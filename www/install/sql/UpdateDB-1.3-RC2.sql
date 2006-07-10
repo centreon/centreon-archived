@@ -115,7 +115,7 @@ CREATE TABLE `log_archive_file_name` (
   `file_name` varchar(200) default NULL,
   `date` int(11) default NULL,
   PRIMARY KEY  (`id_log_file`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=65 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -137,7 +137,7 @@ CREATE TABLE `log_archive_host` (
   `date_end` int(11) default NULL,
   `date_start` int(11) default NULL,
   PRIMARY KEY  (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=42398 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -162,7 +162,7 @@ CREATE TABLE `log_archive_service` (
   `date_start` int(11) default NULL,
   `date_end` int(11) default NULL,
   PRIMARY KEY  (`log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=19692 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 --05 07 06
@@ -174,7 +174,19 @@ UPDATE topology SET topology_name = 'view_redirect_graph' WHERE topology_page = 
 -- 07 07 06
 
 ALTER TABLE `cfg_nagios` CHANGE `sleep_time` `sleep_time` VARCHAR(10) NULL DEFAULT NULL;
-INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('m_host_graph','./img/icones/16x16/column-chart.gif',402,40208,32,1, './include/views/graphs/hostGraphs/hostGraphs.php',NULL,'0','0','1');
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('m_host_graph','./img/icones/16x16/dot-chart.gif',402,40208,32,1, './include/views/graphs/hostGraphs/hostGraphs.php',NULL,'0','0','1');
 
 
 -- --------------------------------------------------------
+-- 10 07 06
+UPDATE topology SET topology_group = '2' WHERE topology_page = '40204';
+UPDATE topology SET topology_group = '2' WHERE topology_page = '40205';
+UPDATE topology SET topology_show = '0' WHERE topology_page = '305';
+UPDATE topology SET topology_url = './include/reporting/viewHostLog.php' WHERE topology_page = '3';
+INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` )
+VALUES (
+'', 'm_dashboard', NULL , '3', '307', '3', '1', './include/reporting/viewHostLog.php', NULL , '0', '0', '1'
+);
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboardHost', './img/icones/16x16/outbox.gif', 307, 30701, 10, 1, './include/reporting/viewHostLog.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboardService', NULL, 307, 30702, 20, 1, './include/reporting/viewServicesLog.php', NULL, '0', '0', '0');
