@@ -63,12 +63,14 @@ For information : contact@oreon.org
 			echo $lang["pel_cant_open"] . $oreon->Nagioscfg["log_file"] . "<br>";
 	}
 	
-	for ($i = 0; $str = fgets($log); $i++){
-		if (preg_match("/^\[([0-9]*)\] (.+)/", $str, $matches)){
-			$time_event = $matches[1];
-			$tab_log[$i] = getLogData($time_event, $matches[2]);
+	
+	if (isset($log))
+		for ($i = 0; $str = fgets($log); $i++){
+			if (preg_match("/^\[([0-9]*)\] (.+)/", $str, $matches)){
+				$time_event = $matches[1];
+				$tab_log[$i] = getLogData($time_event, $matches[2]);
+			}
 		}
-	}
 
 	if (isset($tab_log) && $tab_log)
 		krsort($tab_log);
