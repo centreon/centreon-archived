@@ -27,17 +27,15 @@ For information : contact@oreon.org
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';	
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	
-	if (!file_exists($oreon->Nagioscfg["comment_file"]))
-		print ("downtime file not found");
-	else	{
+	$tab_comments_host = array();
+	$tab_comments_svc = array();
+	
+	if (file_exists($oreon->Nagioscfg["comment_file"]))	{
 		$log = fopen($oreon->Nagioscfg["comment_file"], "r");
-		$tab_comments_host = array();
-		$tab_comments_svc = array();
 		$i = 0;
 		while ($str = fgets($log))	{
 			$res = preg_split("/;/", $str);

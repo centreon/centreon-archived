@@ -29,15 +29,13 @@ For information : contact@oreon.org
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
-	if (!file_exists($oreon->Nagioscfg["downtime_file"]))
-		print ("downtime file not found");
-	else	{
+	
+	$tab_downtime_host = array();
+	$tab_downtime_svc = array();
+	
+	if (file_exists($oreon->Nagioscfg["downtime_file"]))	{
 		$log = fopen($oreon->Nagioscfg["downtime_file"], "r");
-		$tab_downtime_host = array();
-		$tab_downtime_svc = array();
 		$i = 0;
 		$i2 = 0;
 		if ($oreon->user->get_version() == 1)
