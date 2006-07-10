@@ -106,7 +106,7 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'purge_policy_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-
+	
 	#
 	## Form Rules
 	#
@@ -129,6 +129,8 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
+
+	$tpl->assign("help", array("h1"=>$lang["mod_purgePolicy_raw2"], "h2"=>$lang["mod_purgePolicy_bin2"], "h3"=>$lang["mod_purgePolicy_metric2"], "h4"=>$lang["mod_purgePolicy_service2"], "h5"=>$lang["mod_purgePolicy_host2"]));
 
 	# Just watch a contact information
 	if ($o == "w")	{
