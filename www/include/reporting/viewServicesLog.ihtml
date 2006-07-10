@@ -13,14 +13,14 @@
 
 				<table class="ListTable" >
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter"></td>
+						<td class="ListColHeaderCenter">{$infosTitle1}</td>
 					</tr>
 					<tr>
-						<td class='list_one'>
-						{$infosTitle}
+						<td class='ListColCenter'>
+						{$infosTitle2}
 						</td>
 					</tr>
-					<tr class='list_one'>
+					<tr>
 						<td class="ListColCenter"><img src='./include/reporting/generateImages/pie_chart_service.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
 					</tr>
 				</table>

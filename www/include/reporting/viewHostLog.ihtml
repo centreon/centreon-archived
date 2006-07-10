@@ -8,22 +8,18 @@
 	<td  rowspan=3 style='width:300px; padding:5px'>
 		<table class="ListTable" >
 			<tr class='ListHeader'>
-				<td class="ListColHeaderCenter"></td>
-			</tr>
-			<tr>
-				<td class='list_one'>
+				<td class="ListColHeaderLeft">
 					<form {$formHost.attributes}>
-						<b>{$formHost.host.label}</b>&nbsp;&nbsp;{$formHost.host.html}
-		    			{$formHost.hidden}
-					</form>						
+						<b>{$formHost.host.label}</b>&nbsp;&nbsp;{$formHost.host.html}{$formHost.hidden}
+					</form>	
 				</td>
 			</tr>
 			<tr>
-				<td class='list_one'>
+				<td class='ListColCenter'>
 					{$infosTitle}
 				</td>
 			</tr>
-			<tr class='list_two'>
+			<tr>
 				<td class="ListColCenter"><img src='./include/reporting/generateImages/pie_chart_host.php?host_name={$host_name}{$status}'></td>					
 			</tr>
 		</table>

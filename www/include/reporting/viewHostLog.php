@@ -17,13 +17,11 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	
-
 
 	$path = "./include/reporting/";
 	# Smarty template Init
-	$tpl =& new Smarty();
-	$tpl =& initSmartyTpl($path, $tpl, "");
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl, "");
 
 	$tpl->assign('o', $o);
 
@@ -58,16 +56,13 @@ For information : contact@oreon-project.org
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
-
-
 	require_once './class/other.class.php';
 	require_once './include/common/common-Func.php';
 	include("./include/monitoring/log/choose_log_file.php");
 
 
 
-if(!is_null($mhost))
-{	
+if($mhost)	{
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
@@ -268,9 +263,8 @@ $rq = 'SELECT ' .
 	$sub =& $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
 	$res =& $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
 
-if(!is_null($mhost))
+if($mhost)
 {
-
 
 // parser que pour l'host demandé
 function parseFile($file,$end_time, $mhost){
@@ -403,11 +397,7 @@ $tab_log = array();
 
 if($start_date_day < ($end_date_select))
 {
-
-	#
-	## ?????????log path ??????????????
-	#
-	$tmp = "/var/log/nagios/nagios.log";
+	$tmp = $oreon->Nagioscfg["log_file"];
 	$tab = parseFile($tmp,time(), $mhost);
 	
 	
@@ -544,7 +534,7 @@ $tab_resume[3] = $tab;
 	if(isset($tab_svc))
 	$tpl->assign("tab_svc", $tab_svc);		
 	$tpl->assign("tab_log", $tab_log);
-	$tpl->assign('infosTitle', $start_date_select." -> ".$end_date_select."<br><br>");		
+	$tpl->assign('infosTitle', $start_date_select." => ".$end_date_select);	
 }## end of period requirement
 
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'");
@@ -577,16 +567,16 @@ $tab_resume[3] = $tab;
 	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
 
 
-	$renderer1 =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer1 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod1->accept($renderer1);
 	$tpl->assign('formPeriod1', $renderer1->toArray());	
-	$renderer2 =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer2 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod2->accept($renderer2);	
 	$tpl->assign('formPeriod2', $renderer2->toArray());
 
 
 	#Apply a template definition
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formHost->accept($renderer);
 	$tpl->assign('formHost', $renderer->toArray());
 

@@ -173,7 +173,7 @@ $rq = 'SELECT ' .
 	if (PEAR::isError($res)){
 	  die($res->getMessage());
 	} else {
-	  while ($h =& $res->fetchRow()){
+	  while ($h = $res->fetchRow()){
 
 	$Tup = 0 + $h["Tup"];
 	$Tdown = 0 + $h["Tdown"];
@@ -208,7 +208,7 @@ $rq = 'SELECT ' .
 	if (PEAR::isError($res)){
 	  die($res->getMessage());
 	} else { 
-	  while ($s =& $res->fetchRow()){
+	  while ($s = $res->fetchRow()){
 		$tab_svc_bdd["Tok"] = 0 + $s["Tok"];
 		$tab_svc_bdd["Twarn"] = 0 + $s["Twarn"];
 		$tab_svc_bdd["Tunknown"] = 0 + $s["Tunknown"];
@@ -240,7 +240,7 @@ $rq = 'SELECT ' .
 	isset($mservice) ? $formPeriod1->addElement('hidden', 'service', $mservice) : NULL;
 	
 	$formPeriod1->addElement('header', 'title', $lang["m_predefinedPeriod"]);
-	$selHost =& $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));	
+	$selHost = $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));	
 
 
 	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p);
@@ -252,8 +252,8 @@ $rq = 'SELECT ' .
 	$formPeriod2->addElement('text', 'end', $lang["m_end"]);
 	$formPeriod2->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
 
-	$sub =& $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
-	$res =& $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
+	$sub = $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
+	$res = $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
 
 
 
@@ -385,10 +385,7 @@ function parseFile($file,$end_time){
 $tab_log = array();
 if((time() - (24*60*60)) < $end_date_select)
 {
-	#
-	## ?????????log path ??????????????
-	#
-	$tmp = "/var/log/nagios/nagios.log";
+	$tmp = $oreon->Nagioscfg["log_file"];
 	$tab = parseFile($tmp,time());
 	
 	
@@ -528,8 +525,8 @@ $end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 
 	$path = "./include/reporting/";
 	# Smarty template Init
-	$tpl =& new Smarty();
-	$tpl =& initSmartyTpl($path, $tpl, "");
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl, "");
 
 	$tpl->assign('o', $o);
 	
@@ -562,7 +559,8 @@ $end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 	$tpl->assign('InformationsTitle', $lang["m_InformationsTitle"]);
 
 
-	$tpl->assign('infosTitle', $mhost."<br>".$start_date_select." -> ".$end_date_select);		
+	$tpl->assign('infosTitle1', $mhost);
+	$tpl->assign('infosTitle2', $start_date_select." => ".$end_date_select);		
 	$tpl->assign('host_name', $mhost);		
 	$tpl->assign('service_name', $mservice);		
 
@@ -580,11 +578,11 @@ $end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 
 
 
-	$renderer1 =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer1 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod1->accept($renderer1);
 	$tpl->assign('formPeriod1', $renderer1->toArray());	
 
-	$renderer2 =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer2 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod2->accept($renderer2);	
 	$tpl->assign('formPeriod2', $renderer2->toArray());
 
