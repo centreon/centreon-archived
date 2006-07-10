@@ -708,8 +708,11 @@ $lang["mod_purgePolicy_retain"] = "P&eacute;riode de r&eacute;tention";
 $lang["mod_purgePolicy_raw"] = "Suppression des raw";
 $lang["mod_purgePolicy_bin"] = "Suppression des bin";
 $lang["mod_purgePolicy_metric"] = "Suppression des d&eacute;finitions de m&eacute;trics";
+$lang["mod_purgePolicy_metric2"] = "Non li&eacute; &agrave; la p&eacute;riode, SUPPRESSION des Metric + bin";
 $lang["mod_purgePolicy_service"] = "Suppression des d&eacute;finitions de service";
+$lang["mod_purgePolicy_service2"] = "Non li&eacute; &agrave; la p&eacute;riode, SUPPRESSION du Service + Metric + bin + raw";
 $lang["mod_purgePolicy_host"] = "Suppression des d&eacute;finitions d'host";
+$lang["mod_purgePolicy_host2"] = "Non li&eacute; &agrave; la p&eacute;riode, SUPPRESSION de l'Host + Service + Metric + bin + raw";
 $lang["mod_purgePolicy_comment"] = "Commentaires";
 
 $lang["mod_purgePolicy_listRaw"] = "Raw";

@@ -1391,10 +1391,15 @@ $lang["mod_purgePolicy_name"] = "Policy Name";
 $lang["mod_purgePolicy_alias"] = "Alias";
 $lang["mod_purgePolicy_retain"] = "Retention Period";
 $lang["mod_purgePolicy_raw"] = "Raw Deletion";
+$lang["mod_purgePolicy_raw2"] = "Only raw rows according to the retention period";
 $lang["mod_purgePolicy_bin"] = "Bin Deletion";
+$lang["mod_purgePolicy_bin2"] = "Only bin rows according to the retention period";
 $lang["mod_purgePolicy_metric"] = "Metric Definition Deletion";
+$lang["mod_purgePolicy_metric2"] = "Not link with period, ALL metric + bin";
 $lang["mod_purgePolicy_service"] = "Service Definition Deletion";
+$lang["mod_purgePolicy_service2"] = "Not link with period, ALL Service + Metric + bin + raw";
 $lang["mod_purgePolicy_host"] = "Host Definition Deletion";
+$lang["mod_purgePolicy_host2"] = "Not link with period, ALL Host + Service + Metric + bin + raw";
 $lang["mod_purgePolicy_comment"] = "Comments";
 
 $lang["mod_purgePolicy_listRaw"] = "Raw";
