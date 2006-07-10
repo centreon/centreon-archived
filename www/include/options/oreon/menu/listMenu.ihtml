@@ -1,0 +1,20 @@
+<table id="ListTable">
+	<tr class="ListHeader">
+		<td class="ListColHeaderW5PL0TAcenter">{$headerMenu_icone}</td>
+		<td class="ListColHeaderPL4TAleft">{$headerMenu_name}</td>
+		<td class="ListColHeaderPL4TAleft">{$headerMenu_dir}</td>
+		<td class="ListColHeaderPL4TAleft">{$headerMenu_gen}</td>
+		<td class="ListColHeaderPL4TAleft">{$headerMenu_lang}</td>
+		<td class="ListColHeaderPL4TAleft">{$headerMenu_sql}</td>
+	</tr>
+	{section name=elem loop=$elemArr}
+	<tr class={$elemArr[elem].MenuClass}>
+		<td class="ListColTAcenter"></td>
+		<td class="ListColTAcenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
+		<td class="ListColTAcenter">{$elemArr[elem].RowMenu_dir}</td>
+		<td class="ListColTAcenter">{if $elemArr[elem].RowMenu_gen}{$yes}{else}{$no}{/if}</td>
+		<td class="ListColTAcenter">{if $elemArr[elem].RowMenu_lang}{$yes}{else}{$no}{/if}</td>
+		<td class="ListColTAcenter">{if $elemArr[elem].RowMenu_sql}{$yes}{else}{$no}{/if}</td>
+	</tr>
+	{/section}	
+</table>

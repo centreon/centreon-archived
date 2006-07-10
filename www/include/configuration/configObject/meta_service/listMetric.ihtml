@@ -1,0 +1,38 @@
+<table id="ListTable">
+	<tr class="ListHeader">
+	<td class="ListColCenter">
+		<img src='./img/icones/16x16/workstation2.gif'>&nbsp;{$meta.meta} -	{$meta.name}&nbsp;({$meta.calc_type})
+	</td>
+	</tr>		
+</table>
+<br>
+<form {$form1_attributes}>
+	<table id="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColPicker">{$headerMenu_icone}</td>
+			<td class="ListColLeft">{$headerMenu_host}</td>
+			<td class="ListColLeft">{$headerMenu_service}</td>
+			<td class="ListColCenter">{$headerMenu_metric}</td>
+			<td class="ListColCenter">{$headerMenu_status}</td>
+			<td class="ListColRight">{$headerMenu_options}</td>
+		</tr>
+		{section name=elem loop=$elemArr1}
+		<tr class={$elemArr1[elem].MenuClass}>
+			<td class="ListColPicker">{$elemArr1[elem].RowMenu_select}</td>
+			<td class="ListColLeft"><a href="{$elemArr1[elem].RowMenu_link}">{$elemArr1[elem].RowMenu_host}</a></td>
+			<td class="ListColLeft"><a href="{$elemArr1[elem].RowMenu_link}">{$elemArr1[elem].RowMenu_service}</a></td>
+			<td class="ListColCenter">{$elemArr1[elem].RowMenu_metric}</td>
+			<td class="ListColCenter">{$elemArr1[elem].RowMenu_status}</td>
+			<td class="ListColRight">{$elemArr1[elem].RowMenu_options}</td>
+		</tr>
+		{/section}
+		<tr>
+			<td class="ListColFooterLeft" align="left" colspan="2">
+				<input type="image" name="o" value="ds" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msg.delConfirm}')">
+			</td>
+			<td class="ListColFooterCenter" colspan="3"></td>
+			<td class="ListColFooterRight" align="right"><a href="{$msg.addL1}">{$msg.addT}</a></td>
+		</tr>		
+	</table>
+{$form1.hidden}
+</form>

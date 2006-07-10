@@ -1,0 +1,60 @@
+<script type="text/javascript" src='./include/common/javascript/datePicker.js'></script>
+<script type="text/javascript" src='./include/common/javascript/hidden_div.js'></script>
+<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
+{$form.javascript}
+<div>
+{if $rrd}
+	<table id="ListTable">
+		<tr class='ListHeader'>
+			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/line-chart.gif'>&nbsp;&nbsp;Rendu Graphique</td>
+		</tr>
+ 
+		<tr>
+			<td class='ListColCenter'>
+				{foreach item=h from=$rrd }
+					<div style="position: relative; list-style-type: none;"><img src='./include/views/graphs/generateImage/generateRRDImagePlugins.php?nbgraph={$nbGraph}&session_id={$session_id}&database={$h.host_id}_{$h.service_service_id}.rrd&template_id={$h.graph_id}&end={$end}&start={$start}'></div>
+				{/foreach}
+			</td>
+		</tr>
+	</table>
+<br>
+
+{/if}
+
+</div>
+<div style="padding-top: 20px;">
+    <form {$form.attributes}>
+        <div>
+       		<table id="ListTable">
+                <tr class="ListHeader">
+                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                </tr>
+                <tr class="list_one">
+            		<td>{$form.host_name.label}</td>
+            		<td>{$form.host_name.html}</td>
+                </tr>
+        	</table>
+        </div>
+        <div id="validForm">
+        	<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br />
+        </div><br /><br /><br /><br />
+        <div name="div1" id="div1" class='cachediv'>
+        	<table id="ListTable">
+                <tr class="ListHeader">
+                	<td class="FormHeader" colspan="2">{$lang.advanced}</td>
+                </tr>
+                <tr class="list_two"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
+                <tr class="list_one"><td>{$form.nbGraph.label}</td><td>{$form.nbGraph.html}</td></tr>
+				<tr class="list_two">
+					<td>{$form.start.label}</td>
+					<td>{$form.start.html}&nbsp;&nbsp;{$form.startD.html}</td>
+				</tr>
+				<tr class="list_one">
+					<td>{$form.end.label}</td>
+					<td>{$form.end.html}&nbsp;&nbsp;{$form.endD.html}</td>
+				</tr>
+        	</table>
+        </div>
+        {$form.hidden}
+    </form>
+</div>

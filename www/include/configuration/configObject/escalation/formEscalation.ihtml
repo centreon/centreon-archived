@@ -1,0 +1,81 @@
+<script type="text/javascript" src="include/configuration/changetab.js"></script>
+{$form.javascript}
+<form {$form.attributes}>
+<div>
+<ul id="mainnav">
+	<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$sort1}</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
+	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
+</ul>
+</div>
+<div id="validFormTop">
+{if $o == "a" || $o == "c"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+<div id='tab1' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmark.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.esc_name.label}</td><td class="FormRowValue">{$form.esc_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.first_notification.label}</td><td class="FormRowValue">{$form.first_notification.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.last_notification.label}</td><td class="FormRowValue">{$form.last_notification.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
+		{if $nagios == 2}
+		<tr class="list_one"><td class="FormRowField">{$form.escalation_period.label}</td><td class="FormRowValue">{$form.escalation_period.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.escalation_options1.label}</td><td class="FormRowValue">{$form.escalation_options1.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.escalation_options2.label}</td><td class="FormRowValue">{$form.escalation_options2.html}</td></tr>
+		{/if}
+		<tr class="list_one"><td class="FormRowField">{$form.esc_cgs.label}</td><td class="FormRowValue">{$form.esc_cgs.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.esc_comment.label}</td><td class="FormRowValue">{$form.esc_comment.html}</td></tr>
+	</table>
+</div>
+<div id='tab2' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.hosts}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.esc_hosts.label}</td><td class="FormRowValue">{$form.esc_hosts.html}</td></tr>
+	</table>
+</div>
+<div id='tab3' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.esc_hServices.label}</td><td class="FormRowValue">{$form.esc_hServices.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.esc_hgServices.label}</td><td class="FormRowValue">{$form.esc_hgServices.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField" colspan="2">{$legend1}</td></tr>
+	</table>
+</div>
+<div id='tab4' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.hgs}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.esc_hgs.label}</td><td class="FormRowValue">{$form.esc_hgs.html}</td></tr>
+	</table>
+</div>
+<div id='tab5' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.metas}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.esc_metas.label}</td><td class="FormRowValue">{$form.esc_metas.html}</td></tr>
+	</table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.action.html}</p>
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+

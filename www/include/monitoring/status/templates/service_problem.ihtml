@@ -1,0 +1,52 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form method="GET" action="">
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="svcpb" type="hidden">
+<table id="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=svcpb&sort_types=host_name&order=sort_asc'>{$lang.m_mon_hosts}</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&o=svcpb&sort_types=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+	 	<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=svcpb&sort_types=description&order=sort_asc'>{$lang.m_mon_services}</a>&nbsp;{if $sort_type == "description"}<a href='./oreon.php?p={$p}&o=svcpb&sort_types=description&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter">Actions</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=svcpb&sort_types=status&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "status"}<a href='./oreon.php?p={$p}&o=svcpb&sort_types=status&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=svcpb&sort_types=last_check&order=sort_asc'>{ $mon_last_check }</a>&nbsp;{if $sort_type == "last_check"}<a href='./oreon.php?p={$p}&o=svcpb&sort_types=last_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=svcpb&sort_types=next_check&order=sort_asc'>{ $mon_duration }</a&nbsp;{if $sort_type == "next_check"}<a href='./oreon.php?p={$p}&o=svcpb&sort_types=next_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=svcpb&sort_types=retry&order=sort_asc'>{$lang.m_mon_try}</a>&nbsp;{if $sort_type == "retry"}<a href='./oreon.php?p={$p}&o=svcpb&sort_types=retry&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'>{/if}</a></td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=svcpb&sort_types=output&order=sort_asc'>{ $mon_status_information }</a>&nbsp;{if $sort_type == "output"}<a href='./oreon.php?p={$p}&o=svcpb&sort_types=output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+	</tr>
+	{ foreach item=s from=$service_status }
+	{if $s.status ne 'OK'}
+		<tr {if $s.status == CRITICAL}class="list_three"{else}class="{$s.class}"{/if}>
+			<td class="ListColPicker" width="10"><input name="select[{$s.host_name}:{$s.description}]" value="1" type="checkbox"></td>
+			{if $host == $s.host_name}
+				<td class="ListColLeft">&nbsp;</td>
+			{elseif $host != $s.host_name}	
+				<td class="ListColLeft"><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
+			{/if}
+			<td class="ListColLeft"><a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.description}'>{ $s.description }</a></td>
+			<td class="ListColRight">
+				{if $s.pb_aknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
+				{if $s.checks_en == 0 && $s.accept_passive_check}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
+				{if $s.checks_en == 0 && $s.accept_passive_check == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
+				{if $s.not_en == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
+				<a href='./oreon.php?p={$p}&o=svc&cmd=2&select[{$s.host_name}:{$s.description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
+				<a href='./oreon.php?p=40207&host_name={ $s.host_name }&service_description={$s.description}&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
+			</td>
+			{ $s.status_td }
+			<td class="ListColRight">{ $s.last_check }</td>
+			<td class="ListColRight" align="right">{ $s.last_change }</td>
+			<td class="ListColCenter" align="center">{ $s.retry }</td>
+			<td class="ListColNoWrap">{ $s.output}{ $t}</td>
+		</tr>
+		{assign var="host" value=$s.host_name}
+	{/if}
+	{/foreach}
+</table>
+<div style="text-align:left;padding-top:5px;">
+	<select name="cmd">
+		<option value="1">{$lang.m_mon_resubmit_im_checks}</option>
+		<option value="2">{$lang.m_mon_resubmit_im_checks_f}</option>
+	</select>
+	<input name="SubmitOptions" value="go" type="submit">
+</div>
+</form>

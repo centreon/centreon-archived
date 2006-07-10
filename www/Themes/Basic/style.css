@@ -1,0 +1,57 @@
+* {margin:0;padding:0}
+
+
+body{			background-color:#fff9eb;font-family: Verdana;	font-size: 11px;}
+
+.msg{			font-family: Verdana, Arial, sans-serif; font-size: 12px; font-weight: normal; border: 4px solid white; padding:3px; text-align: center;
+background-color:red; color:white; margin:5px;}
+
+
+#header{		height:83px;	padding-left:20px;	background: url("Images/bg_banner.gif") top repeat-x;}
+#logInfos{		float:right;}
+#logInfos div{		padding:2px;	padding-right:10px;	color: #525252;	font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: bold;}
+#logli{			padding-top:5px;	padding-right:10px;	color: #525252;	font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: bold;}
+#logli a {   		color:#666666;}
+
+
+#footer a{				color:#666666;}
+#footer{				float:left;}
+#footerline1{			height:2px;	width:100%;}
+#footerline2{			height:6px;	width:100%;}
+.footer a img {    		opacity: 0.5;}
+.footer a:hover img {	opacity: 1;}
+
+
+#Tcontener{
+	width:100%;
+}
+#Tmenu{
+
+vertical-align: top;
+}
+#Tmainpage{
+width:100%;
+}
+.TcTD{
+	padding:6px;
+}
+
+img {					border:0; margin:0px; padding:0px; margin-bottom:-4px;}
+table{					empty-cells: show; border-spacing:0px; border-collapse:collapse;}
+input	{				font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; border-style: none; padding:1px;}
+textarea	{			font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;}
+checkbox	{			font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; padding: 2px;}
+select	{ font-family: Verdana, Arial, sans-serif; font-size: 10px; font-weight: normal; border-style: none; padding-right:1px;padding-left:1px;}
+option	{				font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;padding-right:1px;padding-left:1px;}
+td	{    				padding:1px; color: #525252; font-family: Verdana, Arial, sans-serif; font-size: 9px;	white-space: nowrap;}
+
+a	{					text-decoration: none;}
+a:hover	{				text-decoration: underline;}
+
+.Small{
+ text-align: center;
+}
+
+.pathWay{
+color:red;
+}

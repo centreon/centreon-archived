@@ -1,0 +1,64 @@
+A {
+  text-decoration: none;
+}
+A:link {
+  color: #486591;
+}
+A:visited {
+  color: #A0AD81;
+}
+A:active {
+  color: blue;
+}
+.itemtitle {
+  text-decoration: none;
+  font-family: Verdana,Helvetica,sans-serif;
+  font-size: 11px;
+  font-weight: none;
+}
+.itemtext {
+  text-decoration: none;
+  font-family: Verdana,Helvetica,sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+}
+.tabletitles {
+  text-decoration: underline;
+  font-family: Verdana,Helvetica,sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+}
+body {
+  color: #000000;
+  background-color: #0000a4;
+  text-decoration: none;
+  font-family: Verdana,Helvetica,sans-serif;
+  font-size: 10px;
+  font-weight: normal;
+}
+font {
+  text-decoration: none;
+  font-family: Verdana,Helvetica,sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+}
+H1 {
+  color: #FFFFFF;
+  text-decoration: none;
+  font-family: Verdana,Helvetica,sans-serif;
+  font-size: 20px;
+}
+select {
+    color: black;
+    text-decoration: none;
+    font-family: Verdana,Helvetica,sans-serif;
+    font-size: 10px;
+    font-weight: normal;
+}
+input {
+    color: black;
+    text-decoration: none;
+    font-family: Verdana,Helvetica,sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+}

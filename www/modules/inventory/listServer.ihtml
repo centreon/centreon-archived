@@ -1,0 +1,54 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form {$form_attributes}>
+	<table id="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_address}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_type}</td>
+		</tr>
+		{section name=elem loop=$elemArr}
+		<tr class={$elemArr[elem].MenuClass}>
+			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
+			<td class="ListColLeft">{$elemArr[elem].RowMenu_desc}</td>
+			<td class="ListColLeft">{$elemArr[elem].RowMenu_address}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
+		</tr>
+		{/section}
+		<tr>
+			<td class="ListColFooterLeft" align="left" colspan="6">
+			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
+			<input type="image" name="o" value="c" src="./img/icones/16x16/refresh.gif">
+			</td>
+		</tr>
+	</table>
+	<table class="TableFooter">
+	<tr>
+	<td class="limitPage">{$form.limit.label}</b>&nbsp;&nbsp;{$form.limit.html}</td>
+	<td class="pagination">
+		{if $pagePrev}
+		&nbsp;<a href="{$pagePrev}"><img src="./img/icones/16x16/arrow_left_blue.png"  alt='{$previous}' title='{$previous}'></a>
+		{/if}
+
+		{section name=elem loop=$pageArr}
+		{if $pageArr[elem].num != $num}
+		&nbsp;&nbsp;<a href="{$pageArr[elem].url_page}" class="otherPageNumber">{$pageArr[elem].label_page}</a>&nbsp;
+		{else}
+		&nbsp;&nbsp;<b class="currentPageNumber">{$pageArr[elem].label_page}</b>&nbsp;
+		{/if}
+		{/section}
+
+		{if $pageNext}
+		&nbsp;<a href="{$pageNext}"><img src="./img/icones/16x16/arrow_right_blue.png"  alt='{$next}' title='{$next}'></a>
+		{/if}	
+	</td>
+	<td class="pageNumber">Page {$pageNumber}</td>
+	</tr>
+	</table>
+{$form.hidden}
+</form>
+

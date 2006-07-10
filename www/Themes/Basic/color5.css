@@ -1,0 +1,51 @@
+#outer{    border-left-color:#F2F2F2;   /* left column colour */}
+body{				background-color:#F2F2F2;}
+.ListTable, #ListTable a:link		{color:#666666;}
+.ListTable, #ListTable a:visited		{color:#666666;}
+.ListTable, #ListTable a:hover		{color:#E3A385;}
+/* Form */
+.list_lvl_1{    	background-color:#e7cafa;}
+.list_lvl_2{    	background-color:#e7bafa;}
+.ListHeader{    	background: #BFD0E2 url("./Images/bg_header_pink.gif") left repeat-x 0px;}
+.list_one{    		background-color:#f1e4fa;}
+.list_two {    		background-color:#f8f1fd;}
+.list_three{    	background-color:#fada83;}
+.list_four {    	background-color:#fdc11e;}
+#page {    			color:#c468f9;}
+#page a{    		color:#c468f9;}
+
+/*Menu*/
+#menu1_bgimg{    	background: url("Images/menu_bg_purple.gif") right repeat-x 0px;}
+#menu1_bgcolor{		background: #9C85E3;}
+#menu2_bgcolor{		background: #ECE5F9;}
+
+
+#menu_2{			background: #9C85E3;}
+
+.Tmenu3 .top .left { background-color:  #F2F2F2;}
+.Tmenu3 .top .right {  background-color:  #F2F2F2;}
+.Tmenu3 .bottom .left {  background-color:  #F2F2F2;}
+.Tmenu3 .bottom .right { background-color:  #F2F2F2;}
+
+/* General */
+#contener{		background:#F2F2F2;}
+#Tmenu{		background:#F2F2F2;
+border-right: 1px solid #9C85E3;;
+}
+
+#footerline1{background-color:#9C85E3;}
+#footerline2{background-color:#dedede;}
+
+#MainPage textarea, #MainPage input, #MainPage select{    color:#a42ab6;}
+#mainnav li{	background: url("./Images/bg_header_pink.gif");}
+
+/* w3c */
+input[type="submit"],input[type="button"],input[type="reset"]{
+    background: url("./Images/bg_input_purple.gif") ;
+}
+/* IE */
+.oreonbutton input{
+    background: url("./Images/bg_input_purple.gif") ;
+}
+
+.quick_search{	border-color:#eff1f4;	background: #BFD0E2 url("Images/bg_header_pink.gif") left repeat-x 0px;	color:#fff;}

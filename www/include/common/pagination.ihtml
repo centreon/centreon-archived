@@ -1,0 +1,24 @@
+	<table class="TableFooter">
+	<tr>
+	<td class="limitPage">{$form.limit.label}</b>&nbsp;&nbsp;{$form.limit.html}</td>
+	<td class="pagination">
+		{if $pagePrev}
+		&nbsp;<a href="{$pagePrev}"><img src="./img/icones/16x16/arrow_left_blue.png"  alt='{$previous}' title='{$previous}'></a>
+		{/if}
+	
+		{foreach key=key item=item from=$pageArr }
+				{if $pageArr[$key].num != $num}
+				&nbsp;&nbsp;<a href="{$pageArr[$key].url_page}" class="otherPageNumber">{$pageArr[$key].label_page}</a>&nbsp;
+				{else}
+				&nbsp;&nbsp;<b class="currentPageNumber">{$pageArr[$key].label_page}</b>&nbsp;
+				{/if}
+		{/foreach}
+	
+		{if $pageNext}
+		&nbsp;<a href="{$pageNext}"><img src="./img/icones/16x16/arrow_right_blue.png"  alt='{$next}' title='{$next}'></a>
+		{/if}	
+	</td>
+	<td class="pageNumber">Page {$pageNumber}</td>
+	</tr>
+	</table>
+	{$form.hidden}

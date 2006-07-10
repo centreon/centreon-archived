@@ -1,0 +1,45 @@
+<SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+	<td>&nbsp;</td>
+	<td>
+		<table id="ListTableSmall">
+			<tr class='ListHeader'>
+				<td>{$lang.m_mon_hosts_status}</td>
+				<td>{$lang.m_mon_up}</td>
+				<td>{$lang.m_mon_down}</td>
+				<td>{$lang.m_mon_unreachable}</td>
+				<td>{$lang.m_mon_pending}</td>
+			</tr>
+			<tr style="text-align:center;">
+				<td>&nbsp;</td>
+				<td{if $statistic_host.UP != 0}{$statistic_host_color.UP}{/if}>{$statistic_host.UP}</td>
+				<td{if $statistic_host.DOWN != 0}{$statistic_host_color.DOWN}{/if}>{$statistic_host.DOWN}</td>
+				<td{if $statistic_host.UNREACHABLE != 0}{$statistic_host_color.UNREACHABLE}{/if}>{$statistic_host.UNREACHABLE}</td>
+				<td{if $statistic_host.PENDING != 0}{$statistic_host_color.PENDING}{/if}>{$statistic_host.PENDING}</td>
+			</tr>
+		</table>
+	</td>
+	<td>&nbsp;</td>
+	<td>
+		<table id="ListTableSmall">
+			<tr class='ListHeader'>
+				<td>{$lang.m_mon_services_status}</td>
+				<td>{$lang.m_mon_ok}</td>
+				<td>{$lang.m_mon_warning}</td>
+				<td>{$lang.m_mon_critical}</td>
+				<td>{$lang.m_mon_pending}</td>
+				<td>{$lang.m_mon_unknown}</td>		
+			</tr>
+			<tr style="text-align:center;">
+				<td>&nbsp;</td>
+				<td{if $statistic_service.OK != 0}{$statistic_service_color.OK}{/if}>{$statistic_service.OK}</td>
+				<td{if $statistic_service.WARNING != 0}{$statistic_service_color.WARNING}{/if}>{$statistic_service.WARNING}</td>
+				<td{if $statistic_service.CRITICAL != 0}{$statistic_service_color.CRITICAL}{/if}>{$statistic_service.CRITICAL}</td>
+				<td{if $statistic_service.PENDING != 0}{$statistic_service_color.PENDING}{/if}>{$statistic_service.PENDING}</td>
+				<td{if $statistic_service.UNKNOWN != 0}{$statistic_service_color.UNKNOWN}{/if}>{$statistic_service.UNKNOWN}</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+</table>

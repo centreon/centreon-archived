@@ -1,0 +1,40 @@
+To use graphic plugins, you need to have on your server :
+- RRDTOOL
+- perl/RRDTOOL (RRDs.pm)
+- Net::SNMP
+
+To use Oreon, you need to have on your server :
+- php4 ( php5 not supported yet )
+- php-snmp
+- php-gd
+- perl-GD
+
+FRANCAIS :
+----------
+
+
+Pour installer Oreon sans mise à jour :
+
+	Lancer la commande "./install.sh"
+
+Pour mettre à jour :
+
+	Lancer la commande "./upgrade.sh"
+
+
+ENGLISH :
+---------
+
+
+For install only :
+
+	Launch "./install.sh"
+
+For update :
+
+	Launch "./upgrade.sh"
+
+
+For more informations, mail infos@oreon-project.org or visit Oreon's forum http://forum.oreon-project.org.
+
+Thanks for using oreon.

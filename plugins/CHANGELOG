@@ -1,0 +1,22 @@
+##########################
+# Oreon Plugins Change Log
+##########################
+
+1.2.3 - 02/11/2005
+----------------
+* Enhanced Oreon Perl Package oreon.pm (wistof)
+* Integration of some Manubulon plugins (wistof)
+* New install script for plugins (wistof)
+* Minor bug fixes
+
+1.2.2 - xx/08/2005
+----------------
+* Add Oreon Perl Package oreon.pm (gollum123)
+* Globalization of paths in oreon.conf (gollum123)
+* Management of RRDTOOL errors (wistof)
+* Use Net::SNMP instead of snmpwalk and snmpget (wistof)
+* Disable regex for '-H' option (wistof)
+* Minor bug fixes
+
+
+

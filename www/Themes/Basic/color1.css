@@ -1,0 +1,67 @@
+#outer{    border-left-color:#F2F2F2;   /* left column colour */}
+body{				background-color:#F2F2F2;}
+
+/* Form  */
+.ListTable, #ListTable a:link		{color:#666666;}
+.ListTable, #ListTable a:visited		{color:#666666;}
+.ListTable, #ListTable a:hover		{color:#E3A385;}
+
+.list_lvl_1{	background-color:#fada83;}
+.list_lvl_2{	background-color:#faeaa3;}
+.ListHeader{	background: #fada83 url("./Images/bg_header_orange.gif") left repeat-x 0px;text-align:center;}
+
+
+#ResumeHeader{	background: #fada83 url("./Images/bg_header_orange.gif") left repeat-x 0px;}
+#ResumeHeader td{padding-left:1px;padding-right:1px; color: #525252; font-family: Verdana, Arial, sans-serif; font-size: 9px;	white-space: nowrap;}
+
+#ResumeTable    {    width:100%;}
+#ResumeTable td	{    padding-top:2px;padding-bottom:2px; border: 0.5px solid gray}
+#ResumeTable a	{color:#666666;}
+
+
+/*.list_one{		background-color:#f8c160;}*/
+.list_one {		background-color:#FFF2AD;}
+.list_one td{	padding-left:1px;padding-right:1px; color: #525252; font-family: Verdana, Arial, sans-serif; font-size: 9px;	white-space: nowrap;}
+
+/* .list_two {		background-color:#ffe3a1;}*/
+.list_two {		background-color:#FEE8AD;}
+.list_three{	background-color:#ffe0d1;}
+.list_four {	background-color:#ffecd1;}
+#page {			color:#592bed;}
+#page a{		color:#592bed;}
+
+/*Menu*/
+#menu1_bgimg{	background: url("Images/menu_bg_orange.gif") right repeat-x 0px;}
+#menu1_bgcolor{	background: #fdc11e;}
+#menu2_bgcolor{	background: #fff3bb;}
+
+
+#menu_2{		background: #fdc11e;}
+.Tmenu3 .top .left { background-color:  #F2F2F2;}
+.Tmenu3 .top .right {  background-color:  #F2F2F2;}
+.Tmenu3 .bottom .left {  background-color:  #F2F2F2;}
+.Tmenu3 .bottom .right { background-color:  #F2F2F2;}
+/* General */
+#contener{		background:#F2F2F2;}
+#Tmenu{		background:#F2F2F2;
+border-right: 1px solid #fdc11e;
+}
+#footerline1{	background-color:#fdc11e;}
+#footerline2{	background-color:#dedede;}
+
+#MainPage textarea, #MainPage input, #MainPage select{    color:#242af6;}
+
+#formulary input{ border-style:inset;border:1px solid #DDDDDD;}
+
+/* w3c */
+input[type="submit"],input[type="button"],input[type="reset"]{
+    background: url("./Images/bg_input_gray.gif") ;
+}
+
+/* IE */
+.oreonbutton input{
+    background: url("./Images/bg_input_gray.gif") ;
+}
+
+
+.quick_search{	border-color:#eff1f4;	background: #BFD0E2 url("Images/bg_header_orange.gif") left repeat-x 0px;	color:#fff;}

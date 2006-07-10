@@ -1,0 +1,47 @@
+{$form.javascript}
+<form {$form.attributes}>
+<div>
+	<table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/workstation2.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.meta_name.label}</td><td class="FormRowValue">{$form.meta_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.warning.label}</td><td class="FormRowValue">{$form.warning.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.critical.label}</td><td class="FormRowValue">{$form.critical.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.calcul_type.label}</td><td class="FormRowValue">{$form.calcul_type.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.meta_select_mode.label}</td><td class="FormRowValue">{$form.meta_select_mode.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.regexp_str.label}</td><td class="FormRowValue">{$form.regexp_str.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.metric.label}</td><td class="FormRowValue">{$form.metric.html}</td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.check_period.label}</td><td class="FormRowValue">{$form.check_period.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.max_check_attempts.label}</td><td class="FormRowValue">{$form.max_check_attempts.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.normal_check_interval.label}</td><td class="FormRowValue">{$form.normal_check_interval.html}{$time_unit}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.retry_check_interval.label}</td><td class="FormRowValue">{$form.retry_check_interval.html}{$time_unit}</td></tr>
+		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mail_write.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.notifications_enabled.label}</td><td class="FormRowValue">{$form.notifications_enabled.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ms_cgs.label}</td><td class="FormRowValue">{$form.ms_cgs.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.notification_period.label}</td><td class="FormRowValue">{$form.notification_period.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ms_notifOpts.label}</td><td class="FormRowValue">{$form.ms_notifOpts.html}</td></tr>
+		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.meta_activate.label}</td><td class="FormRowValue">{$form.meta_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.meta_comment.label}</td><td class="FormRowValue">{$form.meta_comment.html}</td></tr>
+		
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.action.html}</p>
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p class="oreonbutton">{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}	
+</form>

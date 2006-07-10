@@ -1,0 +1,64 @@
+<script type="text/javascript" src="include/configuration/changetab.js"></script>
+{$colorJS}
+{$form.javascript}
+<form {$form.attributes}>
+<div>
+<ul id="mainnav">
+	<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">{$sort1}</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
+</ul>
+</div>
+<div id='tab1' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/layout_horizontal.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	 	
+		<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ds_name.label}</td><td class="FormRowValue">{$form.ds_name.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ds_order.label}</td><td class="FormRowValue">{$form.ds_order.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ds_legend.label}</td><td class="FormRowValue">{$form.ds_legend.html}</td></tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.ds_color_line.label}</td>
+			<td class="FormRowValue">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}&nbsp;&nbsp;{$form.ds_color_line_modify.html}</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.ds_color_area.label}</td>
+			<td class="FormRowValue">{$form.ds_color_area.html}&nbsp;&nbsp;{$form.ds_color_area_color.html}&nbsp;&nbsp;{$form.ds_color_area_modify.html}</td>
+		</tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ds_transparency.label}</td><td class="FormRowValue">{$form.ds_transparency.html}%</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ds_invert.label}</td><td class="FormRowValue">{$form.ds_invert.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ds_max.label}</td><td class="FormRowValue">{$form.ds_max.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ds_min.label}</td><td class="FormRowValue">{$form.ds_min.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ds_average.label}</td><td class="FormRowValue">{$form.ds_average.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ds_last.label}</td><td class="FormRowValue">{$form.ds_last.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ds_tickness.label}</td><td class="FormRowValue">{$form.ds_tickness.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.default_tpl2.label}</td><td class="FormRowValue">{$form.default_tpl2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+</div>
+<div id='tab2' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/layout_horizontal.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/layout_vertical.gif'>&nbsp;&nbsp;{$form.header.graphs}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.compo_graphs.label}</td><td class="FormRowValue">{$form.compo_graphs.html}</td></tr>
+	</table>
+</div>
+<div id="validForm">
+{if $o == "a" || $o == "c"}
+	<p>{$form.action.html}</p>
+	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{else if $o == "w"}
+	<p>{$form.change.html}</p>
+{/if}
+</div>
+{$form.hidden}
+</form>
+

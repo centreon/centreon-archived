@@ -1,0 +1,8 @@
+############################
+# Oreon Plugins Installation
+############################
+
+- just run install.sh in src/ directory
+- don't directly copy plugins in Nagios plugins directory
+
+

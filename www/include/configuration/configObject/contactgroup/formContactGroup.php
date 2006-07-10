@@ -1,0 +1,172 @@
+<?
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus
+
+Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
+	#
+	## Database retrieve information for Contact
+	#
+	$cg = array();
+	if (($o == "c" || $o == "w") && $cg_id)	{	
+		$res =& $pearDB->query("SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1");
+		# Set base value
+		$cg = array_map("myDecode", $res->fetchRow());
+		# Set Contact Childs
+		$res =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."'");
+		for($i = 0; $res->fetchInto($contacts); $i++)
+			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
+		$res->free();
+	}
+	#
+	## Database retrieve information for differents elements list we need on the page
+	#
+	# Contacts comes from DB -> Store in $contacts Array
+	$contacts = array();
+	$res =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
+	while($res->fetchInto($contact))
+		$contacts[$contact["contact_id"]] = $contact["contact_name"];
+	unset($contact);
+	$res->free();
+	#
+	# End of "database-retrieved" information
+	##########################################################
+	##########################################################
+	# Var information to format the element
+	#
+	$attrsText 		= array("size"=>"30");
+	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
+	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+
+	#
+	## Form begin
+	#
+	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	if ($o == "a")
+		$form->addElement('header', 'title', $lang["cg_add"]);
+	else if ($o == "c")
+		$form->addElement('header', 'title', $lang["cg_change"]);
+	else if ($o == "w")
+		$form->addElement('header', 'title', $lang["cg_view"]);
+
+	#
+	## Contact basic information
+	#
+	$form->addElement('header', 'information', $lang['cg_infos']);
+	$form->addElement('text', 'cg_name', $lang["cg_name"], $attrsText);
+	$form->addElement('text', 'cg_alias', $lang["cg_alias"], $attrsText);
+	
+	##
+	## Contacts Selection
+	##
+	$form->addElement('header', 'notification', $lang['cg_notif']);
+	
+    $ams1 =& $form->addElement('advmultiselect', 'cg_contacts', $lang["cg_members"], $contacts, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
+	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
+	
+	#
+	## Further informations
+	#
+	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
+	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, $lang["enable"], '1');
+	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, $lang["disable"], '0');
+	$form->addGroup($cgActivation, 'cg_activate', $lang["status"], '&nbsp;');
+	$form->setDefaults(array('cg_activate' => '1'));
+	$form->addElement('textarea', 'cg_comment', $lang["comment"], $attrsTextarea);
+	
+	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
+	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');	
+	$form->setDefaults(array('action' => '1'));
+	
+	$form->addElement('hidden', 'cg_id');
+	$redirect =& $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
+	
+	#
+	## Form Rules
+	#
+	function myReplace()	{
+		global $form;
+		$ret = $form->getSubmitValues();
+		return (str_replace(" ", "_", $ret["cg_name"]));
+	}
+	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('cg_name', 'myReplace');
+	$form->addRule('cg_name', $lang['ErrName'], 'required');
+	$form->addRule('cg_alias', $lang['ErrAlias'], 'required');
+	$form->registerRule('exist', 'callback', 'testContactGroupExistence');
+	$form->addRule('cg_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->setRequiredNote($lang['requiredFields']);
+
+	# 
+	##End of form definition
+	#
+	
+	# Smarty template Init
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl);
+	
+	# Just watch a Contact Group information
+	if ($o == "w")	{
+		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
+	    $form->setDefaults($cg);
+		$form->freeze();
+	}
+	# Modify a Contact Group information
+	else if ($o == "c")	{
+		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	    $form->setDefaults($cg);
+	}
+	# Add a Contact Group information
+	else if ($o == "a")	{
+		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	}
+	
+	$valid = false;
+	if ($form->validate())	{
+		$cgObj =& $form->getElement('cg_id');
+		if ($form->getSubmitValue("submitA"))
+			$cgObj->setValue(insertContactGroupInDB());
+		else if ($form->getSubmitValue("submitC"))
+			updateContactGroupInDB($cgObj->getValue());
+		$o = "w";
+		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cgObj->getValue()."'"));
+		$form->freeze();
+		$valid = true;
+	}
+	$action = $form->getSubmitValue("action");
+	if ($valid && $action["action"]["action"])
+		require_once($path."listContactGroup.php");
+	else	{
+		#Apply a template definition
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+		$form->accept($renderer);	
+		$tpl->assign('form', $renderer->toArray());	
+		$tpl->assign('o', $o);		
+		$tpl->display("formContactGroup.ihtml");
+	}
+?>
