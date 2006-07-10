@@ -2,7 +2,7 @@
 {$insertValueQuery}
 <form {$form.attributes}>
 	 <table id="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/exchange.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 		<tr class="list_one"><td class="FormRowField">{$form.traps_name.label}</td><td class="FormRowValue">{$form.traps_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
