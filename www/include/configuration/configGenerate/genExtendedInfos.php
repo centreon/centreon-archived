@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 					array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"] == 3)
 					$BP = true;
-				if ($BP)	{
+				if ($BP && isAHostTpl($value))	{
 					$host_name = getMyHostName($value);
 					$service_description = getMyServiceName($esi["service_service_id"]);
 					$str .= "# '" . $host_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
