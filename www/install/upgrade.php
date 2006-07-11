@@ -154,7 +154,7 @@ For information : contact@oreon-project.org
 		// end last code
 		aff_middle();
 		$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' ";
-		if ($return_false)
+		if (isset($return_false) && $return_false)
 			$str .= " disabled";
 		$str .= " />";
 		print $str;

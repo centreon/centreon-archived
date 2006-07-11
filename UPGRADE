@@ -3,8 +3,9 @@ How To update Oreon 1.3-RC1 to oreon-1.3-RC2 ?
 ----------------------------------------------
 
 
-1) After updating Oreon base Folders with the new ones from the tar.gz
-Just delete a field in giv_components_template like this :
+1) After updating Oreon base Files with the new ones from the tar.gz, 
+if you have installed oreon-1.3 patch 1, Just delete a field in 
+giv_components_template like this :
 
 $>mysql -u root -p
 use oreon;
@@ -13,7 +14,7 @@ ALTER TABLE `giv_components_template` DROP `ds_invert` ;
 2) After launch a php udpdate file like this in the good folder :
 
 $>cd /usr/local/oreon/www/install/php
-$>php /usr/local/oreon/www/install/php/update-1.3-RC2.php
+$>php update-1.3-RC2.php
 
 3) Connect you to the oreon interface to follow
 wizard to update your database. 
