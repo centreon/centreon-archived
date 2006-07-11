@@ -53,6 +53,7 @@ For information : contact@oreon-project.org
 
 	if (isset($_POST["submit"])) {
 		require_once("DBconnect.php");
+		
 		$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable  FROM general_opt LIMIT 1");
 		$res->fetchInto($ldap_auth);
 
