@@ -72,6 +72,17 @@ For information : contact@oreon-project.org
 				break;
 		}
 	}
+	
+	function isAHostTpl($host_id = NULL)	{
+		if (!$host_id) return;
+		global $pearDB;
+		$res =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		$row =& $res->fetchRow();
+		if ($row["host_register"])
+			return true;
+		else
+			return false;
+	}
 
 	function getMyHostAddress($host_id = NULL)	{
 		if (!$host_id) return;
