@@ -14,6 +14,11 @@ ALTER TABLE `giv_graphs_template` ADD `lower_limit` INT NULL AFTER `height` , AD
 
 -- 27/06/2006 ----------
 
+-- Template added --
+
+ALTER TABLE `general_opt` ADD `template` VARCHAR( 255 ) NULL AFTER `maxViewConfiguration`;
+UPDATE `general_opt` SET `template` = 'Basic_light' WHERE `gopt_id` =1 LIMIT 1 ;
+
 -- Add Authentification type for LDAP compatibility --
 
 ALTER TABLE `contact` ADD `contact_auth_type` VARCHAR( 255 ) NULL AFTER `contact_activate`;
@@ -26,10 +31,7 @@ ALTER TABLE  `general_opt` ADD `ldap_login_attrib` varchar(254) default 'dn' AFT
 ALTER TABLE  `general_opt` ADD `ldap_ssl` enum('0','1') default NULL AFTER `ldap_login_attrib`;
 ALTER TABLE  `general_opt` ADD `ldap_auth_enable` enum('0','1') default NULL AFTER `ldap_ssl`;
 
--- Template added --
 
-ALTER TABLE `general_opt` ADD `template` VARCHAR( 255 ) NULL AFTER `maxViewConfiguration`;
-UPDATE `general_opt` SET `template` = 'Basic_light' WHERE `gopt_id` =1 LIMIT 1 ;
 
 -- Trap Module --
 
@@ -62,16 +64,16 @@ ALTER TABLE `traps_service_relation`
   ADD CONSTRAINT `traps_service_relation_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `traps_service_relation_ibfk_2` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE;
 
-------------------------
+-- ----------------------
 -- 28/06/2006
 
-ALTER TABLE `topology` ADD `topology_group` INT NULL AFTER `topology_order` ;
+ALTER TABLE topology ADD `topology_group` INT NULL AFTER `topology_order` ;
 UPDATE topology SET topology_group = '1';
 
 INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES
 ('m_traps_command', './img/icones/16x16/funnel_new.gif', 602, 60205, 50, 2, './include/configuration/configObject/traps/traps.php', NULL, NULL, NULL, '1');
 
-
+-- ----------------------
 -- 29/06/2006
 
 CREATE TABLE `purge_policy` (
@@ -165,28 +167,23 @@ CREATE TABLE `log_archive_service` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
---05 07 06
+-- 05 07 06
+UPDATE topology SET `topology_name` = 'view_redirect_graph' WHERE topology_page = '40207';
 
-UPDATE topology SET topology_name = 'view_redirect_graph' WHERE topology_page = '40207';
-
-
-
+-- --------------------------------------------------------
 -- 07 07 06
 
 ALTER TABLE `cfg_nagios` CHANGE `sleep_time` `sleep_time` VARCHAR(10) NULL DEFAULT NULL;
 INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('m_host_graph','./img/icones/16x16/dot-chart.gif',402,40208,32,1, './include/views/graphs/hostGraphs/hostGraphs.php',NULL,'0','0','1');
 
-
 -- --------------------------------------------------------
 -- 10 07 06
+
 UPDATE topology SET topology_group = '2' WHERE topology_page = '40204';
 UPDATE topology SET topology_group = '2' WHERE topology_page = '40205';
 UPDATE topology SET topology_show = '0' WHERE topology_page = '305';
 UPDATE topology SET topology_url = './include/reporting/viewHostLog.php' WHERE topology_page = '3';
-INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` )
-VALUES (
-'', 'm_dashboard', NULL , '3', '307', '3', '1', './include/reporting/viewHostLog.php', NULL , '0', '0', '1'
-);
-
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboard', NULL , '3', '307', '3', '1', './include/reporting/viewHostLog.php', NULL , '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboardHost', './img/icones/16x16/outbox.gif', 307, 30701, 10, 1, './include/reporting/viewHostLog.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboardService', NULL, 307, 30702, 20, 1, './include/reporting/viewServicesLog.php', NULL, '0', '0', '0');
+
