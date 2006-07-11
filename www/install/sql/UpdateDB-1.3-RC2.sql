@@ -183,6 +183,7 @@ UPDATE topology SET topology_group = '2' WHERE topology_page = '40204';
 UPDATE topology SET topology_group = '2' WHERE topology_page = '40205';
 UPDATE topology SET topology_show = '0' WHERE topology_page = '305';
 UPDATE topology SET topology_url = './include/reporting/viewHostLog.php' WHERE topology_page = '3';
+UPDATE topology SET topology_show = '1' WHERE topology_page = '3';
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboard', NULL , '3', '307', '3', '1', './include/reporting/viewHostLog.php', NULL , '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboardHost', './img/icones/16x16/outbox.gif', 307, 30701, 10, 1, './include/reporting/viewHostLog.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_dashboardService', NULL, 307, 30702, 20, 1, './include/reporting/viewServicesLog.php', NULL, '0', '0', '0');
