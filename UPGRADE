@@ -1,102 +1,28 @@
-WARNING !!!
-This file is obsolete for Oreon 1.3
+----------------------------------------------
+How To update Oreon 1.3-RC1 to oreon-1.3-RC2 ?
+----------------------------------------------
 
 
-To use graphic plugins, you need to have on your server :
-- RRDTOOL
-- perl/RRDTOOL (RRDs.pm)
-- Net::SNMP
+1) After updating oreon Files with the new one, 
+Just delete a field in giv_components_template.
+In Mysql, launch :
 
-To use Oreon, you need to have on your server :
-- php4 ( php5 not supported yet )
-- php-snmp
-- php-gd
-- perl-GD
+ALTER TABLE `giv_components_template` DROP `ds_invert` ;
 
-FRANCAIS :
-----------
-Pour mettre à jour :
+2) After launch a php udpdate file like this :
 
-	Etape 1- Executer les requêtes du fichier d'update.
+$>php /usr/local/oreon/www/install/php/update-1.3-RC2.php
 
-	Etape 2- Mettre à jour les fichiers avec ceux de la 1.2.3
-
-	Arrêter nagios le temps de la manipulation
-	Faire une sauvegarde de tout le repertoire de oreon en cas de mauvaise manipulation.
-
-	Garder les répertoires et fichiers suivants :
-
-	/usr/local/oreon/include/trafficmap/average
-	/usr/local/oreon/include/trafficmap/png
-	/usr/local/oreon/include/trafficmap/bg
-	/usr/local/oreon/include/log/
-	/usr/local/oreon/etc/
-	/usr/local/oreon/etc/conf/
-	/usr/local/oreon/temp/
-	/usr/local/oreon/rrd/
-	/usr/local/oreon/oreon.conf.php
-
-	Le répertoire '/usr/local/oreon/etc/'  devient '/usr/local/oreon/nagios_cfg/'
-	Creer le répertoire 'upload' dans '/usr/local/oreon/nagios_cfg/'
-
-	Remplacer les autres fichiers par ceux présents dans 'oreon_src' à la racine du package
-	Mettre les bons droits, cad :
-
-	chown -R apache:apache /usr/local/oreon/
-	chmod 755 /usr/local/oreon/
-
-	chown nagios:nagios /usr/local/oreon/rrd/
-	chmod -R 775 /usr/local/oreon/rrd/
-
-	chown nagios:nagios /usr/local/oreon/include/trafficmap/average
-	chmod -R 775 /usr/local/oreon/include/trafficmap/average
-
-Pour plus d'informations, infos@oreon.org, ou allez sur les forums d'Oreon http://www.oreon.org/Forum/
-
-Merci d'utiliser oreon
+3) Connect you to the oreon interface to follow
+wizard to update your database.
 
 
-ENGLISH :
----------
-For update :
 
-	Step 1 - Execute MySQL request locate on the update file
+----------------------------------------------
 
-	Step 2 - Update Oreon files with the new files
+If you have any questions, contact us on our forum 
 
-For the files :
-
-        Stop nagios during the update
-        Make a tgz with all files in order to save all your data
-
-        Keep thes following files and directories :
-
-        /usr/local/oreon/include/trafficmap/average
-        /usr/local/oreon/include/trafficmap/png
-        /usr/local/oreon/include/trafficmap/bg
-        /usr/local/oreon/include/log/
-        /usr/local/oreon/etc/
-        /usr/local/oreon/etc/conf/
-        /usr/local/oreon/temp/
-        /usr/local/oreon/rrd/
-        /usr/local/oreon/oreon.conf.php
-
-	  	'/usr/local/oreon/etc/' becomes '/usr/local/oreon/nagios_cfg/'
-	  	Create directory 'upload' in '/usr/local/oreon/nagios_cfg/'
-
-        Replace others files by files in oreon_src/
-		and now :
-
-        chown -R apache:apache /usr/local/oreon/
-        chmod 755 /usr/local/oreon/
-
-        chown nagios:nagios /usr/local/oreon/rrd/
-        chmod -R 775 /usr/local/oreon/rrd/
-
-        chown nagios:nagios /usr/local/oreon/include/trafficmap/average
-        chmod -R 775 /usr/local/oreon/include/trafficmap/average
+http://forum.oreon-project.org.
 
 
-For more informations, mail infos@oreon.org or visit Oreon's forum http://www.oreon.org/Forum/.
-
-Thanks for using oreon.
+Thanks for using Oreon.
