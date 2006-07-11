@@ -45,6 +45,7 @@ For information : contact@oreon-project.org
 	
 	function insertResourceCFG(& $buf)	{
 		$i = 0;
+		global $oreon;
 		foreach ($buf as $str)	{
 			$regs = array();
 			$resCFG = array();
@@ -391,6 +392,7 @@ For information : contact@oreon-project.org
 	
 	function insertContactCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/contact/DB-Func.php");
 		if (isset($tmpConf["contact_name"]) && testContactExistence($tmpConf["contact_name"]))	{
 			foreach ($tmpConf as $key=>$value)
@@ -436,6 +438,7 @@ For information : contact@oreon-project.org
 	
 	function insertContactGroupCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/contactgroup/DB-Func.php");
 		if (isset($tmpConf["contactgroup_name"]) && testContactGroupExistence($tmpConf["contactgroup_name"]))	{
 			foreach ($tmpConf as $key=>$value)
@@ -462,6 +465,7 @@ For information : contact@oreon-project.org
 		$use = NULL;
 		$useTpl = array();
 		global $nbr;
+		global $oreon;
 		if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostExistence($tmpConf["name"]))	{
 			foreach ($tmpConf as $key=>$value)	{
 				switch($key)	{
@@ -555,6 +559,7 @@ For information : contact@oreon-project.org
 	
 	function insertHostExtInfoCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/host/DB-Func.php");
 		foreach ($tmpConf as $key=>$value)
 			switch($key)	{
@@ -584,6 +589,7 @@ For information : contact@oreon-project.org
 	
 	function insertHostGroupCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/hostgroup/DB-Func.php");
 		if (isset($tmpConf["hostgroup_name"]) && testHostGroupExistence($tmpConf["hostgroup_name"]))	{
 			foreach ($tmpConf as $key=>$value)
@@ -614,6 +620,7 @@ For information : contact@oreon-project.org
 	
 	function insertHostDependencyCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/host_dependency/DB-Func.php");
 		require_once("./include/configuration/configObject/hostgroup_dependency/DB-Func.php");
 		foreach ($tmpConf as $key=>$value)
@@ -665,6 +672,7 @@ For information : contact@oreon-project.org
 	
 	function insertServiceDependencyCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/service_dependency/DB-Func.php");
 		require_once("./include/configuration/configObject/servicegroup_dependency/DB-Func.php");
 		foreach ($tmpConf as $key=>$value)
@@ -779,6 +787,7 @@ For information : contact@oreon-project.org
 		$rrd_service = NULL;
 		$useTpl = array();
 		global $nbr;
+		global $oreon;
 		foreach ($tmpConf as $key=>$value)
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
@@ -874,6 +883,7 @@ For information : contact@oreon-project.org
 	
 	function insertServiceGroupCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/servicegroup/DB-Func.php");
 		if (isset($tmpConf["servicegroup_name"]) && testServiceGroupExistence($tmpConf["servicegroup_name"]))	{
 			foreach ($tmpConf as $key=>$value)
@@ -900,6 +910,7 @@ For information : contact@oreon-project.org
 	
 	function insertTimePeriodCFG($tmpConf = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/timeperiod/DB-Func.php");
 		if (isset($tmpConf["timeperiod_name"]) && testTPExistence($tmpConf["timeperiod_name"]))	{			
 			foreach ($tmpConf as $key=>$value)
@@ -923,6 +934,7 @@ For information : contact@oreon-project.org
 	
 	function insertCommandCFG($tmpConf = array(), $ret = array())	{
 		global $nbr;
+		global $oreon;
 		require_once("./include/configuration/configObject/command/DB-Func.php");
 		if (isset($tmpConf["command_name"]) && testCmdExistence($tmpConf["command_name"]))	{
 			$tmpConf["command_type"]["command_type"] = $ret["cmdType"]["cmdType"];
