@@ -13,87 +13,16 @@ In no event will OREON be liable for any direct, indirect, punitive, special,
 incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
-For information : contact@oreon.org
+For information : contact@oreon-project.org
 */
 	// configuration
-include_once ("../class/Session.class.php");
+	include_once ("../oreon.conf.php");
+	include_once ("../functions.php");
+	include_once ("../class/Session.class.php");
 
-Session::start();
+	Session::start();
+	$DEBUG = 0;
 
-include_once ("../oreon.conf.php");
-
-$DEBUG = 0;
-
-function Connexion ($pNom, $pMotPasse, $pServeur)	{
-	$connexion = @mysql_pconnect($pServeur, $pNom, $pMotPasse) or ($msg = mysql_error());
-	return array ($connexion, $msg);
-}
-
-function aff_header($str, $str2, $nb){
-?>
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <meta http-equiv="Content-Style-Type" content="text/css">
-   <title><? print $str; ?></title>
-   <link rel="shortcut icon" href="../img/favicon.ico">
-   <link rel="stylesheet" href="./install.css" type="text/css">
-   <SCRIPT language='javascript' src='../include/javascript/functions.js'></SCRIPT>
-   <SCRIPT language='javascript'>
-	function LicenceAccepted(){
-		var theForm     = document.forms[0];
-		var nextButton  = document.getElementById("button_next");
-
-		if( theForm.setup_license_accept.checked ){
-			nextButton.disabled = '';
-			nextButton.focus();
-		}
-		else {
-			nextButton.disabled = "disabled";
-		}
-	}
-	</SCRIPT>
-</head>
-<body rightmargin="0" topmargin="0" leftmargin="0">
-<table cellspacing="0" cellpadding="0" border="0" align="center" class="shell">
-<tr height="83" style=" background-image: url('../img/bg_banner.gif');">
-  <th width="400" height="83"><? print $nb . ". " . $str2; ?></th>
-  <th width="200" height="83" style="text-align: right; padding: 0px;">
-		<a href="http://www.oreon-project.org" target="_blank"><IMG src="../img/logo_oreon.gif" alt="Oreon" border="0"></a>
-  </th>
-</tr>
-<tr>
-  <td colspan="2" width="600" style="background-position : right; background-color: #DDDDDD; background-repeat : no-repeat;">
-	<form action="upgrade.php" method="post" name="theForm" id="theForm">
-	<input type="hidden" name="step" value="<? print $nb; ?>">
-<?
-}
-
-function aff_middle(){
-?>
-  </td>
-</tr>
-<tr>
-  <td align="right" colspan="2" height="20">
-	<hr>
-	<table cellspacing="0" cellpadding="0" border="0" class="stdTable">
-	  <tr>
-		<td>
-<?
-}
-
-function aff_footer(){
-?>				</td>
-			  </tr>
-		</table>
-		</form>
-	  </td>
-	</tr>
-  </table>
-</body>
-</html>
-<?
-}
 
 	if (isset($_POST["Recheck"]))
 		 $_POST["step"] = 3;
@@ -109,12 +38,9 @@ function aff_footer(){
 	}
 	if (!isset($_POST["step"])){
 		aff_header("Oreon Upgrade Wizard", "Welcome to Oreon Upgrade Setup", 1);
-		$str = "<p>This installer updates the Oreon database tables. The entire process
-        should take about 2 minutes.</p>";
-		print $str;
+		print "<p>This installer updates the Oreon database tables. The entire process should take about 2 minutes.</p>";
 		aff_middle();
-		$str = "<input class='button' type='submit' name='goto' value='Start' id='defaultFocus' /></td>";
-		print $str;
+		print "<input class='button' type='submit' name='goto' value='Start' id='defaultFocus' /></td>";
 		aff_footer();
 	} else if (isset($_POST["step"]) && $_POST["step"] == 1){
 		aff_header("Oreon Upgrade Wizard", "Licence", 2);
@@ -177,19 +103,12 @@ function aff_footer(){
 			<tr>
 				<td><b>Database &#146;<? echo $conf_oreon['db'] ; ?>&#146; : Upgrade</b></td>
 <?
-/*
-        	$conf_oreon['host']
-        	$conf_oreon['user']
-        	$conf_oreon['password']
-        	$conf_oreon['db']
-*/
 			$res = connexion($conf_oreon['user'], $conf_oreon['password']  , $conf_oreon['host']) ;
 			$mysql_msg = $res['1'];
-
 			$usedb = mysql_select_db($conf_oreon['db'] , $res['0']) or ( $mysql_msg= mysql_error());
 
 			if ($usedb) {
-				$file_sql = file("./sql/".$_SESSION["mysqlscript"], "r");
+				$file_sql = file("./sql/".$_SESSION["mysqlscript"]);
 	            $str = NULL;
 	            for ($i = 0; $i <= count($file_sql) - 1; $i++){
 		            $line = $file_sql[$i];
