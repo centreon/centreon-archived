@@ -189,7 +189,7 @@ fi
 	if [ -z $RRD_PERL ];then
 		#RRDTOOL perl module directory
 		RRD_PERL="/usr/local/rrdtool/lib/perl"
-		echo "Where is RRD perl modules RRDs.pm ?"
+		echo "Where is installed RRD perl modules (RRDs.pm) ?"
 		echo "Just put directory, not full path."
 		echo -n "default to [$RRD_PERL]:"
 		read temp
