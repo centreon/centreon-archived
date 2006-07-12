@@ -17,7 +17,7 @@ For information : contact@oreon-project.org
 */
 	// configuration
 	include_once ("../oreon.conf.php");
-	include_once ("../step_upgrade/functions.php");
+	include_once ("./step_upgrade/functions.php");
 	include_once ("../class/Session.class.php");
 
 	Session::start();
