@@ -18,8 +18,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-system("echo toto > /root/test");
-
 	function getLogData($time_event, $host, $service, $status, $output, $type){
 		global $lang;
 		$tab["time"] = date($lang["header_format"], $time_event);
@@ -31,16 +29,14 @@ system("echo toto > /root/test");
 		$tab["type"] = $type;
 		return $tab ;
 	}
-	
-
 
 	// à recuperer dans nagios.cfg
 	$NagiosPathArchive = "/var/log/nagios/archives";
 	
 	require_once 'DB.php';	
 	include_once("/usr/local/oreon/www/oreon.conf.php");
-	/* Connect to oreon DB */
-	
+
+	/* Connect to oreon DB */	
 	$dsn = array(
 		     'phptype'  => 'mysql',
 		     'username' => $conf_oreon['user'],
