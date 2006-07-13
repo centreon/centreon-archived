@@ -341,11 +341,6 @@ For information : contact@oreon-project.org
 
 	$form->addElement('header', 'oreon', $lang['h_oreon']);
 	$form->addElement('select', 'graph_id', $lang['sv_graphTpl'], $graphTpls);
-	
-	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, $lang["enable"], '1');
-	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, $lang["disable"], '0');
-	$form->addGroup($serviceActivation, 'service_activate', $lang["status"], '&nbsp;');
-	$form->setDefaults(array('service_activate' => '1'));
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
