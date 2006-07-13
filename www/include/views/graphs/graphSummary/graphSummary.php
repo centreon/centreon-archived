@@ -17,8 +17,16 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	if (!isset($oreon))
 		exit();
+		
+	function isPerfparseEntry($host_name, $service_description){
+		global $pearDBpp;
+		$res =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '$host_name' AND service_description = '$service_description'");
+		$nb = $res->numRows();
+		return $nb;
+	}
 		
 	require("./include/views/graphs/graphSummary/DB-Func.php");
 
@@ -55,18 +63,28 @@ For information : contact@oreon-project.org
 		if (!$oreon->optGen["perfparse_installed"]){
 			if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 				$_GET["database"] = array("1" => $host_id."_".$service_id.".rrd", "0" => $_GET["host_name"]);
-				$_GET["p"] = "40203";
+				$p = "40203";
+				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd"))
+					$msg_error = $lang["giv_db_unavailable"];
 				require_once("./include/views/graphs/graphPlugins/graphPlugins.php");
 			}
 		} else {
 			clearstatcache();
-			if (file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd")){
+			require_once("./DBPerfparseConnect.php");
+			if (isPerfparseEntry($_GET["host_name"], $_GET["service_description"])){
+				$p = "40202";
 				$_GET["database"] = array("1" => $host_id."_".$service_id.".rrd", "0" => $_GET["host_name"]);
-				$_GET["p"] = "40203";
-				require_once("./include/views/graphs/graphPlugins/graphPlugins.php");
-			} else	{
-				$_GET["p"] = "40202";
 				require_once("./include/views/graphs/simpleRenderer/simpleRenderer.php");
+			} else {
+				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd")){
+					$p = "40202";
+					$msg_error = $lang["giv_db_unavailable"];
+					require_once("./include/views/graphs/simpleRenderer/simpleRenderer.php");				
+				} else	{
+					$_GET["database"] = array("1" => $host_id."_".$service_id.".rrd", "0" => $_GET["host_name"]);
+					$p = "40203";
+					require_once("./include/views/graphs/graphPlugins/graphPlugins.php");
+				}
 			}
 		}
 	} else
