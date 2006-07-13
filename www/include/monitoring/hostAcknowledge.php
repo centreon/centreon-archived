@@ -64,7 +64,7 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'en', $en);
 	
 	$attr = "size=40";
-	$form->addElement('text', 'comment', 'comment', $attr);
+	$form->addElement('textarea', 'comment', 'comment', $attr);
 	
 	$form->addRule('comment', $lang["error_msg"], 'required', '', 'client');
 	$form->setJsWarnings($lang["herror"],$lang["ferror"]);
