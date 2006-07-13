@@ -237,6 +237,23 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 
+	function getMyHostServices($host_id = NULL)	{
+		if (!$host_id) return;
+		global $pearDB;
+		$hSvs = array();
+		$res =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
+		while ($res->fetchInto($elem))
+			$hSvs[$elem["service_id"]]	= $elem["service_description"];
+		$res->free();
+		$res =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+				" AND service_id = hsr.service_service_id");
+		while ($res->fetchInto($elem))
+			$hSvs[$elem["service_id"]]	= $elem["service_description"];
+		$res->free();
+		return $hSvs;
+	}
+
 	function getAllMyServiceHosts($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
