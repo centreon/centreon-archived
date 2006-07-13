@@ -106,6 +106,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		set_magic_quotes_runtime(1);
 		$ret["command_line"] = str_replace("\n", "#BR#", $ret["command_line"]);
 		$ret["command_line"] = str_replace("\t", "#T#", $ret["command_line"]);
 		$ret["command_line"] = str_replace("\r", "#R#", $ret["command_line"]);
