@@ -150,7 +150,8 @@ For information : contact@oreon-project.org
 			$service_description = getMyServiceName($split[1]);
 			$case = $host_name . " / " . $service_description;
 		}
-		if (array_search($host_name, $oreon->user->lcaHost) && $case)	{
+		
+		if (array_search($host_name, $oreon->user->lcaHost) && $case && !isset($msg_error))	{
 
 			# 1 for +1 and -1 for -1 and 0 for GMT
 			$GMT = "0";
@@ -197,6 +198,8 @@ For information : contact@oreon-project.org
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
 
+	if (isset($msg_error))
+		$tpl->assign('msg_error', $msg_error);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('lang', $lang);

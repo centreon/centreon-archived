@@ -2,6 +2,9 @@
 <script language='javascript' src='./include/common/javascript/hidden_div.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
+{if $msg_error}
+<div class="msg">{$msg_error}</div>
+{/if}
 <div>
 {if $database_name}
 	<table id="ListTable">
@@ -31,7 +34,7 @@
         </div>
         <div id="validForm">
         	<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br />
-        </div><br>
+        </div><br><br><br><br>
         <div name="div1" id="div1" class='cachediv' {if !$title2}style="padding-top:34px;"{/if}>
         	<table id="ListTable">
                 <tr class="ListHeader">
