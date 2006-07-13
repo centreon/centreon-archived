@@ -232,7 +232,12 @@ For information : contact@oreon-project.org
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
+	$form->addElement('header', 'furtherInfos', $lang['further_infos']);	
+	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, $lang["enable"], '1');
+	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, $lang["disable"], '0');
+	$form->addGroup($hostActivation, 'host_activate', $lang["status"], '&nbsp;');
+	$form->setDefaults(array('host_activate' => '1'));
+	
 	$form->addElement('textarea', 'host_comment', $lang["cmt_comment"], $attrsTextarea);
 
 	#
@@ -351,8 +356,6 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'host_id');
 	$reg =& $form->addElement('hidden', 'host_register');
 	$reg->setValue("0");
-	$act =& $form->addElement('hidden', 'host_activate');
-	$act->setValue("1");
 	$assoc =& $form->addElement('hidden', 'dupSvTplAssoc');
 	$assoc->setValue("0");
 	$redirect =& $form->addElement('hidden', 'o');
