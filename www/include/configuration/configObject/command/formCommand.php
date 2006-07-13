@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 	## Further informations
 	#
 	$form->addElement('hidden', 'command_id');
-	$redirectType =& $form->addElement('hidden', 'type');
+	$redirectType = $form->addElement('hidden', 'type');
 	$redirectType->setValue($type);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -141,7 +141,7 @@ For information : contact@oreon-project.org
 
 	# Just watch a Command information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."'"));
+		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
 	    $form->setDefaults($cmd);
 		$form->freeze();
 	}
