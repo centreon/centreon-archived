@@ -11,8 +11,13 @@
  
 		<tr>
 			<td class='ListColCenter'>
+				<table align="center" width="100%">
+				{assign var="i" value=0}
 				{foreach item=h from=$rrd }
-					<div style="position: relative; list-style-type: none;"><img src='./include/views/graphs/generateImage/generateRRDImagePlugins.php?nbgraph={$nbGraph}&session_id={$session_id}&database={$h.host_id}_{$h.service_service_id}.rrd&template_id={$h.graph_id}&end={$end}&start={$start}'></div>
+					{if $i%2 == 0}<tr>{/if}
+						<td><img src='./include/views/graphs/generateImage/generateRRDImagePlugins.php?nbgraph={$nbGraph}&session_id={$session_id}&database={$h.host_id}_{$h.service_id}.rrd&template_id={$h.graph_id}&end={$end}&start={$start}'></td>
+					{if $i%2 == 1}</tr>{/if}
+					{assign var="i" value=$i+1}
 				{/foreach}
 			</td>
 		</tr>

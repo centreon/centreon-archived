@@ -17,7 +17,8 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	if (!isset ($oreon))
+
+	if (!isset($oreon))
 		exit ();
 
 	isset($_GET["service_id"]) ? $cG = $_GET["service_id"] : $cG = NULL;
@@ -46,26 +47,32 @@ For information : contact@oreon-project.org
 	## Database retrieve information for differents elements list we need on the page
 	#
 
-	$res =& $pearDB->getAssoc("SELECT DISTINCT h.host_name, h.host_name 
-									  	FROM host h, host_service_relation hs, service s, command c, hostgroup_relation hgr, extended_service_information e
-										WHERE  (
-														hs.host_host_id = h.host_id
-														OR (
-															hgr.host_host_id = h.host_id
-															AND hs.hostgroup_hg_id = hgr.hostgroup_hg_id
-															)
-													)
-												AND s.service_id = hs.service_service_id
-												AND e.service_service_id = hs.service_service_id
-												AND c.command_id = s.command_command_id
-												AND c.command_name LIKE 'check_graph%'");
+	$tableFile1 = array();
+	$tableFile2 = array();
+	if ($handle  = @opendir($oreon->optGen["oreon_rrdbase_path"]))	{
+		while ($file = @readdir($handle))
+			if (is_file($oreon->optGen["oreon_rrdbase_path"]."/$file"))	{
+				preg_match("([0-9\_]+)", $file, $matches);
+				$split = preg_split("/\_/", $matches[0]);
+				if (count($split) == 2 && $split[0] && $split[1]){
+					$host_name = getMyHostName($split[0]);
+					$service_description = getMyServiceName($split[1]);
+					if (array_search($host_name, $oreon->user->lcaHost) && getMyServiceID($service_description, $split[0]))	{
+						$tableFile1[$host_name] =  $host_name;
+						$tableFile2[$host_name][$file] = $service_description;
+					}
+				}
+			}
+		@closedir($handle);
+	}
 
+	asort($tableFile1);
+	asort($tableFile2);
 
 	$debug = 0;
 	$attrsTextI		= array("size"=>"3");
 	$attrsText 		= array("size"=>"30");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -77,6 +84,7 @@ For information : contact@oreon-project.org
 
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+	
 	#
 	## Indicator basic information
 	#
@@ -88,21 +96,18 @@ For information : contact@oreon-project.org
 	$minF =& $form->addElement('hidden', 'min');
 	$minF->setValue($min);
 
-	$sel =& $form->addElement('select', 'host_name', "Host", $res);
+	$sel =& $form->addElement('select', 'host_name', "Host", $tableFile1);
 
-	# "3600"=>$lang["giv_sr_p1h"],
-
-	$periods = array(
-				"10800"=>$lang["giv_sr_p3h"],
-				"21600"=>$lang["giv_sr_p6h"],
-				"43200"=>$lang["giv_sr_p12h"],
-				"86400"=>$lang["giv_sr_p24h"],
-				"172800"=>$lang["giv_sr_p2d"],
-				"302400"=>$lang["giv_sr_p4d"],
-				"604800"=>$lang["giv_sr_p7d"],
-				"1209600"=>$lang["giv_sr_p14d"],
-				"2419200"=>$lang["giv_sr_p28d"]
-	);
+	$periods = array(	"10800"=>$lang["giv_sr_p3h"],
+						"21600"=>$lang["giv_sr_p6h"],
+						"43200"=>$lang["giv_sr_p12h"],
+						"86400"=>$lang["giv_sr_p24h"],
+						"172800"=>$lang["giv_sr_p2d"],
+						"302400"=>$lang["giv_sr_p4d"],
+						"604800"=>$lang["giv_sr_p7d"],
+						"1209600"=>$lang["giv_sr_p14d"],
+						"2419200"=>$lang["giv_sr_p28d"]);
+						
 	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
 	$form->setDefaults(array('period' =>'10800'));
 
@@ -123,38 +128,25 @@ For information : contact@oreon-project.org
 
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		if ($form->validate())	{
-		$ret = $form->getsubmitValues();
-
-		$res =& $pearDB->query("SELECT DISTINCT h.host_id, hs.service_service_id,e.graph_id 
-									  	FROM host h, host_service_relation hs, service s, command c, hostgroup_relation hgr, extended_service_information e
-										WHERE h.host_name = '".$_GET["host_name"]."'
-												AND (
-														hs.host_host_id = h.host_id
-														OR (
-															hgr.host_host_id = h.host_id
-															AND hs.hostgroup_hg_id = hgr.hostgroup_hg_id
-															)
-													)
-												AND s.service_id = hs.service_service_id
-												AND e.service_service_id = hs.service_service_id
-												AND c.command_id = s.command_command_id
-												AND c.command_name LIKE 'check_graph%'");
-		$i=0;
-		while($rrd[$i]=$res->fetchRow()){
-			if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$rrd[$i]["host_id"]."_".$rrd[$i]["service_service_id"].".rrd"))
-				print ("rrd file not found");
-		$i++;
-		}
-
-
-		//$_GET["database"] = array("0" => getHostID($_GET["host_name"]) . "_" . getServiceID($_GET["host_name"], $_GET["service_description"]) . ".rrd", "1" => $_GET["host_name"]);
-
+			$ret = $form->getsubmitValues();
+			$i = 0;
+			$rrd = array();
+			
+			$host_id = getMyHostID($_GET["host_name"]);
+			foreach ($tableFile2[$_GET["host_name"]] as $tb){
+				$service_id = getMyServiceID($tb, $host_id);
+				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd"))
+					print ("rrd file not found");
+				else
+					$rrd[$i] = array("host_id" => $host_id, "service_id" => $service_id);
+			$i++;
+			}
+	
 			# Init variable in the page
 			$tpl->assign("period", $periods[$ret["period"]]);
-
-
+	
+	
 			# Init
-
 			if (isset($_GET["start"]) && $_GET["start"]){
 				preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["start"], $matches);
 				$start = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3], 1) ;
@@ -163,19 +155,19 @@ For information : contact@oreon-project.org
 				preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
 				$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
 			}
-
+	
 			if (!isset($start))
 				$start = time() - ($ret["period"] + 120);
 			if (!isset($end))
 				$end = time() + 120;
-
-
+	
+	
 			$tpl->assign("nbGraph", $_GET["nbGraph"]["nbGraph"]);
 			$tpl->assign("end", $end);
 			$tpl->assign("start", $start);
 			if (isset($_GET["grapht_graph_id"]))
 				$tpl->assign('graph_graph_id', $_GET["grapht_graph_id"]);
-    }
+	    }
 
 	#Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
