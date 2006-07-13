@@ -123,14 +123,13 @@ For information : contact@oreon-project.org
 		$res =& $pearDB->query("SELECT * FROM `giv_graphs_template` WHERE graph_id = '".$template_id."'");
 		$res->fetchInto($GraphTemplate);
 		
-		if (isset($_GET["nbgraph"])) {
-	    	if($_GET["nbgraph"]==2){
-	        	$GraphTemplate["width"] = $GraphTemplate["width"]/2; 
+		if (isset($_GET["nbgraph"]))
+	    	if ($_GET["nbgraph"] >= 2){
 	        	$GraphTemplate["height"] = $GraphTemplate["height"]/2;
-	        }
-	    }
-		
+	        	$GraphTemplate["width"] = $GraphTemplate["width"]/2;
+			}
 		# Create command line for graph properties
+		
 		$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph ".$service_description." on ".$host_name." ' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
 		$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
@@ -141,10 +140,12 @@ For information : contact@oreon-project.org
 		$command_line .= "--color ARROW".$GraphTemplate["col_arrow"]." ";
 		$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
 		$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
+		
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit=".$GraphTemplate["upper_limit"]." ";
 		else
 			$command_line .= " --alt-autoscale-max ";
+		
 		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
 			$command_line .= "--lower-limit=".$GraphTemplate["lower_limit"]." ";
 		
@@ -191,10 +192,10 @@ For information : contact@oreon-project.org
 				$legend .= " ";
 			$legend .= "\"";
 			if ($ppMetrics[$key]["ds_filled"] && $GraphTemplate["stacked"] == "0"){
-				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"];
+				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"];
 				$command_line .= " ";
 			} else if ($GraphTemplate["stacked"] == "1")
-				$command_line .= " STACK:v".($cpt-1).$tm["ds_color_area"].":".html_entity_decode($legend);
+				$command_line .= " STACK:v".($cpt-1).$tm["ds_color_area"].$tm["ds_transparency"].":".html_entity_decode($legend);
 			if ($GraphTemplate["stacked"] == "0"){
 				$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
 				$command_line .= $tm["ds_color_line"].":".$legend;

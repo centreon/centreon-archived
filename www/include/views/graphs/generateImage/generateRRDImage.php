@@ -59,13 +59,23 @@ For information : contact@oreon-project.org
 		exit;
 	} else {
 
+		if (strcmp($_GET["host_name"], "Meta_Module")){
+			$host_id = getMyHostID($_GET["host_name"]);
+			$service_id = getMyServiceID($_GET["service_description"], $host_id);
+		}
 		if (!isset($_GET["template_id"])){
-			# Get service id 
-			$res =& $pearDB->query("SELECT service.service_id FROM service,host,host_service_relation WHERE service.service_id = host_service_relation.service_service_id AND host.host_id = host_service_relation.host_host_id AND host.host_name = '".$_GET["host_name"]."' AND service.service_description = '".$_GET["service_description"]."'");
-			$res->fetchInto($service);
-			$template_id = getDefaultGraph($service["service_id"], 1);
+			if (isset($service_id))
+				$template_id = getDefaultGraph($service_id, 1);
+			else {
+				$tab = split("_", $_GET["service_description"]);
+				$res =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
+				$res->fetchInto($meta);
+				$template_id = $meta["graph_id"];
+			}	
 		} else 
 			$template_id = $_GET["template_id"];
+		
+		//print $template_id;
 		
 		include_once("../../../../DBPerfparseConnect.php");
 		
@@ -147,7 +157,7 @@ For information : contact@oreon-project.org
 		$cpt = 1;
 		foreach ($ppMetrics as $key => $tm){
 			if ($ppMetrics[$key]["ds_filled"])
-				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"]." ";	
+				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";	
 			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $ppMetrics[$key]["legend"];
