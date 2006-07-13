@@ -136,4 +136,7 @@ $lang['giv_ct_invert'] = 'Inverser';
 
 $lang["m_host_graph"] = "Graphs par Hosts";
 $lang["giv_hg_nbGraph"] = "Nombre de graphs";
+
+
+$lang["giv_db_unavailable"] = "Base de donn&eacute;es Inexistante";
 ?>
