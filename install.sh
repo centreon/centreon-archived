@@ -24,7 +24,7 @@
 
 SRC_OREON="oreon_src"
 
-PLUGINS_DIR="plugins/"
+PLUGINS_DIR="Plugins/"
 
 PWD=`pwd`
 
