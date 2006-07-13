@@ -2,8 +2,8 @@
 <script language='javascript' src='./include/common/javascript/hidden_div.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
-<div>
 {if $title2}
+<div>
 	<table id="ListTable">
         <tr class="ListHeader">
         	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - {$res}</td>
@@ -19,14 +19,13 @@
     		<td colspan="2" class='ListColCenter'>{$cpt_total_graphed_values}/{$cpt_total_values} {$graphed_values}</b></td>
         </tr>
     </table>
-{/if}
 </div>
+{/if}
 <div style="padding-top: 20px;">
     <form {$form.attributes}>
-    	{if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p></div>{/if}
+    	{if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p></div><br><br><br><br>{/if}
        	<div>
-       		<br><br><br><br>
-	        <table id="ListTable">
+       		<table id="ListTable">
                 <tr class="ListHeader">
                 	<td class="FormHeader" colspan="2">{$form.header.title}</td>
                 </tr>
@@ -38,10 +37,6 @@
                     <td>{$form.meta_service.label}</td>
             		<td>{$form.meta_service.html}</td>
                 </tr>
-               <!-- <tr class="list_one">
-                    <td>{$form.osl.label}</td>
-            		<td>{$form.osl.html}</td>
-                </tr>-->
     	    </table>
     	  	{if !$title2}
     		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br><br><br><br></div>

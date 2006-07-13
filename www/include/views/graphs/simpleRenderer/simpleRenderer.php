@@ -181,9 +181,12 @@ For information : contact@oreon-project.org
 			$case = $lang["ms"]." : ".$meta["meta_name"];
 			$res2->free();
 		}
-		if (array_search($host_name, $oreon->user->lcaHost) && $case)	{
+		if ((array_search($host_name, $oreon->user->lcaHost) || isset($_GET["meta_service"])) && $case)	{
+			$host_id = getMyHostID($host_name);
+			$service_id = getMyServiceID($ret["service_description"], $host_id);
+			
 			if (isset($_GET["service_description"])){
-				$res =& $pearDB->query("SELECT service.service_id, service.service_normal_check_interval, service.service_active_checks_enabled FROM service,host,host_service_relation WHERE service.service_id = host_service_relation.service_service_id AND host.host_id = host_service_relation.host_host_id AND host.host_name = '".$_GET["host_name"]."' AND service.service_description = '".$_GET["service_description"]."'");
+				$res =& $pearDB->query("SELECT service.service_id, service.service_normal_check_interval, service.service_active_checks_enabled FROM service WHERE service_id = '".$service_id."'");
 				$res->fetchInto($service);
 			}
 			
@@ -248,9 +251,11 @@ For information : contact@oreon-project.org
 					preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
 					$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
 				} else if (!$_GET["period"]){
-					$res =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service["service_id"]."'");
-					$res->fetchInto($service_ext);
-					if (!$service_ext["graph_id"])
+					if (isset($service)){
+						$res =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service["service_id"]."'");
+						$res->fetchInto($service_ext);
+					}
+					if ((isset($service_ext) && !$service_ext["graph_id"]) || isset($_GET["meta_service"]))
 						$period = 86400;
 					else {	
 						$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$service_ext["graph_id"]."'");
