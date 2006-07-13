@@ -1301,12 +1301,14 @@ CREATE TABLE `meta_service` (
   `metric` varchar(255) default NULL,
   `warning` varchar(254) default NULL,
   `critical` varchar(254) default NULL,
+  `graph_id` int(11) default NULL,
   `meta_comment` text,
   `meta_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`meta_id`),
   KEY `name_index` (`meta_name`),
   KEY `check_period_index` (`check_period`),
-  KEY `notification_period_index` (`notification_period`)
+  KEY `notification_period_index` (`notification_period`),
+  KEY `graph_index` (`graph_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2100,7 +2102,8 @@ ALTER TABLE `meta_contactgroup_relation`
 --
 ALTER TABLE `meta_service`
   ADD CONSTRAINT `meta_service_ibfk_1` FOREIGN KEY (`check_period`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `meta_service_ibfk_2` FOREIGN KEY (`notification_period`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `meta_service_ibfk_2` FOREIGN KEY (`notification_period`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `meta_service_ibfk_3` FOREIGN KEY (`graph_id`) REFERENCES `giv_graphs_template` (`graph_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `osl`
