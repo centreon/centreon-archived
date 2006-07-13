@@ -93,9 +93,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
-		{if !$msg.tpl}
 		<tr class="list_one"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
-		{/if}
 		<tr class="list_two"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 		
 		{if $o == "a" || $o == "c"}
