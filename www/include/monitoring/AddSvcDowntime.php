@@ -49,26 +49,8 @@ For information : contact@oreon-project.org
 	}
 
 	$services = array();
-	if (isset($host_id)){
-		
-	
-		/*$res =& $pearDB->query("SELECT DISTINCT sv.service_id, sv.service_description FROM service sv, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND sv.service_id = hsr.service_service_id");
-		while ($res->fetchInto($service)){
-			$services[$service["service_id"]] = $service["service_description"];
-		}*/
-
-		$cmd = "SELECT DISTINCT sv.service_id, sv.service_description ";
-		$cmd .= "FROM service sv, host_service_relation hsr, hostgroup_relation hgr ";
-		$cmd .= "WHERE hgr.host_host_id = '".$host_id."' ";
-		$cmd .= "AND ((hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.host_host_id IS NULL) OR (hsr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id IS NULL))";
-		$cmd .= "AND hsr.service_service_id = sv.service_id";
-
-		$res =& $pearDB->query($cmd);
-		while ($res->fetchInto($service)){
-			$services[$service["service_id"]] = $service["service_description"];
-		}
-
-	}			
+	if (isset($host_id))
+		$services = getMyHostServices($host_id);
 
 	$debug = 0;
 	$attrsTextI		= array("size"=>"3");
