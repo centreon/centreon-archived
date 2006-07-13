@@ -78,6 +78,13 @@ For information : contact@oreon-project.org
 	$res->free();
 	# Calc Type
 	$calType = array("AVE"=>$lang['ms_selAvr'], "SOM"=>$lang['ms_selSum'], "MIN"=>$lang['ms_selMin'], "MAX"=>$lang['ms_selMax']);
+	
+	# Graphs Template comes from DB -> Store in $graphTpls Array
+	$graphTpls = array(NULL=>NULL);
+	$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	while($res->fetchInto($graphTpl))
+		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
+	$res->free();
 
 	#
 	# End of "database-retrieved" information
@@ -164,6 +171,7 @@ For information : contact@oreon-project.org
 	## Further informations
 	#
 	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
+	$form->addElement('select', 'graph_id', $lang['sv_graphTpl'], $graphTpls);
 	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, $lang["enable"], '1');
 	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, $lang["disable"], '0');
 	$form->addGroup($msActivation, 'meta_activate', $lang["status"], '&nbsp;');

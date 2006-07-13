@@ -158,7 +158,7 @@ For information : contact@oreon-project.org
 		$rq = "INSERT INTO meta_service " .
 				"(meta_name, check_period, max_check_attempts, normal_check_interval, retry_check_interval, notification_interval, " .
 				"notification_period, notification_options, notifications_enabled, calcul_type, meta_select_mode, regexp_str, metric, warning, critical, " .
-				"meta_comment, meta_activate) " .
+				"graph_id, meta_comment, meta_activate) " .
 				"VALUES ( ";
 				isset($ret["meta_name"]) && $ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 				isset($ret["check_period"]) && $ret["check_period"] != NULL ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
@@ -175,6 +175,7 @@ For information : contact@oreon-project.org
 				isset($ret["metric"]) && $ret["metric"] != NULL ? $rq .= "'".htmlentities($ret["metric"])."', " : $rq .= "NULL, ";
 				isset($ret["warning"]) && $ret["warning"] != NULL ? $rq .= "'".htmlentities($ret["warning"])."', " : $rq .= "NULL, ";
 				isset($ret["critical"]) && $ret["critical"] != NULL ? $rq .= "'".htmlentities($ret["critical"])."', " : $rq .= "NULL, ";
+				isset($ret["graph_id"]) && $ret["graph_id"] != NULL ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
 				isset($ret["meta_comment"]) && $ret["meta_comment"] != NULL ? $rq .= "'".htmlentities($ret["meta_comment"])."', " : $rq .= "NULL, ";
 				isset($ret["meta_activate"]["meta_activate"]) && $ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."'" : $rq .= "NULL";
 				$rq .= ")";
@@ -221,6 +222,8 @@ For information : contact@oreon-project.org
 		$ret["warning"] != NULL ? $rq .= "'".htmlentities($ret["warning"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "critical = ";
 		$ret["critical"] != NULL ? $rq .= "'".htmlentities($ret["critical"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$rq .= "graph_id = ";
+		$ret["graph_id"] != NULL ? $rq .= "'".$ret["graph_id"]."', " : $rq .= "NULL, ";
 		$rq .= "meta_comment = ";
 		$ret["meta_comment"] != NULL ? $rq .= "'".htmlentities($ret["meta_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "meta_activate = ";

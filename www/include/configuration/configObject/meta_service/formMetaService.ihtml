@@ -27,8 +27,9 @@
 		<tr class="list_one"><td class="FormRowField">{$form.ms_notifOpts.label}</td><td class="FormRowValue">{$form.ms_notifOpts.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.meta_activate.label}</td><td class="FormRowValue">{$form.meta_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.meta_comment.label}</td><td class="FormRowValue">{$form.meta_comment.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.meta_activate.label}</td><td class="FormRowValue">{$form.meta_activate.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.meta_comment.label}</td><td class="FormRowValue">{$form.meta_comment.html}</td></tr>
 		
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
