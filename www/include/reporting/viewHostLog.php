@@ -231,7 +231,8 @@ $rq = 'SELECT ' .
 	
 	#
 	## fourchette de temps
-	#	
+	#
+	$period = array();
 	$period["today"] = "Today";
 	$period["last24hours"] = "Last 24 Hours";
 	$period["yesterday"] = "Yesterday";
