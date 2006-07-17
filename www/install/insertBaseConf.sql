@@ -6,7 +6,7 @@
 -- Contenu de la table `cfg_cgi`
 --
 
-INSERT INTO `cfg_cgi` VALUES (10, 'CGI.cfg', '/usr/local/nagios/etc/nagios.cfg', '/usr/local/nagios/share', '/nagios', '/usr/local/nagios/libexec/check_nagios /usr/local/nagios/var/status.log 5 &#039;/usr/local/nagios/bin/nagios&#039;', '1', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'logofullsize.jpg', '4', NULL, '4', 90, NULL, NULL, NULL, NULL, NULL, '/bin/ping -n -U -c 5 $HOSTADDRESS$', 'Install Nagios TGZ - RHAS3', '1');
+INSERT INTO `cfg_cgi` VALUES (10, 'CGI.cfg', '/usr/local/nagios/etc/nagios.cfg', '/usr/local/nagios/share', '/nagios', '/usr/local/nagios/libexec/check_nagios /usr/local/nagios/var/status.log 5 &#039;/usr/local/nagios/bin/nagios&#039;', '1', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'logofullsize.jpg', '4', NULL, '4', 90, NULL, NULL, NULL, NULL, NULL, '/bin/ping -n -c 5 $HOSTADDRESS$', 'Install Nagios TGZ - RHAS3', '1');
 
 --
 -- Contenu de la table `cfg_nagios`
