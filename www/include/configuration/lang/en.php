@@ -1422,4 +1422,11 @@ $lang['m_traps_add'] = "Add a Trap definition";
 $lang['m_traps_change'] = "Modify a Trap definition";
 $lang['m_traps_view'] = "View a Trap definition";
 
+/* GANTT Escalation */
+
+$lang['m_gantt'] = "GANTT";
+$lang['m_header_gantt'] = "Escalations View";
+$lang['m_host_escalation'] = "Hosts Escalations";
+$lang['m_service_escalation'] = "Services Escalations";
+
 ?>
