@@ -450,17 +450,16 @@ For information : contact@oreon-project.org
 	function copyRrdDB($arg = NULL, $new_id = NULL, $host_id = NULL)	{
 		if (!$arg || !$new_id || !$host_id) return;
 		global $oreon;
-		$evol = explode("_", $arg);
-		if (isset($evol[1]))
-			$service_id = $evol[1];
-		else
-			$service_id = $evol[0];
-		if (is_file($oreon->optGen["oreon_path"]."filesUpload/rrd/".$arg.".rrd"))	{
+//		$evol = explode("_", $arg);
+		# service_id
+//		if (isset($evol[1]))
+//			$service_id = $evol[1];
+//		else
+//			$service_id = $evol[0];
+		if (is_file($oreon->optGen["oreon_path"]."filesUpload/rrd/".$arg.".rrd"))
 			copy($oreon->optGen["oreon_path"]."filesUpload/rrd/".$arg.".rrd", $oreon->optGen["oreon_path"]."rrd/".$host_id."_".$new_id.".rrd");
-		}
-		else if (is_file($oreon->optGen["oreon_path"]."filesUpload/rrd/".$service_id.".rrd"))	{
-			copy( $oreon->optGen["oreon_path"]."filesUpload/rrd/".$service_id.".rrd", $oreon->optGen["oreon_path"]."rrd/".$host_id."_".$new_id.".rrd");
-		}
+//		else if (is_file($oreon->optGen["oreon_path"]."filesUpload/rrd/".$service_id.".rrd"))
+//			copy( $oreon->optGen["oreon_path"]."filesUpload/rrd/".$service_id.".rrd", $oreon->optGen["oreon_path"]."rrd/".$host_id."_".$new_id.".rrd");
 	}
 	
 	#
