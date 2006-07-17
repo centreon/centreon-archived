@@ -19,6 +19,7 @@ $lang['ErrSvLeast'] = "HostGroup ou Host requis";
 $lang['ErrCctPasswd'] = "Les mots de passe ne correspondent pas";
 $lang['ErrGenFileProb'] = "Probl&egrave;me d'acc&egrave;s aux fichiers";
 $lang['ErrCycleDef'] = "La d&eacute;finition est redondante";
+$lang['ErrSvConflict'] = "Cette description de Service entre en conflit avec une autre existente au sein des relations s&eacute;lectionn&eacute;es";
 
 /* Configuration Menu */
 

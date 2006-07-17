@@ -19,6 +19,7 @@ $lang['ErrSvLeast'] = "HostGroup or Host Require";
 $lang['ErrCctPasswd'] = "Passwords are not the same";
 $lang['ErrGenFileProb'] = "Can't access to file needed";
 $lang['ErrCycleDef'] = "Circular Definition";
+$lang['ErrSvConflict'] = "This description is in conflicts with another one already define in the relation(s) selected";
 
 /* Configuration Menu */
 
