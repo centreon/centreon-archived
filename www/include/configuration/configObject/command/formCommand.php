@@ -63,7 +63,7 @@ For information : contact@oreon-project.org
 	# Var information to format the element
 	#
 	$attrsText 		= array("size"=>"35");
-	$attrsTextarea 	= array("rows"=>"9", "cols"=>"80");
+	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65");
 
 	#
 	## Form begin
