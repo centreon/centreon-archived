@@ -735,4 +735,11 @@ $lang['m_traps_add'] = "Ajouter une d&eacute;finition de Trap";
 $lang['m_traps_change'] = "Modifier une d&eacute;finition de Trap";
 $lang['m_traps_view'] = "Voir une d&eacute;finition de Trap";
 
+/* GANTT Escalation */
+
+$lang['m_gantt'] = "GANTT";
+$lang['m_header_gantt'] = "Vue des Escalations";
+$lang['m_host_escalation'] = "Escalations des Hotes";
+$lang['m_service_escalation'] = "Escalations des Services";
+
 ?>
