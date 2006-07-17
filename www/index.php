@@ -55,7 +55,7 @@ For information : contact@oreon-project.org
 		require_once("DBconnect.php");
 		
 		$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable  FROM general_opt LIMIT 1");
-		$res->fetchInto($ldap_auth);
+		$ldap_auth = $res->fetchRow();
 
 		$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($_POST["useralias"], ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 		if($res->numRows()) {
