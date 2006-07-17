@@ -10,7 +10,7 @@
 		<tr class='ListHeader'>
 			<td class='ListColHeaderLeft'>{$lang.m_mon_hosts}</td>
 			<td class='ListColHeaderLeft'>{$lang.m_mon_status}</td>
-			<td class='ListColHeaderLeft'>{$lang.m_mon_hosts}</td>
+			<td class='ListColHeaderLeft'>{$lang.m_mon_services}</td>
 			<td class='ListColHeaderLeft'>{$lang.mon_actions}</td>
 		</tr>
 		{foreach item=host_list from=$hostgroup.$hg_name.host}
