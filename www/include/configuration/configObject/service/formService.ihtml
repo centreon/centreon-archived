@@ -98,9 +98,9 @@
 <div id="tab2" class="tab">
 	<table id="ListTable">	 	
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
-		{if !$msg.tpl}
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
+		{if !$msg.tpl}
 		<tr class="list_two"><td class="FormRowField">{$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
 	 	{/if}
