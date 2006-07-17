@@ -234,7 +234,6 @@ $rq = 'SELECT ' .
 	$period["thisyear"] = "This Year";
 	$period["lastyear"] = "Last Year";
 
-
 	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p);
 
 	isset($mhost) ? $formPeriod1->addElement('hidden', 'host', $mhost) : NULL;
@@ -390,24 +389,14 @@ if((time() - (24*60*60)) < $end_date_select)
 	$tab = parseFile($tmp,time());
 	
 	
-	$time_start = $tab["time_start"];
+	//$mtime_start = $tab["time_start"];
 	$tab_log = $tab["tab_log"];
 	foreach($tab as $host => $htab)
 	{
 		if ($host == $mhost)
 		{
 			/*
-			#
-			## last host alert
-			#
-			if(!strncmp($htab["current_state"], "UP", 2))
-				$htab["timeUP"] += ($end_date_select-$htab["current_time"]);
-			elseif(!strncmp($htab["current_state"], "DOWN", 4))
-				$htab["timeDOWN"] += ($end_date_select-$htab["current_time"]);
-			elseif(!strncmp($htab["current_state"], "UNREACHABLE", 11))
-				$htab["timeUNREACHABLE"] += ($end_date_select-$htab["current_time"]);
-			else
-				$htab["timeNONE"] += ($end_date_select-$htab["current_time"]);
+
 				
 			#
 			## add log day

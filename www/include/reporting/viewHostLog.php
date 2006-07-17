@@ -403,7 +403,7 @@ if($start_date_day < ($end_date_select))
 	
 	
 	
-	$time_start = $tab["time_start"];
+	//$mtime_start = $tab["time_start"];
 	$tab_log = $tab["tab_log"];
 	foreach($tab as $host => $htab)
 	{
