@@ -35,24 +35,25 @@ date > $LOG_FILE
 TRUETYPE="/usr/X11R6/lib/X11/fonts/truetype"
 
 
-echo
-echo "###############################################################################"
-echo "#                    OREON Project (www.oreon-project.org)                    #"
-echo "#                            Thanks for using OREON                           #"
-echo "#                                                                             #"
-echo "#                                    v 1.3                                    #"
-echo "#                                                                             #"
-echo "#                             infos@oreon-project.org                         #"
-echo "#                                                                             #"
-echo "#                     Make sure you have installed and configured             #"
-echo "#                                   sudo - sed                                #"
-echo "#                          php - apache - rrdtool - mysql                     #"
-echo "#                                                                             #"
-echo "#                                                                             #"
-echo "###############################################################################"
-echo "#                                 The Team OREON                              #"
-echo "###############################################################################"
-echo ""
+cat <<EOF
+###############################################################################
+#                    OREON Project (www.oreon-project.org)                    #
+#                            Thanks for using OREON                           #
+#                                                                             #
+#                                    v 1.3                                    #
+#                                                                             #
+#                             infos@oreon-project.org                         #
+#                                                                             #
+#                     Make sure you have installed and configured             #
+#                                   sudo - sed                                #
+#                          php - apache - rrdtool - mysql                     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#                                 The Team OREON                              #
+###############################################################################
+EOF
+
 echo ""
 $SETCOLOR_WARNING
 echo "                     Make sure you have root permissions !"
@@ -287,7 +288,7 @@ function configure_apache()
   if test -d $INSTALL_DIR_OREON ; then
       echo_passed "$INSTALL_DIR_OREON already exists" "PASSED"
   else
-      mkdir $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
+      mkdir $INSTALL_DIR_OREON 2>&1 >> ${LOG_FILE}
       echo_success "Creating $INSTALL_DIR_OREON" "OK"
   fi
 
@@ -307,21 +308,23 @@ function configure_apache()
 
 	if [ $temp = "y" ];then
 	     echo "" > $DIR_APACHE_CONF/oreon.conf
-    	 echo "##" >> $DIR_APACHE_CONF/oreon.conf
-         echo "## Section add by OREON Install Setup" >> $DIR_APACHE_CONF/oreon.conf
-         echo "##" >> $DIR_APACHE_CONF/oreon.conf
-         echo "" >> $DIR_APACHE_CONF/oreon.conf
-         echo "AddType application/x-java-jnlp-file .jnlp" >> $DIR_APACHE_CONF/oreon.conf
-         echo "Alias /oreon/ $INSTALL_DIR_OREON/www/" >> $DIR_APACHE_CONF/oreon.conf
-         echo "<Directory "$INSTALL_DIR_OREON/www">" >> $DIR_APACHE_CONF/oreon.conf
-         echo "    Options None" >> $DIR_APACHE_CONF/oreon.conf
-         echo "    AllowOverride AuthConfig Options" >> $DIR_APACHE_CONF/oreon.conf
-         echo "    Order allow,deny" >> $DIR_APACHE_CONF/oreon.conf
-         echo "    Allow from all" >> $DIR_APACHE_CONF/oreon.conf
-         echo "</Directory>" >> $DIR_APACHE_CONF/oreon.conf
-         echo "" >> $DIR_APACHE_CONF/oreon.conf
+	     cat << EOF >> $DIR_APACHE_CONF/oreon.conf
+##
+## Section add by OREON Install Setup
+##
+
+AddType application/x-java-jnlp-file .jnlp
+Alias /oreon/ $INSTALL_DIR_OREON/www/
+<Directory "$INSTALL_DIR_OREON/www">
+    Options None
+    AllowOverride AuthConfig Options
+    Order allow,deny
+    Allow from all
+</Directory>
+
+EOF
 	    echo_success "Create '$DIR_APACHE_CONF/oreon.conf'" "OK"
-    	echo_success "Configuring Apache" "OK"
+	    echo_success "Configuring Apache" "OK"
     else
 	    echo_passed "Apache is already configurated" "PASSED"
     fi
@@ -585,13 +588,16 @@ confirm_oreon
 oreon_post_install
 
 echo ""
-echo "###############################################################################"
-echo "#      Go to the URL : http://your-server/oreon/  to finish the setup         #"
-echo "#                                                                             #"
-echo "#                    Report bugs at bugs@oreon-project.org                    #"
-echo "#                                                                             #"
-echo "#                             Thanks for using OREON.                         #"
-echo "#                             -----------------------                         #"
-echo "#                        Contact : infos@oreon-project.org                    #"
-echo "#                           http://www.oreon-project.org                      #"
-echo "###############################################################################"
+cat <<EOF
+###############################################################################
+#      Go to the URL : http://your-server/oreon/  to finish the setup         #
+#                                                                             #
+#                    Report bugs at bugs@oreon-project.org                    #
+#                                                                             #
+#                             Thanks for using OREON.                         #
+#                             -----------------------                         #
+#                        Contact : infos@oreon-project.org                    #
+#                           http://www.oreon-project.org                      #
+"###############################################################################
+EOF
+
