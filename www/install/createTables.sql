@@ -3,7 +3,7 @@
 --
 
 --
--- Base de données: `oreon`
+-- Base de donnï¿½es: `oreon`
 --
 
 -- --------------------------------------------------------
@@ -1235,7 +1235,10 @@ CREATE TABLE `log_archive_host` (
   `UNDETERMINATETimeUnScheduled` int(11) default NULL,
   `date_end` int(11) default NULL,
   `date_start` int(11) default NULL,
-  PRIMARY KEY  (`log_id`)
+  PRIMARY KEY  (`log_id`),
+  KEY `host_index` (`host_id`),
+  KEY `date_end_index` (`date_end`),
+  KEY `date_start_index` (`date_start`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1260,7 +1263,11 @@ CREATE TABLE `log_archive_service` (
   `UNDETERMINATETimeUnScheduled` int(11) NOT NULL default '0',
   `date_start` int(11) default NULL,
   `date_end` int(11) default NULL,
-  PRIMARY KEY  (`log_id`)
+  PRIMARY KEY  (`log_id`),
+  KEY `host_index` (`host_id`),
+  KEY `service_index` (`service_id`),
+  KEY `date_end_index` (`date_end`),
+  KEY `date_start_index` (`date_start`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2006,6 +2013,19 @@ ALTER TABLE `host`
   ADD CONSTRAINT `host_ibfk_4` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `host_ibfk_5` FOREIGN KEY (`purge_policy_id`) REFERENCES `purge_policy` (`purge_policy_id`) ON DELETE SET NULL;
 
+-- 
+-- Contraintes pour la table `log_archive_host`
+-- 
+ALTER TABLE `log_archive_host`
+  ADD CONSTRAINT `log_archive_host_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
+  
+  -- 
+-- Contraintes pour la table `log_archive_service`
+-- 
+ALTER TABLE `log_archive_service`
+  ADD CONSTRAINT `log_archive_service_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `log_archive_service_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
+  
 --
 -- Contraintes pour la table `host_hostparent_relation`
 --
