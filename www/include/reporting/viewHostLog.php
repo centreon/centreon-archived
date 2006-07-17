@@ -400,10 +400,6 @@ if($start_date_day < ($end_date_select))
 {
 	$tmp = $oreon->Nagioscfg["log_file"];
 	$tab = parseFile($tmp,time(), $mhost);
-	
-	
-	
-	//$mtime_start = $tab["time_start"];
 	$tab_log = $tab["tab_log"];
 	foreach($tab as $host => $htab)
 	{
@@ -477,7 +473,6 @@ else // today is not in the period
 		$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcri"]/ $tt *100,3);
 		$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"])
 											 )  / $tt *100,3);
-
 		$tab_svc[$i++] = $tab_tmp;
 	}
 }

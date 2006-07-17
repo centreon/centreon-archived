@@ -259,7 +259,7 @@ $rq = 'SELECT ' .
 
 
 // parser que pour l'host demandé
-function parseFile($file,$end_time){
+function parseFile($file,$end_time,$host_name,$service_name){
 	$start_time = 0;
 	$log = NULL;
 	$matches = "";
@@ -288,7 +288,7 @@ function parseFile($file,$end_time){
 			if (!strncmp($type, "LOG ROTATION", 12))
 			{
 					$start_time = $time_event;
-			}
+			}			
 			else if (!strncmp($type, "CURRENT HOST STATE", 18) || !strncmp($type, "INITIAL HOST STATE", 18)){
 				$tablist[$res1[0]] = array();
 				$tablist[$res1[0]]["current_time"] = $start_time;
@@ -300,7 +300,9 @@ function parseFile($file,$end_time){
 				$tablist[$res1[0]]["start_time"] = $start_time;
 				$tablist[$res1[0]]["tab_svc_log"] = array();
 			}
-			if (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21))
+			
+			
+			if ((!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21)) && $res1[0] == $host_name && $res1[1] == $service_name)
 			{
 				$tablist[$res1[0]]["tab_svc_log"][$res1[1]] = array();
 				$tab_tmp = array();
@@ -317,7 +319,8 @@ function parseFile($file,$end_time){
 			#
 			## host
 			#
-			if (!strncmp($type, "HOST ALERT", 10) )
+			
+			if (!strncmp($type, "HOST ALERT", 10) && $res1[0] == $host_name)
 			{
 				if(!isset($tablist[$res1[0]]))
 				{
@@ -339,14 +342,15 @@ function parseFile($file,$end_time){
 				$tablist[$res1[0]]["timeUNREACHABLE"] += ($time_event-$tablist[$res1[0]]["current_time"]);
 				else				
 				$tablist[$res1[0]]["timeNONE"] += ($time_event-$tablist[$res1[0]]["current_time"]);
-				$tab_log[$a++] = getLogData($time_event, $res1[0], "", $res1[1], $res1[4], $type);
+				$tab_log[$a++] = getLogData($time_event, $res1[0], "", $res1[1], $res1[4], $type);//filtre
 				$tablist[$res1[0]]["current_state"] = $res1[1];
 				$tablist[$res1[0]]["current_time"] = $time_event; //save time
 			}
+			
 			#
-			## services associed
+			## service associed
 			#
-			else if (!strncmp($type, "SERVICE ALERT", 13))
+			 if (!strncmp($type, "SERVICE ALERT", 13))
 			{
 				if(isset($tablist[$res1[0]]["tab_svc_log"][$res1[1]]))
 				{
@@ -365,7 +369,8 @@ function parseFile($file,$end_time){
 						echo "none: " . $tab_tmp["current_state"] . "<br>";
 						$tab_tmp["timeNONE"] += ($time_event-$tab_tmp["current_time"]);
 						
-					}						
+					}	
+					//$tab_log[$a++] = getLogData($time_event, $res1[0], "", $res1[1], $res1[4], $type);				
 					$tab_tmp["current_time"] = $time_event; //save time
 					$tab_tmp["current_state"] = $res1[2]; //save time
 					$tablist[$res1[0]]["tab_svc_log"][$res1[1]] = $tab_tmp;
@@ -386,7 +391,7 @@ $tab_log = array();
 if((time() - (24*60*60)) < $end_date_select)
 {
 	$tmp = $oreon->Nagioscfg["log_file"];
-	$tab = parseFile($tmp,time());
+	$tab = parseFile($tmp,time(),$mhost,$mservice);
 	
 	
 	//$mtime_start = $tab["time_start"];
