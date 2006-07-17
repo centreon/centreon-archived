@@ -33,17 +33,17 @@ $lang["m_send"] = "Envoyer";
 
 
 # Dashboard
-$lang["m_view"] = "View";
-$lang["m_start"] = "Begin date";
-$lang["m_end"] = "End date";
-$lang["m_predefinedPeriod"] = "Predefined:";
-$lang["m_customizedPeriod"] = "Customized";
-$lang["m_selectPeriodTitle"] = "Period Selection";
-$lang["m_hostResumeTitle"] = "Host state";
-$lang["m_serviceResumeTitle"] = "Host state";
-$lang["m_hostLogTitle"] = "service today log";
-$lang["m_serviceLogTitle"] = "service today log";
-$lang["m_hostSvcAssocied"] = "State Breakdowns For Host Services";
+$lang["m_view"] = "Vue";
+$lang["m_start"] = "Date de debut";
+$lang["m_end"] = "Date de fin";
+$lang["m_predefinedPeriod"] = "Predefinie:";
+$lang["m_customizedPeriod"] = "Personalisée";
+$lang["m_selectPeriodTitle"] = "Selection de la periode";
+$lang["m_hostResumeTitle"] = "Etat de l'host'";
+$lang["m_serviceResumeTitle"] = "Etat du service'";
+$lang["m_hostLogTitle"] = "Log des hosts du jours";
+$lang["m_serviceLogTitle"] = "Log des services du jours";
+$lang["m_hostSvcAssocied"] = "Etat des services associés";
 
 $lang["m_serviceTilte"] = "Service";
 $lang["m_OKTitle"] = "OK";
@@ -55,15 +55,14 @@ $lang["m_UpTitle"] = "Up";
 $lang["m_DownTitle"] = "Down";
 $lang["m_UnreachableTitle"] = "Unreachable";
 
-
 $lang["m_StateTitle"] = "State";
-$lang["m_TimeTitle"] = "Time";
-$lang["m_TimeTotalTitle"] = "Total Time";
-$lang["m_KnownTimeTitle"] = "Known Time";
+$lang["m_TimeTitle"] = "Temps";
+$lang["m_TimeTotalTitle"] = "Temps Total";
+$lang["m_KnownTimeTitle"] = "Temps connus";
 		
 $lang["m_DateTitle"] = "Date";
-$lang["m_EventTitle"] = "Event";
+$lang["m_EventTitle"] = "Evenement";
 $lang["m_HostTitle"] = "Host";
-$lang["m_InformationsTitle"] = "Info";
+$lang["m_InformationsTitle"] = "Informations";
 			
 ?>
