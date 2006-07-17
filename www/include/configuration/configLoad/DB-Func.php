@@ -295,7 +295,7 @@ For information : contact@oreon-project.org
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "service": $useTpl = insertServiceCFG($tmpConf); $useTpls[$useTpl[0]] = $useTpl[1]; break;
+					case "service": $useTpl = insertServiceCFG($tmpConf); count($useTpl) ? $useTpls[$useTpl[0]] = $useTpl[1] : NULL; break;
 					case "hostdependency": insertHostDependencyCFG($tmpConf); break;	
 				}
 				$get = false;
@@ -786,6 +786,8 @@ For information : contact@oreon-project.org
 		$rrd_host = NULL;
 		$rrd_service = NULL;
 		$useTpl = array();
+		$tmpConf["service_hPars"] = array();
+		$tmpConf["service_hgPars"] = array();
 		global $nbr;
 		global $oreon;
 		foreach ($tmpConf as $key=>$value)
@@ -852,7 +854,7 @@ For information : contact@oreon-project.org
 					$tmpConf["service_hPars"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_hPars"] as $key2=>$value2)	{
 						$tmpConf["service_hPars"][$key2] = getMyHostID(trim($value2));
-						$rrd_host = getMyHostID(trim($value2));
+						$rrd_host = $tmpConf["service_hPars"][$key2];
 					}
 					unset ($tmpConf[$key]);
 					break;				
@@ -873,11 +875,13 @@ For information : contact@oreon-project.org
 			$tmpConf["service_register"]["service_register"] = '1';
 		$tmpConf["service_activate"]["service_activate"] = "1";
 		$tmpConf["service_comment"] = date("d/m/Y - H:i:s", time());
-		$useTpl[0] = insertServiceInDB($tmpConf);
-		$useTpl[1] = $use;
-		if ($rrd_service)
-			copyRrdDB($rrd_service, $useTpl[0], $rrd_host);
-		$nbr["sv"] += 1;
+		if (isset($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
+			$useTpl[0] = insertServiceInDB($tmpConf);
+			$useTpl[1] = $use;
+			if ($rrd_service)
+				copyRrdDB($rrd_service, $useTpl[0], $rrd_host);
+			$nbr["sv"] += 1;
+		}
 		return $useTpl;
 	}	
 	
