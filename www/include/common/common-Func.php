@@ -240,7 +240,7 @@ For information : contact@oreon-project.org
 	function getMyHostServices($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
-		$hSvs = array();
+		$hSvs = array(NULL=>NULL);
 		$res =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
 		while ($res->fetchInto($elem))
 			$hSvs[$elem["service_id"]]	= $elem["service_description"];
