@@ -263,6 +263,12 @@ For information : contact@oreon-project.org
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
+	  
+	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_hPars'], $hosts, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
+	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
 	
 	##
 	## Sort 3 - Data treatment
