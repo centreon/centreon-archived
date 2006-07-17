@@ -21,22 +21,40 @@ For information : contact@oreon-project.org
 		exit ();
 	
 		
-	function testServiceExistence ($name = NULL)	{
+	function testServiceExistence ($name = NULL, $hPars = array(), $hgPars = array())	{
 		global $pearDB;
 		global $form;
 		$id = NULL;
-		if (isset($form))
-			$id = $form->getSubmitValue('service_id');
-		$res =& $pearDB->query("SELECT service_id FROM service WHERE service_description = '".htmlentities($name, ENT_QUOTES)."'");
-		$service =& $res->fetchRow();
-		#Modif case
-		if ($res->numRows() >= 1 && $service["service_id"] == $id)	
-			return true;
-		#Duplicate entry
-		else if ($res->numRows() >= 1 && $service["service_id"] != $id)
-			return false;
-		else
-			return true;
+		if (isset($form) && !count($hPars) && !count($hgPars))	{
+			$arr = $form->getSubmitValues();
+			if (isset($arr["service_id"]))
+				$id = $arr["service_id"];
+			if (isset($arr["service_hPars"]))
+				$hPars = $arr["service_hPars"];
+			else
+				$hPars = array();
+			if (isset($arr["service_hgPars"]))
+				$hgPars = $arr["service_hgPars"];
+			else
+				$hgPars = array();
+		}
+		foreach ($hPars as $host)	{
+			$res =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
+			$service =& $res->fetchRow();
+			#Duplicate entry
+			if ($res->numRows() >= 1 && $service["service_id"] != $id)
+				return false;
+			$res->free();
+		}
+		foreach ($hgPars as $hostgroup)	{
+			$res =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
+			$service =& $res->fetchRow();
+			#Duplicate entry
+			if ($res->numRows() >= 1 && $service["service_id"] != $id)
+				return false;
+			$res->free();
+		}			
+		return true;
 	}
 	
 	function enableServiceInDB ($service_id = null)	{

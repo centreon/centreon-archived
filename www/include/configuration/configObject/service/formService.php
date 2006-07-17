@@ -417,8 +417,8 @@ For information : contact@oreon-project.org
 	$form->addRule('service_hgPars', $lang['ErrSvLeast'], 'required');
 	if (!$form->getSubmitValue("service_hgPars"))
 	$form->addRule('service_hPars', $lang['ErrSvLeast'], 'required');
-	//$form->registerRule('exist', 'callback', 'testExistence');
-	//$form->addRule('service_description', $lang['ErrAlreadyExist'], 'exist');
+	$form->registerRule('exist', 'callback', 'testServiceExistence');
+	$form->addRule('service_description', $lang['ErrSvConflict'], 'exist');
 	$form->setRequiredNote($lang['requiredFields']);
 
 	#
