@@ -52,6 +52,7 @@ For information : contact@oreon-project.org
 	
 	function deleteHostInDB ($hosts = array())	{
 		global $pearDB;
+		global $oreon;
 		foreach($hosts as $key=>$value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr WHERE hsr.host_host_id = '".$key."'";
 			$res = & $pearDB->query($rq);
@@ -59,6 +60,9 @@ For information : contact@oreon-project.org
 				if ($row["nbr"] == 1)
 					$pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
 			$pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
+			$files = glob($oreon->optGen["oreon_rrdbase_path"].$key."_*.rrd");
+			foreach ($files as $filename)
+				unlink ($filename);
 		}
 	}
 	
