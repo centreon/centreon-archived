@@ -14,7 +14,34 @@
 # incidental or consequential damages however they may arise and even if OREON has
 # been previously advised of the possibility of such damages.
 
+cat <<EOF
+###############################################################################
+#                    OREON Project (www.oreon-project.org)                    #
+#                            Thanks for using OREON                           #
+#                                                                             #
+#                                    v 1.3                                    #
+#                                                                             #
+#                             infos@oreon-project.org                         #
+#                                                                             #
+#                     Make sure you have installed and configured             #
+#                                   sudo - sed                                #
+#                          php - apache - rrdtool - mysql                     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#                                 The Team OREON                              #
+###############################################################################
+EOF
+
 #Load install script functions
+if [ -z "$BASH" ]; then # Test if BASH is in path 
+    if ! which bash > /dev/null 2>&1; then
+	echo "Install bash and try `bash install.sh`."
+    fi # Exit if we are not in BASH 
+    echo "Error: The script must be run with BASH shell. Try:"
+    echo "# bash install.sh"
+    exit 1 
+fi
 . functions
 
 ##
@@ -34,25 +61,6 @@ date > $LOG_FILE
 
 TRUETYPE="/usr/X11R6/lib/X11/fonts/truetype"
 
-
-cat <<EOF
-###############################################################################
-#                    OREON Project (www.oreon-project.org)                    #
-#                            Thanks for using OREON                           #
-#                                                                             #
-#                                    v 1.3                                    #
-#                                                                             #
-#                             infos@oreon-project.org                         #
-#                                                                             #
-#                     Make sure you have installed and configured             #
-#                                   sudo - sed                                #
-#                          php - apache - rrdtool - mysql                     #
-#                                                                             #
-#                                                                             #
-###############################################################################
-#                                 The Team OREON                              #
-###############################################################################
-EOF
 
 echo ""
 $SETCOLOR_WARNING
