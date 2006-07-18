@@ -20,5 +20,5 @@ ALTER TABLE `log_archive_service`  ADD FOREIGN KEY ( `service_id` ) REFERENCES `
 -- escalation view
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` )
 VALUES (
-NULL , 'mod_gantt', './img/icones/16x16/bookmarks.gif', '604', '60406', '60', '1', './include/configuration/configObject/escalation/ViewEscalation.php', NULL , '0', '0', '1'
+NULL , 'm_gantt', './img/icones/16x16/bookmarks.gif', '604', '60406', '60', '1', './include/configuration/configObject/escalation/ViewEscalation.php', NULL , '0', '0', '1'
 );
