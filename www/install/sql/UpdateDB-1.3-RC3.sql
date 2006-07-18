@@ -16,9 +16,3 @@ ALTER TABLE `log_archive_service` ADD INDEX `date_end_index` ( `date_end` ) ;
 ALTER TABLE `log_archive_service` ADD INDEX `date_start_index` ( `date_start` );
 ALTER TABLE `log_archive_service`  ADD FOREIGN KEY ( `host_id` ) REFERENCES `host` ( `host_id` ) ON DELETE CASCADE ;
 ALTER TABLE `log_archive_service`  ADD FOREIGN KEY ( `service_id` ) REFERENCES `service` ( `service_id` ) ON DELETE CASCADE ;
-
--- escalation view
-INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` )
-VALUES (
-NULL , 'm_gantt', './img/icones/16x16/bookmarks.gif', '604', '60406', '60', '1', './include/configuration/configObject/escalation/ViewEscalation.php', NULL , '0', '0', '1'
-);
