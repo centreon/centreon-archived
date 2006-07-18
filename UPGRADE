@@ -1,4 +1,13 @@
 ----------------------------------------------
+How To update Oreon 1.3-RC2 to oreon-1.3-RC3 ?
+----------------------------------------------
+
+1) Update Oreon base Files with the new ones from the tar.gz
+
+2) Connect you to the oreon interface to follow
+wizard to update your database. 
+
+--------------------------------------------------------------------------------------------
 How To update Oreon 1.3-RC1 to oreon-1.3-RC2 ?
 ----------------------------------------------
 
@@ -18,8 +27,6 @@ $>php update-1.3-RC2.php
 
 3) Connect you to the oreon interface to follow
 wizard to update your database. 
-
-
 
 ----------------------------------------------
 
