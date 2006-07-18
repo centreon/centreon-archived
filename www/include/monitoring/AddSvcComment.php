@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Service Level » is developped by Merethis company for Lafarge Group, 
+This unit, called  Oreon Service Level  is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -32,7 +32,10 @@ For information : contact@oreon-project.org
 		$host_id = array_search($_GET["host_name"], $oreon->user->lcaHost);
 		$svc_description = $_GET["service_description"];
 	} else
+	{
 		$host_name = NULL;
+		$svc_description = NULL;
+	}
 	
 	$data = array("host_id" => $host_id, "service_id" => getMyServiceID($svc_description, $host_id));
 	
@@ -50,10 +53,8 @@ For information : contact@oreon-project.org
 
 	$services = array();
 	if (isset($host_id))	{
-		$res =& $pearDB->query("SELECT DISTINCT sv.service_id, sv.service_description FROM service sv, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND sv.service_id = hsr.service_service_id");
-		while ($res->fetchInto($service)){
-			$services[$service["service_id"]] = $service["service_description"];
-		}
+		
+		$services = getMyHostServices($host_id);
 	}			
 
 	$debug = 0;
@@ -98,7 +99,7 @@ For information : contact@oreon-project.org
 		AddSvcComment($_POST["host_id"], $_POST["service_id"], $_POST["comment"], $_POST["persistant"]);
 		$valid = true;
     	require_once($path."viewComment.php");
-	} else {	
+	} else {
 		# Smarty template Init
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "templates/");
