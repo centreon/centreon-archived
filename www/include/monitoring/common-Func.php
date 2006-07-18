@@ -133,9 +133,11 @@ For information : contact@oreon-project.org
 		
 	}
 
-	function DeleteComment($type){
-		global $oreon, $_GET;
-		exec ("echo \"[".time()."] DEL_".$type."_COMMENT;".$_GET["id"]."\n\" >> " . $oreon->Nagioscfg["command_file"]);  
+	function DeleteComment($type,$hosts = array()){
+		global $oreon, $_GET, $pearDB;
+		foreach($hosts as $key=>$value)	{
+		exec ("echo \"[".time()."] DEL_".$type."_COMMENT;".$key."\n\" >> " . $oreon->Nagioscfg["command_file"]);
+		}
 	}
 	
 	function DeleteDowntime($type,$hosts = array()){
