@@ -41,8 +41,8 @@ For information : contact@oreon-project.org
 	switch ($o)	{
 		case "ah" : require_once($path."AddHostComment.php"); break; 
 		case "as" : require_once($path."AddSvcComment.php"); break;
-		case "ds" : DeleteComment("SVC");require_once($path."viewComment.php"); break; 
-		case "dh" : DeleteComment("HOST");require_once($path."viewComment.php"); break;
+		case "ds" : DeleteComment("SVC",isset($_GET["select"]) ? $_GET["select"] : array());require_once($path."viewComment.php"); break; 
+		case "dh" : DeleteComment("HOST",isset($_GET["select"]) ? $_GET["select"] : array());require_once($path."viewComment.php"); break;
 		default : require_once($path."viewComment.php"); break;
 	}
 ?>
