@@ -45,10 +45,11 @@ For information : contact@oreon-project.org
 		$r =& $res->fetchRow();
 		
 		if (isset($host))	{
-			$res =& $pearDB->query("SELECT DISTINCT sv.service_id, sv.service_description FROM service sv, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND sv.service_id = '".$service."'");
-			$res->fetchInto($service);
+			$svc_description = getMyServiceName($service);
+			/*$res =& $pearDB->query("SELECT DISTINCT sv.service_id, sv.service_description FROM service sv, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND sv.service_id = '".$service."'");
+			$res->fetchInto($service_ary);*/
 		}
-		exec("echo \"[".time()."] ADD_SVC_COMMENT;".$r["host_name"].";".$service["service_description"].";".$persistant.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
+		exec("echo \"[".time()."] ADD_SVC_COMMENT;".$r["host_name"].";".$svc_description.";".$persistant.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 	}
 
 	function AddHostComment($host, $comment, $persistant){
@@ -112,19 +113,21 @@ For information : contact@oreon-project.org
 		$r =& $res->fetchRow();
 
 		if (isset($host))	{
-			$res =& $pearDB->query("SELECT DISTINCT sv.service_id, sv.service_description FROM service sv, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND sv.service_id = '".$service."'");
-			$res->fetchInto($service);
+			
+			$svc_description = getMyServiceName($service);
+		/*	$res =& $pearDB->query("SELECT DISTINCT sv.service_id, sv.service_description FROM service sv, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND sv.service_id = '".$service."'");
+			$res->fetchInto($service);*/
 		}
 		//attention timestamp ki peu etre decaler !
 		$timestamp = time();
 		//print("echo \"[".time()."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$service["service_description"].";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 		if ($oreon->user->get_version() == 1)
-			exec("echo \"[".$timestamp."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$service["service_description"].";".$start_time.";".$end_time.";".$persistant.";".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
+			exec("echo \"[".$timestamp."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$svc_description.";".$start_time.";".$end_time.";".$persistant.";".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 		else
-			exec("echo \"[".$timestamp."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$service["service_description"].";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
+			exec("echo \"[".$timestamp."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$svc_description.";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 
 		$cmd = "INSERT INTO downtime (host_id , service_id , entry_time , author , comment , start_time , end_time , fixed , duration , deleted) ";
-		$cmd .= "VALUES ('".$host."', '".$service["service_id"]."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start."', '".$end."', '".$persistant."', '".$duration."', '0')";
+		$cmd .= "VALUES ('".$host."', '".$service."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start."', '".$end."', '".$persistant."', '".$duration."', '0')";
 
 		$pearDB->query($cmd);
 		
