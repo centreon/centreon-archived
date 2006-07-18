@@ -14,21 +14,22 @@
 		</tr>
 		{foreach item=tch from=$tab_comments_host}
 		<tr class={cycle values="list_two, list_one"}>
-			<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.id}]'></td>
+			<td class="ListColPicker"><input type="checkbox" name='select[{$tch.id}]'></td>
 			<td class="ListColLeft">{$tch.host_name}</td>
 			<td class="ListColRight">{$tch.time}</td>
 			<td class="ListColCenter">{$tch.author}</td>
 			<td class="ListColLeft">{$tch.comment}</td>
 			<td class="ListColLeft">{$tch.persistent}</td>
-			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=dh&id={$tch.id}'><img src='./img/icones/16x16/delete.gif'></a></td>
+			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=dh&select[{$tch.id}]'><img src='./img/icones/16x16/delete.gif'></a></td>
 		</tr>
 		{/foreach}
 		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="image" name="o" value="d" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msg.delConfirm}')"></td>
+			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="image" name="o" value="dh" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msgh.delConfirm}')"></td>
 			<td class="ListColFooterCenter" colspan="4">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgh.addL}">{$msgh.addT}</a></td>
 		</tr>		
 	</table>
+	{$form.hidden}
 	</form>
 	<br><br><span>{$lang.cmt_service_comment}</span><br><br>
 	<form action="" method='GET'>
@@ -52,13 +53,14 @@
 			<td class="ListColCenter">{$tcs.author}</td>
 			<td class="ListColLeft">{$tcs.comment}</td>
 			<td class="ListColLeft">{$tcs.persistent}</td>
-			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=ds&id={$tcs.id}'><img src='./img/icones/16x16/delete.gif'></a></td>
+			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=ds&select[{$tcs.id}]'><img src='./img/icones/16x16/delete.gif'></a></td>
 		</tr>
 		{/foreach}
 		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="image" name="o" value="d" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msg.delConfirm}')"></td>
+			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="image" name="o" value="ds" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msgs.delConfirm}')"></td>
 			<td class="ListColFooterCenter" colspan="5">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
 		</tr>	
 	</table>
+	{$form.hidden}
 </form>
