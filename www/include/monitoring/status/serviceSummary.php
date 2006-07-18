@@ -80,7 +80,7 @@ For information : contact@oreon.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
-	
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);	
 	$tpl->assign("p", $p);
 	//$tpl->assign("view", $lang["m_mon_view"]);
 	$tpl->assign("hostgroup", $hg);

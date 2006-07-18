@@ -35,7 +35,8 @@ $pagination = "maxViewMonitoring";
 			$res =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
 			$res->fetchInto($host);		
 			$host_status[$name]["address"] = $host["host_address"];
-			$host_status[$name]["status_td"] = "<td bgcolor='" . $oreon->optGen["color_".strtolower($h["status"])] . "' align='center'><a href='oreon.php?p=307&host=$name'>" . $h["status"] . "</a></td>";
+			$host_status[$name]["status"] = $h["status"];
+			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["status"])];
 			$host_status[$name]["last_check"] = date($lang["date_time_format_status"], $h["last_check"]);
 			$host_status[$name]["last_stat"] = Duration::toString(time() - $h["last_stat"]);
 			$host_status[$name]["class"] = $tab_class[$rows % 2];
@@ -82,6 +83,40 @@ $pagination = "maxViewMonitoring";
 	$tpl->assign("order", $_GET["order"]);
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);
+
+
+    $ajax = "<script type='text/javascript'>" .
+    "window.onload = function () {" .
+    "setTimeout('init()', 2000);" .
+    "};" .
+    "</script>";
+    $tpl->assign('ajax', $ajax);
+    $tpl->assign('time', time());
+    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
+	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
+    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
+    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
+    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
+    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
+    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
+    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
+    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
+    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
+
+    $lca =& $oreon->user->lcaHStrName;
+	$version = $oreon->user->get_version();
+	$tpl->assign("lca", $lca);
+	$tpl->assign("version", $version);
+
+
+	$res =& $pearDB->query("SELECT * FROM session WHERE" .
+			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
+			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	$session =& $res->fetchRow();
+    $tpl->assign('sid', session_id());
+    $tpl->assign('slastreload', $session["last_reload"]);
+    $tpl->assign('smaxtime', $session_expire["session_expire"]);
+	
 	$tpl->assign("lang", $lang);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host.ihtml");

@@ -18,27 +18,57 @@ For information : contact@oreon.org
 	if (!isset($oreon))
 		exit();
 
+$pagination = "maxViewMonitoring";
+	# set limit & num
+	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	$gopt = array_map("myDecode", $res->fetchRow());		
+	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
+	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
+	!isset($_GET["search"]) ? $search = 0 : $search = $_GET["search"];
+
 	$tab_class = array("0" => "list_one", "1" => "list_two");
-	$cpt = 0;
+	$rows = 0;
+	$host_status_num = array();
 	foreach ($host_status as $name => $h){
-		$res =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
-			$res->fetchInto($host);
+			$tmp = array();
+			$tmp[0] = $name;			
+			$res =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
+			$res->fetchInto($host);		
 			$host_status[$name]["address"] = $host["host_address"];
-			$host_status[$name]["status_td"] = "<td bgcolor='" . $oreon->optGen["color_".strtolower($h["status"])] . "' align='center'>" . $h["status"] . "</td>";
+			$host_status[$name]["status"] = $h["status"];
+			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["status"])];
 			$host_status[$name]["last_check"] = date($lang["date_time_format_status"], $h["last_check"]);
 			$host_status[$name]["last_stat"] = Duration::toString(time() - $h["last_stat"]);
-			$host_status[$name]["class"] = $tab_class[$cpt % 2];
+			$host_status[$name]["class"] = $tab_class[$rows % 2];
 			$host_status[$name]["name"] = $name;
-			$cpt++;
+			$tmp[1] = $host_status[$name];
+			$host_status_num[$rows++] = $tmp;
 	}
-	
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
+
+
+
+	# view tab
+	$displayTab = array();
+	$start = $num*$limit;
+	for($i=$start; isset($host_status_num[$i]) && $i < $limit+$start ;$i++)
+		$displayTab[$host_status_num[$i][0]] = $host_status_num[$i][1];
+	$host_status = $displayTab;
+
+
+
+	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$form->accept($renderer);
+
 	
 	$lang['mon_host'] = "Hosts";
-	$tpl
-	->assign("p", $p);
+	$tpl->assign("p", $p);
+	$tpl->assign("num", $num);
+	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", $lang['mon_host']);
 	$tpl->assign("mon_status", $lang['mon_status']);
 	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
@@ -53,11 +83,47 @@ For information : contact@oreon.org
 	$tpl->assign("order", $_GET["order"]);
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);
+
+
+    $ajax = "<script type='text/javascript'>" .
+    "window.onload = function () {" .
+    "setTimeout('init()', 2000);" .
+    "};" .
+    "</script>";
+    $tpl->assign('ajax', $ajax);
+    $tpl->assign('time', time());
+    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
+	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
+    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
+    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
+    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
+    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
+    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
+    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
+    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
+    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
+
+    $lca =& $oreon->user->lcaHStrName;
+	$version = $oreon->user->get_version();
+	$tpl->assign("lca", $lca);
+	$tpl->assign("version", $version);
+
+
+	$res =& $pearDB->query("SELECT * FROM session WHERE" .
+			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
+			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	$session =& $res->fetchRow();
+    $tpl->assign('sid', session_id());
+    $tpl->assign('slastreload', $session["last_reload"]);
+    $tpl->assign('smaxtime', $session_expire["session_expire"]);
+	
 	$tpl->assign("lang", $lang);
+	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host_problem.ihtml");
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
 	$tpl->assign('lang', $lang);
 	$tpl->display("include/common/legend.ihtml");	
+	
 ?>	

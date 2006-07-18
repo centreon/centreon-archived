@@ -15,6 +15,8 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon.org
 */
+
+
 	if (!isset($oreon))
 		exit();
 	$pagination = "maxViewMonitoring";		
@@ -36,7 +38,8 @@ For information : contact@oreon.org
 			$tmp = array();
 			$tmp[0] = $name;		
 			$service_status[$name]["status"] = $svc["status"];
-			$service_status[$name]["status_td"] = "<td  class='ListColCenter' style='background:" . $oreon->optGen["color_".strtolower($svc["status"])] . "'>" . $svc["status"] . "</td>";
+			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["status"])];
+			$service_status[$name]["flapping"] = $svc["svc_is_flapping"];
 			$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
 			$service_status[$name]["last_change"] = Duration::toString(time() - $svc["last_change"]);
 			$service_status[$name]["class"] = $tab_class[$rows % 2];
@@ -98,6 +101,40 @@ For information : contact@oreon.org
 	$tpl->assign("order", $_GET["order"]);
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
+
+    $ajax = "<script type='text/javascript'>" .
+    "window.onload = function () {" .
+    "setTimeout('init()', 2000);" .
+    "};" .
+    "</script>";
+    $tpl->assign('ajax', $ajax);
+    $tpl->assign('time', time());
+    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
+	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
+
+
+    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
+    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
+    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
+    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
+    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
+    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
+    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
+    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
+
+
+    $lca =& $oreon->user->lcaHStrName;
+	$version = $oreon->user->get_version();
+	$tpl->assign("lca", $lca);
+	$tpl->assign("version", $version);
+        
+	$res =& $pearDB->query("SELECT * FROM session WHERE" .
+			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
+			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	$session =& $res->fetchRow();
+    $tpl->assign('sid', session_id());
+    $tpl->assign('slastreload', $session["last_reload"]);
+    $tpl->assign('smaxtime', $session_expire["session_expire"]);
 
 	
 	$tpl->assign('form', $renderer->toArray());	

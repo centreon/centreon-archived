@@ -31,6 +31,7 @@ For information : contact@oreon-project.org
 	$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 	$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 	
+	
 	if (isset($host_status))
 		foreach ($host_status as $hs)
 			$statistic_host[$hs["status"]]++;
@@ -47,6 +48,8 @@ For information : contact@oreon-project.org
 	if (isset($statistic_host))
 		foreach ($statistic_host as $key => $stth)
 			$statistic_host_color[$key] = " style='background:" . $oreon->optGen["color_".strtolower($key)] . "'";
+
+
 			
 	$tpl_resume->assign("statistic_service", $statistic_service);
 	$tpl_resume->assign("statistic_host", $statistic_host);

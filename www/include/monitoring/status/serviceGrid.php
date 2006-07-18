@@ -60,7 +60,7 @@ For information : contact@oreon.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
-
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign("p", $p);
 	$tpl->assign("hostgroup", $hg);
 	$tpl->assign("h_data", $h_data);

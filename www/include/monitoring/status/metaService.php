@@ -27,14 +27,16 @@ For information : contact@oreon-project.org
 	$c = 0;
 	if (isset($metaService_status)){
 		foreach ($metaService_status as $name => $svc){
-			if (strstr($name, "meta_") && isset($metaService_status[$name]["status"])){
+			if (strstr($name, "meta_") && isset($metaService_status[$name]["status"])){				
 				$metaService_status_bis[$name]["status"] = $svc["status"];
-				$metaService_status_bis[$name]["status_td"] = "<td  class='ListColCenter' style='background:" . $oreon->optGen["color_".strtolower($svc["status"])] . "'>" . $svc["status"] . "</td>";
+				$metaService_status_bis[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["status"])];
 				$metaService_status_bis[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
 				$metaService_status_bis[$name]["last_change"] = Duration::toString(time() - $svc["last_change"]);
 				$metaService_status_bis[$name]["class"] = $tab_class[$c % 2];
 				$metaService_status_bis[$name]["retry"] = $svc["retry"];
-				$metaService_status_bis[$name]["output"] = $svc["output"];
+				$metaService_status_bis[$name]["checks_en"] = $svc["checks_en"];
+				$metaService_status_bis[$name]["accept_passive_check"] = $svc["accept_passive_check"];
+				$metaService_status_bis[$name]["not_en"] = $svc["not_en"];
 				$c++;
 			}
 		}
@@ -57,7 +59,27 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort_type", $_GET["sort_types"]);
 	if (!isset($_GET["order"]))
 		$_GET["order"] = "sort_asc";
-	
+
+    $ajax = "<script type='text/javascript'>" .
+    "window.onload = function () {" .
+    "setTimeout('init()', 2000);" .
+    "};" .
+    "</script>";
+    $tpl->assign('ajax', $ajax);
+    $tpl->assign('time', time());
+    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
+	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
+
+
+    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
+    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
+    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
+    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
+    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
+    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
+    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
+    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
+
 	!isset($_GET["num"]) ? $begin = 0 : $begin = $_GET["num"];
 	!isset($_GET["limit"]) ? $nb = 20 : $nb = $begin + $_GET["limit"];
 

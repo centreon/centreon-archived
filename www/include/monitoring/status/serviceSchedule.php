@@ -61,7 +61,7 @@ For information : contact@oreon.org
 	$tpl->assign("host_name", $host_name);
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	$tpl->assign("status", $status);
-
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign("begin", $begin);
 	$tpl->assign("end", $nb);
 	$tpl->assign("lang", $lang);

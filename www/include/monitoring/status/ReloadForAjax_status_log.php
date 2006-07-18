@@ -17,13 +17,9 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
+
 	
-if (!isset($oreon)){
-  exit();
-}
-
-$debug = 0;
-
 function get_program_data($log, $status_proc){
   $pgr_nagios_stat = array();
   $pgr_nagios_stat["program_start"] = $log['1'];
@@ -105,11 +101,12 @@ function get_service_data($log){
 
 //	xdebug_start_trace(); 
 
-$t_begin = microtime_float();
+//$t_begin = microtime_float();
+
 
 // Open File
-if (file_exists($oreon->Nagioscfg["status_file"])){
-  $log_file = fopen($oreon->Nagioscfg["status_file"], "r");
+if (file_exists($file)){
+  $log_file = fopen($file, "r");
   $status_proc = 1;
 } else {
   $log_file = 0;
@@ -126,8 +123,6 @@ $tab_host_service = array();
 
 // Read 
 
-$lca =& $oreon->user->lcaHost;
-$version = $oreon->user->get_version();
 
 $tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -170,7 +165,7 @@ if ($version == 1){
 						$log[$tab[1]] = $tab[2];
 		    	} else
 		      		break;
-				if (isset($log['host_name']) && array_search($log['host_name'], $lca)){
+				if (isset($log['host_name']) && array_search($log['host_name'], $mtab)){
 					$svc_data["host_name"] = $log["host_name"];
 					$svc_data["description"] = $log["service_description"];
 					$svc_data["status"] = $tab_status_svc[$log['current_state']];
@@ -217,10 +212,11 @@ if ($version == 1){
 					$svc_data["ev_handler_en"] = $log["event_handler_enabled"];
 					$svc_data["last_change"] = $log["last_state_change"];
 					$svc_data["output"] = $log["plugin_output"];
+					//
 					$svc_data["pb_aknowledged"] = $log["problem_has_been_acknowledged"];					
 					$svc_data["svc_is_flapping"] = $log["is_flapping"];					
 					$svc_data["not_en"] = $log["notifications_enabled"];
-					$svc_data["accept_passive_check"] = $log["passive_checks_enabled"];						
+					$svc_data["accept_passive_check"] = $log["passive_checks_enabled"];					
 					$metaService_status[$log["service_description"]] = $svc_data;
 				}
 		  		unset($log);
@@ -233,7 +229,7 @@ if ($version == 1){
 		      		} 
 		    	} else
 		      		break;
-				if (array_search($log['host_name'], $lca)){
+				if (array_search($log['host_name'], $mtab)){
 					$host_data["host_name"] = $log['host_name'];
 					$host_data["status"] = $tab_status_host[$log['current_state']];
 					$host_data["last_check"] = $log['last_check'];
@@ -301,8 +297,5 @@ if (isset($_GET["sort_typeh"]) && $_GET["sort_typeh"]){
   !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
 }
 
-if ($debug){ ?>
- <textarea cols='200' rows='50'><? print_r($host_status);print_r($service_status);?></textarea><?	
-}
 
-?> 
+?>

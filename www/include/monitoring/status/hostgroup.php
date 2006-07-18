@@ -91,10 +91,40 @@ For information : contact@oreon.org
 		print_r($status_hg_h);
 		print "</textarea>";
 	}
-		
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
+
+
+/*
+    $ajax = "<script type='text/javascript'>" .
+    "window.onload = function () {" .
+    "setTimeout('init()', 2000);" .
+    "};" .
+    "</script>";
+    $tpl->assign('ajax', $ajax);
+    $tpl->assign('time', time());
+    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
+	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
+    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
+    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
+    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
+    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
+    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
+    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
+    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
+    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
+
+    $lca =& $oreon->user->lcaHStrName;
+	$version = $oreon->user->get_version();
+	$tpl->assign("lca", $lca);
+	$tpl->assign("version", $version);
+*/
+	
+		
+
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	
 	$tpl->assign("p", $p);
 	$tpl->assign("hg", $hg);
