@@ -31,14 +31,14 @@
 		<tr class="list_two">
 			<td class="FormRowField">
 				{$form.purge_policy_raw.label}<br>
-				{$help.h2}
+				{$help.h1}
 			</td>
 			<td class="FormRowValue">{$form.purge_policy_raw.html}</td>
 		</tr>
 		<tr class="list_one">
 			<td class="FormRowField">
 				{$form.purge_policy_bin.label}<br>
-				{$help.h1}
+				{$help.h2}
 			</td>
 			<td class="FormRowValue">{$form.purge_policy_bin.html}</td>
 		</tr>		
