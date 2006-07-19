@@ -17,12 +17,21 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
+
+
 	if (!isset ($oreon))
 		exit ();
+	
+	
 	
 	isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
 	isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
 	$cG ? $contact_id = $cG : $contact_id = $cP;
+
+	if($oreon->user->get_id() != $contact_id)
+	 exit();
+
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
