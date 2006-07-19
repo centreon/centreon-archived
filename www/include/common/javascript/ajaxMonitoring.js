@@ -107,17 +107,18 @@ function go(){
 				var _statistic_host_unreachable = stat.getElementsByTagName("statistic_host_unreachable")[0].firstChild.nodeValue;
 				var _statistic_host_pending = stat.getElementsByTagName("statistic_host_pending")[0].firstChild.nodeValue;
 
-
-				document.getElementById('host_up').innerHTML = _statistic_host_up;
-				document.getElementById('host_down').innerHTML = _statistic_host_down;
-				document.getElementById('host_unreachable').innerHTML = _statistic_host_unreachable;
-				document.getElementById('host_pending').innerHTML = _statistic_host_pending;
-
-				document.getElementById('service_ok').innerHTML = _statistic_service_ok;
-				document.getElementById('service_warning').innerHTML = _statistic_service_warning;
-				document.getElementById('service_critical').innerHTML = _statistic_service_critical;
-				document.getElementById('service_unknown').innerHTML = _statistic_service_unknown;
-				document.getElementById('service_pending').innerHTML = _statistic_service_pending;
+				if(_type != 'metaservice')
+				{
+					document.getElementById('host_up').innerHTML = _statistic_host_up;
+					document.getElementById('host_down').innerHTML = _statistic_host_down;
+					document.getElementById('host_unreachable').innerHTML = _statistic_host_unreachable;
+					document.getElementById('host_pending').innerHTML = _statistic_host_pending;
+					document.getElementById('service_ok').innerHTML = _statistic_service_ok;
+					document.getElementById('service_warning').innerHTML = _statistic_service_warning;
+					document.getElementById('service_critical').innerHTML = _statistic_service_critical;
+					document.getElementById('service_unknown').innerHTML = _statistic_service_unknown;
+					document.getElementById('service_pending').innerHTML = _statistic_service_pending;
+				}
 			}
 
 
@@ -239,7 +240,7 @@ function go(){
 
 	setTimeout('go()', 5000);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier
-	//le fichier sera parser dans le .php ssi il vient etre modifié par nagios
+	//le fichier sera parser dans le .php ssi il vient a etre modifié par nagios
 }
 
 
