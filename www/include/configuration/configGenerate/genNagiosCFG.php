@@ -128,7 +128,7 @@ For information : contact@oreon-project.org
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
-			else if ($key == "host_perfdata_command`" && $value)	{
+			else if ($key == "host_perfdata_command" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
