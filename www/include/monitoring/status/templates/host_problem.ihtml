@@ -25,7 +25,6 @@
         fileOreonConf:<INPUT type="text" name="fileOreonConf" value="{$fileOreonConf}"><br>
 </FORM>
 </div>
-<div id="test">...</div>
 
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">

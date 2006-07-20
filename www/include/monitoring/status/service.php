@@ -104,7 +104,8 @@ For information : contact@oreon.org
 
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
-    "setTimeout('init()', 2000);" .
+    "setTimeout('init()', 1000);" .
+//    "init();" .
     "};" .
     "</script>";
     $tpl->assign('ajax', $ajax);
