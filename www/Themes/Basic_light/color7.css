@@ -94,7 +94,7 @@ background-color:#F3E9DA;
 #page a{		color:#592bed;}
 
 /*Menu*/
-#menu1_bgimg{	background-image: url("Images/menu_bg_grayblue.gif")
+#menu1_bgimg{	background-image: url("Images/menu_bg_grayblue.gif");
 background-position:top right;
 background-repeat:repeat-x;
 }
