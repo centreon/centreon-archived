@@ -39,14 +39,14 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
-<input name="o" value="svc" type="hidden">
+<input name="o" value="svcpb" type="hidden">
 {php}
    include('./include/common/pagination.php');
 {/php}
 </form>
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
-<input name="o" value="svc" type="hidden">
+<input name="o" value="svcpb" type="hidden">
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>

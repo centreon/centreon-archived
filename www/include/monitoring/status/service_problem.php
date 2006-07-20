@@ -44,6 +44,23 @@ For information : contact@oreon.org
 			$tmp[1] = $service_status[$name];
 			$service_status_num[$rows++] = $tmp;
 		}
+
+
+	$service_status_num = array();
+	$rows = 0;
+
+	$tmp = array();
+		foreach ($service_status as $name => $svc)
+			if($service_status[$name]["status"] != 'OK')
+			{
+			$tmp2 = array();
+			$tmp2[0] = $name;		
+			$tmp[$name] = $service_status[$name];
+			$tmp2[1] = $service_status[$name];
+			$service_status_num[$rows++] = $tmp2;
+			}
+
+	$service_status = $tmp;
 	
 	# Smarty template Init
 	$tpl = new Smarty();
