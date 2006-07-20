@@ -28,7 +28,6 @@ use FileHandle;
 use Getopt::Long;
 
 ##
-## lock file must be set in PutLogInDB.pl !
 ##
 
 my $NagiosInstallFolder = "/usr/local/nagios/";
