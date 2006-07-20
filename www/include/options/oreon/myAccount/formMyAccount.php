@@ -18,20 +18,12 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
-
 	if (!isset ($oreon))
 		exit ();
-	
-	
 	
 	isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
 	isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
 	$cG ? $contact_id = $cG : $contact_id = $cP;
-
-	if($oreon->user->get_id() != $contact_id)
-	 exit();
-
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -52,7 +44,7 @@ For information : contact@oreon-project.org
 	## Database retrieve information for the User
 	#
 	$cct = array();
-	if ($o == "c" && $contact_id)	{	
+	if ($o == "c" && $oreon->user->get_id() == $contact_id)	{	
 		$res =& $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
 		# Set base value
 		$cct = array_map("myDecode", $res->fetchRow());
@@ -133,7 +125,7 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl);
 
 	# Modify a contact information
-	if ($o == "c")	{
+	if ($o == "c" && $oreon->user->get_id() == $contact_id)	{
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	    $form->setDefaults($cct);
@@ -141,8 +133,10 @@ For information : contact@oreon-project.org
 	
 	if ($form->validate())	{
 		$cctObj =& $form->getElement('contact_id');
-		updateContactInDB($cctObj->getValue());
-		$oreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
+		if ($oreon->user->get_id() == $cctObj->getValue())	{
+			updateContactInDB($cctObj->getValue());
+			$oreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
+		}
 		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$cctObj->getValue()."'"));
 		$form->freeze();
