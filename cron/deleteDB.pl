@@ -28,9 +28,16 @@ use FileHandle;
 use Getopt::Long;
 
 ##
+## Specify the directory where the binary perfparse-db-purge is located
 ##
 
-my $NagiosInstallFolder = "/usr/local/nagios/";
+my $NagiosInstallFolder = "/usr/local/nagios/bin/";
+
+##
+## Warning : during the suppression make sure that no data will be put into perfparse database otherwise the suppression 
+## might be stopped!
+##
+
 my $file_lock = "/usr/local/nagios/var/purge.lock";
 
 ##
@@ -39,7 +46,7 @@ my $file_lock = "/usr/local/nagios/var/purge.lock";
 
 my $User = "root";
 my $Password = "";
-my $DataBase = "oreon";
+my $DataBase = "purge_oreon";
 my $Host = "localhost";
 
 ##
@@ -410,7 +417,6 @@ sub check_data_host()
     my $req = $dbpp->prepare($cmd);
     if (!$req) {die "Error:" . $dbpp->errstr . "\n";}
     if (!$req->execute) {die "Error:" . $dbpp->errstr . "\n";}
-    print "a ejecter : \n";
     while (my @host_ary = $req->fetchrow_array)
     {
 	if (!defined($hashForceHostname{$host_ary[1]}))
@@ -439,7 +445,6 @@ sub check_data_service()
     my $req = $dbpp->prepare($cmd);
     if (!$req) {die "Error:" . $dbpp->errstr . "\n";}
     if (!$req->execute) {die "Error:" . $dbpp->errstr . "\n";}
-    print "a ejecter : \n";
     while (my @service_ary = $req->fetchrow_array)
     {
 	if (!defined($hashForceService{$service_ary[1]}))
@@ -453,9 +458,9 @@ sub check_data_service()
 sub complete_deletion()
 {
     if ($Passwordpp ne "") {
-	system($NagiosInstallFolder."bin/perfparse-db-purge -D $DataBasepp -U $Userpp -P $Passwordpp -H $Hostpp");
+	system($NagiosInstallFolder."perfparse-db-purge -D $DataBasepp -U $Userpp -P $Passwordpp -H $Hostpp");
     }else{
-	system($NagiosInstallFolder."bin/perfparse-db-purge -D $DataBasepp -U $Userpp -H $Hostpp");}
+	system($NagiosInstallFolder."perfparse-db-purge -D $DataBasepp -U $Userpp -H $Hostpp");}
 }
 
 
