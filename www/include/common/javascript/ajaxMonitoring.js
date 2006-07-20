@@ -51,6 +51,11 @@ return myArray;
 
 
 function init(){
+
+	_form=document.getElementById('fsave');
+	_time=parseInt(_form.time.value);
+	_form.time.value = _time - 1000;
+
 	go();
 }
 
@@ -94,6 +99,7 @@ function go(){
 				_form.slastreload.value = parseInt(_newreload);
 			}
 
+			// ici je recupere les statistiques
 			var stats = reponse.getElementsByTagName("stats");
 			for (var i = 0 ; i < stats.length ; i++) {
 				var stat = stats[i];
@@ -121,63 +127,58 @@ function go(){
 				}
 			}
 
-
-			var lines = reponse.getElementsByTagName("line");
-			var order =0;
-			for (var i = 0 ; i < lines.length ; i++) {
-				var line = lines[i];
-				order = line.getElementsByTagName("order")[0].firstChild.nodeValue;
 //				document.getElementById('test').innerHTML += order;
 
-				if(_type == 'service' || _type == 'host')
-				{
-					var _host = line.getElementsByTagName("host")[0].firstChild.nodeValue;
-				}
-								
-				var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
-				var _last_change = line.getElementsByTagName("last_change")[0].firstChild.nodeValue;
-				var _status = line.getElementsByTagName("status")[0].firstChild.nodeValue;
-				var _output = line.getElementsByTagName("output")[0].firstChild.nodeValue;
 
-				var _infohtml = '';
+			// a partir d'ici je recupere les informations principales
+			var lines = reponse.getElementsByTagName("line");
+			var order =0;
+			for (var i = 0 ; i < lines.length ; i++) 
+			{
+				var line = lines[i];
+				order = line.getElementsByTagName("order")[0].firstChild.nodeValue;
+
+
 
 				if(_type == 'service')
 				{
+					var _host = line.getElementsByTagName("host")[0].firstChild.nodeValue;								
+					var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
+					var _last_change = line.getElementsByTagName("last_change")[0].firstChild.nodeValue;
+					var _status = line.getElementsByTagName("status")[0].firstChild.nodeValue;
+					var _output = line.getElementsByTagName("output")[0].firstChild.nodeValue;	
 					var _service = line.getElementsByTagName("service")[0].firstChild.nodeValue;
 					var _not_en = line.getElementsByTagName("not_en")[0].firstChild.nodeValue;
 					var _pb_aknowledged = line.getElementsByTagName("pb_aknowledged")[0].firstChild.nodeValue;
 					var _svc_is_flapping = line.getElementsByTagName("svc_is_flapping")[0].firstChild.nodeValue;
+
+					var _infohtml = '';	
 					if(_pb_aknowledged == 1)
 						_infohtml += '<img src=' + _form.icone_pb_aknowledged.value + ' alt=&pb_aknowledged>';
 					if(_not_en == 0)
 						_infohtml += '<img src=' + _form.icone_not_en.value + ' alt=notification_enable>';
 					if(_svc_is_flapping == 1)
 						_infohtml += '<img src=' + _form.icone_flapping.value + ' alt=svc_is_flapping>';
-				}
-				if(_type == 'service' || _type == 'metaservice')
-				{
 					var _retry = line.getElementsByTagName("retry")[0].firstChild.nodeValue;
 					var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
 					var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
 					var _ev_handler_en = line.getElementsByTagName("ev_handler_en")[0].firstChild.nodeValue;
-
+	
 					if(_accept_passive_check == 1)
 						_infohtml += '<img src=' + _form.icone_accept_passive_check1.value + ' alt=accept_passive_check>';
 					if(_accept_active_check == 1)
 						_infohtml += '<img src=' + _form.icone_accept_passive_check0.value + ' alt=accept_active_check>';					
 
-					document.getElementById('infos'+order).innerHTML = _infohtml;
-				}
-				
-				document.getElementById('status'+order).innerHTML = _status;
-				_td=document.getElementById('tdStatus'+order);
-				_tr=document.getElementById('trStatus'+order);
-				var ClassName = "list_one";
-				if(i % 2)
-					ClassName = "list_two";
+					document.getElementById('infos'+order).innerHTML = _infohtml;					
+					document.getElementById('status'+order).innerHTML = _status;
 
-				if(_type == 'service' || _type == 'metaservice')
-				{
+					//bg color
+					_td=document.getElementById('tdStatus'+order);
+					_tr=document.getElementById('trStatus'+order);
+					var ClassName = "list_one";
+					if(i % 2)
+						ClassName = "list_two";
+
 					switch (_status)
 					{
 					  case "OK":
@@ -201,10 +202,30 @@ function go(){
 						_tr.className = ClassName;
 					   break;
 					}
-				document.getElementById('retry'+order).innerHTML = _retry;
+					document.getElementById('retry'+order).innerHTML = _retry;
+					document.getElementById('last_check'+order).innerHTML = _last_check;
+					document.getElementById('last_change'+order).innerHTML = _last_change;
+					document.getElementById('output'+order).innerHTML = _output;					
 				}
-				else 
+
+
+
+				if(_type == 'host')
 				{
+					var _host = line.getElementsByTagName("host")[0].firstChild.nodeValue;
+
+					var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
+					var _last_change = line.getElementsByTagName("last_change")[0].firstChild.nodeValue;
+					var _status = line.getElementsByTagName("status")[0].firstChild.nodeValue;
+					var _output = line.getElementsByTagName("output")[0].firstChild.nodeValue;
+	
+					document.getElementById('status'+order).innerHTML = _status;
+					_td=document.getElementById('tdStatus'+order);
+					_tr=document.getElementById('trStatus'+order);
+					var ClassName = "list_one";
+					if(i % 2)
+						ClassName = "list_two";
+
 					switch (_status)
 					{
 					  case "UP":
@@ -223,12 +244,69 @@ function go(){
 					    _td.style.backgroundColor = _form.color_UNDETERMINATED.value;
 						_tr.className = ClassName;
 					   break;
-					}				
+					}
+					document.getElementById('last_check'+order).innerHTML = _last_check;
+					document.getElementById('last_change'+order).innerHTML = _last_change;
+					document.getElementById('output'+order).innerHTML = _output;				
 				}
-				document.getElementById('last_check'+order).innerHTML = _last_check;
-				document.getElementById('last_change'+order).innerHTML = _last_change;
-				document.getElementById('output'+order).innerHTML = _output;
-			}
+
+				if(_type == 'metaservice')
+				{
+					var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
+					var _last_change = line.getElementsByTagName("last_change")[0].firstChild.nodeValue;
+					var _status = line.getElementsByTagName("status")[0].firstChild.nodeValue;
+					var _output = line.getElementsByTagName("output")[0].firstChild.nodeValue;
+
+					var _infohtml = '';
+
+					var _retry = line.getElementsByTagName("retry")[0].firstChild.nodeValue;
+					var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
+					var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
+					var _ev_handler_en = line.getElementsByTagName("ev_handler_en")[0].firstChild.nodeValue;
+
+					if(_accept_passive_check == 1)
+						_infohtml += '<img src=' + _form.icone_accept_passive_check1.value + ' alt=accept_passive_check>';
+					if(_accept_active_check == 1)
+						_infohtml += '<img src=' + _form.icone_accept_passive_check0.value + ' alt=accept_active_check>';					
+
+					document.getElementById('infos'+order).innerHTML = _infohtml;
+				
+					document.getElementById('status'+order).innerHTML = _status;
+					_td=document.getElementById('tdStatus'+order);
+					_tr=document.getElementById('trStatus'+order);
+					var ClassName = "list_one";
+					if(i % 2)
+						ClassName = "list_two";
+
+					switch (_status)
+					{
+					  case "OK":
+					    _td.style.backgroundColor = _form.color_OK.value;
+						_tr.className = ClassName;
+					   break;
+					  case "WARNING":
+					    _td.style.backgroundColor = _form.color_WARNING.value;
+						_tr.className = ClassName;
+					   break;
+					  case "CRITICAL":
+					    _td.style.backgroundColor = _form.color_CRITICAL.value;
+						_tr.className = "list_three";
+					   break;
+					  case "UNDETERMINATED":
+					    _td.style.backgroundColor = _form.color_UNDETERMINATED.value;
+						_tr.className = ClassName;
+					   break;
+					  default:
+					    _td.style.backgroundColor = _form.color_UNKNOWN.value;
+						_tr.className = ClassName;
+					   break;
+					}
+					document.getElementById('retry'+order).innerHTML = _retry;
+					document.getElementById('last_check'+order).innerHTML = _last_check;
+					document.getElementById('last_change'+order).innerHTML = _last_change;
+					document.getElementById('output'+order).innerHTML = _output;
+				}//fin metaservice
+			}//fin du for pour les infos principale
 		}
 	}
 	
