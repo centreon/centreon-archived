@@ -369,7 +369,7 @@ function install_oreon()
 	echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON'" "OK"
     fi
     
-    for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "rrd" "www"
+    for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "rrd" "www" "cron"
       do
       if test -d $directory ; then
 	  cp -Rf $directory $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
