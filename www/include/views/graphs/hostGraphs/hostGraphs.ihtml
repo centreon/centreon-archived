@@ -2,7 +2,7 @@
 <script type="text/javascript" src='./include/common/javascript/hidden_div.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
-<div>
+<div><!-- start la -->
 {if $rrd}
 	<table id="ListTable">
 		<tr class='ListHeader'>
@@ -11,7 +11,7 @@
  
 		<tr>
 			<td class='ListColCenter'>
-				<table align="center" width="100%">
+				<table align="center" width="100%"><tr>
 				{assign var="i" value=0}
 				{foreach item=h from=$rrd }
 					{if $i%2 == 0}<tr>{/if}
@@ -19,6 +19,8 @@
 					{if $i%2 == 1}</tr>{/if}
 					{assign var="i" value=$i+1}
 				{/foreach}
+				</tr>
+				</table>
 			</td>
 		</tr>
 	</table>
@@ -62,4 +64,4 @@
         </div>
         {$form.hidden}
     </form>
-</div>
+</div><!-- end la -->
