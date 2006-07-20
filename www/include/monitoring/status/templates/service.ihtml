@@ -1,4 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/ajaxMonitoring.js"></script>
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 
 {$ajax}
 <div class="cachediv">
