@@ -29,7 +29,6 @@ For information : contact@oreon.org
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["search"]) ? $search = 0 : $search = $_GET["search"];
 
-
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$service_status_num = array();

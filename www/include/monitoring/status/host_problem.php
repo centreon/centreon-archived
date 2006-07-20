@@ -26,6 +26,7 @@ $pagination = "maxViewMonitoring";
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["search"]) ? $search = 0 : $search = $_GET["search"];
 
+
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$host_status_num = array();
@@ -50,12 +51,20 @@ $pagination = "maxViewMonitoring";
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 
 
-
 	# view tab
 	$displayTab = array();
 	$start = $num*$limit;
-	for($i=$start; isset($host_status_num[$i]) && $i < $limit+$start ;$i++)
-		$displayTab[$host_status_num[$i][0]] = $host_status_num[$i][1];
+	$i_real = $start;
+
+//	for($i=$start; isset($host_status_num[$i]) && $i_real < $limit+$start ;$i++)
+	for($i=$start; isset($host_status_num[$i]) ;$i++)
+	{
+		if($host_status_num[$i][1]["status"] != 'UP')
+		{
+			$i_real++;
+			$displayTab[$host_status_num[$i][0]] = $host_status_num[$i][1];
+		}
+	}
 	$host_status = $displayTab;
 
 
@@ -83,14 +92,15 @@ $pagination = "maxViewMonitoring";
 	$tpl->assign("order", $_GET["order"]);
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);
-
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
     "setTimeout('init()', 2000);" .
     "};" .
     "</script>";
-    $tpl->assign('ajax', $ajax);
+    
+//    $tpl->assign('ajax', $ajax);
     $tpl->assign('time', time());
     $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
 	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);

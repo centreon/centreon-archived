@@ -109,11 +109,13 @@ For information : contact@oreon.org
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	$tpl->assign("status", $status);
 
-
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
 	$tpl->assign("lang", $lang);
 	$tpl->assign("order", $_GET["order"]);
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
+		
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
 
@@ -122,7 +124,7 @@ For information : contact@oreon.org
     "setTimeout('init()', 2000);" .
     "};" .
     "</script>";
-    $tpl->assign('ajax', $ajax);
+//    $tpl->assign('ajax', $ajax);
     $tpl->assign('time', time());
     $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
 	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
