@@ -19,8 +19,9 @@ For information : contact@oreon.org
 global $oreon;
 global $num;
 global $search;
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
+isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
+isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
+isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 
 
 global $rows;
@@ -61,7 +62,7 @@ if(isset($_GET["sort_types"]))
 
 	for ($i = $istart; $i <= $iend; $i++)
 	{
-		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&o=svc".$url_var,
+		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&o=" . $o . $url_var,
 							"label_page"=>"<b>".($i +1)."</b>",
 							"num"=> $i);
 	}
@@ -73,9 +74,9 @@ if(isset($_GET["sort_types"]))
 	$tpl->assign("next", $lang["next"]);
 
 	if(($prev = $num - 1) >= 0)
-	$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&o=svc".$url_var));
+	$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&o=" . $o .$url_var));
 	if(($next = $num + 1) < ($rows/$limit))
-	$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&o=svc".$url_var));
+	$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&o=" . $o .$url_var));
 	$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
 
 
