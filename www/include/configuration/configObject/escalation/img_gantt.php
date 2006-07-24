@@ -27,13 +27,12 @@
 	    'debug'       => 2,
 	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
 	);
-	
+
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB))
 	    die("Unable to connect : " . $pearDB->getMessage());
-	
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 # get info from database
 
@@ -63,6 +62,18 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	$nb_esc = $res_esc_svc->numRows();
 	$nb_esc_default = $nb_esc;
 	$nb_esc != NULL ? $nb_esc = $nb_esc : $nb_esc = 1;
+
+	# calc all row for service escalation (service escalation + contactgroup escalation)
+	$cmd = "SELECT cg.cg_name, esc.esc_id, esc.esc_name, esc.first_notification, esc.last_notification, esc.notification_interval, esc.esc_comment ".
+	"FROM escalation_service_relation ehr, escalation esc, contactgroup cg, escalation_contactgroup_relation ecr ".
+	"WHERE ehr.service_service_id = ".$_GET["service_id"]." ".
+	"AND ehr.escalation_esc_id = esc.esc_id ".
+	"AND ecr.escalation_esc_id = esc.esc_id ".
+	"AND ecr.contactgroup_cg_id = cg.cg_id ".
+	"ORDER BY esc.first_notification desc ";
+	$nb_svc =& $pearDB->query($cmd);
+	$nb_esc_tot = $nb_svc->numRows();
+	$nb_esc_tot != NULL ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
 
 	# retrieve all contactgroup correspond to service
 	$cg_host = "SELECT cg.cg_name ".
@@ -108,13 +119,25 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	$nb_esc_default = $nb_esc;
 	$nb_esc != NULL ? $nb_esc = $nb_esc : $nb_esc = 1;
 	
+	# calc all row for host escalation (host escalation + contactgroup escalation)
+	$cmd = "SELECT cg.cg_name, esc.esc_id, esc.esc_name, esc.first_notification, esc.last_notification, esc.notification_interval, esc.esc_comment ".
+	"FROM escalation_host_relation ehr, escalation esc, contactgroup cg, escalation_contactgroup_relation ecr ".
+	"WHERE ehr.host_host_id = ".$_GET["host_id"]." ".
+	"AND ehr.escalation_esc_id = esc.esc_id ".
+	"AND ecr.escalation_esc_id = esc.esc_id ".
+	"AND ecr.contactgroup_cg_id = cg.cg_id ".
+	"ORDER BY esc.first_notification desc ";
+	$nb_host =& $pearDB->query($cmd);
+	$nb_esc_tot = $nb_host->numRows();
+	$nb_esc_tot != NULL ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
+
 	# retrieve all contactgroup correspond to host
 	$cg_host = "SELECT cg.cg_name ".
 	"FROM contactgroup cg, contactgroup_host_relation chr ".
 	"WHERE chr.host_host_id = ".$_GET["host_id"]." ".
 	"AND chr.contactgroup_cg_id = cg.cg_id";
 	$res_cg_host =& $pearDB->query($cg_host);
-	$max_contact_host = $res_cg_host->numRows();
+	$max_contact_service = $res_cg_host->numRows();
 	
 	# retrieve the max length contactgroup
 	$cg_max_length = "SELECT max(length(cg.cg_name)) max_length ".
@@ -152,6 +175,18 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	$nb_esc_default = $nb_esc;
 	$nb_esc != NULL ? $nb_esc = $nb_esc : $nb_esc = 1;
 
+	# calc all row for hostgroup escalation (hostgroup escalation + contactgroup escalation)
+	$cmd = "SELECT cg.cg_name, esc.esc_id, esc.esc_name, esc.first_notification, esc.last_notification, esc.notification_interval, esc.esc_comment ".
+	"FROM escalation_hostgroup_relation ehr, escalation esc, contactgroup cg, escalation_contactgroup_relation ecr ".
+	"WHERE ehr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+	"AND ehr.escalation_esc_id = esc.esc_id ".
+	"AND ecr.escalation_esc_id = esc.esc_id ".
+	"AND ecr.contactgroup_cg_id = cg.cg_id ".
+	"ORDER BY esc.first_notification desc ";
+	$nb_hostgroup =& $pearDB->query($cmd);
+	$nb_esc_tot = $nb_hostgroup->numRows();
+	$nb_esc_tot != NULL ? $nb_esc_tot = $nb_esc_tot : $nb_esc_tot = 1;
+
 	# retrieve all contactgroup correspond to hostgroup
 	$cg_host = "SELECT cg.cg_name ".
 	"FROM contactgroup cg, contactgroup_hostgroup_relation chr ".
@@ -171,7 +206,8 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 }
 # init IMAGE
 $largeur = ($max_notif > 50) ? 1024 : 800;
-$hauteur = ($nb_esc > 5) ? 768 : 400;
+//$hauteur = ($nb_esc > 5) ? 768 : 400;
+$hauteur = ($nb_esc_tot * 35) + (($max_contact_service == 0 ? $nb_esc : $max_contact_service) * 35) + 70;
 $marge_left = ($max_contact_length) ? $max_contact_length * 13 : 10 * 13;
 $marge_legende = 20;
 $marge_bottom = 50 + $marge_legende;
@@ -235,13 +271,13 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	$res_cg_service->free();
 	ImageLine ($image, $largeur - 10, $hauteur - $marge_bottom - 5, $largeur- 10, $hauteur - $marge_bottom + 5, $noir);
 	imagestring($image, 2, $largeur - 10, $hauteur - $marge_bottom + 10, 'x', $noir);
-	for ($i = 0, $tmp_x = 0; $res_esc_svc->fetchInto($esc_svc_data);)
+	for ($i = 0, $tmp_x = 0, $flag = 0; $res_esc_svc->fetchInto($esc_svc_data);)
 	{
 		# retrieve contactgroup associated with the escalation service
-		$cmd_contactgroup = "SELECT cg.cg_name ";
-		$cmd_contactgroup .= "FROM contactgroup cg, escalation_contactgroup_relation ecr ";
-		$cmd_contactgroup .= "WHERE ecr.escalation_esc_id = ".$esc_svc_data["esc_id"]." ";
-		$cmd_contactgroup .= "AND ecr.contactgroup_cg_id = cg.cg_id";
+		$cmd_contactgroup = "SELECT cg.cg_name ".
+		"FROM contactgroup cg, escalation_contactgroup_relation ecr ".
+		"WHERE ecr.escalation_esc_id = ".$esc_svc_data["esc_id"]." ".
+		"AND ecr.contactgroup_cg_id = cg.cg_id";
 		$res_cg =& $pearDB->query($cmd_contactgroup);
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
@@ -269,7 +305,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 }# GRAPH HOSTS ESCALATION
 else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 	#show contactgroup link with the host
-	$pas_tmp_host = ($max_contact_host * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact_host > 0 ? $max_contact_host : 1) : 20);
+	$pas_tmp_host = ($max_contact_service * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact_service > 0 ? $max_contact_service : 1) : 20);
 	for ($cnt = 0, $i = 0; $res_cg_host->fetchInto($contactgroup_host); $cnt++){
 			($cnt == 0) ? $i += 15 : $i += $pas_tmp_host;
 			imagestring($image, 3, 10, $hauteur - $marge_bottom - $i, $contactgroup_host["cg_name"], $rouge);
@@ -285,10 +321,10 @@ else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 	for ($i = 0; $res_esc_host->fetchInto($esc_host_data);)
 	{
 		# retrieve contactgroup associated with the escalation host
-		$cmd_contactgroup = "SELECT cg.cg_name ";
-		$cmd_contactgroup .= "FROM contactgroup cg, escalation_contactgroup_relation ecr ";
-		$cmd_contactgroup .= "WHERE ecr.escalation_esc_id = ".$esc_host_data["esc_id"]." ";
-		$cmd_contactgroup .= "AND ecr.contactgroup_cg_id = cg.cg_id";
+		$cmd_contactgroup = "SELECT cg.cg_name ".
+		"FROM contactgroup cg, escalation_contactgroup_relation ecr ".
+		"WHERE ecr.escalation_esc_id = ".$esc_host_data["esc_id"]." ".
+		"AND ecr.contactgroup_cg_id = cg.cg_id";
 		$res_cg =& $pearDB->query($cmd_contactgroup);
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
@@ -320,10 +356,10 @@ else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
 	for ($i = 0, $tmp_x = 0; $res_esc_hostgroup->fetchInto($esc_hostgroup_data);)
 	{
 		# retrieve contactgroup associated with the escalation hostgroup
-		$cmd_contactgroup = "SELECT cg.cg_name ";
-		$cmd_contactgroup .= "FROM contactgroup cg, escalation_contactgroup_relation ecr ";
-		$cmd_contactgroup .= "WHERE ecr.escalation_esc_id = ".$esc_hostgroup_data["esc_id"]." ";
-		$cmd_contactgroup .= "AND ecr.contactgroup_cg_id = cg.cg_id";
+		$cmd_contactgroup = "SELECT cg.cg_name ".
+		"FROM contactgroup cg, escalation_contactgroup_relation ecr ".
+		"WHERE ecr.escalation_esc_id = ".$esc_hostgroup_data["esc_id"]." ".
+		"AND ecr.contactgroup_cg_id = cg.cg_id";
 		$res_cg =& $pearDB->query($cmd_contactgroup);
 		$max_contact = $res_cg->numRows();
 		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
