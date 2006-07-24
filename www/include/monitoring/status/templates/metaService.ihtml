@@ -76,7 +76,7 @@
 			<td class="ListColRight"><div id="last_check{$c}">{ $s.last_check }</div></td>
             <td class="ListColRight" align="right"><div id="last_change{$c}">{ $s.last_change }</div></td>
             <td class="ListColCenter" align="center"><div id="retry{$c}">{ $s.retry }</div></td>
-            <td class="ListColNoWrap"><div id="output{$c}">{ $s.output}--{ $t}</div></td>						
+            <td class="ListColNoWrap"><div id="output{$c}">{ $s.output}</div></td>						
 	</tr>
 	{/if}
 			{assign var="c" value=$c+1}
