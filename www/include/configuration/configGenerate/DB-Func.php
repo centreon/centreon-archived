@@ -24,11 +24,11 @@ For information : contact@oreon-project.org
 		$gbArr = array();	
 		$ret = $form->getSubmitValues();
 		if ($ret["level"]["level"] == 1)
-			$gbArr =& checkDependenciesStrong();
+			$gbArr = checkDependenciesStrong();
 		else if ($ret["level"]["level"] == 2)
-			$gbArr =& checkDependenciesLite();
+			$gbArr = checkDependenciesLite();
 		else if (($ret["level"]["level"] == 3) && $ret["xml"]["xml"])
-			$gbArr =& checkNoDependencies();
+			$gbArr = checkNoDependencies();
 		else
 			$gbArr = NULL;
 		return ($gbArr);
