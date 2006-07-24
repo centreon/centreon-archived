@@ -25,6 +25,7 @@ global $search_type_host;
 
 isset ($_GET["search_type_service"]) ? $search_type_service = $_GET["search_type_service"] : $search_type_service = NULL;
 isset ($_GET["search_type_host"]) ? $search_type_host = $_GET["search_type_host"] : $search_type_host = NULL;
+isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 
 isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
@@ -73,7 +74,7 @@ if(isset($_GET["sort_types"]))
 
 	for ($i = $istart; $i <= $iend; $i++)
 	{
-		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&o=" . $o . $url_var,
+		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var,
 							"label_page"=>"<b>".($i +1)."</b>",
 							"num"=> $i);
 	}
@@ -85,9 +86,9 @@ if(isset($_GET["sort_types"]))
 	$tpl->assign("next", $lang["next"]);
 
 	if(($prev = $num - 1) >= 0)
-	$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&o=" . $o .$url_var));
+	$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	if(($next = $num + 1) < ($rows/$limit))
-	$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&o=" . $o .$url_var));
+	$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
 
 
@@ -111,6 +112,7 @@ if(isset($_GET["sort_types"]))
 	$form->addElement('hidden', 'search');
 	$form->addElement('hidden', 'num');
 	$form->addElement('hidden', 'order');
+	$form->addElement('hidden', 'type');
 	$form->addElement('hidden', 'sort_types');
 	$form->addElement('hidden', 'search_type_service');
 	$form->addElement('hidden', 'search_type_host');
