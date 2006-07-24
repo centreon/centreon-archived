@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		global $oreon;
 		foreach($hosts as $key=>$value)	{
-			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr WHERE hsr.host_host_id = '".$key."'";
+			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
 			$res = & $pearDB->query($rq);
 			while ($res->fetchInto($row))
 				if ($row["nbr"] == 1)
