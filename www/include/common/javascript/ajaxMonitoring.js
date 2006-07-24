@@ -79,6 +79,102 @@ function go(){
 	var myArray = take_value(_type);
 
 
+_log = document.getElementById('log');
+
+
+var _del = document.getElementById('trStatus0');
+
+			_del.parentNode.removeChild(_del);
+
+
+var _test = document.getElementById('test2');
+
+_log.innerHTML = "la<br>";
+
+
+
+
+
+
+    var childrenNumber = _test.childNodes.length;
+    for (var i = 0; i < childrenNumber; i++) {
+      var element = _test.childNodes[i];
+      var elementName = element.nodeName.toLowerCase();
+
+
+	if (elementName == 'table')
+	{
+//		var premiere_ligne = element.getElementsByTagName("tr")[0];
+//		element.removeChild(premiere_ligne);
+	
+//		_log.innerHTML += premiere_ligne.innerHTML + "<br>";
+	
+		_log.innerHTML += elementName + "<br>";
+
+
+
+	    var childrenNumbertable = element.childNodes.length;
+	    for (var j = 0; j < childrenNumbertable; j++) {
+	      var elementtable = element.childNodes[j];
+	      var elementNametable = elementtable.nodeName.toLowerCase();
+
+
+
+	
+//		_log.innerHTML += "------" + elementNametable + "<br>";
+
+
+	if (elementNametable == 'tbody')
+	{	
+
+		  var mdiv = document.createElement('div');
+          mdiv.appendChild(document.createTextNode('meuh'));
+
+			var _ligne = document.createElement('tr');
+			var _case1 = document.createElement('td');
+			var _case2 = document.createElement('td');
+
+			var _texte1 = document.createTextNode('-1-');
+			var _texte2 = document.createTextNode('*2*');
+			_case1.appendChild(_texte1);
+			_case2.appendChild(_texte2);
+			_ligne.appendChild(_case1);
+			_ligne.appendChild(_case2);
+			elementtable.appendChild(_ligne);
+	
+	
+
+		
+			    var childrenNumbertableb = elementtable.childNodes.length;
+			    for (var j = 0; j < childrenNumbertableb; j++) 
+			    {
+			      var elementtableb = elementtable.childNodes[j];
+			      var elementNametableb = elementtableb.nodeName.toLowerCase();
+					if (elementNametableb == 'tr')
+					{	
+						_log.innerHTML += "------ ------" + elementNametableb + "<br>";
+
+					}
+
+
+
+				}
+
+
+
+
+		
+		}
+		}
+		
+	}
+}
+
+//_table.innerHTML = "beep!";
+
+
+
+
 	getXhr()
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhr.onreadystatechange = function()
@@ -164,12 +260,16 @@ function go(){
 					var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
 					var _ev_handler_en = line.getElementsByTagName("ev_handler_en")[0].firstChild.nodeValue;
 	
-					if(_accept_passive_check == 1)
+					if(_accept_passive_check == 1)					
 						_infohtml += '<img src=' + _form.icone_accept_passive_check1.value + ' alt=accept_passive_check>';
 					if(_accept_active_check == 1)
 						_infohtml += '<img src=' + _form.icone_accept_passive_check0.value + ' alt=accept_active_check>';					
 
-					document.getElementById('infos'+order).innerHTML = _infohtml;					
+					document.getElementById('infos'+order).innerHTML = _infohtml;
+
+					
+	
+										
 					document.getElementById('status'+order).innerHTML = _status;
 
 					//bg color
