@@ -109,7 +109,6 @@ For information : contact@oreon.org
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	$tpl->assign("status", $status);
 
-	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
 	$tpl->assign("lang", $lang);
@@ -119,6 +118,7 @@ For information : contact@oreon.org
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
 
+/*
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
     "setTimeout('init()', 2000);" .
@@ -141,6 +141,8 @@ For information : contact@oreon.org
 	$version = $oreon->user->get_version();
 	$tpl->assign("lca", $lca);
 	$tpl->assign("version", $version);
+*/
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
 
 	$res =& $pearDB->query("SELECT * FROM session WHERE" .

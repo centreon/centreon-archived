@@ -15,8 +15,6 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon.org
 */
-
-
 	if (!isset($oreon))
 		exit();
 	$pagination = "maxViewMonitoring";		
@@ -101,10 +99,11 @@ For information : contact@oreon.org
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
 
+
+/*
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
     "setTimeout('init()', 1000);" .
-//    "init();" .
     "};" .
     "</script>";
     $tpl->assign('ajax', $ajax);
@@ -135,6 +134,9 @@ For information : contact@oreon.org
     $tpl->assign('sid', session_id());
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
+*/
+
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
 	
 	$tpl->assign('form', $renderer->toArray());	

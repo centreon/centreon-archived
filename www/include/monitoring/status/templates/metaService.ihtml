@@ -1,8 +1,7 @@
+<SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<script type="text/javascript" src="./include/common/javascript/ajaxMonitoring.js"></script>
-{$ajax}
+<!-- informations bank for ajax 
 <div class="cachediv">
-<!-- informations bank for ajax -->
 <FORM id="fsave">
         <INPUT type="text" name="type" value="metaservice" size=12>
         <INPUT type="text" name="len" value="0" size=12>
@@ -35,7 +34,7 @@
         fileOreonConf:<INPUT type="text" name="fileOreonConf" value="{$fileOreonConf}"><br>
 </FORM>
 </div>
-
+-->
 
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">

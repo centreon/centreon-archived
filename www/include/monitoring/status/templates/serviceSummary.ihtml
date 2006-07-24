@@ -1,6 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
-<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <div>
 	{foreach key=hg_name item=hstg from=$hostgroup}
 	<table id="ListTable">	

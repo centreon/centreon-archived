@@ -84,7 +84,7 @@ $pagination = "maxViewMonitoring";
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);
 
-
+/*
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
     "setTimeout('init()', 2000);" .
@@ -107,6 +107,8 @@ $pagination = "maxViewMonitoring";
 	$version = $oreon->user->get_version();
 	$tpl->assign("lca", $lca);
 	$tpl->assign("version", $version);
+*/
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
 
 	$res =& $pearDB->query("SELECT * FROM session WHERE" .

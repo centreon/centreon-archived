@@ -1,6 +1,5 @@
+<SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<script type="text/javascript" src="./include/common/javascript/ajaxMonitoring.js"></script>
-{$ajax}
 <div class="cachediv">
 <!-- informations bank for ajax -->
 <FORM id="fsave">
@@ -20,8 +19,8 @@
         <br>
         <INPUT type="text" name="icone_flapping" value="./img/icones/16x16/flapping.gif" >
         <INPUT type="text" name="icone_pb_aknowledged" value="./img/icones/16x16/worker.gif" >
-        <INPUT type="text" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_pause.gif" >
-        <INPUT type="text" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_stop.gif" >
+        <INPUT type="text" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" >
+        <INPUT type="text" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" >
         <INPUT type="text" name="icone_not_en" value="./img/icones//14x14/noloudspeaker.gif" >
         <INPUT type="text" name="icone_undo" value="./img/icones/14x14/undo.gif" >
         <INPUT type="text" name="icone_graph" value="./img/icones/16x16/column-chart.gif" >
@@ -46,6 +45,8 @@
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
+
+
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -80,9 +81,11 @@
 			<div id="infos{$c}">
 				{if $s.pb_aknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
 				{if $s.flapping == 1}<img src='./img/icones/16x16/flapping.gif'>{/if}
+
+				{if $s.not_en == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
+				
 				{if $s.checks_en == 0 && $s.accept_passive_check}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
 				{if $s.checks_en == 0 && $s.accept_passive_check == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
-				{if $s.not_en == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
 			</div>
 			</td>
 			<td class="ListColCenter" style="background-color:{ $s.status_color }" id="tdStatus{$c}"><div id="status{$c}">{ $s.status }</div></td>
@@ -97,7 +100,6 @@
 		
 	{/foreach}
 </table>
-
 {php}
    include('./include/common/pagination.php');
 {/php}

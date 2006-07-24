@@ -253,8 +253,8 @@ function read($time,$arr,$flag,$type,$version,$lca,$file)
 			foreach ($service_status as $name => $svc)
 				if(isset($gtab[$svc["host_name"] . $svc["description"]]))
 				{
-					$passive = ($svc["checks_en"] == 0 && $svc["accept_passive_check"]) ? 1 : 0;
-					$active = ($svc["checks_en"] == 0 && $svc["accept_passive_check"] == 0) ? 1 : 0;
+					$passive = ($svc["accept_passive_check"]) ? 1 : 0;
+					$active = ($svc["checks_en"]) ? 1 : 0;
 										
 					$output = ($svc["output"]) ? htmlentities($svc["output"]) : " ";					
 					$buffer .= '<line>';
@@ -290,29 +290,21 @@ function read($time,$arr,$flag,$type,$version,$lca,$file)
 				$a++;
 			}
 
-		$meta = array();
+			$meta = array();
 			$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 			while ($res->fetchInto($meta)){
 				$metaService_status_bis["meta_" . $meta["meta_id"]]["real_name"] = $meta["meta_name"]; 
 				$metaService_status_bis["meta_" . $meta["meta_id"]]["id"] = $meta["meta_id"]; 
 			}
 
-/*
-print_r($gtab);
-echo "<br>";
-*/
 
 			if (isset($metaService_status)){
 			foreach ($metaService_status as $name => $svc){
 				if (strstr($name, "meta_") && isset($metaService_status[$name]["status"])){
-/*
-print_r($svc);
-echo "<br>";
-*/
 				if(isset($svc["description"]))
 				{					
-					$passive = ($svc["checks_en"] == 0 && $svc["accept_passive_check"]) ? 1 : 0;
-					$active = ($svc["checks_en"] == 0 && $svc["accept_passive_check"] == 0) ? 1 : 0;
+					$passive = ($svc["accept_passive_check"]) ? 1 : 0;
+					$active = ($svc["checks_en"]) ? 1 : 0;
 										
 					$output = ($svc["output"]) ? htmlentities($svc["output"]) : " ";					
 					$buffer .= '<line>';
@@ -336,7 +328,6 @@ echo "<br>";
 			}
 		}
 	}
-//exit(0);					
 
 		}		
 		
@@ -346,10 +337,6 @@ echo "<br>";
 		if (isset($host_status) && $type == "host")
 		{
 			$gtab = array();
-			/*
-			for($a=0; $mtab[$a];$a++)
-				$gtab[$mtab[$a]] = $a;
-*/
 		$a=0;
 		foreach($mtab as $v)
 		{
@@ -403,10 +390,10 @@ if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtim
 	}
 }
 
-/*
+
 if(!$flag)
 	exit(1);
-*/
+
 if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["lca"])&& isset($_POST["fileStatus"]))
 {
 	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["lca"],$_POST["fileStatus"]);

@@ -37,6 +37,7 @@ For information : contact@oreon-project.org
 				$metaService_status_bis[$name]["checks_en"] = $svc["checks_en"];
 				$metaService_status_bis[$name]["accept_passive_check"] = $svc["accept_passive_check"];
 				$metaService_status_bis[$name]["not_en"] = $svc["not_en"];
+				$metaService_status_bis[$name]["output"] = $svc["output"];
 				$c++;
 			}
 		}
@@ -60,6 +61,8 @@ For information : contact@oreon-project.org
 	if (!isset($_GET["order"]))
 		$_GET["order"] = "sort_asc";
 
+
+/*
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
     "setTimeout('init()', 2000);" .
@@ -79,6 +82,9 @@ For information : contact@oreon-project.org
     $tpl->assign('color_UP', $oreon->optGen["color_up"]);
     $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
     $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
+*/
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
+
 
 	!isset($_GET["num"]) ? $begin = 0 : $begin = $_GET["num"];
 	!isset($_GET["limit"]) ? $nb = 20 : $nb = $begin + $_GET["limit"];

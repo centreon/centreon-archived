@@ -1,7 +1,8 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
+
+<!-- informations bank for ajax
 <div class="cachediv">
-<!-- informations bank for ajax -->
 <FORM id="fsave">
         <INPUT type="text" name="type" value="host" size=12>
         <INPUT type="text" name="len" value="0" size=12>
@@ -15,6 +16,7 @@
         <INPUT type="text" name="color_UP" value="{$color_UP}" size=12>
         <INPUT type="text" name="color_DOWN" value="{$color_DOWN}" >
         <INPUT type="text" name="color_UNREACHABLE" value="{$color_UNREACHABLE}" >
+
         <br>
         lca:<INPUT type="text" name="lca" value="{$lca}"><br>
         version:<INPUT type="text" name="version" value="{$version}"><br>
@@ -25,6 +27,7 @@
         fileOreonConf:<INPUT type="text" name="fileOreonConf" value="{$fileOreonConf}"><br>
 </FORM>
 </div>
+-->
 
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
