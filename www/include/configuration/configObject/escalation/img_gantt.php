@@ -36,6 +36,7 @@
 
 
 # get info from database
+
 if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	# get number of max last_notification service
 	$max_notif = "SELECT max(esc.last_notification) nb_max_service ,min(esc.last_notification) nb_min_lastservice, min(esc.first_notification) nb_firstmin_service ,max(esc.first_notification) nb_firstmax_service ".
@@ -124,11 +125,54 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 	$res_length_contact->fetchInto($cg_contactgroup_host_max);
 	$max_contact_length = $cg_contactgroup_host_max["max_length"];
 }
+else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
+	# get number of max last_notification hostgroup
+	$max_notif = "SELECT max(esc.last_notification) nb_max_hostgroup ,min(esc.last_notification) nb_min_lasthostgroup, min(esc.first_notification) nb_firstmin_hostgroup ,max(esc.first_notification) nb_firstmax_hostgroup ".
+	"FROM escalation_hostgroup_relation ehr, escalation esc ".
+	"WHERE ehr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+	"AND ehr.escalation_esc_id = esc.esc_id ".
+	"ORDER BY esc.first_notification";
+	$res_max =& $pearDB->query($max_notif);
+	$res_max->fetchInto($nb_max);
+	$nb_max["nb_firstmin_hostgroup"] != NULL ? $min_notif = $nb_max["nb_firstmin_hostgroup"] : $min_notif = 1;
+	$nb_max["nb_firstmax_hostgroup"] != NULL ? $max_min_notif = $nb_max["nb_firstmax_hostgroup"] : $max_min_notif = 1;
+	$min_max_notif = $nb_max["nb_min_lasthostgroup"];
+	$nb_max["nb_max_hostgroup"] != NULL ? $max_notif = $nb_max["nb_max_hostgroup"] : $max_notif = 1;
+	$max_notif == 0 ? $max_notif = (($max_min_notif < 42) ? 42 : $max_min_notif + 42) : $max_notif = $max_notif;
+	$res_max->free();
 
+	# retrieve all escalation correspond to hostgroup
+	$cmd = "SELECT esc.esc_id, esc.esc_name, esc.first_notification, esc.last_notification, esc.notification_interval, esc.esc_comment ".
+	"FROM escalation_hostgroup_relation ehr, escalation esc ".
+	"WHERE ehr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+	"AND ehr.escalation_esc_id = esc.esc_id ".
+	"ORDER BY esc.first_notification desc ";
+	$res_esc_hostgroup =& $pearDB->query($cmd);
+	$nb_esc = $res_esc_hostgroup->numRows();
+	$nb_esc_default = $nb_esc;
+	$nb_esc != NULL ? $nb_esc = $nb_esc : $nb_esc = 1;
+
+	# retrieve all contactgroup correspond to hostgroup
+	$cg_host = "SELECT cg.cg_name ".
+	"FROM contactgroup cg, contactgroup_hostgroup_relation chr ".
+	"WHERE chr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+	"AND chr.contactgroup_cg_id = cg.cg_id";
+	$res_cg_hostgroup =& $pearDB->query($cg_host);
+	$max_contact_service = $res_cg_hostgroup->numRows();
+
+	# retrieve max length contactgroup of hostgroup
+	$cg_svc_length = "SELECT max(length(cg.cg_name)) max_length ".
+	"FROM contactgroup cg, contactgroup_hostgroup_relation chr ".
+	"WHERE chr.hostgroup_hg_id = ".$_GET["hostgroup_id"]." ".
+	"AND chr.contactgroup_cg_id = cg.cg_id";
+	$res_svc_max =& $pearDB->query($cg_svc_length);
+	$res_svc_max->fetchInto($cg_contactgroup_svc_max);
+	$max_contact_length = $cg_contactgroup_svc_max["max_length"];
+}
 # init IMAGE
 $largeur = ($max_notif > 50) ? 1024 : 800;
 $hauteur = ($nb_esc > 5) ? 768 : 400;
-$marge_left = $max_contact_length * 13;
+$marge_left = ($max_contact_length) ? $max_contact_length * 13 : 10 * 13;
 $marge_legende = 20;
 $marge_bottom = 50 + $marge_legende;
 $image = imagecreate($largeur,$hauteur);
@@ -149,13 +193,14 @@ ImageRectangle ($image, 0, 0, $largeur - 1, $hauteur - 1, $noir);
 ImageSetThickness ($image, 1); 
 
 # AXE Ordonnée
-ImageLine ($image, $marge_left, 20, $marge_left, $hauteur - 50, $noir);
+ImageLine ($image, $marge_left, 20, $marge_left, $hauteur - $marge_bottom + 20, $noir);
 # AXE abscisse
 ImageLine ($image, $marge_left - 20, $hauteur - $marge_bottom, $largeur, $hauteur - $marge_bottom, $noir);
 
 # LEGENDE
-ImageLine ($image, $marge_left + 10, $hauteur - $marge_legende + 5, $marge_left + 50, $hauteur - $marge_legende + 5, $rouge);
-imagestring($image, 2, $marge_left + 50, $hauteur - $marge_legende, ' : Basic notification', $noir);
+
+ImageLine ($image, $largeur / 2 - 50, $hauteur - $marge_legende + 5, $largeur / 2, $hauteur - $marge_legende + 5, $rouge);
+imagestring($image, 2, $largeur / 2, $hauteur - $marge_legende, ' : Basic notification', $noir);
 trace_bat($largeur / 2 + 160, $hauteur - $marge_legende, $largeur / 2 + 200, $hauteur - $marge_legende + 10, "");
 imagestring($image, 2, $largeur / 2 + 205, $hauteur - $marge_legende, ' : Escalations', $noir);
 
@@ -169,9 +214,9 @@ function trace_bat($x1, $y1, $x2, $y2, $esc_name)
 }
 
 	# pas graduation y
-	$pas_graduation_y = ($hauteur - ($marge_bottom + 50)) / $nb_esc;
+	$pas_graduation_y = ($hauteur - ($marge_bottom)) / $nb_esc;
 	# pas graduation x
-	$pas_graduation_x = ($largeur - ($marge_left + 50)) / $max_notif;
+	$pas_graduation_x = ($largeur - ($marge_left)) / $max_notif;
 
 //imagestring($image, 3, 700, 50, $min_max_notif, $noir);
 # GRAPH SERVICES ESCALATION()
@@ -187,6 +232,7 @@ if (isset($_GET["service_id"]) && $_GET["service_id"] != NULL){
 				ImageFilledPolygon ($image, array($largeur - 10, $hauteur - $marge_bottom - 5 - $i,$largeur - 10, $hauteur - $marge_bottom + 5 - $i,$largeur, $hauteur - $marge_bottom - $i), 3, $rouge);
 			}
 		}
+	$res_cg_service->free();
 	ImageLine ($image, $largeur - 10, $hauteur - $marge_bottom - 5, $largeur- 10, $hauteur - $marge_bottom + 5, $noir);
 	imagestring($image, 2, $largeur - 10, $hauteur - $marge_bottom + 10, 'x', $noir);
 	for ($i = 0, $tmp_x = 0; $res_esc_svc->fetchInto($esc_svc_data);)
@@ -233,6 +279,7 @@ else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 			ImageFilledPolygon ($image, array($largeur - 10, $hauteur - $marge_bottom - 5 - $i,$largeur - 10, $hauteur - $marge_bottom + 5 - $i,$largeur, $hauteur - $marge_bottom - $i), 3, $rouge);
 			}
 		}
+	$res_cg_host->free();
 	ImageLine ($image, $largeur - 10, $hauteur - $marge_bottom - 5, $largeur- 10, $hauteur - $marge_bottom + 5, $noir);
 	imagestring($image, 2, $largeur - 10, $hauteur - $marge_bottom + 10, 'x', $noir);
 	for ($i = 0; $res_esc_host->fetchInto($esc_host_data);)
@@ -266,6 +313,41 @@ else if (isset($_GET["host_id"]) && $_GET["host_id"] != NULL){
 		}
 	}
 	$res_esc_host->free();
+}
+else if (isset($_GET["hostgroup_id"]) && $_GET["hostgroup_id"] != NULL){
+	ImageLine ($image, $largeur - 10, $hauteur - $marge_bottom - 5, $largeur- 10, $hauteur - $marge_bottom + 5, $noir);
+	imagestring($image, 2, $largeur - 10, $hauteur - $marge_bottom + 10, 'x', $noir);
+	for ($i = 0, $tmp_x = 0; $res_esc_hostgroup->fetchInto($esc_hostgroup_data);)
+	{
+		# retrieve contactgroup associated with the escalation hostgroup
+		$cmd_contactgroup = "SELECT cg.cg_name ";
+		$cmd_contactgroup .= "FROM contactgroup cg, escalation_contactgroup_relation ecr ";
+		$cmd_contactgroup .= "WHERE ecr.escalation_esc_id = ".$esc_hostgroup_data["esc_id"]." ";
+		$cmd_contactgroup .= "AND ecr.contactgroup_cg_id = cg.cg_id";
+		$res_cg =& $pearDB->query($cmd_contactgroup);
+		$max_contact = $res_cg->numRows();
+		$pas_tmp = ($max_contact * 20 > $pas_graduation_y ? $pas_graduation_y / ($max_contact > 0 ? $max_contact : 1) : 20);
+		for ($cnt = 0; $res_cg->fetchInto($contactgroup); $cnt++){#show contactgroup link with the escalation of the hostgroup
+			($cnt == 0) ? $i += $pas_graduation_y / 2 : $i += $pas_tmp;
+			ImageLine ($image, $marge_left, $hauteur - $marge_bottom - $i, $marge_left + 5, $hauteur - $marge_bottom - $i, $noir);
+			imagestring($image, 3, 10, $hauteur - $marge_bottom - $i, $contactgroup["cg_name"], $noir);
+			if ($esc_hostgroup_data["last_notification"] == 0){
+				trace_bat($marge_left+(($esc_hostgroup_data["first_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom - $i, $largeur - 10, $hauteur - $marge_bottom - $i + 10, $esc_hostgroup_data["esc_name"]);
+			}
+			else{
+				trace_bat($marge_left+(($esc_hostgroup_data["first_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom - $i, $marge_left + (($esc_hostgroup_data["last_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom - $i + 10,$esc_hostgroup_data["esc_name"]);
+			}
+		}
+		$res_cg->free();
+		#graduation Axe X
+		ImageLine ($image, $marge_left+(($esc_hostgroup_data["first_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom - 5, $marge_left+(($esc_hostgroup_data["first_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom + 5, $noir);
+		imagestring($image, 2, $marge_left+(($esc_hostgroup_data["first_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom + 10, $esc_hostgroup_data["first_notification"], $noir);
+		if ($esc_hostgroup_data["last_notification"] != 0){
+			ImageLine ($image, $marge_left + (($esc_hostgroup_data["last_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom - 5, $marge_left + (($esc_hostgroup_data["last_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom + 5, $noir);
+			imagestring($image, 2, $marge_left + (($esc_hostgroup_data["last_notification"] - $min_notif + 1)*$pas_graduation_x), $hauteur - $marge_bottom + 10, $esc_hostgroup_data["last_notification"], $noir);
+		}
+	}
+	$res_esc_hostgroup->free();
 }
 //imagecolortransparent($image, $blanc);
 imagepng($image);
