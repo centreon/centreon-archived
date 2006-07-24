@@ -87,12 +87,10 @@ For information : contact@oreon-project.org
 
 
 	$tpl->assign("initJS", "<script type='text/javascript'>
-		display('".$lang ["m_mon_waiting"]."<br><br><img src=\'./img/wait.gif\'>','tools');
+		display('".$lang ["m_mon_waiting"]."<br><br><img src=\'./img/icones/48x48/stopwatch.gif\'>','tools');
 //		display('".$lang ["m_mon_waiting"]."','tools');
 		loadXMLDoc('".$tool_cmd_script."','tools');
 		</script>");
-
-
 
 	//if ($msg)
 	//	$tpl->assign('msg', $msg);
