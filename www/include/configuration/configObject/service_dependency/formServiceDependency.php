@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$dep = array_map("myDecode", $res->fetchRow());
 		# Set Notification Failure Criteria
@@ -36,21 +39,33 @@ For information : contact@oreon-project.org
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 		# Set Host Service Childs
 		$res =& $pearDB->query("SELECT DISTINCT dscr.service_service_id FROM dependency_serviceChild_relation dscr, host_service_relation hsr WHERE dscr.dependency_dep_id = '".$dep_id."' AND hsr.service_service_id = dscr.service_service_id AND hsr.host_host_id IS NOT NULL GROUP BY service_service_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($service); $i++)
 			$dep["dep_hSvChi"][$i] = $service["service_service_id"];
 		$res->free();
 		# Set HostGroup Service Childs
 		$res =& $pearDB->query("SELECT DISTINCT dscr.service_service_id FROM dependency_serviceChild_relation dscr, host_service_relation hsr WHERE dscr.dependency_dep_id = '".$dep_id."' AND hsr.service_service_id = dscr.service_service_id AND hsr.hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($service); $i++)
 			$dep["dep_hgSvChi"][$i] = $service["service_service_id"];
 		$res->free();
 		# Set Host Service Parents
 		$res =& $pearDB->query("SELECT DISTINCT dspr.service_service_id FROM dependency_serviceParent_relation dspr, host_service_relation hsr WHERE dspr.dependency_dep_id = '".$dep_id."' AND hsr.service_service_id = dspr.service_service_id AND hsr.host_host_id IS NOT NULL GROUP BY service_service_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($service); $i++)
 			$dep["dep_hSvPar"][$i] = $service["service_service_id"];
 		$res->free();
 		# Set HostGroup Service Parents
 		$res =& $pearDB->query("SELECT DISTINCT dspr.service_service_id FROM dependency_serviceParent_relation dspr, host_service_relation hsr WHERE dspr.dependency_dep_id = '".$dep_id."' AND hsr.service_service_id = dspr.service_service_id AND hsr.hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($service); $i++)
 			$dep["dep_hgSvPar"][$i] = $service["service_service_id"];
 		$res->free();
@@ -62,6 +77,9 @@ For information : contact@oreon-project.org
 	$hServices = array();
 	$hgServices = array();
 	$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id AND h.host_id IN (".$oreon->user->lcaHStr.") ORDER BY sv.service_description, h.host_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($elem))	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
@@ -73,6 +91,9 @@ For information : contact@oreon-project.org
 	}
 	$res->free();
 	$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hg.hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY sv.service_description, hg.hg_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($elem))	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])

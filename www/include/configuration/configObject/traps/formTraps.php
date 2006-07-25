@@ -31,6 +31,9 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $traps_id)	{
 		
 		$res =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$trap = array_map("myDecodeTrap", $res->fetchRow());
 	}

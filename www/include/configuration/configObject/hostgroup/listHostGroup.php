@@ -20,6 +20,9 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -29,6 +32,9 @@ For information : contact@oreon-project.org
 		$res = & $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$oreon->user->lcaHGStr.")");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.")");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -52,6 +58,9 @@ For information : contact@oreon-project.org
 	else
 		$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

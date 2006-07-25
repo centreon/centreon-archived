@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Meta Service » is developped by Merethis company for Lafarge Group, 
+This unit, called ï¿½ Oreon Meta Service ï¿½ is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -28,9 +28,15 @@ For information : contact@oreon-project.org
 	if (($o == "cs" || $o == "ws") && $msr_id)	{	
 		# Set base value
 		$res =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$metric1 = array_map("myDecode", $res->fetchRow());
 		$res =& $pearDBpp->query("SELECT * FROM perfdata_service_metric WHERE metric_id = '".$metric1["metric_id"]."'");		
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$metric2 = array_map("myDecode", $res->fetchRow());
 		$metric = array_merge($metric1, $metric2);
 		$host_name =& $metric["host_name"];
@@ -44,6 +50,9 @@ For information : contact@oreon-project.org
 	# Perfparse Host comes from DB -> Store in $ppHosts Array
 	$ppHosts = array(NULL=>NULL);
 	$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($ppHost))
 		if (array_search($ppHost["host_name"], $oreon->user->lcaHost))
 			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"]; 

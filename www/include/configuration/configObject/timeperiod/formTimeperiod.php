@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$tp = array();
 	if (($o == "c" || $o == "w") && $tp_id)	{	
 		$res =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$tp = array_map("myDecode", $res->fetchRow());
 	}

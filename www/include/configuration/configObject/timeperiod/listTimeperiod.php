@@ -20,6 +20,9 @@ For information : contact@oreon-project.org
 $pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -29,6 +32,9 @@ $pagination = "maxViewConfiguration";
 		$res = & $pearDB->query("SELECT COUNT(*) FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM timeperiod");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -53,6 +59,9 @@ $pagination = "maxViewConfiguration";
 	else
 		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

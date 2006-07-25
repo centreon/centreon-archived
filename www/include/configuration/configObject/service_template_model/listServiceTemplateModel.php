@@ -20,6 +20,9 @@ For information : contact@oreon-project.org
 $pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -29,6 +32,9 @@ $pagination = "maxViewConfiguration";
 		$res = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sv.service_register = '0'");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
@@ -53,6 +59,9 @@ $pagination = "maxViewConfiguration";
 	else
 		$rq = "SELECT @tplPar:=(SELECT service_description FROM service WHERE service_id = sv.service_template_model_stm_id) AS tplPar, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";

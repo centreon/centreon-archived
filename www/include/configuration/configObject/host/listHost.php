@@ -22,6 +22,9 @@ For information : contact@oreon-project.org
 
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -31,6 +34,9 @@ For information : contact@oreon-project.org
 		$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$oreon->user->lcaHStr.") AND host_register = '1'");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_id IN (".$oreon->user->lcaHStr.") AND host_register = '1'");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -57,6 +63,9 @@ For information : contact@oreon-project.org
 	else
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE host_id IN (".$oreon->user->lcaHStr.") AND h.host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

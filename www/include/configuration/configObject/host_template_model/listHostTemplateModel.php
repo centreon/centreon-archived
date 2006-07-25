@@ -29,6 +29,9 @@ For information : contact@oreon-project.org
 		$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_register = '0'");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -55,6 +58,9 @@ For information : contact@oreon-project.org
 	else
 		$rq = "SELECT @nbr:=(SELECT COUNT(service_service_id) FROM host_service_relation hsr WHERE hsr.host_host_id = host_id) AS nbr, host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

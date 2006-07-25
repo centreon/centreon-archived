@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$ppol = array();
 	if (($o == "c" || $o == "w") && $purge_policy_id)	{
 		$res =& $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$purge_policy_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$ppol = array_map("myDecode", $res->fetchRow());
 	}

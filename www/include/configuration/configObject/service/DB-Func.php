@@ -39,6 +39,9 @@ For information : contact@oreon-project.org
 				$hgPars = array();
 		}
 		foreach ($hPars as $host)	{
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$res =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
 			if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
@@ -51,6 +54,9 @@ For information : contact@oreon-project.org
 		}
 		foreach ($hgPars as $hostgroup)	{
 			$res =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
 			}
@@ -67,6 +73,9 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$service_id."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -76,6 +85,9 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$service_id."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}

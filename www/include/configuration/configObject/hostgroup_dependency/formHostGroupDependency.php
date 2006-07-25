@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$dep = array_map("myDecode", $res->fetchRow());
 		# Set Notification Failure Criteria
@@ -36,11 +39,17 @@ For information : contact@oreon-project.org
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 		# Set HostGroup Parents
 		$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($hgP); $i++)
 			$dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
 		$res->free();
 		# Set HostGroup Childs
 		$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($hgC); $i++)
 			$dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
 		$res->free();
@@ -51,6 +60,9 @@ For information : contact@oreon-project.org
 	# HostGroup comes from DB -> Store in $hgs Array
 	$hgs = array();
 	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$res->free();

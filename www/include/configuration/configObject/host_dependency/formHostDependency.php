@@ -26,6 +26,9 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		
 		$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$dep = array_map("myDecode", $res->fetchRow());
 		# Set Notification Failure Criteria
@@ -38,11 +41,17 @@ For information : contact@oreon-project.org
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 		# Set Host Parents
 		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($hostP); $i++)
 			$dep["dep_hostParents"][$i] = $hostP["host_host_id"];
 		$res->free();
 		# Set Host Childs
 		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($hostC); $i++)
 			$dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
 		$res->free();
@@ -53,6 +62,9 @@ For information : contact@oreon-project.org
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
 	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$oreon->user->lcaHStr.") ORDER BY host_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$res->free();

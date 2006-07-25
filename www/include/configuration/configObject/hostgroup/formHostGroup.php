@@ -24,20 +24,32 @@ For information : contact@oreon-project.org
 	$hg = array();
 	if (($o == "c" || $o == "w") && $hg_id)	{	
 		$res =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' AND hg_id IN (".$oreon->user->lcaHGStr.") LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$hg = array_map("myDecode", $res->fetchRow());
 		# Set HostGroup Childs
 		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($hosts); $i++)
 			$hg["hg_hosts"][$i] = $hosts["host_host_id"];
 		$res->free();
 		# Nagios 1 - Set Contact Group Childs
 		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($cgs); $i++)
 			$hg["hg_cgs"][$i] = $cgs["contactgroup_cg_id"];
 		$res->free();
 		# Set City name
 		$res =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$hg["city_id"]."' AND cny.country_id = '".$hg["country_id"]."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$city = $res->fetchRow();
 		$hg["city_name"] = $city["city_name"];
 		$res->free();
@@ -48,18 +60,27 @@ For information : contact@oreon-project.org
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
 	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$oreon->user->lcaHStr.") AND host_register = '1' ORDER BY host_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$res->free();
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
 	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$res->free();
 	# Countries comes from DB -> Store in $countries Array
 	$countries = array(NULL=>NULL);
 	$res =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
 	$res->free();

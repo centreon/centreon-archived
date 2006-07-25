@@ -33,6 +33,9 @@ $pagination = "maxViewConfiguration";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -57,6 +60,9 @@ $pagination = "maxViewConfiguration";
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
 	$res =& $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";

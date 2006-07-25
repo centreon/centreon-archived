@@ -21,6 +21,9 @@ For information : contact@oreon-project.org
 $pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -35,6 +38,9 @@ $pagination = "maxViewConfiguration";
 	if ($search)	{
 		if ($search_type_service) {
 			$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$oreon->user->lcaHStr.")");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 			while ($res->fetchInto($service))
 				if (!$service["service_description"])	{
 					$service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);
@@ -51,6 +57,9 @@ $pagination = "maxViewConfiguration";
 		if ($search_type_host)	{
 			$locale_query = "SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$oreon->user->lcaHStr.")";
 			$res = & $pearDB->query($locale_query);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			while ($res->fetchInto($service)) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
 				$rows++;				
@@ -59,6 +68,9 @@ $pagination = "maxViewConfiguration";
     }
 	else	{
 		$res =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IN (".$oreon->user->lcaHStr.") AND hsr.hostgroup_hg_id IS NULL");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$rows = $res->numRows();
 	}
 	
@@ -84,6 +96,9 @@ $pagination = "maxViewConfiguration";
 	else
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, host.host_name, host.host_template_model_htm_id FROM service sv, host, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND host.host_id = hsr.host_host_id AND host.host_id IN (".$oreon->user->lcaHStr.") AND host.host_register = '1' ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";

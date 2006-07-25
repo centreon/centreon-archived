@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Meta Service » is developped by Merethis company for Lafarge Group, 
+This unit, called ï¿½ Oreon Meta Service ï¿½ is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -27,6 +27,9 @@ For information : contact@oreon-project.org
 	require_once("./DBPerfparseConnect.php");
 	
 	$res = & $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$meta =& $res->fetchRow();
 	$tpl->assign("meta", 
 			array("meta"=>$lang["ms"],
@@ -45,6 +48,9 @@ For information : contact@oreon-project.org
 
 	$rq = "SELECT * FROM `meta_service_relation` WHERE host_id IN (".$oreon->user->lcaHStr.") AND meta_id = '".$meta_id."' ORDER BY host_id";
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$form1 = new HTML_QuickForm('Form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
