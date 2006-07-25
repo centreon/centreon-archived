@@ -1,34 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 
-<!-- informations bank for ajax
-<div class="cachediv">
-<FORM id="fsave">
-        <INPUT type="text" name="type" value="host" size=12>
-        <INPUT type="text" name="len" value="0" size=12>
-        time:<INPUT type="text" name="time" value="{$time}" size=12><br>
-        <INPUT type="text" name="color_OK" value="{$color_OK}" size=12>
-        <INPUT type="text" name="color_CRITICAL" value="{$color_CRITICAL}" >
-        <INPUT type="text" name="color_WARNING" value="{$color_WARNING}" >
-        <INPUT type="text" name="color_PENDING" value="{$color_PENDING}" >
-        <INPUT type="text" name="color_UNKNOWN" value="{$color_UNKNOWN}" >
-        <br>
-        <INPUT type="text" name="color_UP" value="{$color_UP}" size=12>
-        <INPUT type="text" name="color_DOWN" value="{$color_DOWN}" >
-        <INPUT type="text" name="color_UNREACHABLE" value="{$color_UNREACHABLE}" >
-
-        <br>
-        lca:<INPUT type="text" name="lca" value="{$lca}"><br>
-        version:<INPUT type="text" name="version" value="{$version}"><br>
-        sid:<INPUT type="text" name="sid" value="{$sid}"><br>
-        lastreload session:<INPUT type="text" name="slastreload" value="{$slastreload}"><br>
-        maxtime:<INPUT type="text" name="smaxtime" value="{$smaxtime}"><br>
-        fileStatus:<INPUT type="text" name="fileStatus" value="{$fileStatus}"><br>
-        fileOreonConf:<INPUT type="text" name="fileOreonConf" value="{$fileOreonConf}"><br>
-</FORM>
-</div>
--->
-
 
 <form {$form_attributes}>
 <input name="p" value="{$p}" type="hidden">
@@ -51,7 +23,7 @@
 		{assign var="c" value="0"}
 	{ foreach item=h from=$host_status }
 		<tr class="{$h.class}" id="trStatus{$c}">
-			<td class="ListColLeft"><div class="cachediv" id="host{$c}">{$h.name}</div>
+			<td class="ListColLeft">
 			<a href='oreon.php?p=201&o=hd&host_name={$h.name}'>{ $h.name }</a></td>
 			<td class="ListColCenter" style="background-color:{ $h.status_color }" id="tdStatus{$c}"><div id="status{$c}">{ $h.status }</div></td>
 			<td class="ListColCenter">{ $h.address }</td>
