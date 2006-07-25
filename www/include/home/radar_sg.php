@@ -54,6 +54,9 @@ For information : contact@oreon-project.org
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 	
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	if (!$session->numRows()){
 		exit;
 	} else {	
@@ -105,6 +108,9 @@ For information : contact@oreon-project.org
 			while ($sg =& $res->fetchRow()){
 				$tab_sg[$sg["sg_name"]] = array();
 				$resS =& $pearDB->query("SELECT service_service_id, service_description FROM servicegroup_relation, service WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND service.service_id = servicegroup_relation.service_service_id");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				for ($total = 0, $ok = 0;$rS =& $resS->fetchRow();$total++){
 					if (!$rS["service_description"])
 						$rS["service_description"] = getMyHostName($rS["service_service_id"]);
