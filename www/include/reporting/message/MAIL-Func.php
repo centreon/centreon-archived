@@ -57,6 +57,9 @@ function send_simple_message($subject, $body, $contact_lists)
 	foreach($contact_lists as $clALLFORMAT)
 	{
 		$resALLFORMAT =& $pearDB->query("SELECT contact_id, contact_email FROM contact WHERE contact_id IN (SELECT rtde_id FROM reporting_email_list_relation where rtdl_id =".$clALLFORMAT.")");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$contactALLFORMAT = array();
 		while($resALLFORMAT->fetchInto($contactALLFORMAT))
 		{
@@ -71,6 +74,9 @@ function send_simple_message($subject, $body, $contact_lists)
 	foreach($contact_lists as $clTXT)
 	{
 		$resTXT =& $pearDB->query("SELECT contact_id, contact_email FROM contact WHERE contact_type_msg = 'txt' AND contact_id IN (SELECT rtde_id FROM reporting_email_list_relation where rtdl_id =".$clTXT.")");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$contactTXT = array();
 		while($resTXT->fetchInto($contactTXT))
 		{
@@ -113,6 +119,9 @@ function send_simple_message($subject, $body, $contact_lists)
 	foreach($contact_lists as $clHTML)
 	{
 		$resHTML =& $pearDB->query("SELECT contact_id, contact_email FROM contact WHERE contact_type_msg = 'html' AND contact_id IN (SELECT rtde_id FROM reporting_email_list_relation where rtdl_id =".$clHTML.")");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$contactHTML = array();
 		while($resHTML->fetchInto($contactHTML))
 		{

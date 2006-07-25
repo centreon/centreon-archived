@@ -26,6 +26,9 @@ For information : contact@oreon-project.org
 	# Diffusion List comes from DB -> Store in $difLists Array
 	$diffLists = array();
 	$res =& $pearDB->query("SELECT rtdl_id, name FROM reporting_diff_list ORDER BY name");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while($res->fetchInto($list))
 		$diffLists[$list["rtdl_id"]] = $list["name"];
 	$res->free();
