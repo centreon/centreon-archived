@@ -23,6 +23,9 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."nagiosCFG.DEBUG", $oreon->user->get_name(), false);
 	$res =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$nagios = $res->fetchRow();
 	$str = NULL;
 	$ret["comment"]["comment"] ? ($str .= "# '".$nagios["nagios_name"]."'\n") : NULL;
@@ -110,41 +113,65 @@ For information : contact@oreon-project.org
 			else if ($key == "inter_check_delay_method" && ($value == 2 || $oreon->user->get_version() == 2));
 			else if ($key == "global_host_event_handler" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "global_service_event_handler" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "ocsp_command" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "ochp_command" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "host_perfdata_command`" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "service_perfdata_command" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "host_perfdata_file_processing_command" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
 			else if ($key == "service_perfdata_file_processing_command" && $value)	{
 				$res2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$row = $res2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}

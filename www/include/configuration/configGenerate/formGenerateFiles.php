@@ -133,6 +133,9 @@ For information : contact@oreon-project.org
 		if ($ret["xml"]["xml"])	{
 			require_once($path."genXMLList.php");
 			$pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 		if ($ret["debug"]["debug"])	{
 			require_once($path."genNagiosCFG-DEBUG.php");
@@ -153,6 +156,9 @@ For information : contact@oreon-project.org
 		}
 		if ($ret["restartTrapd"]["restartTrapd"])	{
 			$res =& $pearDB->query('SELECT snmp_trapd_path_daemon FROM `general_opt` LIMIT 1');
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			if ($res->numRows())	{
 				$trap_daemon = $res->fetchRow();
 				$stdout = shell_exec("sudo ".$trap_daemon["snmp_trapd_path_daemon"]." restart");

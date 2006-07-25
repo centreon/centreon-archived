@@ -23,8 +23,14 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."cgi.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT cfg_dir FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$nagios = $res->fetchRow();	
 	$res =& $pearDB->query("SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	if ($res->numRows())
 		$cgi = $res->fetchRow();
 	else

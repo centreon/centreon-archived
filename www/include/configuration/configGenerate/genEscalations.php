@@ -23,12 +23,18 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."escalations.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_host_relation ehr, escalation esc WHERE ehr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$escalation = array();
 	$i = 1;
 	$str = NULL;
 	while($res->fetchInto($escalation))	{
 		$BP = false;
 		$res2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM escalation_host_relation ehr, host WHERE ehr.escalation_esc_id = '".$escalation["esc_id"]."' AND host.host_id = ehr.host_host_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$host = array();
 		$strTemp = NULL;
 		while ($res2->fetchInto($host))	{
@@ -56,6 +62,9 @@ For information : contact@oreon-project.org
 			$cg = array();
 			$strTemp = NULL;
 			$res2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			while($res2->fetchInto($cg))	{
 				$BP = false;				
 				if ($ret["level"]["level"] == 1)
@@ -87,10 +96,16 @@ For information : contact@oreon-project.org
 	$res->free();
 	
 	$res =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_hostgroup_relation ehgr, escalation esc WHERE ehgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$escalation = array();
 	while($res->fetchInto($escalation))	{
 		$BP = false;
 		$res2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$hg = array();
 		$strTemp = NULL;
 		while ($res2->fetchInto($hg))	{
@@ -118,6 +133,9 @@ For information : contact@oreon-project.org
 			$cg = array();
 			$strTemp = NULL;
 			$res2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			while($res2->fetchInto($cg))	{
 				$BP = false;				
 				if ($ret["level"]["level"] == 1)
@@ -137,6 +155,9 @@ For information : contact@oreon-project.org
 			// Nagios 2
 			if ($oreon->user->get_version() == 2)	{
 				$res2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$tp =& $res2->fetchRow();				
 				if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
 				if ($escalation["escalation_options1"]) $str .= print_line("escalation_options", $escalation["escalation_options1"]);
@@ -149,6 +170,9 @@ For information : contact@oreon-project.org
 	$res->free();	
 	
 	$res =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY service.service_description");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($service))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
@@ -159,6 +183,9 @@ For information : contact@oreon-project.org
 			$BP = true;
 		if ($BP)	{
 			$res2 =& $pearDB->query("SELECT esc.* FROM escalation esc, escalation_service_relation esr WHERE esr.service_service_id = '".$service["service_service_id"]."' AND esc.esc_id = esr.escalation_esc_id ORDER BY esc.esc_name");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$escalation = array();
 			while($res2->fetchInto($escalation))	{
 				//HostGroup Relation
@@ -166,6 +193,9 @@ For information : contact@oreon-project.org
 				$strTemp1 = NULL;
 				$strTemp2 = NULL;
 				$res3 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg WHERE hsr.service_service_id = '".$service["service_service_id"]."' AND hsr.hostgroup_hg_id = hg.hg_id");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				while($res3->fetchInto($hostGroup))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
@@ -183,6 +213,9 @@ For information : contact@oreon-project.org
 				$host = array();
 				$strTMPTemp = NULL;
 				$res3 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id = '".$service["service_service_id"]."' AND hsr.host_host_id = host.host_id");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				while($res3->fetchInto($host))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
@@ -211,6 +244,9 @@ For information : contact@oreon-project.org
 					$cg = array();
 					$strTemp = NULL;
 					$res3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					while($res3->fetchInto($cg))	{
 						$BP = false;				
 						if ($ret["level"]["level"] == 1)

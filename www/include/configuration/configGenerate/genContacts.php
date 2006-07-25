@@ -23,6 +23,9 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."contacts.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT * FROM contact ORDER BY `contact_name`");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$contact = array();
 	$i = 1;
 	$str = NULL;
@@ -81,6 +84,9 @@ For information : contact@oreon-project.org
 			$command = array();
 			$strTemp = NULL;
 			$res2 =& $pearDB->query("SELECT cmd.command_name FROM contact_hostcommands_relation chr, command cmd WHERE chr.contact_contact_id = '".$contact["contact_id"]."' AND chr.command_command_id = cmd.command_id ORDER BY `command_name`");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			while($res2->fetchInto($command))
 				$strTemp != NULL ? $strTemp .= ", ".$command["command_name"] : $strTemp = $command["command_name"];
 			$res2->free();
@@ -90,6 +96,9 @@ For information : contact@oreon-project.org
 			$command = array();
 			$strTemp = NULL;
 			$res2 =& $pearDB->query("SELECT cmd.command_name FROM contact_servicecommands_relation csr, command cmd WHERE csr.contact_contact_id = '".$contact["contact_id"]."' AND csr.command_command_id = cmd.command_id ORDER BY `command_name`");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			while($res2->fetchInto($command))
 				$strTemp != NULL ? $strTemp .= ", ".$command["command_name"] : $strTemp = $command["command_name"];
 			$res2->free();

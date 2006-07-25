@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$handle1 = create_file($nagiosCFGPath."misccommands.cfg", $oreon->user->get_name());
 	$handle2 = create_file($nagiosCFGPath."checkcommands.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$command = array();
 	$i1 = 1;
 	$i2 = 1;

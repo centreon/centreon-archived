@@ -23,6 +23,9 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."contactgroups.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT * FROM contactgroup ORDER BY `cg_name`");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$contactGroup = array();
 	$i = 1;
 	$str = NULL;

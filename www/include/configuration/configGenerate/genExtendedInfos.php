@@ -22,6 +22,9 @@ For information : contact@oreon-project.org
 	// Host Extended Information
 	$handle = create_file($nagiosCFGPath."hostextinfo.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT host.host_name, ehi.* FROM host, extended_host_information ehi WHERE host.host_id = ehi.host_host_id AND host.host_register = '1' ORDER BY `host_name`");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$ehi = array();
 	$i = 1;
 	$str = NULL;
@@ -66,6 +69,9 @@ For information : contact@oreon-project.org
 	$str = NULL;	
 
 	$res =& $pearDB->query("SELECT * FROM extended_service_information");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($esi))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
