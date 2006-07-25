@@ -27,6 +27,9 @@ For information : contact@oreon-project.org
 		$cct["contact_svNotifCmds"] = array();
 		$cct["contact_cgNotif"] = array();
 		$res =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$cct = array_map("myDecode", $res->fetchRow());
 		$cct["contact_passwd"] = NULL;
@@ -41,20 +44,32 @@ For information : contact@oreon-project.org
 		$res->free();
 		# Set Contact Group Parents
 		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$contact_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($notifCg); $i++)
 			$cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
 		$res->free();
 		# Set Host Notification Commands
 		$res =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$contact_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($notifCmd); $i++)
 			$cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$res->free();
 		# Set Service Notification Commands
 		$res =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$contact_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($notifCmd); $i++)
 			$cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$res->free();
 		$res =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res->fetchInto($ldap_auth);
 		$res->free();
 	}
@@ -75,18 +90,27 @@ For information : contact@oreon-project.org
 	# Timeperiods comes from DB -> Store in $notifsTps Array
 	$notifTps = array();
 	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($notifTp))
 		$notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
 	$res->free();
 	# Notification commands comes from DB -> Store in $notifsCmds Array
 	$notifCmds = array();
 	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($notifCmd))
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$res->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$res->free();

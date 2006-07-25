@@ -27,6 +27,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('contact_id');
 		$res =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$contact =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $contact["contact_id"] == $id)
@@ -45,6 +48,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('contact_id');
 		$res =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$contact =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $contact["contact_id"] == $id)
@@ -60,24 +66,36 @@ For information : contact@oreon-project.org
 		if (!$contact_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE contact SET contact_activate = '1' WHERE contact_id = '".$contact_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 
 	function disableContactInDB ($contact_id = null)	{
 		if (!$contact_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$contact_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 
 	function deleteContactInDB ($contacts = array())	{
 		global $pearDB;
 		foreach($contacts as $key=>$value)
 			$pearDB->query("DELETE FROM contact WHERE contact_id = '".$key."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 
 	function multipleContactInDB ($contacts = array(), $nbrDup = array())	{
 		foreach($contacts as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["contact_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -90,18 +108,48 @@ For information : contact@oreon-project.org
 				if (testContactExistence($contact_name) && testAliasExistence($contact_alias))	{
 					$val ? $rq = "INSERT INTO contact VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$res =& $pearDB->query("SELECT MAX(contact_id) FROM contact");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(contact_id)"]))	{
 						$res =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($hostCmd))
+						{
 							$pearDB->query("INSERT INTO contact_hostcommands_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$hostCmd["command_command_id"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}						
 						$res =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($serviceCmd))
+						{
 							$pearDB->query("INSERT INTO contact_servicecommands_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$serviceCmd["command_command_id"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}
 						$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($Cg))
+						{
 							$pearDB->query("INSERT INTO contactgroup_contact_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$Cg["contactgroup_cg_id"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}
 					}
 				}
 			}
@@ -156,6 +204,9 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$pearDB->query($rq);
 		$res =& $pearDB->query("SELECT MAX(contact_id) FROM contact");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$contact_id = $res->fetchRow();
 		return ($contact_id["MAX(contact_id)"]);
 	}
@@ -214,6 +265,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM contact_hostcommands_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if (isset($ret["contact_hostNotifCmds"]))
 			$ret = $ret["contact_hostNotifCmds"];
 		else
@@ -224,6 +278,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$contact_id."', '".$ret[$i]."')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 
@@ -234,6 +291,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM contact_servicecommands_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if (isset($ret["contact_svNotifCmds"]))
 			$ret = $ret["contact_svNotifCmds"];
 		else
@@ -244,6 +304,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$contact_id."', '".$ret[$i]."')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 
@@ -254,6 +317,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM contactgroup_contact_relation ";
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if (isset($ret["contact_cgNotif"]))
 			$ret = $ret["contact_cgNotif"];
 		else
