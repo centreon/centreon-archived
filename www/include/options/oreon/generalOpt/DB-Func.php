@@ -136,6 +136,9 @@ For information : contact@oreon-project.org
 		$pearDB->query($rq);
 		$oreon->optGen = array();
 		$res =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$oreon->optGen = $res->fetchRow();
 		$oreon->user->version = $ret["nagios_version"];
 	}
