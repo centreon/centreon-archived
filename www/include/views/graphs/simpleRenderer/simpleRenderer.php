@@ -306,7 +306,7 @@ For information : contact@oreon-project.org
 					$nb_ds++;
 				}
 				$cpt_total_graphed_values_for_rrd = $cpt_total_values + 100;
-				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd;
+				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd . " RRA:MIN:0.5:8:".$cpt_total_graphed_values_for_rrd." RRA:MAX:0.5:8:".$cpt_total_graphed_values_for_rrd;
 				system($cmd, $return);
 				###################
 				
