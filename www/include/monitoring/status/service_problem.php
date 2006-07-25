@@ -21,6 +21,9 @@ For information : contact@oreon.org
 
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
@@ -148,6 +151,9 @@ For information : contact@oreon.org
 	$res =& $pearDB->query("SELECT * FROM session WHERE" .
 			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
 			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	$session =& $res->fetchRow();
     $tpl->assign('sid', session_id());
     $tpl->assign('slastreload', $session["last_reload"]);

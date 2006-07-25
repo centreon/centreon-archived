@@ -24,11 +24,17 @@ For information : contact@oreon.org
 	$svc_data = array();
 
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while ($r =& $ret->fetchRow()){
 		$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
 		$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
 									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$cpt = 0;
 		while ($r_h =& $ret_h->fetchRow()){
 			$hg[$r["hg_name"]]["host"][$cpt] = $r_h["host_name"];

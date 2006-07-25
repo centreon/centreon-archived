@@ -19,6 +19,9 @@ For information : contact@oreon-project.org
 		exit();
 			
 	$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while ($res->fetchInto($meta)){
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["real_name"] = $meta["meta_name"]; 
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["id"] = $meta["meta_id"]; 

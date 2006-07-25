@@ -21,6 +21,9 @@ For information : contact@oreon.org
 
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];

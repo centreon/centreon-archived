@@ -292,6 +292,9 @@ function read($time,$arr,$flag,$type,$version,$lca,$file)
 
 			$meta = array();
 			$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			while ($res->fetchInto($meta)){
 				$metaService_status_bis["meta_" . $meta["meta_id"]]["real_name"] = $meta["meta_name"]; 
 				$metaService_status_bis["meta_" . $meta["meta_id"]]["id"] = $meta["meta_id"]; 
@@ -376,6 +379,9 @@ $flag = 0;
 if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtime"]))
 {
 	$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_POST["sid"]."'");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	if($session =& $res->fetchRow())
 	{
 		$flag = $_POST["slastreload"];		
@@ -386,6 +392,9 @@ if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtim
 			$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".
 			$_POST["sid"]."' LIMIT 1";
 			$res =& $pearDB->query($sql);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 }

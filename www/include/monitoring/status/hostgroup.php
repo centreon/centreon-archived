@@ -24,6 +24,9 @@ For information : contact@oreon.org
 	$tab = array("1"=>'list_one', "0" => "list_two"); 
 
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while ($r =& $ret->fetchRow()){
 		$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"]);
 		$status_hg_h[$r["hg_name"]] = array();
@@ -42,6 +45,9 @@ For information : contact@oreon.org
 		$ret_h =& $pearDB->query(	"SELECT host_host_id,host_name FROM hostgroup_relation,host,hostgroup ".
 									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		while ($r_h =& $ret_h->fetchRow()){
 			!$r_h["host_name"] ? $hostname = getMyHostName($r_h["host_id"]) : $hostname = $r_h["host_name"];
 			//print $r["hg_name"]. " : " . $hostname ."-".$host_status[$hostname]["status"] . "<br>";
