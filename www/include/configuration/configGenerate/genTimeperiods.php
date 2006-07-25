@@ -23,6 +23,9 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."timeperiods.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$timePeriod = array();
 	$i = 1;
 	$str = NULL;

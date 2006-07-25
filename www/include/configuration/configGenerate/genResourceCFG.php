@@ -23,6 +23,9 @@ For information : contact@oreon-project.org
 	
 	$handle = create_file($nagiosCFGPath."resource.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1'");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$str = NULL;
 	while ($res->fetchInto($resource))	{
 		$ret["comment"]["comment"] ? ($str .= "# '".$resource["resource_name"]."'\n") : NULL;

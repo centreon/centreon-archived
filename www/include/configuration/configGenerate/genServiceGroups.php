@@ -23,6 +23,9 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."servicegroups.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$serviceGroup = array();
 	$i = 1;
 	$str = NULL;
@@ -49,6 +52,9 @@ For information : contact@oreon-project.org
 			$service = array();
 			$strTemp = NULL;
 			$res2 =& $pearDB->query("SELECT service.service_id, service.service_description, hsr.hostgroup_hg_id, hsr.host_host_id FROM servicegroup_relation sgr, service, host_service_relation hsr WHERE sgr.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' AND sgr.service_service_id = service.service_id AND hsr.service_service_id = sgr.service_service_id");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			while($res2->fetchInto($service))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
@@ -79,6 +85,9 @@ For information : contact@oreon-project.org
 							$BP = true;
 						if ($BP)	{
 							$res3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hostgroup_hg_id"]."'");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
 							while($res3->fetchInto($host))	{
 								$BP = false;
 								if ($ret["level"]["level"] == 1)

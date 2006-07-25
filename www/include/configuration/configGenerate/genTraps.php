@@ -23,10 +23,16 @@ For information : contact@oreon-project.org
 
 	$i = 0;
 	$res =& $pearDB->query('SELECT snmp_trapd_path_conf FROM `general_opt` LIMIT 1');
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	if ($res->numRows())	{
 		$trap_conf = $res->fetchRow();
 		$handle = create_file($trap_conf["snmp_trapd_path_conf"], $oreon->user->get_name());	
 		$res1 =& $pearDB->query('SELECT * FROM `traps` ORDER BY `traps_name`');
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$str = "\n";
 		while($res1->fetchInto($trap))	{
 			$trap["traps_comments"] ? $str .= "# ".$trap["traps_comments"]."\n" : NULL;
