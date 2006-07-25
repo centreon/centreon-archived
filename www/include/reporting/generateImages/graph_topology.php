@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Service Level » is developped by Merethis company for Lafarge Group, 
+This unit, called ï¿½ Oreon Service Level ï¿½ is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -45,6 +45,9 @@ For information : contact@oreon-project.org
 	$db->setFetchMode(DB_FETCHMODE_ASSOC);
 	
 	$session =& $db->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	if (PEAR::isError($db)) {
+				print "Mysql Error : ".$db->getMessage();
+			}
 	if ($session->numRows()){
 		
 		Session::start();
@@ -52,6 +55,9 @@ For information : contact@oreon-project.org
 		
 		$str = "SELECT host_id,host_name FROM `host` WHERE host_activate = '1'";	
 		$res2 =& $db->query($str);
+		if (PEAR::isError($db)) {
+				print "Mysql Error : ".$db->getMessage();
+			}
 		$host_data_id = array();
 		$host_data_name = array();
 		while ($res2->fetchInto($host)){
@@ -65,6 +71,9 @@ For information : contact@oreon-project.org
 			$color = $oreon->optGen["color_".strtolower($h["status"])];
 			$graph->addNode($h["host_name"],array('label' => $h["host_name"], "fillcolor"=>$color, "style"=>"filled", "fontsize"=>"6", "fontname"=>"Verdana")); // "margin"=>"0.04" 
 			$res =& $db->query("SELECT * FROM host_hostparent_relation WHERE host_host_id = '".$host_data_id[$h["host_name"]]."'");
+			if (PEAR::isError($db)) {
+				print "Mysql Error : ".$db->getMessage();
+			}
 			while ($res->fetchInto($host_parents))
 				$graph->addEdge(array($host_data_name[$host_parents["host_parent_hp_id"]] => $h["host_name"]), array('color' => '#000000'));
 		}
