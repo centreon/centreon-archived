@@ -91,7 +91,7 @@ For information : contact@oreon-project.org
 			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph Meta Service ".$meta_data["meta_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		} else
 			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph ".$_GET["service_description"]." on Host ".$_GET["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
-		
+/*		
 		# Init Graph Template Value
 		$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
 		$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
@@ -102,13 +102,18 @@ For information : contact@oreon-project.org
 		$command_line .= "--color ARROW".$GraphTemplate["col_arrow"]." ";
 		$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
 		$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
+*/		
+		
+		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
+			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
 		
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
-			$command_line .= "--upper-limit=".$GraphTemplate["upper_limit"]." ";
-		else
-			$command_line .= "--alt-autoscale-max "; 
-		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
-			$command_line .= "--lower-limit=".$GraphTemplate["lower_limit"]." ";
+			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
+		//else
+		//	$command_line .= "--alt-autoscale-max "; 
+		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
+			$command_line .= "--rigid ";
+		
 		
 		# Init DS template For each curv
 		$ppMetrics = array();
