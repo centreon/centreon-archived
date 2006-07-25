@@ -31,9 +31,15 @@ For information : contact@oreon.org
 		include_once("alt_error.php");
 	} else {
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res->fetchInto($host);
 
 		$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$key."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res->fetchInto($inventory);
 
 		if ($inventory["type_ressources"] == 0){
