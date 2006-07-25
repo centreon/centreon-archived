@@ -28,6 +28,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');
 		$res =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$dep =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $dep["dep_id"] == $id)	
@@ -58,13 +61,21 @@ For information : contact@oreon-project.org
 	function deleteHostDependencyInDB ($dependencies = array())	{
 		global $pearDB;
 		foreach($dependencies as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 	}
 	
 	function multipleHostDependencyInDB ($dependencies = array(), $nbrDup = array())	{
 		foreach($dependencies as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["dep_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -76,16 +87,38 @@ For information : contact@oreon-project.org
 				if (testHostDependencyExistence($dep_name))	{
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$res =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(dep_id)"]))	{
 						$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($host))
+						{
 							$pearDB->query("INSERT INTO dependency_hostParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$host["host_host_id"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}
 						$res->free();
 						$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($host))
+						{
 							$pearDB->query("INSERT INTO dependency_hostChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$host["host_host_id"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}
 						$res->free();
 					}
 				}
@@ -123,7 +156,13 @@ For information : contact@oreon-project.org
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= ")";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$dep_id = $res->fetchRow();
 		return ($dep_id["MAX(dep_id)"]);
 	}
@@ -149,6 +188,9 @@ For information : contact@oreon-project.org
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= "WHERE dep_id = '".$dep_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 		
 	function updateHostDependencyHostParents($dep_id = null, $ret = array())	{
@@ -168,6 +210,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 		
@@ -178,6 +223,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM dependency_hostChild_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if (isset($ret["dep_hostChilds"]))
 			$ret = $ret["dep_hostChilds"];
 		else
@@ -188,6 +236,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 ?>
