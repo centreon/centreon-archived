@@ -37,13 +37,13 @@ $lang["m_view"] = "Vue";
 $lang["m_start"] = "Date de debut";
 $lang["m_end"] = "Date de fin";
 $lang["m_predefinedPeriod"] = "Predefinie:";
-$lang["m_customizedPeriod"] = "Personalisée";
+$lang["m_customizedPeriod"] = "Personalis&eacute;e";
 $lang["m_selectPeriodTitle"] = "Selection de la periode";
-$lang["m_hostResumeTitle"] = "Etat de l'host";
+$lang["m_hostResumeTitle"] = "Etat de l&acute;host";
 $lang["m_serviceResumeTitle"] = "Etat du service'";
 $lang["m_hostLogTitle"] = "Log des hosts du jours";
 $lang["m_serviceLogTitle"] = "Log des services du jours";
-$lang["m_hostSvcAssocied"] = "Etat des services associés";
+$lang["m_hostSvcAssocied"] = "Etat des services associ&eacute;s";
 
 $lang["m_serviceTilte"] = "Service";
 $lang["m_OKTitle"] = "OK";
