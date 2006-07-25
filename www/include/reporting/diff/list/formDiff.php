@@ -26,15 +26,24 @@ For information : contact@oreon-project.org
 			return html_entity_decode($arg, ENT_QUOTES);
 		}
 		$res =& $pearDB->query("SELECT * FROM reporting_diff_list WHERE rtdl_id = '".$rtdl_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		# Set base value
 		$list = array_map("myDecode", $res->fetchRow());
 		# Set Mails List
 		$res =& $pearDB->query("SELECT DISTINCT rtde_id FROM reporting_email_list_relation WHERE rtdl_id = '".$rtdl_id."' AND oreon_contact = '0'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		for($i = 0; $res->fetchInto($mail); $i++)
 			$list["list_mails"][$i] = $mail["rtde_id"];
 		$res->free();
 		# Set Oreon Mails List
 		$res =& $pearDB->query("SELECT DISTINCT rtde_id FROM reporting_email_list_relation WHERE rtdl_id = '".$rtdl_id."' AND oreon_contact = '1'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		for($i = 0; $res->fetchInto($mail); $i++)
 			$list["list_oreonMails"][$i] = $mail["rtde_id"];
 		$res->free();
@@ -45,18 +54,27 @@ For information : contact@oreon-project.org
 	# Mail List comes from DB -> Store in $mails Array
 	$mails = array();
 	$res =& $pearDB->query("SELECT rtde_id, email FROM reporting_diff_email ORDER BY email");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while($res->fetchInto($email))
 		$mails[$email["rtde_id"]] = $email["email"];
 	$res->free();
 	# Oreon Mails List comes from DB -> Store in $oreonMails Array
 	$oreonMails = array();
 	$res =& $pearDB->query("SELECT contact_id, contact_email FROM contact ORDER BY contact_email");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while($res->fetchInto($email))
 		$oreonMails[$email["contact_id"]] = $email["contact_email"];
 	$res->free();
 	# Timeperiods comes from DB -> Store in $notifsTps Array
 	$notifTps = array();
 	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while($res->fetchInto($notifTp))
 		$notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
 	$res->free();

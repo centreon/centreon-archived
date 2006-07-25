@@ -25,6 +25,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('rtdl_id');
 		$res =& $pearDB->query("SELECT name, rtdl_id FROM reporting_diff_list WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$list =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $list["rtdl_id"] == $id)	
@@ -40,24 +43,36 @@ For information : contact@oreon-project.org
 		if (!$rtdl_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE reporting_diff_list SET activate = '1' WHERE rtdl_id = '".$rtdl_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function disableListInDB ($rtdl_id = null)	{
 		if (!$rtdl_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE reporting_diff_list SET activate = '0' WHERE rtdl_id = '".$rtdl_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function deleteListInDB ($lists = array())	{
 		global $pearDB;
 		foreach($lists as $key=>$value)
 			$pearDB->query("DELETE FROM reporting_diff_list WHERE rtdl_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	}
 	
 	function multipleListInDB ($lists = array(), $nbrDup = array())	{
 		foreach($lists as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM reporting_diff_list WHERE rtdl_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["rtdl_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -69,12 +84,25 @@ For information : contact@oreon-project.org
 				if (testExistence($name))	{
 					$val ? $rq = "INSERT INTO reporting_diff_list VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$res =& $pearDB->query("SELECT MAX(rtdl_id) FROM reporting_diff_list");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(rtdl_id)"]))	{
 						$res =& $pearDB->query("SELECT DISTINCT rtde_id, oreon_contact FROM reporting_email_list_relation WHERE rtdl_id = '".$key."'");
-						while($res->fetchInto($mail))
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
+						while($res->fetchInto($mail)){
 							$pearDB->query("INSERT INTO reporting_email_list_relation VALUES ('', '".$maxId["MAX(rtdl_id)"]."', '".$mail["rtde_id"]."', '".$mail["oreon_contact"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}
 						$res->free();
 					}
 				}
@@ -111,7 +139,13 @@ For information : contact@oreon-project.org
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= ")";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(rtdl_id) FROM reporting_diff_list");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$rtdl_id = $res->fetchRow();
 		return ($rtdl_id["MAX(rtdl_id)"]);
 	}
@@ -135,6 +169,9 @@ For information : contact@oreon-project.org
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE rtdl_id = '".$rtdl_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function updateListDiffMail($rtdl_id = null)	{
@@ -144,6 +181,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM reporting_email_list_relation ";
 		$rq .= "WHERE rtdl_id = '".$rtdl_id."' AND oreon_contact = '0'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$ret = array();
 		$ret = $form->getSubmitValue("list_mails");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -152,6 +192,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$rtdl_id."', '".$ret[$i]."', '0')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 	
@@ -162,6 +205,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM reporting_email_list_relation ";
 		$rq .= "WHERE rtdl_id = '".$rtdl_id."' AND oreon_contact = '1'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$ret = array();
 		$ret = $form->getSubmitValue("list_oreonMails");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -170,6 +216,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$rtdl_id."', '".$ret[$i]."', '1')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 ?>
