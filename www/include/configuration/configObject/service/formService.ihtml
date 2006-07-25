@@ -104,7 +104,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
 	 	{/if}
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./modules/traps/img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.traps}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.traps}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_traps.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_traps.html}</p></td></tr>
 	 </table>
 </div>
