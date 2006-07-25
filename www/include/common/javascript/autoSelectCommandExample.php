@@ -40,6 +40,9 @@ For information : contact@oreon-project.org
 
 		$res =& $pearDB->query("SELECT command_example FROM command WHERE" .
 			" command_id = '".$command_id."' ");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		while($res->fetchInto($arg))
 			echo $arg["command_example"];
 
