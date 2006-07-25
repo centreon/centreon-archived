@@ -47,6 +47,11 @@ For information : contact@oreon-project.org
 	# Grab elements for level 1
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
 	$res =& $pearDB->query($rq);
+
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
+	
 	for($i = 0; $res->numRows() && $res->fetchInto($elem);)	{
 		$elem["topology_url"] == "./include/options/oreon/myAccount/formMyAccount.php" ? $cct_id = "&contact_id=".$oreon->user->get_id() : $cct_id = NULL;
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : NULL,
@@ -68,6 +73,10 @@ For information : contact@oreon-project.org
 	# Grab elements for level 2
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_order";
 	$res2 =& $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
+	
 	$firstP = NULL;
 	$sep = "&nbsp;";
 	for($i = 0; $res2->numRows() && $res2->fetchInto($elem); $i++)	{
@@ -87,6 +96,10 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
 
 	$res3 =& $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
+	
 	for($i = 0; $res3->fetchInto($elem);)	{
 		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 || $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 || $elem["topology_page"] == 40202 || $elem["topology_page"] == 60603))
 			;
@@ -130,6 +143,9 @@ For information : contact@oreon-project.org
 	
 	$tab_user = array();
 	$res =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while ($res->fetchInto($session)){
 		$tab_user[$session["user_id"]] = array();
 		$tab_user[$session["user_id"]]["ip"] = $session["ip_address"];
