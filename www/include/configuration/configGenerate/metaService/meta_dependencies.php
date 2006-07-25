@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Meta Service » is developped by Merethis company for Lafarge Group, 
+This unit, called ï¿½ Oreon Meta Service ï¿½ is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -25,12 +25,18 @@ For information : contact@oreon-project.org
 
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmscr WHERE dmscr.dependency_dep_id = dep.dep_id) > 0";
 	$res =& $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$dependency = array();
 	$i = 1;
 	$str = NULL;
 	while($res->fetchInto($dependency))	{
 		$BP = false;
 		$res2 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$metaPar = NULL;
 		while ($res2->fetchInto($metaPar))	{
 			$BP = false;
@@ -42,6 +48,9 @@ For information : contact@oreon-project.org
 				$BP = true;
 			if ($BP)	{
 				$res3 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				$metaCh = NULL;
 				while ($res3->fetchInto($metaCh))	{					
 					$BP = false;

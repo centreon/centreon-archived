@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Service Level » is developped by Merethis company for Lafarge Group, 
+This unit, called ï¿½ Oreon Service Level ï¿½ is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -22,6 +22,9 @@ For information : contact@oreon-project.org
 	$str = NULL;
 	
 	$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	# Write Virtual Services For meta 
 	while ($res->fetchInto($meta))	{
 		$strEval = NULL;
@@ -36,6 +39,9 @@ For information : contact@oreon-project.org
 		$strEval .= print_line("passive_checks_enabled", "0");
 		
 		$res2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$period =& $res2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("check_period", $period["tp_name"]);
@@ -44,6 +50,9 @@ For information : contact@oreon-project.org
 		$strEval .= print_line("notification_interval", $meta["notification_interval"]);
 		
 		$res2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$period =& $res2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("notification_period", $period["tp_name"]);
@@ -55,6 +64,9 @@ For information : contact@oreon-project.org
 		$contactGroup = array();
 		$strTemp = NULL;
 		$res2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		while($res2->fetchInto($contactGroup))	{				
 			$BP = false;
 			if ($ret["level"]["level"] == 1)

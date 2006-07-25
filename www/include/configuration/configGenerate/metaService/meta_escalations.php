@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Meta Service » is developped by Merethis company for Lafarge Group, 
+This unit, called ï¿½ Oreon Meta Service ï¿½ is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."meta_escalations.cfg", $oreon->user->get_name());
 
 	$res =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($service))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
@@ -34,6 +37,9 @@ For information : contact@oreon-project.org
 			$BP = true;
 		if ($BP)	{
 			$res2 =& $pearDB->query("SELECT esc.* FROM escalation esc, escalation_meta_service_relation emsr WHERE emsr.meta_service_meta_id = '".$service["meta_service_meta_id"]."' AND esc.esc_id = emsr.escalation_esc_id ORDER BY esc.esc_name");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$escalation = array();
 			while($res2->fetchInto($escalation))	{
 				$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
@@ -49,6 +55,9 @@ For information : contact@oreon-project.org
 				$cg = array();
 				$strTemp = NULL;
 				$res3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 				while($res3->fetchInto($cg))	{
 					$BP = false;				
 					if ($ret["level"]["level"] == 1)
@@ -68,6 +77,9 @@ For information : contact@oreon-project.org
 				// Nagios 2
 				if ($oreon->user->get_version() == 2)	{
 					$res4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$tp =& $res4->fetchRow();
 					$res4->free();		
 					if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
