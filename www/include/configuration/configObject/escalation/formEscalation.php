@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$esc = array();
 	if (($o == "c" || $o == "w") && $esc_id)	{	
 		$res =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$esc = array_map("myDecode", $res->fetchRow());
 		# Set Host Options
@@ -36,31 +39,49 @@ For information : contact@oreon-project.org
 			$esc["escalation_options2"][trim($value)] = 1;
 		# Set Host Groups relations
 		$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($hg); $i++)
 			$esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$res->free();
 		# Set Host relations
 		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($host); $i++)
 			$esc["esc_hosts"][$i] = $host["host_host_id"];
 		$res->free();
 		# Set Meta Service
 		$res =& $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($metas); $i++)
 			$esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
 		$res->free();
 		# Set Host Service
 		$res =& $pearDB->query("SELECT DISTINCT esr.service_service_id FROM escalation_service_relation esr, host_service_relation hsr WHERE esr.escalation_esc_id = '".$esc_id."' AND hsr.service_service_id = esr.service_service_id AND hsr.host_host_id IS NOT NULL GROUP BY service_service_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($services); $i++)
 			$esc["esc_hServices"][$i] = $services["service_service_id"];
 		$res->free();
 		# Set HostGroup Service
 		$res =& $pearDB->query("SELECT DISTINCT esr.service_service_id FROM escalation_service_relation esr, host_service_relation hsr WHERE esr.escalation_esc_id = '".$esc_id."' AND hsr.service_service_id = esr.service_service_id AND hsr.hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($services); $i++)
 			$esc["esc_hgServices"][$i] = $services["service_service_id"];
 		$res->free();
 		# Set Contact Groups relations
 		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($cg); $i++)
 			$esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
 		$res->free();		
@@ -71,6 +92,9 @@ For information : contact@oreon-project.org
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
 	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$res->free();
@@ -78,6 +102,9 @@ For information : contact@oreon-project.org
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
 	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$oreon->user->lcaHStr.") ORDER BY host_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$res->free();
@@ -87,6 +114,9 @@ For information : contact@oreon-project.org
 	$hgServices = array();
 	$initName = NULL;
 	$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id AND h.host_id IN (".$oreon->user->lcaHStr.") ORDER BY h.host_name, sv.service_description");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($elem))	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
@@ -98,6 +128,9 @@ For information : contact@oreon-project.org
 	}
 	$res->free();
 	$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hg.hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg.hg_name, sv.service_description");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($elem))	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
@@ -108,12 +141,18 @@ For information : contact@oreon-project.org
 	# Meta Services comes from DB -> Store in $metas Array
 	$metas = array();
 	$res =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($meta))
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$res->free();
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
 	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$res->free();
@@ -121,6 +160,9 @@ For information : contact@oreon-project.org
 	# TimePeriods comes from DB -> Store in $tps Array
 	$tps = array();
 	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	while($res->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$res->free();

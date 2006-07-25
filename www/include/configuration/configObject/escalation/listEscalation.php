@@ -20,6 +20,9 @@ For information : contact@oreon-project.org
 $pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -40,6 +43,9 @@ $pagination = "maxViewConfiguration";
 	else if ($search)
 		$rq .= " WHERE esc.esc_name LIKE '%".$search."%'";
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -73,6 +79,9 @@ $pagination = "maxViewConfiguration";
 		$rq .= " WHERE esc.esc_name LIKE '%".$search."%'";
 	$rq .= " ORDER BY esc_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);	
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
