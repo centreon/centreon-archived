@@ -1,40 +1,6 @@
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<!-- informations bank for ajax 
-<div class="cachediv">
-<FORM id="fsave">
-        <INPUT type="text" name="type" value="metaservice" size=12>
-        <INPUT type="text" name="len" value="0" size=12>
-        time:<INPUT type="text" name="time" value="{$time}" size=12><br>
-        <INPUT type="text" name="color_OK" value="{$color_OK}" size=12>
-        <INPUT type="text" name="color_CRITICAL" value="{$color_CRITICAL}" >
-        <INPUT type="text" name="color_WARNING" value="{$color_WARNING}" >
-        <INPUT type="text" name="color_PENDING" value="{$color_PENDING}" >
-        <INPUT type="text" name="color_UNKNOWN" value="{$color_UNKNOWN}" >
-        <br>
-        <INPUT type="text" name="color_UP" value="{$color_UP}" size=12>
-        <INPUT type="text" name="color_DOWN" value="{$color_DOWN}" >
-        <INPUT type="text" name="color_UNREACHABLE" value="{$color_UNREACHABLE}" >
 
-        <br>
-        <INPUT type="text" name="icone_flapping" value="./img/icones/16x16/flapping.gif" >
-        <INPUT type="text" name="icone_pb_aknowledged" value="./img/icones/16x16/worker.gif" >
-        <INPUT type="text" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_pause.gif" >
-        <INPUT type="text" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_stop.gif" >
-        <INPUT type="text" name="icone_not_en" value="./img/icones//14x14/noloudspeaker.gif" >
-        <INPUT type="text" name="icone_undo" value="./img/icones/14x14/undo.gif" >
-        <INPUT type="text" name="icone_graph" value="./img/icones/16x16/column-chart.gif" >
-        <br>
-        lca:<INPUT type="text" name="lca" value="{$lca}"><br>
-        version:<INPUT type="text" name="version" value="{$version}"><br>
-        sid:<INPUT type="text" name="sid" value="{$sid}"><br>
-        lastreload session:<INPUT type="text" name="slastreload" value="{$slastreload}"><br>
-        maxtime:<INPUT type="text" name="smaxtime" value="{$smaxtime}"><br>
-        fileStatus:<INPUT type="text" name="fileStatus" value="{$fileStatus}"><br>
-        fileOreonConf:<INPUT type="text" name="fileOreonConf" value="{$fileOreonConf}"><br>
-</FORM>
-</div>
--->
 
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
