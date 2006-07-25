@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 		return $nb;
 	}
 		
-	require("./include/views/graphs/graphSummary/DB-Func.php");
+	//require("./include/common/common-Func.php");
 
 	function return_period($service_id){
 		global $pearDB;
@@ -40,14 +40,14 @@ For information : contact@oreon-project.org
 	}
 
 	if (isset($_GET["host_name"]))
-		$host_id = getHostID($_GET["host_name"]);
+		$host_id = getMyHostID($_GET["host_name"]);
 	else if (isset($_GET["host_id"]))
 		$host_id = $_GET["host_id"];
 	else
 		$host_id = NULL;
 
 	if (isset($_GET["service_description"]))
-		$service_id = getServiceID($_GET["host_name"], $_GET["service_description"]);
+		$service_id = getMyServiceID($_GET["service_description"], $host_id);
 	else if (isset($_GET["service_id"]))
 		$service_id = $_GET["service_id"];
 	else
