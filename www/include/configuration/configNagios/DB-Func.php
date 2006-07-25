@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('nagios_id');
 		$res =& $pearDB->query("SELECT nagios_name, nagios_id FROM cfg_nagios WHERE nagios_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$nagios =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $nagios["nagios_id"] == $id)	
@@ -40,9 +43,18 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		global $oreon;
 		$pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id."'");		
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$oreon->Nagioscfg = array();
 		$res =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$oreon->Nagioscfg = $res->fetchRow();
 	}
 	
@@ -51,12 +63,21 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		global $oreon;
 		$pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id = '".$nagios_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios WHERE nagios_id != '".$nagios_id."'");
 		$maxId =& $res->fetchRow();
 		if (isset($maxId["MAX(nagios_id)"]))	{
 			$pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$maxId["MAX(nagios_id)"]."'");					
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$oreon->Nagioscfg = array();
 			$res =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$oreon->Nagioscfg = $res->fetchRow();
 		}
 	}
@@ -64,12 +85,26 @@ For information : contact@oreon-project.org
 	function deleteNagiosInDB ($nagios = array())	{
 		global $pearDB;
 		foreach($nagios as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 		$res =& $pearDB->query("SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'");		  
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if (!$res->numRows())	{
 			$res =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$nagios_id = $res->fetchRow();
 			$pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id["MAX(nagios_id)"]."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 	
@@ -77,6 +112,9 @@ For information : contact@oreon-project.org
 		foreach($nagios as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["nagios_id"] = '';
 			$row["nagios_activate"] = '0';
@@ -89,6 +127,9 @@ For information : contact@oreon-project.org
 				if (testExistence($nagios_name))	{
 					$val ? $rq = "INSERT INTO cfg_nagios VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 				}
 			}
 		}
@@ -236,12 +277,24 @@ For information : contact@oreon-project.org
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."')" : $rq .= "'0')";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$nagios_id = $res->fetchRow();
 		if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"])	{
 			$pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$oreon->Nagioscfg = array();
 			$res =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$oreon->Nagioscfg = $res->fetchRow();
 		}
 		return ($nagios_id["MAX(nagios_id)"]);
@@ -356,6 +409,9 @@ For information : contact@oreon-project.org
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if ($ret["nagios_activate"]["nagios_activate"])
 			enableNagiosInDB($nagios_id);
 	}

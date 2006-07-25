@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$nagios = array();
 	if (($o == "c" || $o == "w") && $nagios_id)	{	
 		$res =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$nagios = array_map("myDecode", $res->fetchRow());
 	}
@@ -33,6 +36,9 @@ For information : contact@oreon-project.org
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array();
 	$res =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$checkCmds = array(NULL=>NULL);
 	while($res->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
