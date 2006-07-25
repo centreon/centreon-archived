@@ -19,15 +19,26 @@ For information : contact@oreon-project.org
 */$pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-	if ($search)
+	if ($search){
 		$res = & $pearDB->query("SELECT COUNT(*) FROM reporting_diff_email WHERE email LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
-	else
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+	}
+	else{
 		$res = & $pearDB->query("SELECT COUNT(*) FROM reporting_diff_email");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
@@ -52,6 +63,9 @@ For information : contact@oreon-project.org
 	else
 		$rq = "SELECT @nbr:=(SELECT DISTINCT COUNT(rtelr.rtdl_id) FROM reporting_email_list_relation rtelr WHERE rtelr.rtde_id = rtde.rtde_id) AS nbr, rtde.rtde_id, rtde.email, rtde.activate FROM reporting_diff_email rtde ORDER BY email LIMIT ".$num * $limit.", ".$limit;
 	$res =& $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

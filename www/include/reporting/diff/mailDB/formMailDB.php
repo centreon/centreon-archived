@@ -27,10 +27,16 @@ For information : contact@oreon-project.org
 			return html_entity_decode($arg, ENT_QUOTES);
 		}
 		$res =& $pearDB->query("SELECT * FROM reporting_diff_email WHERE rtde_id = '".$rtde_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		# Set base value
 		$mail = array_map("myDecode", $res->fetchRow());
 		# Set Diffusion Lists
 		$res =& $pearDB->query("SELECT DISTINCT rtdl_id FROM reporting_email_list_relation WHERE rtde_id = '".$rtde_id."'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		for($i = 0; $res->fetchInto($list); $i++)
 			$mail["contact_lists"][$i] = $list["rtdl_id"];
 		$res->free();
@@ -41,6 +47,9 @@ For information : contact@oreon-project.org
 	# Diffusion List comes from DB -> Store in $difLists Array
 	$diffLists = array();
 	$res =& $pearDB->query("SELECT rtdl_id, name FROM reporting_diff_list ORDER BY name");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	while($res->fetchInto($list))
 		$diffLists[$list["rtdl_id"]] = $list["name"];
 	$res->free();
