@@ -32,6 +32,9 @@ For information : contact@oreon-project.org
 	# Host comes from DB
 	$Host = array();
 	$res =& $pearDB->query("SELECT host_id, host_name, host_address, host_snmp_community, host_snmp_version FROM host WHERE host_id =". $host_id ."");
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	$Host  = array(NULL=>NULL);
 	$res->fetchInto($Host);
 	//while()
