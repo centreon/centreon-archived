@@ -13,7 +13,7 @@
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter'>
-    			<img src='./include/views/graphs/generateImage/generateRRDImagePlugins.php?session_id={$session_id}&database={$databaseSH}&template_id={$graph_graph_id}{if $end}&end={$end}{/if}{if $start}&start={$start}{/if}'><br>
+    			<img src='./include/views/graphs/generateImage/generateRRDImagePlugins.php?session_id={$session_id}&database={$databaseSH}&template_id={$grapht_graph_id}{if $end}&end={$end}{/if}{if $start}&start={$start}{/if}'><br>
     		</td>
         </tr>
     </table>
@@ -44,7 +44,10 @@
                 	<td>{$form.grapht_graph_id.label}</td>
                 	<td>{$form.grapht_graph_id.html}</td>
                 </tr>
-                <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
+                <tr class="list_one">
+                	<td>{$form.period.label}</td>
+                	<td>{$form.period.html}</td>
+                </tr>
 				<tr class="list_two">
 					<td>{$form.start.label}</td>
 					<td>{$form.start.html}&nbsp;&nbsp;{$form.startD.html}</td>

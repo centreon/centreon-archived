@@ -27,9 +27,7 @@ For information : contact@oreon-project.org
 		$nb = $res->numRows();
 		return $nb;
 	}
-		
-	//require("./include/common/common-Func.php");
-
+	
 	function return_period($service_id){
 		global $pearDB;
 		$res =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service_id."'");
@@ -39,11 +37,16 @@ For information : contact@oreon-project.org
 		return $graph["period"];
 	}
 
+
 	if (isset($_GET["host_name"]))
 		$host_id = getMyHostID($_GET["host_name"]);
-	else if (isset($_GET["host_id"]))
+	else if (isset($_GET["database"]) && !isset($_GET["host_name"])){
+		$database =& $_GET["database"];
+		$host_id = getMyHostID($database[0]);
+		$db_name = $database[1];
+	} else if (isset($_GET["host_id"]))
 		$host_id = $_GET["host_id"];
-	else
+	else 
 		$host_id = NULL;
 
 	if (isset($_GET["service_description"]))
@@ -57,9 +60,13 @@ For information : contact@oreon-project.org
 		$_GET["steps"] = 0;
 	
 	if (array_key_exists($host_id, $oreon->user->lcaHost))	{
-		$_GET["period"] = return_period($service_id);
 		$_GET["submitC"] = "Grapher";
-		$_GET["grapht_graph_id"] = "";
+		if (!isset($_GET["period"]))
+			$_GET["period"] = return_period($service_id);
+		
+		if (!isset($_GET["grapht_graph_id"]))
+			$_GET["grapht_graph_id"] = "";
+			
 		if (!$oreon->optGen["perfparse_installed"]){
 			if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 				$_GET["database"] = array("1" => $host_id."_".$service_id.".rrd", "0" => $_GET["host_name"]);
@@ -67,20 +74,36 @@ For information : contact@oreon-project.org
 				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd"))
 					$msg_error = $lang["giv_db_unavailable"];
 				require_once("./include/views/graphs/graphPlugins/graphPlugins.php");
+			} else {
+				$_GET["database"] = array("1" => $db_name, "0" => $database[0]);
+				$p = "40203";
+				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$db_name))
+					$msg_error = $lang["giv_db_unavailable"];
+				require_once("./include/views/graphs/graphPlugins/graphPlugins.php");			
 			}
 		} else {
 			clearstatcache();
 			require_once("./DBPerfparseConnect.php");
-			if (isPerfparseEntry($_GET["host_name"], $_GET["service_description"])){
+				
+			if ((isset($_GET["host_name"]) && $_GET["host_name"])&& (isset($_GET["service_description"]) && $_GET["service_description"]) && isPerfparseEntry($_GET["host_name"], $_GET["service_description"])){
 				$p = "40202";
 				$_GET["database"] = array("1" => $host_id."_".$service_id.".rrd", "0" => $_GET["host_name"]);
 				require_once("./include/views/graphs/simpleRenderer/simpleRenderer.php");
 			} else {
+				
+				if (!isset($service_id)){
+					$database =& $_GET["database"];
+					preg_match("/[0-9]+_([0-9]+)\.rrd/", $database[1], $tab);
+					$service_id = $tab[1]; 
+				}	
+				
 				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd")){
 					$p = "40202";
 					$msg_error = $lang["giv_db_unavailable"];
 					require_once("./include/views/graphs/simpleRenderer/simpleRenderer.php");				
 				} else	{
+					if (!isset($_GET["host_name"]))
+						$_GET["host_name"] = getMyHostName($host_id);
 					$_GET["database"] = array("1" => $host_id."_".$service_id.".rrd", "0" => $_GET["host_name"]);
 					$p = "40203";
 					require_once("./include/views/graphs/graphPlugins/graphPlugins.php");

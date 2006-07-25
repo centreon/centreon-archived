@@ -188,7 +188,7 @@ For information : contact@oreon-project.org
 				$tpl->assign("end", $end);
 				$tpl->assign("start", $start);
 			}
-			$tpl->assign('graph_graph_id', $_GET["grapht_graph_id"]);
+			$tpl->assign('grapht_graph_id', $_GET["grapht_graph_id"]);
 		}
     }
 
