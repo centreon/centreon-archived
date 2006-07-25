@@ -44,12 +44,18 @@ For information : contact@oreon-project.org
 	# Notification commands comes from DB -> Store in $notifCmds Array
 	$notifCmds = array(null=>null);
 	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($notifCmd))
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$res->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(null=>null);
 	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$res->free();

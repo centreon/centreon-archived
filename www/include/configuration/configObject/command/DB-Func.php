@@ -28,6 +28,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('command_id');
 		$res =& $pearDB->query("SELECT command_name, command_id FROM command WHERE command_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$command =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $command["command_id"] == $id)	
@@ -43,12 +46,18 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		foreach($commands as $key=>$value)
 			$pearDB->query("DELETE FROM command WHERE command_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	}
 	
 	function multipleCommandInDB ($commands = array(), $nbrDup = array())	{
 		foreach($commands as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["command_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -94,6 +103,9 @@ For information : contact@oreon-project.org
 				"command_type = '".htmlentities($ret["command_type"]["command_type"], ENT_QUOTES)."' " .
 				"WHERE command_id = '".$cmd_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function insertCommandInDB ($ret = array())	{
@@ -122,7 +134,13 @@ For information : contact@oreon-project.org
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["command_name"], ENT_QUOTES)."', '".htmlentities($ret["command_line"], ENT_QUOTES)."', '".htmlentities($ret["command_example"], ENT_QUOTES)."', '".$ret["command_type"]["command_type"]."')";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(command_id) FROM command");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$cmd_id = $res->fetchRow();
 		return ($cmd_id["MAX(command_id)"]);
 	}

@@ -36,6 +36,9 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $command_id)	{
 		
 		$res =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $res->fetchRow());
 	}
@@ -45,6 +48,9 @@ For information : contact@oreon-project.org
 	# Resource Macro
 	$resource = array();
 	$res =& $pearDB->query("SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($row))	{
 		$row["resource_line"] = explode("=", $row["resource_line"]);
 		$resource[$row["resource_line"][0]] = $row["resource_line"][0];
@@ -53,6 +59,9 @@ For information : contact@oreon-project.org
 	# Nagios Macro
 	$macros = array();
 	$res =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($row))
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	$res->free();
