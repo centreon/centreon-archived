@@ -27,6 +27,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('purge_policy_id');
 		$res =& $pearDB->query("SELECT purge_policy_name, purge_policy_id FROM purge_policy WHERE purge_policy_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$pp =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $pp["purge_policy_id"] == $id)
@@ -41,13 +44,21 @@ For information : contact@oreon-project.org
 	function deletePurgePolicyInDB ($ppols = array())	{
 		global $pearDB;
 		foreach($ppols as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM purge_policy WHERE purge_policy_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 	}
 
 	function multiplePurgePolicyInDB ($ppols = array(), $nbrDup = array())	{
 		foreach($ppols as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["purge_policy_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -59,6 +70,9 @@ For information : contact@oreon-project.org
 				if (testPurgePolicyExistence($purge_policy_name))	{
 					$val ? $rq = "INSERT INTO purge_policy VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 				}
 			}
 		}
@@ -96,7 +110,13 @@ For information : contact@oreon-project.org
 		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(purge_policy_id) FROM purge_policy");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$purge_policy_id = $res->fetchRow();
 		return ($purge_policy_id["MAX(purge_policy_id)"]);
 	}
@@ -128,5 +148,8 @@ For information : contact@oreon-project.org
 		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE purge_policy_id = '".$purge_policy_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 ?>

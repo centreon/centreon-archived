@@ -28,6 +28,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('tp_id');
 		$res =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($name, ENT_QUOTES)."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$tp =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $tp["tp_id"] == $id)	
@@ -42,13 +45,21 @@ For information : contact@oreon-project.org
 	function deleteTimeperiodInDB ($timeperiods = array())	{
 		global $pearDB;
 		foreach($timeperiods as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM timeperiod WHERE tp_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 	}
 	
 	function multipleTimeperiodInDB ($timeperiods = array(), $nbrDup = array())	{
 		foreach($timeperiods as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["tp_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -57,8 +68,11 @@ For information : contact@oreon-project.org
 					$key2 == "tp_name" ? ($tp_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				if (testTPExistence($tp_name))
+				if (testTPExistence($tp_name))				
 					$pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			}
 		}
 	}
@@ -86,6 +100,9 @@ For information : contact@oreon-project.org
 				"tp_saturday = '".htmlentities($ret["tp_saturday"], ENT_QUOTES)."' " .
 				"WHERE tp_id = '".$tp_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function insertTimeperiodInDB ($ret = array())	{
@@ -112,7 +129,13 @@ For information : contact@oreon-project.org
 		isset($ret["tp_saturday"]) && $ret["tp_saturday"] != NULL ? $rq .= "'".htmlentities($ret["tp_saturday"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$tp_id = $res->fetchRow();
 		return ($tp_id["MAX(tp_id)"]);
 	}

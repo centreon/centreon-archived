@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Meta Service » is developped by Merethis company for Lafarge Group, 
+This unit, called ï¿½ Oreon Meta Service ï¿½ is developped by Merethis company for Lafarge Group, 
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -28,6 +28,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('meta_id');
 		$res =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$meta =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $meta["meta_id"] == $id)	
@@ -43,36 +46,58 @@ For information : contact@oreon-project.org
 		if (!$meta_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE meta_service SET meta_activate = '1' WHERE meta_id = '".$meta_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function disableMetaServiceInDB ($meta_id = null)	{
 		if (!$meta_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '".$meta_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function deleteMetaServiceInDB ($metas = array())	{
 		global $pearDB;
 		foreach($metas as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM meta_service WHERE meta_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 	}
 	
 	function enableMetricInDB ($msr_id = null)	{
 		if (!$msr_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE meta_service_relation SET activate = '1' WHERE msr_id = '".$msr_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function disableMetricInDB ($msr_id = null)	{
 		if (!$msr_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE meta_service_relation SET activate = '0' WHERE msr_id = '".$msr_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function deleteMetricInDB ($metrics = array())	{
 		global $pearDB;
 		foreach($metrics as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM meta_service_relation WHERE msr_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 	}	
 	
 	function multipleMetaServiceInDB ($metas = array(), $nbrDup = array())	{
@@ -81,6 +106,9 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			# Get all information about it
 			$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["meta_id"] = '';
 			# Loop on the number of MetaService we want to duplicate
@@ -94,13 +122,30 @@ For information : contact@oreon-project.org
 				if (testExistence($meta_name))	{
 					$val ? $rq = "INSERT INTO meta_service VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$res =& $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(meta_id)"]))	{
 						$res =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($Cg))
+						{
 							$pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}
 						$res =& $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($metric))	{
 							$val = null;
 							$metric["msr_id"] = '';
@@ -109,6 +154,9 @@ For information : contact@oreon-project.org
 								$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 							}
 							$pearDB->query("INSERT INTO meta_service_relation VALUES (".$val.")");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
 						}
 					}
 				}
@@ -134,6 +182,9 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			# Get all information about it
 			$res =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["msr_id"] = '';
 			# Loop on the number of Metric we want to duplicate
@@ -144,6 +195,9 @@ For information : contact@oreon-project.org
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				$val ? $rq = "INSERT INTO meta_service_relation VALUES (".$val.")" : $rq = null;
 				$pearDB->query($rq);
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 			}
 		}
 	}
@@ -180,7 +234,13 @@ For information : contact@oreon-project.org
 				isset($ret["meta_activate"]["meta_activate"]) && $ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."'" : $rq .= "NULL";
 				$rq .= ")";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$meta_id = $res->fetchRow();
 		return ($meta_id["MAX(meta_id)"]);
 	}
@@ -230,6 +290,9 @@ For information : contact@oreon-project.org
 		$ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."' " : $rq .= "NULL ";
 		$rq .= " WHERE meta_id = '".$meta_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 		
 	function updateMetaServiceContactGroup($meta_id = null)	{
@@ -239,6 +302,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM meta_contactgroup_relation ";
 		$rq .= "WHERE meta_id = '".$meta_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$ret = array();
 		$ret = $form->getSubmitValue("ms_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -247,6 +313,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$meta_id."', '".$ret[$i]."')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 	
@@ -276,7 +345,13 @@ For information : contact@oreon-project.org
 				isset($ret["activate"]["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."'" : $rq .= "NULL";
 				$rq .= ")";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$msr_id = $res->fetchRow();
 		return ($msr_id["MAX(msr_id)"]);
 	}
@@ -301,5 +376,8 @@ For information : contact@oreon-project.org
 		$ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."' " : $rq .= "NULL ";
 		$rq .= " WHERE msr_id = '".$msr_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 ?>
