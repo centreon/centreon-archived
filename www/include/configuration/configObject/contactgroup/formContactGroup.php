@@ -24,10 +24,16 @@ For information : contact@oreon-project.org
 	$cg = array();
 	if (($o == "c" || $o == "w") && $cg_id)	{	
 		$res =& $pearDB->query("SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$cg = array_map("myDecode", $res->fetchRow());
 		# Set Contact Childs
 		$res =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		for($i = 0; $res->fetchInto($contacts); $i++)
 			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$res->free();
@@ -38,6 +44,9 @@ For information : contact@oreon-project.org
 	# Contacts comes from DB -> Store in $contacts Array
 	$contacts = array();
 	$res =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while($res->fetchInto($contact))
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);

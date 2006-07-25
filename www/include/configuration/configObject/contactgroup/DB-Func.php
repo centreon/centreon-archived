@@ -27,6 +27,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('cg_id');
 		$res =& $pearDB->query("SELECT cg_name, cg_id FROM contactgroup WHERE cg_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$cg =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $cg["cg_id"] == $id)	
@@ -42,24 +45,38 @@ For information : contact@oreon-project.org
 		if (!$cg_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE contactgroup SET cg_activate = '1' WHERE cg_id = '".$cg_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function disableContactGroupInDB ($cg_id = null)	{
 		if (!$cg_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE contactgroup SET cg_activate = '0' WHERE cg_id = '".$cg_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function deleteContactGroupInDB ($contactGroups = array())	{
 		global $pearDB;
 		foreach($contactGroups as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM contactgroup WHERE cg_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 	}
 	
 	function multipleContactGroupInDB ($contactGroups = array(), $nbrDup = array())	{
 		foreach($contactGroups as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM contactgroup WHERE cg_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["cg_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -75,8 +92,16 @@ For information : contact@oreon-project.org
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(cg_id)"]))	{
 						$res =& $pearDB->query("SELECT DISTINCT cgcr.contact_contact_id FROM contactgroup_contact_relation cgcr WHERE cgcr.contactgroup_cg_id = '".$key."'");
+						if (PEAR::isError($pearDB)) {
+							print "Mysql Error : ".$pearDB->getMessage();
+						}
 						while($res->fetchInto($cct))
+						{
 							$pearDB->query("INSERT INTO contactgroup_contact_relation VALUES ('', '".$cct["contact_contact_id"]."', '".$maxId["MAX(cg_id)"]."')");
+							if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
+						}
 					}
 				}
 			}
@@ -99,7 +124,13 @@ For information : contact@oreon-project.org
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["cg_name"], ENT_QUOTES)."', '".htmlentities($ret["cg_alias"], ENT_QUOTES)."', '".htmlentities($ret["cg_comment"], ENT_QUOTES)."', '".$ret["cg_activate"]["cg_activate"]."')";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(cg_id) FROM contactgroup");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$cg_id = $res->fetchRow();
 		return ($cg_id["MAX(cg_id)"]);
 	}
@@ -123,6 +154,9 @@ For information : contact@oreon-project.org
 				"cg_activate = '".$ret["cg_activate"]["cg_activate"]."' " .
 				"WHERE cg_id = '".$cg_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function updateContactGroupContacts($cg_id, $ret = array())	{
@@ -132,6 +166,9 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM contactgroup_contact_relation ";
 		$rq .= "WHERE contactgroup_cg_id = '".$cg_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if (isset($ret["cg_contacts"]))
 			$ret = $ret["cg_contacts"];
 		else
@@ -142,6 +179,9 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$ret[$i]."', '".$cg_id."')";
 			$pearDB->query($rq);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 ?>
