@@ -53,8 +53,14 @@ For information : contact@oreon-project.org
 	function del_svc_downtime_in_db($start_time, $host, $svc){
 		global $pearDB;
 		$host =& $pearDB->query("SELECT host_id FROM host WHERE `host_name` = '".$host."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$host_name = $host->fetchRow();				
 		$service =& $pearDB->query("SELECT service_id FROM service WHERE `service_description` = '".$svc."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$service_desc = $service->fetchRow();				
 		$str = 	"UPDATE `downtime` SET `deleted` = '1' WHERE `service_id` = '".$service_desc["service_id"]."' AND `host_id` = '".$host_name["host_id"]."' AND `start_time` = '".$start_time."' LIMIT 1 ;";
 		$update =& $pearDB->query($str);
@@ -65,6 +71,9 @@ For information : contact@oreon-project.org
 	function del_host_downtime_in_db($start_time, $host){
 		global $pearDB;
 		$host =& $pearDB->query("SELECT host_id FROM host WHERE `host_name` = '".$host."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$host_name = $host->fetchRow();				
 		$str = 	"UPDATE `downtime` SET `deleted` = '1' WHERE `host_id` = '".$host_name["host_id"]."' AND `start_time` = '".$start_time."' LIMIT 1 ;";
 		$update =& $pearDB->query($str);
