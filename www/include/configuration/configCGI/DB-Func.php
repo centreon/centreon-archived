@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('cgi_id');
 		$res =& $pearDB->query("SELECT cgi_name, cgi_id FROM cfg_cgi WHERE cgi_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$cgi =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $cgi["cgi_id"] == $id)	
@@ -40,7 +43,13 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		global $oreon;
 		$pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function disableCGIInDB ($cgi_id = null)	{
@@ -48,7 +57,13 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		global $oreon;
 		$pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id = '".$cgi_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi WHERE cgi_id != '".$cgi_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$maxId =& $res->fetchRow();
 		if (isset($maxId["MAX(cgi_id)"]))
 			$pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$maxId["MAX(cgi_id)"]."'");
@@ -58,11 +73,23 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		foreach($cgi as $key=>$value)
 			$pearDB->query("DELETE FROM cfg_cgi WHERE cgi_id = '".$key."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT cgi_id FROM cfg_cgi WHERE cgi_activate = '1'");		  
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if (!$res->numRows())	{
 			$res =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$cgi_id = $res->fetchRow();
 			$pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id["MAX(cgi_id)"]."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 	
@@ -70,6 +97,9 @@ For information : contact@oreon-project.org
 		foreach($cgi as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["cgi_id"] = '';
 			$row["cgi_activate"] = '0';
@@ -82,6 +112,9 @@ For information : contact@oreon-project.org
 				if (testCgiExistence($cgi_name))	{
 					$val ? $rq = "INSERT INTO cfg_cgi VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
 				}
 			}
 		}
@@ -140,12 +173,21 @@ For information : contact@oreon-project.org
         isset($ret["cgi_comment"]) && $ret["cgi_comment"] != NULL ? $rq .= "'".htmlentities($ret["cgi_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"] != NULL ? $rq .= "'".$ret["cgi_activate"]["cgi_activate"]."')" : $rq .= "'0')";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$res =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi");
 		$cgi_id = $res->fetchRow();
 		if (isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"])	{
 			$pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id != '".$cgi_id["MAX(cgi_id)"]."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$oreon->CGIcfg = array();
 			$res =& $pearDB->query("SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$oreon->CGIcfg = $res->fetchRow();
 		}
 		return ($cgi_id["MAX(cgi_id)"]);
@@ -187,6 +229,9 @@ For information : contact@oreon-project.org
 		isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"] != NULL ? $rq .= "cgi_activate = '".$ret["cgi_activate"]["cgi_activate"]."' " : $rq .= "cgi_activate = '0' ";
 		$rq .= "WHERE cgi_id = '".$cgi_id."'";
 		$pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		if ($ret["cgi_activate"]["cgi_activate"])
 			enableCGIInDB($cgi_id);
 	}

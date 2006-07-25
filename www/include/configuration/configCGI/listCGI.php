@@ -19,6 +19,9 @@ For information : contact@oreon-project.org
 */$pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -27,6 +30,10 @@ For information : contact@oreon-project.org
 		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_cgi WHERE cgi_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_cgi");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
+		
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -51,6 +58,9 @@ For information : contact@oreon-project.org
 	else
 		$rq = "SELECT cgi_id, cgi_name, cgi_comment, cgi_activate FROM cfg_cgi ORDER BY cgi_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
