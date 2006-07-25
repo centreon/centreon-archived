@@ -54,6 +54,9 @@ For information : contact@oreon-project.org
 	$db->setFetchMode(DB_FETCHMODE_ASSOC);
 	
 	$session =& $db->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	if (PEAR::isError($db)) {
+				print "Mysql Error : ".$db->getMessage();
+			}
 	if (!$session->numRows()){
 		exit;
 	} else {	
@@ -107,6 +110,9 @@ For information : contact@oreon-project.org
 			while ($hg =& $res->fetchRow()){
 				$tab_hg[$hg["hg_name"]] = array();
 				$resH =& $db->query("SELECT host_host_id, host_name FROM hostgroup_relation, host WHERE hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND host.host_id = hostgroup_relation.host_host_id");
+				if (PEAR::isError($db)) {
+					print "Mysql Error : ".$db->getMessage();
+				}
 				for ($total = 0, $up = 0;$rH =& $resH->fetchRow();$total++)
 					if (!strcmp($oreon->status_graph_host[$rH["host_name"]]["status"], "UP"))
 						$up++;
