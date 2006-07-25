@@ -61,6 +61,9 @@ For information : contact@oreon-project.org
 	{
 		global $pearDB;
 		$res = $pearDB->query("SELECT * FROM log_archive_file_name WHERE file_name = '".$filename."'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		if ($res->numRows())
 			return $res;
 	}
@@ -71,6 +74,9 @@ For information : contact@oreon-project.org
 		$sql = "INSERT INTO `log_archive_file_name` (`id_log_file`, `file_name`, `date`)" .
 				" VALUES(NULL , '$key','$date')";
 		$res = $pearDB->query($sql);
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 				
 		if (PEAR::isError($res)){			
 			die($res->getMessage());		  
@@ -84,6 +90,9 @@ For information : contact@oreon-project.org
 	$h = array();
 	$host_list = array();
 	$res =& $pearDB->query('SELECT host_name, host_id FROM `host`');
+	if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 	if (PEAR::isError($res)){
 	  die($res->getMessage());
 	} else { 
@@ -95,6 +104,7 @@ For information : contact@oreon-project.org
 	
 	$service_list = array();
 	$res =& $pearDB->query('SELECT service_description, service_id FROM `service`');
+	
 	if (PEAR::isError($res)){
 	  die($res->getMessage());
 	} else { 
