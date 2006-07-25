@@ -106,6 +106,9 @@ For information : contact@oreon.org
 	                        
 	                        $cmd = "SELECT downtime_id from downtime where entry_time = ".$res[1]." ";
                         	$result =& $pearDB->query($cmd);
+                        	if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
                         	$result->fetchInto($id_downtime);
                         	$tab_downtime_host[$i]["id_supp"] = $id_downtime["downtime_id"];
                         }
@@ -146,6 +149,9 @@ For information : contact@oreon.org
 
                         	$cmd = "SELECT downtime_id from downtime where entry_time = ".$res[1]." ";
                         	$result =& $pearDB->query($cmd);
+                        	if (PEAR::isError($pearDB)) {
+								print "Mysql Error : ".$pearDB->getMessage();
+							}
                         	$result->fetchInto($id_downtime);
                         	$tab_downtime_svc[$i2]["id_supp"] = $id_downtime["downtime_id"];
                         	

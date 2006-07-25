@@ -32,6 +32,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		
 		$res =& $pearDB->query("SELECT nagios_version FROM general_opt");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$res->fetchInto($nagios_version);
 		$version = $nagios_version["nagios_version"];
 		

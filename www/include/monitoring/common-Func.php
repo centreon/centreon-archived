@@ -26,6 +26,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		while(1)	{
 			$res =& $pearDB->query("SELECT host_".$rowdata.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row =& $res->fetchRow();
 			if ($row["host_".$rowdata])
 				return $row["host_$rowdata"];
@@ -42,6 +45,9 @@ For information : contact@oreon-project.org
 		if (!isset($persistant))
 			$persistant = 0;
 		$res =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host."'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$r =& $res->fetchRow();
 		
 		if (isset($host))	{
@@ -57,6 +63,9 @@ For information : contact@oreon-project.org
 		if (!isset($persistant))
 			$persistant = 0;
 		$res =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host."'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$r =& $res->fetchRow();
 		
 		exec("echo \"[".time()."] ADD_HOST_COMMENT;".$r["host_name"].";".$persistant.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]) ;
@@ -78,6 +87,9 @@ For information : contact@oreon-project.org
 		$duration = $end_time - $start_time;
 
 		$res =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host."'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$r =& $res->fetchRow();
 		$timestamp = time();
 		//print("echo \"[".time()."] SCHEDULE_HOST_DOWNTIME;".$r["host_name"].";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]) ;
@@ -89,7 +101,7 @@ For information : contact@oreon-project.org
 		$pearDB->query("INSERT INTO downtime (host_id, entry_time , author , comment , start_time , end_time , fixed , duration , deleted) ".
 									"VALUES ('".$host."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start."', '".$end."', '".$persistant."', '".$duration."', '0')");
 		if (PEAR::isError($pearDB)) 
-			print $db->getMessage();
+			print $pearDB->getMessage();
 	}
 
 	function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant){
@@ -110,6 +122,9 @@ For information : contact@oreon-project.org
 		$duration = $end_time - $start_time;
 
 		$res =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host."'");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		$r =& $res->fetchRow();
 
 		if (isset($host))	{
@@ -130,6 +145,9 @@ For information : contact@oreon-project.org
 		$cmd .= "VALUES ('".$host."', '".$service."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start."', '".$end."', '".$persistant."', '".$duration."', '0')";
 
 		$pearDB->query($cmd);
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		
 	}
 
@@ -147,6 +165,9 @@ For information : contact@oreon-project.org
 			exec ("echo \"[".time()."] DEL_".$type."_DOWNTIME;".$res[0]."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 			$cmd = "DELETE FROM downtime where downtime_id = ".$res[1];
 			$pearDB->query($cmd);
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 
