@@ -30,7 +30,7 @@ INSERT INTO `cfg_resource` VALUES (1, '$USER1$', '$USER1$=/usr/local/nagios/libe
 -- Contenu de la table `general_opt`
 --
 
-INSERT INTO `general_opt` VALUES (1, '/usr/local/nagios/', '/usr/local/nagios/bin/nagios', '/usr/local/nagios/share/images/', '/usr/local/nagios/libexec/', NULL, 'public', '1',  NULL, '/etc/snmp/snmptrapd.conf', '/bin/mail', '/usr/bin/rrdtool', '1.0','/usr/local/oreon/', '/usr/local/oreon/www/', '/usr/local/oreon/rrd/', 10, '#19EE11', '#F91E05', '#82CFD8', '#13EB3A', '#F8C706', '#F91D05', '#2AD1D4', '#D4D5CC', 120, '0', '20', '50', 'Basic_light', '','','','uid','0','0');
+INSERT INTO `general_opt` VALUES (1, '/usr/local/nagios/', '/usr/local/nagios/bin/nagios', '/usr/local/nagios/share/images/', '/usr/local/nagios/libexec/', NULL, 'public', '1', '0', NULL, '/etc/snmp/snmptrapd.conf', '/bin/mail', '/usr/bin/rrdtool', '1.0','/usr/local/oreon/', '/usr/local/oreon/www/', '/usr/local/oreon/rrd/', 10, '#19EE11', '#F91E05', '#82CFD8', '#13EB3A', '#F8C706', '#F91D05', '#2AD1D4', '#D4D5CC', 120, '0', '20', '50', 'Basic_light', '','','','uid','0','0');
 
 --
 -- Contenu de la table `nagios_server`
