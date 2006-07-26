@@ -39,8 +39,6 @@ For information : contact@oreon-project.org
 	$elemArr = array(1=>array(), 2=>array(), 3=>array());
 
 	# Special Case
-	# Put the contact_id in the URL
-	$cct_id = NULL;
 	# Put the authentification in the URL
 	$auth = NULL;
 
@@ -53,15 +51,13 @@ For information : contact@oreon-project.org
 	}
 	
 	for($i = 0; $res->numRows() && $res->fetchInto($elem);)	{
-		$elem["topology_url"] == "./include/options/oreon/myAccount/formMyAccount.php" ? $cct_id = "&contact_id=".$oreon->user->get_id() : $cct_id = NULL;
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : NULL,
-								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"].$cct_id,
+								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#");
 		$i++;
 	}
 
-	$userUrl = "oreon.php?p=50104&o=c&contact_id=";
-    $userUrl .= $oreon->user->get_id();
+	$userUrl = "oreon.php?p=50104&o=c";
 	$userName = $oreon->user->get_name();
     $userName .= " ( ";
     $userName .= $oreon->user->get_alias();
@@ -81,10 +77,9 @@ For information : contact@oreon-project.org
 	$sep = "&nbsp;";
 	for($i = 0; $res2->numRows() && $res2->fetchInto($elem); $i++)	{
 		$elem["topology_url"] == "./ext/osm/osm_jnlp.php" ? $auth = "?al=".md5($oreon->user->get_alias())."&pwd=".$oreon->user->get_passwd() : $auth = NULL;
-		$elem["topology_url"] == "./include/options/oreon/myAccount/formMyAccount.php" ? $cct_id = "&contact_id=".$oreon->user->get_id() : $cct_id = NULL;
 		$firstP ? null : $firstP = $elem["topology_page"];
 	    $elemArr[2][$i] = array("Menu2Sep" => $sep,
-								"Menu2Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"].$cct_id,
+								"Menu2Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu2UrlPopup" => $elem["topology_popup"],
 								"Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
 								"Menu2Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
@@ -104,9 +99,8 @@ For information : contact@oreon-project.org
 		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 || $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 || $elem["topology_page"] == 40202 || $elem["topology_page"] == 60603))
 			;
 		else	{
-			$elem["topology_url"] == "./include/options/oreon/myAccount/formMyAccount.php" ? $cct_id = "&contact_id=".$oreon->user->get_id() : $cct_id = NULL;
 		    $elemArr[3][$elem["topology_group"]][$i] = array("Menu3Icone" => $elem["topology_icone"],
-									"Menu3Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"].$cct_id,
+									"Menu3Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 									"Menu3UrlPopup" => $elem["topology_url"],
 									"Menu3Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
 									"Menu3Popup" => $elem["topology_popup"] ? true : false);

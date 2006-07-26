@@ -21,16 +21,14 @@ For information : contact@oreon-project.org
 	function testExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
-		$id = NULL;
-		if (isset($form))
-			$id = $form->getSubmitValue('contact_id');
+		global $oreon;
 		$res =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
 		$contact =& $res->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $contact["contact_id"] == $id)	
+		if ($res->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $contact["contact_id"] != $id)
+		else if ($res->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
 			return false;
 		else
 			return true;
@@ -39,16 +37,14 @@ For information : contact@oreon-project.org
 	function testAliasExistence ($alias = NULL)	{
 		global $pearDB;
 		global $form;
-		$id = NULL;
-		if (isset($form))
-			$id = $form->getSubmitValue('contact_id');
+		global $oreon;
 		$res =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
 		$contact =& $res->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $contact["contact_id"] == $id)	
+		if ($res->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $contact["contact_id"] != $id)
+		else if ($res->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
 			return false;
 		else
 			return true;

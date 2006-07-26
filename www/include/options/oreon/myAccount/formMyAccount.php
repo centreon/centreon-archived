@@ -20,10 +20,6 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 	
-	isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
-	isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
-	$cG ? $contact_id = $cG : $contact_id = $cP;
-		
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -43,8 +39,8 @@ For information : contact@oreon-project.org
 	## Database retrieve information for the User
 	#
 	$cct = array();
-	if ($o == "c" && $oreon->user->get_id() == $contact_id)	{	
-		$res =& $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
+	if ($o == "c")	{	
+		$res =& $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
 		# Set base value
 		$cct = array_map("myDecode", $res->fetchRow());
 	}
@@ -88,8 +84,6 @@ For information : contact@oreon-project.org
 	$form->addElement('password', 'contact_passwd2', $lang['cct_passwd2'], $attrsText);
     $form->addElement('select', 'contact_lang', $lang["cct_lang"], $langs);
 
-	
-	$form->addElement('hidden', 'contact_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
@@ -124,20 +118,18 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl);
 
 	# Modify a contact information
-	if ($o == "c" && $oreon->user->get_id() == $contact_id)	{
+	if ($o == "c")	{
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	    $form->setDefaults($cct);
 	}
 	
 	if ($form->validate())	{
-		$cctObj =& $form->getElement('contact_id');
-		if ($oreon->user->get_id() == $cctObj->getValue())	{
-			updateContactInDB($cctObj->getValue());
+		updateContactInDB($oreon->user->get_id());
+		if ($form->getSubmitValue("contact_passwd"))
 			$oreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
-		}
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$cctObj->getValue()."'"));
+		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c'"));
 		$form->freeze();
 	}
 	#Apply a template definition	
