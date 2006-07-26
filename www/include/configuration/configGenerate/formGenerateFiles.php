@@ -54,18 +54,20 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, $lang["no"], '0');
 	$form->addGroup($tab, 'xml', $lang["gen_xml"], '&nbsp;');
 	$form->setDefaults(array('xml' => '0'));
-		
-	$form->addElement('header', 'traps', $lang['gen_trapd']);
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["no"], '0');
-	$form->addGroup($tab, 'genTraps', $lang['gen_genTrap'], '&nbsp;');
-	$form->setDefaults(array('genTraps' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restartTrapd', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restartTrapd', null, $lang["no"], '0');
-	$form->addGroup($tab, 'restartTrapd', $lang['gen_trapRestart'], '&nbsp;');
-	$form->setDefaults(array('restartTrapd' => '0'));
+	
+	if ($oreon->optGen["snmp_trapd_used"])	{
+		$form->addElement('header', 'traps', $lang['gen_trapd']);
+		$tab = array();
+		$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["yes"], '1');
+		$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["no"], '0');
+		$form->addGroup($tab, 'genTraps', $lang['gen_genTrap'], '&nbsp;');
+		$form->setDefaults(array('genTraps' => '0'));
+		$tab = array();
+		$tab[] = &HTML_QuickForm::createElement('radio', 'restartTrapd', null, $lang["yes"], '1');
+		$tab[] = &HTML_QuickForm::createElement('radio', 'restartTrapd', null, $lang["no"], '0');
+		$form->addGroup($tab, 'restartTrapd', $lang['gen_trapRestart'], '&nbsp;');
+		$form->setDefaults(array('restartTrapd' => '0'));
+	}
 		
 	$form->addElement('header', 'result', $lang["gen_result"]);
 	$tab = array();
@@ -157,20 +159,13 @@ For information : contact@oreon-project.org
 				$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
 			}
 		}
-		if ($ret["genTraps"]["genTraps"])	{
+		if ($ret["genTraps"]["genTraps"] && $oreon->optGen["snmp_trapd_used"])	{
 			require_once($path."genTraps.php");
 			$msg .= "<br>".$i." Traps generated<br>";
 		}
-		if ($ret["restartTrapd"]["restartTrapd"])	{
-			$res =& $pearDB->query('SELECT snmp_trapd_path_daemon FROM `general_opt` LIMIT 1');
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			if ($res->numRows())	{
-				$trap_daemon = $res->fetchRow();
-				$stdout = shell_exec("sudo ".$trap_daemon["snmp_trapd_path_daemon"]." restart");
-				$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
-			}
+		if ($ret["restartTrapd"]["restartTrapd"] && $oreon->optGen["snmp_trapd_used"])	{
+			$stdout = shell_exec("sudo ".$oreon->optGen["snmp_trapd_path_daemon"]." restart");
+			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 		if ($ret["restart"]["restart"])	{
 			if ($ret["restart_mode"]["restart_mode"] == 1)
@@ -192,6 +187,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'status', $lang["gen_status"]);
 	if ($msg)
 		$tpl->assign('msg', $msg);
+	$tpl->assign('traps_used', $oreon->optGen["snmp_trapd_used"]);
 	
 	#
 	##Apply a template definition
