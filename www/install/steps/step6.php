@@ -42,12 +42,15 @@ if (isset($passwd_error) && $passwd_error)
     <td align="right"><input type="password" name="pwdOreonDB2" value="<? if (isset($_SESSION["pwdOreonDB2"])) print $_SESSION["pwdOreonDB2"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Database location (localhost)</b></td>
-    <td align="right"><input type="text" name="dbLocation" disabled value="<? if (isset($_SESSION["dbLocation"])) print $_SESSION["dbLocation"]; ?>"></td>
+    <td><b>Database location (localhost if blank)</b></td>
+    <td align="right"><input type="text" name="dbLocation" value="<? if (isset($_SESSION["dbLocation"])) print $_SESSION["dbLocation"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Nagios location (localhost)</b></td>
-    <td align="right"><input type="text" name="nagiosLocation" disabled value="<? if (isset($_SESSION["nagiosLocation"])) print $_SESSION["nagiosLocation"]; ?>"></td>
+    <td><b>Nagios location (localhost if blank)</b></td>
+    <td align="right"><input type="text" name="nagiosLocation" value="<? if (isset($_SESSION["nagiosLocation"])) print $_SESSION["nagiosLocation"]; ?>"></td>
+  </tr>
+  <tr>
+    <td colspan="2" ><span class="small">If you used a remote mysql server, enter ip address of your oreon box</span></td>
   </tr>
  <!--  <tr>
     <td><b>Nagios version</b></td>
