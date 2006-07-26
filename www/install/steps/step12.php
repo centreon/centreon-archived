@@ -16,10 +16,38 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	session_destroy();
-	$tmpfname = tempnam("", "");
-	@unlink($tmpfname);
-	@rename(getcwd(), realpath("..")."/".basename($tmpfname) );
-	header("Location: ../index.php");
-	
+/*if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
+	$_SESSION["oreonlogin"] = $_POST["oreonlogin"];
+	$_SESSION["oreonpasswd"] = $_POST["oreonpasswd"];
+	$_SESSION["oreonfirstname"] = $_POST["oreonfirstname"];
+	$_SESSION["oreonlastname"] = $_POST["oreonlastname"];
+	$_SESSION["oreonemail"] = $_POST["oreonemail"];
+	$_SESSION["oreonlang"] = $_POST["oreonlang"];
+}*/
+
+aff_header("Oreon Setup Wizard", "Post-Installation", 12);
+
+?>
+<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
+  <tr>
+	<td colspan="2" ><b>Manual Configuration</b></td>
+  </tr>
+  <tr>
+	<td colspan="2">To finish the installation of Oreon, you must still carry out some manuals actions :</td>
+  </tr>
+   <tr>
+	<td colspan="2">&nbsp;</td>
+  </tr>
+  <tr>
+    <td><img src='../img/icones/16x16/arrow_right_blue.png'></td>
+    <td>Go into www/cron,  read ArchiveLogInDB_README.txt and deleteDB_README.txt </td>
+  </tr>
+
+<?
+// end last code
+aff_middle();
+$str = "<input class='button' type='submit' name='goto' value='Finish' id='button_next' ";
+$str .= " />";
+print $str;
+aff_footer();
 ?>
