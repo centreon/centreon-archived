@@ -29,6 +29,9 @@ For information : contact@oreon-project.org
 		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -53,6 +56,9 @@ For information : contact@oreon-project.org
 	else
 		$rq = "SELECT resource_id, resource_name, resource_line, resource_activate FROM cfg_resource ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

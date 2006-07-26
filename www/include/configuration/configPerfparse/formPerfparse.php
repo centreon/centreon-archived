@@ -25,6 +25,9 @@ For information : contact@oreon-project.org
 	$ppTemp = array();
 	if (($o == "c" || $o == "w") && $perfparse_id)	{	
 		$res =& $pearDB->query("SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$perfparse_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$ppTemp = array_map("myDecode", $res->fetchRow());
 		foreach ($ppTemp as $key=>$value)

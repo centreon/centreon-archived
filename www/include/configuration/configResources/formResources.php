@@ -23,6 +23,9 @@ For information : contact@oreon-project.org
 	#
 	if (($o == "c" || $o == "w") && $resource_id)	{	
 		$res =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$resource_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		# Set base value
 		$rs = array_map("myDecode", $res->fetchRow());
 	}

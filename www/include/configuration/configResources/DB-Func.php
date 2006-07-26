@@ -25,6 +25,9 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('resource_id');
 		$res =& $pearDB->query("SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 		$resource =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $resource["resource_id"] == $id)	
@@ -39,25 +42,39 @@ For information : contact@oreon-project.org
 	function deleteResourceInDB ($resources = array())	{
 		global $pearDB;
 		foreach($resources as $key=>$value)
+		{
 			$pearDB->query("DELETE FROM cfg_resource WHERE resource_id = '".$key."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		}
 	}
 	
 	function enableResourceInDB ($resource_id = null)	{
 		if (!$resource_id) exit();
 		global $pearDB;
 		$pearDB->query("UPDATE cfg_resource SET resource_activate = '1' WHERE resource_id = '".$resource_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function disableResourceInDB ($resource_id = null)	{
 		if (!$resource_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
 	}
 	
 	function multipleResourceInDB ($resources = array(), $nbrDup = array())	{
 		foreach($resources as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 			$row = $res->fetchRow();
 			$row["resource_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -68,6 +85,9 @@ For information : contact@oreon-project.org
 				}
 				if (testExistence($resource_name))
 					$pearDB->query($val ? $rq = "INSERT INTO cfg_resource VALUES (".$val.")" : $rq = null);
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 			}
 		}
 	}
