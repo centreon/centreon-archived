@@ -209,6 +209,16 @@ function check_httpd_directory()
 	DIR_APACHE="/etc/httpd/conf"
 	DIR_APACHE_CONF="/etc/httpd/conf.d"
 	HTPASSWD="htpasswd"
+    else if test -d /usr/local/etc/apache ; then
+	DIR_APACHE="/usr/local/etc/apache"
+	DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
+	HTPASSWD="htpasswd"
+    else if test -d /usr/local/etc/apache2 ; then
+	DIR_APACHE="/usr/local/etc/apache2"
+	DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
+	HTPASSWD="htpasswd"
+    fi
+    fi
     fi
     fi
     fi
