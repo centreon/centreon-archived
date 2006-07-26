@@ -34,7 +34,7 @@ background-color:red; color:white; margin:5px;}
 
 
 #footer a{				color:#666666;}
-#footer{				float:left;}
+#footer{				float:left; width:100%;}
 #footerline1{			height:2px;	width:100%;}
 #footerline2{			height:6px;	width:100%;}
 .footer a img {    		opacity: 0.5;}
