@@ -37,6 +37,7 @@ For information : contact@oreon-project.org
 		return $graph["period"];
 	}
 
+	require_once "./include/common/common-Func.php";
 
 	if (isset($_GET["host_name"]))
 		$host_id = getMyHostID($_GET["host_name"]);
