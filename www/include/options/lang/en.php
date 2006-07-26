@@ -68,6 +68,7 @@ $lang["genOpt_maxViewMonitoring"] = "Limit per page for Monitoring";
 $lang["genOpt_maxViewConfiguration"] = "Limit per page (default)";
 $lang["genOpt_snmp_trapd_pathConf"] = "Directory + Conf File SNMPTrapd";
 $lang["genOpt_snmp_trapd_pathBin"] = "Directory + Daemon SNMPTrapd (/etc/init.d/...)";
+$lang["genOpt_snmp_trapd_used"] = "Easy Traps manager used";
 $lang["genOpt_template"] = "Template";
 $lang["genOpt_ldap"] = "LDAP informations";
 $lang["genOpt_ldap_host"] = "LDAP Server";
