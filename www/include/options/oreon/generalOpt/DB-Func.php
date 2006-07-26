@@ -49,6 +49,13 @@ For information : contact@oreon-project.org
 		return false;
 	}
 
+	function is_writable_file_if_exist($path = NULL)      {
+		if (!$path) return true;
+		if (is_file($path) && is_writable($path))
+			return true;
+		return false;
+	}
+
 	function updateGeneralOptInDB ($gopt_id = NULL)	{
 		if (!$gopt_id) return;
 		updateGeneralOpt($gopt_id);
@@ -76,6 +83,8 @@ For information : contact@oreon-project.org
 		isset($ret["snmp_community"]) && $ret["snmp_community"] != NULL ? $rq .= "'".$ret["snmp_community"]."', ": $rq .= "NULL, ";
 		$rq .= "snmp_version = ";
 		isset($ret["snmp_version"]) && $ret["snmp_version"] != NULL ? $rq .= "'".$ret["snmp_version"]."', ": $rq .= "NULL, ";
+		$rq .= "snmp_trapd_used = ";
+		isset($ret["snmp_trapd_used"]["snmp_trapd_used"]) && $ret["snmp_trapd_used"]["snmp_trapd_used"] != NULL ? $rq .= "'".$ret["snmp_trapd_used"]["snmp_trapd_used"]."', ": $rq .= "NULL, ";
 		$rq .= "snmp_trapd_path_daemon = ";
 		isset($ret["snmp_trapd_path_daemon"]) && $ret["snmp_trapd_path_daemon"] != NULL ? $rq .= "'".$ret["snmp_trapd_path_daemon"]."', ": $rq .= "NULL, ";
 		$rq .= "snmp_trapd_path_conf = ";

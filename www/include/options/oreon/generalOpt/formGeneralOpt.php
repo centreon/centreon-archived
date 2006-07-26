@@ -114,6 +114,11 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'snmp', $lang["genOpt_snmp"]);
 	$form->addElement('text', 'snmp_community', $lang["genOpt_snmpCom"], $attrsText2);
 	$form->addElement('select', 'snmp_version', $lang["genOpt_snmpVer"], array("0"=>"1", "1"=>"2", "2"=>"2c"), $attrsAdvSelect);
+	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('radio', 'snmp_trapd_used', null, $lang["yes"], '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'snmp_trapd_used', null, $lang["no"], '0');
+	$form->addGroup($tab, 'snmp_trapd_used', $lang["genOpt_snmp_trapd_used"], '&nbsp;');
+	$form->setDefaults(array('snmp_trapd_used' => '0'));
 	$form->addElement('text', 'snmp_trapd_path_conf', $lang["genOpt_snmp_trapd_pathConf"], $attrsText);
 	$form->addElement('text', 'snmp_trapd_path_daemon', $lang["genOpt_snmp_trapd_pathBin"], $attrsText);
 
@@ -167,6 +172,7 @@ For information : contact@oreon-project.org
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
+	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 	$form->addRule('oreon_path', $lang['ErrWrPath'], 'is_valid_path');
 	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
 	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
@@ -175,7 +181,7 @@ For information : contact@oreon-project.org
 	$form->addRule('mailer_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
 	$form->addRule('rrdtool_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
 	$form->addRule('oreon_rrdbase_path', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrFile'], 'is_writable_file');
+	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrFile'], 'is_writable_file_if_exist');
 
 
 	#

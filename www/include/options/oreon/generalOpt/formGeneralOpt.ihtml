@@ -82,8 +82,9 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.snmp}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.snmp_community.label}</td><td class="FormRowValue">{$form.snmp_community.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.snmp_version.label}</td><td class="FormRowValue">{$form.snmp_version.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.snmp_trapd_path_daemon.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_daemon.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.snmp_trapd_used.label}</td><td class="FormRowValue">{$form.snmp_trapd_used.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.snmp_trapd_path_daemon.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_daemon.html}</td></tr>
 	</table>
 </div>
 <div id="tab5" class="tab">
