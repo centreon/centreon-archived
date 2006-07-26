@@ -429,6 +429,8 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'service_id');
 	$reg =& $form->addElement('hidden', 'service_register');
 	$reg->setValue("1");
+	$page =& $form->addElement('hidden', 'p');
+	$page->setValue($p);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
