@@ -83,6 +83,11 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["no"], '0');
 	$form->addGroup($tab, 'restart', $lang["gen_restart"], '&nbsp;');
 	$form->setDefaults(array('restart' => '0'));
+	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_load"], '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_start"], '2');
+	$form->addGroup($tab, 'restart_mode', $lang["gen_restart"], '&nbsp;');
+	$form->setDefaults(array('restart_mode' => '1'));
 		
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -166,7 +171,10 @@ For information : contact@oreon-project.org
 			}
 		}
 		if ($ret["restart"]["restart"])	{
-			$stdout = shell_exec("sudo /etc/init.d/nagios restart");
+			if ($ret["restart_mode"]["restart_mode"] == 1)
+				$stdout = shell_exec("sudo /etc/init.d/nagios reload");
+			else if ($ret["restart_mode"]["restart_mode"] == 2)
+				$stdout = shell_exec("sudo /etc/init.d/nagios restart");
 			$pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
