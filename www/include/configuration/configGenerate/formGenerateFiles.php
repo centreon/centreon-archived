@@ -86,6 +86,7 @@ For information : contact@oreon-project.org
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_load"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_start"], '2');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_extcmd"], '3');
 	$form->addGroup($tab, 'restart_mode', $lang["gen_restart"], '&nbsp;');
 	$form->setDefaults(array('restart_mode' => '1'));
 		
@@ -102,6 +103,7 @@ For information : contact@oreon-project.org
 	
 	$sub =& $form->addElement('submit', 'submit', $lang["gen_butOK"]);
 	$msg = NULL;
+	$stdout = NULL;
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();
 		if ($ret["generate"]["generate"])	{
@@ -175,6 +177,13 @@ For information : contact@oreon-project.org
 				$stdout = shell_exec("sudo /etc/init.d/nagios reload");
 			else if ($ret["restart_mode"]["restart_mode"] == 2)
 				$stdout = shell_exec("sudo /etc/init.d/nagios restart");
+			else if ($ret["restart_mode"]["restart_mode"] == 3)	{
+				require_once("./include/monitoring/external_cmd/functions.php");
+				$_GET["select"] = array(0=>1);
+				$_GET["cmd"] = 25;
+				require_once("./include/monitoring/external_cmd/cmd.php");
+				$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
+			}
 			$pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
