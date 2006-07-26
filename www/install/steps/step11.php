@@ -309,6 +309,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	$requete .= ", `oreon_rrdbase_path` = '".$_SESSION["oreon_dir_rrd"]."'";
 	$requete .= ", `rrdtool_path_bin` = '".$_SESSION["rrdtool_dir"]."'";
 	$requete .= ", `nagios_version` = '".$_SESSION["nagios_version"]."'";
+	$requete .= ", `snmp_trapd_used` = '0'";
 	$requete .= ", `mailer_path_bin` = '".$conf_installoreon['mail']."' ";
 	$requete .= ", `ldap_host` = '".htmlentities($_SESSION["ldap_host"], ENT_QUOTES)."'";
 	$requete .= ", `ldap_port` = '".htmlentities($_SESSION["ldap_port"], ENT_QUOTES)."'";
@@ -381,7 +382,7 @@ $return_false = 1;
 		@mysql_close($res['0']);
 // end last code
 aff_middle();
-$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Finish' id='button_next' ";
+$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' ";
 if ($return_false)
 	$str .= " disabled";
 $str .= " />";
