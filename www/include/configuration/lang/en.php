@@ -1338,6 +1338,7 @@ $lang["gen_move"] = "Moove Export Files";
 $lang["gen_restart"] = "Reload Nagios";
 $lang["gen_restart_load"] = "Reload";
 $lang["gen_restart_start"] = "Restart";
+$lang["gen_restart_extcmd"] = "External Command";
 $lang["gen_butOK"] = "Export";
 $lang["gen_status"] = "State";
 $lang['gen_mvOk'] = " - movement OK";

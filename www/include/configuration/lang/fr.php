@@ -653,6 +653,7 @@ $lang["gen_move"] = "D&eacute;placer les fichiers";
 $lang["gen_restart"] = "Recharger Nagios";
 $lang["gen_restart_load"] = "Reload";
 $lang["gen_restart_start"] = "Restart";
+$lang["gen_restart_extcmd"] = "Commande externe";
 $lang["gen_butOK"] = "Generer";
 $lang["gen_status"] = "Statuts";
 $lang['gen_mvOk'] = " - d&eacute;placement OK";
