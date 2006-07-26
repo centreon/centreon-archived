@@ -518,8 +518,12 @@ For information : contact@oreon-project.org
 		$valid = true;
 	}
 	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
-		require_once($path."listServiceByHost.php");
+	if ($valid && $action["action"]["action"])	{
+		if ($p == "60201")
+			require_once($path."listServiceByHost.php");
+		else if ($p == "60202")
+			require_once($path."listServiceByHostGroup.php");
+	}
 	else	{
 		#Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
