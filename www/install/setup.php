@@ -86,6 +86,8 @@ For information : contact@oreon-project.org
 		include("./steps/step11.php");
 	else if (isset($_POST["step"]) && $_POST["step"] == 11)
 		include("./steps/step12.php");
+	else if (isset($_POST["step"]) && $_POST["step"] == 12)
+		include("./steps/step13.php");
 		ini_set("track_errors",false);
 	exit();
 ?>
