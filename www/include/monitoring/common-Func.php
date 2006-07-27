@@ -143,7 +143,6 @@ For information : contact@oreon-project.org
 
 		$cmd = "INSERT INTO downtime (host_id , service_id , entry_time , author , comment , start_time , end_time , fixed , duration , deleted) ";
 		$cmd .= "VALUES ('".$host."', '".$service."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start_time."', '".$end_time."', '".$persistant."', '".$duration."', '0')";
-		print $cmd;
 		$pearDB->query($cmd);
 		if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
