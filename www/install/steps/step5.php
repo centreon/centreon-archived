@@ -47,6 +47,7 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
 		} else {
 			echo '<b><span class="stop">Failed</font></b>';
 			$msg ="Need " . $module["name"] . "-" . $module["version"];
+			$alldeps =  $alldeps . " " . $module["name"];
 		    $return_false = 1;
 		}
 		?></td>
@@ -58,6 +59,15 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
   <? } ?>
 
   <? } ?>
+  <? if($msg)  { ?>
+   <tr>
+    <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
+  </tr>
+  <tr>
+    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <? echo $alldeps; ?> </span></td>
+  </tr>
+   <? } ?>
+
 </table>
 <?
 
