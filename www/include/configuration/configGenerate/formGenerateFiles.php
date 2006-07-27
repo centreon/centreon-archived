@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();
 		if ($ret["generate"]["generate"])	{
-			$gbArr =& manageDependencies();
+			$gbArr = manageDependencies();
 			require_once($path."genCGICFG.php");
 			require_once($path."genNagiosCFG.php");
 			require_once($path."genResourceCFG.php");
@@ -159,11 +159,11 @@ For information : contact@oreon-project.org
 				$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
 			}
 		}
-		if ($ret["genTraps"]["genTraps"] && $oreon->optGen["snmp_trapd_used"])	{
+		if (isset($ret["genTraps"]["genTraps"]) && $ret["genTraps"]["genTraps"] && $oreon->optGen["snmp_trapd_used"])	{
 			require_once($path."genTraps.php");
 			$msg .= "<br>".$i." Traps generated<br>";
 		}
-		if ($ret["restartTrapd"]["restartTrapd"] && $oreon->optGen["snmp_trapd_used"])	{
+		if (isset($ret["restartTrapd"]["restartTrapd"]) && $ret["restartTrapd"]["restartTrapd"] && $oreon->optGen["snmp_trapd_used"])	{
 			$stdout = shell_exec("sudo ".$oreon->optGen["snmp_trapd_path_daemon"]." restart");
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
