@@ -170,7 +170,7 @@ For information : contact@oreon-project.org
 	$sel =& $form->addElement('select', 'step', $lang["giv_sr_step"], $steps);
 	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
 	$form->addElement('reset', 'reset', $lang["reset"]);
-  	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DivStatus( 'div', '1' )"));
+  	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
   
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))	
 		$nb_rsp = 0;

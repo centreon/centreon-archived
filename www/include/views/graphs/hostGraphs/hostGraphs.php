@@ -1,3 +1,4 @@
+
 <?
 /**
 Oreon is developped with GPL Licence 2.0 :
@@ -124,7 +125,9 @@ For information : contact@oreon-project.org
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
 	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
-  	$res =& $form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DivStatus( 'div', '1' )"));
+  	$res =& $form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
+
+
 
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		if ($form->validate())	{
@@ -179,7 +182,12 @@ For information : contact@oreon-project.org
 		$tpl->assign("rrd", $rrd);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
+
+
+
 	$tpl->assign('lang', $lang);
 	$tpl->assign('session_id', session_id());
 	$tpl->display("hostGraphs.ihtml");
 ?>
+
+

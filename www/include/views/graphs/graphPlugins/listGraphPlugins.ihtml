@@ -1,5 +1,5 @@
 <script language='javascript' src='./include/common/javascript/datePicker.js'></script>
-<script language='javascript' src='./include/common/javascript/hidden_div.js'></script>
+<script language='javascript' src='./include/common/javascript/tool.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
 {if $msg_error}

@@ -364,10 +364,6 @@ input[type="submit"],input[type="button"],input[type="reset"]{
     text-align:center;
 }
 .cachediv {
-	visibility: hidden;
-	overflow: hidden;
-	height: 1px;
-	margin-top: -1px;
-	position: absolute;
+	display: none;
 }
 

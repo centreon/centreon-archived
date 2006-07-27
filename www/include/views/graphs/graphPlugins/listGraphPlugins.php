@@ -132,7 +132,7 @@ For information : contact@oreon-project.org
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
 	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
-  	$res =& $form->addElement('reset', 'advanced', $lang["advanced"], array("onclick"=>"DivStatus( 'div', '1' )"));
+  	$res =& $form->addElement('reset', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
 
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		if ($form->validate())	{
