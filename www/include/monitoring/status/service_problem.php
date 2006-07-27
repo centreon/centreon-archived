@@ -17,6 +17,7 @@ For information : contact@oreon.org
 */
 	if (!isset($oreon))
 		exit();
+		
 	$pagination = "maxViewMonitoring";		
 
 	# set limit & num
