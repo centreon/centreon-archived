@@ -1,3 +1,4 @@
+{assign var="o" value="svcpb"}
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 
@@ -9,21 +10,22 @@
    include('./include/common/pagination.php');
 {/php}
 </form>
+
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svcpb" type="hidden">
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=host_name&order=sort_asc'>{$lang.m_mon_hosts}</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-	 	<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=description&order=sort_asc'>{$lang.m_mon_services}</a>&nbsp;{if $sort_type == "description"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=description&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=host_name&order=sort_asc'>{$lang.m_mon_hosts}</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+	 	<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=description&order=sort_asc'>{$lang.m_mon_services}</a>&nbsp;{if $sort_type == "description"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=description&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 		<td class="ListColHeaderCenter">Actions</td>
 		<td class="ListColHeaderCenter">Infos</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=status&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "status"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=status&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=last_check&order=sort_asc'>{ $mon_last_check }</a>&nbsp;{if $sort_type == "last_check"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=last_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=next_check&order=sort_asc'>{ $mon_duration }</a&nbsp;{if $sort_type == "next_check"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=next_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=retry&order=sort_asc'>{$lang.m_mon_try}</a>&nbsp;{if $sort_type == "retry"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=retry&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'>{/if}</a></td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=output&order=sort_asc'>{ $mon_status_information }</a>&nbsp;{if $sort_type == "output"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=status&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "status"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=status&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_check&order=sort_asc'>{ $mon_last_check }</a>&nbsp;{if $sort_type == "last_check"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_change&order=sort_asc'>{ $mon_duration }</a&nbsp;{if $sort_type == "last_change"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=retry&order=sort_asc'>{$lang.m_mon_try}</a>&nbsp;{if $sort_type == "retry"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=retry&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'>{/if}</a></td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=output&order=sort_asc'>{ $mon_status_information }</a>&nbsp;{if $sort_type == "output"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 	</tr>
 	{assign var="c" value="0"}
 	
@@ -40,7 +42,7 @@
 			<td class="ListColLeft"><a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.description}'>{ $s.description }</a></td>
 			<td class="ListColRight">
 			<div id="actions{$c}">
-				<a href='./oreon.php?p={$p}&o=svc&cmd=2&select[{$s.host_name}:{$s.description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
+				<a href='./oreon.php?p={$p}&o={$o}&cmd=2&select[{$s.host_name}:{$s.description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
 				<a href='./oreon.php?p=40207&host_name={ $s.host_name }&service_description={$s.description}&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
 			<div>
 			</td>
