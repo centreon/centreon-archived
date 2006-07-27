@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 			exec("echo \"[".$timestamp."] SCHEDULE_HOST_DOWNTIME;".$r["host_name"].";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]) ;
 
 		$pearDB->query("INSERT INTO downtime (host_id, entry_time , author , comment , start_time , end_time , fixed , duration , deleted) ".
-									"VALUES ('".$host."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start."', '".$end."', '".$persistant."', '".$duration."', '0')");
+									"VALUES ('".$host."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start_time."', '".$end_time."', '".$persistant."', '".$duration."', '0')");
 		if (PEAR::isError($pearDB)) 
 			print $pearDB->getMessage();
 	}
@@ -112,8 +112,8 @@ For information : contact@oreon-project.org
 		$res = preg_split("/ /", $start);
 		$res1 = preg_split("/\//", $res[0]);
 		$res2 = preg_split("/:/", $res[1]);
-
 		$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
+		
 		$res = preg_split("/ /", $end);
 		$res3 = preg_split("/\//", $res[0]);
 		$res4 = preg_split("/:/", $res[1]);
@@ -142,8 +142,8 @@ For information : contact@oreon-project.org
 			exec("echo \"[".$timestamp."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$svc_description.";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 
 		$cmd = "INSERT INTO downtime (host_id , service_id , entry_time , author , comment , start_time , end_time , fixed , duration , deleted) ";
-		$cmd .= "VALUES ('".$host."', '".$service."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start."', '".$end."', '".$persistant."', '".$duration."', '0')";
-
+		$cmd .= "VALUES ('".$host."', '".$service."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start_time."', '".$end_time."', '".$persistant."', '".$duration."', '0')";
+		print $cmd;
 		$pearDB->query($cmd);
 		if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
