@@ -59,9 +59,12 @@ For information : contact@oreon-project.org
 			    $return_false = 1;
 			?>
 			<tr>
+        		<td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
+			</tr>
+		<!--	<tr>
 		    	<td>&nbsp;</td>
 	            <td align="right"><? echo $mysql_msg; ?></td>
-			</tr>
+			</tr>-->
 
 			<? }
 
@@ -70,10 +73,13 @@ For information : contact@oreon-project.org
 			    $return_false = 1;
 			?>
 			<tr>
+        		<td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
+			</tr>
+			<!--<tr>
 		    	<td>&nbsp;</td>
 	            <td align="right"><? echo $mysql_msg ; ?></td>
 	            <? 	$return_false = 1; ?>
-			</tr>
+			</tr>-->
 
 		<?	}
 			@mysql_close($res['0']);
