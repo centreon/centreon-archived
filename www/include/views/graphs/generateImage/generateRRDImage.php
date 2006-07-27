@@ -91,18 +91,26 @@ For information : contact@oreon-project.org
 			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph Meta Service ".$meta_data["meta_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		} else
 			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph ".$_GET["service_description"]." on Host ".$_GET["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
-/*		
+			
 		# Init Graph Template Value
-		$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
-		$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
-		$command_line .= "--color FONT".$GraphTemplate["police_color"]." ";
-		$command_line .= "--color MGRID".$GraphTemplate["grid_main_color"]." ";
-		$command_line .= "--color GRID".$GraphTemplate["grid_sec_color"]." ";
-		$command_line .= "--color FRAME".$GraphTemplate["contour_cub_color"]." ";
-		$command_line .= "--color ARROW".$GraphTemplate["col_arrow"]." ";
-		$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
-		$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
-*/		
+		if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"])
+			$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
+		if (isset($GraphTemplate["bg_color"]) && $GraphTemplate["bg_color"])
+			$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
+		if (isset($GraphTemplate["police_color"]) && $GraphTemplate["police_color"])
+			$command_line .= "--color FONT".$GraphTemplate["police_color"]." ";
+		if (isset($GraphTemplate["grid_main_color"]) && $GraphTemplate["grid_main_color"])
+			$command_line .= "--color MGRID".$GraphTemplate["grid_main_color"]." ";
+		if (isset($GraphTemplate["grid_sec_color"]) && $GraphTemplate["grid_sec_color"])
+			$command_line .= "--color GRID".$GraphTemplate["grid_sec_color"]." ";
+		if (isset($GraphTemplate["contour_cub_color"]) && $GraphTemplate["contour_cub_color"])
+			$command_line .= "--color FRAME".$GraphTemplate["contour_cub_color"]." ";
+		if (isset($GraphTemplate["col_arrow"]) && $GraphTemplate["col_arrow"])
+			$command_line .= "--color ARROW".$GraphTemplate["col_arrow"]." ";
+		if (isset($GraphTemplate["col_top"]) && $GraphTemplate["col_top"])
+			$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
+		if (isset($GraphTemplate["col_bot"]) && $GraphTemplate["col_bot"])
+			$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";	
 		
 		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
 			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
