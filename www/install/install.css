@@ -127,6 +127,10 @@ table.StyleDottedHr th {
 .small {
 	font-size: 10px;
 	}
+.small_warning {
+	color: #DE9F25;
+	font-size: 10px;
+	}
 .stop {
 	color: #cc0000;
 	}
