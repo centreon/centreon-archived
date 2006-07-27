@@ -21,8 +21,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-
-
 	require_once './class/other.class.php';
 	include_once("./include/monitoring/common-Func.php");			
 	include_once("./include/monitoring/external_cmd/cmd.php");
@@ -31,27 +29,25 @@ For information : contact@oreon-project.org
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-if(isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 1){
-	if (!isset($_GET["notify"])){
+
+	if(isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 1){
+		if (!isset($_GET["notify"])){
 			$_GET["notify"] = 0;
+		}
+		if (!isset($_GET["persistent"])){
+				$_GET["persistent"] = 0;
+		}
+		acknowledgeService($lang);
+	} else if(isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 0){
+		acknowledgeServiceDisable($lang);
 	}
-	if (!isset($_GET["persistent"])){
-			$_GET["persistent"] = 0;
-	}
-	acknowledgeService($lang);
-}
-else if(isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 0){
-	acknowledgeServiceDisable($lang);
-}
 
 
-if(isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
-{
-	submitPassiveCheck($lang);
-}	
+	if(isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"])){
+		submitPassiveCheck($lang);
+	}	
 ?>
 <div align="center" style="padding-bottom: 20px;">
-
 			<?	include("./include/monitoring/status/resume.php"); ?>
 </div>
 <?
