@@ -1,0 +1,24 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/flag_green.gif'>
+	 	&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	
+		<tr class="list_one">
+			<td class="FormRowField">
+				{$form.subject.label}<br>
+			</td>
+			<td class="FormRowValue">{$form.subject.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_lists.label}</td><td class="FormRowValue">{$form.contact_lists.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.body.label}</td><td class="FormRowValue">{$form.body.html}</td></tr>
+	 	
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	<div id="validForm">
+		<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+	{$form.hidden}
+</form>
+

@@ -1,0 +1,44 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
+<form method="GET" action="">
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="svc" type="hidden">
+<table id="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+		<td class="ListColHeaderCenter">{$lang.m_mon_hosts}</td>
+	 	<td class="ListColHeaderCenter">{$lang.m_mon_services}</td>
+		<td class="ListColHeaderCenter">Actions</td>
+		<td class="ListColHeaderCenter">{ $lang.m_mon_next_check }</td>
+		<td class="ListColHeaderCenter">{ $mon_last_check }</td>
+		<td class="ListColHeaderCenter">Active Checks</td>
+	</tr>
+	{ foreach item=s from=$service_status }
+	{if (!$host_name && !$status) || ($host_name == $s.host_name && $status && $status == $s.status) || ($host_name == $s.host_name && !$status)}
+		<tr {if $s.status == CRITICAL}class="list_three"{else}class="{$s.class}"{/if}>
+			<td class="ListColPicker" width="10"><input name="select[{$s.host_name}:{$s.description}]" value="1" type="checkbox"></td>
+			<td class="ListColLeft"><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
+			<td class="ListColLeft"><a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.description}'>{ $s.description }</a></td>
+			<td class="ListColRight">
+				{if $s.checks_en == 0 && $s.accept_passive_check}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
+				{if $s.checks_en == 0 && $s.accept_passive_check == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
+				{if $s.not_en == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
+				<a href='./oreon.php?p={$p}&o=svcSch&cmd=2&select[{$s.host_name}:{$s.description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
+				<a href='./oreon.php?p=40207&host_name={ $s.host_name }&service_description={$s.description}&period=10800&step=0&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
+			</td>
+			{ $s.status_td }
+			<td class="ListColRight" align="right">{ $s.next_check }</td>
+			<td class="ListColRight">{ $s.last_check }</td>
+			<td class="ListColHeaderCenter" style='background-color:{$color_en[$s.checks_en]};'>{$color_en_label[$s.checks_en]}</td>
+		</tr>
+		{/if}
+	{/foreach}
+</table>
+<div style="text-align:left;padding-top:5px;">
+	<select name="cmd">
+		<option value="1">{$lang.m_mon_resubmit_im_checks}</option>
+		<option value="2">{$lang.m_mon_resubmit_im_checks_f}</option>
+	</select>
+	<input name="SubmitOptions" value="go" type="submit">
+</div>
+</form>

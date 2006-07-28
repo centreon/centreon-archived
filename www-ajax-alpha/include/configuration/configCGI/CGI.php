@@ -1,0 +1,49 @@
+<?
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus
+
+Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+	if (!isset ($oreon))
+		exit ();
+	
+	isset($_GET["cgi_id"]) ? $cG = $_GET["cgi_id"] : $cG = NULL;
+	isset($_POST["cgi_id"]) ? $cP = $_POST["cgi_id"] : $cP = NULL;
+	$cG ? $cgi_id = $cG : $cgi_id = $cP;
+		
+	#Pear library
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/advmultiselect.php';
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+	
+	#Path to the configuration dir
+	$path = "./include/configuration/configCGI/";
+	
+	#PHP functions
+	require_once $path."DB-Func.php";
+	require_once "./include/common/common-Func.php";
+	
+	switch ($o)	{
+		case "a" : require_once($path."formCGI.php"); break; #Add CGI.cfg
+		case "w" : require_once($path."formCGI.php"); break; #Watch CGI.cfg
+		case "c" : require_once($path."formCGI.php"); break; #Modify CGI.cfg
+		case "s" : enableCGIInDB($cgi_id); require_once($path."listCGI.php"); break; #Activate a CGI CFG
+		case "u" : disableCGIInDB($cgi_id); require_once($path."listCGI.php"); break; #Desactivate a CGI CFG
+		case "m" : multipleCGIInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listCGI.php"); break; #Duplicate n CGI CFGs
+		case "d" : deleteCGIInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listCGI.php"); break; #Delete n CGI CFG
+		default : require_once($path."listCGI.php"); break;
+	}
+?>

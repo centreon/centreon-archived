@@ -1,0 +1,139 @@
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus
+
+Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
+#outer{		border-left-color:#F2F2F2;   /* left column colour */}
+body{		background-color:#F2F2F2;}
+
+.ListTable, #ListTable a:link		{}
+.ListTable, #ListTable a:visited		{}
+.ListTable, #ListTable a:hover		{}
+
+/* Form */
+.list_lvl_1{	background-color:#7B8DFF;}
+.list_lvl_2{	background-color:#6479FF;}
+.ListHeader{	background-image: url("./Images/bg_header_grayblue.gif");
+background-position:top left;
+background-repeat:repeat-x;
+background-color:#DFE3FF ;
+}
+#ListTable, #ListTableMedium, #ListTableSmall {
+border-color: #7B8DFF;
+}
+
+.list_lvl_2 td, .list_lvl_1 td{
+	border-top-color: #AAAAAA;
+	border-left-color: #AAAAAA;
+	border-bottom-color: #AAAAAA;
+	border-right-color: #AAAAAA;
+}
+.list_one td, .list_two td, .list_three td, .list_four td{
+	border-top-color: #FFFFFF;
+	border-left-color: #FFFFFF;
+	border-bottom-color: #FFFFFF;
+	border-right-color: #FFFFFF;
+}
+.tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td{
+	border-top-color: #FFFFFF;
+	border-left-color: #FFFFFF;
+	border-bottom-color: #FFFFFF;
+	border-right-color: #FFFFFF;
+}
+.tab .list_lvl_2 td, .tab .list_lvl_1 td{
+	border-top-color: #AAAAAA;
+	border-left-color: #AAAAAA;
+	border-bottom-color: #AAAAAA;
+	border-right-color: #AAAAAA;
+}
+.ListHeader td{
+	border-top-color: #FFFFFF;
+	border-left-color: #FFFFFF;
+}
+
+
+.ListHeader td{
+	border-top-color: #FFFFFF;
+	border-left-color: #FFFFFF;
+}
+
+.ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter{
+	border-top-color: #7B8DFF;
+}
+
+.list_one{		background-color:#DEE7F4;}/*CBE8FB*/
+.list_one:hover{		background-color:#DEd7F4;}/*CBE8FB*/
+.list_two {		background-color:#C2D1E9;}/*B3DCF8*/
+.list_two:hover {		background-color:#C2c1E9;}/*B3DCF8*/
+.list_three{	background-color:#B2F867;}
+.list_three:hover{	background-color:#B2e867;}
+.list_four {	background-color:#FD8B46;}
+.list_four:hover {	background-color:#FD0B46;}
+.quick_search{	border-color:#eff1f4;	
+background-image: url("./Images/bg_header_grayblue.gif") ;
+background-position:top left;
+background-repeat:repeat-x;
+background-color:#F3E9DA;
+	color:#fff;}
+
+#page {			color:#592bed;}
+#page a{		color:#592bed;}
+
+/*Menu*/
+#menu1_bgimg{	background-image: url("Images/menu_bg_grayblue.gif");
+background-position:top right;
+background-repeat:repeat-x;
+}
+
+#menu1_bgcolor{	background-color:#98B2DC;}
+#menu2_bgcolor{	background-color: #B0C4DE;}
+
+#menu_3{		background-color: red;}
+#menu_2{		background-color:	#406FBA;}
+.Tmenu3 .top .left { background-color:  #F2F2F2;}
+.Tmenu3 .top .right {  background-color:  #F2F2F2;}
+.Tmenu3 .bottom .left {  background-color:  #F2F2F2;}
+.Tmenu3 .bottom .right { background-color:  #F2F2F2;}
+
+/* General */
+#contener{		background-color:#F2F2F2;}
+#Tmenu{		background-color:#F2F2F2;
+border-right: 1px solid #98B2DC;
+}
+
+#footerline1{	background-color:#98B2DC;}
+#footerline2{	background-color:#dedede;}
+
+#MainPage textarea, #MainPage input, #MainPage select{    color:#242af6;}
+
+
+#mainnav li{	background-image: url("./Images/bg_header_grayblue.gif");}
+
+/* w3c */
+input[type="submit"],input[type="button"],input[type="reset"]{
+    background-image: url("./Images/bg_input_blue.gif") ;
+}
+/* IE */
+.oreonbutton input{
+    background-image: url("./Images/bg_input_blue.gif") ;
+}
+.quick_search{	border-color:#eff1f4;	
+background-image: url("Images/bg_header_grayblue.gif");	
+background-position:top left;
+background-repeat:repeat-x;
+color:#fff;}
+

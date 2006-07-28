@@ -1,0 +1,54 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_oreon.label}</td><td class="FormRowValue">{$form.contact_oreon.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_type_msg.label}</td><td class="FormRowValue">{$form.contact_type_msg.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_admin.label}</td><td class="FormRowValue">{$form.contact_admin.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>
+		{if $ldap == "1" }
+			<tr class="list_two"><td class="FormRowField">{$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
+		{/if}
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mail_write.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+
+	 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/server_client.gif'>&nbsp;&nbsp;{$form.header.hostNotification}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_hostNotifOpts.label}</td><td class="FormRowValue">{$form.contact_hostNotifOpts.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_hostNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_hostNotifCmds.html}</p></td></tr>
+
+	 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.serviceNotification}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_svNotifOpts.label}</td><td class="FormRowValue">{$form.contact_svNotifOpts.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_svNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_svNotifCmds.html}</p></td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
+
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p>{$form.action.html}</p>
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+

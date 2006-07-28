@@ -1,0 +1,115 @@
+<script type="text/javascript" src="include/configuration/changetab.js"></script>
+{$initJS}
+
+<div>
+<ul id="mainnav">
+	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
+	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
+	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
+</ul>
+</div>
+
+<div id='tab1' class='tab'>
+	 <table class="ListTable">
+	 	<tr class="list_one"><td class="ListColLeft">{$sysNamelabel} :</td><td class="ListColLeft">{$sysName}</td></tr>
+	 	<tr class="list_two"><td class="ListColLeft">{$sysDescrlabel} :</td><td class="ListColLeft">{ $sysDescr }</td></tr>
+	 	<tr class="list_one"><td class="ListColLeft">{$sysContactlabel} :</td><td class="ListColLeft">{$sysContact}</td></tr>
+	 	<tr class="list_two"><td class="ListColLeft">{$sysLocationlabel} : </td><td class="ListColLeft">{$sysLocation}</td></tr>
+	 	<tr class="list_one"><td class="ListColLeft">{$sysUpTimelabel} : </td><td class="ListColLeft">{$sysUpTime}</td></tr>
+	</table>
+</div>
+
+<div id='tab2' class='tab'>
+	 <table class="ListTable">
+{ foreach name=outer item=it from=$ifTab }
+		<tr class="ListHeader">
+			<td colspan="2">{ $it.ifDescr }</td><td td colspan="2"> {$Statuslabel} : { $it.ifOperStatus } ({ $it.ifAdminStatus })&nbsp;</td>
+		</tr>
+		<tr class={$it.Color}>
+			<td> {$PhysAddresslabel} : </td><td>{ $it.ifPhysAddress }&nbsp;</td><td>IP Address : </td><td>{ $it.ipInterface }&nbsp;</td>
+		</tr>
+		<tr class={$it.Color}>
+			<td> {$Typelabel}:</td><td> { $it.ifType }</td><td>Speed :</td><td> {$it.ifSpeed }&nbsp;{$it.ifSpeedUnit}&nbsp;</td>
+		</tr>
+		<tr class={$it.Color}>
+			<td colspan='2'> {$Trafficlabel} - {$Inlabel} : { $it.ifInOctets }&nbsp; / {$Outlabel} : { $it.ifOutOctets }&nbsp;</td>
+			<td colspan='2'>{$Errorlabel}  {$Inlabel} : { $it.ifInError }&nbsp; / {$Outlabel} : { $it.ifOutError }&nbsp;</td>
+		</tr>
+{/foreach }
+</table>
+</div>
+<div id='tab3' class='tab'>
+	 <table class="ListTable">
+	<tr class="ListHeader">
+		<td class="ListColHeaderLeft">{$mntPointlabel}</td>
+		<td class="ListColHeaderLeft">{$Typelabel}</td>
+		<td class="ListColHeaderLeft">{$Utilisationlabel}</td>
+		<td class="ListColHeaderLeft">{$Freelabel}</td>
+		<td class="ListColHeaderLeft">{$Usedlabel}</td>
+		<td class="ListColHeaderLeft">{$Sizelabel}</td>
+	</tr>
+{ foreach name=outer item=si from=$hrStorageIndex }
+	<tr class={cycle values="list_one,list_two"}>
+		<td class="ListColLeft">{ $si.hsStorageDescr }</td>
+		<td class="ListColLeft">{ $si.hsStorageType } {if $si.hsFSBootable == "true(1)"} (Bootable) {/if}</td>
+		<td class="ListColLeft">{if $si.hsStorageUsedPercent}<img height="10" src="./include/options/sysInfos/templates/classic/images/{if $si.hsStorageUsedPercent >= 85}red{/if}bar_left.gif" alt=""><img height="10" src="./include/options/sysInfos/templates/classic/images/{if $si.hsStorageUsedPercent >= 85}red{/if}bar_middle.gif" width="{$si.hsStorageUsedlen}" alt=""><img height="10" src="./include/options/sysInfos/templates/classic/images/{if $si.hsStorageUsedPercent >= 85}red{/if}bar_right.gif" alt="">&nbsp;&nbsp;{$si.hsStorageUsedPercent}% {/if}</td>
+		<td class="ListColLeft">{if $si.hsStorageFree}{$si.hsStorageFree}{/if}</td>
+		<td class="ListColLeft">{if $si.hsStorageUsed}{$si.hsStorageUsed}{/if}</td>
+		<td class="ListColLeft">{if $si.hsStorageSize}{$si.hsStorageSize}{/if}</td>
+	</tr>
+{/foreach}
+</table>
+</div>
+<div id='tab4' class='tab'>
+	 <table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$Softwarelabel}</td>
+			<td class="ListColHeaderLeft">{$Typelabel}</td>
+		</tr>
+	{ foreach name=outer item=swi from=$hrSWInstalled }
+		{if $swi.hrSWInstalledName != "" }
+		<tr class={cycle values="list_one,list_two"}>
+			<td class="ListColLeft">{ $swi.hrSWInstalledName }</td>
+			<td class="ListColLeft">{ $swi.hrSWInstalledType }</td>
+		</tr>
+		{/if}
+	{ /foreach }
+	</table>
+</div>
+<div id='tab5' class='tab'>
+	 <table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$Softwarelabel}</td>
+			<td class="ListColHeaderLeft">{$MermoryUsedlabel}</td>
+			<td class="ListColHeaderLeft">{$Pathlabel}</td>
+		</tr>
+	{ foreach name=outer item=swr from=$hrSWRun }
+		<tr class={cycle values="list_one,list_two"}>
+			<td class="ListColLeft">&nbsp;&nbsp;{ $swr.hrSWRunName }</td>
+			<td class="ListColLeft">{ $swr.hrSWRunPerfMem }</td>
+			<td class="ListColLeft">{ $swr.hrSWRunPath } {if $swr.hrSWRunParameters} {$swr.hrSWRunParameters} {/if}</td>
+		</tr>
+	{ /foreach }
+	</table>
+</div>
+<div id='tab6' class='tab'>
+	 <table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$Datelabel}</td>
+			<td class="ListColHeaderLeft">{$Objectlabel}</td>
+			<td class="ListColHeaderLeft">{$Beforelabel}</td>
+			<td class="ListColHeaderLeft">{$Afterlabel}</td>
+		</tr>
+	{ foreach name=outer item=la from=$log_array }
+		<tr class={cycle values="list_one,list_two"}>
+			<td class="ListColLeft">&nbsp;&nbsp;{ $la.ctime }</td>
+			<td class="ListColLeft">{ $la.type }</td>
+			<td class="ListColLeft">{$la.replaced_value}</td>
+			<td class="ListColLeft">{$la.value}</td>
+		</tr>
+	{ /foreach }
+	</table>
+</div>

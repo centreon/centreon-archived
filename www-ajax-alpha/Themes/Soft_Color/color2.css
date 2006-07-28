@@ -1,0 +1,170 @@
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus
+
+Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
+#outer{    border-left-color:#F2F2F2;   /* left column colour */}
+body{				background-color:#F2F2F2;}
+.ListTable, #ListTable a:link		{color:#666666;}
+.ListTable, #ListTable a:visited		{color:#666666;}
+.ListTable, #ListTable a:hover		{color:#E3A385;}
+/* Form */
+.list_lvl_1{	background-color:#fada83;}
+.list_lvl_2{	background-color:#faeaa3;}
+.ListHeader{	
+
+background-image: url("./Images/bg_header_bluegray.gif");
+background-position:top left;
+background-repeat:repeat-x;
+background-color: #eaeaee;
+}
+#ListTable, #ListTableMedium, #ListTableSmall {
+border-color: #fadab3;
+}
+.list_lvl_2 td, .list_lvl_1 td{
+	border-top-color: #AAAAAA;
+	border-left-color: #AAAAAA;
+	border-bottom-color: #AAAAAA;
+	border-right-color: #AAAAAA;
+}
+.list_one td, .list_two td, .list_three td, .list_four td{
+	border-top-color: #fadab3;
+	border-left-color: #fadab3;
+	border-bottom-color: #fadab3;
+	border-right-color: #fadab3;
+}
+.tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td{
+	border-top-color: #FFFFFF;
+	border-left-color: #FFFFFF;
+	border-bottom-color: #FFFFFF;
+	border-right-color: #FFFFFF;
+}
+.tab .list_lvl_2 td, .tab .list_lvl_1 td{
+	border-top-color: #AAAAAA;
+	border-left-color: #AAAAAA;
+	border-bottom-color: #AAAAAA;
+	border-right-color: #AAAAAA;
+}
+.ListHeader td{
+	border-top-color: #FFFFFF;
+	border-left-color: #FFFFFF;
+}
+
+
+.ListHeader td{
+	border-top-color: #FFFFFF;
+	border-left-color: #FFFFFF;
+}
+
+.ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter{
+	border-top-color: #fada83;
+}
+
+
+.list_one {
+background-color:#f8Fef1;} /*D1ECFD D6E5F0;}*/
+
+table tr.list_one:hover{		background-color:#d0d0e0;} /*D1ECFD D6E5F0;}*/
+
+
+.list_two {
+background-color:#f0f0f0 ;} /*BEE1F8 DCEDF8;}*/
+.list_two:hover {		background-color:#d0d0dd ;} /*BEE1F8 DCEDF8;}*/
+
+.list_three{	background-color:#ffbbbb;}
+.list_three:hover{	background-color:#dfbbbb;}
+.list_four {	background-color:#ffecd1;}
+.list_four:hover {	background-color:#dfecd1;}
+#page {			color:#592bed;}
+#page a{		color:#592bed;}
+
+/*Menu*/
+
+#menu1_bgimg{	background-image: url("Images/menu_bg_orange.gif");
+background-position:top right;
+background-repeat:repeat-x;
+}
+
+
+#menu1_bgcolor{	background: #fdc11e;}
+#menu2_bgcolor{	background: #FEF7DB;}
+
+
+#menu_2{		background: #fdc11e;}
+.Tmenu3 .top .left { background-color:  #FEF7DB;}
+.Tmenu3 .top .right {  background-color:  #FEF7DB;}
+.Tmenu3 .bottom .left {  background-color:  #FEF7DB;}
+.Tmenu3 .bottom .right { background-color:  #FEF7DB;}
+
+
+/* General */
+#contener{		background:#F2F2F2;}
+#Tmenu{		background:#F2F2F2;
+border-right: 1px solid #fdc11e;
+}
+
+#footerline1{	background-color:#fdc11e;}
+#footerline2{	background-color:#dedede;}
+
+#MainPage textarea, #MainPage input, #MainPage select{    color:#242af6;}
+#mainnav li{	
+/*
+background-image: url("./Images/bg_header_orange.gif");
+*/
+background-color: #eaeaee;
+}
+
+#formulary input{ border-style:inset;border:1px solid #DDDDDD;}
+ 
+/* w3c */
+input[type="submit"],input[type="button"],input[type="reset"]{
+    background-image: url("./Images/bg_input_orange.gif") ;
+}
+/* IE */
+.oreonbutton input{
+    background-image: url("./Images/bg_input_orange.gif") ;
+}
+
+
+.quick_search{
+border-color:#eff1f4;	
+background-image: url("./Images/bg_header_bluegray.gif");
+background-position:top left;
+background-repeat:repeat-x;
+
+background-color: #eaeaee;
+color:#666666;
+}
+.limitPage{
+background-image: url("./Images/bg_header_bluegray.gif");
+background-position:top left;
+background-repeat:repeat-x;
+
+background-color: #eaeaee;
+color:#666666;
+}
+.pageNumber{
+background-image: url("./Images/bg_header_bluegray.gif");
+background-position:top left;
+background-repeat:repeat-x;
+background-color: #eaeaee;
+color:#666666;
+}
+
+.a, .b{
+border-color:#fada83;
+}

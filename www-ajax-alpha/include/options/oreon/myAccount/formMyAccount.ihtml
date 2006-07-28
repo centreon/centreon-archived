@@ -1,0 +1,26 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1_message.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
+		
+		{if $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	<div id="validForm">
+	{if $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+

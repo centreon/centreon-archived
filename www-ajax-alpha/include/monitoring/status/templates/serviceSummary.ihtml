@@ -1,0 +1,30 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
+<div>
+	{foreach key=hg_name item=hstg from=$hostgroup}
+	<table id="ListTable">	
+		<tr class='list_lvl_1'>
+			<td class='ListColHeaderLeft' colspan="4">
+				{$lang.m_mon_hostgroup}{$hg_name} ({$hostgroup.$hg_name.alias})
+			</td>
+		</tr>
+		<tr class='ListHeader'>
+			<td class='ListColHeaderLeft'>{$lang.m_mon_hosts}</td>
+			<td class='ListColHeaderLeft'>{$lang.m_mon_status}</td>
+			<td class='ListColHeaderLeft'>{$lang.m_mon_services}</td>
+			<td class='ListColHeaderLeft'>{$lang.mon_actions}</td>
+		</tr>
+		{foreach item=host_list from=$hostgroup.$hg_name.host}
+		{if $svc_data.$hg_name.$host_list }
+			<tr class="{cycle values="list_one,list_two"}">
+				<td class="ListColLeft">{$h_data.$hg_name.$host_list}</td>
+				{$h_status_data.$hg_name.$host_list}
+				<td class="ListColLeft">{$svc_data.$hg_name.$host_list}</td>
+				<td class="ListColLeft"><a href="./oreon.php?p={$p}&host_name={$host_list}"><img src='img/icones/16x16/view.gif' border='0' alt='{$view}'></a></td>
+			</tr>
+		{/if}
+		{/foreach}
+	</table>
+	<br>
+	{/foreach}
+</div>
