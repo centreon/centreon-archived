@@ -223,7 +223,9 @@ For information : contact@oreon-project.org
 			# Grab default Graph Template Model and default Data Source Template Model
 			if (isset($_GET["grapht_graph_id"]) && $_GET["grapht_graph_id"])
 				$graph = array("graph_id" => $_GET["grapht_graph_id"], "name" => "");
-			
+			else
+				$graph = array("graph_id" => getDefaultGraph($service_id, 2), "name" => "");
+				
 			if (isset($graph)) 
 				$tpl->assign("graph", $graph["name"]);
 			$tpl->assign("lgGraph", $lang['giv_gt_name']);
@@ -278,25 +280,17 @@ For information : contact@oreon-project.org
 					preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
 					$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
 				} else if (!$_GET["period"]){
-					if (isset($service)){
-						$res =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service["service_id"]."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
-						$res->fetchInto($service_ext);
-					}
-					if ((isset($service_ext) && !$service_ext["graph_id"]) || isset($_GET["meta_service"]))
+					if (!isset($graph["graph_id"]))
 						$period = 86400;
 					else {	
-						$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$service_ext["graph_id"]."'");
-						if (PEAR::isError($pearDB)) {
+						$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
+						if (PEAR::isError($pearDB))
 							print "Mysql Error : ".$pearDB->getMessage();
-						}
 						$res->fetchInto($graph);
 						$period = $graph["period"];
 					}
 				} else if ($_GET["period"])
-					$period = 	$_GET["period"];
+					$period = $_GET["period"];
 				
 				if (!isset($start) && !isset($end)){
 					$start = time() - ($period + 120);
@@ -306,6 +300,7 @@ For information : contact@oreon-project.org
 	 			
 				# Mise en memoire des valeurs remontees de la base de donnees MySQL
 				# Init Lower Value
+				
 				$GMT = 0;
 				$lower = 0;
 				$tab_bin = array();				 
@@ -314,9 +309,8 @@ For information : contact@oreon-project.org
 						"AND `service_description` = '".$ret["service_description"]."' AND `metric` = '".$value["metric"]."' ".
 						"AND `ctime` >= '".date("Y-m-d G:i:s", $start)."' AND `ctime` <= '".date("Y-m-d G:i:s", $end)."' ORDER BY ctime";
 	 				$req =& $pearDBpp->query($get);
-	 				if (PEAR::isError($pearDBpp)) {
+	 				if (PEAR::isError($pearDBpp))
 						print "Mysql Error : ".$pearDBpp->getMessage();
-					}
 					$r = $str = NULL;
 					$cpt = 0;
 					$cpt_real = 0;
@@ -368,7 +362,6 @@ For information : contact@oreon-project.org
 				}
 				$res->free();
 			}
-			
 			$tpl->assign('cpt_total_values', $cpt_total_values);
 			$tpl->assign('cpt_total_graphed_values', $cpt_total_graphed_values);
 			$tpl->assign('isAvl', $isAvl);

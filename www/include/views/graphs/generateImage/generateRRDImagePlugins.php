@@ -59,7 +59,8 @@ For information : contact@oreon-project.org
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
 		exit;		// Session expired or invalide -> exit 
-	} else {		// Session Ok -> create image
+	} else {		// Session Ok -> create image		
+		
 		$tab_id = split("\_", $_GET["database"]);
 		$res =& $pearDB->query("SELECT service_description FROM service WHERE service_id = '".$tab_id[1]."'");
 		$res->fetchInto($r);
@@ -72,6 +73,7 @@ For information : contact@oreon-project.org
 			$template_id = getDefaultGraph($tab_id[1], 2);
 		else 
 			$template_id = $_GET["template_id"];
+			
 		$return = shell_exec($oreon->optGen['rrdtool_path_bin'] . " info " . $oreon->optGen["oreon_rrdbase_path"].$_GET["database"] . " ");
 		
 		// Recupe le Graph template
@@ -104,12 +106,10 @@ For information : contact@oreon-project.org
 		if (isset($_GET["start"]) && $_GET["start"])
 			$command_line .= " --start=".$_GET["start"]. " --end=".$_GET["end"];
 		else {
-			$res =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$tab_id[1]."'");
-			$res->fetchInto($service_ext);
-			if (!$service_ext["graph_id"])
+			if (!$template_id)
 				$period = 86400;
 			else {	
-				$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$service_ext["graph_id"]."'");
+				$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$template_id."'");
 				$res->fetchInto($graph);
 				$period = $graph["period"];
 			}

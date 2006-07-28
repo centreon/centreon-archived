@@ -114,7 +114,6 @@ For information : contact@oreon-project.org
 		
 		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
 			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
-		
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
 		//else
