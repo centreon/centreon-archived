@@ -326,11 +326,8 @@ foreach($tableFile2 as $key => $time)
 		if (isset($service_list[trim($svc)]))
 		foreach($htabsvc as $host => $htab)
 		{
-			if (!isset($host_list[trim($host)]))
+			if (isset($host_list[trim($host)]))
 			{
-				echo $host . "\n";
-			break;			
-			}
 			#
 			## last service alert
 			#	
@@ -378,7 +375,7 @@ foreach($tableFile2 as $key => $time)
 			$result = $pearDB->query($sql);
 			if (PEAR::isError($res)){
 			  die($res->getMessage());}
-
+			}
 		}		
 	}	
 }
