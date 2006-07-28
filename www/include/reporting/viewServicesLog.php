@@ -89,12 +89,12 @@ For information : contact@oreon-project.org
 		}
 		else if($_POST["period"] == "last7days")
 		{
-			$start_date_select = mktime($hour, $minute, $second, $month, $day-7, $year);
+			$start_date_select = mktime(0, 0, 0, $month, $day-7, $year);
 			$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
 		}
 		else if($_POST["period"] == "last30days")// attention au 31
 		{
-			$start_date_select = mktime($hour, $minute, $second, $month, $day-30, $year);
+			$start_date_select = mktime(0, 0, 0, $month, $day-30, $year);
 			$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
 		}
 		else if($_POST["period"] == "lastyear")// attention au 31
@@ -224,7 +224,7 @@ $rq = 'SELECT ' .
 	#
 	$period = array();
 	$period["today"] = "Today";
-	$period["last24hours"] = "Last 24 Hours";
+//	$period["last24hours"] = "Last 24 Hours";
 	$period["yesterday"] = "Yesterday";
 	$period["thisweek"] = "This Week";
 	$period["last7days"] = "Last 7 Days";
