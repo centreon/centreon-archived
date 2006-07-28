@@ -1,9 +1,10 @@
 Create a cron task as the following sample:
 
-0 0 1-31 * * php /your_oreon_path/cron/ArchiveLogInDB.php
+0 0 1-31 * * php -q /your_oreon_path/cron/ArchiveLogInDB.php
 
-line 34:  Modify your path
-$NagiosPathArchive = "/var/log/nagios/archives";
+Open the following file: oreon/www/include/reporting/ArchiveLogInDB.php
+And modify path variables for your config:
 
-line 37:  Modify your path
-include_once("/usr/local/oreon/www/oreon.conf.php");
+	$path_oreon = '/usr/local/oreon/';
+	$NagiosPathArchive = "/var/log/nagios/archives";
+

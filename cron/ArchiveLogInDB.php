@@ -17,6 +17,11 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	/*
+	 * Set your path here
+	 */
+	$path_oreon = '/usr/local/oreon/';
+	$NagiosPathArchive = "/var/log/nagios/archives";
 
 	function getLogData($time_event, $host, $service, $status, $output, $type){
 		global $lang;
@@ -30,11 +35,9 @@ For information : contact@oreon-project.org
 		return $tab ;
 	}
 
-	// à recuperer dans nagios.cfg
-	$NagiosPathArchive = "/var/log/nagios/archives";
-	
 	require_once 'DB.php';	
-	include_once("/usr/local/oreon/www/oreon.conf.php");
+	include_once($path_oreon . "/www/oreon.conf.php");
+	
 
 	/* Connect to oreon DB */	
 	$dsn = array(
@@ -102,11 +105,9 @@ For information : contact@oreon-project.org
 	    $service_list[$s["service_description"]] = $s["service_id"];
 	  }
 	}	
-	require_once '/usr/local/oreon/www/include/common/common-Func.php';
+	require_once $path_oreon . 'www/include/common/common-Func.php';
 
 
-	
-//!! penser a verifier en bdd si log deja inseré!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	$tableFile2 = array();
 	if ($handle  = @opendir($NagiosPathArchive))	{
 		while ($file = @readdir($handle))
@@ -206,7 +207,6 @@ function parseFile($file,$end_time){
 				else
 				$tab_host[$res1[0]]["timeNONE"] += ($time_event-$tab_host[$res1[0]]["current_time"]);
 				
-				//$tab_log[$a++] = getLogData($time_event, $res1[0], "", $res1[1], $res1[4], $type);
 
 				$tab_host[$res1[0]]["current_state"] = $res1[1];
 				$tab_host[$res1[0]]["current_time"] = $time_event; //save time
@@ -217,7 +217,6 @@ function parseFile($file,$end_time){
 			#
 			else if (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21))
 			{
-				//echo "-----::::" . $res1[1] . "\n";
 				$tab_services[$res1[1]][$res1[0]] = array();
 				$tab_tmp = array();
 				$tab_tmp["current_state"] = $res1[2];
@@ -265,18 +264,8 @@ function parseFile($file,$end_time){
 
 foreach($tableFile2 as $key => $time)
 {
-	$tmp = $NagiosPathArchive."/nagios-06-29-2006-00.log";
-
-
-/*
-	if($tmp == $key)
-	{
-	echo $tmp . "\n";
-	*/
 	$tab = array();
 	$tab = parseFile($key,$time);
-
-//	print_r($tab);
 
 	insert_file_name_in_db($key);
 	
@@ -392,8 +381,6 @@ foreach($tableFile2 as $key => $time)
 
 		}		
 	}	
-
-	//}
 }
 	
 ?>
