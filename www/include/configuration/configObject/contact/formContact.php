@@ -73,6 +73,15 @@ For information : contact@oreon-project.org
 		$res->fetchInto($ldap_auth);
 		$res->free();
 	}
+	if ($o == "a") {
+      $res =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
+      if (PEAR::isError($pearDB)) {
+         print "Mysql Error : ".$pearDB->getMessage();
+      }
+      $res->fetchInto($ldap_auth);
+      $res->free();
+   }
+
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
