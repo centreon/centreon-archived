@@ -46,7 +46,7 @@ my $file_lock = "/usr/local/nagios/var/purge.lock";
 
 my $User = "root";
 my $Password = "";
-my $DataBase = "purge_oreon";
+my $DataBase = "oreon";
 my $Host = "localhost";
 
 ##
