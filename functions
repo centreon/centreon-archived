@@ -70,7 +70,7 @@ function echo_warning() {
 function find_user_nagios()
 {
     NAGIOS_USER=`more $NAGIOS_ETC/nagios.cfg | grep ^nagios_user | cut -d = -f 2`
-    
+
     if [ -z "$NAGIOS_USER"  ] ; then
 	for fichier in $NAGIOS_ETC/*.cfg
       do
@@ -82,7 +82,7 @@ function find_user_nagios()
 	  fi
 	done
     fi
-    
+
     if [ -z "$NAGIOS_USER"  ] ; then
 	#Nagios User
 	NAGIOS_USER="nagios"
@@ -95,13 +95,13 @@ function find_user_nagios()
     else
 	echo_info "Finding Nagios user :" "$NAGIOS_USER"
     fi
-    
+
 }
 
 function find_group_nagios()
 {
     NAGIOS_GROUP=`more $NAGIOS_ETC/nagios.cfg | grep ^nagios_group | cut -d = -f 2`
-    
+
     if [ -z "$NAGIOS_GROUP"  ] ; then
 	for fichier in $NAGIOS_ETC/*.cfg
       do
@@ -113,7 +113,7 @@ function find_group_nagios()
 	  fi
     done
     fi
-    
+
     if [ -z "$NAGIOS_GROUP"  ] ; then
 	#Nagios Group
 	NAGIOS_GROUP="nagiocmd"
@@ -126,7 +126,7 @@ function find_group_nagios()
     else
 	echo_info "Finding Nagios group :" "$NAGIOS_GROUP"
     fi
-    
+
 }
 
 # Check the user and group nagios and create it if necessary
@@ -136,8 +136,8 @@ function check_user_nagios()
 	# Try to find nagios user/group from nagios.cfg file.
     # If not, we ask...
     find_user_nagios
-    
-    
+
+
     nagios_user_grep=`grep $NAGIOS_USER /etc/passwd > /dev/null; echo $?`
     if [ $nagios_user_grep == 0 ]; then
     	echo_success "Finding nagios user '$NAGIOS_USER' in /etc/passwd" "YES"
@@ -158,7 +158,7 @@ function check_group_nagios()
 	# Try to find nagios user/group from nagios.cfg file.
 	# If not, we ask...
     find_group_nagios
-    
+
     nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
     if [ $nagios_group_grep == 0 ]; then
     	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "YES"
@@ -223,7 +223,7 @@ function check_httpd_directory()
     fi
     fi
     fi
-    
+
     if test -e $DIR_APACHE/apache2.conf ; then
 	APACHE_CONF="apache2.conf"
     else if test -e $DIR_APACHE/commondhttpd.conf ; then
@@ -237,13 +237,13 @@ function check_httpd_directory()
 
 function check_user_apache()
 {
-    WEB_USER=`more $DIR_APACHE/$APACHE_CONF | grep ^User | cut -d " " -f 2`
-    
+    WEB_USER=`more $DIR_APACHE/$APACHE_CONF | grep -w ^User | cut -d " " -f 2`
+
     if [ -z "$WEB_USER"  ] ; then
 	for fichier in $DIR_APACHE/*
 	  do
 	  if [ -f "$fichier" ];	then
-	      WEB_USER_TEMP=`more $fichier | grep ^User | cut -d " " -f 2`
+	      WEB_USER_TEMP=`more $fichier | grep -w ^User | cut -d " " -f 2`
 	      if [ -n "$WEB_USER_TEMP" ]; then
 		  WEB_USER=$WEB_USER_TEMP
 	      fi
@@ -255,13 +255,13 @@ function check_user_apache()
 
 function check_group_apache()
 {
-    WEB_GROUP=`more $DIR_APACHE/$APACHE_CONF | grep ^Group | cut -d " " -f 2`
-    
+    WEB_GROUP=`more $DIR_APACHE/$APACHE_CONF | grep -w ^Group | cut -d " " -f 2`
+
     if [ -z "$WEB_GROUP"  ] ; then
 	for fichier in $DIR_APACHE/*
 	  do
 	  if [ -f "$fichier" ];	then
-	      WEB_GROUP_TEMP=`more $fichier | grep ^Group | cut -d " " -f 2`
+	      WEB_GROUP_TEMP=`more $fichier | grep -w ^Group | cut -d " " -f 2`
 	      if [ -n "$WEB_GROUP_TEMP" ]; then
 		  WEB_GROUP=$WEB_GROUP_TEMP
 	      fi
@@ -291,7 +291,7 @@ function install_oreon_plugins()
 	rm -f *.pm 2> /dev/null
 	rm -f *.conf 2> /dev/null
     fi
-    
+
     if [ -n "$PLUGINS_DIR" ]; then
 	for fichier in $PLUGINS_DIR/src/*
 	  do
@@ -319,7 +319,7 @@ function install_oreon_plugins()
 	echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 	cp *.pl $NAGIOS_PLUGIN
     fi
-    
+
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_PLUGIN/* >> $LOG_FILE 2>> $LOG_FILE
@@ -340,7 +340,7 @@ function install_oreon_plugins()
 	echo_success "Installing Oreon Traps Plugins on '$NAGIOS_PLUGIN/traps'" "OK"
 	chmod 775 $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
     fi
-    
+
     if test -a $NAGIOS_PLUGIN/oreon.conf ; then
 	echo ""
 	echo_success "Finding Oreon Plugins configuration file 'oreon.conf' :" "OK"
@@ -354,13 +354,13 @@ function install_oreon_plugins()
     else
 	temp=y
     fi
-    
+
     if [ $temp = "y" ];then
 	cp ${PLUGINS_DIR}oreon.conf $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
 	chmod 775 $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
 	chown $WEB_USER:$WEB_GROUP $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
   fi
-    
+
     cp ${PLUGINS_DIR}oreon.pm $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_PLUGIN/oreon.pm >> $LOG_FILE 2>> $LOG_FILE
 }
@@ -371,14 +371,14 @@ function install_oreon()
     echo ""
     echo "Start Oreon Installation"
     echo "------------------------"
-    
+
     if test -d $INSTALL_DIR_OREON ; then
 	echo_passed "Oreon Directory already exists" "PASSED"
     else
 	mkdir $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON'" "OK"
     fi
-    
+
     for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "rrd" "www" "cron"
       do
       if test -d $directory ; then
@@ -386,8 +386,8 @@ function install_oreon()
 	  echo_success "Copy '$directory'" "OK"
       fi
     done
-    
-    
+
+
 #  cp -Rf $SRC_OREON/* $INSTALL_DIR_OREON  >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/ >> $LOG_FILE 2>> $LOG_FILE
     chmod -R 775 $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
@@ -397,53 +397,53 @@ function install_oreon()
     if test -d /etc/nagios ; then
 	chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
     fi
-    
+
 # rrdtool directory configuration
-    
+
     chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $INSTALL_DIR_OREON/rrd/*  >> $LOG_FILE 2>> $LOG_FILE
-    
+
 # trafficMap data directory configuration
-    
+
 #  chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/include/trafficMap/average >> $LOG_FILE 2>> $LOG_FILE
 #  chmod 775 $INSTALL_DIR_OREON/include/trafficMap/average  >> $LOG_FILE 2>> $LOG_FILE
 #  chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/include/trafficMap/bg >> $LOG_FILE 2>> $LOG_FILE
 #  chmod 775 $INSTALL_DIR_OREON/include/trafficMap/bg  >> $LOG_FILE 2>> $LOG_FILE
 #  chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/include/trafficMap/png >> $LOG_FILE 2>> $LOG_FILE
 #  chmod 775 $INSTALL_DIR_OREON/include/trafficMap/png  >> $LOG_FILE 2>> $LOG_FILE
-    
+
     install_oreon_plugins
-    
+
     if test -d $NAGIOS_ETC ; then
 	echo_passed "$NAGIOS_ETC already exists" "PASSED"
     else
 	mkdir  $NAGIOS_ETC  >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "Creating '$NAGIOS_ETC'" "OK"
     fi
-    
+
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_ETC >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_ETC >> $LOG_FILE 2>> $LOG_FILE
-    
+
     if test -d $INSTALL_DIR_OREON/filesGeneration/nagiosCFG ; then
 	echo_passed "$INSTALL_DIR_OREON/filesGeneration/nagiosCFG already exists" "PASSED"
     else
 	echo_success "Creating '$INSTALL_DIR_OREON/filesGeneration/nagiosCFG'" "OK"
 	mkdir $INSTALL_DIR_OREON/filesGeneration/nagiosCFG
     fi
-    
+
     chmod 775 $INSTALL_DIR_OREON/filesGeneration >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/filesGeneration >> $LOG_FILE 2>> $LOG_FILE
-    
+
     if test -d $INSTALL_DIR_OREON/filesUpload/nagiosCFG ; then
 	echo_passed "$INSTALL_DIR_OREON/filesUpload/nagiosCFG already exists" "PASSED"
     else
 	echo_success "Creating '$INSTALL_DIR_OREON/filesUpload/nagiosCFG'" "OK"
 	mkdir $INSTALL_DIR_OREON/filesUpload/nagiosCFG
     fi
-    
+
     chmod 775 $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
-    
+
 }
 
 
