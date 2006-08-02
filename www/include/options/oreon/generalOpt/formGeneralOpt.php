@@ -112,7 +112,7 @@ For information : contact@oreon-project.org
 	## SNMP information
 	#
 	$form->addElement('header', 'snmp', $lang["genOpt_snmp"]);
-	$form->addElement('text', 'snmp_community', $lang["genOpt_snmpCom"], $attrsText2);
+	$form->addElement('text', 'snmp_community', $lang["genOpt_snmpCom"], $attrsText);
 	$form->addElement('select', 'snmp_version', $lang["genOpt_snmpVer"], array("0"=>"1", "1"=>"2", "2"=>"2c"), $attrsAdvSelect);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'snmp_trapd_used', null, $lang["yes"], '1');
