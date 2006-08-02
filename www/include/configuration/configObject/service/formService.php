@@ -525,6 +525,8 @@ For information : contact@oreon-project.org
 			require_once($path."listServiceByHost.php");
 		else if ($p == "60202")
 			require_once($path."listServiceByHostGroup.php");
+		else if ($p == "602")
+			require_once($path."listServiceByHost.php");
 	}
 	else	{
 		#Apply a template definition
