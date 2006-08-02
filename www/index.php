@@ -53,10 +53,10 @@ For information : contact@oreon-project.org
 
 	if (isset($_POST["submit"]) || (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"])) {
 		require_once("DBconnect.php");
-		
+
 		isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = NULL;
 		isset($_POST["useralias"]) ? $useraliasP = $_POST["useralias"] : $useraliasP = NULL;
-		$useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;		
+		$useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;
 		isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = NULL;
 		isset($_POST["password"]) ? $passwordP = $_POST["password"] : $passwordP = NULL;
 		$passwordG ? $password = $passwordG : $password = $passwordP;
@@ -69,9 +69,9 @@ For information : contact@oreon-project.org
 			if ($contact["contact_oreon"])	{
 				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable  FROM general_opt LIMIT 1");
 				$ldap_auth = $res->fetchRow();
-				$connect = false;			
+				$connect = false;
 				if($ldap_auth['ldap_auth_enable']== '1' && $contact['contact_auth_type']== 'ldap') {
-					if ($ldap_auth['ldap_ssl']) 
+					if ($ldap_auth['ldap_ssl'])
 						$ldapuri = "ldaps://" ;
 					else
 						$ldapuri = "ldap://" ;
@@ -79,7 +79,7 @@ For information : contact@oreon-project.org
 					$ds = ldap_connect($ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']) or $contact['contact_auth_type']='local' ;
 					if($ds) {
 						$userdn = $contact['contact_ldap_dn'];
-						$r = @ldap_bind($ds, $userdn, $password) ;
+						$r = @ldap_bind($ds, $userdn, $password) or $contact['contact_auth_type']='local'  ;
 						if($r) {
 							//update password in mysql database to provide login even if there is LDAP connection
 							if (isset($_POST["submit"]))
@@ -115,7 +115,7 @@ For information : contact@oreon-project.org
 							}
 						}
 						ldap_close($ds);
-					} 
+					}
 					else
 						$msg_error = "Enable to connect to LDAP Server for authentification<br>";
 				}
