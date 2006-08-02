@@ -79,7 +79,7 @@ For information : contact@oreon-project.org
 					$ds = ldap_connect($ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']) or $contact['contact_auth_type']='local' ;
 					if($ds) {
 						$userdn = $contact['contact_ldap_dn'];
-						$r = @ldap_bind($ds, $userdn, $password) or $contact['contact_auth_type']='local'  ;
+						$r = @ldap_bind($ds, $userdn, $password) ;
 						if($r) {
 							//update password in mysql database to provide login even if there is LDAP connection
 							if (isset($_POST["submit"]))
