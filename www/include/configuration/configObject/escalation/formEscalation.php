@@ -62,20 +62,12 @@ For information : contact@oreon-project.org
 			$esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
 		$res->free();
 		# Set Host Service
-		$res =& $pearDB->query("SELECT DISTINCT esr.service_service_id FROM escalation_service_relation esr, host_service_relation hsr WHERE esr.escalation_esc_id = '".$esc_id."' AND hsr.service_service_id = esr.service_service_id AND hsr.host_host_id IS NOT NULL GROUP BY service_service_id");
+		$res =& $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
 		for($i = 0; $res->fetchInto($services); $i++)
-			$esc["esc_hServices"][$i] = $services["service_service_id"];
-		$res->free();
-		# Set HostGroup Service
-		$res =& $pearDB->query("SELECT DISTINCT esr.service_service_id FROM escalation_service_relation esr, host_service_relation hsr WHERE esr.escalation_esc_id = '".$esc_id."' AND hsr.service_service_id = esr.service_service_id AND hsr.hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($services); $i++)
-			$esc["esc_hgServices"][$i] = $services["service_service_id"];
+			$esc["esc_hServices"][$i] = $services["host_host_id"]."_".$services["service_service_id"];
 		$res->free();
 		# Set Contact Groups relations
 		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
@@ -109,33 +101,16 @@ For information : contact@oreon-project.org
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$res->free();
 	#
-	# Services comes from DB -> Store in $hServices Array and $hgServices
+	# Services comes from DB -> Store in $hServices Array	
 	$hServices = array();
-	$hgServices = array();
-	$initName = NULL;
-	$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id AND h.host_id IN (".$oreon->user->lcaHStr.") ORDER BY h.host_name, sv.service_description");
+	$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$oreon->user->lcaHStr.") ORDER BY host_name");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
 	while($res->fetchInto($elem))	{
-		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
-		if (!$elem["service_description"])
-			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
-		if (isset($hServices[$elem["service_id"]]))
-			$hServices[$elem["service_id"]] = $elem["host_name"]."&nbsp;&nbsp;&nbsp;&nbsp;(*)".$elem["service_description"];
-		else
-			$hServices[$elem["service_id"]] = $elem["host_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
-	}
-	$res->free();
-	$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hg.hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg.hg_name, sv.service_description");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($elem))	{
-		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
-		if (!$elem["service_description"])
-			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
-		$hgServices[$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
+		$services = getMyHostServices($elem["host_id"]);
+		foreach ($services as $key=>$index)
+			$hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
 	}
 	$res->free();
 	# Meta Services comes from DB -> Store in $metas Array
@@ -175,6 +150,7 @@ For information : contact@oreon-project.org
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 250px; height: 150px;");
+	$attrsAdvSelect2 = array("style" => "width: 250px; height: 400px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
@@ -235,13 +211,7 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'services', $lang['esc_sortSv']);
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hServices', $lang['esc_hostServiceMembers'], $hServices, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
-	$ams1->setElementTemplate($template);
-	echo $ams1->getElementJs(false);
-	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hgServices', $lang['esc_hostGroupServiceMembers'], $hgServices, $attrsAdvSelect);
+    $ams1 =& $form->addElement('advmultiselect', 'esc_hServices', $lang['esc_hostServiceMembers'], $hServices, $attrsAdvSelect2);
 	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams1->setElementTemplate($template);
@@ -326,7 +296,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort4", $lang['esc_sort4']);
 	$tpl->assign("sort5", $lang['esc_sort5']);
 	
-	$tpl->assign("legend1", $lang['legend1']);
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 	
 	$valid = false;

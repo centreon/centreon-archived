@@ -109,10 +109,10 @@ For information : contact@oreon-project.org
 								print "Mysql Error : ".$pearDB->getMessage();
 							}
 						}
-						$res =& $pearDB->query("SELECT DISTINCT service_service_id FROM escalation_service_relation WHERE escalation_esc_id = '".$key."'");
+						$res =& $pearDB->query("SELECT * FROM escalation_service_relation WHERE escalation_esc_id = '".$key."'");
 						while($res->fetchInto($sv))
 						{
-							$pearDB->query("INSERT INTO escalation_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["service_service_id"]."')");
+							$pearDB->query("INSERT INTO escalation_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["service_service_id"]."', '".$sv["host_host_id"]."')");
 							if (PEAR::isError($pearDB)) {
 								print "Mysql Error : ".$pearDB->getMessage();
 							}
@@ -292,25 +292,16 @@ For information : contact@oreon-project.org
 		$ret = array();
 		$ret = $form->getSubmitValue("esc_hServices");
 		for($i = 0; $i < count($ret); $i++)	{
-			$rq = "INSERT INTO escalation_service_relation ";
-			$rq .= "(escalation_esc_id, service_service_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$esc_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		}
-		$ret = array();
-		$ret = $form->getSubmitValue("esc_hgServices");
-		for($i = 0; $i < count($ret); $i++)	{
-			$rq = "INSERT INTO escalation_service_relation ";
-			$rq .= "(escalation_esc_id, service_service_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$esc_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
+			$exp = explode("_", $ret[$i]);
+			if (count($exp) == 2)	{
+				$rq = "INSERT INTO escalation_service_relation ";
+				$rq .= "(escalation_esc_id, service_service_id, host_host_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$esc_id."', '".$exp[1]."', '".$exp[0]."')";
+				$pearDB->query($rq);
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 			}
 		}
 	}
