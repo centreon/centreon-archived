@@ -112,6 +112,9 @@ For information : contact@oreon-project.org
 		global $oreon;
 		$oreon =& $_SESSION["oreon"];
 
+		if (!is_object($oreon))
+			exit();
+
 		# Init differents elements we need in a lot of pages
 		$oreon->user->createLCA($pearDB);
 		$oreon->initNagiosCFG($pearDB);
