@@ -182,54 +182,21 @@ For information : contact@oreon-project.org
 		else if ($ret["level"]["level"] == 3)
 			$BP = true;
 		if ($BP)	{
-			$res2 =& $pearDB->query("SELECT esc.* FROM escalation esc, escalation_service_relation esr WHERE esr.service_service_id = '".$service["service_service_id"]."' AND esc.esc_id = esr.escalation_esc_id ORDER BY esc.esc_name");
+			$res2 =& $pearDB->query("SELECT * FROM escalation esc, escalation_service_relation esr WHERE esr.service_service_id = '".$service["service_service_id"]."' AND esc.esc_id = esr.escalation_esc_id ORDER BY esc.esc_name");
 			if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
 			}
 			$escalation = array();
 			while($res2->fetchInto($escalation))	{
-				//HostGroup Relation
-				$hostGroup = array();
-				$strTemp1 = NULL;
-				$strTemp2 = NULL;
-				$res3 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg WHERE hsr.service_service_id = '".$service["service_service_id"]."' AND hsr.hostgroup_hg_id = hg.hg_id");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-				while($res3->fetchInto($hostGroup))	{
-					$BP = false;
-					if ($ret["level"]["level"] == 1)
-						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 2)
-						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 3)
-						$BP = true;
-					if ($BP)
-						$strTemp1 != NULL ? $strTemp1 .= ", ".$hostGroup["hg_name"] : $strTemp1 = $hostGroup["hg_name"];
-				}
-				$res3->free();
-				unset($hostGroup);
-				//Host Relation
 				$host = array();
-				$strTMPTemp = NULL;
-				$res3 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id = '".$service["service_service_id"]."' AND hsr.host_host_id = host.host_id");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-				while($res3->fetchInto($host))	{
-					$BP = false;
-					if ($ret["level"]["level"] == 1)
-						array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 2)
-						array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 3)
-						$BP = true;
-					if ($BP)
-						$strTemp2 != NULL ? $strTemp2 .= ", ".$host["host_name"] : $strTemp2 = $host["host_name"];
-				}
-				$res3->free();
-				unset($host);
-				if ($strTemp1 || $strTemp2)	{
+				$BP = false;
+				if ($ret["level"]["level"] == 1)
+					array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+				else if ($ret["level"]["level"] == 2)
+					array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+				else if ($ret["level"]["level"] == 3)
+					$BP = true;
+				if ($BP)	{
 					$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
 					if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
 						$comment = array();
@@ -238,9 +205,8 @@ For information : contact@oreon-project.org
 							$str .= "# ".$cmt."\n";
 					}
 					$str .= "define serviceescalation{\n";			
-					if ($strTemp1) $str .= print_line("hostgroup_name", $strTemp1);
-					if ($strTemp2) $str .= print_line("host_name", $strTemp2);
-					if ($service["service_description"]) $str .= print_line("service_description", $service["service_description"]);
+					$str .= print_line("host_name", getMyHostName($escalation["host_host_id"]));
+					$str .= print_line("service_description", $service["service_description"]);
 					$cg = array();
 					$strTemp = NULL;
 					$res3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
