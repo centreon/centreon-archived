@@ -153,30 +153,6 @@ For information : contact@oreon-project.org
 			}
 		}
 	}
-/*	else if (isset($_GET["autologin"]) && isset($_GET["p"]) && $_GET["autologin"] && $useralias)	{
-		require_once("DBconnect.php");
-		$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".$useralias."' and contact_passwd='".$password."' AND contact_activate = '1' LIMIT 1");
-		if ($res->numRows()) {
-			global $oreon;
-			$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
-			$version = $res2->fetchRow();
-			$user =& new User($res->fetchRow(), $version["nagios_version"]);
-			$user->createLCA($pearDB);
-			$oreon = new Oreon($user);
-			$_SESSION["oreon"] =& $oreon;
-			$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
-			$session_expire =& $res->fetchRow();
-			$res =& $pearDB->query("SELECT * FROM session");
-			while ($session =& $res->fetchRow())
-				if ($session["last_reload"] + ($session_expire["session_expire"] * 60) <= time())
-					$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
-			$res =& $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
-			$args = NULL;
-			foreach($_GET as $key=>$value)
-				$args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
-			header("Location: ./oreon.php?".$args."");
-		}
-	}*/
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
