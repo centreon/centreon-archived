@@ -67,12 +67,13 @@ if (!isset($oreon))
 		$res->free();
 	}
 
-	$svcs = array(NULL=>NULL);
+	$svcs = array();
 	if (isset($_POST["hostgroup_escalation"])){
 		$tpl->assign('hostgroup_id', $_POST["hostgroup_escalation"]);
 	}
 	if (isset($_POST["host_escalation"])){
 		$svcs = getMyHostServices($_POST["host_escalation"]);
+		$svcs[NULL]= NULL;
 		$tpl->assign('host_id', $_POST["host_escalation"]);
 		if (isset($_POST["service_escalation"]))
 			$tpl->assign('service_id', $_POST["service_escalation"]);
