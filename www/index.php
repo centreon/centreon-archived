@@ -53,27 +53,28 @@ For information : contact@oreon-project.org
 
 	if (isset($_POST["submit"])) {
 		require_once("DBconnect.php");
-
+		
 		$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable  FROM general_opt LIMIT 1");
 		$ldap_auth = $res->fetchRow();
 
-		$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($_POST["useralias"], ENT_QUOTES)."' AND contact_activate = '1' AND contact_oreon = '1' LIMIT 1");
+		$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($_POST["useralias"], ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 		if($res->numRows()) {
 			$contact = $res->fetchRow();
 			if(isset($contact['contact_auth_type']) && $contact['contact_auth_type']=='ldap' && $ldap_auth['ldap_auth_enable']=='1' ) {
+
 				if ($ldap_auth['ldap_ssl'] == "0") $ldapuri = "ldap://" ;
 				if ($ldap_auth['ldap_ssl'] == "1") $ldapuri = "ldaps://" ;
  				// if no LDAP connection, use local mysql authentication
 				$ds = ldap_connect($ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']) or $contact['contact_auth_type']='local' ;
 				if($ds) {
 					$userdn = $contact['contact_ldap_dn'];
-					// if no LDAP connection or bind failed, use local mysql authentication
-					$r = @ldap_bind($ds,$userdn,$_POST['password']) or $contact['contact_auth_type']='local' ;
-					//error_log("LDAP Auth :: Bind => " . ldap_error ( $ds ));
+					$r = @ldap_bind($ds,$userdn,$_POST['password']) ;
 					if($r) {
 						//update password in mysql database to provide login even if there is LDAP connection
 						$pearDB->query("UPDATE contact set contact_passwd = '".md5($_POST['password'])."' WHERE contact_alias ='".$contact['contact_alias']."' ");
+
 						$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($_POST["useralias"], ENT_QUOTES)."' and contact_passwd='".md5($_POST["password"])."' AND contact_activate = '1' LIMIT 1");
+
 						if ($res->numRows()) {
 							global $oreon;
 							$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
@@ -151,7 +152,7 @@ For information : contact@oreon-project.org
 <head>
 <title>Oreon - Nagios Solution</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="./Themes/Basic_light/login.css" rel="stylesheet" type="text/css">
+<link href="./Themes/Basic/login.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="./img/iconOreon.ico">
 </head>
 <body OnLoad="document.login.useralias.focus();">
