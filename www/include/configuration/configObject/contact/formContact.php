@@ -73,14 +73,6 @@ For information : contact@oreon-project.org
 		$res->fetchInto($ldap_auth);
 		$res->free();
 	}
-	if ($o == "a") {
-      $res =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
-      if (PEAR::isError($pearDB)) {
-         print "Mysql Error : ".$pearDB->getMessage();
-      }
-      $res->fetchInto($ldap_auth);
-      $res->free();
-   }
 
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -182,7 +174,7 @@ For information : contact@oreon-project.org
 
    $auth_type = array();
    $auth_type["local"] = "local";
-	if (isset($ldap_auth['ldap_auth_enable']) && $ldap_auth['ldap_auth_enable'] == 1) {
+	if ($oreon->optGen['ldap_auth_enable'] == 1) {
 		$auth_type["ldap"] = "ldap";
 		$form->addElement('text', 'contact_ldap_dn', $lang["cct_ldap_dn"], $attrsText2);
 	}
@@ -325,8 +317,8 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
-		if (isset($ldap_auth['ldap_auth_enable']))
-			$tpl->assign('ldap', $ldap_auth['ldap_auth_enable'] );
+		if ($oreon->optGen['ldap_auth_enable'])
+			$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
 		$tpl->display("formContact.ihtml");
 	}
 ?>
