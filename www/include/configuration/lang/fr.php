@@ -161,7 +161,6 @@ $lang['esc_sortSv'] = "Services  concern&eacute;es";
 $lang['esc_sortHg'] = "HostGroups concern&eacute;s";
 $lang['esc_sortMs'] = "Meta Services concern&eacute;s";
 $lang['esc_hostServiceMembers'] = "Services par Hosts";
-$lang['esc_hostGroupServiceMembers'] = "Services par Host Groups";
 
 /* Dependencies */
 
@@ -180,8 +179,6 @@ $lang['dep_hgPar'] = "HostGroups dont nous d&eacute;pendons";
 $lang['dep_hgChi'] = "HostGroups D&eacute;pendants";
 $lang['dep_hSvPar'] = "Hosts Services dont nous d&eacute;pendons";
 $lang['dep_hSvChi'] = "Hosts Services D&eacute;pendants";
-$lang['dep_hgSvPar'] = "HostGroups Services dont nous d&eacute;pendons";
-$lang['dep_hgSvChi'] = "HostGroups Services D&eacute;pendants";
 $lang['dep_sgPar'] = "ServiceGroups dont nous d&eacute;pendons";
 $lang['dep_sgChi'] = "ServiceGroups D&eacute;pendants";
 $lang['dep_msPar'] = "Meta Services dont nous d&eacute;pendons";
@@ -189,7 +186,6 @@ $lang['dep_msChi'] = "Meta Services D&eacute;pendants";
 $lang['dep_name'] = "Nom";
 $lang['dep_description'] = "Description";
 $lang['dep_sort2'] = "Host Service D&eacute;pendance";
-$lang['dep_sort3'] = "HostGroup Service D&eacute;pendance";
 
 /* host template model */
 

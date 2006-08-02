@@ -161,7 +161,6 @@ $lang['esc_sortSv'] = "Implied Services";
 $lang['esc_sortHg'] = "Implied HostGroups";
 $lang['esc_sortMs'] = "Implied Meta Services";
 $lang['esc_hostServiceMembers'] = "Services by Hosts";
-$lang['esc_hostGroupServiceMembers'] = "Services by Host Groups";
 
 /* Dependencies */
 
@@ -180,8 +179,6 @@ $lang['dep_hgPar'] = "HostGroups Name";
 $lang['dep_hgChi'] = "Dependent HostGroups Name";
 $lang['dep_hSvPar'] = "Hosts Services Description";
 $lang['dep_hSvChi'] = "Dependent Hosts Services Description";
-$lang['dep_hgSvPar'] = "HostGroups Services Description";
-$lang['dep_hgSvChi'] = "Dependent HostGroups Services Description";
 $lang['dep_sgPar'] = "ServiceGroups Name";
 $lang['dep_sgChi'] = "Dependent ServiceGroups Name";
 $lang['dep_msPar'] = "Meta Services Name";
@@ -189,7 +186,6 @@ $lang['dep_msChi'] = "Dependent Meta Services Name";
 $lang['dep_name'] = "Name";
 $lang['dep_description'] = "Description";
 $lang['dep_sort2'] = "Host Service Description";
-$lang['dep_sort3'] = "Dependent HostGroup Service Description";
 
 /* host template model */
 
