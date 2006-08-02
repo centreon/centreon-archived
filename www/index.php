@@ -183,7 +183,7 @@ For information : contact@oreon-project.org
 <head>
 <title>Oreon, Revisited Experience Of Nagios</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="./Themes/Basic/login.css" rel="stylesheet" type="text/css">
+<link href="./Themes/Soft_Color/login.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="./img/iconOreon.ico">
 </head>
 <body OnLoad="document.login.useralias.focus();">
