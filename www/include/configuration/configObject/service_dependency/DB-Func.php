@@ -57,22 +57,6 @@ For information : contact@oreon-project.org
 				return false;
 		return true;
 	}
-	
-	function testCycleHg ($childs = NULL)	{
-		global $pearDB;
-		global $form;
-		$parents = array();
-		$childs = array();
-		if (isset($form))	{
-			$parents = $form->getSubmitValue('dep_hgSvPar');
-			$childs = $form->getSubmitValue('dep_hgSvChi');
-			$childs =& array_flip($childs);
-		}
-		foreach ($parents as $parent)
-			if (array_key_exists($parent, $childs))
-				return false;
-		return true;
-	}
 
 	function deleteServiceDependencyInDB ($dependencies = array())	{
 		global $pearDB;
@@ -109,25 +93,23 @@ For information : contact@oreon-project.org
 					}
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(dep_id)"]))	{
-						$res =& $pearDB->query("SELECT DISTINCT service_service_id FROM dependency_serviceParent_relation WHERE dependency_dep_id = '".$key."'");
+						$res =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation WHERE dependency_dep_id = '".$key."'");
 						if (PEAR::isError($pearDB)) {
 							print "Mysql Error : ".$pearDB->getMessage();
 						}
-						while($res->fetchInto($service))
-						{
-							$pearDB->query("INSERT INTO dependency_serviceParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$service["service_service_id"]."')");
+						while($res->fetchInto($service))	{
+							$pearDB->query("INSERT INTO dependency_serviceParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$service["service_service_id"]."', '".$service["host_host_id"]."')");
 							if (PEAR::isError($pearDB)) {
 								print "Mysql Error : ".$pearDB->getMessage();
 							}
 						}
 						$res->free();
-						$res =& $pearDB->query("SELECT DISTINCT service_service_id FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$key."'");
+						$res =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$key."'");
 						if (PEAR::isError($pearDB)) {
 							print "Mysql Error : ".$pearDB->getMessage();
 						}
-						while($res->fetchInto($service))
-						{
-							$pearDB->query("INSERT INTO dependency_serviceChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$service["service_service_id"]."')");
+						while($res->fetchInto($service))	{
+							$pearDB->query("INSERT INTO dependency_serviceChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$service["service_service_id"]."', '".$service["host_host_id"]."')");
 							if (PEAR::isError($pearDB)) {
 								print "Mysql Error : ".$pearDB->getMessage();
 							}
@@ -218,27 +200,16 @@ For information : contact@oreon-project.org
 		else
 			$ret1 = $form->getSubmitValue("dep_hSvPar");
 		for($i = 0; $i < count($ret1); $i++)	{
-			$rq = "INSERT INTO dependency_serviceParent_relation ";
-			$rq .= "(dependency_dep_id, service_service_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$dep_id."', '".$ret1[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		}
-		if (isset($ret["dep_hgSvPar"]))
-			$ret2 = $ret["dep_hgSvPar"]; 
-		else
-			$ret2 = $form->getSubmitValue("dep_hgSvPar");
-		for($i = 0; $i < count($ret2); $i++)	{
-			$rq = "INSERT INTO dependency_serviceParent_relation ";
-			$rq .= "(dependency_dep_id, service_service_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$dep_id."', '".$ret2[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
+			$exp = explode("_", $ret1[$i]);
+			if (count($exp) == 2)	{
+				$rq = "INSERT INTO dependency_serviceParent_relation ";
+				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$dep_id."', '".$exp[1]."', '".$exp[0]."')";
+				$pearDB->query($rq);
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 			}
 		}
 	}
@@ -258,27 +229,16 @@ For information : contact@oreon-project.org
 		else
 			$ret1 = $form->getSubmitValue("dep_hSvChi");
 		for($i = 0; $i < count($ret1); $i++)	{
-			$rq = "INSERT INTO dependency_serviceChild_relation ";
-			$rq .= "(dependency_dep_id, service_service_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$dep_id."', '".$ret1[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		}
-		if (isset($ret["dep_hgSvChi"]))
-			$ret2 = $ret["dep_hgSvChi"];
-		else
-			$ret2 = $form->getSubmitValue("dep_hgSvChi");
-		for($i = 0; $i < count($ret2); $i++)	{
-			$rq = "INSERT INTO dependency_serviceChild_relation ";
-			$rq .= "(dependency_dep_id, service_service_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$dep_id."', '".$ret2[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
+			$exp = explode("_", $ret1[$i]);
+			if (count($exp) == 2)	{
+				$rq = "INSERT INTO dependency_serviceChild_relation ";
+				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$dep_id."', '".$exp[1]."', '".$exp[0]."')";
+				$pearDB->query($rq);
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 			}
 		}
 	}
