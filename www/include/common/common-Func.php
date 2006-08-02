@@ -201,6 +201,20 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 	
+	function getMyHostGroupHosts($hg_id = NULL)	{
+		if (!$hg_id) return;
+		global $pearDB;
+		$hosts = array();
+		$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		while ($res->fetchInto($elem))
+			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
+		$res->free();
+		return $hosts;
+	}
+	
 	#
 	## SERVICE
 	#
