@@ -753,21 +753,27 @@ For information : contact@oreon-project.org
 						foreach ($tmpConf["dep_hSvChi"] as $key2=>$value2)						
 							foreach ($tmpConf["dep_hChi"] as $key3=>$value3)	{
 								if (array_key_exists($key2, $tmpConf["dep_hSvChi"]) && ($tmpConf["dep_hSvChi"][$key2] != getMyServiceID(trim($value2), $value3)))
-									$tmpConf["dep_hSvChi"][count($tmpConf["dep_hSvChi"])] = getMyServiceID(trim($value2), $value3);
+									$tmpConf["dep_hSvChi"][count($tmpConf["dep_hSvChi"])] = $value3."_".getMyServiceID(trim($value2), $value3);
 								else
-									$tmpConf["dep_hSvChi"][$key2] = getMyServiceID(trim($value2), $value3);
+									$tmpConf["dep_hSvChi"][$key2] =  $value3."_".getMyServiceID(trim($value2), $value3);
 							}
 					}
-					else if (isset($tmpConf["dep_hgChi"]))	{
+				/*	else if (isset($tmpConf["dep_hgChi"]))	{
 						$tmpConf["dep_hgSvChi"] = explode(",", $tmpConf[$key]);
 						foreach ($tmpConf["dep_hgSvChi"] as $key2=>$value2)
 							foreach ($tmpConf["dep_hgChi"] as $key3=>$value3)	{
-								if (array_key_exists($key2, $tmpConf["dep_hgSvChi"]) && ($tmpConf["dep_hgSvChi"][$key2] != getMyServiceID(trim($value2), NULL, $value3)))
-									$tmpConf["dep_hgSvChi"][count($tmpConf["dep_hgSvChi"])] = getMyServiceID(trim($value2), NULL, $value3);
-								else
-									$tmpConf["dep_hgSvChi"][$key2] = getMyServiceID(trim($value2), NULL, $value3);
+								if (array_key_exists($key2, $tmpConf["dep_hgSvChi"]) && ($tmpConf["dep_hgSvChi"][$key2] != getMyServiceID(trim($value2), NULL, $value3)))	{
+									$hosts = getMyHostGroupHosts($value3);
+									foreach ($hosts as $host)
+										$tmpConf["dep_hSvChi"][count($tmpConf["dep_hgSvChi"])] = $host."_".getMyServiceID(trim($value2), NULL, $value3);
+								}
+								else	{
+									$hosts = getMyHostGroupHosts($value3);
+									foreach ($hosts as $host)
+										$tmpConf["dep_hSvChi"][$key2] = $host."_".getMyServiceID(trim($value2), NULL, $value3);
+								}
 							}
-					}
+					} */
 					unset ($tmpConf[$key]);
 					break;				
 				case "service_description" :
@@ -776,25 +782,31 @@ For information : contact@oreon-project.org
 						foreach ($tmpConf["dep_hSvPar"] as $key2=>$value2)
 							foreach ($tmpConf["dep_hPar"] as $key3=>$value3)	{
 								if (array_key_exists($key2, $tmpConf["dep_hSvPar"]) && ($tmpConf["dep_hSvPar"][$key2] != getMyServiceID(trim($value2), $value3)))
-									$tmpConf["dep_hSvPar"][count($tmpConf["dep_hSvPar"])] = getMyServiceID(trim($value2), $value3);
+									$tmpConf["dep_hSvPar"][count($tmpConf["dep_hSvPar"])] = $value3."_".getMyServiceID(trim($value2), $value3);
 								else
-									$tmpConf["dep_hSvPar"][$key2] = getMyServiceID(trim($value2), $value3);
+									$tmpConf["dep_hSvPar"][$key2] = $value3."_".getMyServiceID(trim($value2), $value3);
 							}
 					}
-					else if (isset($tmpConf["dep_hgPar"]))	{
+			/*		else if (isset($tmpConf["dep_hgPar"]))	{
 						$tmpConf["dep_hgSvPar"] = explode(",", $tmpConf[$key]);
 						foreach ($tmpConf["dep_hgSvPar"] as $key2=>$value2)
 							foreach ($tmpConf["dep_hgPar"] as $key3=>$value3)	{
-								if (array_key_exists($key2, $tmpConf["dep_hgSvPar"]) && ($tmpConf["dep_hgSvPar"][$key2] != getMyServiceID(trim($value2), NULL, $value3)))
-									$tmpConf["dep_hgSvPar"][count($tmpConf["dep_hgSvPar"])] = getMyServiceID(trim($value2), NULL, $value3);
-								else
-									$tmpConf["dep_hgSvPar"][$key2] = getMyServiceID(trim($value2), NULL, $value3);
+								if (array_key_exists($key2, $tmpConf["dep_hgSvPar"]) && ($tmpConf["dep_hgSvPar"][$key2] != getMyServiceID(trim($value2), NULL, $value3)))	{
+									$hosts = getMyHostGroupHosts($value3);
+									foreach ($hosts as $host)
+										$tmpConf["dep_hSvPar"][count($tmpConf["dep_hgSvPar"])] = $host."_".getMyServiceID(trim($value2), NULL, $value3);
+								}
+								else	{
+									$hosts = getMyHostGroupHosts($value3);
+									foreach ($hosts as $host)
+										$tmpConf["dep_hSvPar"][$key2] = $host."_".getMyServiceID(trim($value2), NULL, $value3);
+								}
 							}
-					}
+					} */
 					unset ($tmpConf[$key]);
 					break;
 			}
-		if ((isset($tmpConf["dep_hSvPar"]) && isset($tmpConf["dep_hSvChi"])) || (isset($tmpConf["dep_hgSvPar"]) && isset($tmpConf["dep_hgSvChi"])))	{
+		if (isset($tmpConf["dep_hSvPar"]) && isset($tmpConf["dep_hSvChi"]))	{
 			$nbr["svd"] += 1;
 			$tmpConf["dep_name"] = "Service Dependency ".$nbr["svd"]." - ".date("d/m/Y - H:i:s", time());
 			$tmpConf["dep_description"] = "Service Dependency ".$nbr["svd"]." - ".date("d/m/Y - H:i:s", time());
