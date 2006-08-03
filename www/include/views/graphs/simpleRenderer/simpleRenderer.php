@@ -191,7 +191,7 @@ For information : contact@oreon-project.org
 	if ($form->validate() && isset($nb_rsp) && $nb_rsp)	{
 		$ret =& $form->getsubmitValues();
 		$case = NULL;
-		if ($ret["host_name"] && isset($ret["service_description"]))
+		if (isset($ret["host_name"]) && $ret["host_name"] && isset($ret["service_description"]))
 			$case = str_replace(" ", "\ ",$ret["host_name"])." / ".str_replace(" ", "\ ",$ret["service_description"]);
 		else if ($_GET["meta_service"])	{	
 			$ret["host_name"] = "Meta_Module";
