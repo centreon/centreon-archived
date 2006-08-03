@@ -150,14 +150,15 @@ For information : contact@oreon-project.org
 		if (isset($GraphTemplate["col_bot"]) && $GraphTemplate["col_bot"])
 			$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
 		
-		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
-			$command_line .= "--upper-limit=".$GraphTemplate["upper_limit"]." ";
-		else
-			$command_line .= " --alt-autoscale-max ";
 		
 		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
-			$command_line .= "--lower-limit=".$GraphTemplate["lower_limit"]." ";
-		
+			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
+		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
+			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
+		//else
+		//	$command_line .= "--alt-autoscale-max "; 
+		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
+			$command_line .= "--rigid ";
 			
 		$cpt = 0;
 		$longer = 0;
