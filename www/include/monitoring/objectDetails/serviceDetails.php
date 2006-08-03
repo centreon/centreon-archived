@@ -20,9 +20,7 @@ For information : contact@oreon.org
 		exit();
 		
 	$lca =& $oreon->user->lcaHost;
-	
-	print_r($lca);
-	
+		
 	if (isset($_GET["host_name"]) && $_GET["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"]){
 		$host_name = $_GET["host_name"];
 		$svc_description = $_GET["service_description"];
