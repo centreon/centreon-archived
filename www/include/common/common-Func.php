@@ -576,6 +576,36 @@ For information : contact@oreon-project.org
 	## GRAPHS	
 	#
 	
+	function getDefaultMetaGraph ($meta_id = NULL)	{
+		global $pearDB;		
+		$res =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		$gt =& $res->fetchRow();
+		if ($gt["graph_id"])
+			return $gt["graph_id"];	
+		else {
+			$res =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
+			if ($res->numRows())	{
+				$gt =& $res->fetchRow();
+				return $gt["graph_id"];
+			}
+		}
+		$res =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
+		if ($res->numRows())	{
+			$gt =& $res->fetchRow();
+			return $gt["graph_id"];
+		}
+		return NULL;
+	}
+	
 	function getDefaultGraph ($service_id = NULL, $rrdType = NULL)	{
 		// rrdType = 1 -> Graphs Perfparse
 		// rrdType = 2 -> Graphs Plugins
