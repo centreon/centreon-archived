@@ -54,14 +54,14 @@ For information : contact@oreon-project.org
 	    $ret =& $pearDB->query("SELECT host_address,host_snmp_community,host_snmp_version,host_template_model_htm_id FROM host WHERE host_id = '".$host_id."'");
 	    $r =& $ret->fetchRow();
 
-		if (!$r["host_snmp_community"]){
+		if (!$r["host_snmp_community"] && isset($r["host_id"])){
 			$community = getMySnmpCommunity($r["host_id"]);
 			if ($community == "")
 				$community = $oreon->optGen["snmp_community"];
 		} else
 			$community = $r["host_snmp_community"];
 
-		if (!$r["host_snmp_version"]){
+		if (!$r["host_snmp_version"] && isset($r["host_id"])){
 			$version = getMySnmpVersion($r["host_id"]);
 			if ($version == "")
 				$version = $oreon->optGen["snmp_version"];
