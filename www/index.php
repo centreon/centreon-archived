@@ -103,7 +103,7 @@ For information : contact@oreon-project.org
 					while ($session =& $res->fetchRow())
 						if ($session["last_reload"] + ($session_expire["session_expire"] * 60) <= time())
 							$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
-					$res =& $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+						$pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
 					if (!isset($_POST["submit"]))	{
 						$args = NULL;
 						foreach($_GET as $key=>$value)
@@ -113,7 +113,6 @@ For information : contact@oreon-project.org
 					else
 						header("Location: ./oreon.php?p=1");
 					$connect = true;
-					$res->free();
 				}
 			}
 		}
