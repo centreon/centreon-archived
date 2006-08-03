@@ -542,7 +542,7 @@ var onBlurHandler=function(event){
 // declenchee quand on clique sur une div contenant une possibilite
 var divOnMouseDown=function(){
   _inputField.value=getSuggestion(this);
-  _documentForm.submit()
+//  _documentForm.submit()
 };
 
 // declenchee quand on passe sur une div de possibilite. La div pr�c�dente est passee en style normal
