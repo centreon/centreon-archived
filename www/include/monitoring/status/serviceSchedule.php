@@ -26,9 +26,15 @@ For information : contact@oreon.org
 	$c = 0;
 	if (isset($service_status))
 		foreach ($service_status as $name => $svc){
+			if ($svc["next_check"])
+				$service_status[$name]["next_check"] = date($lang["date_time_format_status"], $svc["next_check"]);
+			else
+				$service_status[$name]["next_check"] = "";
 			$service_status[$name]["status"] = $svc["status"];
-			$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-			$service_status[$name]["next_check"] = date($lang["date_time_format_status"], $svc["next_check"]);
+			if ($svc["last_check"])
+				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
+			else
+				$service_status[$name]["last_check"] = "";
 			$service_status[$name]["checks_en"] = $svc["checks_en"];
 			$service_status[$name]["class"] = $tab_class[$c % 2];
 			$c++;
