@@ -8,7 +8,7 @@ INSERT INTO `command` VALUES ('', 'check_disk_space', '$USER1$#S#check_nt -H $HO
 INSERT INTO `command` VALUES ('', 'check_distant_disk_space', '$USER1$#S#check_distant_disk_space -H $HOSTADDRESS$ -C $ARG1$ -p $ARG2$ -w $ARG3$ -c $ARG4$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_dns', '$USER1$#S#check_dns -H $ARG1$ -s $HOSTADDRESS$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_ftp', '$USER1$#S#check_ftp -H $HOSTADDRESS$', '!127.0.0.1', 2);
-INSERT INTO `command` VALUES ('', 'check_graph_load_average', '$USER1$#S#check_graph_load_average.pl $HOSTADDRESS$ -v $ARG1$ -W -C $ARG2$ -g -S $ARG3$', '', 2);
+INSERT INTO `command` VALUES ('', 'check_graph_load_average', '$USER1$#S#check_graph_load_average.pl $HOSTADDRESS$ -v $ARG1$ -C $ARG2$ -g -S $ARG3$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_ping', '$USER1$#S#check_graph_ping.pl -H $HOSTADDRESS$ -w 200,20% -c 500,40% -f -n $ARG1$ -g -S $ARG2$', '!3', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_process', '$USER1$#S#check_graph_process.pl $HOSTADDRESS$ -v $ARG1$ -C $ARG2$ -n -g -S $ARG3$', '!2c!public', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_remote_storage', '$USER1$#S#check_graph_remote_storage.pl $HOSTADDRESS$ -d $ARG1$  -C $ARG2$ -w $ARG3$ -c $ARG4$ -v $ARG5$ -g -S $ARG6$', '!1!public!80!90!1', 2);
