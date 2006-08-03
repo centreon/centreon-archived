@@ -34,7 +34,7 @@ INSERT INTO `command` VALUES ('', 'check_tcp', '$USER1$#S#check_tcp -H $HOSTADDR
 INSERT INTO `command` VALUES ('', 'check_telnet', '$USER1$#S#check_tcp -H $HOSTADDRESS$ -p 23', '', 2);
 INSERT INTO `command` VALUES ('', 'check_udp', '$USER1$#S#check_udp -H $HOSTADDRESS$ -p $ARG1$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_uptime', '$USER1$#S#check_uptime.pl $HOSTADDRESS$ $ARG1$ $ARG2$', '', 2);
-INSERT INTO `command` VALUES ('', 'process-service-perfdata', '$USER1$#S#process-service-perfdata  &quot;$SERVICELASTCHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$SERVICEOUTPUT$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEPERFDATA$&quot;', '', 1);
+INSERT INTO `command` VALUES ('', 'process-service-perfdata', '$USER1$#S#process-service-perfdata  &quot;$LASTSERVICECHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$SERVICEOUTPUT$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEPERFDATA$&quot;', '', 1);
 INSERT INTO `command` VALUES ('', 'check_graph_nt', '$USER1$#S#check_graph_nt.pl -H $HOSTADDRESS$ -p 1248 -v $ARG1$ -l $ARG2$ -s $ARG3$ -w $ARG4$ -c $ARG5$ -g -S $ARG6$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_uptime', '$USER1$#S#check_graph_uptime.pl -H $HOSTADDRESS$ -C $ARG1$ -v $ARG2$ -d -g -S $ARG3$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_http', '$USER1$#S#check_graph_http.pl -H $HOSTADDRESS$ -f', '', 2);
