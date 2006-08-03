@@ -260,9 +260,9 @@ For information : contact@oreon-project.org
 		if (!$service_description && (!$host_id || !$hg_id)) return;
 		global $pearDB;
 		if ($host_id)	{
-			$res =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr " .
-					"WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id " .
-							"AND service_description = '".$service_description."' LIMIT 1");
+			$res =& $pearDB->query(	"SELECT service_id FROM service, host_service_relation hsr " .
+									"WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id " .
+									"AND service_description = '".$service_description."' LIMIT 1");
 			if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
 			}
