@@ -68,14 +68,10 @@ For information : contact@oreon-project.org
 				$template_id = getDefaultGraph($service_id, 1);
 			else {
 				$tab = split("_", $_GET["service_description"]);
-				$res =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
-				$res->fetchInto($meta);
-				$template_id = $meta["graph_id"];
+				$template_id = getDefaultMetaGraph($tab[1], 1);
 			}	
 		} else 
 			$template_id = $_GET["template_id"];
-		
-		//print $template_id;
 		
 		include_once("../../../../DBPerfparseConnect.php");
 		
@@ -116,8 +112,7 @@ For information : contact@oreon-project.org
 			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
-		//else
-		//	$command_line .= "--alt-autoscale-max "; 
+		
 		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
 			$command_line .= "--rigid ";
 		

@@ -11,7 +11,7 @@
         <tr>
     		<td colspan="2" class='ListColCenter'>
     			{if $isAvl}
-					<img src='./include/views/graphs/generateImage/generateRRDImage.php?session_id={$session_id}&host_name={$host_name}&service_description={$service_description}{if $defaultGraph.graph_id}&template_id={$defaultGraph.graph_id}{/if}&end={$end}&start={$start}'><br>
+					<img src='./include/views/graphs/generateImage/generateRRDImage.php?session_id={$session_id}&host_name={$host_name}&service_description={$service_description}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}'><br>
     			{/if}
     		</td>
         </tr>
@@ -48,8 +48,8 @@
 	                	<td class="FormHeader" colspan="2">{$lang.advanced}</td>
 	                <tr>
 	                <tr class="list_two">
-	            		<td>{$form.grapht_graph_id.label}</td>
-	            		<td>{$form.grapht_graph_id.html}</td>
+	            		<td>{$form.template_id.label}</td>
+	            		<td>{$form.template_id.html}</td>
 	                </tr>
 	                <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
 					<tr class="list_two">

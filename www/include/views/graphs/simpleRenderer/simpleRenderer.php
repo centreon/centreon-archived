@@ -134,7 +134,7 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'host_name', $lang["h"], $ppHosts, array("onChange"=>"this.form.submit()"));
 	$form->addElement('select', 'service_description', $lang["sv"], $ppServices1);
 	$form->addElement('select', 'meta_service', $lang["ms"], $ppMSs);
-	$form->addElement('select', 'grapht_graph_id', $lang["giv_gg_tpl"], $graphTs);
+	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
 	
 	$periods = array(	""=>"",
 						"10800"=>$lang["giv_sr_p3h"],
@@ -191,9 +191,10 @@ For information : contact@oreon-project.org
 	if ($form->validate() && isset($nb_rsp) && $nb_rsp)	{
 		$ret =& $form->getsubmitValues();
 		$case = NULL;
-		if (isset($ret["host_name"]) && $ret["host_name"] && isset($ret["service_description"]))
+		if (isset($ret["host_name"]) && $ret["host_name"] && isset($ret["service_description"])){	
 			$case = str_replace(" ", "\ ",$ret["host_name"])." / ".str_replace(" ", "\ ",$ret["service_description"]);
-		else if ($_GET["meta_service"])	{	
+			isset($_GET["template_id"]) && $_GET["template_id"] ? $graph = array("graph_id" => $_GET["template_id"], "name" => "") : $graph = array("graph_id" => getDefaultGraph($service_id, 2), "name" => "");
+		} else if ($_GET["meta_service"])	{	
 			$ret["host_name"] = "Meta_Module";
 			$ret["service_description"] = $_GET["meta_service"];		
 			$id = explode("_", $_GET["meta_service"]);
@@ -201,16 +202,19 @@ For information : contact@oreon-project.org
 			$meta =& $res2->fetchRow();
 			$case = $lang["ms"]." : ".$meta["meta_name"];
 			$res2->free();
+			if (isset($_GET["template_id"]) && $_GET["template_id"])
+				$graph = array("graph_id" => $_GET["template_id"], "name" => "");
+			else 
+				$graph = array("graph_id" => getDefaultMetaGraph(1), "name" => "");
 		}
+		
+		
 		if ((array_search($host_name, $oreon->user->lcaHost) || isset($_GET["meta_service"])) && $case)	{
 			$host_id = getMyHostID($host_name);
-			$service_id = getMyServiceID($ret["service_description"], $host_id);
-			
+			$service_id = getMyServiceID($ret["service_description"], $host_id);	
 			if (isset($_GET["service_description"])){
 				$res =& $pearDB->query("SELECT service.service_id, service.service_normal_check_interval, service.service_active_checks_enabled FROM service WHERE service_id = '".$service_id."'");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
+				if (PEAR::isError($pearDB)) print "Mysql Error : ".$pearDB->getMessage();
 				$res->fetchInto($service);
 			}
 			
@@ -219,12 +223,6 @@ For information : contact@oreon-project.org
 			$tpl->assign("res", $case);
 			if (isset($_GET["period"]))
 				$tpl->assign("period", $periods[$_GET["period"]]);
-			
-			# Grab default Graph Template Model and default Data Source Template Model
-			if (isset($_GET["grapht_graph_id"]) && $_GET["grapht_graph_id"])
-				$graph = array("graph_id" => $_GET["grapht_graph_id"], "name" => "");
-			else
-				$graph = array("graph_id" => getDefaultGraph($service_id, 2), "name" => "");
 				
 			if (isset($graph)) 
 				$tpl->assign("graph", $graph["name"]);
@@ -239,9 +237,8 @@ For information : contact@oreon-project.org
 			$cpt_total_graphed_values = 0;
 			
 			$res =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".$ret["host_name"]."' AND service_description = '".$ret["service_description"]."'");
-			if (PEAR::isError($pearDBpp)) {
-				print "Mysql Error : ".$pearDBpp->getMessage();
-			}
+			if (PEAR::isError($pearDBpp)) print "Mysql Error : ".$pearDBpp->getMessage();
+			
 			if ($res->numRows())	{
 				$cpt = 0;
 				$isAvl = true;
@@ -259,7 +256,7 @@ For information : contact@oreon-project.org
 					unlink($oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd");
 				
 				$label = NULL;
-				
+			
 				if (isset($_GET["meta_service"]) && $_GET["meta_service"]) {
 					$tab_meta = split("\_", $_GET["meta_service"]);
 					$res =& $pearDB->query("SELECT retry_check_interval FROM meta_service WHERE meta_id = '".$tab_meta[1]."'");
@@ -279,7 +276,7 @@ For information : contact@oreon-project.org
 					$start = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3], 1) ;
 					preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
 					$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
-				} else if (!$_GET["period"]){
+				} else if (!isset($_GET["period"]) || (isset($_GET["period"]) && !$_GET["period"])){
 					if (!isset($graph["graph_id"]))
 						$period = 86400;
 					else {	
@@ -297,7 +294,7 @@ For information : contact@oreon-project.org
 					$end = time() + 120;
 				}
 				$start_create = $start - 200000;
-	 			
+	 			#####################################################################
 				# Mise en memoire des valeurs remontees de la base de donnees MySQL
 				# Init Lower Value
 				
@@ -309,8 +306,7 @@ For information : contact@oreon-project.org
 						"AND `service_description` = '".$ret["service_description"]."' AND `metric` = '".$value["metric"]."' ".
 						"AND `ctime` >= '".date("Y-m-d G:i:s", $start)."' AND `ctime` <= '".date("Y-m-d G:i:s", $end)."' ORDER BY ctime";
 	 				$req =& $pearDBpp->query($get);
-	 				if (PEAR::isError($pearDBpp))
-						print "Mysql Error : ".$pearDBpp->getMessage();
+	 				if (PEAR::isError($pearDBpp)) print "Mysql Error : ".$pearDBpp->getMessage();
 					$r = $str = NULL;
 					$cpt = 0;
 					$cpt_real = 0;
@@ -337,7 +333,7 @@ For information : contact@oreon-project.org
 				$cpt_total_graphed_values_for_rrd = $cpt_total_values + 100;
 				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd . " RRA:MIN:0.5:8:".$cpt_total_graphed_values_for_rrd." RRA:MAX:0.5:8:".$cpt_total_graphed_values_for_rrd;
 				system($cmd, $return);
-				###################
+				################################################################
 				
 				$cpt_data = 0;
 				foreach ($tab_bin as $key => $value){
@@ -369,13 +365,12 @@ For information : contact@oreon-project.org
 			$tpl->assign('service_description', $ret["service_description"]);
 			$tpl->assign('end', $end);
 			$tpl->assign('start', $start);
-			if (isset($graph))
-				$tpl->assign('defaultGraph', $graph);
+			if (isset($_GET["template_id"]))
+				$tpl->assign('template_id', $_GET["template_id"]);
 		}
     }
 	
 	#Apply a template definition	
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
