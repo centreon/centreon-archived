@@ -65,7 +65,7 @@ $lang["m_services_problems"] = "Services Probl&egrave;mes";
 $lang["m_servicegroup_detail"] = "ServiceGroups D&eacute;tails";
 $lang["m_service_by_service_group"] = "Services par Svc Grp";
 
-$lang["m_status_scheduling"] = "Status et Ordonnancement";
+$lang["m_status_scheduling"] = "Ordonnancement";
 $lang["m_status_summary"] = "Sommaire des Status";
 $lang["m_status_resume"] = "R&eacute;sum&eacute; des Status";
 
