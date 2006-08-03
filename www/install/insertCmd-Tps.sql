@@ -34,8 +34,7 @@ INSERT INTO `command` VALUES ('', 'check_tcp', '$USER1$#S#check_tcp -H $HOSTADDR
 INSERT INTO `command` VALUES ('', 'check_telnet', '$USER1$#S#check_tcp -H $HOSTADDRESS$ -p 23', '', 2);
 INSERT INTO `command` VALUES ('', 'check_udp', '$USER1$#S#check_udp -H $HOSTADDRESS$ -p $ARG1$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_uptime', '$USER1$#S#check_uptime.pl $HOSTADDRESS$ $ARG1$ $ARG2$', '', 2);
-INSERT INTO `command` VALUES ('', 'process-host-perfdata', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;$LASTCHECK$#T#$HOSTNAME$#T#$HOSTSTATE$#T#$HOSTATTEMPT$#T#$STATETYPE$#T#$EXECUTIONTIME$#T#$OUTPUT$#T#$PERFDATA$&quot; &gt;&gt; #S#usr#S#local#S#nagios#S#var#S#host-perfdata.out', '', 1);
-INSERT INTO `command` VALUES ('', 'process-service-perfdata', '#S#usr#S#local#S#nagios#S#libexec#S#process-service-perfdata  &quot;$LASTCHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$OUTPUT$&quot; &quot;$SERVICESTATE$&quot; &quot;$PERFDATA$&quot;', '', 1);
+INSERT INTO `command` VALUES ('', 'process-service-perfdata', '$USER1$#S#process-service-perfdata  &quot;$SERVICELASTCHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$SERVICEOUTPUT$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEPERFDATA$&quot;', '', 1);
 INSERT INTO `command` VALUES ('', 'check_graph_nt', '$USER1$#S#check_graph_nt.pl -H $HOSTADDRESS$ -p 1248 -v $ARG1$ -l $ARG2$ -s $ARG3$ -w $ARG4$ -c $ARG5$ -g -S $ARG6$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_uptime', '$USER1$#S#check_graph_uptime.pl -H $HOSTADDRESS$ -C $ARG1$ -v $ARG2$ -d -g -S $ARG3$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_http', '$USER1$#S#check_graph_http.pl -H $HOSTADDRESS$ -f', '', 2);
@@ -52,6 +51,9 @@ INSERT INTO `command` VALUES ('', 'notify-by-epager', '#S#usr#S#bin#S#printf &qu
 
 INSERT INTO `command` VALUES ('', 'host-notify-by-email-nagios2', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;***** Oreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date#S#Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$', '', 1);
 INSERT INTO `command` VALUES ('', 'notify-by-email-nagios2', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;***** Oreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date#S#Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$#S#$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$', '', 1);
+
+INSERT INTO `command` VALUES ('', 'submit-host-check-result', '$USER1$#S#submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039;$HOSTOUTPUT$&#039;', '', 2);
+INSERT INTO `command` VALUES ('', 'submit-service-check-result', '$USER1$#S#submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039;$SERVICEOUTPUT$&#039;', '', 2);
 
 --
 -- table `timeperiod`
