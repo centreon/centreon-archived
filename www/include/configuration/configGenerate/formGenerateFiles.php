@@ -138,13 +138,13 @@ For information : contact@oreon-project.org
 				if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
 					foreach ($files as $filename)
 						require_once($filename);
+			if ($ret["xml"]["xml"])	{
+				require_once($path."genXMLList.php");
+				$pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
 		}
-		if ($ret["xml"]["xml"])	{
-			require_once($path."genXMLList.php");
-			$pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
 		}
 		if ($ret["debug"]["debug"])	{
 			require_once($path."genNagiosCFG-DEBUG.php");
