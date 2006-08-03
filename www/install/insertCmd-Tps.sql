@@ -37,7 +37,7 @@ INSERT INTO `command` VALUES ('', 'check_uptime', '$USER1$#S#check_uptime.pl $HO
 INSERT INTO `command` VALUES ('', 'process-service-perfdata', '$USER1$#S#process-service-perfdata  &quot;$LASTSERVICECHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$SERVICEOUTPUT$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEPERFDATA$&quot;', '', 1);
 INSERT INTO `command` VALUES ('', 'check_graph_nt', '$USER1$#S#check_graph_nt.pl -H $HOSTADDRESS$ -p 1248 -v $ARG1$ -l $ARG2$ -s $ARG3$ -w $ARG4$ -c $ARG5$ -g -S $ARG6$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_graph_uptime', '$USER1$#S#check_graph_uptime.pl -H $HOSTADDRESS$ -C $ARG1$ -v $ARG2$ -d -g -S $ARG3$', '', 2);
-INSERT INTO `command` VALUES ('', 'check_graph_http', '$USER1$#S#check_graph_http.pl -H $HOSTADDRESS$ -f', '', 2);
+INSERT INTO `command` VALUES ('', 'check_graph_http', '$USER1$#S#check_graph_http.pl -H $HOSTADDRESS$ -f -g -S $ARG1$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_service_state', '$USER1$#S#check_nt -H $HOSTADDRESS$ -v SERVICESTATE -l $ARG1$ -s &quot;public&quot;', '', 2);
 INSERT INTO `command` VALUES ('', 'check_users', '$USER1$#S#check_users -H $HOSTADDRESS$ -w 3 -c 5', '', 2);
 INSERT INTO `command` VALUES ('', 'check_http2', '$USER1$#S#check_http -I $HOSTADDRESS$ -u $ARG1$', '', 2);
