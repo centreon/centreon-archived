@@ -42,8 +42,13 @@ For information : contact@oreon.org
 			$service_status[$name]["status"] = $svc["status"];
 			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["status"])];
 			$service_status[$name]["flapping"] = $svc["svc_is_flapping"];
-			$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-			$service_status[$name]["last_change"] = Duration::toString(time() - $svc["last_change"]);
+			if ($svc["last_check"]){
+				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
+				$service_status[$name]["last_change"] = Duration::toString(time() - $svc["last_change"]);
+			} else {
+				$service_status[$name]["last_check"] = "";
+				$service_status[$name]["last_change"] = "";
+			}
 			$service_status[$name]["class"] = $tab_class[$rows % 2];
 			$tmp[1] = $service_status[$name];
 			$service_status_num[$rows++] = $tmp;
