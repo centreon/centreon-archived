@@ -42,9 +42,9 @@ For information : contact@oreon.org
 		else {
 			if (isset($tab_data["1"])){
 				$tab2 = split("\;", $tab_data["1"]);
-				if (isset($tab2[2]) && isset($tab_logo[$tab_data["0"]."-".$tab2[2]]))
+				if (isset($tab2[2]) && isset($tab_logo[$tab_data["0"]."-".$tab2[2]]) && file_exists($tab_logo[$tab_data["0"]."-".$tab2[2]]))
 					$tab["logo"] = $tab_logo[$tab_data["0"]."-".$tab2[2]];
-				else if (isset($tab2[1]) && isset($tab_logo[$tab_data["0"]."-".$tab2[1]]))
+				else if (isset($tab2[1]) && isset($tab_logo[$tab_data["0"]."-".$tab2[1]]) && file_exists($tab_logo[$tab_data["0"]."-".$tab2[1]]))
 					$tab["logo"] = $tab_logo[$tab_data["0"]."-".$tab2[1]];
 				else
 					$tab["logo"] = "";	
@@ -58,10 +58,9 @@ For information : contact@oreon.org
 	
 	if (isset($_POST["file"]) && is_file($oreon->Nagioscfg["log_archive_path"] . $_POST["file"]))
 		$log = fopen($oreon->Nagioscfg["log_archive_path"] . $_POST["file"], "r");
-	else {
+	else
 		if (file_exists($oreon->Nagioscfg["log_file"]) && !($log = fopen($oreon->Nagioscfg["log_file"], "r")))
 			echo $lang["pel_cant_open"] . $oreon->Nagioscfg["log_file"] . "<br>";
-	}
 	
 	
 	if (isset($log))
