@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Inventory » is developped by Merethis company for Lafarge Group,
+This unit, called ï¿½ Oreon Inventory ï¿½ is developped by Merethis company for Lafarge Group,
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -220,6 +220,8 @@ For information : contact@oreon-project.org
 
 			    $tab_array_index = array();
 
+if(isset($iftab) && is_array($iftab))
+{
 			    foreach ($ifTab as $key => $it)
 			    	$tab_array_index[$it["ifIndex"]] = $key;
 
@@ -229,6 +231,7 @@ For information : contact@oreon-project.org
 			    		$ifTab[$key]["ifVLan"] = $ifTab[$tab_array_index[$returned_value]]["ifDescr"];
 			    	}
 	   			}
+}
 
 			    $ipInterface_data = walk_snmp_value("1.3.6.1.2.1.4.20.1.1", "IpAddress: ");
 			  	if ($ipInterface_data){
@@ -249,6 +252,10 @@ For information : contact@oreon-project.org
 				    		$ifTab[$key]["ipInterface"] = "Not Defined";
 		    		}
 			    $tpl->assign("ifTab", $ifTab);
+				$tpl->assign("Datelabel",$lang["s_Date"]);
+				$tpl->assign("Objectlabel",$lang["s_Object"]);
+				$tpl->assign("Beforelabel",$lang["s_Before"]);
+				$tpl->assign("Afterlabel",$lang["s_After"]);			    
 	    }
 	}
 
@@ -271,6 +278,7 @@ For information : contact@oreon-project.org
 		global $address, $community, $timeout, $retries;
 		$tab = @snmpwalk($address, $community, $oid, $timeout , $retries);
 		$cpt = 0;
+		$tab_ret = array();
 		if ($tab)
 			foreach ($tab as $t){
 				$tab_ret[$cpt] = str_replace($replace_string, '', $t);
