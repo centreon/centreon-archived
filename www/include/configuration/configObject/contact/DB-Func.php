@@ -62,6 +62,27 @@ For information : contact@oreon-project.org
 			return true;
 	}
 
+	function keepOneContactAtLeast()	{
+		global $pearDB;
+		global $form;
+		$res =& $pearDB->query("SELECT COUNT(*) AS nbr_valid FROM contact WHERE contact_activate = '1' AND contact_oreon = '1'");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
+		if (isset($form))
+			$cct_oreon = $form->getSubmitValue('contact_oreon');
+		else
+			$cct_oreon["contact_oreon"] = 0;
+		if (isset($form))
+			$cct_activate = $form->getSubmitValue('contact_activate');
+		else
+			$cct_activate["contact_activate"] = 0;
+		$contact = $res->fetchRow();
+		if ($contact["nbr_valid"] == 1 && ($cct_oreon["contact_oreon"] == 0 || $cct_activate["contact_activate"] == 0))
+			return false;
+		return true;
+	}
+	
 	function enableContactInDB ($contact_id = null)	{
 		if (!$contact_id) return;
 		global $pearDB;
@@ -74,9 +95,11 @@ For information : contact@oreon-project.org
 	function disableContactInDB ($contact_id = null)	{
 		if (!$contact_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$contact_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
+		if (keepOneContactAtLeast())	{
+			$pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$contact_id."'");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
 		}
 	}
 

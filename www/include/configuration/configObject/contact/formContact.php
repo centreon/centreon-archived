@@ -264,6 +264,8 @@ For information : contact@oreon-project.org
 	$form->addRule('contact_name', $lang['ErrAlreadyExist'], 'exist');
 	$form->registerRule('existAlias', 'callback', 'testAliasExistence');
 	$form->addRule('contact_alias', $lang['ErrAlreadyExist'], 'existAlias');
+	$form->registerRule('keepOneContactAtLeast', 'callback', 'keepOneContactAtLeast');
+	$form->addRule('contact_alias', $lang['ErrNotEnoughtContact'], 'keepOneContactAtLeast');
 
 
 	$form->setRequiredNote($lang['requiredFields']);

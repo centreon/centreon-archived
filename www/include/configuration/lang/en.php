@@ -20,6 +20,7 @@ $lang['ErrCctPasswd'] = "Passwords are not the same";
 $lang['ErrGenFileProb'] = "Can't access to file needed";
 $lang['ErrCycleDef'] = "Circular Definition";
 $lang['ErrSvConflict'] = "This description is in conflicts with another one already define in the relation(s) selected";
+$lang['ErrNotEnoughtContact'] = "You have to keep at least one contact to access to Oreon";
 
 /* Configuration Menu */
 
