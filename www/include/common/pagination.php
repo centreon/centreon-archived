@@ -89,7 +89,11 @@ if(isset($_GET["sort_types"]))
 	$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	if(($next = $num + 1) < ($rows/$limit))
 	$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
-	$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
+
+	if(($rows / $limit) > 0)
+		$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
+	else
+		$tpl->assign('pageNumber', ($num)."/".ceil($rows / $limit));
 
 
 	#Select field to change the number of row on the page
