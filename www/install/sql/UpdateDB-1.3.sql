@@ -23,3 +23,5 @@ ALTER TABLE `escalation_service_relation` ADD FOREIGN KEY ( `host_host_id` ) REF
 ALTER TABLE `meta_service_relation` ADD INDEX `host_index` ( `host_id` ) ;
 ALTER TABLE `meta_service_relation` ADD FOREIGN KEY ( `host_id` ) REFERENCES `host` ( `host_id` ) ON DELETE CASCADE ;
 ALTER TABLE `meta_service_relation` ADD FOREIGN KEY ( `meta_id` ) REFERENCES `meta_service` ( `meta_id` ) ON DELETE CASCADE ;
+
+UPDATE general_opt SET template = "Soft_Color";
