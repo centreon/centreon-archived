@@ -1009,4 +1009,10 @@ $lang["lgd_on"] = " Enable";
 $lang["lgd_off"] = " Disable";
 
 $lang["advanced"] = "Advanced >>";
+
+
+$lang["quickFormError"] = "impossible to validate, one or more field is incorrect";
+
+
+
 ?>

@@ -216,6 +216,8 @@ For information : contact@oreon-project.org
 	##End of Picker Color
 	#
 
+
+
     $valid = false;
 	if ($form->validate())	{
 		# Update in DB
@@ -227,6 +229,9 @@ For information : contact@oreon-project.org
 		$o = "w";
    		$valid = true;
 		$form->freeze();
+	}
+	if (!$form->validate() && isset($_POST["gopt_id"]))	{
+	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
 	}
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."'"));

@@ -861,4 +861,6 @@ $lang["lgd_on"] = " Activer";
 $lang["lgd_off"] = " D&eacute;sactiver";
 
 $lang["advanced"] = "Options Avancees >>";
+
+$lang["quickFormError"] = "Impossible de valider, un ou plusieurs champs sont erronés";
 ?>
