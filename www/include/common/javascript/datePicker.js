@@ -108,8 +108,11 @@ the chosen value of the datepicker using a date format of dd.mm.yyyy
 */
 function displayDatePicker(dateFieldName, displayBelowThisObject, dtFormat, dtSep)
 {
-  var targetDateField = document.getElementsByName (dateFieldName).item(0);
- 
+	if (document.getElementsByName (dateFieldName).item(1))
+	  var targetDateField = document.getElementsByName (dateFieldName).item(1);
+	else
+	  var targetDateField = document.getElementsByName (dateFieldName).item(0);
+ 	
   // if we weren't told what node to display the datepicker beneath, just display it
   // beneath the date field we're updating
   if (!displayBelowThisObject)
@@ -426,7 +429,10 @@ function datePickerClosed(dateField)
 */
 function updateDateField(dateFieldName, dateString)
 {
-  var targetDateField = document.getElementsByName (dateFieldName).item(0);
+	if (document.getElementsByName (dateFieldName).item(1))
+	  var targetDateField = document.getElementsByName (dateFieldName).item(1);
+	else
+	  var targetDateField = document.getElementsByName (dateFieldName).item(0);
   if (dateString)
     targetDateField.value = dateString;
  
