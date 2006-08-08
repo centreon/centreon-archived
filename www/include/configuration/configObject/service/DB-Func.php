@@ -73,9 +73,6 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$service_id."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -85,9 +82,6 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$service_id."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
