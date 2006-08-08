@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	function write_command($cmd){
 		global $oreon;
 		$str = NULL;
-		$str = "echo '[" . time() . "] " . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
+		$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		# print $str;
 		return passthru($str);
 	}
