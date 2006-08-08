@@ -15,7 +15,7 @@
 	</tr>
 	{ foreach item=s from=$service_status }
 	{if (!$host_name && !$status) || ($host_name == $s.host_name && $status && $status == $s.status) || ($host_name == $s.host_name && !$status)}
-		{if $s.next_check && $s.last_check}
+		{if $s.next_check || $s.last_check}
 		<tr {if $s.status == CRITICAL}class="list_three"{else}class="{$s.class}"{/if}>
 			<td class="ListColPicker" width="10"><input name="select[{$s.host_name}:{$s.description}]" value="1" type="checkbox"></td>
 			<td class="ListColLeft"><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
