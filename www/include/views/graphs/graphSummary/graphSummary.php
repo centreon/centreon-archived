@@ -91,13 +91,11 @@ For information : contact@oreon-project.org
 				$_GET["database"] = array("1" => $host_id."_".$service_id.".rrd", "0" => $_GET["host_name"]);
 				require_once("./include/views/graphs/simpleRenderer/simpleRenderer.php");
 			} else {
-				
 				if (!isset($service_id)){
 					$database =& $_GET["database"];
 					preg_match("/[0-9]+_([0-9]+)\.rrd/", $database[1], $tab);
 					$service_id = $tab[1]; 
 				}	
-				
 				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd")){
 					$p = "40202";
 					$msg_error = $lang["giv_db_unavailable"];
