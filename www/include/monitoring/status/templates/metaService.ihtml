@@ -25,7 +25,7 @@
 		<td class="ListColLeft"><div id="host{$c}">{ $s.real_name }</div></td>
 			<td class="ListColRight">
 			<div id="actions{$c}">
-				<a href='./oreon.php?p={$p}&o=meta&cmd=2&select[{$s.host_name}:{$s.description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
+				<a href='./oreon.php?p={$p}&o=meta&cmd=2&select[{$s.host_name};{$s.description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
 				<a href='./oreon.php?p=40202&meta_service=meta_{ $s.id }&grapht_graph_id=&step=0&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
 			<div>
 			</td>
