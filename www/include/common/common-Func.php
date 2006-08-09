@@ -219,6 +219,24 @@ For information : contact@oreon-project.org
 	## SERVICE
 	#
 
+	function getMyServiceField($service_id = NULL, $field)	{
+		if (!$service_id) return;
+		global $pearDB;
+		while(1)	{
+			$res =& $pearDB->query("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($pearDB))
+				print "Mysql Error : ".$pearDB->getMessage();
+			$row =& $res->fetchRow();
+			$field_result = $row[$field];
+			if ($row[$field])
+				return $row[$field];
+			else if ($row["service_template_model_stm_id"])
+				$service_id = $row["service_template_model_stm_id"];
+			else
+				break;
+		}
+	}
+
 	function getMyServiceName($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
