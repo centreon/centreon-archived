@@ -18,9 +18,6 @@ For information : contact@oreon.org
 	if (!isset($oreon))
 		exit();
 
-
-
-
 	include_once("./include/monitoring/external_cmd/functions.php");
 	
 	if (isset($_GET["en"]))
