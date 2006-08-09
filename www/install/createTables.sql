@@ -528,9 +528,11 @@ CREATE TABLE `dependency_serviceChild_relation` (
   `dscr_id` int(11) NOT NULL auto_increment,
   `dependency_dep_id` int(11) default NULL,
   `service_service_id` int(11) default NULL,
+  `host_host_id` int(11) default NULL,
   PRIMARY KEY  (`dscr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
-  KEY `service_index` (`service_service_id`)
+  KEY `service_index` (`service_service_id`),
+  KEY `host_index` (`host_host_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -543,9 +545,11 @@ CREATE TABLE `dependency_serviceParent_relation` (
   `dspr_id` int(11) NOT NULL auto_increment,
   `dependency_dep_id` int(11) default NULL,
   `service_service_id` int(11) default NULL,
+  `host_host_id` int(11) default NULL,
   PRIMARY KEY  (`dspr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
-  KEY `service_index` (`service_service_id`)
+  KEY `service_index` (`service_service_id`),
+  KEY `host_index` (`host_host_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -689,9 +693,11 @@ CREATE TABLE `escalation_service_relation` (
   `esr_id` int(11) NOT NULL auto_increment,
   `escalation_esc_id` int(11) default NULL,
   `service_service_id` int(11) default NULL,
+  `host_host_id` int(11) default NULL,
   PRIMARY KEY  (`esr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
-  KEY `service_index` (`service_service_id`)
+  KEY `service_index` (`service_service_id`),
+  KEY `host_index` (`host_host_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1305,7 +1311,8 @@ CREATE TABLE `meta_service_relation` (
   `activate` enum('0','1') default NULL,
   PRIMARY KEY  (`msr_id`),
   KEY `meta_index` (`meta_id`),
-  KEY `metric_index` (`metric_id`)
+  KEY `metric_index` (`metric_id`),
+  KEY `host_index` (`host_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1749,14 +1756,16 @@ ALTER TABLE `dependency_metaserviceParent_relation`
 --
 ALTER TABLE `dependency_serviceChild_relation`
   ADD CONSTRAINT `dependency_serviceChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `dependency_serviceChild_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `dependency_serviceChild_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `dependency_serviceChild_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `dependency_serviceParent_relation`
 --
 ALTER TABLE `dependency_serviceParent_relation`
   ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `dependency_serviceParent_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `dependency_servicegroupChild_relation`
@@ -1811,7 +1820,8 @@ ALTER TABLE `escalation_meta_service_relation`
 --
 ALTER TABLE `escalation_service_relation`
   ADD CONSTRAINT `escalation_service_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `escalation_service_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `escalation_service_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `escalation_service_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `extended_host_information`
@@ -1968,6 +1978,13 @@ ALTER TABLE `meta_service`
   ADD CONSTRAINT `meta_service_ibfk_1` FOREIGN KEY (`check_period`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `meta_service_ibfk_2` FOREIGN KEY (`notification_period`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `meta_service_ibfk_3` FOREIGN KEY (`graph_id`) REFERENCES `giv_graphs_template` (`graph_id`) ON DELETE SET NULL;
+
+--
+-- Contraintes pour la table `meta_service_relation`
+--
+ALTER TABLE `meta_service_relation`
+  ADD CONSTRAINT `meta_service_relation_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `meta_service_relation_ibfk_2` FOREIGN KEY (`meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `reporting_diff_list`
