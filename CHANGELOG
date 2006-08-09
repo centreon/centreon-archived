@@ -7,3 +7,4 @@
 
 => External command working, bad syntax in monitoring file corrected
 => Bugfix in date javascript in reporting
+=> Add Float for upper and lower limit for graph template 
