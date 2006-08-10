@@ -781,7 +781,7 @@ CREATE TABLE `general_opt` (
   `color_unknown` varchar(50) default NULL,
   `session_expire` int(11) default NULL,
   `perfparse_installed` enum('0','1') default NULL,
-  `graph_preferencies` int(11) default NULL,
+  `graph_preferencies` int(11) default '0',
   `maxViewMonitoring` int(11) NOT NULL default '50',
   `maxViewConfiguration` int(11) NOT NULL default '20',
   `template` varchar(254) default 'Basic',
