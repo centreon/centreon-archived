@@ -29,6 +29,9 @@ For information : contact@oreon-project.org
 	require_once ("$classdir/Oreon.class.php");
 	require_once("DBconnect.php");
 
+	if (!isset($debug_auth))
+		$debug_auth = FALSE;
+
 	// detect installation dir
 	$file_install_acces = 0;
 	if (file_exists("./install/setup.php")){
@@ -63,57 +66,89 @@ For information : contact@oreon-project.org
 			$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 		else
 			$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
+
 		if($res->numRows()) {
 			$contact = $res->fetchRow();
 			if ($contact["contact_oreon"])	{
 				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable  FROM general_opt LIMIT 1");
 				$ldap_auth = $res->fetchRow();
-				$connect = false;
-				if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap") { 
+				$connect = true;
+				if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap") {
+					$connect = true;
+					if ($debug_auth)
+						error_log("[" . date("d/m/Y H:s") ."] LDAP User : ". $useralias ." => " . $contact['contact_ldap_dn'] . "\n", 3, "../log/auth.log");
+
 					if ($ldap_auth['ldap_ssl'])
 						$ldapuri = "ldaps://" ;
 					else
 						$ldapuri = "ldap://" ;
+
 					$ds = ldap_connect($ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']);
-					if ($ds && @ldap_bind($ds, $contact['contact_ldap_dn'], $password))
+					if ($debug_auth)
+						error_log("[" . date("d/m/Y H:s") ."] LDAP Auth Cnx  : ". $ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']  ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, "../log/auth.log");
+					@ldap_bind($ds, $contact['contact_ldap_dn'], $password);
+					if ($debug_auth)
+						error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH Bind : ". $contact['contact_ldap_dn'] ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, "../log/auth.log");
+
+					/* In some case, we fallback to local Auth
+					  0 : Bind succesfull => Default case
+					 -1 : Can't contact LDAP server => Fallback
+					 51 : Server is busy => Fallback
+					 52 : Server is unavailable => Fallback
+					*/
+					if ($ds && ((ldap_errno($ds) == 0 ) || (ldap_errno($ds) == -1 )  || (ldap_errno($ds) == 51 ) || (ldap_errno($ds) == 52 ) )) {
 						$connect = true;
+						if ($debug_auth)
+							error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : OK, let's go Local AUTH\n", 3, "../log/auth.log");
+					} else {
+						$connect = false;
+					}
 					ldap_close($ds);
 				}
 				$res->free();
 				//update password in mysql database to provide login even if there is LDAP connection
 				if (isset($_POST["submit"]) && $ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" && $connect)
 					$pearDB->query("UPDATE contact set contact_passwd = '".md5($password)."' WHERE contact_alias ='".$useralias."' ");
-				// Autologin case => contact_alias is MD5 format
-				if (!isset($_POST["submit"]))
-					$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".$password."' AND contact_activate = '1' LIMIT 1");
-				// Normal auth
-				else
-					$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5($password)."' AND contact_activate = '1' LIMIT 1");
-				if ($res->numRows() || $connect) {
-					global $oreon;
-					$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
-					$version = $res2->fetchRow();
-					$user =& new User($res->fetchRow(), $version["nagios_version"]);
-					$user->createLCA($pearDB);
-					$oreon = new Oreon($user);
-					$_SESSION["oreon"] =& $oreon;
-					$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
-					$session_expire =& $res->fetchRow();
-					$res =& $pearDB->query("SELECT * FROM session");
-					while ($session =& $res->fetchRow())
-						if ($session["last_reload"] + ($session_expire["session_expire"] * 60) <= time())
-							$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
-						$pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
-					if (!isset($_POST["submit"]))	{
-						$args = NULL;
-						foreach($_GET as $key=>$value)
-							$args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
-						header("Location: ./oreon.php?".$args."");
+
+
+					if ($connect) {
+						if ($debug_auth)
+							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, "../log/auth.log");
+						// Autologin case => contact_alias is MD5 format
+						if (!isset($_POST["submit"]))
+							$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".$password."' AND contact_activate = '1' LIMIT 1");
+						// Normal auth
+						else
+							$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5($password)."' AND contact_activate = '1' LIMIT 1");
+
+						if ($res->numRows() ) {
+								if ($debug_auth)
+									error_log("[" . date("d/m/Y H:s") ."] Local AUTH : User " .$useralias ." Successfully authentificated\n", 3, "../log/auth.log");
+								global $oreon;
+								$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
+								$version = $res2->fetchRow();
+								$user =& new User($res->fetchRow(), $version["nagios_version"]);
+								$user->createLCA($pearDB);
+								$oreon = new Oreon($user);
+								$_SESSION["oreon"] =& $oreon;
+								$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
+								$session_expire =& $res->fetchRow();
+								$res =& $pearDB->query("SELECT * FROM session");
+								while ($session =& $res->fetchRow())
+									if ($session["last_reload"] + ($session_expire["session_expire"] * 60) <= time())
+										$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
+									$pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+								if (!isset($_POST["submit"]))	{
+									$args = NULL;
+									foreach($_GET as $key=>$value)
+										$args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+									header("Location: ./oreon.php?".$args."");
+								}
+								else
+									header("Location: ./oreon.php?p=1");
+								$connect = true;
+						}
 					}
-					else
-						header("Location: ./oreon.php?p=1");
-					$connect = true;
-				}
 			}
 		}
 	}
