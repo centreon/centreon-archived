@@ -77,6 +77,7 @@ $lang["genOpt_ldap_base_dn"] = "Base DN LDAP";
 $lang["genOpt_ldap_login_attrib"] = "LDAP Login Attribut";
 $lang["genOpt_ldap_ssl"] = "Activ&eacute; le support SSL pour le LDAP";
 $lang["genOpt_ldap_auth_enable"] = "Activ&eacute; l'authentification LDAP";
+$lang["genOpt_graph_preferencies"] = "Moteur de Graphs Pr&eacute;f&eacute;r&eacute;";
 
 
 # Menu

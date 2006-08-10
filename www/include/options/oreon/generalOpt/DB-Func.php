@@ -123,6 +123,8 @@ For information : contact@oreon-project.org
 		isset($ret["session_expire"]) && $ret["session_expire"] != NULL ? $rq .= "'".htmlentities($ret["session_expire"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "perfparse_installed = ";
 		isset($ret["perfparse_installed"]["perfparse_installed"]) && $ret["perfparse_installed"]["perfparse_installed"] != NULL ? $rq .= "'".$ret["perfparse_installed"]["perfparse_installed"]."', ": $rq .= "NULL, ";
+		$rq .= "graph_preferencies = ";
+		isset($ret["graph_preferencies"]["graph_preferencies"]) && $ret["graph_preferencies"]["graph_preferencies"] != NULL ? $rq .= "'".$ret["graph_preferencies"]["graph_preferencies"]."', ": $rq .= "NULL, ";
 		$rq .= "maxViewMonitoring = ";
 		isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["maxViewMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "maxViewConfiguration = ";

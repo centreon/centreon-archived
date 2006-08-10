@@ -38,6 +38,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_version.label}</td><td class="FormRowValue">{$form.nagios_version.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.perfparse_installed.label}</td><td class="FormRowValue">{$form.perfparse_installed.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.graph_preferencies.label}</td><td class="FormRowValue">{$form.graph_preferencies.html}</td></tr>
 	</table>
 </div>
 <div id="tab3" class="tab">

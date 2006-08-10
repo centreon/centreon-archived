@@ -148,6 +148,10 @@ For information : contact@oreon-project.org
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["no"], '0');
 	$form->addGroup($ppUse, 'perfparse_installed', $lang["genOpt_perfparse"], '&nbsp;');
 
+	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, $lang["m_views_graphPlu"], '1');
+	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, $lang["m_views_graphShow"], '0');
+	$form->addGroup($graphPref, 'graph_preferencies', $lang["genOpt_graph_preferencies"], '&nbsp;');
+	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
