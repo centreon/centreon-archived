@@ -94,7 +94,8 @@ For information : contact@oreon-project.org
 				if (!isset($service_id)){
 					$database =& $_GET["database"];
 					preg_match("/[0-9]+_([0-9]+)\.rrd/", $database[1], $tab);
-					$service_id = $tab[1]; 
+					if (isset($tab[1]))
+						$service_id = $tab[1]; 
 				}	
 				if (!file_exists($oreon->optGen["oreon_rrdbase_path"].$host_id."_".$service_id.".rrd")){
 					$p = "40202";
