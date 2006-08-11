@@ -8,5 +8,5 @@
 => Bugfix : Host test existence when Host based on template
 => Feature : No space in service_description when add/modify a service
 => Bugfix : Add Float for upper and lower limit for graph template
-=> Bugfix : synchronise time between value and configuration services
-=> Bugfix : fixe bug for graph transparency
+=> Bugfix : For Graph, synchronise time between perfparse value and service configuration
+=> Bugfix : Graph transparency
