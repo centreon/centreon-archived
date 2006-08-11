@@ -384,6 +384,8 @@ For information : contact@oreon-project.org
 	$form->applyFilter('_ALL_', 'trim');
 	$form->applyFilter('host_name', 'myReplace');
 	$form->addRule('host_name', $lang['ErrName'], 'required');
+	$form->registerRule('exist', 'callback', 'testHostExistence');
+	$form->addRule('host_name', $lang['ErrAlreadyExist'], 'exist');
 	# If we are using a Template, no need to check the value, we hope there are in the Template
 	if (!$form->getSubmitValue("host_template_model_htm_id"))	{
 		$form->addRule('host_alias', $lang['ErrAlias'], 'required');
@@ -397,8 +399,6 @@ For information : contact@oreon-project.org
 		$form->addRule('timeperiod_tp_id2', $lang['ErrTp'], 'required');
 		$form->addRule('host_notifOpts', $lang['ErrOpt'], 'required');
 
-		$form->registerRule('exist', 'callback', 'testHostExistence');
-		$form->addRule('host_name', $lang['ErrAlreadyExist'], 'exist');
 	}
 	$form->setRequiredNote($lang['requiredFields']);
 
