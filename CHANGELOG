@@ -1,10 +1,10 @@
-## Patch Oreon-1.3_P1
-
-=> External command working, bad syntax in monitoring file corrected
-=> Bugfix in date javascript in reporting
-
 ## Oreon 1.3.1
 
-=> External command working, bad syntax in monitoring file corrected
-=> Bugfix in date javascript in reporting
-=> Add Float for upper and lower limit for graph template 
+=> Bugfix : External command working, bad syntax in monitoring file corrected
+=> Bugfix : Date javascript in reporting
+=> Bugfix : Add "host_id" field in service dependency and service escalation table
+=> Bugfix : MySQL DB foreign key update for service dependency & escalation
+=> Bugfix : MySQL DB foreign key update for meta_service_indicator
+=> Bugfix : Host test existence when Host based on template
+=> Feature : No space in service_description when add/modify a service
+=> Bugfix : Add Float for upper and lower limit for graph template
