@@ -87,7 +87,7 @@ if (isset($_GET["select"]))
 				case 22: 	send_cmd("ENABLE_NOTIFICATIONS", $lang, "");break;
 				case 23: 	send_cmd("DISABLE_NOTIFICATIONS", $lang, "");break;
 				case 24: 	send_cmd("SHUTDOWN_PROGRAM", time(), $lang);break;//
-				case 25: 	send_cmd("RESTART_PROGRAM", time(), $lang);break;//
+				case 25: 	send_cmd(" RESTART_PROGRAM", time(), $lang);break;//
 				case 26: 	send_cmd("PROCESS_SERVICE_CHECK_RESULT", $lang, "");break;//
 				case 27: 	send_cmd("SAVE_STATE_INFORMATION", $lang, "");break;
 				case 28: 	send_cmd("READ_STATE_INFORMATION", $lang, "");break;
