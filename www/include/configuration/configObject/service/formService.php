@@ -442,7 +442,7 @@ For information : contact@oreon-project.org
 		return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
 	}
 	$form->applyFilter('_ALL_', 'trim');
-	$form->applyFilter('service_description', 'myReplace');
+	//$form->applyFilter('service_description', 'myReplace');
 	$form->addRule('service_description', $lang['ErrName'], 'required');
 	# If we are using a Template, no need to check the value, we hope there are in the Template
 	if (!$form->getSubmitValue("service_template_model_stm_id"))	{
