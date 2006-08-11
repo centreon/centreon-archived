@@ -16,4 +16,4 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 ?>
-v1.3
+v1.3.1
