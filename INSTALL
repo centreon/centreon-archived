@@ -12,29 +12,17 @@ To use Oreon, you need to have on your server :
 FRANCAIS :
 ----------
 
-
 Pour installer Oreon sans mise à jour :
 
 	Lancer la commande "./install.sh"
 
-Pour mettre à jour :
-
-	Lancer la commande "./upgrade.sh"
-
-
 ENGLISH :
 ---------
-
 
 For install only :
 
 	Launch "./install.sh"
 
-For update :
-
-	Launch "./upgrade.sh"
-
-
-For more informations, mail infos@oreon-project.org or visit Oreon's forum http://forum.oreon-project.org.
+For more informations, mail infos@oreon-project.org or visit Oreon's forum http://forum.oreon-project.org
 
 Thanks for using oreon.
