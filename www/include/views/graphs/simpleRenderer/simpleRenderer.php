@@ -48,36 +48,33 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#	
-	# Resources comes from DB -> Store in $ppHosts Array
+	#         Resources comes from DB -> Store in $ppHosts Array
+	
 	$ppHosts = array(NULL=>NULL);
 	$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
-	if (PEAR::isError($pearDBpp)) {
+	if (PEAR::isError($pearDBpp))
 		print "Mysql Error : ".$pearDBpp->getMessage();
-	}
-	while($res->fetchInto($ppHost))	{
+	while($res->fetchInto($ppHost))
 		if (array_search($ppHost["host_name"], $oreon->user->lcaHost))
 			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"];
-	}
 	$res->free();
 	
 	$graphTs = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	if (PEAR::isError($pearDB)) {
+	$res =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
+	if (PEAR::isError($pearDB))
 		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	while($res->fetchInto($graphT))
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
 	$res->free();
 	
+	# Perfparse Host comes from DB -> Store in $ppHosts Array
 	$ppServices1 = array();
 	$ppServices2 = array();
 	if ($host_name && array_search($host_name, $oreon->user->lcaHost))	{
-		# Perfparse Host comes from DB -> Store in $ppHosts Array
 		$ppServices = array(NULL=>NULL);
 		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, service_description, metric, unit FROM perfdata_service_metric WHERE host_name = '".$host_name."' ORDER BY host_name");
-		if (PEAR::isError($pearDBpp)) {
+		if (PEAR::isError($pearDBpp))
 			print "Mysql Error : ".$pearDBpp->getMessage();
-		}
 		while($res->fetchInto($ppService))
 			$ppServices1[$ppService["service_description"]] = $ppService["service_description"];
 		$res->free();		
@@ -86,15 +83,13 @@ For information : contact@oreon-project.org
 	# Perfparse Meta Services comes from DB -> Store in $ppMSs Array
 	$ppMSs = array(NULL=>NULL);
 	$res =& $pearDBpp->query("SELECT DISTINCT service_description FROM perfdata_service_metric WHERE host_name = 'Meta_Module' ORDER BY service_description");
-	if (PEAR::isError($pearDBpp)) {
+	if (PEAR::isError($pearDBpp))
 		print "Mysql Error : ".$pearDBpp->getMessage();
-	}
 	while($res->fetchInto($ppMS))	{
 		$id = explode("_", $ppMS["service_description"]);
 		$res2 =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$id[1]."'");
-		if (PEAR::isError($pearDB)) {
+		if (PEAR::isError($pearDB))
 			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		if ($res2->numRows())	{
 			$meta =& $res2->fetchRow();
 			$ppMSs[$ppMS["service_description"]] = $meta["meta_name"];
@@ -136,6 +131,11 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'meta_service', $lang["ms"], $ppMSs);
 	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
 	
+	$form->addElement('text', 'start', $lang['giv_gt_start']);
+	$form->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
+	$form->addElement('text', 'end', $lang['giv_gt_end']);
+	$form->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
+	
 	$periods = array(	""=>"",
 						"10800"=>$lang["giv_sr_p3h"],
 						"21600"=>$lang["giv_sr_p6h"],
@@ -154,11 +154,6 @@ For information : contact@oreon-project.org
 						"31104000"=>$lang["giv_sr_p1y"]);
 	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);	
 	
-	$form->addElement('text', 'start', $lang['giv_gt_start']);
-	$form->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
-	$form->addElement('text', 'end', $lang['giv_gt_end']);
-	$form->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
-	
 	$steps = array(	"0"=>$lang["giv_sr_noStep"],
 					"2"=>"2",
 					"6"=>"6",
@@ -166,8 +161,8 @@ For information : contact@oreon-project.org
 					"20"=>"20",
 					"50"=>"50",
 					"100"=>"100");
-					
 	$sel =& $form->addElement('select', 'step', $lang["giv_sr_step"], $steps);
+	
 	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
 	$form->addElement('reset', 'reset', $lang["reset"]);
   	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
@@ -176,15 +171,13 @@ For information : contact@oreon-project.org
 		$nb_rsp = 0;
 	if (isset($_GET["service_description"]) && $_GET["service_description"]){
 		$verify =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' AND service_description = '".str_replace(" ", "\ ", $_GET["service_description"])."'");
-		if (PEAR::isError($pearDBpp)) {
+		if (PEAR::isError($pearDBpp))
 			print "Mysql Error : ".$pearDBpp->getMessage();
-		}
 		$nb_rsp = $verify->numRows();
 	} else if (isset($_GET["meta_service"]) && $_GET["meta_service"]){
 		$verify =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = 'Meta_Module' AND service_description = '".$_GET["meta_service"]."'");
-		if (PEAR::isError($pearDBpp)) {
+		if (PEAR::isError($pearDBpp))
 			print "Mysql Error : ".$pearDBpp->getMessage();
-		}
 		$nb_rsp = $verify->numRows();
 	}
 
@@ -208,69 +201,64 @@ For information : contact@oreon-project.org
 				$graph = array("graph_id" => getDefaultMetaGraph(1), "name" => "");
 		}
 		
-		
+		# OK go create Graphs and database
 		if ((array_search($host_name, $oreon->user->lcaHost) || isset($_GET["meta_service"])) && $case)	{
-			$host_id = getMyHostID($host_name);
-			$service_id = getMyServiceID($ret["service_description"], $host_id);	
-			if (isset($_GET["service_description"])){
-				$res =& $pearDB->query("SELECT service.service_id, service.service_normal_check_interval, service.service_active_checks_enabled FROM service WHERE service_id = '".$service_id."'");
-				if (PEAR::isError($pearDB)) print "Mysql Error : ".$pearDB->getMessage();
-				$res->fetchInto($service);
-			}
-			
 			# Init variable in the page
+			$label = NULL;
 			$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
 			$tpl->assign("res", $case);
-			if (isset($_GET["period"]))
-				$tpl->assign("period", $periods[$_GET["period"]]);
-				
 			if (isset($graph)) 
 				$tpl->assign("graph", $graph["name"]);
 			$tpl->assign("lgGraph", $lang['giv_gt_name']);
 			$tpl->assign("lgMetric", $lang['giv_ct_metric']);
 			$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
 			
-			# Init
+			# Get configuration data for service graphed
+			$host_id = getMyHostID($host_name);
+			$service_id = getMyServiceID($ret["service_description"], $host_id);
+			$service["service_normal_check_interval"] = getMyServiceField($service_id, 'service_normal_check_interval');
+			$service["service_active_checks_enabled"] = getMyServiceField($service_id, 'service_active_checks_enabled');
+			
+			if (isset($_GET["meta_service"]) && $_GET["meta_service"]){
+				$tab_meta = split("\_", $_GET["meta_service"]);
+				$res =& $pearDB->query("SELECT normal_check_interval FROM meta_service WHERE meta_id = '".$tab_meta[1]."'");
+				$res->fetchInto($meta);
+				$len = $meta["normal_check_interval"] * 120;			
+			} else if (($service["service_active_checks_enabled"] == 0) || (!$service["service_normal_check_interval"] && !isset($service["service_normal_check_interval"])) || $service["service_normal_check_interval"] == ""){
+				$service["service_normal_check_interval"] = 5;
+				$len = $service["service_normal_check_interval"] * 120;
+			} else 
+				$len = 5 * 120;
+			
+			isset($ret["step"]) && $ret["step"] != 0 ? $time_between_two_values = $len * $ret["step"] : $time_between_two_values = $len;
+						
+			# Init 
 			$ppMetrics = array();
 			$isAvl = false;
 			$cpt_total_values = 0;
 			$cpt_total_graphed_values = 0;
-			
-			$res =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".$ret["host_name"]."' AND service_description = '".$ret["service_description"]."'");
-			if (PEAR::isError($pearDBpp)) print "Mysql Error : ".$pearDBpp->getMessage();
-			
-			if ($res->numRows())	{
-				$cpt = 0;
-				$isAvl = true;
-				while($res->fetchInto($ppMetric))	{
-					$ppMetrics[$ppMetric["metric_id"]]["metric"] = $ppMetric["metric"];
-					$ppMetrics[$ppMetric["metric_id"]]["unit"] = $ppMetric["unit"];
-					$cpt++;
-				}
-				$res->free();
-				$tpl->assign("metrics", $ppMetrics);
-				
-				# Creating rrd DB
-				
+			$res =& $pearDBpp->query(	"SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric " .
+										"WHERE host_name = '".$ret["host_name"]."' AND service_description = '".$ret["service_description"]."'");
+			if (PEAR::isError($pearDBpp)) 
+				print "Mysql Error : ".$pearDBpp->getMessage();
+			if ($res->numRows()){
+				# Delete Old DataBase 
 				if (file_exists($oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd"))
 					unlink($oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd");
 				
-				$label = NULL;
-			
-				if (isset($_GET["meta_service"]) && $_GET["meta_service"]) {
-					$tab_meta = split("\_", $_GET["meta_service"]);
-					$res =& $pearDB->query("SELECT retry_check_interval FROM meta_service WHERE meta_id = '".$tab_meta[1]."'");
-					$res->fetchInto($meta);
-					$len = $meta["retry_check_interval"] * 120;			
-				} else if (($service["service_active_checks_enabled"] == 0) || (!$service["service_normal_check_interval"] && !isset($service["service_normal_check_interval"])) || $service["service_normal_check_interval"] == ""){
-					$service["service_normal_check_interval"] = 5;
-					$len = $service["service_normal_check_interval"] * 120;
-				} else 
-					$len = 5 * 120;
+				$isAvl = true;
+				for ($cpt = 0;$res->fetchInto($ppMetric);$cpt++){
+					
+					$form->addElement('checkbox', $ppMetric["metric"], $ppMetric["metric"]);
+					$form->setDefaults(array($ppMetric["metric"] => '1'));
+					$ppMetrics[$ppMetric["metric_id"]]["metric"] = $ppMetric["metric"];
+					$ppMetrics[$ppMetric["metric_id"]]["unit"] = $ppMetric["unit"];
+				}
+
+				$res->free();
+				$tpl->assign("metrics", $ppMetrics);
 				
-				isset($ret["step"]) && $ret["step"] != 0 ? $time_between_two_values = $len * $ret["step"] : $time_between_two_values = $len;
-								
-				# create period				
+				# Create period				
 				if (isset($_GET["start"]) && isset($_GET["end"]) && $_GET["start"] && $_GET["end"]){
 					preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["start"], $matches);
 					$start = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3], 1) ;
@@ -290,39 +278,37 @@ For information : contact@oreon-project.org
 					$period = $_GET["period"];
 				
 				if (!isset($start) && !isset($end)){
-					$start = time() - ($period + 120);
-					$end = time() + 120;
+					$start = time() - ($period + 30);
+					$end = time() + 10;
 				}
 				$start_create = $start - 200000;
 	 			#####################################################################
 				# Mise en memoire des valeurs remontees de la base de donnees MySQL
 				# Init Lower Value
-				
+				$time_start_mysql = microtime_float();
 				$GMT = 0;
 				$lower = 0;
 				$tab_bin = array();				 
 				foreach ($ppMetrics as $key => $value){
-					$get = 	"SELECT value,ctime FROM `perfdata_service_bin` WHERE `host_name` = '".$ret["host_name"]."' ".
-						"AND `service_description` = '".$ret["service_description"]."' AND `metric` = '".$value["metric"]."' ".
-						"AND `ctime` >= '".date("Y-m-d G:i:s", $start)."' AND `ctime` <= '".date("Y-m-d G:i:s", $end)."' ORDER BY ctime";
+					$get = 	"SELECT SQL_BIG_RESULT HIGH_PRIORITY value,ctime FROM `perfdata_service_bin` WHERE `host_name` = '".$ret["host_name"]."' ".
+							"AND `service_description` = '".$ret["service_description"]."' AND `metric` = '".$value["metric"]."' ".
+							"AND `ctime` >= '".date("Y-m-d G:i:s", $start)."' AND `ctime` <= '".date("Y-m-d G:i:s", $end)."' ORDER BY ctime";
 	 				$req =& $pearDBpp->query($get);
-	 				if (PEAR::isError($pearDBpp)) print "Mysql Error : ".$pearDBpp->getMessage();
+	 				if (PEAR::isError($pearDBpp)) 
+	 					print "Mysql Error : ".$pearDBpp->getMessage();
 					$r = $str = NULL;
-					$cpt = 0;
-					$cpt_real = 0;
-					while ($r =& $req->fetchRow()){
+					for ($cpt = 0,$cpt_real = 0;$r =& $req->fetchRow();$cpt++){
 						preg_match("/^([0-9]*)-([0-9]*)-([0-9]*) ([0-9]*):([0-9]*):([0-9]*)/", $r["ctime"], $matches);
 						$time_temp = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1], 1);
 						if ((isset($ret["step"]) && $ret["step"] == "1") || (isset($ret["step"]) && ($cpt % $ret["step"] == 0)) || (!isset($ret["step"]))){
 							$tab_bin[$time_temp + (3600 * $GMT)][$value["metric"]] = $r["value"];
 							$cpt_real++;
 						}
-						$cpt++;
 					}
 					$cpt_total_values += $cpt;
 					$cpt_total_graphed_values += $cpt_real;
 				}
-				
+				$time_end_mysql = microtime_float();
 				# Create RRDTool DB
 	 			$cmd = $oreon->optGen["rrdtool_path_bin"] . " create ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd --start $start_create "; 
 				$nb_ds = 0;
@@ -331,10 +317,11 @@ For information : contact@oreon-project.org
 					$nb_ds++;
 				}
 				$cpt_total_graphed_values_for_rrd = $cpt_total_values + 100;
-				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd . " RRA:MIN:0.5:8:".$cpt_total_graphed_values_for_rrd." RRA:MAX:0.5:8:".$cpt_total_graphed_values_for_rrd;
+				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd . " ";//RRA:MIN:0.5:8:".$cpt_total_graphed_values_for_rrd." RRA:MAX:0.5:8:".$cpt_total_graphed_values_for_rrd;
 				system($cmd, $return);
-				################################################################
 				
+				################################################################
+				$time_start_create = microtime_float();
 				$cpt_data = 0;
 				foreach ($tab_bin as $key => $value){
 					$str .= " ".$key;
@@ -357,7 +344,11 @@ For information : contact@oreon-project.org
 					}
 				}
 				$res->free();
+				$time_end_create = microtime_float();
 			}
+			//$time_mysql = $time_end_mysql - $time_start_mysql; 
+			//$time_create = $time_end_create - $time_start_create; 
+			
 			$tpl->assign('cpt_total_values', $cpt_total_values);
 			$tpl->assign('cpt_total_graphed_values', $cpt_total_graphed_values);
 			$tpl->assign('isAvl', $isAvl);
@@ -375,7 +366,6 @@ For information : contact@oreon-project.org
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);	
-	
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->assign('o', $o);
 	$tpl->assign('lang', $lang);

@@ -3,16 +3,23 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
 {if $title2}
+<form {$form.attributes}>
 <div>
 	<table id="ListTable">
         <tr class="ListHeader">
         	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - {$res}</td>
         </tr>
         <tr>
-    		<td colspan="2" class='ListColCenter'>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div>
     			{if $isAvl}
 					<img src='./include/views/graphs/generateImage/generateRRDImage.php?session_id={$session_id}&host_name={$host_name}&service_description={$service_description}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}'><br>
-    			{/if}
+	    			<!--<br>
+	    			{ foreach item=s from=$metrics }
+	    				{$form[$s.metric].html}&nbsp;{$form[$s.metric].label}&nbsp;&nbsp;
+	    			{/foreach}
+    			{/if}-->
+    			</div>
     		</td>
         </tr>
         <tr class="list_one">
@@ -21,9 +28,11 @@
     </table>
 </div>
 {/if}
+{if !$title}
+<form {$form.attributes}>
+{/if}
 <div style="padding-top: 20px;">
-    <form {$form.attributes}>
-    	{if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p></div><br><br><br><br>{/if}
+   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p></div><br><br><br><br>{/if}
        	<div>
        		<table id="ListTable">
                 <tr class="ListHeader">
@@ -64,6 +73,6 @@
 	        	</table>
         	</div>
         </div>
-        {$form.hidden}
-    </form>
-</div>
+    {$form.hidden}
+</div>    
+</form>
