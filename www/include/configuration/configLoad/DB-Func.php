@@ -442,14 +442,20 @@ For information : contact@oreon-project.org
 						break;
 					case "service_notification_commands" : 
 						$tmpConf["contact_svNotifCmds"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["contact_svNotifCmds"] as $key2=>$value2)
+						foreach ($tmpConf["contact_svNotifCmds"] as $key2=>$value2)	{
 							$tmpConf["contact_svNotifCmds"][$key2] = getMyCommandID(trim($value2));
+							if (!$tmpConf["contact_svNotifCmds"][$key2])
+								unset($tmpConf["contact_svNotifCmds"][$key2]);
+						}
 						unset ($tmpConf[$key]); 
 						break;
 					case "contactgroups" :
 						$tmpConf["contact_cgNotif"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["contact_cgNotif"] as $key2=>$value2)
+						foreach ($tmpConf["contact_cgNotif"] as $key2=>$value2)	{
 							$tmpConf["contact_cgNotif"][$key2] = getMyContactGroupID(trim($value2));
+							if (!$tmpConf["contact_cgNotif"][$key2])
+								unset($tmpConf["contact_cgNotif"][$key2]);
+						}
 						unset ($tmpConf[$key]); 
 						break;
 				}
@@ -477,8 +483,11 @@ For information : contact@oreon-project.org
 					case "alias" : $tmpConf["cg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "members" :
 						$tmpConf["cg_contacts"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["cg_contacts"] as $key2=>$value2)
+						foreach ($tmpConf["cg_contacts"] as $key2=>$value2)	{
 							$tmpConf["cg_contacts"][$key2] = getMyContactID(trim($value2));
+							if (!$tmpConf["cg_contacts"][$key2])
+								unset($tmpConf["cg_contacts"][$key2]);
+						}
 						unset ($tmpConf[$key]);
 						break;
 				}
@@ -529,15 +538,23 @@ For information : contact@oreon-project.org
 					case "check_command" : 
 						$cmd =& explode("!", trim($tmpConf[$key]));
 						$tmpConf["command_command_id"] = getMyCommandID(array_shift($cmd));
-						if (count($cmd)) 
+						if (!$tmpConf["command_command_id"])
+							unset($tmpConf["command_command_id"]);
+						else if (count($cmd)) 
 							$tmpConf["command_command_id_arg"] = "!".implode("!", $cmd);
+						else
+							$tmpConf["command_command_id_arg"] = NULL;
 						unset ($tmpConf[$key]);
 						break;
 					case "event_handler" : 
 						$cmd =& explode("!", trim($tmpConf[$key]));
 						$tmpConf["command_command_id2"] = getMyCommandID(array_shift($cmd));
-						if (count($cmd)) 
+						if (!$tmpConf["command_command_id2"])
+							unset($tmpConf["command_command_id2"]);
+						else if (count($cmd)) 
 							$tmpConf["command_command_id2_arg"] = "!".implode("!", $cmd);
+						else
+							$tmpConf["command_command_id2_arg"] = NULL;
 						unset ($tmpConf[$key]);
 						break;
 					case "parents" : $tmpConf["host_parentsTMP"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -546,14 +563,20 @@ For information : contact@oreon-project.org
 					
 					case "contact_groups" :
 						$tmpConf["host_cgs"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["host_cgs"] as $key2=>$value2)
+						foreach ($tmpConf["host_cgs"] as $key2=>$value2)	{
 							$tmpConf["host_cgs"][$key2] = getMyContactGroupID(trim($value2));
+							if (!$tmpConf["host_cgs"][$key2])
+								unset($tmpConf["host_cgs"][$key2]);
+						}
 						unset ($tmpConf[$key]);
 						break;					
 					case "hostgroups" :
 						$tmpConf["host_hgs"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["host_hgs"] as $key2=>$value2)
+						foreach ($tmpConf["host_hgs"] as $key2=>$value2)	{
 							$tmpConf["host_hgs"][$key2] = getMyHostGroupID(trim($value2));
+							if (!$tmpConf["host_hgs"][$key2])
+								unset($tmpConf["host_hgs"][$key2]);
+						}
 						unset ($tmpConf[$key]);
 						break;
 				}
@@ -605,8 +628,11 @@ For information : contact@oreon-project.org
 
 				case "host_name" : 
 					$tmpConf["host_names"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["host_names"] as $key2=>$value2)
+					foreach ($tmpConf["host_names"] as $key2=>$value2)	{
 						$tmpConf["host_names"][$key2] = getMyHostID(trim($value2));
+						if (!$tmpConf["host_names"][$key2])
+							unset($tmpConf["host_names"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 			}
@@ -628,14 +654,20 @@ For information : contact@oreon-project.org
 					case "alias" : $tmpConf["hg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "members" :
 						$tmpConf["hg_hosts"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["hg_hosts"] as $key2=>$value2)
+						foreach ($tmpConf["hg_hosts"] as $key2=>$value2)	{
 							$tmpConf["hg_hosts"][$key2] = getMyHostID(trim($value2));
+							if (!$tmpConf["hg_hosts"][$key2])
+								unset($tmpConf["hg_hosts"][$key2]);
+						}
 						unset ($tmpConf[$key]);
 						break;
 					case "contact_groups" :
 						$tmpConf["hg_cgs"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["hg_cgs"] as $key2=>$value2)
+						foreach ($tmpConf["hg_cgs"] as $key2=>$value2)	{
 							$tmpConf["hg_cgs"][$key2] = getMyContactGroupID(trim($value2));
+							if (!$tmpConf["hg_cgs"][$key2])
+								unset($tmpConf["hg_cgs"][$key2]);
+						}
 						unset ($tmpConf[$key]);
 						break;
 				}
@@ -660,26 +692,38 @@ For information : contact@oreon-project.org
 				case "notification_failure_criteria" : $tmpConf["notification_failure_criteria"] = array_flip(explode(",", $tmpConf[$key])); break;
 				case "dependent_host_name" :
 					$tmpConf["dep_hostChilds"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hostChilds"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hostChilds"] as $key2=>$value2)	{
 						$tmpConf["dep_hostChilds"][$key2] = getMyHostID(trim($value2));
+						if (!$tmpConf["dep_hostChilds"][$key2])
+							unset($tmpConf["dep_hostChilds"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;				
 				case "host_name" :
 					$tmpConf["dep_hostParents"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hostParents"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hostParents"] as $key2=>$value2)	{
 						$tmpConf["dep_hostParents"][$key2] = getMyHostID(trim($value2));
+						if (!$tmpConf["dep_hostParents"][$key2])
+							unset($tmpConf["dep_hostParents"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 				case "dependent_hostgroup_name" :
 					$tmpConf["dep_hgChilds"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hgChilds"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hgChilds"] as $key2=>$value2)	{
 						$tmpConf["dep_hgChilds"][$key2] = getMyHostGroupID(trim($value2));
+						if (!$tmpConf["dep_hgChilds"][$key2])
+							unset($tmpConf["dep_hgChilds"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 				case "hostgroup_name" :
 					$tmpConf["dep_hgParents"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hgParents"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hgParents"] as $key2=>$value2)	{
 						$tmpConf["dep_hgParents"][$key2] = getMyHostGroupID(trim($value2));
+						if (!$tmpConf["dep_hgParents"][$key2])
+							unset($tmpConf["dep_hgParents"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 			}
@@ -712,38 +756,56 @@ For information : contact@oreon-project.org
 				case "notification_failure_criteria" : $tmpConf["notification_failure_criteria"] = array_flip(explode(",", $tmpConf[$key])); break;
 				case "dependent_host_name" :
 					$tmpConf["dep_hChi"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hChi"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hChi"] as $key2=>$value2)	{
 						$tmpConf["dep_hChi"][$key2] = getMyHostID(trim($value2));
+						if (!$tmpConf["dep_hChi"][$key2])
+							unset($tmpConf["dep_hChi"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;				
 				case "host_name" :
 					$tmpConf["dep_hPar"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hPar"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hPar"] as $key2=>$value2)	{
 						$tmpConf["dep_hPar"][$key2] = getMyHostID(trim($value2));
+						if (!$tmpConf["dep_hPar"][$key2])
+							unset($tmpConf["dep_hPar"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 				case "dependent_hostgroup_name" :
 					$tmpConf["dep_hgChi"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hgChi"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hgChi"] as $key2=>$value2)	{
 						$tmpConf["dep_hgChi"][$key2] = getMyHostGroupID(trim($value2));
+						if (!$tmpConf["dep_hgChi"][$key2])
+							unset($tmpConf["dep_hgChi"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 				case "hostgroup_name" :
 					$tmpConf["dep_hgPar"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_hgPar"] as $key2=>$value2)
+					foreach ($tmpConf["dep_hgPar"] as $key2=>$value2)	{
 						$tmpConf["dep_hgPar"][$key2] = getMyHostGroupID(trim($value2));
+						if (!$tmpConf["dep_hgPar"][$key2])
+							unset($tmpConf["dep_hgPar"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 				case "dependent_servicegroup_name" :
 					$tmpConf["dep_sgChilds"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_sgChilds"] as $key2=>$value2)
+					foreach ($tmpConf["dep_sgChilds"] as $key2=>$value2)	{
 						$tmpConf["dep_sgChilds"][$key2] = getMyServiceGroupID(trim($value2));
+						if (!$tmpConf["dep_sgChilds"][$key2])
+							unset($tmpConf["dep_sgChilds"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 				case "servicegroup_name" :
 					$tmpConf["dep_sgParents"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["dep_sgParents"] as $key2=>$value2)
+					foreach ($tmpConf["dep_sgParents"] as $key2=>$value2)	{
 						$tmpConf["dep_sgParents"][$key2] = getMyServiceGroupID(trim($value2));
+						if (!$tmpConf["dep_sgParents"][$key2])
+							unset($tmpConf["dep_sgParents"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 
@@ -867,9 +929,11 @@ For information : contact@oreon-project.org
 					$cmd =& explode("!", trim($tmpConf[$key]));
 					$cmd_name =& array_shift($cmd);
 					$tmpConf["command_command_id"] = getMyCommandID($cmd_name);
-					if (strstr($cmd_name, "check_graph"))
+					if (!$tmpConf["command_command_id"])
+						unset($tmpConf["command_command_id"]);
+					else if (strstr($cmd_name, "check_graph"))
 						$rrd_service = array_pop($cmd);
-					if (count($cmd))
+					if (isset($tmpConf["command_command_id"]) && count($cmd))
 						$tmpConf["command_command_id_arg"] = "!".implode("!", $cmd);
 					unset ($tmpConf[$key]);
 					break;
@@ -877,9 +941,11 @@ For information : contact@oreon-project.org
 					$cmd =& explode("!", trim($tmpConf[$key]));
 					$cmd_name =& array_shift($cmd);
 					$tmpConf["command_command_id2"] = getMyCommandID($cmd_name);
-					if (strstr($cmd_name, "check_graph"))
+					if (!$tmpConf["command_command_id2"])
+						unset($tmpConf["command_command_id2"]);
+					else if (strstr($cmd_name, "check_graph"))
 						$cmd = array_pop($cmd);
-					if (count($cmd)) 
+					if (isset($tmpConf["command_command_id2"]) && count($cmd)) 
 						$tmpConf["command_command_id2_arg"] = "!".implode("!", $cmd);
 					unset ($tmpConf[$key]);
 					break;
@@ -888,22 +954,31 @@ For information : contact@oreon-project.org
 				
 				case "contact_groups" :
 					$tmpConf["service_cgs"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["service_cgs"] as $key2=>$value2)
+					foreach ($tmpConf["service_cgs"] as $key2=>$value2)	{
 						$tmpConf["service_cgs"][$key2] = getMyContactGroupID(trim($value2));
+						if (!$tmpConf["service_cgs"][$key2])
+							unset($tmpConf["service_cgs"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;				
 				case "host_name" :
 					$tmpConf["service_hPars"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_hPars"] as $key2=>$value2)	{
 						$tmpConf["service_hPars"][$key2] = getMyHostID(trim($value2));
-						$rrd_host = $tmpConf["service_hPars"][$key2];
+						if (!$tmpConf["service_hPars"][$key2])
+							unset($tmpConf["service_hPars"][$key2]);
+						else
+							$rrd_host = $tmpConf["service_hPars"][$key2];
 					}
 					unset ($tmpConf[$key]);
 					break;				
 				case "hostgroup_name" :
 					$tmpConf["service_hgPars"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["service_hgPars"] as $key2=>$value2)
+					foreach ($tmpConf["service_hgPars"] as $key2=>$value2)	{				
 						$tmpConf["service_hgPars"][$key2] = getMyHostGroupID(trim($value2));
+						if (!$tmpConf["service_hgPars"][$key2])
+							unset($tmpConf["service_hgPars"][$key2]);
+					}
 					unset ($tmpConf[$key]);
 					break;
 			}
@@ -918,11 +993,13 @@ For information : contact@oreon-project.org
 		$tmpConf["service_activate"]["service_activate"] = "1";
 		$tmpConf["service_comment"] = date("d/m/Y - H:i:s", time());
 		if (isset($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
-			$useTpl[0] = insertServiceInDB($tmpConf);
-			$useTpl[1] = $use;
-			if ($rrd_service)
-				copyRrdDB($rrd_service, $useTpl[0], $rrd_host);
-			$nbr["sv"] += 1;
+			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"]["service_register"])	{
+				$useTpl[0] = insertServiceInDB($tmpConf);
+				$useTpl[1] = $use;
+				if ($rrd_service)
+					copyRrdDB($rrd_service, $useTpl[0], $rrd_host);
+				$nbr["sv"] += 1;
+			}
 		}
 		return $useTpl;
 	}	
