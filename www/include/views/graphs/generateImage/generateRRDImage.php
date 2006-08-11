@@ -129,9 +129,13 @@ For information : contact@oreon-project.org
 
 			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
 			$res_ds->fetchInto($ds_data);
-			foreach ($ds_data as $key => $ds_d)
-				$ppMetrics[$ppMetric["metric_id"]][$key] = $ds_d;
-			
+			foreach ($ds_data as $key => $ds_d){
+				if ($key == "ds_transparency")
+					$ppMetrics[$ppMetric["metric_id"]][$key] = dechex(255-($ds_d*255)/100); 
+				else
+					$ppMetrics[$ppMetric["metric_id"]][$key] = $ds_d;
+			}
+					
 			$ppMetrics[$ppMetric["metric_id"]]["legend"] = $ds_data["name"];
 			if (strcmp($ppMetric["unit"], ""))
 				$ppMetrics[$ppMetric["metric_id"]]["legend"] .= " (".$ppMetric["unit"].") ";
