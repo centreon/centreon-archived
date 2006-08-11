@@ -10,3 +10,4 @@
 => Bugfix : Add Float for upper and lower limit for graph template
 => Bugfix : For Graph, synchronise time between perfparse value and service configuration
 => Bugfix : Graph transparency
+=> Bugfix : When import bad name with no reference in DB, don't record the definition
