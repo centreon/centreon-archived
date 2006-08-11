@@ -9,3 +9,8 @@ ALTER TABLE `general_opt` ADD `graph_preferencies` INT '0' AFTER `perfparse_inst
 
 UPDATE `topology` SET `topology_url` = './include/views/graphs/graphSummary/graphSummary.php' WHERE `topology_page` = 402 LIMIT 1 ;
 UPDATE `topology` SET `topology_url` = './include/views/graphs/graphSummary/graphSummary.php' WHERE `topology_page` = 4 LIMIT 1 ;
+
+-- 11/08/2006
+UPDATE `topology` SET `topology_show` = '0' WHERE `topology_page` = '40102';
+UPDATE `topology` SET `topology_show` = '0' WHERE `topology_page` = '401';
+UPDATE `topology` SET `topology_show` = '0' WHERE `topology_page` = '40101';
