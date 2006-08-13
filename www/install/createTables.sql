@@ -791,6 +791,8 @@ CREATE TABLE `general_opt` (
   `ldap_login_attrib` varchar(254) default 'dn',
   `ldap_ssl` enum('0','1') default NULL,
   `ldap_auth_enable` enum('0','1') default NULL,
+  `debug_auth` enum('0','1') default NULL,
+  `debug_nagios_import` enum('0','1') default NULL,
   PRIMARY KEY  (`gopt_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1868,19 +1870,19 @@ ALTER TABLE `host`
   ADD CONSTRAINT `host_ibfk_4` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
   ADD CONSTRAINT `host_ibfk_5` FOREIGN KEY (`purge_policy_id`) REFERENCES `purge_policy` (`purge_policy_id`) ON DELETE SET NULL;
 
--- 
+--
 -- Contraintes pour la table `log_archive_host`
--- 
+--
 ALTER TABLE `log_archive_host`
   ADD CONSTRAINT `log_archive_host_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
-  
-  -- 
+
+  --
 -- Contraintes pour la table `log_archive_service`
--- 
+--
 ALTER TABLE `log_archive_service`
   ADD CONSTRAINT `log_archive_service_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `log_archive_service_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
-  
+
 --
 -- Contraintes pour la table `host_hostparent_relation`
 --
