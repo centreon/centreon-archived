@@ -137,6 +137,13 @@ For information : contact@oreon-project.org
 	$ldapEnable[] = &HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, $lang["no"], '0');
 	$form->addGroup($ldapEnable, 'ldap_auth_enable', $lang["genOpt_ldap_auth_enable"], '&nbsp;');
 
+    #
+	## Debug information
+	#
+	$form->addElement('header', 'debug', $lang["genOpt_debug"]);
+	$form->addElement('select', 'debug_auth', $lang["genOpt_debug_auth"], array(0=>$lang['no'], 1=>$lang['yes']));
+	$form->addElement('select', 'debug_nagios_import', $lang["genOpt_debug_nagios_import"], array(0=>$lang['no'], 1=>$lang['yes']));
+
 	#
 	## Various information
 	#
@@ -151,7 +158,7 @@ For information : contact@oreon-project.org
 	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, $lang["m_views_graphPlu"], '1');
 	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, $lang["m_views_graphShow"], '0');
 	$form->addGroup($graphPref, 'graph_preferencies', $lang["genOpt_graph_preferencies"], '&nbsp;');
-	
+
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
