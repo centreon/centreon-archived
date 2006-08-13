@@ -11,6 +11,7 @@
 		<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">SNMP</a></li>
 		<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">RRDTool</a></li>
 		<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">LDAP</a></li>
+		<li class="b" id='c7'><a href="#" onclick="javascript:montre('7');">Debug</a></li>
 	</ul>
 </div>
 <div id="tab1" class="tab">
@@ -106,6 +107,14 @@
 		<tr class="list_two"><td class="FormRowField">{$form.ldap_base_dn.label}</td><td class="FormRowValue">{$form.ldap_base_dn.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ldap_login_attrib.label}</td><td class="FormRowValue">{$form.ldap_login_attrib.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ldap_ssl.label}</td><td class="FormRowValue">{$form.ldap_ssl.html}</td></tr>
+	</table>
+</div>
+<div id="tab7" class="tab">
+	<table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.debug}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
 	</table>
 </div>
 	{if !$valid}
