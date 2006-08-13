@@ -29,9 +29,6 @@ For information : contact@oreon-project.org
 	require_once ("$classdir/Oreon.class.php");
 	require_once("DBconnect.php");
 
-	if (!isset($debug_auth))
-		$debug_auth = FALSE;
-
 	// detect installation dir
 	$file_install_acces = 0;
 	if (file_exists("./install/setup.php")){
@@ -70,12 +67,17 @@ For information : contact@oreon-project.org
 		if($res->numRows()) {
 			$contact = $res->fetchRow();
 			if ($contact["contact_oreon"])	{
-				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable  FROM general_opt LIMIT 1");
+				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable, debug_auth  FROM general_opt LIMIT 1");
 				$ldap_auth = $res->fetchRow();
+
+				$debug_auth = $ldap_auth['debug_auth'];
+				if (!isset($debug_auth))
+					$debug_auth = 0;
+
 				$connect = true;
 				if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap") {
 					$connect = true;
-					if ($debug_auth)
+					if ($debug_auth == 1)
 						error_log("[" . date("d/m/Y H:s") ."] LDAP User : ". $useralias ." => " . $contact['contact_ldap_dn'] . "\n", 3, "../log/auth.log");
 
 					if ($ldap_auth['ldap_ssl'])
@@ -84,21 +86,22 @@ For information : contact@oreon-project.org
 						$ldapuri = "ldap://" ;
 
 					$ds = ldap_connect($ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']);
-					if ($debug_auth)
+					if ($debug_auth == 1)
 						error_log("[" . date("d/m/Y H:s") ."] LDAP Auth Cnx  : ". $ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']  ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, "../log/auth.log");
 					@ldap_bind($ds, $contact['contact_ldap_dn'], $password);
-					if ($debug_auth)
+					if ($debug_auth == 1)
 						error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH Bind : ". $contact['contact_ldap_dn'] ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, "../log/auth.log");
 
 					/* In some case, we fallback to local Auth
 					  0 : Bind succesfull => Default case
-					 -1 : Can't contact LDAP server => Fallback
+					 -1 : Can't contact LDAP server (php4) => Fallback
 					 51 : Server is busy => Fallback
 					 52 : Server is unavailable => Fallback
+					 81 : Can't contact LDAP server (php5) => Fallback
 					*/
-					if ($ds && ((ldap_errno($ds) == 0 ) || (ldap_errno($ds) == -1 )  || (ldap_errno($ds) == 51 ) || (ldap_errno($ds) == 52 ) )) {
+					if ($ds && ((ldap_errno($ds) == 0 ) || (ldap_errno($ds) == -1 )  || (ldap_errno($ds) == 51 ) || (ldap_errno($ds) == 52 ) || (ldap_errno($ds) == 81 ) )) {
 						$connect = true;
-						if ($debug_auth)
+						if ($debug_auth == 1)
 							error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : OK, let's go Local AUTH\n", 3, "../log/auth.log");
 					} else {
 						$connect = false;
@@ -112,7 +115,7 @@ For information : contact@oreon-project.org
 
 
 					if ($connect) {
-						if ($debug_auth)
+						if ($debug_auth == 1)
 							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, "../log/auth.log");
 						// Autologin case => contact_alias is MD5 format
 						if (!isset($_POST["submit"]))
@@ -122,7 +125,7 @@ For information : contact@oreon-project.org
 							$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5($password)."' AND contact_activate = '1' LIMIT 1");
 
 						if ($res->numRows() ) {
-								if ($debug_auth)
+								if ($debug_auth == 1)
 									error_log("[" . date("d/m/Y H:s") ."] Local AUTH : User " .$useralias ." Successfully authentificated\n", 3, "../log/auth.log");
 								global $oreon;
 								$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
