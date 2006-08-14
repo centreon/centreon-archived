@@ -791,6 +791,7 @@ CREATE TABLE `general_opt` (
   `ldap_login_attrib` varchar(254) default 'dn',
   `ldap_ssl` enum('0','1') default NULL,
   `ldap_auth_enable` enum('0','1') default NULL,
+  `debug_path` varchar(255) default NULL,
   `debug_auth` enum('0','1') default NULL,
   `debug_nagios_import` enum('0','1') default NULL,
   PRIMARY KEY  (`gopt_id`)
