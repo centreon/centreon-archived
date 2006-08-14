@@ -67,10 +67,14 @@ For information : contact@oreon-project.org
 		if($res->numRows()) {
 			$contact = $res->fetchRow();
 			if ($contact["contact_oreon"])	{
-				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable, debug_auth  FROM general_opt LIMIT 1");
+				$res =& $pearDB->query("SELECT debug_path, debug_auth  FROM general_opt LIMIT 1");
+				$debug = $res->fetchRow();
+
+				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable FROM general_opt LIMIT 1");
 				$ldap_auth = $res->fetchRow();
 
-				$debug_auth = $ldap_auth['debug_auth'];
+				$debug_auth = $debug['debug_auth'];
+				$debug_path = $debug['debug_path'];
 				if (!isset($debug_auth))
 					$debug_auth = 0;
 
@@ -78,7 +82,7 @@ For information : contact@oreon-project.org
 				if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap") {
 					$connect = true;
 					if ($debug_auth == 1)
-						error_log("[" . date("d/m/Y H:s") ."] LDAP User : ". $useralias ." => " . $contact['contact_ldap_dn'] . "\n", 3, "../log/auth.log");
+						error_log("[" . date("d/m/Y H:s") ."] LDAP User : ". $useralias ." => " . $contact['contact_ldap_dn'] . "\n", 3, $debug_path."auth.log");
 
 					if ($ldap_auth['ldap_ssl'])
 						$ldapuri = "ldaps://" ;
@@ -87,10 +91,10 @@ For information : contact@oreon-project.org
 
 					$ds = ldap_connect($ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']);
 					if ($debug_auth == 1)
-						error_log("[" . date("d/m/Y H:s") ."] LDAP Auth Cnx  : ". $ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']  ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, "../log/auth.log");
+						error_log("[" . date("d/m/Y H:s") ."] LDAP Auth Cnx  : ". $ldapuri . $ldap_auth['ldap_host'].":".$ldap_auth['ldap_port']  ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, $debug_path."auth.log");
 					@ldap_bind($ds, $contact['contact_ldap_dn'], $password);
 					if ($debug_auth == 1)
-						error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH Bind : ". $contact['contact_ldap_dn'] ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, "../log/auth.log");
+						error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH Bind : ". $contact['contact_ldap_dn'] ." : " . ldap_error($ds) . " (" . ldap_errno($ds) . ")" . "\n", 3, $debug_path."auth.log");
 
 					/* In some case, we fallback to local Auth
 					  0 : Bind succesfull => Default case
@@ -98,25 +102,55 @@ For information : contact@oreon-project.org
 					 51 : Server is busy => Fallback
 					 52 : Server is unavailable => Fallback
 					 81 : Can't contact LDAP server (php5) => Fallback
+					 Else : Go away !!
 					*/
-					if ($ds && ((ldap_errno($ds) == 0 ) || (ldap_errno($ds) == -1 )  || (ldap_errno($ds) == 51 ) || (ldap_errno($ds) == 52 ) || (ldap_errno($ds) == 81 ) )) {
-						$connect = true;
-						if ($debug_auth == 1)
-							error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : OK, let's go Local AUTH\n", 3, "../log/auth.log");
+					if ($ds) {
+						switch (ldap_errno($ds)) {
+						case 0:
+						   $connect = true;
+						   $fallback = false;
+							if ($debug_auth == 1)
+								error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : OK, let's go to Local AUTH\n", 3, $debug_path."auth.log");
+						   break;
+						case -1:
+						case 51:
+						case 52:
+						case 81:
+							$connect = false;
+							$fallback = true;
+							if ($debug_auth == 1)
+								error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : Error, Fallback to Local AUTH\n", 3, $debug_path."auth.log");
+						   break;
+						default:
+						   $connect = false;
+						   $fallback = false;
+						   if ($debug_auth == 1)
+								error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : LDAP don't like you, sorry \n", 3, $debug_path."auth.log");
+						   break;
+						}
+
+					//if ($ds && ((ldap_errno($ds) == 0 ) || (ldap_errno($ds) == -1 )  || (ldap_errno($ds) == 51 ) || (ldap_errno($ds) == 52 ) || (ldap_errno($ds) == 81 ) )) {
+					//	$connect = true;
+					//	if ($debug_auth == 1)
+					//		error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : OK, let's go to Local AUTH\n", 3, $debug_path."auth.log");
 					} else {
 						$connect = false;
+						$fallback = false;
 					}
 					ldap_close($ds);
 				}
 				$res->free();
 				//update password in mysql database to provide login even if there is LDAP connection
-				if (isset($_POST["submit"]) && $ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" && $connect)
+				if (isset($_POST["submit"]) && $ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" && $connect && !$fallback) {
 					$pearDB->query("UPDATE contact set contact_passwd = '".md5($password)."' WHERE contact_alias ='".$useralias."' ");
+					if ($debug_auth == 1)
+						error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : Local password updated with LDAP password for $useralias \n", 3, $debug_path."auth.log");
+				}
 
 
-					if ($connect) {
+					if ($connect || $fallback) {
 						if ($debug_auth == 1)
-							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, "../log/auth.log");
+							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, $debug_path."auth.log");
 						// Autologin case => contact_alias is MD5 format
 						if (!isset($_POST["submit"]))
 							$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".$password."' AND contact_activate = '1' LIMIT 1");
@@ -126,7 +160,7 @@ For information : contact@oreon-project.org
 
 						if ($res->numRows() ) {
 								if ($debug_auth == 1)
-									error_log("[" . date("d/m/Y H:s") ."] Local AUTH : User " .$useralias ." Successfully authentificated\n", 3, "../log/auth.log");
+									error_log("[" . date("d/m/Y H:s") ."] Local AUTH : User " . $useralias ." Successfully authentificated\n", 3, $debug_path."auth.log");
 								global $oreon;
 								$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
 								$version = $res2->fetchRow();
