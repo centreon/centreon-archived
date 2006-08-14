@@ -82,6 +82,7 @@ $lang["genOpt_debug"] = "Debug";
 $lang["genOpt_dPath"] = "Logs Directory";
 $lang["genOpt_debug_auth"] = "Authentification Debug";
 $lang["genOpt_debug_nagios_import"] = "Nagios Import Debug";
+$lang["genOpt_debug_rrdtool"] = "RRDTool Debug";
 
 # Menu
 
