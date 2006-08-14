@@ -143,6 +143,8 @@ For information : contact@oreon-project.org
 		isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != NULL ? $rq .= "'".htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "ldap_auth_enable = ";
 		isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != NULL ? $rq .= "'".htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "debug_path = ";
+		isset($ret["debug_path"]) && $ret["debug_path"] != NULL ? $rq .= "'".$ret["debug_path"]."', ": $rq .= "NULL, ";
 		$rq .= "debug_auth = ";
 		isset($ret["debug_auth"]) && $ret["debug_auth"] != NULL ? $rq .= "'".$ret["debug_auth"]."', ": $rq .= "NULL, ";
 		$rq .= "debug_nagios_import = ";

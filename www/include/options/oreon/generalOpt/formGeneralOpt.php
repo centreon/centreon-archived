@@ -141,6 +141,7 @@ For information : contact@oreon-project.org
 	## Debug information
 	#
 	$form->addElement('header', 'debug', $lang["genOpt_debug"]);
+	$form->addElement('text', 'debug_path', $lang["genOpt_dPath"], $attrsText);
 	$form->addElement('select', 'debug_auth', $lang["genOpt_debug_auth"], array(0=>$lang['no'], 1=>$lang['yes']));
 	$form->addElement('select', 'debug_nagios_import', $lang["genOpt_debug_nagios_import"], array(0=>$lang['no'], 1=>$lang['yes']));
 
@@ -178,6 +179,7 @@ For information : contact@oreon-project.org
 	$form->applyFilter('oreon_path', 'slash');
 	$form->applyFilter('oreon_web_path', 'slash');
 	$form->applyFilter('oreon_rrdbase_path', 'slash');
+	$form->applyFilter('debug_path', 'slash');
 	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
@@ -192,6 +194,7 @@ For information : contact@oreon-project.org
 	$form->addRule('mailer_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
 	$form->addRule('rrdtool_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
 	$form->addRule('oreon_rrdbase_path', $lang['ErrWrPath'], 'is_writable_path');
+	$form->addRule('debug_path', $lang['ErrWrPath'], 'is_writable_path');
 	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrFile'], 'is_writable_file_if_exist');
 
 
