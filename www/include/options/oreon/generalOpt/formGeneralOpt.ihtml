@@ -116,6 +116,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.debug_path.label}</td><td class="FormRowValue">{$form.debug_path.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.debug_rrdtool.label}</td><td class="FormRowValue">{$form.debug_rrdtool.html}</td></tr>
 	</table>
 </div>
 	{if !$valid}

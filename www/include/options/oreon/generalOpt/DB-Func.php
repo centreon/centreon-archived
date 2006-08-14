@@ -148,8 +148,12 @@ For information : contact@oreon-project.org
 		$rq .= "debug_auth = ";
 		isset($ret["debug_auth"]) && $ret["debug_auth"] != NULL ? $rq .= "'".$ret["debug_auth"]."', ": $rq .= "NULL, ";
 		$rq .= "debug_nagios_import = ";
-		isset($ret["debug_nagios_import"]) && $ret["debug_nagios_import"] != NULL ? $rq .= "'".$ret["debug_nagios_import"]."' ": $rq .= "NULL ";
+		isset($ret["debug_nagios_import"]) && $ret["debug_nagios_import"] != NULL ? $rq .= "'".$ret["debug_nagios_import"]."', ": $rq .= "NULL, ";
+		$rq .= "debug_rrdtool = ";
+		isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $rq .= "'".$ret["debug_rrdtool"]."' ": $rq .= "NULL ";
+
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
+
 		$pearDB->query($rq);
 		$oreon->optGen = array();
 		$res =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");

@@ -144,6 +144,8 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'debug_path', $lang["genOpt_dPath"], $attrsText);
 	$form->addElement('select', 'debug_auth', $lang["genOpt_debug_auth"], array(0=>$lang['no'], 1=>$lang['yes']));
 	$form->addElement('select', 'debug_nagios_import', $lang["genOpt_debug_nagios_import"], array(0=>$lang['no'], 1=>$lang['yes']));
+	$form->addElement('select', 'debug_rrdtool', $lang["genOpt_debug_rrdtool"], array(0=>$lang['no'], 1=>$lang['yes']));
+
 
 	#
 	## Various information
