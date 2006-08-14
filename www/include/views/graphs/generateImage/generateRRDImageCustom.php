@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-	
+
 	require_once 'DB.php';
 	require_once ("../../../../class/Session.class.php");
 	require_once ("../../../../class/Oreon.class.php");
@@ -30,11 +30,11 @@ For information : contact@oreon-project.org
 	$oreon =& $_SESSION["oreon"];
 
 	/* Connect to Oreon DB */
-	
+
 	include("../../../../oreon.conf.php");
-	is_file ("../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../lang/en.php");	
+	is_file ("../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../lang/en.php");
 	require_once "../../../common/common-Func.php";
-	
+
 	$dsn = array(
 	    'phptype'  => 'mysql',
 	    'username' => $conf_oreon['user'],
@@ -42,44 +42,44 @@ For information : contact@oreon-project.org
 	    'hostspec' => $conf_oreon['host'],
 	    'database' => $conf_oreon['db'],
 	);
-	
+
 	$options = array(
 	    'debug'       => 2,
 	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
 	);
-	
+
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB))
 	    die("Unable to connect : " . $pearDB->getMessage());
-	
+
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-	
+
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
 		exit;
 	} else {
-		
+
 		include_once("../../../../DBPerfparseConnect.php");
-		
+
 		$graph_id = $_GET["graph_id"];
 		$command_line = " graph - ";
-		
+
 		if ($_GET["start"])
 			$command_line .= " --start=".$_GET["start"]. " --end=".$_GET["end"];
-		
+
 		# Get Graph Data
 		$graphCustom_d =& $pearDB->query("SELECT * FROM `giv_graphs` WHERE `graph_id` = '".$graph_id."'");
 		$graphCustom_d->fetchInto($graphCustom);
-		
+
 		if (!$graphCustom['grapht_graph_id']){
 			$graph = getDefaultGraph($graph_id, 3);
 		} else {
 			$graph = array("graph_id" => $graphCustom['grapht_graph_id'], "name" => "");
 		}
-		
+
 		$res =& $pearDB->query("SELECT * FROM `giv_graphs_template` WHERE graph_id = '".$graph["graph_id"]."'");
 		$res->fetchInto($GraphTemplate);
-		
+
 		# Create command line for graph properties
 		$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph ".$GraphTemplate["title"]."' --alt-autoscale-max --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
@@ -91,21 +91,21 @@ For information : contact@oreon-project.org
 		$command_line .= "--color ARROW".$GraphTemplate["col_arrow"]." ";
 		$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
 		$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
-		
+
 		$ppMetrics = array();
 		$rq = 	"SELECT compo_id, pp_metric_id, compot_compo_id FROM giv_components gc ".
 				"WHERE gc.graph_id = '".$graph_id."' ORDER BY ds_order";
-				
+
 		$res =& $pearDB->query($rq);
 		$cpt = 0;
 		while($res->fetchInto($ppMetric))	{
 			$ppMetrics[$ppMetric["pp_metric_id"]]["pp_metric_id"] = $ppMetric["pp_metric_id"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["compot_compo_id"] = $ppMetric["compot_compo_id"];
-			
+
 			$res2 =& $pearDBpp->query("SELECT * FROM `perfdata_service_metric` WHERE metric_id = '".$ppMetric["pp_metric_id"]."'");
 			$res2->fetchInto($metric_info);
-			
-			# Get Metric Infos 
+
+			# Get Metric Infos
 			if (!$ppMetric["compot_compo_id"])
 				$ppMetric["compot_compo_id"] = getDefaultDS($graph["graph_id"], $cpt);
 			//print $metric_info["metric"];
@@ -113,7 +113,7 @@ For information : contact@oreon-project.org
 			$ppMetrics[$ppMetric["pp_metric_id"]]["host_name"] = $metric_info["host_name"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["service_description"] = $metric_info["service_description"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["ds_id"] 	= $ppMetric["compot_compo_id"];
-			
+
 			# Get DS Data
 			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ppMetric["compot_compo_id"]."'");
 			$res_ds->fetchInto($ds_data);
@@ -128,26 +128,26 @@ For information : contact@oreon-project.org
 			$ppMetrics[$ppMetric["pp_metric_id"]]["ds_filled"] = $ds_data["ds_filled"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["ds_transparency"] = $ds_data["ds_transparency"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["ds_invert"] = $ds_data["ds_invert"];
-			
+
 			$ppMetrics[$ppMetric["pp_metric_id"]]["legend"] = $ds_data["name"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["legend_len"] = strlen($ppMetrics[$ppMetric["pp_metric_id"]]["legend"]);
 			$cpt++;
 		}
-		$res->free();	
-		
+		$res->free();
+
 		$cpt = 0;
 		$longer = 0;
 		foreach ($ppMetrics as $key => $tm){
 			if (isset($tm["ds_invert"]) && $tm["ds_invert"]){
 				$command_line .= " DEF:va".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/graphCustoms/".$key.".rrd:ds".$key.":LAST ";
 				$command_line .= " CDEF:v".$cpt."=va".$cpt.",-1,* ";
-			} else 
+			} else
 				$command_line .= " DEF:v".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/graphCustoms/".$key.".rrd:ds".$key.":LAST ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
 			$cpt++;
-		}	
-		if ($GraphTemplate["stacked"]){		
+		}
+		if ($GraphTemplate["stacked"]){
 			$cpt = 0;
 			$command_line .= " CDEF:total=";
 			foreach ($ppMetrics as $key => $tm){
@@ -161,24 +161,24 @@ For information : contact@oreon-project.org
 				$command_line .= ",+";
 			$command_line .= " ";
 		}
-		
+
 		$rrd_time  = addslashes(date("d\/m\/Y G:i", $_GET["start"])) ;
 		$rrd_time = str_replace(":", "\:", $rrd_time);
 		$rrd_time2 = addslashes(date("d\/m\/Y G:i", $_GET["end"])) ;
 		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
 		$command_line .= " COMMENT:\" \\c\" COMMENT:\" From  $rrd_time to $rrd_time2 \\c\" COMMENT:\" \\c\" ";
-		
+
 		$cpt = 1;
 		foreach ($ppMetrics as $key => $tm){
 			$space_added = NULL;
-			
+
 			$legend = "\"";
 			$legend .= $ppMetrics[$key]["legend"];
 			for ($i = $ppMetrics[$key]["legend_len"]; $i != $longer + 1; $i++)
 				$legend .= " ";
 			$legend .= "\"";
-			
-			
+
+
 			//$legend = "\"".$tm["host_name"]." - ".$tm["service_description"]." (" . $tm["metric"].")\"";
 			/*
 			if ($GraphTemplate["stacked"] != "0"){
@@ -191,7 +191,7 @@ For information : contact@oreon-project.org
 				} else {
 					$command_line .= " STACK:v".$graph_id."#".$tm["ds_color_area"].":".$legend."$space_added\"";
 				}
-			} 
+			}
 			*/
 			if ($ppMetrics[$key]["ds_filled"] && $GraphTemplate["stacked"] == "0"){
 				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"];
@@ -222,13 +222,15 @@ For information : contact@oreon-project.org
 		}
 		if (isset($GraphTemplate["stacked"]) && $GraphTemplate["stacked"]){
 			$space_added = NULL;
-			$command_line .= " LINE1:total#000000:\"Total$space_added\" GPRINT:total:AVERAGE:\"Average\:%8.2lf%s\" GPRINT:total:MIN:\"Min\:%8.2lf%s\" GPRINT:total:MAX:\"Max\:%8.2lf%s\" GPRINT:total:LAST:\"Last\:%8.2lf%s\\l\" ";	
+			$command_line .= " LINE1:total#000000:\"Total$space_added\" GPRINT:total:AVERAGE:\"Average\:%8.2lf%s\" GPRINT:total:MIN:\"Min\:%8.2lf%s\" GPRINT:total:MAX:\"Max\:%8.2lf%s\" GPRINT:total:LAST:\"Last\:%8.2lf%s\\l\" ";
 		}
 		$command_line = $oreon->optGen["rrdtool_path_bin"] . $command_line .  " 2>&1";
 		$command_line = escape_command("$command_line") ;
-		
+		if ( $oreon->optGen["debug_rrdtool"] == "1" )
+			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $oreon->optGen["debug_path"]."rrdtool.log");
+
 		// print $command_line;
-		
+
 		$fp = popen($command_line  , 'r');
 		if (isset($fp) && $fp ) {
 			$str ='';
@@ -237,6 +239,6 @@ For information : contact@oreon-project.org
 		 		$str = $str . $buffer ;
 			}
 			print $str;
-		}	
+		}
 	}
 ?>

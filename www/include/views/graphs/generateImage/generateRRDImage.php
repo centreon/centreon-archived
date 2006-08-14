@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-	
+
 	require_once 'DB.php';
 	require_once ("../../../../class/Session.class.php");
 	require_once ("../../../../class/Oreon.class.php");
@@ -30,11 +30,11 @@ For information : contact@oreon-project.org
 	$oreon =& $_SESSION["oreon"];
 
 	/* Connect to Oreon DB */
-	
+
 	include("../../../../oreon.conf.php");
-	is_file ("../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../lang/en.php");	
+	is_file ("../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../lang/en.php");
 	require_once "../../../common/common-Func.php";
-	
+
 	$dsn = array(
 	    'phptype'  => 'mysql',
 	    'username' => $conf_oreon['user'],
@@ -42,18 +42,18 @@ For information : contact@oreon-project.org
 	    'hostspec' => $conf_oreon['host'],
 	    'database' => $conf_oreon['db'],
 	);
-	
+
 	$options = array(
 	    'debug'       => 2,
 	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
 	);
-	
+
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB))
 	    die("Unable to connect : " . $pearDB->getMessage());
-	
+
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-	
+
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
 		exit;
@@ -69,14 +69,14 @@ For information : contact@oreon-project.org
 			else {
 				$tab = split("_", $_GET["service_description"]);
 				$template_id = getDefaultMetaGraph($tab[1], 1);
-			}	
-		} else 
+			}
+		} else
 			$template_id = $_GET["template_id"];
-		
+
 		include_once("../../../../DBPerfparseConnect.php");
-		
+
 		$command_line = " graph - --start=".$_GET["start"]. " --end=".$_GET["end"];
-		
+
 		# get all template infos
 		$res =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$res->fetchInto($GraphTemplate);
@@ -87,7 +87,7 @@ For information : contact@oreon-project.org
 			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph Meta Service ".$meta_data["meta_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		} else
 			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph ".$_GET["service_description"]." on Host ".$_GET["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
-			
+
 		# Init Graph Template Value
 		if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"])
 			$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
@@ -106,17 +106,17 @@ For information : contact@oreon-project.org
 		if (isset($GraphTemplate["col_top"]) && $GraphTemplate["col_top"])
 			$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
 		if (isset($GraphTemplate["col_bot"]) && $GraphTemplate["col_bot"])
-			$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";	
-		
+			$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
+
 		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
 			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
-		
+
 		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
 			$command_line .= "--rigid ";
-		
-		
+
+
 		# Init DS template For each curv
 		$ppMetrics = array();
 		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$_GET["service_description"]."'");
@@ -131,18 +131,18 @@ For information : contact@oreon-project.org
 			$res_ds->fetchInto($ds_data);
 			foreach ($ds_data as $key => $ds_d){
 				if ($key == "ds_transparency")
-					$ppMetrics[$ppMetric["metric_id"]][$key] = dechex(255-($ds_d*255)/100); 
+					$ppMetrics[$ppMetric["metric_id"]][$key] = dechex(255-($ds_d*255)/100);
 				else
 					$ppMetrics[$ppMetric["metric_id"]][$key] = $ds_d;
 			}
-					
+
 			$ppMetrics[$ppMetric["metric_id"]]["legend"] = $ds_data["name"];
 			if (strcmp($ppMetric["unit"], ""))
 				$ppMetrics[$ppMetric["metric_id"]]["legend"] .= " (".$ppMetric["unit"].") ";
 			$ppMetrics[$ppMetric["metric_id"]]["legend_len"] = strlen($ppMetrics[$ppMetric["metric_id"]]["legend"]);
 			$cpt++;
 		}
-		$res->free();	
+		$res->free();
 
 		$cpt = 0;
 		$longer = 0;
@@ -150,25 +150,25 @@ For information : contact@oreon-project.org
 			if (isset($tm["ds_invert"]) && $tm["ds_invert"]){
 				$command_line .= " DEF:va".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$_GET["host_name"])."_".str_replace(" ", "-",$_GET["service_description"]).".rrd:".$tm["metric"].":LAST ";
 				$command_line .= " CDEF:v".$cpt."=va".$cpt.",-1,* ";
-			} else 
+			} else
 				$command_line .= " DEF:v".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$_GET["host_name"])."_".str_replace(" ", "-",$_GET["service_description"]).".rrd:".$tm["metric"].":LAST ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
 			$cpt++;
-		}	
-		
+		}
+
 		# Add Comments
 		$rrd_time  = addslashes(date("d\/m\/Y G:i", $_GET["start"])) ;
 		$rrd_time = str_replace(":", "\:", $rrd_time);
 		$rrd_time2 = addslashes(date("d\/m\/Y G:i", $_GET["end"])) ;
 		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
 		$command_line .= " COMMENT:\" \\c\" COMMENT:\" From  $rrd_time to $rrd_time2 \\c\" COMMENT:\" \\c\" ";
-		
+
 		# Create Legende
 		$cpt = 1;
 		foreach ($ppMetrics as $key => $tm){
 			if ($ppMetrics[$key]["ds_filled"])
-				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";	
+				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";
 			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $ppMetrics[$key]["legend"];
@@ -191,9 +191,12 @@ For information : contact@oreon-project.org
 				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%8.2lf%s\\l\"";
 			$cpt++;
 		}
-		
+
 		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";
 		$command_line = escape_command("$command_line");
+		if ( $oreon->optGen["debug_rrdtool"] == "1" )
+			error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : $command_line \n", 3, $oreon->optGen["debug_path"]."rrdtool.log");
+
 		//print $command_line;
 		$fp = popen($command_line  , 'r');
 		if (isset($fp) && $fp ) {
@@ -203,6 +206,6 @@ For information : contact@oreon-project.org
 		 		$str = $str . $buffer ;
 			}
 			print $str;
-		}	
+		}
 	}
 ?>
