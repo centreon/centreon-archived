@@ -794,6 +794,7 @@ CREATE TABLE `general_opt` (
   `debug_path` varchar(255) default NULL,
   `debug_auth` enum('0','1') default NULL,
   `debug_nagios_import` enum('0','1') default NULL,
+  `debug_rrdtool` enum('0','1') default NULL,
   PRIMARY KEY  (`gopt_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
