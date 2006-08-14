@@ -843,7 +843,7 @@ $lang["pel_notify_title"] = "Notifications du ";
 
 /* perfparse */
 
-$lang["perfparse_installed"] = "Perfparse est installe ?";
+$lang["perfparse_installed"] = "Perfparse est install&eacute; ?";
 $lang["service_logged"] = "Services loggs";
 
 /* legend */
