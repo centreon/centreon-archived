@@ -298,7 +298,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	$conf_installoreon['physical_html_path'] = ($conf_installoreon['physical_html_path'] === "" ?  "/usr/local/nagios/share/images/logo/" : $conf_installoreon['physical_html_path']."/images/logo/");
 	$conf_installoreon['nagios'] = ($conf_installoreon['nagios'] === "" ?  "/usr/local/nagios/" : $conf_installoreon['nagios']);
 	$conf_installoreon['mail'] = ($conf_installoreon['mail'] === "" ?  "/usr/bin/mail" : $conf_installoreon['mail']);
-//			$conf_installoreon['rrdtool'] = ($conf_installoreon['rrdtool'] === "" ?  "/usr/bin/rrdtool" : $conf_installoreon['rrdtool']);
+//	$conf_installoreon['rrdtool'] = ($conf_installoreon['rrdtool'] === "" ?  "/usr/bin/rrdtool" : $conf_installoreon['rrdtool']);
 
 	$requete = "UPDATE `general_opt` SET `nagios_path_img` = '".$conf_installoreon['physical_html_path']."'";
 	$requete .= ", `nagios_path` = '".$conf_installoreon['nagios']."'";
@@ -316,7 +316,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	$requete .= ", `ldap_base_dn` = '".htmlentities($_SESSION["ldap_base_dn"], ENT_QUOTES)."'";
 	$requete .= ", `ldap_login_attrib` = '".htmlentities($_SESSION["ldap_login_attrib"], ENT_QUOTES)."'";
 	$requete .= ", `ldap_ssl` = '".htmlentities($_SESSION["ldap_ssl"], ENT_QUOTES)."'";
-	$requete .= ", `ldap_auth_enable` = '".htmlentities($_SESSION["ldap_auth_enable"], ENT_QUOTES)."' ;";
+	$requete .= ", `ldap_auth_enable` = '".htmlentities($_SESSION["ldap_auth_enable"], ENT_QUOTES)."'";
+	$requete .= ", `debug_path` = '".$_SESSION["oreon_dir"]."log/' ;";
 
 	if ($DEBUG) print $requete . "<br>";
 	$result = @mysql_query($requete, $res['0'])or ( $mysql_msg= mysql_error());
