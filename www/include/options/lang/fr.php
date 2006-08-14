@@ -79,6 +79,7 @@ $lang["genOpt_ldap_ssl"] = "Activ&eacute; le support SSL pour le LDAP";
 $lang["genOpt_ldap_auth_enable"] = "Activ&eacute; l'authentification LDAP";
 $lang["genOpt_graph_preferencies"] = "Moteur de Graphs Pr&eacute;f&eacute;r&eacute;";
 $lang["genOpt_debug"] = "Debug";
+$lang["genOpt_dPath"] = "R&eacute;pertoire des logs";
 $lang["genOpt_debug_auth"] = "Debug de l&#146;authentification";
 $lang["genOpt_debug_nagios_import"] = "Debug de l&#146;importation des fichiers Nagios";
 
