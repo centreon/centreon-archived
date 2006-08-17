@@ -288,6 +288,13 @@ For information : contact@oreon-project.org
 	#
 	## Sort 2 - Service relations
 	#
+	if ($o == "a")
+		$form->addElement('header', 'title2', $lang["sv_Links_add"]);
+	else if ($o == "c")
+		$form->addElement('header', 'title2', $lang["sv_Links_change"]);
+	else if ($o == "w")
+		$form->addElement('header', 'title2', $lang["sv_Links_view"]);
+		
 	$form->addElement('header', 'links', $lang['sv_head_links']);
 
 	$form->addElement('header', 'traps', $lang['gen_trapd']);
@@ -306,6 +313,14 @@ For information : contact@oreon-project.org
 	##
 	## Sort 3 - Data treatment
 	##
+	
+	if ($o == "a")
+		$form->addElement('header', 'title3', $lang["h_add_treat"]);
+	else if ($o == "c")
+		$form->addElement('header', 'title3', $lang["h_modify_treat"]);
+	else if ($o == "w")
+		$form->addElement('header', 'title3', $lang["h_view_treat"]);
+	
 	$form->addElement('header', 'treatment', $lang['sv_head_treat']);
 
 	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, $lang["yes"], '1');
