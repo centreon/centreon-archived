@@ -1426,8 +1426,5 @@ $lang['m_traps_view'] = "View a Trap definition";
 
 $lang['m_gantt'] = "Escalations Viewer";
 $lang['m_header_gantt'] = "Escalations View";
-$lang['m_hostgroup_escalation'] = "Hostgroups Escalations";
-$lang['m_host_escalation'] = "Hosts Escalations";
-$lang['m_service_escalation'] = "Services Escalations";
 
 ?>

@@ -739,10 +739,7 @@ $lang['m_traps_view'] = "Voir une d&eacute;finition de Trap";
 
 /* GANTT Escalation */
 
-$lang['m_gantt'] = "Voir Escalations";
-$lang['m_header_gantt'] = "Vue des Escalations";
-$lang['m_hostgroup_escalation'] = "Escalations des Hostgroups";
-$lang['m_host_escalation'] = "Escalations des Hotes";
-$lang['m_service_escalation'] = "Escalations des Services";
+$lang['m_gantt'] = "Voir Escalades";
+$lang['m_header_gantt'] = "Vue des Escalades";
 
 ?>
