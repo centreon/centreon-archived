@@ -86,9 +86,9 @@ if (!isset($oreon))
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
 	$form->addElement('header', 'title', $lang["m_header_gantt"]);
-	$form->addElement('select', 'hostgroup_escalation', $lang['m_hostgroup_escalation'], $hostgroup_ary, array("onChange" =>"this.form.submit();"));
-	$form->addElement('select', 'host_escalation', $lang['m_host_escalation'], $hgs, array("onChange" =>"this.form.submit();"));
-	$form->addElement('select', 'service_escalation', $lang['m_service_escalation'], $svcs, array("onChange" =>"this.form.submit();"));
+	$form->addElement('select', 'hostgroup_escalation', $lang['esc_sort4'], $hostgroup_ary, array("onChange" =>"this.form.submit();"));
+	$form->addElement('select', 'host_escalation', $lang['esc_sort2'], $hgs, array("onChange" =>"this.form.submit();"));
+	$form->addElement('select', 'service_escalation', $lang['esc_sort3'], $svcs, array("onChange" =>"this.form.submit();"));
 	$valid = false;
 		#Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
