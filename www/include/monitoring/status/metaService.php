@@ -20,8 +20,8 @@ For information : contact@oreon-project.org
 			
 	$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	while ($res->fetchInto($meta)){
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["real_name"] = $meta["meta_name"]; 
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["id"] = $meta["meta_id"]; 
@@ -30,17 +30,11 @@ For information : contact@oreon-project.org
 	$c = 0;
 	if (isset($metaService_status)){
 		foreach ($metaService_status as $name => $svc){
-			if (strstr($name, "meta_") && isset($metaService_status[$name]["status"])){				
-				$metaService_status_bis[$name]["status"] = $svc["status"];
-				$metaService_status_bis[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["status"])];
+			if (strstr($name, "meta_") && isset($metaService_status[$name]["current_state"])){				
+				$metaService_status_bis[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 				$metaService_status_bis[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-				$metaService_status_bis[$name]["last_change"] = Duration::toString(time() - $svc["last_change"]);
+				$metaService_status_bis[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
 				$metaService_status_bis[$name]["class"] = $tab_class[$c % 2];
-				$metaService_status_bis[$name]["retry"] = $svc["retry"];
-				$metaService_status_bis[$name]["checks_en"] = $svc["checks_en"];
-				$metaService_status_bis[$name]["accept_passive_check"] = $svc["accept_passive_check"];
-				$metaService_status_bis[$name]["not_en"] = $svc["not_en"];
-				$metaService_status_bis[$name]["output"] = $svc["output"];
 				$c++;
 			}
 		}
@@ -64,7 +58,6 @@ For information : contact@oreon-project.org
 	if (!isset($_GET["order"]))
 		$_GET["order"] = "sort_asc";
 
-
 /*
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
@@ -87,14 +80,11 @@ For information : contact@oreon-project.org
     $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
 */
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-
-
 	!isset($_GET["num"]) ? $begin = 0 : $begin = $_GET["num"];
 	!isset($_GET["limit"]) ? $nb = 20 : $nb = $begin + $_GET["limit"];
 
 	if (isset($metaService_status))
 		$tpl->assign("metaService_status", $metaService_status_bis);
-
 	
 	$tpl->assign("begin", $begin);
 	$tpl->assign("end", $nb);
