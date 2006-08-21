@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	
 	#Path to the configuration dir
-	$path = "./include/monitoring/";
+	$path = "./include/monitoring/external_cmd/";
 	
 	#PHP functions
 	require_once "./include/common/common-Func.php";
