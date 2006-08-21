@@ -75,7 +75,7 @@ For information : contact@oreon.org
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-
+	
 	if (isset($service_status))
 		$tpl->assign("service_status", $service_status);
 	if (!isset($_GET["sort_types"]))
