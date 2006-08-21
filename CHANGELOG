@@ -16,3 +16,8 @@
 
 => Bugfix : correcting sql error during installation.
 => Bugfix : Two headers text for Service Template Model form missing
+
+# Oreon 1.3.2
+
+=> Bugfix : Correcting bug when reschedul meta_service
+=> Bugfix : do a powerfull monitoring with nagios2
