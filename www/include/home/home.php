@@ -39,10 +39,6 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign("ssvc", $statistic_service);
 	$tpl->assign("sh", $statistic_host);
-	if (isset($host_status))
-		$oreon->status_graph_host = $host_status;
-	if (isset($service_status))
-		$oreon->status_graph_service = $service_status;
 	$tpl->assign("session", session_id());
 	$tpl->display("home.ihtml");
 ?>

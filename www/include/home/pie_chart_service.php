@@ -51,14 +51,17 @@
 	// create the dataset
 	
 	$tab = array();
-	foreach ($oreon->status_graph_service as $s){
+	/*foreach ($oreon->status_graph_service as $s){
 		if (!isset($tab[strtolower($s["status"])]))
 			$tab[strtolower($s["status"])] = 0;
 		$tab[strtolower($s["status"])]++;
-	}
+	}*/
 	$tab2 = array();
-	foreach ($tab as $key => $value){
-		$tab2[$key . " - ". $value] = $value;
+	foreach ($oreon->status_graph_service as $key => $value){
+		if ($value != 0){
+			$tab2[strtolower($key) . " - ". $value] = $value;
+			$tab[strtolower($key)] = $value;
+		}	
 	}
 
 	$Dataset =& Image_Graph::factory('dataset', array($tab2));

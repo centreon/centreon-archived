@@ -50,40 +50,41 @@
 	
 	// create the dataset
 	
-	$tab = array();
-	foreach ($oreon->status_graph_host as $s){
+	/*foreach ($oreon->status_graph_host as $s){
 		if (!isset($tab[strtolower($s["status"])]))
 			$tab[strtolower($s["status"])] = 0;
 		$tab[strtolower($s["status"])]++;
-	}
-	$tab2 = array();
-	foreach ($tab as $key => $value){
-		$tab2[$key . " - ". $value] = $value;
-	}
+	}*/
 
+	$tab = array();
+	$tab2 = array();
+	foreach ($oreon->status_graph_host as $key => $value){
+		if ($value != 0){
+			$tab2[strtolower($key) . " - ". $value] = $value;
+			$tab[strtolower($key)] = $value;
+		}			
+	}
+		
 	$Dataset =& Image_Graph::factory('dataset', array($tab2));
 	
 	// create the 1st plot as smoothed area chart using the 1st dataset
 	$Plot =& $Plotarea->addNew('Image_Graph_Plot_Pie', $Dataset);
-	
 	$Plot->Radius = 2;
-	    
 	// set a line color
 	$Plot->setLineColor('gray');
-	
 	// set a standard fill style
-	
-	
 	
 	$FillArray =& Image_Graph::factory('Image_Graph_Fill_Array');
 	$Plot->setFillStyle($FillArray);
 	
 	foreach ($tab as $key => $value){
-		$FillArray->addColor($oreon->optGen["color_".$key]."@0.2");
+		if ($value != 0)
+			$FillArray->addColor($oreon->optGen["color_".$key]."@0.2");
 	}
+	
+	//print_r($tab);print_r($tab2);
 
 	$Plot->explode(4);
-	
 	
 	// create a Y data value marker
 	$Marker =& $Plot->addNew('Image_Graph_Marker_Value', IMAGE_GRAPH_PCT_Y_TOTAL);
