@@ -21,3 +21,4 @@
 
 => Bugfix : Correcting bug when reschedul meta_service
 => Bugfix : do a powerfull monitoring with nagios2
+=> Feature : Add debug in graphs, configuration upload and ldap auth 
