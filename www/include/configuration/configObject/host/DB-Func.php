@@ -355,15 +355,9 @@ For information : contact@oreon-project.org
 		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$res =& $pearDB->query("SELECT city_id, city_date FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			$date = 0;
-			$city_id = NULL;
-			while($res->fetchInto($city))
-				if ($city["city_date"] > $date)	{
-					 $city_id = $city["city_id"];
-					 $date = $city["city_date"];
-				}
-			$city_id ? $rq .= "'".$city_id."' ": $rq .= "NULL ";
+			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
+			$city = $res->fetchRow();
+			$city["city_id"] ? $rq .= "'".$city["city_id"]."' ": $rq .= "NULL ";
 		}	
 		else
 			$rq .= "NULL ";
@@ -534,19 +528,9 @@ For information : contact@oreon-project.org
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
 		$rq .= "city_id = ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$res =& $pearDB->query("SELECT city_id, city_date FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");			
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$date = 0;
-			$city_id = NULL;
-			while($res->fetchInto($city))	{
-				if ($city["city_date"] > $date)	{
-					 $city_id = $city["city_id"];
-					 $date = $city["city_date"];
-				}
-			}
-			$city_id ? $rq .= "'".$city_id."' ": $rq .= "NULL ";
+			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
+			$city = $res->fetchRow();
+			$city["city_id"] ? $rq .= "'".$city["city_id"]."' ": $rq .= "NULL ";
 		}	
 		else
 			$rq .= "NULL ";

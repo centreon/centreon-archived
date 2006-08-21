@@ -159,11 +159,11 @@ For information : contact@oreon-project.org
 		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$res =& $pearDB->query("SELECT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' LIMIT 1");
+			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
 			if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
 			}
-			$city =& $res->fetchRow();
+			$city = $res->fetchRow();
 			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
 		}	
 		else
@@ -217,11 +217,11 @@ For information : contact@oreon-project.org
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "country_id = '".$ret["country_id"]."', ": $rq .= "country_id = NULL, ";
 		$rq .= "city_id = ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$res =& $pearDB->query("SELECT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' LIMIT 1");
+			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
 			if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
 			}
-			$city =& $res->fetchRow();
+			$city = $res->fetchRow();
 			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
 		}	
 		else
