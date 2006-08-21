@@ -35,6 +35,12 @@ For information : contact@oreon-project.org
 				$metaService_status_bis[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
 				$metaService_status_bis[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
 				$metaService_status_bis[$name]["class"] = $tab_class[$c % 2];
+				$metaService_status_bis[$name]["current_state"] = $metaService_status[$name]["current_state"];
+				$metaService_status_bis[$name]["plugin_output"] = $metaService_status[$name]["plugin_output"];
+				$metaService_status_bis[$name]["current_attempt"] = $metaService_status[$name]["current_attempt"];
+				$metaService_status_bis[$name]["notifications_enabled"] = $metaService_status[$name]["notifications_enabled"];
+				$metaService_status_bis[$name]["active_checks_enabled"] = $metaService_status[$name]["active_checks_enabled"];
+				$metaService_status_bis[$name]["passive_checks_enabled"] = $metaService_status[$name]["passive_checks_enabled"];
 				$c++;
 			}
 		}

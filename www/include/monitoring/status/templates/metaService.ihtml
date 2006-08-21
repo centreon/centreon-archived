@@ -17,8 +17,8 @@
 	</tr>
 	{assign var="c" value="0"}
 	{ foreach item=s from=$metaService_status }
-	{if $s.real_name && $s.current_state}
-	<tr {if $s.status == CRITICAL}class="list_three"{else}class="{$s.class}"{/if} id="trStatus{$c}">
+	{if $s.real_name}
+	<tr {if $s.current_state == CRITICAL}class="list_three"{else}class="{$s.class}"{/if} id="trStatus{$c}">
 		<td class="ListColPicker" width="10"><input name="select[Meta_Module;meta_{ $s.id }]" value="1" type="checkbox"></td>
 		<td class="ListColLeft"><div id="host{$c}">{ $s.real_name }</div></td>
 			<td class="ListColRight">
