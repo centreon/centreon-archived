@@ -18,65 +18,58 @@
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=host_name&order=sort_asc'>{$lang.m_mon_hosts}</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-	 	<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=description&order=sort_asc'>{$lang.m_mon_services}</a>&nbsp;{if $sort_type == "description"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=description&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+	 	<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=service_description&order=sort_asc'>{$lang.m_mon_services}</a>&nbsp;{if $sort_type == "service_description"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=service_description&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 		<td class="ListColHeaderCenter">Actions</td>
 		<td class="ListColHeaderCenter">Infos</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=status&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "status"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=status&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=current_state&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "current_state"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=current_state&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_check&order=sort_asc'>{ $mon_last_check }</a>&nbsp;{if $sort_type == "last_check"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_change&order=sort_asc'>{ $mon_duration }</a&nbsp;{if $sort_type == "last_change"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=retry&order=sort_asc'>{$lang.m_mon_try}</a>&nbsp;{if $sort_type == "retry"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=retry&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'>{/if}</a></td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=output&order=sort_asc'>{ $mon_status_information }</a>&nbsp;{if $sort_type == "output"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_state_change&order=sort_asc'>{ $mon_duration }</a&nbsp;{if $sort_type == "last_state_change"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=last_state_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=currents_attempts&order=sort_asc'>{$lang.m_mon_try}</a>&nbsp;{if $sort_type == "current_attempts"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=current_attempts&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'>{/if}</a></td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=plugin_output&order=sort_asc'>{ $mon_status_information }</a>&nbsp;{if $sort_type == "plugin_output"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=plugin_output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 	</tr>
 	{assign var="c" value="0"}
 	
 	{ foreach item=s from=$service_status }
 	{if $s.status ne 'OK'}	
-	{if (!$host_name && !$status) || ($host_name == $s.host_name && $status && $status == $s.status) || ($host_name == $s.host_name && !$status)}
-		<tr {if $s.status == CRITICAL}class="list_three"{else}class="{$s.class}"{/if} id="trStatus{$c}">
-			<td class="ListColPicker"><input name="select[{$s.host_name};{$s.description}]" value="1" type="checkbox"></td>
-			{if $host == $s.host_name}
-				<td class="ListColLeft">&nbsp;</td>
-			{elseif $host != $s.host_name}	
-				<td class="ListColLeft"><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
+		{if (!$host_name && !$status) || ($host_name == $s.host_name && $status && $status == $s.status) || ($host_name == $s.host_name && !$status)}
+			<tr {if $s.current_status == CRITICAL}class="list_three"{else}class="{$s.class}"{/if} id="trStatus{$c}">
+				<td class="ListColPicker"><input name="select[{$s.host_name};{$s.service_description}]" value="1" type="checkbox"></td>
+				{if $host == $s.host_name}
+					<td class="ListColLeft">&nbsp;</td>
+				{elseif $host != $s.host_name}	
+					<td class="ListColLeft"><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
+				{/if}
+				<td class="ListColLeft"><a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.service_description}'>{ $s.service_description }</a></td>
+				<td class="ListColRight">
+					<div id="actions{$c}">
+						<a href='./oreon.php?p={$p}&o={$o}&cmd=2&select[{$s.host_name}:{$s.service_description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
+						<a href='./oreon.php?p=40207&host_name={ $s.host_name }&service_description={$s.service_description}&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
+					<div>
+				</td>
+				<td class="ListColRight">
+				<div id="infos{$c}">
+					{if $s.problem_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
+					{if $s.is_flapping == 1}<img src='./img/icones/16x16/flapping.gif'>{/if}
+					{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
+					{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
+					{if $s.notifications_enabled == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
+				</div>
+				</td>
+				<td class="ListColCenter" style="background-color:{ $s.status_color }" id="tdStatus{$c}"><div id="current_state{$c}">{ $s.current_state }</div></td>
+				<td class="ListColRight"><div id="last_check{$c}">{ $s.last_check }</div></td>
+	            <td class="ListColRight" align="right"><div id="last_state_change{$c}">{ $s.last_state_change }</div></td>
+	            <td class="ListColCenter" align="center"><div id="current_attempts{$c}">{ $s.current_attempts }</div></td>
+	            <td class="ListColNoWrap"><div id="plugin_output{$c}">{ $s.plugin_output}{ $t}</div></td>						
+			</tr>
+			{assign var="host" value=$s.host_name}
 			{/if}
-			<td class="ListColLeft"><a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.description}'>{ $s.description }</a></td>
-			<td class="ListColRight">
-			<div id="actions{$c}">
-				<a href='./oreon.php?p={$p}&o={$o}&cmd=2&select[{$s.host_name}:{$s.description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
-				<a href='./oreon.php?p=40207&host_name={ $s.host_name }&service_description={$s.description}&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
-			<div>
-			</td>
-			<td class="ListColRight">
-			<div id="infos{$c}">
-				{if $s.pb_aknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
-				{if $s.flapping == 1}<img src='./img/icones/16x16/flapping.gif'>{/if}
-				{if $s.checks_en == 0 && $s.accept_passive_check}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
-				{if $s.checks_en == 0 && $s.accept_passive_check == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
-				{if $s.not_en == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
-			</div>
-			</td>
-			<td class="ListColCenter" style="background-color:{ $s.status_color }" id="tdStatus{$c}"><div id="status{$c}">{ $s.status }</div></td>
-			
-			
-			<td class="ListColRight"><div id="last_check{$c}">{ $s.last_check }</div></td>
-            <td class="ListColRight" align="right"><div id="last_change{$c}">{ $s.last_change }</div></td>
-            <td class="ListColCenter" align="center"><div id="retry{$c}">{ $s.retry }</div></td>
-            <td class="ListColNoWrap"><div id="output{$c}">{ $s.output}{ $t}</div></td>						
-		</tr>
-		{assign var="host" value=$s.host_name}
+			{assign var="c" value=$c+1}
 		{/if}
-		{assign var="c" value=$c+1}
-	{/if}
 	{/foreach}
 </table>
-
 {php}
    include('./include/common/pagination.php');
 {/php}
-
-
-
-
 <div style="text-align:left;padding-top:5px;">
 	<select name="cmd">
 		<option value="1">{$lang.m_mon_resubmit_im_checks}</option>

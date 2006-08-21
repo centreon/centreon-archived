@@ -31,43 +31,39 @@ For information : contact@oreon.org
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["search"]) ? $search = 0 : $search = $_GET["search"];
 
-
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$service_status_num = array();
 	if (isset($service_status))
 		foreach ($service_status as $name => $svc){			
 			$tmp = array();
-			$tmp[0] = $name;		
-			$service_status[$name]["status"] = $svc["status"];
-			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["status"])];
-			$service_status[$name]["flapping"] = $svc["svc_is_flapping"];
-			if ($svc["last_check"]){
-				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-				$service_status[$name]["last_change"] = Duration::toString(time() - $svc["last_change"]);
-			} else {
-				$service_status[$name]["last_check"] = "";
-				$service_status[$name]["last_change"] = "";
+			$tmp[0] = $name;
+			if (strcmp($svc["current_state"], "OK")){
+				$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
+				if ($svc["last_check"]){
+					$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
+					$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
+				} else {
+					$service_status[$name]["last_check"] = "";
+					$service_status[$name]["last_state_change"] = "";
+				}
+				$service_status[$name]["class"] = $tab_class[$rows % 2];
+				$tmp[1] = $service_status[$name];
+				$service_status_num[$rows++] = $tmp;
 			}
-			$service_status[$name]["class"] = $tab_class[$rows % 2];
-			$tmp[1] = $service_status[$name];
-			$service_status_num[$rows++] = $tmp;
 		}
-
-
 	$service_status_num = array();
 	$rows = 0;
 
 	$tmp = array();
-		foreach ($service_status as $name => $svc)
-			if($service_status[$name]["status"] != 'OK')
-			{
+	foreach ($service_status as $name => $svc)
+		if($service_status[$name]["current_state"] != 'OK'){
 			$tmp2 = array();
 			$tmp2[0] = $name;		
 			$tmp[$name] = $service_status[$name];
 			$tmp2[1] = $service_status[$name];
 			$service_status_num[$rows++] = $tmp2;
-			}
+		}
 
 	$service_status = $tmp;
 	
@@ -86,9 +82,6 @@ For information : contact@oreon.org
 	$tpl->assign("mon_duration", $lang['mon_duration']);
 	$tpl->assign("mon_status_information", $lang['mon_status_information']); 
 
-
-
-
 	# view tab
 	$displayTab = array();
 	$start = $num*$limit;
@@ -96,13 +89,9 @@ For information : contact@oreon.org
 		$displayTab[$service_status_num[$i][0]] = $service_status_num[$i][1];
 		$service_status = $displayTab;
 
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-
 
 	if (isset($service_status))
 		$tpl->assign("service_status", $service_status);
@@ -152,20 +141,16 @@ For information : contact@oreon.org
 	$tpl->assign("version", $version);
 */
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-
-
 	$res =& $pearDB->query("SELECT * FROM session WHERE" .
 			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
 			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($pearDB))
+		print "Mysql Error : ".$pearDB->getMessage();
+
 	$session =& $res->fetchRow();
     $tpl->assign('sid', session_id());
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
-
-	
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->display("service_problem.ihtml");;
 

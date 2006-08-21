@@ -23,9 +23,8 @@ For information : contact@oreon.org
 	$status_hg = array();
 		
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($pearDB)) 
+		print "Mysql Error : ".$pearDB->getMessage();
 	while ($r =& $ret->fetchRow()){
 		$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
 		$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
@@ -50,7 +49,7 @@ For information : contact@oreon.org
 			if(isset($tab_host_service[$r_h["host_name"]]))
 			{
 					foreach ($tab_host_service[$r_h["host_name"]] as $key => $value)
-						$status_hg[$service_status[$r_h["host_name"]. "_" .$key]["status"]]++;
+						$status_hg[$service_status[$r_h["host_name"]. "_" .$key]["current_state"]]++;
 					
 					$service_data_str = "";
 					if ($status_hg["OK"] != 0)
@@ -65,14 +64,13 @@ For information : contact@oreon.org
 						$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>" . $status_hg["UNKNOWN"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=UNKNOWN'>UNKNOWN</a></span> ";
 					
 					$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
-					$status = "color_".strtolower($host_status[$r_h["host_name"]]["status"]);
-					$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'><a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."'>".$host_status[$r_h["host_name"]]["status"]."</a></td>";
+					$status = "color_".strtolower($host_status[$r_h["host_name"]]["current_state"]);
+					$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'><a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."'>".$host_status[$r_h["host_name"]]["current_state"]."</a></td>";
 					$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
 					$cpt++;
 			}
 		}
 	}
-	
 	
 	if ($debug){
 		print "<textarea rows='20' cols='100'>";

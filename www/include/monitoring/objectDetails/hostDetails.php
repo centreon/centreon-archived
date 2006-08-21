@@ -31,15 +31,13 @@ For information : contact@oreon.org
 		include_once("alt_error.php");
 	} else {
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."'");
-		if (PEAR::isError($pearDB)) {
+		if (PEAR::isError($pearDB))
 			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		$res->fetchInto($host);
 
 		$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$key."'");
-		if (PEAR::isError($pearDB)) {
+		if (PEAR::isError($pearDB))
 			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		$res->fetchInto($inventory);
 
 		if ($inventory["type_ressources"] == 0){
@@ -93,20 +91,20 @@ For information : contact@oreon.org
 
 		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
 
-		$host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["status"])];
+		$host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
 		$host_status[$host_name]["last_check"] = date($lang["date_time_format"], $host_status[$host_name]["last_check"]);
-		!$host_status[$host_name]["last_notifi"] ? $host_status[$host_name]["last_notifi"] = "": $host_status[$host_name]["last_notifi"] = date($lang["date_time_format"], $host_status[$host_name]["last_notifi"]);
-		!$host_status[$host_name]["last_stat"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = Duration::toString(time() - $host_status[$host_name]["last_stat"]);
-		!$host_status[$host_name]["last_stat"] ? $host_status[$host_name]["last_stat"] = "": $host_status[$host_name]["last_stat"] = date($lang["date_time_format"],$host_status[$host_name]["last_stat"]);
+		!$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = date($lang["date_time_format"], $host_status[$host_name]["last_notification"]);
+		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = Duration::toString(time() - $host_status[$host_name]["last_state_change"]);
+		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = date($lang["date_time_format"],$host_status[$host_name]["last_state_change"]);
 		$host_status[$host_name]["last_update"] = date($lang["date_time_format"], time());
 
-		$host_status[$host_name]["flapping"] = $en[$host_status[$host_name]["flapping"]];
+		$host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
 
 		$tab_status = array();
 		foreach ($tab_host_service[$host_name] as $key_name => $s){
-			if (!isset($tab_status[$service_status[$host_name."_".$key_name]["status"]]))
-				$tab_status[$service_status[$host_name."_".$key_name]["status"]] = 0;
-			$tab_status[$service_status[$host_name."_".$key_name]["status"]]++;
+			if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
+				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
+			$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
 		}
 		$status = NULL;
 		foreach ($tab_status as $key => $value)
@@ -124,7 +122,6 @@ For information : contact@oreon.org
 		$tpl->assign("en_disable", $en_disable);
 		$tpl->assign("img_en", $img_en);
 		$tpl->assign("status", $status);
-		
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
 		

@@ -24,17 +24,16 @@ For information : contact@oreon.org
 	$svc_data = array();
 
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($pearDB))
+		print "Mysql Error : ".$pearDB->getMessage();
+
 	while ($r =& $ret->fetchRow()){
 		$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
 		$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
 									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		if (PEAR::isError($pearDB)) 
+			print "Mysql Error : ".$pearDB->getMessage();
 		$cpt = 0;
 		while ($r_h =& $ret_h->fetchRow()){
 			$hg[$r["hg_name"]]["host"][$cpt] = $r_h["host_name"];
@@ -43,7 +42,7 @@ For information : contact@oreon.org
 			if (isset($tab_host_service[$r_h["host_name"]]))
 				foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
 					$service_data_str .= 	"<span style='background:".
-											$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["status"])]."'>".
+											$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])]."'>".
 											"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
 											"</a></span> &nbsp;&nbsp;";
 				}
@@ -52,7 +51,6 @@ For information : contact@oreon.org
 			$cpt++;
 		}
 	}
-
 
 	if ($debug){
 		print "<textarea rows='20' cols='100'>";

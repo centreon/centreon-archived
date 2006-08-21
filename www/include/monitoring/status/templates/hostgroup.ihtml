@@ -9,14 +9,14 @@
 		</tr>
 		{assign var="c" value="0"}
 		{foreach item=hg from=$hg}
-		{if $hg.host_stats != "" && $hg.svc_stats}
-		<tr class="{$hg.class}">
-			<td><div id="name_alias{$c}">{$hg.name} ({$hg.alias})</div></td>
-			<td><div id="hg_host_stat{$c}">{$hg.host_stats}</div></td>
-			<td><div id="hg_svc_stat{$c}">{$hg.svc_stats}</div></td>
-		</tr>
-		{assign var="c" value=$c+1}
-		{/if}
+			{if $hg.host_stats != "" && $hg.svc_stats}
+			<tr class="{$hg.class}">
+				<td><div id="name_alias{$c}">{$hg.name} ({$hg.alias})</div></td>
+				<td><div id="hg_host_stat{$c}">{$hg.host_stats}</div></td>
+				<td><div id="hg_svc_stat{$c}">{$hg.svc_stats}</div></td>
+			</tr>
+			{assign var="c" value=$c+1}
+			{/if}
 		{/foreach}
 	</table>
 </div>

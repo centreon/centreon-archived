@@ -18,17 +18,16 @@ For information : contact@oreon.org
 	if (!isset($oreon))
 		exit();
 
-$pagination = "maxViewMonitoring";
+	$pagination = "maxViewMonitoring";
 	# set limit & num
+	
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (PEAR::isError($pearDB)) 
+		print "Mysql Error : ".$pearDB->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["search"]) ? $search = 0 : $search = $_GET["search"];
-
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
@@ -39,10 +38,9 @@ $pagination = "maxViewMonitoring";
 			$res =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
 			$res->fetchInto($host);		
 			$host_status[$name]["address"] = $host["host_address"];
-			$host_status[$name]["status"] = $h["status"];
-			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["status"])];
+			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["current_state"])];
 			$host_status[$name]["last_check"] = date($lang["date_time_format_status"], $h["last_check"]);
-			$host_status[$name]["last_stat"] = Duration::toString(time() - $h["last_stat"]);
+			$host_status[$name]["last_state_change"] = Duration::toString(time() - $h["last_state_change"]);
 			$host_status[$name]["class"] = $tab_class[$rows % 2];
 			$host_status[$name]["name"] = $name;
 			$tmp[1] = $host_status[$name];
@@ -56,26 +54,20 @@ $pagination = "maxViewMonitoring";
 
 	# view tab
 	$displayTab = array();
-	$start = $num*$limit;
+	$start = $num * $limit;
 	$i_real = $start;
 
-//	for($i=$start; isset($host_status_num[$i]) && $i_real < $limit+$start ;$i++)
-	for($i=$start; isset($host_status_num[$i]) ;$i++)
-	{
-		if($host_status_num[$i][1]["status"] != 'UP')
-		{
+	for($i=$start; isset($host_status_num[$i]) ;$i++){
+		if($host_status_num[$i][1]["current_state"] != 'UP'){
 			$i_real++;
 			$displayTab[$host_status_num[$i][0]] = $host_status_num[$i][1];
 		}
 	}
 	$host_status = $displayTab;
 
-
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-
 	
 	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);

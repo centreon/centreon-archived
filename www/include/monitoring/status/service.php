@@ -18,7 +18,7 @@ For information : contact@oreon.org
 	if (!isset($oreon))
 		exit();
 	$pagination = "maxViewMonitoring";		
-
+	
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
 	if (PEAR::isError($pearDB)) {
@@ -37,15 +37,13 @@ For information : contact@oreon.org
 		foreach ($service_status as $name => $svc){			
 			$tmp = array();
 			$tmp[0] = $name;		
-			$service_status[$name]["status"] = $svc["status"];
-			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["status"])];
-			$service_status[$name]["flapping"] = $svc["svc_is_flapping"];
+			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 			if ($svc["last_check"]){
 				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-				$service_status[$name]["last_change"] = Duration::toString(time() - $svc["last_change"]);
+				$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
 			} else {
 				$service_status[$name]["last_check"] = "";
-				$service_status[$name]["last_change"] = "";
+				$service_status[$name]["last_state_change"] = "";
 			}
 			$service_status[$name]["class"] = $tab_class[$rows % 2];
 			$tmp[1] = $service_status[$name];
@@ -69,18 +67,14 @@ For information : contact@oreon.org
 
 	# view tab
 	$displayTab = array();
-	$start = $num*$limit;
-	for($i=$start; $i < ($limit+$start) && isset($service_status_num[$i])  ;$i++)
+	$start = $num * $limit;
+	for($i=$start ; $i < ($limit+$start) && isset($service_status_num[$i]) ;$i++)
 		$displayTab[$service_status_num[$i][0]] = $service_status_num[$i][1];
 		$service_status = $displayTab;
 
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-
 
 	if (isset($service_status))
 		$tpl->assign("service_status", $service_status);
@@ -89,13 +83,11 @@ For information : contact@oreon.org
 	$tpl->assign("sort_type", $_GET["sort_types"]);
 	if (!isset($_GET["order"]))
 		$_GET["order"] = "sort_asc";
-	
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	$tpl->assign("host_name", $host_name);
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	$tpl->assign("status", $status);
-
 
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
@@ -142,8 +134,6 @@ For information : contact@oreon.org
 */
 
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-
-	
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->display("service.ihtml");
 

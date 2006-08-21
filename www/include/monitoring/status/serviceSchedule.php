@@ -26,16 +26,8 @@ For information : contact@oreon.org
 	$c = 0;
 	if (isset($service_status))
 		foreach ($service_status as $name => $svc){
-			if ($svc["next_check"])
-				$service_status[$name]["next_check"] = date($lang["date_time_format_status"], $svc["next_check"]);
-			else
-				$service_status[$name]["next_check"] = "";
-			$service_status[$name]["status"] = $svc["status"];
-			if ($svc["last_check"])
-				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-			else
-				$service_status[$name]["last_check"] = "";
-			$service_status[$name]["checks_en"] = $svc["checks_en"];
+			$svc["next_check"] ? $service_status[$name]["next_check"] = date($lang["date_time_format_status"], $svc["next_check"]) : $service_status[$name]["next_check"] = "";
+			$svc["last_check"] ? $service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]) : $service_status[$name]["last_check"] = "";
 			$service_status[$name]["class"] = $tab_class[$c % 2];
 			$c++;
 		}
@@ -52,6 +44,7 @@ For information : contact@oreon.org
 	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
 	$tpl->assign("mon_duration", $lang['mon_duration']);
 	$tpl->assign("mon_status_information", $lang['mon_status_information']); 
+	
 	if (isset($service_status))
 		$tpl->assign("service_status", $service_status);
 	if (!isset($_GET["sort_types"]))

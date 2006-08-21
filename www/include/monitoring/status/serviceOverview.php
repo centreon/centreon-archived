@@ -22,17 +22,15 @@ For information : contact@oreon.org
 	$hg = array();
 	
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($pearDB))
+		print "Mysql Error : ".$pearDB->getMessage();
 	while ($r =& $ret->fetchRow()){
 		$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
 		$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
 									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		if (PEAR::isError($pearDB))
+			print "Mysql Error : ".$pearDB->getMessage();
 		$cpt = 0;
 		
 		while ($r_h =& $ret_h->fetchRow()){
@@ -43,19 +41,18 @@ For information : contact@oreon.org
 			{
 				foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
 					$service_data_str .= 	"<span style='background:".
-											$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["status"])]."'>".
+											$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])]."'>".
 											"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
 											"</a></span> &nbsp;&nbsp;";
 				}
 				$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
-				$status = "color_".strtolower($host_status[$r_h["host_name"]]["status"]);
-				$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'>".$host_status[$r_h["host_name"]]["status"]."</td>";
+				$status = "color_".strtolower($host_status[$r_h["host_name"]]["current_state"]);
+				$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'>".$host_status[$r_h["host_name"]]["current_state"]."</td>";
 				$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
 				$cpt++;
 			}
 		}
 	}
-	
 	
 	if ($debug){
 		print "<textarea rows='20' cols='100'>";
@@ -70,7 +67,7 @@ For information : contact@oreon.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 
-		$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign("p", $p);
 	$tpl->assign("hostgroup", $hg);
 	if (isset($h_data))
@@ -80,7 +77,6 @@ For information : contact@oreon.org
 	$tpl->assign("lang", $lang);
 	if(isset($svc_data))
 		$tpl->assign("svc_data", $svc_data);
-
 
 	$tpl->display("serviceOverview.ihtml");
 

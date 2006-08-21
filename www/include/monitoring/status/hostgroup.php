@@ -20,13 +20,11 @@ For information : contact@oreon.org
 		exit();
 
 	$hg = array();
-
 	$tab = array("1"=>'list_one', "0" => "list_two"); 
 
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($pearDB))
+		print "Mysql Error : ".$pearDB->getMessage();
 	while ($r =& $ret->fetchRow()){
 		$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"]);
 		$status_hg_h[$r["hg_name"]] = array();
@@ -45,16 +43,14 @@ For information : contact@oreon.org
 		$ret_h =& $pearDB->query(	"SELECT host_host_id,host_name FROM hostgroup_relation,host,hostgroup ".
 									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		if (PEAR::isError($pearDB))
+			print "Mysql Error : ".$pearDB->getMessage();
 		while ($r_h =& $ret_h->fetchRow()){
 			!$r_h["host_name"] ? $hostname = getMyHostName($r_h["host_id"]) : $hostname = $r_h["host_name"];
-			//print $r["hg_name"]. " : " . $hostname ."-".$host_status[$hostname]["status"] . "<br>";
-			if (isset($host_status[$hostname]["status"])){
-				$status_hg_h[$r["hg_name"]][$host_status[$hostname]["status"]]++;
+			if (isset($host_status[$hostname]["current_state"])){
+				$status_hg_h[$r["hg_name"]][$host_status[$hostname]["current_state"]]++;
 				foreach ($tab_host_service[$hostname] as $key => $s){
-					$status_hg[$r["hg_name"]][$service_status[$hostname. "_" .$key]["status"]]++;
+					$status_hg[$r["hg_name"]][$service_status[$hostname. "_" .$key]["current_state"]]++;
 				} 		
 			}
 		}
@@ -88,20 +84,9 @@ For information : contact@oreon.org
 		$hg[$hgs["name"]]["class"] = $tab[$cpt % 2];
 		$cpt++;
 	}
-	
-	if ($debug){
-		print "<textarea rows='20' cols='100'>";
-		print_r($status_hg);
-		print "</textarea>";
-		print "<textarea rows='20' cols='100'>";
-		print_r($status_hg_h);
-		print "</textarea>";
-	}
-
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
-
 
 /*
     $ajax = "<script type='text/javascript'>" .
@@ -128,8 +113,6 @@ For information : contact@oreon.org
 	$tpl->assign("version", $version);
 */
 	
-		
-
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	
 	$tpl->assign("p", $p);

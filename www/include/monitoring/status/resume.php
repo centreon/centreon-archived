@@ -34,10 +34,10 @@ For information : contact@oreon-project.org
 	
 	if (isset($host_status))
 		foreach ($host_status as $hs)
-			$statistic_host[$hs["status"]]++;
+			$statistic_host[$hs["current_state"]]++;
 	if (isset($service_status))		
 		foreach ($service_status as $s)
-			$statistic_service[$s["status"]]++;
+			$statistic_service[$s["current_state"]]++;
 	
 	$statistic_service_color = array();
 	if (isset($statistic_service))
