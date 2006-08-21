@@ -124,4 +124,25 @@ $lang ["error_msg"] = "le champ comment doit etre renseign&eacute;";
 $lang ["herror"] = "Erreur de saisie";
 $lang ["ferror"] = "Veuillez corriger";
 
+/*** Host Details ***/
+
+$lang["m_mon_performance_data"] = "Donn&eacute;es de Performance";
+$lang["m_mon_current_attempt"] = "Tentatives";
+$lang["m_mon_state_type"] = "Etat du Status";
+$lang["m_mon_next_check"] = "Prochaine v&eacute;rification";
+$lang["m_mon_check_latency"] = "Latence";
+$lang["m_mon_next_notification"] = "Prochaine Notification";
+$lang["m_mon_obsess_over_host"] = "Obsess Over Host";
+$lang["m_mon_obsessing"] = "Obsessing";
+$lang["m_mon_host_checks_passive"] = "V&eacute;rification passive";
+$lang["m_mon_host_checks_active"] = "V&eacute;rification active";
+$lang["m_mon_check_execution_time"] = "Temps d'execution";
+$lang["m_mon_last_check_type"] = "Type de la Derni&eacute;re v&eacute;rification";
+$lang["m_mon_active"] = "Active";
+$lang["m_mon_passive"] = "Passive";
+
+$lang["m_mon_hard"] = "Hard";
+$lang["m_mon_soft"] = "Soft";
+
+
 ?>

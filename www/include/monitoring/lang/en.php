@@ -126,4 +126,24 @@ $lang ["error_msg"] = "comment is required";
 $lang ["herror"] = "Invalid information entered";
 $lang ["ferror"] = "Please correct these fields";
 
+/*** Host Details ***/
+
+$lang["m_mon_performance_data"] = "Performance Data";
+$lang["m_mon_current_attempt"] = "Current Attempt";
+$lang["m_mon_state_type"] = "State Type";
+$lang["m_mon_next_check"] = "Next Check";
+$lang["m_mon_check_latency"] = "Latency";
+$lang["m_mon_next_notification"] = "Next Notification";
+$lang["m_mon_obsess_over_host"] = "Obsess Over Host";
+$lang["m_mon_obsessing"] = "Obsessing";
+$lang["m_mon_host_checks_passive"] = "Passive Checks";
+$lang["m_mon_host_checks_active"] = "Active Checks";
+$lang["m_mon_check_execution_time"] = "Execution Time";
+$lang["m_mon_last_check_type"] = "Last Check Type";
+
+$lang["m_mon_active"] = "Active";
+$lang["m_mon_passive"] = "Passive";
+
+$lang["m_mon_hard"] = "Hard";
+$lang["m_mon_soft"] = "Soft";
 ?>
