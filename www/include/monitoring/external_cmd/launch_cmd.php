@@ -13,7 +13,7 @@ In no event will OREON be liable for any direct, indirect, punitive, special,
 incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
-For information : contact@oreon.org
+For information : contact@oreon-project.org
 */
 ?>
 <td width='85%'>
