@@ -346,9 +346,7 @@ For information : contact@oreon-project.org
 				$res->free();
 				$time_end_create = microtime_float();
 			}
-			//$time_mysql = $time_end_mysql - $time_start_mysql;
-			//$time_create = $time_end_create - $time_start_create;
-
+			
 			$tpl->assign('cpt_total_values', $cpt_total_values);
 			$tpl->assign('cpt_total_graphed_values', $cpt_total_graphed_values);
 			$tpl->assign('isAvl', $isAvl);
