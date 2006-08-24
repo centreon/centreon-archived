@@ -185,7 +185,7 @@ For information : contact@oreon-project.org
 		}
 		$cpt_total_values += $cpt;
 		$cpt_total_graphed_values += $cpt_real;
-		$update_cmd = "rrdtool update ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/graphCustoms/".$key.".rrd " . $str . " 2>&1";
+		$update_cmd = $oreon->optGen["rrdtool_path_bin"]." update ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/graphCustoms/".$key.".rrd " . $str . " 2>&1";
 		system($update_cmd, $ret);
 		if ($ret)
 			print $ret;
