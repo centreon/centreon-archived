@@ -19,14 +19,16 @@ For information : contact@oreon-project.org
 */
 	/* start quickSearch form*/
 	
-	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p);
+	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
 	
-	$tab = array ("search" => $search, "p"=>$p, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
+	$tab = array ("search" => $search, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
 	$form_search->addElement('text', 'search', $lang["quicksearch"]);
 	$form_search->addElement('hidden', 'p');
 	$form_search->addElement('hidden', 'limit');
 	$form_search->addElement('hidden', 'list');
-	if ($p == 602 || $p == 60201) {
+	$form_search->addElement('hidden', 'o', $o);
+
+	if ($p == 602 || $p == 60201 || $p == 20201 || $p == 20202|| $p == 202|| $p == 2) {
 		$form_search->addElement('advcheckbox', 'search_type_host', 'host');
 		$form_search->addElement('advcheckbox', 'search_type_service', 'service');
 	}
