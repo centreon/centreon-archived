@@ -94,6 +94,13 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _previous_host_name){
 	var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
 	var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 
+	var _search=_form.search.value;
+	var _search_type_service=_form.search_type_service.value;
+	var _search_type_host=_form.search_type_host.value;
+	var _num=_form.num.value;
+	var _limit=_form.limit.value;
+	var _order=_form.order.value;
+	var _sort_types=_form.sort_types.value;
 
 	var _ligne = document.createElement('tr');
 	_ligne.id = 'trStatus'+ i;
@@ -222,8 +229,13 @@ _case_infos.id = 'infos' + i;
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!p!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 var _p = 20201;
 
+
+
+
+
 	var _linkaction_recheck = document.createElement("a");
-  	_linkaction_recheck.href = './oreon.php?p=' + _p + '&o=svc&cmd=2&select[' + _host_name + ':' + _service_description + ']=1';
+  	_linkaction_recheck.href = './oreon.php?p=' + _p + '&o=svc&cmd=2&select[' + _host_name + ':' + _service_description + ']=1' +
+  			'&num='+_num+'&limit='+_limit+'&sort_types='+_sort_types+'&order='+_order+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service;
 	_linkaction_recheck.appendChild(_img7);
 
 	var _linkaction_graph = document.createElement("a"); 
@@ -242,7 +254,7 @@ var _p = 20201;
 		var _text_host_name = document.createTextNode(' ');
 
 	var _linkhost_name = document.createElement("a"); 
-  	_linkhost_name.href = './oreon.php?p=201&o=hd&host_name_name=' + _host_name;
+  	_linkhost_name.href = './oreon.php?p=201&o=hd&host_name=' + _host_name;
 	_linkhost_name.appendChild(_text_host_name);
 
 	var _divhost_name = document.createElement("div");
@@ -253,7 +265,7 @@ var _p = 20201;
 
 	var _text_service_description = document.createTextNode(_service_description);
 	var _linkservice = document.createElement("a"); 
-  	_linkservice.href = './oreon.php?p=202&o=svcd&host_name_name=' + _host_name + '&service_description=' +_service_description;
+  	_linkservice.href = './oreon.php?p=202&o=svcd&host_name=' + _host_name + '&service_description=' +_service_description;
 	_linkservice.appendChild(_text_service_description);
 
 	var _divservice = document.createElement("div");
@@ -314,7 +326,6 @@ var _p = 20201;
 
 
 function init(){
-
 	_form=document.getElementById('fsave');
 	_time=parseInt(_form.time.value);
 	_form.time.value = _time - 1000;
@@ -331,7 +342,7 @@ function go(){
 	_smaxtime = parseInt(_form.smaxtime.value);
 	_time=parseInt(_form.time.value);
 	_order=_form.order.value;
-	_sort_type=_form.sort_type.value;
+	_sort_types=_form.sort_types.value;
 	_sid=_form.sid.value;
 	_type=_form.type.value;
 	_version=_form.version.value;
@@ -340,6 +351,8 @@ function go(){
 	_fileOreonConf=_form.fileOreonConf.value;
 	_limit=_form.limit.value;
 	_search=_form.search.value;
+	_search_type_service=_form.search_type_service.value;
+	_search_type_host=_form.search_type_host.value;
 	_num=_form.num.value;
 	_previous_host_name = '';
 				
@@ -459,6 +472,7 @@ function go(){
 					if(_is_flapping == 1)
 						_infohtml += '<img src=' + _form.icone_flapping.value + ' alt=is_flapping>';
 					var _current_state = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
+					var _current_attempt = line.getElementsByTagName("current_attempt")[0].firstChild.nodeValue;
 					var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
 					var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
 					var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
@@ -470,6 +484,7 @@ function go(){
 
 					document.getElementById('infos'+order).innerHTML = _infohtml;
 					document.getElementById('current_state'+order).innerHTML = _status;
+					document.getElementById('current_attempt'+order).innerHTML = _current_attempt;
 
 					//bg color
 					_td=document.getElementById('tdStatus'+order);
@@ -624,7 +639,7 @@ function go(){
 
 	xhr.open("POST",_adresseRecherche,true);
 	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhr.send("order="+_order+"&sort_type="+_sort_type+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
+	xhr.send("search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
 	setTimeout('go()', 5000);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier
