@@ -488,8 +488,8 @@ function adjustiFrame(pickerDiv, iFrameDiv)
     
     try {
       iFrameDiv.style.position = "absolute";
-      iFrameDiv.style.width = pickerDiv.offsetWidth;
-      iFrameDiv.style.height = pickerDiv.offsetHeight ;
+//      iFrameDiv.style.width = pickerDiv.offsetWidth;
+//      iFrameDiv.style.height = pickerDiv.offsetHeight ;
       iFrameDiv.style.top = pickerDiv.style.top;
       iFrameDiv.style.left = pickerDiv.style.left;
       iFrameDiv.style.zIndex = pickerDiv.style.zIndex - 1;
