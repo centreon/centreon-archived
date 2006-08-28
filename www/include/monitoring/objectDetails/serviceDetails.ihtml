@@ -15,7 +15,7 @@
 					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_services_status}</td>
 						<td class="ListColLeft" style='background:{$service_data.status_color}'>{$service_data.current_state}</td>
-					</tr class='list_two'>
+					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_host_status_info}</td>
 						<td class="ListColLeft">{$service_data.plugin_output}</td>
@@ -43,48 +43,44 @@
 					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_services_active_check}</td>
 						<td class="ListColLeft">{$service_data.next_check}</td>
-					</tr><!--
+					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_status_data_age}</td>
-						<td class="ListColLeft"></td>
-					</tr>-->
-					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_services_latency}</td>
 						<td class="ListColLeft">{$service_data.check_latency}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_services_duration}</td>
 						<td class="ListColLeft">{$service_data.check_execution_time}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_last_change}</td>
 						<td class="ListColLeft">{$service_data.last_state_change}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_current_state_duration}</td>
 						<td class="ListColLeft">{$service_data.duration}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_last_notification_serv}</td>
 						<td class="ListColLeft">{if $service_data.last_notification}{$service_data.last_notification}{/if}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_notification_nb}</td>
 						<td class="ListColLeft">{$service_data.current_notification_number}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_services_flapping}</td>
 						<td class="ListColLeft">{$service_data.is_flapping}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_percent_state_change}</td>
 						<td class="ListColLeft">{$service_data.percent_state_change} % </td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_downtime_sc}</td>
 						<td class="ListColLeft" style='background:{$color_onoff_inv[$service_data.scheduled_downtime_depth]};'>{$en[$service_data.scheduled_downtime_depth]}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_last_update}</td>
 						<td class="ListColLeft">{$service_data.last_update}</td>
 					</tr>

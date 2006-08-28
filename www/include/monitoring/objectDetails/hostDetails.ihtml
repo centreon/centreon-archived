@@ -15,12 +15,12 @@
 					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_host_status}</td>
 						<td class="ListColLeft" style='background:{$host_data.status_color}'>{$host_data.current_state}</td>
-					</tr class='list_two'>
+					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_host_status_info}</td>
 						<td class="ListColLeft">{$host_data.plugin_output}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_onre'>
 						<td class="ListColLeft">{$lang.m_mon_performance_data}</td>
 						<td class="ListColLeft">{$host_data.performance_data}</td>
 					</tr>
@@ -28,15 +28,15 @@
 						<td class="ListColLeft">{$lang.m_mon_current_attempt}</td>
 						<td class="ListColLeft">{$host_data.current_attempt}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_state_type}</td>
 						<td class="ListColLeft">{$host_data.state_type}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_host_last_check}</td>
 						<td class="ListColLeft">{$host_data.last_check}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_status_data_age}</td>
 						<td class="ListColLeft"></td>
 					</tr>
@@ -48,7 +48,7 @@
 						<td class="ListColLeft">{$lang.m_mon_check_latency}</td>
 						<td class="ListColLeft">{$host_data.check_latency}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_check_execution_time}</td>
 						<td class="ListColLeft">{$host_data.check_execution_time}</td>
 					</tr>
@@ -64,27 +64,27 @@
 						<td class="ListColLeft">{$lang.m_mon_last_notification}</td>
 						<td class="ListColLeft">{$host_data.last_notification}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_next_notification}</td>
 						<td class="ListColLeft">{$host_data.next_notification}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_notification_nb}</td>
 						<td class="ListColLeft">{$host_data.current_notification_number}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_host_flapping}</td>
 						<td class="ListColLeft">{$host_data.is_flapping}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_percent_state_change}</td>
 						<td class="ListColLeft">{$host_data.percent_state_change} % </td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_downtime_sc}</td>
 						<td class="ListColLeft" style='background:{$color_onoff_inv[$host_data.scheduled_downtime_depth]}'>{$en[$host_data.scheduled_downtime_depth]}</td>
 					</tr>
-					<tr class='list_two'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_last_update}</td>
 						<td class="ListColLeft">{$host_data.last_update}</td>
 					</tr>
