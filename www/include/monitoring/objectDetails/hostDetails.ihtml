@@ -20,7 +20,7 @@
 						<td class="ListColLeft">{$lang.m_mon_host_status_info}</td>
 						<td class="ListColLeft">{$host_data.plugin_output}</td>
 					</tr>
-					<tr class='list_onre'>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_performance_data}</td>
 						<td class="ListColLeft">{$host_data.performance_data}</td>
 					</tr>
