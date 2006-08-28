@@ -98,6 +98,9 @@ For information : contact@oreon.org
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = date($lang["date_time_format"],$host_status[$host_name]["last_state_change"]);
 		$host_status[$host_name]["last_update"] = date($lang["date_time_format"], time());
 
+		$tab_status = array("1" => "HARD", "0" => "SOFT");
+		$host_status[$host_name]["state_type"] = $tab_status[$host_status[$host_name]["state_type"]];
+
 		$host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
 
 		$tab_status = array();
