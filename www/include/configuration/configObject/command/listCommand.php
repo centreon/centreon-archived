@@ -81,7 +81,7 @@ For information : contact@oreon-project.org
 		$moptions .= "<a href='oreon.php?p=".$p."&command_id=".$cmd['command_id']."&o=c&type=".$cmd['command_type']."&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&type=".$cmd['command_type']."&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<select style='width:35; margin-bottom: 3px;' name='dupNbr[".$cmd['command_id']."]'><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>10</option></select>";
+		$moptions .= "<select style='margin-bottom: 3px;' name='dupNbr[".$cmd['command_id']."]'><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>10</option></select>";
 		$cmd["command_line"] = str_replace('#BR#', "\\n", $cmd["command_line"]);
 		$cmd["command_line"] = str_replace('#T#', "\\t", $cmd["command_line"]);
 		$cmd["command_line"] = str_replace('#R#', "\\r", $cmd["command_line"]);
