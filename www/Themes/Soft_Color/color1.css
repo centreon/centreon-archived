@@ -41,7 +41,7 @@ body	{background-color:#F2F2F2;}
 }
 
 #ResumeHeader	{	
-	background-image: #fada83 url("./Images/bg_header_orange.gif")
+	background-image: url("./Images/bg_header_orange.gif");
 	background-position:top left;
 	background-repeat:repeat-x;
 	background-color:#fada83 ;
