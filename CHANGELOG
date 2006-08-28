@@ -26,5 +26,5 @@
 => Feature : Add a upgrade.sh script
 => Bugfix : Correcting bug when reschedul meta_service
 => Bugfix : do a powerfull monitoring with nagios2
-=> Feature : Add debug in graphs, configuration upload and ldap auth 
-
+=> Feature : Add more informations in object details
+=> Bugfix : plugin list in commande form in now reloaded in live
