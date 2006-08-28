@@ -17,7 +17,9 @@
 => Bugfix : correcting sql error during installation.
 => Bugfix : Two headers text for Service Template Model form missing
 
-# Oreon 1.3.2
+## Oreon 1.3.2
+
+=> Bugfix : City name upload - Manage different city case
 => Feature : Add authentification Debug (useful for LDAP)
 => Bugfix : Fallback for LDAP Authentification
 => Feature : Add Debug Management for Authentification, RRDTOOL Graphs
@@ -25,3 +27,4 @@
 => Bugfix : Correcting bug when reschedul meta_service
 => Bugfix : do a powerfull monitoring with nagios2
 => Feature : Add debug in graphs, configuration upload and ldap auth 
+
