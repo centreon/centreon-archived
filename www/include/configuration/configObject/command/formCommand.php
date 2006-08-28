@@ -32,6 +32,8 @@ For information : contact@oreon-project.org
 		return($arg);
 	}
 
+	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
+		
 	$cmd = array();
 	if (($o == "c" || $o == "w") && $command_id)	{
 		
@@ -111,8 +113,8 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'resource', null, $resource);
 	$form->addElement('select', 'macros', null, $macros);
 	
-	ksort($oreon->plugins);
-	$form->addElement('select', 'plugins', null, $oreon->plugins);
+	ksort($plugins_list);
+	$form->addElement('select', 'plugins', null, $plugins_list);
 	
 	#
 	## Further informations

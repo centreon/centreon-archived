@@ -58,29 +58,6 @@ class Oreon	{
 			}
 		}
 		closedir($handle);
-		
-		# Grab Plugins Name
-		$this->plugins = array();
-		$handle = array();
-		$handle[0] = opendir($this->optGen["nagios_path_plugins"]);
-		$this->return_plugin($this->optGen["nagios_path_plugins"]);
-		closedir($handle[0]);
-	}
-	
-	function return_plugin($rep){
-		$is_not_a_plugin = array("."=>".", ".."=>"..", "oreon.conf"=>"oreon.conf", "oreon.pm"=>"oreon.pm", "utils.pm"=>"utils.pm", "negate"=>"negate");
-		$handle[$rep] = opendir($rep);
-		while (false !== ($filename = readdir($handle[$rep]))){
-			if ($filename != "." && $filename != ".."){
-				if (is_dir($rep.$filename)){
-					$this->return_plugin($rep."/".$filename, $handle[$rep]);
-				} else if (!array_key_exists($filename, $is_not_a_plugin) && substr($filename, -1)!= "~"){
-					$key = substr($rep."/".$filename, strlen($this->optGen["nagios_path_plugins"]));
-					$this->plugins[$key] = $key;
-				}
-			}
-		}
-		closedir($handle[$rep]);
 	}
 	
 	function initNagiosCFG($pearDB = NULL)	{

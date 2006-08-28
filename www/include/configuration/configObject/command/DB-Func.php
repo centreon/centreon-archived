@@ -144,4 +144,25 @@ For information : contact@oreon-project.org
 		$cmd_id = $res->fetchRow();
 		return ($cmd_id["MAX(command_id)"]);
 	}
+	
+	function return_plugin($rep){
+		global $oreon;
+		$plugins = array();
+		$is_not_a_plugin = array("."=>".", ".."=>"..", "oreon.conf"=>"oreon.conf", "oreon.pm"=>"oreon.pm", "utils.pm"=>"utils.pm", "negate"=>"negate");
+		$handle[$rep] = opendir($rep);
+		while (false !== ($filename = readdir($handle[$rep]))){
+			if ($filename != "." && $filename != ".."){
+				if (is_dir($rep.$filename)){
+					$plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
+					$plugins = array_merge($plugins, $plg_tmp);
+					unset($plg_tmp);
+				} else if (!array_key_exists($filename, $is_not_a_plugin) && substr($filename, -1)!= "~"){
+					$key = substr($rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"]));
+					$plugins[$key] = $key;
+				}
+			}
+		}
+		closedir($handle[$rep]);
+		return ($plugins);
+	}
 ?>
