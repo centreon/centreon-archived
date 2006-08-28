@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 		else
 			$moptions .= "<a href='oreon.php?p=".$p."&nagios_id=".$nagios['nagios_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<select style='width:35; margin-bottom: 3px;' name='dupNbr[".$nagios['nagios_id']."]'><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>10</option></select>";
+		$moptions .= "<select style='margin-bottom: 3px;' name='dupNbr[".$nagios['nagios_id']."]'><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>10</option></select>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$nagios["nagios_name"],
