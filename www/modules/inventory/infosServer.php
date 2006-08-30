@@ -51,24 +51,31 @@ For information : contact@oreon-project.org
 
 		$timeout = 100 * 1000;
 	    $retries = 10;
+
+		/*
 	    $ret =& $pearDB->query("SELECT host_id,host_address,host_snmp_community,host_snmp_version,host_template_model_htm_id FROM host WHERE host_id = '".$host_id."'");
 	    $r =& $ret->fetchRow();
-
+	    
 		if (!$r["host_snmp_community"]){
 			$community = getMySnmpCommunity($r["host_id"]);
 			if ($community == "")
 				$community = $oreon->optGen["snmp_community"];
 		} else
 			$community = $r["host_snmp_community"];
-
+			
 		if (!$r["host_snmp_version"]){
 			$version = getMySnmpVersion($r["host_id"]);
 			if ($version == "")
 				$version = $oreon->optGen["snmp_version"];
 		} else 
 			$version = $r["host_snmp_version"];
-
-	    $address = $r["host_address"];
+			
+		$address = $r["host_address"];
+		*/
+		
+	  	$community = getMySnmpCommunity($host_id);
+		$version = getMySnmpVersion($host_id);	
+	    $address = getMyHostAddress($host_id);	
 
 	  	//$community = $r["host_snmp_community"];
 		//$version = $r["host_snmp_version"];
@@ -172,7 +179,6 @@ For information : contact@oreon-project.org
 //			    	strstr($operstatus, "up") ? $ifTab[$key]["Color"] = "list_three" : $ifTab[$key]["Color"] = "list_four";
 					($matches[2] == 1 ) ? $ifTab[$key]["Color"] = "list_three" : $ifTab[$key]["Color"] = "list_four";
 			    	$ifTab[$key]["ifLastChange"] = get_snmp_value("1.3.6.1.2.1.2.2.1.6.".$it, "STRING: ");
-
 			    }
 
 			    $ipInterface_data = walk_snmp_value("1.3.6.1.2.1.4.20.1.1", "IpAddress: ");

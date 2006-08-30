@@ -51,6 +51,8 @@ For information : contact@oreon-project.org
 
 		$timeout = 30 * 1000;
 	    $retries = 5;
+
+	/*
 	    $ret =& $pearDB->query("SELECT host_address,host_snmp_community,host_snmp_version,host_template_model_htm_id FROM host WHERE host_id = '".$host_id."'");
 	    $r =& $ret->fetchRow();
 
@@ -67,8 +69,14 @@ For information : contact@oreon-project.org
 				$version = $oreon->optGen["snmp_version"];
 		} else 
 			$version = $r["host_snmp_version"];
+		
 	    $address = $r["host_address"];
-
+	  */
+	  
+	  	$community = getMySnmpCommunity($host_id);
+		$version = getMySnmpVersion($host_id);	
+	    $address = getMyHostAddress($host_id);
+	    
 	    $resData =& $pearDB->query("SELECT * FROM `inventory_index` WHERE host_id = '".$host_id."'");
 	    $rD =& $resData->fetchRow();
 
