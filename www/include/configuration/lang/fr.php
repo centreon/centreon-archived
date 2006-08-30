@@ -396,8 +396,9 @@ $lang["tp_view"] = "Afficher une Time Period";
 
 $lang['cmd_type'] = "Type de Commande";
 $lang['cmd_infos'] = "Informations";
-$lang['cmd_check'] = "Commande de Check";
+$lang['cmd_check'] = "Commande de V&eacute;rification";
 $lang['cmd_notif'] = "Commande de notification";
+$lang['cmd_various'] = "Commande Divers";
 $lang['cmd_checkShort'] = "Check";
 $lang['cmd_notifShort'] = "Notification";
 $lang["cmd_add"] = "Ajouter une Commande";

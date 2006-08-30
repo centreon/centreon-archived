@@ -398,6 +398,7 @@ $lang['cmd_type'] = "Command Type";
 $lang['cmd_infos'] = "Informations";
 $lang['cmd_check'] = "Check Command";
 $lang['cmd_notif'] = "Notification Command";
+$lang['cmd_various'] = "Various Command";
 $lang['cmd_checkShort'] = "Check";
 $lang['cmd_notifShort'] = "Notification";
 $lang["cmd_add"] = "Add a Command";
