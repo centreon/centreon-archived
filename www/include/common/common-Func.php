@@ -161,8 +161,18 @@ For information : contact@oreon-project.org
 				return $row["host_snmp_community"];
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
-			else
+			else	{
+				$res =& $pearDB->query("SELECT snmp_community FROM general_opt LIMIT 1");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
+				$row =& $res->fetchRow();
+				if (isset($row["snmp_community"]))
+					return $row["snmp_community"];
+				else
+					break;
 				break;
+			}
 		}
 	}
 
@@ -179,8 +189,18 @@ For information : contact@oreon-project.org
 				return $row["host_snmp_version"];
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
-			else
+			else	{
+				$res =& $pearDB->query("SELECT snmp_version FROM general_opt LIMIT 1");
+				if (PEAR::isError($pearDB)) {
+					print "Mysql Error : ".$pearDB->getMessage();
+				}
+				$row =& $res->fetchRow();
+				if (isset($row["snmp_version"]))
+					return $row["snmp_version"];
+				else
+					break;
 				break;
+			}
 		}
 	}
 	
