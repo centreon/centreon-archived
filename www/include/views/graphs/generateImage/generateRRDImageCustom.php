@@ -129,7 +129,7 @@ For information : contact@oreon-project.org
 			$ppMetrics[$ppMetric["pp_metric_id"]]["ds_transparency"] = $ds_data["ds_transparency"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["ds_invert"] = $ds_data["ds_invert"];
 
-			$ppMetrics[$ppMetric["pp_metric_id"]]["legend"] = $ds_data["name"];
+			$ppMetrics[$ppMetric["pp_metric_id"]]["legend"] = $ds_data["ds_name"];
 			$ppMetrics[$ppMetric["pp_metric_id"]]["legend_len"] = strlen($ppMetrics[$ppMetric["pp_metric_id"]]["legend"]);
 			$cpt++;
 		}
