@@ -94,10 +94,13 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'information', $lang['cmd_notif']);
 	else if ($type == "2")
 		$form->addElement('header', 'information', $lang['cmd_check']);
+	else if ($type == "3")
+		$form->addElement('header', 'information', $lang['cmd_check']);
 	else
 		$form->addElement('header', 'information', $lang['cmd_infos']);
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_notif'], '1');
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_check'], '2');
+	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_various'], '3');
 	$form->addGroup($cmdType, 'command_type', $lang['cmd_type'], '&nbsp;&nbsp;');
 	$form->setDefaults(array('command_type' => '2'));
 	$form->addElement('text', 'command_name', $lang["cmd_name"], $attrsText);
