@@ -1,3 +1,22 @@
+## Oreon 1.3.2
+
+=> Bugfix : City name upload - Manage different city case
+=> Feature : Add authentification Debug (useful for LDAP)
+=> Bugfix : Fallback for LDAP Authentification
+=> Feature : Add Debug Management for Authentification, RRDTOOL Graphs
+=> Feature : Add a upgrade.sh script
+=> Bugfix : Correcting bug when reschedul meta_service
+=> Bugfix : do a powerfull monitoring with nagios2
+=> Feature : Add more informations in object details
+=> Bugfix : plugin list in command form is now reloaded each time we need it
+=> Bugfix : Get the SNMP version & community in the opt_gen conf if there are not in host or host tpl def
+=> Bugfix : In inventory_server & network, call the common-func to get SNMP version and community.
+
+## Oreon 1.3.1-1
+
+=> Bugfix : correcting sql error during installation.
+=> Bugfix : Two headers text for Service Template Model form missing
+
 ## Oreon 1.3.1
 
 => Bugfix : External command working, bad syntax in monitoring file corrected
@@ -11,20 +30,3 @@
 => Bugfix : For Graph, synchronise time between perfparse value and service configuration
 => Bugfix : Graph transparency
 => Bugfix : When import bad name with no reference in DB, don't record the definition
-
-## Oreon 1.3.1-1
-
-=> Bugfix : correcting sql error during installation.
-=> Bugfix : Two headers text for Service Template Model form missing
-
-## Oreon 1.3.2
-
-=> Bugfix : City name upload - Manage different city case
-=> Feature : Add authentification Debug (useful for LDAP)
-=> Bugfix : Fallback for LDAP Authentification
-=> Feature : Add Debug Management for Authentification, RRDTOOL Graphs
-=> Feature : Add a upgrade.sh script
-=> Bugfix : Correcting bug when reschedul meta_service
-=> Bugfix : do a powerfull monitoring with nagios2
-=> Feature : Add more informations in object details
-=> Bugfix : plugin list in commande form in now reloaded in live
