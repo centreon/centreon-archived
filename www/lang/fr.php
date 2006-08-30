@@ -162,7 +162,6 @@ $lang['m_notification'] = "Utilisateurs";
 $lang['m_contact'] = "Utilisateurs";
 $lang['m_contactgroup'] = "Groupes Utilisateurs";
 $lang['m_timeperiod'] = "Plage Horaires";
-$lang['m_commandNotif'] = "Commandes de Notification";
 
 $lang['m_escalation'] = "Escalades";
 $lang['m_hostgroupesc'] = "Host Group Escalades";
@@ -185,7 +184,12 @@ $lang['m_resource'] = "Resource CFG";
 $lang['m_perfparse'] = "Perfparse CFG";
 $lang['m_load_nagios'] = "Importer";
 $lang['m_gen_nagios'] = "Exporter";
-$lang['m_commandCheck'] = "Commande de Check";
+
+$lang['m_commandNotif'] = "Commandes de Notification";
+$lang['m_commandCheck'] = "Commandes de V&eacute;rifcations";
+$lang['m_commandMisc'] = "Commandes Diverses";
+$lang['m_commands'] = "Commandes";
+
 
 /* ID Menu */
 
