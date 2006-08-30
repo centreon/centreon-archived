@@ -136,7 +136,7 @@ For information : contact@oreon-project.org
 					$ppMetrics[$ppMetric["metric_id"]][$key] = $ds_d;
 			}
 
-			$ppMetrics[$ppMetric["metric_id"]]["legend"] = $ds_data["name"];
+			$ppMetrics[$ppMetric["metric_id"]]["legend"] = $ds_data["ds_name"];
 			if (strcmp($ppMetric["unit"], ""))
 				$ppMetrics[$ppMetric["metric_id"]]["legend"] .= " (".$ppMetric["unit"].") ";
 			$ppMetrics[$ppMetric["metric_id"]]["legend_len"] = strlen($ppMetrics[$ppMetric["metric_id"]]["legend"]);

@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 			$res_ds->fetchInto($ds_data);
 			foreach ($ds_data as $key => $ds_d)
 				$ppMetrics[$t][$key] = $ds_d;
-			$ppMetrics[$t]["legend"] = $ds_data["name"];
+			$ppMetrics[$t]["legend"] = $ds_data["ds_name"];
 			$ppMetrics[$t]["legend_len"] = strlen($ppMetrics[$t]["legend"]);
 			$cpt++;
 		}
