@@ -20,12 +20,17 @@ For information : contact@oreon-project.org
 */
 	if (!isset ($oreon))
 		exit ();
+	$pagination = "maxViewConfiguration";		
 
-	# set limit
+	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
 	$gopt = array_map("myDecode", $res->fetchRow());		
+
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
+	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 
 	if ($search)
@@ -93,26 +98,8 @@ For information : contact@oreon-project.org
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-	#Fill a tab with different page numbers and link
-	$pageArr = array();
-	for ($i = 0; $i < ($rows / $limit); $i++)
-		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search,
-							"label_page"=>"<b>".($i +1)."</b>",
-"num"=> $i);
-							
-	if($i > 1)							
-	$tpl->assign("pageArr", $pageArr);
-
-	$tpl->assign("num", $num);
-	$tpl->assign("previous", $lang["previous"]);
-	$tpl->assign("next", $lang["next"]);
-
-	if(($prev = $num - 1) >= 0)
-	$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search));
-	if(($next = $num + 1) < ($rows/$limit))
-	$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search));
-	$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
 	
+			
 	#form select host
 	$req = "SELECT id, alias FROM inventory_manufacturer ";
 	$res = & $pearDB->query($req);
@@ -123,20 +110,6 @@ For information : contact@oreon-project.org
     
     $form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
 	
-	#Select field to change the number of row on the page
-	for ($i = 10; $i <= 100; $i = $i +10)
-		$select[$i]=$i;
-	$select[$gopt["maxViewConfiguration"]]=$gopt["maxViewConfiguration"];
-	ksort($select);
-	$selLim =& $form->addElement('select', 'limit', $lang['nbr_per_page'], $select, array("onChange" => "this.form.submit('')"));
-	$selLim->setSelected($limit);
-	
-	#Element we need when we reload the page
-	$form->addElement('hidden', 'p');
-	$form->addElement('hidden', 'search');
-	$form->addElement('hidden', 'num');
-	$tab = array ("p" => $p, "search" => $search, "num"=>$num);
-	$form->setDefaults($tab);	
 
 	#
 	##Apply a template definition
@@ -144,6 +117,7 @@ For information : contact@oreon-project.org
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
+	$tpl->assign('p', $p);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listServer.ihtml");
 	

@@ -1,5 +1,14 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form>
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="s" type="hidden">
+{php}
+   include('./include/common/pagination.php');
+{/php}
+</form>
 <form {$form_attributes}>
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="s" type="hidden">
 	<table id="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -26,29 +35,11 @@
 			</td>
 		</tr>
 	</table>
-	<table class="TableFooter">
-	<tr>
-	<td class="limitPage">{$form.limit.label}</b>&nbsp;&nbsp;{$form.limit.html}</td>
-	<td class="pagination">
-		{if $pagePrev}
-		&nbsp;<a href="{$pagePrev}"><img src="./img/icones/16x16/arrow_left_blue.png"  alt='{$previous}' title='{$previous}'></a>
-		{/if}
-
-		{section name=elem loop=$pageArr}
-		{if $pageArr[elem].num != $num}
-		&nbsp;&nbsp;<a href="{$pageArr[elem].url_page}" class="otherPageNumber">{$pageArr[elem].label_page}</a>&nbsp;
-		{else}
-		&nbsp;&nbsp;<b class="currentPageNumber">{$pageArr[elem].label_page}</b>&nbsp;
-		{/if}
-		{/section}
-
-		{if $pageNext}
-		&nbsp;<a href="{$pageNext}"><img src="./img/icones/16x16/arrow_right_blue.png"  alt='{$next}' title='{$next}'></a>
-		{/if}	
-	</td>
-	<td class="pageNumber">Page {$pageNumber}</td>
-	</tr>
-	</table>
+</form>
+<form>
+{php}
+   include('./include/common/pagination.php');
+{/php}
 {$form.hidden}
 </form>
 
