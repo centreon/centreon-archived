@@ -11,6 +11,8 @@
 => Bugfix : plugin list in command form is now reloaded each time we need it
 => Bugfix : Get the SNMP version & community in the opt_gen conf if there are not in host or host tpl def
 => Bugfix : In inventory_server & network, call the common-func to get SNMP version and community.
+=> Feature : Add Snmp information in Host Group def. Now we search SNMP com and Version in 1-Host 2-Host Tpls 3-Host Group 4- OptGen
+=> Bugfix : Number of list element in ID Cards according to numbers define in optGen
 
 ## Oreon 1.3.1-1
 
