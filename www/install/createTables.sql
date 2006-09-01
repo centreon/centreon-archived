@@ -1003,6 +1003,8 @@ CREATE TABLE `hostgroup` (
   `hg_id` int(11) NOT NULL auto_increment,
   `hg_name` varchar(200) default NULL,
   `hg_alias` varchar(200) default NULL,
+  `hg_snmp_community` varchar(255) default NULL,
+  `hg_snmp_version` varchar(255) default NULL,
   `country_id` int(10) unsigned default NULL,
   `city_id` int(10) unsigned default NULL,
   `hg_comment` text,

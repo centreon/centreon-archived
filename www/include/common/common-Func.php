@@ -146,11 +146,26 @@ For information : contact@oreon-project.org
 			else
 				return $res;
 		}
+	}	
+
+	function getMyHostGroups($host_id = NULL)	{
+		if (!$host_id) return;
+		global $pearDB;
+		$hgs = array();
+		$res =& $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '".$host_id."' AND hgr.hostgroup_hg_id = hg.hg_id");
+		if (PEAR::isError($pearDB)) {
+			print "Mysql Error : ".$pearDB->getMessage();
+		}
+		while ($res->fetchInto($hg))
+			$hgs[$hg["hostgroup_hg_id"]] = $hg["hg_name"];
+		return $hgs;
 	}
-		
+	
+	// Search community in Host, Host Tpl, Hostgroup, General Options
 	function getMySnmpCommunity($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
+		$host_id_bkp = $host_id;
 		while(1)	{
 			$res =& $pearDB->query("SELECT host_snmp_community, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
 			if (PEAR::isError($pearDB)) {
@@ -162,6 +177,16 @@ For information : contact@oreon-project.org
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
 			else	{
+				$hgs = getMyHostGroups($host_id_bkp);
+				foreach ($hgs as $key=>$value)	{
+					$res =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
+					$row =& $res->fetchRow();
+					if ($row["hg_snmp_community"])
+						return $row["hg_snmp_community"];
+				}
 				$res =& $pearDB->query("SELECT snmp_community FROM general_opt LIMIT 1");
 				if (PEAR::isError($pearDB)) {
 					print "Mysql Error : ".$pearDB->getMessage();
@@ -169,16 +194,17 @@ For information : contact@oreon-project.org
 				$row =& $res->fetchRow();
 				if (isset($row["snmp_community"]))
 					return $row["snmp_community"];
-				else
-					break;
-				break;
+				return NULL;
 			}
 		}
+		return NULL;
 	}
 
+	// Search version in Host, Host Tpl, Hostgroup, General Options
 	function getMySnmpVersion($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
+		$host_id_bkp = $host_id;
 		while(1)	{
 			$res =& $pearDB->query("SELECT host_snmp_version, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
 			if (PEAR::isError($pearDB)) {
@@ -190,6 +216,16 @@ For information : contact@oreon-project.org
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
 			else	{
+				$hgs = getMyHostGroups($host_id_bkp);
+				foreach ($hgs as $key=>$value)	{
+					$res =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+					if (PEAR::isError($pearDB)) {
+						print "Mysql Error : ".$pearDB->getMessage();
+					}
+					$row =& $res->fetchRow();
+					if ($row["hg_snmp_version"])
+						return $row["hg_snmp_version"];
+				}
 				$res =& $pearDB->query("SELECT snmp_version FROM general_opt LIMIT 1");
 				if (PEAR::isError($pearDB)) {
 					print "Mysql Error : ".$pearDB->getMessage();
@@ -202,6 +238,7 @@ For information : contact@oreon-project.org
 				break;
 			}
 		}
+		return NULL;
 	}
 	
 	#
@@ -233,6 +270,32 @@ For information : contact@oreon-project.org
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		$res->free();
 		return $hosts;
+	}
+	
+	function getMyHostGroupCommunity($hg_id = NULL)	{
+		if (!$hg_id) return;
+		global $pearDB;
+		$res =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		$row =& $res->fetchRow();
+		if ($row["hg_snmp_community"])
+			return $row["hg_snmp_community"];
+		return NULL;
+	}
+	
+	function getMyHostGroupVersion($hg_id = NULL)	{
+		if (!$hg_id) return;
+		global $pearDB;
+		$res =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+		$row =& $res->fetchRow();
+		if ($row["hg_snmp_version"])
+			return $row["hg_snmp_version"];
+		return NULL;
 	}
 	
 	#

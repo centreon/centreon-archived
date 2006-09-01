@@ -160,10 +160,12 @@ For information : contact@oreon-project.org
 		if (!count($ret))
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO hostgroup ";
-		$rq .= "(hg_name, hg_alias, `country_id`, `city_id`, hg_comment, hg_activate) ";
+		$rq .= "(hg_name, hg_alias, hg_snmp_community, hg_snmp_version, `country_id`, `city_id`, hg_comment, hg_activate) ";
 		$rq .= "VALUES (";
 		isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "'".htmlentities($ret["hg_name"], ENT_QUOTES)."', " : $rq .= "NULL,";
 		isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".htmlentities($ret["hg_alias"], ENT_QUOTES)."', " : $rq .= "NULL,";
+		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] ? $rq .= "'".htmlentities($ret["hg_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL,";
+		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] ? $rq .= "'".htmlentities($ret["hg_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL,";
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
 			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
@@ -219,8 +221,14 @@ For information : contact@oreon-project.org
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE hostgroup SET ";
-		isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "hg_name = '".htmlentities($ret["hg_name"], ENT_QUOTES)."', " : "hg_name = NULL,";
-		isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "hg_alias = '".htmlentities($ret["hg_alias"], ENT_QUOTES)."', " : "hg_alias = NULL,";
+		$rq .= "hg_name = ";
+		isset($ret["hg_name"]) && $ret["hg_name"] != NULL ? $rq .= "'".htmlentities($ret["hg_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$rq .= "hg_alias = ";
+		isset($ret["hg_alias"]) && $ret["hg_alias"] != NULL ? $rq .= "'".htmlentities($ret["hg_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$rq .= "hg_snmp_community = ";
+		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["hg_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$rq .= "hg_snmp_version = ";
+		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["hg_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "country_id = '".$ret["country_id"]."', ": $rq .= "country_id = NULL, ";
 		$rq .= "city_id = ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
@@ -233,8 +241,10 @@ For information : contact@oreon-project.org
 		}	
 		else
 			$rq .= "NULL, ";
-		isset($ret["hg_comment"]) && $ret["hg_comment"] ? $rq .= "hg_comment = '".htmlentities($ret["hg_comment"], ENT_QUOTES)."', " : $rq .= "hg_comment = NULL, ";
-		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] ? $rq .= "hg_activate = '".$ret["hg_activate"]["hg_activate"]."' " : $rq .= "hg_activate = '0' ";
+		$rq .= "hg_comment = ";
+		isset($ret["hg_comment"]) && $ret["hg_comment"] != NULL ? $rq .= "'".htmlentities($ret["hg_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+		$rq .= "hg_activate = ";
+		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] != NULL ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "NULL ";
 		$rq .= "WHERE hg_id = '".$hg_id."'";
 		$pearDB->query($rq);
 		if (PEAR::isError($pearDB)) {
