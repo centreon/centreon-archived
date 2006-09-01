@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = NULL;
 	$hG ? $host_id = $hG : $host_id = $hP;
 
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
+	!isset ($_GET["limit"]) ? $limit = $oreon->optGen["maxViewConfiguration"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	isset($type) ? $type = $type : $type = "Server";
 
