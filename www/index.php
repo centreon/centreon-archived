@@ -68,7 +68,10 @@ For information : contact@oreon-project.org
 			$contact = $res->fetchRow();
 			if ($contact["contact_oreon"])	{
 				$res =& $pearDB->query("SELECT debug_path, debug_auth  FROM general_opt LIMIT 1");
-				$debug = $res->fetchRow();
+	if (PEAR::isError($pearDB))
+	    die($pearDB->getMessage());
+
+//				$debug = $res->fetchRow();
 
 				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable FROM general_opt LIMIT 1");
 				$ldap_auth = $res->fetchRow();

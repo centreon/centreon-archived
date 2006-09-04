@@ -103,7 +103,7 @@ For information : contact@oreon-project.org
 		$res =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
 
 		if (!$res->numRows())
-			header("Location: index.php?disconnect=2");
+			header("Location: index.php?disconnect=2");			
 		if (!isset($_SESSION["oreon"]))
 			header("Location: index.php?disconnect=1");
 
@@ -151,6 +151,7 @@ For information : contact@oreon-project.org
 <link href="<? echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?>color<? echo $level1; ?>.css" rel="stylesheet" type="text/css"/>
+<script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>
 <?
 	// Add Template CSS for sysInfos Pages
 
@@ -175,7 +176,30 @@ For information : contact@oreon-project.org
 		   Rel.style.visibility="visible";
 		}
 	</SCRIPT>
-<?	} ?>
+<?	} 
+
+/*
+ * init javascript for statusCounter
+ */
+?>
+<script type='text/javascript'>
+    window.onload = function () {
+    setTimeout('reloadStatusCounter()', 10);
+    };
+    </script>
+<?
+
+
+	$res = null;
+	$res = $pearDB->query("SELECT PathName_js FROM topology_JS WHERE id_page = '".$p."'");
+		if (PEAR::isError($res))
+			print ($res->getMessage());
+	while ($res->fetchInto($PathName_js))
+	{
+		echo "<script language='javascript' src='" . $PathName_js['PathName_js'] .  "'></script> ";
+	}
+
+?>
 </head>
 <body>
 <? } ?>
