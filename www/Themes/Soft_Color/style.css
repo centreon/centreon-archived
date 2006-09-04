@@ -29,8 +29,7 @@ background-color:red; color:white; margin:5px;}
 #header{		height:83px;	padding-left:20px;	background: url("Images/bg_banner.gif") top repeat-x;}
 #logInfos{		float:right;}
 #logInfos div{		padding:2px;	padding-right:10px;	color: #525252;	font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: bold;}
-#logli{			padding-top:5px;	padding-right:10px;	color: #525252;	font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: bold;}
-#logli a {   		color:#666666;}
+
 
 
 #footer a{				color:#666666;}
@@ -100,3 +99,48 @@ padding-right:5px;
 	FONT-SIZE: 11px;
 	COLOR: #454545;
 }
+
+#resume_light{
+position:absolute;
+top:20px;
+right:10px;
+}
+
+.Resume_light_table{
+	PADDING: 1px;
+	PADDING-right: 3px;
+	PADDING-left: 3px;
+	FONT-SIZE: 8px;
+	COLOR: #454545;
+}
+.Resume_light_table td{
+	BORDER-LEFT: 1px SOLID #aeaeae;
+	BORDER-TOP: 1px SOLID #aeaeae;
+	BORDER-RIGHT: 1px SOLID #aeaeae;
+	BORDER-BOTTOM: 1px SOLID #aeaeae;
+}
+
+.Resume_light_header{
+background-image: url("./Images/bg_header_bluegray.gif");
+background-position:top left;
+background-repeat:repeat-x;
+background-color: #eaeaee;
+color:#666666;
+}
+
+#logli{
+position:absolute;
+top:55px;
+/*top:55px;*/
+right:10px;
+
+		color: #525252;	font-family: Verdana, Arial, sans-serif; font-size: 10px;	font-weight: bold;}
+#logli a,#logOut a {   		color:#666666;}
+
+#logOut{
+position:absolute;
+top:131px;
+/*top:55px;*/
+right:10px;
+color: #525252;	font-family: Verdana, Arial, sans-serif; font-size: 10px;	font-weight: bold;}
+
