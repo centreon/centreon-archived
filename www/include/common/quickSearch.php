@@ -29,8 +29,8 @@ For information : contact@oreon-project.org
 	$form_search->addElement('hidden', 'o', $o);
 
 	if ($p == 602 || $p == 60201 || $p == 20201 || $p == 20202|| $p == 202|| $p == 2) {
-		$form_search->addElement('advcheckbox', 'search_type_host', 'host');
-		$form_search->addElement('advcheckbox', 'search_type_service', 'service');
+		$form_search->addElement('advcheckbox', 'search_type_host', 'host', '', 'class=mini_checkbox');
+		$form_search->addElement('advcheckbox', 'search_type_service', 'service', '', 'class=mini_checkbox');
 	}
 
 	$form_search->setDefaults($tab);

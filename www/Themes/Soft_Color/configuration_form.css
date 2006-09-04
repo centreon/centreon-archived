@@ -225,19 +225,37 @@ form{  padding-bottom:10px;}
 #page {    padding:5px;    text-align:center;}
 #page a{    text-align:center;}
 
-.quick_search{
+.quick_search1{
 	padding-top:4px;
-	border: 1px;
-	border-style: solid;
-	border-color: red;
-	width:350px;
+/*	width:350px;*/
 	font-family:Arial, Helvetica, Sans-Serif;
-	font-size:12px;
+	font-size:9px;
 	font-weight:bold;
 	padding-left: 5px;
 	padding-right: 5px;
 	padding-bottom: 5px;
 	margin:0px;
+}
+.quick_search2{
+	padding-top:4px;
+/*	width:350px;*/
+	font-family:Arial, Helvetica, Sans-Serif;
+	font-size:9px;
+	font-weight:bold;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 5px;
+	margin:0px;
+}
+.mini_checkbox{
+width:12px;
+height:12px;
+}
+
+#QuickSearch{
+position:absolute;
+top:86px;
+right:10px;
 }
 
 

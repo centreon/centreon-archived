@@ -139,6 +139,7 @@ For information : contact@oreon-project.org
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 		    
+
 	if ($version == 1){
 	  if ($log_file)
 	    while ($str = fgets($log_file))		{
@@ -168,7 +169,7 @@ For information : contact@oreon-project.org
 	    	while ($str = fgets($log_file)) {
 	      		$last_update = date("d-m-Y h:i:s");
 	      		if (!preg_match("/^\#.*/", $str)){
-					if (preg_match("/^service/", $str)){   
+					if (preg_match("/^service/", $str)){
 				  		$log = array();
 				  		while ($str2 = fgets($log_file))
 		          			if (!strpos($str2, "}")){      
@@ -180,11 +181,25 @@ For information : contact@oreon-project.org
 			      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
-			      			if (isset($svc_data['host_name']) && array_search($svc_data['host_name'], $lca)){
+			      			if (isset($svc_data['host_name']) && array_search($svc_data['host_name'], $lca)
+								&&
+								(($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)								
+								||
+								($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
+								||
+								($search_type_service == NULL && $search_type_host == NULL)
+								||
+								 !$search
+								))
+								{
 				      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 				      			$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
 				      			$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
 				      			$oreon->status_graph_service[$svc_data['current_state']]++;
+								/*
+								if(strpos($svc_data['host_name'], 'forum') !== false)
+									echo "---<br>";
+								*/
 			      			}
 			      		}
 					} else if (preg_match("/^host/", $str)){ // get host stat
@@ -220,7 +235,6 @@ For information : contact@oreon-project.org
 	      		}
 	    	}
 	}
-	
 	$row_data = array();
 	if (isset($_GET["o"]) && $_GET["o"] == "svcSch" && !isset($_GET["sort_types"])){
 		$_GET["sort_types"] = "next_check";

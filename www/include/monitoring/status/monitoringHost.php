@@ -48,10 +48,8 @@ For information : contact@oreon-project.org
 		switch ($o)	{
 			default : require_once($pathTools."tools.php"); break;
 		}
-	else {		?>
-	<div align="center" style="padding-bottom: 20px;">
-		<?	include("./include/monitoring/status/resume.php"); ?>
-    </div>	<?
+	else {		
+			include("./include/monitoring/status/resume.php"); 
 		switch ($o)	{
 			case "h" 	: require_once($path."host.php"); 					break;
 			case "hpb" 	: require_once($path."host_problem.php"); 			break;

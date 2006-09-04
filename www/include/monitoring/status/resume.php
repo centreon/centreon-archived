@@ -21,6 +21,10 @@ For information : contact@oreon-project.org
 	$path = "./include/monitoring/status/";
 	$pgr_nagios_stat = array();
 
+	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
+	isset ($_GET["search_type_service"]) ? $search_type_service = $_GET["search_type_service"] : $search_type_service = NULL;
+	isset ($_GET["search_type_host"]) ? $search_type_host = $_GET["search_type_host"] : $search_type_host = NULL;
+
 	include("./include/monitoring/load_status_log.php");
 	
 	# Smarty template Init
@@ -50,7 +54,7 @@ For information : contact@oreon-project.org
 			$statistic_host_color[$key] = " style='background:" . $oreon->optGen["color_".strtolower($key)] . "'";
 
 
-			
+		/*	
 	$tpl_resume->assign("statistic_service", $statistic_service);
 	$tpl_resume->assign("statistic_host", $statistic_host);
 	$tpl_resume->assign("statistic_service_color", $statistic_service_color);
@@ -58,5 +62,6 @@ For information : contact@oreon-project.org
 	$tpl_resume->assign("lang", $lang);
 	$tpl_resume->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl_resume->assign("pgr_nagios_stat", $pgr_nagios_stat);
-	$tpl_resume->display("resume.ihtml");
+*/
+//	$tpl_resume->display("resume.ihtml");
 ?>

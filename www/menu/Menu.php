@@ -19,13 +19,8 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-	?>
-	<div id="header">
-	<img src=<? echo $skin.'Images/logo_oreon.gif'?> alt='Oreon logo' title='Oreon Logo'>
-	<!--<a href="#" class="help" onclick="DisplayHidden('legend');">Help</a>-->
-	<img onclick="DisplayHidden('legend');" class="help" src="./img/icones/16x16/about.gif" alt='<? echo $lang['m_help']; ?>' title='<? echo $lang['lgd_legend']; ?>'>
-	</div>
-	<?
+			
+
 	# Path to the configuration dir
 	$path = "./menu/";
 	require_once ("./include/common/common-Func.php");
@@ -41,6 +36,46 @@ For information : contact@oreon-project.org
 	# Special Case
 	# Put the authentification in the URL
 	$auth = NULL;
+
+	# block headerHTML
+	$lca =& $oreon->user->lcaHStrName;
+	$version = $oreon->user->get_version();
+
+	$fileStatus = $oreon->Nagioscfg["status_file"];
+	$fileOreonConf = $oreon->optGen["oreon_path"];
+
+/*
+	$color["OK"] = " style='background:" . $oreon->optGen["color_ok"] . "'";
+	$color["CRITICAL"] = " style='background:" . $oreon->optGen["color_critical"] . "'";
+	$color["WARNING"] = " style='background:" . $oreon->optGen["color_warning"] . "'";
+	$color["PENDING"] = " style='background:" . $oreon->optGen["color_pending"] . "'";
+	$color["UNKNOWN"] = " style='background:" . $oreon->optGen["color_unknown"] . "'";
+	$color["UP"] = " style='background:" . $oreon->optGen["color_up"] . "'";
+	$color["DOWN"] = " style='background:" . $oreon->optGen["color_down"] . "'";
+	$color["UNREACHABLE"] = " style='background:" . $oreon->optGen["color_unreachable"] . "'";
+*/
+
+	$color["OK"] = $oreon->optGen["color_ok"] . "'";
+	$color["CRITICAL"] = $oreon->optGen["color_critical"] . "'";
+	$color["WARNING"] = $oreon->optGen["color_warning"] . "'";
+	$color["PENDING"] =  $oreon->optGen["color_pending"] . "'";
+	$color["UNKNOWN"] =  $oreon->optGen["color_unknown"] . "'";
+	$color["UP"] =  $oreon->optGen["color_up"] . "'";
+	$color["DOWN"] =  $oreon->optGen["color_down"] . "'";
+	$color["UNREACHABLE"] =  $oreon->optGen["color_unreachable"] . "'";
+
+	$tpl->assign("urlLogo", $skin.'Images/logo_oreon.gif');
+	$tpl->assign("lang", $lang);
+	$tpl->assign("color", $color);
+	$tpl->assign("lca", $lca);
+	$tpl->assign("version", $version);
+	$tpl->assign("fileStatus", $fileStatus);
+	$tpl->assign("fileOreonConf", $fileOreonConf);
+	$tpl->assign("date_time_format_status", $lang["date_time_format_status"]);
+
+
+
+
 
 	# Grab elements for level 1
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
@@ -61,7 +96,7 @@ For information : contact@oreon-project.org
 	$userName = $oreon->user->get_name();
     $userName .= " ( ";
     $userName .= $oreon->user->get_alias();
-    $userName .= " )";
+    $userName .= " ) ";
     $logDate= date($lang['header_format']);
     $logOut= $lang['m_logout'];
     $logOutUrl= "index.php?disconnect=1";
@@ -117,7 +152,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("Menu1ID", "menu1_bgcolor");
 
 	$tpl->assign("UserInfoUrl", $userUrl);
-	$tpl->assign("UserName", $userName);
+	$tpl->assign("UserName", $oreon->user->get_alias());
 	$tpl->assign("Date", $logDate);
 	$tpl->assign("LogOut", $logOut);
 	$tpl->assign("LogOutUrl", $logOutUrl);
@@ -133,8 +168,12 @@ For information : contact@oreon-project.org
 	count($elemArr[2]) ? $tpl->assign("elemArr2", $elemArr[2]) : NULL;
 	count($elemArr[3]) ? $tpl->assign("elemArr3", $elemArr[3]) : NULL;
 
-	# User Online
-	
+	# Legend icon
+	$tpl->assign("legend1", $lang['m_help']);
+	$tpl->assign("legend2", $lang['lgd_legend']);
+
+
+	# User Online	
 	$tab_user = array();
 	$res =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
 	if (PEAR::isError($pearDB)) {
@@ -151,6 +190,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("tab_user", $tab_user);
 
 	# Display
+	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("BlockMenuType1.ihtml");
 	count($elemArr[2]) ? $tpl->display("BlockMenuType2.ihtml") : NULL;
 	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : print '<div id="contener"><!-- begin contener --><table id="Tcontener"><tr><td id="Tmainpage" class="TcTD">';

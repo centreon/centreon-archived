@@ -106,6 +106,7 @@ if(isset($_GET["sort_types"]))
 	ksort($select);
 
 
+
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
 	$selLim =& $form->addElement('select', 'limit', $lang['nbr_per_page'], $select, array("onChange" => "this.form.submit('')"));
 	$selLim->setSelected($limit);

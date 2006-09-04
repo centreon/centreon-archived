@@ -42,11 +42,7 @@ For information : contact@oreon-project.org
 	if(isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
 		submitPassiveCheck($lang);
 	
-?>
-<div align="center" style="padding-bottom: 20px;">
-	<?	include("./include/monitoring/status/resume.php"); ?>
-</div>
-<?
+		include("./include/monitoring/status/resume.php"); 
 
 	$path = "./include/monitoring/status/";
 	$pathRoot = "./include/monitoring/";

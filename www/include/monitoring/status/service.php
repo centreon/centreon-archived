@@ -13,11 +13,14 @@ In no event will OREON be liable for any direct, indirect, punitive, special,
 incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
-For information : contact@oreon.org
+For information : contact@oreon-project.org
 */
+
+
 	if (!isset($oreon))
 		exit();
 	$pagination = "maxViewMonitoring";		
+	
 	
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
@@ -28,7 +31,11 @@ For information : contact@oreon.org
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-	!isset($_GET["search"]) ? $search = 0 : $search = $_GET["search"];
+	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
+
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
@@ -56,6 +63,7 @@ For information : contact@oreon.org
 	
 	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);
+	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", $lang['mon_host']);
@@ -64,6 +72,19 @@ For information : contact@oreon.org
 	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
 	$tpl->assign("mon_duration", $lang['mon_duration']);
 	$tpl->assign("mon_status_information", $lang['mon_status_information']); 
+
+
+/*
+foreach($service_status_num as $smt)
+{
+echo array_search('forum_oreon_connected_users', $smt);
+
+//print_r(array_values($smt));
+echo "<br>***<br>";
+}
+*/
+
+
 
 	# view tab
 	$displayTab = array();
@@ -132,6 +153,48 @@ For information : contact@oreon.org
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
 */
+    $ajax = "<script type='text/javascript'>" .
+    "window.onload = function () {" .
+    "setTimeout('reloadStatusCounter()', 10);" .    
+    "setTimeout('init()', 1000);" .
+    "};" .
+    "</script>";
+    $tpl->assign('ajax', $ajax);
+    $tpl->assign('time', time());
+    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
+        $tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
+
+
+    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
+    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
+    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
+    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
+    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
+    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
+    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
+    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
+
+
+    $lca =& $oreon->user->lcaHStrName;
+        $version = $oreon->user->get_version();
+        $tpl->assign("lca", $lca);
+        $tpl->assign("version", $version);
+
+        $res =& $pearDB->query("SELECT * FROM session WHERE" .
+                        " CONVERT( `session_id` USING utf8 ) = '". session_id() .
+                        "' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+        $session =& $res->fetchRow();
+    $tpl->assign('sid', session_id());
+    $tpl->assign('slastreload', $session["last_reload"]);
+    $tpl->assign('smaxtime', $session_expire["session_expire"]);
+    $tpl->assign('limit', $limit);
+    $tpl->assign('num', $num);
+    $tpl->assign('search', $search);
+    $tpl->assign('search_type_host', $search_type_host);
+    $tpl->assign('search_type_service', $search_type_service);
+
+
+
 
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign('form', $renderer->toArray());	

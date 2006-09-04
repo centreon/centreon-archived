@@ -1,12 +1,14 @@
+<div id="QuickSearch">
 <form {$form_search_attributes}>
 	<span class="quick_search">
 		{$form_search.search.label}&nbsp;&nbsp;{$form_search.search.html}
 	</span>
 	{if $p == 602 || $p == 60201|| $p == 20201|| $p == 20202|| $p == 202|| $p == 2}
-	<span class="quick_search">
+	<span class="quick_search2">
 		&nbsp;&nbsp;{$form_search.search_type_host.html}&nbsp;&nbsp;{$form_search.search_type_host.label}
 		&nbsp;&nbsp;{$form_search.search_type_service.html}&nbsp;&nbsp;{$form_search.search_type_service.label}
 	</span>
 	{/if}
 	{$form_search.hidden}
 </form>
+</div>

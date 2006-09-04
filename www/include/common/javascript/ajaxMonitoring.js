@@ -77,7 +77,7 @@ function mk_img(_src, _alt)
 }
 
 
-function addLineToTab_Service(_tableAjax, line, i, _form, _previous_host_name){
+function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_host_name){
 
 	var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 	var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
@@ -158,20 +158,20 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _previous_host_name){
 	switch (_status)
 	{
 	  case "OK":
-	    _case_status.style.backgroundColor = _form.color_OK.value;
+	    _case_status.style.backgroundColor = _formBasic.color_OK.value;
 	   break;
 	  case "WARNING":
-	    _case_status.style.backgroundColor = _form.color_WARNING.value;
+	    _case_status.style.backgroundColor = _formBasic.color_WARNING.value;
 	   break;
 	  case "CRITICAL":
-	    _case_status.style.backgroundColor = _form.color_CRITICAL.value;
+	    _case_status.style.backgroundColor = _formBasic.color_CRITICAL.value;
 		_ligne.className = "list_three";
 	   break;
 	  case "UNDETERMINATED":
-	    _case_status.style.backgroundColor = _form.color_UNDETERMINATED.value;
+	    _case_status.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
 	   break;
 	  default:
-	    _case_status.style.backgroundColor = _form.color_UNKNOWN.value;
+	    _case_status.style.backgroundColor = _formBasic.color_UNKNOWN.value;
 	   break;
 	}
 
@@ -199,13 +199,13 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _previous_host_name){
 	var _case_plugin_output = document.createElement('td');
 	_case_plugin_output.className = 'ListColNoWrap';
 
-	var _img1 = mk_img(_form.icone_problem_has_been_acknowledged.value, "problem_has_been_acknowledged");
-	var _img2 = mk_img(_form.icone_notifications_enabled.value, "notification_enable");
-	var _img3 = mk_img(_form.icone_is_flapping.value, "is_flapping");
-	var _img4 = mk_img(_form.icone_accept_passive_check1.value, "accept_passive_check");
-	var _img5 = mk_img(_form.icone_accept_passive_check0.value, "accept_active_check");
-	var _img6 = mk_img(_form.icone_graph.value, "graph");
-	var _img7 = mk_img(_form.icone_undo.value, "re-check");
+	var _img1 = mk_img(_formBasic.icone_problem_has_been_acknowledged.value, "problem_has_been_acknowledged");
+	var _img2 = mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable");
+	var _img3 = mk_img(_formBasic.icone_is_flapping.value, "is_flapping");
+	var _img4 = mk_img(_formBasic.icone_accept_passive_check1.value, "accept_passive_check");
+	var _img5 = mk_img(_formBasic.icone_accept_passive_check0.value, "accept_active_check");
+	var _img6 = mk_img(_formBasic.icone_graph.value, "graph");
+	var _img7 = mk_img(_formBasic.icone_undo.value, "re-check");
 
 
 
@@ -213,7 +213,7 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _previous_host_name){
 	_case_infos.appendChild(_img1);
 
 	if(_notifications_enabled == 0)
-	_case_infos.appendChild(mk_img(_form.icone_notifications_enabled.value, "notification_enable"));
+	_case_infos.appendChild(mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable"));
 
 	if(_is_flapping == 1)
 	_case_infos.appendChild(_img3);
@@ -232,7 +232,9 @@ var _p = 20201;
 
 
 
-
+/*
+ * actions
+ */
 	var _linkaction_recheck = document.createElement("a");
   	_linkaction_recheck.href = './oreon.php?p=' + _p + '&o=svc&cmd=2&select[' + _host_name + ':' + _service_description + ']=1' +
   			'&num='+_num+'&limit='+_limit+'&sort_types='+_sort_types+'&order='+_order+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service;
@@ -242,43 +244,54 @@ var _p = 20201;
   	_linkaction_graph.href = './oreon.php?p=40207&host_name_name=' + _host_name + '&service_description=' + _service_description + '&submitC=Grapher';
 	_linkaction_graph.appendChild(_img6);
 
+	_case_actions.appendChild(_linkaction_recheck);
+	_case_actions.appendChild(_linkaction_graph);
+	_case_actions.id = 'action' + i;
 
 
-//<div class="cachediv" id="service{$c}">{$s.description}</div>
 
 
+/*
+ * host name 
+ */
 
-	if(_previous_host_name != _host_name)
-		var _text_host_name = document.createTextNode(_host_name);
-	else
-		var _text_host_name = document.createTextNode(' ');
-
-	var _linkhost_name = document.createElement("a"); 
-  	_linkhost_name.href = './oreon.php?p=201&o=hd&host_name=' + _host_name;
-	_linkhost_name.appendChild(_text_host_name);
+	var _text_host_name = document.createTextNode(_host_name);
 
 	var _divhost_name = document.createElement("div");
 	_divhost_name.id = 'host_name'+i;
+	_divhost_name.className = 'cachediv';
 	_divhost_name.appendChild(_text_host_name);
 
+	_case_host_name.appendChild(_divhost_name);
 
 
+	if(_previous_host_name != _host_name)
+	{
+		var _text_host_name = document.createTextNode(_host_name);
+		var _linkhost_name = document.createElement("a"); 
+  		_linkhost_name.href = './oreon.php?p=201&o=hd&host_name=' + _host_name;
+		_linkhost_name.appendChild(_text_host_name);
+		_case_host_name.appendChild(_linkhost_name);
+	}
+	else
+	{
+		var _text_host_name = document.createTextNode(' ');
+	}
+
+
+/*
+ * service description 
+ */
 	var _text_service_description = document.createTextNode(_service_description);
+	var _text_service_description2 = document.createTextNode(_service_description);
 	var _linkservice = document.createElement("a"); 
   	_linkservice.href = './oreon.php?p=202&o=svcd&host_name=' + _host_name + '&service_description=' +_service_description;
 	_linkservice.appendChild(_text_service_description);
 
 	var _divservice = document.createElement("div");
 	_divservice.id = 'service'+i;
-	_divservice.appendChild(_text_service_description);
-
-
-	_case_actions.appendChild(_linkaction_recheck);
-	_case_actions.appendChild(_linkaction_graph);
-	_case_actions.id = 'action' + i;
-
-	_case_host_name.appendChild(_divhost_name);
-	_case_host_name.appendChild(_linkhost_name);
+	_divservice.className = 'cachediv';
+	_divservice.appendChild(_text_service_description2);
 
 	_case_service_description.appendChild(_linkservice);
 	_case_service_description.appendChild(_divservice);
@@ -336,7 +349,13 @@ function init(){
 function go(){
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
 	
-	_form=document.getElementById('fsave');		       
+	_formBasic=document.getElementById('AjaxBankBasic');		       
+	_version=_formBasic.version.value;
+	_lca=_formBasic.lca.value;
+	_fileStatus=_formBasic.fileStatus.value;
+	_fileOreonConf=_formBasic.fileOreonConf.value;
+	_date_time_format_status = _formBasic.date_time_format_status.value;
+	_form=document.getElementById('fsave');
 	_form.len.value = parseInt(_form.len.value) + 1;
 	_slastreload = parseInt(_form.slastreload.value);
 	_smaxtime = parseInt(_form.smaxtime.value);
@@ -345,15 +364,16 @@ function go(){
 	_sort_types=_form.sort_types.value;
 	_sid=_form.sid.value;
 	_type=_form.type.value;
-	_version=_form.version.value;
-	_lca=_form.lca.value;
-	_fileStatus=_form.fileStatus.value;
-	_fileOreonConf=_form.fileOreonConf.value;
+	_version=_formBasic.version.value;
+	_lca=_formBasic.lca.value;
+	_fileStatus=_formBasic.fileStatus.value;
+	_fileOreonConf=_formBasic.fileOreonConf.value;
 	_limit=_form.limit.value;
 	_search=_form.search.value;
 	_search_type_service=_form.search_type_service.value;
 	_search_type_host=_form.search_type_host.value;
 	_num=_form.num.value;
+//	_test=_form.test.value;
 	_previous_host_name = '';
 				
 	var myArray = take_value(_type);
@@ -399,7 +419,7 @@ function go(){
 		if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML)
 		{		
 			reponse = xhr.responseXML.documentElement;
-			_test=document.getElementById('test');
+			//_test=document.getElementById('test');
 			
 			var infos = reponse.getElementsByTagName("infos");
 			for (var i = 0 ; i < infos.length ; i++) {
@@ -412,6 +432,7 @@ function go(){
 			}
 
 			// ici je recupere les statistiques
+/*
 			var stats = reponse.getElementsByTagName("stats");
 			for (var i = 0 ; i < stats.length ; i++) {
 				var stat = stats[i];
@@ -427,10 +448,10 @@ function go(){
 
 				if(_type != 'metaservice')
 				{
-					document.getElementById('host_name_up').innerHTML = _statistic_host_up;
-					document.getElementById('host_name_down').innerHTML = _statistic_host_down;
-					document.getElementById('host_name_unreachable').innerHTML = _statistic_host_unreachable;
-					document.getElementById('host_name_pending').innerHTML = _statistic_host_pending;
+					document.getElementById('host_up').innerHTML = _statistic_host_up;
+					document.getElementById('host_down').innerHTML = _statistic_host_down;
+					document.getElementById('host_unreachable').innerHTML = _statistic_host_unreachable;
+					document.getElementById('host_pending').innerHTML = _statistic_host_pending;
 					document.getElementById('service_ok').innerHTML = _statistic_service_ok;
 					document.getElementById('service_warning').innerHTML = _statistic_service_warning;
 					document.getElementById('service_critical').innerHTML = _statistic_service_critical;
@@ -438,7 +459,7 @@ function go(){
 					document.getElementById('service_pending').innerHTML = _statistic_service_pending;
 				}
 			}
-
+*/
 
 
 			// a partir d'ici je recupere les informations principales
@@ -466,11 +487,11 @@ function go(){
 
 					var _infohtml = '';	
 					if(_problem_has_been_acknowledged == 1)
-						_infohtml += '<img src=' + _form.icone_problem_has_been_acknowledged.value + ' alt=problem_has_been_acknowledged>';
+						_infohtml += '<img src=' + _formBasic.icone_problem_has_been_acknowledged.value + ' alt=problem_has_been_acknowledged>';
 					if(_notifications_enabled == 0)
-						_infohtml += '<img src=' + _form.icone_notifications_enabled.value + ' alt=notification_enable>';
+						_infohtml += '<img src=' + _formBasic.icone_notifications_enabled.value + ' alt=notification_enable>';
 					if(_is_flapping == 1)
-						_infohtml += '<img src=' + _form.icone_flapping.value + ' alt=is_flapping>';
+						_infohtml += '<img src=' + _formBasic.icone_flapping.value + ' alt=is_flapping>';
 					var _current_state = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
 					var _current_attempt = line.getElementsByTagName("current_attempt")[0].firstChild.nodeValue;
 					var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
@@ -478,9 +499,9 @@ function go(){
 					var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 	
 					if(_accept_passive_check == 1)					
-						_infohtml += '<img src=' + _form.icone_accept_passive_check1.value + ' alt=accept_passive_check>';
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_passive_check>';
 					if(_accept_active_check == 1)
-						_infohtml += '<img src=' + _form.icone_accept_passive_check0.value + ' alt=accept_active_check>';					
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_active_check>';					
 
 					document.getElementById('infos'+order).innerHTML = _infohtml;
 					document.getElementById('current_state'+order).innerHTML = _status;
@@ -497,23 +518,23 @@ function go(){
 					switch (_status)
 					{
 					  case "OK":
-					    _td.style.backgroundColor = _form.color_OK.value;
+					    _td.style.backgroundColor = _formBasic.color_OK.value;
 						_tr.className = ClassName;
 					   break;
 					  case "WARNING":
-					    _td.style.backgroundColor = _form.color_WARNING.value;
+					    _td.style.backgroundColor = _formBasic.color_WARNING.value;
 						_tr.className = ClassName;
 					   break;
 					  case "CRITICAL":
-					    _td.style.backgroundColor = _form.color_CRITICAL.value;
+					    _td.style.backgroundColor = _formBasic.color_CRITICAL.value;
 						_tr.className = "list_three";
 					   break;
 					  case "UNDETERMINATED":
-					    _td.style.backgroundColor = _form.color_UNDETERMINATED.value;
+					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
 						_tr.className = ClassName;
 					   break;
 					  default:
-					    _td.style.backgroundColor = _form.color_UNKNOWN.value;
+					    _td.style.backgroundColor = _formBasic.color_UNKNOWN.value;
 						_tr.className = ClassName;
 					   break;
 					}
@@ -529,7 +550,7 @@ function go(){
 				{
 					
 					DelOneLine(i);
-					addLineToTab_Service(_tableAjax, line, i, _form, _previous_host_name);
+					addLineToTab_Service(_tableAjax, line, i, _form,_formBasic, _previous_host_name);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 				}				
 
@@ -552,19 +573,19 @@ function go(){
 					switch (_status)
 					{
 					  case "UP":
-					    _td.style.backgroundColor = _form.color_UP.value;
+					    _td.style.backgroundColor = _formBasic.color_UP.value;
 						_tr.className = ClassName;
 					   break;
 					  case "DOWN":
-					    _td.style.backgroundColor = _form.color_DOWN.value;
+					    _td.style.backgroundColor = _formBasic.color_DOWN.value;
 						_tr.className = ClassName;
 					   break;
 					  case "UNREACHABLE":
-					    _td.style.backgroundColor = _form.color_UNREACHABLE.value;
+					    _td.style.backgroundColor = _formBasic.color_UNREACHABLE.value;
 						_tr.className = "list_three";
 					   break;
 					  default:
-					    _td.style.backgroundColor = _form.color_UNDETERMINATED.value;
+					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
 						_tr.className = ClassName;
 					   break;
 					}
@@ -588,9 +609,9 @@ function go(){
 					var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 
 					if(_accept_passive_check == 1)
-						_infohtml += '<img src=' + _form.icone_accept_passive_check1.value + ' alt=accept_passive_check>';
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_passive_check>';
 					if(_accept_active_check == 1)
-						_infohtml += '<img src=' + _form.icone_accept_passive_check0.value + ' alt=accept_active_check>';					
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_active_check>';					
 
 					document.getElementById('infos'+order).innerHTML = _infohtml;
 				
@@ -604,23 +625,23 @@ function go(){
 					switch (_status)
 					{
 					  case "OK":
-					    _td.style.backgroundColor = _form.color_OK.value;
+					    _td.style.backgroundColor = _formBasic.color_OK.value;
 						_tr.className = ClassName;
 					   break;
 					  case "WARNING":
-					    _td.style.backgroundColor = _form.color_WARNING.value;
+					    _td.style.backgroundColor = _formBasic.color_WARNING.value;
 						_tr.className = ClassName;
 					   break;
 					  case "CRITICAL":
-					    _td.style.backgroundColor = _form.color_CRITICAL.value;
+					    _td.style.backgroundColor = _formBasic.color_CRITICAL.value;
 						_tr.className = "list_three";
 					   break;
 					  case "UNDETERMINATED":
-					    _td.style.backgroundColor = _form.color_UNDETERMINATED.value;
+					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
 						_tr.className = ClassName;
 					   break;
 					  default:
-					    _td.style.backgroundColor = _form.color_UNKNOWN.value;
+					    _td.style.backgroundColor = _formBasic.color_UNKNOWN.value;
 						_tr.className = ClassName;
 					   break;
 					}
@@ -631,7 +652,7 @@ function go(){
 				}//fin metaservice
 			}//fin du for pour les infos principale
 			if(i > 0)
-			DelAllLine(i);			
+			DelAllLine(i);
 		}
 	}
 
@@ -639,7 +660,7 @@ function go(){
 
 	xhr.open("POST",_adresseRecherche,true);
 	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhr.send("search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
+	xhr.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
 	setTimeout('go()', 5000);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier

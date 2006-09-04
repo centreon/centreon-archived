@@ -5,11 +5,6 @@
             <li><div id="{$elemArr1[elem1].Menu1ClassImg}"><a href={$elemArr1[elem1].Menu1Url}>{$elemArr1[elem1].Menu1Name}</a></div></li>
 		{/section}
         </ul>
-		<div id="logli">
-	       <a href="{$UserInfoUrl}">{$UserName}</a>
-	       &nbsp;-&nbsp;{$Date}
-	       &nbsp;-&nbsp;<a href="{$LogOutUrl}">{$LogOut}</a>
-        </div>
     </div>
 </div>
 

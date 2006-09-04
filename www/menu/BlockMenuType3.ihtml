@@ -56,9 +56,20 @@
 			<td class="center">
 				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}'>&nbsp;{$connected_users} <br><br>
   	             	<ul>
+ 
+ 
   	              { foreach item=user from=$tab_user }
   	             	{if $user.admin}
-  	             	<li><img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;{$user.alias}</li>
+  	             	<li>
+  	             	<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;
+
+  	             	{if $user.alias == $UserName}
+ 	       				<a href="{$UserInfoUrl}">{$user.alias}&nbsp;(you)</a>
+  	             	{else}
+  	             		{$user.alias}
+  	           		{/if}
+  	             	
+  	             	</li>
   	             	{else}
   	             	<li><img src='./img/icones/16x16/user1.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;{$user.alias}</li>
   	           		{/if}
@@ -73,6 +84,8 @@
 			<td class="right"></td>
 		</tr>
 		</table>
+
+		
    </div>
 </div>
 </td>

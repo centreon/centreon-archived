@@ -181,3 +181,9 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 	background-repeat:repeat-x;
 	background-color:#BFD0E2 ;
 }
+#logOut{
+position:absolute;
+top:116px;
+/*top:55px;*/
+right:10px;
+color: #525252;	font-family: Verdana, Arial, sans-serif; font-size: 10px;	font-weight: bold;}

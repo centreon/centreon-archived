@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 	!isset($_GET["num"]) ? $begin = 0 : $begin = $_GET["num"];
 	!isset($_GET["limit"]) ? $nb = 20 : $nb = $begin + $_GET["limit"];
 
-	if (isset($metaService_status))
+	if (isset($metaService_status_bis) )
 		$tpl->assign("metaService_status", $metaService_status_bis);
 	
 	$tpl->assign("begin", $begin);
