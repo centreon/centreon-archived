@@ -189,7 +189,11 @@ For information : contact@oreon-project.org
     </script>
 <?
 
+/*
+ * include javascript
+ */
 
+/*
 	$res = null;
 	$res = $pearDB->query("SELECT PathName_js FROM topology_JS WHERE id_page = '".$p."'");
 		if (PEAR::isError($res))
@@ -198,7 +202,7 @@ For information : contact@oreon-project.org
 	{
 		echo "<script language='javascript' src='" . $PathName_js['PathName_js'] .  "'></script> ";
 	}
-
+*/
 ?>
 </head>
 <body>
