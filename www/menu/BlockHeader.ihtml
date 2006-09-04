@@ -1,0 +1,90 @@
+<div id="header">
+	<img src={$urlLogo} alt='Oreon logo' title='Oreon Logo'>
+	<!--<a href="#" class="help" onclick="DisplayHidden('legend');">Help</a>-->
+
+	<!-- informations bank for ajax -->
+	<FORM id="AjaxBankBasic">
+			<INPUT type="hidden" name="color_OK" value="{$color.OK}">
+			<INPUT type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" >
+			<INPUT type="hidden" name="color_WARNING" value="{$color.WARNING}" >
+			<INPUT type="hidden" name="color_PENDING" value="{$color.PENDING}" >
+			<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	        
+			<INPUT type="hidden" name="color_UP" value="{$color.UP}">
+			<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
+			<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
+			<INPUT type="hidden" name="icone_is_flapping" value="./img/icones/16x16/flapping.gif" >
+			<INPUT type="hidden" name="icone_problem_has_been_acknowledged" value="./img/icones/16x16/worker.gif" >
+			<INPUT type="hidden" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" >
+			<INPUT type="hidden" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" >
+			<INPUT type="hidden" name="icone_notifications_enabled" value="./img/icones//14x14/noloudspeaker.gif" >
+			<INPUT type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" >
+			<INPUT type="hidden" name="icone_graph" value="./img/icones/16x16/column-chart.gif">
+			<INPUT type="hidden" name="lca" value="{$lca}">
+			<INPUT type="hidden" name="version" value="{$version}">
+			<INPUT type="hidden" name="fileStatus" value="{$fileStatus}">
+			<INPUT type="hidden" name="fileOreonConf" value="{$fileOreonConf}">
+			<INPUT type="hidden" name="date_time_format_status" value="{$date_time_format_status}">			
+	</FORM>
+
+<!-- stat -->
+	<div id="resume_light">
+		<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<table class='Resume_light_table'>
+					<tr class='Resume_light_header'>
+						<td>{$lang.m_mon_hosts_status}</td>
+						<td>{$lang.m_mon_up}</td>
+						<td>{$lang.m_mon_down}</td>
+						<td>{$lang.m_mon_unreachable}</td>
+						<td>{$lang.m_mon_pending}</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td	style='background:{$color.UP}'><div id="host_up" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.DOWN}'><div id="host_down" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.UNREACHABLE}'><div id="host_unreachable" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.PENDING}'><div id="host_pending" style='background:white;text-align:center'>?</div></td>
+					</tr>
+				</table>
+			</td>
+			<td>&nbsp;</td>
+			<td>
+				<table class='Resume_light_table'>
+					<tr class='Resume_light_header'>
+						<td>{$lang.m_mon_services_status}</td>
+						<td>{$lang.m_mon_ok}</td>
+						<td>{$lang.m_mon_warning}</td>
+						<td>{$lang.m_mon_critical}</td>
+						<td>{$lang.m_mon_pending}</td>
+						<td>{$lang.m_mon_unknown}</td>		
+					</tr>
+					<tr >
+						<td>&nbsp;</td>
+						<td style='background:{$color.OK}'><div id="service_ok" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.WARNING}'><div id="service_warning" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.CRITICAL}'><div id="service_critical" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.PENDING}'><div id="service_pending" style='background:white;text-align:center'>?</div></td>
+						<td	style='background:{$color.UNKNOWN}'><div id="service_unknown" style='background:white;text-align:center'>?</div></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		</table>
+
+	</div>
+<span id="logli">
+			<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/about.gif" alt='{$legend1}' title='{$legend2}'><br>
+</span>
+
+
+<div id="logOut">
+			{$Date}
+	       &nbsp;&nbsp;-&nbsp;&nbsp;<a href="{$LogOutUrl}">{$LogOut}</a>
+</div>
+
+</div>
+	
+</div>
+
