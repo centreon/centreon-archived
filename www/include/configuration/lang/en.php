@@ -342,6 +342,7 @@ $lang['sg_notif'] = "Notification";
 $lang['cct_add'] = "Add an User";
 $lang['cct_change'] = "Modify an User";
 $lang['cct_view'] = "View an User";
+$lang['cct_mchange'] = "Massive Users Change";
 $lang['cct_infos'] = "General Informations";
 $lang['cct_notif'] = "Notifications Type";
 $lang['cct_name'] = "Full Name";
