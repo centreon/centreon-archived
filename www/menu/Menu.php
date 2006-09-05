@@ -74,16 +74,12 @@ For information : contact@oreon-project.org
 	$tpl->assign("date_time_format_status", $lang["date_time_format_status"]);
 
 
-
-
-
 	# Grab elements for level 1
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
 	$res =& $pearDB->query($rq);
 
-	if (PEAR::isError($pearDB)) {
+	if (PEAR::isError($pearDB))
 		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	
 	for($i = 0; $res->numRows() && $res->fetchInto($elem);)	{
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : NULL,

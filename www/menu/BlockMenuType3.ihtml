@@ -1,50 +1,41 @@
 <div id="contener"><!-- begin contener -->
-
 <table id="Tcontener">
-<tr>
-<td id="Tmenu" class="TcTD">
-<div id="{$Menu3Color}">
-	<div>
-	    <div id="{$Menu3ID}">
-
-
-{assign var="c" value="0"}
-{foreach from=$elemArr3 item=curr_id}
-
-		<table class="Tmenu3" width="100%">
-		<tr class="top">
-			<td class="left"></td>
-			<td class="center"></td>
-			<td class="right"></td>
-		</tr>
-		<tr class="middle">
-			<td class="left"></td>
-			<td class="center">
-{if $c == 0 }
-				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}'>&nbsp;{$main_menu}<br><br>
-{assign var="c" value="1"}
-{/if}
-
-
-	       		<ul>
-					{foreach from=$curr_id item=curr_id2}					
-	                    <li>
-	                    {if $curr_id2.Menu3Icone}<img src='{$curr_id2.Menu3Icone}'>{/if}&nbsp;{if $curr_id2.Menu3Popup}<a href={$curr_id2.Menu3UrlPopup} target="_blank" style="white-space:nowrap;">{$curr_id2.Menu3Name}</a></li>{else}<a href={$curr_id2.Menu3Url} style="white-space:nowrap;">{$curr_id2.Menu3Name}</a></li>{/if}
-					{/foreach}
-	            </ul>
-	        </td>  
-	        <td class="right"></td>
-	    </tr>
-	   	<tr class="bottom">
-			<td class="left"></td>
-			<td class="center"></td>
-			<td class="right"></td>
-		</tr>
-		</table>
-<br>
-
+	<tr>
+		<td id="Tmenu" class="TcTD">
+		<div id="{$Menu3Color}">
+			<div>
+	    		<div id="{$Menu3ID}">
+					{assign var="c" value="0"}
+						{foreach from=$elemArr3 item=curr_id}
+						<table class="Tmenu3" width="100%">
+							<tr class="top">
+								<td class="left"></td>
+								<td class="center"></td>
+								<td class="right"></td>
+							</tr>
+							<tr class="middle">
+								<td class="left"></td>
+								<td class="center">
+								{if $c == 0 }
+									<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}'>&nbsp;{$main_menu}<br><br>
+									{assign var="c" value="1"}
+								{/if}
+						       		<ul>
+										{foreach from=$curr_id item=curr_id2}					
+						                    <li>
+						                    {if $curr_id2.Menu3Icone}<img src='{$curr_id2.Menu3Icone}'>{/if}&nbsp;{if $curr_id2.Menu3Popup}<a href={$curr_id2.Menu3UrlPopup} target="_blank" style="white-space:nowrap;">{$curr_id2.Menu3Name}</a></li>{else}<a href={$curr_id2.Menu3Url} style="white-space:nowrap;">{$curr_id2.Menu3Name}</a></li>{/if}
+										{/foreach}
+						            </ul>
+					        	</td>  
+					        	<td class="right"></td>
+					    	</tr>
+						   	<tr class="bottom">
+								<td class="left"></td>
+								<td class="center"></td>
+								<td class="right"></td>
+							</tr>
+						</table><br>
 {/foreach}
-
 		<table class="Tmenu3" width="100%">
 		<tr class="top">
 			<td class="left"></td>
@@ -56,24 +47,20 @@
 			<td class="center">
 				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}'>&nbsp;{$connected_users} <br><br>
   	             	<ul>
- 
- 
-  	              { foreach item=user from=$tab_user }
-  	             	{if $user.admin}
-  	             	<li>
-  	             	<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;
-
-  	             	{if $user.alias == $UserName}
- 	       				<a href="{$UserInfoUrl}">{$user.alias}&nbsp;(you)</a>
-  	             	{else}
-  	             		{$user.alias}
-  	           		{/if}
-  	             	
-  	             	</li>
-  	             	{else}
-  	             	<li><img src='./img/icones/16x16/user1.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;{$user.alias}</li>
-  	           		{/if}
-  	              {/foreach} 
+	  	              { foreach item=user from=$tab_user }
+	  	             	{if $user.admin}
+	  	             	<li>
+	  	             		<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;
+	  	             		{if $user.alias == $UserName}
+	 	       					<a href="{$UserInfoUrl}">{$user.alias}</a>
+	  	             		{else}
+	  	             			{$user.alias}
+	  	           			{/if}
+	  	             	</li>
+	  	             	{else}
+		  	             	<li><img src='./img/icones/16x16/user1.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;{$user.alias}</li>
+	  	           		{/if}
+	  	              {/foreach} 
 					</ul>
 			</td>
 			<td class="right" width='15'></td>
@@ -83,9 +70,7 @@
 			<td class="center"></td>
 			<td class="right"></td>
 		</tr>
-		</table>
-
-		
+		</table>	
    </div>
 </div>
 </td>
