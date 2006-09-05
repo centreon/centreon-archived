@@ -397,6 +397,7 @@ $lang['add'] = "Ajouter";
 $lang['dup'] = "Dupliquer";
 $lang['save'] = "Sauvegarder";
 $lang['modify'] = "Modifier";
+$lang['mchange'] = "Changement Massif";
 $lang['delete'] = "Supprimer";
 $lang['update'] = "Mettre &agrave; jour";
 $lang['ex'] = "Exemple ";
@@ -405,7 +406,9 @@ $lang['alias'] = "Alias";
 $lang['user'] = "Utilisateur ";
 $lang['here'] = "ici";
 $lang['this'] = "celui-ci";
-$lang['confirm_removing'] = "Etes vous s&ucirc;r de vouloir supprimer cet &eacute;l&eacute;ment ?";
+$lang['confirm_removing'] = "Validez vous cette suppression ?";
+$lang['confirm_duplication'] = "Validez vous cette duplication ?";
+$lang['confirm_mchange'] = "Validez vous ce changement massif ?";
 $lang['confirm_update'] = "Etes vous s&ucirc;r de vouloir mettre &agrave; jour la traffic map ?";
 $lang['file_exist'] = "D&eacute;sol&eacute; le fichier existe d&eacute;j&agrave;.";
 $lang['uncomplete_form'] = "Formulaire incomplet ou erron&eacute;";
@@ -436,6 +439,7 @@ $lang['time_hours'] = " Heures ";
 $lang['time_days'] = " Jours ";
 $lang['size'] = "Taille";
 $lang['close'] = "Fermer";
+$lang['forTheSelectedElements'] = "Pour la s&eacute;lection : ";
 
 /* Load Nagios CFG */
 

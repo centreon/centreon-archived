@@ -396,6 +396,7 @@ $lang['add'] = "Add";
 $lang['dup'] = "Duplicate";
 $lang['save'] = "Save";
 $lang['modify'] = "Modify";
+$lang['mchange'] = "Massive Change";
 $lang['delete'] = "Delete";
 $lang['update'] = "Update";
 $lang['ex'] = "Example ";
@@ -404,7 +405,9 @@ $lang['alias'] = "Alias ";
 $lang['user'] = "User ";
 $lang['here'] = "here";
 $lang['this'] = "this";
-$lang['confirm_removing'] = "Are you sure you want to delete this item ?";
+$lang['confirm_removing'] = "Do you validate the deletion ?";
+$lang['confirm_duplication'] = "Do you validate the duplication ?";
+$lang['confirm_mchange'] = "Do you validate the massive change ?";
 $lang['confirm_update'] = "Are you sure you want to update the traffic map ?";
 $lang['file_exist'] = "Sorry the file already exist.";
 $lang['uncomplete_form'] = "Uncomplete form or invalid";
@@ -435,6 +438,7 @@ $lang['time_hours'] = " Hours ";
 $lang['time_days'] = " Days ";
 $lang['size'] = "Size";
 $lang['close'] = "Close";
+$lang['forTheSelectedElements'] = "For the selection : ";
 
 /* host */
 
