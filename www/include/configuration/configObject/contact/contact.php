@@ -37,6 +37,7 @@ For information : contact@oreon-project.org
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{
+		case "mc" : require_once($path."formContact.php"); break; # Massive Change
 		case "a" : require_once($path."formContact.php"); break; #Add a contact
 		case "w" : require_once($path."formContact.php"); break; #Watch a contact
 		case "c" : require_once($path."formContact.php"); break; #Modify a contact

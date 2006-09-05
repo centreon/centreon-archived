@@ -26,10 +26,7 @@
 		{/section}
 		<tr>
 			<td class="ListColFooterLeft" align="left" colspan="2">
-				&nbsp;
-				<input type="image" name="o" value="m" src="./img/icones/16x16/document_exchange.gif">
-				&nbsp;&nbsp;&nbsp;
-				<input type="image" name="o" value="d" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msg.delConfirm}')">
+				<br>{$msg.options} {$form.o.html}
 			</td>
 			<td class="ListColFooterCenter" colspan="2"></td>
 			<td class="ListColFooterRight" align="right"><a href="{$msg.addL}">{$msg.addT}</a></td>

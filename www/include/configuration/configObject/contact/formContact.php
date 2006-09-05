@@ -137,6 +137,8 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title', $lang["cct_change"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title', $lang["cct_view"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title', $lang["cct_mchange"]);
 
 	#
 	## Contact basic information
@@ -267,7 +269,6 @@ For information : contact@oreon-project.org
 	$form->registerRule('keepOneContactAtLeast', 'callback', 'keepOneContactAtLeast');
 	$form->addRule('contact_alias', $lang['ErrNotEnoughtContact'], 'keepOneContactAtLeast');
 
-
 	$form->setRequiredNote($lang['requiredFields']);
 
 	#
@@ -293,6 +294,11 @@ For information : contact@oreon-project.org
 	# Add a contact information
 	else if ($o == "a")	{
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	}
+	# Massive Change
+	else if ($o == "mc")	{
+		$subMC =& $form->addElement('submit', 'submitMC', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
 

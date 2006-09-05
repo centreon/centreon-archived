@@ -89,8 +89,9 @@ For information : contact@oreon-project.org
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "options"=>$lang['forTheSelectedElements']));
 	
+	require_once("./include/common/checkListAction.php");
 
 	#
 	##Apply a template definition

@@ -42,9 +42,9 @@
 		{/if}
 	</table>
 	<div id="validForm">
-	{if $o == "a" || $o == "c"}
+	{if $o == "a" || $o == "c" || $o == "mc"}
 		<p>{$form.action.html}</p>
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	{else if $o == "w"}
 		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
