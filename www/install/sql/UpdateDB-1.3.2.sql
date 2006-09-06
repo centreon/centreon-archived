@@ -8,5 +8,5 @@ ALTER TABLE  `general_opt` ADD `debug_rrdtool` enum('0','1') default NULL AFTER 
 ALTER TABLE `hostgroup` ADD `hg_snmp_community` VARCHAR( 255 ) NULL AFTER `hg_alias` , ADD `hg_snmp_version` VARCHAR( 255 ) NULL AFTER `hg_snmp_community` ;
 
 -- 01 09 2006
-ALTER TABLE `general_opt` ADD `AjaxTimeReloadMonitoring` INT NOT NULL DEFAULT '15000' AFTER `maxViewConfiguration`;
-ALTER TABLE `general_opt` ADD `AjaxTimeReloadStatistic` INT NOT NULL DEFAULT '15000' AFTER `AjaxTimeReloadMonitoring` ;
+ALTER TABLE `general_opt` ADD `AjaxTimeReloadMonitoring` INT NOT NULL DEFAULT '15' AFTER `maxViewConfiguration`;
+ALTER TABLE `general_opt` ADD `AjaxTimeReloadStatistic` INT NOT NULL DEFAULT '15' AFTER `AjaxTimeReloadMonitoring` ;
