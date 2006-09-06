@@ -125,10 +125,16 @@ For information : contact@oreon-project.org
 		isset($ret["perfparse_installed"]["perfparse_installed"]) && $ret["perfparse_installed"]["perfparse_installed"] != NULL ? $rq .= "'".$ret["perfparse_installed"]["perfparse_installed"]."', ": $rq .= "NULL, ";
 		$rq .= "graph_preferencies = ";
 		isset($ret["graph_preferencies"]["graph_preferencies"]) && $ret["graph_preferencies"]["graph_preferencies"] != NULL ? $rq .= "'".$ret["graph_preferencies"]["graph_preferencies"]."', ": $rq .= "NULL, ";
+		
 		$rq .= "maxViewMonitoring = ";
 		isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["maxViewMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "maxViewConfiguration = ";
 		isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != NULL ? $rq .= "'".htmlentities($ret["maxViewConfiguration"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+
+		$rq .= "AjaxTimeReloadMonitoring = ";
+		isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "AjaxTimeReloadStatistic = ";
+		isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "template = ";
 		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "ldap_host = ";
@@ -153,6 +159,7 @@ For information : contact@oreon-project.org
 		isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $rq .= "'".$ret["debug_rrdtool"]."' ": $rq .= "NULL ";
 
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
+
 
 		$pearDB->query($rq);
 		$oreon->optGen = array();

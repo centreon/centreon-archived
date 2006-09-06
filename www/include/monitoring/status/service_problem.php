@@ -123,10 +123,11 @@ For information : contact@oreon.org
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
 
+	$t = $oreon->optGen["AjaxTimeReloadMonitoring"];
     $ajax = "<script type='text/javascript'>" .
     "window.onload = function () {" .
     "setTimeout('reloadStatusCounter()', 10);" .    
-    "setTimeout('init()', 1000);" .
+    "setTimeout('initM($t)', 1000);" .
     "};" .
     "</script>";
     $tpl->assign('ajax', $ajax);

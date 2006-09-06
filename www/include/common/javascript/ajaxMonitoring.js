@@ -17,22 +17,22 @@ For information : contact@oreon-project.org
 
 // JavaScript Document
 
-var xhr = null; 
-var _adresseRecherche = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
+var xhrM = null; 
+var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
 	 
-function getXhr(){
+function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
-	   xhr = new XMLHttpRequest(); 
+	   xhrM = new XMLHttpRequest(); 
 	else if(window.ActiveXObject){ // Internet Explorer 
 	   try {
-                xhr = new ActiveXObject("Msxml2.XMLHTTP");
+                xhrM = new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
-                xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                xhrM = new ActiveXObject("Microsoft.XMLHTTP");
             }
 	}
 	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
 	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest..."); 
-	   xhr = false; 
+	   xhrM = false; 
 	} 
 }
 
@@ -338,15 +338,16 @@ var _p = 20201;
 }
 
 
-function init(){
+function initM(_time_reload){
 	_form=document.getElementById('fsave');
 	_time=parseInt(_form.time.value);
 	_form.time.value = _time - 1000;
 
-	go();
+	goM(_time_reload);
 }
 
-function go(){
+function goM(_time_reload){
+//alert(_time_reload);
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
 	
 	_formBasic=document.getElementById('AjaxBankBasic');		       
@@ -383,7 +384,6 @@ function go(){
 
 
 
-
 	var _tableforajax = document.getElementById('forajax');
 	var _tableAjax = null;
 
@@ -410,15 +410,15 @@ function go(){
 
 //					document.getElementById('log').innerHTML += '<br><br>';
 
-	getXhr()
+	getXhrM()
 	// On defini ce qu'on va faire quand on aura la reponse
-	xhr.onreadystatechange = function()
+	xhrM.onreadystatechange = function()
 	{	
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 
-		if(xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML)
+		if(xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
 		{		
-			reponse = xhr.responseXML.documentElement;
+			reponse = xhrM.responseXML.documentElement;
 			//_test=document.getElementById('test');
 			
 			var infos = reponse.getElementsByTagName("infos");
@@ -656,13 +656,11 @@ function go(){
 		}
 	}
 
-//	document.getElementById('log').innerHTML = "num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value)+"&arr="+myArray;
+	xhrM.open("POST",_addrSearchM,true);
+	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	xhrM.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
-	xhr.open("POST",_adresseRecherche,true);
-	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhr.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
-
-	setTimeout('go()', 15000);
+	setTimeout('goM("'+ _time_reload +'")', _time_reload);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier
 	//le fichier sera parser dans le .php ssi il vient a etre modifiÃ�Â© par nagios
 }

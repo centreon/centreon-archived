@@ -71,6 +71,9 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'maxViewMonitoring', $lang["genOpt_maxViewMonitoring"], $attrsText2);
 	$form->addElement('text', 'maxViewConfiguration', $lang["genOpt_maxViewConfiguration"], $attrsText2);
 
+	$form->addElement('text', 'AjaxTimeReloadStatistic', $lang["genOpt_AjaxTimeReloadStatistic"], $attrsText2);
+	$form->addElement('text', 'AjaxTimeReloadMonitoring', $lang["genOpt_AjaxTimeReloadMonitoring"], $attrsText2);
+
 	$templates = array();
 	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
 		while ($file = @readdir($handle))

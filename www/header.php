@@ -181,13 +181,18 @@ For information : contact@oreon-project.org
 /*
  * init javascript for statusCounter
  */
+
+	$t = $oreon->optGen["AjaxTimeReloadStatistic"];
+
 ?>
 <script type='text/javascript'>
     window.onload = function () {
-    setTimeout('reloadStatusCounter()', 10);
+    setTimeout('reloadStatusCounter(<?=$t?>)', 10);
     };
     </script>
 <?
+
+
 
 /*
  * include javascript
@@ -206,4 +211,6 @@ For information : contact@oreon-project.org
 ?>
 </head>
 <body>
-<? } ?>
+<? } 
+$mem_befor = memory_get_usage() / 1024 / 1024 ;
+?>

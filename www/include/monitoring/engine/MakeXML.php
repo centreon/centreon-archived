@@ -18,6 +18,7 @@ For information : contact@oreon-project.org
 
 $debug = 1;
 
+
 #
 ## pearDB init
 #
@@ -124,17 +125,34 @@ class Duration
 
 function read($time,$arr,$flag,$type,$version,$lca,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status)
 {
+	
+	
 	global $pearDB;
 	global $flag;
 
 	$MyLog = date('l dS \of F Y h:i:s A'). "\n";
-//$MyLog .= $test . "\n";
 
-/*
-$MyLog += $search . "<br>";
-$MyLog += $search_type_host . "<br>";
-$MyLog += $search_type_service . "<br>";
-*/
+	$MyLog .= "search:" . $search . "\n";
+	$MyLog .= "search type h:" .$search_type_host . "\n";
+	$MyLog .= "search type svc:" .$search_type_service . "\n";
+	$MyLog .= "time:" . $time . "\n";
+	$MyLog .= "flag:" . $flag . "\n";
+	$MyLog .= "type:" . $type . "\n";
+	$MyLog .= "version:" . $version . "\n";
+	$MyLog .= "file:" . $file . "\n";
+	$MyLog .= "num:" . $num . "\n";
+
+
+
+
+
+
+
+
+
+
+
+
 		$_GET["sort_types"] = $sort_type;
 		$_GET["order"] = $order;
 
@@ -177,6 +195,8 @@ $MyLog += $search_type_service . "<br>";
 
 
 
+
+
 		#
 		## calcul stat for statistic
 		#
@@ -206,6 +226,8 @@ $MyLog += $search_type_service . "<br>";
 		#
 		## services infos
 		#
+
+
 		if (isset($service_status) &&  ($type == "service" || $type == "service_problem"))
 		{
 			
@@ -291,97 +313,7 @@ $MyLog += $search_type_service . "<br>";
 					$buffer .= '<last_state_change>'. $duration . '</last_state_change>';
 					$buffer .= '</line>';
 				}
-
 		}
-		#
-		## hosts infos
-		#		
-		if (isset($host_status) && $type == "host")
-		{
-			$gtab = array();
-		$a=0;
-		foreach($mtab as $v)
-		{
-			$gtab[$v] = $a;
-			$a++;
-		}
-
-			foreach ($host_status as $name => $h)
-			{
-				if(isset($gtab[$h["host_name"]]))
-				{
-					$output = ($h["output"]) ? htmlentities($h["output"]) : " ";
-					$buffer .= '<line>';
-					$buffer .= '<order>'. $gtab[$h["host_name"]] . '</order>';
-					$buffer .= '<host>'. $h["host_name"] . '</host>';
-					$buffer .= '<status>'. $h["status"] . '</status>';
-					$buffer .= '<output>'. $output . '</output>';
-					$buffer .= '<last_check>'. date("d/m/Y H:i:s", $h["last_check"]) . '</last_check>';
-					$buffer .= '<last_change>'. Duration::toString(time() - $h["last_stat"]) . '</last_change>';
-					$buffer .= '</line>';
-				}	
-			}			
-		}
-
-		#
-		## metaservices infos
-		#
-/*
-		if (isset($metaService_status) && $type == "metaservice")
-		{
-			$gtab = array();
-			$a=0;
-			foreach($mtab as $v)
-			{
-				$gtab[$v] = $a;
-				$a++;
-			}
-
-			$meta = array();
-			$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			while ($res->fetchInto($meta)){
-				$metaService_status_bis["meta_" . $meta["meta_id"]]["real_name"] = $meta["meta_name"]; 
-				$metaService_status_bis["meta_" . $meta["meta_id"]]["id"] = $meta["meta_id"]; 
-			}
-
-
-			if (isset($metaService_status)){
-			foreach ($metaService_status as $name => $svc){
-				if (strstr($name, "meta_") && isset($metaService_status[$name]["status"])){
-				if(isset($svc["description"]))
-				{					
-					$passive = ($svc["accept_passive_check"] && $svc["checks_en"] == 0) ? 1 : 0;
-					$active = ($svc["accept_passive_check"] == 0 && $svc["checks_en"] == 0) ? 1 : 0;
-
-										
-					$output = ($svc["output"]) ? htmlentities($svc["output"]) : " ";					
-					$buffer .= '<line>';
-					$buffer .= '<order>'. $gtab[$metaService_status_bis[$name]["real_name"]] . '</order>';
-					$buffer .= '<service>'. $metaService_status_bis[$name]["real_name"] . '</service>';
-					$buffer .= '<status>'. $svc["status"] . '</status>';
-					$buffer .= '<output>'. $output . '</output>';
-					$buffer .= '<retry>'. $svc["retry"] . '</retry>';
-					$buffer .= '<not_en>'. $svc["not_en"] . '</not_en>';
-					$buffer .= '<pb_aknowledged>'. $svc["pb_aknowledged"] . '</pb_aknowledged>';
-					$buffer .= '<accept_passive_check>'. $passive . '</accept_passive_check>';
-					$buffer .= '<accept_active_check>'. $active . '</accept_active_check>';
-					$buffer .= '<ev_handler_en>'. $svc["ev_handler_en"] . '</ev_handler_en>';
-					$buffer .= '<svc_is_flapping>'. $svc["svc_is_flapping"] . '</svc_is_flapping>';
-//					$buffer .= '<flap_detect_en>'. $svc["flap_detect_en"] . '</flap_detect_en>';
-					$buffer .= '<last_check>'. date("d/m/Y H:i:s", $svc["last_check"]) . '</last_check>';
-					$buffer .= '<last_change>'. Duration::toString(time() - $svc["last_change"]) . '</last_change>';
-					$buffer .= '</line>';
-				}
-					
-			}
-		}
-	}
-
-		}		
-		*/
 	}
 	
 	$buffer .= '</reponse>';
@@ -389,6 +321,7 @@ $MyLog += $search_type_service . "<br>";
 	echo $buffer;
 
 
+global $debug;
 if($debug == 1)
 {
 	$file = "log.xml";
@@ -399,8 +332,6 @@ if($debug == 1)
 	$file = "log.txt";
 	$inF = fopen($file,"w");
 	fwrite($inF,"log:\n ".$MyLog."\n\n");
-	fwrite($inF,"lca: ".$lca."\n\n");
-	fwrite($inF,"arr: ".$arr."\n\n");
 	fclose($inF);
 }
 }
@@ -442,6 +373,8 @@ if(!$flag)
 
 if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["lca"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"]))
 {
+
+
 	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["lca"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
 }
 else

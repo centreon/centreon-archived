@@ -25,6 +25,8 @@
 		<tr class="list_one"><td class="FormRowField">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}</td></tr>
 	 	<tr class="list_two"><td class="FormRowField">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
 	 </table>
 </div>

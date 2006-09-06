@@ -36,7 +36,8 @@ function getXhrC(){
 	} 
 }
 
-function reloadStatusCounter(){
+function reloadStatusCounter(_relaod_time){
+
 
 	_form=document.getElementById('AjaxBankBasic');		       
 	_version=_form.version.value;
@@ -149,8 +150,10 @@ function reloadStatusCounter(){
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	xhrC.send("lca="+_lca+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf);
 //document.getElementById('log').innerHTML = "lca="+_lca+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf;
-	setTimeout('reloadStatusCounter()', 15000);
+	setTimeout('reloadStatusCounter("'+ _relaod_time +'")', _relaod_time);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier
 	//le fichier sera parser dans le .php ssi il vient a etre modifiÃ�Â© par nagios
+
+
 }
 
