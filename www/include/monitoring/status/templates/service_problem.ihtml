@@ -1,9 +1,6 @@
 {assign var="o" value="svcpb"}
 
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<script type="text/javascript" src="./include/common/javascript/ajaxMonitoring.js"></script>
-
-{$ajax}
 <div class="cachediv">
 <!-- informations bank for ajax -->
 <FORM id="fsave">
@@ -28,9 +25,7 @@
         <INPUT type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" >
         <INPUT type="hidden" name="icone_graph" value="./img/icones/16x16/column-chart.gif" >
         <br>
-        lca:<INPUT type="hidden" name="lca" value="{$lca}"><br>
         version:<INPUT type="hidden" name="version" value="{$version}"><br>
-        sid:<INPUT type="hidden" name="sid" value="{$sid}"><br>
         lastreload session:<INPUT type="hidden" name="slastreload" value="{$slastreload}"><br>
         maxtime:<INPUT type="hidden" name="smaxtime" value="{$smaxtime}"><br>
         fileStatus:<INPUT type="hidden" name="fileStatus" value="{$fileStatus}"><br>
@@ -42,7 +37,6 @@
         num:<INPUT type="hidden" name="num" value="{$num}"><br>
         order:<INPUT type="hidden" name="order" value="{$order}"><br>
         sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br>
-       test:<INPUT type="hidden" name="test" value="toto:paf;titi:pif;tonton:pouf,plouf,plop"><br>        
 </FORM>
 </div>
 

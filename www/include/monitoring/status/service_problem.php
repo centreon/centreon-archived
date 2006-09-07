@@ -123,14 +123,6 @@ For information : contact@oreon.org
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
 
-	$t = $oreon->optGen["AjaxTimeReloadMonitoring"];
-    $ajax = "<script type='text/javascript'>" .
-    "window.onload = function () {" .
-    "setTimeout('reloadStatusCounter()', 10);" .    
-    "setTimeout('initM($t)', 1000);" .
-    "};" .
-    "</script>";
-    $tpl->assign('ajax', $ajax);
     $tpl->assign('time', time());
     $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
 	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
@@ -155,7 +147,6 @@ For information : contact@oreon.org
                         " CONVERT( `session_id` USING utf8 ) = '". session_id() .
                         "' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
         $session =& $res->fetchRow();
-    $tpl->assign('sid', session_id());
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
     $tpl->assign('limit', $limit);
@@ -172,9 +163,7 @@ For information : contact@oreon.org
 		print "Mysql Error : ".$pearDB->getMessage();
 
 	$session =& $res->fetchRow();
-    $tpl->assign('sid', session_id());
-    $tpl->assign('slastreload', $session["last_reload"]);
-    $tpl->assign('smaxtime', $session_expire["session_expire"]);
+
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->display("service_problem.ihtml");;
 

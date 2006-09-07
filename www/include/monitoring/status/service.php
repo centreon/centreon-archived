@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-	$pagination = "maxViewMonitoring";		
+	$pagination = "maxViewMonitoring";
 	
 	
 	# set limit & num
@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$gopt = array_map("myDecode", $res->fetchRow());
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
@@ -74,17 +74,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("mon_status_information", $lang['mon_status_information']); 
 
 
-/*
-foreach($service_status_num as $smt)
-{
-echo array_search('forum_oreon_connected_users', $smt);
-
-//print_r(array_values($smt));
-echo "<br>***<br>";
-}
-*/
-
-
 
 	# view tab
 	$displayTab = array();
@@ -117,14 +106,7 @@ echo "<br>***<br>";
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
 
-	$t = $oreon->optGen["AjaxTimeReloadMonitoring"];
-    $ajax = "<script type='text/javascript'>" .
-    "window.onload = function () {" .
-    "setTimeout('reloadStatusCounter()', 10);" .    
-    "setTimeout('initM($t)', 1000);" .
-    "};" .
-    "</script>";
-    $tpl->assign('ajax', $ajax);
+
     $tpl->assign('time', time());
     $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
         $tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
@@ -142,14 +124,14 @@ echo "<br>***<br>";
 
     $lca =& $oreon->user->lcaHStrName;
         $version = $oreon->user->get_version();
-        $tpl->assign("lca", $lca);
+
         $tpl->assign("version", $version);
 
         $res =& $pearDB->query("SELECT * FROM session WHERE" .
                         " CONVERT( `session_id` USING utf8 ) = '". session_id() .
                         "' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
         $session =& $res->fetchRow();
-    $tpl->assign('sid', session_id());
+
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
     $tpl->assign('limit', $limit);
