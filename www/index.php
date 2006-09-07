@@ -168,7 +168,7 @@ For information : contact@oreon-project.org
 								$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
 								$version = $res2->fetchRow();
 								$user =& new User($res->fetchRow(), $version["nagios_version"]);
-								$user->createLCA($pearDB);
+								//$user->createLCA($pearDB);
 								$oreon = new Oreon($user);
 								$_SESSION["oreon"] =& $oreon;
 								$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
