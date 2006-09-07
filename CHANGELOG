@@ -32,3 +32,5 @@
 => Bugfix : For Graph, synchronise time between perfparse value and service configuration
 => Bugfix : Graph transparency
 => Bugfix : When import bad name with no reference in DB, don't record the definition
+=> Feature : Add fird type for commande (Divers)
+
