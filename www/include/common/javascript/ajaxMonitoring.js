@@ -338,21 +338,19 @@ var _p = 20201;
 }
 
 
-function initM(_time_reload){
+function initM(_time_reload,_sid){
 	_form=document.getElementById('fsave');
 	_time=parseInt(_form.time.value);
 	_form.time.value = _time - 1000;
 
-	goM(_time_reload);
+	goM(_time_reload,_sid);
 }
 
-function goM(_time_reload){
-//alert(_time_reload);
+function goM(_time_reload,_sid){
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
 	
 	_formBasic=document.getElementById('AjaxBankBasic');		       
 	_version=_formBasic.version.value;
-	_lca=_formBasic.lca.value;
 	_fileStatus=_formBasic.fileStatus.value;
 	_fileOreonConf=_formBasic.fileOreonConf.value;
 	_date_time_format_status = _formBasic.date_time_format_status.value;
@@ -363,10 +361,8 @@ function goM(_time_reload){
 	_time=parseInt(_form.time.value);
 	_order=_form.order.value;
 	_sort_types=_form.sort_types.value;
-	_sid=_form.sid.value;
 	_type=_form.type.value;
 	_version=_formBasic.version.value;
-	_lca=_formBasic.lca.value;
 	_fileStatus=_formBasic.fileStatus.value;
 	_fileOreonConf=_formBasic.fileOreonConf.value;
 	_limit=_form.limit.value;
@@ -374,7 +370,6 @@ function goM(_time_reload){
 	_search_type_service=_form.search_type_service.value;
 	_search_type_host=_form.search_type_host.value;
 	_num=_form.num.value;
-//	_test=_form.test.value;
 	_previous_host_name = '';
 				
 	var myArray = take_value(_type);
@@ -658,10 +653,11 @@ function goM(_time_reload){
 
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrM.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&lca="+_lca+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
+	xhrM.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
-	setTimeout('goM("'+ _time_reload +'")', _time_reload);
+//	document.getElementById('log').innerHTML = "date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+
+	setTimeout('goM("'+ _time_reload +'","'+ _sid +'")', _time_reload);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier
 	//le fichier sera parser dans le .php ssi il vient a etre modifiÃ�Â© par nagios
 }
-

@@ -31,20 +31,17 @@ function getXhrC(){
             }
 	}
 	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest..."); 
+	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 	   xhrC = false; 
-	} 
+	}
 }
 
-function reloadStatusCounter(_relaod_time){
-
+function reloadStatusCounter(_relaod_time,_sid){
 
 	_form=document.getElementById('AjaxBankBasic');		       
 	_version=_form.version.value;
-	_lca=_form.lca.value;
 	_fileStatus=_form.fileStatus.value;
 	_fileOreonConf=_form.fileOreonConf.value;
-
 
 	getXhrC()
 	// On defini ce qu'on va faire quand on aura la reponse
@@ -148,9 +145,10 @@ function reloadStatusCounter(_relaod_time){
 
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrC.send("lca="+_lca+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf);
-//document.getElementById('log').innerHTML = "lca="+_lca+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf;
-	setTimeout('reloadStatusCounter("'+ _relaod_time +'")', _relaod_time);
+	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf);
+
+//document.getElementById('log').innerHTML = "sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf;
+	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier
 	//le fichier sera parser dans le .php ssi il vient a etre modifiÃ�Â© par nagios
 
