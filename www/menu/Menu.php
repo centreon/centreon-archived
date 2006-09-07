@@ -38,7 +38,7 @@ For information : contact@oreon-project.org
 	$auth = NULL;
 
 	# block headerHTML
-	$lca =& $oreon->user->lcaHStrName;
+//	$lca =& $oreon->user->lcaHStrName;
 	$version = $oreon->user->get_version();
 
 	$fileStatus = $oreon->Nagioscfg["status_file"];
@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("urlLogo", $skin.'Images/logo_oreon.gif');
 	$tpl->assign("lang", $lang);
 	$tpl->assign("color", $color);
-	$tpl->assign("lca", $lca);
+//	$tpl->assign("lca", $lca);
 	$tpl->assign("version", $version);
 	$tpl->assign("fileStatus", $fileStatus);
 	$tpl->assign("fileOreonConf", $fileOreonConf);

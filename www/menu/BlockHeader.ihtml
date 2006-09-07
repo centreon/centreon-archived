@@ -19,7 +19,6 @@
 			<INPUT type="hidden" name="icone_notifications_enabled" value="./img/icones//14x14/noloudspeaker.gif" >
 			<INPUT type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" >
 			<INPUT type="hidden" name="icone_graph" value="./img/icones/16x16/column-chart.gif">
-			<INPUT type="hidden" name="lca" value="{$lca}">
 			<INPUT type="hidden" name="version" value="{$version}">
 			<INPUT type="hidden" name="fileStatus" value="{$fileStatus}">
 			<INPUT type="hidden" name="fileOreonConf" value="{$fileOreonConf}">
