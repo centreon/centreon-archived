@@ -413,6 +413,12 @@ $lang['cmd_help'] = "Aide du Plugin";
 $lang['cmd_help_output'] = "Aide";
 $lang['cmd_output'] = "Sortie";
 $lang['cmd_example'] = "Exemple d'argument";
+$lang['cmd_plugins'] = "Sondes";
+
+/* Plugins */
+
+$lang['plg_path'] = "Chemin d'acc&egrave;s";
+$lang['plg_size'] = "Taille";
 
 /* Nagios CFG */
 
