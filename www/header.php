@@ -178,39 +178,51 @@ For information : contact@oreon-project.org
 	</SCRIPT>
 <?	} 
 
-/*
- * init javascript for statusCounter
- */
-
-	$t = $oreon->optGen["AjaxTimeReloadStatistic"];
-
-?>
-<script type='text/javascript'>
-    window.onload = function () {
-    setTimeout('reloadStatusCounter(<?=$t?>)', 10);
-    };
-    </script>
-<?
-
-
 
 /*
  * include javascript
  */
 
-/*
 	$res = null;
-	$res = $pearDB->query("SELECT PathName_js FROM topology_JS WHERE id_page = '".$p."'");
+	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."'");
 		if (PEAR::isError($res))
 			print ($res->getMessage());
-	while ($res->fetchInto($PathName_js))
+	while ($res->fetchInto($topology_js))
 	{
-		echo "<script language='javascript' src='" . $PathName_js['PathName_js'] .  "'></script> ";
+		echo "<script language='javascript' src='" . $topology_js['PathName_js'] .  "'></script> ";
+		
+		if($topology_js['init'] == "initM")
+			$initM = 1;
 	}
-*/
+
+/*
+ * init javascript
+ */
+	$tS = $oreon->optGen["AjaxTimeReloadStatistic"];
+	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"];
+	$sid = session_id();
 ?>
+<script type='text/javascript'>
+    window.onload = function () {
+    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', 10);
+<?
+	$res = null;
+	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."'");
+		if (PEAR::isError($res))
+			print ($res->getMessage());
+	while ($res->fetchInto($topology_js))
+	{
+		if($topology_js['init'] == "initM")
+		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', 10);<?
+		if($topology_js['init'])
+		echo $topology_js['init'] ."()";
+	}
+?>
+    };
+    </script>
 </head>
 <body>
+
 <? } 
 $mem_befor = memory_get_usage() / 1024 / 1024 ;
 ?>
