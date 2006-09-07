@@ -24,9 +24,8 @@ For information : contact@oreon-project.org
 	$handle1 = create_file($nagiosCFGPath."misccommands.cfg", $oreon->user->get_name());
 	$handle2 = create_file($nagiosCFGPath."checkcommands.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
-	if (PEAR::isError($pearDB)) {
+	if (PEAR::isError($res))
 		print "Mysql Error : ".$pearDB->getMessage();
-	}
 	$command = array();
 	$i1 = 1;
 	$i2 = 1;
@@ -39,7 +38,7 @@ For information : contact@oreon-project.org
 		$command["command_line"] = str_replace('#S#', "/", $command["command_line"]);
 		$command["command_line"] = str_replace('#BS#', "\\", $command["command_line"]);
 		# Notification Command case -> command_type == 1
-		if ($command["command_type"] == 1)	{
+		if ($command["command_type"] == 1 || $command["command_type"] == 3)	{
 			$ret["comment"]["comment"] ? ($str1 .= "# '" . $command["command_name"] . "' command definition " . $i1 . "\n") : NULL;
 			$str1 .= "define command{\n";
 			$str1 .= print_line("command_name", $command["command_name"]);
