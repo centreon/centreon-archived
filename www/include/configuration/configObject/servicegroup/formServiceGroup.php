@@ -204,10 +204,7 @@ For information : contact@oreon-project.org
 	}
 
 	$tpl->assign('nagios', $oreon->user->get_version());
-	$tpl->assign("initJS", "<script type='text/javascript'>
-							window.onload = function () {
-							initAutoComplete('Form','city_name','sub');
-							};</script>");
+
 	
 	$valid = false;
 	if ($form->validate())	{

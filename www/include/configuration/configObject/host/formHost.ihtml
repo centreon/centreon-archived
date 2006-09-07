@@ -1,7 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/autocomplete-3-2.js"></script>
-<script type="text/javascript" src="include/configuration/changetab.js"></script>
 
-{$initJS}
 {$form.javascript}
 <form {$form.attributes}>
 <div>

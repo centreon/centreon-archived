@@ -184,16 +184,11 @@ For information : contact@oreon-project.org
  */
 
 	$res = null;
-	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."'");
+	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 		if (PEAR::isError($res))
 			print ($res->getMessage());
 	while ($res->fetchInto($topology_js))
-	{
-		echo "<script language='javascript' src='" . $topology_js['PathName_js'] .  "'></script> ";
-		
-		if($topology_js['init'] == "initM")
-			$initM = 1;
-	}
+		echo "<script language='javascript' src='" . $topology_js['PathName_js'] .  "'></script> ";		
 
 /*
  * init javascript
@@ -207,15 +202,18 @@ For information : contact@oreon-project.org
     setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', 10);
 <?
 	$res = null;
-	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."'");
+	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 		if (PEAR::isError($res))
 			print ($res->getMessage());
 	while ($res->fetchInto($topology_js))
 	{
-		if($topology_js['init'] == "initM")
+		
+		if($topology_js['init'] == "initM")		
+		{
 		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', 10);<?
+		}		
 		if($topology_js['init'])
-		echo $topology_js['init'] ."()";
+		echo $topology_js['init'] .";";
 	}
 ?>
     };

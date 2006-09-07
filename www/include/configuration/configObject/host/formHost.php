@@ -434,11 +434,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort2", $lang['h_head_links']);
 	$tpl->assign("sort3", $lang['h_head_treat']);
 	$tpl->assign("sort4", $lang['h_extInf']);
-	$tpl->assign("initJS", "<script type='text/javascript'>
-							window.onload = function () {
-							init();
-							initAutoComplete('Form','city_name','sub');
-							};</script>");
+
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
 	$valid = false;
