@@ -16,19 +16,22 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+$debug = 1;
 
 #
 ## pearDB init
 #
 	require_once 'DB.php';	
 
-$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : "";
+$oreonPath = '/usr/local/oreon/';
+$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : $oreonPath;
 $oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
 
 $buffer = "";
 
 if($oreonPath == "")
 {
+	$buffer = null;
 	$buffer .= '<reponse>';	
 	$buffer .= 'none';
 	$buffer .= '</reponse>';
@@ -58,43 +61,79 @@ include_once($oreonPath . "www/oreon.conf.php");
 	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+function GetUid($sid)
+{
+	global $pearDB;
+	$uid = array();
+	$res =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $sid ."'");
+
+	if(!$res->fetchinto($uid))
+		$uid = array("user_id"=>-1);	
+	return $uid["user_id"];
+}
+
+function IsAdmin($uid)
+{
+	global $pearDB;
+	$admin = array();
+	$res =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '" . $uid ."'");
+	if(!$res->fetchinto($admin))
+		$admin["contact_admin"] = 0;
+	
+	return $admin["contact_admin"];
+}
+
+function GetLcaHost($uid)
+{
+	global $pearDB;
+	$Mlca = array();
+	$contactGroup = array();
+	$host = array();
+
+	$have_an_lca = false;
+	$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$uid."'");
+	if ($res1->numRows())	{
+		while($res1->fetchInto($contactGroup))	{
+		 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
+			 if ($res2->numRows())	{
+				while ($res2->fetchInto($lca))	{
+					$have_an_lca = true;
+				 	$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
+					while ($res3->fetchInto($host))
+						$Mlca[$host["host_id"]] = $host["host_name"];
+				}
+			 }
+		}
+	}
+	return $Mlca;
+}
+
 
 
 #
 ## class init
 #
 
-function read($version,$lca,$file)
+function read($version,$sid,$file)
 {
 	global $pearDB;
 	global $flag;
 
 	$MyLog = date('l dS \of F Y h:i:s A'). "\n";
+	$uid = GetUid($sid);
+	$oreonLCA = GetLcaHost($uid);
+	$IsAdmin = IsAdmin($uid);
 
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<reponse>';
-
 
 	$buffer .= '<infos>';
 	$buffer .= '<filetime>'.filectime($file). '</filetime>';
 	$buffer .= '</infos>';
 
 
-	$tab = array();
-	$tab = explode(',', $lca);
-
-	$mtab[0] = "";
-
-	$a=0;
-	foreach($tab as $v)
-	{
-		$mtab[$a+1] = trim($v);		
-		$a++;
-	}
-
-
-	$oreon = "titi";
+	$oreon = "";
 	$search = "";
 	$search_type_service = 0;
 	$search_type_host = 0;
@@ -131,27 +170,41 @@ function read($version,$lca,$file)
 	header('Content-Type: text/xml');
 	echo $buffer;
 
-	$file = "log2.xml";
-	$inF = fopen($file,"w");
-	fwrite($inF,$buffer);
-	fclose($inF);
+global $debug;
+	if($debug)
+	{
+		$file = "log2.xml";
+		$inF = fopen($file,"w");
+		fwrite($inF,$buffer);
+		fclose($inF);
+		
 	
-	$file = "log2.txt";
-	$inF = fopen($file,"w");
-	fwrite($inF,"log:\n ".$MyLog."\n\n");
-	fwrite($inF,"lca: ".$lca."\n\n");
-	fclose($inF);
+		$file = "log2.txt";
+		$inF = fopen($file,"w");
+		fwrite($inF,"log:\n ".$MyLog."\n\n");
+		fwrite($inF,"sid:\n ".$sid."\n\n");
+		fwrite($inF,"uid:\n ".$uid."\n\n");
+		fwrite($inF,"admin:\n ".$IsAdmin."\n\n");
+		foreach($oreonLCA as $key => $h)
+		{
+			fwrite($inF,"lca h: ".$h."\n\n");	
+		}
+		
+		fwrite($inF,"log:\n----------\n\n");
+		fclose($inF);
+	}
 }
 
 
-if(isset($_POST["version"]) && isset($_POST["lca"])&& isset($_POST["fileStatus"]))
+if(isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"]))
 {
-	read($_POST["version"],$_POST["lca"],$_POST["fileStatus"]);
+	read($_POST["version"],$_POST["sid"],$_POST["fileStatus"]);
 }
-else if(isset($_GET["version"]) && isset($_GET["lca"])&& isset($_GET["fileStatus"]))
+/*
+elseif(isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"]))
 {
-	read($_GET["version"],$_GET["lca"],$_GET["fileStatus"]);
-}
+	read($_GET["version"],$_GET["sid"],$_GET["fileStatus"]);
+}*/
 else
 {
 	$buffer = null;
@@ -160,5 +213,6 @@ else
 	$buffer .= '</reponse>';	
 	header('Content-Type: text/xml');
 	echo $buffer;
+	
 }
 ?>

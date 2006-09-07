@@ -58,6 +58,52 @@ include_once($oreonPath . "www/oreon.conf.php");
 	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+function GetUid($sid)
+{
+	global $pearDB;
+	$uid = array();
+	$res =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $sid ."'");
+
+	if(!$res->fetchinto($uid))
+		$uid = array("user_id"=>-1);	
+	return $uid["user_id"];
+}
+
+function IsAdmin($uid)
+{
+	global $pearDB;
+	$admin = array();
+	$res =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '" . $uid ."'");
+	if(!$res->fetchinto($admin))
+		$admin["contact_admin"] = 0;
+	
+	return $admin["contact_admin"];
+}
+
+function GetLcaHost($uid)
+{
+	global $pearDB;
+	$Mlca = array();
+	$contactGroup = array();
+	$host = array();
+
+	$have_an_lca = false;
+	$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$uid."'");
+	if ($res1->numRows())	{
+		while($res1->fetchInto($contactGroup))	{
+		 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
+			 if ($res2->numRows())	{
+				while ($res2->fetchInto($lca))	{
+					$have_an_lca = true;
+				 	$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
+					while ($res3->fetchInto($host))
+						$Mlca[$host["host_id"]] = $host["host_name"];
+				}
+			 }
+		}
+	}
+	return $Mlca;
+}
 
 
 #
@@ -123,38 +169,21 @@ class Duration
     }
 }
 
-function read($time,$arr,$flag,$type,$version,$lca,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status)
+function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status)
 {
-	
-	
 	global $pearDB;
 	global $flag;
 
+	$uid = GetUid($sid);
+	$oreonLCA = GetLcaHost($uid);
+	$IsAdmin = IsAdmin($uid);
+
+
 	$MyLog = date('l dS \of F Y h:i:s A'). "\n";
 
-	$MyLog .= "search:" . $search . "\n";
-	$MyLog .= "search type h:" .$search_type_host . "\n";
-	$MyLog .= "search type svc:" .$search_type_service . "\n";
-	$MyLog .= "time:" . $time . "\n";
-	$MyLog .= "flag:" . $flag . "\n";
-	$MyLog .= "type:" . $type . "\n";
-	$MyLog .= "version:" . $version . "\n";
-	$MyLog .= "file:" . $file . "\n";
-	$MyLog .= "num:" . $num . "\n";
 
-
-
-
-
-
-
-
-
-
-
-
-		$_GET["sort_types"] = $sort_type;
-		$_GET["order"] = $order;
+	$_GET["sort_types"] = $sort_type;
+	$_GET["order"] = $order;
 
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
@@ -175,18 +204,6 @@ function read($time,$arr,$flag,$type,$version,$lca,$file,$num, $search, $limit,$
 
 	if( filectime($file) > $time)
 	{		
-		$tab = array();
-		$tab = explode(',', $lca);
-
-		$mtab[0] = "";
-
-		$a=0;
-		foreach($tab as $v)
-		{
-			$mtab[$a+1] = trim($v);		
-			$a++;
-		}
-
 
 		$oreon = "titi";
 		include("ReloadForAjax_status_log.php");
@@ -321,19 +338,28 @@ function read($time,$arr,$flag,$type,$version,$lca,$file,$num, $search, $limit,$
 	echo $buffer;
 
 
-global $debug;
-if($debug == 1)
-{
-	$file = "log.xml";
-	$inF = fopen($file,"w");
-	fwrite($inF,$buffer);
-	fclose($inF);
-	
-	$file = "log.txt";
-	$inF = fopen($file,"w");
-	fwrite($inF,"log:\n ".$MyLog."\n\n");
-	fclose($inF);
-}
+	global $debug;
+	if($debug == 1)
+	{
+		$file = "log.xml";
+		$inF = fopen($file,"w");
+		fwrite($inF,$buffer);
+		fclose($inF);
+		
+		$file = "log.txt";
+		$inF = fopen($file,"w");
+		fwrite($inF,"---log:\n ".$MyLog."\n\n");
+		fwrite($inF,"sid:\n ".$sid."\n\n");
+		fwrite($inF,"uid:\n ".$uid."\n\n");
+		fwrite($inF,"admin:\n ".$IsAdmin."\n\n");
+		foreach($oreonLCA as $key => $h)
+		{
+			fwrite($inF,"lca h: ".$h."\n\n");	
+		}
+		
+		fwrite($inF,"log:\n----------\n\n");	
+		fclose($inF);
+	}
 }
 
 
@@ -371,12 +397,16 @@ if(!$flag)
 	exit(1);
 
 
-if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["lca"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"]))
+if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"]))
 {
-
-
-	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["lca"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
+	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
 }
+/*
+else if(isset($_GET["time"]) && isset($_GET["arr"]) && isset($_GET["type"])  && isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])&& isset($_GET["num"])&& isset($_GET["search"]) && isset($_GET["limit"])&& isset($_GET["order"])&& isset($_GET["sort_type"])&& isset($_GET["search_type_service"])&& isset($_GET["search_type_host"])&& isset($_GET["date_time_format_status"]))
+{
+	read($_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
+}
+*/
 else
 {
 	$buffer = null;

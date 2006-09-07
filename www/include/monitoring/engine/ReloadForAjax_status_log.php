@@ -139,7 +139,8 @@ $tab_host_service = array();
 $tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-	if ($version == 1){
+
+	if ($version == 1){//compatibilité ????????????????????????????????????
 	  if ($log_file)
 	    while ($str = fgets($log_file))		{
 	      	// set last update 
@@ -147,14 +148,14 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 	      	if (!preg_match("/^\#.*/", $str)){		// get service stat
 				$log = split(";", $str);
 				if (preg_match("/^[\[\]0-9]* SERVICE[.]*/", $str)){
-		  			if (array_search($log["1"], $lca)){
+		  			if (array_search($log["1"], $oreonLCA)){
 						$service_status[$log["1"]."_".$log["2"]] = get_service_data($log);
 			    		$tab_host_service[$log["1"]][$log["2"]] = "1";
 			 		} else if (!strcmp($log[1], "Meta_Module")){
 			    		$metaService_status[$log["2"]] = get_service_data($log);
 		  			}
 				} else if (preg_match("/^[\[\]0-9]* HOST[.]*/", $str)){ // get host stat
-		  			if (array_search($log["1"], $lca)){
+		  			if (array_search($log["1"], $oreonLCA)){
 		    			$host_status[$log["1"]] = get_host_data($log);
 		    			$tab_host_service[$log["1"]] = array();
 		  			}
@@ -180,7 +181,7 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 			      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
-			      			if (isset($svc_data['host_name']) && array_search($svc_data['host_name'], $mtab)
+			      			if (isset($svc_data['host_name']) && (array_search($svc_data['host_name'], $oreonLCA) || $IsAdmin)
 								&&
 								(($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)								
 								||
@@ -194,7 +195,7 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 				      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 				      			$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
 				      			$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
-				      			$oreon->status_graph_service[$svc_data['current_state']]++;
+				      			//$oreon->status_graph_service[$svc_data['current_state']]++;
 			      			}
 			      		}
 					} else if (preg_match("/^host/", $str)){ // get host stat
@@ -205,10 +206,10 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && array_search($host_data['host_name'], $mtab)){
+			      		if (isset($host_data['host_name']) && (array_search($host_data['host_name'], $oreonLCA) || $IsAdmin)){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
-							$oreon->status_graph_host[$host_data['current_state']]++;
+							//$oreon->status_graph_host[$host_data['current_state']]++;
 			      		}
 					} else if (preg_match("/^program/", $str)){
 		          		while ($str2 = fgets($log_file))
