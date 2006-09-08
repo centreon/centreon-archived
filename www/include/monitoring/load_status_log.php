@@ -26,9 +26,7 @@ For information : contact@oreon-project.org
 	unset ($host_status);
 	unset ($service_status);
 	
-	//$mem_befor = memory_get_usage() / 1024 / 1024 ;
-	//print "  befor : " . $mem_befor . "Mo";
-
+	$mem_befor = memory_get_usage() / 1024 / 1024 ;
 
 	function get_program_data($log, $status_proc){
 	  $pgr_nagios_stat = array();
@@ -129,33 +127,35 @@ For information : contact@oreon-project.org
 	
 	// Read 
 	
-	$lca =& $oreon->user->lcaHost;
+	$lcaHostByName = getLcaHostByName($pearDB);
 	$version = $oreon->user->get_version();
 	
 	// Stats
+	
 	$oreon->status_graph_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 	$oreon->status_graph_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => "0");
 	
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
-		    
-
+	
+	$time = time();
+	
 	if ($version == 1){
 	  if ($log_file)
-	    while ($str = fgets($log_file))		{
+	    while ($str = fgets($log_file))	{
 	      	// set last update 
 	     	$last_update = date("d-m-Y h:i:s");
 	      	if (!preg_match("/^\#.*/", $str)){		// get service stat
 				$log = split(";", $str);
 				if (preg_match("/^[\[\]0-9]* SERVICE[.]*/", $str)){
-		  			if (array_search($log["1"], $lca)){
+		  			if (($oreon->user->admin || HadUserLca($pearDB) || (!HadUserLca($pearDB) && $lcaHostByName[$log["1"]]))){
 						$service_status[$log["1"]."_".$log["2"]] = get_service_data($log);
 			    		$tab_host_service[$log["1"]][$log["2"]] = "1";
 			 		} else if (!strcmp($log[1], "Meta_Module")){
 			    		$metaService_status[$log["2"]] = get_service_data($log);
 		  			}
 				} else if (preg_match("/^[\[\]0-9]* HOST[.]*/", $str)){ // get host stat
-		  			if (array_search($log["1"], $lca)){
+		  			if (($oreon->user->admin || HadUserLca($pearDB) || (!HadUserLca($pearDB) && $lcaHostByName[$log["1"]]))){
 		    			$host_status[$log["1"]] = get_host_data($log);
 		    			$tab_host_service[$log["1"]] = array();
 		  			}
@@ -169,6 +169,7 @@ For information : contact@oreon-project.org
 	    	while ($str = fgets($log_file)) {
 	      		$last_update = date("d-m-Y h:i:s");
 	      		if (!preg_match("/^\#.*/", $str)){
+					###################### SERVICE ######################
 					if (preg_match("/^service/", $str)){
 				  		$log = array();
 				  		while ($str2 = fgets($log_file))
@@ -181,27 +182,25 @@ For information : contact@oreon-project.org
 			      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
-			      			if (isset($svc_data['host_name']) && array_search($svc_data['host_name'], $lca)
-								&&
-								(($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)								
-								||
-								($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
-								||
-								($search_type_service == NULL && $search_type_host == NULL)
-								||
-								 !$search
-								))
-								{
-				      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
-				      			$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
-				      			$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
-				      			$oreon->status_graph_service[$svc_data['current_state']]++;
-								/*
-								if(strpos($svc_data['host_name'], 'forum') !== false)
-									echo "---<br>";
-								*/
-			      			}
+							if (isset($_GET["host_name"]) && $_GET["host_name"] == $svc_data["host_name"] 
+								&& isset($_GET["service_description"]) && $_GET["service_description"] == $svc_data["service_description"]){
+								$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
+						      	$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
+						      	$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
+						      	$oreon->status_graph_service[$svc_data['current_state']]++;	
+								break;
+							} else {		
+								if (isset($svc_data['host_name']) && ($oreon->user->admin || HadUserLca($pearDB) || (!HadUserLca($pearDB) && $lcaHostByName[$svc_data['host_name']]))
+									&& (($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)||($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
+									||($search_type_service == NULL && $search_type_host == NULL)|| !$search)){
+					      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
+					      			$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
+					      			$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
+					      			$oreon->status_graph_service[$svc_data['current_state']]++;
+				      			}
+							}
 			      		}
+			      	##################### HOST #########################
 					} else if (preg_match("/^host/", $str)){ // get host stat
 						$host_data = array();
 			  			while ($str2 = fgets($log_file))
@@ -210,11 +209,12 @@ For information : contact@oreon-project.org
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && array_search($host_data['host_name'], $lca)){
+			      		if (isset($host_data['host_name']) && ($oreon->user->admin || HadUserLca($pearDB) || (!HadUserLca($pearDB) && $lcaHostByName[$host_data['host_name']]))){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
 							$oreon->status_graph_host[$host_data['current_state']]++;
 			      		}
+			      	################## PROGRAM ############################
 					} else if (preg_match("/^program/", $str)){
 		          		while ($str2 = fgets($log_file))
 		            		if (!strpos($str2, "}")){
@@ -255,11 +255,14 @@ For information : contact@oreon-project.org
 	if ($debug){ ?>
 	 <textarea cols='200' rows='50'><? print_r($host_status);print_r($service_status);?></textarea><?	
 	}
+	/*
+	$mem_after = memory_get_usage() / 1024 / 1024 ;
+	$mem = $mem_after - $mem_befor;
 	
-	//$mem_after = memory_get_usage() / 1024 / 1024 ;
-	//$peak = memory_get_peak_usage() / 1024 / 1024;
-	//$mem = $mem_after - $mem_befor;
-	
-	//print "After : " .$mem_after . "Mo # ".$mem."Mo";
+	print "After : " .$mem_after . "Mo # ".$mem."Mo";
 
+	$time = time() - $time;
+
+	print $time ;
+	*/
 ?> 
