@@ -907,8 +907,7 @@ For information : contact@oreon-project.org
 		
 	function getLCAHGStr($lcaHostGroup){
 		$lcaHGStr = NULL;
-			print_r($lcaHostGroup);
-	  	foreach ($lcaHostGroup as $key=>$value)
+		foreach ($lcaHostGroup as $key=>$value)
 	  		$lcaHGStr ? $lcaHGStr .= ", ".$key : $lcaHGStr = $key;
 	  	if (!$lcaHGStr) 
 	  		$lcaHGStr = '\'\'';
