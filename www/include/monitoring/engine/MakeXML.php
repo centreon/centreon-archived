@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-$debug = 1;
+$debug = 0;
 
 
 #
@@ -97,7 +97,7 @@ function GetLcaHost($uid)
 					$have_an_lca = true;
 				 	$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
 					while ($res3->fetchInto($host))
-						$Mlca[$host["host_id"]] = $host["host_name"];
+						$Mlca[$host["host_name"]] = $host["host_id"];
 				}
 			 }
 		}

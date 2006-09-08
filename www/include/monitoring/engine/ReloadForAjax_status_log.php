@@ -140,7 +140,7 @@ $tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" =>
 $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 
-	if ($version == 1){//compatibilité ????????????????????????????????????
+	if ($version == 1){//compatibilité 1.X ????????????????????????????????????
 	  if ($log_file)
 	    while ($str = fgets($log_file))		{
 	      	// set last update 
@@ -148,14 +148,14 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 	      	if (!preg_match("/^\#.*/", $str)){		// get service stat
 				$log = split(";", $str);
 				if (preg_match("/^[\[\]0-9]* SERVICE[.]*/", $str)){
-		  			if (array_search($log["1"], $oreonLCA)){
+		  			if ($oreonLCA[$log["1"]]){
 						$service_status[$log["1"]."_".$log["2"]] = get_service_data($log);
 			    		$tab_host_service[$log["1"]][$log["2"]] = "1";
 			 		} else if (!strcmp($log[1], "Meta_Module")){
 			    		$metaService_status[$log["2"]] = get_service_data($log);
 		  			}
 				} else if (preg_match("/^[\[\]0-9]* HOST[.]*/", $str)){ // get host stat
-		  			if (array_search($log["1"], $oreonLCA)){
+		  			if ($oreonLCA[$log["1"]]){
 		    			$host_status[$log["1"]] = get_host_data($log);
 		    			$tab_host_service[$log["1"]] = array();
 		  			}
@@ -181,7 +181,7 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 			      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
-			      			if (isset($svc_data['host_name']) && (array_search($svc_data['host_name'], $oreonLCA) || $IsAdmin)
+			      			if (isset($svc_data['host_name']) && (isset($oreonLCA[$svc_data['host_name']])  || $IsAdmin)
 								&&
 								(($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)								
 								||
@@ -206,7 +206,7 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && (array_search($host_data['host_name'], $oreonLCA) || $IsAdmin)){
+			      		if (isset($host_data['host_name']) && (isset($oreonLCA[$host_data['host_name']])  || $IsAdmin)){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
 							//$oreon->status_graph_host[$host_data['current_state']]++;
