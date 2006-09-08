@@ -7,38 +7,18 @@
         <INPUT type="hidden" name="type" value="service_problem" size=12>
         <INPUT type="hidden" name="len" value="0" size=12>
         time:<INPUT type="hidden" name="time" value="{$time}" size=12><br>
-        <INPUT type="hidden" name="color_OK" value="{$color_OK}" size=12>
-        <INPUT type="hidden" name="color_CRITICAL" value="{$color_CRITICAL}" >
-        <INPUT type="hidden" name="color_WARNING" value="{$color_WARNING}" >
-        <INPUT type="hidden" name="color_PENDING" value="{$color_PENDING}" >
-        <INPUT type="hidden" name="color_UNKNOWN" value="{$color_UNKNOWN}" >
-        <br>
-        <INPUT type="hidden" name="color_UP" value="{$color_UP}" size=12>
-        <INPUT type="hidden" name="color_DOWN" value="{$color_DOWN}" >
-        <INPUT type="hidden" name="color_UNREACHABLE" value="{$color_UNREACHABLE}" >
-        <br>
-        <INPUT type="hidden" name="icone_is_flapping" value="./img/icones/16x16/flapping.gif" >
-        <INPUT type="hidden" name="icone_problem_has_been_acknowledged" value="./img/icones/16x16/worker.gif" >
-        <INPUT type="hidden" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" >
-        <INPUT type="hidden" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" >
-        <INPUT type="hidden" name="icone_notifications_enabled" value="./img/icones//14x14/noloudspeaker.gif" >
-        <INPUT type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" >
-        <INPUT type="hidden" name="icone_graph" value="./img/icones/16x16/column-chart.gif" >
-        <br>
-        version:<INPUT type="hidden" name="version" value="{$version}"><br>
         lastreload session:<INPUT type="hidden" name="slastreload" value="{$slastreload}"><br>
         maxtime:<INPUT type="hidden" name="smaxtime" value="{$smaxtime}"><br>
-        fileStatus:<INPUT type="hidden" name="fileStatus" value="{$fileStatus}"><br>
-        fileOreonConf:<INPUT type="hidden" name="fileOreonConf" value="{$fileOreonConf}"><br>
         search:<INPUT type="hidden" name="search" value="{$search}"><br>
         search_type_host:<INPUT type="hidden" name="search_type_host" value="{$search_type_host}"><br>
         search_type_service:<INPUT type="hidden" name="search_type_service" value="{$search_type_service}"><br>
         limit:<INPUT type="hidden" name="limit" value="{$limit}"><br>
         num:<INPUT type="hidden" name="num" value="{$num}"><br>
         order:<INPUT type="hidden" name="order" value="{$order}"><br>
-        sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br>
+       sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br>
 </FORM>
 </div>
+
 
 
 
