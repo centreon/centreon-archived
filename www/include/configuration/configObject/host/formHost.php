@@ -23,7 +23,10 @@ For information : contact@oreon-project.org
 
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
-		$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1");
+		if ($oreon->user->admin || !HadUserLca($pearDB))		
+			$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
+		else
+			$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1");
 		# Set base value
 		$host = array_map("myDecode", $res->fetchRow());
 		# Set Host Notification Options
@@ -66,7 +69,10 @@ For information : contact@oreon-project.org
 	#
 	# Host Templates comes from DB -> Store in $hTpls Array
 	$hTpls = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 	while($res->fetchInto($hTpl))	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
@@ -99,7 +105,10 @@ For information : contact@oreon-project.org
 	$res->free();
 	# Host Parents comes from DB -> Store in $hostPs Array
 	$hostPs = array();
-	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
 	while($res->fetchInto($hostP))	{
 		if (!$hostP["host_name"])
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";

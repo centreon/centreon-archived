@@ -31,9 +31,19 @@ For information : contact@oreon-project.org
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))
+			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND  host_register = '1'");
+		else
+			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
+	}
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1'");
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))
+			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE  host_register = '1'");
+		else
+			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1'");
+	}
 	if (PEAR::isError($res)) {
 		print "Mysql Error : ".$res->getMessage();
 	}
@@ -59,9 +69,19 @@ For information : contact@oreon-project.org
 	# end header menu
 	#Host list
 	if ($search)
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))				
+		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+		else
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+	}
 	else
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))				
+		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE h.host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+		else
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE host_id IN (".$lcaHoststr.") AND h.host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+	}
 	$res = & $pearDB->query($rq);
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();

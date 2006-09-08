@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.")) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$res = & $pearDB->query($rq);
@@ -56,7 +56,7 @@ For information : contact@oreon-project.org
 	# end header menu
 	#Dependcy list
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.")) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;

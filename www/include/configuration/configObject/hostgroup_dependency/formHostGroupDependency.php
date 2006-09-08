@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 	#
 	# HostGroup comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name");
+	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}

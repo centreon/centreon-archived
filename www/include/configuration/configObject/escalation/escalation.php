@@ -19,6 +19,10 @@ For information : contact@oreon-project.org
 */
 	if (!isset ($oreon))
 		exit ();
+
+	$lcaHost = getLcaHostByID($pearDB);
+	$lcaHoststr = getLCAHostStr($lcaHost["LcaHost"]);
+	$lcaHostGroupstr = getLcaHGStr($lcaHost["LcaHostGroup"]);
 	
 	isset($_GET["esc_id"]) ? $cG = $_GET["esc_id"] : $cG = NULL;
 	isset($_POST["esc_id"]) ? $cP = $_POST["esc_id"] : $cP = NULL;
