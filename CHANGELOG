@@ -1,5 +1,11 @@
 ## Oreon 1.3.2
 
+=> Feature : Add 2 field in general option, refresh stat and refresh monitoring (ajax refresh)
+=> Feature : "service detail" and "service problem" refresh in ajax
+=> Feature : new table mysql "topology_JS" use for include and start all js
+=> Feature : Add Status bar in top rihgt with ajax for auto refresh
+=> Feature : Moving quickSearch
+=> Feature : Add quickSearch monitoring
 => Bugfix : City name upload - Manage different city case
 => Feature : Add authentification Debug (useful for LDAP)
 => Bugfix : Fallback for LDAP Authentification
