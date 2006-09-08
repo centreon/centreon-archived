@@ -17,23 +17,24 @@ For information : contact@oreon-project.org
 
 // JavaScript Document
 
-var xhrC = null; 
+//var xhrC = null; 
 var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php" //l'adresse   interroger pour trouver les suggestions
 	 
 function getXhrC(){
 	if(window.XMLHttpRequest) // Firefox et autres
-	   xhrC = new XMLHttpRequest(); 
+	   var xhrC = new XMLHttpRequest(); 
 	else if(window.ActiveXObject){ // Internet Explorer 
 	   try {
-                xhrC = new ActiveXObject("Msxml2.XMLHTTP");
+                var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
-                xhrC = new ActiveXObject("Microsoft.XMLHTTP");
+                var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
             }
 	}
 	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
 	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
-	   xhrC = false; 
+	   var xhrC = false; 
 	}
+	return xhrC;
 }
 
 function reloadStatusCounter(_relaod_time,_sid){
@@ -43,12 +44,12 @@ function reloadStatusCounter(_relaod_time,_sid){
 	_fileStatus=_form.fileStatus.value;
 	_fileOreonConf=_form.fileOreonConf.value;
 
-	getXhrC()
+	var xhrC = getXhrC();
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrC.onreadystatechange = function()
 	{	
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
-		if(xhrC.readyState == 4 && xhrC.status == 200 && xhrC.responseXML)
+		if(xhrC && xhrC.readyState == 4 && xhrC.status == 200 && xhrC.responseXML)
 		{		
 			reponseC = xhrC.responseXML.documentElement;
 			

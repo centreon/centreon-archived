@@ -17,9 +17,28 @@ For information : contact@oreon-project.org
 
 // JavaScript Document
 
-var xhrM = null; 
+//var xhrM = null; 
 var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
 	 
+	 
+function getXhrM(){
+	if(window.XMLHttpRequest) // Firefox et autres
+	   var xhrM = new XMLHttpRequest(); 
+	else if(window.ActiveXObject){ // Internet Explorer 
+	   try {
+                var xhrM = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                var xhrM = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+	}
+	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
+	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+	   var xhrM = false;
+	}
+	return xhrM;
+}	 
+
+/*	 
 function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
 	   xhrM = new XMLHttpRequest(); 
@@ -35,6 +54,7 @@ function getXhrM(){
 	   xhrM = false; 
 	} 
 }
+*/
 
 function take_value(_type)
 {
@@ -405,13 +425,20 @@ function goM(_time_reload,_sid){
 
 //					document.getElementById('log').innerHTML += '<br><br>';
 
-	getXhrM()
+	var xhrM = getXhrM();
+
+	xhrM.open("POST",_addrSearchM,true);
+	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	xhrM.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
+
+
+
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrM.onreadystatechange = function()
 	{	
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 
-		if(xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
+		if(xhrM && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
 		{		
 			reponse = xhrM.responseXML.documentElement;
 			//_test=document.getElementById('test');
@@ -651,9 +678,6 @@ function goM(_time_reload,_sid){
 		}
 	}
 
-	xhrM.open("POST",_addrSearchM,true);
-	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrM.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
 //	document.getElementById('log').innerHTML = "date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 
