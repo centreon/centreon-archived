@@ -1560,9 +1560,9 @@ CREATE TABLE `topology` (
   `topology_popup` enum('0','1') default NULL,
   `topology_modules` enum('0','1') default NULL,
   `topology_show` enum('0','1') default '1',
-  PRIMARY KEY  (`topology_id`)
+  PRIMARY KEY  (`topology_id`),
+  KEY `topology_page` (`topology_page`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --
@@ -1643,6 +1643,29 @@ CREATE TABLE `view_map` (
   `map_comment` text,
   PRIMARY KEY  (`map_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
+
+-- 
+-- Structure de la table `topology_JS`
+-- 
+
+CREATE TABLE `topology_JS` (
+  `id_t_js` int(11) NOT NULL auto_increment,
+  `id_page` int(11) default NULL,
+  `o` varchar(12) default NULL,
+  `PathName_js` text,
+  `Init` text,
+  PRIMARY KEY  (`id_t_js`),
+  KEY `id_page` (`id_page`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- --------------------------------------------------------
+
+
+-- 
+-- Contraintes pour la table `topology_JS`
+-- 
+ALTER TABLE `topology_JS`
+  ADD CONSTRAINT `topology_JS_ibfk_1` FOREIGN KEY (`id_page`) REFERENCES `topology` (`topology_page`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour les tables exportées
