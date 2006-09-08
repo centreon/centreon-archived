@@ -13,7 +13,7 @@ In no event will OREON be liable for any direct, indirect, punitive, special,
 incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
-For information : contact@oreon.org
+For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
@@ -22,8 +22,8 @@ For information : contact@oreon.org
 	# set limit & num
 	
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) 
-		print "Mysql Error : ".$pearDB->getMessage();
+	if (PEAR::isError($res)) 
+		print "Mysql Error : ".$res->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
@@ -33,10 +33,11 @@ For information : contact@oreon.org
 	$rows = 0;
 	$host_status_num = array();
 	foreach ($host_status as $name => $h){
-			$tmp = array();
-			$tmp[0] = $name;			
-			$res =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
-			$res->fetchInto($host);		
+		$tmp = array();
+		$tmp[0] = $name;			
+		$res =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
+		$res->fetchInto($host);
+		if ($oreon->user->admin || HadUserLca($pearDB) == 0 || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$name]))){			
 			$host_status[$name]["address"] = $host["host_address"];
 			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["current_state"])];
 			$host_status[$name]["last_check"] = date($lang["date_time_format_status"], $h["last_check"]);
@@ -45,26 +46,24 @@ For information : contact@oreon.org
 			$host_status[$name]["name"] = $name;
 			$tmp[1] = $host_status[$name];
 			$host_status_num[$rows++] = $tmp;
+		}
 	}
 
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 
-
 	# view tab
 	$displayTab = array();
 	$start = $num * $limit;
 	$i_real = $start;
 
-	for($i=$start; isset($host_status_num[$i]) ;$i++){
+	for($i=$start; isset($host_status_num[$i]) ;$i++)
 		if($host_status_num[$i][1]["current_state"] != 'UP'){
 			$i_real++;
 			$displayTab[$host_status_num[$i][0]] = $host_status_num[$i][1];
 		}
-	}
 	$host_status = $displayTab;
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
@@ -115,18 +114,15 @@ For information : contact@oreon.org
 */
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
-
 	$res =& $pearDB->query("SELECT * FROM session WHERE" .
 			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
 			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (PEAR::isError($res)) 
+		print "Mysql Error : ".$res->getMessage();
 	$session =& $res->fetchRow();
     $tpl->assign('sid', session_id());
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
-	
 	$tpl->assign("lang", $lang);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host_problem.ihtml");

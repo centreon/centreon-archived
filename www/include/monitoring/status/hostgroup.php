@@ -13,7 +13,7 @@ In no event will OREON be liable for any direct, indirect, punitive, special,
 incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
-For information : contact@oreon.org
+For information : contact@oreon-project.org
 */
 
 	if (!isset($oreon))
@@ -22,36 +22,28 @@ For information : contact@oreon.org
 	$hg = array();
 	$tab = array("1"=>'list_one', "0" => "list_two"); 
 
+	$TabLca = getLcaHostByName($pearDB);
+
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
 	if (PEAR::isError($pearDB))
 		print "Mysql Error : ".$pearDB->getMessage();
 	while ($r =& $ret->fetchRow()){
-		$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"]);
-		$status_hg_h[$r["hg_name"]] = array();
-		$status_hg_h[$r["hg_name"]]["UP"] = 0;
-		$status_hg_h[$r["hg_name"]]["DOWN"] = 0;
-		$status_hg_h[$r["hg_name"]]["UNREACHABLE"] = 0;
-		$status_hg_h[$r["hg_name"]]["PENDING"] = 0;
-		$status_hg_h[$r["hg_name"]]["UNKNOWN"] = 0;
-		$status_hg[$r["hg_name"]] = array();
-		$status_hg[$r["hg_name"]]["OK"] = 0;
-		$status_hg[$r["hg_name"]]["PENDING"] = 0;
-		$status_hg[$r["hg_name"]]["WARNING"] = 0;
-		$status_hg[$r["hg_name"]]["CRITICAL"] = 0;
-		$status_hg[$r["hg_name"]]["UNKNOWN"] = 0;
-		
-		$ret_h =& $pearDB->query(	"SELECT host_host_id,host_name FROM hostgroup_relation,host,hostgroup ".
-									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
-									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-		if (PEAR::isError($pearDB))
-			print "Mysql Error : ".$pearDB->getMessage();
-		while ($r_h =& $ret_h->fetchRow()){
-			!$r_h["host_name"] ? $hostname = getMyHostName($r_h["host_id"]) : $hostname = $r_h["host_name"];
-			if (isset($host_status[$hostname]["current_state"])){
-				$status_hg_h[$r["hg_name"]][$host_status[$hostname]["current_state"]]++;
-				foreach ($tab_host_service[$hostname] as $key => $s){
-					$status_hg[$r["hg_name"]][$service_status[$hostname. "_" .$key]["current_state"]]++;
-				} 		
+		if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){	
+			$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"]);
+			$status_hg_h[$r["hg_name"]] = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0, "UNKNOWN" => 0);
+			$status_hg[$r["hg_name"]] = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
+			$ret_h =& $pearDB->query(	"SELECT host_host_id,host_name FROM hostgroup_relation,host,hostgroup ".
+										"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
+										"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
+			if (PEAR::isError($ret_h))
+				print "Mysql Error : ". $ret_h->getMessage();
+			while ($r_h =& $ret_h->fetchRow()){
+				!$r_h["host_name"] ? $hostname = getMyHostName($r_h["host_id"]) : $hostname = $r_h["host_name"];
+				if (isset($host_status[$hostname]["current_state"])){
+					$status_hg_h[$r["hg_name"]][$host_status[$hostname]["current_state"]]++;
+					foreach ($tab_host_service[$hostname] as $key => $s)
+						$status_hg[$r["hg_name"]][$service_status[$hostname. "_" .$key]["current_state"]]++;
+				}
 			}
 		}
 	}
@@ -114,7 +106,6 @@ For information : contact@oreon.org
 */
 	
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-	
 	$tpl->assign("p", $p);
 	$tpl->assign("hg", $hg);
 	$tpl->assign("lang", $lang);
