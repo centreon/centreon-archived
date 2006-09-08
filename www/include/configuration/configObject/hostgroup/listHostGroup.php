@@ -29,9 +29,9 @@ For information : contact@oreon-project.org
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$oreon->user->lcaHGStr.")");
+		$res = & $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$lcaHostGroupstr.")");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.")");
+		$res = & $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.")");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
@@ -54,9 +54,9 @@ For information : contact@oreon-project.org
 	# end header menu
 	#Hostgroup list
 	if ($search)
-		$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();

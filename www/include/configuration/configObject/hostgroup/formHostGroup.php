@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	#
 	$hg = array();
 	if (($o == "c" || $o == "w") && $hg_id)	{	
-		$res =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' AND hg_id IN (".$oreon->user->lcaHGStr.") LIMIT 1");
+		$res =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' AND hg_id IN (".$lcaHostGroupstr.") LIMIT 1");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 	#
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
-	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$oreon->user->lcaHStr.") AND host_register = '1' ORDER BY host_name");
+	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
