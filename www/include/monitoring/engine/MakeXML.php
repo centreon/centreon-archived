@@ -83,27 +83,35 @@ function IsAdmin($uid)
 function GetLcaHost($uid)
 {
 	global $pearDB;
-	$Mlca = array();
-	$contactGroup = array();
-	$host = array();
 
-	$have_an_lca = false;
+	$lcaHost = array();
+	$lcaHostGroup = array();
 	$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$uid."'");
 	if ($res1->numRows())	{
 		while($res1->fetchInto($contactGroup))	{
 		 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-			 if ($res2->numRows())	{
+			 if ($res2->numRows())
 				while ($res2->fetchInto($lca))	{
-					$have_an_lca = true;
-				 	$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
+					$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
 					while ($res3->fetchInto($host))
-						$Mlca[$host["host_name"]] = $host["host_id"];
+						$lcaHost[$host["host_name"]] = $host["host_id"];
+				 	$res3 =& $pearDB->query("SELECT DISTINCT hg_id, hg_name FROM hostgroup, lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND hg_id = hostgroup_hg_id");	
+					while ($res3->fetchInto($hostGroup))	{
+						
+						# Apply the LCA to hosts contains in
+						if ($lca["lca_hg_childs"])	{
+							$res4 =& $pearDB->query("SELECT h.host_name, hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND h.host_id = hgr.host_host_id");	
+							while ($res4->fetchInto($host))	
+								$lcaHost[$host["host_name"]] = $host["host_host_id"];
+						}
+					}
 				}
-			 }
-		}
+		}	
 	}
-	return $Mlca;
+	return $lcaHost;
 }
+
+
 
 
 #
