@@ -40,11 +40,11 @@
 	         80
 	      ),10));
 	      
-	$Graph->setBackgroundColor('#F8FABE');
+	$Graph->setBackgroundColor('#f8Fef1');
 	$Legend->setPlotArea($Plotarea);
 	
 	$Plotarea->hideAxis();
-	$Plotarea->setBackgroundColor('#F8FABE');
+	$Plotarea->setBackgroundColor('#f8Fef1');
 	
 	$value =& $_GET["value"];
 	$tab2 = array();
