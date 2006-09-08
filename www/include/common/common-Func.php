@@ -814,6 +814,7 @@ For information : contact@oreon-project.org
 		if (!$pearDB)
 			return ;
 		global $oreon;	
+		$lcaServiceGroup = array();
 		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->user_id."'");
 		if ($res1->numRows())	{
 			while($res1->fetchInto($contactGroup))	{
@@ -857,8 +858,8 @@ For information : contact@oreon-project.org
 			}
 		}
 		$LcaHHG = array();
-		$lcaHost ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
-		$lcaHostGroup ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"];
+		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
+		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
 		return $LcaHHG;
 	}
 	
@@ -891,8 +892,8 @@ For information : contact@oreon-project.org
 			}	
 		}
 		$LcaHHG = array();
-		$lcaHost ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
-		$lcaHostGroup ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"];
+		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
+		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
 		return $LcaHHG;
 	}
 	
@@ -918,9 +919,9 @@ For information : contact@oreon-project.org
 		$lcaSGStr = NULL;
 	  	foreach ($lcaServiceGroup as $key=>$value)
 	  		$lcaSGStr ? $lcaSGStr .= ", ".$key : $lcaSGStr = $key;
-	  	if (!$lcaSGStrName) 
-	  		$lcaSGStrName = '\'\'';
-		return $lcaSGStrName;
+	  	if (!$lcaSGStr) 
+	  		$lcaSGStr = '\'\'';
+		return $lcaSGStr;
 	}
 	
 	function HadUserLca($pearDB){
