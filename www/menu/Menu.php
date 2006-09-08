@@ -44,25 +44,15 @@ For information : contact@oreon-project.org
 	$fileStatus = $oreon->Nagioscfg["status_file"];
 	$fileOreonConf = $oreon->optGen["oreon_path"];
 
-/*
-	$color["OK"] = " style='background:" . $oreon->optGen["color_ok"] . "'";
-	$color["CRITICAL"] = " style='background:" . $oreon->optGen["color_critical"] . "'";
-	$color["WARNING"] = " style='background:" . $oreon->optGen["color_warning"] . "'";
-	$color["PENDING"] = " style='background:" . $oreon->optGen["color_pending"] . "'";
-	$color["UNKNOWN"] = " style='background:" . $oreon->optGen["color_unknown"] . "'";
-	$color["UP"] = " style='background:" . $oreon->optGen["color_up"] . "'";
-	$color["DOWN"] = " style='background:" . $oreon->optGen["color_down"] . "'";
-	$color["UNREACHABLE"] = " style='background:" . $oreon->optGen["color_unreachable"] . "'";
-*/
 
-	$color["OK"] = $oreon->optGen["color_ok"] . "'";
-	$color["CRITICAL"] = $oreon->optGen["color_critical"] . "'";
-	$color["WARNING"] = $oreon->optGen["color_warning"] . "'";
-	$color["PENDING"] =  $oreon->optGen["color_pending"] . "'";
-	$color["UNKNOWN"] =  $oreon->optGen["color_unknown"] . "'";
-	$color["UP"] =  $oreon->optGen["color_up"] . "'";
-	$color["DOWN"] =  $oreon->optGen["color_down"] . "'";
-	$color["UNREACHABLE"] =  $oreon->optGen["color_unreachable"] . "'";
+	$color["OK"] = $oreon->optGen["color_ok"];
+	$color["CRITICAL"] = $oreon->optGen["color_critical"];
+	$color["WARNING"] = $oreon->optGen["color_warning"];
+	$color["PENDING"] =  $oreon->optGen["color_pending"];
+	$color["UNKNOWN"] =  $oreon->optGen["color_unknown"];
+	$color["UP"] =  $oreon->optGen["color_up"];
+	$color["DOWN"] =  $oreon->optGen["color_down"];
+	$color["UNREACHABLE"] =  $oreon->optGen["color_unreachable"];
 
 	$tpl->assign("urlLogo", $skin.'Images/logo_oreon.gif');
 	$tpl->assign("lang", $lang);
