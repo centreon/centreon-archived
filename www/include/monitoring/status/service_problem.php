@@ -22,9 +22,8 @@ For information : contact@oreon.org
 
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());		
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
@@ -38,7 +37,6 @@ For information : contact@oreon.org
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$service_status_num = array();
-	
 	
 	if (isset($service_status))
 		foreach ($service_status as $name => $svc){			
@@ -108,7 +106,6 @@ For information : contact@oreon.org
 	if (!isset($_GET["order"]))
 		$_GET["order"] = "sort_asc";
 	
-
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	$tpl->assign("host_name", $host_name);
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
@@ -122,12 +119,9 @@ For information : contact@oreon.org
 		
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
-
     $tpl->assign('time', time());
     $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
 	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
-
-
     $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
     $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
     $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
@@ -137,16 +131,17 @@ For information : contact@oreon.org
     $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
     $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
 
-
     $lca =& $oreon->user->lcaHStrName;
-        $version = $oreon->user->get_version();
-        $tpl->assign("lca", $lca);
-        $tpl->assign("version", $version);
+    $version = $oreon->user->get_version();
+    $tpl->assign("lca", $lca);
+    $tpl->assign("version", $version);
 
-        $res =& $pearDB->query("SELECT * FROM session WHERE" .
-                        " CONVERT( `session_id` USING utf8 ) = '". session_id() .
-                        "' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-        $session =& $res->fetchRow();
+    $res =& $pearDB->query(	"SELECT * FROM session WHERE" .
+  		                  	" CONVERT( `session_id` USING utf8 ) = '". session_id() .
+  		                  	"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+    $session =& $res->fetchRow();
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
     $tpl->assign('limit', $limit);
@@ -156,17 +151,10 @@ For information : contact@oreon.org
     $tpl->assign('search_type_service', $search_type_service);
 
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-	$res =& $pearDB->query("SELECT * FROM session WHERE" .
-			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
-			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-	if (PEAR::isError($pearDB))
-		print "Mysql Error : ".$pearDB->getMessage();
-
-	$session =& $res->fetchRow();
-
+	
 	$tpl->assign('form', $renderer->toArray());	
-	$tpl->display("service_problem.ihtml");;
-
+	$tpl->display("service_problem.ihtml");
+	
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
 	$tpl->assign('lang', $lang);
@@ -174,6 +162,5 @@ For information : contact@oreon.org
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);
 	else
 		$pgr_nagios_stat["created"] = 0;
-	$tpl->display("include/common/legend.ihtml");
-	
-	?>	
+	$tpl->display("include/common/legend.ihtml");	
+?>	
