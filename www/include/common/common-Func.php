@@ -856,7 +856,9 @@ For information : contact@oreon-project.org
 					}
 			}
 		}
-		$LcaHHG = array("LcaHost" => $lcaHost, "LcaHostGroup" => $lcaHostGroup);
+		$LcaHHG = array();
+		$lcaHost ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
+		$lcaHostGroup ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"];
 		return $LcaHHG;
 	}
 	
@@ -889,64 +891,34 @@ For information : contact@oreon-project.org
 			}	
 		}
 		$LcaHHG = array();
-		if ($lcaHost)
-			$LcaHHG["LcaHost"] = $lcaHost;
-		if ($lcaHostGroup)
-			$LcaHHG["LcaHostGroup"] = $lcaHostGroup;
+		$lcaHost ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
+		$lcaHostGroup ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"];
 		return $LcaHHG;
 	}
 	
 	function getLCAHostStr($lcaHost){
 		$lcaHStr = NULL;
-	  	$lcaHStrName = NULL;
 	  	foreach ($lcaHost as $key=>$value)
 	  		$lcaHStr ? $lcaHStr .= ", ".$key : $lcaHStr = $key;
 	  	if (!$lcaHStr) 
 	  		$lcaHStr = '\'\'';
   	  	return $lcaHStr;
 	}
-	
-	function getLCAHostStrName($LCAHost){
-		$lcaHStr = NULL;
-	  	$lcaHStrName = NULL;
-	  	foreach ($lcaHost as $key=>$value)
-	  		$lcaHStrName ? $lcaHStrName .= ", ".$value : $lcaHStrName = $value;
-	  	if (!$lcaHStrName) 
-	  		$lcaHStrName = '\'\'';
-	  	return $lcaHStrName;
-	}
-	
-	function getLcaHGStr($lcaHostGroup){
+		
+	function getLCAHGStr($lcaHostGroup){
 		$lcaHGStr = NULL;
+			print_r($lcaHostGroup);
 	  	foreach ($lcaHostGroup as $key=>$value)
 	  		$lcaHGStr ? $lcaHGStr .= ", ".$key : $lcaHGStr = $key;
 	  	if (!$lcaHGStr) 
 	  		$lcaHGStr = '\'\'';
 	  	return $lcaHGStr;
 	}
-	
-	function getLcaHGStrName($lcaHostGroup){
-		$lcaHGStrName = NULL;
-	  	foreach ($lcaHostGroup as $key=>$value)	
-	  		$lcaHGStrName ? $lcaHGStrName .= ", ".$value : $lcaHGStrName = $value;
-	  	if (!$lcaHGStrName) 
-	  		$lcaHGStrName = '\'\'';
-	  	return $lcaHGStrName;
-	}
-	
-	function getLcaSGStr($lcaServiceGroup){
+		
+	function getLCASGStr($lcaServiceGroup){
 		$lcaSGStr = NULL;
 	  	foreach ($lcaServiceGroup as $key=>$value)
 	  		$lcaSGStr ? $lcaSGStr .= ", ".$key : $lcaSGStr = $key;
-	  	if (!$lcaSGStrName) 
-	  		$lcaSGStrName = '\'\'';
-		return $lcaSGStrName;
-	}
-
-	function getLcaSGStrName($lcaServiceGroup){
-		$lcaSGStrName = NULL;
-	  	foreach ($lcaServiceGroup as $key=>$value)
-	  		$lcaSGStrName ? $lcaSGStrName .= ", ".$value : $lcaSGStrName = $value;
 	  	if (!$lcaSGStrName) 
 	  		$lcaSGStrName = '\'\'';
 		return $lcaSGStrName;
@@ -958,12 +930,11 @@ For information : contact@oreon-project.org
 		global $oreon;	
 		$num = 0;
 		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->user_id."'");
-		if ($res1->numRows())	{
+		if ($res1->numRows())
 			while($res1->fetchInto($contactGroup))	{
 			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
 			 	$num = $res2->numRows();
 			}
-		}
 		return $num;
 	}
 	
