@@ -212,7 +212,7 @@ For information : contact@oreon-project.org
 		{
 		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', 10);<?
 		}		
-		if($topology_js['init'])
+		else if($topology_js['init'])
 		echo $topology_js['init'] .";";
 	}
 ?>
