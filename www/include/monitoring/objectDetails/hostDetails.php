@@ -13,31 +13,30 @@ In no event will OREON be liable for any direct, indirect, punitive, special,
 incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
-For information : contact@oreon.org
+For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-
-	$lca =& $oreon->user->lcaHost;
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"])
 		$host_name = $_GET["host_name"];
 	else
 		foreach ($_GET["select"] as $key => $value)
 			$host_name = $key;
-
-	$key = array_search($host_name, $lca);
+	
+	$lcaHost = getLcaHostByName($pearDB);
+	isset($lcaHost["LcaHost"][$host_name]) ? $key = $lcaHost["LcaHost"][$host_name] : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."'");
-		if (PEAR::isError($pearDB))
-			print "Mysql Error : ".$pearDB->getMessage();
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$res->fetchInto($host);
 
 		$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$key."'");
-		if (PEAR::isError($pearDB))
-			print "Mysql Error : ".$pearDB->getMessage();
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$res->fetchInto($inventory);
 
 		if ($inventory["type_ressources"] == 0){
@@ -79,7 +78,6 @@ For information : contact@oreon.org
 
 		$en = array("0" => "No", "1" => "Yes");
 		
-		
 		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
 		$en_acknowledge = array("1" => "0", "0" => "1");
 		
@@ -112,7 +110,6 @@ For information : contact@oreon.org
 		$status = NULL;
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;
-
 
 		$tpl->assign("lang", $lang);
 		$tpl->assign("p", $p);

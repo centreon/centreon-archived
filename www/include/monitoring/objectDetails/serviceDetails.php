@@ -18,9 +18,7 @@ For information : contact@oreon.org
 
 	if (!isset($oreon))
 		exit();
-		
-	$lca =& $oreon->user->lcaHost;
-		
+			
 	if (isset($_GET["host_name"]) && $_GET["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"]){
 		$host_name = $_GET["host_name"];
 		$svc_description = $_GET["service_description"];
@@ -32,7 +30,8 @@ For information : contact@oreon.org
 		$svc_description = $tab_data[1];
 	}
 	
-	$key = array_search($host_name, $lca);
+	$lcaHost = getLcaHostByName($pearDB);
+	isset($lcaHost["LcaHost"][$host_name]) ? $key = $lcaHost["LcaHost"][$host_name] : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
