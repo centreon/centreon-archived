@@ -54,26 +54,43 @@ For information : contact@oreon-project.org
 			$lca["lca_topos"][$topo["topology_topology_id"]] = 1;
 		$res->free();
 	}
+	# Init LCA 
+	
+	$lca_data = getLCAHostByID($pearDB);
+	$lcaHostStr = getLCAHostStr($lca_data["LcaHost"]);
+	$lcaHGStr = getLCAHGStr($lca_data["LcaHostGroup"]);
+	$lca_sg = getLCASG($pearDB);
+	$lcaSGStr = getLCASGStr($lca_sg);
+	
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	else
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHGStr.") ORDER BY hg_name");
 	while($res->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$res->free();
 	#
 	# Service Groups comes from DB -> Store in $sgs Array
 	$sgs = array();
-	$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$oreon->user->lcaSGStr.") ORDER BY sg_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	else
+		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name");
 	while($res->fetchInto($sg))
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$res->free();
 	#
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
-	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$oreon->user->lcaHStr.") ORDER BY host_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
 	while($res->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$res->free();
