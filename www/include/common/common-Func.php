@@ -967,4 +967,12 @@ For information : contact@oreon-project.org
 		return $num;
 	}
 	
+	function IsHostReadable($lcaHostByName, $host_name){
+		global $oreon;
+		global $pearDB;
+		if ($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$host_name])))
+			return 1;
+		return 0;		
+	}
+	
 ?>
