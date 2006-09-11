@@ -59,9 +59,12 @@ For information : contact@oreon-project.org
 	#
 	# ServiceGroup comes from DB -> Store in $sgs Array
 	$sgs = array();
-	$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$oreon->user->lcaSGStr.") ORDER BY sg_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	else
+		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name");
+	if (PEAR::isError($res)) {
+		print "Mysql Error : ".$res->getMessage();
 	}
 	while($res->fetchInto($sg))
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];

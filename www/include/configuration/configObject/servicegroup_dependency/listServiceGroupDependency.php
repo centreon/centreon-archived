@@ -30,12 +30,15 @@ $pagination = "maxViewConfiguration";
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$oreon->user->lcaSGStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$oreon->user->lcaSGStr.")) > 0";
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
+	else
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
+	if (PEAR::isError($res)) {
+		print "Mysql Error : ".$res->getMessage();
 	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -56,7 +59,10 @@ $pagination = "maxViewConfiguration";
 	# end header menu
 	#Dependcy list
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$oreon->user->lcaSGStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$oreon->user->lcaSGStr.")) > 0";
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
+	else
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
