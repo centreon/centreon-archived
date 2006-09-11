@@ -217,11 +217,12 @@ $rq = 'SELECT ' .
 	isset($_POST["start"]) ? $formHost->addElement('hidden', 'start', $_POST["start"]) : NULL;
 	
 	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while ($res->fetchInto($h))
-		$host[$h["host_name"]] = $h["host_name"];	
+		if (IsHostReadable($lcaHostByName, $h["host_name"]))
+			$host[$h["host_name"]] = $h["host_name"];	
+			
 	$selHost =& $formHost->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
 
 	if (isset($_POST["host"])){
