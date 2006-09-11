@@ -44,6 +44,10 @@ For information : contact@oreon-project.org
 	#PHP functions
 	require_once "./include/common/common-Func.php";
 
+	# LCA 
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
+
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -58,7 +62,7 @@ For information : contact@oreon-project.org
 				if (count($split) == 2 && $split[0] && $split[1]){
 					$host_name = getMyHostName($split[0]);
 					$service_description = getMyServiceName($split[1]);
-					if (array_search($host_name, $oreon->user->lcaHost) && getMyServiceID($service_description, $split[0]))	{
+					if (IsHostReadable($lcaHostByName, $host_name) && getMyServiceID($service_description, $split[0]))	{
 						$tableFile1[$host_name] =  $host_name;
 						$tableFile2[$host_name][$file] = $service_description;
 					}

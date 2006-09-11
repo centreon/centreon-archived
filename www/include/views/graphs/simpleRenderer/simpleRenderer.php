@@ -44,7 +44,9 @@ For information : contact@oreon-project.org
 	require_once "./include/common/common-Func.php";
 	require_once("./DBPerfparseConnect.php");
 
-
+	# LCA 
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -55,7 +57,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDBpp))
 		print "Mysql Error : ".$pearDBpp->getMessage();
 	while($res->fetchInto($ppHost))
-		if (array_search($ppHost["host_name"], $oreon->user->lcaHost))
+		if (IsHostReadable($lcaHostByName, $ppHost["host_name"]))
 			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"];
 	$res->free();
 
@@ -70,7 +72,7 @@ For information : contact@oreon-project.org
 	# Perfparse Host comes from DB -> Store in $ppHosts Array
 	$ppServices1 = array();
 	$ppServices2 = array();
-	if ($host_name && array_search($host_name, $oreon->user->lcaHost))	{
+	if ($host_name && ($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$host_name]))))	{
 		$ppServices = array(NULL=>NULL);
 		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, service_description, metric, unit FROM perfdata_service_metric WHERE host_name = '".$host_name."' ORDER BY host_name");
 		if (PEAR::isError($pearDBpp))

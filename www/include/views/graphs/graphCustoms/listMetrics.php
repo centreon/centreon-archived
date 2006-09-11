@@ -24,6 +24,9 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
+	# LCA 
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
 	$form1 = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
 	if ($o == "mm" && $compo_id)	{
@@ -42,8 +45,10 @@ For information : contact@oreon-project.org
 				$osl = $metric["service_description"];
 			}
 			else	{
-				$form1->setDefaults(array("host_name"=>$metric["host_name"], "metric_sel1"=>array(0=>$metric["service_description"], 1=>$metric["metric"]), "compot_1"=>$compo["compot_compo_id"]));
-				$host_name = $metric["host_name"];
+				if (IsHostReadable($lcaHostByName, $metric["host_name"])){
+					$form1->setDefaults(array("host_name"=>$metric["host_name"], "metric_sel1"=>array(0=>$metric["service_description"], 1=>$metric["metric"]), "compot_1"=>$compo["compot_compo_id"]));
+					$host_name = $metric["host_name"];
+				}
 			}
 		}
 		
@@ -78,7 +83,7 @@ For information : contact@oreon-project.org
 		$ppHosts = array(NULL=>NULL);
 		$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
 		while($res->fetchInto($ppHost))	{
-			if (array_search($ppHost["host_name"], $oreon->user->lcaHost))
+			if (IsHostReadable($lcaHostByName, $ppHost["host_name"]))
 				$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"]; 
 			else if ($ppHost["host_name"] == "Meta_Module")	{
 				
