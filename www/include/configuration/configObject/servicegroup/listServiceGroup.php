@@ -29,9 +29,19 @@ $pagination = "maxViewConfiguration";
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$oreon->user->lcaSGStr.")");
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))		
+			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		else
+			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaServiceGroupStr.")");
+	}
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$oreon->user->lcaSGStr.")");
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))		
+			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
+		else
+			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.")");
+	}
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
@@ -54,9 +64,19 @@ $pagination = "maxViewConfiguration";
 	# end header menu
 	#Servicegroup list
 	if ($search)
-		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$oreon->user->lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+		else
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+	}
 	else
-		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_id IN (".$oreon->user->lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+		else
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+	}
 	$res = & $pearDB->query($rq);
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();

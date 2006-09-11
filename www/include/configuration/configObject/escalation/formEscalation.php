@@ -83,7 +83,10 @@ For information : contact@oreon-project.org
 	#
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHoststr.") ORDER BY hg_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))		
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	else
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -93,7 +96,10 @@ For information : contact@oreon-project.org
 	#
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
-	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))		
+		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -103,7 +109,10 @@ For information : contact@oreon-project.org
 	#
 	# Services comes from DB -> Store in $hServices Array	
 	$hServices = array();
-	$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))		
+		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}

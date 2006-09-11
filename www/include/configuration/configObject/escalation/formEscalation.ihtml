@@ -1,4 +1,3 @@
-<script type="text/javascript" src="include/configuration/changetab.js"></script>
 {$form.javascript}
 <form {$form.attributes}>
 <div>

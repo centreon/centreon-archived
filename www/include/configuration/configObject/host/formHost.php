@@ -99,7 +99,11 @@ For information : contact@oreon-project.org
 	$res->free();
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))		
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	else
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
+
 	while($res->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$res->free();

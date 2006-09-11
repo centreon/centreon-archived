@@ -61,7 +61,10 @@ For information : contact@oreon-project.org
 	#
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
-	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}

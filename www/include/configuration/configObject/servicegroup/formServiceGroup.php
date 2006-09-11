@@ -23,7 +23,10 @@ For information : contact@oreon-project.org
 	#
 	$sg = array();
 	if (($o == "c" || $o == "w") && $sg_id)	{	
-		$res =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$oreon->user->lcaSGStr.") LIMIT 1");
+		if ($oreon->user->admin || !HadUserLca($pearDB))		
+			$res =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
+		else
+			$res =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$lcaServiceGroupStr.") LIMIT 1");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -60,7 +63,10 @@ For information : contact@oreon-project.org
 	$hServices = array();
 	$hgServices = array();
 	$initName = NULL;
-	$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id AND h.host_id IN (".$oreon->user->lcaHStr.") ORDER BY h.host_name, sv.service_description");
+	if ($oreon->user->admin || !HadUserLca($pearDB))		
+		$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id ORDER BY h.host_name, sv.service_description");
+	else
+		$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id AND h.host_id IN (".$lcaHostStr.") ORDER BY h.host_name, sv.service_description");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -72,8 +78,11 @@ For information : contact@oreon-project.org
 	}
 	$res->free();
 	# Host Group LCA
-	$oreon->user->lcaHGStr ? $lcaHGStr = $oreon->user->lcaHGStr : $lcaHGStr =  '\'\'';
-	$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hg.hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg.hg_name, sv.service_description");
+	$lcaHGStr ? $lcaHGStr = $lcaHGStr : $lcaHGStr =  '\'\'';
+	if ($oreon->user->admin || !HadUserLca($pearDB))		
+		$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, sv.service_description");
+	else
+		$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hg.hg_id IN (".$lcaHGStr.") ORDER BY hg.hg_name, sv.service_description");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}

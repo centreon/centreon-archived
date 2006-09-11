@@ -17,6 +17,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	#
 	## Database retrieve information for Service
 	#
@@ -88,9 +89,9 @@ For information : contact@oreon-project.org
 	#
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
-	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host.host_id IN (".$oreon->user->lcaHStr.") AND host_register = '1' ORDER BY host_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
+	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host.host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");
+		if (PEAR::isError($res)) {
+			print "Mysql Error : ".$res->getMessage();
 		}
 	while($res->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
@@ -109,7 +110,7 @@ For information : contact@oreon-project.org
 	$res->free();
 	# HostGroups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg_name");
+	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostStr.") ORDER BY hg_name");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
@@ -145,7 +146,7 @@ For information : contact@oreon-project.org
 	$res->free();
 	# Service Groups comes from DB -> Store in $sgs Array
 	$sgs = array();
-	$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$oreon->user->lcaSGStr.") ORDER BY sg_name");
+	$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}

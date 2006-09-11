@@ -60,7 +60,10 @@ For information : contact@oreon-project.org
 	# Services comes from DB -> Store in $hServices Array
 	
 	$hServices = array();
-	$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$oreon->user->lcaHStr.") ORDER BY host_name");
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1'  ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}

@@ -25,8 +25,10 @@ For information : contact@oreon-project.org
 	$sG ? $service_id = $sG : $service_id = $sP;
 
 	$lcaHost = getLCAHostByID($pearDB);
+	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+	$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
 	$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
-	
+
 
 	#Pear library
 	require_once "HTML/QuickForm.php";
