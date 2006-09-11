@@ -733,7 +733,6 @@ $lang["mod_purgePolicy_listService"] = "Service";
 $lang["mod_purgePolicy_listHost"] = "Host";
 
 /* Traps SNMP */
-
 $lang['m_traps_command'] = "Traps SNMP";
 $lang['m_traps_name'] = "Nom de la Trap";
 $lang['m_traps_oid'] = "OID";
@@ -746,7 +745,6 @@ $lang['m_traps_change'] = "Modifier une d&eacute;finition de Trap";
 $lang['m_traps_view'] = "Voir une d&eacute;finition de Trap";
 
 /* GANTT Escalation */
-
 $lang['m_gantt'] = "Voir Escalades";
 $lang['m_header_gantt'] = "Vue des Escalades";
 
