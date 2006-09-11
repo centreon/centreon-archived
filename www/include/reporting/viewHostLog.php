@@ -25,6 +25,9 @@ For information : contact@oreon-project.org
 
 	$tpl->assign('o', $o);
 
+	# LCA 
+	$lcaHostByName = getLcaHostByName($pearDB);
+
 	function my_getTimeTamps($dateSTR)
 	{
 		list($m,$d,$y) = split('/',$dateSTR);
