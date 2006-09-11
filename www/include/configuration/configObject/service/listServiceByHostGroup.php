@@ -20,9 +20,8 @@ For information : contact@oreon-project.org
 $pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (PEAR::isError($pearDB))
+		print "Mysql Error : ".$pearDB->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -32,10 +31,12 @@ $pagination = "maxViewConfiguration";
 	$tmp = NULL;
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	if ($search)	{
-		$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.")");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if ($oreon->user->admin || !HadUserLca($pearDB))
+			$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+		else
+			$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
+		if (PEAR::isError($pearDB))
+			print "Mysql Error : ".$res->getMessage();
 		while ($res->fetchInto($service))
 			if (!$service["service_description"])	{
 				$service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);
@@ -43,14 +44,15 @@ $pagination = "maxViewConfiguration";
 					$rows++;
 					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 				}
-			}
-			else if (stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
+			} else if (stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
 				$rows++;
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 			}
-	}
-	else	{
-		$res = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.")");
+	} else	{
+		if ($oreon->user->admin || !HadUserLca($pearDB))
+			$res = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+		else
+			$res = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
@@ -74,14 +76,14 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#HostGroup/service list
+	$oreon->user->admin || !HadUserLca($pearDB) ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") "; 
 	if ($search)
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hsr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hsr.hostgroup_hg_id IN (".$oreon->user->lcaHGStr.") ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (PEAR::isError($res)) 
+		print "Mysql Error : ".$res->getMessage();
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
@@ -118,7 +120,6 @@ $pagination = "maxViewConfiguration";
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-
 	#
 	##Apply a template definition
 	#

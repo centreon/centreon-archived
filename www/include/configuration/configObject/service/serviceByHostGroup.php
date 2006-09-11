@@ -24,6 +24,10 @@ For information : contact@oreon-project.org
 	isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
 	$sG ? $service_id = $sG : $service_id = $sP;
 
+	$lcaHost = getLCAHostByID($pearDB);
+	$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
+	
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
