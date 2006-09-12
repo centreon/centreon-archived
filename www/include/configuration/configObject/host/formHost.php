@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
+		if ($oreon->user->admin || !HadUserLca($pearDB))
 			$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 		else
 			$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1");
