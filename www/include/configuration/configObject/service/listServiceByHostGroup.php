@@ -31,11 +31,11 @@ $pagination = "maxViewConfiguration";
 	$tmp = NULL;
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	if ($search)	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
+		if ($oreon->user->admin || !$isRestreint)
 			$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		else
 			$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
-		if (PEAR::isError($pearDB))
+		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
 		while ($res->fetchInto($service))
 			if (!$service["service_description"])	{
@@ -49,13 +49,12 @@ $pagination = "maxViewConfiguration";
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 			}
 	} else	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
+		if ($oreon->user->admin || !$isRestreint)
 			$res = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		else
 			$res = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$rows = $res->numRows();
 	}
 	
@@ -76,7 +75,7 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#HostGroup/service list
-	$oreon->user->admin || !HadUserLca($pearDB) ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") "; 
+	$oreon->user->admin || !$isRestreint ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") "; 
 	if ($search)
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
