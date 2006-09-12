@@ -23,6 +23,7 @@ For information : contact@oreon-project.org
 		exit();
 	
 	# Init
+	$lcaHostByName = getLcaHostByName($pearDB);
 	
 	if (isset($_GET["host_name"]))
 		$host_name = $_GET["host_name"];
@@ -43,7 +44,8 @@ For information : contact@oreon-project.org
 	while ($res->fetchInto($host)){
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-		$hosts[$host["host_id"]]= $host["host_name"];
+		if (IsHostReadable($lcaHostByName, $host["host_name"]))
+			$hosts[$host["host_id"]]= $host["host_name"];
 	}
 	
 	$debug = 0;

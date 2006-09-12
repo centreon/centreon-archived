@@ -17,9 +17,9 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-
-	//$path = "./include/monitoring/";
-
+		
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "templates/");
@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 		{
 			while ($str = fgets($log))	{
 				$res = preg_split("/;/", $str);
-				if (preg_match("/^\[([0-9]*)\] HOST_DOWNTIME;/", $str, $matches)){
+				if (preg_match("/^\[([0-9]*)\] HOST_DOWNTIME;/", $str, $matches) && IsHostReadable($lcaHostByName, $res[2])){
 					$selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
 					$tab_downtime_host[$i] = array();
 					$tab_downtime_host[$i]["id"] = $res[1];
@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 					$tab_downtime_host[$i]["comment"] = $res[8];
 					$tab_downtime_host[$i]["persistent"] = $res[5];
 					$i++;
-				} else if (preg_match("/^\[([0-9]*)\] SERVICE_DOWNTIME;/", $str, $matches)){
+				} else if (preg_match("/^\[([0-9]*)\] SERVICE_DOWNTIME;/", $str, $matches) && IsHostReadable($lcaHostByName, $res[2])){
 					$selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
 					$tab_downtime_svc[$i] = array();
 					$tab_downtime_svc[$i]["id"] = $res[1];
@@ -73,44 +73,34 @@ For information : contact@oreon-project.org
 					$i++;
 				}			
 			}
-		}
-		else
-		{
+		} else {
           $flag_host = 0;
           $flag_svc = 0;
 
 			while ($str = fgets($log))	{
-                if (preg_match("/^hostdowntime/", $str))
-                    {
-                        $tab_downtime_host[$i] = array();
-                      $flag_host = 1;
-                    }
-                else if (preg_match("/^servicedowntime/", $str))
-                    {
-                        $tab_downtime_svc[$i2] = array();
-                      $flag_svc = 1;
-                    }
-                else{
-
-                    if($flag_host == 1)
-                    {
-                      $res = preg_split("/=/", $str);
-                      $res[0] = trim($res[0]);
-                      if (isset($res[1]))
-                      	$res[1] = trim($res[1]);
+                if (preg_match("/^hostdowntime/", $str)){
+                	$tab_downtime_host[$i] = array();
+                    $flag_host = 1;
+                } else if (preg_match("/^servicedowntime/", $str))	{
+                    $tab_downtime_svc[$i2] = array();
+                    $flag_svc = 1;
+                } else {
+					if($flag_host == 1) {
+                    	$res = preg_split("/=/", $str);
+                    	$res[0] = trim($res[0]);
+                      	if (isset($res[1]))
+                      		$res[1] = trim($res[1]);
                         if (preg_match('`downtime_id$`', $res[0])){
                             $selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
                             $tab_downtime_host[$i]["id"] = $res[1];}
                         if (preg_match('`host_name$`', $res[0])){
-                          $tab_downtime_host[$i]["host_name"] = $res[1];}
+                          	$tab_downtime_host[$i]["host_name"] = $res[1];}
                         if (preg_match('`entry_time$`', $res[0])){
 	                        $tab_downtime_host[$i]["time"] = date("d-m-Y G:i:s", $res[1]);
-	                        
 	                        $cmd = "SELECT downtime_id from downtime where entry_time = ".$res[1]." ";
                         	$result =& $pearDB->query($cmd);
-                        	if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+                        	if (PEAR::isError($result))
+								print "Mysql Error : ".$result->getMessage();
                         	$result->fetchInto($id_downtime);
                         	$tab_downtime_host[$i]["id_supp"] = $id_downtime["downtime_id"];
                         }

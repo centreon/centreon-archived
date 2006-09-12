@@ -22,23 +22,21 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 			
+	$lcaHostByName = getLcaHostByName($pearDB);		
+			
 	isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
 	isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;	
 	$cG ? $host_id = $cG : $host_id = $cP;
 	
-	
-	
 	if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 		$host_id = array_search($_GET["host_name"], $oreon->user->lcaHost);
 		$svc_description = $_GET["service_description"];
-	} else
-	{
+	} else	{
 		$host_name = NULL;
 		$svc_description = NULL;
 	}
 	
 	$data = array("host_id" => $host_id, "service_id" => getMyServiceID($svc_description, $host_id));
-	
 	
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -51,7 +49,8 @@ For information : contact@oreon-project.org
 	while ($res->fetchInto($host)){
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-		$hosts[$host["host_id"]]= $host["host_name"];
+		if (IsHostReadable($lcaHostByName, $host["host_name"]))
+			$hosts[$host["host_id"]]= $host["host_name"];
 	}
 
 	$services = array();

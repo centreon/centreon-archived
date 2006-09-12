@@ -25,15 +25,12 @@ For information : contact@oreon-project.org
 	isset($_GET["service_description"]) ? $service_description = $_GET["service_description"] : $service_description = NULL;
 	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
 
-	
 	$path = "/usr/local/oreon/www/include/monitoring/external_cmd/";
-
-
-
+	
 	# HOST LCA
-	$key = array_search($host_name, $oreon->user->lcaHost);
-	if ($key != NULL){
-
+	$lcaHostByName = getLcaHostByName($pearDB);
+	$idRestreint = HadUserLca($pearDB);
+	if ($oreon->user->admin || !$idRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $idRestreint)){
 
 	#Pear library
 	require_once "HTML/QuickForm.php";

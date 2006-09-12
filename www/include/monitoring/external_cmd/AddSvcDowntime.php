@@ -21,7 +21,9 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-
+	
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
 	isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
 	isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;	
 	$cG ? $host_id = $cG : $host_id = $cP;
@@ -48,7 +50,8 @@ For information : contact@oreon-project.org
 	while ($res->fetchInto($host)){
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-		$hosts[$host["host_id"]]= $host["host_name"];
+		if (IsHostReadable($lcaHostByName, $host["host_name"]))
+			$hosts[$host["host_id"]]= $host["host_name"];
 	}
 
 	$services = array();

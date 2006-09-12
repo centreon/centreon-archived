@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 */
 
 
-	if (!isset ($oreon))
+	if (!isset($oreon))
 		exit ();
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
@@ -27,18 +27,18 @@ For information : contact@oreon-project.org
 	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
 	isset($_GET["en"]) ? $en = $_GET["en"] : $en = 1;
 
-	$path = $oreon->optGen["oreon_path"]."www/include/monitoring/external_cmd/";
+	$path = $pathExternal;
 
 
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-
+	$lcaHostByName = getLcaHostByName($pearDB);
+	$idRestreint = HadUserLca($pearDB);
+	
 	# HOST LCA
-	$key = array_search($host_name, $oreon->user->lcaHost);
-	if ($key != NULL){
-
+	if ($oreon->user->admin || !$idRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $idRestreint)){
 
 	#Pear library
 	require_once "HTML/QuickForm.php";

@@ -72,70 +72,61 @@ For information : contact@oreon-project.org
           $flag_svc = 0;
 
 			while ($str = fgets($log))	{
-                if (preg_match("/^hostcomment/", $str))
-                    {
-                        $tab_comments_host[$i] = array();
-                      $flag_host = 1;
-                    }
-                else if (preg_match("/^servicecomment /", $str))
-                    {
-                        $tab_comments_svc[$i2] = array();
-                      $flag_svc = 1;
-                    }
-                else{
-
-                    if($flag_host == 1)
-                    {
-                      $res = preg_split("/=/", $str);
-                      $res[0] = trim($res[0]);
-                      if (isset($res[1]))
-                      	$res[1] = trim($res[1]);
+                if (preg_match("/^hostcomment/", $str)){
+                	$tab_comments_host[$i] = array();
+                    $flag_host = 1;
+                } else if (preg_match("/^servicecomment /", $str)){
+                	$tab_comments_svc[$i2] = array();
+                    $flag_svc = 1;
+                } else {
+                    if($flag_host == 1){
+                    	$res = preg_split("/=/", $str);
+                      	$res[0] = trim($res[0]);
+                      	if (isset($res[1]))
+                      		$res[1] = trim($res[1]);
                         if (preg_match('`comment_id$`', $res[0])){
                             $selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
                             $tab_comments_host[$i]["id"] = $res[1];}
-                        if (preg_match('`host_name$`', $res[0])){
-                          $tab_comments_host[$i]["host_name"] = $res[1];}
-                        if (preg_match('`entry_time$`', $res[0])){
+                        if (preg_match('`host_name$`', $res[0]))
+                          $tab_comments_host[$i]["host_name"] = $res[1];
+                        if (preg_match('`entry_time$`', $res[0]))
 	                        $tab_comments_host[$i]["time"] = date("d-m-Y G:i:s", $res[1]);
-                        }
-                        if (preg_match('`author$`', $res[0])){$tab_comments_host[$i]["author"] = $res[1];}
-                        if (preg_match('`comment_data$`', $res[0])){$tab_comments_host[$i]["comment"] = $res[1];}
-                        if (preg_match('`persistent$`', $res[0])){$tab_comments_host[$i]["persistent"] = $res[1];}
-                        if (preg_match('`}$`', $str))
-                        {
+                        if (preg_match('`author$`', $res[0]))
+                        	$tab_comments_host[$i]["author"] = $res[1];
+                        if (preg_match('`comment_data$`', $res[0]))
+                        	$tab_comments_host[$i]["comment"] = $res[1];
+                        if (preg_match('`persistent$`', $res[0]))
+                        	$tab_comments_host[$i]["persistent"] = $res[1];
+                        if (preg_match('`}$`', $str)){
                             $flag_host = 0;
                             $i++;
                         }
-                    }
-                    else if($flag_svc == 1)
-                    {
-                      $res = preg_split("/=/", $str);
-                      $res[0] = trim($res[0]);
-                      if (isset($res[1]))
-                      	$res[1] = trim($res[1]);
-
+                    } else if($flag_svc == 1) {
+                      	$res = preg_split("/=/", $str);
+                      	$res[0] = trim($res[0]);
+                      	if (isset($res[1]))
+                      		$res[1] = trim($res[1]);
                         if (preg_match('`comment_id$`', $res[0])){
                             $selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
                             $tab_comments_svc[$i2]["id"] = $res[1];}
                         if (preg_match('`service_description$`', $res[0])){
                           $tab_comments_svc[$i2]["service_descr"] = $res[1];}
-                        if (preg_match('`host_name$`', $res[0])){
-                          $tab_comments_svc[$i2]["host_name"] = $res[1];}
-                        if (preg_match('`entry_time$`', $res[0])){
+                        if (preg_match('`host_name$`', $res[0]))
+                          $tab_comments_svc[$i2]["host_name"] = $res[1];
+                        if (preg_match('`entry_time$`', $res[0]))
                         	$tab_comments_svc[$i2]["time"] = date("d-m-Y G:i:s", $res[1]);
-                        }
-                        if (preg_match('`author$`', $res[0])){$tab_comments_svc[$i2]["author"] = $res[1];}
-                        if (preg_match('`comment_data$`', $res[0])){$tab_comments_svc[$i2]["comment"] = $res[1];}
-                        if (preg_match('`persistent$`', $res[0])){$tab_comments_svc[$i2]["persistent"] = $res[1];}
-                        if (preg_match('`}$`', $str))
-                        {
+                        if (preg_match('`author$`', $res[0]))
+                        	$tab_comments_svc[$i2]["author"] = $res[1];
+                        if (preg_match('`comment_data$`', $res[0]))
+                        	$tab_comments_svc[$i2]["comment"] = $res[1];
+                        if (preg_match('`persistent$`', $res[0]))
+                        	$tab_comments_svc[$i2]["persistent"] = $res[1];
+                        if (preg_match('`}$`', $str)){
                             $flag_svc = 0;
-                        $i2++;
+                        	$i2++;
                         }
                     }
                 }
-
-
 			}
 		}
 	}
