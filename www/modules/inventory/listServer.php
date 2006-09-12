@@ -21,17 +21,25 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 
+	# LCA 
+	$lcaHostByID = getLcaHostByID($pearDB);
+
 	!isset ($_GET["limit"]) ? $limit = $oreon->optGen["maxViewConfiguration"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 
+
+	$lcaHStr = getLCAHostStr($lcaHostByID["LcaHost"]); 
+	if (HadUserLca($pearDB))
+		$LcaStr = "AND h.host_id IN (".$lcaHStr.")";
+	else
+		$LcaStr = "";
 	if ($search)
 		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
+			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' $LcaStr " .
 			  " AND host_register = '1'";
 	else
-		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-				" h.host_id IN (".$oreon->user->lcaHStr.") AND host_register = '1'";
+		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL $LcaStr AND host_register = '1'";
 	$res =& $pearDB->query($rq);
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -54,15 +62,20 @@ For information : contact@oreon-project.org
 	# end header menu
 
 	#Host list
+	if (HadUserLca($pearDB))
+		$LcaStr = "AND h.host_id IN (".$lcaHStr.")";
+	else
+		$LcaStr = "";
 	if ($search)
 		$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
+			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' $LcaStr " .
 			  " AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-	else
-		$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-				" h.host_id IN (".$oreon->user->lcaHStr.") AND host_register = '1' " .
-				" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-
+	else {
+		$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL $LcaStr AND host_register = '1' " .
+			  " ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+	
+	}
+	
 	$res = & $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
@@ -73,10 +86,10 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $res->fetchInto($host); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
-
 		if (!$host["host_name"])
-			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
+			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);	
+		if (IsHostReadable($lcaHostByID, $host["host_id"])){
+			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$host["host_name"],
 						"RowMenu_link"=>"?p=".$p."&o=t&host_id=".$host['host_id']."&search=".$search,
@@ -84,7 +97,8 @@ For information : contact@oreon-project.org
 						"RowMenu_address"=>$host["host_address"],
 						"RowMenu_status"=>$host["host_activate"] ? $lang["enable"] : $lang["disable"],
 						"RowMenu_type"=>$lang['s_server']);
-		$style != "two" ? $style = "two" : $style = "one";
+			$style != "two" ? $style = "two" : $style = "one";
+		}
 	}
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template

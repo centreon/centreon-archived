@@ -21,18 +21,27 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 
+	# LCA 
+	$lcaHostByID = getLcaHostByID($pearDB);
+
 	!isset ($_GET["limit"]) ? $limit = $oreon->optGen["maxViewConfiguration"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 
+	$lcaHStr = getLCAHostStr($lcaHostByID["LcaHost"]); 
+	if (HadUserLca($pearDB))
+		$LcaStr = "AND h.host_id IN (".$lcaHStr.")";
+	else
+		$LcaStr = "";
+	
 	if ($search)
 		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
-			  " AND ii.type_ressources";
-	else
-		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				" h.host_id IN (".$oreon->user->lcaHStr.") AND im.id = ii.type_ressources";
+			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' $LcaStr AND ii.type_ressources";
+	else 
+		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id $LcaStr AND im.id = ii.type_ressources";
+
 	$res =& $pearDB->query($rq);
+	
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -54,13 +63,18 @@ For information : contact@oreon-project.org
 	# end header menu
 
 	#Host list
+	
+	if (HadUserLca($pearDB))
+		$LcaStr = "AND h.host_id IN (".$lcaHStr.")";
+	else
+		$LcaStr = "";
+	
 	if ($search)
 		$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
+			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' $LcaStr " .
 			  " AND ii.type_ressources ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				" h.host_id IN (".$oreon->user->lcaHStr.") AND im.id = ii.type_ressources  " .
+		$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id $LcaStr AND im.id = ii.type_ressources  " .
 				" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
 	
@@ -72,10 +86,10 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $res->fetchInto($host); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
-
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
+		if (IsHostReadable($lcaHostByID, $host["host_name"])){
+			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$host["host_name"],
 						"RowMenu_link"=>"?p=".$p."&o=o&host_id=".$host['host_id']."&search=".$search,
@@ -83,7 +97,8 @@ For information : contact@oreon-project.org
 						"RowMenu_address"=>$host["host_address"],
 						"RowMenu_status"=>$host["host_activate"] ? $lang["enable"] : $lang["disable"],
 						"RowMenu_manu"=>$host["manu_alias"]);
-		$style != "two" ? $style = "two" : $style = "one";
+			$style != "two" ? $style = "two" : $style = "one";
+		}
 	}
 	$tpl->assign("elemArr", $elemArr);
 
