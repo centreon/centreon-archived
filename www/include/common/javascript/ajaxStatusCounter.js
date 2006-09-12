@@ -30,7 +30,7 @@ function getXhrC(){
                 var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
             }
 	}
-	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
+	else { // XMLHttpRequest non support2 par le navigateur 
 	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 	   var xhrC = false; 
 	}
@@ -38,6 +38,7 @@ function getXhrC(){
 }
 
 function reloadStatusCounter(_relaod_time,_sid){
+
 
 	_form=document.getElementById('AjaxBankBasic');		       
 	_version=_form.version.value;
