@@ -617,6 +617,6 @@ $tab_resume[3] = $tab;
 
 	$time_startR2 = microtime_float();
 	$time_R = $time_startR2 - $time_startR;
-	print $time_R;
+	//print $time_R;
 	
 ?>
