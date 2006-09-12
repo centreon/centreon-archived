@@ -193,24 +193,26 @@ For information : contact@oreon-project.org
 /*
  * init javascript
  */
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"];
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"];
+	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
+	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
+
 ?>
 <script type='text/javascript'>
     window.onload = function () {
-    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', 10);
+    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', 10000);
 <?
+
 	$res = null;
 	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 		if (PEAR::isError($res))
 			print ($res->getMessage());
 	while ($res->fetchInto($topology_js))
 	{
-		
+
 		if($topology_js['init'] == "initM")		
 		{
-		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', 10);<?
+		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', 10000);<?
 		}		
 		else if($topology_js['init'])
 		echo $topology_js['init'] .";";
