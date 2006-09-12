@@ -50,7 +50,7 @@
 	  	              { foreach item=user from=$tab_user }
 	  	             	{if $user.admin}
 	  	             	<li>
-	  	             		<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;
+	  	             		<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;'>
 	  	             		{if $user.alias == $UserName}
 	 	       					<a href="{$UserInfoUrl}">{$user.alias}</a>
 	  	             		{else}
