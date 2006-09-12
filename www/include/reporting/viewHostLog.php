@@ -18,6 +18,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	$time_startR = microtime_float();
+
 	$path = "./include/reporting/";
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -27,7 +29,8 @@ For information : contact@oreon-project.org
 
 	# LCA 
 	$lcaHostByName = getLcaHostByName($pearDB);
-
+	$isRestreint = HadUserLca($pearDB);
+	
 	function my_getTimeTamps($dateSTR)
 	{
 		list($m,$d,$y) = split('/',$dateSTR);
@@ -196,8 +199,7 @@ $rq = 'SELECT ' .
 	if (PEAR::isError($res)){
 	  die($res->getMessage());
 	} else { 
-	  while ($s =& $res->fetchRow()){
-	  	
+	  while ($s =& $res->fetchRow()){ 	
 		$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 		$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
 		$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];
@@ -223,7 +225,7 @@ $rq = 'SELECT ' .
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
 	while ($res->fetchInto($h))
-		if (IsHostReadable($lcaHostByName, $h["host_name"]))
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$h["host_name"]])))
 			$host[$h["host_name"]] = $h["host_name"];	
 			
 	$selHost =& $formHost->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
@@ -233,9 +235,6 @@ $rq = 'SELECT ' .
 	}else if (isset($_GET["host"])){
 		$formHost->setDefaults(array('host' => $_GET["host"]));
 	}
-//	$formHost->Display();
-
-
 	
 	#
 	## fourchette de temps
@@ -615,4 +614,9 @@ $tab_resume[3] = $tab;
 	}
 
 */
+
+	$time_startR2 = microtime_float();
+	$time_R = $time_startR2 - $time_startR;
+	print $time_R;
+	
 ?>
