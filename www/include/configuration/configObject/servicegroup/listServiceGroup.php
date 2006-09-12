@@ -17,34 +17,38 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+
+	$lcaHost = getLCAHostByID($pearDB);
+	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+	$lcaSGStr = getLCASGStr(getLCASG($pearDB));
+	$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
+	$isRestreint = HadUserLca($pearDB);
+
+	$pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-	if ($search)
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
+	
+	if ($search){
+		if ($oreon->user->admin || !$isRestreint)		
 			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 		else
 			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaServiceGroupStr.")");
-	}
-	else
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
+	} else {
+		if ($oreon->user->admin || !$isRestreint)		
 			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
 		else
-			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.")");
+			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaSGStr.")");
 	}
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -63,24 +67,23 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Servicegroup list
-	if ($search)
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
+	
+	!$isRestreint ? $lcaStr = " AND sg_id IN (".$lcaSGStr.") " : $lcaStr = ""; 
+	if ($search) {
+		if ($oreon->user->admin || !$isRestreint)
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 		else
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
-	}
-	else
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+	} else {
+		if ($oreon->user->admin || !$isRestreint)
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 		else
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	}
+
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res)) 
+		print "Mysql Error : ".$res->getMessage();
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
@@ -109,8 +112,6 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-	
-
 
 	#
 	##Apply a template definition
