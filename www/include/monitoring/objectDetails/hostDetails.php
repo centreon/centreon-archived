@@ -24,8 +24,10 @@ For information : contact@oreon-project.org
 		foreach ($_GET["select"] as $key => $value)
 			$host_name = $key;
 	
+	$idRestreint = HadUserLca($pearDB);
+	
 	$lcaHost = getLcaHostByName($pearDB);
-	isset($lcaHost["LcaHost"][$host_name]) ? $key = $lcaHost["LcaHost"][$host_name] : $key = NULL;
+	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {

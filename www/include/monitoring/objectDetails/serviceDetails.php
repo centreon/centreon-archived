@@ -30,15 +30,17 @@ For information : contact@oreon.org
 		$svc_description = $tab_data[1];
 	}
 	
+	$idRestreint = HadUserLca($pearDB);
+	
 	$lcaHost = getLcaHostByName($pearDB);
-	isset($lcaHost["LcaHost"][$host_name]) ? $key = $lcaHost["LcaHost"][$host_name] : $key = NULL;
+	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
-		$res =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."'");
+		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		if (PEAR::isError($pearDB)) 
 			print "Mysql Error : ".$pearDB->getMessage();
-		$res->fetchInto($host);
+		$res->fetchInto($host);	
 		$res =& $pearDB->query("SELECT service_max_check_attempts FROM service WHERE service_description = '".$_GET["service_description"]."'");
 		if (PEAR::isError($pearDB)) 
 			print "Mysql Error : ".$pearDB->getMessage();
@@ -52,24 +54,65 @@ For information : contact@oreon.org
 		if (!file_exists($oreon->Nagioscfg["comment_file"]))
 			print ("downtime file not found");
 		else	{
+			print "ok";
 			$tab_comments_svc = array();
 			$i = 0;
 			$log = fopen($oreon->Nagioscfg["comment_file"], "r");
-			while ($str = fgets($log))	{
-				$res = preg_split("/;/", $str);
-				if (preg_match("/^\[([0-9]*)\] SERVICE_COMMENT;/", $str, $matches)){
-					if (!strcmp($res[2], $host_name)){
-						$tab_comments_svc[$i] = array();
-						$tab_comments_svc[$i]["id"] = $res[1];
-						$tab_comments_svc[$i]["host_name"] = $res[2];
-						$tab_comments_svc[$i]["service_descr"] = $res[3];
-						$tab_comments_svc[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
-						$tab_comments_svc[$i]["author"] = $res[5];
-						$tab_comments_svc[$i]["comment"] = $res[6];
-						$tab_comments_svc[$i]["persistent"] = $res[4];
+			if ($oreon->user->get_version() == 1){
+				while ($str = fgets($log))	{
+					print $str . "<br>";
+					$res = preg_split("/;/", $str);
+					if (preg_match("/^\[([0-9]*)\] SERVICE_COMMENT;/", $str, $matches)){
+						if (!strcmp($res[2], $host_name)){
+							print $res[6];
+							$tab_comments_svc[$i] = array();
+							$tab_comments_svc[$i]["id"] = $res[1];
+							$tab_comments_svc[$i]["host_name"] = $res[2];
+							$tab_comments_svc[$i]["service_descr"] = $res[3];
+							$tab_comments_svc[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
+							$tab_comments_svc[$i]["author"] = $res[5];
+							$tab_comments_svc[$i]["comment"] = $res[6];
+							$tab_comments_svc[$i]["persistent"] = $res[4];
+						}
 					}
+					$i++;	
 				}
-				$i++;	
+			} else {
+				while ($str = fgets($log))	{
+                if (preg_match("/^hostcomment/", $str)){
+                	$tab_comments_host[$i] = array();
+                    $flag_host = 1;
+                } else if (preg_match("/^servicecomment /", $str)){
+                	$tab_comments_svc[$i2] = array();
+                    $flag_svc = 1;
+                } else {
+                    if($flag_svc == 1) {
+                      	$res = preg_split("/=/", $str);
+                      	$res[0] = trim($res[0]);
+                      	if (isset($res[1]))
+                      		$res[1] = trim($res[1]);
+                        if (preg_match('`comment_id$`', $res[0]))
+                            $tab_comments_svc[$i2]["id"] = $res[1];
+                        if (preg_match('`service_description$`', $res[0])){
+                          $tab_comments_svc[$i2]["service_descr"] = $res[1];}
+                        if (preg_match('`host_name$`', $res[0]))
+                          $tab_comments_svc[$i2]["host_name"] = $res[1];
+                        if (preg_match('`entry_time$`', $res[0]))
+                        	$tab_comments_svc[$i2]["time"] = date("d-m-Y G:i:s", $res[1]);
+                        if (preg_match('`author$`', $res[0]))
+                        	$tab_comments_svc[$i2]["author"] = $res[1];
+                        if (preg_match('`comment_data$`', $res[0]))
+                        	$tab_comments_svc[$i2]["comment"] = $res[1];
+                        if (preg_match('`persistent$`', $res[0]))
+                        	$tab_comments_svc[$i2]["persistent"] = $res[1];
+                        if (preg_match('`}$`', $str)){
+                            $flag_svc = 0;
+                        	$i2++;
+                        }
+                    }
+                }
+			}
+			
 			}
 		}
 		

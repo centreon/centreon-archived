@@ -186,7 +186,7 @@
 		</tr>
 	</table>
 	<br>
-	{if count($tab_comments_svc)}
+	{if $tab_comments_svc}
 	<table id="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter" colspan="3">Comments For this Service</td>
@@ -202,9 +202,9 @@
 			<td class="ListColHeaderCenter">{$lang.cmt_author}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_comment}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_persistent}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_actions}</td>
 		</tr>
 		{foreach item=tcs from=$tab_comments_svc}
+		{if $tcs.host_name == $h.host_name}
 		<tr class={cycle values="list_two, list_one"}>
 			<td class="ListColHeaderCenter"><input type="checkbox" name='select[{$tcs.id}]'></td>
 			<td class="ListColLeft">{$tcs.host_name}</td>
@@ -213,8 +213,8 @@
 			<td class="ListColCenter">{$tcs.author}</td>
 			<td class="ListColLeft" style='white-space:none;'>{$tcs.comment}</td>
 			<td class="ListColLeft">{$tcs.persistent}</td>
-			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=ds&id={$tcs.id}'><img src='./img/icones/16x16/delete.gif'></a></td>
-		</tr>
+			</tr>
+		{/if}
 		{/foreach}
 	</table>
 	{/if}
