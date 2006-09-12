@@ -24,11 +24,7 @@ For information : contact@oreon-project.org
 	require_once './class/other.class.php';
 	include_once("./include/monitoring/common-Func.php");			
 	include_once("./include/monitoring/external_cmd/cmd.php");
-?>
-<div align="center" style="padding-bottom: 20px;">
-	<?	include("./include/monitoring/status/resume.php"); ?>
-</div>
-<?
+	
 	$path = "./include/monitoring/status/";
 	$pathDetails = "./include/monitoring/objectDetails/";
 	
