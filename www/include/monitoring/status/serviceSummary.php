@@ -20,6 +20,7 @@ For information : contact@oreon-project.org
 		exit();
 	
 	$TabLca = getLcaHostByName($pearDB);
+	$isRestreint = hadUserLca($pearDB);
 	
 	$hg = array();
 	$status_hg = array();
@@ -28,43 +29,43 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDB)) 
 		print "Mysql Error : ".$pearDB->getMessage();
 	while ($r =& $ret->fetchRow()){
-		$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
-									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
-									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-		if (PEAR::isError($pearDB)) 
-			print "Mysql Error : ".$pearDB->getMessage();
-		$cpt = 0;
 		if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){		
-			while ($r_h =& $ret_h->fetchRow()){
-				$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
-				$service_data_str = NULL;	
-				if (isset($tab_host_service[$r_h["host_name"]])){
-					$cpt_host = 0;
-					foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
-						$status_hg[$service_status[$r_h["host_name"]. "_" .$key]["current_state"]]++;					
-						$cpt_host++;
+			$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
+										"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
+										"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
+			if (PEAR::isError($pearDB)) 
+				print "Mysql Error : ".$pearDB->getMessage();
+			$cpt_host = 0;
+			if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
+				while ($r_h =& $ret_h->fetchRow()){
+					$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
+					$service_data_str = NULL;	
+					if (isset($tab_host_service[$r_h["host_name"]])){
+						foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
+							$status_hg[$service_status[$r_h["host_name"]. "_" .$key]["current_state"]]++;					
+							$service_data_str = "";
+							if ($status_hg["OK"] != 0)
+								$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>" . $status_hg["OK"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=OK'>OK</a></span> ";
+							if ($status_hg["WARNING"] != 0)
+								$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>" . $status_hg["WARNING"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=WARNING'>WARNING</a></span> ";
+							if ($status_hg["CRITICAL"] != 0)
+								$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>" . $status_hg["CRITICAL"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=CRITICAL'>CRITICAL</a></span> ";
+							if ($status_hg["PENDING"] != 0)
+								$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>" . $status_hg["PENDING"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=PENDING'>PENDING</a></span> ";
+							if ($status_hg["UNKNOWN"] != 0)
+								$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>" . $status_hg["UNKNOWN"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=UNKNOWN'>UNKNOWN</a></span> ";
+							if (!isset($hg[$r["hg_name"]]))
+								$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
+							$hg[$r["hg_name"]]["host"][$cpt_host] = $r_h["host_name"];
+							$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a> (" . $r_h["host_alias"] . ")";
+							$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
+							$status = "color_".strtolower($host_status[$r_h["host_name"]]["current_state"]);
+							$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'><a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."'>".$host_status[$r_h["host_name"]]["current_state"]."</a></td>";
+							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
+							$cpt_host++;
+						}
+						
 					}
-					$service_data_str = "";
-					if ($status_hg["OK"] != 0)
-						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>" . $status_hg["OK"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=OK'>OK</a></span> ";
-					if ($status_hg["WARNING"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>" . $status_hg["WARNING"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=WARNING'>WARNING</a></span> ";
-					if ($status_hg["CRITICAL"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>" . $status_hg["CRITICAL"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=CRITICAL'>CRITICAL</a></span> ";
-					if ($status_hg["PENDING"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>" . $status_hg["PENDING"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=PENDING'>PENDING</a></span> ";
-					if ($status_hg["UNKNOWN"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>" . $status_hg["UNKNOWN"] . " <a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."&status=UNKNOWN'>UNKNOWN</a></span> ";
-					if ($cpt_host){
-						$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
-						$hg[$r["hg_name"]]["host"][$cpt] = $r_h["host_name"];
-						$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a> (" . $r_h["host_alias"] . ")";
-					}
-					$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
-					$status = "color_".strtolower($host_status[$r_h["host_name"]]["current_state"]);
-					$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'><a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."'>".$host_status[$r_h["host_name"]]["current_state"]."</a></td>";
-					$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
-					$cpt++;
 				}
 			}
 		}

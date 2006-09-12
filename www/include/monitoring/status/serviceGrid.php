@@ -24,41 +24,44 @@ For information : contact@oreon-project.org
 	$svc_data = array();
 
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-
+	if (PEAR::isError($ret))
+		print "Mysql Error : ".$ret->getMessage();
+	
+	unset($TabLca);
 	$TabLca = getLcaHostByName($pearDB);
-
+	$isRestreint = hadUserLca($pearDB);
+		
 	while ($r =& $ret->fetchRow()){
-		$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
-									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
-									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-		if (PEAR::isError($ret_h)) 
-			print "Mysql Error : ".$ret_h->getMessage();
 		$cpt = 0;
-		while ($r_h =& $ret_h->fetchRow()){
-			if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){
-				$service_data_str = NULL;
-				$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a> (" . $r_h["host_alias"] . ")";
-				$cpt_host = 0;
-				if (isset($tab_host_service[$r_h["host_name"]]))
-					foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
-						$service_data_str .= 	"<span style='background:".
-												$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])]."'>".
-												"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
-												"</a></span> &nbsp;&nbsp;";
-						$cpt_host++;
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){	
+			$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
+										"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
+										"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
+			if (PEAR::isError($ret_h)) 
+				print "Mysql Error : ".$ret_h->getMessage();
+			$cpt_host = 0;
+			while ($r_h =& $ret_h->fetchRow()){
+				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
+					$service_data_str = NULL;
+					$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a> (" . $r_h["host_alias"] . ")";
+					if (isset($tab_host_service[$r_h["host_name"]]))
+						foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
+							$service_data_str .= 	"<span style='background:".
+													$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])]."'>".
+													"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
+													"</a></span> &nbsp;&nbsp;";
+							$cpt_host++;
+							if (!isset($hg[$r["hg_name"]]))
+								$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
+							$hg[$r["hg_name"]]["host"][$cpt_host] = $r_h["host_name"];
+							$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
+							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
+							$cpt++;		
+						}
 					}
-				if ($cpt_host){
-					$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
-					$hg[$r["hg_name"]]["host"][$cpt] = $r_h["host_name"];
-				} 
-				$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
-				$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
-				$cpt++;
 			}
 		}
-	}
+	}		
 
 	# Smarty template Init
 	$tpl = new Smarty();
