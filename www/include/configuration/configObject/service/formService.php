@@ -41,9 +41,8 @@ For information : contact@oreon-project.org
 		$service = array_map("myDecodeService", $res->fetchRow());
 		# Grab hostgroup || host
 		$res =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		while ($res->fetchInto($parent))	{
 			if ($parent["host_host_id"])
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
@@ -99,9 +98,8 @@ For information : contact@oreon-project.org
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array(NULL=>NULL);
 	$res =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while($res->fetchInto($svTpl))	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
@@ -110,10 +108,12 @@ For information : contact@oreon-project.org
 	$res->free();
 	# HostGroups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostStr.") ORDER BY hg_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (HadUserLca($pearDB))
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHGStr.") ORDER BY hg_name");
+	else
+		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while($res->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$res->free();
