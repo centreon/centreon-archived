@@ -18,6 +18,8 @@ For information : contact@oreon.org
 	if (!isset($oreon))
 		exit();
 	
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
 	function getLogData($time_event, $contact, $host, $service, $status, $output, $command, $type){
 		global $lang;
 		$tab["time"] = date($lang["header_format"], $time_event);
@@ -50,14 +52,14 @@ For information : contact@oreon.org
 					$res1 = preg_split("/;/", $res[1]);			
 				$type = $res[0];
 				if (isset($_POST["host"]) && strlen($_POST["host"])) {
-					if (!strncmp($type, "HOST NOTIFICATION", 17) && !strcmp($res1[1], $_POST["host"]))
+					if (!strncmp($type, "HOST NOTIFICATION", 17) && !strcmp($res1[1], $_POST["host"])/* && IsHostReadable($lcaHostByName, $res1[1])*/)
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], "", $res1[2], $res1[4], $res1[3], $type);
-					else if (!strcmp($type, "SERVICE NOTIFICATION") && !strcmp($res1[1], $_POST["host"]))
+					else if (!strcmp($type, "SERVICE NOTIFICATION") && !strcmp($res1[1], $_POST["host"])/* && IsHostReadable($lcaHostByName, $res1[1])*/)
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], $res1[2], $res1[3], $res1[5], $res1[4], $type);
 				} else {
-					if (!strncmp($type, "HOST NOTIFICATION", 17))
+					if (!strncmp($type, "HOST NOTIFICATION", 17)/* && IsHostReadable($lcaHostByName, $res1[1])*/)
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], "", $res1[2], $res1[4], $res1[3], $type);
-					else if (!strcmp($type, "SERVICE NOTIFICATION"))
+					else if (!strcmp($type, "SERVICE NOTIFICATION") /*&& IsHostReadable($lcaHostByName, $res1[1])*/)
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], $res1[2], $res1[3], $res1[5], $res1[4], $type);
 				
 				}

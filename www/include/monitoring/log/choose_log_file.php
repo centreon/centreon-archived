@@ -30,6 +30,8 @@ For information : contact@oreon-project.org
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
 	$tableFile2 = array();
 	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
 		while ($file = @readdir($handle))
@@ -45,18 +47,15 @@ For information : contact@oreon-project.org
 	$tableFile3 = array($oreon->Nagioscfg["log_file"] => " -- " . $lang["m_mon_today"] . " -- ");
 	$tableFile1 = array_merge($tableFile3, $tableFile2);
 
-
-
 	$host = array();
 	
 	$host[""] = "";
-	
 	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while ($res->fetchInto($h))
-		$host[$h["host_name"]] = $h["host_name"];
+		if (IsHostReadable($lcaHostByName, $h['host_name']))
+			$host[$h["host_name"]] = $h["host_name"];
 
 	$debug = 0;
 	$attrsTextI		= array("size"=>"3");
@@ -79,11 +78,7 @@ For information : contact@oreon-project.org
     
     $selHost =& $form->addElement('select', 'file', $lang["nag_logFile"], $tableFile1, array("onChange" =>"this.form.submit();"));
 	$selHost =& $form->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
-	
-	if (isset($_POST["host"])){
-		$form->setDefaults(array('file' => $_POST["host"]));
-	} else 
-		$form->setDefaults(array('file' => $oreon->Nagioscfg["log_file"]));
+	isset($_POST["host"]) ?	$form->setDefaults(array('file' => $_POST["host"])) : $form->setDefaults(array('file' => $oreon->Nagioscfg["log_file"]));
 	
 	$log = NULL;	
 	$tab_log = array();	

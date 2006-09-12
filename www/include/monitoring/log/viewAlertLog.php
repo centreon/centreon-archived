@@ -18,11 +18,7 @@ For information : contact@oreon.org
 	if (!isset($oreon))
 		exit();
 	
-	/*
-	 	
-	include_once("./include/monitoring/common-Func.php");			
-	include_once("./include/monitoring/external_cmd/cmd.php");
-	*/
+	$lcaHostByName = getLcaHostByName($pearDB);
 	
 	function getLogData($time_event, $host, $service, $status, $output, $type){
 		global $lang;
@@ -55,14 +51,14 @@ For information : contact@oreon.org
 				$type = $res[0];
 				if (isset($_POST["host"]) && strlen($_POST["host"])) {
 					$res1[0] = str_replace(" ", "", $res1[0]);
-					if (!strncmp($type, "HOST ALERT", 10) && !strcmp($_POST["host"], $res1[0]))
+					if (!strncmp($type, "HOST ALERT", 10) && !strcmp($_POST["host"], $res1[0]) && IsHostReadable($lcaHostByName, $res1[0]))
 						$tab_log[$i] = getLogData($time_event, $res1[0], "", $res1[1], $res1[4], $type);
-					else if (!strncmp($type, "SERVICE ALERT", 13) && !strcmp($_POST["host"], $res1[0]))
+					else if (!strncmp($type, "SERVICE ALERT", 13) && !strcmp($_POST["host"], $res1[0])&& IsHostReadable($lcaHostByName, $res1[0]))
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], $res1[2], $res1[5], $type);
 				} else {
-					if (!strncmp($type, "HOST ALERT", 10))
+					if (!strncmp($type, "HOST ALERT", 10)&& IsHostReadable($lcaHostByName, $res1[0]))
 						$tab_log[$i] = getLogData($time_event, $res1[0], "", $res1[1], $res1[4], $type);
-					else if (!strncmp($type, "SERVICE ALERT", 13))
+					else if (!strncmp($type, "SERVICE ALERT", 13)&& IsHostReadable($lcaHostByName, $res1[0]))
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], $res1[2], $res1[5], $type);
 				
 				}
@@ -77,15 +73,12 @@ For information : contact@oreon.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "templates/");
 	
-	#Apply a template definition	
-		
+	#Apply a template definition			
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);	
-	
-	//$form->display();
-	
+
 	$tpl->assign('o', $o);		
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->assign('lang', $lang);			
