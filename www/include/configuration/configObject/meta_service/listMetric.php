@@ -46,7 +46,10 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_options", $lang["options"]);
 	# end header menu
 
-	$rq = "SELECT * FROM `meta_service_relation` WHERE host_id IN (".$oreon->user->lcaHStr.") AND meta_id = '".$meta_id."' ORDER BY host_id";
+	if ($oreon->user->admin || !HadUserLca($pearDB))
+		$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
+	else
+		$rq = "SELECT * FROM `meta_service_relation` WHERE host_id IN (".$lcaHoststr.") AND meta_id = '".$meta_id."' ORDER BY host_id";
 	$res = & $pearDB->query($rq);
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();

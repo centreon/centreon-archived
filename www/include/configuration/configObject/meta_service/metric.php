@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 	
 	#
 	## Database retrieve information for differents elements list we need on the page
-	#	
+	#
 	# Perfparse Host comes from DB -> Store in $ppHosts Array
 	$ppHosts = array(NULL=>NULL);
 	$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
@@ -54,8 +54,9 @@ For information : contact@oreon-project.org
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
 	while($res->fetchInto($ppHost))
-		if (array_search($ppHost["host_name"], $oreon->user->lcaHost))
-			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"]; 
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$ppHost["host_name"]])))
+			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"];
+	
 	$res->free();
 	$ppServices1 = array();
 	$ppServices2 = array();
