@@ -21,8 +21,12 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 	  exit();
 	
-	$debug = 0;
+	$time_startR = microtime_float();
+	$lcaHostByName = getLcaHostByName($pearDB);
+	$isRestreint = HadUserLca($pearDB);
 	
+	$debug = 0;
+		
 	unset ($host_status);
 	unset ($service_status);
 	
@@ -126,8 +130,6 @@ For information : contact@oreon-project.org
 	$tab_host_service = array();
 	
 	// Read 
-	
-	$lcaHostByName = getLcaHostByName($pearDB);
 	$version = $oreon->user->get_version();
 	
 	// Stats
@@ -148,14 +150,14 @@ For information : contact@oreon-project.org
 	      	if (!preg_match("/^\#.*/", $str)){		// get service stat
 				$log = split(";", $str);
 				if (preg_match("/^[\[\]0-9]* SERVICE[.]*/", $str)){
-		  			if (($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$log['1']])))){
+		  			if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']])))){
 						$service_status[$log["1"]."_".$log["2"]] = get_service_data($log);
 			    		$tab_host_service[$log["1"]][$log["2"]] = "1";
 			 		} else if (!strcmp($log[1], "Meta_Module")){
 			    		$metaService_status[$log["2"]] = get_service_data($log);
 		  			}
 				} else if (preg_match("/^[\[\]0-9]* HOST[.]*/", $str)){ // get host stat
-		  			if (($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$log["1"]])))){
+		  			if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
 		    			$host_status[$log["1"]] = get_host_data($log);
 		    			$tab_host_service[$log["1"]] = array();
 		  			}
@@ -190,7 +192,7 @@ For information : contact@oreon-project.org
 						      	$oreon->status_graph_service[$svc_data['current_state']]++;	
 								break;
 							} else {		
-								if (isset($svc_data['host_name']) && ($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$svc_data['host_name']])))
+								if (isset($svc_data['host_name']) && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_data['host_name']])))
 									&& (($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)||($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
 									||($search_type_service == NULL && $search_type_host == NULL)|| !$search)){
 					      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
@@ -209,7 +211,7 @@ For information : contact@oreon-project.org
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && ($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
+			      		if (isset($host_data['host_name']) && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
 							$oreon->status_graph_host[$host_data['current_state']]++;
@@ -246,6 +248,7 @@ For information : contact@oreon-project.org
 	    $row_data[$key] = $row[$_GET["sort_types"]];
 	  !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $service_status) : array_multisort($row_data, SORT_DESC, $service_status);
 	}
+
 	if (isset($_GET["sort_typeh"]) && $_GET["sort_typeh"]){
 	  foreach ($host_status as $key => $row)
 	    $row_data[$key] = $row[$_GET["sort_typeh"]];
@@ -253,16 +256,10 @@ For information : contact@oreon-project.org
 	}
 	
 	if ($debug){ ?>
-	 <textarea cols='200' rows='50'><? print_r($host_status);print_r($service_status);?></textarea><?	
+	 	<textarea cols='200' rows='50'><? print_r($host_status);print_r($service_status);?></textarea><?	
 	}
-	/*
-	$mem_after = memory_get_usage() / 1024 / 1024 ;
-	$mem = $mem_after - $mem_befor;
-	
-	print "After : " .$mem_after . "Mo # ".$mem."Mo";
 
-	$time = time() - $time;
-
-	print $time ;
-	*/
+	$time_startR2 = microtime_float();
+	$time_R = $time_startR2 - $time_startR;
+	//print $time_R;
 ?> 
