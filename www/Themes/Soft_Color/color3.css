@@ -126,13 +126,6 @@ input[type="submit"],input[type="button"],input[type="reset"]{
     background-image: url("./Images/bg_input_green.gif") ;
 }
 
-.quick_search{	border-color:#eff1f4;	
-background-image: url("Images/bg_header_green.gif");	color:#fff;
-background-position:top left;
-background-repeat:repeat-x;
-background-color:#BFD0E2 ;
-
-}
 .limitPage{
 background-image: url("Images/bg_header_green.gif");
 background-position:top left;

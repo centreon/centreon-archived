@@ -21,8 +21,6 @@ For information : contact@oreon-project.org
 
 body	{background-color:#F2F2F2;}
 
-
-
 /* Form  */
 
 .ListTable, #ListTable a:link		{color:#666666;}
@@ -172,15 +170,6 @@ input[type="submit"],input[type="button"],input[type="reset"]{
     background-image: url("./Images/bg_input_gray.gif") ;
 }
 
-
-.quick_search{	
-	border-color:#eff1f4;	
-	background-image:  url("Images/bg_header_orange.gif");	
-	color:#fff;
-	background-position:top left;
-	background-repeat:repeat-x;
-	background-color:#BFD0E2 ;
-}
 #logOut{
 position:absolute;
 top:116px;

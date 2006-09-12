@@ -140,17 +140,6 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 }
 
 
-.quick_search{
-/*
-border-color:#eff1f4;	
-background-image: url("./Images/bg_header_bluegray.gif");
-background-position:top left;
-background-repeat:repeat-x;
-
-background-color: #eaeaee;
-color:#666666;
-*/
-}
 .limitPage{
 background-image: url("./Images/bg_header_bluegray.gif");
 background-position:top left;

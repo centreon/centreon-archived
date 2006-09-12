@@ -135,14 +135,7 @@ background-repeat:no-repeat;
 background-color:#ebf5ff ;
 }
 
-.quick_search, .quick_search_sub{
-border-color:#eff1f4;
-background-image:url("./Images/bg_header.gif");
-color:#fff;
-background-position:top left;
-background-repeat:repeat-x;
-background-color:#BFD0E2 ;
-}
+
 
 .limitPage{
 	background-image:url("./Images/bg_header.gif");
