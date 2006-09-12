@@ -17,12 +17,14 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	
+	if (PEAR::isError($RES))
+		print "Mysql Error : ".$RES->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -30,34 +32,23 @@ $pagination = "maxViewConfiguration";
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	$rq = "SELECT COUNT(*) FROM escalation esc";
-	if ($list && $list == "h")
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
-			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0";
-		else
-			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
-	}
-	else if ($list && $list == "sv")
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))		
-			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
-		else
-			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
- 	}
-	else if ($list && $list == "hg")
-	{
+	
+	if ($list && $list == "h"){
+		$oreon->user->admin || !HadUserLca($pearDB) ? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0" : $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
+	} else if ($list && $list == "sv") {
+		$oreon->user->admin || !HadUserLca($pearDB) ? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0" : $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
+	} else if ($list && $list == "hg") {
 		if ($oreon->user->admin || !HadUserLca($pearDB))		
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id AND ehgr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
 		else
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id AND ehgr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
-	}
-	else if ($list && $list == "ms")
-	{
+	} else if ($list && $list == "ms"){
 		if ($oreon->user->admin || !HadUserLca($pearDB))		
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
 		else
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
 	}
+	
 	if ($search && $list)
 		$rq .= " AND esc.esc_name LIKE '%".$search."%'";
 	else if ($search)
@@ -99,9 +90,8 @@ $pagination = "maxViewConfiguration";
 		$rq .= " WHERE esc.esc_name LIKE '%".$search."%'";
 	$rq .= " ORDER BY esc_name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);	
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
@@ -124,8 +114,6 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-	
-	
 
 	#
 	##Apply a template definition
