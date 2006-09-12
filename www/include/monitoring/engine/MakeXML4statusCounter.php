@@ -157,7 +157,7 @@ function read($version,$sid,$file)
 	if (isset($service_status))
 		foreach ($service_status as $s)
 			$statistic_service[$s["current_state"]]++;
-	
+
 	$buffer .= '<stats>';
 	$buffer .= '<statistic_service_ok>'. $statistic_service["OK"] . '</statistic_service_ok>';
 	$buffer .= '<statistic_service_warning>'. $statistic_service["WARNING"] . '</statistic_service_warning>';
@@ -174,17 +174,18 @@ function read($version,$sid,$file)
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
+//echo "la";
+/*
 	global $debug;
 	if($debug)
 	{
-		$file = "log2.xml";
+		$file = "logb.xml";
 		$inF = fopen($file,"w");
 		fwrite($inF,$buffer);
 		fclose($inF);
 		
 	
-		$file = "log2.txt";
+		$file = "logb.txt";
 		$inF = fopen($file,"w");
 		fwrite($inF,"log:\n ".$MyLog."\n\n");
 		fwrite($inF,"sid:\n ".$sid."\n\n");
@@ -198,6 +199,7 @@ function read($version,$sid,$file)
 		fwrite($inF,"log:\n----------\n\n");
 		fclose($inF);
 	}
+	*/
 }
 
 
