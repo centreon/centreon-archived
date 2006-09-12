@@ -22,14 +22,8 @@ For information : contact@oreon-project.org
 		exit(); 
 	
 	include_once("./include/monitoring/common-Func.php");
+	include_once("./include/monitoring/status/resume.php"); 
 
-?>
-<div align="center" style="padding-bottom: 20px;">
-	<?
-		include("./include/monitoring/status/resume.php"); 
-		?>
-</div>
-<?	
 	unset($tpl);
 	unset($path);
 
@@ -38,10 +32,7 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./");	
-	
-	
-//	$tpl->assign("ssvc", $statistic_service);
-//	$tpl->assign("sh", $statistic_host);
+		
 	$tpl->assign("session", session_id());
 	$tpl->display("home.ihtml");
 ?>
