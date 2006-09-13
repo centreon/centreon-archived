@@ -21,6 +21,9 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 		
+	$lcaHostByID = getLcaHostByID($pearDB);	
+	$isRetreint = HadUserLca($pearDB);
+	
 	function isPerfparseEntry($host_name, $service_description){
 		global $pearDBpp;
 		$res =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '$host_name' AND service_description = '$service_description'");
@@ -66,7 +69,7 @@ For information : contact@oreon-project.org
 		if (!isset($_GET["steps"]))
 			$_GET["steps"] = 0;
 		
-		if (array_key_exists($host_id, $oreon->user->lcaHost))	{
+		if ($oreon->user->admin || !$isRetreint || ($isRetreint && isset($lcaHostByID["LcaHost"][$host_id])))	{
 			$_GET["submitC"] = "Grapher";
 			if (!isset($_GET["period"]))
 				$_GET["period"] = return_period($service_id);
