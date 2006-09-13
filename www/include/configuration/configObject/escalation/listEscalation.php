@@ -23,8 +23,8 @@ For information : contact@oreon-project.org
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	
-	if (PEAR::isError($RES))
-		print "Mysql Error : ".$RES->getMessage();
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
