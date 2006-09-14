@@ -161,8 +161,8 @@ For information : contact@oreon-project.org
 
 	$res = null;
 	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-		if (PEAR::isError($res))
-			print ($res->getMessage());
+	if (PEAR::isError($res))
+		print ($res->getMessage());
 	while ($res->fetchInto($topology_js))
 		echo "<script language='javascript' src='" . $topology_js['PathName_js'] .  "'></script> ";		
 
