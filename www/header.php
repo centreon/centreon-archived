@@ -171,12 +171,14 @@ For information : contact@oreon-project.org
  */
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
+	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
+	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 
 ?>
 <script type='text/javascript'>
     window.onload = function () {
-    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', 10000);
+    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', <?=$tFS?>);
 <?
 
 	$res = null;
@@ -185,7 +187,7 @@ For information : contact@oreon-project.org
 			print ($res->getMessage());
 	while ($res->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
-		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', 10000);<?
+		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', <?=$tFM?>);<?
 		}		
 		else if ($topology_js['init'])
 			echo $topology_js['init'] .";";
