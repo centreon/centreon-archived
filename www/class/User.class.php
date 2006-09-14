@@ -29,20 +29,10 @@ class User	{
   
   ## User LCA
   # Array with elements ID for loop test
-  var $lcaHost;
-  var $lcaHostGroup;
-  var $lcaServiceGroup;
   var $lcaTopo;
   # String with elements ID separated by commas for DB requests
-  var $lcaHStr;
-  var $lcaHGStr;
-  var $lcaSGStr;
   var $lcaTStr;
-  # String with elements Name separated by commas for DB requests
-  var $lcaHStrName;
-  var $lcaHGStrName;
-  var $lcaSGStrName;
- 
+  
   function User($user = array(), $nagios_version = NULL)  {
 	$this->user_id = $user["contact_id"];
 	$this->name = html_entity_decode($user["contact_name"], ENT_QUOTES);
@@ -52,9 +42,6 @@ class User	{
 	$this->passwd = $user["contact_passwd"];
 	$this->admin = $user["contact_admin"];
 	$this->version = $nagios_version;
-  	$this->lcaHost = array();
-  	$this->lcaHostGroup = array();
-  	$this->lcaServiceGroup = array();
   	$this->lcaTopo = array();
   }
   
