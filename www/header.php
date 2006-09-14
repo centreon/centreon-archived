@@ -161,22 +161,7 @@ For information : contact@oreon-project.org
 	if (isset($p) && $p == 310)
 		print "<SCRIPT language='javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>";
 
-	if (isset($p) && $p == 520){?>
-	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
-		function isAbsRelVisible() {
-		  if (document.graph.timerange[1].checked) showAbsolute();
-		  else showRelative();
-		}
-		function showAbsolute() {
-		   Abs.style.visibility="visible";
-		   Rel.style.visibility="hidden";
-		}
-		function showRelative() {
-		   Abs.style.visibility="hidden";
-		   Rel.style.visibility="visible";
-		}
-	</SCRIPT>
-<?	} 
+
 
 
 /*
