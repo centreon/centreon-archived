@@ -21,9 +21,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 -- Monitoring
 --
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'h_host_data', NULL, 20201, 2020101, 10, 1, './include/monitoring/objectDetails/hostDetails.php', '&o=hd', '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_service_data', NULL, 20201, 2020101, 20, 1, './include/monitoring/objectDetails/serviceDetails.php', '&o=svcd', '0', '0', '1');
-
 -- hosts
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_host_detail', NULL, 2, 201, 20, 1, './include/monitoring/status/monitoringHost.php', '&o=h', NULL, NULL, '1');
