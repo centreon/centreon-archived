@@ -786,6 +786,8 @@ CREATE TABLE `general_opt` (
   `maxViewConfiguration` int(11) NOT NULL default '20',
   `AjaxTimeReloadMonitoring` INT NOT NULL DEFAULT '15' ,
   `AjaxTimeReloadStatistic` INT NOT NULL DEFAULT '15',
+  `AjaxFirstTimeReloadMonitoring` INT NOT NULL DEFAULT '15' ,
+  `AjaxFirstTimeReloadStatistic` INT NOT NULL DEFAULT '1',
   `template` varchar(254) default 'Basic',
   `ldap_host` varchar(254) default NULL,
   `ldap_port` varchar(5) default '389',
