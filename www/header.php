@@ -41,15 +41,16 @@ For information : contact@oreon-project.org
 	$level1 = NULL;
 	$level2 = NULL;
 	$level3 = NULL;
+	$level4 = NULL;
 	switch (strlen($p))	{
 		case 1 :  $level1= $p; break;
 		case 3 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
 		case 5 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
 		case 6 :  $level1 = substr($p, 0, 2); $level2 = substr($p, 2, 2); $level3 = substr($p, 3, 2); break;
+		case 7 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); $level4 = substr($p, 5, 2); break;
 		default : $level1= $p; break;
 	}
-
-
+	
    	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
 	    eval('
@@ -57,7 +58,7 @@ For information : contact@oreon-project.org
 	      return $object;
 	    }
 	    ');
-	  }  
+	}  
 
 	if (isset($_POST["export_sub_list"])) {
 		$mime_type = 'text/x-text';
@@ -82,33 +83,27 @@ For information : contact@oreon-project.org
 	} else {
 
 		# Skin path
-		
 		$res =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
 		$res->fetchInto($data);
 		$skin = "./Themes/".$data["template"]."/";
 		
-		// Delete Session Expired
-
+		# Delete Session Expired
 		$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
 		$session_expire =& $res->fetchRow();
-
 		$time_limit = time() - ($session_expire["session_expire"] * 60);
-
 		$res =& $pearDB->query("SELECT * FROM session WHERE last_reload < '".$time_limit."'");
 		while ($session =& $res->fetchRow())
 			$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
 
-		// Get session and Check if session is not expired
+		# Get session and Check if session is not expired
 
 		$res =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
-
 		if (!$res->numRows())
 			header("Location: index.php?disconnect=2");			
 		if (!isset($_SESSION["oreon"]))
 			header("Location: index.php?disconnect=1");
 
-		// Define Oreon var alias
-
+		# Define Oreon var alias
 		global $oreon;
 		$oreon =& $_SESSION["oreon"];
 
@@ -154,15 +149,11 @@ For information : contact@oreon-project.org
 <script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>
 <?
 	// Add Template CSS for sysInfos Pages
-
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 	  echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
 	if (isset($p) && $p == 310)
 		print "<SCRIPT language='javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>";
-
-
-
 
 /*
  * include javascript
@@ -192,22 +183,16 @@ For information : contact@oreon-project.org
 	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 		if (PEAR::isError($res))
 			print ($res->getMessage());
-	while ($res->fetchInto($topology_js))
-	{
-
-		if($topology_js['init'] == "initM")		
-		{
+	while ($res->fetchInto($topology_js)){
+		if($topology_js['init'] == "initM")	{
 		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', 10000);<?
 		}		
-		else if($topology_js['init'])
-		echo $topology_js['init'] .";";
+		else if ($topology_js['init'])
+			echo $topology_js['init'] .";";
 	}
 ?>
     };
     </script>
 </head>
 <body>
-
-<? } 
-$mem_befor = memory_get_usage() / 1024 / 1024 ;
-?>
+<? } ?>
