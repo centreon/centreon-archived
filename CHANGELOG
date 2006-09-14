@@ -20,6 +20,9 @@
 => Feature : Add Snmp information in Host Group def. Now we search SNMP com and Version in 1-Host 2-Host Tpls 3-Host Group 4- OptGen
 => Bugfix : Number of list element in ID Cards according to numbers define in optGen
 => Feature : Add third type for commande (Divers)
+=> Feature : Add Fourth level in left menu
+=> Bugfix : ACL is lighter
+
 
 ## Oreon 1.3.1-1
 
