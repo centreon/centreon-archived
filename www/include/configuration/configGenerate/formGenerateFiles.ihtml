@@ -24,7 +24,8 @@
 		<tr class="list_one"><td class="FormRowField">{$form.restart.label}</td><td class="FormRowValue">{$form.restart.html}<br><br>{$form.restart_mode.html}</td></tr>
 
 	</table>
-	<br><br>
+	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
+	<br><br><br><br>
 	{if $msg}
 	 <table id="ListTable">
 	 	<tr class="ListHeader">
@@ -39,6 +40,5 @@
 	 	</tr>	 	
 	 </table>
 	{/if}
-	<div align="center" id="validForm"><p  class="oreonbutton">{$form.submit.html}</p></div>
 	{$form.hidden}
 </form>
