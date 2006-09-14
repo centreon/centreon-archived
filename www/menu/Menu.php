@@ -19,7 +19,6 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-			
 
 	# Path to the configuration dir
 	$path = "./menu/";
@@ -31,14 +30,13 @@ For information : contact@oreon-project.org
 
 	# Var init
 	$sep = NULL;
-	$elemArr = array(1=>array(), 2=>array(), 3=>array());
+	$elemArr = array(1=>array(), 2=>array(), 3=>array(), 4=>array());
 
 	# Special Case
 	# Put the authentification in the URL
 	$auth = NULL;
 
 	# block headerHTML
-//	$lca =& $oreon->user->lcaHStrName;
 	$version = $oreon->user->get_version();
 
 	$fileStatus = $oreon->Nagioscfg["status_file"];
@@ -57,26 +55,22 @@ For information : contact@oreon-project.org
 	$tpl->assign("urlLogo", $skin.'Images/logo_oreon.gif');
 	$tpl->assign("lang", $lang);
 	$tpl->assign("color", $color);
-//	$tpl->assign("lca", $lca);
 	$tpl->assign("version", $version);
 	$tpl->assign("fileStatus", $fileStatus);
 	$tpl->assign("fileOreonConf", $fileOreonConf);
 	$tpl->assign("date_time_format_status", $lang["date_time_format_status"]);
 
-
 	# Grab elements for level 1
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
 	$res =& $pearDB->query($rq);
 
-	if (PEAR::isError($pearDB))
-		print "Mysql Error : ".$pearDB->getMessage();
-	
-	for($i = 0; $res->numRows() && $res->fetchInto($elem);)	{
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	for($i = 0; $res->numRows() && $res->fetchInto($elem);$i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : NULL,
 								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#");
-		$i++;
-	}
+		
 
 	$userUrl = "oreon.php?p=50104&o=c";
 	$userName = $oreon->user->get_name();
@@ -90,10 +84,8 @@ For information : contact@oreon-project.org
 	# Grab elements for level 2
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_order";
 	$res2 =& $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	
+	if (PEAR::isError($res2)) 
+		print "Mysql Error : ".$res2->getMessage();
 	$firstP = NULL;
 	$sep = "&nbsp;";
 	for($i = 0; $res2->numRows() && $res2->fetchInto($elem); $i++)	{
@@ -110,42 +102,52 @@ For information : contact@oreon-project.org
 
 	# Grab elements for level 3
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
-
 	$res3 =& $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	
+	if (PEAR::isError($res3))
+		print "Mysql Error : ".$res3->getMessage();
 	for($i = 0; $res3->fetchInto($elem);)	{
 		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 || $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 || $elem["topology_page"] == 40202 || $elem["topology_page"] == 60603))
 			;
-		else	{
+		else {
 		    $elemArr[3][$elem["topology_group"]][$i] = array("Menu3Icone" => $elem["topology_icone"],
 									"Menu3Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
+									"Menu3ID" => $elem["topology_page"],
 									"Menu3UrlPopup" => $elem["topology_url"],
 									"Menu3Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
 									"Menu3Popup" => $elem["topology_popup"] ? true : false);
 			 $i++;
 		}
 	}
-
-
-
-
-
-	# Create Menu Level 1-2-3
-	$tpl->assign("Menu1Color", "menu_1");
-	$tpl->assign("Menu1ID", "menu1_bgcolor");
-
+	
+	unset($elem);
+	# Grab elements for level 4
+	if ($level1 && $level2 && $level3){
+		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+		$res4 =& $pearDB->query($rq);
+		if (PEAR::isError($res4))
+			print "Mysql Error : ".$res4->getMessage();
+		for ($i = 0; $res4->fetchInto($elem);$i++)
+			$elemArr[4][$level1.$level2.$level3][$i] = array("Menu4Icone" => $elem["topology_icone"],
+										"Menu4Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
+										"Menu4UrlPopup" => $elem["topology_url"],
+										"Menu4Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
+										"Menu4Popup" => $elem["topology_popup"] ? true : false);
+	}	
+	# Create Menu Level 1-2-3-4
 	$tpl->assign("UserInfoUrl", $userUrl);
 	$tpl->assign("UserName", $oreon->user->get_alias());
 	$tpl->assign("Date", $logDate);
 	$tpl->assign("LogOut", $logOut);
 	$tpl->assign("LogOutUrl", $logOutUrl);
+	$tpl->assign("Menu1Color", "menu_1");
+	$tpl->assign("Menu1ID", "menu1_bgcolor");
 	$tpl->assign("Menu2Color", "menu_2");
 	$tpl->assign("Menu2ID", "menu2_bgcolor");
 	$tpl->assign("Menu3Color", "menu_3");
 	$tpl->assign("Menu3ID", "menu3_bgcolor");
+	$tpl->assign("Menu4Color", "menu_4");
+	$tpl->assign("Menu4ID", "menu4_bgcolor");
+
 	$tpl->assign("connected_users", $lang["m_connected_users"]);
 	$tpl->assign("main_menu", $lang["m_main_menu"]);
 
@@ -153,18 +155,19 @@ For information : contact@oreon-project.org
 	$tpl->assign("elemArr1", $elemArr[1]);
 	count($elemArr[2]) ? $tpl->assign("elemArr2", $elemArr[2]) : NULL;
 	count($elemArr[3]) ? $tpl->assign("elemArr3", $elemArr[3]) : NULL;
+	count($elemArr[4]) ? $tpl->assign("elemArr4", $elemArr[4]) : NULL;
+
+	$tpl->assign("idParent", $level1.$level2.$level3);
 
 	# Legend icon
 	$tpl->assign("legend1", $lang['m_help']);
 	$tpl->assign("legend2", $lang['lgd_legend']);
 
-
 	# User Online	
 	$tab_user = array();
 	$res =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while ($res->fetchInto($session)){
 		$tab_user[$session["user_id"]] = array();
 		$tab_user[$session["user_id"]]["ip"] = $session["ip_address"];
@@ -172,7 +175,7 @@ For information : contact@oreon-project.org
 		$tab_user[$session["user_id"]]["alias"] = $session["contact_alias"];
 		$tab_user[$session["user_id"]]["admin"] = $session["contact_admin"];
 	}
-	
+		
 	$tpl->assign("tab_user", $tab_user);
 
 	# Display
