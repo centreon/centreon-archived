@@ -62,10 +62,9 @@ For information : contact@oreon-project.org
 							$status = "color_".strtolower($host_status[$r_h["host_name"]]["current_state"]);
 							$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'><a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."'>".$host_status[$r_h["host_name"]]["current_state"]."</a></td>";
 							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
-							$cpt_host++;
-						}
-						
+						}						
 					}
+				$cpt_host++;
 				}
 			}
 		}

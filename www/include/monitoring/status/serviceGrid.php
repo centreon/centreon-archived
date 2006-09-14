@@ -50,15 +50,14 @@ For information : contact@oreon-project.org
 													$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])]."'>".
 													"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
 													"</a></span> &nbsp;&nbsp;";
-							$cpt_host++;
 							if (!isset($hg[$r["hg_name"]]))
 								$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
 							$hg[$r["hg_name"]]["host"][$cpt_host] = $r_h["host_name"];
 							$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
 							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
-							$cpt++;		
 						}
 					}
+					$cpt_host++;		
 			}
 		}
 	}		
