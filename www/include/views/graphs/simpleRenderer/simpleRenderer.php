@@ -46,6 +46,7 @@ For information : contact@oreon-project.org
 
 	# LCA 
 	$lcaHostByName = getLcaHostByName($pearDB);
+	$isRestreint = HadUserLca($pearDB);
 	
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -204,7 +205,7 @@ For information : contact@oreon-project.org
 		}
 
 		# OK go create Graphs and database
-		if ((array_search($host_name, $oreon->user->lcaHost) || isset($_GET["meta_service"])) && $case)	{
+		if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])) || isset($_GET["meta_service"])) && $case)	{
 			# Init variable in the page
 			$label = NULL;
 			$tpl->assign("title2", $lang["giv_sr_rendTitle"]);

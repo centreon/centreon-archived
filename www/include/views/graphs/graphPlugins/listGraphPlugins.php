@@ -142,8 +142,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getsubmitValues();
 		$case = NULL;
 		$rrDB = array(0=>NULL, 1=>NULL);
-		//$_GET["database"] = array("0" => getHostID($_GET["host_name"]) . "_" . getServiceID($_GET["host_name"], $_GET["service_description"]) . ".rrd", "1" => $_GET["host_name"]);
-
+		
 		$rrdDB = $_GET["database"];
 		preg_match("([0-9\_]+)", $rrdDB[1], $matches);
 		$split = preg_split("/\_/", $matches[0]);
@@ -153,9 +152,8 @@ For information : contact@oreon-project.org
 			$service_description = getMyServiceName($split[1]);
 			$case = $host_name . " / " . $service_description;
 		}
+		if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])) || isset($_GET["meta_service"])) && $case && !isset($msg_error)){
 		
-		if (array_search($host_name, $oreon->user->lcaHost) && $case && !isset($msg_error))	{
-
 			# 1 for +1 and -1 for -1 and 0 for GMT
 			$GMT = "0";
 
