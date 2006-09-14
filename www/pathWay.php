@@ -74,15 +74,15 @@ For information : contact@oreon-project.org
 	}
 	$tabPath = $tmp;
 	
-	$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlueStart.png" alt="" class="imgPathWay">&nbsp;';
+	$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlueStart.gif" alt="" class="imgPathWay">&nbsp;';
 	foreach ($tabPath as $cle => $valeur){
 		echo $flag;
 		?><a href="oreon.php?p=<? echo $cle.$valeur["opt"]; ?>" class="pathWay" ><? echo $valeur["name"]; ?></a><?
-		$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.png" alt="" class="imgPathWay">&nbsp;';
+		$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
 	}
 
 	if(isset($_GET["host_id"]))	{
-		echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.png" alt="" class="imgPathWay">&nbsp;';
+		echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
 		echo getMyHostName($_GET["host_id"]);
 	}
 ?>
