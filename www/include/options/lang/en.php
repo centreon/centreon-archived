@@ -68,6 +68,8 @@ $lang["genOpt_maxViewMonitoring"] = "Limit per page for Monitoring";
 $lang["genOpt_maxViewConfiguration"] = "Limit per page (default)";
 $lang["genOpt_AjaxTimeReloadStatistic"] = "Refresh Interval for statistics (in seconds)";
 $lang["genOpt_AjaxTimeReloadMonitoring"] = "Refresh Interval for monitoring (in seconds)";
+$lang["genOpt_AjaxFirstTimeReloadStatistic"] = "First Refresh delay for statistics (in seconds)";
+$lang["genOpt_AjaxFirstTimeReloadMonitoring"] = "First Refresh delay for monitoring (in seconds)";
 $lang["genOpt_snmp_trapd_pathConf"] = "Directory + Conf File SNMPTrapd";
 $lang["genOpt_snmp_trapd_pathBin"] = "Directory + Daemon SNMPTrapd (/etc/init.d/...)";
 $lang["genOpt_snmp_trapd_used"] = "Easy Traps manager used";
@@ -103,6 +105,7 @@ $lang["menu_listDir"] = "Directory";
 $lang["menu_listGen"] = "Generation";
 $lang["menu_listLang"] = "Lang";
 $lang["menu_listSql"] = "Sql";
+$lang["menu_nagios"] = "Nagios";
 
 # Session
 

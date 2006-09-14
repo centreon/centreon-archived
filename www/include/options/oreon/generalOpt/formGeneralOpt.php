@@ -73,6 +73,8 @@ For information : contact@oreon-project.org
 
 	$form->addElement('text', 'AjaxTimeReloadStatistic', $lang["genOpt_AjaxTimeReloadStatistic"], $attrsText2);
 	$form->addElement('text', 'AjaxTimeReloadMonitoring', $lang["genOpt_AjaxTimeReloadMonitoring"], $attrsText2);
+	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', $lang["genOpt_AjaxFirstTimeReloadStatistic"], $attrsText2);
+	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', $lang["genOpt_AjaxFirstTimeReloadMonitoring"], $attrsText2);
 
 	$templates = array();
 	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
@@ -201,7 +203,6 @@ For information : contact@oreon-project.org
 	$form->addRule('oreon_rrdbase_path', $lang['ErrWrPath'], 'is_writable_path');
 	$form->addRule('debug_path', $lang['ErrWrPath'], 'is_writable_path');
 	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrFile'], 'is_writable_file_if_exist');
-
 
 	#
 	##End of form definition

@@ -135,6 +135,12 @@ For information : contact@oreon-project.org
 		isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "AjaxTimeReloadStatistic = ";
 		isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		
+		$rq .= "AjaxFirstTimeReloadMonitoring = ";
+		isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "AjaxFirstTimeReloadStatistic = ";
+		isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		
 		$rq .= "template = ";
 		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "ldap_host = ";
