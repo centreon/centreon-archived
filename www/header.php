@@ -190,7 +190,7 @@ For information : contact@oreon-project.org
 		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', <?=$tFM?>);<?
 		}		
 		else if ($topology_js['init'])
-			echo $topology_js['init'] .";";
+			echo $topology_js['init'] ."();";
 	}
 ?>
     };
