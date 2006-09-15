@@ -20,8 +20,8 @@ For information : contact@oreon-project.org
 	/*
 	 * Set your path here
 	 */
-	$path_oreon = '/usr/local/oreon/';
-	$NagiosPathArchive = "/var/log/nagios/archives";
+	$path_oreon = '/srv/oreon/';
+	$NagiosPathArchive = "/srv/nagios/var/archives";
 
 	function getLogData($time_event, $host, $service, $status, $output, $type){
 		global $lang;
@@ -173,15 +173,51 @@ function parseFile($file,$end_time){
 			## host
 			#			
 			else if (!strncmp($type, "CURRENT HOST STATE", 18) || !strncmp($type, "INITIAL HOST STATE", 18)){
-				$tab_host[$res1[0]] = array();
-				$tab_host[$res1[0]]["current_time"] = $start_time;
-				$tab_host[$res1[0]]["current_state"] = $res1[1];
-				$tab_host[$res1[0]]["timeUP"] = 0;
-				$tab_host[$res1[0]]["timeDOWN"] = 0;
-				$tab_host[$res1[0]]["timeUNREACHABLE"] = 0;
-				$tab_host[$res1[0]]["timeNONE"] = 0;
-				$tab_host[$res1[0]]["start_time"] = $start_time;
-				$tab_host[$res1[0]]["tab_svc_log"] = array();
+				if($time_event > $start_time && !isset($tab_host[$res1[0]])){// util si un initial apparait au millieu d'une periode
+					$tab_host[$res1[0]] = array();
+					$tab_host[$res1[0]]["current_time"] = $start_time;
+					$tab_host[$res1[0]]["current_state"] = "UNDETERMINATED";// pending
+					$tab_host[$res1[0]]["timeUP"] = 0;
+					$tab_host[$res1[0]]["timeDOWN"] = 0;
+					$tab_host[$res1[0]]["timeUNREACHABLE"] = 0;
+					$tab_host[$res1[0]]["timeNONE"] = 0;
+					$tab_host[$res1[0]]["start_time"] = $start_time;
+					$tab_host[$res1[0]]["tab_svc_log"] = array();
+
+					if(!strncmp($tab_host[$res1[0]]["current_state"], "UP", 2))
+					$tab_host[$res1[0]]["timeUP"] += ($time_event-$tab_host[$res1[0]]["current_time"]);
+					elseif(!strncmp($tab_host[$res1[0]]["current_state"], "DOWN", 4))
+					$tab_host[$res1[0]]["timeDOWN"] += ($time_event-$tab_host[$res1[0]]["current_time"]);
+					elseif(!strncmp($tab_host[$res1[0]]["current_state"], "UNREACHABLE", 11))
+					$tab_host[$res1[0]]["timeUNREACHABLE"] += ($time_event-$tab_host[$res1[0]]["current_time"]);
+					else
+					$tab_host[$res1[0]]["timeNONE"] += ($time_event-$tab_host[$res1[0]]["current_time"]);					
+					$tab_host[$res1[0]]["current_state"] = $res1[1];
+					$tab_host[$res1[0]]["current_time"] = $time_event; //save time
+				}
+				else if($time_event > $start_time && isset($tab_host[$res1[0]])) {
+					if(!strncmp($tab_host[$res1[0]]["current_state"], "UP", 2))
+					$tab_host[$res1[0]]["timeUP"] += ($time_event-$tab_host[$res1[0]]["current_time"]);
+					elseif(!strncmp($tab_host[$res1[0]]["current_state"], "DOWN", 4))
+					$tab_host[$res1[0]]["timeDOWN"] += ($time_event-$tab_host[$res1[0]]["current_time"]);
+					elseif(!strncmp($tab_host[$res1[0]]["current_state"], "UNREACHABLE", 11))
+					$tab_host[$res1[0]]["timeUNREACHABLE"] += ($time_event-$tab_host[$res1[0]]["current_time"]);
+					else
+					$tab_host[$res1[0]]["timeNONE"] += ($time_event-$tab_host[$res1[0]]["current_time"]);					
+					$tab_host[$res1[0]]["current_state"] = $res1[1];
+					$tab_host[$res1[0]]["current_time"] = $time_event; //save time					
+				}
+				else {
+					$tab_host[$res1[0]] = array();
+					$tab_host[$res1[0]]["current_time"] = $time_event;
+					$tab_host[$res1[0]]["current_state"] = $res1[1];
+					$tab_host[$res1[0]]["timeUP"] = 0;
+					$tab_host[$res1[0]]["timeDOWN"] = 0;
+					$tab_host[$res1[0]]["timeUNREACHABLE"] = 0;
+					$tab_host[$res1[0]]["timeNONE"] = 0;
+					$tab_host[$res1[0]]["start_time"] = $start_time;
+					$tab_host[$res1[0]]["tab_svc_log"] = array();
+				}
 			}
 			else if (!strncmp($type, "HOST ALERT", 10) )
 			{
@@ -217,19 +253,68 @@ function parseFile($file,$end_time){
 			#
 			else if (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21))
 			{
-				$tab_services[$res1[1]][$res1[0]] = array();
-				$tab_tmp = array();
-				$tab_tmp["current_state"] = $res1[2];
-				$tab_tmp["current_time"] = $start_time;
-				$tab_tmp["timeOK"] = 0;
-				$tab_tmp["timeWARNING"] = 0;
-				$tab_tmp["timeUNKNOWN"] = 0;
-				$tab_tmp["timeCRITICAL"] = 0;
-				$tab_tmp["timeNONE"] = 0;
-				$tab_tmp["start_time"] = $start_time;
-				$tab_tmp["service_id"] = getMyServiceID($res1[1],getMyHostID($res1[0]));
-				$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
-			}			
+				if($time_event > $start_time && !isset($tab_services[$res1[1]][$res1[0]])){// util si un initial apparait au millieu d'une periode
+					$tab_services[$res1[1]][$res1[0]] = array();
+					$tab_tmp = array();
+					$tab_tmp["current_state"] = "UNDETERMINATED";
+					$tab_tmp["current_time"] = $start_time;
+					$tab_tmp["timeOK"] = 0;
+					$tab_tmp["timeWARNING"] = 0;
+					$tab_tmp["timeUNKNOWN"] = 0;
+					$tab_tmp["timeCRITICAL"] = 0;
+					$tab_tmp["timeNONE"] = 0;
+					$tab_tmp["start_time"] = $start_time;
+					$tab_tmp["service_id"] = getMyServiceID($res1[1],getMyHostID($res1[0]));
+					$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
+
+					$tab_tmp = array();
+					$tab_tmp = $tab_services[$res1[1]][$res1[0]];
+					if(!strncmp($tab_tmp["current_state"], "OK", 2))
+						$tab_tmp["timeOK"] += ($time_event-$tab_tmp["current_time"]);
+					elseif(!strncmp($tab_tmp["current_state"], "WARNING", 7))
+						$tab_tmp["timeWARNING"] += ($time_event-$tab_tmp["current_time"]);
+					elseif(!strncmp($tab_tmp["current_state"], "UNKNOWN", 7))
+						$tab_tmp["timeUNKNOWN"] += ($time_event-$tab_tmp["current_time"]);
+					elseif(!strncmp($tab_tmp["current_state"], "CRITICAL", 8))
+						$tab_tmp["timeCRITICAL"] += ($time_event-$tab_tmp["current_time"]);
+					else
+						$tab_tmp["timeNONE"] += ($time_event-$tab_tmp["current_time"]);
+					$tab_tmp["current_time"] = $time_event; //save time
+					$tab_tmp["current_state"] = $res1[2]; //save time
+					$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
+				}
+				else if($time_event > $start_time && isset($tab_services[$res1[1]][$res1[0]])) {
+					$tab_tmp = array();
+					$tab_tmp = $tab_services[$res1[1]][$res1[0]];
+					if(!strncmp($tab_tmp["current_state"], "OK", 2))
+						$tab_tmp["timeOK"] += ($time_event-$tab_tmp["current_time"]);
+					elseif(!strncmp($tab_tmp["current_state"], "WARNING", 7))
+						$tab_tmp["timeWARNING"] += ($time_event-$tab_tmp["current_time"]);
+					elseif(!strncmp($tab_tmp["current_state"], "UNKNOWN", 7))
+						$tab_tmp["timeUNKNOWN"] += ($time_event-$tab_tmp["current_time"]);
+					elseif(!strncmp($tab_tmp["current_state"], "CRITICAL", 8))
+						$tab_tmp["timeCRITICAL"] += ($time_event-$tab_tmp["current_time"]);
+					else
+						$tab_tmp["timeNONE"] += ($time_event-$tab_tmp["current_time"]);
+					$tab_tmp["current_time"] = $time_event; //save time
+					$tab_tmp["current_state"] = $res1[2]; //save time
+					$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
+				}
+				else {				
+					$tab_services[$res1[1]][$res1[0]] = array();
+					$tab_tmp = array();
+					$tab_tmp["current_state"] = $res1[2];
+					$tab_tmp["current_time"] = $time_event;
+					$tab_tmp["timeOK"] = 0;
+					$tab_tmp["timeWARNING"] = 0;
+					$tab_tmp["timeUNKNOWN"] = 0;
+					$tab_tmp["timeCRITICAL"] = 0;
+					$tab_tmp["timeNONE"] = 0;
+					$tab_tmp["start_time"] = $start_time;
+					$tab_tmp["service_id"] = getMyServiceID($res1[1],getMyHostID($res1[0]));
+					$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
+				}
+			}
 			else if (!strncmp($type, "SERVICE ALERT", 13))
 			{
 				if(isset($tab_services[$res1[1]][$res1[0]]))
