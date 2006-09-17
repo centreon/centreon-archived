@@ -81,12 +81,19 @@ $lang["genOpt_ldap_base_dn"] = "LDAP Base DN";
 $lang["genOpt_ldap_login_attrib"] = "LDAP Login Attribut";
 $lang["genOpt_ldap_ssl"] = "Enable LDAP over SSL";
 $lang["genOpt_ldap_auth_enable"] = "Enable LDAP authentification";
+$lang["genOpt_searchldap"] = "LDAP Search Information";
+$lang["genOpt_ldap_search_user"] = "User for search (anonymous if empty)";
+$lang["genOpt_ldap_search_user_pwd"] = "Password";
+$lang["genOpt_ldap_search_filter"] = "Default LDAP filter";
+$lang["genOpt_ldap_search_timeout"] = "LDAP search timeout";
+$lang["genOpt_ldap_search_limit"] = "LDAP Search Size Limit";
 $lang["genOpt_graph_preferencies"] = "Favorite Graphs Engine";
 $lang["genOpt_debug"] = "Debug";
 $lang["genOpt_dPath"] = "Logs Directory";
 $lang["genOpt_debug_auth"] = "Authentification Debug";
 $lang["genOpt_debug_nagios_import"] = "Nagios Import Debug";
 $lang["genOpt_debug_rrdtool"] = "RRDTool Debug";
+$lang["genOpt_debug_ldap_import"] = "Ldap Import Users Debug";
 
 # Menu
 

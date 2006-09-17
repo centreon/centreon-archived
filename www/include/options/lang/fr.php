@@ -81,12 +81,19 @@ $lang["genOpt_ldap_base_dn"] = "Base DN LDAP";
 $lang["genOpt_ldap_login_attrib"] = "LDAP Login Attribut";
 $lang["genOpt_ldap_ssl"] = "Activ&eacute; le support SSL pour le LDAP";
 $lang["genOpt_ldap_auth_enable"] = "Activ&eacute; l'authentification LDAP";
+$lang["genOpt_searchldap"] = "Informations sur la recherche LDAP";
+$lang["genOpt_ldap_search_user"] = "Utilisateur pour effectuer la recherche (anonyme si vide)";
+$lang["genOpt_ldap_search_user_pwd"] = "Mot de passe";
+$lang["genOpt_ldap_search_filter"] = "Filtre de recherche par d&eacute;faut";
+$lang["genOpt_ldap_search_timeout"] = "Dur&eacute;e limite de la recherche";
+$lang["genOpt_ldap_search_limit"] = "Nombre maximum d'entre&eacute;es retourn&eacute;es";
 $lang["genOpt_graph_preferencies"] = "Moteur de Graphs Pr&eacute;f&eacute;r&eacute;";
 $lang["genOpt_debug"] = "Debug";
 $lang["genOpt_dPath"] = "R&eacute;pertoire des logs";
 $lang["genOpt_debug_auth"] = "Debug de l&#146;authentification";
 $lang["genOpt_debug_nagios_import"] = "Debug de l&#146;importation des fichiers Nagios";
 $lang["genOpt_debug_rrdtool"] = "Debug de RRDTool";
+$lang["genOpt_debug_ldap_import"] = "Debug de l&#146;importation des users LDAP ";
 
 
 # Menu
