@@ -59,6 +59,8 @@ For information : contact@oreon-project.org
 		isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = NULL;
 		isset($_POST["password"]) ? $passwordP = $_POST["password"] : $passwordP = NULL;
 		$passwordG ? $password = $passwordG : $password = $passwordP;
+		$password = ($password == '' ? time() : $password  );
+
 		if (!isset($_POST["submit"]))
 			$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 		else
@@ -70,8 +72,8 @@ For information : contact@oreon-project.org
 					$res =& $pearDB->query("SELECT debug_path, debug_auth  FROM general_opt LIMIT 1");
 					if (PEAR::isError($res))
 		    			die($res->getMessage());
-				
-//				$debug = $res->fetchRow();
+
+				$debug = $res->fetchRow();
 
 				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable FROM general_opt LIMIT 1");
 				$ldap_auth = $res->fetchRow();
