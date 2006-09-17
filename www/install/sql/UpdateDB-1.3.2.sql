@@ -3,6 +3,9 @@ ALTER TABLE  `general_opt` ADD `debug_path` VARCHAR( 255 ) NULL AFTER `ldap_auth
 ALTER TABLE  `general_opt` ADD `debug_auth` enum('0','1') default NULL AFTER `debug_path`;
 ALTER TABLE  `general_opt` ADD `debug_nagios_import` enum('0','1') default NULL AFTER `debug_auth`;
 ALTER TABLE  `general_opt` ADD `debug_rrdtool` enum('0','1') default NULL AFTER `debug_nagios_import`;
+-- 15 09 06
+ALTER TABLE  `general_opt` ADD `debug_ldap_import` enum('0','1') default NULL AFTER `debug_rrdtool`;
+--
 
 -- 01 09 2006
 ALTER TABLE `hostgroup` ADD `hg_snmp_community` VARCHAR( 255 ) NULL AFTER `hg_alias` , ADD `hg_snmp_version` VARCHAR( 255 ) NULL AFTER `hg_snmp_community` ;
@@ -11,6 +14,14 @@ ALTER TABLE `hostgroup` ADD `hg_snmp_community` VARCHAR( 255 ) NULL AFTER `hg_al
 ALTER TABLE `general_opt` ADD `AjaxTimeReloadMonitoring` INT NOT NULL DEFAULT '15' AFTER `maxViewConfiguration`;
 ALTER TABLE `general_opt` ADD `AjaxTimeReloadStatistic` INT NOT NULL DEFAULT '15' AFTER `AjaxTimeReloadMonitoring` ;
 
+ALTER TABLE `general_opt` ADD `AjaxFirstTimeReloadMonitoring` INT NOT NULL DEFAULT '15' AFTER `AjaxTimeReloadStatistic`;
+ALTER TABLE `general_opt` ADD `AjaxFirstTimeReloadStatistic` INT NOT NULL DEFAULT '1' AFTER `AjaxFirstTimeReloadMonitoring`;
+
+ALTER TABLE  `general_opt` ADD `ldap_search_user` varchar(254) default NULL AFTER `ldap_ssl` ;
+ALTER TABLE  `general_opt` ADD `ldap_search_user_pwd` varchar(254) default NULL AFTER `ldap_search_user`;
+ALTER TABLE  `general_opt` ADD `ldap_search_filter` varchar(254) default NULL AFTER `ldap_search_user_pwd`;
+ALTER TABLE  `general_opt` ADD `ldap_search_timeout` varchar(5) default '60' AFTER `ldap_search_filter`;
+ALTER TABLE  `general_opt` ADD `ldap_search_limit` varchar(5) default '60' AFTER `ldap_search_timeout`;
 
 --
 -- Structure de la table `topology_JS`
