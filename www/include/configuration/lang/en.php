@@ -364,6 +364,16 @@ $lang['cct_oreon_text'] = "AReach Oreon Frontend";
 $lang['cct_admin'] = "Admin";
 $lang["cct_contact_auth_type"] = "Authentification Type";
 $lang["cct_ldap_dn"] = "Ldap DN (Distinguished Name)";
+$lang["cct_ldap_import"] ="LDAP Import";
+$lang["cct_ldap_search_param"] ="Search Options";
+$lang["cct_ldap_search_options"] ="Search Options";
+$lang["cct_ldap_search_result"] ="Search Result";
+$lang["cct_ldap_search_filter"] ="Search Filter";
+$lang["cct_ldap_search_result_output"] ="Result";
+$lang["cct_ldap_search"] = "Search";
+$lang["cct_ldap_import_users"] = "Import";
+$lang["cct_ldap_search_filter_help_title"] ="Filter Examples";
+$lang["cct_ldap_search_filter_help"] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))";
 
 /* contact group */
 

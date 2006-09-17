@@ -364,6 +364,17 @@ $lang['cct_oreon_text'] = "Acc&egrave;de &agrave; l'interface";
 $lang['cct_admin'] = "Administrateur";
 $lang["cct_contact_auth_type"] = "Type d'authentification";
 $lang["cct_ldap_dn"] = "Ldap DN (Distinguished Name)";
+$lang["cct_ldap_import"] ="Importer via LDAP";
+$lang["cct_ldap_search"] ="Recherche LDAP";
+$lang["cct_ldap_search_options"] ="Options de recherche";
+$lang["cct_ldap_search_result"] ="R&eacute;sultat de la recherche";
+$lang["cct_ldap_search_filter"] ="Filtre de recherche";
+$lang["cct_ldap_search_result_output"] ="R&eacute;sultat";
+$lang["cct_ldap_search"] = "Rechercher";
+$lang["cct_ldap_import_users"] = "Importer";
+$lang["cct_ldap_search_filter_help_title"] ="Exemples de filtre";
+$lang["cct_ldap_search_filter_help"] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))";
+
 
 /* contact group */
 
