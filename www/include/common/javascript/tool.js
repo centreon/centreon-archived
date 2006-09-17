@@ -17,20 +17,19 @@ For information : contact@oreon-project.org
 // JavaScript Document
 
 <!-- Begin
-	
+
 	function checkUncheckAll(theElement) {
-   
+
      var theForm = theElement.form, z = 0;
-	 for(z=0; z<theForm.length;z++){	 
-      if(theForm[z].type == 'checkbox'){
-      
-	  if(theForm[z].checked)
-	  {
-	   theForm[z].checked = false;
-	   }
-	  else{
-	  theForm[z].checked = true;}
-	  
+	 for(z=0; z<theForm.length;z++){
+      if(theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
+		  if(theForm[z].checked)
+		  {
+		   theForm[z].checked = false;
+		   }
+		  else{
+		  theForm[z].checked = true;
+		  }
 	  }
      }
    }
@@ -41,15 +40,15 @@ For information : contact@oreon-project.org
 
 if(d)
 {
-	if (d.style.display == 'block') {	
+	if (d.style.display == 'block') {
 	d.style.display='none';
 	}
 	else
 	{
 	d.style.display='block';
-	}	
+	}
 }
-}	
-	
+}
+
 
 //  End -->
