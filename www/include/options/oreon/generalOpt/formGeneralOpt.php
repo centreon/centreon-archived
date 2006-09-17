@@ -141,6 +141,12 @@ For information : contact@oreon-project.org
 	$ldapEnable[] = &HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, $lang["yes"], '1');
 	$ldapEnable[] = &HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, $lang["no"], '0');
 	$form->addGroup($ldapEnable, 'ldap_auth_enable', $lang["genOpt_ldap_auth_enable"], '&nbsp;');
+	$form->addElement('header', 'searchldap', $lang["genOpt_searchldap"]);
+	$form->addElement('text', 'ldap_search_user', $lang["genOpt_ldap_search_user"], $attrsText );
+	$form->addElement('password', 'ldap_search_user_pwd', $lang["genOpt_ldap_search_user_pwd"],  $attrsText);
+	$form->addElement('text', 'ldap_search_filter', $lang["genOpt_ldap_search_filter"], $attrsText);
+	$form->addElement('text', 'ldap_search_timeout', $lang["genOpt_ldap_search_timeout"], $attrsText2);
+	$form->addElement('text', 'ldap_search_limit', $lang["genOpt_ldap_search_limit"], $attrsText2);
 
     #
 	## Debug information
@@ -150,6 +156,9 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'debug_auth', $lang["genOpt_debug_auth"], array(0=>$lang['no'], 1=>$lang['yes']));
 	$form->addElement('select', 'debug_nagios_import', $lang["genOpt_debug_nagios_import"], array(0=>$lang['no'], 1=>$lang['yes']));
 	$form->addElement('select', 'debug_rrdtool', $lang["genOpt_debug_rrdtool"], array(0=>$lang['no'], 1=>$lang['yes']));
+	$form->addElement('select', 'debug_ldap_import', $lang["genOpt_debug_ldap_import"], array(0=>$lang['no'], 1=>$lang['yes']));
+
+
 
 
 	#

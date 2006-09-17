@@ -125,7 +125,7 @@ For information : contact@oreon-project.org
 		isset($ret["perfparse_installed"]["perfparse_installed"]) && $ret["perfparse_installed"]["perfparse_installed"] != NULL ? $rq .= "'".$ret["perfparse_installed"]["perfparse_installed"]."', ": $rq .= "NULL, ";
 		$rq .= "graph_preferencies = ";
 		isset($ret["graph_preferencies"]["graph_preferencies"]) && $ret["graph_preferencies"]["graph_preferencies"] != NULL ? $rq .= "'".$ret["graph_preferencies"]["graph_preferencies"]."', ": $rq .= "NULL, ";
-		
+
 		$rq .= "maxViewMonitoring = ";
 		isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["maxViewMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "maxViewConfiguration = ";
@@ -135,12 +135,12 @@ For information : contact@oreon-project.org
 		isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "AjaxTimeReloadStatistic = ";
 		isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		
+
 		$rq .= "AjaxFirstTimeReloadMonitoring = ";
 		isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "AjaxFirstTimeReloadStatistic = ";
 		isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		
+
 		$rq .= "template = ";
 		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "ldap_host = ";
@@ -155,6 +155,16 @@ For information : contact@oreon-project.org
 		isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != NULL ? $rq .= "'".htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "ldap_auth_enable = ";
 		isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != NULL ? $rq .= "'".htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "ldap_search_user = ";
+		isset($ret["ldap_search_user"]) && $ret["ldap_search_user"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_user"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "ldap_search_user_pwd = ";
+		isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "ldap_search_filter = ";
+		isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_filter"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "ldap_search_timeout = ";
+		isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_timeout"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "ldap_search_limit = ";
+		isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_limit"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "debug_path = ";
 		isset($ret["debug_path"]) && $ret["debug_path"] != NULL ? $rq .= "'".$ret["debug_path"]."', ": $rq .= "NULL, ";
 		$rq .= "debug_auth = ";
@@ -162,7 +172,9 @@ For information : contact@oreon-project.org
 		$rq .= "debug_nagios_import = ";
 		isset($ret["debug_nagios_import"]) && $ret["debug_nagios_import"] != NULL ? $rq .= "'".$ret["debug_nagios_import"]."', ": $rq .= "NULL, ";
 		$rq .= "debug_rrdtool = ";
-		isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $rq .= "'".$ret["debug_rrdtool"]."' ": $rq .= "NULL ";
+		isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $rq .= "'".$ret["debug_rrdtool"]."', ": $rq .= "NULL, ";
+		$rq .= "debug_ldap_import = ";
+		isset($ret["debug_ldap_import"]) && $ret["debug_ldap_import"] != NULL ? $rq .= "'".$ret["debug_ldap_import"]."' ": $rq .= "NULL ";
 
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 
