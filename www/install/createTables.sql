@@ -799,6 +799,7 @@ CREATE TABLE `general_opt` (
   `debug_auth` enum('0','1') default NULL,
   `debug_nagios_import` enum('0','1') default NULL,
   `debug_rrdtool` enum('0','1') default NULL,
+  `debug_ldap_import` enum('0','1') default NULL,
   PRIMARY KEY  (`gopt_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -1647,9 +1648,9 @@ CREATE TABLE `view_map` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
 
--- 
+--
 -- Structure de la table `topology_JS`
--- 
+--
 
 CREATE TABLE `topology_JS` (
   `id_t_js` int(11) NOT NULL auto_increment,
@@ -1663,9 +1664,9 @@ CREATE TABLE `topology_JS` (
 -- --------------------------------------------------------
 
 
--- 
+--
 -- Contraintes pour la table `topology_JS`
--- 
+--
 ALTER TABLE `topology_JS`
   ADD CONSTRAINT `topology_JS_ibfk_1` FOREIGN KEY (`id_page`) REFERENCES `topology` (`topology_page`) ON DELETE CASCADE;
 
