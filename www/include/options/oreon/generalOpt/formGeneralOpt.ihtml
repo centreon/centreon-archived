@@ -127,6 +127,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.debug_rrdtool.label}</td><td class="FormRowValue">{$form.debug_rrdtool.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.debug_ldap_import.label}</td><td class="FormRowValue">{$form.debug_ldap_import.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.debug_inventory.label}</td><td class="FormRowValue">{$form.debug_inventory.html}</td></tr>
 	</table>
 </div>
 	{if !$valid}

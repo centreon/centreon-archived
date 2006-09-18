@@ -174,7 +174,9 @@ For information : contact@oreon-project.org
 		$rq .= "debug_rrdtool = ";
 		isset($ret["debug_rrdtool"]) && $ret["debug_rrdtool"] != NULL ? $rq .= "'".$ret["debug_rrdtool"]."', ": $rq .= "NULL, ";
 		$rq .= "debug_ldap_import = ";
-		isset($ret["debug_ldap_import"]) && $ret["debug_ldap_import"] != NULL ? $rq .= "'".$ret["debug_ldap_import"]."' ": $rq .= "NULL ";
+		isset($ret["debug_ldap_import"]) && $ret["debug_ldap_import"] != NULL ? $rq .= "'".$ret["debug_ldap_import"]."', ": $rq .= "NULL, ";
+		$rq .= "debug_inventory = ";
+		isset($ret["debug_inventory"]) && $ret["debug_inventory"] != NULL ? $rq .= "'".$ret["debug_inventory"]."' ": $rq .= "NULL ";
 
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 
