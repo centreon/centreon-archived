@@ -23,12 +23,13 @@ For information : contact@oreon-project.org
 	$tab = array("1"=>'list_one', "0" => "list_two"); 
 
 	$TabLca = getLcaHostByName($pearDB);
-
+	$isRestreint = hadUserLca($pearDB);
+	
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
 	if (PEAR::isError($pearDB))
 		print "Mysql Error : ".$pearDB->getMessage();
 	while ($r =& $ret->fetchRow()){
-		if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){	
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){	
 			$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"]);
 			$status_hg_h[$r["hg_name"]] = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0, "UNKNOWN" => 0);
 			$status_hg[$r["hg_name"]] = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
@@ -47,7 +48,7 @@ For information : contact@oreon-project.org
 			}
 		}
 	}
-	
+
 	$cpt = 0;
 	foreach ($hg as $hgs){
 		$hg[$hgs["name"]]["host_stats"] = "";
