@@ -94,6 +94,7 @@ $lang["genOpt_debug_auth"] = "Debug de l&#146;authentification";
 $lang["genOpt_debug_nagios_import"] = "Debug de l&#146;importation des fichiers Nagios";
 $lang["genOpt_debug_rrdtool"] = "Debug de RRDTool";
 $lang["genOpt_debug_ldap_import"] = "Debug de l&#146;importation des users LDAP ";
+$lang["genOpt_debug_inventory"] = "Debug de l&#146;inventaire";
 
 
 # Menu

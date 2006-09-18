@@ -94,6 +94,7 @@ $lang["genOpt_debug_auth"] = "Authentification Debug";
 $lang["genOpt_debug_nagios_import"] = "Nagios Import Debug";
 $lang["genOpt_debug_rrdtool"] = "RRDTool Debug";
 $lang["genOpt_debug_ldap_import"] = "Ldap Import Users Debug";
+$lang["genOpt_debug_inventory"] = "Inventory Debug";
 
 # Menu
 
