@@ -74,11 +74,24 @@ For information : contact@oreon-project.org
 
   include("inventory_oid_library.php");
 
+  $res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
+	if (PEAR::isError($res))
+		die($res->getMessage());
+
+  $debug = $res->fetchRow();
+
+  $debug_inventory = $debug['debug_inventory'];
+  $debug_path = $debug['debug_path'];
+  if (!isset($debug_inventory))
+  	$debug_inventory = 0;
+
   $optres =& $pearDB->query("SELECT snmp_community,snmp_version FROM general_opt LIMIT 1");
   $optr =& $optres->fetchRow();
   $globalCommunity = $optr["snmp_community"];
   $globalVersion = $optr["snmp_version"];
 
+  if ($debug_inventory == 1)
+	error_log("[" . date("d/m/Y H:s") ."] Inventory : Global : SNMP Community : ".  $globalCommunity . ", SNMP Version => ". $globalVersion ."\n", 3, $debug_path."inventory.log");
 
   $resHost =& $pearDB->query("SELECT * FROM host WHERE host_register= '1'");
 
@@ -104,9 +117,13 @@ For information : contact@oreon-project.org
 		$version = getMySnmpVersion($r["host_id"]);
 		if ($version == "")
 			$version = $oreon->optGen["snmp_version"];
-	} else 
+	} else
 		$version = $r["host_snmp_version"];
 
+  if ($debug_inventory == 1) {
+   		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host : ID => ".  $host_id . ", Address => " . $address ."\n", 3, $debug_path."inventory.log");
+		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host : SNMP Community => ".  $community . ", SNMP Version => ". $version ."\n", 3, $debug_path."inventory.log");
+	}
 
   /*  if ($r["host_snmp_community"])
         $community = $r["host_snmp_community"];
@@ -115,6 +132,9 @@ For information : contact@oreon-project.org
     $uptime =  get_snmp_value(".1.3.6.1.2.1.1.3.0", "STRING: ");
 
     if ($uptime != FALSE){
+    	if ($debug_inventory == 1)
+   			error_log("[" . date("d/m/Y H:s") ."] Inventory : Host : Great ! we have a SNMP response (uptime)\n", 3, $debug_path."inventory.log");
+
       $host_inv =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '$host_id'");
       if ($host_inv->numRows() == 0){
         $Constructor = get_manufacturer();
@@ -141,10 +161,10 @@ For information : contact@oreon-project.org
       print "		<td class='ListColLeft'>".$Constructor_alias."</td>\n";
       print "	</tr>\n";
 
-	  $sysLocation =  get_snmp_value(".1.3.6.1.2.1.1.6.0", "STRING: ");
+	  $sysLocation = get_snmp_value(".1.3.6.1.2.1.1.6.0", "STRING: ");
       $sysDescr =  	get_snmp_value(".1.3.6.1.2.1.1.1.0", "STRING: ");
       $sysName =  	get_snmp_value(".1.3.6.1.2.1.1.5.0", "STRING: ");
-      $sysContact =  	get_snmp_value(".1.3.6.1.2.1.1.4.0", "STRING: ");
+      $sysContact = get_snmp_value(".1.3.6.1.2.1.1.4.0", "STRING: ");
 
       if ( isset($Constructor_name)&& ($Constructor_name)) {
         $str = get_snmp_value($oid[$Constructor_name]["SwitchVersion"], "STRING: ");
@@ -180,7 +200,10 @@ For information : contact@oreon-project.org
         verify_data($r["host_id"]);
         }
     } else {
-      ;//print "host : ".$r["host_name"]." n'a pas snmp;\n";
+        if ($debug_inventory == 1)
+   			error_log("[" . date("d/m/Y H:s") ."] Inventory : Host : Don't seems to have SNMP, no uptime retrieved\n", 3, $debug_path."inventory.log");
+
+      //print "host : ".$r["host_name"]." n'a pas snmp;\n";
     }
   }
    print "</table>\n";
