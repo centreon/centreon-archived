@@ -243,6 +243,11 @@ For information : contact@oreon-project.org
 		$_GET["order"] = "SORT_ASC";
 	}
 	
+	if (isset($_GET["o"]) && $_GET["o"] == "svcpb" && !isset($_GET["sort_types"])){
+		$_GET["sort_types"] = "last_state_change";
+		$_GET["order"] = "SORT_DESC";
+	}
+	
 	if (isset($_GET["sort_types"]) && $_GET["sort_types"]){
 	  foreach ($service_status as $key => $row)
 	    $row_data[$key] = $row[$_GET["sort_types"]];
