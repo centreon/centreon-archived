@@ -5,6 +5,7 @@ ALTER TABLE  `general_opt` ADD `debug_nagios_import` enum('0','1') default NULL 
 ALTER TABLE  `general_opt` ADD `debug_rrdtool` enum('0','1') default NULL AFTER `debug_nagios_import`;
 -- 15 09 06
 ALTER TABLE  `general_opt` ADD `debug_ldap_import` enum('0','1') default NULL AFTER `debug_rrdtool`;
+ALTER TABLE  `general_opt` ADD `debug_inventory` enum('0','1') default NULL AFTER `debug_ldap_import`;
 --
 
 -- 01 09 2006
