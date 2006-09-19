@@ -304,9 +304,6 @@ For information : contact@oreon-project.org
 		$res =& $pearDB->query("SELECT MAX(host_id) FROM host");
 		$host_id = $res->fetchRow();		
 		# Update LCA
-		$oreon->user->lcaHost[$host_id["MAX(host_id)"]] = $ret["host_name"];
-		$oreon->user->lcaHStr != '\'\'' ? $oreon->user->lcaHStr .= ",".$host_id["MAX(host_id)"] : $oreon->user->lcaHStr = $host_id["MAX(host_id)"];
-		$oreon->user->lcaHStrName != '\'\'' ? $oreon->user->lcaHStrName .= ",".$ret["host_name"] : $oreon->user->lcaHStrName = $ret["host_name"];
 		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();

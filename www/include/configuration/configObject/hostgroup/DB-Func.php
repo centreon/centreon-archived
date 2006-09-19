@@ -187,9 +187,6 @@ For information : contact@oreon-project.org
 		}
 		$hg_id = $res->fetchRow();
 		# Update LCA
-		$oreon->user->lcaHostGroup[$hg_id["MAX(hg_id)"]] = $ret["hg_name"];
-		$oreon->user->lcaHGStr != '\'\''? $oreon->user->lcaHGStr .= ",".$hg_id["MAX(hg_id)"] : $oreon->user->lcaHGStr = $hg_id["MAX(hg_id)"];
-		$oreon->user->lcaHGStrName != '\'\''? $oreon->user->lcaHGStrName .= ",".$ret["hg_name"] : $oreon->user->lcaHGStrName = $ret["hg_name"];
 		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 		if (PEAR::isError($pearDB)) {
 			print "Mysql Error : ".$pearDB->getMessage();

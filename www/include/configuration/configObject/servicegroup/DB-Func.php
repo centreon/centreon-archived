@@ -99,9 +99,6 @@ For information : contact@oreon-project.org
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
 						# Update LCA
-						$oreon->user->lcaServiceGroup[$maxId["MAX(sg_id)"]] = $sg_name;
-						$oreon->user->lcaSGStr != '\'\''? $oreon->user->lcaSGStr .= ",".$maxId["MAX(sg_id)"] : $oreon->user->lcaSGStr = $maxId["MAX(sg_id)"];
-						$oreon->user->lcaSGStrName != '\'\''? $oreon->user->lcaSGStrName .= ",".$sg_name : $oreon->user->lcaSGStrName = $sg_name;
 						$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 						while($res1->fetchInto($contactGroup))	{
 						 	$res2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
