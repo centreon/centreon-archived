@@ -220,12 +220,12 @@ For information : contact@oreon-project.org
         isset($ret["sleep_time"]) && $ret["sleep_time"] != NULL ? $rq .= "'".htmlentities($ret["sleep_time"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["inter_check_delay_method"]) && $ret["inter_check_delay_method"] != NULL ? $rq .= "'".$ret["inter_check_delay_method"]."',  " : $rq .= "NULL, ";
         isset($ret["service_inter_check_delay_method"]) && $ret["service_inter_check_delay_method"] != NULL ? $rq .= "'".$ret["service_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
-        isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != NULL ? $rq .= "max_service_check_spread = '".htmlentities($ret["max_service_check_spread"], ENT_QUOTES)."',  " : $rq .= "max_service_check_spread = NULL, ";
+        isset($ret["host_inter_check_delay_method"]) && $ret["host_inter_check_delay_method"] != NULL ? $rq .= "'".$ret["host_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
         isset($ret["service_interleave_factor"]["service_interleave_factor"]) && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ? $rq .= "'".$ret["service_interleave_factor"]["service_interleave_factor"]."',  " : $rq .= "'2', ";
   		isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != NULL ? $rq .= "'".htmlentities($ret["max_concurrent_checks"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["service_reaper_frequency"]) && $ret["service_reaper_frequency"] != NULL ? $rq .= "'".htmlentities($ret["service_reaper_frequency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["host_inter_check_delay_method"]) && $ret["host_inter_check_delay_method"] != NULL ? $rq .= "'".$ret["host_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
+        isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_service_check_spread"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_host_check_spread"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["service_reaper_frequency"]) && $ret["service_reaper_frequency"] != NULL ? $rq .= "'".htmlentities($ret["service_reaper_frequency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $rq .= "'".htmlentities($ret["interval_length"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"]) && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2 ? $rq .= "'".$ret["auto_reschedule_checks"]["auto_reschedule_checks"]."', " : $rq .= "'2', ";
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES)."', " : $rq .= "NULL, ";
