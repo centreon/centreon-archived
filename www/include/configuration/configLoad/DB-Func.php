@@ -116,9 +116,9 @@ For information : contact@oreon-project.org
 							array_pop($path);
 							$regs[2] = implode("/", $path);
 							if (!trim($regs[2]))
-								$nagiosCFG["cfg_pwd"] = "/";
+								$nagiosCFG["cfg_dir"] = "/";
 							else
-								$nagiosCFG["cfg_pwd"] = trim($regs[2])."/";
+								$nagiosCFG["cfg_dir"] = trim($regs[2])."/";
 							$flag = true;
 						}
 						break;
