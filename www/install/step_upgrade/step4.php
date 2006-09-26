@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 		if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
 			$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; }
 
-		aff_header("Oreon Setup Wizard", "Creating Database", 4);
+		aff_header("Oreon Setup Wizard", "Updating Database", 4);
 		?>
 		<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
           <tr>
