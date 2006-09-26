@@ -29,8 +29,8 @@
 				<br>{$msg.options} {$form.o.html}
 			</td>
 			<td class="ListColFooterCenter" colspan="2"></td>
-			<td class="ListColFooterRight" align="right"><a href="{$msg.addL}">{$msg.addT}</a></td>
-		</tr>		
+			<td class="ListColFooterRight" align="right">{if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>&nbsp;-&nbsp;{/if}<a href="{$msg.addL}">{$msg.addT}</a></td>
+		</tr>
 	</table>
 {php}
    include('./include/common/pagination.php');

@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$gopt = array_map("myDecode", $res->fetchRow());
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -37,6 +37,13 @@ For information : contact@oreon-project.org
 	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
+
+	$res =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
+	$res->fetchInto($ldap_auth);
+	$res->free();
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
@@ -62,14 +69,14 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	
+
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($contact); $i++) {		
-		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");	
+	for ($i = 0; $res->fetchInto($contact); $i++) {
+		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");
 		$moptions = "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=d&select[".$contact['contact_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
@@ -79,7 +86,7 @@ For information : contact@oreon-project.org
 			$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<select style='margin-bottom: 3px;' name='dupNbr[".$contact['contact_id']."]'><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>10</option></select>";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
+		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$contact["contact_name"],
 						"RowMenu_link"=>"?p=".$p."&o=w&contact_id=".$contact['contact_id'],
@@ -89,21 +96,24 @@ For information : contact@oreon-project.org
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "options"=>$lang['forTheSelectedElements']));
-	
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'],"options"=>$lang['forTheSelectedElements'],"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>$lang['cct_ldap_import']));
+	if ($oreon->optGen['ldap_auth_enable'])
+		$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
+
+
 	require_once("./include/common/checkListAction.php");
 
 	#
 	##Apply a template definition
 	#
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);	
+	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listContact.ihtml");
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
 	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");	
+	$tpl->display("include/common/legend.ihtml");
 ?>

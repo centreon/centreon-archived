@@ -82,7 +82,7 @@ For information : contact@oreon-project.org
 			return false;
 		return true;
 	}
-	
+
 	function enableContactInDB ($contact_id = null)	{
 		if (!$contact_id) return;
 		global $pearDB;
@@ -150,7 +150,7 @@ For information : contact@oreon-project.org
 							if (PEAR::isError($pearDB)) {
 								print "Mysql Error : ".$pearDB->getMessage();
 							}
-						}						
+						}
 						$res =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($pearDB)) {
 							print "Mysql Error : ".$pearDB->getMessage();
@@ -198,6 +198,7 @@ For information : contact@oreon-project.org
 	function insertContact($ret = array())	{
 		global $form;
 		global $pearDB;
+
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `contact` ( " .
@@ -355,4 +356,36 @@ For information : contact@oreon-project.org
 			$pearDB->query($rq);
 		}
 	}
+
+
+
+	function insertLdapContactInDB($tmpContacts = array())	{
+		global $nbr;
+		global $oreon;
+		$tmpConf = array();
+
+		foreach ($tmpContacts["select"] as $select_key=>$select_value) {
+			$tmpContacts["contact_name"][$select_key] = str_replace(" ", "_", $tmpContacts["contact_name"][$select_key]);
+			if (isset($tmpContacts["contact_name"][$select_key]) && testContactExistence($tmpContacts["contact_name"][$select_key]))	{
+				$tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
+				$tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
+				$tmpConf["contact_email"] = $tmpContacts["contact_email"][$select_key];
+				$tmpConf["contact_oreon"]["contact_oreon"] = "0";
+				$tmpConf["contact_admin"]["contact_admin"] = "0";
+				$tmpConf["contact_type_msg"] = "txt";
+				$tmpConf["contact_lang"] = "en";
+				$tmpConf["contact_auth_type"] = "ldap";
+				$tmpConf["contact_ldap_dn"] = $tmpContacts["dn"][$select_key];;
+				$tmpConf["contact_activate"]["contact_activate"] = "1";
+				$tmpConf["contact_comment"] = "Ldap Import - " .  date("d/m/Y - H:i:s", time());
+				insertContactInDB($tmpConf);
+				unset($tmpConf);
+			}
+		}
+		return false;
+	}
+
+
+
+
 ?>
