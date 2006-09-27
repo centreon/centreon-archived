@@ -18,16 +18,11 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
-
 	if (!isset($oreon))
 	  exit();
-	  
-
 
 	unset ($host_status);
 	unset ($service_status);
-
 	
 	function get_program_data($log, $status_proc){
 	  $pgr_nagios_stat = array();
@@ -107,12 +102,6 @@ For information : contact@oreon-project.org
 	  return ($svc_data);
 	}
 
-
-//	xdebug_start_trace(); 
-
-//$t_begin = microtime_float();
-
-
 // Open File
 if (file_exists($file)){
   $log_file = fopen($file, "r");
@@ -140,7 +129,7 @@ $tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" =>
 $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 
-	if ($version == 1){//compatibilité 1.X ????????????????????????????????????
+	if ($version == 1){//compatibilite 1.X 
 	  if ($log_file)
 	    while ($str = fgets($log_file))		{
 	      	// set last update 
@@ -181,16 +170,11 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 			      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
-			      			if (isset($svc_data['host_name']) && (isset($oreonLCA[$svc_data['host_name']])  || $IsAdmin)
-								&&
-								(($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)								
-								||
-								($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
-								||
-								($search_type_service == NULL && $search_type_host == NULL)
-								||
-								 !$search
-								))
+			      			if (isset($svc_data['host_name']) && strcmp($svc_data['host_name'], "OSL_Module") && (isset($oreonLCA[$svc_data['host_name']])  || $IsAdmin)
+								&& (($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)								
+								|| ($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
+								|| ($search_type_service == NULL && $search_type_host == NULL)
+								|| !$search))
 			      			{
 				      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 				      			$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
@@ -206,7 +190,7 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && (isset($oreonLCA[$host_data['host_name']])  || $IsAdmin)){
+			      		if (isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && (isset($oreonLCA[$host_data['host_name']])  || $IsAdmin)){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
 							//$oreon->status_graph_host[$host_data['current_state']]++;
@@ -249,7 +233,4 @@ $tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 	  !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
 	}
 	
-
-
-
 ?>

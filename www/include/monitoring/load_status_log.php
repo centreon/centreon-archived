@@ -150,13 +150,13 @@ For information : contact@oreon-project.org
 	      	if (!preg_match("/^\#.*/", $str)){		// get service stat
 				$log = split(";", $str);
 				if (preg_match("/^[\[\]0-9]* SERVICE[.]*/", $str)){
-		  			if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']])))){
+		  			if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) && strcmp($log[1], "OSL_Module")){
 						$service_status[$log["1"]."_".$log["2"]] = get_service_data($log);
 			    		$tab_host_service[$log["1"]][$log["2"]] = "1";
 			 		} else if (!strcmp($log[1], "Meta_Module")){
 			    		$metaService_status[$log["2"]] = get_service_data($log);
 		  			}
-				} else if (preg_match("/^[\[\]0-9]* HOST[.]*/", $str)){ // get host stat
+				} else if (preg_match("/^[\[\]0-9]* HOST[.]*/", $str) && strcmp($log[1], "OSL_Module")){ // get host stat
 		  			if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
 		    			$host_status[$log["1"]] = get_host_data($log);
 		    			$tab_host_service[$log["1"]] = array();
@@ -184,7 +184,7 @@ For information : contact@oreon-project.org
 			      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
-							if (isset($_GET["host_name"]) && $_GET["host_name"] == $svc_data["host_name"] 
+							if (isset($_GET["host_name"]) && strcmp($_GET["host_name"], "OSL_Module") && $_GET["host_name"] == $svc_data["host_name"] 
 								&& isset($_GET["service_description"]) && $_GET["service_description"] == $svc_data["service_description"]){
 								$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 						      	$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
@@ -192,7 +192,7 @@ For information : contact@oreon-project.org
 						      	$oreon->status_graph_service[$svc_data['current_state']]++;	
 								break;
 							} else {		
-								if (isset($svc_data['host_name']) && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_data['host_name']])))
+								if (isset($svc_data['host_name']) && strcmp($svc_data['host_name'], "OSL_Module") && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_data['host_name']])))
 									&& (($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)||($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
 									||($search_type_service == NULL && $search_type_host == NULL)|| !$search)){
 					      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
@@ -211,7 +211,7 @@ For information : contact@oreon-project.org
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
+			      		if (isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
 							$oreon->status_graph_host[$host_data['current_state']]++;
