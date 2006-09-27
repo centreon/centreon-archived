@@ -36,10 +36,10 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($pearDB)) 
 				print "Mysql Error : ".$pearDB->getMessage();
 			$cpt_host = 0;
-			if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
-				while ($r_h =& $ret_h->fetchRow()){
-					$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
-					$service_data_str = NULL;	
+			while ($r_h =& $ret_h->fetchRow()){
+				$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
+				$service_data_str = NULL;	
+				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
 					if (isset($tab_host_service[$r_h["host_name"]])){
 						foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
 							$status_hg[$service_status[$r_h["host_name"]. "_" .$key]["current_state"]]++;					
@@ -64,8 +64,8 @@ For information : contact@oreon-project.org
 							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
 						}						
 					}
-				$cpt_host++;
 				}
+				$cpt_host++;
 			}
 		}
 	}
