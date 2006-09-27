@@ -88,10 +88,10 @@ For information : contact@oreon-project.org
 	#
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
-	if ($isRestreint || $oreon->user->admin)
+	if (!$isRestreint || $oreon->user->admin)
 		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host.host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");		
+		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");		
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
 	while($res->fetchInto($host))
@@ -110,7 +110,7 @@ For information : contact@oreon-project.org
 	$res->free();
 	# HostGroups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	if (HadUserLca($pearDB))
+	if ($isRestreint || $oreon->user->admin)
 		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHGStr.") ORDER BY hg_name");
 	else
 		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
