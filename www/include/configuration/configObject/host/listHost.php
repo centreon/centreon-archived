@@ -30,23 +30,20 @@ For information : contact@oreon-project.org
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-	if ($search)
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
+	
+	if ($search) {
+		if ($oreon->user->admin || !$isRestreint)
 			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND  host_register = '1'");
 		else
 			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
-	}
-	else
-	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
+	} else {
+		if ($oreon->user->admin || !$isRestreint)
 			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE  host_register = '1'");
-		else
+		else 
 			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1'");
 	}
-	if (PEAR::isError($res)) {
+	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
-	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
