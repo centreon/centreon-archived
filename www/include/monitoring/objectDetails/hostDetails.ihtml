@@ -1,7 +1,7 @@
 <div>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$lang.m_mon_host} : {$h.host_name} ({$h.host_alias}) - {$h.host_address} </td>
+			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$lang.m_mon_host} : {$host_data.host_name} ({$h.host_alias}) - {$h.host_address} </td>
 		</tr>
 	</table>
 	<br>

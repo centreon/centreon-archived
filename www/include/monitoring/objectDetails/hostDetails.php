@@ -31,12 +31,12 @@ For information : contact@oreon-project.org
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
-		$res =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."'");
+		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-		$res->fetchInto($host);
-
-		$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$key."'");
+		$res->fetchInto($hostDB);
+		
+		$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$hostDB["host_name"]."'");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
 		$res->fetchInto($inventory);
@@ -127,7 +127,7 @@ For information : contact@oreon-project.org
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
 		
-		$tpl->assign("h", $host);
+		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
 		$tpl->assign("tab_comments_host", $tab_comments_host);
 		$tpl->assign("host_data", $host_status[$host_name]);
