@@ -203,6 +203,10 @@ For information : contact@oreon-project.org
 													 + ($archive_svc_unknown+$tab_tmp["timeUNKNOWN"])
 													 + ($archive_svc_cri+$tab_tmp["timeCRITICAL"])))  / $tt *100,3);
 
+
+
+
+
 				/* les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... */
 				$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 2, '.', '');
 				$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 2, '.', '');
@@ -347,9 +351,9 @@ For information : contact@oreon-project.org
 
 	$renderer1 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod1->accept($renderer1);
-	$tpl->assign('formPeriod1', $renderer1->toArray());	
+	$tpl->assign('formPeriod1', $renderer1->toArray());
 	$renderer2 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$formPeriod2->accept($renderer2);	
+	$formPeriod2->accept($renderer2);
 	$tpl->assign('formPeriod2', $renderer2->toArray());
 
 
@@ -363,6 +367,5 @@ For information : contact@oreon-project.org
 	$tpl->assign("p", $p);
 
 	$tpl->display("template/viewHostLog.ihtml");
-
 	
 ?>
