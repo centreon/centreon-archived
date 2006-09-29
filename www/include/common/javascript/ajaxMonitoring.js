@@ -560,6 +560,9 @@ function goM(_time_reload,_sid){
 						_tr.className = ClassName;
 					   break;
 					}
+					if(_problem_has_been_acknowledged == 1)
+						_tr.className = "list_four";
+						
 					document.getElementById('current_state'+order).innerHTML = _current_state;
 					document.getElementById('last_check'+order).innerHTML = _last_check;
 					document.getElementById('last_state_change'+order).innerHTML = _last_state_change;
