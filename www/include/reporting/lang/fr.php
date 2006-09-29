@@ -34,15 +34,15 @@ $lang["m_send"] = "Envoyer";
 
 # Dashboard
 $lang["m_view"] = "Vue";
-$lang["m_start"] = "Date de debut";
+$lang["m_start"] = "Date de d&eacute;but";
 $lang["m_end"] = "Date de fin";
-$lang["m_predefinedPeriod"] = "Predefinie:";
+$lang["m_predefinedPeriod"] = "Pr&eacute;d&eacute;finie:";
 $lang["m_customizedPeriod"] = "Personalis&eacute;e";
-$lang["m_selectPeriodTitle"] = "Selection de la periode";
+$lang["m_selectPeriodTitle"] = "Selection de la p&eacute;riode";
 $lang["m_hostResumeTitle"] = "Etat de l&acute;host";
-$lang["m_serviceResumeTitle"] = "Etat du service'";
-$lang["m_hostLogTitle"] = "Log des hosts du jours";
-$lang["m_serviceLogTitle"] = "Log des services du jours";
+$lang["m_serviceResumeTitle"] = "Etat du service";
+$lang["m_hostLogTitle"] = "Log du jour";
+$lang["m_serviceLogTitle"] = "Log du jours";
 $lang["m_hostSvcAssocied"] = "Etat des services associ&eacute;s";
 
 $lang["m_serviceTilte"] = "Service";
@@ -59,10 +59,13 @@ $lang["m_StateTitle"] = "State";
 $lang["m_TimeTitle"] = "Temps";
 $lang["m_TimeTotalTitle"] = "Temps Total";
 $lang["m_KnownTimeTitle"] = "Temps connus";
-		
+
 $lang["m_DateTitle"] = "Date";
 $lang["m_EventTitle"] = "Evenement";
 $lang["m_HostTitle"] = "Host";
 $lang["m_InformationsTitle"] = "Informations";
+
+$lang["m_to"] = " à ";
+$lang["m_duration"] = "Durée ";
 			
 ?>

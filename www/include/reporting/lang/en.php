@@ -65,6 +65,7 @@ $lang["m_EventTitle"] = "Event";
 $lang["m_HostTitle"] = "Host";
 $lang["m_InformationsTitle"] = "Info";
 
-
+$lang["m_to"] = " to ";
+$lang["m_duration"] = "Duration ";
 
 ?>
