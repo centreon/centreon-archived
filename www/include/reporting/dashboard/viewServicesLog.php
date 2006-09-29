@@ -184,13 +184,21 @@ $serviceList["b"] = "b";
 			else
 				$tab_svc["timeNONE"] += (time()-$tab_svc["current_time"]);
 
-			echo "-->" . $tab_svc["timeOK"];
-			echo "-->" . $tab_svc["timeCRITICAL"];
+
 
 
 
 			$tt = $end_date_select - $start_date_select;
 			$svc_id = $tab_svc["service_id"];
+
+
+
+			echo "=".$tab_svc["timeOK"]."<br>";
+			echo "=".$tab_svc["timeWARNING"]."<br>";
+			echo "=".$tab_svc["timeUNKNOWN"]."<br>";
+			echo "=".$tab_svc["timeCRITICAL"]."<br>";
+
+
 			$archive_svc_ok =  isset($tab_svc_bdd[$svc_id]["Tok"]) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
 			$archive_svc_warn = isset($tab_svc_bdd[$svc_id]["Twarn"]) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
 			$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
@@ -205,6 +213,11 @@ $serviceList["b"] = "b";
 												 + ($archive_svc_unknown+$tab_svc["timeUNKNOWN"])
 												 + ($archive_svc_cri+$tab_svc["timeCRITICAL"])))  / $tt *100,3);
 
+			$tab_svc["timeOK"] += $archive_svc_ok;
+			$tab_svc["timeWARNING"] += $archive_svc_warn;
+			$tab_svc["timeUNKNOWN"] += $archive_svc_unknown;
+			$tab_svc["timeCRITICAL"] +=$archive_svc_cri;
+			$tab_svc["timeNONE"] += $tt - ( $archive_svc_ok + $archive_svc_warn + $archive_svc_unknown + $archive_svc_cri);
 
 			# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
 			$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
@@ -214,18 +227,24 @@ $serviceList["b"] = "b";
 			$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');
 			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? 0.00 : $tab_svc["PtimeNONE"];
 			#end
-							
 			}
 	}
 	else { // today is not in the period		
 		$tab_svc = array();
 
-		$svc_id = key($tab_svc_bdd);
+
+		$svc_id = getMyServiceID($mservice,getMyHostID($mhost));
+
+		$tab_svc_bdd = array();
+		getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select);
+
 			
 		$tab_svc["svcName"] = $mservice;
 		$tt = $end_date_select - $start_date_select;
 
-print_r($tab_svc_bdd);
+
+
+
 
 		$tab_svc["timeOK"] = $tab_svc_bdd[$svc_id]["Tok"];
 		$tab_svc["timeWARNING"] = $tab_svc_bdd[$svc_id]["Twarn"];

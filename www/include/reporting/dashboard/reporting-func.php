@@ -157,8 +157,42 @@ For information : contact@oreon-project.org
 				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];
 			  }
 			}
-	}	
-
+	}
+	function getLogInDbForOneSVC(&$tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select){	
+		$rq = 'SELECT ' .
+			'service_id, ' .
+			'sum(OKTimeScheduled)' .
+			' as Tok,' .				
+			'sum(WARNINGTimeScheduled)' .
+			' as Twarn,' .
+			'sum(UNKNOWNTimeScheduled)' .
+			' as Tunknown, ' .				
+			'sum(UNDETERMINATETimeScheduled)' .
+			' as Tnone, ' .
+			'sum(CRITICALTimeScheduled)' .
+			' as Tcri, ' .
+			'min(date_start) as log_date_start,' .
+			'max(date_end) as log_date_end' .
+			' FROM `log_archive_service` WHERE host_id = ' . $host_id  .			
+			' AND service_id =  ' . $svc_id .
+			' AND date_start >=  ' . ($start_date_select-1) .
+			' AND date_end <= ' . $end_date_select .
+			' GROUP BY service_id';
+			$res = & $pearDB->query($rq);
+			$tab_svc_bdd = array();
+			if (PEAR::isError($res)){
+			  die($res->getMessage());
+			} else { 
+			  while ($s =& $res->fetchRow()){
+			  	
+				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
+				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
+				$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];
+				$tab_svc_bdd[$s["service_id"]]["Tnone"] = 0 + $s["Tnone"];
+				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];
+			  }
+			}
+	}
 
 	// parser que pour l'host demandé
 	function parseFile($file,$end_time, $startTimeOfThisDay, $mhost, $mservice){
