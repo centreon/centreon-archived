@@ -16,28 +16,10 @@ For information : contact@oreon-project.org
 */
 // JavaScript Document
 
-var xhr = null; 
-var _adresseRecherche = "./include/monitoring/status/readStatus.php" //l'adresse   interroger pour trouver les suggestions
-	 
-function getXhr(){
-	if(window.XMLHttpRequest) // Firefox et autres
-	   xhr = new XMLHttpRequest(); 
-	else if(window.ActiveXObject){ // Internet Explorer 
-	   try {
-                xhr = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                xhr = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-	}
-	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest..."); 
-	   xhr = false; 
-	} 
-}
-
 
     var tl;
-	function onLoad() {
+    
+function initTimeline() {
 	var eventSource = new Timeline.DefaultEventSource();
 
 	  var bandInfos = [
@@ -62,7 +44,9 @@ function getXhr(){
 	              bandInfos[1].syncWith = 0;
             bandInfos[1].highlight = true;
 	  var tl = Timeline.create(document.getElementById('my-timeline'), bandInfos, Timeline.HORIZONTAL);
-/*
+
+ 
+ /*
 
             var bandInfos = [
                 Timeline.createBandInfo({
@@ -91,14 +75,16 @@ function getXhr(){
 
 	_form=document.getElementById('AjaxBankBasic');
 	_formR=document.getElementById('datareport');
-	var arg = 'oreonPath=' + _formR.fileOreonConf.value +
+
+	var color = _formR.color_UP.value + ':' +
+	_formR.color_DOWN.value  + ':' +
+	_formR.color_UNREACHABLE.value + ':' +
+	_formR.color_UNKNOWN.value;
+
+	var arg = 'oreonPath=' + _form.fileOreonConf.value +
 	 		  	'&hostID=' + _formR.hostID.value +
-	 		  	'&colorUP=' + _form.color_UP.value +
-	 		  	'&colorDOWN=' + _form.color_DOWN.value +
-	 		  	'&colorUNREACHABLE=' + _form.color_UNREACHABLE.value +
-	 		  	'&colorUNKNOWN=' + _form.color_UNKNOWN.value;
+	 		  	'&color=' + color;
 	 		  	
-//document.getElementById('log').innerHTML = arg;			
-			
-  	Timeline.loadXML('./include/reporting/GetXmlHost.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
+	//document.getElementById('alog').innerHTML = arg;			
+  	Timeline.loadXML('./include/reporting/dashboard/GetXmlHost.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });  	
 	}
