@@ -25,21 +25,33 @@ For information : contact@oreon-project.org
 		global $oreon;
 		$plugins = array();
 		$is_not_a_plugin = array("."=>".", ".."=>"..", "oreon.conf"=>"oreon.conf", "oreon.pm"=>"oreon.pm", "utils.pm"=>"utils.pm", "negate"=>"negate");
-		$handle[$rep] = opendir($rep);
-		while (false !== ($filename = readdir($handle[$rep]))){
-			if ($filename != "." && $filename != ".."){
-				if (is_dir($rep.$filename)){
-					$plg_tmp = return_plugin_list($rep."/".$filename, $handle[$rep]);
-					$plugins = array_merge($plugins, $plg_tmp);
-					unset($plg_tmp);
-				} else if (!array_key_exists($filename, $is_not_a_plugin) && substr($filename, -1)!= "~"){
-					$key = substr($rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"]));
-					$plugins[$key] = $key;
-				}
+		if (substr($oreon->optGen["nagios_path_plugins"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
+			$rep = substr($rep, 1);
+		$handle = opendir($oreon->optGen["nagios_path_plugins"].$rep);
+		while (false !== ($filename = readdir($handle))){
+			if (!is_dir($oreon->optGen["nagios_path_plugins"].$rep."/".$filename) && !array_key_exists($filename, $is_not_a_plugin) && substr($filename, -1)!= "~"){
+				$key = substr($oreon->optGen["nagios_path_plugins"].$rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"].$rep));
+				$plugins[$key] = $key;
 			}
 		}
-		closedir($handle[$rep]);
+		ksort($plugins);
+		closedir($handle);
 		return ($plugins);
+	}
+	
+	function return_plugin_dir($rep){
+		global $oreon;
+		$plugins_rep = array("/"=>"/");
+		$is_not_a_plugin = array("."=>".", ".."=>"..", "oreon.conf"=>"oreon.conf", "oreon.pm"=>"oreon.pm", "utils.pm"=>"utils.pm", "negate"=>"negate");
+		$handle = opendir($oreon->optGen["nagios_path_plugins"].$rep);
+		while (false !== ($filename = readdir($handle))){
+			if (is_dir($oreon->optGen["nagios_path_plugins"].$rep.$filename) && !array_key_exists($filename, $is_not_a_plugin) && substr($filename, -1)!= "~"){
+				$key = substr($oreon->optGen["nagios_path_plugins"].$rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"].$rep));
+				$plugins_rep[$key] = $key;
+			}
+		}
+		closedir($handle);
+		return ($plugins_rep);
 	}
 	
 
