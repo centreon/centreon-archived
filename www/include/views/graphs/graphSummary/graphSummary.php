@@ -21,6 +21,8 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 		
+	include_once("./include/common/common-Func.php");	
+		
 	$lcaHostByID = getLcaHostByID($pearDB);	
 	$isRetreint = HadUserLca($pearDB);
 	
