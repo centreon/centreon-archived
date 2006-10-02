@@ -319,9 +319,9 @@ For information : contact@oreon-project.org
 							else
 								$tab_tmp["timeNONE"] += ($time_event-$tab_tmp["current_time"]);
 							$tab_tmp["current_time"] = $time_event; //save time
+							$tab_tmp["current_state"] = $name2; //save time
 							$tablist[$name0]["tab_svc_log"][$name1] = $tab_tmp;
 						}
-						$tab_tmp["current_state"] = $name2; //save time
 					}
 				}
 			}
