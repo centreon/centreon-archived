@@ -95,6 +95,7 @@ $lang["genOpt_debug_nagios_import"] = "Nagios Import Debug";
 $lang["genOpt_debug_rrdtool"] = "RRDTool Debug";
 $lang["genOpt_debug_ldap_import"] = "Ldap Import Users Debug";
 $lang["genOpt_debug_inventory"] = "Inventory Debug";
+$lang["genOpt_debug_clear"] = "&nbsp;Clear debug file";
 
 # Menu
 

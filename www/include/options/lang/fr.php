@@ -95,7 +95,7 @@ $lang["genOpt_debug_nagios_import"] = "Debug de l&#146;importation des fichiers 
 $lang["genOpt_debug_rrdtool"] = "Debug de RRDTool";
 $lang["genOpt_debug_ldap_import"] = "Debug de l&#146;importation des users LDAP ";
 $lang["genOpt_debug_inventory"] = "Debug de l&#146;inventaire";
-
+$lang["genOpt_debug_clear"] = "&nbsp;Effacer le fichier de debug";
 
 # Menu
 
