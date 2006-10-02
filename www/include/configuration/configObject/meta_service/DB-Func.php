@@ -339,7 +339,7 @@ For information : contact@oreon-project.org
 				"(meta_id, host_id, metric_id, msr_comment, activate) " .
 				"VALUES ( ";
 				isset($ret["meta_id"]) && $ret["meta_id"] != NULL ? $rq .= "'".$ret["meta_id"]."', ": $rq .= "NULL, ";
-				isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".array_search($ret["host_name"], $oreon->user->lcaHost)."', ": $rq .= "NULL, ";
+				isset($ret["host_id"]) && $ret["host_id"] != NULL ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
 				isset($ret["metric_sel"][1]) && $ret["metric_sel"][1] != NULL ? $rq .= "'".$ret["metric_sel"][1]."', ": $rq .= "NULL, ";
 				isset($ret["msr_comment"]) && $ret["msr_comment"] != NULL ? $rq .= "'".htmlentities($ret["msr_comment"])."', " : $rq .= "NULL, ";
 				isset($ret["activate"]["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."'" : $rq .= "NULL";
@@ -367,7 +367,7 @@ For information : contact@oreon-project.org
 		$rq .= "meta_id = ";
 		$ret["meta_id"] != NULL ? $rq .= "'".$ret["meta_id"]."', ": $rq .= "NULL, ";
 		$rq .= "host_id = ";
-		$ret["host_name"] != NULL ? $rq .= "'".array_search($ret["host_name"], $oreon->user->lcaHost)."', ": $rq .= "NULL, ";
+		$ret["host_id"] != NULL ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
 		$rq .= "metric_id = ";
 		$ret["metric_id"] != NULL ? $rq .= "'".$ret["metric_id"]."', ": $rq .= "NULL, ";
 		$rq .= "msr_comment = ";

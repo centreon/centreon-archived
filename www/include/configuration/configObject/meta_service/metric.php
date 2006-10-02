@@ -39,34 +39,37 @@ For information : contact@oreon-project.org
 		}
 		$metric2 = array_map("myDecode", $res->fetchRow());
 		$metric = array_merge($metric1, $metric2);
-		$host_name =& $metric["host_name"];
-		$metric["metric_sel"][0] = $metric["service_description"];
-		$metric["metric_sel"][1] = $metric["metric_id"];
+		$host_id = $metric1["host_id"];
+		$metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
+		$metric["metric_sel"][1] = $metric["metric_id"];		
 	}
 	
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
-	# Perfparse Host comes from DB -> Store in $ppHosts Array
-	$ppHosts = array(NULL=>NULL);
-	$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
+
+	# Host comes from DB -> Store in $hosts Array
+	$hosts = array(NULL=>NULL);
+	$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host ORDER BY host_name");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	while($res->fetchInto($ppHost))
-		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$ppHost["host_name"]])))
-			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"];
-	
+	while($res->fetchInto($host))
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host["host_name"]])))
+			$hosts[$host["host_id"]] = $host["host_name"];
 	$res->free();
-	$ppServices1 = array();
-	$ppServices2 = array();
-	if ($host_name)	{
-		# Perfparse Host comes from DB -> Store in $ppHosts Array
-		$ppServices = array(NULL=>NULL);
-		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, service_description, metric, unit FROM perfdata_service_metric WHERE host_name = '".$host_name."' ORDER BY host_name");
-		while($res->fetchInto($ppService))	{
-			$ppServices1[$ppService["service_description"]] = $ppService["service_description"];
-			$ppServices2[$ppService["service_description"]][$ppService["metric_id"]] = $ppService["metric"]."  (".$ppService["unit"].")";
+	
+	$services1 = array();
+	$services2 = array();
+	if ($host_id)	{
+		$services = array(NULL=>NULL);
+		$services = getMyHostServices($host_id);
+		foreach ($services as $key=>$value)	{
+			$res =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".getMyHostName($host_id)."' AND service_description = '".$value."' ORDER BY metric, unit");
+			while ($res->fetchInto($metricSV))	{
+				$services1[$key] = $value;
+				$services2[$key][$metricSV["metric_id"]] = $metricSV["metric"]."  (".$metricSV["unit"].")";
+			}
 		}
 		$res->free();
 	}
@@ -100,9 +103,9 @@ For information : contact@oreon-project.org
 	$formMetricId =& $form->addElement('hidden', 'metric_id');
 	$formMetricId->setValue($metric_id);
    
-	$hn =& $form->addElement('select', 'host_name', $lang["h"], $ppHosts, array("onChange"=>"this.form.submit()"));
+	$hn =& $form->addElement('select', 'host_id', $lang["h"], $hosts, array("onChange"=>"this.form.submit()"));
 	$sel =& $form->addElement('hierselect', 'metric_sel', $lang["sv"]);
-	$sel->setOptions(array($ppServices1, $ppServices2));
+	$sel->setOptions(array($services1, $services2));
 	
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, $lang["enable"], '1');

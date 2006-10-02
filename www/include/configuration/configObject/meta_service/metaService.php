@@ -34,6 +34,10 @@ For information : contact@oreon-project.org
 	isset($_GET["host_name"]) ? $cG = $_GET["host_name"] : $cG = NULL;
 	isset($_POST["host_name"]) ? $cP = $_POST["host_name"] : $cP = NULL;
 	$cG ? $host_name = $cG : $host_name = $cP;
+	
+	isset($_GET["host_id"]) ? $cG = $_GET["host_id"] : $cG = NULL;
+	isset($_POST["host_id"]) ? $cP = $_POST["host_id"] : $cP = NULL;
+	$cG ? $host_id = $cG : $host_id = $cP;
 
 	isset($_GET["metric_id"]) ? $cG = $_GET["metric_id"] : $cG = NULL;
 	isset($_POST["metric_id"]) ? $cP = $_POST["metric_id"] : $cP = NULL;

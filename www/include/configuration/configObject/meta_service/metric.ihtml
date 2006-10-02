@@ -6,8 +6,8 @@
                     	<td class="FormHeader" colspan="2">{$form.header.title}</td>
                     <tr>
                     <tr class="list_one">
-                		<td>{$form.host_name.label}</td>
-                		<td>{$form.host_name.html}</td>
+                		<td>{$form.host_id.label}</td>
+                		<td>{$form.host_id.html}</td>
                     </tr>
 	                <tr class="list_two">
                         <td>{$form.metric_sel.label}</td>                   	 	
