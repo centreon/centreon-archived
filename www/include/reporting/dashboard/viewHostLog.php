@@ -35,11 +35,11 @@ For information : contact@oreon-project.org
 	## Selection de l'host
 	#
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
-	$formHost->addElement('hidden', 'timeline', "1");	
+	$formHost->addElement('hidden', 'timeline', "1");
 	$formHost->addElement('header', 'title', "...selection host...");
 
-	$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL; 
-	$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1; 
+	$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL;
+	$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1;
 	$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 	$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 	$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
@@ -55,8 +55,8 @@ For information : contact@oreon-project.org
 		print "Mysql Error : ".$res->getMessage();
 	while ($res->fetchInto($h))
 		if (IsHostReadable($lcaHostByName, $h["host_name"]))
-			$host[$h["host_name"]] = $h["host_name"];	
-			
+			$host[$h["host_name"]] = $h["host_name"];
+
 	$selHost =& $formHost->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
 
 	if (isset($_POST["host"])){
@@ -67,9 +67,9 @@ For information : contact@oreon-project.org
 	#
 	##
 	#
-	
 
-		
+
+
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
@@ -77,7 +77,7 @@ For information : contact@oreon-project.org
 		$end_date_select = 0;
 		$start_date_select= 0;
 
-	
+
 		getDateSelect($end_date_select, $start_date_select, $period1, $start, $end);
 
 		$host_id = getMyHostID($mhost);
@@ -98,28 +98,28 @@ For information : contact@oreon-project.org
 
 
 
-	
+
 	#
 	## fourchette de temps
 	#
 	$period = array();
 	$period[""] = "";
-	$period["today"] = "Today";
-	$period["yesterday"] = "Yesterday";
-	$period["thisweek"] = "This Week";
-	$period["last7days"] = "Last 7 Days";
-	$period["thismonth"] = "This Month";
-	$period["last30days"] = "Last 30 Days";
-	$period["lastmonth"] = "Last Month";
-	$period["thisyear"] = "This Year";
-	$period["lastyear"] = "Last Year";
+	$period["today"] = $lang["today"];
+	$period["yesterday"] = $lang["yesterday"];
+	$period["thisweek"] = $lang["thisweek"];
+	$period["last7days"] = $lang["last7days"];
+	$period["thismonth"] = $lang["thismonth"];
+	$period["last30days"] = $lang["last30days"];
+	$period["lastmonth"] = $lang["lastmonth"];
+	$period["thisyear"] = $lang["thisyear"];
+	$period["lastyear"] = $lang["lastyear"];
 	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p);
 	isset($mhost) ? $formPeriod1->addElement('hidden', 'host', $mhost) : NULL;
-	$formPeriod1->addElement('hidden', 'timeline', "1");	
+	$formPeriod1->addElement('hidden', 'timeline', "1");
 	$formPeriod1->addElement('header', 'title', $lang["m_predefinedPeriod"]);
-	$selHost =& $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));	
+	$selHost =& $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));
 	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p);
-	$formPeriod2->addElement('hidden', 'timeline', "1");	
+	$formPeriod2->addElement('hidden', 'timeline', "1");
 	isset($mhost) ? $formPeriod2->addElement('hidden', 'host', $mhost) : NULL;
 	$formPeriod2->addElement('header', 'title', $lang["m_customizedPeriod"]);
 	$formPeriod2->addElement('text', 'start', $lang["m_start"]);
@@ -162,13 +162,13 @@ For information : contact@oreon-project.org
 			elseif(!strncmp($tab[$mhost]["current_state"], "UNREACHABLE", 11))
 				$tab[$mhost]["timeUNREACHABLE"] += ($end_date_select-$tab[$mhost]["current_time"]);
 			else
-				$tab[$mhost]["timeNONE"] += ($end_date_select-$tab[$mhost]["current_time"]);					
+				$tab[$mhost]["timeNONE"] += ($end_date_select-$tab[$mhost]["current_time"]);
 
 
 
 			#
 			## add log day
-			#		
+			#
 			$Tup += $tab[$mhost]["timeUP"];
 			$Tdown += $tab[$mhost]["timeDOWN"];
 		 	$Tunreach += $tab[$mhost]["timeUNREACHABLE"];
@@ -238,17 +238,17 @@ For information : contact@oreon-project.org
 			$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcri"]/ $tt *100,3);
 			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"])
 												 )  / $tt *100,3);
-	
+
 			/* les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... */
 			$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 2, '.', '');
 			$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 2, '.', '');
 			$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 2, '.', '');
 			$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 2, '.', '');
 			$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 2, '.', '');
-	
+
 			$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? 0.00 : $tab_tmp["PtimeNONE"];
 			/*end*/
-	
+
 			$tab_svc[$i++] = $tab_tmp;
 		}
 	}
@@ -261,30 +261,30 @@ For information : contact@oreon-project.org
 	$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
 	if($Tnone < 0)
 	$Tnone = 0;
-	
-	
+
+
 	$tab["state"] = $lang["m_UpTitle"];
 	$tab["time"] = Duration::toString($Tup);
 	$tab["pourcentTime"] = round($Tup/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = round($Tup/$timeTOTAL*100,2);
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 	$tab_resume[0] = $tab;
-	
+
 	$tab["state"] = $lang["m_DownTitle"];
 	$tab["time"] = Duration::toString($Tdown);
 	$tab["pourcentTime"] = round($Tdown/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = round($Tdown/$timeTOTAL*100,2);
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
 	$tab_resume[1] = $tab;
-	
+
 	$tab["state"] = $lang["m_UnreachableTitle"];
 	$tab["time"] = Duration::toString($Tunreach);
 	$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = round($Tunreach/$timeTOTAL*100,2);
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
 	$tab_resume[2] = $tab;
-	
-	
+
+
 	$tab["state"] = $lang["m_PendingTitle"];
 	$tab["time"] = Duration::toString($Tnone);
 	$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
@@ -296,18 +296,18 @@ For information : contact@oreon-project.org
 	$start_date_select = date("d/m/Y G:i:s", $start_date_select);
 	$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 
-	$tpl->assign('host_name', $mhost);		
+	$tpl->assign('host_name', $mhost);
 	$status = "";
 	foreach ($tab_resume  as $tb)
 		if($tb["pourcentTime"] > 0)
-			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];  
-                
-	$tpl->assign('status', $status);		
+			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
+
+	$tpl->assign('status', $status);
 	$tpl->assign("tab_resume", $tab_resume);
 	if(isset($tab_svc))
-	$tpl->assign("tab_svc", $tab_svc);		
+	$tpl->assign("tab_svc", $tab_svc);
 	$tpl->assign("tab_log", $tab_log);
-	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));	
+	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));
 		}## end of period requirement
 
 	$tpl->assign('actualTitle', $lang["actual"]);
@@ -335,12 +335,12 @@ For information : contact@oreon-project.org
 	$tpl->assign('TimeTitle', $lang["m_TimeTitle"]);
 	$tpl->assign('TimeTotalTitle', $lang["m_TimeTotalTitle"]);
 	$tpl->assign('KnownTimeTitle', $lang["m_KnownTimeTitle"]);
-			
+
 	$tpl->assign('DateTitle', $lang["m_DateTitle"]);
 	$tpl->assign('EventTitle', $lang["m_EventTitle"]);
 	$tpl->assign('HostTitle', $lang["m_HostTitle"]);
 	$tpl->assign('InformationsTitle', $lang["m_InformationsTitle"]);
-			
+
 	$tpl->assign('periodTitle', $lang["m_selectPeriodTitle"]);
 	$tpl->assign('resumeTitle', $lang["m_hostResumeTitle"]);
 	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
@@ -378,5 +378,5 @@ For information : contact@oreon-project.org
 	$tpl->assign("p", $p);
 
 	$tpl->display("template/viewHostLog.ihtml");
-	
+
 ?>
