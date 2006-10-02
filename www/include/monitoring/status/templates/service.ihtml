@@ -48,7 +48,7 @@
 	{assign var="c" value="0"}	
 	{ foreach item=s from=$service_status }
 	{if (!$host_name && !$status) || ($host_name == $s.host_name && $status && $status == $s.status) || ($host_name == $s.host_name && !$status)}
-		<tr {if $s.current_state == CRITICAL}class="list_three"{else}class="{$s.class}"{/if} id="trStatus{$c}">
+		<tr {if $s.current_state == CRITICAL}{if $s.problem_has_been_acknowledged == 1}class="list_four"{else}class="list_three"{/if}{else}class="{$s.class}"{/if} id="trStatus{$c}">
 			<td class="ListColPicker"><input name="select[{$s.host_name};{$s.service_description}]" value="1" type="checkbox"></td>
 			{if $host == $s.host_name}
 				<td class="ListColLeft"><div class="cachediv" id="host{$c}">{$s.host_name}</div>&nbsp;</td>
