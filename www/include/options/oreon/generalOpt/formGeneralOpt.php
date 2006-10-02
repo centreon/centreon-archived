@@ -153,6 +153,28 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'debug', $lang["genOpt_debug"]);
 	$form->addElement('text', 'debug_path', $lang["genOpt_dPath"], $attrsText);
+
+	$Opt = array();
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+	$form->addGroup($Opt, 'debug_auth_clear', '&nbsp;', '&nbsp;&nbsp;');
+
+	$Opt = array();
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+	$form->addGroup($Opt, 'debug_nagios_import_clear', '&nbsp;', '&nbsp;&nbsp;');
+
+	$Opt = array();
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+	$form->addGroup($Opt, 'debug_rrdtool_clear', '&nbsp;', '&nbsp;&nbsp;');
+
+	$Opt = array();
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+	$form->addGroup($Opt, 'debug_ldap_import_clear', '&nbsp;', '&nbsp;&nbsp;');
+
+	$Opt = array();
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+	$form->addGroup($Opt, 'debug_inventory_clear', '&nbsp;', '&nbsp;&nbsp;');
+
+
 	$form->addElement('select', 'debug_auth', $lang["genOpt_debug_auth"], array(0=>$lang['no'], 1=>$lang['yes']));
 	$form->addElement('select', 'debug_nagios_import', $lang["genOpt_debug_nagios_import"], array(0=>$lang['no'], 1=>$lang['yes']));
 	$form->addElement('select', 'debug_rrdtool', $lang["genOpt_debug_rrdtool"], array(0=>$lang['no'], 1=>$lang['yes']));
@@ -247,6 +269,7 @@ For information : contact@oreon-project.org
 
     $valid = false;
 	if ($form->validate())	{
+
 		# Update in DB
 		updateGeneralOptInDB($form->getSubmitValue("gopt_id"));
 		# Update in Oreon Object
@@ -256,6 +279,21 @@ For information : contact@oreon-project.org
 		$o = "w";
    		$valid = true;
 		$form->freeze();
+
+		if (isset($_POST["debug_auth_clear"]))
+			@unlink($oreon->optGen["debug_path"]."auth.log");
+
+		if (isset($_POST["debug_nagios_import_clear"]))
+			@unlink($oreon->optGen["debug_path"]."cfgimport.log");
+
+		if (isset($_POST["debug_rrdtool_clear"]))
+			@unlink($oreon->optGen["debug_path"]."rrdtool.log");
+
+		if (isset($_POST["debug_ldap_import_clear"]))
+			@unlink($oreon->optGen["debug_path"]."ldapsearch.log");
+
+		if (isset($_POST["debug_inventory_clear"]))
+			@unlink($oreon->optGen["debug_path"]."inventory.log");
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
