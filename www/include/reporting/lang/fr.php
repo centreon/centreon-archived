@@ -38,7 +38,7 @@ $lang["m_start"] = "Date de d&eacute;but";
 $lang["m_end"] = "Date de fin";
 $lang["m_predefinedPeriod"] = "Pr&eacute;d&eacute;finie:";
 $lang["m_customizedPeriod"] = "Personalis&eacute;e";
-$lang["m_selectPeriodTitle"] = "Selection de la p&eacute;riode";
+$lang["m_selectPeriodTitle"] = "S&eacute;lection de la p&eacute;riode";
 $lang["m_hostResumeTitle"] = "Etat de l&acute;host";
 $lang["m_serviceResumeTitle"] = "Etat du service";
 $lang["m_hostLogTitle"] = "Log du jour";
@@ -65,11 +65,21 @@ $lang["m_EventTitle"] = "Evenement";
 $lang["m_HostTitle"] = "Host";
 $lang["m_InformationsTitle"] = "Informations";
 
-$lang["m_to"] = " à ";
-$lang["m_duration"] = "Durée ";
+$lang["m_to"] = " &agrave; ";
+$lang["m_duration"] = "Dur&eacute;e ";
 
 $lang["m_svc"] = " Service ";
 $lang["m_h"] = " Host ";
 $lang["actual"] = " Actuel ";
-			
+
+$lang["today"] = "Aujourd&acute;hui";
+$lang["yesterday"] = "Hier";
+$lang["thisweek"] = "Cette semaine";
+$lang["last7days"] = "7 derniers jours";
+$lang["thismonth"] = "Ce mois";
+$lang["last30days"] = "30 derniers jours";
+$lang["lastmonth"] = "Le mois dernier";
+$lang["thisyear"] = "Cette ann&eacute;e";
+$lang["lastyear"] = "L&acute;ann&eacute;e derni&eagrave;re";
+
 ?>

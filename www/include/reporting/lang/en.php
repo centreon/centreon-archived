@@ -59,7 +59,7 @@ $lang["m_StateTitle"] = "State";
 $lang["m_TimeTitle"] = "Time";
 $lang["m_TimeTotalTitle"] = "Total Time";
 $lang["m_KnownTimeTitle"] = "Known Time";
-		
+
 $lang["m_DateTitle"] = "Date";
 $lang["m_EventTitle"] = "Event";
 $lang["m_HostTitle"] = "Host";
@@ -71,5 +71,15 @@ $lang["m_duration"] = "Duration ";
 $lang["m_svc"] = " Service ";
 $lang["m_h"] = " Host ";
 $lang["actual"] = " Actual ";
+
+$lang["today"] = "Today";
+$lang["yesterday"] = "Yesterday";
+$lang["thisweek"] = "This Week";
+$lang["last7days"] = "Last 7 Days";
+$lang["thismonth"] = "This Month";
+$lang["last30days"] = "Last 30 Days";
+$lang["lastmonth"] = "Last Month";
+$lang["thisyear"] = "This Year";
+$lang["lastyear"] = "Last Year";
 
 ?>
