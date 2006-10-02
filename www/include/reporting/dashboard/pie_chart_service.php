@@ -24,13 +24,11 @@ For information : contact@oreon-project.org
 	require_once ("../../../class/Session.class.php");
 	require_once ("../../../class/Oreon.class.php");
 
-
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-
 	// create the graph
-	$Graph =& Image_Graph::factory('graph', array(300, 250));
+	$Graph =& Image_Graph::factory('graph', array(300, 300));
 	// add a TrueType font
 	$Font =& $Graph->addNew('font', 'Arial');
 	// set the font size to 11 pixels

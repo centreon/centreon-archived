@@ -17,7 +17,9 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
+	$start_date_select = 0;
+	$end_date_select = 0;
+$tab_svc = array();
 	$path = "./include/reporting/dashboard";
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -41,6 +43,14 @@ For information : contact@oreon-project.org
 	$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
 
 
+	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
+	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+
+//	isset ($_GET["service"]) ? $mservice = getMyServiceName($_GET["service"]) : $mservice = NULL;
+//	isset ($_POST["service"]) ? $mservice = getMyServiceName($_POST["service"]) : $mservice = $mservice;
+	isset ($_GET["service"]) ? $mservice = $_GET["service"] : $mservice = NULL;
+	isset ($_POST["service"]) ? $mservice = $_POST["service"] : $mservice = $mservice;
+
 	#
 	## Selection de l'host
 	#
@@ -49,40 +59,18 @@ For information : contact@oreon-project.org
 	$formService->addElement('hidden', 'period', $period1);
 	$formService->addElement('hidden', 'end', $end);
 	$formService->addElement('hidden', 'start', $start);
-
-/*
-	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while ($res->fetchInto($h))
-		if (IsHostReadable($lcaHostByName, $h["host_name"]))
-			$host[$h["host_name"]] = $h["host_name"];	
-*/			
-$serviceList = array();
-$serviceList["a"] = "a";
-$serviceList["b"] = "b";
-	$selService =& $formService->addElement('select', 'service', $lang["h"], $serviceList, array("onChange" =>"this.form.submit();"));
+	$formService->addElement('hidden', 'host', $mhost);
 
 
-/*
-	if (isset($_POST["host"])){
-		$formService->setDefaults(array('service' => $_POST["host"]));
-	}else if (isset($_GET["host"])){
-		$formService->setDefaults(array('service' => $_GET["host"]));
-	}
-	*/
-	
-	
+
+	$serviceList = array();
+	$serviceList = getMyHostServices(getMyHostID($mhost));
+
+	$selService =& $formService->addElement('select', 'service', $lang["m_svc"], $serviceList, array("onChange" =>"this.form.submit();"));
+
 	#
 	##
 	#
-
-	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
-	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
-
-	isset ($_GET["service"]) ? $mservice = $_GET["service"] : $mservice = NULL;
-	isset ($_POST["service"]) ? $mservice = $_POST["service"] : $mservice = $mservice;
-
 
 	if($mhost)	{
 		$end_date_select = 0;
@@ -113,6 +101,7 @@ $serviceList["b"] = "b";
 	## fourchette de temps
 	#
 	$period = array();
+	$period[""] = "";
 	$period["today"] = "Today";
 	$period["yesterday"] = "Yesterday";
 	$period["thisweek"] = "This Week";
@@ -136,8 +125,6 @@ $serviceList["b"] = "b";
     'period' => $period1
 	));
 
-
-
 	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p);
 	isset($mhost) ? $formPeriod2->addElement('hidden', 'host', $mhost) : NULL;
 	isset($mservice) ? $formPeriod2->addElement('hidden', 'service', $mservice) : NULL;
@@ -151,11 +138,13 @@ $serviceList["b"] = "b";
 	$res = $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
 
 
+
 	if($mhost){
 	#
 	## if today is include in the time period
 	#
 	$tab_log = array();
+	$tab_svc = array();
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
@@ -164,14 +153,15 @@ $serviceList["b"] = "b";
 	if($startTimeOfThisDay  < ($end_date_select)){
 		$tmp = $oreon->Nagioscfg["log_file"];
 
-		$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, $mservice);
+		$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, getMyServiceName($mservice));
 //		$tab_log = $tab["tab_log"];
 
 
 
-		if (isset($tab[$mhost]["tab_svc_log"][$mservice]))
+		if (isset($tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)]))
 		{
-			$tab_svc = $tab[$mhost]["tab_svc_log"][$mservice];
+			$tab_svc = $tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)];
+
 
 			if(!strncmp($tab_svc["current_state"], "OK", 2))
 				$tab_svc["timeOK"] += (time()-$tab_svc["current_time"]);
@@ -184,19 +174,8 @@ $serviceList["b"] = "b";
 			else
 				$tab_svc["timeNONE"] += (time()-$tab_svc["current_time"]);
 
-
-
-
-
 			$tt = $end_date_select - $start_date_select;
 			$svc_id = $tab_svc["service_id"];
-
-
-
-			echo "=".$tab_svc["timeOK"]."<br>";
-			echo "=".$tab_svc["timeWARNING"]."<br>";
-			echo "=".$tab_svc["timeUNKNOWN"]."<br>";
-			echo "=".$tab_svc["timeCRITICAL"]."<br>";
 
 
 			$archive_svc_ok =  isset($tab_svc_bdd[$svc_id]["Tok"]) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
@@ -208,16 +187,23 @@ $serviceList["b"] = "b";
 			$tab_svc["PtimeWARNING"] = round(($archive_svc_warn+$tab_svc["timeWARNING"]) / $tt *100,3);
 			$tab_svc["PtimeUNKNOWN"] = round(($archive_svc_unknown+$tab_svc["timeUNKNOWN"]) / $tt *100,3);
 			$tab_svc["PtimeCRITICAL"] = round(($archive_svc_cri+$tab_svc["timeCRITICAL"]) / $tt *100,3);
-			$tab_svc["PtimeNONE"] = round( ( $tt - (($archive_svc_ok+$tab_svc["timeOK"])
-												 + ($archive_svc_warn+$tab_svc["timeWARNING"])
-												 + ($archive_svc_unknown+$tab_svc["timeUNKNOWN"])
-												 + ($archive_svc_cri+$tab_svc["timeCRITICAL"])))  / $tt *100,3);
+
+			$tab_svc["PtimeNONE"] = round( 
+										( 100 - ($tab_svc["PtimeOK"] +
+												 $tab_svc["PtimeWARNING"] + 
+												 $tab_svc["PtimeUNKNOWN"] + 
+												 $tab_svc["PtimeCRITICAL"]))  / $tt *100,3);
+
+
 
 			$tab_svc["timeOK"] += $archive_svc_ok;
 			$tab_svc["timeWARNING"] += $archive_svc_warn;
 			$tab_svc["timeUNKNOWN"] += $archive_svc_unknown;
 			$tab_svc["timeCRITICAL"] +=$archive_svc_cri;
-			$tab_svc["timeNONE"] += $tt - ( $archive_svc_ok + $archive_svc_warn + $archive_svc_unknown + $archive_svc_cri);
+			$tab_svc["timeNONE"] += $tt - ($tab_svc["timeOK"] +
+											$tab_svc["timeWARNING"] + 
+											$tab_svc["timeUNKNOWN"] + 
+											$tab_svc["timeCRITICAL"]);
 
 			# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
 			$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
@@ -233,17 +219,14 @@ $serviceList["b"] = "b";
 		$tab_svc = array();
 
 
-		$svc_id = getMyServiceID($mservice,getMyHostID($mhost));
+//		$svc_id = getMyServiceID($mservice,getMyHostID($mhost));
+		$svc_id = $mservice;
 
 		$tab_svc_bdd = array();
 		getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select);
-
 			
-		$tab_svc["svcName"] = $mservice;
+		$tab_svc["svcName"] = getMyServiceName($mservice);
 		$tt = $end_date_select - $start_date_select;
-
-
-
 
 
 		$tab_svc["timeOK"] = $tab_svc_bdd[$svc_id]["Tok"];
@@ -278,7 +261,8 @@ $serviceList["b"] = "b";
 $tab_resume = array();
 $tab = array();
 
-
+if($mservice && $mhost)
+{
 $tab["state"] = $lang["m_OKTitle"];
 $tab["time"] = Duration::toString($tab_svc["timeOK"]);
 $tab["pourcentTime"] = $tab_svc["PtimeOK"];
@@ -313,7 +297,7 @@ $tab["pourcentTime"] = $tab_svc["PtimeNONE"];
 $tab["pourcentkTime"] = $tab_svc["PtimeNONE"];
 $tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_pending"]."'";
 $tab_resume[4] = $tab;
-
+}
 
 $start_date_select = date("d/m/Y G:i:s", $start_date_select);
 $end_date_select =  date("d/m/Y G:i:s", $end_date_select);
@@ -325,7 +309,16 @@ $end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 	$tpl = initSmartyTpl($path, $tpl, "");
 
 	$tpl->assign('o', $o);
-	
+	$tpl->assign('mhost', $mhost);
+	$tpl->assign('hostTitle', $lang["h"]);
+	$tpl->assign('actualTitle', $lang["actual"]);
+	$tpl->assign('date_start_select', $start_date_select);
+	$tpl->assign('date_end_select', $end_date_select);
+
+if($mservice && $mhost)
+{
+	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));	
+}
 
 	$tpl->assign('periodTitle', $lang["m_selectPeriodTitle"]);
 	$tpl->assign('resumeTitle', $lang["m_serviceResumeTitle"]);
@@ -358,7 +351,7 @@ $end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 	$tpl->assign('infosTitle1', $mhost);
 	$tpl->assign('infosTitle2', $start_date_select." => ".$end_date_select);		
 	$tpl->assign('host_name', $mhost);		
-	$tpl->assign('service_name', $mservice);		
+	$tpl->assign('service_name', getMyServiceName($mservice));		
 
 
 

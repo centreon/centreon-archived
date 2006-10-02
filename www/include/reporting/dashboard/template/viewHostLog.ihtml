@@ -43,23 +43,20 @@
 						</tr>	
 
 						<tr class='list_lvl_1'>
-							<td colspan=2 & class="ListColHeaderLeft">Actual</td>
+							<td colspan=2  class="ListColHeaderLeft">{$actualTitle}:</td>
 						</tr>
 				        <tr class="list_one">
 					        <td colspan=2>
 					        	{$infosTitle}
 					        </td>
 				        </tr>
-
-
 						<tr class='list_lvl_2'>
-							<td colspan=2 & class="ListColHeaderLeft">{$formPeriod1.header.title}</td>
+							<td colspan=2  class="ListColHeaderLeft">{$formPeriod1.header.title}</td>
 						</tr>
 				        <tr class="list_one">
 					        <td colspan=2>
 						        <form {$formPeriod1.attributes}>
 						        	{$formPeriod1.period.html}
-						        	
 						        		{$formPeriod1.hidden}
 								</form>
 					        </td>
@@ -69,11 +66,11 @@
 						</tr>
 						<tr class="list_two">
 							<td>	        <form {$formPeriod2.attributes}>			
-							{$formPeriod2.start.label}</td>
+							{$formPeriod2.start.label}&nbsp;&nbsp;({$date_start_select})</td>
 							<td>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</td>
 						</tr>
 						<tr class="list_one">
-							<td>{$formPeriod2.end.label}</td>
+							<td>{$formPeriod2.end.label}&nbsp;&nbsp;({$date_end_select})</td>
 							<td>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</td>
 						</tr>
 						<tr class="list_one">
@@ -124,7 +121,7 @@
 						</tr>
 						{foreach item=tb from=$tab_svc}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.svcName}{$period}">{$tb.svcName}</a></td>
+							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
 							<td {$style_ok}>{$tb.PtimeOK}%</td>
 							<td {$style_warning}>{$tb.PtimeWARNING}%</td>
 							<td {$style_unknown}>{$tb.PtimeUNKNOWN}%</td>

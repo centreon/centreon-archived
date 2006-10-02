@@ -15,7 +15,8 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
+	$start_date_select = 0;
+	$end_date_select = 0;
 	$path = "./include/reporting/dashboard";
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -102,6 +103,7 @@ For information : contact@oreon-project.org
 	## fourchette de temps
 	#
 	$period = array();
+	$period[""] = "";
 	$period["today"] = "Today";
 	$period["yesterday"] = "Yesterday";
 	$period["thisweek"] = "This Week";
@@ -189,6 +191,7 @@ For information : contact@oreon-project.org
 					$tab_tmp["timeNONE"] += (time()-$tab_tmp["current_time"]);
 				$tt = $end_date_select - $start_date_select;
 				$svc_id = $tab_tmp["service_id"];
+
 				$archive_svc_ok =  isset($tab_svc_bdd[$svc_id]["Tok"]) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
 				$archive_svc_warn = isset($tab_svc_bdd[$svc_id]["Twarn"]) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
 				$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
@@ -227,6 +230,7 @@ For information : contact@oreon-project.org
 		{
 			$tab_tmp = array();
 			$tab_tmp["svcName"] = getMyServiceName($svc_id);
+			$tab_tmp["service_id"] = $svc_id;
 			$tt = $end_date_select - $start_date_select;
 			$tab_tmp["PtimeOK"] = round($tab["Tok"] / $tt *100,3);
 			$tab_tmp["PtimeWARNING"] = round( $tab["Twarn"]/ $tt *100,3);
@@ -303,8 +307,15 @@ For information : contact@oreon-project.org
 	if(isset($tab_svc))
 	$tpl->assign("tab_svc", $tab_svc);		
 	$tpl->assign("tab_log", $tab_log);
-	$tpl->assign('infosTitle', $start_date_select. $lang["m_to"] .$end_date_select . "  " . $lang["m_duration"] . Duration::toString($timeTOTAL));	
-	}## end of period requirement
+	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));	
+		}## end of period requirement
+
+	$tpl->assign('actualTitle', $lang["actual"]);
+
+	$tpl->assign('date_start_select', $start_date_select);
+	$tpl->assign('date_end_select', $end_date_select);
+
+
 
 
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");

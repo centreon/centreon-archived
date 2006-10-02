@@ -227,6 +227,7 @@ For information : contact@oreon-project.org
 			$name4 = isset($res1[4]) ? trim($res1[4]) : NULL;
 
 
+
 				#
 				## find the log's start time
 				#
@@ -236,7 +237,8 @@ For information : contact@oreon-project.org
 				{
 						$start_time = $time_event;
 				}
-				else if ($name0 == $mhost && (!strncmp($type, "CURRENT HOST STATE", 18) || !strncmp($type, "INITIAL HOST STATE", 18))){
+				else if ($name0 == $mhost && (!strncmp($type, "CURRENT HOST STATE", 18) || !strncmp($type, "INITIAL HOST STATE", 18))
+				/*&& ($time_event+50) >= $startTimeOfThisDay*/){
 					$tablist[$name0] = array();
 					$tablist[$name0]["current_time"] = $start_time;
 					$tablist[$name0]["current_state"] = $name1;
@@ -251,7 +253,8 @@ For information : contact@oreon-project.org
 						$tab_log[$a++] = getLogData($time_event, $name0, "", $name1, $res1[4], $type);
 					
 				}
-				else if ($name0 == $mhost && (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21)))
+				else if ($name0 == $mhost && (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21))
+				/*&& ($time_event+50) >= $startTimeOfThisDay*/)
 				{
 					$tablist[$name0]["tab_svc_log"][$name1] = array();
 					$tab_tmp = array();
@@ -268,7 +271,7 @@ For information : contact@oreon-project.org
 				#
 				## host
 				#
-				else if ($name0 == $mhost && !strncmp($type, "HOST ALERT", 10) )
+				else if ($name0 == $mhost && !strncmp($type, "HOST ALERT", 10) /*&& ($time_event+50) >= $startTimeOfThisDay*/)
 				{
 					if(!isset($tablist[$name0]))
 					{
@@ -301,11 +304,11 @@ For information : contact@oreon-project.org
 				#
 				## services associed
 				#
-				else if ($name0 == $mhost && !strncmp($type, "SERVICE ALERT", 13))
+				else if ($name0 == $mhost && !strncmp($type, "SERVICE ALERT", 13) /*&& ($time_event+50) >= $startTimeOfThisDay*/)
 				{
-					if(isset($tablist[$name0]["tab_svc_log"][$name1]) && (is_null($mservice) || $name0 == $mservice))
+					if(isset($tablist[$name0]["tab_svc_log"][$name1]) && (is_null($mservice) || $name1 == $mservice))
 					{
-						if($startTimeOfThisDay < $time_event){ ## pour essayer d'eviter les problemes quand la rotation na pas pu etre faite..
+						//if($startTimeOfThisDay < $time_event){ ## pour essayer d'eviter les problemes quand la rotation na pas pu etre faite..
 							$tab_tmp = array();
 							$tab_tmp = $tablist[$name0]["tab_svc_log"][$name1];
 							if(!strncmp($tab_tmp["current_state"], "OK", 2))
@@ -321,7 +324,7 @@ For information : contact@oreon-project.org
 							$tab_tmp["current_time"] = $time_event; //save time
 							$tab_tmp["current_state"] = $name2; //save time
 							$tablist[$name0]["tab_svc_log"][$name1] = $tab_tmp;
-						}
+						//}
 					}
 				}
 			}

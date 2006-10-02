@@ -68,4 +68,8 @@ $lang["m_InformationsTitle"] = "Info";
 $lang["m_to"] = " to ";
 $lang["m_duration"] = "Duration ";
 
+$lang["m_svc"] = " Service ";
+$lang["m_h"] = " Host ";
+$lang["actual"] = " Actual ";
+
 ?>
