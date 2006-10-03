@@ -72,14 +72,11 @@ For information : contact@oreon-project.org
 			if (file_exists($ret["topology_url"])){
 				$o = $ret["topology_url_opt"];
 				require_once($ret["topology_url"]);
-				print "ok";
 			} else {
 				if (file_exists($redirect["topology_url"]))
 					require_once($redirect["topology_url"]);
-				print "ok2";
 			}
 		} else {
-			print "ok3";
 			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);			
 			if (file_exists($ret["topology_url"])){
 				$o = $ret["topology_url_opt"];
@@ -87,7 +84,6 @@ For information : contact@oreon-project.org
 			} else
 				require_once("./alt_error.php");
 		}
-		print $o;
 	} else {		
 		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");
 	} 
