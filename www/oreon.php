@@ -17,7 +17,6 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	# xdebug_start_trace();
 	
 	# Clean Var	
 	if (isset($_GET["p"]))
@@ -43,21 +42,55 @@ For information : contact@oreon-project.org
 	# header html
 	require_once ("./header.php");
 
+	# function 
+	
+	function get_child($id_page, $lcaTStr){
+		global $pearDB;
+		$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt FROM topology WHERE  topology_id IN ($lcaTStr) AND topology_parent = '".$id_page."' ORDER BY topology_order";
+		$res =& $pearDB->query($rq);
+		$res->fetchInto($redirect);
+		return $redirect;
+	}
+
 	# Menu
 	if (!$min)
 		require_once ("menu/Menu.php");
 
-	$rq = "SELECT topology_parent,topology_name,topology_id, topology_url FROM topology WHERE topology_page = '".$p."'";
+	$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'";
 	$res =& $pearDB->query($rq);
 	$redirect =& $res->fetchRow();
 	
 	if($min != 1)
 		include("pathWay.php");
 	
-	if (file_exists($redirect["topology_url"]) && array_key_exists($redirect["topology_id"], $oreon->user->lcaTopo))
-		require_once($redirect["topology_url"]);
-	else
-		require_once("./alt_error.php");
+	$isRestreint = HadUserLca($pearDB);
+	
+	if ($redirect["topology_page"] < 1000 && ($isRestreint || !$oreon->user->admin)) {
+		if ($redirect["topology_page"] < 100){
+			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+			$ret = get_child($ret['topology_page'], $oreon->user->lcaTStr);
+			if (file_exists($ret["topology_url"])){
+				$o = $ret["topology_url_opt"];
+				require_once($ret["topology_url"]);
+				print "ok";
+			} else {
+				if (file_exists($redirect["topology_url"]))
+					require_once($redirect["topology_url"]);
+				print "ok2";
+			}
+		} else {
+			print "ok3";
+			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);			
+			if (file_exists($ret["topology_url"])){
+				$o = $ret["topology_url_opt"];
+				require_once($ret["topology_url"]);
+			} else
+				require_once("./alt_error.php");
+		}
+		print $o;
+	} else {		
+		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");
+	} 
 ?>
 
 			</td>
