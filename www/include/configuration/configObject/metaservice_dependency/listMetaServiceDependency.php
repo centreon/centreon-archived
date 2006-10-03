@@ -17,7 +17,9 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	$gopt = array_map("myDecode", $res->fetchRow());		
@@ -26,16 +28,15 @@ $pagination = "maxViewConfiguration";
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
+	
 	# HostGroup LCA
-	$oreon->user->lcaHGStr ? $lcaHGStr = $oreon->user->lcaHGStr : $lcaHGStr =  '\'\'';
 	$rq = "SELECT COUNT(*) FROM dependency dep";
 	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
