@@ -66,7 +66,7 @@ function montre(id) {
 		}
 	}	
 	else if (id == 5){
-		_f5=document.getElementById('f6');
+		_f5=document.getElementById('f5');
 		if(_f5.status.value == '0')
 		{
 			MyLoading('Loading...');
@@ -132,7 +132,7 @@ function getXhrIDCard(){
 }
 function get_runningProcessus(_host_id)
 {
-	var _tableforajax = document.getElementById('tab4');
+	var _tableforajax = document.getElementById('tab5');
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 
@@ -168,12 +168,15 @@ function get_runningProcessus(_host_id)
 			// ici je recupere les statistiques
 			var _runningProcs = reponseIDCard.getElementsByTagName("runningprocessus");
 
+
 			for (var i = 0 ; i < _runningProcs.length ; i++) {
 				var _runningProc = _runningProcs[i];
 
-				var _application = _software.getElementsByTagName("application")[0].firstChild.nodeValue;
-				var _mem = _software.getElementsByTagName("mem")[0].firstChild.nodeValue;
-				var _path = _software.getElementsByTagName("path")[0].firstChild.nodeValue;
+				var _application = _runningProc.getElementsByTagName("application")[0].firstChild.nodeValue;
+				var _mem = _runningProc.getElementsByTagName("mem")[0].firstChild.nodeValue;
+				var _path = _runningProc.getElementsByTagName("path")[0].firstChild.nodeValue;
+
+//alert(_path);
 
 				var _ligne = document.createElement('tr');
 	
@@ -201,7 +204,7 @@ function get_runningProcessus(_host_id)
 				_tableAjax.appendChild(_ligne);
 			}
 		}
-		MyIsLoading("software is loaded");
+		MyIsLoading("running processus is loaded");
 //		setTimeout('MyIsLoading("storageDevices is loaded")', '2000');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
@@ -268,7 +271,7 @@ function get_software(_host_id)
 			}
 		}
 //		MyIsLoading("software is loaded");
-		setTimeout('MyIsLoading("software is loaded")', '1000');
+		setTimeout('MyIsLoading("software is loaded")', '500');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -364,7 +367,7 @@ function get_StorageDevice(_host_id)
 			}
 		}
 //		MyIsLoading("storageDevices is loaded");
-		setTimeout('MyIsLoading("storageDevices is loaded")', '1000');
+		setTimeout('MyIsLoading("storageDevices is loaded")', '500');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -512,7 +515,7 @@ function get_network(_host_id)
 			}
 		}
 //		MyIsLoading("network is loaded");
-		setTimeout('MyIsLoading("network is loaded")', '1000');
+		setTimeout('MyIsLoading("network is loaded")', '500');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');

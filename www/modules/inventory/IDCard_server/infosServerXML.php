@@ -339,10 +339,12 @@ For information : contact@oreon-project.org
 		$hrSWRun = walk_snmp_value("1.3.6.1.2.1.25.4.2.1.1", "INTEGER: ");
 	    if ($hrSWRun)
 		    foreach ($hrSWRun as $key => $SWR){
-		    	$buffer .= '<runningprocessus>';	
+		    	$buffer .= '<runningprocessus>';
 				$buffer .= '<application>'.str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.2.".$SWR, "STRING: ")).'</application>';
-		    	$path = str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.4.".$SWR, "STRING: "));
+
+				$path = str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.4.".$SWR, "STRING: "));
 		    	$path = str_replace("\\\\", "\\", $path);
+
 		    	$buffer .= '<path> '.$path.'</path>';
 		    	$buffer .= '<mem> '.get_snmp_value("1.3.6.1.2.1.25.5.1.1.2.".$SWR, "INTEGER: ").'</mem>';
 				$buffer .= '</runningprocessus>';	
