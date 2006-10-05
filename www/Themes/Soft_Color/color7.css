@@ -132,8 +132,26 @@ input[type="submit"],input[type="button"],input[type="reset"]{
     background-image: url("./Images/bg_input_blue.gif") ;
 }
 .quick_search{	border-color:#eff1f4;	
-background-image: url("Images/bg_header_grayblue.gif");	
 background-position:top left;
 background-repeat:repeat-x;
 color:#fff;}
 
+
+.msg_loading{
+position:absolute;
+top:20px;
+left:200px;
+color:blue;
+font-size:18px;
+
+width:200px;
+}
+.msg_isloading{
+font-size:14px;
+position:absolute;
+top:20px;
+left:200px;
+background-color:red;
+color:white;
+width:200px;
+}
