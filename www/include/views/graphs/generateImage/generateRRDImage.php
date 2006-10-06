@@ -148,10 +148,10 @@ For information : contact@oreon-project.org
 		$longer = 0;
 		foreach ($ppMetrics as $tm){
 			if (isset($tm["ds_invert"]) && $tm["ds_invert"]){
-				$command_line .= " DEF:va".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$_GET["host_name"])."_".str_replace(" ", "-",$_GET["service_description"]).".rrd:".$tm["metric"].":LAST ";
+				$command_line .= " DEF:va".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$_GET["host_name"])."_".str_replace(" ", "-",$_GET["service_description"]).".rrd:".addslashes($tm["metric"]).":LAST ";
 				$command_line .= " CDEF:v".$cpt."=va".$cpt.",-1,* ";
 			} else
-				$command_line .= " DEF:v".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$_GET["host_name"])."_".str_replace(" ", "-",$_GET["service_description"]).".rrd:".$tm["metric"].":LAST ";
+				$command_line .= " DEF:v".$cpt."=".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$_GET["host_name"])."_".str_replace(" ", "-",$_GET["service_description"]).".rrd:".addslashes($tm["metric"]).":LAST ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
 			$cpt++;
