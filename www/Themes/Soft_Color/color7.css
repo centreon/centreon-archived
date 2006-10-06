@@ -83,12 +83,7 @@ border-color: #7B8DFF;
 .list_three:hover{	background-color:#B2e867;}
 .list_four {	background-color:#FD8B46;}
 .list_four:hover {	background-color:#FD0B46;}
-.quick_search{	border-color:#eff1f4;	
-background-image: url("./Images/bg_header_grayblue.gif") ;
-background-position:top left;
-background-repeat:repeat-x;
-background-color:#F3E9DA;
-	color:#fff;}
+
 
 #page {			color:#592bed;}
 #page a{		color:#592bed;}
@@ -102,7 +97,6 @@ background-repeat:repeat-x;
 #menu1_bgcolor{	background-color:#98B2DC;}
 #menu2_bgcolor{	background-color: #B0C4DE;}
 
-#menu_3{		background-color: red;}
 #menu_2{		background-color:	#406FBA;}
 .Tmenu3 .top .left { background-color:  #F2F2F2;}
 .Tmenu3 .top .right {  background-color:  #F2F2F2;}
@@ -131,20 +125,27 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 .oreonbutton input{
     background-image: url("./Images/bg_input_blue.gif") ;
 }
-.quick_search{	border-color:#eff1f4;	
-background-position:top left;
-background-repeat:repeat-x;
-color:#fff;}
-
 
 .msg_loading{
 position:absolute;
+
+
 top:20px;
 left:200px;
+width:200px;
+
+
 color:blue;
 font-size:18px;
 
-width:200px;
+/*
+background-color:#aaaaaa;
+top:0px;
+left:0px;
+*/
+
+width:100%;
+height:100%;
 }
 .msg_isloading{
 font-size:14px;
