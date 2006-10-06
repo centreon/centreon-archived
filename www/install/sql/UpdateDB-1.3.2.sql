@@ -141,10 +141,35 @@ DELETE FROM `topology` WHERE `topology_page` = '2020101';
 
 -- 06/10/2006
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_nagios', NULL, 50101, 5010101, 10, NULL, './include/options/oreon/generalOpt/generalOpt.php', '&o=nsgios', '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_colors', NULL, 50101, 5010102, 20, NULL, './include/options/oreon/generalOpt/generalOpt.php', '&o=colors', '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_snmp', NULL, 50101, 5010103, 30, NULL, './include/options/oreon/generalOpt/generalOpt.php', '&o=snmp', '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_ldap', NULL, 50101, 5010104, 40, NULL, './include/options/oreon/generalOpt/generalOpt.php', '&o=ldap', '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_rrdtool', NULL, 50101, 5010105, 50, NULL, './include/options/oreon/generalOpt/generalOpt.php', '&o=rrdtool', '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_debug', NULL, 50101, 5010106, 60, NULL, './include/options/oreon/generalOpt/generalOpt.php', '&o=debug', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_opt_conf', './img/icones/16x16/nagios.gif', 50101, 5010101, 10, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=debug', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_nagios', './img/icones/16x16/nagios.gif', 50101, 5010102, 20, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=nagios', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_colors', './img/icones/16x16/colors.gif', 50101, 5010103, 30, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=colors', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_snmp', './img/icones/16x16/nagios.gif', 50101, 5010104, 40, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=snmp', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_ldap', './img/icones/16x16/book_yellow.gif', 50101, 5010105, 50, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=ldap', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_rrdtool', './img/icones/16x16/column-chart.gif', 50101, 5010106, 60, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=rrdtool', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_debug', './img/icones/16x16/nagios.gif', 50101, 5010107, 70, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=debug', '0', '0', '1');
+
+
+ALTER TABLE `general_opt` ADD `debug_inventory` ENUM( "0", "1" ) NULL , ADD `debug_ldap_import` ENUM( "0", "1" ) NOT NULL ;
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_idCards', NULL, 7, 701, 45, 1, './modules/inventory/inventory.php', NULL, '0', '1', '1');
+
+
+-- changement de topology
+
+UPDATE `topology` SET `topology_name` = 'm_general',
+`topology_icone` = NULL ,
+`topology_parent` = '5',
+`topology_page` = '501',
+`topology_order` = '10',
+`topology_group` = '1',
+`topology_url` = './include/options/oreon/myAccount/formMyAccount.php',
+`topology_url_opt` = '&o=c',
+`topology_popup` = '0',
+`topology_modules` = '0',
+`topology_show` = '1' WHERE `topology_id` =65 LIMIT 1 ;
+
+
+
+
 
