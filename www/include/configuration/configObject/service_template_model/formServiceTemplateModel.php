@@ -213,7 +213,7 @@ For information : contact@oreon-project.org
 	$form->addGroup($serviceIV, 'service_is_volatile', $lang['sv_isVolatile'], '&nbsp;');
 	$form->setDefaults(array('service_is_volatile' => '2'));
 
-	$form->addElement('select', 'command_command_id', $lang['sv_checkCmd'], $checkCmds);
+	$form->addElement('select', 'command_command_id', $lang['sv_checkCmd'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
 	$form->addElement('text', 'command_command_id_arg', $lang['sv_args'], $attrsText);
 	$form->addElement('text', 'service_max_check_attempts', $lang['sv_checkMca'], $attrsText2);
 	$form->addElement('text', 'service_normal_check_interval', $lang['sv_normalCheckInterval'], $attrsText2);
@@ -224,7 +224,7 @@ For information : contact@oreon-project.org
 	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($serviceEHE, 'service_event_handler_enabled', $lang['sv_eventHandlerE'], '&nbsp;');
 	$form->setDefaults(array('service_event_handler_enabled' => '2'));
-	$form->addElement('select', 'command_command_id2', $lang['sv_eventHandler'], $checkCmds);
+	$form->addElement('select', 'command_command_id2', $lang['sv_eventHandler'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', $lang['sv_args'], $attrsText);
 
 
