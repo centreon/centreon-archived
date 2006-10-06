@@ -24,6 +24,64 @@ function init(){
 	}
 */
 
+function mreload(id) {
+	var _tableforajax = document.getElementById('tab' + id);
+	var _tableAjax = null;
+    var childrenNumber = _tableforajax.childNodes.length;
+
+    for (var i = 0; i < childrenNumber; i++) 
+    {
+		var element = _tableforajax.childNodes[i];
+      	var elementName = element.nodeName.toLowerCase();
+		if (elementName == 'table')
+		{
+		    var childrenNumbertable = element.childNodes.length;
+		    for (var j = 0; j < childrenNumbertable; j++) 
+		    {
+				var elementtable = element.childNodes[j];
+		  		var elementNametable = elementtable.nodeName.toLowerCase();
+		  		
+				if (elementNametable == 'tbody')
+				{
+					_tableAjax = elementtable;
+				}
+			}
+		}
+	}	
+	_tableAjax.innerHTML = "";
+
+	
+	if (id == 1){
+	}
+	else if (id == 2){
+	}
+	else if (id == 3){
+			MyLoading('Loading...');
+			_f3.status.value = 1;
+			get_StorageDevice(_host_id);
+	}
+	else if (id == 4){
+			MyLoading('Loading...');
+			_f4.status.value = 1;
+			get_software(_host_id);
+	}	
+	else if (id == 5){
+			MyLoading('Loading...');
+			_f5.status.value = 1;
+			get_runningProcessus(_host_id);
+	}	
+	else if (id == 6){
+			MyLoading('Loading...');
+			_f6.status.value = 1;
+			get_network(_host_id);
+	}
+	else
+	{
+		;
+	}
+	
+	
+}
 
 function montre(id) {
 
@@ -36,11 +94,16 @@ function montre(id) {
 		document.getElementById('c'+id).className='a';
 
 		var d = document.getElementById('tab'+id);
+		var dreload = document.getElementById('mreload'+id);
 		for (var i = 1; document.getElementById('tab'+i); i++) {
 			document.getElementById('tab'+i).style.display='none';
+			document.getElementById('mreload'+i).style.display='none';
 		}
 	if (d) {
 	d.style.display='block';
+	}
+	if (dreload) {
+	dreload.style.display='block';
 	}
 
 	if (id == 1){
@@ -204,8 +267,8 @@ function get_runningProcessus(_host_id)
 				_tableAjax.appendChild(_ligne);
 			}
 		}
-		MyIsLoading("running processus is loaded");
-//		setTimeout('MyIsLoading("storageDevices is loaded")', '2000');
+		//MyIsLoading("running processus is loaded");
+		setTimeout('MyIsLoading("running processus is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -271,7 +334,7 @@ function get_software(_host_id)
 			}
 		}
 //		MyIsLoading("software is loaded");
-		setTimeout('MyIsLoading("software is loaded")', '500');
+		setTimeout('MyIsLoading("software is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -367,7 +430,7 @@ function get_StorageDevice(_host_id)
 			}
 		}
 //		MyIsLoading("storageDevices is loaded");
-		setTimeout('MyIsLoading("storageDevices is loaded")', '500');
+		setTimeout('MyIsLoading("storageDevices is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -515,7 +578,7 @@ function get_network(_host_id)
 			}
 		}
 //		MyIsLoading("network is loaded");
-		setTimeout('MyIsLoading("network is loaded")', '500');
+		setTimeout('MyIsLoading("network is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
