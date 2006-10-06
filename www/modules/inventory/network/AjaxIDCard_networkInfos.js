@@ -40,6 +40,7 @@ function mreload(id) {
 		    {
 				var elementtable = element.childNodes[j];
 		  		var elementNametable = elementtable.nodeName.toLowerCase();
+
 		  		
 				if (elementNametable == 'tbody')
 				{
@@ -48,6 +49,7 @@ function mreload(id) {
 			}
 		}
 	}	
+	
 	_tableAjax.innerHTML = "";
 	
 	if (id == 1){
@@ -85,15 +87,19 @@ function montre(id) {
 		document.getElementById('c'+id).className='a';
 
 		var d = document.getElementById('tab'+id);
-		var dreload = document.getElementById('mreload'+id);
+
+		if(id == 2 || id == 3)
+			var dreload = document.getElementById('mreload'+id);
+
 		for (var i = 1; document.getElementById('tab'+i); i++) {
 			document.getElementById('tab'+i).style.display='none';
-			document.getElementById('mreload'+i).style.display='none';
+			if(i == 2 || i == 3)
+				document.getElementById('mreload'+i).style.display='none';
 		}
 	if (d) {
 	d.style.display='block';
 	}
-	if (dreload) {
+	if (dreload && (id == 2 || id == 3)) {
 	dreload.style.display='block';
 	}
 
@@ -170,7 +176,7 @@ function get_vlan(_host_id)
 }
 function get_network(_host_id)
 {
-	var _tableforajax = document.getElementById('tab6');
+	var _tableforajax = document.getElementById('tab2');
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 

@@ -22,7 +22,6 @@ For information : contact@oreon-project.org
 		exit ();
 	$pagination = "maxViewConfiguration";		
 
-	# LCA
 	# LCA 
 	$lcaHostByName = getLcaHostByName($pearDB);
 	$lcaHostByID = getLcaHostByID($pearDB);

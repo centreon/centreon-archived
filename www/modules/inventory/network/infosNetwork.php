@@ -112,6 +112,8 @@ For information : contact@oreon-project.org
 		$tpl->assign("sysUpTime", $sysUpTime);
 		$tpl->assign("sysUpTimelabel", $lang["s_uptime"]);
 
+
+/*
 	    if ($sysUpTime || $rD["description"]) {
 
 	    	$change_value = array("NetRessource" => "1", "Server" => "2");
@@ -275,6 +277,10 @@ if(isset($iftab) && is_array($iftab))
 				$tpl->assign("Beforelabel",$lang["s_Before"]);
 				$tpl->assign("Afterlabel",$lang["s_After"]);			    
 	    }
+	    */
+	    
+	    
+	    
 	}
 
 	if (isset($host_id)){

@@ -11,10 +11,10 @@
 
 <div>
 <ul id="mainnav">
-	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a><a id="mreload1" class="cachediv" href="#" onclick="javascript:mreload('1');">R</a></li>
+	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
 	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a><a id="mreload2" class="cachediv" href="#" onclick="javascript:mreload('2');">R</a></li>
 	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a><a id="mreload3" class="cachediv" href="#" onclick="javascript:mreload('3');">R</a></li>
-	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a><a id="mreload4" class="cachediv" href="#" onclick="javascript:mreload('4');">R</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
 </ul>
 </div>
 <div id='tab1' class='tab'>
@@ -43,35 +43,14 @@
 	</table>
 </div>
 <div id='tab2' class='tab'>
-<form class="cachediv">
+<form id='f2' class="cachediv">
 <input type="hidden" name="status" value="0">
 </form>
-	 <table class="ListTable">
-{ foreach name=outer item=it from=$ifTab }
-	{if $it.type_interface == 1}
-		<tr class="ListHeader">
-			<td colspan="2">{ $it.ifDescr } ({$it.ifVlan})</td>
-			<td td colspan="2"> {$Statuslabel} : { $it.ifOperStatus } ({ $it.ifAdminStatus })&nbsp;</td>
-		</tr>
-		<tr class={$it.Color}>
-			<td> {$PhysAddresslabel} : </td>
-			<td>{ $it.ifPhysAddress }&nbsp;</td>
-			<td>IP Address : </td><td>{ $it.ipInterface }&nbsp;</td>
-		</tr>
-		<tr class={$it.Color}>
-			<td> {$Typelabel}:</td><td> { $it.ifType }</td>
-			<td>Speed :</td><td> {$it.ifSpeed }&nbsp;{$it.ifSpeedUnit}&nbsp;</td>
-		</tr>
-		<tr class={$it.Color}>
-			<td colspan="2"> {$Trafficlabel} - {$Inlabel} : { $it.ifInOctets }&nbsp; / {$Outlabel} : { $it.ifOutOctets }&nbsp;</td>
-			<td colspan="2">{$Errorlabel} - {$Inlabel} : { $it.ifInError }&nbsp; / {$Outlabel} : { $it.ifOutError }&nbsp;</td>
-		</tr>
-	{/if}
-{/foreach}
-</table>
+<table class="ListTable">
+	 <tr><td></td></tr></table>
 </div>
 <div id='tab3' class='tab'>
-<form class="cachediv">
+<form id='f3' class="cachediv">
 <input type="hidden" name="status" value="0">
 </form>
 	 <table class="ListTable">

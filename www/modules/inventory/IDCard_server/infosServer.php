@@ -198,13 +198,9 @@ For information : contact@oreon-project.org
 				    	else
 				    		$ifTab[$key]["ipInterface"] = "Not Defined";
 		    		}
-
 			    $tpl->assign("ifTab", $ifTab);
-
 				$tab_unit = array("0" => "o", "1" => "Ko","2" => "Mo","3" => "Go","4" => "To");
-
 			    $hrStorageIndex = walk_snmp_value(".1.3.6.1.2.1.25.2.3.1.1", "INTEGER: ");
-
 */
 				$tpl->assign("mntPointlabel",$lang["s_mntPoint"]);
 				$tpl->assign("Typelabel",$lang["s_Type"]);
@@ -212,9 +208,8 @@ For information : contact@oreon-project.org
 				$tpl->assign("Freelabel",$lang["s_Free"]);
 				$tpl->assign("Usedlabel",$lang["s_Used"]);
 				$tpl->assign("Sizelabel",$lang["s_Size"]);
+
 /*
-
-
 			    if ($hrStorageIndex)
 				    foreach ($hrStorageIndex as $key => $SI){
 				    	$hrStorageIndex[$key] = array();
