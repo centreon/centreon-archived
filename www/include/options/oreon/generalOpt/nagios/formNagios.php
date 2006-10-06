@@ -47,33 +47,19 @@ For information : contact@oreon-project.org
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["genOpt_change"]);
 
-	$TabColorNameAndLang = array("color_up"=>"genOpt_oHCUP",
-                                    	"color_down"=>"genOpt_oHCDW",
-                                    	"color_unreachable"=>"genOpt_oHCUN",
-                                    	"color_ok"=>"genOpt_oSOK",
-                                    	"color_warning"=>"genOpt_oSWN",
-                                    	"color_critical"=>"genOpt_oSCT",
-                                    	"color_pending"=>"genOpt_oSPD",
-                                    	"color_unknown"=>"genOpt_oSUK",
-					);
-
-	while (list($nameColor, $val) = each($TabColorNameAndLang))
-	{
-		$nameLang = $lang[$val];
-		$codeColor = $gopt[$nameColor];
-		$title = $lang["genOpt_colorPicker"];
-		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
-		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
-		if ($form->validate())	{
-			$colorColor = $form->exportValue($nameColor);
-		}
-		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
-		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
-		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
-		if (!$form->validate())	{
-			$form->addElement('button', $nameColor.'_modify', $lang['modify'], $attrsText5);
-		}
-	}
+	#
+	## Nagios information
+	#
+	$form->addElement('header', 'nagios', $lang['genOpt_nagios']);
+	$form->addElement('text', 'nagios_path', $lang["genOpt_nagPath"], $attrsText);
+	$form->addElement('text', 'nagios_path_bin', $lang["genOpt_nagBin"], $attrsText);
+	$form->addElement('text', 'nagios_path_img', $lang["genOpt_nagImg"], $attrsText);
+	$form->addElement('text', 'nagios_path_plugins', $lang["genOpt_nagPlug"], $attrsText);
+	$form->addElement('select', 'nagios_version', $lang["genOpt_nagVersion"], array(1=>"1", 2=>"2"));
+	$form->addElement('text', 'mailer_path_bin', $lang["genOpt_mailer"], $attrsText);
+	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["yes"], '1');
+	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["no"], '0');
+	$form->addGroup($ppUse, 'perfparse_installed', $lang["genOpt_perfparse"], '&nbsp;');
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -87,46 +73,37 @@ For information : contact@oreon-project.org
 			return rtrim($elem, "/")."/";
 	}
 	$form->applyFilter('_ALL_', 'trim');
-	
+	$form->applyFilter('nagios_path', 'slash');
+	$form->applyFilter('nagios_path_img', 'slash');
+	$form->applyFilter('nagios_path_plugins', 'slash');
+	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
+	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
+	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
+	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
+	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
+	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
+	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
+	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
+	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
+	$form->addRule('nagios_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
+
 	#
 	##End of form definition
 	#
 
 	# Smarty template Init
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path.'/colors', $tpl);
+	$tpl = initSmartyTpl($path."/nagios", $tpl);
 
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 
-	#
-	##Picker Color JS
-	#
-	$tpl->assign('colorJS',"
-	<script type='text/javascript'>
-		function popup_color_picker(t,name,title)
-		{
-			var width = 400;
-			var height = 300;
-			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title, 'cp', 'resizable=no, location=no, width='
-						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
-		}
-	</script>
-    "
-    );
-	#
-	##End of Picker Color
-	#
-
-
-
     $valid = false;
 	if ($form->validate())	{
-
 		# Update in DB
-		updateColorsConfigData($form->getSubmitValue("gopt_id"));
+		updateNagiosConfigData($form->getSubmitValue("gopt_id"));
 		# Update in Oreon Object
 		$oreon->optGen = array();
 		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
@@ -139,7 +116,7 @@ For information : contact@oreon-project.org
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
 	}
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=colors'"));
+	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'"));
 
 
 	#
@@ -153,5 +130,5 @@ For information : contact@oreon-project.org
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('valid', $valid);
-	$tpl->display("formColors.ihtml");
+	$tpl->display("formNagios.ihtml");
 ?>

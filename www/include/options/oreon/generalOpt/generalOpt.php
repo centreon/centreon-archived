@@ -35,8 +35,15 @@ For information : contact@oreon-project.org
 	#PHP functions
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
-	
+
 	switch ($o)	{
-		default : require_once($path."formGeneralOpt.php"); break;
+		case "nagios" : require_once($path."nagios/formNagios.php"); break;
+		case "colors" : require_once($path."colors/formColors.php"); break;
+		case "snmp" : require_once($path."snmp/formSNMP.php"); break;
+		case "rrdtool" : require_once($path."rrdtool/formRRDTool.php"); break;
+		case "ldap" : require_once($path."ldap/formLDAP.php"); break;
+		case "debug" : require_once($path."debug/formDebug.php"); break;
+		case "general" : require_once($path."general/formGeneralOpt.php"); break;
+		default : require_once($path."general/formGeneralOpt.php"); break;
 	}
 ?>

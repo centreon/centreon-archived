@@ -1,0 +1,21 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+<table id="ListTable">
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/layout_vertical.gif'>&nbsp;&nbsp;{$form.header.various}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_path_bin.label}</td><td class="FormRowValue">{$form.rrdtool_path_bin.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_version.label}</td><td class="FormRowValue">{$form.rrdtool_version.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.graph_preferencies.label}</td><td class="FormRowValue">{$form.graph_preferencies.html}</td></tr>
+</table>
+{if !$valid}
+	<div id="validForm">
+		<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+{else}
+	<div id="validForm">
+		<p>{$form.change.html}</p>
+	</div>
+{/if}
+{$form.hidden}
+</form>
