@@ -1,0 +1,46 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form method="GET" action="">
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="n" type="hidden">
+{php}
+   include('./include/common/pagination.php');
+{/php}
+</form>
+<form {$form_attributes}>
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="n" type="hidden">
+
+	<table id="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_address}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_manu}</td>
+		</tr>
+		{section name=elem loop=$elemArr}
+		<tr class={$elemArr[elem].MenuClass}>
+			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
+			<td class="ListColLeft">{$elemArr[elem].RowMenu_desc}</td>
+			<td class="ListColLeft">{$elemArr[elem].RowMenu_address}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_manu}</td>
+		</tr>
+		{/section}
+		<tr>
+			<td class="ListColFooterLeft" align="left" colspan="6">
+			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
+			<input type="image" name="o" value="d" src="./img/icones/16x16/refresh.gif">
+			</td>
+		</tr>		
+	</table>
+</form>
+<form>
+{php}
+   include('./include/common/pagination.php');
+{/php}
+{$form.hidden}
+</form>
+
