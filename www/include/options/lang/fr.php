@@ -114,7 +114,6 @@ $lang["menu_listDir"] = "R&eacute;pertoire";
 $lang["menu_listGen"] = "G&eacute;n&eacute;ration";
 $lang["menu_listLang"] = "Langue";
 $lang["menu_listSql"] = "SQL";
-$lang["menu_nagios"] = "Nagios";
 
 
 # Session
@@ -146,4 +145,13 @@ $lang["myAcc_change"] = "Modifier mes param&egrave;tres";
 
 $lang["m_task"] = "T&acirc;ches";
 
+# Menu 
+
+$lang["menu_ldap"] = "LDAP";
+$lang["menu_snmp"] = "SNMP";
+$lang["menu_rrdtool"] = "RRDTool";
+$lang["menu_debug"] = "Debug";
+$lang["menu_colors"] = "Colors";
+$lang["menu_nagios"] = "Nagios";
+$lang["menu_general"] = "G&ecute;n&ecute;rate";
 ?>

@@ -144,4 +144,15 @@ $lang["myAcc_change"] = "Change my settings";
 # Tasks
 
 $lang["m_task"] = "Tasks";
+
+# Menu 
+
+$lang["menu_ldap"] = "LDAP";
+$lang["menu_snmp"] = "SNMP";
+$lang["menu_rrdtool"] = "RRDTool";
+$lang["menu_debug"] = "Debug";
+$lang["menu_colors"] = "Colors";
+$lang["menu_nagios"] = "Nagios";
+$lang["menu_general"] = "G&ecute;n&ecute;rate";
+
 ?>
