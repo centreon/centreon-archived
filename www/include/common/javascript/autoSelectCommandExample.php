@@ -25,23 +25,30 @@ For information : contact@oreon-project.org
 	require_once("../../../DBconnect.php");
 	
 	
-	header('Content-type: text/html; charset=iso-8859-1'); 
-	 
+	header('Content-type: text/html; charset=iso-8859-1');
+
+
+/*
 	if(count($_POST) > 0) 
 	{ 
 	   foreach($_POST as $v) 
 	      $command_id = utf8_decode($v); 
 	} 
+*/
+
+//	if(!is_null($command_id))
 
 
-	if(!is_null($command_id))
+	if(isset($_POST["index"]))
 	{
+//		echo $_GET["index"];
+		
 		header('Content-Type: text/xml;charset=utf-8');
 
 		$res =& $pearDB->query("SELECT command_example FROM command WHERE" .
-			" command_id = '".$command_id."' ");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
+			" command_id = '". $_POST["index"] ."' ");
+		if (PEAR::isError($res)) {
+			print "Mysql Error : ".$res->getMessage();
 		}
 		while($res->fetchInto($arg))
 			echo $arg["command_example"];
