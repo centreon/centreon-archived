@@ -11,12 +11,12 @@
 
 <div>
 <ul id="mainnav">
-	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
-	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
-	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
-	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
-	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
-	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
+	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a><a id="mreload1" class="cachediv" href="#" onclick="javascript:mreload('1');">R</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a><a id="mreload2" class="cachediv" href="#" onclick="javascript:mreload('2');">R</a></li>
+	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a><a id="mreload3" class="cachediv" href="#" onclick="javascript:mreload('3');">R</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a><a id="mreload4" class="cachediv" href="#" onclick="javascript:mreload('4');">R</a></li>
+	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a><a id="mreload5" class="cachediv" href="#" onclick="javascript:mreload('5');">R</a></li>
+	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a><a id="mreload6" class="cachediv" href="#" onclick="javascript:mreload('6');">R</a></li>
 </ul>
 </div>
 
