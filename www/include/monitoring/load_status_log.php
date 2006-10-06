@@ -20,8 +20,25 @@ For information : contact@oreon-project.org
 	
 	if (!isset($oreon))
 	  exit();
+
+	include_once("./include/monitoring/functions.php");
+	
+	// Read 
+	$version = $oreon->user->get_version();
+	
+	# Init tab
+	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+	
+	
+	// Stats
+	
+	$oreon->status_graph_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
+	$oreon->status_graph_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => "0");
 	
 	$time_startR = microtime_float();
+	
+	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
 	$isRestreint = HadUserLca($pearDB);
 	
@@ -30,91 +47,15 @@ For information : contact@oreon-project.org
 	unset ($host_status);
 	unset ($service_status);
 	
-	$mem_befor = memory_get_usage() / 1024 / 1024 ;
-
-	function get_program_data($log, $status_proc){
-	  $pgr_nagios_stat = array();
-	  $pgr_nagios_stat["program_start"] = $log['1'];
-	  $pgr_nagios_stat["nagios_pid"] = $log['2'];
-	  $pgr_nagios_stat["daemon_mode"] = $log['3'];
-	  $pgr_nagios_stat["last_command_check"] = $log['4'];
-	  $pgr_nagios_stat["last_log_rotation"] = $log['5'];
-	  $pgr_nagios_stat["enable_notifications"] = $log['6'];
-	  $pgr_nagios_stat["execute_service_checks"] = $log['7'];
-	  $pgr_nagios_stat["accept_passive_service_checks"] = $log['8'];
-	  $pgr_nagios_stat["enable_event_handlers"] = $log['9'];
-	  $pgr_nagios_stat["obsess_over_services"] = $log['10'];
-	  $pgr_nagios_stat["enable_flap_detection"] = $log['11'];
-	  $pgr_nagios_stat["process_performance_data"] = $log['13'];
-	  $pgr_nagios_stat["status_proc"] = $status_proc;
-	  return ($pgr_nagios_stat);
-	}
-		
-	function get_host_data($log){
-	  $host_data["host_name"] = $log['1'];
-	  $host_data["current_state"] = $log['2'];
-	  $host_data["last_check"] = $log['3'];
-	  $host_data["last_state_change"] = $log['4'];
-	  $host_data["problem_has_been_acknowledged"] = $log['5'];
-	  $host_data["time_up"] = $log['6'];
-	  $host_data["time_down"] = $log['7'];
-	  $host_data["time_unrea"] = $log['8'];
-	  $host_data["last_notification"] = $log['9'];
-	  $host_data["current_notification_number"] = $log['10'];
-	  $host_data["notifications_enabled"] = $log['11'];
-	  $host_data["event_handler_enabled"] = $log['12'];
-	  $host_data["active_checks_enabled"] = $log['13'];
-	  $host_data["flap_detection_enabled"] = $log['14'];
-	  $host_data["is_flapping"] = $log['15'];
-	  $host_data["percent_state_change"] = $log['16'];
-	  $host_data["scheduled_downtime_depth"] = $log['17'];
-	  $host_data["failure_prediction_enabled"] = $log['18'];
-	  $host_data["process_performance_data"] = $log['19'];
-	  $host_data["plugin_output"] = $log['20'];
-	  return ($host_data);
-	}
-	
-	function get_service_data($log){
-	  $svc_data["host_name"] = $log[1];
-	  $svc_data["service_description"] = $log[2];
-	  $svc_data["current_state"] = $log[3];
-	  $svc_data["current_attempt"] = $log[4];
-	  $svc_data["stat_type"] = $log[5];
-	  $svc_data["last_check"] = $log[6];
-	  $svc_data["next_check"] = $log[7];
-	  $svc_data["check_type"] = $log[8];
-	  $svc_data["active_checks_enabled"] = $log[9];
-	  $svc_data["passive_checks_enabled"] = $log[10];
-	  $svc_data["event_handler_enabled"] = $log[11];
-	  $svc_data["last_state_change"] = $log[12];
-	  $svc_data["problem_has_been_acknowledged"] = $log[13];
-	  $svc_data["last_hard_state_change"] = $log[14];
-	  $svc_data["ok"] = $log[15];
-	  $svc_data["warning"] = $log[16];
-	  $svc_data["unknown"] = $log[17];
-	  $svc_data["critical"] = $log[18];
-	  $svc_data["last_notification"] = $log[19];
-	  $svc_data["current_notification_number"] = $log[20];
-	  $svc_data["notifications_enabled"] = $log[21];
-	  $svc_data["check_latency"] = $log[22];
-	  $svc_data["check_execution_time"] = $log[23];
-	  $svc_data["flap_detection_enabled"] = $log[24];
-	  $svc_data["is_flapping"] = $log[25];
-	  $svc_data["percent_state_change"] = $log[26];
-	  $svc_data["scheduled_downtime_depth"] = $log[27];
-	  $svc_data["failure_prediction_enabled"] = $log[28];
-	  $svc_data["process_performance_data"] = $log[29];
-	  $svc_data["obsess_over_service"] = $log[30];
-	  $svc_data["plugin_output"] = $log[31];
-	  $svc_data["total_running"] = $log[15]+$log[16]+$log[17]+$log[18];
-	  return ($svc_data);
-	}
-
-	$t_begin = microtime_float();
+	# Read File
+	if ($version == 1 || $version == 2)	
+		$file = $oreon->Nagioscfg["status_file"];
+	else
+		$file = "/srv/nagios/var/status_oreon.log";
 
 	// Open File
-	if (file_exists($oreon->Nagioscfg["status_file"])){
-		$log_file = fopen($oreon->Nagioscfg["status_file"], "r");
+	if (file_exists($file)){
+		$log_file = fopen($file, "r");
 	 	$status_proc = 1;
 	} else {
 	  	$log_file = 0;
@@ -128,24 +69,13 @@ For information : contact@oreon-project.org
 	$host_services = array();
 	$metaService_status = array();
 	$tab_host_service = array();
-	
-	// Read 
-	$version = $oreon->user->get_version();
-	
-	// Stats
-	
-	$oreon->status_graph_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
-	$oreon->status_graph_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => "0");
-	
-	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
-	
+		
 	$time = time();
 	
 	if ($version == 1){
 	  if ($log_file)
 	    while ($str = fgets($log_file))	{
-	      	// set last update 
+      	  	// set last update 
 	     	$last_update = date("d-m-Y h:i:s");
 	      	if (!preg_match("/^\#.*/", $str)){		// get service stat
 				$log = split(";", $str);
@@ -166,7 +96,7 @@ For information : contact@oreon-project.org
 		  	}
 	      	unset($str);
 		}
-	} else {
+	} else if ($version == 2){
 		if ($log_file)
 	    	while ($str = fgets($log_file)) {
 	      		$last_update = date("d-m-Y h:i:s");
@@ -236,7 +166,32 @@ For information : contact@oreon-project.org
 					unset($str);	
 	      		}
 	    	}
+	} else {
+		if ($log_file)
+		    while ($str = fgets($log_file))	{
+		      	// set last update 
+		     	$last_update = date("d-m-Y h:i:s");
+		      	$log = split("#", $str);
+				if (preg_match("/^s/", $str)){
+					if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) 
+							&& strcmp($log[1], "OSL_Module") && strcmp($log[1], "Meta_Module")){
+						$service_status[$log["1"]."_".$log["2"]] = getServiceDataParsed($log);
+				   		$tab_host_service[$log["1"]][$log["2"]] = "1";
+				   		$oreon->status_graph_service[$service_status[$log["1"]."_".$log["2"]]['current_state']]++;
+					} else if (!strcmp($log[1], "Meta_Module"))
+				  		$metaService_status[$log["2"]] = getServiceDataParsed($log);
+				} else if (preg_match("/^h*/", $str) && strcmp($log[1], "OSL_Module")){ // get host stat
+			  		if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
+			    		$tab_host_service[$log["1"]] = array();
+			    		$host_status[$log["1"]] = getHostDataParsed($log);
+			    		$oreon->status_graph_host[$host_status[$log["1"]]['current_state']]++;
+			  		}
+				} else if (preg_match("/^p/", $str))
+			  		$program_data = getProgramDataParsed($log, $status_proc);
+		      	unset($str);
+			}
 	}
+	
 	$row_data = array();
 	if (isset($_GET["o"]) && $_GET["o"] == "svcSch" && !isset($_GET["sort_types"])){
 		$_GET["sort_types"] = "next_check";
