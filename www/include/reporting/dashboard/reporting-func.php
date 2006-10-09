@@ -25,6 +25,9 @@ For information : contact@oreon-project.org
 		$minute = date("i",time());
 		$second = date("s",time());
 		$start_date_day = mktime(0, 0, 0, $month, $day, $year);
+
+				echo "ici<br>";
+
 	
 		if(!is_null($period)){
 			if($period == "today"){
@@ -34,9 +37,10 @@ For information : contact@oreon-project.org
 				$start_date_select = time() - (24*60*60);
 				$end_date_select = time();
 			} else if($period == "yesterday"){
+				echo "la";
 				$start_date_select = mktime(0, 0, 0, $month, $day-1, $year);
 				$end_date_select = mktime(0, 0, 0, $month, $day, $year);
-			} else if($period == "thisweek"){//a fair
+			} else if($period == "thisweek"){
 				$dd = (date("D",mktime(0, 0, 0, $month, $day, $year)));
 				for($ct = 1; $dd != "Mon" ;$ct++)
 					$dd = (date("D",mktime(0, 0, 0, $month, ($day-$ct), $year)));
@@ -49,8 +53,8 @@ For information : contact@oreon-project.org
 				$start_date_select = mktime($hour, $minute, $second, $month, $day-30, $year);
 				$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
 			} else if($period == "lastyear"){// attention au 31 
-				$start_date_select = mktime(23, 59, 60, 12, 31, $year-1);
-				$end_date_select = mktime(23, 59, 60, 12, 31, $year);
+				$start_date_select = mktime(23, 59, 60, 12, 31, $year-2);
+				$end_date_select = mktime(23, 59, 60, 12, 31, $year-1);
 			} else if($period == "thismonth") {
 				$start_date_select = mktime(23, 59, 60, $month, 0, $year);
 				$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
@@ -125,6 +129,12 @@ For information : contact@oreon-project.org
 	}
 
 	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select){	
+		echo "<br>log in db<br>";
+
+		echo $end_date_select."<br>";
+		echo $start_date_select."<br>";
+echo $host_id . "<br>";
+
 		$rq = 'SELECT ' .
 			'service_id, ' .
 			'sum(OKTimeScheduled)' .
@@ -147,8 +157,9 @@ For information : contact@oreon-project.org
 			$tab_svc_bdd = array();
 			if (PEAR::isError($res)){
 			  die($res->getMessage());
-			} else { 
+			} else {
 			  while ($s =& $res->fetchRow()){
+		echo "--log--<br>";
 			  	
 				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
