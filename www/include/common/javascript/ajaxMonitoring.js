@@ -21,6 +21,10 @@ For information : contact@oreon-project.org
 var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
 	 
 	 
+function monitoring_refresh()	{
+goM(0,1);
+}
+	 
 function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
 	   var xhrM = new XMLHttpRequest(); 
