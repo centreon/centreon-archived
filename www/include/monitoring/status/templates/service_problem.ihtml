@@ -1,6 +1,11 @@
 {assign var="o" value="svcpb"}
 
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+
+<div id="JS_monitoring_toolbar">
+<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');">R</a>
+</div>
+
 <div class="cachediv">
 <!-- informations bank for ajax -->
 <FORM id="fsave">
