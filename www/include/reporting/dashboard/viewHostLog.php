@@ -15,6 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	$tt = 0;
 	$start_date_select = 0;
 	$end_date_select = 0;
 	$path = "./include/reporting/dashboard";
@@ -292,6 +293,7 @@ For information : contact@oreon-project.org
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";
 	$tab_resume[3] = $tab;
 
+	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
 
 	$start_date_select = date("d/m/Y G:i:s", $start_date_select);
 	$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
@@ -308,7 +310,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("tab_svc", $tab_svc);
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));
-		}## end of period requirement
+	}## end of period requirement
 
 	$tpl->assign('actualTitle', $lang["actual"]);
 
