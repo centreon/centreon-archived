@@ -19,6 +19,9 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	$pagination = "maxViewMonitoring";
+
+	#create javascript for refresh ajax
+	include('makeJS.php');
 	
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
