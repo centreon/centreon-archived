@@ -57,16 +57,16 @@ For information : contact@oreon-project.org
 	switch ($o)	{
 		case "u" : require_once($path."inventoryUpdate.php"); break; #Update Inventory
 
-		case "t" : require_once($path."infosServer.php"); break; #Watch  server
-		case "o" : require_once($path."infosNetwork.php"); break; #Watch  network
+		case "t" : require_once($path."IDCard_server/infosServer.php"); break; #Watch  server
+		case "o" : require_once($path."IDCard_network/infosNetwork.php"); break; #Watch  network
 
 		case "b" : require_once($path."inventoryBlanck.php"); break; #No ID Card
 
-		case "s" : require_once($path."listServer.php"); break; #list of server
-		case "n" : require_once($path."listNetwork.php"); break; #list of network
+		case "s" : require_once($path."IDCard_server/listServer.php"); break; #list of server
+		case "n" : require_once($path."IDCard_network/listNetwork.php"); break; #list of network
 
-		case "c" : change_manufacturer(isset($_GET["select"]) ? $_GET["select"]: array() , $_GET["select_manufacturer"]); require_once($path."listServer.php"); break; #change manufacturer
-		case "d" : change_manufacturer(isset($_GET["select"]) ? $_GET["select"]: array(), $_GET["select_manufacturer"]); require_once($path."listNetwork.php"); break; #change manufacturer
-		default : require_once($path."listServer.php"); break;
+		case "c" : change_manufacturer(isset($_GET["select"]) ? $_GET["select"]: array() , $_GET["select_manufacturer"]); require_once($path."IDCard_server/listServer.php"); break; #change manufacturer
+		case "d" : change_manufacturer(isset($_GET["select"]) ? $_GET["select"]: array(), $_GET["select_manufacturer"]); require_once($path."IDCard_network/listNetwork.php"); break; #change manufacturer
+		default : require_once($path."IDCard_server/listServer.php"); break;
 	}
 ?>
