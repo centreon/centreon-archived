@@ -393,3 +393,10 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 	display: none;
 }
 
+.consol_button{
+float:left;
+}
+#JS_monitoring_toolbar{
+float:right;
+width:100%;
+}

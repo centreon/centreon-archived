@@ -1,10 +1,11 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 
-<div id="JS_monitoring_toolbar">
-<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a>
-<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.png' alt='Play'></a>
-<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.png' alt='Pause'></a>
-<div id="time_live">...</div>
+<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.png' alt='Refresh' title='Refresh'></a></span>
+<span class="consol_button"><a id="JS_monitoring_play" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.png' alt='Play' title='Play'></a></span>
+<span class="consol_button"><img id="JS_monitoring_play_gray" class="cachediv" src='./img/icones/16x16/media_play_gray.png' alt='Play' title='Play'></span>
+<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.png' alt='Pause' title='Pause'></a></span>
+<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.png' alt='Pause' title='Pause'></span>
+<div class="cachediv" id="time_live">...</div>
 </div>
 
 <div class="cachediv">
