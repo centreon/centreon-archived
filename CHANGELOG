@@ -1,9 +1,13 @@
 ## Oreon 1.3.2
 
+=> Bugfix : Multiple correction in Darshboard with a new algo
+=> Feature : Refresh IDCard in Ajax
+=> Bugfix : Bug in command example
 => Bugfix : Nagios import : Set the etc/ dir
 => Bugfix : Nagios CFG creation : Correct mistakes between performance fields
 => Feature : Add 2 field in general option, refresh stat and refresh monitoring (ajax refresh)
-=> Feature : "service detail" and "service problem" refresh in ajax
+=> Feature : Add Console for Ajax monitoring
+=> Feature : "service detail" and "service problem" refresh in Ajax
 => Feature : new table mysql "topology_JS" use for include and start all js
 => Feature : Add Status bar in top rihgt with ajax for auto refresh
 => Feature : Moving quickSearch
