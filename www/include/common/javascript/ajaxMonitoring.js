@@ -22,6 +22,7 @@ var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   inter
 var _timeoutID =	0;
 var _on = 1;
 
+
 	 
 function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
@@ -95,8 +96,10 @@ function mk_img(_src, _alt)
 	var _img = document.createElement("img");
   	_img.src = _src;
   	_img.alt = _alt;
+  	_img.title = _alt;
 	return _img;
 }
+
 
 
 function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_host_name){
@@ -500,6 +503,9 @@ function goM(_time_reload,_sid){
 
 //					document.getElementById('log').innerHTML += _flag + '->' + order + ' = ';
 
+
+
+
 				if((_type == 'service' || _type == 'service_problem') && _flag == 0)
 				{
 					var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;								
@@ -514,11 +520,11 @@ function goM(_time_reload,_sid){
 
 					var _infohtml = '';	
 					if(_problem_has_been_acknowledged == 1)
-						_infohtml += '<img src=' + _formBasic.icone_problem_has_been_acknowledged.value + ' alt=problem_has_been_acknowledged>';
+						_infohtml += '<img src=' + _formBasic.icone_problem_has_been_acknowledged.value + ' alt=problem_has_been_acknowledged title=problem_has_been_acknowledged>';
 					if(_notifications_enabled == 0)
-						_infohtml += '<img src=' + _formBasic.icone_notifications_enabled.value + ' alt=notification_enable>';
+						_infohtml += '<img src=' + _formBasic.icone_notifications_enabled.value + ' alt=notification_enable title=notification_enable>';
 					if(_is_flapping == 1)
-						_infohtml += '<img src=' + _formBasic.icone_flapping.value + ' alt=is_flapping>';
+						_infohtml += '<img src=' + _formBasic.icone_flapping.value + ' alt=is_flapping title=is_flapping>';
 					var _current_state = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
 					var _current_attempt = line.getElementsByTagName("current_attempt")[0].firstChild.nodeValue;
 					var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
@@ -526,9 +532,9 @@ function goM(_time_reload,_sid){
 					var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 	
 					if(_accept_passive_check == 1)					
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_passive_check>';
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_passive_check title=accept_passive_check>';
 					if(_accept_active_check == 1)
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_active_check>';					
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_active_check title=accept_active_check>';					
 
 					document.getElementById('infos'+order).innerHTML = _infohtml;
 					document.getElementById('current_state'+order).innerHTML = _status;
@@ -639,9 +645,9 @@ function goM(_time_reload,_sid){
 					var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 
 					if(_accept_passive_check == 1)
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_passive_check>';
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_passive_check title=accept_passive_check>';
 					if(_accept_active_check == 1)
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_active_check>';					
+						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_active_check title=accept_active_check>';					
 
 					document.getElementById('infos'+order).innerHTML = _infohtml;
 				
