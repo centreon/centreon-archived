@@ -1,0 +1,104 @@
+<script type="text/javascript" src="./modules/inventory/IDCard_network/AjaxIDCard_networkInfos.js"></script>
+{$initJS}
+
+<div id="msg" class="cachediv">
+...
+</div>
+
+<form id='infosBasic' >
+<input type="hidden" name="host_id" value="{$host_id}">
+</form>
+
+<div>
+<ul id="mainnav">
+	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
+	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a><a id="mreload2" class="cachediv" href="#" onclick="javascript:mreload('2');">R</a></li>
+	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a><a id="mreload3" class="cachediv" href="#" onclick="javascript:mreload('3');">R</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+</ul>
+</div>
+<div id='tab1' class='tab'>
+<form class="cachediv">
+<input type="hidden" name="status" value="0">
+</form>
+	 <table class="ListTable">
+	 	<tr class="list_one"><td class="ListColLeft">{$sysNamelabel} :</td><td class="ListColLeft">{$sysName}</td></tr>
+	 	<tr class="list_two"><td class="ListColLeft">{$sysDescrlabel} :</td><td class="ListColLeft">{ $sysDescr }</td></tr>
+	 	<tr class="list_one"><td class="ListColLeft">{$sysContactlabel} :</td><td class="ListColLeft">{$sysContact}</td></tr>
+	 	<tr class="list_two"><td class="ListColLeft">{$sysLocationlabel} : </td><td class="ListColLeft">{$sysLocation}</td></tr>
+	 	<tr class="list_one"><td class="ListColLeft">{$sysUpTimelabel} : </td><td class="ListColLeft">{$sysUpTime}</td></tr>
+	{ if $Health != 0 }
+	 	<tr class="list_two"><td class="ListColLeft">{$sysHealthlabel} :</td><td class="ListColLeft">{$Health}</td></tr>
+	{/if}
+	{ if $const == "hp" }
+	 	<tr class="list_one"><td class="ListColLeft">{$sysCPUStatlabel} :</td><td class="ListColLeft">{$CPUStat}</td></tr>
+	 	<tr class="list_two"><td class="ListColLeft">{$sysTelnetEnablelabel} : </td><td class="ListColLeft">{$TelnetEnable}</td></tr>
+	 	<tr class="list_one"><td class="ListColLeft">{$sysSSHEnablelabel} :</td><td class="ListColLeft">{ $enable[$SSHEnable] } ({$sysSSHPortlabel} : { $SSHPort }) &nbsp;</td></tr>
+	 	<tr class="list_two"><td class="ListColLeft">{$sysSerialNumberlabel} : </td><td class="ListColLeft">{$SerialNumber }</td></tr>
+	{/if}
+	 	<tr class="list_one"><td class="ListColLeft">{$sysManufacturerlabel} : </td><td class="ListColLeft">{$Manufacturer }</td></tr>
+	 	<!--<tr class="list_two"><td class="ListColLeft">{$sysSerieTypelabel} :</td><td class="ListColLeft">{$SerieType}</td></tr>-->
+	 	<tr class="list_one"><td class="ListColLeft">{$sysRomVersionlabel} : </td><td class="ListColLeft">{$RomVersion}</td></tr>
+	 	<tr class="list_two"><td class="ListColLeft">{$sysSwitchVersionlabel} : </td><td class="ListColLeft">{$SwitchVersion}</td></tr>
+	</table>
+</div>
+<div id='tab2' class='tab'>
+<form id='f2' class="cachediv">
+<input type="hidden" name="status" value="0">
+</form>
+<table class="ListTable">
+	 <tr><td></td></tr></table>
+</div>
+<div id='tab3' class='tab'>
+<form id='f3' class="cachediv">
+<input type="hidden" name="status" value="0">
+</form>
+	 <table class="ListTable">
+{ foreach name=outer item=it from=$ifTab }
+	{if $it.type_interface == 2}
+			<tr class="ListHeader">
+				<td colspan="2">{ $it.ifDescr }</td>
+				<td td colspan="2"> {$Statuslabel} : { $it.ifOperStatus } ({ $it.ifAdminStatus })&nbsp;</td>
+			</tr>
+			<tr class={$it.Color}>
+				<td> {$PhysAddresslabel} : </td>
+				<td>{ $it.ifPhysAddress }&nbsp;</td>
+				<td>IP Address : </td><td>{ $it.ipInterface }&nbsp;</td>
+			</tr>
+			<tr class={$it.Color}>
+				<td> {$Typelabel}:</td>
+				<td> { $it.ifType }</td>
+				<td>Speed :</td>
+				<td> {$it.ifSpeed }&nbsp;{$it.ifSpeedUnit}&nbsp;</td>
+			</tr>
+			<tr class={$it.Color}>
+				<td> {$Trafficlabel} - {$Inlabel} :{ $it.ifInOctets }&nbsp;</td>
+				<td> / {$Outlabel} : { $it.ifOutOctets }&nbsp;</td>
+				<td>{$Errorlabel}  {$Inlabel} : { $it.ifInError }&nbsp;</td>
+				<td> / {$Outlabel} : { $it.ifOutError }&nbsp;</td>
+			</tr>
+	{/if}
+{/foreach}
+</table>
+</div>
+<div id='tab4' class='tab'>
+<form class="cachediv">
+<input type="hidden" name="status" value="0">
+</form>
+	 <table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$Datelabel}</td>
+			<td class="ListColHeaderLeft">{$Objectlabel}</td>
+			<td class="ListColHeaderLeft">{$Beforelabel}</td>
+			<td class="ListColHeaderLeft">{$Afterlabel}</td>
+		</tr>
+	{ foreach name=outer item=la from=$log_array }
+		<tr class={cycle values="list_one,list_two"}>
+			<td class="ListColLeft">&nbsp;&nbsp;{ $la.ctime }</td>
+			<td class="ListColLeft">{ $la.type }</td>
+			<td class="ListColLeft">{$la.replaced_value}</td>
+			<td class="ListColLeft">{$la.value}</td>
+		</tr>
+	{ /foreach }
+	</table>
+</div>
