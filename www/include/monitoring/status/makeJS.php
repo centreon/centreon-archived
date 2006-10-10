@@ -36,36 +36,42 @@ _time_reload = <?=$tM?>;
 _time_live = <?=$tFM?>;
 
 function monitoring_time()	{
-	document.getElementById('time_live').innerHTML = (_time_live / 1000);
 
-	if(_time_live > 0)
+	if(_time_live > 999 && _on)
+	{
+		document.getElementById('time_live').innerHTML = (_time_live / 1000);
 		_time_live = _time_live - 1000;
-
+		_timeoutID = setTimeout('monitoring_time()', 1000);	
+	}
+	else if(_time_live < 999)
+	{
+		document.getElementById('time_live').innerHTML = *;
+		_time_live = 0;
+		//_on = 0;
+	}
 	else
-		_time_live = _time_live -42;
-
-	
-//if(_on)
-	setTimeout('monitoring_time()', 1000);	
-
+	{
+		//_on = 0;
+	}
 }
 
 
 function monitoring_refresh()	{	
 _time_live = _time_reload;
-//monitoring_time();
+_on = 1;
 window.clearTimeout(_timeoutID);
+//monitoring_time();
 initM(<?=$tM?>,"<?=$sid?>");
 }
 
 function monitoring_play()	{
-//_on = 1;
+_on = 1;
 initM(<?=$tM?>,"<?=$sid?>");
-//monitoring_time();
 }
 
 function monitoring_pause()	{
-//_on = 0;
+// document.images["image_pause"].src='./img/icones/16x16/media_pause2.png'; 
+_on = 0;
 window.clearTimeout(_timeoutID);
 }
 

@@ -2,11 +2,12 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 
 <div id="JS_monitoring_toolbar">
-<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');">Refresh</a>
-<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_play('');">Play</a>
-<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_pause('');">Pause</a>
+<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a>
+<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.png' alt='Play'></a>
+<a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_pause('');"><img name='image_pause' src='./img/icones/16x16/media_pause.png' alt='Pause'></a>
 <div id="time_live">...</div>
 </div>
+
 <div class="cachediv">
 <!-- informations bank for ajax -->
 <FORM id="fsave">
