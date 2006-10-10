@@ -330,6 +330,14 @@ position:absolute;
 	border-width: 1px;
 	border-style:solid;
 }
+.c{
+	float:right;
+	margin-left:5px;
+	margin-top:0px;
+	border-width: 1px;
+	border-style:solid;
+	border-bottom:none;
+}
 /*end tab*/
 
 #validForm input	{    color:#666666;  font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    font-weight:normal;    text-align:left;}
