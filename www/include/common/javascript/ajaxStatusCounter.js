@@ -19,20 +19,20 @@ For information : contact@oreon-project.org
 
 //var xhrC = null; 
 var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php" //l'adresse   interroger pour trouver les suggestions
-	 
+
 function getXhrC(){
 	if(window.XMLHttpRequest) // Firefox et autres
-	   var xhrC = new XMLHttpRequest(); 
-	else if(window.ActiveXObject){ // Internet Explorer 
+	   var xhrC = new XMLHttpRequest();
+	else if(window.ActiveXObject){ // Internet Explorer
 	   try {
                 var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
                 var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
             }
 	}
-	else { // XMLHttpRequest non support2 par le navigateur 
+	else { // XMLHttpRequest non support2 par le navigateur
 	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
-	   var xhrC = false; 
+	   var xhrC = false;
 	}
 	return xhrC;
 }

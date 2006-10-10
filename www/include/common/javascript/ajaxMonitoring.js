@@ -19,11 +19,9 @@ For information : contact@oreon-project.org
 
 //var xhrM = null; 
 var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
-	 
-	 
-function monitoring_refresh()	{
-goM(0,1);
-}
+var _timeoutID =	0;
+var _on = 1;
+
 	 
 function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
@@ -370,9 +368,12 @@ function initM(_time_reload,_sid){
 	goM(_time_reload,_sid);
 }
 
+
 function goM(_time_reload,_sid){
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
-	
+
+	if(_on)
+	{
 	_formBasic=document.getElementById('AjaxBankBasic');		       
 	_version=_formBasic.version.value;
 	_fileStatus=_formBasic.fileStatus.value;
@@ -688,7 +689,11 @@ function goM(_time_reload,_sid){
 
 //	document.getElementById('log').innerHTML = "date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 
-	setTimeout('goM("'+ _time_reload +'","'+ _sid +'")', _time_reload);
+	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'")', _time_reload);
+	_time_live = _time_reload;
+	_on = 1;
+//	monitoring_time();
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier
 	//le fichier sera parser dans le .php ssi il vient a etre modifiÃ�Â© par nagios
+}
 }
