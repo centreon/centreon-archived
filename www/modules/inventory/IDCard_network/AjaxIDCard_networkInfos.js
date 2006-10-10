@@ -85,7 +85,9 @@ function montre(id) {
 				document.getElementById('c'+i).className='b';
 		}
 		document.getElementById('c'+id).className='a';
-
+		if(id == 2 || id == 3 )
+			document.getElementById('mreload'+id).className='c';
+			
 		var d = document.getElementById('tab'+id);
 
 		if(id == 2 || id == 3)

@@ -30,7 +30,6 @@ For information : contact@oreon-project.org
 	$isRestreint = HadUserLca($pearDB);
 
 
-	print_r($lcaHostByID["LcaHost"]);
 
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");

@@ -65,11 +65,11 @@ For information : contact@oreon-project.org
 	    $rD =& $resData->fetchRow();
 
 		$tpl->assign("sort1", $lang["s_description"]);
-		$tpl->assign("sort2", $lang["s_changeLog"]);
+		$tpl->assign("sort2", $lang["s_network"]);
 		$tpl->assign("sort3", $lang["s_storageDevice"]);
 		$tpl->assign("sort4", $lang["s_softwareInstalled"]);
 		$tpl->assign("sort5", $lang["s_runningProcessus"]);
-		$tpl->assign("sort6", $lang["s_network"]);
+		$tpl->assign("sort6", $lang["s_changeLog"]);
 
 		$tpl->assign("host_id", $host_id);
 

@@ -13,10 +13,15 @@
 <ul id="mainnav">
 	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
 	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
-	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a><a id="mreload3" class="cachediv" href="#" onclick="javascript:mreload('3');">R</a></li>
-	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a><a id="mreload4" class="cachediv" href="#" onclick="javascript:mreload('4');">R</a></li>
-	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a><a id="mreload5" class="cachediv" href="#" onclick="javascript:mreload('5');">R</a></li>
-	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a><a id="mreload6" class="cachediv" href="#" onclick="javascript:mreload('6');">R</a></li>
+	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
+	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
+	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
+
+	<li class="cachediv" id="mreload2"> <a  href="#" onclick="javascript:mreload('2');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload3"> <a  href="#" onclick="javascript:mreload('3');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload4"> <a  href="#" onclick="javascript:mreload('4');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload5"> <a  href="#" onclick="javascript:mreload('5');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
 </ul>
 </div>
 
@@ -36,28 +41,16 @@
 </div>
 
 <div id='tab2' class='tab'>
-<form class="cachediv">
+<form id='f2' class="cachediv">
 <input type="hidden" name="status" value="0">
 </form>
 	 <table class="ListTable">
-		<tr class="ListHeader">
-			<td class="ListColHeaderLeft">{$Datelabel}</td>
-			<td class="ListColHeaderLeft">{$Objectlabel}</td>
-			<td class="ListColHeaderLeft">{$Beforelabel}</td>
-			<td class="ListColHeaderLeft">{$Afterlabel}</td>
-		</tr>
-	{ foreach name=outer item=la from=$log_array }
-		<tr class={cycle values="list_one,list_two"}>
-			<td class="ListColLeft">&nbsp;&nbsp;{ $la.ctime }</td>
-			<td class="ListColLeft">{ $la.type }</td>
-			<td class="ListColLeft">{$la.replaced_value}</td>
-			<td class="ListColLeft">{$la.value}</td>
-		</tr>
-	{ /foreach }
-	</table>
-
-
+	 <tr><td></td></tr>
+</table>
 </div>
+
+
+
 <div id='tab3' class='tab'>
 <form id='f3' class="cachediv">
 <input type="hidden" name="status" value="0">
@@ -102,11 +95,27 @@
 	{ /foreach }
 	</table>
 </div>
+
 <div id='tab6' class='tab'>
-<form id='f6' class="cachediv">
+<form class="cachediv">
 <input type="hidden" name="status" value="0">
 </form>
 	 <table class="ListTable">
-	 <tr><td></td></tr>
-</table>
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$Datelabel}</td>
+			<td class="ListColHeaderLeft">{$Objectlabel}</td>
+			<td class="ListColHeaderLeft">{$Beforelabel}</td>
+			<td class="ListColHeaderLeft">{$Afterlabel}</td>
+		</tr>
+	{ foreach name=outer item=la from=$log_array }
+		<tr class={cycle values="list_one,list_two"}>
+			<td class="ListColLeft">&nbsp;&nbsp;{ $la.ctime }</td>
+			<td class="ListColLeft">{ $la.type }</td>
+			<td class="ListColLeft">{$la.replaced_value}</td>
+			<td class="ListColLeft">{$la.value}</td>
+		</tr>
+	{ /foreach }
+	</table>
 </div>
+
+

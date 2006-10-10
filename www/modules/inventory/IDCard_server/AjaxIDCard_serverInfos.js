@@ -25,6 +25,7 @@ function init(){
 */
 
 function mreload(id) {
+	
 	var _tableforajax = document.getElementById('tab' + id);
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
@@ -54,6 +55,9 @@ function mreload(id) {
 	if (id == 1){
 	}
 	else if (id == 2){
+			MyLoading('Loading...');
+			_f2.status.value = 1;
+			get_network(_host_id);
 	}
 	else if (id == 3){
 			MyLoading('Loading...');
@@ -71,9 +75,6 @@ function mreload(id) {
 			get_runningProcessus(_host_id);
 	}	
 	else if (id == 6){
-			MyLoading('Loading...');
-			_f6.status.value = 1;
-			get_network(_host_id);
 	}
 	else
 	{
@@ -92,14 +93,17 @@ function montre(id) {
 				document.getElementById('c'+i).className='b';
 		}
 		document.getElementById('c'+id).className='a';
+		if(id == 2 || id == 3 || id == 4 || id == 5)
+			document.getElementById('mreload'+id).className='c';
 
 		var d = document.getElementById('tab'+id);
 		var dreload = document.getElementById('mreload'+id);
 		for (var i = 1; document.getElementById('tab'+i); i++) {
 			document.getElementById('tab'+i).style.display='none';
-			document.getElementById('mreload'+i).style.display='none';
+			if(i == 2 || i == 3 || i == 4 || i == 5)
+				document.getElementById('mreload'+i).style.display='none';
 		}
-	if (d) {
+	if (d) {		
 	d.style.display='block';
 	}
 	if (dreload) {
@@ -109,6 +113,13 @@ function montre(id) {
 	if (id == 1){
 	}
 	else if (id == 2){
+		_f2=document.getElementById('f2');
+		if(_f2.status.value == '0')
+		{
+			MyLoading('Loading...');
+			_f2.status.value = 1;
+			get_network(_host_id);
+		}
 	}	
 	else if (id == 3){
 		_f3=document.getElementById('f3');
@@ -138,13 +149,6 @@ function montre(id) {
 		}
 	}	
 	else if (id == 6){
-		_f6=document.getElementById('f6');
-		if(_f6.status.value == '0')
-		{
-			MyLoading('Loading...');
-			_f6.status.value = 1;
-			get_network(_host_id);
-		}
 	}
 	else
 	{
@@ -439,7 +443,7 @@ function get_StorageDevice(_host_id)
 
 function get_network(_host_id)
 {
-	var _tableforajax = document.getElementById('tab6');
+	var _tableforajax = document.getElementById('tab2');
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 
