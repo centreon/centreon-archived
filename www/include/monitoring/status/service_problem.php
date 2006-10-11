@@ -165,6 +165,5 @@ For information : contact@oreon-project.org
 	if ($oreon->optGen["nagios_version"] == 2 && isset($pgr_nagios_stat["created"])) 	
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);
 	else
-		$pgr_nagios_stat["created"] = 0;
-	$tpl->display("include/common/legend.ihtml");	
+		$pgr_nagios_stat["created"] = 0;	
 ?>	
