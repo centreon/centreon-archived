@@ -33,15 +33,22 @@ For information : contact@oreon-project.org
 _time_reload = <?=$tM?>;
 _time_live = <?=$tFM?>;
 
+function monitoring_time_msg_failled(_msg) {
+	var _tmp = document.getElementById('time_live');
+	_tmp.innerHTML = _msg;
+	_tmp.className = 'failled_msg';
+}
 
 function monitoring_time_Del_msg()	{
 		var _tmp = document.getElementById('time_live');
+		_tmp.innerHTML = '';
 		_tmp.className = 'cachediv';
 }
 
 function monitoring_time_msg()	{
 		var _tmp = document.getElementById('time_live');
-		_tmp.className = 'abc';
+		_tmp.innerHTML = ' Loading in progress...';
+		_tmp.className = 'ok_msg';
 }
 
 
@@ -67,6 +74,7 @@ function monitoring_time()	{
 
 
 function monitoring_refresh()	{	
+monitoring_time_msg();
 _tmp_on = _on;
 _time_live = _time_reload;
 _on = 1;
@@ -77,6 +85,7 @@ _on = _tmp_on;
 }
 
 function monitoring_play()	{
+monitoring_time_msg();
 document.getElementById('JS_monitoring_play').style.display = 'none';
 document.getElementById('JS_monitoring_pause').style.display = 'block';
 

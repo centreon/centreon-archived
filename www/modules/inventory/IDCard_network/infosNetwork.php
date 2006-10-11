@@ -112,9 +112,10 @@ For information : contact@oreon-project.org
 		$tpl->assign("sysUpTime", $sysUpTime);
 		$tpl->assign("sysUpTimelabel", $lang["s_uptime"]);
 
-
 /*
+
 	    if ($sysUpTime || $rD["description"]) {
+	    	
 
 	    	$change_value = array("NetRessource" => "1", "Server" => "2");
 	    	$tpl->assign("Type", $change_value[$type]);
@@ -271,6 +272,7 @@ if(isset($iftab) && is_array($iftab))
 				    	else
 				    		$ifTab[$key]["ipInterface"] = "Not Defined";
 		    		}
+		    		
 			    $tpl->assign("ifTab", $ifTab);
 				$tpl->assign("Datelabel",$lang["s_Date"]);
 				$tpl->assign("Objectlabel",$lang["s_Object"]);
@@ -278,9 +280,6 @@ if(isset($iftab) && is_array($iftab))
 				$tpl->assign("Afterlabel",$lang["s_After"]);			    
 	    }
 	    */
-	    
-	    
-	    
 	}
 
 	if (isset($host_id)){
