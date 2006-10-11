@@ -77,8 +77,4 @@ For information : contact@oreon-project.org
 		$tpl->assign("svc_data", $svc_data);
 
 	$tpl->display("serviceOverview.ihtml");
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");
 ?>
