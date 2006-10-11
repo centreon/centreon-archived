@@ -97,8 +97,4 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listTimeperiod.ihtml");
 
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");	
 ?>
