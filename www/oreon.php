@@ -43,6 +43,18 @@ For information : contact@oreon-project.org
 	require_once ("./header.php");
 
 	# function 
+	function get_path($abs_path)
+	{
+		$len = strlen($abs_path);
+		for ($i = 0, $flag = 0; $i < $len; $i++){
+			if ($flag == 3)
+				break;
+			if ($abs_path{$i} == "/")
+				$flag++;
+		}
+		return substr($abs_path, 0, $i);
+	}
+	
 	
 	function get_child($id_page, $lcaTStr){
 		global $pearDB;
@@ -88,12 +100,13 @@ For information : contact@oreon-project.org
 		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");
 	}
 	# Display Legend
-	if (file_exists($path."legend.ihtml"))
+	$lg_path = get_path($path);
+	if (file_exists($lg_path."legend.ihtml"))
 		{
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl("./", $tpl);
 		$tpl->assign('lang', $lang);
-		$tpl->display($path."legend.ihtml");
+		$tpl->display($lg_path."legend.ihtml");
 		}
 ?>
 
