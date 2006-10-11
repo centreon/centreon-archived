@@ -102,9 +102,4 @@ $pagination = "maxViewConfiguration";
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listServiceTemplateModel.ihtml");
-
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");	
 ?>
