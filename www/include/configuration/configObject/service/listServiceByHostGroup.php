@@ -128,8 +128,4 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listService.ihtml");
 	
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");
 ?>
