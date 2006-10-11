@@ -1005,6 +1005,11 @@ $lang["service_logged"] = "Logged services";
 /* legend */
 
 $lang["lgd_legend"] = " Legend";
+$lang["lgd_force"] = " Force Check";
+$lang["lgd_graph"] = " Graph";
+$lang["lgd_notification"] = " Notification desactivated";
+$lang["lgd_passiv"] = " Passiv check activated";
+$lang["lgd_work"] = " Acknowledge Activated";
 $lang["lgd_delOne"] = " Delete";
 $lang["lgd_delAll"] = " Delete";
 $lang["lgd_duplicate"] = " Duplicate";
