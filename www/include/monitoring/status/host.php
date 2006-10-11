@@ -121,10 +121,5 @@ For information : contact@oreon-project.org
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
 	$tpl->assign("lang", $lang);
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("host.ihtml");
-
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");	
+	$tpl->display("host.ihtml");	
 ?>
