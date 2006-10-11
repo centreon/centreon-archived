@@ -16,10 +16,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
 	if (!isset($oreon))
 		exit();
-
 
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
@@ -34,6 +32,18 @@ For information : contact@oreon-project.org
 
 _time_reload = <?=$tM?>;
 _time_live = <?=$tFM?>;
+
+
+function monitoring_time_Del_msg()	{
+		var _tmp = document.getElementById('time_live');
+		_tmp.className = 'cachediv';
+}
+
+function monitoring_time_msg()	{
+		var _tmp = document.getElementById('time_live');
+		_tmp.className = 'abc';
+}
+
 
 function monitoring_time()	{
 
@@ -72,29 +82,7 @@ document.getElementById('JS_monitoring_pause').style.display = 'block';
 
 document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 document.getElementById('JS_monitoring_play_gray').style.display = 'block';
-/*
-document.getElementById('JS_monitoring_pause').innerHTML = '';
-document.getElementById('JS_monitoring_play').innerHTML = '';
 
-	var _img = document.createElement("img");
-  	_img.src = './img/icones/16x16/media_play_gray.png';
-  	_img.alt = 'Play';
-  	_img.title = 'Play';
-	document.getElementById('JS_monitoring_play').appendChild(_img);
-
-	var _img = document.createElement("img");
-  	_img.src = './img/icones/16x16/media_pause.png';
-  	_img.alt = 'Pause';
-  	_img.title = 'Pause';
-
-	var _link = document.createElement("a");
-	_link.href = '#';
-	_link.id = 'JS_monitoring_pause';
-
-	_link.appendChild(_img);
-
-document.getElementById('JS_monitoring_pause').appendChild(_link);
-*/
 
 _on = 1;
 initM(<?=$tM?>,"<?=$sid?>");
@@ -102,30 +90,7 @@ initM(<?=$tM?>,"<?=$sid?>");
 
 function monitoring_pause()	{
 
-/*
-document.getElementById('JS_monitoring_pause').innerHTML = '';
-document.getElementById('JS_monitoring_play').innerHTML = '';
 
-
-	var _img = document.createElement("img");
-  	_img.src = './img/icones/16x16/media_pause_gray.png';
-  	_img.alt = 'Pause';
-  	_img.title = 'Pause';
-document.getElementById('JS_monitoring_pause').appendChild(_img);
-
-	var _img = document.createElement("img");
-  	_img.src = './img/icones/16x16/media_play.png';
-  	_img.alt = 'Play';
-  	_img.title = 'Play';
-
-	var _link = document.createElement("a");
-	_link.href = '#';
-	_link.id = 'JS_monitoring_play';
-
-	_link.appendChild(_img);
-
-document.getElementById('JS_monitoring_play').appendChild(_link);
-*/
 document.getElementById('JS_monitoring_play').style.display = 'block';
 document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
 

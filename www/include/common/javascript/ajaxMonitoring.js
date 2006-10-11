@@ -447,7 +447,10 @@ function goM(_time_reload,_sid){
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 
 		if(xhrM && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
-		{		
+		{	
+			monitoring_time_msg();
+			
+				
 			reponse = xhrM.responseXML.documentElement;
 			//_test=document.getElementById('test');
 			
@@ -689,6 +692,7 @@ function goM(_time_reload,_sid){
 			}//fin du for pour les infos principale
 			if(i > 0)
 			DelAllLine(i);
+			setTimeout('monitoring_time_Del_msg()', 1000);
 		}
 	}
 
