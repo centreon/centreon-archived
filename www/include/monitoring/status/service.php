@@ -141,5 +141,4 @@ For information : contact@oreon-project.org
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);
 	else
 		$pgr_nagios_stat["created"] = 0;
-	$tpl->display("include/common/legend.ihtml");
 ?>	
