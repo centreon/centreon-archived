@@ -86,7 +86,15 @@ For information : contact@oreon-project.org
 		}
 	} else {		
 		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");
-	} 
+	}
+	# Display Legend
+	if (file_exists($path."legend.ihtml"))
+		{
+		$tpl = new Smarty();
+		$tpl = initSmartyTpl("./", $tpl);
+		$tpl->assign('lang', $lang);
+		$tpl->display($path."legend.ihtml");
+		}
 ?>
 
 			</td>
