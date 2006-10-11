@@ -126,10 +126,5 @@ For information : contact@oreon-project.org
 	$tpl->assign("lang", $lang);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host_problem.ihtml");
-
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");	
 	
 ?>	
