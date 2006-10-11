@@ -111,9 +111,4 @@ For information : contact@oreon-project.org
 	$tpl->assign("hg", $hg);
 	$tpl->assign("lang", $lang);
 	$tpl->display("hostgroup.ihtml");
-
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-	$tpl->display("include/common/legend.ihtml");
 ?>
