@@ -1508,6 +1508,7 @@ CREATE TABLE `servicegroup` (
 CREATE TABLE `servicegroup_relation` (
   `sgr_id` int(11) NOT NULL auto_increment,
   `host_host_id` int(11) default NULL,
+  `hostgroup_hg_id` int(11) default NULL,  
   `service_service_id` int(11) default NULL,
   `servicegroup_sg_id` int(11) default NULL,
   PRIMARY KEY  (`sgr_id`),

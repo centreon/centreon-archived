@@ -170,6 +170,5 @@ UPDATE `topology` SET `topology_name` = 'm_general',
 `topology_show` = '1' WHERE `topology_id` =65 LIMIT 1 ;
 
 ALTER TABLE `servicegroup_relation` ADD `host_host_id` INT NULL AFTER `sgr_id` ;
-
-
+ALTER TABLE `servicegroup_relation` ADD `hostgroup_hg_id` INT NULL AFTER `host_host_id` ;
 
