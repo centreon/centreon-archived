@@ -117,9 +117,8 @@ For information : contact@oreon-project.org
 
     $valid = false;
 	if ($form->validate())	{
-
 		# Update in DB
-		updateGeneralConfigData($form->getSubmitValue("gopt_id"));
+		updateGeneralConfigData(1);
 		# Update in Oreon Object
 		$oreon->optGen = array();
 		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
