@@ -371,6 +371,7 @@ For information : contact@oreon-project.org
 		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$res =& $pearDB->query($rq);
+		print $rq;
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
 	}

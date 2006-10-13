@@ -265,13 +265,10 @@ For information : contact@oreon-project.org
 	##End of Picker Color
 	#
 
-
-
     $valid = false;
 	if ($form->validate())	{
-
 		# Update in DB
-		updateGeneralOptInDB($form->getSubmitValue("gopt_id"));
+		updateGeneralConfigData(1);
 		# Update in Oreon Object
 		$oreon->optGen = array();
 		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
@@ -279,28 +276,12 @@ For information : contact@oreon-project.org
 		$o = "w";
    		$valid = true;
 		$form->freeze();
-
-		if (isset($_POST["debug_auth_clear"]))
-			@unlink($oreon->optGen["debug_path"]."auth.log");
-
-		if (isset($_POST["debug_nagios_import_clear"]))
-			@unlink($oreon->optGen["debug_path"]."cfgimport.log");
-
-		if (isset($_POST["debug_rrdtool_clear"]))
-			@unlink($oreon->optGen["debug_path"]."rrdtool.log");
-
-		if (isset($_POST["debug_ldap_import_clear"]))
-			@unlink($oreon->optGen["debug_path"]."ldapsearch.log");
-
-		if (isset($_POST["debug_inventory_clear"]))
-			@unlink($oreon->optGen["debug_path"]."inventory.log");
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
 	}
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
-
 
 	#
 	##Apply a template definition
