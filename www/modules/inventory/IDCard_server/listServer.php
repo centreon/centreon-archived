@@ -44,20 +44,16 @@ For information : contact@oreon-project.org
 		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
 			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
 			  " AND host_register = '1'";
-	else
-	{
+	else {
 		if ($oreon->user->admin || !$isRestreint)
-				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-						" host_register = '1'";
+				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND host_register = '1'";
 		else
-				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-						" h.host_id IN (".$lcaHostByID["LcaHost"].") AND host_register = '1'";
+				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND h.host_id IN (".$lcaHostByID["LcaHost"].") AND host_register = '1'";
 	}
 
 	$res =& $pearDB->query($rq);
-	if (PEAR::isError($res)) {
+	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
-	}
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -83,14 +79,13 @@ For information : contact@oreon-project.org
 		$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
 			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
 			  " AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-	else
-	{
+	else {
 		if ($oreon->user->admin || !$isRestreint)
-			$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
+			$rq = 	"SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
 					" host_register = '1' " .
 					" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 		else
-			$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
+			$rq = 	"SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
 					" h.host_id IN (".$lcaHoststr.") AND host_register = '1' " .
 					" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	}
@@ -104,7 +99,6 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $res->fetchInto($host); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
-
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
@@ -121,8 +115,6 @@ For information : contact@oreon-project.org
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-	
-			
 	#form select host
 	$req = "SELECT id, alias FROM inventory_manufacturer ";
 	$res = & $pearDB->query($req);
@@ -130,10 +122,8 @@ For information : contact@oreon-project.org
 	$option = array();
 	while ($res->fetchInto($const)) 
     	$option[$const['id']] = $const['alias'];
-    
     $form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
 	
-
 	#
 	##Apply a template definition
 	#

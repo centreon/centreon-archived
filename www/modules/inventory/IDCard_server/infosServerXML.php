@@ -207,7 +207,7 @@ For information : contact@oreon-project.org
 	}
 	
 	//$_POST["host_id"] = 37;
-	//$_POST["type"] = 5;
+	//$_POST["type"] = 3;
 	
 	
 	$community = getMySnmpCommunity($_POST["host_id"]);
@@ -218,6 +218,7 @@ For information : contact@oreon-project.org
 	$retries = 10;
 	
 	$tab_unit = array("0"=>"bits", "1"=>"Kbits","2"=>"Mbits","3"=>"Gbits");
+	$tab_unit_o = array("0"=>"o", "1"=>"Ko","2"=>"Mo","3"=>"Go");
 	
 	
 	if($_POST["type"] == 3 && $_POST["host_id"])
@@ -231,35 +232,36 @@ For information : contact@oreon-project.org
 				$buffer .= '<Typelabel>'.get_snmp_value("1.3.6.1.2.1.25.3.8.1.4.".$SI, "OID: HOST-RESOURCES-TYPES::")	.'</Typelabel>';
 				
 				$block = get_snmp_value("1.3.6.1.2.1.25.2.3.1.4.".$SI, "INTEGER: ");
-					    	
-				$hrStorageIndex["hsStorageSize"] = get_snmp_value("1.3.6.1.2.1.25.2.3.1.4.".$SI, "INTEGER: ");
-				$hrStorageIndex["hsStorageUsed"] = $block * get_snmp_value("1.3.6.1.2.1.25.2.3.1.6.".$SI, "INTEGER: ");
+				
+				$hrStorageIndex["hsStorageSize"] = $block * get_snmp_value("1.3.6.1.2.1.25.2.3.1.5.".$SI, "INTEGER: ");
+		    	$hrStorageIndex["hsStorageUsed"] = $block * get_snmp_value("1.3.6.1.2.1.25.2.3.1.6.".$SI, "INTEGER: ");
 				$hrStorageIndex["hsStorageFree"] = $hrStorageIndex["hsStorageSize"] - $hrStorageIndex["hsStorageUsed"];
-					    	
+					    		    			    	
 				$buffer .= '<Utilisationlabel>...</Utilisationlabel>';
-		   		if 	(isset($hrStorageIndex["hsStorageSize"])){
-			    	for ($cpt = 0; $hrStorageIndex["hsStorageSize"] >= 1024; $cpt++)
+		   		if 	(isset($hrStorageIndex["hsStorageSize"]) && $hrStorageIndex["hsStorageSize"]){
+		   			for ($cpt = 0; $hrStorageIndex["hsStorageSize"] >= 1024; $cpt++)
 			    		$hrStorageIndex["hsStorageSize"] /= 1024;
-			    	$hrStorageIndex["hsStorageSize"] = round($hrStorageIndex["hsStorageSize"], 2) . " " . $tab_unit[$cpt];
+			    	$hrStorageIndex["hsStorageSize"] = round($hrStorageIndex["hsStorageSize"], 2) . " " . $tab_unit_o[$cpt];
 		    	}
-		    	if 	(isset($hrStorageIndex["hsStorageUsed"])){
+		    	if 	(isset($hrStorageIndex["hsStorageUsed"]) && $hrStorageIndex["hsStorageUsed"]){
 			    	for ($cpt = 0; $hrStorageIndex["hsStorageUsed"] >= 1024; $cpt++)
 			    		$hrStorageIndex["hsStorageUsed"] /= 1024;
-			    	$hrStorageIndex["hsStorageUsed"] = round($hrStorageIndex["hsStorageUsed"], 2) ." " . $tab_unit[$cpt];
+			    	$hrStorageIndex["hsStorageUsed"] = round($hrStorageIndex["hsStorageUsed"], 2) ." " . $tab_unit_o[$cpt];
 	    		}
-		    	if 	(isset($hrStorageIndex["hsStorageFree"])){
+		    	if 	(isset($hrStorageIndex["hsStorageFree"]) && $hrStorageIndex["hsStorageFree"]){
 			    	for ($cpt = 0; $hrStorageIndex["hsStorageFree"] >= 1024; $cpt++)
 			    		$hrStorageIndex["hsStorageFree"] /= 1024;
-			    	$hrStorageIndex["hsStorageFree"] = round($hrStorageIndex["hsStorageFree"], 2) ." " . $tab_unit[$cpt];
+			    	$hrStorageIndex["hsStorageFree"] = round($hrStorageIndex["hsStorageFree"], 2) ." " . $tab_unit_o[$cpt];
 		    	}
 		    	if (isset($hrStorageIndex["hsStorageSize"])){
-		    		if ($hrStorageIndex["hsStorageSize"] == 0)
-		    			$hrStorageIndex["hsStorageSize"] = 1;	
-			    	$buffer .= '<Utilisationlabel>'.round($hrStorageIndex["hsStorageUsed"] / $hrStorageIndex["hsStorageSize"] * 100).'</Utilisationlabel>';	
+		    		if ($hrStorageIndex["hsStorageSize"] != 0)
+		    			$buffer .= '<Utilisationlabel>'.round($hrStorageIndex["hsStorageUsed"] / $hrStorageIndex["hsStorageSize"] * 100).'</Utilisationlabel>';	
+		    		else
+			    		$buffer .= '<Utilisationlabel> </Utilisationlabel>';	
 		    	}
-		   		$buffer .= '<Freelabel>'.$hrStorageIndex["hsStorageFree"].'</Freelabel>';
-				$buffer .= '<Usedlabel>'.$hrStorageIndex["hsStorageUsed"].'</Usedlabel>';
-				$buffer .= '<Sizelabel>'.$hrStorageIndex["hsStorageSize"].'</Sizelabel>';
+		   		$hrStorageIndex["hsStorageFree"] ? $buffer .= '<Freelabel>'.$hrStorageIndex["hsStorageFree"].'</Freelabel>': $buffer .= '<Freelabel> </Freelabel>';
+				$hrStorageIndex["hsStorageUsed"] ? $buffer .= '<Usedlabel>'.$hrStorageIndex["hsStorageUsed"].'</Usedlabel>': $buffer .= '<Usedlabel> </Usedlabel>';
+				$hrStorageIndex["hsStorageSize"] ? $buffer .= '<Sizelabel>'.$hrStorageIndex["hsStorageSize"].'</Sizelabel>': $buffer .= '<Sizelabel> </Sizelabel>';
 				$buffer .= '</storageDevice>';
 		    }
 	} else 	if($_POST["type"] == 6 && $_POST["host_id"]){
