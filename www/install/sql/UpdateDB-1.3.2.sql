@@ -172,3 +172,11 @@ UPDATE `topology` SET `topology_name` = 'm_general',
 ALTER TABLE `servicegroup_relation` ADD `host_host_id` INT NULL AFTER `sgr_id` ;
 ALTER TABLE `servicegroup_relation` ADD `hostgroup_hg_id` INT NULL AFTER `host_host_id` ;
 
+ALTER TABLE `servicegroup_relation` ADD INDEX ( `host_host_id` ); 
+ALTER TABLE `servicegroup_relation` ADD INDEX ( `hostgroup_hg_id` );
+
+ALTER TABLE `servicegroup_relation`
+  ADD CONSTRAINT `servicegroup_relation_ibfk_7` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `servicegroup_relation_ibfk_8` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE;
+
+

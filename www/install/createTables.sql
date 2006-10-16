@@ -1513,7 +1513,9 @@ CREATE TABLE `servicegroup_relation` (
   `servicegroup_sg_id` int(11) default NULL,
   PRIMARY KEY  (`sgr_id`),
   KEY `service_index` (`service_service_id`),
-  KEY `servicegroup_index` (`servicegroup_sg_id`)
+  KEY `servicegroup_index` (`servicegroup_sg_id`), 
+  KEY `host_host_id` (`host_host_id`),
+  KEY `hostgroup_hg_id` (`hostgroup_hg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2062,8 +2064,10 @@ ALTER TABLE `servicegroup`
 -- Contraintes pour la table `servicegroup_relation`
 --
 ALTER TABLE `servicegroup_relation`
-  ADD CONSTRAINT `servicegroup_relation_ibfk_1` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `servicegroup_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `servicegroup_relation_ibfk_10` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `servicegroup_relation_ibfk_7` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `servicegroup_relation_ibfk_8` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `servicegroup_relation_ibfk_9` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `traps_service_relation`
