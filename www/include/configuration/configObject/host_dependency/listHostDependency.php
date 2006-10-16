@@ -18,26 +18,33 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-$pagination = "maxViewConfiguration";
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
-	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
+	
+	if ($oreon->user->admin || !$isRestreint){
+		$rq = "SELECT COUNT(*) FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id ) > 0";
+	} else {
+		$rq = "SELECT COUNT(*) FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
+	}
+	 
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -55,19 +62,28 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("headerMenu_description", $lang['description']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
+	
 	#Dependcy list
-	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
+	if ($oreon->user->admin || !$isRestreint){
+		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0";
+	} else {
+		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
+	}
+	
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
 	$res =& $pearDB->query($rq);	
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
+	
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
 	for ($i = 0; $res->fetchInto($dep); $i++) {		
@@ -98,8 +114,8 @@ $pagination = "maxViewConfiguration";
 	}
 	</SCRIPT>
 	<?
-	$attrs = array(
-		'onchange'=>"javascript: " .
+		$attrs = array(
+				'onchange'=>"javascript: " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
@@ -108,7 +124,7 @@ $pagination = "maxViewConfiguration";
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");	  
         $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
-	$form->setDefaults(array('o1' => NULL));
+		$form->setDefaults(array('o1' => NULL));
 			$o1 =& $form->getElement('o1');
 		$o1->setValue(NULL);
 	
@@ -128,8 +144,6 @@ $pagination = "maxViewConfiguration";
 		$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
-
-
 
 	#
 	##Apply a template definition
