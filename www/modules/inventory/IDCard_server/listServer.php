@@ -123,7 +123,7 @@ For information : contact@oreon-project.org
 	while ($res->fetchInto($const)) 
     	$option[$const['id']] = $const['alias'];
     $form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
-	
+
 	#
 	##Apply a template definition
 	#
