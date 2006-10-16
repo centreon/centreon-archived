@@ -2,11 +2,11 @@
 
 <div id="JS_monitoring_toolbar">
 
-<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.png' alt='Refresh' title='Refresh'></a></span>
-<span class="consol_button"><a id="JS_monitoring_play" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.png' alt='Play' title='Play'></a></span>
-<span class="consol_button"><img id="JS_monitoring_play_gray" class="cachediv" src='./img/icones/16x16/media_play_gray.png' alt='Play' title='Play'></span>
-<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.png' alt='Pause' title='Pause'></a></span>
-<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.png' alt='Pause' title='Pause'></span>
+<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
+<span class="consol_button"><a id="JS_monitoring_play" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
+<span class="consol_button"><img id="JS_monitoring_play_gray" class="cachediv" src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
+<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
+<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
 <span class="consol_button"><div class="cachediv" id="time_live">&nbsp;Loading in progress...</div></span>
 </div>
 &nbsp;
@@ -30,17 +30,31 @@
 </div>
 
 
+<form name='form'>
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="svc" type="hidden">
+	<table class="Toolbar_TableTop">
+		<tr class="Toolbar_TR_Top">
+			<td class="Toolbar_TDSelectAction_Top">
+			<div style="text-align:left;padding-top:5px;">
+				<select name="cmd">
+					<option value="1">{$lang.m_mon_resubmit_im_checks}</option>
+					<option value="2">{$lang.m_mon_resubmit_im_checks_f}</option>
+				</select>
+				<input name="SubmitOptions" value="go" type="submit">
+			</div>
+			{if $pgr_nagios_stat.created != 0}
+				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
+			{/if}
 
-<form method="GET" action="">
-<input name="p" value="{$p}" type="hidden">
-<input name="o" value="svc" type="hidden">
-{php}
-   include('./include/common/pagination.php');
-{/php}
-</form>
-<form method="GET" action="">
-<input name="p" value="{$p}" type="hidden">
-<input name="o" value="svc" type="hidden">
+			</td>
+
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
 
 <div id="forajax">
 <table id="ListTable">
@@ -104,21 +118,30 @@
 	{/foreach}
 </table>
 </div>
-{php}
-   include('./include/common/pagination.php');
-{/php}
+	<table class="Toolbar_TableBottom">
+		<tr>
+			<td class="Toolbar_TDSelectAction_Bottom">
+			<div style="text-align:left;padding-top:5px;">
+				<select name="cmd">
+					<option value="1">{$lang.m_mon_resubmit_im_checks}</option>
+					<option value="2">{$lang.m_mon_resubmit_im_checks_f}</option>
+				</select>
+				<input name="SubmitOptions" value="go" type="submit">
+			</div>
+			{if $pgr_nagios_stat.created != 0}
+				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
+			{/if}
 
+			</td>
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
 
+<input type='hidden' name='o' id='o' value='42'>
 
-
-<div style="text-align:left;padding-top:5px;">
-	<select name="cmd">
-		<option value="1">{$lang.m_mon_resubmit_im_checks}</option>
-		<option value="2">{$lang.m_mon_resubmit_im_checks_f}</option>
-	</select>
-	<input name="SubmitOptions" value="go" type="submit">
-</div>
-{if $pgr_nagios_stat.created != 0}
-	<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
-{/if}
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+{$form.hidden}
 </form>

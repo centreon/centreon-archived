@@ -18,10 +18,10 @@
 	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
 	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
 
-	<li class="cachediv" id="mreload2"> <a  href="#" onclick="javascript:mreload('2');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload3"> <a  href="#" onclick="javascript:mreload('3');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload4"> <a  href="#" onclick="javascript:mreload('4');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload5"> <a  href="#" onclick="javascript:mreload('5');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload2"> <a  href="#" onclick="javascript:mreload('2');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload3"> <a  href="#" onclick="javascript:mreload('3');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload4"> <a  href="#" onclick="javascript:mreload('4');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload5"> <a  href="#" onclick="javascript:mreload('5');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
 </ul>
 </div>
 

@@ -16,8 +16,8 @@
 	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
 	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
 
-	<li class="cachediv" id="mreload2"> <a  href="#" onclick="javascript:mreload('2');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload3"> <a  href="#" onclick="javascript:mreload('3');"><img src='./img/icones/16x16/refresh.png' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload2"> <a  href="#" onclick="javascript:mreload('2');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload3"> <a  href="#" onclick="javascript:mreload('3');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
 
 </ul>
 </div>
