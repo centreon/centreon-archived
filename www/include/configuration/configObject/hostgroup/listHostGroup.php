@@ -77,10 +77,10 @@ For information : contact@oreon-project.org
 		else
 			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 	}
+	print $rq . "|".$_GET["limit"]."|";
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

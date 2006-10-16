@@ -22,15 +22,13 @@ For information : contact@oreon-project.org
 		exit ();
 
 	function testHostGroupExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('hg_id');
 		$res =& $pearDB->query("SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$hg =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $hg["hg_id"] == $id)	
@@ -67,8 +65,7 @@ For information : contact@oreon-project.org
 	}
 	
 	function multipleHostGroupInDB ($hostGroups = array(), $nbrDup = array())	{
-		global $pearDB;
-		global $oreon;
+		global $pearDB, $oreon;
 		foreach($hostGroups as $key=>$value)	{
 			$res =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
 			$row = $res->fetchRow();
@@ -82,20 +79,15 @@ For information : contact@oreon-project.org
 				}
 				if (testHostGroupExistence($hg_name))	{
 					$val ? $rq = "INSERT INTO hostgroup VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
+					$res =& $pearDB->query($rq);
+					if (PEAR::isError($res))
+						print "Mysql Error : ".$res->getMessage();
 					$res =& $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
+					if (PEAR::isError($res))
+						print "Mysql Error : ".$res->getMessage();
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(hg_id)"]))	{
 						# Update LCA
-						$oreon->user->lcaHostGroup[$maxId["MAX(hg_id)"]] = $hg_name;
-						$oreon->user->lcaHGStr != '\'\''? $oreon->user->lcaHGStr .= ",".$maxId["MAX(hg_id)"] : $oreon->user->lcaHGStr = $maxId["MAX(hg_id)"];
-						$oreon->user->lcaHGStrName != '\'\''? $oreon->user->lcaHGStrName .= ",".$hg_name : $oreon->user->lcaHGStrName = $hg_name;
 						$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 						while($res1->fetchInto($contactGroup))	{
 						 	$res2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
@@ -104,34 +96,27 @@ For information : contact@oreon-project.org
 								$rq .= "(lca_define_lca_id, hostgroup_hg_id) ";
 								$rq .= "VALUES ";
 								$rq .= "('".$lca["lca_define_lca_id"]."', '".$maxId["MAX(hg_id)"]."')";
-								$pearDB->query($rq);
-								if (PEAR::isError($pearDB)) {
-									print "Mysql Error : ".$pearDB->getMessage();
-								}
+								$res =& $pearDB->query($rq);
+								if (PEAR::isError($res))
+									print "Mysql Error : ".$res->getMessage();
 							}
 						}
 						#
 						$res =& $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
-						while($res->fetchInto($host))
-						{
+						if (PEAR::isError($res))
+							print "Mysql Error : ".$res->getMessage();
+						while($res->fetchInto($host)){
 							$pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$maxId["MAX(hg_id)"]."', '".$host["host_host_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+							if (PEAR::isError($res))
+								print "Mysql Error : ".$res->getMessage();
 						}
 						$res =& $pearDB->query("SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr WHERE cghgr.hostgroup_hg_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
-						while($res->fetchInto($cg))
-						{
+						if (PEAR::isError($res))
+							print "Mysql Error : ".$res->getMessage();
+						while($res->fetchInto($cg)){
 							$pearDB->query("INSERT INTO contactgroup_hostgroup_relation VALUES ('', '".$cg["contactgroup_cg_id"]."', '".$maxId["MAX(hg_id)"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+							if (PEAR::isError($res))
+								print "Mysql Error : ".$res->getMessage();
 						}
 					}
 				}
@@ -169,9 +154,8 @@ For information : contact@oreon-project.org
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
 			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			$city = $res->fetchRow();
 			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
 		}	
@@ -182,29 +166,25 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$pearDB->query($rq);
 		$res =& $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$hg_id = $res->fetchRow();
 		# Update LCA
 		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res1))
+			print "Mysql Error : ".$res1->getMessage();
 		while($res1->fetchInto($contactGroup))	{
 		 	$res2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res2))
+				print "Mysql Error : ".$res2->getMessage();
 			while ($res2->fetchInto($lca))	{
 				$rq = "INSERT INTO lca_define_hostgroup_relation ";
 				$rq .= "(lca_define_lca_id, hostgroup_hg_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$lca["lca_define_lca_id"]."', '".$hg_id["MAX(hg_id)"]."')";
-				$pearDB->query($rq);
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
+				$res =& $pearDB->query($rq);
+				if (PEAR::isError($res))
+					print "Mysql Error : ".$res->getMessage();
 			}
 		}
 		#
@@ -213,8 +193,7 @@ For information : contact@oreon-project.org
 	
 	function updateHostGroup($hg_id)	{
 		if (!$hg_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE hostgroup SET ";
@@ -230,9 +209,8 @@ For information : contact@oreon-project.org
 		$rq .= "city_id = ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
 			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			$city = $res->fetchRow();
 			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
 		}	
@@ -243,55 +221,44 @@ For information : contact@oreon-project.org
 		$rq .= "hg_activate = ";
 		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] != NULL ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "NULL ";
 		$rq .= "WHERE hg_id = '".$hg_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function updateHostGroupHosts($hg_id, $ret = array())	{
 		if (!$hg_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM hostgroup_relation ";
 		$rq .= "WHERE hostgroup_hg_id = '".$hg_id."'";
-		$pearDB->query($rq);
-		if (isset($ret["hg_hosts"]))
-			$ret = $ret["hg_hosts"];
-		else
-			$ret = $form->getSubmitValue("hg_hosts");
+		$res =& $pearDB->query($rq);
+		isset($ret["hg_hosts"]) ? $ret = $ret["hg_hosts"] : $ret = $form->getSubmitValue("hg_hosts");
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO hostgroup_relation ";
 			$rq .= "(hostgroup_hg_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$hg_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$res =& $pearDB->query($rq);
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 		}
 	}
 	
 	function updateHostGroupContactGroups($hg_id, $ret = array())	{
 		if (!$hg_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM contactgroup_hostgroup_relation ";
 		$rq .= "WHERE hostgroup_hg_id = '".$hg_id."'";
-		$pearDB->query($rq);
-		if (isset($ret["hg_cgs"]))
-			$ret = $ret["hg_cgs"];
-		else
-			$ret = $form->getSubmitValue("hg_cgs");
+		$res =& $pearDB->query($rq);
+		isset($ret["hg_cgs"]) ? $ret = $ret["hg_cgs"]: $ret = $form->getSubmitValue("hg_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contactgroup_hostgroup_relation ";
 			$rq .= "(contactgroup_cg_id, hostgroup_hg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$ret[$i]."', '".$hg_id."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$res =& $pearDB->query($rq);
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();		
 		}
 	}
 ?>
