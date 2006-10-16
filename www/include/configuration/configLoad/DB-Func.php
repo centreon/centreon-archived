@@ -72,10 +72,12 @@ For information : contact@oreon-project.org
 			print "Mysql Error : ".$pearDB->getMessage();
 		}
 	}
-	
+
 	function insertResourceCFG(& $buf)	{
 		$i = 0;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		foreach ($buf as $str)	{
 			$regs = array();
 			$resCFG = array();
@@ -94,17 +96,17 @@ For information : contact@oreon-project.org
 		}
 		return $i;
 	}
-		
+
 	function deleteResourceCFG()	{
 		global $pearDB;
 		//echo "delete all resources<br>";
 		$rq = "DELETE * FROM cfg_resource; ";
 		$pearDB->query($rq);
 	}
-	
+
 	function insertNagiosCFG(& $buf)	{
 		$nagiosCFG = array();
-		$flag = false;	
+		$flag = false;
 		# Fill with buffer value
 		foreach ($buf as $str)	{
 			$regs = array();
@@ -152,13 +154,13 @@ For information : contact@oreon-project.org
 	function deleteNagiosCFG()	{
 		global $pearDB;
 		//echo "delete all nagios<br>";
-		$rq = "DELETE FROM cfg_nagios; "; 	
+		$rq = "DELETE FROM cfg_nagios; ";
 		$pearDB->query($rq);
 	}
-		
+
 	function insertCgiCFG(& $buf)	{
 		$cgiCFG = array();
-		$flag = false;	
+		$flag = false;
 		# Fill with buffer value
 		foreach ($buf as $str)	{
 			$regs = array();
@@ -179,36 +181,40 @@ For information : contact@oreon-project.org
 		else
 			return false;
 	}
-	
+
 	function deleteCgiCFG()	{
 		global $pearDB;
-		$rq = "DELETE FROM cfg_cgi; "; 	
+		$rq = "DELETE FROM cfg_cgi; ";
 		$pearDB->query($rq);
 	}
-	
+
 	function deletePerfparseCFG()	{
 		global $pearDB;
 		//echo "delete all perpar<br>";
-		$rq = "DELETE FROM cfg_perfparse; "; 	
+		$rq = "DELETE FROM cfg_perfparse; ";
 		$pearDB->query($rq);
 	}
-		
+
 	function insertCFG(& $buf, & $ret)	{
 		$typeDef = NULL;
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		$nbr = array("cmd"=>0, "tp"=>0, "cct"=>0, "cg"=>0, "h"=>0, "hg"=>0, "hd"=>0, "sv"=>0, "svd"=>0, "sg"=>0, "sgd"=>0, "hei"=>0);
 		$tmpConf = array();
 		$get = false;
 		$regexp = "/^[ \t]*(.[^ \t#]+)[ \t]+(.[^;]+)/";
 		# Fill with buffer value
 		# Turn 1 -> Time Period, Commands
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 1 -> Time Period, Commands\n", 3, $debug_path."cfgimport.log");
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
 					case "command": insertCommandCFG($tmpConf, $ret); break;
-					case "timeperiod": insertTimePeriodCFG($tmpConf); break;						
+					case "timeperiod": insertTimePeriodCFG($tmpConf); break;
 					default :; break;
 				}
 				$get = false;
@@ -227,6 +233,9 @@ For information : contact@oreon-project.org
 			unset($regs);
 		}
 		# Turn 2 -> contacts
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 2 -> contacts\n", 3, $debug_path."cfgimport.log");
+
 		reset($buf);
 		foreach ($buf as $str)	{
 			$regs = array();
@@ -244,6 +253,8 @@ For information : contact@oreon-project.org
 			unset($regs);
 		}
 		# Turn 3 -> Contact Groups
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 3 -> Contact Groups\n", 3, $debug_path."cfgimport.log");
 		reset($buf);
 		foreach ($buf as $str)	{
 			$regs = array();
@@ -261,6 +272,8 @@ For information : contact@oreon-project.org
 			unset($regs);
 		}
 		# Turn 4 -> Hosts
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 4 -> Hosts\n", 3, $debug_path."cfgimport.log");
 		reset($buf);
 		$useTpl = array();
 		$useTpls = array();
@@ -293,13 +306,15 @@ For information : contact@oreon-project.org
 		# Update Host Template relation when we have record all host definition
 		updateHostTemplateUsed($useTpls);
 		# Turn 5 -> Host Groups
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 5 -> Host Groups\n", 3, $debug_path."cfgimport.log");
 		reset($buf);
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
 					case "hostgroup": insertHostGroupCFG($tmpConf); break;
-					case "hostextinfo": insertHostExtInfoCFG($tmpConf); break;					
+					case "hostextinfo": insertHostExtInfoCFG($tmpConf); break;
 					default :; break;
 				}
 				$get = false;
@@ -317,6 +332,8 @@ For information : contact@oreon-project.org
 			unset($regs);
 		}
 		# Turn 6 -> Services
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 6 -> Services\n", 3, $debug_path."cfgimport.log");
 		reset($buf);
 		$useTpl = array();
 		$useTpls = array();
@@ -326,7 +343,7 @@ For information : contact@oreon-project.org
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
 					case "service": $useTpl = insertServiceCFG($tmpConf); count($useTpl) ? $useTpls[$useTpl[0]] = $useTpl[1] : NULL; break;
-					case "hostdependency": insertHostDependencyCFG($tmpConf); break;	
+					case "hostdependency": insertHostDependencyCFG($tmpConf); break;
 				}
 				$get = false;
 				$tmpConf = array();
@@ -345,13 +362,15 @@ For information : contact@oreon-project.org
 		# Update Service Template relation when we have record all service definition
 		updateServiceTemplateUsed($useTpls);
 		# Turn 7 -> Service Groups
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 7 -> Service Groups\n", 3, $debug_path."cfgimport.log");
 		reset($buf);
-		
+
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "servicegroup": insertServiceGroupCFG($tmpConf);  break;					
+					case "servicegroup": insertServiceGroupCFG($tmpConf);  break;
 					default :; break;
 				}
 				$get = false;
@@ -369,12 +388,14 @@ For information : contact@oreon-project.org
 			unset($regs);
 		}
 		# Turn 8 -> Service Dependencies
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 8 -> Service Dependencies\n", 3, $debug_path."cfgimport.log");
 		reset($buf);
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "servicedependency": insertServiceDependencyCFG($tmpConf);  break;					
+					case "servicedependency": insertServiceDependencyCFG($tmpConf);  break;
 					default :; break;
 				}
 				$get = false;
@@ -419,12 +440,17 @@ For information : contact@oreon-project.org
 		*/
 		return $nbr;
 	}
-	
+
 	function insertContactCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/contact/DB-Func.php");
 		if (isset($tmpConf["contact_name"]) && testContactExistence($tmpConf["contact_name"]))	{
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactCFG : ". $tmpConf["contact_name"] ."\n", 3, $debug_path."cfgimport.log");
+
 			foreach ($tmpConf as $key=>$value)
 				switch($key)	{
 					case "alias" : $tmpConf["contact_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -434,20 +460,20 @@ For information : contact@oreon-project.org
 					case "service_notification_period" : $tmpConf["timeperiod_tp_id2"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
 					case "email" : $tmpConf["contact_email"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "pager" : $tmpConf["contact_pager"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "host_notification_commands" : 
+					case "host_notification_commands" :
 						$tmpConf["contact_hostNotifCmds"] = explode(",", $tmpConf[$key]);
 						foreach ($tmpConf["contact_hostNotifCmds"] as $key2=>$value2)
 							$tmpConf["contact_hostNotifCmds"][$key2] = getMyCommandID(trim($value2));
-						unset ($tmpConf[$key]); 
+						unset ($tmpConf[$key]);
 						break;
-					case "service_notification_commands" : 
+					case "service_notification_commands" :
 						$tmpConf["contact_svNotifCmds"] = explode(",", $tmpConf[$key]);
 						foreach ($tmpConf["contact_svNotifCmds"] as $key2=>$value2)	{
 							$tmpConf["contact_svNotifCmds"][$key2] = getMyCommandID(trim($value2));
 							if (!$tmpConf["contact_svNotifCmds"][$key2])
 								unset($tmpConf["contact_svNotifCmds"][$key2]);
 						}
-						unset ($tmpConf[$key]); 
+						unset ($tmpConf[$key]);
 						break;
 					case "contactgroups" :
 						$tmpConf["contact_cgNotif"] = explode(",", $tmpConf[$key]);
@@ -456,7 +482,7 @@ For information : contact@oreon-project.org
 							if (!$tmpConf["contact_cgNotif"][$key2])
 								unset($tmpConf["contact_cgNotif"][$key2]);
 						}
-						unset ($tmpConf[$key]); 
+						unset ($tmpConf[$key]);
 						break;
 				}
 			$tmpConf["contact_oreon"]["contact_oreon"] = "0";
@@ -468,15 +494,23 @@ For information : contact@oreon-project.org
 			insertContactInDB($tmpConf);
 			$nbr["cct"] += 1;
 			return true;
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactCFG : ". $tmpConf["contact_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
 		}
 		return false;
 	}
-	
+
 	function insertContactGroupCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/contactgroup/DB-Func.php");
 		if (isset($tmpConf["contactgroup_name"]) && testContactGroupExistence($tmpConf["contactgroup_name"]))	{
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactGroupCFG : ". $tmpConf["contactgroup_name"] ."\n", 3, $debug_path."cfgimport.log");
+
 			foreach ($tmpConf as $key=>$value)
 				switch($key)	{
 					case "contactgroup_name" : $tmpConf["cg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -496,16 +530,24 @@ For information : contact@oreon-project.org
 			insertContactGroupInDB($tmpConf);
 			$nbr["cg"] += 1;
 			return true;
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactGroupCFG : ". $tmpConf["contactgroup_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
 		}
 		return false;
 	}
-	
+
 	function insertHostCFG($tmpConf = array())	{
 		$use = NULL;
 		$useTpl = array();
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		if (isset($tmpConf["host_name"]) && testHostExistence($tmpConf["host_name"]) || isset($tmpConf["name"]) && testHostExistence($tmpConf["name"]))	{
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
+
 			foreach ($tmpConf as $key=>$value)	{
 				switch($key)	{
 					case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
@@ -535,23 +577,23 @@ For information : contact@oreon-project.org
 					case "notification_options" : $tmpConf["host_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 					case "stalking_options" : $tmpConf["host_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 
-					case "check_command" : 
+					case "check_command" :
 						$cmd =& explode("!", trim($tmpConf[$key]));
 						$tmpConf["command_command_id"] = getMyCommandID(array_shift($cmd));
 						if (!$tmpConf["command_command_id"])
 							unset($tmpConf["command_command_id"]);
-						else if (count($cmd)) 
+						else if (count($cmd))
 							$tmpConf["command_command_id_arg"] = "!".implode("!", $cmd);
 						else
 							$tmpConf["command_command_id_arg"] = NULL;
 						unset ($tmpConf[$key]);
 						break;
-					case "event_handler" : 
+					case "event_handler" :
 						$cmd =& explode("!", trim($tmpConf[$key]));
 						$tmpConf["command_command_id2"] = getMyCommandID(array_shift($cmd));
 						if (!$tmpConf["command_command_id2"])
 							unset($tmpConf["command_command_id2"]);
-						else if (count($cmd)) 
+						else if (count($cmd))
 							$tmpConf["command_command_id2_arg"] = "!".implode("!", $cmd);
 						else
 							$tmpConf["command_command_id2_arg"] = NULL;
@@ -560,7 +602,7 @@ For information : contact@oreon-project.org
 					case "parents" : $tmpConf["host_parentsTMP"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "check_period" : $tmpConf["timeperiod_tp_id"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
 					case "notification_period" : $tmpConf["timeperiod_tp_id2"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
-					
+
 					case "contact_groups" :
 						$tmpConf["host_cgs"] = explode(",", $tmpConf[$key]);
 						foreach ($tmpConf["host_cgs"] as $key2=>$value2)	{
@@ -569,7 +611,7 @@ For information : contact@oreon-project.org
 								unset($tmpConf["host_cgs"][$key2]);
 						}
 						unset ($tmpConf[$key]);
-						break;					
+						break;
 					case "hostgroups" :
 						$tmpConf["host_hgs"] = explode(",", $tmpConf[$key]);
 						foreach ($tmpConf["host_hgs"] as $key2=>$value2)	{
@@ -607,12 +649,18 @@ For information : contact@oreon-project.org
 			isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
 			$nbr["h"] += 1;
 			return $useTpl;
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
+
 		}
 	}
-	
+
 	function insertHostExtInfoCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/host/DB-Func.php");
 		foreach ($tmpConf as $key=>$value)
 			switch($key)	{
@@ -626,7 +674,7 @@ For information : contact@oreon-project.org
 				case "2d_coords" : $tmpConf["ehi_2d_coords"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "3d_coords" : $tmpConf["ehi_3d_coords"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 
-				case "host_name" : 
+				case "host_name" :
 					$tmpConf["host_names"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["host_names"] as $key2=>$value2)	{
 						$tmpConf["host_names"][$key2] = getMyHostID(trim($value2));
@@ -642,12 +690,16 @@ For information : contact@oreon-project.org
 		}
 		return true;
 	}
-	
+
 	function insertHostGroupCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/hostgroup/DB-Func.php");
 		if (isset($tmpConf["hostgroup_name"]) && testHostGroupExistence($tmpConf["hostgroup_name"]))	{
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostGroupCFG : ". $tmpConf["hostgroup_name"] ."  \n", 3, $debug_path."cfgimport.log");
 			foreach ($tmpConf as $key=>$value)
 				switch($key)	{
 					case "hostgroup_name" : $tmpConf["hg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -676,13 +728,18 @@ For information : contact@oreon-project.org
 			insertHostGroupInDB($tmpConf);
 			$nbr["hg"] += 1;
 			return true;
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostGroupCFG : ". $tmpConf["hostgroup_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
 		}
 		return false;
 	}
-	
+
 	function insertHostDependencyCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/host_dependency/DB-Func.php");
 		require_once("./include/configuration/configObject/hostgroup_dependency/DB-Func.php");
 		foreach ($tmpConf as $key=>$value)
@@ -698,7 +755,7 @@ For information : contact@oreon-project.org
 							unset($tmpConf["dep_hostChilds"][$key2]);
 					}
 					unset ($tmpConf[$key]);
-					break;				
+					break;
 				case "host_name" :
 					$tmpConf["dep_hostParents"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["dep_hostParents"] as $key2=>$value2)	{
@@ -739,14 +796,16 @@ For information : contact@oreon-project.org
 			$tmpConf["dep_name"] = "Host Dependency ".$nbr["hd"]." - ".date("d/m/Y - H:i:s", time());
 			$tmpConf["dep_description"] = "Host Dependency ".$nbr["hd"]." - ".date("d/m/Y - H:i:s", time());
 			$tmpConf["dep_comment"] = date("d/m/Y - H:i:s", time());
-			insertHostDependencyInDB($tmpConf);	
+			insertHostDependencyInDB($tmpConf);
 		}
 		return true;
 	}
-	
+
 	function insertServiceDependencyCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/service_dependency/DB-Func.php");
 		require_once("./include/configuration/configObject/servicegroup_dependency/DB-Func.php");
 		foreach ($tmpConf as $key=>$value)
@@ -762,7 +821,7 @@ For information : contact@oreon-project.org
 							unset($tmpConf["dep_hChi"][$key2]);
 					}
 					unset ($tmpConf[$key]);
-					break;				
+					break;
 				case "host_name" :
 					$tmpConf["dep_hPar"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["dep_hPar"] as $key2=>$value2)	{
@@ -812,7 +871,7 @@ For information : contact@oreon-project.org
 				case "dependent_service_description" :
 					if (isset($tmpConf["dep_hChi"]))	{
 						$tmpConf["dep_hSvChi"] = explode(",", $tmpConf[$key]);
-						foreach ($tmpConf["dep_hSvChi"] as $key2=>$value2)						
+						foreach ($tmpConf["dep_hSvChi"] as $key2=>$value2)
 							foreach ($tmpConf["dep_hChi"] as $key3=>$value3)	{
 								if (array_key_exists($key2, $tmpConf["dep_hSvChi"]) && ($tmpConf["dep_hSvChi"][$key2] != getMyServiceID(trim($value2), $value3)))
 									$tmpConf["dep_hSvChi"][count($tmpConf["dep_hSvChi"])] = $value3."_".getMyServiceID(trim($value2), $value3);
@@ -837,7 +896,7 @@ For information : contact@oreon-project.org
 							}
 					} */
 					unset ($tmpConf[$key]);
-					break;				
+					break;
 				case "service_description" :
 					if (isset($tmpConf["dep_hPar"]))	{
 						$tmpConf["dep_hSvPar"] = explode(",", $tmpConf[$key]);
@@ -873,6 +932,8 @@ For information : contact@oreon-project.org
 			$tmpConf["dep_name"] = "Service Dependency ".$nbr["svd"]." - ".date("d/m/Y - H:i:s", time());
 			$tmpConf["dep_description"] = "Service Dependency ".$nbr["svd"]." - ".date("d/m/Y - H:i:s", time());
 			$tmpConf["dep_comment"] = date("d/m/Y - H:i:s", time());
+			if ($debug_nagios_import == 1)
+					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceDependencyCFG : ". $tmpConf["dep_name"] ." \n", 3, $debug_path."cfgimport.log");
 			insertServiceDependencyInDB($tmpConf);
 		}
 		else if (isset($tmpConf["dep_sgParents"]) && isset($tmpConf["dep_sgChilds"]))	{
@@ -880,11 +941,13 @@ For information : contact@oreon-project.org
 			$tmpConf["dep_name"] = "SG Dependency ".$nbr["sgd"]." - ".date("d/m/Y - H:i:s", time());
 			$tmpConf["dep_description"] = "SG Dependency ".$nbr["sgd"]." - ".date("d/m/Y - H:i:s", time());
 			$tmpConf["dep_comment"] = date("d/m/Y - H:i:s", time());
-			insertServiceGroupDependencyInDB($tmpConf);	
+			if ($debug_nagios_import == 1)
+					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupDependencyCFG : ". $tmpConf["dep_name"] ." \n", 3, $debug_path."cfgimport.log");
+			insertServiceGroupDependencyInDB($tmpConf);
 		}
 		return true;
 	}
-	
+
 	function insertServiceCFG($tmpConf = array())	{
 		$use = NULL;
 		$rrd_host = NULL;
@@ -894,6 +957,8 @@ For information : contact@oreon-project.org
 		$tmpConf["service_hgPars"] = array();
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		foreach ($tmpConf as $key=>$value)
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
@@ -925,7 +990,7 @@ For information : contact@oreon-project.org
 				case "notification_options" : $tmpConf["service_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "stalking_options" : $tmpConf["service_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 
-				case "check_command" : 
+				case "check_command" :
 					$cmd =& explode("!", trim($tmpConf[$key]));
 					$cmd_name =& array_shift($cmd);
 					$tmpConf["command_command_id"] = getMyCommandID($cmd_name);
@@ -937,7 +1002,7 @@ For information : contact@oreon-project.org
 						$tmpConf["command_command_id_arg"] = "!".implode("!", $cmd);
 					unset ($tmpConf[$key]);
 					break;
-				case "event_handler" : 
+				case "event_handler" :
 					$cmd =& explode("!", trim($tmpConf[$key]));
 					$cmd_name =& array_shift($cmd);
 					$tmpConf["command_command_id2"] = getMyCommandID($cmd_name);
@@ -945,13 +1010,13 @@ For information : contact@oreon-project.org
 						unset($tmpConf["command_command_id2"]);
 					else if (strstr($cmd_name, "check_graph"))
 						$cmd = array_pop($cmd);
-					if (isset($tmpConf["command_command_id2"]) && count($cmd)) 
+					if (isset($tmpConf["command_command_id2"]) && count($cmd))
 						$tmpConf["command_command_id2_arg"] = "!".implode("!", $cmd);
 					unset ($tmpConf[$key]);
 					break;
 				case "check_period" : $tmpConf["timeperiod_tp_id"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "notification_period" : $tmpConf["timeperiod_tp_id2"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
-				
+
 				case "contact_groups" :
 					$tmpConf["service_cgs"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_cgs"] as $key2=>$value2)	{
@@ -960,7 +1025,7 @@ For information : contact@oreon-project.org
 							unset($tmpConf["service_cgs"][$key2]);
 					}
 					unset ($tmpConf[$key]);
-					break;				
+					break;
 				case "host_name" :
 					$tmpConf["service_hPars"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_hPars"] as $key2=>$value2)	{
@@ -971,10 +1036,10 @@ For information : contact@oreon-project.org
 							$rrd_host = $tmpConf["service_hPars"][$key2];
 					}
 					unset ($tmpConf[$key]);
-					break;				
+					break;
 				case "hostgroup_name" :
 					$tmpConf["service_hgPars"] = explode(",", $tmpConf[$key]);
-					foreach ($tmpConf["service_hgPars"] as $key2=>$value2)	{				
+					foreach ($tmpConf["service_hgPars"] as $key2=>$value2)	{
 						$tmpConf["service_hgPars"][$key2] = getMyHostGroupID(trim($value2));
 						if (!$tmpConf["service_hgPars"][$key2])
 							unset($tmpConf["service_hgPars"][$key2]);
@@ -994,19 +1059,27 @@ For information : contact@oreon-project.org
 		$tmpConf["service_comment"] = date("d/m/Y - H:i:s", time());
 		if (isset($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
 			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"]["service_register"])	{
+				if ($debug_nagios_import == 1)
+					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ." \n", 3, $debug_path."cfgimport.log");
+
 				$useTpl[0] = insertServiceInDB($tmpConf);
 				$useTpl[1] = $use;
 				if ($rrd_service)
 					copyRrdDB($rrd_service, $useTpl[0], $rrd_host);
 				$nbr["sv"] += 1;
 			}
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ."  already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
 		}
 		return $useTpl;
-	}	
-	
+	}
+
 	function insertServiceGroupCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/servicegroup/DB-Func.php");
 		if (isset($tmpConf["servicegroup_name"]) && testServiceGroupExistence($tmpConf["servicegroup_name"]))	{
 			foreach ($tmpConf as $key=>$value)
@@ -1024,18 +1097,25 @@ For information : contact@oreon-project.org
 				}
 			$tmpConf["sg_activate"]["sg_activate"] = "1";
 			$tmpConf["sg_comment"] = date("d/m/Y - H:i:s", time());
+			if ($debug_nagios_import == 1)
+					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["servicegroup_name"]."\n", 3, $debug_path."cfgimport.log");
 			insertServiceGroupInDB($tmpConf);
 			$nbr["sg"] += 1;
 			return true;
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["servicegroup_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
 		}
 		return false;
 	}
-	
+
 	function insertTimePeriodCFG($tmpConf = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/timeperiod/DB-Func.php");
-		if (isset($tmpConf["timeperiod_name"]) && testTPExistence($tmpConf["timeperiod_name"]))	{			
+		if (isset($tmpConf["timeperiod_name"]) && testTPExistence($tmpConf["timeperiod_name"]))	{
 			foreach ($tmpConf as $key=>$value)
 				switch($key)	{
 					case "timeperiod_name" : $tmpConf["tp_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -1048,27 +1128,42 @@ For information : contact@oreon-project.org
 					case "friday" : $tmpConf["tp_friday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "saturday" : $tmpConf["tp_saturday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				}
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertTimePeriodCFG : ". $tmpConf["tp_name"] ."\nalias-> ". $tmpConf["tp_alias"] ."\ncommand_line -> "  . $tmpConf["command_line"]."\n", 3, $debug_path."cfgimport.log");
 			insertTimeperiodInDB($tmpConf);
 			$nbr["tp"] += 1;
 			return true;
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertTimePeriodCFG : ". $tmpConf["tp_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
+
 		}
 		return false;
 	}
-	
+
 	function insertCommandCFG($tmpConf = array(), $ret = array())	{
 		global $nbr;
 		global $oreon;
+		global $debug_nagios_import;
+		global $debug_path;
 		require_once("./include/configuration/configObject/command/DB-Func.php");
+
 		if (isset($tmpConf["command_name"]) && testCmdExistence($tmpConf["command_name"]))	{
 			$tmpConf["command_type"]["command_type"] = $ret["cmdType"]["cmdType"];
 			$tmpConf["command_example"] = NULL;
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCommandCFG : ". $tmpConf["command_name"] ."\ncommand_type-> ". $tmpConf["command_type"]["command_type"] ."\ncommand_line -> "  . $tmpConf["command_line"]."\n", 3, $debug_path."cfgimport.log");
 			insertCommandInDB($tmpConf);
 			$nbr["cmd"] += 1;
 			return true;
+		} else {
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCommandCFG : ". $tmpConf["command_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
 		}
+
 		return false;
 	}
-	
+
 	function deleteAll()	{
 		deleteAllConfCFG();
 		deleteResourceCFG();
@@ -1076,5 +1171,5 @@ For information : contact@oreon-project.org
 		deleteCgiCFG();
 		deletePerfparseCFG();
 	}
-	
+
 ?>
