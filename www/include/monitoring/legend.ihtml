@@ -69,19 +69,19 @@
 </tr>
 <tr>
         <td colspan="2">
-        <img src="./img/icones/16x16/refresh.png" border="0" alt="{$lang.lgd_refresh}">
+        <img src="./img/icones/16x16/refresh.gif" border="0" alt="{$lang.lgd_refresh}">
         &nbsp;=&nbsp;
         {$lang.lgd_refresh}
         </td>
 
         <td>
-        <img src="./img/icones/16x16/media_play.png" border="0" alt="{$lang.lgd_play}">
+        <img src="./img/icones/16x16/media_play.gif" border="0" alt="{$lang.lgd_play}">
         &nbsp;=&nbsp;
         {$lang.lgd_play}
         </td>
 
         <td colspan="2">
-        <img src="./img/icones/16x16/media_pause.png" border="0" alt="{$lang.lgd_pause}">
+        <img src="./img/icones/16x16/media_pause.gif" border="0" alt="{$lang.lgd_pause}">
         &nbsp;=&nbsp;
         {$lang.lgd_pause}
         </td>
