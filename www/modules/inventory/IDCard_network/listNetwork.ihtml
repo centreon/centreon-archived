@@ -1,15 +1,21 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<form method="GET" action="">
-<input name="p" value="{$p}" type="hidden">
-<input name="o" value="n" type="hidden">
-{php}
-   include('./include/common/pagination.php');
-{/php}
-</form>
-<form {$form_attributes}>
-<input name="p" value="{$p}" type="hidden">
-<input name="o" value="n" type="hidden">
 
+<form name='form'>
+<input name="p" value="{$p}" type="hidden">
+<input name="o" value="n" type="hidden">
+	<table class="Toolbar_TableTop">
+		<tr class="Toolbar_TR_Top">
+			<td class="Toolbar_TDSelectAction_Bottom">
+			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
+			<input type="image" name="o" value="d" src="./img/icones/16x16/refresh.gif">
+			</td>
+
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
 	<table id="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -29,18 +35,24 @@
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_manu}</td>
 		</tr>
 		{/section}
+	</table>
+
+	<table class="Toolbar_TableBottom">
 		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="6">
+			<td class="Toolbar_TDSelectAction_Bottom">
 			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
 			<input type="image" name="o" value="d" src="./img/icones/16x16/refresh.gif">
 			</td>
-		</tr>		
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
 	</table>
-</form>
-<form>
-{php}
-   include('./include/common/pagination.php');
-{/php}
+
+<input type='hidden' name='o' id='o' value='42'>
+
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
 
