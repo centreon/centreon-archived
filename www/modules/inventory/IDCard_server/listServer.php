@@ -20,23 +20,21 @@ For information : contact@oreon-project.org
 */
 	if (!isset ($oreon))
 		exit ();
-	$pagination = "maxViewConfiguration";		
+	$pagination = "maxViewConfiguration";
 
-	# LCA 
+	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
 	$lcaHostByID = getLcaHostByID($pearDB);
 	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
 	$isRestreint = HadUserLca($pearDB);
 
-
-
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$gopt = array_map("myDecode", $res->fetchRow());
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
