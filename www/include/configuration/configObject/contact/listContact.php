@@ -124,8 +124,8 @@ For information : contact@oreon-project.org
 				"");	  
         $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
 	$form->setDefaults(array('o1' => NULL));
-			$o1 =& $form->getElement('o1');
-		$o1->setValue(NULL);
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
 	
 	$attrs = array(
 		'onchange'=>"javascript: " .
@@ -137,10 +137,11 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
     $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+
 	$form->setDefaults(array('o2' => NULL));
-	if ($form->validate())	{
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
+
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
 
