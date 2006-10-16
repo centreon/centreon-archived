@@ -1,12 +1,21 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<form {$form_attributes}>
-<input name="p" value="{$p}" type="hidden">
-{php}
-   include('./include/common/pagination.php');
-{/php}
-{$form.hidden}
-</form>
-<form {$form_attributes}>
+
+<form name='form'>
+	<table class="Toolbar_TableTop">
+		<tr class="Toolbar_TR_Top">
+			<td class="Toolbar_TDSelectAction_Top">
+				{$msg.options} {$form.o1.html}
+				&nbsp;&nbsp;&nbsp;
+				<a href="{$msg.addL}">{$msg.addT}</a>
+			</td>
+
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+	
 	<table class="TableFooter">
 		<tr>
 			<td class="limitPage" >{$form.plugin_dir.label}&nbsp;{$form.plugin_dir.html}</td>
@@ -28,25 +37,24 @@
 			<td class="ListColRight">{$elemArr[elem].RowMenu_size}&nbsp;Ko </td>
 			<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
-		{/section}
-		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="2">
-				&nbsp;
-				<input type="image" name="o" value="m" src="./img/icones/16x16/document_exchange.gif">
-				&nbsp;&nbsp;&nbsp;
-				<input type="image" name="o" value="d" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msg.delConfirm}')">				
-			</td>
-			<td class="ListColFooterCenter" colspan="2"></td>
-			<td class="ListColFooterRight" align="right"><a href="{$msg.addL}">{$msg.addT}</a></td>
-		</tr>		
+		{/section}	
 	</table>
-{php}
-   include('./include/common/pagination.php');
-{/php}
-{$form.hidden}
-</form>
-<form {$form_attributes}>
-{$form.hidden}
+
+	<table class="Toolbar_TableBottom">
+		<tr>
+			<td class="Toolbar_TDSelectAction_Bottom">
+				{$msg.options} {$form.o2.html}
+				&nbsp;&nbsp;&nbsp;
+				<a href="{$msg.addL}">{$msg.addT}</a>
+			</td>
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+<br><br>
+
 <input name="p" value="{$p}" type="hidden">
 <table id="ListTable">
 	<tr class="ListHeader">
@@ -56,4 +64,8 @@
 		<td class="ListColHeaderPicker">{$form2.filename.label}&nbsp;{$form2.filename.html}&nbsp;&nbsp;{$form2.load.html}</td>
 	</tr>
 </table>
+<input type='hidden' name='o' id='o' value='42'>
+
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+{$form.hidden}
 </form>

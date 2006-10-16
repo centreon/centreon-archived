@@ -37,8 +37,23 @@
 			<td class="ListColFooterRight" align="right"><a href="{$msg.addL}">{$msg.addT}</a></td>
 		</tr>		
 	</table>
-	{php}
-	   include('./include/common/pagination.php');
-	{/php}
-	{$form.hidden}
+
+	<table class="Toolbar_TableBottom">
+		<tr>
+			<td class="Toolbar_TDSelectAction_Bottom">
+				{$msg.options} {$form.o2.html}
+				&nbsp;&nbsp;&nbsp;
+				<a href="{$msg.addL}">{$msg.addT}</a>
+			</td>
+			<input name="p" value="{$p}" type="hidden">
+			{php}
+			   include('./include/common/pagination.php');
+			{/php}
+		</tr>
+	</table>
+
+<input type='hidden' name='o' id='o' value='42'>
+
+<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+{$form.hidden}
 </form>
