@@ -106,10 +106,29 @@ if(isset($_GET["sort_types"]))
 	ksort($select);
 
 
+?>
+
+<SCRIPT LANGUAGE="JavaScript">
+function setL(_this)
+{
+	var _l = document.getElementsByName('l');
+	var _limite = document.getElementById('limit');
+
+	_limite.value = _this;
+
+	_l[0].value = _this;
+	_l[1].value = _this;
+
+}
+</SCRIPT>
+
+<?
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
-	$selLim =& $form->addElement('select', 'limit', $lang['nbr_per_page'], $select, array("onChange" => "this.form.submit('')"));
+
+	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit('')"));
 	$selLim->setSelected($limit);
+
 
 	#Element we need when we reload the page
 
@@ -132,6 +151,8 @@ if(isset($_GET["sort_types"]))
 	$tpl->assign("host_name", $host_name);
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	$tpl->assign("status", $status);
+
+	$tpl->assign("limite", $limite);
 
 
 	$tpl->assign("begin", $num);

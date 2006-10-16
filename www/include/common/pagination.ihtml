@@ -1,7 +1,7 @@
-	<table class="TableFooter">
-	<tr>
-	<td class="limitPage">{$form.limit.label}</b>&nbsp;&nbsp;{$form.limit.html}</td>
-	<td class="pagination">
+
+
+
+	<td class="Toolbar_pagination">
 		{if $pagePrev}
 		&nbsp;<a href="{$pagePrev}"><img src="./img/icones/16x16/arrow_left_blue.png"  alt='{$previous}' title='{$previous}'></a>
 		{/if}
@@ -18,7 +18,7 @@
 		&nbsp;<a href="{$pageNext}"><img src="./img/icones/16x16/arrow_right_blue.png"  alt='{$next}' title='{$next}'></a>
 		{/if}	
 	</td>
-	<td class="pageNumber">Page {$pageNumber}</td>
-	</tr>
-	</table>
+	<td class="Toolbar_pagelimit">{$form.l.label}</b>&nbsp;&nbsp;{$form.l.html}
+	&nbsp;&nbsp;Page {$pageNumber}</td>
+
 	{$form.hidden}

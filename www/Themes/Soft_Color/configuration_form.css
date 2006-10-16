@@ -400,3 +400,57 @@ float:left;
 float:right;
 width:100%;
 }
+
+
+.Toolbar_TableTop{
+	width:100%;
+	margin-bottom:5px;
+
+/*
+	padding:10px;
+	border-top-width: 0.5px;
+	border-top-style:solid;
+	border-right-width: 0.5px;
+	border-right-style:solid;
+*/
+}
+
+.Toolbar_TR_Top{
+	padding-left:10px;
+	margin-left:10px;
+}
+
+.Toolbar_TDSelectAction_Top{
+/*
+	padding-left:10px;
+	margin-left:10px;
+	border-left-width: 0.5px;
+	border-left-style:solid;
+*/
+}
+
+
+.Toolbar_TableBottom{
+	margin-top:5px;
+	width:100%;
+/*
+	border-bottom-width: 0.5px;
+	border-bottom-style:solid;
+	border-right-width: 0.5px;
+	border-right-style:solid;
+*/
+}
+.Toolbar_TDSelectAction_Bottom{
+/*
+	border-left-width: 0.5px;
+	border-left-style:solid;
+*/
+}
+
+
+.Toolbar_pagelimit{
+text-align:right;
+}
+
+.Toolbar_pagination{
+}

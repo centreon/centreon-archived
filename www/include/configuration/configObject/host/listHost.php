@@ -18,14 +18,14 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	$pagination = "maxViewConfiguration";		
+	$pagination = "maxViewConfiguration";
 
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$gopt = array_map("myDecode", $res->fetchRow());
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -80,8 +80,8 @@ For information : contact@oreon-project.org
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE host_id IN (".$lcaHoststr.") AND h.host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	}
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
+	if (PEAR::isError($res)) {
+		print "Mysql Error : ".$res->getMessage();
 	}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 		else
 			$moptions .= "<a href='oreon.php?p=".$p."&host_id=".$host['host_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" style=\"margin-bottom:0px;\" name='dupNbr[".$host['host_id']."]'></input>";
+		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$host['host_id']."]'></input>";
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
@@ -118,14 +118,47 @@ For information : contact@oreon-project.org
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
+
+
+
 	#
-	##Apply a template definition
+	##Toolbar select 'More actions...'
 	#
-	
+	?>
+	<SCRIPT LANGUAGE="JavaScript">
+	function setO(_i) {
+		document.forms['form'].elements['o'].value = _i;
+	}
+	</SCRIPT>
+	<?
+	$attrs = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"");	  
+    $form->addElement('select', 'o1', NULL, array(NULL=>'More actions...', "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange']), $attrs);
+	$attrs = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"");
+    $form->addElement('select', 'o2', NULL, array(NULL=>'More actions...', "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange']), $attrs);
+
+
+
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
-
+	$tpl->assign('limit', $limit);
 
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listHost.ihtml");
