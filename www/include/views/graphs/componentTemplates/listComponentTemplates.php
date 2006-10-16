@@ -104,10 +104,9 @@ $pagination = "maxViewConfiguration";
 				"");	  
         $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
 	$form->setDefaults(array('o1' => NULL));
-	if ($form->validate())	{
-		$o1 =& $form->getElement('o1');
+			$o1 =& $form->getElement('o1');
 		$o1->setValue(NULL);
-	}
+	
 	$attrs = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
@@ -122,7 +121,7 @@ $pagination = "maxViewConfiguration";
 	if ($form->validate())	{
 		$o2 =& $form->getElement('o2');
 		$o2->setValue(NULL);
-	}
+	
 	$tpl->assign('limit', $limit);
 
 
