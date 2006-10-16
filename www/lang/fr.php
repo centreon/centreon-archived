@@ -878,4 +878,8 @@ $lang["lgd_off"] = " D&eacute;sactiver";
 $lang["advanced"] = "Options Avancees >>";
 
 $lang["quickFormError"] = "Impossible de valider, un ou plusieurs champs sont erron&eacute;s";
+
+
+$lang["lgd_more_actions"] = " Plus d'actions...'";
+
 ?>

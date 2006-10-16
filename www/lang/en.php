@@ -1026,6 +1026,6 @@ $lang["advanced"] = "Advanced >>";
 
 $lang["quickFormError"] = "impossible to validate, one or more field is incorrect";
 
-
+$lang["lgd_more_actions"] = " More Actions...'";
 
 ?>
