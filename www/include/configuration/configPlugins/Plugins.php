@@ -45,6 +45,6 @@ For information : contact@oreon-project.org
 			case "a" : require_once($path."listPlugins.php"); break; #Add a Command
 			case "w" : require_once($path."listPlugins.php"); break; #Watch a Command
 			case "d" : require_once($path."listPlugins.php"); break; #Delete n Commands
-			default : require_once($path."listPlugin.php"); break;
+			default : require_once($path."listPlugins.php"); break;
 		}
 ?>

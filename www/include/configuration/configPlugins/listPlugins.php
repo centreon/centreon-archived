@@ -31,11 +31,20 @@ For information : contact@oreon-project.org
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-	$plugin_list = return_plugin_list($oreon->optGen["nagios_path_plugins"]);
-	//if ($search)
-	//	$res = & $pearDB->query("SELECT COUNT(*) FROM command WHERE command_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
-	//else
-		$rows = count($plugin_list);
+	
+	if (isset($_GET["plugin_dir"]) && $_GET["plugin_dir"])
+		$dir = $_GET["plugin_dir"];
+	else
+		$dir = "";
+	
+	if (isset($_GET["create"]) && $_GET["create"]){
+		mkdir(str_replace("//", "/", $oreon->optGen["nagios_path_plugins"].$dir.$_GET["new_dir"]));
+	}
+	
+	$plugin_list = return_plugin_list($dir);
+	$plugin_dir = return_plugin_dir("");
+	
+	$rows = count($plugin_list);
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
@@ -76,10 +85,10 @@ For information : contact@oreon-project.org
 			$path = str_replace('#BS#', "\\", $path);
 			$elemArr[$i_real] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),
-							"RowMenu_name" => $name,
+							"RowMenu_name" => substr($name, 1),
 							"RowMenu_num" => $i,
-							"RowMenu_size" => round(filesize($oreon->optGen["nagios_path_plugins"].$path) / 1024,2),
-							"RowMenu_path" => $path,
+							"RowMenu_size" => round(filesize($oreon->optGen["nagios_path_plugins"].$dir.$path) / 1024,2),
+							"RowMenu_path" => str_replace("//", "/", $dir.$path),
 							"RowMenu_options"=>$moptions);
 			$style != "two" ? $style = "two" : $style = "one";
 			$i_real++;
@@ -87,16 +96,54 @@ For information : contact@oreon-project.org
 		$i++;
 	}
 	$tpl->assign("elemArr", $elemArr);
+	
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$form->addElement('select', 'plugin_dir', "Directory", $plugin_dir, array("onChange" => "this.form.submit('')"));
+	
+	# Form2
+	
+	$form2 = new HTML_QuickForm('form', 'POST', "?p=".$p);
+	$form2->addElement('submit', 'create', "Create");
+	$form2->addElement('text', 'new_dir', "Create New Directory");
+	$file =& $form2->addElement('file', 'filename', $lang["upl_file"]);
+	$form2->addElement('submit', 'load', "Load");
+	
+	if (isset($_GET["filename"])){
+		print $_GET["filename"];
+				
+	}
+	
+	if ($form2->validate()) {
+		print "ok !!";
+		$ret = $form2->getSubmitValues();
+		$fDataz = array();
+		$buf = NULL;
+		$fDataz =& $file->getValue();
+		print $fDataz["type"];
+		/*
+		# File Moving
+		switch ($fDataz["type"])	{
+			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." ".$lang["upl_uplBadType"]."<br>"; break;
+			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." ".$lang["upl_uplOk"]."<br>"; break; // tar.gz
+			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $lang["upl_manualDef"]." ".$lang["upl_uplOk"]."<br>"; break; // Text
+			default : $msg .= $lang["upl_uplKo"]."<br>";
+		}
+		*/
+	}
 	
 	#
 	##Apply a template definition
 	#
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer2 =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	
 	$form->accept($renderer);	
+	$form2->accept($renderer2);	
 	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('form2', $renderer2->toArray());
+	$tpl->assign('p', $p);
 	$tpl->display("listPlugins.ihtml");
 	
 	$tpl = new Smarty();
