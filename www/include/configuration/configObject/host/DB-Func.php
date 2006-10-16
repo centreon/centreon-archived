@@ -17,6 +17,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	if (!isset ($oreon))
 		exit ();
 		
@@ -27,9 +28,8 @@ For information : contact@oreon-project.org
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');
 		$res =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$host =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $host["host_id"] == $id)	
@@ -45,36 +45,31 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE host SET host_activate = '1' WHERE host_id = '".$host_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function disableHostInDB ($host_id = null)	{
 		if (!$host_id) return;
 		global $pearDB;
 		$pearDB->query("UPDATE host SET host_activate = '0' WHERE host_id = '".$host_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function deleteHostInDB ($hosts = array())	{
-		global $pearDB;
-		global $oreon;
+		global $pearDB, $oreon;
 		foreach($hosts as $key=>$value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
 			$res = & $pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			while ($res->fetchInto($row))
 				if ($row["nbr"] == 1)
 					$pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
-			$pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$res =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
+			if (PEAR::isError($res)) 
+				print "Mysql Error : ".$res->getMessage();
 			$files = glob($oreon->optGen["oreon_rrdbase_path"].$key."_*.rrd");
 			foreach ($files as $filename)
 				unlink ($filename);
