@@ -67,7 +67,7 @@ $pagination = "maxViewConfiguration";
 		$moptions .= "<a href='oreon.php?p=".$p."&graph_id=".$graph['graph_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&graph_id=".$graph['graph_id']."&o=d&select[".$graph['graph_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<select style='width:35; margin-bottom: 3px;' name='dupNbr[".$graph['graph_id']."]'><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>10</option></select>";
+		$moptions .= "<select style='width:35; margin-bottom: 3px;' name='dupNbr[".$graph['graph_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$graph["name"],
