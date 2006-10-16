@@ -135,6 +135,7 @@ For information : contact@oreon-project.org
 		$o2 =& $form->getElement('o2');
 		$o2->setValue(NULL);
 	}
+	$tpl->assign('limit', $limit);
 
 	
 	

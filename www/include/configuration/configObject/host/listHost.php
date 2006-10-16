@@ -162,20 +162,14 @@ For information : contact@oreon-project.org
 		$o2 =& $form->getElement('o2');
 		$o2->setValue(NULL);
 	}
-
-	$form->setDefaults(array('o2' => NULL));
-	if ($form->validate())	{
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
-	}
-
+	$tpl->assign('limit', $limit);
 
 
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
-	$tpl->assign('limit', $limit);
+
 
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listHost.ihtml");
