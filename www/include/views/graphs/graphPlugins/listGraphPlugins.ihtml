@@ -8,32 +8,32 @@
 <div>
 {if $database_name}
 	<table id="ListTable">
-        <tr class="ListHeader">
-        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/line-chart.gif'>&nbsp;{$title2} - {$database_name}</td>
-        </tr>
-        <tr>
-    		<td colspan="2" class='ListColCenter'>
-    			<img src='./include/views/graphs/generateImage/generateRRDImagePlugins.php?session_id={$session_id}&database={$databaseSH}&template_id={$grapht_graph_id}{if $end}&end={$end}{/if}{if $start}&start={$start}{/if}'><br>
-    		</td>
-        </tr>
-    </table>
+		<tr class="ListHeader">
+			<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/line-chart.gif'>&nbsp;{$title2} - {$database_name}</td>
+		</tr>
+		<tr>
+			<td colspan="2" class='ListColCenter'>
+				<img src='./include/views/graphs/generateImage/generateRRDImagePlugins.php?session_id={$session_id}&database={$databaseSH}&template_id={$grapht_graph_id}{if $end}&end={$end}{/if}{if $start}&start={$start}{/if}'><br>
+			</td>
+		</tr>
+	</table>
 {/if}
 </div>
 <div style="padding-top: 20px;">
-    <form {$form.attributes}>
-        <div>
-       		<table id="ListTable">
-                <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
-                </tr>
-                <tr class="list_one">
-            		<td>{$form.database.label}</td>
-            		<td>{$form.database.html}</td>
-                </tr>
-        	</table>
-        </div>
-        <div id="validForm">
-        	<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br />
+	<form {$form.attributes}>
+		<div>
+			<table id="ListTable">
+				<tr class="ListHeader">
+					<td class="FormHeader" colspan="2">{$form.header.title}</td>
+				</tr>
+				<tr class="list_one">
+				<td>{$form.database.label}</td>
+					<td>{$form.database.html}</td>
+				</tr>
+			</table>
+		</div>
+		<div id="validForm">
+			<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br />
         </div><br><br><br><br>
         <div name="div1" id="div1" class='cachediv' {if !$title2}style="padding-top:34px;"{/if}>
         	<table id="ListTable">
