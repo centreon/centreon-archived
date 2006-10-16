@@ -36,26 +36,39 @@ For information : contact@oreon-project.org
 			$res =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$lcaSGStr.") LIMIT 1");
 		if (PEAR::isError($res)) 
 			print "Mysql Error : ".$res->getMessage();
+		
 		# Set base value
 		$sg = array_map("myDecode", $res->fetchRow());
+		
 		# Set ServiceGroup Childs
-		$res =& $pearDB->query("SELECT DISTINCT hsr.host_host_id, sgr.service_service_id FROM servicegroup_relation sgr, host_service_relation hsr WHERE sgr.servicegroup_sg_id = '".$sg_id."' AND hsr.service_service_id = sgr.service_service_id AND hsr.host_host_id IS NOT NULL GROUP BY service_service_id");
+		
+		$res =& $pearDB->query(	"SELECT host_host_id, service_service_id " .
+								"FROM servicegroup_relation " .
+								"WHERE servicegroup_sg_id = '".$sg_id."' " .
+								"AND host_host_id IS NOT NULL ORDER BY service_service_id");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-		for($i = 0; $res->fetchInto($services); $i++)
-			$sg["sg_hServices"][$i] = $services["service_service_id"];
-		$res->free();
-		$res =& $pearDB->query("SELECT DISTINCT hsr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr, host_service_relation hsr WHERE sgr.servicegroup_sg_id = '".$sg_id."' AND hsr.service_service_id = sgr.service_service_id AND hsr.hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
+		$i = 0;
+		while ($res->fetchInto($host)){
+			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
+			$i++;
+		}	
+		$res =& $pearDB->query(	"SELECT hostgroup_hg_id, service_service_id " .
+								"FROM servicegroup_relation " .
+								"WHERE servicegroup_sg_id = '".$sg_id."' " .
+								"AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-		for($i = 0; $res->fetchInto($services); $i++)
-			$sg["sg_hgServices"][$i] = $services["service_service_id"];
+		for($i = 0; $res->fetchInto($services); $i++){
+			print "hg";
+			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
+		}
 		$res->free();
+
 		# Set City name
 		$res =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$sg["city_id"]."' AND cny.country_id = '".$sg["country_id"]."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res)) 
+			print "Mysql Error : ".$res->getMessage();
 		$city = $res->fetchRow();
 		$sg["city_name"] = $city["city_name"];
 		$res->free();
@@ -68,25 +81,42 @@ For information : contact@oreon-project.org
 	$hgServices = array();
 	$initName = NULL;
 	if ($oreon->user->admin || !$isRestreint)		
-		$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id ORDER BY h.host_name, sv.service_description");
+		$res =& $pearDB->query(	"SELECT host_name, host_id " .
+								"FROM host " .
+								"WHERE host_register = '1' " .
+								"ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT DISTINCT h.host_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, host h WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND h.host_id = hsr.host_host_id AND h.host_id IN (".$lcaHostStr.") ORDER BY h.host_name, sv.service_description");
+		$res =& $pearDB->query(	"SELECT host_name, host_id " .
+								"FROM host " .
+								"WHERE host_register = '1' " .
+								"AND host_id IN (".$lcaHostStr.") " .
+								"ORDER BY host_name");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-	while($res->fetchInto($elem))	{
-		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
-		if (!$elem["service_description"])
-			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
-		$hServices[$elem["service_id"]] = $elem["host_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];		
+	while($res->fetchInto($host))	{
+		$services = getMyHostServices($host["host_id"]);
+		foreach ($services as $key => $s)
+			$hServices[$host["host_id"]."-".$key] = $host["host_name"]."&nbsp;-&nbsp;".$s;
 	}
 	$res->free();
 
 	# Host Group LCA
 	$lcaHGStr ? $lcaHGStr = $lcaHGStr : $lcaHGStr =  '\'\'';
 	if ($oreon->user->admin || !$isRestreint)		
-		$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, sv.service_description");
+		$res =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
+								"FROM host_service_relation hsr, service sv, hostgroup hg " .
+								"WHERE sv.service_register = '1' " .
+								"AND hsr.service_service_id = sv.service_id " .
+								"AND hg.hg_id = hsr.hostgroup_hg_id " .
+								"ORDER BY hg.hg_name, sv.service_description");
 	else
-		$res =& $pearDB->query("SELECT DISTINCT hg.hg_name, sv.service_description, sv.service_template_model_stm_id, sv.service_id FROM host_service_relation hsr, service sv, hostgroup hg WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id AND hg.hg_id IN (".$lcaHGStr.") ORDER BY hg.hg_name, sv.service_description");
+		$res =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
+								"FROM host_service_relation hsr, service sv, hostgroup hg " .
+								"WHERE sv.service_register = '1' " .
+								"AND hsr.service_service_id = sv.service_id " .
+								"AND hg.hg_id = hsr.hostgroup_hg_id " .
+								"AND hg.hg_id IN (".$lcaHGStr.") " .
+								"ORDER BY hg.hg_name, sv.service_description");
 	
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
@@ -94,7 +124,7 @@ For information : contact@oreon-project.org
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
 			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
-		$hgServices[$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
+		$hgServices[$elem["hg_id"] . '-'.$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
 	}
 	$res->free();
 	# Countries comes from DB -> Store in $countries Array
