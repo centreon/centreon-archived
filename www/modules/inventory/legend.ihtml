@@ -70,7 +70,7 @@
 {$lang.lgd_view}
 </td>
 <td>
-<img src="./img/icones/16x16/arrow_right_blue.png" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/arrow_right_blue.gif" border="0" alt="{$lang.duplicate}">
 &nbsp;=&nbsp;
 {$lang.lgd_next}
 </td>
