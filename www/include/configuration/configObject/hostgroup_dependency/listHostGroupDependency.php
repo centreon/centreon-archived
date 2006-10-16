@@ -18,25 +18,34 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	$pagination = "maxViewConfiguration";
+
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
-	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
+
+
+	if ($oreon->user->admin || !$isRestreint){
+		$rq = "SELECT COUNT(*) FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
+	}  else  {
+		$rq = "SELECT COUNT(*) FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
+	}
+	
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -55,15 +64,20 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Dependcy list
-	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
+	if ($oreon->user->admin || !$isRestreint){
+		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
+	} else {
+		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id AND dhgpr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";	
+	}
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
 	$res =& $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
@@ -128,12 +142,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-	
-
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
