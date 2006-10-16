@@ -122,7 +122,7 @@ For information : contact@oreon-project.org
 
 
 	#
-	##Toolbar select 'More actions...'
+	##Toolbar select $lang["lgd_more_actions"]
 	#
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
@@ -139,8 +139,9 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");	  
-    $form->addElement('select', 'o1', NULL, array(NULL=>'More actions...', "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange']), $attrs);
+				"");
+    $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange']), $attrs);
+	$form->setDefaults(array('o1' => '0'));
 	$attrs = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
@@ -150,7 +151,8 @@ For information : contact@oreon-project.org
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>'More actions...', "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange']), $attrs);
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange']), $attrs);
+	$form->setDefaults(array('o1' => '0'));
 
 
 
