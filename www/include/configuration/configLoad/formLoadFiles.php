@@ -17,18 +17,33 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
+	global $pearDB;
+	$res =& $pearDB->query("SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1");
+	if (PEAR::isError($res))
+		die($res->getMessage());
+
+	$debug = $res->fetchRow();
+
+	$debug_nagios_import = $debug['debug_nagios_import'];
+	$debug_path = $debug['debug_path'];
+
+	if (!isset($debug_nagios_import))
+		$debug_nagios_import = 0;
+
+
 	#
 	## Form begin
 	#
 	$attrSelect = array("style" => "width: 100px;");
 	$attrsTextarea 	= array("rows"=>"12", "cols"=>"90");
-	
+
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["upl_name"]);
-	
+
 	$form->addElement('header', 'infos', $lang["upl_infos"]);
     $form->addElement('select', 'host', $lang["upl_host"], array(0=>"localhost"), $attrSelect);
-    
+
 	$form->addElement('header', 'opt', $lang["upl_opt"]);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, $lang["yes"], '1');
@@ -45,7 +60,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["no"], '0');
 	$form->addGroup($tab, 'comment', $lang["upl_comment"], '&nbsp;');
 	$form->setDefaults(array('comment' => '0'));
-			
+
 	$form->addElement('header', 'fileType', $lang["upl_type"]);
 	$form->addElement('header', 'fileMis1', $lang["upl_mis1"]);
 	$tab = array();
@@ -55,7 +70,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, $lang["upl_typeCfg"], 'cfg');
 	$form->addGroup($tab, 'Type', $lang["upl_typeName"], '<br>');
 	$form->setDefaults(array('Type' => array("Type"=>"cfg")));
-	
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, $lang["upl_typeCmdCheck"], '2');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, $lang["upl_typeCmdNotif"], '1');
@@ -66,37 +81,43 @@ For information : contact@oreon-project.org
 
 	$file =& $form->addElement('file', 'filename', $lang["upl_file"]);
 	$form->addElement('textarea', 'manualDef', $lang["upl_manualDef"], $attrsTextarea);
-	
-	$form->addElement('header', 'result', $lang["upl_result"]);	
+
+	$form->addElement('header', 'result', $lang["upl_result"]);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["yes"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["no"], '0');
 	$form->addGroup($tab, 'debug', $lang["upl_debug"], '&nbsp;');
 	$form->setDefaults(array('debug' => '0'));
-		
+
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
-	# 
+
+	#
 	##End of form definition
 	#
 	$form->applyFilter('_ALL_', 'trim');
-	
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	$sub =& $form->addElement('submit', 'submit', $lang["upl_butOK"]);
-	$msg = NULL;  
+	$msg = NULL;
 	if ($form->validate()) {
 		$ret = $form->getSubmitValues();
 		$fDataz = array();
 		$buf = NULL;
 		$fDataz =& $file->getValue();
+
+		if ($debug_nagios_import == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : ". $fDataz["name"] . " -> ". $fDataz["type"]."\n", 3, $debug_path."cfgimport.log");
+
+
 		# File Moving
 		switch ($fDataz["type"])	{
 			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." ".$lang["upl_uplBadType"]."<br>"; break;
 			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." ".$lang["upl_uplOk"]."<br>"; break; // tar.gz
+			case "application/x-tar" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." ".$lang["upl_uplOk"]."<br>"; break; // tar
 			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $lang["upl_manualDef"]." ".$lang["upl_uplOk"]."<br>"; break; // Text
 			default : $msg .= $lang["upl_uplKo"]."<br>";
 		}
@@ -106,12 +127,18 @@ For information : contact@oreon-project.org
 			$buf ? $msg .= $lang["upl_carrOk"]."<br>" :	$msg .= $lang["upl_carrKo"]."<br>";
 		}
 		else if ($ret["manualDef"])	{
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Manual Definition\n", 3, $debug_path."cfgimport.log");
+
 			$msg .= $lang["upl_manualDefOk"]."<br>";
 			$msg .= $lang["upl_carrOk"]."<br>";
 			$buf =& explode("\n", $ret["manualDef"]);
 		}
 		# Enum Object Types
 		if ($buf)	{
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : File Type ". $ret["Type"]["Type"] ."\n", 3, $debug_path."cfgimport.log");
+
 			switch ($ret["Type"]["Type"])	{
 				case "nagios" :
 					if ($ret["del"]["del"])
@@ -131,8 +158,11 @@ For information : contact@oreon-project.org
 					$msg .= insertResourceCFG($buf)." ".$lang["upl_newEntries"]."<br>";
 					break;
 				case "cfg" :
-					if ($ret["del"]["del"])
+					if ($ret["del"]["del"]) {
 						deleteAllConfCFG();
+						if ($debug_nagios_import == 1)
+							error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Delete All Conf\n", 3, $debug_path."cfgimport.log");
+					}
 					$nbr =& insertCFG($buf, $ret);
 					$msg .= "Command :".($nbr["cmd"] ? $nbr["cmd"] : "0")." ".$lang["upl_newEntries"]."<br>";
 					$msg .= "Time Period :".($nbr["tp"] ? $nbr["tp"] : "0")." ".$lang["upl_newEntries"]."<br>";
@@ -146,27 +176,30 @@ For information : contact@oreon-project.org
 					$msg .= "Service Dependency :".($nbr["svd"] ? $nbr["svd"] : "0")." ".$lang["upl_newEntries"]."<br>";
 					$msg .= "Service Group :".($nbr["sg"] ? $nbr["sg"] : "0")." ".$lang["upl_newEntries"]."<br>";
 					$msg .= "Service Group Dependency :".($nbr["sgd"] ? $nbr["sgd"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					break;		
+					break;
 			}
 		}
 		# Delete File Uploaded
-		if (is_file($nagiosCFGPath.$fDataz["name"]))
+		if (is_file($nagiosCFGPath.$fDataz["name"]))  {
 			unlink($nagiosCFGPath.$fDataz["name"]);
+			if ($debug_nagios_import == 1)
+				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Delete File Uploaded ". $nagiosCFGPath.$fDataz["name"] ."\n", 3, $debug_path."cfgimport.log");
+		}
 	}
-	
+
 	$form->addElement('header', 'status', $lang["gen_status"]);
 	if ($msg)
 		$tpl->assign('msg', $msg);
-	
+
 	#
 	##Apply a template definition
 	#
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);	
-	$tpl->assign('form', $renderer->toArray());	
-	$tpl->assign('o', $o);		
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('o', $o);
 	$tpl->display("formLoadFiles.ihtml");
 ?>
