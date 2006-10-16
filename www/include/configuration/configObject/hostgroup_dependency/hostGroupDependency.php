@@ -23,6 +23,7 @@ For information : contact@oreon-project.org
 	$lcaHost = getLcaHostByID($pearDB);
 	$lcaHoststr = getLCAHostStr($lcaHost["LcaHost"]);
 	$lcaHostGroupstr = getLcaHGStr($lcaHost["LcaHostGroup"]);
+	$isRestreint = HadUserLca($pearDB);
 	
 	isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = NULL;
 	isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = NULL;
