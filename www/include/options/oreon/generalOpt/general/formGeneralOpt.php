@@ -84,7 +84,6 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('_ALL_', 'trim');
 	$form->applyFilter('nagios_path', 'slash');
-	//$form->applyFilter('nagios_path_bin', 'slash');
 	$form->applyFilter('nagios_path_img', 'slash');
 	$form->applyFilter('nagios_path_plugins', 'slash');
 	$form->applyFilter('oreon_path', 'slash');

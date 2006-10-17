@@ -246,9 +246,7 @@ For information : contact@oreon-project.org
 	
 	function updateDebugConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `general_opt` SET ";
@@ -273,9 +271,7 @@ For information : contact@oreon-project.org
 	
 	function updateLdapConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `general_opt` SET ";
@@ -309,9 +305,7 @@ For information : contact@oreon-project.org
 	
 	function updateColorsConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `general_opt` SET ";
@@ -339,9 +333,7 @@ For information : contact@oreon-project.org
 	
 	function updateGeneralConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `general_opt` SET ";
@@ -371,16 +363,13 @@ For information : contact@oreon-project.org
 		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$res =& $pearDB->query($rq);
-		print $rq;
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function updateRRDToolConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE `general_opt` SET ";
