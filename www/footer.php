@@ -36,7 +36,7 @@ For information : contact@oreon-project.org
 			</tr>
 			<tr>
 				<td align="center" style="padding-top:5px;"><div class='footer'>
-				<a href='http://www.oreon-project.org'><img src="<? echo $skin; ?>Images/footer/colophon_css.png"
+				<a href='http://www.w3c.org'><img src="<? echo $skin; ?>Images/footer/colophon_css.png"
 				          height="15" width="80" alt="Valid CSS"
 				          title="Oreon was built with valid CSS." />
 				<a href='http://www.php.net'><img src="<? echo $skin; ?>Images/footer/button-php.gif"
