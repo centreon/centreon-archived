@@ -32,7 +32,7 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.rs}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lca_hgs.label}</td><td class="FormRowValue">{$form.lca_hgs.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.lca_hg_childs.label}</td><td class="FormRowValue">{$form.lca_hg_childs.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.lca_sgs.label}</td><td class="FormRowValue">{$form.lca_sgs.html}</td></tr>
+		<!--<tr class="list_one"><td class="FormRowField">{$form.lca_sgs.label}</td><td class="FormRowValue">{$form.lca_sgs.html}</td></tr>-->
 		<tr class="list_two"><td class="FormRowField">{$form.lca_hosts.label}</td><td class="FormRowValue">{$form.lca_hosts.html}</td></tr>
 	</table>
 </div>

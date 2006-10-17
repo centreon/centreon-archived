@@ -19,8 +19,7 @@ For information : contact@oreon-project.org
 */
 
 	function testExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('lca_id');
@@ -39,19 +38,26 @@ For information : contact@oreon-project.org
 	function enableLCAInDB ($lca_id = null)	{
 		if (!$lca_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE lca_define SET lca_activate = '1' WHERE lca_id = '".$lca_id."'");
+		$res =& $pearDB->query("UPDATE lca_define SET lca_activate = '1' WHERE lca_id = '".$lca_id."'");
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 	}
 	
 	function disableLCAInDB ($lca_id = null)	{
 		if (!$lca_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE lca_define SET lca_activate = '0' WHERE lca_id = '".$lca_id."'");
+		$res =& $pearDB->query("UPDATE lca_define SET lca_activate = '0' WHERE lca_id = '".$lca_id."'");
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 	}
 	
 	function deleteLCAInDB ($lcas = array())	{
 		global $pearDB;
-		foreach($lcas as $key=>$value)
-			$pearDB->query("DELETE FROM lca_define WHERE lca_id = '".$key."'");
+		foreach($lcas as $key=>$value){
+			$res =& $pearDB->query("DELETE FROM lca_define WHERE lca_id = '".$key."'");
+			if (PEAR::isError($res))
+				print ("MySQL error : ".$res->getMessage());
+		}
 	}
 	
 	function multipleLCAInDB ($lcas = array(), $nbrDup = array())	{
@@ -63,7 +69,7 @@ For information : contact@oreon-project.org
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "lca_name" ? ($lca_name = clone($value2 = $value2."_".$i)) : null;
+					$key2 == "lca_name" ? ($lca_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 				if (testExistence($lca_name))	{
@@ -119,8 +125,12 @@ For information : contact@oreon-project.org
 		$rq .= "(lca_name, lca_comment, lca_hg_childs, lca_activate) ";
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["lca_name"], ENT_QUOTES)."', '".htmlentities($ret["lca_comment"], ENT_QUOTES)."', '".$ret["lca_hg_childs"]["lca_hg_childs"]."', '".$ret["lca_activate"]["lca_activate"]."')";
-		$pearDB->query($rq);
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 		$res =& $pearDB->query("SELECT MAX(lca_id) FROM lca_define");
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 		$lca_id = $res->fetchRow();
 		return ($lca_id["MAX(lca_id)"]);
 	}
@@ -162,11 +172,12 @@ For information : contact@oreon-project.org
 	
 	function updateLCAHosts($lca_id = null)	{
 		if (!$lca_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_host_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$pearDB->query($rq);
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_hosts");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -174,14 +185,15 @@ For information : contact@oreon-project.org
 			$rq .= "(lca_define_lca_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
+			$res =& $pearDB->query($rq);
+			if (PEAR::isError($res))
+				print ("MySQL error : ".$res->getMessage());
 		}
 	}
 	
 	function updateLCAHostGroups($lca_id = null)	{
 		if (!$lca_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_hostgroup_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
 		$pearDB->query($rq);
@@ -198,11 +210,12 @@ For information : contact@oreon-project.org
 	
 	function updateLCAServiceGroups($lca_id = null)	{
 		if (!$lca_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_servicegroup_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$pearDB->query($rq);
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_sgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -210,17 +223,20 @@ For information : contact@oreon-project.org
 			$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
+			$res =& $pearDB->query($rq);
+			if (PEAR::isError($res))
+				print ("MySQL error : ".$res->getMessage());
 		}
 	}
 	
 	function updateLCATopology($lca_id = null)	{
 		if (!$lca_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_topology_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$pearDB->query($rq);
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_topos");
 		$ret = array_keys($ret);		
@@ -230,7 +246,9 @@ For information : contact@oreon-project.org
 				$rq .= "(lca_define_lca_id, topology_topology_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$lca_id."', '".$ret[$i]."')";
-				$pearDB->query($rq);
+				$res =& $pearDB->query($rq);
+				if (PEAR::isError($res))
+					print ("MySQL error : ".$res->getMessage());
 				//updateLCATopologyParents($ret[$i], $lca_id);
 			}
 		}
@@ -240,14 +258,20 @@ For information : contact@oreon-project.org
 		if (!$topology_id || !$lca_id) return;
 		global $pearDB;
 		$res =& $pearDB->query("SELECT DISTINCT topology_page FROM topology WHERE topology_id = '".$topology_id."'");
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 		$level1 =& $res->fetchRow();
 		$res2 =& $pearDB->query("SELECT topology_id, topology_page FROM topology WHERE topology_parent = '".$level1["topology_page"]."'");
+		if (PEAR::isError($res2))
+			print ("MySQL error : ".$res2->getMessage());
 		while($res2->fetchInto($level2))	{
 			$rq = "INSERT INTO lca_define_topology_relation ";
 			$rq .= "(lca_define_lca_id, topology_topology_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$level2["topology_id"]."')";
-			$pearDB->query($rq);
+			$res =& $pearDB->query($rq);
+			if (PEAR::isError($res))
+				print ("MySQL error : ".$res->getMessage());
 			updateLCATopologyChilds($level2["topology_id"], $lca_id);
 		}
 	}
