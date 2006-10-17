@@ -19,15 +19,13 @@ For information : contact@oreon-project.org
 */
 
 	function testExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('resource_id');
 		$res =& $pearDB->query("SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$resource =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $resource["resource_id"] == $id)	
@@ -41,53 +39,47 @@ For information : contact@oreon-project.org
 
 	function deleteResourceInDB ($resources = array())	{
 		global $pearDB;
-		foreach($resources as $key=>$value)
-		{
-			$pearDB->query("DELETE FROM cfg_resource WHERE resource_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach($resources as $key=>$value){
+			$res =& $pearDB->query("DELETE FROM cfg_resource WHERE resource_id = '".$key."'");
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 		}
 	}
 	
 	function enableResourceInDB ($resource_id = null)	{
 		if (!$resource_id) exit();
 		global $pearDB;
-		$pearDB->query("UPDATE cfg_resource SET resource_activate = '1' WHERE resource_id = '".$resource_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$res =& $pearDB->query("UPDATE cfg_resource SET resource_activate = '1' WHERE resource_id = '".$resource_id."'");
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function disableResourceInDB ($resource_id = null)	{
 		if (!$resource_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$res =& $pearDB->query("UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."'");
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function multipleResourceInDB ($resources = array(), $nbrDup = array())	{
 		foreach($resources as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			$row = $res->fetchRow();
 			$row["resource_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "resource_name" ? ($resource_name = clone($value2 = $value2."_".$i)) : null;
+					$key2 == "resource_name" ? ($resource_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 				if (testExistence($resource_name))
-					$pearDB->query($val ? $rq = "INSERT INTO cfg_resource VALUES (".$val.")" : $rq = null);
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
+					$res =& $pearDB->query($val ? $rq = "INSERT INTO cfg_resource VALUES (".$val.")" : $rq = null);
+				if (PEAR::isError($res))
+					print "Mysql Error : ".$res->getMessage();
 			}
 		}
 	}
@@ -109,7 +101,9 @@ For information : contact@oreon-project.org
 				"resource_comment= '".htmlentities($ret["resource_comment"], ENT_QUOTES)."', " .
 				"resource_activate= '".$ret["resource_activate"]["resource_activate"]."' " .
 				"WHERE resource_id = '".$resource_id."'";
-		$pearDB->query($rq);
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function insertResourceInDB ()	{
@@ -118,8 +112,7 @@ For information : contact@oreon-project.org
 	}
 	
 	function insertResource($ret = array())	{
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO cfg_resource ";
@@ -130,9 +123,13 @@ For information : contact@oreon-project.org
 		isset($ret["resource_comment"]) && $ret["resource_comment"] != NULL ? $rq .= "'".htmlentities($ret["resource_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["resource_activate"]["resource_activate"]) && $ret["resource_activate"]["resource_activate"] != NULL ? $rq .= "'".$ret["resource_activate"]["resource_activate"]."'" : $rq .= "NULL";
 		$rq .= ")";
-		$pearDB->query($rq);
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$res =& $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");
 		$resource_id = $res->fetchRow();
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		return ($resource_id["MAX(resource_id)"]);
 	}
 ?>
