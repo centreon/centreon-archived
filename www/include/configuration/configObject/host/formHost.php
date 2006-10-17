@@ -468,6 +468,7 @@ For information : contact@oreon-project.org
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);
+		$tpl->assign('is_not_template', $host["host_register"]);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->display("formHost.ihtml");

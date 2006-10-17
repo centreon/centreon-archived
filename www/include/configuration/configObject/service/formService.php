@@ -34,9 +34,8 @@ For information : contact@oreon-project.org
 	$service = array();
 	if (($o == "c" || $o == "w") && $service_id)	{
 		$res =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		# Set base value
 		$service = array_map("myDecodeService", $res->fetchRow());
 		# Grab hostgroup || host
@@ -537,6 +536,7 @@ For information : contact@oreon-project.org
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);
+		$tpl->assign('is_not_template', $service["service_register"]);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('v', $oreon->user->get_version());		

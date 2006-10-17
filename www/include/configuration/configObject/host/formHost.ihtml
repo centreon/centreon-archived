@@ -155,7 +155,7 @@
 				{/if} -->
 			</td>
 		</tr>
-
+		{if $is_not_template == 1}
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ehi_notes_url.label}</td><td class="FormRowValue">{$form.ehi_notes_url.html}</td></tr>
 	 	{if $msg.nagios == 2}
@@ -168,6 +168,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
+	 	{/if}
 	 </table>
 </div>
 <div id="validForm">
