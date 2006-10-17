@@ -47,7 +47,19 @@ function mreload(id) {
 			}
 		}
 	}	
-	_tableAjax.innerHTML = "";
+
+
+
+    var childrenNumbertable = _tableAjax.childNodes.length;
+    for (var j = 0; j < childrenNumbertable; j++) 
+    {
+		var elementtable = _tableAjax.childNodes[j];
+		if(elementtable && elementtable.className != "ListHeader")
+		{
+			_tableAjax.removeChild(elementtable);
+			j = j -1;
+		}
+	}
 
 	
 	if (id == 1){
@@ -419,7 +431,7 @@ function get_StorageDevice(_host_id)
 				var _text_Utilisationlabel = '';
 
 				if(_Utilisationlabel >= 0)
-					_text_Utilisationlabel = document.createTextNode(_Utilisationlabel + '%');
+					_text_Utilisationlabel = document.createTextNode('  ' + _Utilisationlabel + '%');
 				else
 					_text_Utilisationlabel = document.createTextNode('');
 
