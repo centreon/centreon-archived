@@ -169,6 +169,42 @@ UPDATE `topology` SET `topology_name` = 'm_general',
 `topology_modules` = '0',
 `topology_show` = '1' WHERE `topology_id` =65 LIMIT 1 ;
 
+UPDATE `topology` SET `topology_name` = 'm_reporting',
+`topology_icone` = NULL ,
+`topology_parent` = NULL ,
+`topology_page` = '3',
+`topology_order` = '30',
+`topology_group` = '1',
+`topology_url` = './include/reporting/dashboard/viewHostLog.php',
+`topology_url_opt` = NULL ,
+`topology_popup` = '0',
+`topology_modules` = '0',
+`topology_show` = '1' WHERE `topology_id` =3 LIMIT 1 ;
+
+UPDATE `topology` SET `topology_name` = 'm_dashboard',
+`topology_icone` = NULL ,
+`topology_parent` = '3',
+`topology_page` = '307',
+`topology_order` = '3',
+`topology_group` = '1',
+`topology_url` = './include/reporting/dashboard/viewHostLog.php',
+`topology_url_opt` = NULL ,
+`topology_popup` = '0',
+`topology_modules` = '0',
+`topology_show` = '1' WHERE `topology_id` =83 LIMIT 1 ;
+
+UPDATE `topology` SET `topology_name` = 'm_dashboard',
+`topology_icone` = './img/icones/16x16/outbox.gif',
+`topology_parent` = '301',
+`topology_page` = '30106',
+`topology_order` = '60',
+`topology_group` = '1',
+`topology_url` = './modules/osl/osl_generalReport.php',
+`topology_url_opt` = NULL ,
+`topology_popup` = '0',
+`topology_modules` = '1',
+`topology_show` = '1' WHERE `topology_id` =159 LIMIT 1 ;
+
 ALTER TABLE `servicegroup_relation` ADD `host_host_id` INT NULL AFTER `sgr_id` ;
 ALTER TABLE `servicegroup_relation` ADD `hostgroup_hg_id` INT NULL AFTER `host_host_id` ;
 
