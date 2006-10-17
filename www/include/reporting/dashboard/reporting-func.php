@@ -26,7 +26,6 @@ For information : contact@oreon-project.org
 		$second = date("s",time());
 		$start_date_day = mktime(0, 0, 0, $month, $day, $year);
 
-				echo "ici<br>";
 
 	
 		if(!is_null($period)){
@@ -37,7 +36,6 @@ For information : contact@oreon-project.org
 				$start_date_select = time() - (24*60*60);
 				$end_date_select = time();
 			} else if($period == "yesterday"){
-				echo "la";
 				$start_date_select = mktime(0, 0, 0, $month, $day-1, $year);
 				$end_date_select = mktime(0, 0, 0, $month, $day, $year);
 			} else if($period == "thisweek"){
@@ -129,11 +127,7 @@ For information : contact@oreon-project.org
 	}
 
 	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select){	
-		echo "<br>log in db<br>";
 
-		echo $end_date_select."<br>";
-		echo $start_date_select."<br>";
-echo $host_id . "<br>";
 
 		$rq = 'SELECT ' .
 			'service_id, ' .
@@ -159,7 +153,7 @@ echo $host_id . "<br>";
 			  die($res->getMessage());
 			} else {
 			  while ($s =& $res->fetchRow()){
-		echo "--log--<br>";
+
 			  	
 				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
