@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>edu.mit.simile</groupId>
+  <artifactId>timeline</artifactId>
+  <name>SIMILE Timeline</name>
+  <version>1.0</version>
+  <description>Timeline is a DHTML-based AJAXy timeline</description> 
+  <url>http://simile.mit.edu/timeline/</url>
+  <inceptionYear>2006</inceptionYear>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>http://simile.mit.edu/issues/browse/TIMELINE</url>
+  </issueManagement>
+
+  <distributionManagement>
+    <repository>
+      <id>simile.mit.edu</id>
+      <url>scpexe://simile.mit.edu/var/maven</url>
+    </repository>
+  </distributionManagement>
+
+  <scm>
+    <connection>scm:svn:http://simile.mit.edu/repository/timeline/trunk/</connection>
+    <developerConnection>scm:svn:http://simile.mit.edu/repository/timeline/trunk/</developerConnection>
+    <url>http://simile.mit.edu/viewsvn/timeline/trunk/</url>
+  </scm>
+
+  <repositories>
+    <repository>
+      <id>simile.mit.edu</id>
+      <url>http://simile.mit.edu/maven-proxy</url>
+    </repository>
+  </repositories>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <links>
+            <link>http://java.sun.com/j2ee/1.4/docs/api</link>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+            <link>http://jakarta.apache.org/commons/collections/apidocs-COLLECTIONS_3_0/</link>
+            <link>http://jakarta.apache.org/commons/dbcp/apidocs/</link>
+            <link>http://jakarta.apache.org/commons/fileupload/apidocs/</link>
+            <link>http://jakarta.apache.org/commons/httpclient/apidocs/</link>
+            <link>http://jakarta.apache.org/commons/logging/api/</link>
+            <link>http://jakarta.apache.org/commons/pool/apidocs/</link>
+            <link>http://www.junit.org/junit/javadoc/</link>
+            <link>http://logging.apache.org/log4j/docs/api/</link>
+            <link>http://jakarta.apache.org/regexp/apidocs/</link>
+            <link>http://jakarta.apache.org/velocity/api/</link>
+          </links>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>maven-jetty6-plugin</artifactId>
+        <version>6.0.0beta16</version>
+        <configuration>
+          <connectors>            <connector implementation="org.mortbay.jetty.bio.SocketConnector">              <port>8888</port>              <maxIdleTime>60000</maxIdleTime>            </connector>          </connectors>        
+          <scanIntervalSeconds>5</scanIntervalSeconds>
+          <contextPath>/</contextPath>
+          <webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.13</version>
+    </dependency>
+  </dependencies>
+</project>
