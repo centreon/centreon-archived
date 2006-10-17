@@ -4,7 +4,7 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Inventory » is developped by Merethis company for Lafarge Group,
+This unit, called ï¿½ Oreon Inventory ï¿½ is developped by Merethis company for Lafarge Group,
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -49,7 +49,7 @@ For information : contact@oreon-project.org
 
 
 		$tpl->assign("initJS", "<script type='text/javascript'>
-		display('". $lang['s_waiting'] ."<br><br><img src=\'./img/icones/48x48/stopwatch.gif\'>','inventory');
+		display('". $lang['s_waiting'] ."<br><br><img src=\'./img/icones/16x16/spinner_blue.gif\'>','inventory');
 		//display('Please wait during inventory...','inventory');
 		loadXMLDoc('modules/inventory/inventory_cron_update.php','inventory');
 		</script>");
