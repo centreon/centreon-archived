@@ -379,6 +379,8 @@ For information : contact@oreon-project.org
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
+	include('ajaxReporting_js.php');
+
 	$tpl->display("template/viewHostLog.ihtml");
 
 ?>
