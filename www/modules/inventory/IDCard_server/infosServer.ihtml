@@ -67,21 +67,37 @@
 <input type="hidden" name="status" value="0">
 </form>
 <table class="ListTable">
-	 <tr class="cachediv"><td>...</td></tr></table>
+	<tr class="ListHeader">
+		<td class="ListColHeaderLeft">{$mntPointlabel}</td>
+		<td class="ListColHeaderLeft">{$Typelabel}</td>
+		<td class="ListColHeaderLeft">{$Utilisationlabel}</td>
+		<td class="ListColHeaderLeft">{$Freelabel}</td>
+		<td class="ListColHeaderLeft">{$Usedlabel}</td>
+		<td class="ListColHeaderLeft">{$Sizelabel}</td>
+	</tr>
+</table>		
 </div>
 <div id='tab4' class='tab'>
 <form id='f4' class="cachediv">
 <input type="hidden" name="status" value="0">
 </form>
 <table class="ListTable">
-	 <tr class="cachediv"><td>...</td></tr></table>
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$Softwarelabel}</td>
+		</tr>
+</table>		
 </div>
 <div id='tab5' class='tab'>
 <form id='f5' class="cachediv">
 <input type="hidden" name="status" value="0">
 </form>
 <table class="ListTable">
-	 <tr class="cachediv"><td>...</td></tr></table>
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$Softwarelabel}</td>
+			<td class="ListColHeaderLeft">{$MermoryUsedlabel}</td>
+			<td class="ListColHeaderLeft">{$Pathlabel}</td>
+		</tr>
+</table>		
 </div>
 
 <div id='tab6' class='tab'>

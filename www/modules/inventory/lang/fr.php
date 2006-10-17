@@ -46,6 +46,8 @@ $lang['s_manufacturer'] = "Constructeur";
 $lang['s_server'] = "Serveur";
 $lang['s_type'] = "Type";
 $lang['s_none'] = "Aucun";
+$lang['s_ipadress'] = "IP adress";
+$lang['s_speed'] = "Speed";
 
 $lang['s_traffic'] = "Trafic";
 $lang['s_pkt_error'] = "Paquet Erreur";
