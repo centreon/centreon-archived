@@ -84,6 +84,8 @@ For information : contact@oreon-project.org
 
 		# Skin path
 		$res =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
 		$res->fetchInto($data);
 		$skin = "./Themes/".$data["template"]."/";
 		
@@ -91,9 +93,16 @@ For information : contact@oreon-project.org
 		$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
 		$session_expire =& $res->fetchRow();
 		$time_limit = time() - ($session_expire["session_expire"] * 60);
+		
+		$pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
+		if (PEAR::isError($res))
+			print ("MySQL error : ".$res->getMessage());
+			
+		/* 
 		$res =& $pearDB->query("SELECT * FROM session WHERE last_reload < '".$time_limit."'");
 		while ($session =& $res->fetchRow())
 			$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
+		*/
 
 		# Get session and Check if session is not expired
 
@@ -119,7 +128,7 @@ For information : contact@oreon-project.org
 		$res =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 		if (PEAR::isError($res))
 			print ($res->getMessage());
-
+			
 		// Load traduction in the selected language.
 		is_file ("./lang/".$oreon->user->get_lang().".php") ? include_once ("./lang/".$oreon->user->get_lang().".php") : include_once ("./lang/en.php");
 		is_file ("./include/configuration/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/configuration/lang/".$oreon->user->get_lang().".php") : include_once ("./include/configuration/lang/en.php");
@@ -134,6 +143,7 @@ For information : contact@oreon-project.org
 		print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";
 
         $mlang = $oreon->user->get_lang();
+		
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<? echo $mlang; ?>" lang="<? echo $mlang; ?>">
@@ -183,13 +193,12 @@ For information : contact@oreon-project.org
 
 	$res = null;
 	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-		if (PEAR::isError($res))
-			print ($res->getMessage());
+	if (PEAR::isError($res))
+		print ($res->getMessage());
 	while ($res->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
 		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', <?=$tFM?>);<?
-		}		
-		else if ($topology_js['init'])
+		} else if ($topology_js['init'])
 			echo $topology_js['init'] ."();";
 	}
 ?>
