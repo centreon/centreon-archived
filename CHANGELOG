@@ -39,7 +39,6 @@
 => Bugfix : ACL pb in popup for displaying template in service and hosts.
 => Bugfix : can now graph with metric with space
 
-
 ## Oreon 1.3.1-1
 
 => Bugfix : correcting sql error during installation.
