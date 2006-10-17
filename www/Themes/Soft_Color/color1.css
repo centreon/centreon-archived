@@ -176,3 +176,20 @@ top:116px;
 /*top:55px;*/
 right:10px;
 color: #525252;	font-family: Verdana, Arial, sans-serif; font-size: 10px;	font-weight: bold;}
+.Toolbar_TDSelectAction_Top a{
+font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    color:#666;
+color:#5e5e5e;
+}
+.Toolbar_TDSelectAction_Top a:hover{
+color:#E8AB5C;
+}
+.Toolbar_TDSelectAction_Bottom a{
+font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    color:#666;
+color:#5e5e5e;
+}
+.Toolbar_TDSelectAction_Bottom a:hover{
+color:#E8AB5C;
+}
+.Toolbar_TableBottom{
+	border-color:#6056e8;
+}
