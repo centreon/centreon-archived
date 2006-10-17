@@ -18,7 +18,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
-		exit ();
+		exit();
 
 	isset($_GET["service_id"]) ? $cG = $_GET["service_id"] : $cG = NULL;
 	isset($_POST["service_id"]) ? $cP = $_POST["service_id"] : $cP = NULL;
@@ -51,14 +51,24 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
-	#         Resources comes from DB -> Store in $ppHosts Array
+	#   Resources comes from DB -> Store in $ppHosts Array
 
+	# Get all host_list
+	
+	$hostsInOreon = array();
+	$res =& $pearDB->query("SELECT DISTINCT host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	while($res->fetchInto($hostInOreon))
+		$hostsInOreon[$hostInOreon["host_name"]] = 1;
+	$res->free();
+	
 	$ppHosts = array(NULL=>NULL);
 	$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
 	if (PEAR::isError($pearDBpp))
 		print "Mysql Error : ".$pearDBpp->getMessage();
 	while($res->fetchInto($ppHost))
-		if (IsHostReadable($lcaHostByName, $ppHost["host_name"]))
+		if (IsHostReadable($lcaHostByName, $ppHost["host_name"]) && isset($hostsInOreon[$ppHost["host_name"]]))
 			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"];
 	$res->free();
 
@@ -91,8 +101,8 @@ For information : contact@oreon-project.org
 	while($res->fetchInto($ppMS))	{
 		$id = explode("_", $ppMS["service_description"]);
 		$res2 =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$id[1]."'");
-		if (PEAR::isError($pearDB))
-			print "Mysql Error : ".$pearDB->getMessage();
+		if (PEAR::isError($res2))
+			print "Mysql Error : ".$res2->getMessage();
 		if ($res2->numRows())	{
 			$meta =& $res2->fetchRow();
 			$ppMSs[$ppMS["service_description"]] = $meta["meta_name"];
