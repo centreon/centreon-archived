@@ -101,13 +101,12 @@ For information : contact@oreon-project.org
 	}
 	# Display Legend
 	$lg_path = get_path($path);
-	if (file_exists($lg_path."legend.ihtml"))
-		{
+	if (file_exists($lg_path."legend.ihtml")){
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl("./", $tpl);
 		$tpl->assign('lang', $lang);
 		$tpl->display($lg_path."legend.ihtml");
-		}
+	}
 ?>
 
 			</td>
