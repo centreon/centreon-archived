@@ -31,15 +31,15 @@ For information : contact@oreon.org
 	}
 	
 	$idRestreint = HadUserLca($pearDB);
-	
 	$lcaHost = getLcaHostByName($pearDB);
+	
 	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-		if (PEAR::isError($pearDB)) 
-			print "Mysql Error : ".$pearDB->getMessage();
+		if (PEAR::isError($res)) 
+			print "Mysql Error : ".$res->getMessage();
 		$res->fetchInto($host);	
 		$res =& $pearDB->query("SELECT service_max_check_attempts FROM service WHERE service_description = '".$_GET["service_description"]."'");
 		if (PEAR::isError($pearDB)) 
