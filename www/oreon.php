@@ -43,8 +43,7 @@ For information : contact@oreon-project.org
 	require_once ("./header.php");
 
 	# function 
-	function get_path($abs_path)
-	{
+	function get_path($abs_path){
 		$len = strlen($abs_path);
 		for ($i = 0, $flag = 0; $i < $len; $i++){
 			if ($flag == 3)
@@ -64,6 +63,8 @@ For information : contact@oreon-project.org
 		return $redirect;
 	}
 
+	require_once ("./include/common/common-Func.php");
+
 	# Menu
 	if (!$min)
 		require_once ("menu/Menu.php");
@@ -74,6 +75,7 @@ For information : contact@oreon-project.org
 	
 	if($min != 1)
 		include("pathWay.php");
+	
 	
 	$isRestreint = HadUserLca($pearDB);
 	

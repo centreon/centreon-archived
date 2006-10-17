@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 
 	# Path to the configuration dir
 	$path = "./menu/";
-	require_once ("./include/common/common-Func.php");
+	#require_once ("./include/common/common-Func.php");
 
 	# Smarty template Init
 	$tpl = new Smarty();
