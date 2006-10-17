@@ -63,21 +63,17 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Hostgroup list
-	if ($search)
-	{
+	if ($search){
 		if ($oreon->user->admin || !HadUserLca($pearDB))
 			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 		else
 			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
-	}
-	else
-	{
+	} else {
 		if ($oreon->user->admin || !HadUserLca($pearDB))
 			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 		else
 			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 	}
-	print $rq . "|".$_GET["limit"]."|";
 	$res = & $pearDB->query($rq);
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
