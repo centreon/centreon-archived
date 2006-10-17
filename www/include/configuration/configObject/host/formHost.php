@@ -381,6 +381,7 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'host_id');
 	$reg =& $form->addElement('hidden', 'host_register');
 	$reg->setValue("1");
+	$host_register = 1;
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
@@ -468,7 +469,7 @@ For information : contact@oreon-project.org
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);
-		$tpl->assign('is_not_template', $host["host_register"]);
+		$tpl->assign('is_not_template', $host_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->display("formHost.ihtml");

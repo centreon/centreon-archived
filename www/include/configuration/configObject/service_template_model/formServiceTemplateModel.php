@@ -405,6 +405,7 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'service_id');
 	$reg =& $form->addElement('hidden', 'service_register');
 	$reg->setValue("0");
+	$service_register = 0;
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
@@ -477,6 +478,7 @@ For information : contact@oreon-project.org
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);
+		$tpl->assign('is_not_template', $service_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('v', $oreon->user->get_version());

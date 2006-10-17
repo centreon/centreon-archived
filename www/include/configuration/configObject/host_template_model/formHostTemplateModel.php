@@ -392,6 +392,7 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'host_id');
 	$reg =& $form->addElement('hidden', 'host_register');
 	$reg->setValue("0");
+	$host_register = 0;
 	$assoc =& $form->addElement('hidden', 'dupSvTplAssoc');
 	$assoc->setValue("0");
 	$redirect =& $form->addElement('hidden', 'o');
