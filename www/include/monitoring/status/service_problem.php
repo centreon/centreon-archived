@@ -118,7 +118,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
 	$tpl->assign("lang", $lang);
-	$tpl->assign("order", $_GET["order"]);
+	$tpl->assign("order", strtolower($_GET["order"]));
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 		
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 

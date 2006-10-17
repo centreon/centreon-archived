@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 	if (isset($service_status))
 		foreach ($service_status as $name => $svc){			
 			$tmp = array();
-			$tmp[0] = $name;		
+			$tmp[0] = $name;
 			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 			if ($svc["last_check"]){
 				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
@@ -100,7 +100,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
 	$tpl->assign("lang", $lang);
-	$tpl->assign("order", $_GET["order"]);
+	$tpl->assign("order", strtolower($_GET["order"]));
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);	
 
