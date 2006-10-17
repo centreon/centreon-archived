@@ -141,7 +141,7 @@ For information : contact@oreon-project.org
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
+			      		if (isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && strcmp($host_data['host_name'], "Meta_Module") && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
 							$oreon->status_graph_host[$host_data['current_state']]++;
