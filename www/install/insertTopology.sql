@@ -100,8 +100,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_plugins', './img/icones/16x16/window_gear.gif' , '608', '60804', '40', NULL , './include/configuration/configPlugins/Plugins.php', NULL , '0', '0', '1');
 
-
-
 --
 -- Options
 --
