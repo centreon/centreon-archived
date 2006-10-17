@@ -4,9 +4,6 @@
 ...
 </div>
 
-<form id='infosBasic' >
-<input type="hidden" name="host_id" value="{$host_id}">
-</form>
 
 <div>
 <ul id="mainnav">
