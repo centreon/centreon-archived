@@ -1,3 +1,4 @@
+<?
 /**
 Oreon is developped with Apache Licence 2.0 :
 http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -15,16 +16,13 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-// JavaScript Document
-/*
-function init(){
-		for (var i = 2; document.getElementById('tab'+i); i++) {
-			document.getElementById('tab'+i).style.display='none';
-		}
-	}
-*/
+?>
+<SCRIPT LANGUAGE="JavaScript">
+
+var _current_id = '1';
 
 function mreload(id) {
+	_current_id = id;
 	
 	var _tableforajax = document.getElementById('tab' + id);
 	var _tableAjax = null;
@@ -85,9 +83,9 @@ function mreload(id) {
 }
 
 function montre(id) {
+	_current_id = id;
 
-	_formBasic=document.getElementById('infosBasic');		       
-	_host_id=_formBasic.host_id.value;
+	_host_id=<?=$host_id?>;
 
 		for (var i = 1; document.getElementById('c'+i); i++) {
 				document.getElementById('c'+i).className='b';
@@ -162,6 +160,12 @@ function MyHiddenDiv() {
 }
 
 function MyIsLoading(_txt) {
+	_img = document.getElementById('isrefresh' + _current_id);
+	_img.className = "cachediv";
+	_img = document.getElementById('refresh' + _current_id);
+	_img.className = "ok";
+
+
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
 	_divmsg.className = "msg_isloading";
@@ -171,6 +175,12 @@ function MyIsLoading(_txt) {
 }
 
 function MyLoading(_txt) {
+	_img = document.getElementById('refresh' + _current_id);
+	_img.className = "cachediv";
+
+	_img = document.getElementById('isrefresh' + _current_id);
+	_img.className = "ok";
+
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
 	
@@ -243,7 +253,7 @@ function get_runningProcessus(_host_id)
 				var _mem = _runningProc.getElementsByTagName("mem")[0].firstChild.nodeValue;
 				var _path = _runningProc.getElementsByTagName("path")[0].firstChild.nodeValue;
 
-//alert(_path);
+
 
 				var _ligne = document.createElement('tr');
 	
@@ -271,8 +281,8 @@ function get_runningProcessus(_host_id)
 				_tableAjax.appendChild(_ligne);
 			}
 		}
-		//MyIsLoading("running processus is loaded");
-		setTimeout('MyIsLoading("running processus is loaded")', '800');
+		MyIsLoading("running processus is loaded");
+		//setTimeout('MyIsLoading("running processus is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -337,8 +347,8 @@ function get_software(_host_id)
 				_tableAjax.appendChild(_ligne);
 			}
 		}
-//		MyIsLoading("software is loaded");
-		setTimeout('MyIsLoading("software is loaded")', '800');
+		MyIsLoading("software is loaded");
+//		setTimeout('MyIsLoading("software is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -389,7 +399,7 @@ function get_StorageDevice(_host_id)
 
 				var _mntPointlabel = _storageDevice.getElementsByTagName("mntPointlabel")[0].firstChild.nodeValue;
 				var _Typelabel = _storageDevice.getElementsByTagName("Typelabel")[0].firstChild.nodeValue;
-				var _Utilisationlabel = _storageDevice.getElementsByTagName("Utilisationlabel")[0].firstChild.nodeValue;
+				var _Utilisationlabel =  parseInt(_storageDevice.getElementsByTagName("Utilisationlabel")[0].firstChild.nodeValue);
 				var _Freelabel = _storageDevice.getElementsByTagName("Freelabel")[0].firstChild.nodeValue;
 				var _Usedlabel = _storageDevice.getElementsByTagName("Usedlabel")[0].firstChild.nodeValue;
 				var _Sizelabel = _storageDevice.getElementsByTagName("Sizelabel")[0].firstChild.nodeValue;
@@ -405,17 +415,40 @@ function get_StorageDevice(_host_id)
 	
 				var _text_mntPointlabel = document.createTextNode(_mntPointlabel);
 				var _text_Typelabel = document.createTextNode(_Typelabel);
-				var _text_Utilisationlabel = document.createTextNode(_Utilisationlabel);
+
+				var _text_Utilisationlabel = '';
+
+				if(_Utilisationlabel >= 0)
+					_text_Utilisationlabel = document.createTextNode(_Utilisationlabel + '%');
+				else
+					_text_Utilisationlabel = document.createTextNode('');
+
 				var _text_Freelabel = document.createTextNode(_Freelabel);
 				var _text_Usedlabel = document.createTextNode(_Usedlabel);
 				var _text_Sizelabel = document.createTextNode(_Sizelabel);
 	
 				_case_mntPointlabel.appendChild(_text_mntPointlabel);
 				_case_Typelabel.appendChild(_text_Typelabel);
-				_case_Utilisationlabel.appendChild(_text_Utilisationlabel);
 				_case_Freelabel.appendChild(_text_Freelabel);
 				_case_Usedlabel.appendChild(_text_Usedlabel);
 				_case_Sizelabel.appendChild(_text_Sizelabel);
+	
+	
+
+		var _red = '';
+		if(_Utilisationlabel >= 85)
+			_red = "red";
+	
+
+		var _imgmiddle = document.createElement('img');
+		_imgmiddle.src = "./include/options/sysInfos/templates/classic/images/" + _red + "bar_middle.gif";
+		_imgmiddle.height='10';
+		_imgmiddle.width= _Utilisationlabel;
+
+
+				_case_Utilisationlabel.appendChild(_imgmiddle);
+				_case_Utilisationlabel.appendChild(_text_Utilisationlabel);
+	
 	
 				_ligne.appendChild(_case_mntPointlabel);
 				_ligne.appendChild(_case_Typelabel);
@@ -433,8 +466,8 @@ function get_StorageDevice(_host_id)
 				_tableAjax.appendChild(_ligne);
 			}
 		}
-//		MyIsLoading("storageDevices is loaded");
-		setTimeout('MyIsLoading("storageDevices is loaded")', '800');
+		MyIsLoading("storageDevices is loaded");
+//		setTimeout('MyIsLoading("storageDevices is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -491,14 +524,14 @@ function get_network(_host_id)
 				var _Speed = _network.getElementsByTagName("Speed")[0].firstChild.nodeValue;
 				var _errorPaquet = _network.getElementsByTagName("errorPaquet")[0].firstChild.nodeValue;
 
-				var _interfaceName_label = 'interfaceName_label';
-				var _Status_label = 'Status_label';
-				var _PhysAddress_label = 'PhysAddress_label';
-				var _Type_label = 'Type_label';
-				var _Trafic_label = 'Trafic_label';
-				var _ipAdress_label = 'ipAdress_label';
-				var _Speed_label = 'Speed_label';
-				var _errorPaquet_label = 'errorPaquet';
+				var _interfaceName_label = '<?=$lang["s_status"]?>';
+				var _Status_label = '<?=$lang["s_status"]?>';
+				var _PhysAddress_label = '<?=$lang["s_PhysAddress"]?>';
+				var _Type_label = '<?=$lang["s_Type"]?>';
+				var _Trafic_label = '<?=$lang["s_traffic"]?>';
+				var _ipAdress_label = '<?=$lang["s_ipadress"]?>';
+				var _Speed_label = '<?=$lang["s_speed"]?>';
+				var _errorPaquet_label = '<?=$lang["s_pkt_error"]?>';
 
 
 				var _classname = _network.getElementsByTagName("class")[0].firstChild.nodeValue;
@@ -581,10 +614,12 @@ function get_network(_host_id)
 				_tableAjax.appendChild(_ligne_3);
 			}
 		}
-//		MyIsLoading("network is loaded");
-		setTimeout('MyIsLoading("network is loaded")', '800');
+		MyIsLoading("network is loaded");
+//		setTimeout('MyIsLoading("network is loaded")', '800');
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	xhrIDCard.send("type=6&host_id="+_host_id);
 }
+
+</SCRIPT>
