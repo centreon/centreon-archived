@@ -21,7 +21,7 @@
                 <tr class="list_two">
                     <td>{$form1.compot_2.label}</td>
             		<td>{$form1.compot_2.html}</td>
-                </tr>
+                </tr><!--
                 <tr class="list_one">
                     <td>{$form1.osl.label}</td>
             		<td>{$form1.osl.html}&nbsp;&nbsp;{$form1.metric_sel3.html}</td>
@@ -29,7 +29,7 @@
                 <tr class="list_two">
                     <td>{$form1.compot_3.label}</td>
             		<td>{$form1.compot_3.html}</td>
-                </tr>
+                </tr>-->
         </table>
         <div id="validForm">
         	<p>{$form1.submitA.html}&nbsp;&nbsp;&nbsp;{$form1.reset.html}</p>

@@ -80,10 +80,19 @@ For information : contact@oreon-project.org
 
 		#	
 		# Resources comes from DB -> Store in $ppHosts Array
+		
+		$hostsInOreon = array();
+		$res =& $pearDB->query("SELECT DISTINCT host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
+		while($res->fetchInto($hostInOreon))
+			$hostsInOreon[$hostInOreon["host_name"]] = 1;
+		$res->free();
+		
 		$ppHosts = array(NULL=>NULL);
 		$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
 		while($res->fetchInto($ppHost))	{
-			if (IsHostReadable($lcaHostByName, $ppHost["host_name"]))
+			if (IsHostReadable($lcaHostByName, $ppHost["host_name"]) && isset($hostsInOreon[$ppHost["host_name"]]))
 				$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"]; 
 			else if ($ppHost["host_name"] == "Meta_Module")	{
 				
