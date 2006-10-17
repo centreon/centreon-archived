@@ -20,8 +20,8 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
+	if (PEAR::isError($res)) {
+		print "Mysql Error : ".$res->getMessage();
 	}
 	$gopt = array_map("myDecode", $res->fetchRow());
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
@@ -99,9 +99,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'],"options"=>$lang['forTheSelectedElements'],"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>$lang['cct_ldap_import']));
 	if ($oreon->optGen['ldap_auth_enable'])
 		$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
-
-
-	require_once("./include/common/checkListAction.php");
 
 	#
 	##Toolbar select 'More actions...'
