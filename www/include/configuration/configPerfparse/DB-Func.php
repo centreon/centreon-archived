@@ -17,16 +17,17 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	if (!isset($oreon))
+		exit();
+
 	function testExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('perfparse_id');
 		$res =& $pearDB->query("SELECT perfparse_name, perfparse_id FROM cfg_perfparse WHERE perfparse_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$perfparse =& $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $perfparse["perfparse_id"] == $id)	
@@ -41,54 +42,47 @@ For information : contact@oreon-project.org
 	function enablePerfparseInDB ($perfparse_id = null)	{
 		if (!$perfparse_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0'");
-		$pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$perfparse_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$res =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0'");
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
+		$res =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$perfparse_id."'");
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 	}
 	
 	function disablePerfparseInDB ($perfparse_id = null)	{
 		if (!$perfparse_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0' WHERE perfparse_id = '".$perfparse_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$res =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0' WHERE perfparse_id = '".$perfparse_id."'");
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$res =& $pearDB->query("SELECT MAX(perfparse_id) FROM cfg_perfparse WHERE perfparse_id != '".$perfparse_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$maxId =& $res->fetchRow();
-		if (isset($maxId["MAX(perfparse_id)"]))
-		{
-			$pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$maxId["MAX(perfparse_id)"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		if (isset($maxId["MAX(perfparse_id)"])){
+			$res =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$maxId["MAX(perfparse_id)"]."'");
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 		}
 	}
 	
 	function deletePerfparseInDB ($perfparse = array())	{
 		global $pearDB;
-		foreach($perfparse as $key=>$value)
-		{
-			$pearDB->query("DELETE FROM cfg_perfparse WHERE perfparse_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach($perfparse as $key=>$value){
+			$res =& $pearDB->query("DELETE FROM cfg_perfparse WHERE perfparse_id = '".$key."'");
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 		}
 		$res =& $pearDB->query("SELECT perfparse_id FROM cfg_perfparse WHERE perfparse_activate = '1'");		  
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		if (!$res->numRows())	{
 			$res =& $pearDB->query("SELECT MAX(perfparse_id) FROM cfg_perfparse");
 			$perfparse_id = $res->fetchRow();
-			$pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$perfparse_id["MAX(perfparse_id)"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$res =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '1' WHERE perfparse_id = '".$perfparse_id["MAX(perfparse_id)"]."'");
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 		}
 	}
 	
@@ -96,24 +90,22 @@ For information : contact@oreon-project.org
 		foreach($perfparse as $key=>$value)	{
 			global $pearDB;
 			$res =& $pearDB->query("SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			$row = $res->fetchRow();
 			$row["perfparse_id"] = '';
 			$row["perfparse_activate"] = '0';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "perfparse_name" ? ($perfparse_name = clone($value2 = $value2."_".$i)) : null;
+					$key2 == "perfparse_name" ? ($perfparse_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 				if (testExistence($perfparse_name))	{
 					$val ? $rq = "INSERT INTO cfg_perfparse VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
+					$res =& $pearDB->query($rq);
+					if (PEAR::isError($res))
+						print "Mysql Error : ".$res->getMessage();
 				}
 			}
 		}
@@ -130,8 +122,7 @@ For information : contact@oreon-project.org
 	}
 	
 	function insertPerfparse()	{
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `cfg_perfparse` ( `perfparse_id` , `perfparse_name` , `Server_Port` , `Service_Log` , " .
@@ -178,24 +169,24 @@ For information : contact@oreon-project.org
         isset($ret["storage_modules_load"]) && $ret["storage_modules_load"] != NULL ? $rq .= "'".htmlentities($ret["storage_modules_load"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["perfparse_comment"]) && $ret["perfparse_comment"] != NULL ? $rq .= "'".htmlentities($ret["perfparse_comment"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
 		$rq .= "'".$ret["perfparse_activate"]["perfparse_activate"]."')";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$res =& $pearDB->query("SELECT MAX(perfparse_id) FROM cfg_perfparse");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$perfparse_id = $res->fetchRow();
-		if ($ret["perfparse_activate"]["perfparse_activate"])
-			$pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0' WHERE perfparse_id != '".$perfparse_id["MAX(perfparse_id)"]."'");
+		if ($ret["perfparse_activate"]["perfparse_activate"]){
+			$res =& $pearDB->query("UPDATE cfg_perfparse SET perfparse_activate = '0' WHERE perfparse_id != '".$perfparse_id["MAX(perfparse_id)"]."'");
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
+		}
 		return ($perfparse_id["MAX(perfparse_id)"]);
 	}
 	
 	function updatePerfparse($perfparse_id = null)	{
 		if (!$perfparse_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE cfg_perfparse SET ";
@@ -234,10 +225,9 @@ For information : contact@oreon-project.org
         isset($ret["perfparse_comment"]) && $ret["perfparse_comment"] != NULL ? $rq .= "perfparse_comment = '".htmlentities($ret["perfparse_comment"], ENT_QUOTES)."',  " : $rq .= "perfparse_comment = NULL, ";
 		$rq .= "perfparse_activate = '".$ret["perfparse_activate"]["perfparse_activate"]."' ";
 		$rq .= "WHERE perfparse_id = '".$perfparse_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$res =& $pearDB->query($rq);
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		if ($ret["perfparse_activate"]["perfparse_activate"])
 			enablePerfparseInDB($perfparse_id);
 	}
