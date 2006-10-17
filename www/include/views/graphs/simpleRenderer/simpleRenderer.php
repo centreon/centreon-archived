@@ -261,10 +261,9 @@ For information : contact@oreon-project.org
 
 				$isAvl = true;
 				for ($cpt = 0;$res->fetchInto($ppMetric);$cpt++){
-
 					$form->addElement('checkbox', $ppMetric["metric"], $ppMetric["metric"]);
 					$form->setDefaults(array($ppMetric["metric"] => '1'));
-					$ppMetrics[$ppMetric["metric_id"]]["metric"] = $ppMetric["metric"];
+					$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace(" ", "_", $ppMetric["metric"]);
 					$ppMetrics[$ppMetric["metric_id"]]["unit"] = $ppMetric["unit"];
 				}
 
@@ -282,8 +281,8 @@ For information : contact@oreon-project.org
 						$period = 86400;
 					else {
 						$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
-						if (PEAR::isError($pearDB))
-							print "Mysql Error : ".$pearDB->getMessage();
+						if (PEAR::isError($res))
+							print "Mysql Error : ".$res->getMessage();
 						$res->fetchInto($graph);
 						$period = $graph["period"];
 					}
