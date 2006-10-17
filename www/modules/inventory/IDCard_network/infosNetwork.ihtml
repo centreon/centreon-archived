@@ -1,4 +1,3 @@
-<script type="text/javascript" src="./modules/inventory/IDCard_network/AjaxIDCard_networkInfos.js"></script>
 {$initJS}
 
 <div id="msg" class="cachediv">
@@ -16,8 +15,14 @@
 	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
 	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
 
-	<li class="cachediv" id="mreload2"> <a  href="#" onclick="javascript:mreload('2');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload3"> <a  href="#" onclick="javascript:mreload('3');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload2"> 
+	<a  href="#" onclick="javascript:mreload('2');"><img id='refresh2' src='./img/icones/16x16/arrow_down_green.gif' alt='Refresh' title='Refresh'></a>
+	<img id='isrefresh2' class='cachediv' src='./img/icones/16x16/spinner_blue.gif' alt='is Refreshing'>
+	</li>
+	<li class="cachediv" id="mreload3"> 
+	<a  href="#" onclick="javascript:mreload('3');"><img id='refresh3' src='./img/icones/16x16/arrow_down_green.gif' alt='Refresh' title='Refresh'></a>
+	<img id='isrefresh3' class='cachediv' src='./img/icones/16x16/spinner_blue.gif' alt='is Refreshing'>	
+	</li>
 
 </ul>
 </div>
@@ -51,39 +56,14 @@
 <input type="hidden" name="status" value="0">
 </form>
 <table class="ListTable">
-	 <tr><td></td></tr></table>
+	 <tr class="cachediv"><td>...</td></tr></table>
 </div>
 <div id='tab3' class='tab'>
 <form id='f3' class="cachediv">
 <input type="hidden" name="status" value="0">
 </form>
-	 <table class="ListTable">
-{ foreach name=outer item=it from=$ifTab }
-	{if $it.type_interface == 2}
-			<tr class="ListHeader">
-				<td colspan="2">{ $it.ifDescr }</td>
-				<td td colspan="2"> {$Statuslabel} : { $it.ifOperStatus } ({ $it.ifAdminStatus })&nbsp;</td>
-			</tr>
-			<tr class={$it.Color}>
-				<td> {$PhysAddresslabel} : </td>
-				<td>{ $it.ifPhysAddress }&nbsp;</td>
-				<td>IP Address : </td><td>{ $it.ipInterface }&nbsp;</td>
-			</tr>
-			<tr class={$it.Color}>
-				<td> {$Typelabel}:</td>
-				<td> { $it.ifType }</td>
-				<td>Speed :</td>
-				<td> {$it.ifSpeed }&nbsp;{$it.ifSpeedUnit}&nbsp;</td>
-			</tr>
-			<tr class={$it.Color}>
-				<td> {$Trafficlabel} - {$Inlabel} :{ $it.ifInOctets }&nbsp;</td>
-				<td> / {$Outlabel} : { $it.ifOutOctets }&nbsp;</td>
-				<td>{$Errorlabel}  {$Inlabel} : { $it.ifInError }&nbsp;</td>
-				<td> / {$Outlabel} : { $it.ifOutError }&nbsp;</td>
-			</tr>
-	{/if}
-{/foreach}
-</table>
+<table class="ListTable">
+	 <tr class="cachediv"><td>...</td></tr></table>
 </div>
 <div id='tab4' class='tab'>
 <form class="cachediv">

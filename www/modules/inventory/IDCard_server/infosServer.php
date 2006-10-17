@@ -340,6 +340,8 @@ For information : contact@oreon-project.org
 		return $tab_ret;
 	}
 
+	include('AjaxIDCard_serverInfos_js.php');
+
 	if (isset($tpl) && $host_id && $sysUpTime)
 		$tpl->display("IDCard_server/infosServer.ihtml");
 	else

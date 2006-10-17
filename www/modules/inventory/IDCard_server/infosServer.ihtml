@@ -1,4 +1,3 @@
-<script type="text/javascript" src="./modules/inventory/IDCard_server/AjaxIDCard_serverInfos.js"></script>
 {$initJS}
 
 <div id="msg" class="cachediv">
@@ -18,10 +17,25 @@
 	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
 	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
 
-	<li class="cachediv" id="mreload2"> <a  href="#" onclick="javascript:mreload('2');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload3"> <a  href="#" onclick="javascript:mreload('3');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload4"> <a  href="#" onclick="javascript:mreload('4');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
-	<li class="cachediv" id="mreload5"> <a  href="#" onclick="javascript:mreload('5');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh'></a></li>
+	<li class="cachediv" id="mreload2"> 
+	<a  href="#" onclick="javascript:mreload('2');"><img id='refresh2' src='./img/icones/16x16/arrow_down_green.gif' alt='Refresh' title='Refresh'></a>
+	<img id='isrefresh2' class='cachediv' src='./img/icones/16x16/spinner_blue.gif' alt='is Refreshing'>
+	</li>
+
+	<li class="cachediv" id="mreload3"> 
+	<a  href="#" onclick="javascript:mreload('3');"><img id='refresh3' src='./img/icones/16x16/arrow_down_green.gif' alt='Refresh' title='Refresh'></a>
+	<img id='isrefresh3' class='cachediv' src='./img/icones/16x16/spinner_blue.gif' alt='is Refreshing'>
+	</li>
+	
+	<li class="cachediv" id="mreload4"> 
+	<a  href="#" onclick="javascript:mreload('4');"><img id='refresh4' src='./img/icones/16x16/arrow_down_green.gif' alt='Refresh' title='Refresh'></a>
+	<img id='isrefresh4' class='cachediv' src='./img/icones/16x16/spinner_blue.gif' alt='is Refreshing'>
+	</li>
+	
+	<li class="cachediv" id="mreload5"> 
+	<a  href="#" onclick="javascript:mreload('5');"><img id='refresh5' src='./img/icones/16x16/arrow_down_green.gif' alt='Refresh' title='Refresh'></a>
+	<img id='isrefresh5' class='cachediv' src='./img/icones/16x16/spinner_blue.gif' alt='is Refreshing'>
+	</li>
 </ul>
 </div>
 
