@@ -158,41 +158,41 @@ For information : contact@oreon-project.org
 	  $host_data["last_time_down"] = 							$log['22'];
 	  $host_data["last_time_unreachable"] =	 					$log['23'];
 	  if (isset($log['24']))
-		  $host_data["last_notification"] = 						$log['24'];
+		  $host_data["last_notification"] = 					$log['24'];
 	  if (isset($log['25']))
-		  $host_data["next_notification"] = 						$log['25'];
+		  $host_data["next_notification"] = 					$log['25'];
 	  if (isset($log['26']))
-		  $host_data["no_more_notifications"] = 					$log['26'];
+		  $host_data["no_more_notifications"] = 				$log['26'];
 	  if (isset($log['27']))
-		  $host_data["current_notification_number"] = 				$log['27'];
+		  $host_data["current_notification_number"] = 			$log['27'];
 	  if (isset($log['28']))
-		  $host_data["notifications_enabled"] = 					$log['28'];
+		  $host_data["notifications_enabled"] = 				$log['28'];
 	  if (isset($log['29']))
-		  $host_data["problem_has_been_acknowledged"] = 			$log['29'];
+		  $host_data["problem_has_been_acknowledged"] = 		$log['29'];
 	  if (isset($log['30']))
-		  $host_data["acknowledgement_type"] = 						$log['30'];
+		  $host_data["acknowledgement_type"] = 					$log['30'];
 	  if (isset($log['31']))
-		  $host_data["active_checks_enabled"] = 					$log['31'];
+		  $host_data["active_checks_enabled"] = 				$log['31'];
 	  if (isset($log['32']))
-		  $host_data["passive_checks_enabled"] = 					$log['32'];
+		  $host_data["passive_checks_enabled"] = 				$log['32'];
 	  if (isset($log['33']))
-		  $host_data["event_handler_enabled"] = 					$log['33'];
+		  $host_data["event_handler_enabled"] = 				$log['33'];
 	  if (isset($log['34']))
-		  $host_data["flap_detection_enabled"] = 					$log['34'];
+		  $host_data["flap_detection_enabled"] = 				$log['34'];
 	  if (isset($log['35']))
-		  $host_data["failure_prediction_enabled"] = 				$log['35'];
+		  $host_data["failure_prediction_enabled"] = 			$log['35'];
 	  if (isset($log['36']))
-		  $host_data["process_performance_data"] = 					$log['36'];
+		  $host_data["process_performance_data"] = 				$log['36'];
 	  if (isset($log['37']))
-		  $host_data["obsess_over_host"] = 							$log['37'];
+		  $host_data["obsess_over_host"] = 						$log['37'];
 	  if (isset($log['38']))
-		  $host_data["last_update"] = 								$log['38'];
+		  $host_data["last_update"] = 							$log['38'];
 	  if (isset($log['39']))
-		  $host_data["is_flapping"] = 								$log['39'];
+		  $host_data["is_flapping"] = 							$log['39'];
 	  if (isset($log['40']))
-		  $host_data["percent_state_change"] = 						$log['40'];
+		  $host_data["percent_state_change"] = 					$log['40'];
 	  if (isset($log['41']))
-		  $host_data["scheduled_downtime_depth"] = 					$log['41'];
+		  $host_data["scheduled_downtime_depth"] = 				$log['41'];
 	  return ($host_data);
 	}
 	
