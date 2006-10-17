@@ -136,7 +136,6 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 
 -- 14 / 09 / 2006
 
-ALTER TABLE `general_opt` ADD `AjaxFirstTimeReloadMonitoring` INT NOT NULL DEFAULT '15' AFTER `AjaxTimeReloadMonitoring` , ADD `AjaxFirstTimeReloadStatistic` INT NOT NULL DEFAULT '2' AFTER `AjaxFirstTimeReloadMonitoring`;
 DELETE FROM `topology` WHERE `topology_page` = '2020101';
 
 -- 06/10/2006
@@ -160,14 +159,13 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 UPDATE `topology` SET `topology_name` = 'm_general',
 `topology_icone` = NULL ,
 `topology_parent` = '5',
-`topology_page` = '501',
 `topology_order` = '10',
 `topology_group` = '1',
 `topology_url` = './include/options/oreon/myAccount/formMyAccount.php',
 `topology_url_opt` = '&o=c',
 `topology_popup` = '0',
 `topology_modules` = '0',
-`topology_show` = '1' WHERE `topology_id` =65 LIMIT 1 ;
+`topology_show` = '1' WHERE `topology_page` = 501 LIMIT 1 ;
 
 UPDATE `topology` SET `topology_name` = 'm_reporting',
 `topology_icone` = NULL ,
