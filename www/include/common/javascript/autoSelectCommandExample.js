@@ -16,14 +16,14 @@ For information : contact@oreon-project.org
 */
 // JavaScript Document
 
-/*
+
 function set_arg(e, a) {
 var f = document.forms["Form"];
 	var example    = f.elements[e];
 	var argument    = f.elements[a];
 	argument.value = example.value;
 }
-*/
+
 
 function setArgument(f, l, a) {
 	
