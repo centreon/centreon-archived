@@ -206,8 +206,8 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 	
-	//$_POST["host_id"] = 37;
-	//$_POST["type"] = 5;
+	//$_POST["host_id"] = 53;
+	//$_POST["type"] = 2;
 	
 	
 	$community = getMySnmpCommunity($_POST["host_id"]);
@@ -218,57 +218,18 @@ For information : contact@oreon-project.org
 	$retries = 10;
 	
 	$tab_unit = array("0"=>"bits", "1"=>"Kbits","2"=>"Mbits","3"=>"Gbits");
+	$tab_unit_o = array("0"=>"o", "1"=>"Ko","2"=>"Mo","3"=>"Go");
 	
-	
-	if($_POST["type"] == 3 && $_POST["host_id"])
-	{
-		$hrStorageIndex = walk_snmp_value(".1.3.6.1.2.1.25.2.3.1.1", "INTEGER: ");
-		if ($hrStorageIndex)
-		    foreach ($hrStorageIndex as $key => $SI){
-		    	$hrStorageIndex = array();
-		    	$buffer .= '<storageDevice>';
-				$buffer .= '<mntPointlabel>' . get_snmp_value("1.3.6.1.2.1.25.2.3.1.3.".$SI, "STRING: "). '</mntPointlabel>';
-				$buffer .= '<Typelabel>'.get_snmp_value("1.3.6.1.2.1.25.3.8.1.4.".$SI, "OID: HOST-RESOURCES-TYPES::")	.'</Typelabel>';
-				
-				$block = get_snmp_value("1.3.6.1.2.1.25.2.3.1.4.".$SI, "INTEGER: ");
-					    	
-				$hrStorageIndex["hsStorageSize"] = get_snmp_value("1.3.6.1.2.1.25.2.3.1.4.".$SI, "INTEGER: ");
-				$hrStorageIndex["hsStorageUsed"] = $block * get_snmp_value("1.3.6.1.2.1.25.2.3.1.6.".$SI, "INTEGER: ");
-				$hrStorageIndex["hsStorageFree"] = $hrStorageIndex["hsStorageSize"] - $hrStorageIndex["hsStorageUsed"];
-					    	
-				$buffer .= '<Utilisationlabel>...</Utilisationlabel>';
-		   		if 	(isset($hrStorageIndex["hsStorageSize"])){
-			    	for ($cpt = 0; $hrStorageIndex["hsStorageSize"] >= 1024; $cpt++)
-			    		$hrStorageIndex["hsStorageSize"] /= 1024;
-			    	$hrStorageIndex["hsStorageSize"] = round($hrStorageIndex["hsStorageSize"], 2) . " " . $tab_unit[$cpt];
-		    	}
-		    	if 	(isset($hrStorageIndex["hsStorageUsed"])){
-			    	for ($cpt = 0; $hrStorageIndex["hsStorageUsed"] >= 1024; $cpt++)
-			    		$hrStorageIndex["hsStorageUsed"] /= 1024;
-			    	$hrStorageIndex["hsStorageUsed"] = round($hrStorageIndex["hsStorageUsed"], 2) ." " . $tab_unit[$cpt];
-	    		}
-		    	if 	(isset($hrStorageIndex["hsStorageFree"])){
-			    	for ($cpt = 0; $hrStorageIndex["hsStorageFree"] >= 1024; $cpt++)
-			    		$hrStorageIndex["hsStorageFree"] /= 1024;
-			    	$hrStorageIndex["hsStorageFree"] = round($hrStorageIndex["hsStorageFree"], 2) ." " . $tab_unit[$cpt];
-		    	}
-		    	if (isset($hrStorageIndex["hsStorageSize"])){
-		    		if ($hrStorageIndex["hsStorageSize"] == 0)
-		    			$hrStorageIndex["hsStorageSize"] = 1;	
-			    	$buffer .= '<Utilisationlabel>'.round($hrStorageIndex["hsStorageUsed"] / $hrStorageIndex["hsStorageSize"] * 100).'</Utilisationlabel>';	
-		    	}
-		   		$buffer .= '<Freelabel>'.$hrStorageIndex["hsStorageFree"].'</Freelabel>';
-				$buffer .= '<Usedlabel>'.$hrStorageIndex["hsStorageUsed"].'</Usedlabel>';
-				$buffer .= '<Sizelabel>'.$hrStorageIndex["hsStorageSize"].'</Sizelabel>';
-				$buffer .= '</storageDevice>';
-		    }
-	} else 	if($_POST["type"] == 6 && $_POST["host_id"]){
+	if (($_POST["type"] == 3 || $_POST["type"] == 2) && $_POST["host_id"]){
 		$ifTab = walk_snmp_value(".1.3.6.1.2.1.2.2.1.1", "INTEGER: ");
 	    if ($ifTab)
 		    foreach ($ifTab as $key => $it){
 			   	$ifTab[$key]["ifIndex"] = $it;
-			    $buffer .= '<network>';
-				$buffer .= '<interfaceName>'.get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ").'</interfaceName>';
+			   	$description = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ");
+			   	$iftype = get_snmp_value("1.3.6.1.2.1.2.2.1.3.".$it, "INTEGER: ");
+			   	(strstr(strtolower($description), "vlan") || strstr(strtolower($iftype), 'virtual')) ? $type = 2 : $type = 1;
+			    $type == 1 ? $buffer .= '<network>': $buffer .= '<vlan>';
+				$buffer .= '<interfaceName>'.$description.'</interfaceName>';
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
 				preg_match("/([A-Za-z\-]*)\(?([0-9]+)\)?/", $operstatus, $matches);
 				$operstatus = $matches[1];
@@ -283,8 +244,7 @@ For information : contact@oreon-project.org
 				else
 					$buffer .= '<PhysAddress> </PhysAddress>';
 				# Type
-				$iftype = get_snmp_value("1.3.6.1.2.1.2.2.1.3.".$it, "INTEGER: ");
-		    	$r = preg_match("/([A-Za-z\-]*)\(?([0-9]+)\)?/", $iftype, $matches);
+				$r = preg_match("/([A-Za-z\-]*)\(?([0-9]+)\)?/", $iftype, $matches);
 		    	if (isset($ifType[$matches[2]]) && $ifType[$matches[2]])
 			    	$ifTab["ifType"] = $ifType[$matches[2]];
 		    	else
@@ -322,38 +282,11 @@ For information : contact@oreon-project.org
 				else
 					$str = "Not Defined";
 				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
-				$buffer .= '</network>';
-		    }
-	} else if($_POST["type"] == 4 && $_POST["host_id"]){
-		$hrSWInstalled = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.1", "INTEGER: ");
-	   	$hrSWInstalledName = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.2", "STRING: ");
-	   	if ($hrSWInstalled)
-			foreach ($hrSWInstalled as $key => $SWI){
-		    	$buffer .= '<software>';	
-				if (isset($hrSWInstalledName[$key]) && !strstr($hrSWInstalledName[$key], "Hex-"))
-		    		$hrSWInstalled["hrSWInstalledName"] = str_replace("\"", "", $hrSWInstalledName[$key]);
-		    	$buffer.= '<name>'.$hrSWInstalled["hrSWInstalledName"].'</name>';
-				$buffer .= '</software>';	
-		    }
-	} else if($_POST["type"] == 5 && $_POST["host_id"]){
-		$hrSWRun = walk_snmp_value("1.3.6.1.2.1.25.4.2.1.1", "INTEGER: ");
-	    if ($hrSWRun)
-		    foreach ($hrSWRun as $key => $SWR){
-		    	$buffer .= '<runningprocessus>';
-				$buffer .= '<application>'.str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.2.".$SWR, "STRING: ")).'</application>';
-
-				$path = str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.4.".$SWR, "STRING: "));
-		    	$path = str_replace("\\\\", "\\", $path);
-
-		    	$buffer .= '<path> '.$path.'</path>';
-		    	$buffer .= '<mem> '.get_snmp_value("1.3.6.1.2.1.25.5.1.1.2.".$SWR, "INTEGER: ").'</mem>';
-				$buffer .= '</runningprocessus>';	
+				$type == 1 ? $buffer .= '</network>': $buffer .= '</vlan>';
 		    }
 	}
 	
-
 	$buffer .= '</reponse>';	
 	header('Content-Type: text/xml');
 	echo $buffer;
-
 ?>
