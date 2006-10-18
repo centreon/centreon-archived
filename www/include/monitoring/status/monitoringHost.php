@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 			case "h" 	: require_once($path."host.php"); 					break;
 			case "hpb" 	: require_once($path."host_problem.php"); 			break;
 			case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
-			case "hak" 	: require_once($pathRoot."hostAcknowledge.php"); 	break;
+			case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
 			default 	: require_once($path."host.php"); 					break;
 		}
 	}
