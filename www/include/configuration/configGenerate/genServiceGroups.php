@@ -23,9 +23,9 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."servicegroups.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	
 	$serviceGroup = array();
 	$i = 1;
 	$str = NULL;
@@ -46,65 +46,88 @@ For information : contact@oreon-project.org
 					$str .= "# ".$cmt."\n";
 			}
 			$str .= "define servicegroup{\n";
-			if ($serviceGroup["sg_name"]) $str .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
+			if ($serviceGroup["sg_name"])  $str .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
 			if ($serviceGroup["sg_alias"]) $str .= print_line("alias", $serviceGroup["sg_alias"]);
 			// Service members
 			$service = array();
 			$strTemp = NULL;
-			$res2 =& $pearDB->query("SELECT service.service_id, service.service_description, hsr.hostgroup_hg_id, hsr.host_host_id FROM servicegroup_relation sgr, service, host_service_relation hsr WHERE sgr.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' AND sgr.service_service_id = service.service_id AND hsr.service_service_id = sgr.service_service_id");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			while($res2->fetchInto($service))	{
-				$BP = false;
+			$res2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
+									"FROM servicegroup_relation, service, host " .
+									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
+									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND host.host_id = servicegroup_relation.host_host_id " .
+									"AND service.service_activate = '1' " .
+									"AND host.host_activate = '1' " .
+									"AND  servicegroup_relation.host_host_id IS NOT NULL");
+			if (PEAR::isError($res2))
+				print "Mysql Error : ".$res2->getMessage();
+			while($res2->fetchInto($service)){
 				if ($ret["level"]["level"] == 1)
-					array_key_exists($service["service_id"], $gbArr[4]) ? $BP = true : NULL;
+					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"] == 2)
-					array_key_exists($service["service_id"], $gbArr[4]) ? $BP = true : NULL;
+					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"]	 == 3)
 					$BP = true;
 				if ($BP)	{				
-					if ($service["host_host_id"])	{
+					if ($service["host_id"])	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)
-							array_key_exists($service["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+							isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
 						else if ($ret["level"]["level"] == 2)
-							array_key_exists($service["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+							isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
 						else if ($ret["level"]["level"]	 == 3)
 							$BP = true;
 						if ($BP)
-							$strTemp != NULL ? $strTemp .= ", ".getMyHostName($service["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($service["host_host_id"]).", ".$service["service_description"];
+							$strTemp != NULL ? $strTemp .= ", ".$service["host_name"].", ".$service["service_description"] : $strTemp = $service["host_name"].", ".$service["service_description"];
 					}
-					else if ($service["hostgroup_hg_id"])	{
+				}
+			}
+
+			$res2 =& $pearDB->query("SELECT service_description, service_id, hg_id " .
+									"FROM servicegroup_relation, service, hostgroup " .
+									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
+									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id " .
+									"AND service.service_activate = '1' " .
+									"AND hostgroup.hg_activate = '1' " .
+									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
+			if (PEAR::isError($res2))
+				print "Mysql Error : ".$res2->getMessage();
+			while($res2->fetchInto($service)){
+				if ($ret["level"]["level"] == 1)
+					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
+				else if ($ret["level"]["level"] == 2)
+					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
+				else if ($ret["level"]["level"]	 == 3)
+					$BP = true;
+				if ($BP)	{				
+					if ($service["hg_id"])	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)
-							array_key_exists($service["hostgroup_hg_id"], $gbArr[3]) ? $BP = true : NULL;
+							isset($gbArr[3][$service["hg_id"]]) ? $BP = true : NULL;
 						else if ($ret["level"]["level"] == 2)
-							array_key_exists($service["hostgroup_hg_id"], $gbArr[3]) ? $BP = true : NULL;
+							isset($gbArr[3][$service["hg_id"]]) ? $BP = true : NULL;
 						else if ($ret["level"]["level"]	 == 3)
 							$BP = true;
-						if ($BP)	{
-							$res3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hostgroup_hg_id"]."'");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+						if ($BP){
+							$res3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
+							if (PEAR::isError($res3)) 
+								print "Mysql Error : ".$res3->getMessage();
 							while($res3->fetchInto($host))	{
 								$BP = false;
 								if ($ret["level"]["level"] == 1)
-									array_key_exists($host["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+									isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
 								else if ($ret["level"]["level"] == 2)
-									array_key_exists($host["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+									isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
 								else if ($ret["level"]["level"]	 == 3)
 									$BP = true;
 								if ($BP)
 									$strTemp != NULL ? $strTemp .= ", ".getMyHostName($host["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($host["host_host_id"]).", ".$service["service_description"];
 							}
-							unset($host);
-							$res3->free();
 						}
+						$res3->free();
 					}
-					
-				}				
+				}
 			}
 			$res2->free();
 			unset($service);
@@ -120,4 +143,4 @@ For information : contact@oreon-project.org
 	$res->free();
 	unset($str);
 	unset($i);
-	?>
+?>
