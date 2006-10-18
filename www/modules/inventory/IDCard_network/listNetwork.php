@@ -128,7 +128,7 @@ For information : contact@oreon-project.org
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
-
+	$tpl->assign("limit", $limit);
 	
 	#form select host
 	$req = "SELECT id, alias FROM inventory_manufacturer ";

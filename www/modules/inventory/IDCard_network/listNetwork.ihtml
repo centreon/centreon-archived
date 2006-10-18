@@ -9,7 +9,6 @@
 			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
 			<input type="image" name="o" value="d" src="./img/icones/16x16/refresh.gif">
 			</td>
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -42,13 +41,13 @@
 			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
 			<input type="image" name="o" value="d" src="./img/icones/16x16/refresh.gif">
 			</td>
-			<input name="p" value="{$p}" type="hidden">
+
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
 		</tr>
 	</table>
-<input type='hidden' name='o' id='o' value='42'>
+
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>

@@ -40,6 +40,8 @@ For information : contact@oreon-project.org
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 
+
+
 	if ($search)
 		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
 			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
@@ -90,7 +92,9 @@ For information : contact@oreon-project.org
 					" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	}
 	$res = & $pearDB->query($rq);
-	
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+			
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
@@ -112,6 +116,7 @@ For information : contact@oreon-project.org
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
+	$tpl->assign("limit", $limit);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
