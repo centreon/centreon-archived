@@ -48,10 +48,8 @@ function mreload(id) {
 		}
 	}	
 
-
-
     var childrenNumbertable = _tableAjax.childNodes.length;
-    for (var j = 0; j < childrenNumbertable; j++) 
+    for (var j = 0; j < childrenNumbertable; j++)
     {
 		var elementtable = _tableAjax.childNodes[j];
 		if(elementtable && elementtable.className != "ListHeader")
@@ -60,6 +58,8 @@ function mreload(id) {
 			j = j -1;
 		}
 	}
+	if(id == 2)
+	_tableAjax.innerHTML = '';
 
 	
 	if (id == 1){
@@ -177,19 +177,17 @@ function MyIsLoading(_txt) {
 	_img = document.getElementById('refresh' + _current_id);
 	_img.className = "ok";
 
-
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
 	_divmsg.className = "msg_isloading";
 	var _text = document.createTextNode(_txt);
 	_divmsg.appendChild(_text);
-	setTimeout('MyHiddenDiv()', '2000');
+	setTimeout('MyHiddenDiv()', '2000');	
 }
 
 function MyLoading(_txt) {
 	_img = document.getElementById('refresh' + _current_id);
 	_img.className = "cachediv";
-
 	_img = document.getElementById('isrefresh' + _current_id);
 	_img.className = "ok";
 
@@ -291,10 +289,11 @@ function get_runningProcessus(_host_id)
 
 				_ligne.className = ClassName;
 				_tableAjax.appendChild(_ligne);
-			}
-		}
 		MyIsLoading("running processus is loaded");
+			}
+		//MyIsLoading("running processus is loaded");
 		//setTimeout('MyIsLoading("running processus is loaded")', '800');
+		}
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -358,9 +357,9 @@ function get_software(_host_id)
 				_ligne.className = ClassName;
 				_tableAjax.appendChild(_ligne);
 			}
-		}
 		MyIsLoading("software is loaded");
 //		setTimeout('MyIsLoading("software is loaded")', '800');
+		}
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -455,13 +454,15 @@ function get_StorageDevice(_host_id)
 		var _imgmiddle = document.createElement('img');
 		_imgmiddle.src = "./include/options/sysInfos/templates/classic/images/" + _red + "bar_middle.gif";
 		_imgmiddle.height='10';
-		_imgmiddle.width= _Utilisationlabel;
 
+		if(_Utilisationlabel <= 100)
+			_imgmiddle.width= _Utilisationlabel;
+		else
+			_imgmiddle.width= '100';
 
 				_case_Utilisationlabel.appendChild(_imgmiddle);
 				_case_Utilisationlabel.appendChild(_text_Utilisationlabel);
-	
-	
+		
 				_ligne.appendChild(_case_mntPointlabel);
 				_ligne.appendChild(_case_Typelabel);
 				_ligne.appendChild(_case_Utilisationlabel);
@@ -477,9 +478,9 @@ function get_StorageDevice(_host_id)
 	
 				_tableAjax.appendChild(_ligne);
 			}
-		}
 		MyIsLoading("storageDevices is loaded");
 //		setTimeout('MyIsLoading("storageDevices is loaded")', '800');
+		}
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -520,9 +521,7 @@ function get_network(_host_id)
 		if(xhrIDCard.readyState == 4 && xhrIDCard.status == 200 && xhrIDCard.responseXML)
 		{		
 			reponseIDCard = xhrIDCard.responseXML.documentElement;
-
 			var _networks = reponseIDCard.getElementsByTagName("network");
-
 
 			for (var i = 0 ; i < _networks.length ; i++) {
 				var _network = _networks[i];
@@ -608,8 +607,8 @@ function get_network(_host_id)
 				var _ligne_3 = document.createElement('tr');
 				var _case_Trafic = document.createElement('td');
 				var _case_errorPaquet = document.createElement('td');
-				var _text_Trafic = document.createTextNode(_Trafic_label + ': ' + _Trafic);	
-				var _text_errorPaquet = document.createTextNode(_errorPaquet_label + ': ' + _errorPaquet);	
+				var _text_Trafic = document.createTextNode(_Trafic_label + ': ' + _Trafic);
+				var _text_errorPaquet = document.createTextNode(_errorPaquet_label + ': ' + _errorPaquet);
 				_case_Trafic.appendChild(_text_Trafic);
 				_case_errorPaquet.appendChild(_text_errorPaquet);
 
@@ -625,9 +624,10 @@ function get_network(_host_id)
 				_tableAjax.appendChild(_ligne_2);
 				_tableAjax.appendChild(_ligne_3);
 			}
-		}
 		MyIsLoading("network is loaded");
 //		setTimeout('MyIsLoading("network is loaded")', '800');
+
+		}
 	}
 	xhrIDCard.open("POST",_adrrsearchIDCard,true);
 	xhrIDCard.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
