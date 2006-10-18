@@ -29,8 +29,14 @@ For information : contact@oreon-project.org
 	require_once('reporting-func.php');
 	include("./include/monitoring/log/choose_log_file.php");
 
-	# LCA
+
+	# LCA 
 	$lcaHostByName = getLcaHostByName($pearDB);
+	$lcaHostByID = getLcaHostByID($pearDB);
+	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
+	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	$isRestreint = HadUserLca($pearDB);
+
 
 	#
 	## Selection de l'host
@@ -51,7 +57,7 @@ For information : contact@oreon-project.org
 	$formHost->addElement('hidden', 'end', $end);
 	$formHost->addElement('hidden', 'start', $start);
 
-	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
+	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' AND host_id IN (".$lcaHoststr.") and host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
 	while ($res->fetchInto($h))
