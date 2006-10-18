@@ -477,6 +477,9 @@ function get_StorageDevice(_host_id)
 				_ligne.className = ClassName;	
 	
 				_tableAjax.appendChild(_ligne);
+
+		MyIsLoading("storageDevices is loaded");
+
 			}
 		MyIsLoading("storageDevices is loaded");
 //		setTimeout('MyIsLoading("storageDevices is loaded")', '800');
