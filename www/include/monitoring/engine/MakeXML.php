@@ -55,33 +55,27 @@ For information : contact@oreon-project.org
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) 
 	 	die("Connecting probems with oreon database : " . $pearDB->getMessage());
-	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-	function GetUid($sid)
-	{
+	function GetUid($sid){
 		global $pearDB;
 		$uid = array();
 		$res =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $sid ."'");
-	
 		if(!$res->fetchinto($uid))
 			$uid = array("user_id"=>-1);	
 		return $uid["user_id"];
 	}
 	
-	function IsAdmin($uid)
-	{
+	function IsAdmin($uid){
 		global $pearDB;
 		$admin = array();
 		$res =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '" . $uid ."'");
 		if(!$res->fetchinto($admin))
 			$admin["contact_admin"] = 0;
-		
 		return $admin["contact_admin"];
 	}
 	
-	function GetLcaHost($uid)
-	{
+	function GetLcaHost($uid){
 		global $pearDB;
 	
 		$lcaHost = array();
@@ -110,9 +104,6 @@ For information : contact@oreon-project.org
 		}
 		return $lcaHost;
 	}
-
-
-
 
 	#
 	## class init
@@ -179,16 +170,13 @@ For information : contact@oreon-project.org
 
 function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status)
 {
-	global $pearDB;
-	global $flag;
+	global $pearDB, $flag;
 
 	$uid = GetUid($sid);
 	$oreonLCA = GetLcaHost($uid);
 	$IsAdmin = IsAdmin($uid);
 
-
 	$MyLog = date('l dS \of F Y h:i:s A'). "\n";
-
 
 	$_GET["sort_types"] = $sort_type;
 	$_GET["order"] = $order;
@@ -208,19 +196,11 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 	$buffer .= '<filetime>'.filectime($file). '</filetime>';
 	$buffer .= '</infos>';
 
-
-
-	if( filectime($file) > $time)
-	{		
-
+	if( filectime($file) > $time){		
 		$oreon = "titi";
 		include("ReloadForAjax_status_log.php");
 		$mtab = array();
 		$mtab = explode(',', $arr);
-
-
-
-
 
 		#
 		## calcul stat for statistic
@@ -258,23 +238,16 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 		## services infos
 		#
 
-
-		if (isset($service_status) &&  ($type == "service" || $type == "service_problem"))
-		{
+		if (isset($service_status) &&  ($type == "service" || $type == "service_problem")){
 			
 			$gtab = array();
 			for($a=0,$b=1; sizeof($mtab) > $b;$a+=2,$b+=2)
 				$gtab[$mtab[$a] . $mtab[$b]] = $a / 2 + $a % 2;
-
-
-
 			$rows = 0;
 			$service_status_num = array();
 			if (isset($service_status))
 				foreach ($service_status as $name => $svc){
-		
-					if($type == "service" || ($type == "service_problem" && $svc["current_state"] != "OK"))
-					{
+					if($type == "service" || ($type == "service_problem" && $svc["current_state"] != "OK")){
 						$tmp = array();
 						$tmp[0] = $name;		
 						$service_status[$name]["status"] = $svc["current_state"];
@@ -282,7 +255,6 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 						$tmp[1] = $service_status[$name];
 						$service_status_num[$rows++] = $tmp;
 					}
-		
 				}
 
 			# view tab
@@ -291,8 +263,6 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 			for($i=$start; $i < ($limit+$start) && isset($service_status_num[$i])  ;$i++)
 				$displayTab[$service_status_num[$i][0]] = $service_status_num[$i][1];
 				$service_status = $displayTab;
-
-
 			$ct = 0;
 			$flag = 0;
 			
@@ -300,14 +270,9 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 //				if(isset($gtab[$svc["host_name"] . $svc["description"]]))
 				{					
 
-					if(
-					(isset($gtab[$svc["host_name"] . $svc["service_description"]]) && $gtab[$svc["host_name"] . $svc["service_description"]] != $ct)
-					)
+					if((isset($gtab[$svc["host_name"] . $svc["service_description"]]) && $gtab[$svc["host_name"] . $svc["service_description"]] != $ct))
 						$flag = 1;
-					
-					if(
-					 !isset($gtab[$svc["host_name"] . $svc["service_description"]]) 
-					)
+					if(!isset($gtab[$svc["host_name"] . $svc["service_description"]]))
 						$flag = 1;
 
 					$MyLog .= "flag=" . $flag . " host=" . $svc["host_name"] . " svc=" . $svc["service_description"]  . "\n";
@@ -351,10 +316,8 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 	header('Content-Type: text/xml');
 	echo $buffer;
 
-
 	global $debug;
-	if($debug == 1)
-	{
+	if($debug == 1){
 		$file = "log.xml";
 		$inF = fopen($file,"w");
 		fwrite($inF,$buffer);
@@ -367,9 +330,7 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 		fwrite($inF,"uid:\n ".$uid."\n\n");
 		fwrite($inF,"admin:\n ".$IsAdmin."\n\n");
 		foreach($oreonLCA as $key => $h)
-		{
 			fwrite($inF,"lca h: ".$h."\n\n");	
-		}
 		
 		fwrite($inF,"log:\n----------\n\n");	
 		fclose($inF);
@@ -383,23 +344,20 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 
 $flag = 0;
 
-if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtime"]))
-{
+if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtime"])){
 	$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_POST["sid"]."'");
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
 	if($session =& $res->fetchRow()){
 		$flag = $_POST["slastreload"];		
-		if(time() - $_POST["slastreload"] > ($_POST["smaxtime"] / 4))
-		{		
+		if(time() - $_POST["slastreload"] > ($_POST["smaxtime"] / 4)){		
 			$flag = time();
 			$sql = "UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".
 			$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".
 			$_POST["sid"]."' LIMIT 1";
 			$res =& $pearDB->query($sql);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 		}
 	}
 }
@@ -409,8 +367,7 @@ if(!$flag)
 	exit(1);
 
 
-if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"]))
-{
+if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"])){
 	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
 }
 /*
@@ -419,8 +376,7 @@ else if(isset($_GET["time"]) && isset($_GET["arr"]) && isset($_GET["type"])  && 
 	read($_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
 }
 */
-else
-{
+else {
 	$buffer = null;
 	$buffer .= '<reponse>';	
 	$buffer .= 'none';	
