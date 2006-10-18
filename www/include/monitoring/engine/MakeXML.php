@@ -380,11 +380,9 @@ $flag = 0;
 if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtime"]))
 {
 	$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_POST["sid"]."'");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-	if($session =& $res->fetchRow())
-	{
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	if($session =& $res->fetchRow()){
 		$flag = $_POST["slastreload"];		
 		if(time() - $_POST["slastreload"] > ($_POST["smaxtime"] / 4))
 		{		
