@@ -34,21 +34,27 @@ _time_reload = <?=$tM?>;
 _time_live = <?=$tFM?>;
 
 function monitoring_time_msg_failled(_msg) {
+	/*
 	var _tmp = document.getElementById('time_live');
 	_tmp.innerHTML = _msg;
 	_tmp.className = 'failled_msg';
+	*/
 }
 
 function monitoring_time_Del_msg()	{
+	/*
 		var _tmp = document.getElementById('time_live');
 		_tmp.innerHTML = '';
 		_tmp.className = 'cachediv';
+		*/
 }
 
 function monitoring_time_msg()	{
+	/*
 		var _tmp = document.getElementById('time_live');
 		_tmp.innerHTML = ' Loading in progress...';
 		_tmp.className = 'ok_msg';
+		*/
 }
 
 

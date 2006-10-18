@@ -37,7 +37,6 @@
 			&nbsp;
 			{$form.o1.html}
 			</div>
-			<span class="consol_button"><div class="cachediv" id="time_live">&nbsp;Loading in progress...</div></span>
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
 			{/if}
