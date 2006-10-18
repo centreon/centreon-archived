@@ -3,6 +3,7 @@ ALTER TABLE  `general_opt` ADD `debug_path` VARCHAR( 255 ) NULL AFTER `ldap_auth
 ALTER TABLE  `general_opt` ADD `debug_auth` enum('0','1') default NULL AFTER `debug_path`;
 ALTER TABLE  `general_opt` ADD `debug_nagios_import` enum('0','1') default NULL AFTER `debug_auth`;
 ALTER TABLE  `general_opt` ADD `debug_rrdtool` enum('0','1') default NULL AFTER `debug_nagios_import`;
+
 -- 15 09 06
 ALTER TABLE  `general_opt` ADD `debug_ldap_import` enum('0','1') default NULL AFTER `debug_rrdtool`;
 ALTER TABLE  `general_opt` ADD `debug_inventory` enum('0','1') default NULL AFTER `debug_ldap_import`;
@@ -41,10 +42,12 @@ CREATE TABLE `topology_JS` (
 --
 -- Contraintes pour la table `topology_JS`
 --
+
+ALTER TABLE `topology` ADD INDEX ( `topology_page` );
+
 ALTER TABLE `topology_JS`
   ADD CONSTRAINT `topology_JS_ibfk_1` FOREIGN KEY (`id_page`) REFERENCES `topology` (`topology_page`) ON DELETE CASCADE;
 
-ALTER TABLE `topology` ADD INDEX ( `topology_page` );
 
 --
 -- Contenu de la table `topology_JS`
@@ -149,9 +152,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_debug', './img/icones/16x16/nagios.gif', 50101, 5010107, 70, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=debug', '0', '0', '1');
 
 
-ALTER TABLE `general_opt` ADD `debug_inventory` ENUM( "0", "1" ) NULL , ADD `debug_ldap_import` ENUM( "0", "1" ) NOT NULL ;
-
-
 -- changement de topology
 
 UPDATE `topology` SET `topology_name` = 'm_general',
@@ -187,6 +187,7 @@ UPDATE `topology` SET `topology_name` = 'm_dashboard',
 `topology_modules` = '0',
 `topology_show` = '1' WHERE `topology_page` =307 LIMIT 1 ;
 
+####
 UPDATE `topology` SET `topology_name` = 'm_dashboard',
 `topology_icone` = './img/icones/16x16/outbox.gif',
 `topology_parent` = '301',
