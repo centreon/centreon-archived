@@ -158,10 +158,10 @@ For information : contact@oreon-project.org
 							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, $debug_path."auth.log");
 						// Autologin case => contact_alias is MD5 format
 						if (!isset($_POST["submit"]))
-							$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".$password."' AND contact_activate = '1' LIMIT 1");
+							$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".htmlentities($password, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
 						// Normal auth
 						else
-							$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5($password)."' AND contact_activate = '1' LIMIT 1");
+							$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5(htmlentities($password, ENT_QUOTES))."' AND contact_activate = '1' LIMIT 1");
 
 						if ($res->numRows() ) {
 								if ($debug_auth == 1)
