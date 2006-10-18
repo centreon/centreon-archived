@@ -4,11 +4,6 @@
 <table id="tabLegend">
 
 <tr>
-<td>
-<img src="./img/icones/16x16/document_exchange.gif" border="0" alt="{$lang.duplicate}">
-&nbsp;=&nbsp;
-{$lang.lgd_duplicate}
-</td>
 
 <td>
 <img src="./img/icones/16x16/element_next.gif" border="0" alt="{$lang.duplicate}">
@@ -40,15 +35,6 @@
 
 </tr>
 <tr>
-
-
-
-
-<td>
-<img src="./img/icones/16x16/selection_delete.gif" border="0" alt="{$lang.delete}">
-&nbsp;=&nbsp;
-{$lang.lgd_delAll}
-</td>
 
 
 <td>
