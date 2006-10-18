@@ -115,7 +115,8 @@ $lang ["m_mon_accept_passive"] = "accepting passive checks for this service";
 $lang ["m_mon_notification_service"] = "notifications for this service";
 $lang ["m_mon_schedule_downtime"] = "Schedule downtime for this service";
 $lang ["m_mon_schedule_comment"] = "Schedule Comment for this service";
-//$lang ["m_mon_acknowledge"] = "Acknowledge this service";
+
+$lang ["m_mon_acknowledge"] = "Acknowledge this host";
 
 $lang ["m_mon_disack"] = "Delete this Acknowledge";
 $lang ["m_mon_ack"] = "Acknowledge this service";

@@ -193,7 +193,10 @@
 					</tr>
 					{if $host_data.current_state != UP}
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$host_data.problem_has_been_acknowledged]}&nbsp;<a href='./oreon.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>{$en_acknowledge_text[$host_data.acknowledged]}</a></a></td>
+						<td class="ListColLeft">{$img_en[$host_data.problem_has_been_acknowledged]}&nbsp;
+						<a href='./oreon.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
+						{$en_acknowledge_text[$host_data.acknowledged]}
+						{$lang.m_mon_acknowledge}</a></td>
 					</tr>
 					{/if}
 				</table>

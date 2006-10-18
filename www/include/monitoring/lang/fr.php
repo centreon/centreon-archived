@@ -113,7 +113,8 @@ $lang ["m_mon_accept_passive"] = "la v&eacute;rification du service en passif";
 $lang ["m_mon_notification_service"] = "les notifications pour le service";
 $lang ["m_mon_schedule_downtime"] = "Plannifier une p&eacute;riode d&acute;arr&ecirc;t";
 $lang ["m_mon_schedule_comment"] = "Ajouter un commentaire pour ce service";
-//$lang ["m_mon_acknowledge"] = "en compte du status courant";
+
+$lang ["m_mon_acknowledge"] = "Prendre en compte le status courant";
 
 $lang ["m_mon_disack"] = "Supprimer la prise en compte du status courant";
 $lang ["m_mon_ack"] = "Prendre en compte le status courant";
