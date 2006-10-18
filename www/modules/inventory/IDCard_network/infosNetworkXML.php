@@ -222,7 +222,7 @@ For information : contact@oreon-project.org
 	
 	if (($_POST["type"] == 3 || $_POST["type"] == 2) && $_POST["host_id"]){
 		$ifTab = walk_snmp_value(".1.3.6.1.2.1.2.2.1.1", "INTEGER: ");
-	    if ($ifTab)
+	    if ($ifTab){
 		    foreach ($ifTab as $key => $it){
 			   	$ifTab[$key]["ifIndex"] = $it;
 			   	$description = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ");
@@ -284,6 +284,9 @@ For information : contact@oreon-project.org
 				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
 				$type == 1 ? $buffer .= '</network>': $buffer .= '</vlan>';
 		    }
+	    } else {
+	    	$buffer .= "<network></network>\n<vlan></vlan>";
+	    }
 	}
 	
 	$buffer .= '</reponse>';	

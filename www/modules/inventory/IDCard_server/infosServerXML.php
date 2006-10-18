@@ -224,7 +224,7 @@ For information : contact@oreon-project.org
 	if($_POST["type"] == 3 && $_POST["host_id"])
 	{
 		$hrStorageIndex = walk_snmp_value(".1.3.6.1.2.1.25.2.3.1.1", "INTEGER: ");
-		if ($hrStorageIndex)
+		if ($hrStorageIndex){
 		    foreach ($hrStorageIndex as $key => $SI){
 		    	$hrStorageIndex = array();
 		    	$buffer .= '<storageDevice>';
@@ -263,9 +263,11 @@ For information : contact@oreon-project.org
 				$hrStorageIndex["hsStorageSize"] ? $buffer .= '<Sizelabel>'.$hrStorageIndex["hsStorageSize"].'</Sizelabel>': $buffer .= '<Sizelabel> </Sizelabel>';
 				$buffer .= '</storageDevice>';
 		    }
+		} else 
+			$buffer .= '<storageDevice></storageDevice>';
 	} else 	if($_POST["type"] == 6 && $_POST["host_id"]){
 		$ifTab = walk_snmp_value(".1.3.6.1.2.1.2.2.1.1", "INTEGER: ");
-	    if ($ifTab)
+	    if ($ifTab) {
 		    foreach ($ifTab as $key => $it){
 			   	$ifTab[$key]["ifIndex"] = $it;
 			    $buffer .= '<network>';
@@ -325,6 +327,8 @@ For information : contact@oreon-project.org
 				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
 				$buffer .= '</network>';
 		    }
+	    } else 
+	    	$buffer .= '<network></network>';	
 	} else if($_POST["type"] == 4 && $_POST["host_id"]){
 		$hrSWInstalled = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.1", "INTEGER: ");
 	   	$hrSWInstalledName = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.2", "STRING: ");
@@ -336,9 +340,11 @@ For information : contact@oreon-project.org
 		    	$buffer.= '<name>'.$hrSWInstalled["hrSWInstalledName"].'</name>';
 				$buffer .= '</software>';	
 		    }
+		else
+			$buffer .= '<software></software>';
 	} else if($_POST["type"] == 5 && $_POST["host_id"]){
 		$hrSWRun = walk_snmp_value("1.3.6.1.2.1.25.4.2.1.1", "INTEGER: ");
-	    if ($hrSWRun)
+	    if ($hrSWRun){
 		    foreach ($hrSWRun as $key => $SWR){
 		    	$buffer .= '<runningprocessus>';
 				$buffer .= '<application>'.str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.2.".$SWR, "STRING: ")).'</application>';
@@ -350,6 +356,8 @@ For information : contact@oreon-project.org
 		    	$buffer .= '<mem> '.get_snmp_value("1.3.6.1.2.1.25.5.1.1.2.".$SWR, "INTEGER: ").'</mem>';
 				$buffer .= '</runningprocessus>';	
 		    }
+	    } else
+	    	$buffer .= '</runningprocessus><runningprocessus>';
 	}
 	
 
