@@ -16,27 +16,27 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-$debug = 0;
-
-
-#
-## pearDB init
-#
+	$debug = 0;
+	
+	#
+	## pearDB init
+	#
+	
 	require_once 'DB.php';	
 
-$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : "";
-$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
+	$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : "";
+	$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
 
-if($oreonPath == "")
-{
-	$buffer .= '<reponse>';	
-	$buffer .= 'none';
-	$buffer .= '</reponse>';
-	header('Content-Type: text/xml');
-	echo $buffer;
-}
+	if($oreonPath == ""){
+		$buffer .= '<reponse>';	
+		$buffer .= 'none';
+		$buffer .= '</reponse>';
+		header('Content-Type: text/xml');
+		echo $buffer;
+	}
 
-include_once($oreonPath . "www/oreon.conf.php");
+	include_once($oreonPath . "www/oreon.conf.php");
+	
 	/* Connect to oreon DB */
 	
 	$dsn = array(
@@ -54,128 +54,128 @@ include_once($oreonPath . "www/oreon.conf.php");
 	
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) 
-	  die("Connecting probems with oreon database : " . $pearDB->getMessage());
+	 	die("Connecting probems with oreon database : " . $pearDB->getMessage());
 	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-function GetUid($sid)
-{
-	global $pearDB;
-	$uid = array();
-	$res =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $sid ."'");
-
-	if(!$res->fetchinto($uid))
-		$uid = array("user_id"=>-1);	
-	return $uid["user_id"];
-}
-
-function IsAdmin($uid)
-{
-	global $pearDB;
-	$admin = array();
-	$res =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '" . $uid ."'");
-	if(!$res->fetchinto($admin))
-		$admin["contact_admin"] = 0;
+	function GetUid($sid)
+	{
+		global $pearDB;
+		$uid = array();
+		$res =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . $sid ."'");
 	
-	return $admin["contact_admin"];
-}
-
-function GetLcaHost($uid)
-{
-	global $pearDB;
-
-	$lcaHost = array();
-	$lcaHostGroup = array();
-	$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$uid."'");
-	if ($res1->numRows())	{
-		while($res1->fetchInto($contactGroup))	{
-		 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-			 if ($res2->numRows())
-				while ($res2->fetchInto($lca))	{
-					$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
-					while ($res3->fetchInto($host))
-						$lcaHost[$host["host_name"]] = $host["host_id"];
-				 	$res3 =& $pearDB->query("SELECT DISTINCT hg_id, hg_name FROM hostgroup, lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND hg_id = hostgroup_hg_id");	
-					while ($res3->fetchInto($hostGroup))	{
-						
-						# Apply the LCA to hosts contains in
-						if ($lca["lca_hg_childs"])	{
-							$res4 =& $pearDB->query("SELECT h.host_name, hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND h.host_id = hgr.host_host_id");	
-							while ($res4->fetchInto($host))	
-								$lcaHost[$host["host_name"]] = $host["host_host_id"];
+		if(!$res->fetchinto($uid))
+			$uid = array("user_id"=>-1);	
+		return $uid["user_id"];
+	}
+	
+	function IsAdmin($uid)
+	{
+		global $pearDB;
+		$admin = array();
+		$res =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '" . $uid ."'");
+		if(!$res->fetchinto($admin))
+			$admin["contact_admin"] = 0;
+		
+		return $admin["contact_admin"];
+	}
+	
+	function GetLcaHost($uid)
+	{
+		global $pearDB;
+	
+		$lcaHost = array();
+		$lcaHostGroup = array();
+		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$uid."'");
+		if ($res1->numRows())	{
+			while($res1->fetchInto($contactGroup))	{
+			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
+				 if ($res2->numRows())
+					while ($res2->fetchInto($lca))	{
+						$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
+						while ($res3->fetchInto($host))
+							$lcaHost[$host["host_name"]] = $host["host_id"];
+					 	$res3 =& $pearDB->query("SELECT DISTINCT hg_id, hg_name FROM hostgroup, lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND hg_id = hostgroup_hg_id");	
+						while ($res3->fetchInto($hostGroup))	{
+							
+							# Apply the LCA to hosts contains in
+							if ($lca["lca_hg_childs"])	{
+								$res4 =& $pearDB->query("SELECT h.host_name, hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND h.host_id = hgr.host_host_id");	
+								while ($res4->fetchInto($host))	
+									$lcaHost[$host["host_name"]] = $host["host_host_id"];
+							}
 						}
 					}
-				}
-		}	
+			}	
+		}
+		return $lcaHost;
 	}
-	return $lcaHost;
-}
 
 
 
 
-#
-## class init
-#
-
-class Duration
-{
-	function toString ($duration, $periods = null)
-    {
-        if (!is_array($duration)) {
-            $duration = Duration::int2array($duration, $periods);
-        }
-        return Duration::array2string($duration);
-    }
- 
-    function int2array ($seconds, $periods = null)
-    {        
-        // Define time periods
-        if (!is_array($periods)) {
-            $periods = array (
-                    'y'	=> 31556926,
-                    'M' => 2629743,
-                    'w' => 604800,
-                    'd' => 86400,
-                    'h' => 3600,
-                    'm' => 60,
-                    's' => 1
-                    );
-        }
- 
-        // Loop
-        $seconds = (int) $seconds;
-        foreach ($periods as $period => $value) {
-            $count = floor($seconds / $value);
- 
-            if ($count == 0) {
-                continue;
-            }
- 
-            $values[$period] = $count;
-            $seconds = $seconds % $value;
-        }
- 
-        // Return
-        if (empty($values)) {
-            $values = null;
-        }
-        return $values;
-    }
- 
-    function array2string ($duration)
-    {
-        if (!is_array($duration)) {
-            return false;
-        }
-        foreach ($duration as $key => $value) {
-            $segment = $value . '' . $key;
-            $array[] = $segment;
-        }
-        $str = implode(' ', $array);
-        return $str;
-    }
-}
+	#
+	## class init
+	#
+	
+	class Duration
+	{
+		function toString ($duration, $periods = null)
+	    {
+	        if (!is_array($duration)) {
+	            $duration = Duration::int2array($duration, $periods);
+	        }
+	        return Duration::array2string($duration);
+	    }
+	 
+	    function int2array ($seconds, $periods = null)
+	    {        
+	        // Define time periods
+	        if (!is_array($periods)) {
+	            $periods = array (
+	                    'y'	=> 31556926,
+	                    'M' => 2629743,
+	                    'w' => 604800,
+	                    'd' => 86400,
+	                    'h' => 3600,
+	                    'm' => 60,
+	                    's' => 1
+	                    );
+	        }
+	 
+	        // Loop
+	        $seconds = (int) $seconds;
+	        foreach ($periods as $period => $value) {
+	            $count = floor($seconds / $value);
+	 
+	            if ($count == 0) {
+	                continue;
+	            }
+	 
+	            $values[$period] = $count;
+	            $seconds = $seconds % $value;
+	        }
+	 
+	        // Return
+	        if (empty($values)) {
+	            $values = null;
+	        }
+	        return $values;
+	    }
+	 
+	    function array2string ($duration)
+	    {
+	        if (!is_array($duration)) {
+	            return false;
+	        }
+	        foreach ($duration as $key => $value) {
+	            $segment = $value . '' . $key;
+	            $array[] = $segment;
+	        }
+	        $str = implode(' ', $array);
+	        return $str;
+	    }
+	}
 
 function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status)
 {
@@ -229,6 +229,9 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 		
+		/*
+		 * 
+		 * 
 		if (isset($host_status))
 			foreach ($host_status as $hs)
 				$statistic_host[$hs["current_state"]]++;
@@ -248,6 +251,9 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 		$buffer .= '<statistic_host_pending>'.$statistic_host["PENDING"]. '</statistic_host_pending>';
 		$buffer .= '</stats>';
 
+		*
+		*/
+		
 		#
 		## services infos
 		#
