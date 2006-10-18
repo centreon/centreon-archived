@@ -1,0 +1,908 @@
+<data>
+    <!-- Sources:
+        http://roswell.fortunecity.com/angelic/96/pctime.htm
+    -->
+    <event start="Sat May 20 1961 00:00:00 GMT-0600"
+        title="'Bay of Pigs' Invasion"
+        >
+        </event>
+    <event start="Wed May 01 1963 00:00:00 GMT-0600" end="Sat Jun 01 1963 00:00:00 GMT-0600" isDuration="true"
+        title="Oswald moves to New Orleans"
+        >
+        Oswald moves to New Orleans, and finds employment at the William 
+        B. Riley Coffee Company. &lt;i&gt;ref. Treachery in Dallas, p 320&lt;/i&gt;
+        </event>
+    <event start="Fri May 10 1963 00:00:00 GMT-0600"
+        title="General Walker shot"
+        >
+        General Walker shot at in his home. &lt;i&gt;ref. Treachery in Dallas, p 319&lt;/i&gt;
+        </event>
+    <event start="Wed Jun 05 1963 00:00:00 GMT-0600"
+        title="Kennedy, Johnson, Connelly met"
+        >
+        Decision for Texas trip made at meeting with Kennedy, Johnson, 
+        and Connelly at the Cortez hotel in El Paso Texas. &lt;i&gt;ref. W.C.&lt;i&gt;
+        </event>
+    <event start="Wed Sep 25 1963 00:00:00 GMT-0600"
+        title="Maurice Bishop seen speaking to Oswald"
+        >
+        Antonio Veciana travels to Dallas for a meeting with Maurice 
+        Bishop (a.k.a. David Atlee Philips). In the lobby of the 
+        Southland building, Veciana sees Bishop speaking to a man 
+        Veciana later identifies as Lee Harvey Oswald. 
+        &lt;i&gt;ref. Last Investigation, p 141&lt;/i&gt;
+        </event>
+    <event start="Tue Oct 01 1963 00:00:00 GMT-0600"
+        title="CIA's growth a malignancy"
+        >
+        Reporter Arther Krock, citing a dispatch from Vietnam reporter 
+        Richard Starnes, writes, "The CIA's growth was likened to a 
+        malignancy which the very high official was not sure even the 
+        White House could control any longer. If the United States ever 
+        experiences an attempt at a coup to overthrow the government 
+        it will come from the CIA and not the Pentagon. The agency 
+        represents a tremendous power and total unaccountability to 
+        anyone". &lt;i&gt;ref. Last Investigation, p 422&lt;/i&gt;
+        </event>
+    <event start="Fri Oct 11 1963 00:00:00 GMT-0600"
+        title="Kennedy signs NSAM 263"
+        >
+        Kennedy signs National Security Action Memorandum (NSAM) #263,
+        signalling his intention to withdraw troops from Vietnam.
+        &lt;i&gt;ref. JFK, CIA, Vietnam by Prouty, p xxiii&lt;/i&gt;
+        </event>
+    <event start="Wed Oct 16 1963 00:00:00 GMT-0600"
+        title="Oswald begins job at TSBD"
+        >
+        Oswald begins job at Texas School Book Depository. He reportedly 
+        obtained it through a contact of Ruth Paine. 
+        &lt;i&gt;ref. Last Investigation, p 422&lt;/i&gt;
+        </event>
+    <event start="Wed Oct 23 1963 00:00:00 GMT-0600"
+        title="Oswald purchased rifle"
+        >
+        Ruth Paine makes notation on her calendar 'LHO purchase of rifle.' 
+        &lt;i&gt;ref. Treachery in Dallas, p 293&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 08 1963 00:00:00 GMT-0600"
+        title="Lawson receives Texas trip schedule"
+        >
+        SS Agent Winston Lawson is briefed and receives a tentative 
+        schedule of Texas trip from SS Agent Roy H Kellerman who was 
+        the agent in charge of arranging the timetable for trip and 
+        responsible for motorcade route.
+        </event>
+    <event start="Fri Nov 08 1963 00:00:00 GMT-0600"
+        title="Governor Connelly confirms trip"
+        >
+        Governor Connelly confirms trip to Dallas on November 21 - 22, 1963.
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 08 1963 00:00:00 GMT-0600"
+        title="Oswald writes to Mr. Hunt"
+        >
+        Oswald writes to, "Dear Mr. Hunt, (most likely Howard E. Hunt) 
+        I would like more information concerning my position. I am 
+        asking only for information. I am suggesting that we discuss the 
+        matter fully before any steps are taken by me or anyone else. 
+        Thank you, Lee Harvey Oswald." 
+        &lt;i&gt;ref. Last Investigation, p 423; 
+            Treachery in Dallas, p 324; 
+            Crossfire (letter shown in full)&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 08 1963 00:00:00 GMT-0600"
+        title="Oswald delivers note to Dallas FBI HQ"
+        >
+        Oswald delivers a note to Dallas FBI HQ where Agent James Hosty 
+        is told to destroy it by Special Agent in Charge, Gordin Shanklin.
+        &lt;i&gt;ref. Treachery in Dallas, p 261&lt;/i&gt;
+        </event>
+    <event start="Thu Nov 14 1963 00:00:00 GMT-0600"
+        title="SS Agents Lawson and Sorrels test-drive route"
+        >
+        SS Agents Lawson and Sorrels drive route from Lovefield to 
+        Trademart which went down Main street to Stemmons freeway.
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 15 1963 00:00:00 GMT-0600"
+        title="Motorcade route reviewed, unchanged"
+        >
+        Motorcade route reviewed but was unchanged. 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 16 1963 00:00:00 GMT-0600"
+        title="Dallas Times Herald reports route"
+        >
+        Dallas Times Herald reported that the Presidential motorcade "apparently 
+        will loop through downtown area, probably on Main street on its way 
+        to Trade Mart". 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 17 1963 00:00:00 GMT-0600"
+        title="FBI calls to determine potential threat"
+        >
+        An FBI teletype is received, directed to all field offices to contact 
+        CIs (confidential informants) to determine whether a revolutionary group 
+        was a potential threat to the president during his Dallas trip November 
+        22 - 23. 
+        &lt;i&gt;ref. Treachery in Dallas, p 77&lt;/i&gt;
+        </event>
+    <event start="Mon Nov 18 1963 00:00:00 GMT-0600"
+        title="Motorcade timing verified"
+        >
+        SS Agents Lawson and Sorrels with Dallas police assistant Chief Charles 
+        Batchelor drive motorcade route verifying that it could be driven in 
+        45 minutes and was unchanged. 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Tue Nov 19 1963 00:00:00 GMT-0600"
+        title="Newspaper published precise route"
+        >
+        Newspaper published precise route mentioning the turn into Elm into 
+        Houston then onto the freeway. 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Wed Nov 20 1963 00:00:00 GMT-0600"
+        title="Mock target practice witnessed"
+        >
+        Two Dallas police officers witness a "mock target practice" going on 
+        at the picket fence atop the knoll. They arrived in time to see the 
+        partipants depart in haste, and only write a report of the incedent 
+        subsequent to November 22. 
+        &lt;i&gt;ref. Treachery in Dallas, p 132&lt;/i&gt;
+        </event>
+    <event start="Wed Nov 20 1963 00:00:00 GMT-0600"
+        title="Motorcade route on front page"
+        >
+        Newspaper reports motorcade route on front page. 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Wed Nov 20 1963 00:00:00 GMT-0600"
+        title="Rose Cheramie warns of assassination"
+        >
+        Rose Cheramie is thrown from a car, taken to hospital, and while there 
+        tells doctors that JFK is going to be killed in Dallas.
+        &lt;i&gt;ref. Crossfire, p 401&lt;/i&gt;
+        </event>
+    <event start="Thu Nov 21 1963 00:00:00 GMT-0600"
+        title="Bundy signs 1st draft of NSAM 273"
+        >
+        McGeorge Bundy, then assistant to President Kennedy, signs the key first 
+        draft of NSAM 273, in contradiction to all previous Kennedy policy.
+        &lt;i&gt;ref. JFK, CIA Vietnam by Prouty, p xii&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 11:00:00 GMT-0600"
+        title="Man with rifle spotted on Elm St."
+        >
+        Julia Ann Mercer drives down Elm street, her way is blocked by a green 
+        Ford pickup truck. A young man removes a long paper bag, she can see 
+        the outline of a rifle in the bag, and he walks with it to the top of 
+        the grassy knoll. She also sees the driver of the truck, whom she later 
+        identifies as Jack Ruby (before he shot Oswald). 
+        &lt;i&gt;ref. Crossfire, p 18&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 11:10:00 GMT-0600"
+        title="Air Force One leaves Fort Worth"
+        >
+        Air Force One leaves Carswell AFB Fort Worth for 13 min flight to Lovefield Airport.
+        </event>
+    <event start="Fri Nov 22 1963 11:30:00 GMT-0600"
+        title="Motorcade leaves Lovefield Airport"
+        image="motorcade.png"
+        link="http://en.wikipedia.org/wiki/Image:JFKmotorcade.jpg"
+        >
+        Presidential Motorcade leaves Lovefield Airport. 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 11:45:00 GMT-0600"
+        title="Oswald alone in TSBD"
+        >
+        Oswald is left on sixth floor of the TSBD as fellow workmates leave to 
+        go to Lunch break. He yells, "Guys, How about an elevator?" And then 
+        adding "Send one of the elevators back up". 
+        &lt;i&gt;ref. Conspiracy - Who Killed Kennedy?, p 106&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 11:50:00 GMT-0600"
+        title="Oswald near telephone in TSBD"
+        >
+        TSBD foreman Bill Shelley said he saw Oswald near the telephone on 
+        the first floor. 
+        &lt;i&gt;ref. Conspiracy - Who Killed Kennedy?, p 107&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:00:00 GMT-0600"
+        title="Jack Ruby seen with Wanda Walker"
+        >
+        Jack Ruby is seen sitting in an office at the Dallas Morning News by 
+        newspaper employee Wanda Walker. 
+        &lt;i&gt;ref. Crossfire, p 327&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:00:00 GMT-0600"
+        title="Eddie Piper speaks to Oswald"
+        >
+        TSBD employee Eddie Piper said he actually spoke to Oswald, 
+        "Just at twelve o'clock, down on the first floor". 
+        </event>
+    <event start="Fri Nov 22 1963 12:10:00 GMT-0600"
+        title="Cars seen cruising motorcade area"
+        >
+        Lee Bowers, a railway supervisor located in a tower behind the knoll 
+        fence, sees a 1959 Oldsmobile cruise the area. And at 12:20pm, a 
+        Black 1957 Ford also did the same and left. Then a third car, a 61 
+        or 62 Chevrolet Impala entered the area, parked out of his sight near 
+        the decorative masonry wall, then reappeared immediately after the 
+        last shot. 
+        &lt;i&gt;ref. Crossfire, pp 75-76&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:15:00 GMT-0600"
+        title="Oswald seen having lunch"
+        >
+        Carolyn Arnold sees Oswald eating lunch on the second floor lunchroom. 
+        "Oswald was sitting in one of the booth seats on the right hand side 
+        of the room as you go in. He was alone as usual and appeared to be 
+        having lunch. I did not speak to him but I recognized him clearly."
+        &lt;i&gt;ref. Crossfire, p 49; Conspiracy - Who Killed Kennedy?, p 108&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:15:00 GMT-0600" end="Fri Nov 22 1963 12:20:00 GMT-0600"
+        title="TSBD sixth floor empty"
+        >
+        TSBD employee Bonnie Ray Williams leaves the sixth floor after eating 
+        his lunch, he saw nobody. 
+        &lt;i&gt;ref. Crossfire, p 49; Conspiracy - Who Killed Kennedy?, p 106&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:15:00 GMT-0600"
+        title="Man with rifle seen in TSBD"
+        >
+        Witness Arnold Rowland observes man with rifle at the Western end 
+        of TSBD. &lt;i&gt;ref. Treachery in Dallas, p 300&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:18:00 GMT-0600"
+        title="Man with seizure in front of TSBD"
+        >
+        A young man suffers some sort of seizure in front of the book depository.
+        &lt;i&gt;ref. Crossfire, p 42&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:19:00 GMT-0600"
+        title="Police radio for ambulance"
+        >
+        Police radio "code 3" (haste) for ambulance for Dealey Plaza. The 
+        ambulance arrived and picked up a suspected epilectic, departing at 
+        12:25 pm. The man was taken to Parkland Hospital where his admittance 
+        was never recorded. 
+        &lt;i&gt;ref. Treachery in Dallas, p 137&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:20:00 GMT-0600"
+        title="Williams left 6th floor"
+        >
+        Bonnie Ray Williams, left the 6th floor after finishing his lunch 
+        and using the elevator joined co workers on the 5th floor to watch 
+        the motorcade. 
+        &lt;i&gt;ref. Crossfire, p 47.&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:30:00 GMT-0600"
+        title="Kennedy shot"
+        icon="../../api/images/dark-red-circle.png"
+        color="red"
+        >
+        President Kennedy shot in Dallas.
+        </event>
+    <event start="Fri Nov 22 1963 12:00:00 GMT-0600"
+        title="David Ferrie takes mysterious drive"
+        >
+        David Ferrie takes a mysterious 364 mile drive in the afternoon.
+        &lt;i&gt;ref. Treachery in Dallas, p 131&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:30:40 GMT-0600"
+        title="Officers ordered to north of Elm St."
+        >
+        Police Radio. Bill Decker orders officers to the "Railroad track 
+        area just North of Elm St."
+        &lt;i&gt;ref. Treachery in Dallas, p 136&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:32:00 GMT-0600"
+        title="Washington D.C.'s phone system breakdown"
+        >
+        Breakdown of Washington D.C.'s telephone system for almost 1 hour
+        (though Hoover's line remains fuctional?). 
+        &lt;i&gt;ref. Conspiracy of Silence, p 71&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:33:00 GMT-0600"
+        title="Oswald leaves TSBD and boards bus"
+        >
+        Lee Harvey Oswald leaves Depository and boards bus. 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:37:00 GMT-0600"
+        title="Witness pinpoints window"
+        >
+        Sergent Harkness reports he has a witness who had pinpointed the window
+        (Howard Brennan).
+        </event>
+    <event start="Fri Nov 22 1963 12:38:00 GMT-0600"
+        title="JFK arrives at Parkland Hospital"
+        >
+        JFK arrives at Parkland Hospital. 
+        &lt;i&gt;ref. Best Evidence, p 710&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:40:00 GMT-0600"
+        title="White male seen running from TSBD"
+        >
+        Police officer Roger Craig sees a white male running down the hill from 
+        the direction of the book depository, climbing into a waiting Rambler 
+        station wagon, and driving off. 
+        &lt;i&gt;ref. Crossfire, p 329&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:40:00 GMT-0600" end="Fri Nov 22 1963 12:45:00 GMT-0600"
+        title="Oswald gets off bus and boards taxi"
+        >
+        Oswald gets off bus and boards second taxi after allowing a woman 
+        to take the first taxi, tells driver William Whaley, "500 North Beckley 
+        Street". 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:45:00 GMT-0600"
+        title="Suspect's description on police radio"
+        >
+        Description put out about suspect on Dallas police radio. "The wanted 
+        person in this is a slender white male about thirty, five feet ten, 
+        one sixty five, carrying what looked to be a 30.30 or some type of 
+        Winchester".
+        &lt;br/&gt;
+        Officer Tippit told by H/Q dispatcher to "go to central Oakcliff area".
+        &lt;i&gt;ref. Rush to Judgement, p 194&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:48:00 GMT-0600"
+        title="Police radio assassin's location"
+        >
+        Police radio in reference to the location of the assassin. "He is 
+        thought to be in the Texas School Book Depository here on the North 
+        West corner of Elm and Houston." 
+        &lt;i&gt;ref. Treachery in Dallas, p 35&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:49:00 GMT-0600"
+        title="TSBD ordered cut off"
+        >
+        Captain Talbert gives orders on Police radio, "Have that cut off on 
+        the back side will you? Make sure nobody leave there"
+        (refering to the Depository). 
+        &lt;i&gt;ref. Treachery in Dallas, p 143&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:51:00 GMT-0600"
+        title="Homicide Chief calls"
+        >
+        Homicide Chief William Fritz calls in to the dispatchers office 
+        from his post at the Trade Mart to ask if JFK will still be going 
+        to the site. He is told, "It's very doubtful."
+        &lt;i&gt;ref. Treachery in Dallas, p 150&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 12:54:00 GMT-0600"
+        title="Office Tippit calls HQ"
+        >
+        Officer Tippit calls into HQ, and is asked if he is in Oakcliff 
+        area. He replies, "Yes". 
+        &lt;i&gt;ref. Rush to Judgement, p 194&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:00:00 GMT-0600"
+        title="JFK pronounced dead"
+        >
+        JFK pronounced dead. 
+        &lt;i&gt;ref. Best Evidence, p 710&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:00:00 GMT-0600"
+        title="Police car outside Oswald's home"
+        >
+        Police car no. 207 stops outside Oswald's rooming house, and sounds horn twice. 
+        </event>
+    <event start="Fri Nov 22 1963 13:00:00 GMT-0600"
+        title="Bullet 399 discovered"
+        >
+        Parkland hospital. Darrell Tomlinson discovers the stretcher bullet 
+        399 which rolls out from under a mat when stretcher bumps the wall.
+        &lt;i&gt;ref. Best Evidence, p 90&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:00:00 GMT-0600"
+        title="Oswald seen entering Texas Theater"
+        >
+        Oswald enters the Texas Theater according to theater assistant 
+        manager shortly after 1:00 pm. 
+        &lt;i&gt;ref. Crossfire, p 353&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:04:00 GMT-0600"
+        title="Oswald seen at bus stop"
+        >
+        Oswald seen standing at bus stop outside his rooming house by 
+        his landlady. 
+        &lt;i&gt;ref. Rush to Judgement, p 159&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:05:00 GMT-0600"
+        title="Fake secret service agent pulled over"
+        >
+        In the South of Dallas, three men are pulled over, one identifies 
+        himself as a Secret Service agent and states, "We are in a hurry 
+        to get to New Orleans to investigate part of the shooting." 
+        However, there is no record of Secret Service being dispatched to 
+        New Orleans on the day of the assassination.
+        </event>
+    <event start="Fri Nov 22 1963 13:08:00 GMT-0600"
+        title="Officer Tippit calls HQ twice"
+        >
+        Officer Tippit makes two attempts to call HQ, but dispatcher does 
+        not reply. 
+        &lt;i&gt;ref. Rush to Judgement, p 195&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:10:00 GMT-0600"
+        title="Tippit's body discovered"
+        >
+        T. F. Bewley comes upon J.D. Tippit's body in the street. As he gets 
+        out to help he looks at his watch, which reads 1:10pm
+        &lt;i&gt;ref. Conspiracy - Who Killed Kennedy?, p 122&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:12:00 GMT-0600"
+        title="Hulls found on 6th floor of TSBD"
+        >
+        Policeman Luke Mooney finds hulls on sixth floor of Depository.
+        &lt;i&gt;ref. Treachery in Dallas, p 143&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:15:00 GMT-0600"
+        title="Oswald inside Texas theatre"
+        >
+        Oswald buys popcorn at concession stand inside Texas theatre, 
+        according to concession stand operator Boroughs.
+        &lt;i&gt;ref. Crossfire, p 353&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:16:00 GMT-0600"
+        title="Police says Tippit shot"
+        >
+        Police told "Officer Tippit has been shot" by civilian Domingo 
+        Benavides using Tippit's police car radio. 
+        &lt;i&gt;ref. Crossfire, p 348&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:20:00 GMT-0600"
+        title="TV reports shots heard from Knoll"
+        >
+        Jean Hill in live television report states she heard shots from 
+        the Knoll. 
+        &lt;i&gt;ref. Treachery in Dallas, p 153&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:22:00 GMT-0600"
+        title="Rifle found on 6th floor of TSBD"
+        >
+        Rifle found on sixth floor of Book Depository, first identified 
+        as 7.5 German Mauser.
+        </event>
+    <event start="Fri Nov 22 1963 13:22:00 GMT-0600"
+        title="Police radio describing Tippit's killer"
+        >
+        Police radio call goes out describing Tippit's killer as about 
+        30, 5ft 8in black hair and slender. 
+        &lt;i&gt;ref. Unanswered Questions, p 105&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:25:00 GMT-0600"
+        title="Police find white jacket"
+        >
+        Police radio reports finding of a white jacket in parking lot.
+        &lt;i&gt;ref. Rush to Judgement, p 191&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:30:00 GMT-0600"
+        title="Jack Ruby at Parkland hospital"
+        >
+        Seth Kantor encounters Jack Ruby at Parkland hospital and has brief 
+        conversation with him
+        &lt;i&gt;. ref. Crossfire, p 366&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:35:00 GMT-0600"
+        title="TSBD declared secure"
+        >
+        Police Radio. The TSBD is mentioned, "It's secure now."
+        &lt;i&gt;ref. Treachery in Dallas, p 143&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:36:00 GMT-0600"
+        title="Police radio from Tippit's murder scene"
+        >
+        Police radio from scene of Tippit's murder, "I got an eyeball witness 
+        to the getaway man - that suspect in this shooting. He is a white male ... 
+        apparently armed with a .32, dark finish automatic pistol..."
+        &lt;i&gt;ref. Conspiracy - Who Killed Kennedy?, p 119&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:45:00 GMT-0600"
+        title="Police radio of suspect entering Texas theatre"
+        >
+        Police radio, "Have information, a suspect just went into Texas theatre 
+        on West Jefferson". 
+        &lt;i&gt;ref. Unanswered Questions, p 112&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 13:55:00 GMT-0600"
+        title="Oswald arrested at Texas theatre"
+        >
+        Police arrest Oswald at Texas theater as suspect in shooting Tippit.
+        &lt;i&gt;ref. Best Evidence, p 710&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 14:00:00 GMT-0600"
+        title="Bullet 399 handed to SS Agent Johnson"
+        >
+        Bullet 399 handed to SS Agent Richard Johnson at Parkland Hospital 
+        by Chief of Parkland Hospital security O. P. Wright.
+        &lt;i&gt;ref. Best Evidence, pp 591, 652&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 14:04:00 GMT-0600"
+        title="Kennedy's body leaves hospital"
+        >
+        Kennedy's body leaves Parkland Hospital.
+        </event>
+    <event start="Fri Nov 22 1963 14:14:00 GMT-0600"
+        title="Kennedy's body arrives at airport"
+        >
+        Kennedy's body arrives at Lovefield Airport.
+        </event>
+    <event start="Fri Nov 22 1963 14:15:00 GMT-0600"
+        title="Oswald taken into police dept."
+        >
+        Oswald taken into Dallas Police Dept. 
+        &lt;i&gt;ref. W.C.&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 14:18:00 GMT-0600"
+        title="Casket aboard Air Force One"
+        >
+        Casket placed aboard Air Force One.
+        </event>
+    <event start="Fri Nov 22 1963 14:30:00 GMT-0600"
+        title="Casket aboard Air Force One"
+        >
+        J. Edgar Hoover calls Robert Kennedy to inform him that the killer 
+        was an ex-marine who defected to the Soviet Union and was also known 
+        to be a pro-communist nut. 
+        &lt;i&gt;ref. Treachery in Dallas, p 259&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 14:38:00 GMT-0600"
+        title="Johnson sworn in aboard Air Force One"
+        >
+        Lyndon Johnson sworn in aboard Air Force One, then orders take off.
+        </event>
+    <event start="Fri Nov 22 1963 14:25:00 GMT-0600" end="Fri Nov 22 1963 16:04:00 GMT-0600"
+        isDuration="true"
+        title="Oswald interrogation"
+        >
+        Oswald interrogation in Office of Captain Will Fritz.
+        </event>
+    <event start="Fri Nov 22 1963 14:47:00 GMT-0600"
+        title="Air Force One airborne"
+        >
+        Air Force One airborne.
+        </event>
+    <event start="Fri Nov 22 1963 15:30:00 GMT-0600"
+        title="Police arrives at Paines residence"
+        >
+        Police officers arrive at the residence of Michael and Ruth Paine, 
+        Ruth indicates that she has been expecting them.
+        </event>
+    <event start="Fri Nov 22 1963 15:54:00 GMT-0600"
+        title="Oswald named prime suspect on NBC"
+        >
+        NBC Newsman Bill Ryan announces on national television that "Lee 
+        Oswald seems to be prime suspect in the assassination of John 
+        F. Kennedy."
+        </event>
+    <event start="Fri Nov 22 1963 15:54:00 GMT-0600"
+        title="White House claims no conspiracy"
+        >
+        Situation room of the White House communications center informs 
+        Lyndon Johnson that the assassination is the act of one lone 
+        individual and that no conspiracy exists.
+        </event>
+    <event start="Fri Nov 22 1963 16:05:00 GMT-0600"
+        title="Oswald at lineup"
+        >
+        Oswald taken to first Lineup for Helen Markham, witness to Tippit 
+        murder. (While waiting outside the lineup room, Oswald is searched, 
+        and five bullet cartridges are found in his pockets.)
+        </event>
+    <event start="Fri Nov 22 1963 16:45:00 GMT-0600" end="Fri Nov 22 1963 18:30:00 GMT-0600"
+        isDuration="true"
+        title="Oswald interrogated 2nd time"
+        >
+        Second interrogation of Oswald in Captain Fritz's Office.
+        </event>
+
+    <event start="Fri Nov 22 1963 17:00:00 GMT-0600"
+        title="Air Force One arrives at Washington DC"
+        >
+        Air Force One arrives at Andrews Air Force base Washington D.C., 
+        total flight time 2hrs 15min. 
+        &lt;i&gt;ref. Best Evidence, p 680&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 17:30:00 GMT-0600"
+        title="Deputy sheriff identifies Oswald"
+        >
+        Deputy sheriff Roger Craig identifies Oswald as the man he saw 
+        running toward the Rambler station wagon. When asked about the 
+        station wagon Oswald replies, "That station wagon belongs to 
+        Mrs. Pain, don't try to tie her into this. She had nothing to do 
+        with it." 
+        &lt;i&gt;ref. Rush to Judgement, p 159&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 17:30:00 GMT-0600" end="Fri Nov 22 1963 18:30:00 GMT-0600"
+        title="Bullet 399 handed to SS Chief Rowley"
+        >
+        SS Agent Richard Johnson hands bullet 399 to SS Chief Rowley at 
+        Executive building in Washington D.C. 
+        &lt;i&gt;ref. Best Evidence, p 646&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 18:20:00 GMT-0600"
+        title="Oswald taken to second lineup"
+        >
+        Oswald taken to second lineup, and yells to reporter's in hallway, 
+        "I didn't shoot anyone."
+        </event>
+    <event start="Fri Nov 22 1963 18:30:00 GMT-0600"
+        title="Lineup for witnesses"
+        >
+        Lineup for Witnesses Cecil J. McWatters, Sam Guinyard, and Ted Callaway. 
+        </event>
+    <event start="Fri Nov 22 1963 19:05:00 GMT-0600"
+        title="Oswald charged with Tippit's murder"
+        >
+        Oswald charged with Tippit's murder. 
+        &lt;i&gt;ref. Treachery in Dallas, p 5&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 19:15:00 GMT-0600"
+        title="Kennedy's autopsy"
+        >
+        First incision at Kennedy autopsy.
+        </event>
+    <event start="Fri Nov 22 1963 19:50:00 GMT-0600"
+        title="Bullet 399 sent to FBI Lab"
+        >
+        SS Chief Rowley sends bullet 399 to FBI laboratory. 
+        &lt;i&gt;ref. Best Evidence, p 646&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 19:50:00 GMT-0600"
+        title="Oswald taken to 3rd lineup"
+        >
+        Oswald taken to third lineup for witness J. D. Davies.
+        </event>
+    <event start="Fri Nov 22 1963 19:55:00 GMT-0600"
+        title="Oswald yells at reporters"
+        >
+        Oswald yells at reporters in hallway "I'm just a patsy". 
+        &lt;i&gt;ref. (Entry in Seth Kantor's notebook) Treachery in Dallas, p 293&lt;/i&gt;
+        </event>
+    <event start="Fri Nov 22 1963 19:56:00 GMT-0600"
+        title="3rd interrogation of Oswald"
+        >
+        Third interrogation of Oswald in Captain Fritz's Office.
+        </event>
+    <event start="Fri Nov 22 1963 20:55:00 GMT-0600"
+        title="Oswald's fingerprints, ID tests"
+        >
+        Oswald's fingerprints, identification, Paraffin tests - all in Fritz's Office.
+        </event>
+    <event start="Fri Nov 22 1963 23:00:00 GMT-0600" end="Fri Nov 22 1963 23:20:00 GMT-0600"
+        isDuration="true"
+        title="Oswald 'talked to' by FBI"
+        >
+        Oswald "Talked to" by FBI Agent M. Clements and Police Officer John Adamcik.
+        </event>
+    <event start="Fri Nov 22 1963 23:20:00 GMT-0600" end="Fri Nov 22 1963 23:25:00 GMT-0600"
+        title="Oswald taken to press conference"
+        >
+        Oswald is taken to press conference. Oswald is asked if he is a member 
+        of the Free Cuba Committee, but before he answers, Jack Ruby standing 
+        up the back, corrects the reporter and says, "That's the Fair Play for 
+        Cuba Committee". Oswald is asked by a reporter, "Did you kill President 
+        Kennedy?" Oswald replies, "No, I have not been charged with that. In 
+        fact nobody has said that to me yet. The first thing I heard about that 
+        is when the newspaper reporters asked me that question." Oswald is told 
+        by a reporter, "That you have been charged" (with the murder of Kennedy.) 
+        Oswald looks baffled as he is lead away.
+        </event>
+    <event start="Fri Nov 22 1963 23:26:00 GMT-0600"
+        title="Oswald charged with JFK's murder"
+        >
+        Oswald charged with President Kennedy's murder. (Oswald is not told of this charge).
+        </event>
+
+    <event start="Sat Nov 23 1963 00:30:00 GMT-0600" end="Sat Nov 23 1963 01:00:00 GMT-0600"
+        title="FBI tells Thomlinson stay quiet"
+        >
+        Darrell Thomlinson is awakened by a phone call from the FBI, and is 
+        told to keep his mouth shut about the bullet he found on the stretcher 
+        at Parkland Hospital. 
+        &lt;i&gt;ref. Best Evidence, p 591&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 00:35:00 GMT-0600"
+        title="3rd set of evidence taken"
+        >
+        Oswald complains, "That this is the third set of fingerprints, 
+        photographs being taken." 
+        &lt;i&gt;ref. The Peoples Almanac, p 49&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 01:35:00 GMT-0600"
+        title="Oswald told of JFK's murder charge"
+        >
+        Oswald officialy told that he has been charged with JFK's murder.
+        &lt;i&gt;ref. The Peoples Almanac, p 49&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 02:15:00 GMT-0600"
+        title="McCoy told Oswald to be killed"
+        >
+        Sheriff officer Perry McCoy receives a phone call from a "white 
+        male" who says that Oswald is going to be killed during his 
+        transfer.
+        </event>
+    <event start="Sat Nov 23 1963 02:20:00 GMT-0600"
+        title="Grammer receives phone call"
+        >
+        Police lieutenant Billy Grammer also receives a phone call. The 
+        caller asks specifically to speak to Grammer and says, "You know me". 
+        He describes in detail the plan to move Oswald and tells him that other 
+        arrangements should be made or, "We are going to kill Oswald right 
+        there in the basement".
+        </event>
+    <event start="Sat Nov 23 1963 03:00:00 GMT-0600"
+        title="All evidence to Washington DC"
+        >
+        FBI Special Agent Vince Drain transports the gun and all other evidence 
+        to Washington D.C. 
+        &lt;i&gt;ref. Treachery in Dallas, p 28&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 10:30:00 GMT-0600" end="Sat Nov 23 1963 13:10:00 GMT-0600"
+        isDuration="true"
+        title="Interrogation of Oswald"
+        >
+        Interrogation of Oswald, Captain Fritz's office. 
+        &lt;i&gt;ref. The Peoples Almanac, p 49&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 13:10:00 GMT-0600" end="Sat Nov 23 1963 13:30:00 GMT-0600"
+        isDuration="true"
+        title="Oswald visited by mother, wife"
+        >
+        Oswald visited by Mother, Margurite, and Wife Marina. 
+        &lt;i&gt;ref. The Peoples Almanac, p 50&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 14:15:00 GMT-0600"
+        title="Lineup"
+        >
+        Lineup for Witness William Scoggins and William Whaley. 
+        &lt;i&gt;ref. The Peoples Almanac, p 50&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 15:30:00 GMT-0600" end="Sat Nov 23 1963 15:40:00 GMT-0600"
+        isDuration="true"
+        title="Robert Oswald visits Lee Oswald"
+        >
+        Robert Oswald visits Lee for 10 Minutes. Lee tells Robert, 
+        "Don't believe all the so-called evidence."
+        </event>
+    <event start="Sat Nov 23 1963 15:40:00 GMT-0600"
+        title="Oswald calls Ruth Paine"
+        >
+        Lee Oswald calls Ruth Paine and asks her. "Would you please call 
+        John Abt (Lawyer) in New York for me after 6:00 pm."
+        </event>
+    <event start="Sat Nov 23 1963 16:21:00 GMT-0600"
+        title="Kennedy's body returns to White House"
+        >
+        Kennedy's body returns to the White House. 
+        &lt;i&gt;ref. Treachery in Dallas, p 5&lt;/i&gt;
+        </event>
+    <event start="Sat Nov 23 1963 17:30:00 GMT-0600" end="Sat Nov 23 1963 17:35:00 GMT-0600"
+        isDuration="true"
+        title="Nichols visits Oswald"
+        >
+        Oswald has visit with H. Louis Nichols, President of the Dallas Bar Association.
+        </event>
+    <event start="Sat Nov 23 1963 18:00:00 GMT-0600" end="Sat Nov 23 1963 18:30:00 GMT-0600"
+        title="Oswald shown photo of him with gun"
+        >
+        Interrogation in Captain Fritz's Office, Oswald is shown the backyard photo 
+        of him with gun. "That picture is not my mine. The picture has been made 
+        by superimposing my face. The other part of the picture is not me at all, 
+        I have never seen this picture before. I understand photography real well, 
+        and that in time, I will be able to show you that this is not my picture 
+        and that it was made by someone else."
+        </event>
+
+    <event start="Sun Nov 24 1963 09:30:00 GMT-0600"
+        title="Interrogation"
+        >
+        Interrogation in Captain Fritz's Office. 
+        &lt;i&gt;ref. The Peoples Almanac, p 51&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 24 1963 11:00:00 GMT-0600"
+        title="Nurse Lozana warned of emergency"
+        >
+        Registered Nurse Bertha Lozana recalls, "At 11:00 a.m. I was informed 
+        by Jill Pomeroy, the ward clerk, that we might prepare for an emergency 
+        because there was a large crowd at city hall". 
+        &lt;i&gt;ref. Treachery in Dallas, p 169&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 24 1963 11:10:00 GMT-0600"
+        title="Preparation of Oswald's transfer"
+        >
+        Preparation for Oswald's transfer to County Jail.
+        &lt;i&gt;ref. The Peoples Almanac, p 52&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 24 1963 11:15:00 GMT-0600"
+        title="Final conversation with Oswald"
+        >
+        Inspector Thomas J. Kelly Secret Service, has final conversation with Oswald.
+        &lt;i&gt;ref. The Peoples Almanac, p 52&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 24 1963 11:17:00 GMT-0600"
+        title="Jack Ruby wires money order"
+        >
+        Jack Ruby wires money order at Western Union Office (some 350 feet 
+        from Dallas police department, Main St. ramp.) 
+        &lt;i&gt;ref. Treachery in Dallas, p 328&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 24 1963 11:21:00 GMT-0600"
+        title="Jack Ruby shoots Oswald"
+        >
+        Jack Ruby shoots Oswald in basement carpark of Dallas police dept.
+        &lt;i&gt;ref. Treachery in Dallas, p 203&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 24 1963 13:00:00 GMT-0600"
+        title="Jack Ruby told Oswald dead"
+        >
+        On being told that Oswald is dead, Jack Ruby calms down in his cell 
+        at Dallas Police Station. 
+        &lt;i&gt;ref. Framed, p 41&lt;/i&gt;
+        </event>
+    <event start="Sun Nov 24 1963 13:00:00 GMT-0600"
+        title="Johnson signs NSAM 273"
+        >
+        President Johnson signs NSAM 273, signalling a reversal to JFK's
+        policy of withdrawing troops from Vietnam.
+        &lt;i&gt;ref. JFK, CIA and Vietnam by Prouty, p 422&lt;/i&gt;
+        </event>
+        
+    <event start="Nov 25 1963 00:00:00 GMT-0600"
+        title="FBI agent at funeral home"
+        >
+        FBI Agent Richard Harrison arrives at Miller's Funeral Home with 
+        rifle (type unknown) and finger print ink. Funeral Director would 
+        tell researchers that he could not understand the event and that 
+        he had a very difficult time getting the black ink off Oswald's 
+        corpse. 
+        &lt;i&gt;ref. Treachery in Dallas, p 332&lt;/i&gt;
+        </event>
+    <event start="Nov 29 1963 00:00:00 GMT-0600"
+        title="Warren Commission established"
+        >
+        Warren Commission established.
+        </event>
+    <event start="Feb 03 1964 00:00:00 GMT-0600"
+        title="Warren Commission hears first witness"
+        >
+        Warren Commission hears first witness.
+        </event>
+    <event start="May 08 1964 00:00:00 GMT-0600"
+        title="Johnson appoints Hover as FBI Director"
+        >
+        J. Edgar Hover is appointed as FBI Director for life by Lyndon Johnson
+        </event>
+    <event start="May 14 1964 00:00:00 GMT-0600"
+        title="Hover before Warren Commission"
+        >
+        J. Edgar Hover appears before the Warren Commission and commits at 
+        least three acts of perjury.
+        </event>
+    <event start="Mar 01 1967 00:00:00 GMT-0600"
+        title="Jack Ruby dies in prison"
+        >
+        Jack Ruby dies in prison. 
+        &lt;i&gt;ref. Treachery in Dallas, p 330&lt;/i&gt;
+        </event>
+    <event start="Dec 01 1976 00:00:00 GMT-0600" end="Jan 01 1977 00:00:00 GMT-0600"
+        title="Jack Ruby diagnosed with cancer"
+        >
+        Jack Ruby diagnosed with cancer.
+        &lt;i&gt;ref. Treachery in Dallas, p 330&lt;/i&gt;
+        </event>
+    <event start="Jan 01 1978 00:00:00 GMT-0600" end="Jan 01 1979 00:00:00 GMT-0600"
+        title="Phillips confides about conspiracy"
+        >
+        David Atlee Phillips confiding in a House Select Committee staffer 
+        Kevin Walgh shortly before his death. "My private opinion is that 
+        JFK was done in by a conspiracy, likely including rogue American 
+        Intelligence people".
+        </event>
+</data>

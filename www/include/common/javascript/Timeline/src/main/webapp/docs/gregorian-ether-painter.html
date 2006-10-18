@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | GregorianEtherPainter class</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+</head>
+<body>
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>GregorianEtherPainter class</span></li>
+</ul>
+
+<div id="body">
+    <h1>Timeline.GregorianEtherPainter class</h1>
+    
+    <p>A Gregorian <a href="ether-painters.html"><em>ether painter</em></a>
+        paints regular markings at some Gregorian calendar interval, i.e., any of
+        the followings:
+        millisecond, second, minute, hour, day, month, year, decade,
+        century, and millennium.
+    </p>
+    
+    <h2>Initialization</h2>
+    <p>The constructor of <span class="code">Timeline.GregorianEtherPainter</span> 
+        takes an object whose fields (listed below) specify initialization
+        settings for the ether.
+    </p>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">theme</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, a <a href="themes.html">theme</a> object that
+            stores default visual settings. In fact, some visual settings
+            can only be set in this theme object.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">unit</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, one of the Gregorian calendar unit defined in
+            <span class="code">Timeline.<a href="date-time.html">DateTime</a></span>,
+            e.g., <span class="code">Timeline.<a href="date-time.html">DateTime</a>.WEEK</span>.
+            This argument specifies the interval at which ticks and labels
+            are painted on the band's background.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">align</span>
+        </div>
+        <div class="itf-member-description">
+            <em>optional</em>, one of 
+            <span class="code">"Left"</span>,
+            <span class="code">"Right"</span>,
+            <span class="code">"Top"</span>, and
+            <span class="code">"Bottom"</span>, specifying which edge of the band
+            markings are drawn. By default, markings are drawn on the bottom edges
+            of bands in horizontal timelines, and on the right edges of bands in
+            vertical timelines. This setting overrides either the
+            <span class="code">hAlign</span> or the
+            <span class="code">vAlign</span> field of
+            <span class="itf-member-name">theme</span><span class="code">.ether.interval.marker</span>.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">showLine</span>
+        </div>
+        <div class="itf-member-description">
+            <em>optional</em>, a boolean specifying whether full lines (from edge
+            to edge)should be drawn at regular intervals. This setting overrides
+            <span class="itf-member-name">theme</span><span class="code">.ether.interval.line.show</span>.
+        </div>
+    </div>
+    
+    <h2>Related Topics</h2>
+    <ul>
+        <li><a href="ether-painters.html">Ether painters</a>, basics and interface</li>
+        <li>Timeline.<a href="linear-ether.html">LinearEther</a>, the ether class that this ether painter class is usually used for</li>
+    </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | How to Create Timelines</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+    <style>
+        .timeline-default {
+            margin: 2em;
+        }
+    </style>
+    <script src="../api/timeline-api.js" type="text/javascript"></script>
+    <script src="create-timelines.js" type="text/javascript"></script>
+</head>
+<body onload="onLoad();" onresize="onResize();">
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>How to Create Timelines</span></li>
+</ul>
+
+<div id="body">
+    <h1>How to Create Timelines</h1>
+    
+    <p>Table of Contents:
+    <ul>
+        <li><a href="#getting-started">Getting Started</a></li>
+        <li><a href="#differentiating-the-two-bands">Differentiating the Two Bands</a></li>
+        <li><a href="#understanding-initialization-settings">Understanding Initialization Settings</a></li>
+        <li><a href="#hot-zones">Hot Zones</a></li>
+    </ul>
+    </p>
+    
+    <!--================================================================================
+        Getting Started
+    -->
+    <h2><a name="getting-started">Getting Started</a></h2>
+    
+    <p>Here are a few easy steps to create a simple timeline. Open up your favorite text
+        or HTML editor and start creating an HTML file.
+    </p>
+    
+    <h3>Step 1. Link to the API</h3>
+    <p>In your HTML code, link to Timeline's Javascript API code as follows:
+<pre>&lt;html&gt;
+  &lt;head&gt;
+    ...
+    <span class="highlight">&lt;script src="<a href="http://simile.mit.edu/timeline/api/timeline-api.js">http://simile.mit.edu/timeline/api/timeline-api.js</a>" type="text/javascript"&gt;&lt;/script&gt;</span>
+    ...
+  &lt;/head&gt;
+  &lt;body&gt;
+    ...
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+    </p>
+    
+    <h3>Step 2. Create a DIV Element</h3>
+    <p>Create a <span class="html">div</span> element in your HTML code, e.g.
+<pre>&lt;div id="my-timeline" style="height: 150px; border: 1px solid #aaa"&gt;&lt;/div&gt;</pre>
+        You should give it an ID as well as fix its height. You can
+        optionally set its borders&mdash;this usually makes the timeline
+        look better.
+    </p>
+
+    <h3>Step 3. Call <span class="code">Timeline.create()</span></h3>
+    <p>Add two event handlers, <span class="code">onload</span> and
+        <span class="code">onresize</span>, to the 
+        <span class="html">body</span> element:
+<pre>  &lt;body onload="onLoad();" onresize="onResize();"&gt;
+    ...
+  &lt;/body&gt;</pre>
+        Then write the following code in a 
+        <span class="html">script</span> block or a separate Javascript file:
+<pre>var tl;
+function onLoad() {
+  var bandInfos = [
+    Timeline.createBandInfo({
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.createBandInfo({
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+  var tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+}
+
+var resizeTimerID = null;
+function onResize() {
+    if (resizeTimerID == null) {
+        resizeTimerID = window.setTimeout(function() {
+            resizeTimerID = null;
+            tl.layout();
+        }, 500);
+    }
+}
+</pre>
+        Note that if we put the code to construct the timeline in
+        the <span class="code">onload</span> handler to make sure that when
+        we start to use Timeline's API, all its code has been loaded.
+        That code creates a horizontal timeline (below) with 2 bands: 
+        in the top band, a month spans 100 pixels (approximately, since
+        a month here refers to 30 days while not every month is
+        exactly 30 days long); and in the bottom band, a year spans
+        200 pixels. The top band takes up 70% of the timeline's height,
+        and the bottom band 30%. <em>Note that the two bands scroll
+        independently.</em>
+    </p>
+    
+    <p><div id="tl0" class="timeline-default" style="height: 150px;"></div></p>
+    
+    <p>To make the two bands scroll in synchrony, and then to make the
+        bottom band highlights the visible time span of the top band,
+        add the following code (highlighted):
+<pre>function onLoad() {
+  var bandInfos = [
+    Timeline.createBandInfo({
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.createBandInfo({
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+<span class="highlight">  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;</span>
+  
+  var tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+}</pre>
+        If you try to pan one band, the other is scrolled as well.
+    </p>
+    
+    <p><div id="tl1" class="timeline-default" style="height: 150px;"></div></p>
+    
+    <h3>Step 4. Add Events</h3>
+    
+    <p>To add events to the timeline, create an <a href="../api/scripts/sources.js">event source</a>
+        and load it with data from an XML file:
+<pre>function onLoad() {
+<span class="highlight">  var eventSource = new Timeline.DefaultEventSource();</span>
+  var bandInfos = [
+    Timeline.createBandInfo({
+        <span class="highlight">eventSource:    eventSource,</span>
+        <span class="highlight">date:           "Jun 28 2006 00:00:00 GMT",</span>
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.createBandInfo({
+        <span class="highlight">eventSource:    eventSource,</span>
+        <span class="highlight">date:           "Jun 28 2006 00:00:00 GMT",</span>
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;
+  
+  var tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+<span class="highlight">  Timeline.loadXML("example1.xml", function(xml, url) { eventSource.loadXML(xml, url); });</span>
+}</pre>
+        The <span class="code">date</span> field is there to make sure the
+        timeline starts out showing the events immediately without requiring 
+        the user to pan first. Here is the resulting timeline with 3 events:
+    </p>
+    
+    <p><div id="tl2" class="timeline-default" style="height: 250px"></div></p>
+    
+    <p>Take a look at <a href="example1.xml">example1.xml</a>. There are
+        3 types of events: a duration, an instantaneous event with an
+        imprecise starting time, and an instantaneous event with a precise
+        starting time. Click on the events to see how their bubbles are
+        rendered based on the data in the XML file. For the exact format 
+        of such XML files, refer to the documentation on 
+        <a href="event-sources.html">event sources</a>.
+        <em>Note that loading XML files is only one way in which you can
+        add events to timelines.</em>
+    </p>
+    
+    <!--================================================================================
+        Differentiating the Two Bands
+    -->
+    <h2><a name="differentiating-the-two-bands">Differentiating the Two Bands</a></h2>
+    
+    <p>Looking at the previous timeline, it is obvious that the lower band looks
+        denser, and it will become a lot denser a lot quicker than the upper band
+        should we add more events. The lower band acts as a zoomed-out overview
+        for the upper band and it does not have to show as much detail as the upper
+        band. We can turn off the rendering of text as well as condense the event
+        markings vertically:
+<pre>function onLoad() {
+  var eventSource = new Timeline.DefaultEventSource();
+  var bandInfos = [
+    Timeline.createBandInfo({
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.createBandInfo({
+        <span class="highlight">showEventText:  false,</span>
+        <span class="highlight">trackHeight:    0.5,</span>
+        <span class="highlight">trackGap:       0.2,</span>
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;
+  
+  var tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+  Timeline.loadXML("example1.xml", function(xml, url) { eventSource.loadXML(xml, url); });
+}</pre>
+        The lower band of the timeline below does not show text and its
+        event markers are also smaller. But note that the third event
+        is vertically aligned with the first event in the lower band,
+        but it is on its own track in the upper band. We will address
+        this problem later.
+    </p>
+    
+    <p><div id="tl3" class="timeline-default" style="height: 250px"></div></p>
+    
+    <!--================================================================================
+        Understanding Initialization Settings
+    -->
+    <h2><a name="understanding-initialization-settings">Understanding Initialization Settings</a></h2>
+    
+    <p>By now you must have realized that <span class="code">Timeline.createBandInfo()</span>
+        fills in default settings, which can be overridden, for constructing
+        a band in a timeline. What <span class="code">Timeline.createBandInfo()</span>
+        does is something like this (in pseudo-code):
+<pre>Timeline.createBandInfo = function(params) {
+  return {
+    width:          params.width,
+    eventSource:    params.eventSource <em>(or null by default)</em>,
+    timeZone:       params.timeZone <em>(or 0 by default)</em>,
+    ether:          new Timeline.LinearEther({
+                      interval:          <em>the number of milliseconds in <span class="highlight">params.intervalUnit</span></em>,
+                      pixelsPerInterval: params.intervalPixels,
+                      centersOn:         params.date <em>(or the current date by default)</em>
+                    }),
+    etherPainter:   new Timeline.GregorianEtherPainter({
+                      unit:              <span class="highlight">params.intervalUnit</span>,
+                      theme:             params.theme <em>(or the default theme)</em>
+                    }),
+    eventPainter:   new Timeline.DurationEventPainter({
+                      showText:          params.showEventText <em>(or true by default)</em>,
+                      theme:             <em>the same theme above</em>,
+                      trackHeight:       params.trackHeight <em>(or the default track height in the theme)</em>,
+                      trackGap:          params.trackHeight <em>(or the default track gap in the theme)</em>,
+                      layout:            new Timeline.StaticTrackBasedLayout({
+                                           eventSource: <em>the same eventSource above</em>,
+                                           ether:       <em>the same ether above</em>,
+                                           showText:    <em>the same showText value above</em>,
+                                           theme:       <em>the same theme above</em>
+                                         })
+                    })
+  }
+};</pre>
+        In other words, <span class="code">Timeline.createBandInfo()</span>
+        takes an object whose fields store initialization settings and 
+        returns yet another object whose fields stores initialization
+        settings that <span class="code">Timeline.create()</span> can
+        understand. <span class="code">Timeline.createBandInfo()</span>
+        does the work of routing each initialization setting that you
+        give it to the appropriate place(s). For example,
+        <span class="code"><span class="highlight">params.intervalUnit</span></span>
+        is used referenced twice above, once to construct an 
+        <a href="ethers.html"><em>ether</em></a> and once to construct an
+        <a href="ether-painters.html"><em>ether painter</em></a>.
+        Whatever default setting that 
+        <span class="code">Timeline.createBandInfo()</span> doesn't provide
+        is provided by the <a href="ethers.html"><em>theme</em></a>.
+    </p>
+    
+    <p>The <a href="ethers.html"><em>ether</em></a> of a band dictates
+        how time is mapped onto the pixel space: how many pixels
+        a time span takes up. The <a href="ether-painters.html"><em>ether painter</em></a>
+        makes this mapping visible to the user by painting various
+        markings on the background of the band, e.g., "Jun", "Jul", "2005", 
+        "2006". The <a href="event-painters.html"><em>event painter</em></a>,
+        obviously, paints the events that are fed to it by the
+        <a href="ether-sources.html"><em>ether source</em></a>. 
+        The <span class="code">Timeline.DurationEventPainter</span> uses
+        a <a href="layouts.html"><em>layout</em></a> to determine how
+        to distribute the events among several <em>tracks</em> such that
+        events don't overlap one another.
+    </p>
+    
+    <p>The object returned by <span class="code">Timeline.createBandInfo()</span>
+        can be fixed before we feed it into <span class="code">Timeline.create()</span>.
+        We have already done that to sync the two bands. This time, we will
+        take the layout from the upper band and set it into the lower band
+        so that the event is positioned on the same track in both bands:
+<pre>function onLoad() {
+  var eventSource = new Timeline.DefaultEventSource();
+  var bandInfos = [
+    Timeline.createBandInfo({
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.createBandInfo({
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;
+  <span class="highlight">bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());</span>
+  
+  var tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+  Timeline.loadXML("example1.xml", function(xml, url) { eventSource.loadXML(xml, url); });
+}</pre>
+        Now note that the last event is on its own track in the lower band
+        (just like in the upper band) although it can stay on the same
+        track as the first even in the lower band without resulting in any
+        overlap.
+    </p>    
+    
+    <p><div id="tl4" class="timeline-default" style="height: 250px"></div></p>
+    
+    
+    <!--================================================================================
+        Hot Zones
+    -->
+    <h2><a name="hot-zones">Hot Zones</a></h2>
+    
+    <p>Now we load <a href="example2.xml">example2.xml</a>, which contains a few more
+        details for "Trip to Beijing" and discover that the days starting on August 2,
+        2006, are quite cramped:
+    </p>
+    
+    <p><div id="tl5" class="timeline-default" style="height: 250px"></div></p>
+    
+    <p>To solve this problem, we will <em>distort</em> the time of those days, producing
+        the effect of zooming in. Because we want time to flow differently than 
+        before&mdash;we want time spans to be mapped to pixels in a different way, we
+        need a different kind of ether (and a different kind of ether painter to go with
+        it):
+<pre>function onLoad() {
+  var eventSource = new Timeline.DefaultEventSource();
+  var bandInfos = [
+    Timeline.<span class="highlight">createHotZoneBandInfo</span>({
+<span class="highlight">        zones: [
+            {   start:    "Aug 01 2006 00:00:00 GMT-0500",
+                end:      "Sep 01 2006 00:00:00 GMT-0500",
+                magnify:  10,
+                unit:     Timeline.DateTime.WEEK
+            },
+            {   start:    "Aug 02 2006 00:00:00 GMT-0500",
+                end:      "Aug 04 2006 00:00:00 GMT-0500",
+                magnify:  7,
+                unit:     Timeline.DateTime.DAY
+            },
+            {   start:    "Aug 02 2006 06:00:00 GMT-0500",
+                end:      "Aug 02 2006 12:00:00 GMT-0500",
+                magnify:  5,
+                unit:     Timeline.DateTime.HOUR
+            }
+        ],
+        timeZone:       -5,</span>
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.createBandInfo({
+<span class="higlight">        timeZone:       -5,</span>
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;
+  bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
+  
+  var tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+  Timeline.loadXML("example1.xml", function(xml, url) { eventSource.loadXML(xml, url); });
+}</pre>
+        In the resulting timeline below, the whole month of August 2006
+        is stretched out 10 times, showing weekly intervals; the
+        two days of August 2nd and August 3rd are stretched out another
+        7 times; and then the time between 6am to noon on August 2nd is
+        stretched out another 5 times, showing hourly intervals. All this
+        stretching is done to the upper band only, so if you pan the
+        upper band, observe how the lower band's highlight grows and
+        shrinks.
+    </p>
+    
+    <p><div id="tl6" class="timeline-default" style="height: 250px"></div></p>
+    
+    <p>Of course, panning the lower band over the <em>hot zones</em> of the
+        upper band now makes the upper band a little jumpy. We can distort
+        the lower band to reduce this effect:
+<pre>function onLoad() {
+  var eventSource = new Timeline.DefaultEventSource();
+  var bandInfos = [
+    Timeline.createHotZoneBandInfo({
+        zones: [
+            {   start:    "Aug 01 2006 00:00:00 GMT-0500",
+                end:      "Sep 01 2006 00:00:00 GMT-0500",
+                magnify:  10,
+                unit:     Timeline.DateTime.WEEK
+            },
+            {   start:    "Aug 02 2006 00:00:00 GMT-0500",
+                end:      "Aug 04 2006 00:00:00 GMT-0500",
+                magnify:  7,
+                unit:     Timeline.DateTime.DAY
+            },
+            {   start:    "Aug 02 2006 06:00:00 GMT-0500",
+                end:      "Aug 02 2006 12:00:00 GMT-0500",
+                magnify:  5,
+                unit:     Timeline.DateTime.HOUR
+            }
+        ],
+        timeZone:       -5,
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 100
+    }),
+    Timeline.<span class="highlight">createHotZoneBandInfo</span>({
+<span class="highlight">        zones: [
+            {   start:    "Aug 01 2006 00:00:00 GMT-0500",
+                end:      "Sep 01 2006 00:00:00 GMT-0500",
+                magnify:  20,
+                unit:     Timeline.DateTime.WEEK
+            }
+        ],</span>
+        timeZone:       -5,
+        eventSource:    eventSource,
+        date:           "Jun 28 2006 00:00:00 GMT",
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.YEAR, 
+        intervalPixels: 200
+    })
+  ];
+  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;
+  bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
+  
+  var tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+  Timeline.loadXML("example1.xml", function(xml, url) { eventSource.loadXML(xml, url); });
+}</pre>
+    </p>
+    
+    <p>The resulting timeline below still needs a few more iteration to make
+        it smooth. But I hope this has been a good starting point for you.
+    </p>
+    
+    <p><div id="tl7" class="timeline-default" style="height: 250px"></div></p>
+    
+</div>
+</body>
+</html>

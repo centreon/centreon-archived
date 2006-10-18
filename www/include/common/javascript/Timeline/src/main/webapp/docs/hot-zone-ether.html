@@ -1,0 +1,225 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | HotZoneEther class</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+    <script src="../api/timeline-api.js" type="text/javascript"></script>
+    <script>
+        var tl;
+        function onLoad() {
+            var bandInfos = [
+                Timeline.createHotZoneBandInfo({
+                    width:          "70%", 
+                    intervalUnit:   Timeline.DateTime.DAY, 
+                    intervalPixels: 300,
+                    zones: [
+                        {   start:          "Fri Nov 22 1963 00:00:00 GMT-0600",
+                            end:            "Mon Nov 25 1963 00:00:00 GMT-0600",
+                            magnify:        3,
+                            unit:           Timeline.DateTime.HOUR,
+                            multiple:       3
+                        },
+                        {   start:          "Fri Nov 22 1963 09:00:00 GMT-0600",
+                            end:            "Fri Nov 22 1963 21:00:00 GMT-0600",
+                            magnify:        5,
+                            unit:           Timeline.DateTime.MINUTE,
+                            multiple:       15
+                        }
+                    ],
+                    date: "Fri Nov 22 1963 12:30:00 GMT-0600",
+                    timeZone: -6
+                }),
+                Timeline.createBandInfo({
+                    width:          "30%", 
+                    intervalUnit:   Timeline.DateTime.WEEK, 
+                    intervalPixels: 300,
+                    date: "Fri Nov 22 1963 12:30:00 GMT-0600",
+                    timeZone: -6
+                })
+            ];
+            bandInfos[1].syncWith = 0;
+            bandInfos[1].highlight = true;
+            tl = Timeline.create(document.getElementById("tl"), bandInfos, 
+                Timeline.HORIZONTAL);
+        }
+    </script>
+</head>
+<body onload="onLoad();">
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>HotZoneEther class</span></li>
+</ul>
+
+<div id="body">
+    <h1>Timeline.HotZoneEther class</h1>
+    
+    <p>Hot-zone <a href="ethers.html"><em>ethers</em></a> are intended to 
+        magnify time spans in which there are a lot of events compared to 
+        the rest of history. In the 
+        <a href="../examples/jfk/jfk.html">JFK Assassination example</a>,
+        the time span within the few days starting on November 22, 1963
+        is full of development.
+    </p>
+    
+    <p>A hot-zone ether is like a
+        <a href="linear-ether.html">linear ether</a> in that, 
+        <em>generally</em>, equal pixel distances map to equal time spans, 
+        and equal time spans map to equal pixel distances. However,
+        there are <em>zones</em> in which this mapping is scaled as if
+        magnifying glasses are put on them. These zones can overlap and
+        the effect of an overlap is like that of overlapping two magnifying
+        glasses.         
+    </p>
+    
+    <h2>Initialization</h2>
+    <p>The constructor of <span class="code">Timeline.HotZoneEther</span> 
+        takes an object whose fields (listed below) specify initialization
+        settings for the ether.
+    </p>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">interval</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, a number of milliseconds in some date/time 
+            interval. The interval is intentionally left unspecified for 
+            your discretion. For example, if you want to use the interval
+            of a day, you can construct your initialization object as
+            follows:
+            <pre class="code-block">
+new Timeline.HotZoneEther({
+    interval: 1000 * 60 * 60 * 24,
+    ...
+});</pre>
+            or in a more understandable manner,
+            <pre class="code-block">
+new Timeline.HotZoneEther({
+    interval: Timeline.<a href="date-time.html">DateTime</a>.gregorianUnitLengths[Timeline.<a href="date-time.html">DateTime</a>.DAY],
+    ...
+});</pre>
+            Together with the field 
+            <span class="itf-member-name">pixelsPerInterval</span>,
+            this field specifies the mapping of the ether outside the
+            hot zones.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">pixelsPerInterval</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, the number of pixels corresponding to the
+            date/time interval above. Start off with <span class="code">100</span>
+            and then adjust to achieve the effect you want.
+            Together with the field <span class="itf-member-name">interval</span>,
+            this field specifies the mapping of the ether outside the hot zones.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">startsOn</span>, 
+            <span class="itf-member-name">endsOn</span>, 
+            <span class="itf-member-name">centersOn</span>
+        </div>
+        <div class="itf-member-description">
+            <em>optional</em>. Any one of those fields can be specified to
+            set (directly or indirectly) the origin of the ether. These can
+            be <span class="code">String</span> or <span class="code">Date</span>
+            objects; they are parsed using 
+            <span class="code">Timeline.<a href="date-time.html">DateTime</a>.parseGregorianDateTime()</span>
+            into <span class="code">Date</span> objects. If none of these
+            fields is specified, the current date is used to center the
+            ether.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">zones</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, an array describing the hot zones. Each element of
+            this array is an object with the following fields:
+            
+            <div class="itf-member">
+                <div class="itf-member-prototype">
+                    <span class="itf-member-name">startTime</span>
+                </div>
+                <div class="itf-member-description">
+                    <em>required</em>, a <span class="code">String</span> or a
+                    <span class="code">Date</span> object that specifies the
+                    beginning date/time of the zone. It is parsed by 
+                    <span class="code">Timeline.<a href="date-time.html">DateTime</a>.parseGregorianDateTime()</span>
+                    to get a <span class="code">Date</span> object.
+                </div>
+            </div>
+            
+            <div class="itf-member">
+                <div class="itf-member-prototype">
+                    <span class="itf-member-name">endTime</span>
+                </div>
+                <div class="itf-member-description">
+                    <em>required</em>, a <span class="code">String</span> or a
+                    <span class="code">Date</span> object that specifies the
+                    ending date/time of the zone. It is parsed by 
+                    <span class="code">Timeline.<a href="date-time.html">DateTime</a>.parseGregorianDateTime()</span>
+                    to get a <span class="code">Date</span> object.
+                </div>
+            </div>
+            
+            <div class="itf-member">
+                <div class="itf-member-prototype">
+                    <span class="itf-member-name">magnify</span>
+                </div>
+                <div class="itf-member-description">
+                    <em>required</em>, a number specifying the magnification
+                    of the mapping in this zone. A greater-than-1 number causes
+                    more pixels to be mapped to the same time interval, resulting
+                    in a zoom-in effect.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2><a name="example">Example</a></h2>
+    <p>Here is an example of constructing a hot zone ether:
+        <pre class="code-block">
+new Timeline.HotZoneEther({
+    interval: Timeline.<a href="date-time.html">DateTime</a>.gregorianUnitLengths[Timeline.<a href="date-time.html">DateTime</a>.DAY],
+    pixelsPerInterval: 300,
+    zones: [
+        {   start:          "Fri Nov 22 1963 00:00:00 GMT-0600",
+            end:            "Mon Nov 25 1963 00:00:00 GMT-0600",
+            magnify:        3
+        },
+        {   start:          "Fri Nov 22 1963 09:00:00 GMT-0600",
+            end:            "Fri Nov 22 1963 21:00:00 GMT-0600",
+            magnify:        5
+        }
+    ],
+    centersOn: "Fri Nov 22 1963 12:30:00 GMT-0600"
+});</pre>
+        This ether maps 300 pixels to a day for all time except during
+        November 22, 23, and 24, 1963. On these 3 days, 3 x 300 = 900
+        pixels are mapped to a day, except from 9am to 9pm on November
+        22 when 5 x 900 = 4500 pixels are mapped to a day. Below,
+        the upper band has such a hot zone ether while the lower
+        band has a linear ether. As the two bands scroll in synchrony,
+        observe the highlight in the lower band grow and shrink as
+        the upper band moves over its hot zones.
+    </p>
+    
+    <div id="tl" class="timeline-default" style="height: 200px;"></div>
+    
+    <h2>Related Topics</h2>
+    <ul>
+        <li><a href="ethers.html">Ethers</a>, basics and interface</li>
+        <li>Timeline.<a href="hot-zone-gregorian-ether-painter.html">HotZoneGregorianEtherPainter</a>, the default ether painter to be used for hot zone ethers</li>
+    </ul>
+</div>
+</body>
+</html>

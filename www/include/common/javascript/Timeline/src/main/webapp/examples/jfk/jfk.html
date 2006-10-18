@@ -1,0 +1,166 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Examples | The JFK Assassination Timeline</title>
+    <link rel='stylesheet' href='../styles.css' type='text/css' />
+    <script src="../../api/timeline-api.js" type="text/javascript"></script>
+    <script src="../examples.js" type="text/javascript"></script>
+    <script>
+        var tl;
+        function onLoad() {
+            var eventSource = new Timeline.DefaultEventSource();
+            
+            var zones = [
+                {   start:    "Fri Nov 22 1963 00:00:00 GMT-0600",
+                    end:      "Mon Nov 25 1963 00:00:00 GMT-0600",
+                    magnify:  10,
+                    unit:     Timeline.DateTime.DAY
+                },
+                {   start:    "Fri Nov 22 1963 09:00:00 GMT-0600",
+                    end:      "Sun Nov 24 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.HOUR
+                },
+                {   start:    "Fri Nov 22 1963 11:00:00 GMT-0600",
+                    end:      "Sat Nov 23 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 10
+                },
+                {   start:    "Fri Nov 22 1963 12:00:00 GMT-0600",
+                    end:      "Fri Nov 22 1963 14:00:00 GMT-0600",
+                    magnify:  3,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 5
+                }
+            ];
+            var zones2 = [
+                {   start:    "Fri Nov 22 1963 00:00:00 GMT-0600",
+                    end:      "Mon Nov 25 1963 00:00:00 GMT-0600",
+                    magnify:  10,
+                    unit:     Timeline.DateTime.WEEK
+                },
+                {   start:    "Fri Nov 22 1963 09:00:00 GMT-0600",
+                    end:      "Sun Nov 24 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.DAY
+                },
+                {   start:    "Fri Nov 22 1963 11:00:00 GMT-0600",
+                    end:      "Sat Nov 23 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 60
+                },
+                {   start:    "Fri Nov 22 1963 12:00:00 GMT-0600",
+                    end:      "Fri Nov 22 1963 14:00:00 GMT-0600",
+                    magnify:  3,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 15
+                }
+            ];
+            
+            var theme = Timeline.ClassicTheme.create();
+            theme.event.label.width = 250; // px
+            theme.event.bubble.width = 250;
+            theme.event.bubble.height = 200;
+            
+            var date = "Fri Nov 22 1963 13:00:00 GMT-0600"
+            var bandInfos = [
+                Timeline.createHotZoneBandInfo({
+                    width:          "75%", 
+                    intervalUnit:   Timeline.DateTime.WEEK, 
+                    intervalPixels: 200,
+                    zones:          zones,
+                    eventSource:    eventSource,
+                    date:           date,
+                    timeZone:       -6,
+                    theme:          theme
+                }),
+                Timeline.createHotZoneBandInfo({
+                    width:          "25%", 
+                    intervalUnit:   Timeline.DateTime.MONTH, 
+                    intervalPixels: 200,
+                    zones:          zones2, 
+                    eventSource:    eventSource,
+                    date:           date, 
+                    timeZone:       -6,
+                    showEventText:  false, 
+                    trackHeight:    0.5,
+                    trackGap:       0.2,
+                    theme:          theme
+                })
+            ];
+            bandInfos[1].syncWith = 0;
+            bandInfos[1].highlight = true;
+            bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
+            
+            for (var i = 0; i < bandInfos.length; i++) {
+                bandInfos[i].decorators = [
+                    new Timeline.SpanHighlightDecorator({
+                        startDate:  "Fri Nov 22 1963 12:30:00 GMT-0600",
+                        endDate:    "Fri Nov 22 1963 13:00:00 GMT-0600",
+                        color:      "#FFC080",
+                        opacity:    50,
+                        startLabel: "shot",
+                        endLabel:   "t.o.d.",
+                        theme:      theme
+                    }),
+                    new Timeline.PointHighlightDecorator({
+                        date:       "Fri Nov 22 1963 14:38:00 GMT-0600",
+                        color:      "#FFC080",
+                        opacity:    50,
+                        theme:      theme
+                    }),
+                    new Timeline.PointHighlightDecorator({
+                        date:       "Sun Nov 24 1963 13:00:00 GMT-0600",
+                        color:      "#FFC080",
+                        opacity:    50,
+                        theme:      theme
+                    })
+                ];
+            }
+            
+            tl = Timeline.create(document.getElementById("tl"), bandInfos, Timeline.HORIZONTAL);
+            Timeline.loadXML("jfk.xml", function(xml, url) { eventSource.loadXML(xml, url); });
+            
+            setupFilterHighlightControls(document.getElementById("controls"), tl, [0,1], theme);
+        }
+        var resizeTimerID = null;
+        function onResize() {
+            if (resizeTimerID == null) {
+                resizeTimerID = window.setTimeout(function() {
+                    resizeTimerID = null;
+                    tl.layout();
+                }, 500);
+            }
+        }
+    </script>
+</head>
+<body onload="onLoad();" onresize="onResize();">
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../../" title="Timeline">Timeline</a></li>
+  <li><a href="../" title="Examples">Examples</a></li>
+  <li><span>The JFK Assassination Timeline</span></li>
+</ul>
+
+<div id="body">
+    <h1>The JFK Assassination Timeline</h1>
+    <p>Sources:
+        <a href="http://roswell.fortunecity.com/angelic/96/pctime.htm">http://roswell.fortunecity.com/angelic/96/pctime.htm</a>.
+        Titles of events have been phrased by David Huynh, author of this timeline example.
+        The phrasing might not be of journalistic quality. The information in this example
+        should not be taken as an official source of this topic.
+    </p>
+    
+    <div id="tl" class="timeline-default" style="height: 400px;">
+    </div>
+    <div class="footnotes">
+        All times are in Dallas CST (GMT-0600).
+    </div>
+    
+    <div class="controls" id="controls">
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+@import url("../styles.css");
+
+.html {
+    font-family: Courier New, Courier;
+}
+
+.code {
+    font-family: Courier New, Courier;
+}
+
+.code-block {
+    font-family: Courier New, Courier;
+    margin: 1em;
+}
+
+.highlight {
+    background: #FFFFE0;
+}
+
+.itf-member {
+    margin: 1em 0;
+    padding: 1em;
+    border: 1px solid #ddd;
+}
+
+.itf-member-prototype {
+    font-family: Courier New, Courier;
+}
+
+.itf-member-description {
+    margin: 1em 1em 0 1em;
+}
+
+.itf-member-name {
+    font-family: Courier New, Courier;
+    font-weight: bold;
+    color: #008;
+}
+
+.itf-member-param {
+    font-family: Courier New, Courier;
+    font-style: italic;
+}

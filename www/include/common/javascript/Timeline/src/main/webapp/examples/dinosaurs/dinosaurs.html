@@ -1,0 +1,91 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Examples | Dinosaurs</title>
+    <link rel='stylesheet' href='../styles.css' type='text/css' />
+    <script src="../../api/timeline-api.js" type="text/javascript"></script>
+    <script src="../../api/ext/geochrono/geochrono-api.js" type="text/javascript"></script>
+    <script src="../examples.js" type="text/javascript"></script>
+    <script>
+        var tl;
+        function onLoad() {
+            var theme = Timeline.ClassicTheme.create();
+            theme.event.label.width = 150; // px
+            theme.event.bubble.width = 250;
+            theme.event.bubble.height = 200;
+            
+            var eventSource = new Timeline.DefaultEventSource(new Timeline.EventIndex(Timeline.GeochronoUnit));
+            
+            var d = Timeline.GeochronoUnit.wrapMA(80);
+            var bandInfos = [
+                Timeline.Geochrono.createBandInfo({
+                    eventSource:    eventSource,
+                    date:           d,
+                    width:          "90%", 
+                    intervalUnit:   Timeline.GeochronoUnit.MA, 
+                    intervalPixels: 50,
+                    trackGap:       0.2,
+                    trackHeight:    1.3,
+                    theme:          theme
+                }),
+                Timeline.Geochrono.createBandInfo({
+                    date:           d,
+                    width:          "5%", 
+                    intervalUnit:   Timeline.GeochronoUnit.PERIOD, 
+                    intervalPixels: 5,
+                    showEventText:  false,
+                    theme:          theme
+                }),
+                Timeline.Geochrono.createBandInfo({
+                    date:           d,
+                    width:          "5%", 
+                    intervalUnit:   Timeline.GeochronoUnit.ERA, 
+                    intervalPixels: 1,
+                    showEventText:  false,
+                    theme:          theme
+                })
+            ];
+            bandInfos[1].syncWith = 0;
+            bandInfos[1].highlight = true;
+            bandInfos[2].syncWith = 1;
+            bandInfos[2].highlight = true;
+            
+            tl = Timeline.create(document.getElementById("tl"), bandInfos, Timeline.HORIZONTAL, Timeline.GeochronoUnit);
+            Timeline.loadXML("dinosaurs.xml", function(xml, url) {
+                eventSource.loadXML(xml, url);
+            });
+            
+            setupFilterHighlightControls(document.getElementById("controls"), tl, [0,1], theme);
+        }
+        var resizeTimerID = null;
+        function onResize() {
+            if (resizeTimerID == null) {
+                resizeTimerID = window.setTimeout(function() {
+                    resizeTimerID = null;
+                    tl.layout();
+                }, 500);
+            }
+        }
+    </script>
+</head>
+<body onload="onLoad();" onresize="onResize();">
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../../" title="Timeline">Timeline</a></li>
+  <li><a href="../" title="Examples">Examples</a></li>
+  <li><span>Dinosaurs</span></li>
+</ul>
+<div id="body">
+    <h1>Dinosaurs</h1>
+    
+    <p>Here is a <a href="dinosaurs2.html">more visual version</a> of this.</p>
+    <p>Sources: <a href="http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/timeline.dsml?disp=gall&per_id=&sort=Genus">the National History Museum</a>.
+    </p>
+    
+    <div id="tl" class="timeline-default" style="height: 1000px;">
+    </div>
+    
+    <div class="controls" id="controls">
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1574 @@
+﻿<data>
+    <!-- Source:
+        http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/timeline.dsml?disp=gall&amp;per_id=&amp;sort=Genus
+    -->
+<event isDuration="true" start='115' end='105' title='Acrocanthosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/acrocantho.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=acrocantho&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=0&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Carnosauria, Allosauroidea, Carcharodontosauridae
+	</event>
+<event isDuration="true" start='132' end='121' title='Afrovenator'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/afrovenator.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=afrovenator&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=1&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Megalosauridae, Eustreptospondylinae
+	</event>
+<event isDuration="true" start='132' end='127' title='Amargasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Amargasaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Amargasaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=2&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Dicraeosauridae
+	</event>
+<event isDuration="true" start='121' end='97' title='Atlascopcosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Atlascopcosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Atlascopcosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=3&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda
+	</event>
+<event isDuration="true" start='112' end='99' title='Austrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Austrosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Austrosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=4&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria
+	</event>
+<event isDuration="true" start='125' title='Baryonyx'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/bary.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=bary&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=5&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Spinosauridae, Baryonychinae
+	</event>
+<event isDuration="true" start='142' end='132' title='Becklespinax'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Becklespinax.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Becklespinax&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=6&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae
+	</event>
+<event isDuration="true" start='125' end='122' title='Caudipteryx'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/caudip.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=caudip&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=7&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Oviraptorosauria, Caudipterygidae
+	</event>
+<event isDuration="true" start='127' end='121' title='Confuciusornis'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Confuciusornis.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Confuciusornis&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=8&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptoria, Avialae, Ornithurae, Avibrevicauda, Pygostylia, Confuciusornithidae
+	</event>
+<event isDuration="true" start='120' end='110' title='Deinonychus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/deinon.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=deinon&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=9&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptora, Dromaeosauridae
+	</event>
+<event isDuration="true" start='112' end='90' title='Giganotosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/giganoto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=giganoto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=10&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Carnosauria, Allosauroidea, Carcharodontosauridae
+	</event>
+<event isDuration="true" start='121' end='99' title='Harpymimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Harpymimus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Harpymimus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=11&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria
+	</event>
+<event isDuration="true" start='150' end='135' title='Hylaeosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/hylaeo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=hylaeo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=12&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria
+	</event>
+<event isDuration="true" start='125' title='Hypsilophodon'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/hypsil.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=hypsil&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=13&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Hypsilophodontidae
+	</event>
+<event isDuration="true" start='140' end='110' title='Iguanodon'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/iguano.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=iguano&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=14&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea
+	</event>
+<event isDuration="true" start='112' end='99' title='Irritator'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Irritator.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Irritator&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=15&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Spinosauridae, Spinosaurinae
+	</event>
+<event isDuration="true" start='115' end='110' title='Leaellynasaura'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/leaelly.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=leaelly&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=16&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda
+	</event>
+<event isDuration="true" start='127' end='121' title='Liaoxiornis'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Liaoxiornis.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Liaoxiornis&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=17&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptoria, Avialae, Ornithurae, Avibrevicauda, Pygostylia, Ornithathoraces, Enantiornithes
+	</event>
+<event isDuration="true" start='125' end='122' title='Microraptor'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Microraptor.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Microraptor&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=18&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptora, Dromaeosauridae
+	</event>
+<event isDuration="true" start='121' end='112' title='Minmi'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Minmi.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Minmi&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=19&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria
+	</event>
+<event isDuration="true" start='110' end='100' title='Muttaburrasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/muttab.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=muttab&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=20&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea
+	</event>
+<event isDuration="true" start='110' end='100' title='Nodosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/nodo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=nodo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=21&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Nodosauridae
+	</event>
+<event isDuration="true" start='115' end='100' title='Ouranosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/ourano.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=ourano&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=22&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea
+	</event>
+<event isDuration="true" start='127' end='121' title='Pelicanimimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Pelicanimimus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Pelicanimimus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=23&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria
+	</event>
+<event isDuration="true" start='125' title='Pelorosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/pelo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=pelo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=24&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes
+	</event>
+<event isDuration="true" start='125' title='Polacanthus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/polac.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=polac&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=25&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria
+	</event>
+<event isDuration="true" start='121' end='99' title='Probactrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Probactrosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Probactrosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=26&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea
+	</event>
+<event isDuration="true" start='122' end='120' title='Protarchaeopteryx'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Protarchaeopteryx.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Protarchaeopteryx&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=27&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptora
+	</event>
+<event isDuration="true" start='120' end='100' title='Psittacosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/psittaco.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=psittaco&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=28&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Psittacosauridae
+	</event>
+<event isDuration="true" start='121' end='94' title='Sauropelta'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Sauropelta.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Sauropelta&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=29&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Nodosauridae
+	</event>
+<event isDuration="true" start='121' end='112' title='Silvisaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Silvisaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Silvisaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=30&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Nodosauridae
+	</event>
+<event isDuration="true" start='122' end='120' title='Sinosauropteryx'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Sinosauropteryx.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Sinosauropteryx&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=31&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Compsognathidae
+	</event>
+<event isDuration="true" start='127' end='121' title='Stenopelix'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Stenopelix.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Stenopelix&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=32&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria
+	</event>
+<event isDuration="true" start='121' end='112' title='Suchomimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Suchomimus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Suchomimus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=33&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Spinosauridae, Baryonychinae
+	</event>
+<event isDuration="true" start='154' end='142' title='Supersaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Supersaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Supersaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=34&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Diplodocidae
+	</event>
+<event isDuration="true" start='120' end='110' title='Tenontosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/tenonto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=tenonto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=35&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia
+	</event>
+<event isDuration="true" start='112' end='100' title='Utahraptor'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/utah.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=utah&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=36&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptora, Dromaeosauridae
+	</event>
+<event isDuration="true" start='137' end='99' title='Wuerhosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Wuerhosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=Wuerhosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=37&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae, Stegosaurinae
+	</event>
+<event isDuration="true" start='120' end='110' title='Zephyrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/zephyro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=5&amp;disp=time&amp;identifier=zephyro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=38&amp;listPageURL=timeline%2edsml%3fperID%3d5%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda
+	</event>
+<event isDuration="true" start='74' end='70' title='Abelisaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/abeli.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=abeli&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=0&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Neoceratosauria, Abelisauridae, Abelisaurinae
+	</event>
+<event isDuration="true" start='83' end='70' title='Achelousaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/achelou.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=achelou&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=1&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Centrosaurinae
+	</event>
+<event isDuration="true" start='98' end='93' title='Aegyptosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/aegypto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=aegypto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=2&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria
+	</event>
+<event isDuration="true" start='70' end='65' title='Alamosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/alamo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=alamo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=3&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria, Lithostrotia
+	</event>
+<event isDuration="true" start='76' end='74' title='Albertosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/albert.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=albert&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=4&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea, Tyrannosauridae, Albertosaurinae
+	</event>
+<event isDuration="true" start='90' end='70' title='Alectrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/alectro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=alectro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=5&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea
+	</event>
+<event isDuration="true" start='71' end='65' title='Alioramus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Alioramus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Alioramus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=6&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea
+	</event>
+<event isDuration="true" start='89' end='85' title='Alvarezsaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/alvarez.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=alvarez&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=7&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Alvarezsauridae
+	</event>
+<event isDuration="true" start='70' end='65' title='Anatotitan'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/anato.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=anato&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=8&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='74' end='70' title='Anchiceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/anchi2.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=anchi2&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=9&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Chasmosaurinae
+	</event>
+<event isDuration="true" start='74' end='67' title='Ankylosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/ankyl.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=ankyl&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=10&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Ankylosauridae
+	</event>
+<event isDuration="true" start='84' end='65' title='Anserimimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/anseri.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=anseri&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=11&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria, Ornithomimidae
+	</event>
+<event isDuration="true" start='84' end='65' title='Antarctosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/antarcto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=antarcto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=12&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria, Lithostrotia
+	</event>
+<event isDuration="true" start='94' end='84' title='Aralosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Aralosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Aralosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=13&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='95' end='70' title='Archaeornithomimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/archaeorn.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=archaeorn&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=14&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria, Ornithomimidae
+	</event>
+<event isDuration="true" start='90' title='Argentinosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/argent.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=argent&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=15&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria
+	</event>
+<event isDuration="true" start='72' end='67' title='Arrhinoceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Arrhinoceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Arrhinoceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=16&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Chasmosaurinae
+	</event>
+<event isDuration="true" start='80' end='75' title='Avaceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Avaceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Avaceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=17&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Centrosaurinae
+	</event>
+<event isDuration="true" start='80' end='75' title='Avimimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/avim.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=avim&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=18&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Oviraptorosauria, Avimimidae
+	</event>
+<event isDuration="true" start='85' end='80' title='Bagaceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Bagaceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Bagaceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=19&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria
+	</event>
+<event isDuration="true" start='84' end='65' title='Borogovia'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Borogovia.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Borogovia&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=20&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptoria, Troodontidae
+	</event>
+<event isDuration="true" start='81' end='74' title='Brachyceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Brachyceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Brachyceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=21&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Centrosaurinae
+	</event>
+<event isDuration="true" start='89' end='88' title='Brachylophosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Brachylophosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Brachylophosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=22&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='99' end='90' title='Buitreraptor'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Buitreraptor.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Buitreraptor&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=23&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptora, Dromaeosauridae, Unenlagiinae
+	</event>
+<event isDuration="true" start='98' end='94' title='Carcharodontosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/carch.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=carch&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=24&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Carnosauria, Allosauroidea, Carcharodontosauridae
+	</event>
+<event isDuration="true" start='?70' title='Carnotaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/carnoto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=carnoto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=25&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Neoceratosauria, Abelisauridae
+	</event>
+<event isDuration="true" start='76' end='74' title='Centrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/centro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=centro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=26&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Centrosaurinae
+	</event>
+<event isDuration="true" start='76' end='74' title='Chasmosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/chasmo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=chasmo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=27&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Chasmosaurinae
+	</event>
+<event isDuration="true" start='81' end='76' title='Conchoraptor'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Conchoraptor.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Conchoraptor&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=28&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Oviraptorosauria, Caenagnathoidea, Oviraptoridae, Ingeniinae
+	</event>
+<event isDuration="true" start='76' end='74' title='Corythosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/coryth.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=coryth&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=29&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Lambeosaurinae
+	</event>
+<event isDuration="true" start='76' end='74' title='Daspletosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/daspelet.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=daspelet&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=30&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea, Tyrannosauridae, Tyrannosaurinae
+	</event>
+<event isDuration="true" start='70' end='65' title='Deinocheirus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/deinoc.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=deinoc&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=31&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria
+	</event>
+<event isDuration="true" start='67' end='65' title='Diceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Diceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Diceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=32&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Chasmosaurinae
+	</event>
+<event isDuration="true" start='89' end='86' title='Dravidosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Dravidosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Dravidosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=33&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae
+	</event>
+<event isDuration="true" start='76' end='74' title='Dromaeosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/droma.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=droma&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=34&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptora, Dromaeosauridae
+	</event>
+<event isDuration="true" start='74' end='70' title='Dromiceiomimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/dromic.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=dromic&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=35&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria, Ornithomimidae
+	</event>
+<event isDuration="true" start='70' title='Dryptosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/drypto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=drypto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=36&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea
+	</event>
+<event isDuration="true" start='76' end='74' title='Edmontonia'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Edmontonia.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Edmontonia&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=37&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Nodosauridae
+	</event>
+<event isDuration="true" start='76' end='65' title='Edmontosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/edmonto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=edmonto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=38&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='74' title='Einiosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Einiosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Einiosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=39&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Centrosaurinae
+	</event>
+<event isDuration="true" start='99' end='89' title='Erlikosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Erlikosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Erlikosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=40&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Therizinosauroidea, Therizinosauridae
+	</event>
+<event isDuration="true" start='76' end='70' title='Euoplocephalus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/euoplo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=euoplo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=41&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Ankylosauridae
+	</event>
+<event isDuration="true" start='74' end='70' title='Gallimimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/gallim.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=gallim&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=42&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria, Ornithomimidae
+	</event>
+<event isDuration="true" start='99' end='89' title='Garudimimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Garudimimus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Garudimimus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=43&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria
+	</event>
+<event isDuration="true" start='?76' end='70' title='Gilmoreosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/gilmore.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=gilmore&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=44&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae
+	</event>
+<event isDuration="true" start='81' end='75' title='Goyocephale'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Goyocephale.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Goyocephale&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=45&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria, Goyocephala
+	</event>
+<event isDuration="true" start='78' end='74' title='Hadrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/hadro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=hadro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=46&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='72' end='68' title='Homalocephale'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Homalocephale.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Homalocephale&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=47&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria, Goyocephala, Homalocephaloidea
+	</event>
+<event isDuration="true" start='70' title='Hypacrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Hypacrosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Hypacrosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=48&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Lambeosaurinae
+	</event>
+<event isDuration="true" start='71' end='65' title='Hypselosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Hypselosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Hypselosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=49&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria
+	</event>
+<event isDuration="true" start='71' end='65' title='Indosuchus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Indosuchus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Indosuchus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=50&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Neoceratosauria
+	</event>
+<event isDuration="true" start='94' end='84' title='Jaxartosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Jaxartosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Jaxartosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=51&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Lambeosaurinae
+	</event>
+<event isDuration="true" start='78' end='74' title='Kritosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/krito.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=krito&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=52&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='76' end='74' title='Lambeosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/lambeo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=lambeo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=53&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Lambeosaurinae
+	</event>
+<event isDuration="true" start='67' end='65' title='Leptoceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Leptoceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Leptoceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=54&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria
+	</event>
+<event isDuration="true" start='71' end='65' title='Magyarosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Magyarosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Magyarosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=55&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria, Lithostrotia
+	</event>
+<event isDuration="true" start='80' end='75' title='Maiasaura'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/maia.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=maia&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=56&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='86' end='66' title='Microceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Microceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Microceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=57&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria
+	</event>
+<event isDuration="true" start='84' end='71' title='Micropachycephalosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Micropachycephalosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Micropachycephalosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=58&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria
+	</event>
+<event isDuration="true" start='67' end='65' title='Nanotyrannus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Nanotyrannus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Nanotyrannus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=59&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea, Tyrannosauridae, Tyrannosaurinae
+	</event>
+<event isDuration="true" start='72' end='68' title='Nemegtosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Nemegtosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Nemegtosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=60&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Nemegtosauridae
+	</event>
+<event isDuration="true" start='127' end='121' title='Neovenator'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Neovenator.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Neovenator&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=61&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Carnosauria, Allosauroidea, Carcharodontosauridae
+	</event>
+<event isDuration="true" start='89' end='84' title='Nipponosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Nipponosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Nipponosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=62&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Lambeosaurinae
+	</event>
+<event isDuration="true" start='84' end='65' title='Noasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Noasaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Noasaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=63&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Neoceratosauria, Abelisauroidea, Abelisauria
+	</event>
+<event isDuration="true" start='72' end='68' title='Opisthocoelicaudia'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Opisthocoelicaudia.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Opisthocoelicaudia&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=64&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria, Lithostrotia, Saltasauridae
+	</event>
+<event isDuration="true" start='74' end='65' title='Ornithomimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/ornithom.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=ornithom&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=65&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria, Ornithomimidae
+	</event>
+<event isDuration="true" start='74' title='Orodromeus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/orodro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=orodro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=66&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda
+	</event>
+<event isDuration="true" start='85' end='75' title='Oviraptor'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/oviraps.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=oviraps&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=67&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Oviraptorosauria, Caenagnathoidea, Oviraptoridae, Oviraptorinae
+	</event>
+<event isDuration="true" start='76' end='65' title='Pachycephalosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/pachyceph.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=pachyceph&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=68&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria, Goyocephala, Homalocephaloidea, Pachycephalosauridae
+	</event>
+<event isDuration="true" start='76' end='74' title='Pachyrhinosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/pachyr.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=pachyr&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=69&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Centrosaurinae
+	</event>
+<event isDuration="true" start='79' end='75' title='Panoplosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Panoplosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Panoplosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=70&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Nodosauridae
+	</event>
+<event isDuration="true" start='76' end='74' title='Parasaurolophus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/parasaur.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=parasaur&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=71&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Lambeosaurinae
+	</event>
+<event isDuration="true" start='76' end='74' title='Parksosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/parkso.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=parkso&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=72&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda
+	</event>
+<event isDuration="true" start='76' end='74' title='Pentaceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Pentaceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Pentaceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=73&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Chasmosaurinae
+	</event>
+<event isDuration="true" start='81' end='75' title='Pinacosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Pinacosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Pinacosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=74&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Ankylosauridae
+	</event>
+<event isDuration="true" start='80' end='65' title='Prenocephale'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Prenocephale.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Prenocephale&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=75&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria, Goyocephala, Homalocephaloidea, Pachycephalosauridae
+	</event>
+<event isDuration="true" start='85' end='80' title='Protoceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/proto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=proto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=76&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria
+	</event>
+<event isDuration="true" start='86' end='84' title='Quaesitosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Quaesitosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Quaesitosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=77&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Nemegtosauridae
+	</event>
+<event isDuration="true" start='76' end='70' title='Rhabdodon'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/rhab.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=rhab&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=78&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Rhabdodontidae
+	</event>
+<event isDuration="true" start='80' title='Saichania'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/saich.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=saich&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=79&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Ankylosauridae
+	</event>
+<event isDuration="true" start='70' end='65' title='Saltasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/salta.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=salta&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=80&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Titanosauria, Lithostrotia, Saltasauridae
+	</event>
+<event isDuration="true" start='74' end='70' title='Saurolophus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/sauro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=sauro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=81&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='85' end='80' title='Saurornithoides'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/saurorn.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=saurorn&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=82&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptoria, Troodontidae
+	</event>
+<event isDuration="true" start='71' end='65' title='Secernosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Secernosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Secernosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=83&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae
+	</event>
+<event isDuration="true" start='97' end='88' title='Segnosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/segno.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=segno&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=84&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Therizinosauroidea, Therizinosauridae
+	</event>
+<event isDuration="true" start='78' end='74' title='Shantungosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/shantung.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=shantung&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=85&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Hadrosaurinae
+	</event>
+<event isDuration="true" start='95' end='70' title='Spinosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/spino.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=spino&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=86&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Spinosauridae, Spinosaurinae
+	</event>
+<event isDuration="true" start='76' end='74' title='Stegoceras'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/stegoceras.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=stegoceras&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=87&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria, Goyocephala, Homalocephaloidea, Pachycephalosauridae
+	</event>
+<event isDuration="true" start='76' end='74' title='Struthiomimus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/struthio.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=struthio&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=88&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Ornithomimosauria, Ornithomimidae
+	</event>
+<event isDuration="true" start='83' end='75' title='Struthiosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Struthiosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Struthiosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=89&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Nodosauridae
+	</event>
+<event isDuration="true" start='67' end='65' title='Stygimoloch'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Stygimoloch.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Stygimoloch&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=90&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria, Goyocephala, Homalocephaloidea, Pachycephalosauridae
+	</event>
+<event isDuration="true" start='76' end='70' title='Styracosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/styrac.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=styrac&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=91&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Centrosaurinae
+	</event>
+<event isDuration="true" start='99' end='89' title='Talarurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Talarurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Talarurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=92&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Ankylosauromorpha, Ankylosauria, Ankylosauridae
+	</event>
+<event isDuration="true" start='74' end='70' title='Tarbosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/tarbo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=tarbo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=93&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea, Tyrannosauridae, Tyrannosaurinae
+	</event>
+<event isDuration="true" start='84' end='65' title='Telmatosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Telmatosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Telmatosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=94&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae
+	</event>
+<event isDuration="true" start='85' end='70' title='Therizinosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/theriz.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=theriz&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=95&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Therizinosauroidea, Therizinosauridae
+	</event>
+<event isDuration="true" start='76' end='67' title='Thescelosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/thescelo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=thescelo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=96&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda
+	</event>
+<event isDuration="true" start='70' end='65' title='Torosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/toro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=toro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=97&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Chasmosaurinae
+	</event>
+<event isDuration="true" start='67' end='65' title='Triceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/triceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=triceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=98&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha, Ceratopsidae, Chasmosaurinae
+	</event>
+<event isDuration="true" start='74' end='65' title='Troodon'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/troo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=troo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=99&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptoria, Troodontidae
+	</event>
+<event isDuration="true" start='84' end='71' title='Tsintaosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Tsintaosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Tsintaosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=100&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia, Iguanodontoidea, Hadrosauridae, Euhadrosauria, Lambeosaurinae
+	</event>
+<event isDuration="true" start='75' end='72' title='Tylocephale'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Tylocephale.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Tylocephale&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=101&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria, Goyocephala, Homalocephaloidea, Pachycephalosauridae
+	</event>
+<event isDuration="true" start='67' end='65' title='Tyrannosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/tyran.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=tyran&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=102&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Tyrannosauroidea, Tyrannosauridae, Tyrannosaurinae
+	</event>
+<event isDuration="true" start='84' end='80' title='Velociraptor'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/veloc.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=veloc&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=103&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptora, Dromaeosauridae
+	</event>
+<event isDuration="true" start='84' end='71' title='Wannanosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Wannanosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Wannanosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=104&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Pachycephalosauria
+	</event>
+<event isDuration="true" start='94' end='89' title='Zuniceratops'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Zuniceratops.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=6&amp;disp=time&amp;identifier=Zuniceratops&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Cretaceous+dinosaurs%0d%0a&amp;beginIndex=105&amp;listPageURL=timeline%2edsml%3fperID%3d6%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ceraICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Marginocephalia, Ceratopsia, Neoceratopsia, Coronosauria, Ceratopsomorpha
+	</event>
+<event isDuration="true" start='153' end='135' title='Allosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/allo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=allo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=0&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Carnosauria, Allosauroidea, Allosauridae
+	</event>
+<event isDuration="true" start='154' end='145' title='Apatosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/apato.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=apato&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=1&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Diplodocidae
+	</event>
+<event isDuration="true" start='147' title='Archaeopteryx'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/archaeo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=archaeo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=2&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Tyrannoraptora, Maniraptoriformes, Maniraptora, Paraves, Eumaniraptoria, Avialae, Archaeopterygidae
+	</event>
+<event isDuration="true" start='155' end='145' title='Barosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/baro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=baro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=3&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Diplodocidae
+	</event>
+<event isDuration="true" start='155' end='140' title='Brachiosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/brach.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=brach&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=4&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes, Brachiosauridae
+	</event>
+<event isDuration="true" start='150' end='140' title='Camarasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/camara.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=camara&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=5&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Camarasauridae
+	</event>
+<event isDuration="true" start='155' end='145' title='Camptosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/campto.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=campto&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=6&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Ankylopollexia
+	</event>
+<event isDuration="true" start='150' end='144' title='Ceratosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/cerato.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=cerato&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=7&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Neoceratosauria
+	</event>
+<event isDuration="true" start='159' end='142' title='Chialingosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Chialingosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Chialingosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=8&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae, Stegosaurinae
+	</event>
+<event isDuration="true" start='159' end='142' title='Chinshakiangosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Chinshakiangosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Chinshakiangosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=9&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda
+	</event>
+<event isDuration="true" start='155' end='145' title='Coelurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/coelurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=coelurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=10&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria
+	</event>
+<event isDuration="true" start='145' end='140' title='Compsognathus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/compso.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=compso&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=11&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria, Compsognathidae
+	</event>
+<event isDuration="true" start='154' end='150' title='Dacentrurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/dacentr.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=dacentr&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=12&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae
+	</event>
+<event isDuration="true" start='150' end='135' title='Dicraeosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/dicraeo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=dicraeo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=13&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Dicraeosauridae
+	</event>
+<event isDuration="true" start='155' end='145' title='Diplodocus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/diplo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=diplo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=14&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Diplodocidae
+	</event>
+<event isDuration="true" start='155' end='140' title='Dryosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/dryo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=dryo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=15&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda, Iguanadontia, Euiguanadontia, Dryomorpha, Dryosauridae
+	</event>
+<event isDuration="true" start='154' end='151' title='Elaphrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Elaphrosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Elaphrosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=16&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Neoceratosauria
+	</event>
+<event isDuration="true" start='154' end='142' title='Euhelopus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Euhelopus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Euhelopus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=17&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda
+	</event>
+<event isDuration="true" start='154' end='142' title='Haplocanthosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Haplocanthosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Haplocanthosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=18&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Camarasauridae
+	</event>
+<event isDuration="true" start='155' end='150' title='Kentrosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/kentro.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=kentro&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=19&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae, Stegosaurinae
+	</event>
+<event isDuration="true" start='170' end='150' title='Lexovisaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Lexovisaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Lexovisaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=20&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae, Stegosaurinae
+	</event>
+<event isDuration="true" start='155' end='145' title='Mamenchisaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/mamench.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=mamench&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=21&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda
+	</event>
+<event isDuration="true" start='159' end='154' title='Metriacanthosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Metriacanthosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Metriacanthosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=22&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae
+	</event>
+<event isDuration="true" start='150' end='144' title='Ornitholestes'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/ornithol.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=ornithol&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=23&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria
+	</event>
+<event isDuration="true" start='164' end='159' title='Piatnitzkysaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Piatnitzkysaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Piatnitzkysaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=24&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Megalosauridae, Eustreptospondylinae
+	</event>
+<event isDuration="true" start='155' end='144' title='Seismosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/seismo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=seismo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=25&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea, Diplodocidae
+	</event>
+<event isDuration="true" start='155' end='144' title='Stegosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/stego.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=stego&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=26&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae, Stegosaurinae
+	</event>
+<event isDuration="true" start='155' end='144' title='Torvosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/torvo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=torvo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=27&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Megalosauridae, Megalosaurinae
+	</event>
+<event isDuration="true" start='157' end='154' title='Tuojiangosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/tuojiang.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=tuojiang&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=28&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Stegosauridae, Stegosaurinae
+	</event>
+<event isDuration="true" start='160' end='144' title='Yangchuanosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/yangchu.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=yangchu&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=29&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Carnosauria, Allosauroidea, Sinraptoridae
+	</event>
+<event isDuration="true" start='159' end='142' title='Yingshanosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Yingshanosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=4&amp;disp=time&amp;identifier=Yingshanosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Jurassic+dinosaurs%0d%0a&amp;beginIndex=30&amp;listPageURL=timeline%2edsml%3fperID%3d4%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria
+	</event>
+<event isDuration="true" start='175' end='160' title='Cetiosauriscus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/cetios.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=cetios&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=0&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Diplodocoidea
+	</event>
+<event isDuration="true" start='170' end='160' title='Cetiosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/cetio.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=cetio&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=1&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Cetiosauridae
+	</event>
+<event isDuration="true" start='170' title='Datousaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/datou.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=datou&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=2&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda
+	</event>
+<event isDuration="true" start='190' end='180' title='Emausaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Emausaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Emausaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=3&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora
+	</event>
+<event isDuration="true" start='165' title='Eustreptospondylus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Eustreptospondylus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Eustreptospondylus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=4&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Megalosauridae, Eustreptospondylinae
+	</event>
+<event isDuration="true" start='170' end='160' title='Gasosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/gaso.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=gaso&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=5&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda
+	</event>
+<event isDuration="true" start='170' end='160' title='Huayangosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/huayango.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=huayango&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=6&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Stegosauria, Huayangosauridae
+	</event>
+<event isDuration="true" start='169' end='164' title='Lapparentosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Lapparentosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Lapparentosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=7&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Neosauropoda, Macronaria, Camarasauromorpha, Titanosauriformes
+	</event>
+<event isDuration="true" start='170' end='155' title='Megalosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/megalo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=megalo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=8&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Spinosauroidea, Megalosauridae, Megalosaurinae
+	</event>
+<event isDuration="true" start='169' end='159' title='Omeisaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Omeisaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Omeisaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=9&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda
+	</event>
+<event isDuration="true" start='195' end='180' title='Podokesaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Podokesaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Podokesaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=10&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Coelophysoidea
+	</event>
+<event isDuration="true" start='169' end='164' title='Proceratosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Proceratosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Proceratosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=11&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Coelurosauria
+	</event>
+<event isDuration="true" start='177' end='169' title='Rhoetosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Rhoetosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Rhoetosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=12&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda
+	</event>
+<event isDuration="true" start='170' end='160' title='Shunosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/shuno.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=shuno&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=13&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda
+	</event>
+<event isDuration="true" start='169' end='159' title='Yandusaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Yandusaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=3&amp;disp=time&amp;identifier=Yandusaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Middle+Jurassic+dinosaurs%0d%0a&amp;beginIndex=14&amp;listPageURL=timeline%2edsml%3fperID%3d3%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Ornithopoda, Euornithopoda
+	</event>
+<event isDuration="true" start='195' end='180' title='Ammosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/ammo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=ammo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=0&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Anchisauria, Anchisauridae
+	</event>
+<event isDuration="true" start='190' title='Anchisaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/anchi.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=anchi&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=1&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Anchisauria, Anchisauridae
+	</event>
+<event isDuration="true" start='185' end='170' title='Barapasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/barapa.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=barapa&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=2&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Eusauropoda, Cetiosauridae
+	</event>
+<event isDuration="true" start='170' title='Cryolophosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/cryolopho.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=cryolopho&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=3&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Tetanurae, Avetherapoda, Carnosauria
+	</event>
+<event isDuration="true" start='190' title='Dilophosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/dilopho.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=dilopho&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=4&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Coelophysoidea
+	</event>
+<event isDuration="true" start='205' title='Heterodontosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/hetero.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=hetero&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=5&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Heterodontosauridae
+	</event>
+<event isDuration="true" start='205' end='180' title='Kotasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Kotasaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=Kotasaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=6&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda
+	</event>
+<event isDuration="true" start='213' end='200' title='Lesothosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/lesotho.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=lesotho&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=7&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='unknown.png'
+	>
+	Dinosauria, Ornithischia
+	</event>
+<event isDuration="true" start='200' end='195' title='Lufengosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/lufengos.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=lufengos&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=8&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Plateosauria, Plateosauridae
+	</event>
+<event isDuration="true" start='208' end='204' title='Massospondylus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/massospon.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=massospon&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=9&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Plateosauria, Plateosauridae
+	</event>
+<event isDuration="true" start='208' end='194' title='Scelidosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/scelid.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=scelid&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=10&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora, Scelidosauridae
+	</event>
+<event isDuration="true" start='205' end='202' title='Scutellosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Scutellosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=Scutellosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=11&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/ankyICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Thyreophora
+	</event>
+<event isDuration="true" start='205' end='202' title='Vulcanodon'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Vulcanodon.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=Vulcanodon&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=12&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Sauropoda, Vulcanodontidae
+	</event>
+<event isDuration="true" start='205' end='190' title='Yunnanosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Yunnanosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=2&amp;disp=time&amp;identifier=Yunnanosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Lower+Jurassic+dinosaurs%0d%0a&amp;beginIndex=13&amp;listPageURL=timeline%2edsml%3fperID%3d2%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Plateosauria
+	</event>
+<event isDuration="true" start='210' end='205' title='Avalonia'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Avalonia.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Avalonia&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=0&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Anchisauria, Melanorosauridae
+	</event>
+<event isDuration="true" start='227' end='221' title='Azendohsaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Azendohsaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Azendohsaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=1&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda
+	</event>
+<event isDuration="true" start='225' end='220' title='Coelophysis'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/coelo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=coelo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=2&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Coelophysoidea, Coelophysidae
+	</event>
+<event isDuration="true" start='221' end='210' title='Coloradisaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Coloradisaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Coloradisaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=3&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Plateosauria, Plateosauridae
+	</event>
+<event isDuration="true" start='228' title='Eoraptor'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/eor.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=eor&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=4&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda
+	</event>
+<event isDuration="true" start='227' end='210' title='Euskelosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Euskelosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Euskelosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=5&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Plateosauria, Plateosauridae
+	</event>
+<event isDuration="true" start='228' title='Herrerasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/herrera.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=herrera&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=6&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Herrerasauridae
+	</event>
+<event isDuration="true" start='205' end='202' title='Liliensternus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Liliensternus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Liliensternus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=7&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Coelophysoidea
+	</event>
+<event isDuration="true" start='205' end='195' title='Lycorhinus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Lycorhinus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Lycorhinus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=8&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia, Genasauria, Cerapoda, Heterodontosauridae
+	</event>
+<event isDuration="true" start='227' end='221' title='Melanorosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Melanorosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Melanorosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=9&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Anchisauria, Melanorosauridae
+	</event>
+<event isDuration="true" start='221' end='210' title='Mussaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/muss.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=muss&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=10&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Plateosauria, Plateosauridae
+	</event>
+<event isDuration="true" start='227' end='221' title='Pisanosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Pisanosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Pisanosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=11&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/iguaICON.gif'
+	>
+	Dinosauria, Ornithischia
+	</event>
+<event isDuration="true" start='210' title='Plateosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/plateo.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=plateo&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=12&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Plateosauria, Plateosauridae
+	</event>
+<event isDuration="true" start='221' end='210' title='Procompsognathus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Procompsognathus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Procompsognathus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=13&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Coelophysoidea
+	</event>
+<event isDuration="true" start='221' end='210' title='Riojasaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Riojasaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Riojasaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=14&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda, Anchisauria, Melanorosauridae
+	</event>
+<event isDuration="true" start='221' end='210' title='Saltopus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Saltopus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Saltopus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=15&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	, Dinosauria
+	</event>
+<event isDuration="true" start='227' end='221' title='Staurikosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Staurikosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Staurikosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=16&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/tyraICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Herrerasauridae
+	</event>
+<event isDuration="true" start='205' end='190' title='Syntarsus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Syntarsus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Syntarsus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=17&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/coelICON.gif'
+	>
+	Dinosauria, Saurischia, Theropoda, Neotherapoda, Ceratosauria, Coelophysoidea, Coelophysidae
+	</event>
+<event isDuration="true" start='227' end='205' title='Thecodontosaurus'
+	image='http://internt.nhm.ac.uk/resources/nature-online/life/dinosaurs/dino-directory/drawing/thumb/Thecodontosaurus.gif'
+	link='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/detail.dsml?perID=1&amp;disp=time&amp;identifier=Thecodontosaurus&amp;sort=Genus&amp;dataHeaderText_EX=%0d%0a%09Upper+Triassic+dinosaurs%0d%0a&amp;beginIndex=18&amp;listPageURL=timeline%2edsml%3fperID%3d1%26disp%3dtime%26sort%3dGenus'
+	thumbnail='http://internt.nhm.ac.uk/jdsml/nature-online/dino-directory/images/body/saurICON.gif'
+	>
+	Dinosauria, Saurischia, Sauropodomorpha, Prosauropoda
+	</event>
+
+</data>

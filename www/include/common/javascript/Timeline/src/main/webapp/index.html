@@ -1,0 +1,215 @@
+<html>
+<head>
+    <title>SIMILE | Timeline</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+    <link rel="alternate" type="application/rdf+xml" href="doap.rdf" />
+    
+    <script src="api/timeline-api.js" type="text/javascript"></script>
+    <script>
+        var tl;
+        function onLoad() {
+            var eventSource = new Timeline.DefaultEventSource();
+            
+            var zones = [
+                {   start:    "Fri Nov 22 1963 00:00:00 GMT-0600",
+                    end:      "Mon Nov 25 1963 00:00:00 GMT-0600",
+                    magnify:  10,
+                    unit:     Timeline.DateTime.DAY
+                },
+                {   start:    "Fri Nov 22 1963 09:00:00 GMT-0600",
+                    end:      "Sun Nov 24 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.HOUR
+                },
+                {   start:    "Fri Nov 22 1963 11:00:00 GMT-0600",
+                    end:      "Sat Nov 23 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 10
+                },
+                {   start:    "Fri Nov 22 1963 12:00:00 GMT-0600",
+                    end:      "Fri Nov 22 1963 14:00:00 GMT-0600",
+                    magnify:  3,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 5
+                }
+            ];
+            var zones2 = [
+                {   start:    "Fri Nov 22 1963 00:00:00 GMT-0600",
+                    end:      "Mon Nov 25 1963 00:00:00 GMT-0600",
+                    magnify:  10,
+                    unit:     Timeline.DateTime.WEEK
+                },
+                {   start:    "Fri Nov 22 1963 09:00:00 GMT-0600",
+                    end:      "Sun Nov 24 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.DAY
+                },
+                {   start:    "Fri Nov 22 1963 11:00:00 GMT-0600",
+                    end:      "Sat Nov 23 1963 00:00:00 GMT-0600",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 60
+                },
+                {   start:    "Fri Nov 22 1963 12:00:00 GMT-0600",
+                    end:      "Fri Nov 22 1963 14:00:00 GMT-0600",
+                    magnify:  3,
+                    unit:     Timeline.DateTime.MINUTE,
+                    multiple: 15
+                }
+            ];
+            
+            var theme = Timeline.ClassicTheme.create();
+            theme.event.label.width = 250; // px
+            theme.event.bubble.width = 250;
+            theme.event.bubble.height = 200;
+            
+            var date = "Fri Nov 22 1963 13:00:00 GMT-0600"
+            var bandInfos = [
+                Timeline.createHotZoneBandInfo({
+                    width:          "75%", 
+                    intervalUnit:   Timeline.DateTime.WEEK, 
+                    intervalPixels: 200,
+                    zones:          zones,
+                    eventSource:    eventSource,
+                    date:           date,
+                    timeZone:       -6,
+                    theme:          theme
+                }),
+                Timeline.createHotZoneBandInfo({
+                    width:          "25%", 
+                    intervalUnit:   Timeline.DateTime.MONTH, 
+                    intervalPixels: 200,
+                    zones:          zones2, 
+                    eventSource:    eventSource,
+                    date:           date, 
+                    timeZone:       -6,
+                    showEventText:  false, 
+                    trackHeight:    0.5,
+                    trackGap:       0.2,
+                    theme:          theme
+                })
+            ];
+            bandInfos[1].syncWith = 0;
+            bandInfos[1].highlight = true;
+            bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
+            
+            for (var i = 0; i < bandInfos.length; i++) {
+                bandInfos[i].decorators = [
+                    new Timeline.SpanHighlightDecorator({
+                        startDate:  "Fri Nov 22 1963 12:30:00 GMT-0600",
+                        endDate:    "Fri Nov 22 1963 13:00:00 GMT-0600",
+                        color:      "#FFC080",
+                        opacity:    50,
+                        startLabel: "shot",
+                        endLabel:   "t.o.d.",
+                        theme:      theme
+                    }),
+                    new Timeline.PointHighlightDecorator({
+                        date:       "Fri Nov 22 1963 14:38:00 GMT-0600",
+                        color:      "#FFC080",
+                        opacity:    50,
+                        theme:      theme
+                    }),
+                    new Timeline.PointHighlightDecorator({
+                        date:       "Sun Nov 24 1963 13:00:00 GMT-0600",
+                        color:      "#FFC080",
+                        opacity:    50,
+                        theme:      theme
+                    })
+                ];
+            }
+            
+            tl = Timeline.create(document.getElementById("tl"), bandInfos, Timeline.HORIZONTAL);
+            Timeline.loadXML("examples/jfk/jfk.xml", function(xml, url) { eventSource.loadXML(xml, url); });
+        }
+        
+        var resizeTimerID = null;
+        function onResize() {
+            if (resizeTimerID == null) {
+                resizeTimerID = window.setTimeout(function() {
+                    resizeTimerID = null;
+                    tl.layout();
+                }, 500);
+            }
+        }
+    </script>
+</head>
+<body onload="onLoad();" onresize="onResize();">
+<!--#include virtual="sidebar.html" -->
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><span>Timeline</span></li>
+</ul>
+
+<div id="body">
+    <h1>Timeline</h1>
+    <p>Timeline is a DHTML-based AJAXy widget for visualizing time-based events.
+        It is like <a href="http://maps.google.com/">Google Maps</a> for time-based information.
+        Below is a live example that you can play with. Pan the timeline by
+        dragging it horizontally.
+    </p>
+
+    <div id="tl" class="timeline-default" style="height: 400px; margin: 2em;">
+    </div>
+    
+    <p>Just like Google Maps, Timeline can be used with zero software installation,
+        server-side or client-side. And like Google Maps, you can populate Timeline
+        with data by pointing it to an XML file (here is the 
+        <a href="examples/jfk/jfk.xml">data file</a> for the timeline above).
+        But Timeline is not limited to only that means of loading data; for instance,
+        we have just added <a href="examples/cubism/cubism.html">JSON support</a>.
+    </p>
+    
+    <h2>Live Examples</h2>
+    <ul>
+        <li><a href="examples/religions/religions.html">Religion Timelines</a>:
+            recommended to be viewed on a <em>huge monitor</em>, 
+            2000 years of Jewish and Christianity history, all
+            mashed up, scrolling side-by-side.
+        </li>
+        
+        <li><a href="examples/dinosaurs/dinosaurs2.html">Dinosaurs</a>:
+            recommended to be viewed on a huge monitor, showing Timeline
+            working on geological scale events.
+        </li>
+        
+        <li>... and <a href="examples/">more</a> ...</li>
+    </ul>
+        
+    <h2>Feedback / Contribute</h2>
+    <ul>
+        <li>Send questions/comments/ideas/discussions/etc. to our 
+            <a href="mailto:general@simile.mit.edu">mailing list</a>
+            (<a href="http://simile.mit.edu/mailman/listinfo/general">archive/sign-up</a>)
+        </li>
+        <li>Contribute to Timeline's <a href="http://simile.mit.edu/wiki2/Timeline">wiki</a>
+        </li>
+        <li>Log bugs/issues in our <a href="http://simile.mit.edu/issues/browse/TIMELINE">issue tracker</a> 
+            (<a href="http://simile.mit.edu/issues/secure/Signup!default.jspa">sign-up</a>)
+        </li>
+    </ul>
+    
+    <h2>Documentation</h2>
+    <ul>
+        <li><a href="docs/">Static documentation</a>, for now...</li>
+        <li>... but we really wish to transfer it over to the <a href=http://simile.mit.edu/wiki2/Timeline">wiki</a> so that it can be better maintained</li>
+        <li><a href="http://simile.mit.edu/repository/timeline/">Code on SVN repository</a></li>
+    </ul>
+    
+    <h2>Licensing</h2>
+    <p>Timeline is open source software and is licensed under the 
+        <a href="http://simile.mit.edu/license.html">BSD license</a>.</p>
+    </p>
+    
+    <h2>Credits</h2>
+    <p>This software is sponsored by <a href="http://mellon.org/">The Andrew W. Mellon Foundation</a>
+        and is maintained by the SIMILE project, in particular:
+        <ul>
+            <li><a href="http://people.csail.mit.edu/people/dfhuynh/">David Fran&ccedil;ois Huynh</a>,
+                dfhuynh at csail.mit.edu
+            </li>
+        </ul>
+    </p>
+</body>
+</html>

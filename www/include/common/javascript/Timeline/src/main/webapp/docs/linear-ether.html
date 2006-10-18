@@ -1,0 +1,88 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | LinearEther class</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+</head>
+<body>
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>LinearEther class</span></li>
+</ul>
+
+<div id="body">
+    <h1>Timeline.LinearEther class</h1>
+    
+    <p>On a linear <a href="ethers.html"><em>ether</em></a>, equal pixel
+        distances map to equal time spans, and equal time spans map to
+        equal pixel distances.
+    </p>
+    
+    <h2>Initialization</h2>
+    <p>The constructor of <span class="code">Timeline.LinearEther</span> takes an
+        object whose fields (listed below) specify initialization
+        settings for the ether.
+    </p>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">interval</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, a number of milliseconds in some date/time 
+            interval. The interval is intentionally left unspecified for 
+            your discretion. For example, if you want to use the interval
+            of a day, you can construct your initialization object as
+            follows:
+            <pre class="code-block">
+new Timeline.LinearEther({
+    interval: 1000 * 60 * 60 * 24,
+    ...
+});</pre>
+            or in a more understandable manner,
+            <pre class="code-block">
+new Timeline.LinearEther({
+    interval: Timeline.<a href="date-time.html">DateTime</a>.gregorianUnitLengths[Timeline.<a href="date-time.html">DateTime</a>.DAY],
+    ...
+});</pre>
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">pixelsPerInterval</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, the number of pixels corresponding to the
+            date/time interval above. Start off with <span class="code">100</span>
+            and then adjust to achieve the effect you want.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">startsOn</span>, 
+            <span class="itf-member-name">endsOn</span>, 
+            <span class="itf-member-name">centersOn</span>
+        </div>
+        <div class="itf-member-description">
+            <em>optional</em>. Any one of those fields can be specified to
+            set (directly or indirectly) the origin of the ether. These can
+            be <span class="code">String</span> or <span class="code">Date</span>
+            objects; they are parsed using 
+            <span class="code">Timeline.<a href="date-time.html">DateTime</a>.parseGregorianDateTime()</span>
+            into <span class="code">Date</span> objects. If none of these
+            fields is specified, the current date is used to center the
+            ether.
+        </div>
+    </div>
+    
+    <h2>Related Topics</h2>
+    <ul>
+        <li><a href="ethers.html">Ethers</a>, basics and interface</li>
+        <li>Timeline.<a href="gregorian-ether-painter.html">GregorianEtherPainter</a>, the default ether painter to be used for linear ethers</li>
+    </ul>
+</div>
+</body>
+</html>

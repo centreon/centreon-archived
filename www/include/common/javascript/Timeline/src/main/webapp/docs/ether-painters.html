@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | Ether Painters</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+</head>
+<body>
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>Ether Painters</span></li>
+</ul>
+
+<div id="body">
+    <h1>Ether Painters</h1>
+    
+    <p>An <em>ether painter</em> is an object made use by a <a href="bands.html"><em>band</em></a>
+        to paint markings on its background. These markings make the
+        mapping from pixels to date/time of the band's
+        <a href="ethers.html"><em>ether</em></a> visible to the
+        user and helps her gauge when each particular event happens.
+        An ether painter should be constructed by client code for 
+        the initialization of a band in a timeline, and then not
+        touched again by client code.
+    </p>
+    
+    <h2>Interface</h2>
+    <p>An ether painter must expose the following Javascript interface:
+    </p>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">constructor</span>
+            ( <span class="itf-member-param">params</span> )
+        </div>
+        <div class="itf-member-description">
+            <span class="itf-member-param">params</span> is an object whose
+            fields carry initialization settings for the ether painter. Different
+            ether painter classes require different fields in this initialization
+            object. Refer to the documentation of each ether painter class for
+            details (see <a href="#ether-painters-in-library">Ether Painters in Library</a> below).
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">initialize</span>
+            ( <span class="itf-member-param">band</span>,
+            <span class="itf-member-param">timeline</span> )
+        </div>
+        <div class="itf-member-description">
+            The ether painter is to paint the background of the given
+            <a href="bands.html"><span class="itf-member-param">band</span></a>
+            of the given
+            <a href="timelines.html"><span class="itf-member-param">timeline</span></a>.
+            This method is called by the band itself as it is being 
+            initialized. Client code is not supposed to call this method.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">paint</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            (Re)paint the band's background. The band will call this method
+            when it needs to be (re)painted, at construction time as well
+            as whenever its origin is shifted. Client code is not supposed
+            to call this method.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">softPaint</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            (Re)paint any part of the band's background that is positioned
+            relative to the visible area of the band. The band will call 
+            this method whenever it is scrolled. Client code is not supposed
+            to call this method.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">setHighlight</span>
+            ( <span class="itf-member-param">startDate</span>,
+            <span class="itf-member-param">endDate</span> )
+        </div>
+        <div class="itf-member-description">
+            Show a highlight between the two given 
+            <span class="code">Date</span> objects.
+        </div>
+    </div>
+    
+    <h2><a name="ether-painters-in-library">Ether Painters in Library</a></h2>
+    <p>There are currently 2 ether painter classes provided by default:
+        <span class="code">Timeline.<a href="gregorian-ether-painter.html">GregorianEtherPainter</a></span> and 
+        <span class="code">Timeline.<a href="hot-zone-gregorian-ether-painter.html">HotZoneGregorianEtherPainter</a></span>.
+        They all expose the interface above, but they differ in their
+        initialization parameters.
+    </p>
+    <p>There is also an undocumented <span class="code">Timeline.<a href="../api/scripts/ext/japanese-eras.js">JapaneseEraEtherPainter</a></span>.
+</div>
+</body>
+</html>

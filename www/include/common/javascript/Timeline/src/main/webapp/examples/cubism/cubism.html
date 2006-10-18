@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Examples | Cubism</title>
+    <link rel='stylesheet' href='../styles.css' type='text/css' />
+    <script src="../../api/timeline-api.js" type="text/javascript"></script>
+    <script>
+        var tl;
+        function onLoad() {
+            var eventSource = new Timeline.DefaultEventSource(0);
+            
+            var theme = Timeline.ClassicTheme.create();
+            theme.event.bubble.width = 320;
+            theme.event.bubble.height = 220;
+            var d = Timeline.DateTime.parseGregorianDateTime("1900")
+            var bandInfos = [
+                Timeline.createBandInfo({
+                    width:          "100%", 
+                    intervalUnit:   Timeline.DateTime.DECADE, 
+                    intervalPixels: 200,
+                    eventSource:    eventSource,
+                    date:           d,
+                    theme:          theme
+                })
+            ];
+            
+            tl = Timeline.create(document.getElementById("tl"), bandInfos, Timeline.HORIZONTAL);
+            Timeline.loadJSON("cubism.js", function(json, url) {
+                eventSource.loadJSON(json, url);
+            });
+        }
+        var resizeTimerID = null;
+        function onResize() {
+            if (resizeTimerID == null) {
+                resizeTimerID = window.setTimeout(function() {
+                    resizeTimerID = null;
+                    tl.layout();
+                }, 500);
+            }
+        }
+    </script>
+</head>
+<body onload="onLoad();" onresize="onResize();">
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../../" title="Timeline">Timeline</a></li>
+  <li><a href="../" title="Examples">Examples</a></li>
+  <li><span>Cubism</span></li>
+</ul>
+<div id="body">
+    <h1>Cubism</h1>
+    
+    <p>Demonstrating the use of <a href="cubism.js">JSON data</a>, thanks to Juan Manuel Caicedo.
+    </p>
+    <p>Sources:
+        <ul>
+            <li><a href="http://en.wikipedia.org/wiki/Monet">http://en.wikipedia.org/wiki/Monet</a></li>
+            <li><a href="http://www.accents-n-art.com/artists/claude-monet-biography.html">http://www.accents-n-art.com/artists/claude-monet-biography.html</a></li>
+        </ul>
+    </p>
+    <div id="tl" class="timeline-default" style="height: 300px;">
+    </div>
+</div>
+</body>
+</html>

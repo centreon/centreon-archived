@@ -1,0 +1,233 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | HotZoneGregorianEtherPainter class</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+    <script src="../api/timeline-api.js" type="text/javascript"></script>
+    <script>
+        var tl;
+        function onLoad() {
+            var bandInfos = [
+                Timeline.createHotZoneBandInfo({
+                    width:          "70%", 
+                    intervalUnit:   Timeline.DateTime.DAY, 
+                    intervalPixels: 300,
+                    zones: [
+                        {   start:          "Fri Nov 22 1963 00:00:00 GMT-0600",
+                            end:            "Mon Nov 25 1963 00:00:00 GMT-0600",
+                            magnify:        3,
+                            unit:           Timeline.DateTime.HOUR,
+                            multiple:       3
+                        },
+                        {   start:          "Fri Nov 22 1963 09:00:00 GMT-0600",
+                            end:            "Fri Nov 22 1963 21:00:00 GMT-0600",
+                            magnify:        5,
+                            unit:           Timeline.DateTime.MINUTE,
+                            multiple:       15
+                        }
+                    ],
+                    date: "Fri Nov 22 1963 03:00:00 GMT-0600",
+                    timeZone: -6
+                }),
+                Timeline.createBandInfo({
+                    width:          "30%", 
+                    intervalUnit:   Timeline.DateTime.WEEK, 
+                    intervalPixels: 300,
+                    date: "Fri Nov 22 1963 03:00:00 GMT-0600",
+                    timeZone: -6
+                })
+            ];
+            bandInfos[1].syncWith = 0;
+            bandInfos[1].highlight = true;
+            tl = Timeline.create(document.getElementById("tl"), bandInfos, 
+                Timeline.HORIZONTAL);
+        }
+    </script>
+</head>
+<body onload="onLoad();">
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>HotZoneGregorianEtherPainter class</span></li>
+</ul>
+
+<div id="body">
+    <h1>Timeline.HotZoneGregorianEtherPainter class</h1>
+    
+    <p>A hot-zone Gregorian <a href="ether-painters.html"><em>ether painter</em></a>
+        is just like a 
+        <span class="code">Timeline.<a href="gregorian-ether-painter.html">GregorianEtherPainter</a></span>,
+        except that it also handles the hot-zones of a
+        <a href="hot-zone-ether.html">hot-zone ether</a>.
+    </p>
+    
+    <h2>Initialization</h2>
+    <p>The constructor of <span class="code">Timeline.HotZoneGregorianEtherPainter</span> 
+        takes an object whose fields (listed below) specify initialization
+        settings for the ether.
+    </p>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">theme</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, a <a href="themes.html">theme</a> object that
+            stores default visual settings. In fact, some visual settings
+            can only be set in this theme object.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">unit</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, one of the Gregorian calendar unit defined in
+            <span class="code">Timeline.<a href="date-time.html">DateTime</a></span>,
+            e.g., <span class="code">Timeline.<a href="date-time.html">DateTime</a>.WEEK</span>.
+            This argument specifies the interval at which ticks and labels
+            are painted on the band's background <em>outside the hot-zones</em>.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">align</span>
+        </div>
+        <div class="itf-member-description">
+            <em>optional</em>, one of 
+            <span class="code">"Left"</span>,
+            <span class="code">"Right"</span>,
+            <span class="code">"Top"</span>, and
+            <span class="code">"Bottom"</span>, specifying which edge of the band
+            markings are drawn. By default, markings are drawn on the bottom edges
+            of bands in horizontal timelines, and on the right edges of bands in
+            vertical timelines. This setting overrides either the
+            <span class="code">hAlign</span> or the
+            <span class="code">vAlign</span> field of
+            <span class="itf-member-name">theme</span><span class="code">.ether.interval.marker</span>.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">showLine</span>
+        </div>
+        <div class="itf-member-description">
+            <em>optional</em>, a boolean specifying whether full lines (from edge
+            to edge)should be drawn at regular intervals. This setting overrides
+            <span class="itf-member-name">theme</span><span class="code">.ether.interval.line.show</span>.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">zones</span>
+        </div>
+        <div class="itf-member-description">
+            <em>required</em>, an array describing the hot zones. Each element of
+            this array is an object with the following fields:
+            
+            <div class="itf-member">
+                <div class="itf-member-prototype">
+                    <span class="itf-member-name">startTime</span>
+                </div>
+                <div class="itf-member-description">
+                    <em>required</em>, a <span class="code">String</span> or a
+                    <span class="code">Date</span> object that specifies the
+                    beginning date/time of the zone. It is parsed by 
+                    <span class="code">Timeline.<a href="date-time.html">DateTime</a>.parseGregorianDateTime()</span>
+                    to get a <span class="code">Date</span> object.
+                </div>
+            </div>
+            
+            <div class="itf-member">
+                <div class="itf-member-prototype">
+                    <span class="itf-member-name">endTime</span>
+                </div>
+                <div class="itf-member-description">
+                    <em>required</em>, a <span class="code">String</span> or a
+                    <span class="code">Date</span> object that specifies the
+                    ending date/time of the zone. It is parsed by 
+                    <span class="code">Timeline.<a href="date-time.html">DateTime</a>.parseGregorianDateTime()</span>
+                    to get a <span class="code">Date</span> object.
+                </div>
+            </div>
+            
+            <div class="itf-member">
+                <div class="itf-member-prototype">
+                    <span class="itf-member-name">unit</span>
+                </div>
+                <div class="itf-member-description">
+                    <em>required</em>, one of the Gregorian calendar unit defined in
+                    <span class="code">Timeline.<a href="date-time.html">DateTime</a></span>,
+                    e.g., <span class="code">Timeline.<a href="date-time.html">DateTime</a>.MINUTE</span>.
+                    This argument specifies the interval at which ticks and labels
+                    are painted on the band's background <em>inside this hot-zone</em>.
+                </div>
+            </div>
+            
+            <div class="itf-member">
+                <div class="itf-member-prototype">
+                    <span class="itf-member-name">multiple</span>
+                </div>
+                <div class="itf-member-description">
+                    <em>optional</em>, default to 1. A label is painted for every
+                    <span class="itf-member-name">multiple</span> of
+                    <span class="itf-member-name">unit</span>. For example, if
+                    <span class="itf-member-name">unit</span> is 
+                    <span class="code">Timeline.<a href="date-time.html">DateTime</a>.MINUTE</span> and
+                    <span class="itf-member-name">multiple</span> is 15, then there
+                    is a label for every 15 minutes (i.e., 15, 30, 45,...).
+                </div>
+            </div>
+            
+            Note that you can and should use the same array you use to initialize the 
+            corresponding hot-zone ether. Doing so avoids mistakenly define
+            different zones for the ether and the ether painter. For each
+            element in the <span class="itf-member-name">zones</span> array,
+            specify the union of fields:
+            <span class="itf-member-name">startTime</span>,
+            <span class="itf-member-name">endTime</span>,
+            <span class="itf-member-name">magnify</span>,
+            <span class="itf-member-name">unit</span>, and (optionally)
+            <span class="itf-member-name">multiple</span>.
+        </div>
+    </div>
+    
+    <h2><a name="example">Example</a></h2>
+    <p>Here is an example of constructing a hot-zone Gregorian ether painter:
+        <pre class="code-block">
+new Timeline.HotZoneGregorianEtherPainter({
+    theme: Timeline.getDefaultTheme(),
+    unit: Timeline.<a href="date-time.html">DateTime</a>.DAY,
+    zones: [
+        {   start:          "Fri Nov 22 1963 00:00:00 GMT-0600",
+            end:            "Mon Nov 25 1963 00:00:00 GMT-0600",
+            unit:           Timeline.DateTime.HOUR,
+            multiple:       3
+        },
+        {   start:          "Fri Nov 22 1963 09:00:00 GMT-0600",
+            end:            "Fri Nov 22 1963 21:00:00 GMT-0600",
+            unit:           Timeline.DateTime.MINUTE,
+            multiple:       15
+        }
+    ]
+});</pre>
+        The ether painter paints a label for each day except during
+        November 22, 23, and 24, 1963. On these 3 days, a label is
+        painted for every 3 hours, except from 9am to 9pm on November
+        22 when a label is painted for every 15 minutes.
+    </p>
+    
+    <div id="tl" class="timeline-default" style="height: 200px"></div>
+    
+    <h2>Related Topics</h2>
+    <ul>
+        <li><a href="ether-painters.html">Ether painters</a>, basics and interface</li>
+        <li>Timeline.<a href="hot-zone-ether.html">HotZoneEther</a>, the ether class that this ether painter class is usually used for</li>
+    </ul>
+</div>
+</body>
+</html>

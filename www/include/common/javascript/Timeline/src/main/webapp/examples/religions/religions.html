@@ -1,0 +1,176 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Examples | Religion Timelines</title>
+    <link rel='stylesheet' href='../styles.css' type='text/css' />
+    <script src="../../api/timeline-api.js" type="text/javascript"></script>
+    <script src="../examples.js" type="text/javascript"></script>
+    <script>
+        var tl;
+        function onLoad() {
+            var eventSourceJewish = new Timeline.DefaultEventSource(0);
+            var eventSourceChristianity = new Timeline.DefaultEventSource(0);
+            
+            var theme = Timeline.ClassicTheme.create();
+            theme.event.bubble.width = 320;
+            theme.event.bubble.height = 220;
+            theme.event.track.height = 1.5;
+            theme.event.track.gap = 0.1;
+            theme.ether.backgroundColors = [
+                "#D1CECA",
+                "#E7DFD6",
+                "#E8E8F4",
+                "#D0D0E8"
+            ];
+            
+            var zones = [
+                {   start:    "0",
+                    end:      "2100",
+                    magnify:  10,
+                    unit:     Timeline.DateTime.DECADE
+                },
+                {   start:    "1800",
+                    end:      "2100",
+                    magnify:  3,
+                    unit:     Timeline.DateTime.YEAR,
+                    multiple: 5
+                }
+            ];
+            var zones2 = [
+                {   start:    "0",
+                    end:      "2100",
+                    magnify:  5,
+                    unit:     Timeline.DateTime.DECADE
+                },
+                {   start:    "1800",
+                    end:      "2100",
+                    magnify:  3,
+                    unit:     Timeline.DateTime.YEAR,
+                    multiple: 10
+                }
+            ];
+            
+            var d = Timeline.DateTime.parseGregorianDateTime("0");
+            var bandInfos = [
+                Timeline.createHotZoneBandInfo({
+                    width:          "10%", 
+                    intervalUnit:   Timeline.DateTime.CENTURY, 
+                    intervalPixels: 70,
+                    zones:          zones2,
+                    eventSource:    eventSourceJewish,
+                    date:           d,
+                    showEventText:  false,
+                    trackHeight:    0.5,
+                    trackGap:       0.2,
+                    theme:          theme
+                }),
+                Timeline.createHotZoneBandInfo({
+                    width:          "30%", 
+                    intervalUnit:   Timeline.DateTime.CENTURY, 
+                    intervalPixels: 250,
+                    zones:          zones,
+                    eventSource:    eventSourceJewish,
+                    date:           d,
+                    timeZone:       -6,
+                    theme:          theme
+                }),
+                Timeline.createHotZoneBandInfo({
+                    width:          "42%", 
+                    intervalUnit:   Timeline.DateTime.CENTURY, 
+                    intervalPixels: 250,
+                    zones:          zones,
+                    eventSource:    eventSourceChristianity,
+                    date:           d,
+                    timeZone:       -6,
+                    theme:          theme
+                }),
+                Timeline.createHotZoneBandInfo({
+                    width:          "18%", 
+                    intervalUnit:   Timeline.DateTime.CENTURY, 
+                    intervalPixels: 70,
+                    zones:          zones2,
+                    eventSource:    eventSourceChristianity,
+                    date:           d,
+                    showEventText:  false,
+                    trackHeight:    0.5,
+                    trackGap:       0.2,
+                    theme:          theme
+                })
+            ];
+            bandInfos[0].syncWith = 1;
+            bandInfos[0].highlight = true;
+            bandInfos[0].eventPainter.setLayout(bandInfos[1].eventPainter.getLayout());
+            
+            bandInfos[2].syncWith = 1;
+            bandInfos[3].syncWith = 2;
+            bandInfos[3].highlight = true;
+            bandInfos[3].eventPainter.setLayout(bandInfos[2].eventPainter.getLayout());
+            
+            tl = Timeline.create(document.getElementById("tl"), bandInfos, Timeline.HORIZONTAL);
+            Timeline.loadXML("jewish.xml", function(xml, url) {
+                eventSourceJewish.loadXML(xml, url);
+                document.getElementById("jewish-event-count").innerHTML = eventSourceJewish.getCount();
+            });
+            Timeline.loadXML("christianity.xml", function(xml, url) {
+                eventSourceChristianity.loadXML(xml, url);
+                document.getElementById("christianity-event-count").innerHTML = eventSourceChristianity.getCount();
+            });
+            
+            setupFilterHighlightControls(document.getElementById("jewish-controls"), tl, [0,1], theme);
+            setupFilterHighlightControls(document.getElementById("christianity-controls"), tl, [2,3], theme);
+        }
+        var resizeTimerID = null;
+        function onResize() {
+            if (resizeTimerID == null) {
+                resizeTimerID = window.setTimeout(function() {
+                    resizeTimerID = null;
+                    tl.layout();
+                }, 500);
+            }
+        }
+    </script>
+</head>
+<body onload="onLoad();" onresize="onResize();">
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../../" title="Timeline">Timeline</a></li>
+  <li><a href="../" title="Examples">Examples</a></li>
+  <li><span>Religion Timelines</span></li>
+</ul>
+
+<div id="body">
+    <h1>Religion Timelines: Jewish History + Christianity History</h1>
+    <p>Sources:
+        <a href="http://en.wikipedia.org/wiki/Timeline_of_Jewish_history">Timeline of Jewish history (Wikipedia)</a>,
+        <a href="http://en.wikipedia.org/wiki/Timeline_of_Christianity">Timeline of Christianity</a>.
+        The Jewish timeline (top) contains <span id="jewish-event-count"></span> events while 
+        the Christianity timeline contains <span id="christianity-event-count"></span> events.
+        Titles of events have been phrased by David Huynh, author of this timeline example.
+        The phrasing might not be of journalistic quality. The information in this example
+        should not be used as an official source.
+    </p>
+    
+    <div style="width: 100%">
+        <table style="text-align: center; width: 100%">
+            <tr>
+                <td><a href="javascript:centerTimeline(1);">1 AD</a></td>
+                <td><a href="javascript:centerTimeline(250);">250 AD</a></td>
+                <td><a href="javascript:centerTimeline(500);">500 AD</a></td>
+                <td><a href="javascript:centerTimeline(750);">750 AD</a></td>
+                <td><a href="javascript:centerTimeline(1000);">1000 AD</a></td>
+                <td><a href="javascript:centerTimeline(1250);">1250 AD</a></td>
+                <td><a href="javascript:centerTimeline(1500);">1500 AD</a></td>
+                <td><a href="javascript:centerTimeline(1750);">1750 AD</a></td>
+                <td><a href="javascript:centerTimeline(2000);">2000 AD</a></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="controls" id="jewish-controls">
+    </div>
+    <div id="tl" class="timeline-default" style="height: 800px">
+    </div>
+    <div class="controls" id="christianity-controls">
+    </div>
+</div>
+</body>
+</html>

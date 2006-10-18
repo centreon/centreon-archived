@@ -1,0 +1,130 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | Ethers</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+</head>
+<body>
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>Ethers</span></li>
+</ul>
+
+<div id="body">
+    <h1>Ethers</h1>
+    
+    <p>An <em>ether</em> is an object made use by a <a href="bands.html"><em>band</em></a>
+        to map between pixel coordinates and date/time.
+    </p>
+    
+    <p>Each band keeps a single ether. The ether keeps track of the date 
+        corresponding to the left (or top) edge of the visible area of the 
+        band. That date corresponds to pixel offset 0 (see below). The 
+        ether's sole responsibility is to return a date when given a
+        positive or negative pixel offset, and to return a pixel offset
+        when given a date.
+    </p>
+    
+    <img src="images/ether-coordinates.jpg" />
+    
+    <p>An ether's mapping, abstract, is made visible to the user by an
+        <a href="ether-painters.html"><em>ether painter</em></a>.
+    </p>
+    
+    <h2>Interface</h2>
+    <p>An ether must expose the following Javascript interface:
+    </p>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">constructor</span>
+            ( <span class="itf-member-param">params</span> )
+        </div>
+        <div class="itf-member-description">
+            <span class="itf-member-param">params</span> is an object whose
+            fields carry initialization settings for the ether. Different
+            ether classes require different fields in this initialization
+            object. Refer to the documentation of each ether class for
+            details (see <a href="#ethers-in-library">Ethers in Library</a> below).
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">initialize</span>
+            ( <span class="itf-member-param">timeline</span> )
+        </div>
+        <div class="itf-member-description">
+            <span class="itf-member-param">timeline</span> is the timeline
+            to which this ether belongs. This method is called by the
+            timeline itself as it is being initialized. Client code is
+            not supposed to call this method.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">dateToPixelOffset</span>
+            ( <span class="itf-member-param">date</span> )
+        </div>
+        <div class="itf-member-description">
+            Map the given <span class="itf-member-param">date</span> argument
+            (a Javascript <span class="code">Date</span>) to a pixel offset
+            (positive or negative, float). Note that you must round the
+            result (e.g., using <span class="code">Math.round()</span>) before
+            you can use it as a coordinate of some element, e.g.,
+            <div class="code-block">
+                elmt.style.left = Math.round(ether.dateToPixelOffset(aDate)) + "px";
+            </div>
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">pixelOffsetToDate</span>
+            ( <span class="itf-member-param">pixels</span> )
+        </div>
+        <div class="itf-member-description">
+            Map the given pixel offset (positive or negative, float) to a 
+            <span class="code">Date</span>.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">setDate</span>
+            ( <span class="itf-member-param">date</span> )
+        </div>
+        <div class="itf-member-description">
+            Set the date that corresponds to pixel offset 0 to the
+            <span class="itf-member-param">date</span> argument.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">shiftPixels</span>
+            ( <span class="itf-member-param">pixels</span> )
+        </div>
+        <div class="itf-member-description">
+            Shift the origin of the ether by the given number of pixels
+            (positive or negative, float). A positive 
+            <span class="itf-member-param">pixels</span> makes the ether
+            start later, a negative <span class="itf-member-param">pixels</span>
+            makes it start earlier. This method is equivalent to:
+            <div class="code-block">
+                ether.setDate(ether.pixelOffsetToDate(pixels))
+            </div>
+        </div>
+    </div>
+    
+    <h2><a name="ethers-in-library">Ethers in Library</a></h2>
+    <p>There are currently 2 ether classes provided by default:
+        <span class="code">Timeline.<a href="linear-ether.html">LinearEther</a></span> and 
+        <span class="code">Timeline.<a href="hot-zone-ether.html">HotZoneEther</a></span>.
+        They all expose the interface above, but they differ in their
+        initialization parameters.
+</div>
+</body>
+</html>

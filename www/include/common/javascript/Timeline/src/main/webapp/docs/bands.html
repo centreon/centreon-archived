@@ -1,0 +1,297 @@
+<html>
+<head>
+    <title>SIMILE | Timeline | Documentation | Band class</title>
+    <link rel='stylesheet' href='styles.css' type='text/css' />
+</head>
+<body>
+<ul id="path">
+  <li><a href="http://simile.mit.edu/" title="Home">SIMILE</a></li>
+  <li><a href="../" title="Timeline">Timeline</a></li>
+  <li><a href="./" title="Documentation">Documentation</a></li>
+  <li><span>Band class</span></li>
+</ul>
+
+<div id="body">
+    <h1>Band class</h1>
+    
+    <p>Note that you cannot create a Band object by yourself. You
+        can only retrieve Band objects from a 
+        <a href="timelines.html"><span class="code">Timeline</span></a> object.
+    </p>
+    
+    <h2>Interface</h2>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">addOnScrollListener</span>
+            ( <span class="itf-member-param">listener</span> )
+        </div>
+        <div class="itf-member-description">
+            Add a listener for scroll events. <span class="itf-member-param">listener</span>
+            is a function that will receive a single argument,
+            this band object.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">removeOnScrollListener</span>
+            ( <span class="itf-member-param">listener</span> )
+        </div>
+        <div class="itf-member-description">
+            Remove the given scroll listener
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getLocale</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the locale of this band, e.g., 
+            <span class="code">"en-US"</span>.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getTimeZone</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the time zone of this band, e.g., 
+            <span class="code">-5</span> (Eastern Standard Time).
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getViewLength</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the pixel width of the band's visible area if the 
+            timeline is horizontal, and the pixel height if verical.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getTotalViewLength</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the pixel width of the band's (visible and cropped) if the 
+            timeline is horizontal, and the pixel height if verical.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getViewWidth</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the pixel height of the band if the timeline is horizontal,
+            and the pixel width if verical.
+        </div>
+    </div>
+
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getViewOffset</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the scroll offset of the band's <span class="html">div</span>
+            relative to the visible area. This is always negative.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getMinDate</span>(),
+            <span class="itf-member-name">getMaxDate</span>(),
+            <span class="itf-member-name">getMinVisibleDate</span>(),
+            <span class="itf-member-name">getMaxVisibleDate</span>(),
+            <span class="itf-member-name">getCenterVisibleDate</span>(),
+            <br/>
+            <span class="itf-member-name">setMinVisibleDate</span>( <span class="itf-member-param">date</span> ),
+            <span class="itf-member-name">setMaxVisibleDate</span>( <span class="itf-member-param">date</span> ),
+            <span class="itf-member-name">setCenterVisibleDate</span>( <span class="itf-member-param">date</span> )
+        </div>
+        <div class="itf-member-description">
+            The diagram below illustrates what these methods do:
+            <p><img src="images/ether-coordinates.jpg" /></p>
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">dateToPixelOffset</span>
+            ( <span class="itf-member-param">date</span> )
+        </div>
+        <div class="itf-member-description">
+            Return the pixel offset relative to the starting edge of
+            the band's <span class="html">div</span> (not the visible
+            area) corresponding to the given date.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">pixelOffsetToDate</span>
+            ( <span class="itf-member-param">pixels</span> )
+        </div>
+        <div class="itf-member-description">
+            Return the date corresponding to the given pixel offset 
+            (relative to the starting edge of the band's 
+            <span class="html">div</span>, not the visible
+            area).
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">createLayerDiv</span>
+            ( <span class="itf-member-param">zIndex</span> )
+        </div>
+        <div class="itf-member-description">
+            Create and return a <span class="html">div</span> that
+            acts like a layer inside the band, ordered in the z dimension
+            among other layers of that band. Child elements of this
+            <span class="html">div</span> can then be positioned
+            relative to the band.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">removeLayerDiv</span>
+            ( <span class="itf-member-param">div</span> )
+        </div>
+        <div class="itf-member-description">
+            Remove an existing layer <span class="html">div</span>.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">openBubbleForPoint</span>
+            ( <span class="itf-member-param">pageX</span>,
+            <span class="itf-member-param">pageY</span>,
+            <span class="itf-member-param">width</span>, 
+            <span class="itf-member-param">height</span> )
+        </div>
+        <div class="itf-member-description">
+            Open an information bubble at the given page coordinates,
+            large enough to accommodate content of the given dimensions
+            in pixels. The bubble will be automatically positioned 
+            around the given coordinates, pointing to it.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">closeBubble</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Close any open information bubble.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getLabeller</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the <a href="labellers.html">labeller</a> of this band.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getIndex</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the index of this band in its containing timeline,
+            e.g., <span class="code">0</span> for the first band.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getEther</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the <a href="ethers.html">ether</a> of this band.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getEtherPainter</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the <a href="ether-painters.html">ether painter</a> of this band.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getEventSource</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the <a href="event-sources.html">event source</a> of this band.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">getEventPainter</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Return the <a href="event-painters.html">event painter</a> of this band.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">layout</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Trigger a re-layout.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">paint</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Trigger a repaint.
+        </div>
+    </div>
+    
+    <div class="itf-member">
+        <div class="itf-member-prototype">
+            <span class="itf-member-name">softPaint</span>
+            ()
+        </div>
+        <div class="itf-member-description">
+            Trigger a soft repaint.
+        </div>
+    </div>
+</div>
+</body>
+</html>
