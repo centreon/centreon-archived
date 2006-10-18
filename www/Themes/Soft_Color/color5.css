@@ -120,10 +120,6 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 .quick_search{	
 border-color:#eff1f4;	
 color:#fff;
-background-position:top left;
-background-repeat:repeat-x;
-background-color:#BFD0E2 ;
-
 }
 .limitPage{
 background-image: url("Images/bg_header_pink.gif");
