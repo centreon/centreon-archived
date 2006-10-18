@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 	else
 		$host_name = NULL;
 	
-	$data = array("host_id" => array_search($host_name, $oreon->user->lcaHost), "start" => date("Y/m/d G:i" , time() + 120), "end" => date("Y/m/d G:i", time() + 7320));
+	$data = array("host_id" => getMyHostID($host_name), "start" => date("Y/m/d G:i" , time() + 120), "end" => date("Y/m/d G:i", time() + 7320));
 		
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -38,9 +38,8 @@ For information : contact@oreon-project.org
 	 
 	$hosts = array(""=>"");
 	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while ($res->fetchInto($host)){
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
@@ -90,7 +89,6 @@ For information : contact@oreon-project.org
 		if (!isset($_POST["comment"]))
 			$_POST["comment"] = 0;
 		AddHostDowntime($_POST["host_id"], $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
-		
 		require_once($path."viewDowntime.php");
     } else {	
 		# Smarty template Init
