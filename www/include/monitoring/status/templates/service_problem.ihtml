@@ -31,8 +31,8 @@
 		<tr class="Toolbar_TR_Top">
 			<td class="Toolbar_TDSelectAction_Top">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
-			<span class="consol_button"><a id="JS_monitoring_play" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
-			<span class="consol_button"><img id="JS_monitoring_play_gray" class="cachediv" src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
+			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
+			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
 			<div style="text-align:left;padding-top:5px;">
