@@ -332,7 +332,7 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 		foreach($oreonLCA as $key => $h)
 			fwrite($inF,"lca h: ".$h."\n\n");	
 		
-		fwrite($inF,"log:\n----------\n\n");	
+		fwrite($inF,$buffer."log:\n----------\n\n");	
 		fclose($inF);
 	}
 }
