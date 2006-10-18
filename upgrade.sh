@@ -365,8 +365,13 @@ function confirm_oreon()
 	  echo ""
 	  echo "Oreon is already install on your server !"
 
-	  echo -n "Are you sure you want to upgrade OREON ? [y/n] "
+	  echo -n "Are you sure you want to upgrade OREON ? "
+      echo -n "[y/n], default to [n]:"
 	  read answer
+	  if [ -z $answer ];then
+	  	answer=n
+	  fi
+
 	  if [ $answer == 'n' ]; then
 	      echo "Ok, so bye bye !! "
 	      exit

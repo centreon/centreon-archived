@@ -34,13 +34,13 @@ cat <<EOF
 EOF
 
 #Load install script functions
-if [ -z "$BASH" ]; then # Test if BASH is in path 
+if [ -z "$BASH" ]; then # Test if BASH is in path
     if ! which bash > /dev/null 2>&1; then
 	echo "Install bash and try `bash install.sh`."
-    fi # Exit if we are not in BASH 
+    fi # Exit if we are not in BASH
     echo "Error: The script must be run with BASH shell. Try:"
     echo "# bash install.sh"
-    exit 1 
+    exit 1
 fi
 . functions
 
@@ -365,8 +365,12 @@ function confirm_oreon()
 	  echo ""
 	  echo "Oreon is already install on your server !"
 
-	  echo -n "Are you sure you want to install OREON ? [y/n] "
+	  echo -n "Are you sure you want to install OREON ?"
+      echo -n "[y/n], default to [n]:"
 	  read answer
+	  if [ -z $answer ];then
+	  	answer=n
+	  fi
 	  if [ $answer == 'n' ]; then
 	      echo "Ok, so bye bye !! "
 	      exit
