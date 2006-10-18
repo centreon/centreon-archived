@@ -1,6 +1,5 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 
-<span class="consol_button"><div class="cachediv" id="time_live">&nbsp;Loading in progress...</div></span>
 
 <div class="cachediv">
 <!-- informations bank for ajax -->
@@ -36,10 +35,9 @@
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
 			<div style="text-align:left;padding-top:5px;">
 			&nbsp;
-
 			{$form.o1.html}
-
 			</div>
+			<span class="consol_button"><div class="cachediv" id="time_live">&nbsp;Loading in progress...</div></span>
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
 			{/if}
