@@ -151,8 +151,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 ALTER TABLE `general_opt` ADD `debug_inventory` ENUM( "0", "1" ) NULL , ADD `debug_ldap_import` ENUM( "0", "1" ) NOT NULL ;
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_idCards', NULL, 7, 701, 45, 1, './modules/inventory/inventory.php', NULL, '0', '1', '1');
-
 
 -- changement de topology
 
@@ -232,5 +230,13 @@ ALTER TABLE `servicegroup_relation` ADD INDEX ( `hostgroup_hg_id` );
 ALTER TABLE `servicegroup_relation`
   ADD CONSTRAINT `servicegroup_relation_ibfk_7` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `servicegroup_relation_ibfk_8` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE;
+
+DELETE FROM topology WHERE topology_parent = '7';
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_id_serv', NULL, 7, 701, 10, 1, './modules/inventory/inventory.php', '&o=s', '0', '1', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_id_serv', NULL, 701, 70101, 10, 1, './modules/inventory/inventory.php', '&o=s', '0', '1', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_id_network', NULL, 701, 70102, 20, 1, './modules/inventory/inventory.php', '&o=n', '0', '1', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_idUpdate', NULL, 701, 70103, 40, 1, './modules/inventory/inventory.php', '&o=u', NULL, NULL, '1');
+
 
 
