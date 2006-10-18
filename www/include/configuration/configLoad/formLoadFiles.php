@@ -164,18 +164,18 @@ For information : contact@oreon-project.org
 							error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Delete All Conf\n", 3, $debug_path."cfgimport.log");
 					}
 					$nbr =& insertCFG($buf, $ret);
-					$msg .= "Command :".($nbr["cmd"] ? $nbr["cmd"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Time Period :".($nbr["tp"] ? $nbr["tp"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Contact :".($nbr["cct"] ? $nbr["cct"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Contact Group :".($nbr["cg"] ? $nbr["cg"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Host :".($nbr["h"] ? $nbr["h"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Host Extended Infos :".($nbr["hei"] ? $nbr["hei"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Host Group :".($nbr["hg"] ? $nbr["hg"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Host Dependency :".($nbr["hd"] ? $nbr["hd"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Service :".($nbr["sv"] ? $nbr["sv"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Service Dependency :".($nbr["svd"] ? $nbr["svd"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Service Group :".($nbr["sg"] ? $nbr["sg"] : "0")." ".$lang["upl_newEntries"]."<br>";
-					$msg .= "Service Group Dependency :".($nbr["sgd"] ? $nbr["sgd"] : "0")." ".$lang["upl_newEntries"]."<br>";
+					($nbr["cmd"] ? $msg .= "Command : ".$nbr["cmd"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["tp"] ? $msg .= "Time Period : ".$nbr["tp"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["cct"] ? $msg .= "Contact : ".$nbr["cct"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["cg"] ? $msg .= "Contact Group : ".$nbr["cg"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["h"] ? $msg .= "Host : ".$nbr["h"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["hei"] ? $msg .= "Host Extended Infos : ".$nbr["hei"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["hg"] ? $msg .= "Host Group : ".$nbr["hg"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["hd"] ? $msg .= "Host Dependency : ".$nbr["hd"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["sv"] ? $msg .= "Service : ".$nbr["sv"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["svd"] ? $msg .= "Service Dependency : ".$nbr["svd"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["sg"] ? $msg .= "Service Group : ".$nbr["sg"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["sgd"] ? $msg .= "Service Group Dependency : ".$nbr["sgd"]." ".$lang["upl_newEntries"]."<br>" : 0);
 					break;
 			}
 		}
