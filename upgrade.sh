@@ -418,6 +418,9 @@ function config_sudo()
     echo "Configure Sudo"
     echo "--------------"
 
+    # Find Nagios Init Script
+	check_nagios_init_script
+
   sudo=`cat $SUDO_FILE | grep OREON > /dev/null; echo $?`
 
   if [ $sudo == '1' ]; then
