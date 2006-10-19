@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 					" im.id = ii.type_ressources";
 		else
 			$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-					" h.host_id IN (".$lcaHostByID["LcaHost"].") AND im.id = ii.type_ressources";
+					" h.host_id IN (".$lcaHoststr.") AND im.id = ii.type_ressources";
 	}
 	$res =& $pearDB->query($rq);
 	$tmp = & $res->fetchRow();
@@ -101,7 +101,7 @@ For information : contact@oreon-project.org
 				" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 		else
 		$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				" h.host_id IN (".$lcaHostByID["LcaHost"].") AND im.id = ii.type_ressources  " .
+				" h.host_id IN (".$lcaHoststr.") AND im.id = ii.type_ressources  " .
 				" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	}
 	$res = & $pearDB->query($rq);

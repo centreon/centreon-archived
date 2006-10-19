@@ -50,7 +50,7 @@ For information : contact@oreon-project.org
 		if ($oreon->user->admin || !$isRestreint)
 				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND host_register = '1'";
 		else
-				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND h.host_id IN (".$lcaHostByID["LcaHost"].") AND host_register = '1'";
+				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND h.host_id IN (".$lcaHoststr.") AND host_register = '1'";
 	}
 
 	$res =& $pearDB->query($rq);
