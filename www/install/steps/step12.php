@@ -39,7 +39,7 @@ aff_header("Oreon Setup Wizard", "Post-Installation", 12);
 	<td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-    <td><img src='../img/icones/16x16/arrow_right_blue.png'></td>
+    <td><img src='../img/icones/16x16/arrow_right_blue.gif'></td>
     <td>Go into www/cron,  read ArchiveLogInDB_README.txt and deleteDB_README.txt </td>
   </tr>
 
