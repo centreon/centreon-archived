@@ -187,17 +187,6 @@ UPDATE `topology` SET `topology_name` = 'm_dashboard',
 `topology_modules` = '0',
 `topology_show` = '1' WHERE `topology_page` =307 LIMIT 1 ;
 
-####
-UPDATE `topology` SET `topology_name` = 'm_dashboard',
-`topology_icone` = './img/icones/16x16/outbox.gif',
-`topology_parent` = '301',
-`topology_order` = '60',
-`topology_group` = '1',
-`topology_url` = './modules/osl/osl_generalReport.php',
-`topology_url_opt` = NULL ,
-`topology_popup` = '0',
-`topology_modules` = '1',
-`topology_show` = '1' WHERE `topology_page` =30106 LIMIT 1 ;
 
 UPDATE `topology` SET `topology_name` = 'm_dashboardHost',
 `topology_icone` = './img/icones/16x16/outbox.gif',
