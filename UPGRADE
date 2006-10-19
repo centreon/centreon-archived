@@ -1,3 +1,14 @@
+----------------------------------------------
+How To update Oreon 1.3.1-1 to oreon-1.3.2 ?
+----------------------------------------------
+
+1) Execute upgrade.sh
+
+2) Connect you to the oreon interface to follow
+wizard to update your database.
+
+3) Choose UpdateDB-1.3.2.sql then "next"
+
 
 ----------------------------------------------
 How To update Oreon 1.3.1 to oreon-1.3.1-1 ?
