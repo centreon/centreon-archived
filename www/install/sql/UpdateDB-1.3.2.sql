@@ -165,18 +165,6 @@ UPDATE `topology` SET `topology_name` = 'm_general',
 `topology_modules` = '0',
 `topology_show` = '1' WHERE `topology_page` = 501 LIMIT 1 ;
 
-DELETE FROM `topology` WHERE `topology_page` = 3 OR  `topology_page` = 307 OR  `topology_page` = 30701 OR  `topology_page` = 30702 OR `topology_parent` = 3;
-
-INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES 
-( 'm_reporting', NULL, NULL, 3, 30, 1, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1'),
-( 'm_dashboard', NULL, 3, 307, 3, 1, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1'),
-( 'm_dashboardHost', './img/icones/16x16/outbox.gif', 307, 30701, 10, 1, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1'),
-( 'm_dashboardService', NULL, 307, 30702, 20, 1, './include/reporting/dashboard/viewServicesLog.php', NULL, '0', '0', '0');
-
-DELETE FROM `log_archive_file_name`;
-DELETE FROM `log_archive_host`;
-DELETE FROM `log_archive_service`;
-
 
 ALTER TABLE `servicegroup_relation` ADD `host_host_id` INT NULL AFTER `sgr_id` ;
 ALTER TABLE `servicegroup_relation` ADD `hostgroup_hg_id` INT NULL AFTER `host_host_id` ;
@@ -208,5 +196,16 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 UPDATE `topology` SET `topology_order` = '20' WHERE `topology_page` = '20201' AND `topology_url_opt` = '&o=svc' LIMIT 1 ;
 UPDATE `topology` SET `topology_order` = '10' WHERE `topology_page` = '20201' AND `topology_url_opt` = '&o=svcpb' LIMIT 1 ;
 
+DELETE FROM `topology` WHERE `topology_page` = 3 OR  `topology_page` = 307 OR  `topology_page` = 30701 OR  `topology_page` = 30702 OR `topology_parent` = 3;
+
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES 
+( 'm_reporting', NULL, NULL, 3, 30, 1, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1'),
+( 'm_dashboard', NULL, 3, 307, 3, 1, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1'),
+( 'm_dashboardHost', './img/icones/16x16/outbox.gif', 307, 30701, 10, 1, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1'),
+( 'm_dashboardService', NULL, 307, 30702, 20, 1, './include/reporting/dashboard/viewServicesLog.php', NULL, '0', '0', '0');
+
+DELETE FROM `log_archive_file_name`;
+DELETE FROM `log_archive_host`;
+DELETE FROM `log_archive_service`;
 
 
