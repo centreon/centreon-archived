@@ -293,9 +293,10 @@ function install_oreon_plugins()
     fi
 
     if [ -n "$PLUGINS_DIR" ]; then
-	for fichier in $PLUGINS_DIR/src/*
+	for fichier in ${PLUGINS_DIR}src/*
 	  do
 	  if [ -d "$fichier" ]; then
+
 	      echo "$fichier is a directory"
 	  else
 	      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
@@ -337,8 +338,10 @@ function install_oreon_plugins()
 	  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
 	done
 	cp $PLUGINS_DIR/src/traps/* $NAGIOS_PLUGIN/traps
-	echo_success "Installing Oreon Traps Plugins on '$NAGIOS_PLUGIN/traps'" "OK"
 	chmod 775 $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
+	echo "Installing Oreon Traps Plugins on "
+	echo_success "$NAGIOS_PLUGIN/traps'" "OK"
+
     fi
 
     if test -a $NAGIOS_PLUGIN/oreon.conf ; then
