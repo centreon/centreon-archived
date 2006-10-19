@@ -30,7 +30,7 @@ function initTimeline() {
         	eventSource:    eventSource,
 	        width:          "70%", 
 	        intervalUnit:   Timeline.DateTime.DAY, 
-	        intervalPixels: 100
+	        intervalPixels: 100,
 	    }),
 	    Timeline.createBandInfo({
 	        showEventText:  false,
@@ -62,8 +62,6 @@ function initTimeline() {
 	 		  	'&hostID=' + _formR.hostID.value +
 	 		  	'&color=' + color;
 	 		  	
-	
-	
 	if(_formR.hostID.value)
   		Timeline.loadXML('./include/reporting/dashboard/GetXmlHost.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });  	
 	}
