@@ -417,13 +417,16 @@ function config_sudo()
     echo "Configure Sudo"
     echo "--------------"
 
+	# Find Nagios Init Script
+	check_nagios_init_script
+
   sudo=`cat $SUDO_FILE | grep OREON > /dev/null; echo $?`
 
   if [ $sudo == '1' ]; then
       echo "#Add by OREON" >> $SUDO_FILE
       echo "User_Alias      OREON= $WEB_USER" >> $SUDO_FILE
-      echo "OREON   ALL = NOPASSWD: /etc/init.d/nagios restart" >> $SUDO_FILE
-      echo "OREON   ALL = NOPASSWD: /etc/init.d/nagios reload" >> $SUDO_FILE
+      echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
+      echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
       echo "" >> $SUDO_FILE
       echo_success "Configuring Sudo" "OK"

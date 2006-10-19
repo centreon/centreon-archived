@@ -191,6 +191,29 @@ function check_group_nagiocmd()
     fi
 }
 
+
+function check_nagios_init_script()
+{
+    if test -x /etc/init.d/nagios ; then
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
+    else if test -x /etc/init.d/nagios2 ; then
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
+    fi
+
+    if [ -z "$NAGIOS_INIT_SCRIPT"  ] ; then
+	#Nagios init script
+	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
+	echo_passed "Sorry, we don't found nagios init script" "PASSED"
+	echo "Which is your nagios init script ?"
+	echo -n "default is [$NAGIOS_INIT_SCRIPT]:"
+	read temp
+	test_answer NAGIOS_INIT_SCRIPT $temp
+	echo ""
+    else
+	echo_info "Finding nagios init script :" "$NAGIOS_INIT_SCRIPT"
+    fi   
+}
+
 function check_httpd_directory()
 {
     if test -d /etc/apache/conf ; then
@@ -296,7 +319,6 @@ function install_oreon_plugins()
 	for fichier in ${PLUGINS_DIR}src/*
 	  do
 	  if [ -d "$fichier" ]; then
-
 	      echo "$fichier is a directory"
 	  else
 	      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
