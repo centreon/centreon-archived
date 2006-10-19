@@ -34,7 +34,7 @@
 => bugfix : disabled ACL by servicegroups
 => bugfix : add ajax technology for inventory module. 
 => Feature : new toolbar for all listing
-=> Bugfix : unable acces to old data in perfparse when host is not defined in oreon. next step : remove data.
+=> Bugfix : disable acces to old data in perfparse when host is not defined in oreon. next step : remove data.
 => Feature : Acknownledged services are in orange now. 
 => Bugfix : ACL pb in popup for displaying template in service and hosts.
 => Bugfix : can now graph with metric with space
