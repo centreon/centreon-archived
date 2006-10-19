@@ -202,5 +202,11 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_commandMisc', './img/icones/16x16/exchange.gif', 608, 60803, 30, NULL, './include/configuration/configObject/command/command.php', '&type=3', '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_plugins', './img/icones/16x16/window_gear.gif', 608, 60804, 40, NULL, './include/configuration/configPlugins/Plugins.php', '', '0', '0', '1');
 
+-- beta 2--
+
+
+UPDATE `topology` SET `topology_order` = '20' WHERE `topology_page` = '20201' AND `topology_url_opt` = '&o=svc' LIMIT 1 ;
+UPDATE `topology` SET `topology_order` = '10' WHERE `topology_page` = '20201' AND `topology_url_opt` = '&o=svcpb' LIMIT 1 ;
+
 
 
