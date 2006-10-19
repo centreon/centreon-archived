@@ -858,10 +858,10 @@ $lang["service_logged"] = "Services loggs";
 
 $lang["lgd_legend"] = " L&eacute;gende";
 
-$lang["lgd_force"] = " Forc&eacute; une v&eacute;rification";
+$lang["lgd_force"] = " Forcer une v&eacute;rification";
 $lang["lgd_graph"] = " Graph";
-$lang["lgd_passiv"] = " V&eacute;rification passif activ&eacute;";
-$lang["lgd_notification"] = "Notification d&eacute;sactiv&eacute;";
+$lang["lgd_passiv"] = " V&eacute;rification passive activ&eacute;e";
+$lang["lgd_notification"] = "Notification d&eacute;sactiv&eacute;e";
 $lang["lgd_work"] = " Status courant pris en compte";
 
 $lang["lgd_delOne"] = " Supprimer";
