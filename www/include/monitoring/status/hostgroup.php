@@ -18,97 +18,74 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-
-	$hg = array();
-	$tab = array("1"=>'list_one', "0" => "list_two"); 
-
+	
 	$TabLca = getLcaHostByName($pearDB);
 	$isRestreint = hadUserLca($pearDB);
 	
+	$data = array();
+	$hg = array();
+	$status_hg = array();
+			
 	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($pearDB))
-		print "Mysql Error : ".$pearDB->getMessage();
-	while ($r =& $ret->fetchRow()){
-		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){	
-			$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"]);
-			$status_hg_h[$r["hg_name"]] = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0, "UNKNOWN" => 0);
-			$status_hg[$r["hg_name"]] = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
-			$ret_h =& $pearDB->query(	"SELECT host_host_id,host_name FROM hostgroup_relation,host,hostgroup ".
+	if (PEAR::isError($ret)) 
+		print "Mysql Error : ".$ret->getMessage();
+	while ($r =& $ret->fetchRow()){	
+		if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){		
+			$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
 										"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 										"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-			if (PEAR::isError($ret_h))
-				print "Mysql Error : ". $ret_h->getMessage();
+			$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);	
+			$status_hg_h = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0);	
+			
+			if (PEAR::isError($ret_h)) 
+				print "Mysql Error : ".$ret_h->getMessage();
+			$cpt_host = 0;
 			while ($r_h =& $ret_h->fetchRow()){
-				!$r_h["host_name"] ? $hostname = getMyHostName($r_h["host_id"]) : $hostname = $r_h["host_name"];
-				if (isset($host_status[$hostname]["current_state"])){
-					$status_hg_h[$r["hg_name"]][$host_status[$hostname]["current_state"]]++;
-					foreach ($tab_host_service[$hostname] as $key => $s)
-						$status_hg[$r["hg_name"]][$service_status[$hostname. "_" .$key]["current_state"]]++;
+				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
+					if (isset($tab_host_service[$r_h["host_name"]]))
+						foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
+							$status_hg_h[$host_status[$r_h["host_name"]]["current_state"]]++;	
+							$status_hg[$service_status[$r_h["host_name"]. "_" .$key]["current_state"]]++;					
+						}						
 				}
+				$cpt_host++;
 			}
 		}
+		$service_data_str = NULL;	
+		$h_data_str = NULL;	
+		if ($status_hg["OK"] != 0)
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_ok"]."'>" . $status_hg["OK"] . " OK</span> ";
+		if ($status_hg["WARNING"] != 0)
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>" . $status_hg["WARNING"] . " WARNING</span> ";
+		if ($status_hg["CRITICAL"] != 0)
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>" . $status_hg["CRITICAL"] . " CRITICAL</span> ";
+		if ($status_hg["PENDING"] != 0)
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>" . $status_hg["PENDING"] . " PENDING</span> ";
+		if ($status_hg["UNKNOWN"] != 0)
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>" . $status_hg["UNKNOWN"] . " UNKNOWN</span> ";
+		if (!isset($hg[$r["hg_name"]]))
+			$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());			
+		$data[$r["hg_name"]]["service"] = $service_data_str;
+		$data[$r["hg_name"]]["name"] = $r["hg_name"];
+		if ($status_hg_h["UP"] != 0)
+			$h_data_str .= "<span style='background:".$oreon->optGen["color_up"]."'>" . $status_hg_h["UP"] . " UP</span> ";
+		if ($status_hg_h["DOWN"] != 0)
+			$h_data_str .= "<span style='background:".$oreon->optGen["color_down"]."'>" . $status_hg_h["DOWN"] . " DOWN</span> ";
+		if ($status_hg_h["UNREACHABLE"] != 0)
+			$h_data_str .= "<span style='background:".$oreon->optGen["color_unreachable"]."'>" . $status_hg_h["UNREACHABLE"] . " CRITICAL</span> ";
+		if (!isset($hg[$r["hg_name"]]))
+			$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());	
+		$data[$r["hg_name"]]["host"] = $h_data_str;
 	}
-
-	$cpt = 0;
-	foreach ($hg as $hgs){
-		$hg[$hgs["name"]]["host_stats"] = "";
-		if ($status_hg_h[$hgs["name"]]["UP"] != 0)
-			$hg[$hgs["name"]]["host_stats"] = "<span style='background:".$oreon->optGen["color_up"]."'>" . $status_hg_h[$hgs["name"]]["UP"] . " UP</span> ";
-		if ($status_hg_h[$hgs["name"]]["DOWN"] != 0)
-			$hg[$hgs["name"]]["host_stats"] .= "<span style='background:".$oreon->optGen["color_down"]."'>" . $status_hg_h[$hgs["name"]]["DOWN"] . " DOWN</span> ";
-		if ($status_hg_h[$hgs["name"]]["UNREACHABLE"] != 0)
-			$hg[$hgs["name"]]["host_stats"] .= "<span style='background:".$oreon->optGen["color_unreachable"]."'>" . $status_hg_h[$hgs["name"]]["UNREACHABLE"] . " UNREACHABLE</span> ";
-		if ($status_hg_h[$hgs["name"]]["PENDING"] != 0)
-			$hg[$hgs["name"]]["host_stats"] .= "<span style='background:".$oreon->optGen["color_pending"]."'>" . $status_hg_h[$hgs["name"]]["PENDING"] . " PENDING</span> ";
-		if ($status_hg_h[$hgs["name"]]["UNKNOWN"] != 0)
-			$hg[$hgs["name"]]["host_stats"] .= "<span style='background:".$oreon->optGen["color_unknown"]."'>" . $status_hg_h[$hgs["name"]]["UNKNOWN"] . " UNKNOWN</span> ";
 		
-		$hg[$hgs["name"]]["svc_stats"] = "";
-		if ($status_hg[$hgs["name"]]["OK"] != 0)
-			$hg[$hgs["name"]]["svc_stats"] = "<span style='background:".$oreon->optGen["color_ok"]."'>" . $status_hg[$hgs["name"]]["OK"] . " OK</span> ";
-		if ($status_hg[$hgs["name"]]["WARNING"] != 0)
-			$hg[$hgs["name"]]["svc_stats"] .= "<span style='background:".$oreon->optGen["color_warning"]."'>" . $status_hg[$hgs["name"]]["WARNING"] . " WARNING</span> ";
-		if ($status_hg[$hgs["name"]]["CRITICAL"] != 0)
-			$hg[$hgs["name"]]["svc_stats"] .= "<span style='background:".$oreon->optGen["color_critical"]."'>" . $status_hg[$hgs["name"]]["CRITICAL"] . " CRITICAL</span> ";
-		if ($status_hg[$hgs["name"]]["PENDING"] != 0)
-			$hg[$hgs["name"]]["svc_stats"] .= "<span style='background:".$oreon->optGen["color_pending"]."'>" . $status_hg[$hgs["name"]]["PENDING"] . " PENDING</span> ";
-		if ($status_hg[$hgs["name"]]["UNKNOWN"] != 0)
-			$hg[$hgs["name"]]["svc_stats"] .= "<span style='background:".$oreon->optGen["color_unknown"]."'>" . $status_hg[$hgs["name"]]["UNKNOWN"] . " UNKNOWN</span> ";
-		$hg[$hgs["name"]]["class"] = $tab[$cpt % 2];
-		$cpt++;
-	}
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
-
-/*
-    $ajax = "<script type='text/javascript'>" .
-    "window.onload = function () {" .
-    "setTimeout('init()', 2000);" .
-    "};" .
-    "</script>";
-    $tpl->assign('ajax', $ajax);
-    $tpl->assign('time', time());
-    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
-	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
-    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
-    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
-    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
-    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
-    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
-    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
-    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
-    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
-
-    $lca =& $oreon->user->lcaHStrName;
-	$version = $oreon->user->get_version();
-	$tpl->assign("lca", $lca);
-	$tpl->assign("version", $version);
-*/
-	
-	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
+	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);	
 	$tpl->assign("p", $p);
-	$tpl->assign("hg", $hg);
+	$tpl->assign("hostgroup", $hg);
+	if (isset($data))
+		$tpl->assign("data", $data);
 	$tpl->assign("lang", $lang);
 	$tpl->display("hostgroup.ihtml");
 ?>

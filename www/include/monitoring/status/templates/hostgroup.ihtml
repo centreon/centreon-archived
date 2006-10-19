@@ -7,16 +7,13 @@
 			<td>{$lang.m_mon_host_stt_ttl}</td>
 			<td>{$lang.m_mon_svc_stt_ttl}</td>
 		</tr>
-		{assign var="c" value="0"}
-		{foreach item=hg from=$hg}
-			{if $hg.host_stats != "" && $hg.svc_stats}
-			<tr class="{$hg.class}">
-				<td><div id="name_alias{$c}">{$hg.name} ({$hg.alias})</div></td>
-				<td><div id="hg_host_stat{$c}">{$hg.host_stats}</div></td>
-				<td><div id="hg_svc_stat{$c}">{$hg.svc_stats}</div></td>
+		{foreach item=d from=$data}
+			<tr class="{cycle values="list_one,list_two"}">
+				<td class="ListColLeft">{$d.name}</td>
+				<td class="ListColLeft">{$d.host}</td>
+				<td class="ListColLeft">{$d.service}</td>
 			</tr>
-			{assign var="c" value=$c+1}
-			{/if}
 		{/foreach}
 	</table>
+	<br>
 </div>
