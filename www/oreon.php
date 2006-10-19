@@ -84,21 +84,24 @@ For information : contact@oreon-project.org
 			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 			$ret = get_child($ret['topology_page'], $oreon->user->lcaTStr);
 			if (file_exists($ret["topology_url"])){
-				$o = $ret["topology_url_opt"];
+				$tab = split("\=", $ret["topology_url_opt"]);
+				$o = $tab[1];
 				require_once($ret["topology_url"]);
 			} else {
 				if (file_exists($redirect["topology_url"]))
 					require_once($redirect["topology_url"]);
 			}
 		} else {
+		
 			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);			
 			if (file_exists($ret["topology_url"])){
-				$o = $ret["topology_url_opt"];
+				$tab = split("\=", $ret["topology_url_opt"]);
+				$o = $tab[1];
 				require_once($ret["topology_url"]);
 			} else
 				require_once("./alt_error.php");
 		}
-	} else {		
+	} else {
 		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");
 	}
 	# Display Legend
