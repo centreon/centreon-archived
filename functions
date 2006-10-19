@@ -194,52 +194,54 @@ function check_group_nagiocmd()
 
 function check_nagios_init_script()
 {
-    if test -x /etc/init.d/nagios ; then
+    if [ -x "/etc/init.d/nagios" ]; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
-    else if test -x /etc/init.d/nagios2 ; then
+    else if [ -x "/etc/init.d/nagios2" ] ; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
     fi
+    fi
 
-    if [ -z "$NAGIOS_INIT_SCRIPT"  ] ; then
-	#Nagios init script
-	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-	echo_passed "Sorry, we don't found nagios init script" "PASSED"
-	echo "Which is your nagios init script ?"
-	echo -n "default is [$NAGIOS_INIT_SCRIPT]:"
-	read temp
-	test_answer NAGIOS_INIT_SCRIPT $temp
-	echo ""
+    if [ -z "$NAGIOS_INIT_SCRIPT" ] ; then
+		#Nagios init script
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
+		echo_passed "Sorry, we don't found nagios init script" "PASSED"
+		echo "Which is your nagios init script ?"
+		echo -n "default is [$NAGIOS_INIT_SCRIPT]:"
+		read temp
+		test_answer NAGIOS_INIT_SCRIPT $temp
+		echo ""
     else
-	echo_info "Finding nagios init script :" "$NAGIOS_INIT_SCRIPT"
-    fi   
+		echo_info "Finding nagios init script :" "$NAGIOS_INIT_SCRIPT"
+    fi
+
 }
 
 function check_httpd_directory()
 {
     if test -d /etc/apache/conf ; then
-	DIR_APACHE="/etc/apache/conf"
-	DIR_APACHE_CONF="/etc/apache/conf.d"
-	HTPASSWD="htpasswd"
+		DIR_APACHE="/etc/apache/conf"
+		DIR_APACHE_CONF="/etc/apache/conf.d"
+		HTPASSWD="htpasswd"
     else if test -d /usr/local/apache2/conf ; then
-	DIR_APACHE="/usr/local/apache2/conf"
-	DIR_APACHE_CONF="/usr/local/apache2/conf"
-	HTPASSWD="htpasswd2"
+		DIR_APACHE="/usr/local/apache2/conf"
+		DIR_APACHE_CONF="/usr/local/apache2/conf"
+		HTPASSWD="htpasswd2"
     else if test -d /etc/apache2 ; then
-	DIR_APACHE="/etc/apache2"
-	DIR_APACHE_CONF="/etc/apache2/conf.d"
-	HTPASSWD="htpasswd2"
+		DIR_APACHE="/etc/apache2"
+		DIR_APACHE_CONF="/etc/apache2/conf.d"
+		HTPASSWD="htpasswd2"
     else if test -d /etc/httpd/conf ; then
-	DIR_APACHE="/etc/httpd/conf"
-	DIR_APACHE_CONF="/etc/httpd/conf.d"
-	HTPASSWD="htpasswd"
+		DIR_APACHE="/etc/httpd/conf"
+		DIR_APACHE_CONF="/etc/httpd/conf.d"
+		HTPASSWD="htpasswd"
     else if test -d /usr/local/etc/apache ; then
-	DIR_APACHE="/usr/local/etc/apache"
-	DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
-	HTPASSWD="htpasswd"
+		DIR_APACHE="/usr/local/etc/apache"
+		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
+		HTPASSWD="htpasswd"
     else if test -d /usr/local/etc/apache2 ; then
-	DIR_APACHE="/usr/local/etc/apache2"
-	DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
-	HTPASSWD="htpasswd"
+		DIR_APACHE="/usr/local/etc/apache2"
+		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
+		HTPASSWD="htpasswd"
     fi
     fi
     fi
@@ -248,11 +250,11 @@ function check_httpd_directory()
     fi
 
     if test -e $DIR_APACHE/apache2.conf ; then
-	APACHE_CONF="apache2.conf"
+		APACHE_CONF="apache2.conf"
     else if test -e $DIR_APACHE/commondhttpd.conf ; then
-	APACHE_CONF="commondhttpd.conf"
+		APACHE_CONF="commondhttpd.conf"
     else if test -e $DIR_APACHE/httpd.conf ; then
-	APACHE_CONF="httpd.conf"
+		APACHE_CONF="httpd.conf"
     fi
     fi
     fi

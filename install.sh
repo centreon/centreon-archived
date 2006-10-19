@@ -423,7 +423,7 @@ function config_sudo()
   sudo=`cat $SUDO_FILE | grep OREON > /dev/null; echo $?`
 
   if [ $sudo == '1' ]; then
-      echo "#Add by OREON" >> $SUDO_FILE
+      echo "#Add by OREON installation script" >> $SUDO_FILE
       echo "User_Alias      OREON= $WEB_USER" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
