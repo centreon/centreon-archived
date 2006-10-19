@@ -34,9 +34,7 @@
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}
-	
 	</table>
-
 	<table class="Toolbar_TableBottom">
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
@@ -48,11 +46,9 @@
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
-		</tr>&
+		</tr>
 	</table>
-
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
