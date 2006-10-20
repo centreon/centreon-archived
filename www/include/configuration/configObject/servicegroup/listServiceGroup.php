@@ -123,7 +123,7 @@ For information : contact@oreon-project.org
 	}
 	</SCRIPT>
 	<?
-	$attrs = array(
+	$attrs1 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
@@ -132,7 +132,7 @@ For information : contact@oreon-project.org
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");	  
-        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 			$o1 =& $form->getElement('o1');
 		$o1->setValue(NULL);
@@ -165,7 +165,7 @@ For information : contact@oreon-project.org
 	}
 	</SCRIPT>
 	<?
-	$attrs = array(
+	$attrs1 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
@@ -174,7 +174,7 @@ For information : contact@oreon-project.org
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");	  
-        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 			$o1 =& $form->getElement('o1');
 		$o1->setValue(NULL);

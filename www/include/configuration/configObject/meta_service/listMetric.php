@@ -18,7 +18,22 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+echo "->".$_GET["o1"]. "<br>";
+
+
 	$calcType = array("AVE"=>$lang['ms_selAvr'], "SOM"=>$lang['ms_selSum'], "MIN"=>$lang['ms_selMin'], "MAX"=>$lang['ms_selMax']);
+
+	$pagination = "maxViewConfiguration";
+	# set limit
+	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($pearDB)) {
+		print "Mysql Error : ".$pearDB->getMessage();
+	}
+	$gopt = array_map("myDecode", $res->fetchRow());		
+	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
+
+	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
+	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -54,13 +69,13 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
-	$form1 = new HTML_QuickForm('Form', 'GET', "?p=".$p);
+	$form = new HTML_QuickForm('Form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr1 = array();
 	for ($i = 0; $res->fetchInto($metric); $i++) {
-		$selectedElements =& $form1->addElement('checkbox', "select[".$metric['msr_id']."]");	
+		$selectedElements =& $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=ws'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=cs'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=ds&select[".$metric['msr_id']."]=1' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
@@ -87,17 +102,60 @@ For information : contact@oreon-project.org
 	$tpl->assign('msg', array ("addL1"=>"?p=".$p."&o=as&meta_id=".$meta_id, "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 		
 	#Element we need when we reload the page
-	$form1->addElement('hidden', 'p');
-	$form1->addElement('hidden', 'meta_id');
+	$form->addElement('hidden', 'p');
+	$form->addElement('hidden', 'meta_id');
 	$tab = array ("p" => $p, "meta_id"=>$meta_id);
-	$form1->setDefaults($tab);
+	$form->setDefaults($tab);
+
+
+	#
+	##Toolbar select $lang["lgd_more_actions"]
+	#
+	?>
+	<SCRIPT LANGUAGE="JavaScript">
+	function setO(_i) {
+		document.forms['form'].elements['o'].value = _i;
+	}
+	</SCRIPT>
+	<?
+	$attrs1 = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"");
+	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "ds"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+	$form->setDefaults(array('o1' => NULL));
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
+	
+	$attrs = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"");
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "ds"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+	$form->setDefaults(array('o2' => NULL));
+
+		$o2 =& $form->getElement('o2');
+		$o2->setValue(NULL);
+	
+	$tpl->assign('limit', $limit);
+
 
 	#
 	##Apply a template definition
 	#
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form1->accept($renderer);
-	$tpl->assign('form1', $renderer->toArray());
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listMetric.ihtml");
 ?>

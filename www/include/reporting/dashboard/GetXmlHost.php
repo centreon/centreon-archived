@@ -136,10 +136,10 @@ For information : contact@oreon-project.org
 	
 			$tt = 	$uptime + $downtime + $unreachalbetime + $undeterminatetime;
 	
-			$pup = $uptime / $tt * 100;
-			$pdown = $downtime / $tt * 100;
-			$punreach = $unreachalbetime / $tt * 100;
-			$pundet = $undeterminatetime / $tt * 100;
+			$pup = 0 +round(($uptime / $tt * 100),2);
+			$pdown = 0 +round(($downtime / $tt * 100),2);
+			$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
+			$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
 
 
 			$sortTab = array();
@@ -149,24 +149,95 @@ For information : contact@oreon-project.org
 			$sortTab["#" . $colorUNREACHABLE] = $punreach;
 			$sortTab["#" . $colorUNKNOWN] = $pundet;
 			
+/*
 			asort($sortTab);
 			$sortTab = array_reverse($sortTab);
 			array_pop($sortTab);
 			array_pop($sortTab);
 			array_pop($sortTab);
 			$sortTab = array_keys($sortTab);
+	*/	
 		
+		/*
 			$buffer .= '<event start="' . date("m d Y G:i:s", $h["date_start"]) . ' GMT" end="' .date("m d Y G:i:s", $h["date_end"]). ' GMT"   color="' . $sortTab[0] . '" isDuration="true" title="">';
-
-
 			$buffer .= 'up: ' . $pup . '%';
 			$buffer .= ' down: ' . $pdown . '%';
 			$buffer .= ' unreachable: ' . $punreach . '%';
 			$buffer .= ' undeterminate: ' . $pundet . '%';	
-
-
 			$buffer .= '</event>';
-		
+		*/
+
+
+			$t = 0 + ($h["date_end"] - $h["date_start"]);
+			$t = $t - 10000;
+
+
+
+			if($pup > 0){
+				$t1 = round(($t - ($pup * $t / 100) ),2);
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", ($h["date_start"] + 5000) ) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", ($h["date_end"] - $t1 -5000)). ' GMT"';
+				$buffer .= ' color="#' . $colorUP . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . $pup . '%" >' ;
+
+/*
+				$buffer .= 'up: ' . $pup . '%';
+				$buffer .= ' down: ' . $pdown . '%';
+				$buffer .= ' unreachable: ' . $punreach . '%';
+				$buffer .= ' undeterminate: ' . $pundet . '%';	
+*/
+								$buffer .= '</event>';		
+			}
+
+			if($pdown > 0){
+				$t1 = round(($t - ($pdown * $t / 100) ),2);
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", ($h["date_start"] + 5000) ) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", ($h["date_end"] - $t1 -5000)). ' GMT"';
+				$buffer .= ' color="#' . $colorDOWN . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . $pdown . '%" >' ;
+/*
+				$buffer .= 'up: ' . $pup . '%';
+				$buffer .= ' down: ' . $pdown . '%';
+				$buffer .= ' unreachable: ' . $punreach . '%';
+				$buffer .= ' undeterminate: ' . $pundet . '%';	
+*/
+				$buffer .= '</event>';		
+			}
+
+			if($punreach > 0){
+				$t1 = round(($t - ($punreach * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_end"] - $t1 -5000;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . $punreach . '%" >' ;
+				$buffer .= '</event>';		
+			}
+
+
+
+			if($pundet > 0){
+				$t1 = round(($t - ($pundet * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_end"] - $t1 -5000;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorUNKNOWN . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . $pundet . '%" >' ;
+				$buffer .= '</event>';		
+			}
+
+
+	
 		  }
 		}
 	}

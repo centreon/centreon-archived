@@ -30,7 +30,10 @@ function initTimeline() {
         	eventSource:    eventSource,
 	        width:          "70%", 
 	        intervalUnit:   Timeline.DateTime.DAY, 
-	        intervalPixels: 100,
+	        intervalPixels: 300,
+
+            trackHeight:    3.0,
+            trackGap:       0.1,
 	    }),
 	    Timeline.createBandInfo({
 	        showEventText:  false,
@@ -39,11 +42,15 @@ function initTimeline() {
         	eventSource:    eventSource,
 	        width:          "30%", 
 	        intervalUnit:   Timeline.DateTime.MONTH, 
-	        intervalPixels: 200
+	        intervalPixels: 300
 	    })
 	  ];
-	              bandInfos[1].syncWith = 0;
-            bandInfos[1].highlight = true;
+	        bandInfos[0].syncWith = 1;
+	        bandInfos[0].multiple = 2;
+            bandInfos[0].highlight = false;
+	        bandInfos[1].syncWith = 1;
+            bandInfos[1].highlight = false;
+	        bandInfos[1].multiple = 2;
 	  var tl = Timeline.create(document.getElementById('my-timeline'), bandInfos, Timeline.HORIZONTAL);
 
  
