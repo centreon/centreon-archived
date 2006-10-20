@@ -112,9 +112,8 @@ if(isset($_GET["sort_types"]))
 function setL(_this)
 {
 	var _l = document.getElementsByName('l');
-	var _limite = document.getElementById('limit');
 
-	_limite.value = _this;
+	document.forms['form'].elements['limit'].value = _this;
 
 	_l[0].value = _this;
 	_l[1].value = _this;
