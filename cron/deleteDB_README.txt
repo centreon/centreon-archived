@@ -4,7 +4,7 @@ Create a cron task as the following sample:
 
 line 34: Specify nagios directory
 
-$NagiosInstallFolder = "/usr/local/nagios/";
+$PerfparseInstallFolder = "/srv/perfparse/";
 
 line 35: specify where you would create the lock file
 
