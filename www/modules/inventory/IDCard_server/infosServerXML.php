@@ -206,13 +206,20 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 	
-	//$_POST["host_id"] = 37;
+	//$host_id = 37;
 	//$_POST["type"] = 3;
 	
+	$type = isset($_GET["type"]) ? $_GET["type"] : 0;
+	$type = isset($_POST["type"]) ? $_POST["type"] : $type;
+
+	$host_id = isset($_GET["host_id"]) ? $_GET["host_id"] : 0;
+	$host_id = isset($_POST["host_id"]) ? $_POST["host_id"] : $host_id;
 	
-	$community = getMySnmpCommunity($_POST["host_id"]);
-	$version = getMySnmpVersion($_POST["host_id"]);	
-	$address = getMyHostAddress($_POST["host_id"]);	
+	
+	
+	$community = getMySnmpCommunity($host_id);
+	$version = getMySnmpVersion($host_id);	
+	$address = getMyHostAddress($host_id);	
 	
 	$timeout = 100 * 1000;
 	$retries = 10;
@@ -221,7 +228,7 @@ For information : contact@oreon-project.org
 	$tab_unit_o = array("0"=>"o", "1"=>"Ko","2"=>"Mo","3"=>"Go");
 	
 	
-	if($_POST["type"] == 3 && $_POST["host_id"])
+	if($type == 3 && $host_id)
 	{
 		$hrStorageIndex = walk_snmp_value(".1.3.6.1.2.1.25.2.3.1.1", "INTEGER: ");
 		if ($hrStorageIndex){
@@ -265,7 +272,7 @@ For information : contact@oreon-project.org
 		    }
 		} else 
 			$buffer .= '<storageDevice></storageDevice>';
-	} else 	if($_POST["type"] == 6 && $_POST["host_id"]){
+	} else 	if($type == 6 && $host_id){
 		$ifTab = walk_snmp_value(".1.3.6.1.2.1.2.2.1.1", "INTEGER: ");
 	    if ($ifTab) {
 		    foreach ($ifTab as $key => $it){
@@ -275,7 +282,12 @@ For information : contact@oreon-project.org
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
 				preg_match("/([A-Za-z\-]*)\(?([0-9]+)\)?/", $operstatus, $matches);
 				$operstatus = $matches[1];
-				$buffer .= '<Status>'.$operstatus.'</Status>';
+
+				if($operstatus)
+					$buffer .= '<Status>'.$operstatus.'</Status>';
+				else
+					$buffer .= '<Status>none</Status>';
+
 				if ($operstatus == "up")
 					$buffer .= '<class>list_three</class>';
 				else
@@ -328,8 +340,8 @@ For information : contact@oreon-project.org
 				$buffer .= '</network>';
 		    }
 	    } else 
-	    	$buffer .= '<network></network>';	
-	} else if($_POST["type"] == 4 && $_POST["host_id"]){
+	    	$buffer .= '<network>none</network>';
+	} else if($type == 4 && $host_id){
 		$hrSWInstalled = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.1", "INTEGER: ");
 	   	$hrSWInstalledName = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.2", "STRING: ");
 	   	if ($hrSWInstalled)
@@ -338,11 +350,9 @@ For information : contact@oreon-project.org
 				if (isset($hrSWInstalledName[$key]) && !strstr($hrSWInstalledName[$key], "Hex-"))
 		    		$hrSWInstalled["hrSWInstalledName"] = str_replace("\"", "", $hrSWInstalledName[$key]);
 		    	$buffer.= '<name>'.$hrSWInstalled["hrSWInstalledName"].'</name>';
-				$buffer .= '</software>';	
+				$buffer .= '</software>';
 		    }
-		else
-			$buffer .= '<software></software>';
-	} else if($_POST["type"] == 5 && $_POST["host_id"]){
+	} else if($type == 5 && $host_id){
 		$hrSWRun = walk_snmp_value("1.3.6.1.2.1.25.4.2.1.1", "INTEGER: ");
 	    if ($hrSWRun){
 		    foreach ($hrSWRun as $key => $SWR){

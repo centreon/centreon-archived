@@ -200,7 +200,7 @@ function MyLoading(_txt) {
 }
 
 var xhrIDCard = null; 
-var _adrrsearchIDCard = "./modules/inventory/IDCard_server/infosServerXML.php" //l'adresse   interroger pour trouver les suggestions
+var _adrrsearchIDCard = ".&" //l'adresse   interroger pour trouver les suggestions
 	 
 function getXhrIDCard(){
 	if(window.XMLHttpRequest) // Firefox et autres
