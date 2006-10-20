@@ -210,4 +210,5 @@ DELETE FROM `log_archive_file_name`;
 DELETE FROM `log_archive_host`;
 DELETE FROM `log_archive_service`;
 
-
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'a', './include/common/javascript/autoSelectCommandExample.js', NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'c', './include/common/javascript/autoSelectCommandExample.js', NULL);
