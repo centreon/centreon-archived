@@ -325,7 +325,7 @@ For information : contact@oreon-project.org
 	 			$cmd = $oreon->optGen["rrdtool_path_bin"] . " create ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd --start $start_create ";
 				$nb_ds = 0;
 				foreach ($ppMetrics as $key => $metric){
-					$cmd .= " DS:".addslashes($metric["metric"]).":GAUGE:$time_between_two_values:U:U";
+					$cmd .= " DS:".str_replace("/", "", addslashes($metric["metric"])).":GAUGE:$time_between_two_values:U:U";
 					$nb_ds++;
 				}
 				$cpt_total_graphed_values_for_rrd = $cpt_total_values + 100;

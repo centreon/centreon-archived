@@ -58,7 +58,6 @@ For information : contact@oreon-project.org
 	if (!$session->numRows()){
 		exit;
 	} else {
-
 		if (strcmp($_GET["host_name"], "Meta_Module")){
 			$host_id = getMyHostID($_GET["host_name"]);
 			$service_id = getMyServiceID($_GET["service_description"], $host_id);
@@ -122,7 +121,7 @@ For information : contact@oreon-project.org
 		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$_GET["service_description"]."'");
 		$cpt = 0;
 		while($res->fetchInto($ppMetric))	{
-			$ppMetrics[$ppMetric["metric_id"]]["metric"] = $ppMetric["metric"];
+			$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace("/", "", $ppMetric["metric"]);
 			$ppMetrics[$ppMetric["metric_id"]]["unit"] = $ppMetric["unit"];
 			$ds = getDefaultDS($template_id, $cpt, 1);
 			$ppMetrics[$ppMetric["metric_id"]]["ds_id"] = $ds;
