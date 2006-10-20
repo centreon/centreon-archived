@@ -23,7 +23,7 @@
 
 use strict;
 use DBI;
-use vars qw($dbh $opt_V $opt_h $opt_f);
+use vars qw($dbh $opt_V $opt_h);
 use FileHandle;
 use Getopt::Long;
 
@@ -605,12 +605,6 @@ sub	purge_service()
 sub	main()
 {
     create_lock_file();
-    if ($opt_f)
-    {
-	check_data_host();
-	check_data_service();
-	complete_deletion();
-    }
     autoflush STDOUT 1;
     getPolicy();
     getHostname();
@@ -625,7 +619,6 @@ GetOptions
     ("h" => \$opt_h,
      "help" => \$opt_h,
      "version" => \$opt_V,
-     "f" => \$opt_f,
      "V" => \$opt_V);
 
 if ($opt_h) {
