@@ -861,6 +861,7 @@ $lang["lgd_legend"] = " L&eacute;gende";
 $lang["lgd_force"] = " Forcer une v&eacute;rification";
 $lang["lgd_graph"] = " Graph";
 $lang["lgd_passiv"] = " V&eacute;rification passive activ&eacute;e";
+$lang["lgd_desactivated"] = " El&eacute;ment D&eacute;sactiv&eacute;";
 $lang["lgd_notification"] = "Notification d&eacute;sactiv&eacute;e";
 $lang["lgd_work"] = " Status courant pris en compte";
 

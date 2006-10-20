@@ -1009,6 +1009,7 @@ $lang["lgd_force"] = " Force Check";
 $lang["lgd_graph"] = " Graph";
 $lang["lgd_notification"] = " Notification disabled";
 $lang["lgd_passiv"] = " Passiv check enabled";
+$lang["lgd_desactivated"] = " Item Disable";
 $lang["lgd_work"] = " Acknowledged";
 $lang["lgd_delOne"] = " Delete";
 $lang["lgd_delAll"] = " Delete";
