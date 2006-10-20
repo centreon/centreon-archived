@@ -31,7 +31,7 @@ use Getopt::Long;
 ## Specify the directory where the binary perfparse-db-purge is located
 ##
 
-my $NagiosInstallFolder = "/usr/local/nagios/bin/";
+my $PerfparseInstallFolder = "/usr/local/nagios/bin/";
 
 ##
 ## Warning : during the suppression make sure that no data will be put into perfparse database otherwise the suppression 
@@ -458,9 +458,9 @@ sub check_data_service()
 sub complete_deletion()
 {
     if ($Passwordpp ne "") {
-	system($NagiosInstallFolder."perfparse-db-purge -D $DataBasepp -U $Userpp -P $Passwordpp -H $Hostpp");
+	system($PerfparseInstallFolder."perfparse-db-purge -D $DataBasepp -U $Userpp -P $Passwordpp -H $Hostpp");
     }else{
-	system($NagiosInstallFolder."perfparse-db-purge -D $DataBasepp -U $Userpp -H $Hostpp");}
+	system($PerfparseInstallFolder."perfparse-db-purge -D $DataBasepp -U $Userpp -H $Hostpp");}
 }
 
 
