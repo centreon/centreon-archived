@@ -490,4 +490,7 @@ INSERT INTO `inventory_mac_address` (`mac_address_begin`, `manufacturer`) VALUES
 INSERT INTO `inventory_mac_address` (`mac_address_begin`, `manufacturer`) VALUES ( '00:B0:D0', 6);
 INSERT INTO `inventory_mac_address` (`mac_address_begin`, `manufacturer`) VALUES ( '00:C0:4F', 6);
 
+-- insert version
+
+INSERT INTO `oreon_informations` ( `key` , `value` ) VALUES ('version', '1.3.2');
 
