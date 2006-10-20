@@ -129,10 +129,9 @@ echo "->".$_GET["o1"]. "<br>";
 				"");
 	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "ds"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
-	$o1->setValue(NULL);
+
 	
-	$attrs = array(
+	$attrs2 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
@@ -141,11 +140,16 @@ echo "->".$_GET["o1"]. "<br>";
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "ds"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "ds"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
+	$o1->setSelected(NULL);
+
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
+	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
 
