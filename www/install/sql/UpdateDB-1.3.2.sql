@@ -210,6 +210,18 @@ DELETE FROM `log_archive_file_name`;
 DELETE FROM `log_archive_host`;
 DELETE FROM `log_archive_service`;
 
+--
+-- Structure de la table `oreon_informations`
+--
+
+CREATE TABLE `oreon_informations` (
+`key` VARCHAR( 25 ) NULL ,
+`value` VARCHAR( 25 ) NULL
+) ENGINE = innodb;
+
+INSERT INTO `oreon_informations` ( `key` , `value` )VALUES ('version', '1.3.2');
+
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'a', './include/common/javascript/autoSelectCommandExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'c', './include/common/javascript/autoSelectCommandExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+
