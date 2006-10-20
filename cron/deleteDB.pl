@@ -31,14 +31,14 @@ use Getopt::Long;
 ## Specify the directory where the binary perfparse-db-purge is located
 ##
 
-my $PerfparseInstallFolder = "/usr/local/nagios/bin/";
+my $PerfparseInstallFolder = "/srv/perfparse/bin/";
 
 ##
 ## Warning : during the suppression make sure that no data will be put into perfparse database otherwise the suppression 
 ## might be stopped!
 ##
 
-my $file_lock = "/usr/local/nagios/var/purge.lock";
+my $file_lock = "/var/lock/purge.lock";
 
 ##
 ## Configuration init base oreon

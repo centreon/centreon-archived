@@ -1,8 +1,10 @@
+USE FOR : This script will erase data which correspond to purge policy (defined in oreon frontend) in perfparse database.
+
 Create a cron task as the following sample:
 
 59 23 * * * /your_oreon_path/cron/deleteDB.pl > /dev/null
 
-line 34: Specify nagios directory
+line 34: Specify perfparse directory
 
 $PerfparseInstallFolder = "/srv/perfparse/";
 
