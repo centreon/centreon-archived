@@ -80,12 +80,18 @@
         {$lang.lgd_play}
         </td>
 
-        <td colspan="2">
+        <td>
         <img src="./img/icones/16x16/media_pause.gif" border="0" alt="{$lang.lgd_pause}">
         &nbsp;=&nbsp;
         {$lang.lgd_pause}
         </td>
 
+		<td>
+        <img src="./img/icones/14x14/gears_stop.gif" border="0" alt="{$lang.lgd_desactivated}">
+        &nbsp;=&nbsp;
+        {$lang.lgd_desactivated}
+        </td>
+        
 </tr>
 </table>
 </div>
