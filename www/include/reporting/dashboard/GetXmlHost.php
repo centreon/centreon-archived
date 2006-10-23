@@ -173,40 +173,6 @@ For information : contact@oreon-project.org
 
 
 
-			if($pup > 0){
-				$t1 = round(($t - ($pup * $t / 100) ),2);
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", ($h["date_start"] + 5000) ) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", ($h["date_end"] - $t1 -5000)). ' GMT"';
-				$buffer .= ' color="#' . $colorUP . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . $pup . '%" >' ;
-
-/*
-				$buffer .= 'up: ' . $pup . '%';
-				$buffer .= ' down: ' . $pdown . '%';
-				$buffer .= ' unreachable: ' . $punreach . '%';
-				$buffer .= ' undeterminate: ' . $pundet . '%';	
-*/
-								$buffer .= '</event>';		
-			}
-
-			if($pdown > 0){
-				$t1 = round(($t - ($pdown * $t / 100) ),2);
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", ($h["date_start"] + 5000) ) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", ($h["date_end"] - $t1 -5000)). ' GMT"';
-				$buffer .= ' color="#' . $colorDOWN . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . $pdown . '%" >' ;
-/*
-				$buffer .= 'up: ' . $pup . '%';
-				$buffer .= ' down: ' . $pdown . '%';
-				$buffer .= ' unreachable: ' . $punreach . '%';
-				$buffer .= ' undeterminate: ' . $pundet . '%';	
-*/
-				$buffer .= '</event>';		
-			}
 
 			if($punreach > 0){
 				$t1 = round(($t - ($punreach * $t / 100) ),2);
@@ -220,10 +186,23 @@ For information : contact@oreon-project.org
 				$buffer .= ' title= "' . $punreach . '%" >' ;
 				$buffer .= '</event>';		
 			}
+			else{
+				$t1 = round(($t - ($punreach * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_start"] + 5001;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "" >' ;
+				$buffer .= '</event>';		
+			}
 
 
 
 			if($pundet > 0){
+				
 				$t1 = round(($t - ($pundet * $t / 100) ),2);
 				$start = $h["date_start"] + 5000;
 				$end = $h["date_end"] - $t1 -5000;
@@ -235,6 +214,73 @@ For information : contact@oreon-project.org
 				$buffer .= ' title= "' . $pundet . '%" >' ;
 				$buffer .= '</event>';		
 			}
+			else{				
+				$t1 = round(($t - ($pundet * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_start"] + 5001;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorUNKNOWN . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "" >' ;
+				$buffer .= '</event>';		
+			}
+
+
+			if($pdown > 0){
+				$t1 = round(($t - ($pdown * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_end"] - $t1 -5000;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorDOWN . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . $pdown . '%" >' ;
+				$buffer .= '</event>';		
+			}
+			else{
+				$t1 = round(($t - ($pdown * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_start"] + 5001;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorDOWN . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "" >' ;
+				$buffer .= '</event>';
+			}
+
+			if($pup > 0){
+				$t1 = round(($t - ($pup * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_end"] - $t1 -5000;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorUP . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . $pup . '%" >' ;
+				$buffer .= '</event>';
+			}
+			else{
+				$t1 = round(($t - ($pup * $t / 100) ),2);
+				$start = $h["date_start"] + 5000;
+				$end = $h["date_start"] + 5001;
+				$buffer .= '<event ';
+				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+				$buffer .= ' color="#' . $colorUP . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "" >' ;
+				$buffer .= '</event>';
+			}
+
+
+
+
 
 
 	

@@ -32,7 +32,7 @@ function initTimeline() {
 	        intervalUnit:   Timeline.DateTime.DAY, 
 	        intervalPixels: 300,
 
-            trackHeight:    3.0,
+            trackHeight:    2.0,
             trackGap:       0.1,
 	    }),
 	    Timeline.createBandInfo({
