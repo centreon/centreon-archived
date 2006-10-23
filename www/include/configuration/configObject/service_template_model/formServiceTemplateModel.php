@@ -420,9 +420,13 @@ For information : contact@oreon-project.org
 	$form->applyFilter('service_description', 'myReplace');
 	$form->addRule('service_description', $lang['ErrName'], 'required');
 
-	//$form->registerRule('exist', 'callback', 'testExistence');
-	//$form->addRule('service_description', $lang['ErrAlreadyExist'], 'exist');
+	$form->registerRule('exist', 'callback', 'testServiceTemplateExistence');
+	$form->addRule('service_description', $lang['ErrAlreadyExist'], 'exist');
+
 	$form->setRequiredNote($lang['requiredFields']);
+
+
+
 
 	#
 	##End of form definition

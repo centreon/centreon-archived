@@ -19,8 +19,28 @@ For information : contact@oreon-project.org
 */
 	if (!isset ($oreon))
 		exit ();
-	
-		
+
+	function testServiceTemplateExistence ($name = NULL)	{
+		global $pearDB;
+		global $form;
+		$id = NULL;
+		if (isset($form))
+			$id = $form->getSubmitValue('service_id');
+		$res =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($res)) {
+			print "Mysql Error : ".$res->getMessage();
+		}
+		$service =& $res->fetchRow();
+		#Modif case
+		if ($res->numRows() >= 1 && $service["service_id"] == $id)
+			return true;
+		#Duplicate entry
+		else if ($res->numRows() >= 1 && $service["service_id"] != $id)
+			return false;
+		else
+			return true;
+	}
+			
 	function testServiceExistence ($name = NULL, $hPars = array(), $hgPars = array())	{
 		global $pearDB;
 		global $form;
