@@ -71,6 +71,53 @@ For information : contact@oreon-project.org
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
+	#
+	##Toolbar select $lang["lgd_more_actions"]
+	#
+	?>
+	<SCRIPT LANGUAGE="JavaScript">
+	function setO(_i) {
+		document.forms['form'].elements['o'].value = _i;
+	}
+	</SCRIPT>
+	<?
+	$attrs1 = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"this.form.elements['o1'].selectedIndex = 0");
+    $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+	$form->setDefaults(array('o1' => NULL));
+
+
+	
+	$attrs2 = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"this.form.elements['o2'].selectedIndex = 0");
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
+	$form->setDefaults(array('o2' => NULL));
+
+
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
+	$o1->setSelected(NULL);
+
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
+	$o2->setSelected(NULL);
+	
+	$tpl->assign('limit', $limit);
+
 
 	#
 	##Apply a template definition

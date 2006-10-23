@@ -60,7 +60,9 @@ For information : contact@oreon-project.org
 		$moptions .= "<a href='oreon.php?p=".$p."&country_id=".$country['country_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&country_id=".$country['country_id']."&o=d&select[".$country['country_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<select style='width:35; margin-bottom: 3px;' name='dupNbr[".$country['country_id']."]'></input>";
+
+		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$host['host_id']."]'></input>";
+
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$country["country_name"],
@@ -72,6 +74,53 @@ For information : contact@oreon-project.org
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+
+	#
+	##Toolbar select $lang["lgd_more_actions"]
+	#
+	?>
+	<SCRIPT LANGUAGE="JavaScript">
+	function setO(_i) {
+		document.forms['form'].elements['o'].value = _i;
+	}
+	</SCRIPT>
+	<?
+	$attrs1 = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"this.form.elements['o1'].selectedIndex = 0");
+    $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+	$form->setDefaults(array('o1' => NULL));
+
+
+	
+	$attrs2 = array(
+		'onchange'=>"javascript: " .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"this.form.elements['o2'].selectedIndex = 0");
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
+	$form->setDefaults(array('o2' => NULL));
+
+
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
+	$o1->setSelected(NULL);
+
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
+	$o2->setSelected(NULL);
+	
+	$tpl->assign('limit', $limit);
 	
 
 	#
