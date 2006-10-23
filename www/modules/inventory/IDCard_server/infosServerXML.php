@@ -277,26 +277,37 @@ For information : contact@oreon-project.org
 	    if ($ifTab) {
 		    foreach ($ifTab as $key => $it){
 			   	$ifTab[$key]["ifIndex"] = $it;
-			    $buffer .= '<network>';
-				$buffer .= '<interfaceName>'.get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ").'</interfaceName>';
+//			    $buffer .= '<network>';
+
+				//$buffer .= '<interfaceName>'.get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ").'</interfaceName>';
+				$interfaceName = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ");
+
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
 				preg_match("/([A-Za-z\-]*)\(?([0-9]+)\)?/", $operstatus, $matches);
 				$operstatus = $matches[1];
 
+
+
 				if($operstatus)
-					$buffer .= '<Status>'.$operstatus.'</Status>';
+					$status = $operstatus;
+					//$buffer .= '<Status>'.$operstatus.'</Status>';
 				else
-					$buffer .= '<Status>none</Status>';
+					$status = 'none';
+					//$buffer .= '<Status>none</Status>';
 
 				if ($operstatus == "up")
-					$buffer .= '<class>list_three</class>';
+					$class = 'list_three';
+//					$buffer .= '<class>list_three</class>';
 				else
-					$buffer .= '<class>list_four</class>';
+					$class = 'list_four';
+//					$buffer .= '<class>list_four</class>';
 				$ifTab["ifPhysAddress"] = get_snmp_value("1.3.6.1.2.1.2.2.1.6.".$it, "STRING: ");
 				if ($ifTab["ifPhysAddress"])
-					$buffer .= '<PhysAddress>'.$ifTab["ifPhysAddress"].'</PhysAddress>';
+					$PhysAddress = $ifTab["ifPhysAddress"];
+//					$buffer .= '<PhysAddress>'.$ifTab["ifPhysAddress"].'</PhysAddress>';
 				else
-					$buffer .= '<PhysAddress> </PhysAddress>';
+					$PhysAddress = 'none';
+//					$buffer .= '<PhysAddress> </PhysAddress>';
 				# Type
 				$iftype = get_snmp_value("1.3.6.1.2.1.2.2.1.3.".$it, "INTEGER: ");
 		    	$r = preg_match("/([A-Za-z\-]*)\(?([0-9]+)\)?/", $iftype, $matches);
@@ -304,7 +315,8 @@ For information : contact@oreon-project.org
 			    	$ifTab["ifType"] = $ifType[$matches[2]];
 		    	else
 		    		$ifTab["ifType"] = " ";
-		    	$buffer .= '<Type>'.$ifTab["ifType"].'</Type>';
+//		    	$buffer .= '<Type>'.$ifTab["ifType"].'</Type>';
+				$type = $ifTab["ifType"];
 	
 				# In Octets
 				$ifinoctets = get_snmp_value("1.3.6.1.2.1.2.2.1.10.".$it, "Counter32: ");
@@ -318,15 +330,16 @@ For information : contact@oreon-project.org
 					$cpt++;
 				$ifTab["ifOutOctets"] = round($value,2) . " " . $tab_unit[$cpt];
 				
-				$buffer .= '<Trafic> In : '.$ifTab["ifInOctets"].' / Out '. $ifTab["ifOutOctets"].'</Trafic>';
-				
+//				$buffer .= '<Trafic> In : '.$ifTab["ifInOctets"].' / Out '. $ifTab["ifOutOctets"].'</Trafic>';
+				$traffic = ' In : '.$ifTab["ifInOctets"].' / Out '. $ifTab["ifOutOctets"];
+
 				$ifSpeed = get_snmp_value("1.3.6.1.2.1.2.2.1.5.".$it, "Gauge32: ");
 		    	for ($cpt = 0,$value = $ifSpeed; $value >= 1000 ; $value /= 1000)
 					$cpt++;
-				$buffer .= '<Speed>'.$value.' '.$tab_unit[$cpt].'</Speed>';
-
-				$buffer .= '<errorPaquet> In : '.get_snmp_value("1.3.6.1.2.1.2.2.1.14.".$it, "Counter32: ") . " Pkts".' / Out : '.get_snmp_value("1.3.6.1.2.1.2.2.1.20.".$it, "Counter32: ") . " Pkts".'</errorPaquet>';
-	
+//				$buffer .= '<Speed>'.$value.' '.$tab_unit[$cpt].'</Speed>';
+				$speed = $value.' '.$tab_unit[$cpt];
+//				$buffer .= '<errorPaquet> In : '.get_snmp_value("1.3.6.1.2.1.2.2.1.14.".$it, "Counter32: ") . " Pkts".' / Out : '.get_snmp_value("1.3.6.1.2.1.2.2.1.20.".$it, "Counter32: ") . " Pkts".'</errorPaquet>';
+				$errorPaquet =  'In : '.get_snmp_value("1.3.6.1.2.1.2.2.1.14.".$it, "Counter32: ") . " Pkts".' / Out : '.get_snmp_value("1.3.6.1.2.1.2.2.1.20.".$it, "Counter32: ") . " Pkts";
 				# IP Interface
 				$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
 	    		$ipInterface = array();
@@ -336,7 +349,21 @@ For information : contact@oreon-project.org
 					$str = $ipInterface["ipIP"].' / '.$ipInterface["ipNetMask"];
 				else
 					$str = "Not Defined";
-				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
+//				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
+				$ipAddress = $str;
+//				$buffer .= '</network>';
+
+
+				$buffer .= '<network>';
+				$buffer .= '<interfaceName isvalid="1">' .$interfaceName . '</interfaceName>';
+				$buffer .= '<PhysAddress isvalid="1">' . $PhysAddress . '</PhysAddress>';
+				$buffer .= '<Status isvalid="1">' . $status . '</Status>';
+				$buffer .= '<class isvalid="1">' . $class . '</class>';
+		    	$buffer .= '<Type isvalid="1">' . $type . '</Type>';
+				$buffer .= '<Trafic isvalid="1">' . $traffic . '</Trafic>';
+				$buffer .= '<Speed isvalid="1">' . $speed . '</Speed>';
+				$buffer .= '<errorPaquet isvalid="1">' . $errorPaquet . '</errorPaquet>';
+				$buffer .= '<ipAddress isvalid="1">' . $ipAddress . '</ipAddress>';
 				$buffer .= '</network>';
 		    }
 	    } else 

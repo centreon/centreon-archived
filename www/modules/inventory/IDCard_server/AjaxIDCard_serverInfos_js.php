@@ -529,14 +529,30 @@ function get_network(_host_id)
 			for (var i = 0 ; i < _networks.length ; i++) {
 				var _network = _networks[i];
 
-				var _interfaceName = _network.getElementsByTagName("interfaceName")[0].firstChild.nodeValue;
-				var _Status = _network.getElementsByTagName("Status")[0].firstChild.nodeValue;
-				var _PhysAddress = _network.getElementsByTagName("PhysAddress")[0].firstChild.nodeValue;
-				var _Type = _network.getElementsByTagName("Type")[0].firstChild.nodeValue;
-				var _Trafic = _network.getElementsByTagName("Trafic")[0].firstChild.nodeValue;
-				var _ipAdress = _network.getElementsByTagName("ipAddress")[0].firstChild.nodeValue;
-				var _Speed = _network.getElementsByTagName("Speed")[0].firstChild.nodeValue;
-				var _errorPaquet = _network.getElementsByTagName("errorPaquet")[0].firstChild.nodeValue;
+				var _interfaceName = "";
+			    if (_network.getElementsByTagName("interfaceName")[0].getAttribute('isvalid') == 1)
+					var _interfaceName = _network.getElementsByTagName("interfaceName")[0].firstChild.nodeValue;
+			    var _Status = " ";
+			    if (_network.getElementsByTagName("Status")[0].getAttribute('isvalid') == 1)
+					var _Status = _network.getElementsByTagName("Status")[0].firstChild.nodeValue;
+				var _PhysAddress = "";
+			    if (_network.getElementsByTagName("PhysAddress")[0].getAttribute('isvalid') == 1)
+					var _PhysAddress = _network.getElementsByTagName("PhysAddress")[0].firstChild.nodeValue;
+				var _Type = "";
+			    if (_network.getElementsByTagName("Type")[0].getAttribute('isvalid') == 1)
+					var _Type = _network.getElementsByTagName("Type")[0].firstChild.nodeValue;
+				var _Trafic = "";
+			    if (_network.getElementsByTagName("Trafic")[0].getAttribute('isvalid') == 1)
+					var _Trafic = _network.getElementsByTagName("Trafic")[0].firstChild.nodeValue;
+				var _ipAdress = "";
+			    if (_network.getElementsByTagName("ipAddress")[0].getAttribute('isvalid') == 1)
+					var _ipAdress = _network.getElementsByTagName("ipAddress")[0].firstChild.nodeValue;
+				var _Speed = "";
+			    if (_network.getElementsByTagName("Speed")[0].getAttribute('isvalid') == 1)
+					var _Speed = _network.getElementsByTagName("Speed")[0].firstChild.nodeValue;
+				var _errorPaquet = "";
+			    if (_network.getElementsByTagName("errorPaquet")[0].getAttribute('isvalid') == 1)
+					var _errorPaquet = _network.getElementsByTagName("errorPaquet")[0].firstChild.nodeValue;
 
 				var _interfaceName_label = '<?=$lang["s_status"]?>';
 				var _Status_label = '<?=$lang["s_status"]?>';
