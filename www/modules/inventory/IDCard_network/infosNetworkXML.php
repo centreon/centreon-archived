@@ -2,7 +2,7 @@
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
-Developped by : Julien Mathis - Romain Le Merlus
+Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
 This unit, called « Oreon Inventory » is developped by Merethis company for Lafarge Group,
 under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
@@ -20,14 +20,14 @@ For information : contact@oreon-project.org
 */
 
 	$buffer = "<reponse>";
-	
+
 	require_once("../../../oreon.conf.php");
 	require_once("../../../DBconnect.php");
-	
-	
+	require_once("../inventory_library.php");
+
 	#Path to the configuration dir
 	#PHP functions
-	
+
 	function getMyHostGroups($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -40,7 +40,7 @@ For information : contact@oreon-project.org
 			$hgs[$hg["hostgroup_hg_id"]] = $hg["hg_name"];
 		return $hgs;
 	}
-	
+
 	function getMyHostGroupCommunity($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
@@ -53,7 +53,7 @@ For information : contact@oreon-project.org
 			return $row["hg_snmp_community"];
 		return NULL;
 	}
-	
+
 	function getMyHostGroupVersion($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
@@ -66,10 +66,14 @@ For information : contact@oreon-project.org
 			return $row["hg_snmp_version"];
 		return NULL;
 	}
-	
+
 	function get_snmp_value($oid, $replace_string){
-		global $address, $community, $timeout, $retries;
+		global $address, $community, $timeout, $retries, $debug_inventory, $debug_path ;
 		$str = @snmpget($address, $community, $oid, $timeout , $retries);
+
+		if ($debug_inventory == 1)
+			error_log("[" . date("d/m/Y H:s") ."] Inventory : OID => " . $oid . ", Value => " . $str ."\n", 3, $debug_path."inventory.log");
+
 		//print "[".$str."]";
 		if ($str == FALSE)
 			return FALSE;
@@ -91,7 +95,7 @@ For information : contact@oreon-project.org
 		} else
 			return FALSE;
 	}
-	
+
 	function getMyHostName($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -109,7 +113,7 @@ For information : contact@oreon-project.org
 				break;
 		}
 	}
-	
+
 	function getMyHostAddress($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -127,7 +131,7 @@ For information : contact@oreon-project.org
 				break;
 		}
 	}
-	
+
 	function getMySnmpVersion($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -167,7 +171,7 @@ For information : contact@oreon-project.org
 		}
 		return NULL;
 	}
-	
+
 	function getMySnmpCommunity($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -205,21 +209,34 @@ For information : contact@oreon-project.org
 		}
 		return NULL;
 	}
-	
+
 	//$_POST["host_id"] = 53;
 	//$_POST["type"] = 2;
-	
-	
+	 global $pearDB;
+     $res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
+	 if (PEAR::isError($res))
+		die($res->getMessage());
+
+	  $debug = $res->fetchRow();
+
+	  $debug_inventory = $debug['debug_inventory'];
+	  $debug_path = $debug['debug_path'];
+	  if (!isset($debug_inventory))
+	  	$debug_inventory = 0;
+
 	$community = getMySnmpCommunity($_POST["host_id"]);
-	$version = getMySnmpVersion($_POST["host_id"]);	
-	$address = getMyHostAddress($_POST["host_id"]);	
-	
+	$version = getMySnmpVersion($_POST["host_id"]);
+	$address = getMyHostAddress($_POST["host_id"]);
+
+	if ($debug_inventory == 1)
+		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host Network '".  $address . "' : SNMP Community : ".  $community . ", SNMP Version => ". $version ."\n", 3, $debug_path."inventory.log");
+
 	$timeout = 100 * 1000;
 	$retries = 10;
-	
+
 	$tab_unit = array("0"=>"bits", "1"=>"Kbits","2"=>"Mbits","3"=>"Gbits");
 	$tab_unit_o = array("0"=>"o", "1"=>"Ko","2"=>"Mo","3"=>"Go");
-	
+
 	if (($_POST["type"] == 3 || $_POST["type"] == 2) && $_POST["host_id"]){
 		$ifTab = walk_snmp_value(".1.3.6.1.2.1.2.2.1.1", "INTEGER: ");
 	    if ($ifTab){
@@ -231,10 +248,14 @@ For information : contact@oreon-project.org
 			    $type == 1 ? $buffer .= '<network>': $buffer .= '<vlan>';
 				$buffer .= '<interfaceName>'.$description.'</interfaceName>';
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
-				preg_match("/([A-Za-z\-]*)\(?([0-9]+)\)?/", $operstatus, $matches);
-				$operstatus = $matches[1];
-				$buffer .= '<Status>'.$operstatus.'</Status>';
-				if ($operstatus == "up")
+				preg_match("/[A-Za-z\-]*\(?([0-9]+)\)?/", $operstatus, $matches);
+				$operstatus = $matches[0];
+				if ($operstatus)
+					$buffer .= '<Status>'.$ifOperStatus[$operstatus].'</Status>';
+				else
+					$buffer .= '<Status>none</Status>';
+
+				if ($operstatus == "1")
 					$buffer .= '<class>list_three</class>';
 				else
 					$buffer .= '<class>list_four</class>';
@@ -250,7 +271,7 @@ For information : contact@oreon-project.org
 		    	else
 		    		$ifTab["ifType"] = " ";
 		    	$buffer .= '<Type>'.$ifTab["ifType"].'</Type>';
-	
+
 				# In Octets
 				$ifinoctets = get_snmp_value("1.3.6.1.2.1.2.2.1.10.".$it, "Counter32: ");
 		    	for ($cpt = 0,$value = $ifinoctets; $value >= 1024 ; $value /= 1024)
@@ -262,34 +283,48 @@ For information : contact@oreon-project.org
 		    	for ($cpt = 0,$value = $ifoutoctets; $value >= 1024 ; $value /= 1024)
 					$cpt++;
 				$ifTab["ifOutOctets"] = round($value,2) . " " . $tab_unit[$cpt];
-				
+
 				$buffer .= '<Trafic> In : '.$ifTab["ifInOctets"].' / Out '. $ifTab["ifOutOctets"].'</Trafic>';
-				
+
 				$ifSpeed = get_snmp_value("1.3.6.1.2.1.2.2.1.5.".$it, "Gauge32: ");
 		    	for ($cpt = 0,$value = $ifSpeed; $value >= 1000 ; $value /= 1000)
 					$cpt++;
 				$buffer .= '<Speed>'.$value.' '.$tab_unit[$cpt].'</Speed>';
 
 				$buffer .= '<errorPaquet> In : '.get_snmp_value("1.3.6.1.2.1.2.2.1.14.".$it, "Counter32: ") . " Pkts".' / Out : '.get_snmp_value("1.3.6.1.2.1.2.2.1.20.".$it, "Counter32: ") . " Pkts".'</errorPaquet>';
-	
+
 				# IP Interface
 				$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
 	    		$ipInterface = array();
-	    		$ipInterface["ipIP"] = $it;
+	    		//$ipInterface["ipIP"] = $it;
+	    		$ipInterface["ipIP"] = get_snmp_value("1.3.6.1.2.1.4.20.1.1.".$it, "IpAddress: ");
 	    		$ipInterface["ipNetMask"] = get_snmp_value("1.3.6.1.2.1.4.20.1.3.".$it, "IpAddress: ");
+
+	    		if ($debug_inventory == 1)
+					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : IP Address => " . $ipInterface["ipIP"] . " : NetMask => " .  $ipInterface["ipNetMask"]  ."\n", 3, $debug_path."inventory.log");
+
+
 				if ($ipInterface["ipIP"] && $ipInterface["ipNetMask"])
 					$str = $ipInterface["ipIP"].' / '.$ipInterface["ipNetMask"];
 				else
 					$str = "Not Defined";
 				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
 				$type == 1 ? $buffer .= '</network>': $buffer .= '</vlan>';
+
+				if ($debug_inventory == 1)
+					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Description => ". $description  . " : Type => " . $ifTab["ifType"]. " :  Status => " . $operstatus . " : Speed => " .  $value.' '.$tab_unit[$cpt] . " : PhysAddress => " .  $ifTab["ifPhysAddress"]  . ": IP Address => " . $str  ."\n", 3, $debug_path."inventory.log");
+
 		    }
 	    } else {
 	    	$buffer .= "<network></network>\n<vlan></vlan>";
 	    }
 	}
-	
-	$buffer .= '</reponse>';	
+
+	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
+
+	if ($debug_inventory == 1)
+		error_log("[" . date("d/m/Y H:s") ."] Inventory : XML Response : " .$buffer ."\n", 3, $debug_path."inventory.log");
+
 ?>
