@@ -409,6 +409,8 @@ For information : contact@oreon-project.org
 	$form->applyFilter('host_name', 'myReplace');
 	$form->registerRule('exist', 'callback', 'testHostExistence');
 	$form->addRule('host_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->addRule('host_name', $lang['ErrName'], 'required');
+	$form->addRule('host_alias', $lang['ErrAlias'], 'required');
 
 	#
 	##End of form definition
