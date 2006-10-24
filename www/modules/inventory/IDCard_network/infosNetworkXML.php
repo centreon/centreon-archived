@@ -232,7 +232,7 @@ For information : contact@oreon-project.org
 		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host Network '".  $address . "' : SNMP Community : ".  $community . ", SNMP Version => ". $version ."\n", 3, $debug_path."inventory.log");
 
 	$timeout = 100 * 1000;
-	$retries = 10;
+	$retries = 4;
 
 	$tab_unit = array("0"=>"bits", "1"=>"Kbits","2"=>"Mbits","3"=>"Gbits");
 	$tab_unit_o = array("0"=>"o", "1"=>"Ko","2"=>"Mo","3"=>"Go");
@@ -246,7 +246,7 @@ For information : contact@oreon-project.org
 			   	$iftype = get_snmp_value("1.3.6.1.2.1.2.2.1.3.".$it, "INTEGER: ");
 			   	(strstr(strtolower($description), "vlan") || strstr(strtolower($iftype), 'virtual')) ? $type = 2 : $type = 1;
 			    $type == 1 ? $buffer .= '<network>': $buffer .= '<vlan>';
-				$buffer .= '<interfaceName>'.$description.'</interfaceName>';
+				$buffer .= '<interfaceName>'. htmlentities($description, ENT_QUOTES) .'</interfaceName>';
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
 				preg_match("/[A-Za-z\-]*\(?([0-9]+)\)?/", $operstatus, $matches);
 				$operstatus = $matches[0];
@@ -294,7 +294,7 @@ For information : contact@oreon-project.org
 				$buffer .= '<errorPaquet> In : '.get_snmp_value("1.3.6.1.2.1.2.2.1.14.".$it, "Counter32: ") . " Pkts".' / Out : '.get_snmp_value("1.3.6.1.2.1.2.2.1.20.".$it, "Counter32: ") . " Pkts".'</errorPaquet>';
 
 				# IP Interface
-				$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
+	/*			$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
 	    		$ipInterface = array();
 	    		//$ipInterface["ipIP"] = $it;
 	    		$ipInterface["ipIP"] = get_snmp_value("1.3.6.1.2.1.4.20.1.1.".$it, "IpAddress: ");
@@ -313,6 +313,29 @@ For information : contact@oreon-project.org
 
 				if ($debug_inventory == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Description => ". $description  . " : Type => " . $ifTab["ifType"]. " :  Status => " . $operstatus . " : Speed => " .  $value.' '.$tab_unit[$cpt] . " : PhysAddress => " .  $ifTab["ifPhysAddress"]  . ": IP Address => " . $str  ."\n", 3, $debug_path."inventory.log");
+					*/
+
+				$ipInterface_data = walk_snmp_value("1.3.6.1.2.1.4.20.1.1", "IpAddress: ");
+			  	if ($ipInterface_data){
+			    	foreach ($ipInterface_data as $it){
+			    		$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
+			    		$ipInterface[$index] = array();
+			    		$ipInterface[$index]["ipIP"] = $it;
+			    		$ipInterface[$index]["ipIndex"] = $index;
+			    		$ipInterface[$index]["ipNetMask"] = get_snmp_value("1.3.6.1.2.1.4.20.1.3.".$it, "IpAddress: ");
+
+			    		if ($debug_inventory == 1)
+							error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' Index => " . $ipInterface[$index]["ipIndex"] ." : Ip => " .$ipInterface[$index]["ipIP"] . " : NetMask => " .  $ipInterface[$index]["ipNetMask"]  ."\n", 3, $debug_path."inventory.log");
+			    	}
+			    }
+
+		    	if (isset($ipInterface[$ifTab[$key]["ifIndex"]]) && $ipInterface[$ifTab[$key]["ifIndex"]]["ipIP"])
+					$str   = $ipInterface[$ifTab[$key]["ifIndex"]]["ipIP"]." / ".$ipInterface[$ifTab[$key]["ifIndex"]]["ipNetMask"];
+				else
+					$str   = "Not Defined";
+
+				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
+				$type == 1 ? $buffer .= '</network>': $buffer .= '</vlan>';
 
 		    }
 	    } else {

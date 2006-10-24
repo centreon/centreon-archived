@@ -71,8 +71,8 @@ For information : contact@oreon-project.org
 		global $address, $community, $timeout, $retries,$debug_inventory,$debug_path;
 		$str = @snmpget($address, $community, $oid, $timeout , $retries);
 
-		if ($debug_inventory == 1)
-			error_log("[" . date("d/m/Y H:s") ."] Inventory : OID => " . $oid . ", Value => " . $str ."\n", 3, $debug_path."inventory.log");
+//		if ($debug_inventory == 1)
+//			error_log("[" . date("d/m/Y H:s") ."] Inventory : OID => " . $oid . ", Value => " . $str ."\n", 3, $debug_path."inventory.log");
 
 		//print "[".$str."]";
 		if ($str == FALSE)
@@ -239,7 +239,7 @@ For information : contact@oreon-project.org
 		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host Server '".  $address . "' : SNMP Community : ".  $community . ", SNMP Version => ". $version ."\n", 3, $debug_path."inventory.log");
 
 	$timeout = 100 * 1000;
-	$retries = 10;
+	$retries = 4;
 
 	$tab_unit = array("0"=>"bits", "1"=>"Kbits","2"=>"Mbits","3"=>"Gbits");
 	$tab_unit_o = array("0"=>"o", "1"=>"Ko","2"=>"Mo","3"=>"Go");
@@ -334,7 +334,7 @@ For information : contact@oreon-project.org
 					$PhysAddress = $ifTab["ifPhysAddress"];
 //					$buffer .= '<PhysAddress>'.$ifTab["ifPhysAddress"].'</PhysAddress>';
 				else
-					$PhysAddress = 'none';
+					$PhysAddress = 'N/A';
 //					$buffer .= '<PhysAddress>N/A</PhysAddress>';
 //					$buffer .= '<PhysAddress> </PhysAddress>';
 
@@ -379,7 +379,29 @@ For information : contact@oreon-project.org
 				$errorPaquet =  'In : '.get_snmp_value("1.3.6.1.2.1.2.2.1.14.".$it, "Counter32: ") . " Pkts".' / Out : '.get_snmp_value("1.3.6.1.2.1.2.2.1.20.".$it, "Counter32: ") . " Pkts";
 
 				# IP Interface
-				$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
+
+				$ipInterface_data = walk_snmp_value("1.3.6.1.2.1.4.20.1.1", "IpAddress: ");
+			  	if ($ipInterface_data){
+			    	foreach ($ipInterface_data as $it){
+			    		$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
+			    		$ipInterface[$index] = array();
+			    		$ipInterface[$index]["ipIP"] = $it;
+			    		$ipInterface[$index]["ipIndex"] = $index;
+			    		$ipInterface[$index]["ipNetMask"] = get_snmp_value("1.3.6.1.2.1.4.20.1.3.".$it, "IpAddress: ");
+
+			    		if ($debug_inventory == 1)
+							error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' Index => " . $ipInterface[$index]["ipIndex"] ." : Ip => " .$ipInterface[$index]["ipIP"] . " : NetMask => " .  $ipInterface[$index]["ipNetMask"]  ."\n", 3, $debug_path."inventory.log");
+
+			    	}
+			    }
+
+		    	if (isset($ipInterface[$ifTab[$key]["ifIndex"]]) && $ipInterface[$ifTab[$key]["ifIndex"]]["ipIP"])
+					$ipAddress   = $ipInterface[$ifTab[$key]["ifIndex"]]["ipIP"]." / ".$ipInterface[$ifTab[$key]["ifIndex"]]["ipNetMask"];
+				else
+					$ipAddress   = "Not Defined";
+
+
+	/*			$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
 	    		$ipInterface = array();
 	    		$ipInterface["ipIP"] = $it;
 	    		$ipInterface["ipNetMask"] = get_snmp_value("1.3.6.1.2.1.4.20.1.3.".$it, "IpAddress: ");
@@ -389,7 +411,7 @@ For information : contact@oreon-project.org
 					$str = "Not Defined";
 //				$buffer .= '<ipAddress>'.$str.'</ipAddress>';
 				$ipAddress = $str;
-//				$buffer .= '</network>';
+//				$buffer .= '</network>';*/
 
 
 				$buffer .= '<network>';
@@ -405,7 +427,7 @@ For information : contact@oreon-project.org
 				$buffer .= '</network>';
 
 				if ($debug_inventory == 1)
-					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Type => " . $ifTab["ifType"]. " :  Status => " . $operstatus . " : Speed => " .  $value.' '.$tab_unit[$cpt] . " : PhysAddress => " .  $ifTab["ifPhysAddress"]  . ": IP Address => " . $str  ."\n", 3, $debug_path."inventory.log");
+					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Type => " . $ifTab["ifType"]. " :  Status => " . $operstatus . " : Speed => " .  $value.' '.$tab_unit[$cpt] . " : PhysAddress => " .  $ifTab["ifPhysAddress"]  . ": IP Address => " . $ipAddress   ."\n", 3, $debug_path."inventory.log");
 		    }
 	    } else
 	    	$buffer .= '<network>none</network>';
