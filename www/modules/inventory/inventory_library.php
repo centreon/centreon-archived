@@ -24,9 +24,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	if (!$oreon)
-		exit();
-
 	/*
 	 * The type of interface, distinguished according to
      * the physical/link protocol(s) immediately `below'
