@@ -45,6 +45,7 @@
 => Bugfix : #238
 => Bugfix : topologyjs -> changetab for 60101 o=a
 => Bugfix : duplicate entry for template (in configuration)
+=> Bugfix : #251
 
 ## Oreon 1.3.1-1
 
