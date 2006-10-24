@@ -121,7 +121,7 @@ For information : contact@oreon-project.org
 		$version = $r["host_snmp_version"];
 
   if ($debug_inventory == 1) {
-   		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host : ID => ".  $host_id . ", Address => " . $address ."\n", 3, $debug_path."inventory.log");
+   		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host : Name => ". $r["host_name"] . ", ID => ".  $host_id . ", Address => " . $address ."\n", 3, $debug_path."inventory.log");
 		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host : SNMP Community => ".  $community . ", SNMP Version => ". $version ."\n", 3, $debug_path."inventory.log");
 	}
 
