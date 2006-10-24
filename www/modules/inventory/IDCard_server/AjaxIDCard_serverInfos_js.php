@@ -2,7 +2,7 @@
 /**
 Oreon is developped with Apache Licence 2.0 :
 http://www.apache.org/licenses/LICENSE-2.0.txt
-Developped by : Cedrick Facon
+Developped by : Cedrick Facon - Christophe Coraboeuf
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
@@ -23,30 +23,30 @@ var _current_id = '1';
 
 function mreload(id) {
 	_current_id = id;
-	
+
 	var _tableforajax = document.getElementById('tab' + id);
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 
-    for (var i = 0; i < childrenNumber; i++) 
+    for (var i = 0; i < childrenNumber; i++)
     {
 		var element = _tableforajax.childNodes[i];
       	var elementName = element.nodeName.toLowerCase();
 		if (elementName == 'table')
 		{
 		    var childrenNumbertable = element.childNodes.length;
-		    for (var j = 0; j < childrenNumbertable; j++) 
+		    for (var j = 0; j < childrenNumbertable; j++)
 		    {
 				var elementtable = element.childNodes[j];
 		  		var elementNametable = elementtable.nodeName.toLowerCase();
-		  		
+
 				if (elementNametable == 'tbody')
 				{
 					_tableAjax = elementtable;
 				}
 			}
 		}
-	}	
+	}
 
     var childrenNumbertable = _tableAjax.childNodes.length;
     for (var j = 0; j < childrenNumbertable; j++)
@@ -61,7 +61,7 @@ function mreload(id) {
 	if(id == 2)
 	_tableAjax.innerHTML = '';
 
-	
+
 	if (id == 1){
 	}
 	else if (id == 2){
@@ -78,20 +78,20 @@ function mreload(id) {
 			MyLoading('Loading...');
 			_f4.status.value = 1;
 			get_software(_host_id);
-	}	
+	}
 	else if (id == 5){
 			MyLoading('Loading...');
 			_f5.status.value = 1;
 			get_runningProcessus(_host_id);
-	}	
+	}
 	else if (id == 6){
 	}
 	else
 	{
 		;
 	}
-	
-	
+
+
 }
 
 function montre(id) {
@@ -113,7 +113,7 @@ function montre(id) {
 			if(i == 2 || i == 3 || i == 4 || i == 5)
 				document.getElementById('mreload'+i).style.display='none';
 		}
-	if (d) {		
+	if (d) {
 	d.style.display='block';
 	}
 	if (dreload) {
@@ -130,7 +130,7 @@ function montre(id) {
 			_f2.status.value = 1;
 			get_network(_host_id);
 		}
-	}	
+	}
 	else if (id == 3){
 		_f3=document.getElementById('f3');
 		if(_f3.status.value == '0')
@@ -148,7 +148,7 @@ function montre(id) {
 			_f4.status.value = 1;
 			get_software(_host_id);
 		}
-	}	
+	}
 	else if (id == 5){
 		_f5=document.getElementById('f5');
 		if(_f5.status.value == '0')
@@ -157,7 +157,7 @@ function montre(id) {
 			_f5.status.value = 1;
 			get_runningProcessus(_host_id);
 		}
-	}	
+	}
 	else if (id == 6){
 	}
 	else
@@ -182,7 +182,7 @@ function MyIsLoading(_txt) {
 	_divmsg.className = "msg_isloading";
 	var _text = document.createTextNode(_txt);
 	_divmsg.appendChild(_text);
-	setTimeout('MyHiddenDiv()', '2000');	
+	setTimeout('MyHiddenDiv()', '2000');
 }
 
 function MyLoading(_txt) {
@@ -193,29 +193,29 @@ function MyLoading(_txt) {
 
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
-	
+
 	var _text = document.createTextNode(_txt);
 	_divmsg.className = "msg_loading";
 	_divmsg.appendChild(_text);
 }
 
-var xhrIDCard = null; 
-var _adrrsearchIDCard = ".&" //l'adresse   interroger pour trouver les suggestions
-	 
+var xhrIDCard = null;
+var _adrrsearchIDCard = "./modules/inventory/IDCard_server/infosServerXML.php" //l'adresse   interroger pour trouver les suggestions
+
 function getXhrIDCard(){
 	if(window.XMLHttpRequest) // Firefox et autres
-	   xhrIDCard = new XMLHttpRequest(); 
-	else if(window.ActiveXObject){ // Internet Explorer 
+	   xhrIDCard = new XMLHttpRequest();
+	else if(window.ActiveXObject){ // Internet Explorer
 	   try {
                 xhrIDCard = new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
                 xhrIDCard = new ActiveXObject("Microsoft.XMLHTTP");
             }
 	}
-	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest..."); 
-	   xhrIDCard = false; 
-	} 
+	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur
+	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+	   xhrIDCard = false;
+	}
 }
 function get_runningProcessus(_host_id)
 {
@@ -223,18 +223,18 @@ function get_runningProcessus(_host_id)
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 
-    for (var i = 0; i < childrenNumber; i++) 
+    for (var i = 0; i < childrenNumber; i++)
     {
 		var element = _tableforajax.childNodes[i];
       	var elementName = element.nodeName.toLowerCase();
 		if (elementName == 'table')
 		{
 		    var childrenNumbertable = element.childNodes.length;
-		    for (var j = 0; j < childrenNumbertable; j++) 
+		    for (var j = 0; j < childrenNumbertable; j++)
 		    {
 				var elementtable = element.childNodes[j];
 		  		var elementNametable = elementtable.nodeName.toLowerCase();
-		  		
+
 				if (elementNametable == 'tbody')
 				{
 					_tableAjax = elementtable;
@@ -246,10 +246,10 @@ function get_runningProcessus(_host_id)
 	getXhrIDCard()
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrIDCard.onreadystatechange = function()
-	{	
+	{
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 		if(xhrIDCard.readyState == 4 && xhrIDCard.status == 200 && xhrIDCard.responseXML)
-		{		
+		{
 			reponseIDCard = xhrIDCard.responseXML.documentElement;
 
 			// ici je recupere les statistiques
@@ -266,7 +266,7 @@ function get_runningProcessus(_host_id)
 
 
 				var _ligne = document.createElement('tr');
-	
+
 				var _case_application = document.createElement('td');
 				var _case_mem = document.createElement('td');
 				var _case_path = document.createElement('td');
@@ -307,18 +307,18 @@ function get_software(_host_id)
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 
-    for (var i = 0; i < childrenNumber; i++) 
+    for (var i = 0; i < childrenNumber; i++)
     {
 		var element = _tableforajax.childNodes[i];
       	var elementName = element.nodeName.toLowerCase();
 		if (elementName == 'table')
 		{
 		    var childrenNumbertable = element.childNodes.length;
-		    for (var j = 0; j < childrenNumbertable; j++) 
+		    for (var j = 0; j < childrenNumbertable; j++)
 		    {
 				var elementtable = element.childNodes[j];
 		  		var elementNametable = elementtable.nodeName.toLowerCase();
-		  		
+
 				if (elementNametable == 'tbody')
 				{
 					_tableAjax = elementtable;
@@ -330,10 +330,10 @@ function get_software(_host_id)
 	getXhrIDCard()
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrIDCard.onreadystatechange = function()
-	{	
+	{
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 		if(xhrIDCard.readyState == 4 && xhrIDCard.status == 200 && xhrIDCard.responseXML)
-		{		
+		{
 			reponseIDCard = xhrIDCard.responseXML.documentElement;
 
 			// ici je recupere les statistiques
@@ -349,7 +349,7 @@ function get_software(_host_id)
 				var _text_name = document.createTextNode(_name);
 				_case_name.appendChild(_text_name);
 				_ligne.appendChild(_case_name);
-	
+
 				var ClassName = "list_one";
 				if(i % 2)
 					ClassName = "list_two";
@@ -373,18 +373,18 @@ function get_StorageDevice(_host_id)
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 
-    for (var i = 0; i < childrenNumber; i++) 
+    for (var i = 0; i < childrenNumber; i++)
     {
 		var element = _tableforajax.childNodes[i];
       	var elementName = element.nodeName.toLowerCase();
 		if (elementName == 'table')
 		{
 		    var childrenNumbertable = element.childNodes.length;
-		    for (var j = 0; j < childrenNumbertable; j++) 
+		    for (var j = 0; j < childrenNumbertable; j++)
 		    {
 				var elementtable = element.childNodes[j];
 		  		var elementNametable = elementtable.nodeName.toLowerCase();
-		  		
+
 				if (elementNametable == 'tbody')
 				{
 					_tableAjax = elementtable;
@@ -396,10 +396,10 @@ function get_StorageDevice(_host_id)
 	getXhrIDCard()
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrIDCard.onreadystatechange = function()
-	{	
+	{
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 		if(xhrIDCard.readyState == 4 && xhrIDCard.status == 200 && xhrIDCard.responseXML)
-		{		
+		{
 			reponseIDCard = xhrIDCard.responseXML.documentElement;
 
 			// ici je recupere les statistiques
@@ -416,14 +416,14 @@ function get_StorageDevice(_host_id)
 				var _Sizelabel = _storageDevice.getElementsByTagName("Sizelabel")[0].firstChild.nodeValue;
 
 				var _ligne = document.createElement('tr');
-	
+
 				var _case_mntPointlabel = document.createElement('td');
 				var _case_Typelabel = document.createElement('td');
 				var _case_Utilisationlabel = document.createElement('td');
 				var _case_Freelabel = document.createElement('td');
 				var _case_Usedlabel = document.createElement('td');
 				var _case_Sizelabel = document.createElement('td');
-	
+
 				var _text_mntPointlabel = document.createTextNode(_mntPointlabel);
 				var _text_Typelabel = document.createTextNode(_Typelabel);
 
@@ -437,19 +437,19 @@ function get_StorageDevice(_host_id)
 				var _text_Freelabel = document.createTextNode(_Freelabel);
 				var _text_Usedlabel = document.createTextNode(_Usedlabel);
 				var _text_Sizelabel = document.createTextNode(_Sizelabel);
-	
+
 				_case_mntPointlabel.appendChild(_text_mntPointlabel);
 				_case_Typelabel.appendChild(_text_Typelabel);
 				_case_Freelabel.appendChild(_text_Freelabel);
 				_case_Usedlabel.appendChild(_text_Usedlabel);
 				_case_Sizelabel.appendChild(_text_Sizelabel);
-	
-	
+
+
 
 		var _red = '';
 		if(_Utilisationlabel >= 85)
 			_red = "red";
-	
+
 
 		var _imgmiddle = document.createElement('img');
 		_imgmiddle.src = "./include/options/sysInfos/templates/classic/images/" + _red + "bar_middle.gif";
@@ -462,20 +462,20 @@ function get_StorageDevice(_host_id)
 
 				_case_Utilisationlabel.appendChild(_imgmiddle);
 				_case_Utilisationlabel.appendChild(_text_Utilisationlabel);
-		
+
 				_ligne.appendChild(_case_mntPointlabel);
 				_ligne.appendChild(_case_Typelabel);
 				_ligne.appendChild(_case_Utilisationlabel);
 				_ligne.appendChild(_case_Freelabel);
 				_ligne.appendChild(_case_Usedlabel);
 				_ligne.appendChild(_case_Sizelabel);
-	
+
 				var ClassName = "list_one";
 				if(i % 2)
 					ClassName = "list_two";
 
-				_ligne.className = ClassName;	
-	
+				_ligne.className = ClassName;
+
 				_tableAjax.appendChild(_ligne);
 
 		MyIsLoading("storageDevices is loaded");
@@ -496,18 +496,18 @@ function get_network(_host_id)
 	var _tableAjax = null;
     var childrenNumber = _tableforajax.childNodes.length;
 
-    for (var i = 0; i < childrenNumber; i++) 
+    for (var i = 0; i < childrenNumber; i++)
     {
 		var element = _tableforajax.childNodes[i];
       	var elementName = element.nodeName.toLowerCase();
 		if (elementName == 'table')
 		{
 		    var childrenNumbertable = element.childNodes.length;
-		    for (var j = 0; j < childrenNumbertable; j++) 
+		    for (var j = 0; j < childrenNumbertable; j++)
 		    {
 				var elementtable = element.childNodes[j];
 		  		var elementNametable = elementtable.nodeName.toLowerCase();
-		  		
+
 				if (elementNametable == 'tbody')
 				{
 					_tableAjax = elementtable;
@@ -519,10 +519,10 @@ function get_network(_host_id)
 	getXhrIDCard()
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrIDCard.onreadystatechange = function()
-	{	
+	{
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 		if(xhrIDCard.readyState == 4 && xhrIDCard.status == 200 && xhrIDCard.responseXML)
-		{		
+		{
 			reponseIDCard = xhrIDCard.responseXML.documentElement;
 			var _networks = reponseIDCard.getElementsByTagName("network");
 
@@ -567,18 +567,18 @@ function get_network(_host_id)
 				var _classname = _network.getElementsByTagName("class")[0].firstChild.nodeValue;
 
 				var _ligne_title = document.createElement('tr');
-				
+
 				var _case_interfaceName = document.createElement('td');
 				var _text_interfaceName = document.createTextNode(_interfaceName_label + ': ' + _interfaceName);
 				_case_interfaceName.appendChild(_text_interfaceName);
-				
+
 				_case_interfaceName.colSpan = 2;
 
 				var _case_Status = document.createElement('td');
 				var _text_Status = document.createTextNode(_Status_label + ': ' + _Status);
 				_case_Status.appendChild(_text_Status);
 				_case_Status.colSpan = 2;
-				
+
 				_ligne_title.appendChild(_case_interfaceName);
 				_ligne_title.appendChild(_case_Status);
 				_ligne_title.className = "ListHeader";
@@ -592,10 +592,10 @@ function get_network(_host_id)
 				var _text_PhysAddress = document.createTextNode(_PhysAddress);
 				var _text_ipAdress_label = document.createTextNode(_ipAdress_label);
 				var _text_ipAdress = document.createTextNode(_ipAdress);
-				_case_PhysAddress_label.appendChild(_text_PhysAddress_label);	
-				_case_PhysAddress.appendChild(_text_PhysAddress);	
-				_case_ipAdress_label.appendChild(_text_ipAdress_label);	
-				_case_ipAdress.appendChild(_text_ipAdress);	
+				_case_PhysAddress_label.appendChild(_text_PhysAddress_label);
+				_case_PhysAddress.appendChild(_text_PhysAddress);
+				_case_ipAdress_label.appendChild(_text_ipAdress_label);
+				_case_ipAdress.appendChild(_text_ipAdress);
 				_ligne_1.appendChild(_case_PhysAddress_label);
 				_ligne_1.appendChild(_case_PhysAddress);
 				_ligne_1.appendChild(_case_ipAdress_label);
@@ -607,15 +607,15 @@ function get_network(_host_id)
 				var _case_Type = document.createElement('td');
 				var _case_Speed_label = document.createElement('td');
 				var _case_Speed = document.createElement('td');
-				var _text_Type_label = document.createTextNode(_Type_label);	
-				var _text_Type = document.createTextNode(_Type);	
-				var _text_Speed_label = document.createTextNode(_Speed_label);	
-				var _text_Speed = document.createTextNode(_Speed);	
+				var _text_Type_label = document.createTextNode(_Type_label);
+				var _text_Type = document.createTextNode(_Type);
+				var _text_Speed_label = document.createTextNode(_Speed_label);
+				var _text_Speed = document.createTextNode(_Speed);
 
-				_case_Type_label.appendChild(_text_Type_label);	
-				_case_Type.appendChild(_text_Type);	
-				_case_Speed_label.appendChild(_text_Speed_label);	
-				_case_Speed.appendChild(_text_Speed);	
+				_case_Type_label.appendChild(_text_Type_label);
+				_case_Type.appendChild(_text_Type);
+				_case_Speed_label.appendChild(_text_Speed_label);
+				_case_Speed.appendChild(_text_Speed);
 				_ligne_2.appendChild(_case_Type_label);
 				_ligne_2.appendChild(_case_Type);
 				_ligne_2.appendChild(_case_Speed_label);
