@@ -284,6 +284,7 @@ $lang['ms_selMod'] = "Mode de s&eacute;lection";
 $lang['ms_selList'] = "Liste de Services";
 $lang['ms_regexp'] = "Expression R&eacute;guli&egrave;re";
 $lang['ms_exp'] = "Expression";
+$lang['ms_sqlMatch'] = "SQL matching";
 $lang['ms_metric'] = "Metric";
 
 $lang['ms_head_state'] = "Status du Meta Service";

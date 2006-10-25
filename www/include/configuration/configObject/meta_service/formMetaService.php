@@ -149,11 +149,11 @@ For information : contact@oreon-project.org
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, $lang['ms_selList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, $lang['ms_regexp'], '2');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, $lang['ms_sqlMatch'], '2');
 	$form->addGroup($tab, 'meta_select_mode', $lang['ms_selMod'], '<br>');
 	$form->setDefaults(array('meta_select_mode' => array('meta_select_mode'=>'1')));
 
-	$form->addElement('text', 'regexp_str', $lang['ms_exp'], $attrsText);
+	$form->addElement('text', 'regexp_str', $lang['ms_sqlMatch'], $attrsText);
 	$form->addElement('select', 'metric', $lang['ms_metric'], $metrics);
 
 	#

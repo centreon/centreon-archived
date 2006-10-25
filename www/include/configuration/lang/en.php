@@ -989,6 +989,7 @@ $lang['ms_selMod'] = "Selection Mode";
 $lang['ms_selList'] = "Services List";
 $lang['ms_regexp'] = "Regular Expression";
 $lang['ms_exp'] = "Expression";
+$lang['ms_sqlMatch'] = "SQL matching";
 $lang['ms_metric'] = "Metric";
 
 $lang['ms_head_state'] = "Meta Service State";
