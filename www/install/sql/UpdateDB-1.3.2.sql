@@ -37,7 +37,7 @@ CREATE TABLE `topology_JS` (
   `Init` text,
   PRIMARY KEY  (`id_t_js`),
   KEY `id_page` (`id_page`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Contraintes pour la table `topology_JS`
