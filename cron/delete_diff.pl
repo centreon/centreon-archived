@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #
-# $Id: delete_diff.pl,v 1.2 2005/07/27 22:21:49 kyo $
+# $Id: delete_diff.pl,v 1.0.1 2006/10/19 22:21:49 kyo $
 #
 # Oreon's plugins are developped with GPL Licence :
 # http://www.fsf.org/licenses/gpl.txt
@@ -43,32 +43,11 @@ my $PerfparseInstallFolder = "/srv/perfparse/bin/";
 my $file_lock = "/var/lock/purge.lock";
 
 ##
-## Configuration init oreon database
+## Specify the path of oreon.conf.php should be $PATH_OREON/www/oreon.conf.php
 ##
 
-my $User = "root";
-my $Password = "";
-my $DataBase = "oreon";
-my $Host = "localhost";
+my $oreon_conf = "/srv/oreon/www/oreon.conf.php";
 
-##
-## Configuration init perfparse database
-##
-
-my $Userpp = "root";
-my $Passwordpp = "";
-my $DataBasepp = "perfparse";
-my $Hostpp = "localhost";
-
-######## init connection database oreon and perfparse #######
-
-my $dbh = DBI->connect("DBI:mysql:database=$DataBase;host=$Host",
-                         "$User", "$Password",
-                         {'RaiseError' => 1});
-
-my $dbpp = DBI->connect("DBI:mysql:database=$DataBasepp;host=$Hostpp",
-                         "$Userpp", "$Passwordpp",
-                         {'RaiseError' => 1});
 ##
 ## Set this variable to 1 in order to display debug display
 ##
@@ -119,6 +98,63 @@ sub return_eval($)
       {
 	  return "";
       }
+}
+
+my $Userpp;
+my $Passwordpp;
+my $DataBasepp;
+my $Hostpp;
+my $dbh;
+my $dbpp;
+
+sub	connect_db()
+{
+    my $User;
+    my $Password;
+    my $DataBase;
+    my $Host;
+    open(OREON_FD,"$oreon_conf");
+    while (<OREON_FD>)
+    {
+	chomp($_);
+	if ($_ =~ /=/)
+	{
+	    my @access = split(/\"/, $_);
+	    my @field = split(/\'/, $_);
+	    if ($field[1] eq "host"){
+	        $Host = return_eval($access[1]);
+	    }
+	    elsif ($field[1] eq "user"){
+		$User = return_eval($access[1]);
+	    }
+	    elsif ($field[1] eq "password"){
+		$Password = return_eval($access[1]);
+	    }
+	    elsif ($field[1] eq "db"){
+		$DataBase = return_eval($access[1]);
+	    }
+	}
+    }
+    close(OREON_FD);
+#    if ($debug) {print "connecting : Database : $DataBase \t Host : $Host \t User : $User \t Pass : $Password\n";}
+    $dbh = DBI->connect("DBI:mysql:database=$DataBase;host=$Host",
+			"$User", "$Password",
+			{'RaiseError' => 1});
+
+    my $cmd_access = "SELECT DB_user, DB_pass, DB_name, DB_host from cfg_perfparse";
+    my $p_access = $dbh->prepare($cmd_access);
+    if (!$p_access) {die "Error:" . $dbh->errstr . "\n";}
+    if (!$p_access->execute) {die "Error:" . $dbh->errstr . "\n";}
+    my @arr_p_access = $p_access->fetchrow_array;
+
+    $Userpp = return_eval($arr_p_access[0]);
+    $Passwordpp = return_eval($arr_p_access[1]);
+    $DataBasepp = return_eval($arr_p_access[2]);
+    $Hostpp = return_eval($arr_p_access[3]);
+#    if ($debug) {print "connecting : Database : $DataBasepp \t Host : $Hostpp \t User : $Userpp \t Pass : $Passwordpp\n";}
+    $dbpp = DBI->connect("DBI:mysql:database=$DataBasepp;host=$Hostpp",
+                         "$Userpp", "$Passwordpp",
+                         {'RaiseError' => 1});
 }
 
 my %hashForceHostname;
@@ -203,12 +239,13 @@ sub check_data_host()
     my $req = $dbpp->prepare($cmd);
     if (!$req) {die "Error:" . $dbpp->errstr . "\n";}
     if (!$req->execute) {die "Error:" . $dbpp->errstr . "\n";}
+
     while (my @host_ary = $req->fetchrow_array)
     {
-	if (!defined($hashForceHostname{$host_ary[1]}) && $host_ary[1] ne "OSL_Module" && $host_ary[1] ne "Meta_Module")
-	{
-	    is_delete_host($host_ary[0]);
-	}
+		if (!defined($hashForceHostname{$host_ary[1]}) && $host_ary[1] ne "OSL_Module" && $host_ary[1] ne "Meta_Module")
+		{
+		    is_delete_host($host_ary[0]);
+		}
     }
 }
 
@@ -234,16 +271,16 @@ sub check_host_service(@)
 
     while (my @service_ary = $req->fetchrow_array)
     {
-	my $service_id = return_eval($service_ary[0]);
-	if (defined($service_id)){
-	    my %hostslist = getAllMyServiceHosts($service_id);
-	    while ((my $clef, my $valeur) = each(%hostslist)) {
-		if ($service_host eq $valeur)
-		{
-		    return (0);
+		my $service_id = return_eval($service_ary[0]);
+		if (defined($service_id)){
+		    my %hostslist = getAllMyServiceHosts($service_id);
+		    while ((my $clef, my $valeur) = each(%hostslist)) {
+			if ($service_host eq $valeur)
+			{
+			    return (0);
+			}
+		    }
 		}
-	    }
-	}
     }
     return (1);
 }
@@ -255,15 +292,16 @@ sub check_data_service()
     my $req = $dbpp->prepare($cmd);
     if (!$req) {die "Error:" . $dbpp->errstr . "\n";}
     if (!$req->execute) {die "Error:" . $dbpp->errstr . "\n";}
+   
     while (my @service_ary = $req->fetchrow_array)
     {
-	if ($service_ary[2] ne "OSL_Module" && $service_ary[2] ne "Meta_Module")
-	{
-	    my $return_val = check_host_service($service_ary[1], $service_ary[2]);
-	    if ($return_val == 1){
-		is_delete_service($service_ary[0]);
-	    }
-	}
+		if ($service_ary[2] ne "OSL_Module" && $service_ary[2] ne "Meta_Module")
+		{
+		    my $return_val = check_host_service($service_ary[1], $service_ary[2]);
+		    if ($return_val == 1){
+			is_delete_service($service_ary[0]);
+		    }
+		}
     }
 }
 
@@ -282,6 +320,7 @@ sub complete_deletion()
 sub	main()
 {
     create_lock_file();
+    connect_db();
     getHostname();
     check_data_host();
     check_data_service();
@@ -302,7 +341,7 @@ if ($opt_h) {
 }
 
 if ($opt_V) {
-    print "Version plugin V1.0.2 (2006/10/19)\n";
+    print "Version plugin V1.0.1 (2006/10/19)\n";
     exit(0);
 }
 

@@ -8,20 +8,10 @@ line 34: Specify perfparse directory
 
 $PerfparseInstallFolder = "/srv/perfparse/";
 
-line 35: specify where you would create the lock file
+line 41: specify where you would create the lock file
 
 $file_lock = "/var/lock/purge.lock";
 
-line 41:  Modify your oreon database access
+line 47: specify where is oreon.conf.php
 
-$User = "root";
-$Password = "";
-$DataBase = "oreon";
-$Host = "localhost";
-
-line 50: Modify your perfparse database access
-
-$Userpp = "root";
-$Passwordpp = "";
-$DataBasepp = "perfparse";
-$Hostpp = "localhost";
+$file_lock = "/srv/oreon/www/oreon.conf.php";

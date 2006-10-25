@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 #
-# $Id: purgeDB.pl,v 1.2 2005/07/27 22:21:49 kyo $
+# $Id: deleteDB.pl,v 1.0.3 2006/10/25 22:21:49 kyo $
 #
 # Oreon's plugins are developped with GPL Licence :
 # http://www.fsf.org/licenses/gpl.txt
@@ -41,32 +41,11 @@ my $PerfparseInstallFolder = "/srv/perfparse/bin/";
 my $file_lock = "/var/lock/purge.lock";
 
 ##
-## Configuration init base oreon
+## Specify the path of oreon.conf.php should be $PATH_OREON/www/oreon.conf.php
 ##
 
-my $User = "root";
-my $Password = "";
-my $DataBase = "oreon";
-my $Host = "localhost";
+my $oreon_conf = "/srv/oreon/www/oreon.conf.php";
 
-##
-## Configuration init base perfparse
-##
-
-my $Userpp = "root";
-my $Passwordpp = "";
-my $DataBasepp = "perfparse";
-my $Hostpp = "localhost";
-
-######## init connection database oreon and perfparse #######
-
-my $dbh = DBI->connect("DBI:mysql:database=$DataBase;host=$Host",
-                         "$User", "$Password",
-                         {'RaiseError' => 1});
-
-my $dbpp = DBI->connect("DBI:mysql:database=$DataBasepp;host=$Hostpp",
-                         "$Userpp", "$Passwordpp",
-                         {'RaiseError' => 1});
 ##
 ## Set this variable to 1 in order to display debug display
 ##
@@ -118,6 +97,67 @@ sub return_eval($)
       {
 	  return "";
       }
+}
+
+#
+## Retrieve access for database oreon and perfparse
+#
+
+my $Userpp;
+my $Passwordpp;
+my $DataBasepp;
+my $Hostpp;
+my $dbh;
+my $dbpp;
+
+sub	connect_db()
+{
+    my $User;
+    my $Password;
+    my $DataBase;
+    my $Host;
+    open(OREON_FD,"$oreon_conf");
+    while (<OREON_FD>)
+    {
+	chomp($_);
+	if ($_ =~ /=/)
+	{
+	    my @access = split(/\"/, $_);
+	    my @field = split(/\'/, $_);
+	    if ($field[1] eq "host"){
+	        $Host = return_eval($access[1]);
+	    }
+	    elsif ($field[1] eq "user"){
+		$User = return_eval($access[1]);
+	    }
+	    elsif ($field[1] eq "password"){
+		$Password = return_eval($access[1]);
+	    }
+	    elsif ($field[1] eq "db"){
+		$DataBase = return_eval($access[1]);
+	    }
+	}
+    }
+    close(OREON_FD);
+ #   if ($debug) {print "connecting : Database : $DataBase \t Host : $Host \t User : $User \t Pass : $Password\n";}
+    $dbh = DBI->connect("DBI:mysql:database=$DataBase;host=$Host",
+			"$User", "$Password",
+			{'RaiseError' => 1});
+
+    my $cmd_access = "SELECT DB_user, DB_pass, DB_name, DB_host from cfg_perfparse";
+    my $p_access = $dbh->prepare($cmd_access);
+    if (!$p_access) {die "Error:" . $dbh->errstr . "\n";}
+    if (!$p_access->execute) {die "Error:" . $dbh->errstr . "\n";}
+    my @arr_p_access = $p_access->fetchrow_array;
+
+    $Userpp = return_eval($arr_p_access[0]);
+    $Passwordpp = return_eval($arr_p_access[1]);
+    $DataBasepp = return_eval($arr_p_access[2]);
+    $Hostpp = return_eval($arr_p_access[3]);
+#    if ($debug) {print "connecting : Database : $DataBasepp \t Host : $Hostpp \t User : $Userpp \t Pass : $Passwordpp\n";}
+    $dbpp = DBI->connect("DBI:mysql:database=$DataBasepp;host=$Hostpp",
+                         "$Userpp", "$Passwordpp",
+                         {'RaiseError' => 1});
 }
 
 # retrieve and stock all purge_policy
@@ -417,13 +457,14 @@ sub check_data_host()
     my $req = $dbpp->prepare($cmd);
     if (!$req) {die "Error:" . $dbpp->errstr . "\n";}
     if (!$req->execute) {die "Error:" . $dbpp->errstr . "\n";}
+    
     while (my @host_ary = $req->fetchrow_array)
     {
-	if (!defined($hashForceHostname{$host_ary[1]}))
-	{
-	    print "id host : $host_ary[0] \t host_name : $host_ary[1]\n";
-	    is_delete_host($host_ary[0]);
-	}
+		if (!defined($hashForceHostname{$host_ary[1]}))
+		{
+		    print "id host : $host_ary[0] \t host_name : $host_ary[1]\n";
+		    is_delete_host($host_ary[0]);
+		}
     }
 }
 
@@ -445,13 +486,14 @@ sub check_data_service()
     my $req = $dbpp->prepare($cmd);
     if (!$req) {die "Error:" . $dbpp->errstr . "\n";}
     if (!$req->execute) {die "Error:" . $dbpp->errstr . "\n";}
+
     while (my @service_ary = $req->fetchrow_array)
     {
-	if (!defined($hashForceService{$service_ary[1]}))
-	{
-	    print "id host : $service_ary[0] \t host_name : $service_ary[1]\n";
-	    is_delete_service($service_ary[0]);
-	}
+		if (!defined($hashForceService{$service_ary[1]}))
+		{
+		    print "id host : $service_ary[0] \t host_name : $service_ary[1]\n";
+		    is_delete_service($service_ary[0]);
+		}
     }
 }
 
@@ -555,15 +597,17 @@ sub	delete_motor(@)
 
 # purge hosts
 
-my $cmd_host = "SELECT host_id, host_name ";
-$cmd_host .= "FROM host ";
-$cmd_host .= "WHERE host_register = \'1\' ";
-my $host = $dbh->prepare($cmd_host);
-if (!$host) {die "Error:" . $dbh->errstr . "\n";}
-if (!$host->execute) {die "Error:" . $dbh->errstr . "\n";}
+
 
 sub	purge_host()
 {
+	my $cmd_host = "SELECT host_id, host_name ";
+	$cmd_host .= "FROM host ";
+	$cmd_host .= "WHERE host_register = \'1\' ";
+	my $host = $dbh->prepare($cmd_host);
+	if (!$host) {die "Error:" . $dbh->errstr . "\n";}
+	if (!$host->execute) {die "Error:" . $dbh->errstr . "\n";}
+
     while (my @row_ary = $host->fetchrow_array)
     {
 	my $id_policy = getMyHostPolicy($row_ary[0]);
@@ -579,15 +623,17 @@ sub	purge_host()
 
 # purge services
 
-my $cmd_service = "SELECT service_id, service_description ";
-$cmd_service .= "FROM service ";
-$cmd_service .= "WHERE service_register = \'1\' ";
-my $svc = $dbh->prepare($cmd_service);
-if (!$svc) {die "Error:" . $dbh->errstr . "\n";}
-if (!$svc->execute) {die "Error:" . $dbh->errstr . "\n";}
+
 
 sub	purge_service()
 {
+	my $cmd_service = "SELECT service_id, service_description ";
+	$cmd_service .= "FROM service ";
+	$cmd_service .= "WHERE service_register = \'1\' ";
+	my $svc = $dbh->prepare($cmd_service);
+	if (!$svc) {die "Error:" . $dbh->errstr . "\n";}
+	if (!$svc->execute) {die "Error:" . $dbh->errstr . "\n";}
+
     while (my @svc_ary = $svc->fetchrow_array)
     {
 	my $id_policy = getMyServicePolicy($svc_ary[0]);
@@ -606,6 +652,7 @@ sub	main()
 {
     create_lock_file();
     autoflush STDOUT 1;
+    connect_db();
     getPolicy();
     getHostname();
     purge_host();
@@ -627,7 +674,7 @@ if ($opt_h) {
 }
 
 if ($opt_V) {
-    print "Version plugin V1.0.2 (2006/06/30)\n";
+    print "Version plugin V1.0.3 (2006/10/25)\n";
     exit(0);
 }
 
