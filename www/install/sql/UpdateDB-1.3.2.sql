@@ -225,3 +225,26 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'c', './include/common/javascript/autoSelectCommandExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 
+UPDATE `topology` SET `topology_name` = 'm_host',
+`topology_icone` = NULL ,
+`topology_parent` = '2',
+`topology_page` = '201',
+`topology_order` = '20',
+`topology_group` = '1',
+`topology_url` = './include/monitoring/status/monitoringHost.php',
+`topology_url_opt` = '&o=h',
+`topology_popup` = NULL ,
+`topology_modules` = NULL ,
+`topology_show` = '1' WHERE `topology_page` =201 LIMIT 1 ;
+
+UPDATE `topology` SET `topology_name` = 'm_service',
+`topology_icone` = NULL ,
+`topology_parent` = '2',
+`topology_page` = '202',
+`topology_order` = '10',
+`topology_group` = '1',
+`topology_url` = './include/monitoring/status/monitoringService.php',
+`topology_url_opt` = '&o=svcpb',
+`topology_popup` = '0',
+`topology_modules` = '0',
+`topology_show` = '1' WHERE `topology_page` =202 LIMIT 1 ;
