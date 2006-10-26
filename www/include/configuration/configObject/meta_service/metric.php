@@ -19,6 +19,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+
 	#
 	## Database retrieve information
 	#
@@ -50,7 +51,7 @@ For information : contact@oreon-project.org
 
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host ORDER BY host_name");
+	$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
 	}
