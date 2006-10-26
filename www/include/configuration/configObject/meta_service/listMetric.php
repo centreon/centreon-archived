@@ -18,7 +18,6 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-echo "->".$_GET["o1"]. "<br>";
 
 
 	$calcType = array("AVE"=>$lang['ms_selAvr'], "SOM"=>$lang['ms_selSum'], "MIN"=>$lang['ms_selMin'], "MAX"=>$lang['ms_selMax']);

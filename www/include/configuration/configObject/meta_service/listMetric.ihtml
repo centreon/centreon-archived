@@ -10,6 +10,7 @@
 
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
+<input type='hidden' name='o' id='o' value='42'>
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">
 			<td class="Toolbar_TDSelectAction_Top">
@@ -25,7 +26,9 @@
 
 	<table id="ListTable">
 		<tr class="ListHeader">
-			<td class="ListColPicker">{$headerMenu_icone}</td>
+			<td class="ListColHeaderPicker">
+				<input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>			
+			</td>
 			<td class="ListColLeft">{$headerMenu_host}</td>
 			<td class="ListColLeft">{$headerMenu_service}</td>
 			<td class="ListColCenter">{$headerMenu_metric}</td>
@@ -48,13 +51,12 @@
 			<td class="Toolbar_TDSelectAction_Bottom">
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
+				<a href="{$msg.addL1}">{$msg.addT}</a>
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 		</tr>
 	</table>
 
-<input type='hidden' name='o' id='o' value='42'>
 
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
