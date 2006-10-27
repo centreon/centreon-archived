@@ -42,10 +42,10 @@
 	 	<tr class="list_one"><td class="ListColLeft">{$sysSSHEnablelabel} :</td><td class="ListColLeft">{ $enable[$SSHEnable] } ({$sysSSHPortlabel} : { $SSHPort }) &nbsp;</td></tr>
 	 	<tr class="list_two"><td class="ListColLeft">{$sysSerialNumberlabel} : </td><td class="ListColLeft">{$SerialNumber }</td></tr>
 	{/if}
-	 	<tr class="list_one"><td class="ListColLeft">{$sysManufacturerlabel} : </td><td class="ListColLeft">{$Manufacturer }</td></tr>
+	 	<!--<tr class="list_one"><td class="ListColLeft">{$sysManufacturerlabel} : </td><td class="ListColLeft">{$Manufacturer }</td></tr>-->
 	 	<!--<tr class="list_two"><td class="ListColLeft">{$sysSerieTypelabel} :</td><td class="ListColLeft">{$SerieType}</td></tr>-->
-	 	<tr class="list_one"><td class="ListColLeft">{$sysRomVersionlabel} : </td><td class="ListColLeft">{$RomVersion}</td></tr>
-	 	<tr class="list_two"><td class="ListColLeft">{$sysSwitchVersionlabel} : </td><td class="ListColLeft">{$SwitchVersion}</td></tr>
+	 	<!--<tr class="list_one"><td class="ListColLeft">{$sysRomVersionlabel} : </td><td class="ListColLeft">{$RomVersion}</td></tr>-->
+	 	<!--<tr class="list_two"><td class="ListColLeft">{$sysSwitchVersionlabel} : </td><td class="ListColLeft">{$SwitchVersion}</td></tr>-->
 	</table>
 </div>
 <div id='tab2' class='tab'>
