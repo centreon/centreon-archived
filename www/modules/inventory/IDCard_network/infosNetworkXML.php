@@ -260,7 +260,6 @@ For information : contact@oreon-project.org
 					$status = $ifOperStatus[$operstatus];
 				else
 					$status = 'none';
-
 				if ($ifOperStatus[$operstatus] == "Up")
 					$class = 'list_three';
 				else
