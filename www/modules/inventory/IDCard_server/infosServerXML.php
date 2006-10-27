@@ -302,41 +302,30 @@ For information : contact@oreon-project.org
 	    if ($ifTab) {
 		    foreach ($ifTab as $key => $it){
 			   	$ifTab[$key]["ifIndex"] = $it;
-//			    $buffer .= '<network>';
-
-				//$buffer .= '<interfaceName>'.get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ").'</interfaceName>';
 				$interfaceName = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ");
 
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
-
 				if ($debug_inventory == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Status => " . $operstatus ."\n", 3, $debug_path."inventory.log");
 
 				preg_match("/[A-Za-z\-]*\(?([0-9]+)\)?/", $operstatus, $matches);
-				$operstatus = $matches[0];
+				$operstatus = $matches[1];
 
-				if($operstatus)
-//					$buffer .= '<Status>'.$ifOperStatus[$operstatus].'</Status>';
+				if(isset($operstatus) && $operstatus)
 					$status = $ifOperStatus[$operstatus];
-					//$buffer .= '<Status>'.$operstatus.'</Status>';
 				else
 					$status = 'none';
-					//$buffer .= '<Status>none</Status>';
 
-				if ($operstatus == "1")
+				if ($ifOperStatus[$operstatus] == "Up")
 					$class = 'list_three';
-//					$buffer .= '<class>list_three</class>';
 				else
 					$class = 'list_four';
-//					$buffer .= '<class>list_four</class>';
+
 				$ifTab["ifPhysAddress"] = get_snmp_value("1.3.6.1.2.1.2.2.1.6.".$it, "STRING: ");
 				if ($ifTab["ifPhysAddress"])
 					$PhysAddress = $ifTab["ifPhysAddress"];
-//					$buffer .= '<PhysAddress>'.$ifTab["ifPhysAddress"].'</PhysAddress>';
 				else
 					$PhysAddress = 'N/A';
-//					$buffer .= '<PhysAddress>N/A</PhysAddress>';
-//					$buffer .= '<PhysAddress> </PhysAddress>';
 
 				# Type
 				$iftype = get_snmp_value("1.3.6.1.2.1.2.2.1.3.".$it, "INTEGER: ");

@@ -67,6 +67,10 @@ For information : contact@oreon-project.org
 	$ifAdminStatus[2] = "Down";
 	$ifAdminStatus[3] = "Testing";
 
+	$ifOperStatus["up(1)"] = "Up";
+	$ifOperStatus["down(2)"] = "Down";
+	$ifOperStatus["testing(3)"] = "Testing";
+
 	$ifOperStatus[1] = "Up";
 	$ifOperStatus[2] = "Down";
 	$ifOperStatus[3] = "Testing";

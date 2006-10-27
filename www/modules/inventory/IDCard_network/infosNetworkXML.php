@@ -224,20 +224,26 @@ For information : contact@oreon-project.org
 	  if (!isset($debug_inventory))
 	  	$debug_inventory = 0;
 
-	$community = getMySnmpCommunity($_POST["host_id"]);
-	$version = getMySnmpVersion($_POST["host_id"]);
-	$address = getMyHostAddress($_POST["host_id"]);
+	$type = isset($_GET["type"]) ? $_GET["type"] : 0;
+	$type = isset($_POST["type"]) ? $_POST["type"] : $type;
+
+	$host_id = isset($_GET["host_id"]) ? $_GET["host_id"] : 0;
+	$host_id = isset($_POST["host_id"]) ? $_POST["host_id"] : $host_id;
+
+	$community = getMySnmpCommunity($host_id);
+	$version = getMySnmpVersion($host_id);
+	$address = getMyHostAddress($host_id);
 
 	if ($debug_inventory == 1)
-		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host Network '".  $address . "' : SNMP Community : ".  $community . ", SNMP Version => ". $version ."\n", 3, $debug_path."inventory.log");
+		error_log("[" . date("d/m/Y H:s") ."] Inventory : Host Server '".  $address . "' : SNMP Community : ".  $community . ", SNMP Version => ". $version ."\n", 3, $debug_path."inventory.log");
 
 	$timeout = 100 * 1000;
 	$retries = 4;
-
+	
 	$tab_unit = array("0"=>"bits", "1"=>"Kbits","2"=>"Mbits","3"=>"Gbits");
 	$tab_unit_o = array("0"=>"o", "1"=>"Ko","2"=>"Mo","3"=>"Go");
 
-	if (($_POST["type"] == 3 || $_POST["type"] == 2) && $_POST["host_id"]){
+	if (($type == 3 || $type == 2) && $host_id){
 		$ifTab = walk_snmp_value(".1.3.6.1.2.1.2.2.1.1", "INTEGER: ");
 	    if ($ifTab){
 		    foreach ($ifTab as $key => $it){
@@ -249,16 +255,16 @@ For information : contact@oreon-project.org
 				$buffer .= '<interfaceName>'. htmlentities($description, ENT_QUOTES) .'</interfaceName>';
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
 				preg_match("/[A-Za-z\-]*\(?([0-9]+)\)?/", $operstatus, $matches);
-				$operstatus = $matches[0];
-				if ($operstatus)
-					$buffer .= '<Status>'.$ifOperStatus[$operstatus].'</Status>';
+				$operstatus = $matches[1];
+				if(isset($operstatus) && $operstatus)
+					$status = $ifOperStatus[$operstatus];
 				else
-					$buffer .= '<Status>none</Status>';
+					$status = 'none';
 
-				if ($operstatus == "1")
-					$buffer .= '<class>list_three</class>';
+				if ($ifOperStatus[$operstatus] == "Up")
+					$class = 'list_three';
 				else
-					$buffer .= '<class>list_four</class>';
+					$class = 'list_four';
 				$ifTab["ifPhysAddress"] = get_snmp_value("1.3.6.1.2.1.2.2.1.6.".$it, "STRING: ");
 				if ($ifTab["ifPhysAddress"])
 					$buffer .= '<PhysAddress>'.$ifTab["ifPhysAddress"].'</PhysAddress>';
