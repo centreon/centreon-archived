@@ -199,8 +199,8 @@ For information : contact@oreon-project.org
 	}
 	
 	if (isset($_GET["o"]) && $_GET["o"] == "svcpb" && !isset($_GET["sort_types"])){
-		$_GET["sort_types"] = "last_state_change";
-		$_GET["order"] = "SORT_DESC";
+		$_GET["sort_types"] = $oreon->optGen["problem_sort_type"];
+		$_GET["order"] = $oreon->optGen["sort_order"];
 	}
 	
 	if (isset($_GET["sort_types"]) && $_GET["sort_types"]){
