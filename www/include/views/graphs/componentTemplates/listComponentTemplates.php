@@ -68,7 +68,7 @@ $pagination = "maxViewConfiguration";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$compo["name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&compo_id=".$compo['compo_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&compo_id=".$compo['compo_id'],
 						"RowMenu_desc"=>$compo["ds_name"],
 						"RowMenu_graph"=>$compo["nbr"],
 						"RowMenu_clrLine"=>$compo["ds_color_line"],
