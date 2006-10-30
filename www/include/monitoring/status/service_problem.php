@@ -143,6 +143,7 @@ For information : contact@oreon-project.org
   		                  	"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
+    
     $session =& $res->fetchRow();
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
@@ -151,10 +152,7 @@ For information : contact@oreon-project.org
     $tpl->assign('search', $search);
     $tpl->assign('search_type_host', $search_type_host);
     $tpl->assign('search_type_service', $search_type_service);
-
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-
-
 
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -186,12 +184,8 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-
-
 	
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->display("service_problem.ihtml");
