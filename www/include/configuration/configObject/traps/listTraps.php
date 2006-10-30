@@ -72,7 +72,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$trap["traps_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&traps_id=".$trap['traps_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&traps_id=".$trap['traps_id'],
 						"RowMenu_desc"=>substr($trap["traps_oid"], 0, 40),
 						"RowMenu_args"=>$trap["traps_args"],
 						"RowMenu_handler"=>$trap["traps_handler"],

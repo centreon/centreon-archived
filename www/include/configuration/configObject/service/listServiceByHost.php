@@ -131,7 +131,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style), 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$service["host_name"],
-						"RowMenu_link"=>"?p=60101&o=w&host_id=".$service['host_id'],
+						"RowMenu_link"=>"?p=60101&o=c&host_id=".$service['host_id'],
 						"RowMenu_link2"=>"?p=".$p."&o=w&service_id=".$service['service_id'],
 						"RowMenu_parent"=>$service["service_template_model_stm_id"] ? $lang["yes"] : $lang["no"],
 						"RowMenu_desc"=>$service["service_description"],

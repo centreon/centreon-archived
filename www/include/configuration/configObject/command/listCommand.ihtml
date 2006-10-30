@@ -15,7 +15,6 @@
 			{/php}
 		</tr>
 	</table>
-
 	<table id="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -35,9 +34,7 @@
 			<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}
-	
 	</table>
-
 	<table class="Toolbar_TableBottom">
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
@@ -51,9 +48,7 @@
 			{/php}
 		</tr>
 	</table>
-
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>

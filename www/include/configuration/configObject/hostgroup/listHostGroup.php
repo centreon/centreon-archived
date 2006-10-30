@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$hg["hg_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&hg_id=".$hg['hg_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&hg_id=".$hg['hg_id'],
 						"RowMenu_desc"=>$hg["hg_alias"],
 						"RowMenu_status"=>$hg["hg_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);

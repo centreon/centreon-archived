@@ -107,7 +107,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$esc["esc_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&esc_id=".$esc['esc_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&esc_id=".$esc['esc_id'],
 						"RowMenu_desc"=>substr($esc["esc_comment"], 0, 40),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}

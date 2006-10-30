@@ -77,7 +77,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$resource["resource_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&resource_id=".$resource['resource_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
 						"RowMenu_desc"=>substr($resource["resource_line"], 0, 40),
 						"RowMenu_status"=>$resource["resource_activate"] ? $lang['enable'] :  $lang['disable'],
 						"RowMenu_options"=>$moptions);

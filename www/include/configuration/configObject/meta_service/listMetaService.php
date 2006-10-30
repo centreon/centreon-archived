@@ -94,7 +94,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$ms["meta_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&meta_id=".$ms['meta_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&meta_id=".$ms['meta_id'],
 						"RowMenu_type"=>$calcType[$ms["calcul_type"]],
 						"RowMenu_levelw"=>$ms["warning"],
 						"RowMenu_levelc"=>$ms["critical"],

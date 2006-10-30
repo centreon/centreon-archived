@@ -77,7 +77,7 @@ $pagination = "maxViewConfiguration";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$timeperiod["tp_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&tp_id=".$timeperiod['tp_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&tp_id=".$timeperiod['tp_id'],
 						"RowMenu_desc"=>$timeperiod["tp_alias"],
 						"RowMenu_status"=>$lang['enable'],
 						"RowMenu_options"=>$moptions);

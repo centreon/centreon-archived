@@ -85,7 +85,7 @@ $pagination = "maxViewConfiguration";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$dep["dep_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&dep_id=".$dep['dep_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
 						"RowMenu_description"=>$dep["dep_description"],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}

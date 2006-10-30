@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$host["host_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&host_id=".$host['host_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 						"RowMenu_desc"=>$host["host_alias"],
 						"RowMenu_svChilds"=>$host["nbr"],
 						"RowMenu_parent"=>$host["host_template_model_htm_id"] ? $lang["yes"] : $lang["no"],

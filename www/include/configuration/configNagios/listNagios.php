@@ -71,7 +71,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$nagios["nagios_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&nagios_id=".$nagios['nagios_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&nagios_id=".$nagios['nagios_id'],
 						"RowMenu_desc"=>substr($nagios["nagios_comment"], 0, 40),
 						"RowMenu_status"=>$nagios["nagios_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);

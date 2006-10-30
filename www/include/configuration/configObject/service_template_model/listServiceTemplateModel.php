@@ -85,7 +85,7 @@ $pagination = "maxViewConfiguration";
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_desc"=>$service["service_description"],
 						"RowMenu_parent"=>$service["service_template_model_stm_id"] ? $service["tplPar"] :  $lang["no"],
-						"RowMenu_link"=>"?p=".$p."&o=w&service_id=".$service['service_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_status"=>$service["service_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}

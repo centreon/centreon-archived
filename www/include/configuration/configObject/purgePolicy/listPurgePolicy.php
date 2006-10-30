@@ -82,7 +82,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$purgePolicy["purge_policy_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&purge_policy_id=".$purgePolicy['purge_policy_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&purge_policy_id=".$purgePolicy['purge_policy_id'],
 						"RowMenu_desc"=>$purgePolicy["purge_policy_alias"],
 						"RowMenu_host"=>$purgePolicy["purge_policy_host"] ? "x" : NULL,
 						"RowMenu_service"=>$purgePolicy["purge_policy_service"] ? "x" : NULL,

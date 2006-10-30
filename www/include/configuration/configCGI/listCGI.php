@@ -81,7 +81,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$cgi["cgi_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&cgi_id=".$cgi['cgi_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&cgi_id=".$cgi['cgi_id'],
 						"RowMenu_desc"=>substr($cgi["cgi_comment"], 0, 40),
 						"RowMenu_status"=>$cgi["cgi_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);

@@ -81,7 +81,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$perfparse["perfparse_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&perfparse_id=".$perfparse['perfparse_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&perfparse_id=".$perfparse['perfparse_id'],
 						"RowMenu_desc"=>substr($perfparse["perfparse_comment"], 0, 40),
 						"RowMenu_status"=>$perfparse["perfparse_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);

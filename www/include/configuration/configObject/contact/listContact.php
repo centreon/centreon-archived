@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$contact["contact_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&contact_id=".$contact['contact_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&contact_id=".$contact['contact_id'],
 						"RowMenu_desc"=>$contact["contact_alias"],
 						"RowMenu_status"=>$contact["contact_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
