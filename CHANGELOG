@@ -1,5 +1,23 @@
 ## Oreon 1.3.2
 
+=> Bugfix : #234
+=> Bugfix : #240
+=> Bugfix : pagintaion with IE
+=> Bugfix : #242
+=> Bugfix : #238
+=> Bugfix : topologyjs -> changetab for 60101 o=a
+=> Bugfix : duplicate entry for template (in configuration)
+=> Bugfix : #251
+=> Bugfix : meta service (add multi select, restrict template in list)
+=> Bugfix : topologyJS in utf8 now 
+=> Bugfix : remove bug with LCA and topology
+=> Bugfix : add fourth level for lca page
+=> Feature : change result clic on object configuration : w->c
+=> Feature : add possibility to select display order for services problems
+
+
+## Oreon 1.3.2
+
 => Bugfix : Multiple correction in Darshboard with a new algo
 => Feature : Refresh IDCard in Ajax
 => Bugfix : Bug in command example
@@ -38,16 +56,6 @@
 => Feature : Acknownledged services are in orange now.
 => Bugfix : ACL pb in popup for displaying template in service and hosts.
 => Bugfix : can now graph with metric with space
-=> Bugfix : #234
-=> Bugfix : #240
-=> Bugfix : pagintaion with IE
-=> Bugfix : #242
-=> Bugfix : #238
-=> Bugfix : topologyjs -> changetab for 60101 o=a
-=> Bugfix : duplicate entry for template (in configuration)
-=> Bugfix : #251
-=> Bugfix : meta service (add multi select, restrict template in list)
-=> Bugfix : topologyJS in utf8 now 
 
 ## Oreon 1.3.1-1
 
