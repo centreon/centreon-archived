@@ -369,9 +369,7 @@ For information : contact@oreon-project.org
 			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
 		}
-		
-		$rq = "UPDATE host SET " ;
-		$rq .= "host_template_model_htm_id = ";
+		$rq = "UPDATE host SET host_template_model_htm_id = ";
 		isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'".$ret["host_template_model_htm_id"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id = ";		
 		isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";		
