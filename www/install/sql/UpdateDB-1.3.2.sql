@@ -248,3 +248,5 @@ UPDATE `topology` SET `topology_name` = 'm_service',
 `topology_popup` = '0',
 `topology_modules` = '0',
 `topology_show` = '1' WHERE `topology_page` =202 LIMIT 1 ;
+
+DELETE FROM `topology` WHERE `topology_url` = './include/views/graphs/myViews/myViews.php' LIMIT 1;
