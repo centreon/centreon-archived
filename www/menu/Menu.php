@@ -43,14 +43,14 @@ For information : contact@oreon-project.org
 	$fileOreonConf = $oreon->optGen["oreon_path"];
 
 
-	$color["OK"] = $oreon->optGen["color_ok"];
-	$color["CRITICAL"] = $oreon->optGen["color_critical"];
-	$color["WARNING"] = $oreon->optGen["color_warning"];
-	$color["PENDING"] =  $oreon->optGen["color_pending"];
-	$color["UNKNOWN"] =  $oreon->optGen["color_unknown"];
-	$color["UP"] =  $oreon->optGen["color_up"];
-	$color["DOWN"] =  $oreon->optGen["color_down"];
-	$color["UNREACHABLE"] =  $oreon->optGen["color_unreachable"];
+	$color["OK"] = 			$oreon->optGen["color_ok"];
+	$color["CRITICAL"] = 	$oreon->optGen["color_critical"];
+	$color["WARNING"] = 	$oreon->optGen["color_warning"];
+	$color["PENDING"] =  	$oreon->optGen["color_pending"];
+	$color["UNKNOWN"] =  	$oreon->optGen["color_unknown"];
+	$color["UP"] =  		$oreon->optGen["color_up"];
+	$color["DOWN"] =  		$oreon->optGen["color_down"];
+	$color["UNREACHABLE"] = $oreon->optGen["color_unreachable"];
 
 	$tpl->assign("urlLogo", $skin.'Images/logo_oreon.gif');
 	$tpl->assign("lang", $lang);
@@ -72,14 +72,11 @@ For information : contact@oreon-project.org
 								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#");
 		
 
-	$userUrl = "oreon.php?p=50104&o=c";
-	$userName = $oreon->user->get_name();
-    $userName .= " ( ";
-    $userName .= $oreon->user->get_alias();
-    $userName .= " ) ";
-    $logDate= date($lang['header_format']);
-    $logOut= $lang['m_logout'];
-    $logOutUrl= "index.php?disconnect=1";
+	$userUrl = "oreon.php?p=50104&o=c".$oreon->user->get_name()." ( ".$oreon->user->get_alias()." ) ";
+    
+    $logDate = date($lang['header_format']);
+    $logOut = $lang['m_logout'];
+    $logOutUrl = "index.php?disconnect=1";
 
 	# Grab elements for level 2
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_order";
@@ -126,13 +123,15 @@ For information : contact@oreon-project.org
 		$res4 =& $pearDB->query($rq);
 		if (PEAR::isError($res4))
 			print "Mysql Error : ".$res4->getMessage();
-		for ($i = 0; $res4->fetchInto($elem);$i++)
+		for ($i = 0; $res4->fetchInto($elem);$i++){
 			$elemArr[4][$level1.$level2.$level3][$i] = array("Menu4Icone" => $elem["topology_icone"],
 										"Menu4Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 										"Menu4UrlPopup" => $elem["topology_url"],
 										"Menu4Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
 										"Menu4Popup" => $elem["topology_popup"] ? true : false);
+		}
 	}	
+	
 	# Create Menu Level 1-2-3-4
 	$tpl->assign("UserInfoUrl", $userUrl);
 	$tpl->assign("UserName", $oreon->user->get_alias());
