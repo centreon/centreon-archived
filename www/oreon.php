@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 	
 	function get_child($id_page, $lcaTStr){
 		global $pearDB;
-		$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt FROM topology WHERE  topology_id IN ($lcaTStr) AND topology_parent = '".$id_page."' ORDER BY topology_order";
+		$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt FROM topology WHERE  topology_id IN ($lcaTStr) AND topology_parent = '".$id_page."' ORDER BY topology_order ASC";
 		$res =& $pearDB->query($rq);
 		$res->fetchInto($redirect);
 		return $redirect;
@@ -76,34 +76,38 @@ For information : contact@oreon-project.org
 	if($min != 1)
 		include("pathWay.php");
 	
-	
 	$isRestreint = HadUserLca($pearDB);
-	
-	if ($redirect["topology_page"] < 1000 && ($isRestreint || !$oreon->user->admin)) {
-		if ($redirect["topology_page"] < 100){
-			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
-			$ret = get_child($ret['topology_page'], $oreon->user->lcaTStr);
-			if (file_exists($ret["topology_url"])){
-				$tab = split("\=", $ret["topology_url_opt"]);
-				$o = $tab[1];
-				require_once($ret["topology_url"]);
-			} else {
-				if (file_exists($redirect["topology_url"]))
-					require_once($redirect["topology_url"]);
-			}
+	if ($redirect["topology_page"] < 100){
+		$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+		if (!$ret['topology_page']){
+			file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
 		} else {
-		
-			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);			
-			if (file_exists($ret["topology_url"])){
+			$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
+			if ($ret2["topology_url_opt"]){
+				$tab = split("\=", $ret2["topology_url_opt"]);
+				$o = $tab[1];
+				$p = $ret2["topology_page"];
+			}
+			file_exists($ret2["topology_url"]) ? require_once($ret2["topology_url"]) : require_once("./alt_error.php");
+		}
+	} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
+		$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
+		if (!$ret['topology_page']){
+			file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+		} else {
+			if ($ret["topology_url_opt"]){
 				$tab = split("\=", $ret["topology_url_opt"]);
 				$o = $tab[1];
-				require_once($ret["topology_url"]);
-			} else
-				require_once("./alt_error.php");
+				$p = $ret["topology_page"];
+			}
+			file_exists($ret["topology_url"]) ? require_once($ret["topology_url"]) : require_once("./alt_error.php");		
 		}
+	} else if ($redirect["topology_page"] >= 1000) {
+		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
 	} else {
-		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");
+		print "Unknown operation...";
 	}
+		
 	# Display Legend
 	$lg_path = get_path($path);
 	if (file_exists($lg_path."legend.ihtml")){
@@ -113,7 +117,6 @@ For information : contact@oreon-project.org
 		$tpl->display($lg_path."legend.ihtml");
 	}
 ?>
-
 			</td>
 		</tr>
 	</table>

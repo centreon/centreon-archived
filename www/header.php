@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 		default : $level1= $p; break;
 	}
 	
-   	Session::start();
+	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
 	    eval('
 	    function clone($object) {
