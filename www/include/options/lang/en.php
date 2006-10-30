@@ -97,6 +97,17 @@ $lang["genOpt_debug_ldap_import"] = "Ldap Import Users Debug";
 $lang["genOpt_debug_inventory"] = "Inventory Debug";
 $lang["genOpt_debug_clear"] = "&nbsp;Clear debug file";
 
+$lang["genOpt_problem_sort_type"] = "Sort problems by  ";
+$lang["genOpt_problem_duration"] = "Duration";
+$lang["genOpt_problem_host"] = "Hosts";
+$lang["genOpt_problem_service"] = "Services";
+$lang["genOpt_problem_status"] = "Status";
+$lang["genOpt_problem_last_check"] = "Last check";
+$lang["genOpt_problem_output"] = "Output";
+$lang["genOpt_problem_sort_order"] = "Order sort problems ";
+$lang["genOpt_problem_order_asc"] = "Ascendant";
+$lang["genOpt_problem_order_desc"] = "Descendant";
+
 # Menu
 
 $lang['menu_infos'] = "Menu Information";

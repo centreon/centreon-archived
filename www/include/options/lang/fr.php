@@ -97,6 +97,17 @@ $lang["genOpt_debug_ldap_import"] = "Debug de l&#146;importation des users LDAP 
 $lang["genOpt_debug_inventory"] = "Debug de l&#146;inventaire";
 $lang["genOpt_debug_clear"] = "&nbsp;Effacer le fichier de debug";
 
+$lang["genOpt_problem_sort_type"] = "Trier les probl&egrave;mes par ";
+$lang["genOpt_problem_duration"] = "Dur&eacute;e";
+$lang["genOpt_problem_host"] = "Hosts";
+$lang["genOpt_problem_service"] = "Services";
+$lang["genOpt_problem_status"] = "Status";
+$lang["genOpt_problem_last_check"] = "Last check";
+$lang["genOpt_problem_output"] = "Output";
+$lang["genOpt_problem_sort_order"] = "Trier les probl&egrave;mes par ordre ";
+$lang["genOpt_problem_order_asc"] = "Ascendant";
+$lang["genOpt_problem_order_desc"] = "Descendant";
+
 # Menu
 
 $lang['menu_infos'] = "Informations sur le Menu";
@@ -154,4 +165,6 @@ $lang["menu_debug"] = "Debug";
 $lang["menu_colors"] = "Colors";
 $lang["menu_nagios"] = "Nagios";
 $lang["menu_general"] = "G&ecute;n&ecute;rate";
+
+
 ?>
