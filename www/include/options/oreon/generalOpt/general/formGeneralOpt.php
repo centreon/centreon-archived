@@ -74,7 +74,19 @@ For information : contact@oreon-project.org
 		@closedir($handle);
 	}
 	$form->addElement('select', 'template', $lang["genOpt_template"], $templates);
-
+	
+	$sort_type = array(	"last_state_change" => $lang["genOpt_problem_duration"],
+						"host_name" => $lang["genOpt_problem_host"],
+						"service_description" => $lang["genOpt_problem_service"],
+						"current_state" => $lang["genOpt_problem_status"],
+						"last_check" => $lang["genOpt_problem_last_check"],
+						"plugin_output" => $lang["genOpt_problem_output"]);
+	
+	$form->addElement('select', 'problem_sort_type', $lang["genOpt_problem_sort_type"], $sort_type);
+	
+	$sort_order = array("ASC" => $lang["genOpt_problem_order_asc"], "DESC" => $lang["genOpt_problem_order_desc"]);
+	$form->addElement('select', 'problem_sort_order', $lang["genOpt_problem_sort_order"], $sort_order);
+	
 	#
 	## Form Rules
 	#

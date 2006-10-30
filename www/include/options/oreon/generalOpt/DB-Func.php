@@ -360,7 +360,11 @@ For information : contact@oreon-project.org
 		$rq .= "AjaxFirstTimeReloadStatistic = ";
 		isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "template = ";
-		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "problem_sort_type = ";
+		isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != NULL ? $rq .= "'".htmlentities($ret["problem_sort_type"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "problem_sort_order = ";
+		isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? $rq .= "'".htmlentities($ret["problem_sort_order"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$res =& $pearDB->query($rq);
 		if (PEAR::isError($res))
