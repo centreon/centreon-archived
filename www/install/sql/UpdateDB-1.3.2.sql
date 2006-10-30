@@ -250,3 +250,13 @@ UPDATE `topology` SET `topology_name` = 'm_service',
 `topology_show` = '1' WHERE `topology_page` =202 LIMIT 1 ;
 
 DELETE FROM `topology` WHERE `topology_url` = './include/views/graphs/myViews/myViews.php' LIMIT 1;
+
+ALTER TABLE `general_opt` ADD `problem_sort_type` VARCHAR( 25 ) NULL AFTER `template` ;
+ALTER TABLE `general_opt` ADD `problem_sort_order` VARCHAR( 15 ) NULL AFTER `problem_sort_type` ;
+
+-- had host check arg
+
+ALTER TABLE `host` ADD `command_command_id_arg1` TEXT NULL AFTER `command_command_id` ;
+
+-- 
+
