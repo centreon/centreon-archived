@@ -223,13 +223,26 @@ For information : contact@oreon-project.org
 	}
 	
 	function insertHost($ret)	{
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg"] != NULL)		{
+			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace("\r", "#R#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace('/', "#S#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace('\\', "#BS#", $ret["command_command_id_arg1"]);
+		}
+		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
+			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
+		}
+		
 		$rq = "INSERT INTO host " .
-				"(host_template_model_htm_id, command_command_id, timeperiod_tp_id, timeperiod_tp_id2, purge_policy_id, command_command_id2, " .
+				"(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id, timeperiod_tp_id2, purge_policy_id, command_command_id2, command_command_id_arg2," .
 				"host_name, host_alias, host_address, host_max_check_attempts, host_check_interval, host_active_checks_enabled, " .
 				"host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
 				"host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
@@ -238,10 +251,12 @@ For information : contact@oreon-project.org
 				"VALUES ( ";
 				isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'".$ret["host_template_model_htm_id"]."', ": $rq .= "NULL, ";
 				isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
+				isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL ? $rq .= "'".$ret["command_command_id_arg1"]."', ": $rq .= "NULL, ";
 				isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 				isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 				isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 				isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
+				isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".$ret["command_command_id_arg2"]."', ": $rq .= "NULL, ";
 				isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 				isset($ret["host_alias"]) && $ret["host_alias"] != NULL ? $rq .= "'".htmlentities($ret["host_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 				isset($ret["host_address"]) && $ret["host_address"] != NULL ? $rq .= "'".htmlentities($ret["host_address"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -269,18 +284,16 @@ For information : contact@oreon-project.org
 				isset($ret["host_comment"]) && $ret["host_comment"] != NULL ? $rq .= "'".htmlentities($ret["host_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 				isset($ret["host_register"]["host_register"]) && $ret["host_register"]["host_register"] != NULL ? $rq .= "'".$ret["host_register"]["host_register"]."', " : $rq .= "NULL, ";
 				isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL";
-				$rq .= ")";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$rq .= ")";
+		$ret =& $pearDB->query($rq);
+		if (PEAR::isError($ret))
+			print "Mysql Error : ".$ret->getMessage();
 		$res =& $pearDB->query("SELECT MAX(host_id) FROM host");
 		$host_id = $res->fetchRow();		
 		# Update LCA
 		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		if (PEAR::isError($res1))
+			print "Mysql Error : ".$res1->getMessage();
 		while($res1->fetchInto($contactGroup))	{
 		 	$res2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
 			if (PEAR::isError($pearDB)) {
@@ -303,8 +316,7 @@ For information : contact@oreon-project.org
 	
 	function insertHostExtInfos($host_id = null, $ret)	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = 	"INSERT INTO `extended_host_information` " .
@@ -328,14 +340,12 @@ For information : contact@oreon-project.org
 			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
 			$city = $res->fetchRow();
 			$city["city_id"] ? $rq .= "'".$city["city_id"]."' ": $rq .= "NULL ";
-		}	
-		else
+		} else
 			$rq .= "NULL ";
 		$rq .= ")";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$ret =& $pearDB->query($rq);
+		if (PEAR::isError($ret))
+			print "Mysql Error : ".$ret->getMessage();
 	}
 	
 	function updateHost($host_id = null)	{
@@ -344,11 +354,29 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
+		
+		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg"] != NULL)		{
+			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace("\r", "#R#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace('/', "#S#", $ret["command_command_id_arg1"]);
+			$ret["command_command_id_arg1"] = str_replace('\\', "#BS#", $ret["command_command_id_arg1"]);
+		}
+		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
+			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
+		}
+		
 		$rq = "UPDATE host SET " ;
 		$rq .= "host_template_model_htm_id = ";
 		isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'".$ret["host_template_model_htm_id"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id = ";		
-		isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";
+		isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL ? $rq .= "'".$ret["command_command_id"]."', ": $rq .= "NULL, ";		
+		$rq .= "command_command_id_arg1 = ";		
+		isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL ? $rq .= "'".$ret["command_command_id_arg1"]."', ": $rq .= "NULL, ";
 		$rq .= "timeperiod_tp_id = ";
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 		$rq .= "timeperiod_tp_id2 = ";
@@ -357,6 +385,8 @@ For information : contact@oreon-project.org
 		isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id2 = ";
 		isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
+		$rq .= "command_command_id_arg2 = ";		
+		isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL ? $rq .= "'".$ret["command_command_id_arg2"]."', ": $rq .= "NULL, ";
 		$rq .= "host_name = ";
 		isset($ret["host_name"]) && $ret["host_name"] != NULL ? $rq .= "'".htmlentities($ret["host_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "host_alias = ";
@@ -412,10 +442,9 @@ For information : contact@oreon-project.org
 		$rq .= "host_activate = ";
 		isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != NULL ? $rq .= "'".$ret["host_activate"]["host_activate"]."'" : $rq .= "NULL ";
 		$rq .= "WHERE host_id = '".$host_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$ret =& $pearDB->query($rq);
+		if (PEAR::isError($ret))
+			print "Mysql Error : ".$ret->getMessage();
 	}
 	
 	function updateHostHostParent($host_id = null, $ret = array())	{
@@ -437,17 +466,15 @@ For information : contact@oreon-project.org
 			$rq .= "(host_parent_hp_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$ret[$i]."', '".$host_id."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$ret =& $pearDB->query($rq);
+			if (PEAR::isError($ret))
+				print "Mysql Error : ".$ret->getMessage();
 		}
 	}
 	
 	function updateHostHostChild($host_id = null)	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM host_hostparent_relation ";
 		$rq .= "WHERE host_parent_host_id = '".$host_id."'";
 		$pearDB->query($rq);
@@ -461,18 +488,16 @@ For information : contact@oreon-project.org
 			$rq .= "(host_parent_hp_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$ret =& $pearDB->query($rq);
+			if (PEAR::isError($ret))
+				print "Mysql Error : ".$ret->getMessage();
 		}
 	}
 
 
 	function updateHostExtInfos($host_id = null, $ret = array())	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "UPDATE extended_host_information ";		
@@ -505,35 +530,28 @@ For information : contact@oreon-project.org
 		else
 			$rq .= "NULL ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$ret =& $pearDB->query($rq);
+		if (PEAR::isError($ret))
+			print "Mysql Error : ".$ret->getMessage();
 	}
 	
 	function updateHostContactGroup($host_id, $ret = array())	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM contactgroup_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		if (isset($ret["host_cgs"]))
-			$ret = $ret["host_cgs"];
-		else
-			$ret = $form->getSubmitValue("host_cgs");
+		$ret =& $pearDB->query($rq);
+		if (PEAR::isError($ret))
+			print "Mysql Error : ".$ret->getMessage();
+		isset($ret["host_cgs"]) ? $ret = $ret["host_cgs"] : $ret = $form->getSubmitValue("host_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contactgroup_host_relation ";
 			$rq .= "(host_host_id, contactgroup_cg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$ret =& $pearDB->query($rq);
+			if (PEAR::isError($ret))
+				print "Mysql Error : ".$ret->getMessage();
 		}
 	}
 	
@@ -543,31 +561,24 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM hostgroup_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		if (isset($ret["host_hgs"]))
-			$ret = $ret["host_hgs"];
-		else
-			$ret = $form->getSubmitValue("host_hgs");
+		$ret =& $pearDB->query($rq);
+		if (PEAR::isError($ret))
+			print "Mysql Error : ".$ret->getMessage();
+		isset($ret["host_hgs"]) ? $ret = $ret["host_hgs"] : $ret = $form->getSubmitValue("host_hgs");
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO hostgroup_relation ";
 			$rq .= "(hostgroup_hg_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$ret[$i]."', '".$host_id."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$ret =& $pearDB->query($rq);
+			if (PEAR::isError($ret))
+				print "Mysql Error : ".$ret->getMessage();
 		}
 	}
 	
 	function createHostTemplateService($host_id = null, $htm_id = NULL)	{
 		if (!$host_id || !$htm_id) return;
-		global $pearDB;
-		global $path;
-		global $oreon;
+		global $pearDB, $path, $oreon;
 		require_once($path."../service/DB-Func.php");
 		$res =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
 		while ($res->fetchInto($row))	{
@@ -579,27 +590,24 @@ For information : contact@oreon-project.org
 				$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
 				$rq .= "VALUES ";
 				$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
-				$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+				$ret =& $pearDB->query($rq);
+				if (PEAR::isError($ret))
+					print "Mysql Error : ".$ret->getMessage();
 			}
 		}
 	}
 	
 	function updateHostTemplateService($host_id = null)	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$res =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."'");
 		$row =& $res->fetchRow();
 		if ($row["host_register"] == 0) 	{
 			$rq = "DELETE FROM host_service_relation ";
 			$rq .= "WHERE host_host_id = '".$host_id."'";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$ret =& $pearDB->query($rq);
+			if (PEAR::isError($ret))
+				print "Mysql Error : ".$ret->getMessage();
 			$ret = array();
 			$ret = $form->getSubmitValue("host_svTpls");
 			for($i = 0; $i < count($ret); $i++)	{
@@ -607,10 +615,9 @@ For information : contact@oreon-project.org
 				$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
 				$rq .= "VALUES ";
 				$rq .= "(NULL, '".$host_id."', NULL, '".$ret[$i]."')";
-				$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+				$ret =& $pearDB->query($rq);
+				if (PEAR::isError($ret))
+					print "Mysql Error : ".$ret->getMessage();
 			}
 		}
 	}
@@ -619,12 +626,10 @@ For information : contact@oreon-project.org
 		if(!count($useTpls)) return;
 		global $pearDB;
 		require_once "./include/common/common-Func.php";
-		foreach ($useTpls as $key=>$value)
-		{
-			$pearDB->query("UPDATE host SET host_template_model_htm_id = '".getMyHostID($value)."' WHERE host_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach ($useTpls as $key=>$value){
+			$ret =& $pearDB->query("UPDATE host SET host_template_model_htm_id = '".getMyHostID($value)."' WHERE host_id = '".$key."'");
+			if (PEAR::isError($ret))
+				print "Mysql Error : ".$ret->getMessage();
 		}			
 	}
 ?>

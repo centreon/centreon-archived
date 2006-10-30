@@ -145,10 +145,10 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			# Get all information about it
 			$res =& $pearDB->query("SELECT * FROM service WHERE service_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			$row = $res->fetchRow();
+			print_r($row);
 			
 			$row["service_id"] = '';
 			# Loop on the number of Service we want to duplicate
@@ -156,24 +156,20 @@ For information : contact@oreon-project.org
 				$val = null;
 				# Create a sentence which contains all the value
 				foreach ($row as $key2=>$value2)	{
-					if (!$host) # Not put an '_nbr' when it's a duplication for another Host
-						$key2 == "service_description" ? ($service_description = $value2 = $value2."_".$i) : null;
+					$key2 == "service_description" ? ($service_description = $value2 = $value2."_".$i) : $service_description = null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 
 				$h = array('0' => $key);
 
-				if( ($row["service_register"] && testServiceExistence($service_description, $h)) ||
-				  (!$row["service_register"] && testServiceTemplateExistence($service_description)))	{
+				if (($row["service_register"] && testServiceExistence($service_description, $h)) || (!$row["service_register"] && testServiceTemplateExistence($service_description)))	{
 					$val ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
+					$res2 =& $pearDB->query($rq);
+					if (PEAR::isError($res2))
+						print "Mysql Error : ".$res2->getMessage();
 					$res =& $pearDB->query("SELECT MAX(service_id) FROM service");
-					if (PEAR::isError($pearDB)) {
+					if (PEAR::isError($res))
 						print "Mysql Error : ".$pearDB->getMessage();
-					}
 					$maxId =& $res->fetchRow();
 					if (isset($maxId["MAX(service_id)"]))	{
 						# Host duplication case -> Duplicate the Service for the Host we create
@@ -182,35 +178,28 @@ For information : contact@oreon-project.org
 						else	{
 						# Service duplication case -> Duplicate the Service for each relation the base Service have
 							$res =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
-	
+							if (PEAR::isError($res))
+								print "Mysql Error : ".$res->getMessage();
 							while($res->fetchInto($service))	{
 								if ($service["host_host_id"])				
-									$pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
+									$res1 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
 								else if ($service["hostgroup_hg_id"])	
-									$pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$service["hostgroup_hg_id"]."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
-								if (PEAR::isError($pearDB)) {
-									print "Mysql Error : ".$pearDB->getMessage();
-								}
+									$res1 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$service["hostgroup_hg_id"]."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
+								if (PEAR::isError($res1))
+									print "Mysql Error : ".$res1->getMessage();
 							}
 						}
 						$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
-						while($res->fetchInto($Cg))
-						{
-							$pearDB->query("INSERT INTO contactgroup_service_relation VALUES ('', '".$Cg["contactgroup_cg_id"]."', '".$maxId["MAX(service_id)"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+						if (PEAR::isError($res))
+							print "Mysql Error : ".$res->getMessage();
+						while($res->fetchInto($Cg)){
+							$res1 =& $pearDB->query("INSERT INTO contactgroup_service_relation VALUES ('', '".$Cg["contactgroup_cg_id"]."', '".$maxId["MAX(service_id)"]."')");
+							if (PEAR::isError($res1))
+								print "Mysql Error : ".$res1->getMessage();
 						}
 						$res =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
+						if (PEAR::isError($res))
+							print "Mysql Error : ".$res->getMessage();
 						while($res->fetchInto($Sg))
 						{
 							$pearDB->query("INSERT INTO servicegroup_relation VALUES ('', '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
