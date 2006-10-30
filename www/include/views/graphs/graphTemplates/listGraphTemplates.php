@@ -72,7 +72,7 @@ $pagination = "maxViewConfiguration";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$graph["name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&graph_id=".$graph['graph_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&graph_id=".$graph['graph_id'],
 						"RowMenu_desc"=>$graph["title"],
 						"RowMenu_compo"=>$graph["nbr"],
 						"RowMenu_tpl1"=>$graph["default_tpl1"] ? $lang["yes"] : $lang["no"],
