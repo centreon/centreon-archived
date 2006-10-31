@@ -260,3 +260,7 @@ ALTER TABLE `host` ADD `command_command_id_arg1` TEXT NULL AFTER `command_comman
 
 -- 
 
+UPDATE `topology` SET `topology_order` = '20' WHERE `topology_page` = '40201' LIMIT 1 ;
+UPDATE `topology` SET `topology_order` = '10' WHERE `topology_page` = '40202' LIMIT 1 ;
+
+
