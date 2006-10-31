@@ -23,9 +23,8 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."hosts.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT * FROM host ORDER BY `host_register`, `host_name`");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$host = array();
 	$i = 1;
 	$str = NULL;
@@ -68,9 +67,8 @@ For information : contact@oreon-project.org
 			$hostParent = array();
 			$strTemp = NULL;
 			$res2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res2))
+				print "Mysql Error : ".$res2->getMessage();
 			while($res2->fetchInto($hostParent))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
@@ -91,9 +89,8 @@ For information : contact@oreon-project.org
 				$hostGroup = array();
 				$strTemp = NULL;
 				$res2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
+				if (PEAR::isError($res2))
+					print "Mysql Error : ".$res2->getMessage();
 				while($res2->fetchInto($hostGroup))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
@@ -113,11 +110,17 @@ For information : contact@oreon-project.org
 			//Check Command
 			$command = array();
 			$res2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id"]."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res2))
+				print "Mysql Error : ".$res2->getMessage();
+			
+			$host["command_command_id_arg2"] = str_replace('#BR#', "\\n", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#T#', "\\t", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#R#', "\\r", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
+			
 			while($res2->fetchInto($command))
-				$str .= print_line("check_command", $command["command_name"]);
+				$str .= print_line("check_command", $command["command_name"].$host["command_command_id_arg1"]);
 			$res2->free();
 			unset($command);
 			//
@@ -143,11 +146,16 @@ For information : contact@oreon-project.org
 			//Event_handler
 			$command = array();
 			$res2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id2"]."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res2))
+				print "Mysql Error : ".$res2->getMessage();
+			$host["command_command_id_arg2"] = str_replace('#BR#', "\\n", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#T#', "\\t", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#R#', "\\r", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
+			$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
+				
 			while($res2->fetchInto($command))
-				$str .= print_line("event_handler", $command["command_name"]);
+				$str .= print_line("event_handler", $command["command_name"].$host["command_command_id_arg2"]);
 			$res2->free();
 			unset($command);
 			//
