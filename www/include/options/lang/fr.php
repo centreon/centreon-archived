@@ -31,6 +31,7 @@ $lang['lca_host'] = "Hosts";
 $lang['lca_sortTopo'] = "Topologie";
 $lang['lca_appTopo'] = "Pages concern&eacute;es";
 $lang['lca_topo'] = "Pages visibles";
+$lang['m_general'] = "G&eacute;n&eacute;rale";
 
 # General Options
 
