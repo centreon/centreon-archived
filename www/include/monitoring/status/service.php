@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
 	if (PEAR::isError($res))
-		print "Mysql Error : ".$pearDB->getMessage();
+		print "Mysql Error : ".$res->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
@@ -37,6 +37,11 @@ For information : contact@oreon-project.org
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 
+	# get monitoring bonus info
+	$res =& $pearDB->query("SELECT * FROM host_extended_info");
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$service_status_num = array();
@@ -118,9 +123,9 @@ For information : contact@oreon-project.org
 	$version = $oreon->user->get_version();
 
     $tpl->assign("version", $version);
-    $res =& $pearDB->query("SELECT * FROM session WHERE" .
-                    " CONVERT( `session_id` USING utf8 ) = '". session_id() .
-                    "' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+    $res =& $pearDB->query(	"SELECT * FROM session WHERE" .
+		                    " CONVERT( `session_id` USING utf8 ) = '". session_id() .
+		                    "' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
     $session =& $res->fetchRow();
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
@@ -130,16 +135,6 @@ For information : contact@oreon-project.org
     $tpl->assign('search_type_host', $search_type_host);
     $tpl->assign('search_type_service', $search_type_service);
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-
-
-
-
-
-
-
-
-
-
 
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -151,19 +146,13 @@ For information : contact@oreon-project.org
 	}
 	</SCRIPT>
 	<?
-	$attrs = array(
-		'onchange'=>"javascript: ".
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");
+	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();} ");
         $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
 		$form->setDefaults(array('o1' => NULL));
 			$o1 =& $form->getElement('o1');
 			$o1->setValue(NULL);
 
-		$attrs = array(
-		'onchange'=>"javascript: " .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"");
+		$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();}");
         $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
 		$form->setDefaults(array('o2' => NULL));
 		$o2 =& $form->getElement('o2');
@@ -171,15 +160,8 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-
-
-
-
-
 
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->display("service.ihtml");
