@@ -144,14 +144,15 @@ For information : contact@oreon-project.org
 							if (PEAR::isError($res2))
 								print "Mysql Error : ".$res2->getMessage();
 							$mulHostSv = $res2->fetchrow();
-							if ($mulHostSv["COUNT(*)"] > 1)
+							if ($mulHostSv["COUNT(*)"] > 1)	{
 								$res3 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$service["service_service_id"]."')");
+								if (PEAR::isError($res3))
+									print "Mysql Error : ".$res3->getMessage();
+							}
 							else	{
 								$serviceArr[$service["service_service_id"]] = $service["service_service_id"];
 								$serviceNbr[$service["service_service_id"]] = 1;
 							}
-							if (PEAR::isError($res3))
-								print "Mysql Error : ".$res3->getMessage();
 						}
 						# Duplicate the Service list
 						multipleServiceInDB($serviceArr, $serviceNbr, $hostInf);							
