@@ -60,6 +60,19 @@ For information : contact@oreon-project.org
 	## HOST
 	#
 	
+	function getMyHostTemplateModel($host_id = NULL)	{
+		if (!$host_id) return;
+		global $pearDB;
+		$res =& $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
+		$row =& $res->fetchRow();
+		if ($row["host_template_model_htm_id"])
+			return $row["host_template_model_htm_id"];
+		else
+			NULL;
+	}
+	
 	function getMyHostName($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;

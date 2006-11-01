@@ -42,12 +42,6 @@ For information : contact@oreon-project.org
 	}
 			
 	function testServiceExistence ($name = NULL, $hPars = array(), $hgPars = array())	{
-
-		echo "<br>-";
-
-	print_r($hPars);
-		echo "-<br>";
-
 		global $pearDB;
 		global $form;
 		$id = NULL;
@@ -65,7 +59,6 @@ For information : contact@oreon-project.org
 				$hgPars = array();
 		}
 		foreach ($hPars as $host)	{
-			echo $host . "<br>";
 			if (PEAR::isError($pearDB)) {
 				print "Mysql Error : ".$pearDB->getMessage();
 			}
