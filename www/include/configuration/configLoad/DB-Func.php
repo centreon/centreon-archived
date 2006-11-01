@@ -83,9 +83,14 @@ For information : contact@oreon-project.org
 			$resCFG = array();
 			# Fill with buffer value
 			if (preg_match("/^[ \t]*([0-9a-zA-Z\_ \$#]+)[ \t]*=[ \t]*(.+)/", $str, $regs))	{
-				$resCFG["resource_activate"]["resource_activate"] = "1";
-				$resCFG["resource_name"] = trim($regs[1]);
-				$resCFG["resource_line"] = trim($regs[1])."=".trim($regs[2]);
+				if (preg_match("/([#]+)/", trim($regs[1])))	{
+					$resCFG["resource_activate"]["resource_activate"] = "0";
+					$resCFG["resource_name"] = preg_replace("/([#]+)/", "", trim($regs[1]));
+				}	else	{					
+					$resCFG["resource_activate"]["resource_activate"] = "1";
+					$resCFG["resource_name"] = trim($regs[1]);
+				}				
+				$resCFG["resource_line"] = $resCFG["resource_name"]."=".trim($regs[2]);
 				$resCFG["resource_comment"] = trim($regs[1])." ".date("d/m/Y - H:i:s", time());
 				# Add in db
 				require_once("./include/configuration/configResources/DB-Func.php");
