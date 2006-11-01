@@ -1,6 +1,6 @@
 ## Oreon 1.3.2
 
-=> Bugfix : For resources upload, delete the '#' in the expression and put the MACRO state to 'disabled'
+=> Bugfix : #226 For resources upload, delete the '#' in the expression and put the MACRO state to 'disabled'
 => Feature : When creating an Host based on Host Template, multi level inheritance for services link to host templates
 => Bugfix : #234
 => Bugfix : #240
