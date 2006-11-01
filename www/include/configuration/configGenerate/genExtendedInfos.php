@@ -1,5 +1,5 @@
 <?php
-/** 
+/**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
@@ -61,12 +61,12 @@ For information : contact@oreon-project.org
 	unset($ehi);
 	unset($str);
 	unset($i);
-	
-	// Service Extended Information 
+
+	// Service Extended Information
 	$handle = create_file($nagiosCFGPath."serviceextinfo.cfg", $oreon->user->get_name());
 	$esi = array();
 	$i = 1;
-	$str = NULL;	
+	$str = NULL;
 
 	$res =& $pearDB->query("SELECT * FROM extended_service_information");
 	if (PEAR::isError($pearDB)) {
@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 				}
 			}
 			$hgs = getMyServiceHostGroups($esi["service_service_id"]);
-			foreach ($hgs as $key=>$value)	{		
+			foreach ($hgs as $key=>$value)	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
 					array_key_exists($value, $gbArr[3]) ? $BP = true : NULL;
@@ -137,7 +137,7 @@ For information : contact@oreon-project.org
 			}
 		}
 	}
-	write_in_file($handle, $str, $nagiosCFGPath."serviceextinfo.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."serviceextinfo.cfg");
 	fclose($handle);
 	$res->free();
 	unset($esi);
