@@ -406,18 +406,48 @@ function get_StorageDevice(_host_id)
 			var _storageDevices = reponseIDCard.getElementsByTagName("storageDevice");
 
 			for (var i = 0 ; i < _storageDevices.length ; i++) {
+			
 				var _storageDevice = _storageDevices[i];
 
-				var _mntPointlabel = _storageDevice.getElementsByTagName("mntPointlabel")[0].firstChild.nodeValue;
-				var _Typelabel = _storageDevice.getElementsByTagName("Typelabel")[0].firstChild.nodeValue;
-				var _Utilisationlabel =  parseInt(_storageDevice.getElementsByTagName("Utilisationlabel")[0].firstChild.nodeValue);
-				var _Freelabel = _storageDevice.getElementsByTagName("Freelabel")[0].firstChild.nodeValue;
-				var _Usedlabel = _storageDevice.getElementsByTagName("Usedlabel")[0].firstChild.nodeValue;
-				var _Sizelabel = _storageDevice.getElementsByTagName("Sizelabel")[0].firstChild.nodeValue;
+
+				var _mntPointlabel = " ";
+				if(_storageDevice.getElementsByTagName("mntPointlabel")[0].firstChild.nodeValue != "none")
+					var _mntPointlabel = _storageDevice.getElementsByTagName("mntPointlabel")[0].firstChild.nodeValue;
+
+				var _Typelabel = " ";
+				
+				if(_storageDevice.getElementsByTagName("Typelabel")[0].firstChild.nodeValue != "none")
+					var _Typelabel = _storageDevice.getElementsByTagName("Typelabel")[0].firstChild.nodeValue;
+
+
+				var _Utilisationlabel = "none";
+				
+				if(_storageDevice.getElementsByTagName("Utilisationlabel")[0].firstChild.nodeValue != "none")
+					var _Utilisationlabel =  parseInt(_storageDevice.getElementsByTagName("Utilisationlabel")[0].firstChild.nodeValue);
+
+
+				var _Freelabel = " ";
+				
+				if(_storageDevice.getElementsByTagName("Freelabel")[0].firstChild.nodeValue != "none")
+					var _Freelabel = _storageDevice.getElementsByTagName("Freelabel")[0].firstChild.nodeValue;
+
+				var _Usedlabel = " ";
+				
+				if(_storageDevice.getElementsByTagName("Usedlabel")[0].firstChild.nodeValue != "none")
+					var _Usedlabel = _storageDevice.getElementsByTagName("Usedlabel")[0].firstChild.nodeValue;
+
+				var _Sizelabel = " ";
+				
+				if( _storageDevice.getElementsByTagName("Sizelabel")[0].firstChild.nodeValue != "none")
+					var _Sizelabel = _storageDevice.getElementsByTagName("Sizelabel")[0].firstChild.nodeValue;
+
+
 
 				var _ligne = document.createElement('tr');
 
 				var _case_mntPointlabel = document.createElement('td');
+
+
 				var _case_Typelabel = document.createElement('td');
 				var _case_Utilisationlabel = document.createElement('td');
 				var _case_Freelabel = document.createElement('td');
@@ -425,8 +455,9 @@ function get_StorageDevice(_host_id)
 				var _case_Sizelabel = document.createElement('td');
 
 				var _text_mntPointlabel = document.createTextNode(_mntPointlabel);
-				var _text_Typelabel = document.createTextNode(_Typelabel);
 
+
+				var _text_Typelabel = document.createTextNode(_Typelabel);
 				var _text_Utilisationlabel = '';
 
 				if(_Utilisationlabel >= 0)
@@ -438,7 +469,10 @@ function get_StorageDevice(_host_id)
 				var _text_Usedlabel = document.createTextNode(_Usedlabel);
 				var _text_Sizelabel = document.createTextNode(_Sizelabel);
 
+
 				_case_mntPointlabel.appendChild(_text_mntPointlabel);
+
+
 				_case_Typelabel.appendChild(_text_Typelabel);
 				_case_Freelabel.appendChild(_text_Freelabel);
 				_case_Usedlabel.appendChild(_text_Usedlabel);
@@ -455,8 +489,10 @@ function get_StorageDevice(_host_id)
 		_imgmiddle.src = "./include/options/sysInfos/templates/classic/images/" + _red + "bar_middle.gif";
 		_imgmiddle.height='10';
 
-		if(_Utilisationlabel <= 100)
+		if(_Utilisationlabel <= 100 && _Utilisationlabel > 0)
 			_imgmiddle.width= _Utilisationlabel;
+		else if(_Utilisationlabel == "none")
+			_imgmiddle.width= '0';
 		else
 			_imgmiddle.width= '100';
 
@@ -464,6 +500,8 @@ function get_StorageDevice(_host_id)
 				_case_Utilisationlabel.appendChild(_text_Utilisationlabel);
 
 				_ligne.appendChild(_case_mntPointlabel);
+
+
 				_ligne.appendChild(_case_Typelabel);
 				_ligne.appendChild(_case_Utilisationlabel);
 				_ligne.appendChild(_case_Freelabel);
@@ -476,9 +514,10 @@ function get_StorageDevice(_host_id)
 
 				_ligne.className = ClassName;
 
+
 				_tableAjax.appendChild(_ligne);
 
-		MyIsLoading("storageDevices is loaded");
+//		MyIsLoading("storageDevices is loaded");
 
 			}
 		MyIsLoading("storageDevices is loaded");

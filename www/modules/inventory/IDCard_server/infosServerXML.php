@@ -258,7 +258,7 @@ For information : contact@oreon-project.org
 				if ($typelabel)
 					$buffer .= '<Typelabel>'.$typelabel.'</Typelabel>';
 				else
-					$buffer .= '<Typelabel>-</Typelabel>';
+					$buffer .= '<Typelabel>none</Typelabel>';
 
 				$block = get_snmp_value("1.3.6.1.2.1.25.2.3.1.4.".$SI, "INTEGER: ");
 
@@ -285,18 +285,18 @@ For information : contact@oreon-project.org
 		    		if ($hrStorageIndex["hsStorageSize"] != 0)
 		    			$buffer .= '<Utilisationlabel>'.round($hrStorageIndex["hsStorageUsed"] / $hrStorageIndex["hsStorageSize"] * 100).'</Utilisationlabel>';
 		    		else
-			    		$buffer .= '<Utilisationlabel> </Utilisationlabel>';
+			    		$buffer .= '<Utilisationlabel>none</Utilisationlabel>';
 		    	}
-		   		$hrStorageIndex["hsStorageFree"] ? $buffer .= '<Freelabel>'.$hrStorageIndex["hsStorageFree"].'</Freelabel>': $buffer .= '<Freelabel> </Freelabel>';
-				$hrStorageIndex["hsStorageUsed"] ? $buffer .= '<Usedlabel>'.$hrStorageIndex["hsStorageUsed"].'</Usedlabel>': $buffer .= '<Usedlabel> </Usedlabel>';
-				$hrStorageIndex["hsStorageSize"] ? $buffer .= '<Sizelabel>'.$hrStorageIndex["hsStorageSize"].'</Sizelabel>': $buffer .= '<Sizelabel> </Sizelabel>';
+		   		$hrStorageIndex["hsStorageFree"] ? $buffer .= '<Freelabel>'.$hrStorageIndex["hsStorageFree"].'</Freelabel>': $buffer .= '<Freelabel>none</Freelabel>';
+				$hrStorageIndex["hsStorageUsed"] ? $buffer .= '<Usedlabel>'.$hrStorageIndex["hsStorageUsed"].'</Usedlabel>': $buffer .= '<Usedlabel>none</Usedlabel>';
+				$hrStorageIndex["hsStorageSize"] ? $buffer .= '<Sizelabel>'.$hrStorageIndex["hsStorageSize"].'</Sizelabel>': $buffer .= '<Sizelabel>none</Sizelabel>';
 				$buffer .= '</storageDevice>';
 
 			    if ($debug_inventory == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host Server '".  $address . "' : Type => " . $typelabel . " : Block => ". $block . " : Size => " . $hrStorageIndex["hsStorageSize"] . " : Used => " . $hrStorageIndex["hsStorageUsed"] . " : Free => " . $hrStorageIndex["hsStorageFree"] . " \n", 3, $debug_path."inventory.log");
 		    }
 		} else
-			$buffer .= '<storageDevice></storageDevice>';
+			$buffer .= '<storageDevice>none</storageDevice>';
 	} else 	if($type == 6 && $host_id){
 		$ifTab = walk_snmp_value(".1.3.6.1.2.1.2.2.1.1", "INTEGER: ");
 	    if ($ifTab) {
