@@ -226,7 +226,7 @@ For information : contact@oreon-project.org
 		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg"] != NULL)		{
+		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
 			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\r", "#R#", $ret["command_command_id_arg1"]);
@@ -355,7 +355,7 @@ For information : contact@oreon-project.org
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		
-		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg"] != NULL)		{
+		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
 			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\r", "#R#", $ret["command_command_id_arg1"]);
@@ -578,20 +578,25 @@ For information : contact@oreon-project.org
 		if (!$host_id || !$htm_id) return;
 		global $pearDB, $path, $oreon;
 		require_once($path."../service/DB-Func.php");
-		$res =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
-		while ($res->fetchInto($row))	{
-			$desc =& getMyServiceName($row["service_service_id"]);
-			if (testServiceExistence ($desc, array(0=>$host_id)))	{
-				$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $desc, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
-				$service_id = insertServiceInDB($service);		
-				$rq = "INSERT INTO host_service_relation ";
-				$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-				$rq .= "VALUES ";
-				$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
-				$ret =& $pearDB->query($rq);
-				if (PEAR::isError($ret))
-					print "Mysql Error : ".$ret->getMessage();
+		while (1)	{
+			$res =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
+			while ($res->fetchInto($row))	{
+				$desc =& getMyServiceName($row["service_service_id"]);
+				if (testServiceExistence ($desc, array(0=>$host_id)))	{
+					$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $desc, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
+					$service_id = insertServiceInDB($service);		
+					$rq = "INSERT INTO host_service_relation ";
+					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+					$rq .= "VALUES ";
+					$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
+					$ret =& $pearDB->query($rq);
+					if (PEAR::isError($ret))
+						print "Mysql Error : ".$ret->getMessage();
+				}
 			}
+			$htm_id = getMyHostTemplateModel($htm_id); 
+			if (!$htm_id)
+				break;
 		}
 	}
 	
