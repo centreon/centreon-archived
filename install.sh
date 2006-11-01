@@ -425,8 +425,11 @@ function config_sudo()
   if [ $sudo == '1' ]; then
       echo "#Add by OREON installation script" >> $SUDO_FILE
       echo "User_Alias      OREON= $WEB_USER" >> $SUDO_FILE
+      echo "## Nagios Restart" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
+      echo "## Nagios reload" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
+      echo "## Snmptrapd Restart" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
       echo "" >> $SUDO_FILE
       echo_success "Configuring Sudo" "OK"

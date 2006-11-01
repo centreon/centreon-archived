@@ -421,18 +421,30 @@ function config_sudo()
     # Find Nagios Init Script
 	check_nagios_init_script
 
-  sudo=`cat $SUDO_FILE | grep OREON > /dev/null; echo $?`
+  sudo=`cat $SUDO_FILE | grep "#Add by OREON" > /dev/null; echo $?`
+  nagiosrestart=`cat $SUDO_FILE | grep "## Nagios Restart" > /dev/null; echo $?`
+  nagiosreload=`cat $SUDO_FILE | grep "## Nagios reload" > /dev/null; echo $?`
+  snmptrapdrestart=`cat $SUDO_FILE | grep "## Snmptrapd Restart" > /dev/null; echo $?`
 
   if [ $sudo == '1' ]; then
       echo "#Add by OREON installation script" >> $SUDO_FILE
       echo "User_Alias      OREON= $WEB_USER" >> $SUDO_FILE
+      echo_success "Upgrading Sudo" "OK"
+  fi
+  if [ $sudo == '1' ]; then
+      echo "## Nagios Restart" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
+      echo_success "Upgrading Sudo : Nagios Restart" "OK"
+  fi
+  if [ $sudo == '1' ]; then
+      echo "## Nagios reload" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
+      echo_success "Upgrading Sudo : Nagios Reload" "OK"
+  fi
+  if [ $sudo == '1' ]; then
+      echo "## Snmptrapd Restart" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
-      echo "" >> $SUDO_FILE
-      echo_success "Configuring Sudo" "OK"
-  else
-      echo_passed "Sudo is already configurated" "PASSED"
+      echo_success "Upgrading Sudo : Snmptrapd Restart" "OK"
   fi
 }
 
