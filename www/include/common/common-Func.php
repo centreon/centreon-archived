@@ -18,7 +18,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	include_once("./include/common/common-Func-ACL.php");
+	if (file_exists("./include/common/common-Func-ACL.php"))
+		include_once("./include/common/common-Func-ACL.php");
 
 	function myDecode($arg)	{
 		return html_entity_decode($arg, ENT_QUOTES);
