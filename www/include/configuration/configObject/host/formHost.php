@@ -182,7 +182,7 @@ For information : contact@oreon-project.org
 	$form->addGroup($hostCE, 'host_checks_enabled', $lang['h_checksEnabled'], '&nbsp;');
 	$form->setDefaults(array('host_checks_enabled' => '2'));
 	}
-	$form->addElement('select', 'command_command_id', $lang['h_checkCmd'], $checkCmds);
+	$form->addElement('select', 'command_command_id', $lang['h_checkCmd'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
 	$form->addElement('text', 'command_command_id_arg1', $lang['sv_args'], $attrsText);
 	
 	$form->addElement('text', 'host_max_check_attempts', $lang['h_checkMca'], $attrsText2);
@@ -192,7 +192,7 @@ For information : contact@oreon-project.org
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($hostEHE, 'host_event_handler_enabled', $lang['h_eventHandlerE'], '&nbsp;');
 	$form->setDefaults(array('host_event_handler_enabled' => '2'));
-	$form->addElement('select', 'command_command_id2', $lang['h_eventHandler'], $checkCmds);
+	$form->addElement('select', 'command_command_id2', $lang['h_eventHandler'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', $lang['sv_args'], $attrsText);
 	
 	# Nagios 2
