@@ -934,7 +934,7 @@ CREATE TABLE `host` (
   `timeperiod_tp_id2` int(11) default NULL,
   `purge_policy_id` int(11) default NULL,
   `command_command_id2` int(11) default NULL,
-  `command_command_id_arg2` text,
+  `command_command_id2_arg2` text,
   `host_name` varchar(200) default NULL,
   `host_alias` varchar(200) default NULL,
   `host_address` varchar(255) default NULL,
@@ -1521,12 +1521,12 @@ CREATE TABLE `servicegroup` (
 CREATE TABLE `servicegroup_relation` (
   `sgr_id` int(11) NOT NULL auto_increment,
   `host_host_id` int(11) default NULL,
-  `hostgroup_hg_id` int(11) default NULL,  
+  `hostgroup_hg_id` int(11) default NULL,
   `service_service_id` int(11) default NULL,
   `servicegroup_sg_id` int(11) default NULL,
   PRIMARY KEY  (`sgr_id`),
   KEY `service_index` (`service_service_id`),
-  KEY `servicegroup_index` (`servicegroup_sg_id`), 
+  KEY `servicegroup_index` (`servicegroup_sg_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `hostgroup_hg_id` (`hostgroup_hg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
