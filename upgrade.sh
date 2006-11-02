@@ -431,17 +431,17 @@ function config_sudo()
       echo "User_Alias      OREON= $WEB_USER" >> $SUDO_FILE
       echo_success "Upgrading Sudo" "OK"
   fi
-  if [ $sudo == '1' ]; then
+  if [ $nagiosrestart == '1' ]; then
       echo "## Nagios Restart" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
       echo_success "Upgrading Sudo : Nagios Restart" "OK"
   fi
-  if [ $sudo == '1' ]; then
+  if [ $nagiosreload == '1' ]; then
       echo "## Nagios reload" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
       echo_success "Upgrading Sudo : Nagios Reload" "OK"
   fi
-  if [ $sudo == '1' ]; then
+  if [ $snmptrapdrestart == '1' ]; then
       echo "## Snmptrapd Restart" >> $SUDO_FILE
       echo "OREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
       echo_success "Upgrading Sudo : Snmptrapd Restart" "OK"
