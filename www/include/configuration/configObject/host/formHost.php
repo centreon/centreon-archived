@@ -406,8 +406,8 @@ For information : contact@oreon-project.org
 		$form->addRule('host_address', $lang['ErrAddress'], 'required');
 		$form->addRule('host_max_check_attempts', $lang['ErrRequired'], 'required');
 		if ($oreon->user->get_version() == 2)	{
-		$form->addRule('timeperiod_tp_id', $lang['ErrTp'], 'required');
-		$form->addRule('host_cgs', $lang['ErrCg'], 'required');
+			$form->addRule('timeperiod_tp_id', $lang['ErrTp'], 'required');
+			$form->addRule('host_cgs', $lang['ErrCg'], 'required');
 		}
 		$form->addRule('host_notification_interval', $lang['ErrRequired'], 'required');
 		$form->addRule('timeperiod_tp_id2', $lang['ErrTp'], 'required');
