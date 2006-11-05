@@ -375,19 +375,18 @@ For information : contact@oreon-project.org
 			$res =& $pearDB->query(	"SELECT service_id FROM service, host_service_relation hsr " .
 									"WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id " .
 									"AND service_description = '".$service_description."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			$row =& $res->fetchRow();
 			# Service is directely link to a host, no problem
 			if ($row["service_id"])
 				return $row["service_id"];
 			# The Service might be link with a HostGroup
-			$res =& $pearDB->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-					" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-							" AND service_id = hsr.service_service_id AND service_description = '".$service_description."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
+			$res =& $pearDB->query(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+									" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+									" AND service_id = hsr.service_service_id AND service_description = '".$service_description."'");
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			}
 			$row =& $res->fetchRow();
 			if ($row["service_id"])
