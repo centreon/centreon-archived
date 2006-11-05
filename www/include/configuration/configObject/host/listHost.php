@@ -22,9 +22,8 @@ For information : contact@oreon-project.org
 
 	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	$gopt = array_map("myDecode", $res->fetchRow());
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -65,24 +64,20 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Host list
-	if ($search)
-	{
+	if ($search){
 		if ($oreon->user->admin || !HadUserLca($pearDB))				
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 		else
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-	}
-	else
-	{
+	} else {
 		if ($oreon->user->admin || !HadUserLca($pearDB))				
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE h.host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 		else
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE host_id IN (".$lcaHoststr.") AND h.host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	}
 	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res)) {
+	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
-	}
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
@@ -118,9 +113,6 @@ For information : contact@oreon-project.org
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-
-
-
 	#
 	##Toolbar select $lang["lgd_more_actions"]
 	#
