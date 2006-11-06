@@ -167,5 +167,8 @@ $lang["menu_colors"] = "Colors";
 $lang["menu_nagios"] = "Nagios";
 $lang["menu_general"] = "G&ecute;n&ecute;rate";
 
+# Menu
+
+$lang["m_modules"] = "Modules";
 
 ?>
