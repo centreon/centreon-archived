@@ -387,7 +387,6 @@ For information : contact@oreon-project.org
 									" AND service_id = hsr.service_service_id AND service_description = '".$service_description."'");
 			if (PEAR::isError($res))
 				print "Mysql Error : ".$res->getMessage();
-			}
 			$row =& $res->fetchRow();
 			if ($row["service_id"])
 				return $row["service_id"];
