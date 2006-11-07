@@ -36,11 +36,7 @@
 	      Image_Graph::factory('title', array('Services', 10)),        
 	      Image_Graph::vertical(
 	         $Plotarea = Image_Graph::factory('plotarea'),
-	         $Legend = Image_Graph::factory('legend'),
-	         80
-	      ),
-	      10
-	   )
+	         $Legend = Image_Graph::factory('legend'), 80),10)
 	);
 	$Graph->setBackgroundColor('#fff9eb');
 	$Legend->setPlotArea($Plotarea);
