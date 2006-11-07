@@ -40,7 +40,7 @@ For information : contact@oreon-project.org
 	# get monitoring bonus info
 	$res =& $pearDB->query("SELECT * FROM host_extended_info");
 	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+		print "ok : Mysql Error : ".$res->getMessage();
 	
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;

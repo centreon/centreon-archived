@@ -23,7 +23,6 @@ For information : contact@oreon-project.org
 	#create javascript for refresh ajax
 	include('makeJS.php');
 
-
 	# set limit & num
 	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
 	if (PEAR::isError($res))
@@ -32,7 +31,8 @@ For information : contact@oreon-project.org
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
+	!isset($_GET["sort_types"]) ? $sort_types = $oreon->OptGen["problem_sort_type"] : $sort_types = $_GET["sort_types"];
+	!isset($_GET["order"]) ? $order = "SORT_".$oreon->OptGen["problem_sort_order"] : $order = $_GET["order"];
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
@@ -82,6 +82,7 @@ For information : contact@oreon-project.org
 	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);
 	$tpl->assign("sort_types", $sort_types);
+	$tpl->assign("order", $order);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", $lang['mon_host']);
@@ -103,10 +104,10 @@ For information : contact@oreon-project.org
 	if (isset($service_status))
 		$tpl->assign("service_status", $service_status);
 	if (!isset($_GET["sort_types"]))
-		$_GET["sort_types"] = "host_name";
+		$_GET["sort_types"] = "SORT_".$oreon->optGen["problem_sort_type"];
 	$tpl->assign("sort_type", $_GET["sort_types"]);
 	if (!isset($_GET["order"]))
-		$_GET["order"] = "sort_asc";
+		$_GET["order"] = "SORT_".$oreon->optGen["problem_sort_order"];
 	
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	$tpl->assign("host_name", $host_name);
