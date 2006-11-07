@@ -96,13 +96,12 @@ $lang ["m_mon_services_duration"] = "Dur&eacute;e de la v&eacute;rification";
 $lang ["m_mon_last_notification_serv"] = "Derni&egrave;re notification du service";
 $lang ["m_mon_services_flapping"] = "Ce Service est Volatile ?";
 
-
 $lang ["m_mon_services_en_check_active"] = "V&eacute;rification des Services :";
 $lang ["m_mon_services_en_check_passif"] = "V&eacute;rification Passive :";
 $lang ["m_mon_services_en_notification"] = "Notification des services :";
+$lang ["m_mon_services_en_handler"] = "Event Handler Activ&eacute;: ";
 $lang ["m_mon_services_en_flap"] = "Detection des oscillations :";
 $lang ["m_mon_services_en_acknowledge"] = "Prise en compte du status courant :";
-
 
 $lang ["m_mon_service_command"] = "Actions sur ce service";
 $lang ["m_mon_check_this_service"] = "la v&eacute;rification de ce service";
@@ -144,6 +143,5 @@ $lang["m_mon_passive"] = "Passive";
 
 $lang["m_mon_hard"] = "Hard";
 $lang["m_mon_soft"] = "Soft";
-
 
 ?>

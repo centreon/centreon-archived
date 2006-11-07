@@ -83,7 +83,6 @@ $lang ["m_mon_next_check"] = "Next Check";
 $lang ["m_mon_log_select"] = "Period";
 $lang ["m_mon_only_for"] = "Only for host";
 
-
 /*** service detail ***/
 
 $lang ["m_mon_services"] = "Services";
@@ -97,14 +96,12 @@ $lang ["m_mon_services_duration"] = "Check Duration";
 $lang ["m_mon_last_notification_serv"] = "Last Service Notification";
 $lang ["m_mon_services_flapping"] = "Is This Service Flapping?";
 
-
 $lang ["m_mon_services_en_check_active"] = "Check Active Enabled :";
 $lang ["m_mon_services_en_check_passif"] = "Check Passive Enabled :";
 $lang ["m_mon_services_en_notification"] = "Notification Enabled :";
 $lang ["m_mon_services_en_handler"] = "Event Handler Enabled : ";
 $lang ["m_mon_services_en_flap"] = "Flap Detection Enabled :";
 $lang ["m_mon_services_en_acknowledge"] = "Acknowledge Enabled :";
-
 
 $lang ["m_mon_service_command"] = "Service Commands";
 $lang ["m_mon_check_this_service"] = "Checks of this service";
@@ -147,4 +144,5 @@ $lang["m_mon_passive"] = "Passive";
 
 $lang["m_mon_hard"] = "Hard";
 $lang["m_mon_soft"] = "Soft";
+
 ?>
