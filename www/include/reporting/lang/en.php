@@ -1,4 +1,21 @@
 <?
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
 # MailDB
 
 $lang["mailDB_list"] = "List";
@@ -32,6 +49,7 @@ $lang["list_oreonMails"] = "Oreon Contacts linked";
 $lang["m_send"] = "Send";
 
 # Dashboard
+
 $lang["m_view"] = "View";
 $lang["m_start"] = "Begin date";
 $lang["m_end"] = "End date";
@@ -43,7 +61,6 @@ $lang["m_serviceResumeTitle"] = "Host state";
 $lang["m_hostLogTitle"] = "service today log";
 $lang["m_serviceLogTitle"] = "service today log";
 $lang["m_hostSvcAssocied"] = "State Breakdowns For Host Services";
-
 
 $lang["m_serviceTilte"] = "Service";
 $lang["m_OKTitle"] = "OK";
