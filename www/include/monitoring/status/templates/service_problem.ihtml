@@ -17,7 +17,7 @@
         limit:<INPUT type="hidden" name="limit" value="{$limit}"><br>
         num:<INPUT type="hidden" name="num" value="{$num}"><br>
         order:<INPUT type="hidden" name="order" value="{$order}"><br>
-       sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br>
+       	sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br>
 </FORM>
 </div>
 
