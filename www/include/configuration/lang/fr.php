@@ -1,4 +1,21 @@
 <?
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
 /* Configuration Error */
 
 $lang['requiredFields'] = "<font style='color: red;'>*</font> Champs requis";
@@ -376,7 +393,6 @@ $lang["cct_ldap_import_users"] = "Importer";
 $lang["cct_ldap_search_filter_help_title"] ="Exemples de filtre";
 $lang["cct_ldap_search_filter_help"] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))";
 
-
 /* contact group */
 
 $lang['cg_infos'] = "Informations g&eacute;n&eacute;rales";
@@ -564,6 +580,7 @@ $lang["nag_adminEmail"] = "Administrator Email Address";
 $lang["nag_adminPager"] = "Administrator Pager";
 
 /* Resource CFG */
+
 $lang['rs_add'] = "Ajouter une Ressource";
 $lang['rs_change'] = "Modifier une Ressource";
 $lang['rs_view'] = "Afficher une Ressource";
@@ -572,6 +589,7 @@ $lang['rs_name'] = "Nom de la Ressource";
 $lang['rs_line'] = "Expression de la MACRO";
 
 /* Perfparse CFG */
+
 $lang['pp_add'] = "Ajouter un fichier de configuration Perfparse";
 $lang['pp_change'] = "Modifier un fichier de configuration Perfparse";
 $lang['pp_view'] = "Afficher un fichier de configuration Perfparse";
@@ -621,6 +639,7 @@ $lang['pp_dumHN'] = "Dummy Hostname";
 $lang['pp_stoModLoad'] = "Storage Modules Load";
 
 /* CGI cfg */
+
 $lang['cgi_name'] = "Nom du fichier CGI";
 $lang['cgi_comment'] = "Commentaires sur ce fichier";
 $lang['cgi_add'] = "Ajouter un fichier de configuration CGI";
@@ -653,6 +672,7 @@ $lang["cgi_sus"] = "Service Unknown Sound";
 $lang["cgi_pingSyntax"] = "Ping Syntax";
 
 /* Generate File */
+
 $lang["gen_name"] = "G&eacute;n&eacute;ration des fichiers de configuration de Nagios";
 $lang["gen_infos"] = "Serveur concern&eacute;";
 $lang["gen_host"] = "Serveur Nagios / Oreon";
@@ -680,6 +700,7 @@ $lang['gen_genTrap'] = "G&eacute;n&eacute;rer les Traps";
 $lang['gen_trapRestart'] = "Red&eacute;marrer snmptrad";
 
 /* Upload File */
+
 $lang["upl_name"] = "Upload de configuration Nagios";
 $lang["upl_infos"] = "Serveur concern&eacute;";
 $lang["upl_host"] = "Serveur Nagios / Oreon";
@@ -715,6 +736,43 @@ $lang["upl_manualDefOk"] = "D&eacute;finition Manuelle OK";
 $lang["upl_uplBadType"] = "Extension non prise en charge";
 $lang["upl_newEntries"] = "entr&eacute;e(s) enregistr&eacute;e(s)";
 
+/* Configuration Error */
+
+$lang['requiredFields'] = "<font style='color: red;'>*</font> Champs requis";
+$lang['ErrName'] = "Compulsory Name";
+$lang['ErrAlias'] = "Compulsory Alias";
+$lang['ErrEmail'] = "Valid Email";
+$lang['ErrOpt'] = "Compulsory Option";
+$lang['ErrTp'] = "Compulsory Period";
+$lang['ErrCmd'] = "Compulsory Command";
+$lang['ErrCct'] = "Compulsory Contact";
+$lang['ErrCg'] = "Compulsory Contact Group";
+$lang['ErrCmdLine'] = "Compulsory Command Line";
+$lang['ErrCmdType'] = "Compulsory  Command Type";
+$lang['ErrAlreadyExist'] = "Un &ecute;l&egrave;ment du même nom existe d&ecute;j&agrave;";
+$lang['ErrAddress'] = "Compulsory Adress";
+$lang['ErrRequired'] = "Champs requis";
+$lang['ErrSvLeast'] = "HostGroup or Host Require";
+$lang['ErrCctPasswd'] = "Passwords are not the same";
+$lang['ErrGenFileProb'] = "Can't access to file needed";
+$lang['ErrCycleDef'] = "Circular Definition";
+
+/* Configuration Menu */
+
+$lang['quicksearch'] = "Recherche rapide";
+$lang['available'] = "Accessible";
+$lang['selected'] = "Selectionn&eacute;";
+$lang['further_infos'] = "Additional Information";
+$lang['comment'] = "Commentaires";
+$lang['nothing'] = "Vide";
+$lang['formObjMatch'] = "El&egrave;ments impact&eacute;s: ";
+$lang['action'] = "Post Validation";
+$lang['actionList'] = "Liste";
+$lang['actionForm'] = "Formulaire";
+$lang['legend1'] = "(*) Ce service est utilis&eacute; par plusieurs hosts";
+$lang['previous'] = "Pr&eacute;c&eacute;dent";
+$lang['next'] = "Suivant";
+
 /* Purge Policy Template */
 
 $lang["mod_purgePolicy"] = "Mod&egrave;le de purge des donn&eacute;es";
@@ -745,6 +803,7 @@ $lang["mod_purgePolicy_listService"] = "Service";
 $lang["mod_purgePolicy_listHost"] = "Host";
 
 /* Traps SNMP */
+
 $lang['m_traps_command'] = "Traps SNMP";
 $lang['m_traps_name'] = "Nom de la Trap";
 $lang['m_traps_oid'] = "OID";
@@ -757,6 +816,7 @@ $lang['m_traps_change'] = "Modifier une d&eacute;finition de Trap";
 $lang['m_traps_view'] = "Voir une d&eacute;finition de Trap";
 
 /* GANTT Escalation */
+
 $lang['m_gantt'] = "Voir Escalades";
 $lang['m_header_gantt'] = "Vue des Escalades";
 
