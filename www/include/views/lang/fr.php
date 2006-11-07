@@ -1,5 +1,23 @@
 <?
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
 # Country
+
 $lang['views_ct_infos'] = "Informations g&eacute;n&eacute;rales";
 $lang['views_ct_add'] = "Ajouter un Pays";
 $lang['views_ct_change'] = "Modifier un Pays";
@@ -14,6 +32,7 @@ $lang['views_ct_cty'] = "Nombre de villes pour ce pays";
 $lang['views_ct_init'] = "R&eacute;initialiser les villes pour ce pays";
 
 # Map
+
 $lang['views_map_infos'] = "Informations g&eacute;n&eacute;rales";
 $lang['views_map_add'] = "Ajouter une Carte";
 $lang['views_map_change'] = "Modifier une Carte";
@@ -26,12 +45,15 @@ $lang['views_map_desc'] = "Description";
 $lang['views_map_comment'] = "Commentaire";
 
 # Oreon Graph Plugins
+
 $lang["giv_gp_size"] = "Taille";
 
 # Graph redirection
+
 $lang["view_redirect_graph"] = "Redirection Graph (cach&eacute;)";
 
 # Oreon Graph Customs
+
 $lang["giv_gg_infos"] = "Informations G&eacute;n&eacute;rales";
 $lang['giv_gg_add'] = "Ajouter un Graph Personnalis&eacute;";
 $lang['giv_gg_change'] = "Modifier un Graph Personnalis&eacute;";
@@ -44,6 +66,7 @@ $lang["giv_gg_ms"] = "Meta Service";
 $lang["giv_gg_tpl"] = "Template";
 
 # Oreon Simple Renderer
+
 $lang["giv_sr_infos"] = "Choisir la Ressource &agrave; grapher";
 $lang["giv_sr_period"] = "P&eacute;riode &agrave; grapher";
 $lang["giv_sr_p1h"] = "Derni&egrave;re Heure";
@@ -70,6 +93,7 @@ $lang["giv_sr_rendTitle"] = "Rendu Graphique";
 $lang["giv_sr_gValues"] = "Valeurs Graph&eacute;es";
 
 # Graph Templates
+
 $lang["giv_compoNbr"] = "Nombre de Composantes";
 $lang["giv_compoChoice"] = "Choix des Composantes";
 $lang["giv_compoList"] = "Liste des Composantes";
@@ -106,6 +130,7 @@ $lang['giv_gt_lower_limit'] = "Limite Basse";
 $lang['giv_gt_upper_limit'] = "Limite Haute";
 
 # Component Templates
+
 $lang["giv_graphNbr"] = "Utilisation";
 $lang["giv_graphChoice"] = "Choix des Graphs";
 $lang["giv_graphList"] = "Liste des Graphs";
@@ -136,7 +161,6 @@ $lang['giv_ct_invert'] = 'Inverser';
 
 $lang["m_host_graph"] = "Graphs par Hosts";
 $lang["giv_hg_nbGraph"] = "Nombre de graphs";
-
-
 $lang["giv_db_unavailable"] = "Base de donn&eacute;es Inexistante";
+
 ?>

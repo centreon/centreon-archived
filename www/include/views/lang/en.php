@@ -1,5 +1,23 @@
 <?
+/**
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+OREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the OREON web site.
+In no event will OREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
 # Country
+
 $lang['views_ct_infos'] = "General Informations";
 $lang['views_ct_add'] = "Add a Country";
 $lang['views_ct_change'] = "Modify a Country";
@@ -14,6 +32,7 @@ $lang['views_ct_cty'] = "City number for this Country";
 $lang['views_ct_init'] = "Reset Cities for this Country";
 
 # Map
+
 $lang['views_map_infos'] = "General Informations";
 $lang['views_map_add'] = "Add a Map";
 $lang['views_map_change'] = "Modify  a Map";
@@ -26,12 +45,15 @@ $lang['views_map_desc'] = "Description";
 $lang['views_map_comment'] = "Comment";
 
 # Oreon Graph Plugins
+
 $lang["giv_gp_size"] = "Size";
 
 # Graph redirection
+
 $lang["view_redirect_graph"] = "Graph Redirection (hidden)";
 
 # Oreon Graph Customs
+
 $lang["giv_gg_infos"] = "General Informations";
 $lang['giv_gg_add'] = "Add a Custom Graph";
 $lang['giv_gg_change'] = "Modify a Custom Graph";
@@ -44,6 +66,7 @@ $lang["giv_gg_ms"] = "Meta Service";
 $lang["giv_gg_tpl"] = "Template";
 
 # Oreon Simple Renderer
+
 $lang["giv_sr_infos"] = "Choose the source to graph";
 $lang["giv_sr_period"] = "Graph Period";
 $lang["giv_sr_p1h"] = "Last Hour";
@@ -70,6 +93,7 @@ $lang["giv_sr_rendTitle"] = "Graph Renderer";
 $lang["giv_sr_gValues"] = "Graphed Values";
 
 # Graph Templates
+
 $lang["giv_compoNbr"] = "Number of Data Source";
 $lang["giv_compoChoice"] = "Data Source Choice";
 $lang["giv_compoList"] = "Data Source List";
@@ -106,6 +130,7 @@ $lang['giv_gt_lower_limit'] = "Lower Limit";
 $lang['giv_gt_upper_limit'] = "Upper Limit";
 
 # Component Templates
+
 $lang["giv_graphNbr"] = "Use";
 $lang["giv_graphChoice"] = "Graphs Choice";
 $lang["giv_graphList"] = "Graphs List";
