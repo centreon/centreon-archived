@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	#
 	$buffer = '';	
 	
-	require_once 'DB.php';	
+	require_once 'DB.php';
 
 	$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : "";
 	$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;

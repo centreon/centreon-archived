@@ -23,7 +23,7 @@ $debug = 0;
 #
 	require_once 'DB.php';	
 
-$oreonPath = '/usr/local/oreon/';
+$oreonPath = '/srv/oreon/';
 $oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : $oreonPath;
 $oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
 
@@ -39,7 +39,9 @@ if($oreonPath == "")
 	echo $buffer;
 }
 
-include_once($oreonPath . "www/oreon.conf.php");
+	include_once($oreonPath . "www/oreon.conf.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+
 	/* Connect to oreon DB */
 	
 	$dsn = array(
@@ -141,7 +143,8 @@ function read($version,$sid,$file)
 	$search = "";
 	$search_type_service = 0;
 	$search_type_host = 0;
-	include("ReloadForAjax_status_log.php");
+//		include("ReloadForAjax_status_log.php");
+		include("../load_status_log.php");
 
 	#
 	## calcul stat for resume
