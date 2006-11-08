@@ -16,7 +16,7 @@
  	<tr class="list_two"><td class="FormRowField">{$form.AjaxFirstTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadStatistic.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.AjaxFirstTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadMonitoring.html}</td></tr>
  	<tr class="list_two"><td class="FormRowField">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
  </table>
 {if !$valid}
