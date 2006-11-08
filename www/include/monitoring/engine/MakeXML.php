@@ -21,6 +21,7 @@ For information : contact@oreon-project.org
 	#
 	## pearDB init
 	#
+	$buffer = '';	
 	
 	require_once 'DB.php';	
 
@@ -36,6 +37,7 @@ For information : contact@oreon-project.org
 	}
 
 	include_once($oreonPath . "www/oreon.conf.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	
 	/* Connect to oreon DB */
 	
@@ -190,15 +192,24 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 	if( filectime($file) > $ntime)
 		$ntime = filectime($file);	
 
+
 	$buffer .= '<infos>';
 	$buffer .= '<flag>'. $flag . '</flag>';
 	$buffer .= '<time>'.$ntime. '</time>';
 	$buffer .= '<filetime>'.filectime($file). '</filetime>';
 	$buffer .= '</infos>';
 
+
+
+
 	if( filectime($file) > $time){		
 		$oreon = "titi";
-		include("ReloadForAjax_status_log.php");
+
+//		include("ReloadForAjax_status_log.php");
+		include("../load_status_log.php");
+
+
+
 		$mtab = array();
 		$mtab = explode(',', $arr);
 
@@ -209,30 +220,7 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 		
-		/*
-		 * 
-		 * 
-		if (isset($host_status))
-			foreach ($host_status as $hs)
-				$statistic_host[$hs["current_state"]]++;
-		if (isset($service_status))
-			foreach ($service_status as $s)
-				$statistic_service[$s["current_state"]]++;
-		
-		$buffer .= '<stats>';
-		$buffer .= '<statistic_service_ok>'. $statistic_service["OK"] . '</statistic_service_ok>';
-		$buffer .= '<statistic_service_warning>'. $statistic_service["WARNING"] . '</statistic_service_warning>';
-		$buffer .= '<statistic_service_critical>'. $statistic_service["CRITICAL"] . '</statistic_service_critical>';
-		$buffer .= '<statistic_service_unknown>'. $statistic_service["UNKNOWN"] . '</statistic_service_unknown>';
-		$buffer .= '<statistic_service_pending>'. $statistic_service["PENDING"] . '</statistic_service_pending>';
-		$buffer .= '<statistic_host_up>'.$statistic_host["UP"]. '</statistic_host_up>';
-		$buffer .= '<statistic_host_down>'.$statistic_host["DOWN"]. '</statistic_host_down>';
-		$buffer .= '<statistic_host_unreachable>'.$statistic_host["UNREACHABLE"]. '</statistic_host_unreachable>';
-		$buffer .= '<statistic_host_pending>'.$statistic_host["PENDING"]. '</statistic_host_pending>';
-		$buffer .= '</stats>';
 
-		*
-		*/
 		
 		#
 		## services infos
@@ -310,14 +298,27 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 					$buffer .= '</line>';
 				}
 		}
+		
 	}
+	
+	
+	
+	
+		
+	
+	
+	
+	
+	
 	
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
 
+
 	global $debug;
 	if($debug == 1){
+		
 		$file = "log.xml";
 		$inF = fopen($file,"w");
 		fwrite($inF,$buffer);
@@ -326,6 +327,7 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 		$file = "log.txt";
 		$inF = fopen($file,"w");
 		fwrite($inF,"---log:\n ".$MyLog."\n\n");
+		
 		fwrite($inF,"sid:\n ".$sid."\n\n");
 		fwrite($inF,"uid:\n ".$uid."\n\n");
 		fwrite($inF,"admin:\n ".$IsAdmin."\n\n");
@@ -333,8 +335,9 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 			fwrite($inF,"lca h: ".$h."\n\n");	
 		
 		fwrite($inF,$buffer."log:\n----------\n\n");	
+		
 		fclose($inF);
-	}
+	}	
 }
 
 
@@ -370,12 +373,13 @@ if(!$flag)
 if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"])){
 	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
 }
-/*
-else if(isset($_GET["time"]) && isset($_GET["arr"]) && isset($_GET["type"])  && isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])&& isset($_GET["num"])&& isset($_GET["search"]) && isset($_GET["limit"])&& isset($_GET["order"])&& isset($_GET["sort_type"])&& isset($_GET["search_type_service"])&& isset($_GET["search_type_host"])&& isset($_GET["date_time_format_status"]))
+
+else if(isset($_GET["time"]) && isset($_GET["type"])  && isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])&& isset($_GET["num"])&& isset($_GET["search"]) && isset($_GET["limit"])&& isset($_GET["order"])&& isset($_GET["sort_type"])&& isset($_GET["search_type_service"])&& isset($_GET["search_type_host"])&& isset($_GET["date_time_format_status"]))
 {
+//	read($_GET["time"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
 	read($_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
 }
-*/
+
 else {
 	$buffer = null;
 	$buffer .= '<reponse>';	

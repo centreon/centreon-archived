@@ -437,8 +437,12 @@ function goM(_time_reload,_sid){
 
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+
 	xhrM.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
+//	document.getElementById('header').innerHTML = "-->date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+
+	//alert("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
 
 	// On defini ce qu'on va faire quand on aura la reponse
@@ -707,7 +711,6 @@ function goM(_time_reload,_sid){
 	}
 
 
-//	document.getElementById('log').innerHTML = "date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'")', _time_reload);
 	_time_live = _time_reload;
