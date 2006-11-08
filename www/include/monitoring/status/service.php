@@ -38,9 +38,9 @@ For information : contact@oreon-project.org
 	# end quickSearch form
 
 	# get monitoring bonus info
-	$res =& $pearDB->query("SELECT * FROM host_extended_info");
-	if (PEAR::isError($res))
-		print "ok : Mysql Error : ".$res->getMessage();
+	//$res =& $pearDB->query("SELECT * FROM host_extended_info");
+	//if (PEAR::isError($res))
+	//	print "ok : Mysql Error : ".$res->getMessage();
 	
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
