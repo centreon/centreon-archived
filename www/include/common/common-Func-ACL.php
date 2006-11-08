@@ -23,9 +23,12 @@ For information : contact@oreon-project.org
 	function getLCASG($pearDB){
 		if (!$pearDB)
 			return ;
-		global $oreon;	
+		global $oreon;
+		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".session_id()."'");
+		$res1->fetchInto($user);
+		$user_id = $user["user_id"];	
 		$lcaServiceGroup = array();
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->user_id."'");
+		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
 		if ($res1->numRows())	{
 			while($res1->fetchInto($contactGroup))	{
 			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
@@ -45,7 +48,10 @@ For information : contact@oreon-project.org
 		if (!$pearDB)
 			return ;
 		global $oreon;	
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->user_id."'");
+		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".session_id()."'");
+		$res1->fetchInto($user);
+		$user_id = $user["user_id"];
+		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
 		if ($res1->numRows())	{
 			while($res1->fetchInto($contactGroup))	{
 			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
@@ -79,7 +85,10 @@ For information : contact@oreon-project.org
 		global $oreon;	
 		$lcaHost = array();
 		$lcaHostGroup = array();
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->user_id."'");
+		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".session_id()."'");
+		$res1->fetchInto($user);
+		$user_id = $user["user_id"];
+		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
 		if ($res1->numRows())	{
 			while($res1->fetchInto($contactGroup))	{
 			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
@@ -139,7 +148,10 @@ For information : contact@oreon-project.org
 			return ;
 		global $oreon;	
 		$num = 0;
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->user_id."'");
+		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".session_id()."'");
+		$res1->fetchInto($user);
+		$user_id = $user["user_id"];
+		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
 		if ($res1->numRows())
 			while($res1->fetchInto($contactGroup))	{
 			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
