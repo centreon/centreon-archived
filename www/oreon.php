@@ -107,7 +107,8 @@ For information : contact@oreon-project.org
 		}
 	} else if ($redirect["topology_page"] >= 1000) {
 		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
-		$o = $_GET["o"];
+		if (isset($_GET["o"]))
+			$o = $_GET["o"];
 	} else {
 		print "Unknown operation...";
 	}
