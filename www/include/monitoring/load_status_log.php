@@ -27,6 +27,8 @@ For information : contact@oreon-project.org
 		include_once("../functions.php");
 	
 	// Is User Admin ?
+	if (!isset($pearDB))
+		global $pearDB;
 	
 	$res1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
 	$res1->fetchInto($user);
@@ -61,8 +63,8 @@ For information : contact@oreon-project.org
 	# Read File
 	if ($version == 1 || $version == 2){
 		$res1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
-		$res2->fetchInto($nagios_cfg);
-		$version = $nagios_cfg["status_file"];
+		$res1->fetchInto($nagios_cfg);
+		$file = $nagios_cfg["status_file"];
 	} else
 		$file = "/srv/nagios/var/status_oreon.log";
 
