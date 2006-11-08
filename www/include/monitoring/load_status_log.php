@@ -20,11 +20,23 @@ For information : contact@oreon-project.org
 	
 	if (!isset($oreon))
 	  exit();
-
-	include_once("./include/monitoring/functions.php");
+	
+	if (file_exists("./include/monitoring/functions.php"))
+		include_once("./include/monitoring/functions.php");
+	else if (file_exists("../functions.php"))
+		include_once("../functions.php");
+	
+	// Is User Admin ?
+	
+	$res1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
+	$res2->fetchInto($user);
+	$user_admin = $user["contact_admin"];
+	
 	
 	// Read 
-	$version = $oreon->user->get_version();
+	$res1 =& $pearDB->query("SELECT nagios_version, problem_sort_order, problem_sort_type FROM general_opt");
+	$res2->fetchInto($general_opt);
+	$version = $general_opt["nagios_version"];
 	
 	# Init tab
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
@@ -32,11 +44,10 @@ For information : contact@oreon-project.org
 	
 	
 	// Stats
-	
-	$oreon->status_graph_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
-	$oreon->status_graph_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => "0");
-	
-	$time_startR = microtime_float();
+	if (is_object($oreon)){
+		$oreon->status_graph_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
+		$oreon->status_graph_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => "0");
+	}
 	
 	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
@@ -48,9 +59,11 @@ For information : contact@oreon-project.org
 	unset ($service_status);
 	
 	# Read File
-	if ($version == 1 || $version == 2)	
-		$file = $oreon->Nagioscfg["status_file"];
-	else
+	if ($version == 1 || $version == 2){
+		$res1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
+		$res2->fetchInto($nagios_cfg);
+		$version = $nagios_cfg["status_file"];
+	} else
 		$file = "/srv/nagios/var/status_oreon.log";
 
 	// Open File
@@ -80,14 +93,14 @@ For information : contact@oreon-project.org
 	      	if (!preg_match("/^\#.*/", $str)){		// get service stat
 				$log = split(";", $str);
 				if (preg_match("/^[\[\]0-9]* SERVICE[.]*/", $str)){
-		  			if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) && strcmp($log[1], "OSL_Module")){
+		  			if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) && strcmp($log[1], "OSL_Module")){
 						$service_status[$log["1"]."_".$log["2"]] = get_service_data($log);
 			    		$tab_host_service[$log["1"]][$log["2"]] = "1";
 			 		} else if (!strcmp($log[1], "Meta_Module")){
 			    		$metaService_status[$log["2"]] = get_service_data($log);
 		  			}
 				} else if (preg_match("/^[\[\]0-9]* HOST[.]*/", $str) && strcmp($log[1], "OSL_Module")){ // get host stat
-		  			if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
+		  			if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
 		    			$host_status[$log["1"]] = get_host_data($log);
 		    			$tab_host_service[$log["1"]] = array();
 		  			}
@@ -119,16 +132,18 @@ For information : contact@oreon-project.org
 								$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 						      	$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
 						      	$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
-						      	$oreon->status_graph_service[$svc_data['current_state']]++;	
+						      	if (is_object($oreon))
+						      		$oreon->status_graph_service[$svc_data['current_state']]++;	
 								break;
 							} else {		
-								if (isset($svc_data['host_name']) && strcmp($svc_data['host_name'], "OSL_Module") && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_data['host_name']])))
+								if (isset($svc_data['host_name']) && strcmp($svc_data['host_name'], "OSL_Module") && ($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_data['host_name']])))
 									&& (($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)||($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
 									||($search_type_service == NULL && $search_type_host == NULL)|| !$search)){
 					      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 					      			$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
 					      			$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
-					      			$oreon->status_graph_service[$svc_data['current_state']]++;
+					      			if (is_object($oreon))
+					      				$oreon->status_graph_service[$svc_data['current_state']]++;
 				      			}
 							}
 			      		}
@@ -141,10 +156,11 @@ For information : contact@oreon-project.org
 								$host_data[$tab[1]] = $tab[2];
 			    		} else
 			      			break;
-			      		if (isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && strcmp($host_data['host_name'], "Meta_Module") && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
+			      		if (isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && strcmp($host_data['host_name'], "Meta_Module") && ($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']])))){
 				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 							$host_status[$host_data["host_name"]] = $host_data;
-							$oreon->status_graph_host[$host_data['current_state']]++;
+							if (is_object($oreon))
+								$oreon->status_graph_host[$host_data['current_state']]++;
 			      		}
 			      	################## PROGRAM ############################
 					} else if (preg_match("/^program/", $str)){
@@ -173,18 +189,20 @@ For information : contact@oreon-project.org
 		     	$last_update = date("d-m-Y h:i:s");
 		      	$log = split("#", $str);
 				if (preg_match("/^s/", $str)){
-					if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) 
+					if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) 
 							&& strcmp($log[1], "OSL_Module") && strcmp($log[1], "Meta_Module")){
 						$service_status[$log["1"]."_".$log["2"]] = getServiceDataParsed($log);
 				   		$tab_host_service[$log["1"]][$log["2"]] = "1";
-				   		$oreon->status_graph_service[$service_status[$log["1"]."_".$log["2"]]['current_state']]++;
+				   		if (is_object($oreon))
+					   		$oreon->status_graph_service[$service_status[$log["1"]."_".$log["2"]]['current_state']]++;
 					} else if (!strcmp($log[1], "Meta_Module"))
 				  		$metaService_status[$log["2"]] = getServiceDataParsed($log);
 				} else if (preg_match("/^h*/", $str) && strcmp($log[1], "OSL_Module")){ // get host stat
-			  		if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
+			  		if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
 			    		$tab_host_service[$log["1"]] = array();
 			    		$host_status[$log["1"]] = getHostDataParsed($log);
-			    		$oreon->status_graph_host[$host_status[$log["1"]]['current_state']]++;
+			    		if (is_object($oreon))
+				    		$oreon->status_graph_host[$host_status[$log["1"]]['current_state']]++;
 			  		}
 				} else if (preg_match("/^p/", $str))
 			  		$program_data = getProgramDataParsed($log, $status_proc);
@@ -200,16 +218,16 @@ For information : contact@oreon-project.org
 	
 	if (isset($_GET["o"]) && $_GET["o"] == "svcpb"){
 		if (!isset($_GET["sort_types"])){
-			$_GET["sort_types"] = $oreon->optGen["problem_sort_type"];
+			$_GET["sort_types"] = $general_opt["problem_sort_type"];
 			if ($_GET["sort_types"] == "last_state_change")
-				$_GET["order"] = "SORT_".($oreon->optGen["problem_sort_order"] == "ASC" ? "DESC" : "ASC"); //$oreon->optGen["problem_sort_order"];
+				$_GET["order"] = "SORT_".($$general_opt["problem_sort_order"] == "ASC" ? "DESC" : "ASC");
 			else
-				$_GET["order"] = "SORT_".$oreon->optGen["problem_sort_order"];
+				$_GET["order"] = "SORT_".$general_opt["problem_sort_order"];
 		}
 		if (!isset($_GET["order"]))
-			$_GET["order"] = "SORT_".$oreon->optGen["problem_sort_order"];
+			$_GET["order"] = "SORT_".$general_opt["problem_sort_order"];
 	}
-		
+	
 	if (isset($_GET["sort_types"]) && $_GET["sort_types"]){
 	  foreach ($service_status as $key => $row)
 	    $row_data[$key] = $row[$_GET["sort_types"]];
@@ -221,7 +239,4 @@ For information : contact@oreon-project.org
 	    $row_data[$key] = $row[$_GET["sort_typeh"]];
 	  !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
 	}
-	$time_startR2 = microtime_float();
-	$time_R = $time_startR2 - $time_startR;
-	//print $time_R;
 ?> 
