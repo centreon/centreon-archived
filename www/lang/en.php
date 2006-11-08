@@ -198,40 +198,6 @@ $lang["m_id_network"] = "Network Equipments";
 $lang["m_idUpdate"] = "Manual Update";
 $lang["m_id_manu"] = "Manufacturer";
 
-/* Plugins */
-
-#$lang["plugins1"] = "Plugins deleted";
-#$lang["plugins2"] = "Are you sure you want to delete this plugin ? ";
-#$lang["plugins3"] = "Plugin sent";
-#$lang["plugins4"] = "A error occured during Plugin upload. May be a right problem";
-#$lang["plugins5"] = "A error occured during &#146;oreon.conf&#146; file creation. May be a right problem";
-#$lang["plugins6"] = "Generated file";
-#$lang["plugins_add"] = "Add plugins for Nagios";
-#$lang["plugins"] = "Plugins";
-#$lang["plugins_list"] = "List of plugins";
-#$lang["plugins_pm_conf"] = "Oreon.conf";
-#$lang["plugins_pm_conf_desc"] = "Generate configuration file for Oreon.pm with informations include in General menu";
-
-/* index100 */
-
-#$lang['ind_infos'] = "In this section, you can configure all Nagios items";
-#$lang['ind_detail'] = "Ressources are linked together, be careful when you modify or delete one item, related items will be removed too.";
-
-/* index */
-
-#$lang['ind_first'] = "You are already connected to OREON, firstly, close the other session<br>If this window is only the first windo you&acute;ve got, click";
-
-/* alt main */
-
-#$lang['am_intro'] = "monitoring now :";
-#$lang['host_health'] = "Host health";
-#$lang['service_health'] = "Service health";
-#$lang['network_health'] = "Network health";
-#$lang['am_hg_vdetail'] = 'View Hostgroup details';
-#$lang['am_sg_vdetail'] = 'View Servicegroup details';
-#$lang['am_hg_detail'] = 'Hostgroup details';
-#$lang['am_sg_detail'] = 'Servicegroup details';
-
 /* Monitoring */
 
 $lang['mon_last_update'] = "Last update :";

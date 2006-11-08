@@ -199,40 +199,6 @@ $lang["m_id_network"] = "Equipements Reseaux";
 $lang["m_idUpdate"] = "Mise a jour manuelle";
 $lang["m_id_manu"] = "Constructeur";
 
-/* Plugins */
-
-#$lang["plugins1"] = "Sonde effac&eacute;e";
-#$lang["plugins2"] = "Etes vous sur de vouloir supprimer cette sonde ? ";
-#$lang["plugins3"] = "Sonde envoy&eacute;e";
-#$lang["plugins4"] = "Une erreur est survenue durant l'enregistrement de la sonde. Il s&#146;agit peut etre d'un probl&egrave;me de droits";
-#$lang["plugins5"] = "Une erreur est survenue durant l'enregistrement du fichier &#146;oreon.conf&#146;. Il s&#146;agit peut etre d'un probl&egrave;me de droits";
-#$lang["plugins6"] = "Fichier g&eacute;n&eacute;r&eacute;";
-#$lang["plugins_add"] = "Ajout de sondes pour Nagios";
-#$lang["plugins"] = "Sondes";
-#$lang["plugins_list"] = "Liste des sondes";
-#$lang["plugins_pm_conf"] = "Oreon.conf";
-#$lang["plugins_pm_conf_desc"] = "G&eacute;n&eacute;re le fichier de configuration pour &#146;Oreon.pm&#146; avec les informations contenues dans le menu G&eacute;n&eacute;ral";
-
-/* index100 */
-
-#$lang['ind_infos'] = "Dans cette partie vous pouvez configurer toutes les ressources de Nagios.";
-#$lang['ind_detail'] = "Les ressources sont li&eacute;es entre elles pour la plupart, n&acute;oubliez pas que la suppression d&acute;une ressource peut impacter, <br>et donc supprimer de nombreuses autres.";
-
-/* index */
-
-#$lang['ind_first'] = "Vous &ecirc;tes d&eacute;j&agrave; connect&eacute; &agrave; OREON, fermez d&acute;abord l&acute;autre session<br>Si c&acute;est la seule fen&ecirc;tre d&acute;ouverte, cliquez";
-
-/* alt main */
-
-#$lang['am_intro'] = "g&egrave;re actuellement :";
-#$lang['host_health'] = "Etat des ressources";
-#$lang['service_health'] = "Etat des services";
-#$lang['network_health'] = "Etat du r&eacute;seau";
-#$lang['am_hg_vdetail'] = 'Voir le d&eacute;tail par Hostgroup';
-#$lang['am_sg_vdetail'] = 'Voir le d&eacute;tail par Servicegroup';
-#$lang['am_hg_detail'] = 'D&eacute;tails des Hostgroup';
-#$lang['am_sg_detail'] = 'D&eacute;tails des Servicegroup';
-
 /* Monitoring */
 
 $lang['mon_last_update'] = "Derni&egrave;re mise &agrave; jour :";
