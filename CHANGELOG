@@ -1,6 +1,8 @@
 ## Oreon 1.3.2-b2
 
-
+=> Feature : add host arguments for check and event handler
+=> BugFix : Best ACL for pages
+=> Feature : add possibility to sort service problem by different key defined in general options
 => Bugfix : #226 For resources upload, delete the '#' in the expression and put the MACRO state to 'disabled'
 => Feature : When creating an Host based on Host Template, multi level inheritance for services link to host templates
 => Bugfix : #234
