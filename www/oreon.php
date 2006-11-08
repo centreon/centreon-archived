@@ -85,7 +85,8 @@ For information : contact@oreon-project.org
 			$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
 			if ($ret2["topology_url_opt"]){
 				$tab = split("\=", $ret2["topology_url_opt"]);
-				$o = $tab[1];
+				if (!isset($_GET["o"]))
+					$o = $tab[1];
 				$p = $ret2["topology_page"];
 			}
 			file_exists($ret2["topology_url"]) ? require_once($ret2["topology_url"]) : require_once("./alt_error.php");
@@ -97,13 +98,16 @@ For information : contact@oreon-project.org
 		} else {
 			if ($ret["topology_url_opt"]){
 				$tab = split("\=", $ret["topology_url_opt"]);
-				$o = $tab[1];
+				if (!isset($_GET["o"])){
+					$o = $tab[1];
+				}
 				$p = $ret["topology_page"];
 			}
 			file_exists($ret["topology_url"]) ? require_once($ret["topology_url"]) : require_once("./alt_error.php");		
 		}
 	} else if ($redirect["topology_page"] >= 1000) {
 		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+		$o = $_GET["o"];
 	} else {
 		print "Unknown operation...";
 	}
