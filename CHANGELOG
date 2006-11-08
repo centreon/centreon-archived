@@ -1,4 +1,5 @@
-## Oreon 1.3.2
+## Oreon 1.3.2-b2
+
 
 => Bugfix : #226 For resources upload, delete the '#' in the expression and put the MACRO state to 'disabled'
 => Feature : When creating an Host based on Host Template, multi level inheritance for services link to host templates
@@ -18,7 +19,7 @@
 => Feature : add possibility to select display order for services problems
 
 
-## Oreon 1.3.2
+## Oreon 1.3.2-b1
 
 => Bugfix : Multiple correction in Darshboard with a new algo
 => Feature : Refresh IDCard in Ajax
