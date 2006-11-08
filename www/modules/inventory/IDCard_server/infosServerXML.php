@@ -263,15 +263,15 @@ For information : contact@oreon-project.org
 				$block = get_snmp_value("1.3.6.1.2.1.25.2.3.1.4.".$SI, "INTEGER: ");
 
 				$hrStorageIndex["hsStorageSize"] = $block * get_snmp_value("1.3.6.1.2.1.25.2.3.1.5.".$SI, "INTEGER: ");
-		    	$hrStorageIndex["hsStorageUsed"] = $block * get_snmp_value("1.3.6.1.2.1.25.2.3.1.6.".$SI, "INTEGER: ");
+				$hrStorageIndex["hsStorageUsed"] = $block * get_snmp_value("1.3.6.1.2.1.25.2.3.1.6.".$SI, "INTEGER: ");
 				$hrStorageIndex["hsStorageFree"] = $hrStorageIndex["hsStorageSize"] - $hrStorageIndex["hsStorageUsed"];
 
 
 		    	if (isset($hrStorageIndex["hsStorageSize"])){
 		    		if ($hrStorageIndex["hsStorageSize"] != 0)
-		    			$buffer .= '<Utilisationlabel>'.round($hrStorageIndex["hsStorageUsed"] / $hrStorageIndex["hsStorageSize"] * 100).'</Utilisationlabel>';
+						$buffer .= '<Utilisationlabel>'.round($hrStorageIndex["hsStorageUsed"] / $hrStorageIndex["hsStorageSize"] * 100).'</Utilisationlabel>';
 		    		else
-			    		$buffer .= '<Utilisationlabel>none</Utilisationlabel>';
+						$buffer .= '<Utilisationlabel>none</Utilisationlabel>';
 		    	}
 		   		if 	(isset($hrStorageIndex["hsStorageSize"]) && $hrStorageIndex["hsStorageSize"]){
 		   			for ($cpt = 0; $hrStorageIndex["hsStorageSize"] >= 1024; $cpt++)
