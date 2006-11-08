@@ -190,7 +190,6 @@ $lang['m_commandCheck'] = "Check Commands";
 $lang['m_commandMisc'] = "Various Commands";
 $lang["m_commands"] = "Commands";
 
-
 /* ID Menu */
 
 $lang["m_idCards"] = "ID Cards";
