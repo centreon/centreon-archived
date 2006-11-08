@@ -344,6 +344,12 @@ function get_software(_host_id)
 				var _software = _softwares[i];
 
 				var _name = _software.getElementsByTagName("name")[0].firstChild.nodeValue;
+
+				var _name = " ";
+				if(_software.getElementsByTagName("name")[0].firstChild.nodeValue != "none")
+					var _name = _software.getElementsByTagName("name")[0].firstChild.nodeValue;
+				
+				
 				var _ligne = document.createElement('tr');
 				var _case_name = document.createElement('td');
 				var _text_name = document.createTextNode(_name);
