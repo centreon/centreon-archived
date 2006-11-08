@@ -29,13 +29,13 @@ For information : contact@oreon-project.org
 	// Is User Admin ?
 	
 	$res1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
-	$res2->fetchInto($user);
+	$res1->fetchInto($user);
 	$user_admin = $user["contact_admin"];
 	
 	
 	// Read 
 	$res1 =& $pearDB->query("SELECT nagios_version, problem_sort_order, problem_sort_type FROM general_opt");
-	$res2->fetchInto($general_opt);
+	$res1->fetchInto($general_opt);
 	$version = $general_opt["nagios_version"];
 	
 	# Init tab
