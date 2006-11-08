@@ -211,7 +211,7 @@ For information : contact@oreon-project.org
 		      	unset($str);
 			}
 	}
-	
+	/*
 	$row_data = array();
 	if (isset($_GET["o"]) && $_GET["o"] == "svcSch" && !isset($_GET["sort_types"])){
 		$_GET["sort_types"] = "next_check";
@@ -222,7 +222,7 @@ For information : contact@oreon-project.org
 		if (!isset($_GET["sort_types"])){
 			$_GET["sort_types"] = $general_opt["problem_sort_type"];
 			if ($_GET["sort_types"] == "last_state_change")
-				$_GET["order"] = "SORT_".($$general_opt["problem_sort_order"] == "ASC" ? "DESC" : "ASC");
+				$_GET["order"] = "SORT_".($general_opt["problem_sort_order"] == "ASC" ? "DESC" : "ASC");
 			else
 				$_GET["order"] = "SORT_".$general_opt["problem_sort_order"];
 		}
@@ -241,4 +241,5 @@ For information : contact@oreon-project.org
 	    $row_data[$key] = $row[$_GET["sort_typeh"]];
 	  !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
 	}
+	*/
 ?> 
