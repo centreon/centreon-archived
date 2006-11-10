@@ -141,7 +141,6 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($res))
 				print "Mysql Error : ".$res->getMessage();
 			$row = $res->fetchRow();
-			print_r($row);
 			
 			$row["service_id"] = '';
 			# Loop on the number of Service we want to duplicate
