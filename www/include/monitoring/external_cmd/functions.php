@@ -42,7 +42,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$tab_forced = array("0" => "", "1" => "_FORCED");
 		$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_HOST_SVC_CHECKS;" . $arg . ";" . time());
-		return $lang["cmd_send"];
+		return $flg;
 	}
 	
 	// SCHEDULE_SVC_CHECK
