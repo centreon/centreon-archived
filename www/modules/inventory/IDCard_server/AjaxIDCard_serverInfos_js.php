@@ -484,12 +484,9 @@ function get_StorageDevice(_host_id)
 				_case_Usedlabel.appendChild(_text_Usedlabel);
 				_case_Sizelabel.appendChild(_text_Sizelabel);
 
-
-
 		var _red = '';
 		if(_Utilisationlabel >= 85)
 			_red = "red";
-
 
 		var _imgmiddle = document.createElement('img');
 		_imgmiddle.src = "./include/options/sysInfos/templates/classic/images/" + _red + "bar_middle.gif";
