@@ -495,12 +495,14 @@ function get_StorageDevice(_host_id)
 		_imgmiddle.src = "./include/options/sysInfos/templates/classic/images/" + _red + "bar_middle.gif";
 		_imgmiddle.height='10';
 
-		if(_Utilisationlabel <= 100 && _Utilisationlabel > 0)
+		if(_Utilisationlabel <= 100 && _Utilisationlabel >= 0)
 			_imgmiddle.width= _Utilisationlabel;
+		else if(_Utilisationlabel >= 100)
+			_imgmiddle.width= '100';
 		else if(_Utilisationlabel == "none")
 			_imgmiddle.width= '0';
 		else
-			_imgmiddle.width= '100';
+			_imgmiddle.width= '0';
 
 				_case_Utilisationlabel.appendChild(_imgmiddle);
 				_case_Utilisationlabel.appendChild(_text_Utilisationlabel);
