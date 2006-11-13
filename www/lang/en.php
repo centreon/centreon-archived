@@ -52,58 +52,58 @@ $lang['m_help'] = "Help";
 
 # Menu Level 3
 
-$lang["m_main_menu"] = "Main Menu";
-$lang["m_connected_users"] = "Online Users";
+$lang['m_main_menu'] = "Main Menu";
+$lang['m_connected_users'] = "Online Users";
 
 # Monitoring menu
 
-$lang["m_host_detail"] = "Host detail";
-$lang["m_hosts_problems"] = "Hosts problems";
-$lang["m_hostgroup_detail"] = "Host Group detail";
+$lang['m_host_detail'] = "Host detail";
+$lang['m_hosts_problems'] = "Hosts problems";
+$lang['m_hostgroup_detail'] = "Host Group detail";
 
-$lang["m_service_detail"] = "Service detail";
-$lang["m_services_problems"] = "Services problems";
-$lang["m_servicegroup_detail"] = "Service Group detail";
-$lang["m_service_by_service_group"] = "Services by Svc Grp";
+$lang['m_service_detail'] = "Service detail";
+$lang['m_services_problems'] = "Services problems";
+$lang['m_servicegroup_detail'] = "Service Group detail";
+$lang['m_service_by_service_group'] = "Services by Svc Grp";
 
-$lang["m_status_scheduling"] = "Status and scheduling";
-$lang["m_status_summary"] = "Status Summary";
-$lang["m_status_resume"] = "Status Resume";
+$lang['m_status_scheduling'] = "Status and scheduling";
+$lang['m_status_summary'] = "Status Summary";
+$lang['m_status_resume'] = "Status Resume";
 
-$lang["m_status_grid"] = "Status Grid";
-$lang["m_scheduling"] = "Scheduling Queue";
+$lang['m_status_grid'] = "Status Grid";
+$lang['m_scheduling'] = "Scheduling Queue";
 
 $lang['m_tools'] = "Tools";
-$lang["m_process_info"] = "Process Info";
-$lang["m_event_log"] = "Event Log";
-$lang["m_downtime"] = "Downtime";
-$lang["m_comments"] = "Comments";
+$lang['m_process_info'] = "Process Info";
+$lang['m_event_log'] = "Event Log";
+$lang['m_downtime'] = "Downtime";
+$lang['m_comments'] = "Comments";
 
-$lang["m_alerts"] = "Alerts history";
+$lang['m_alerts'] = "Alerts history";
 
 # Log Menu
 
-$lang["m_all_logs"] = "All Logs";
-$lang["m_notify_logs"] = "Notifications";
-$lang["m_alerts_log"] = "Alerts";
-$lang["m_warning_log"] = "Errors/Warnings";
+$lang['m_all_logs'] = "All Logs";
+$lang['m_notify_logs'] = "Notifications";
+$lang['m_alerts_log'] = "Alerts";
+$lang['m_warning_log'] = "Errors/Warnings";
 
 # Reporting menu
 
-$lang["m_report"] = "Reports";
-$lang["m_rtList"] = "Report List";
-$lang["m_rtStat"] = "Stats";
-$lang["m_rtNotif"] = "Diffusion";
-$lang["m_rtMailList"] = "Diffusion List";
-$lang["m_rtMail"] = "Mail DB";
+$lang['m_report'] = "Reports";
+$lang['m_rtList'] = "Report List";
+$lang['m_rtStat'] = "Stats";
+$lang['m_rtNotif'] = "Diffusion";
+$lang['m_rtMailList'] = "Diffusion List";
+$lang['m_rtMail'] = "Mail DB";
 
-$lang["m_message"] = "Message";
-$lang["m_status_map"] = "Carte de Status des Hosts";
-$lang["m_cartography"] = "Cartography";
+$lang['m_message'] = "Message";
+$lang['m_status_map'] = "Carte de Status des Hosts";
+$lang['m_cartography'] = "Cartography";
 
-$lang["m_dashboard"] = "Dashboard";
-$lang["m_dashboardHost"] = "Host";
-$lang["m_dashboardService"] = "Service";
+$lang['m_dashboard'] = "Dashboard";
+$lang['m_dashboardHost'] = "Host";
+$lang['m_dashboardService'] = "Service";
 
 # Graph menu
 
@@ -128,7 +128,7 @@ $lang['m_plugins'] = "Plugins";
 $lang['m_myAccount'] = "My Account";
 
 $lang['m_acl'] = "ACL";
-$lang["lca_list"] = "Access Control Lists";
+$lang['lca_list'] = "Access Control Lists";
 
 $lang['m_db'] = "Database";
 $lang['m_extract_db'] = "Extract Database";
@@ -188,15 +188,15 @@ $lang['m_gen_nagios'] = "Generate";
 $lang['m_commandNotif'] = "Notification Commands";
 $lang['m_commandCheck'] = "Check Commands";
 $lang['m_commandMisc'] = "Various Commands";
-$lang["m_commands"] = "Commands";
+$lang['m_commands'] = "Commands";
 
 /* ID Menu */
 
-$lang["m_idCards"] = "ID Cards";
-$lang["m_id_serv"] = "Servers";
-$lang["m_id_network"] = "Network Equipments";
-$lang["m_idUpdate"] = "Manual Update";
-$lang["m_id_manu"] = "Manufacturer";
+$lang['m_idCards'] = "ID Cards";
+$lang['m_id_serv'] = "Servers";
+$lang['m_id_network'] = "Network Equipments";
+$lang['m_idUpdate'] = "Manual Update";
+$lang['m_id_manu'] = "Manufacturer";
 
 /* Monitoring */
 
@@ -319,9 +319,9 @@ $lang['cmt_service_comment'] = "Service Comments";
 $lang['cmt_host_comment'] = "Host Comments";
 $lang['cmt_addH'] = "Add a Host comment";
 $lang['cmt_addS'] = "Add a Service comment";
-$lang["cmt_added"] = "Comment added with succes. <br><br>Click <a href='./oreon.php?p=307' class='text11b'>here</a> to return to the comments page. ";
-$lang["cmt_del"] = "Comment deleted with succes. <br><br>Click <a href='./oreon.php?p=307' class='text11b'>here</a> to return to the comments page. ";
-$lang["cmt_del_all"] = "All Comments deleted with succes. <br><br>Click <a href='./oreon.php?p=307' class='text11b'>here</a> to return to the comments page. ";
+$lang['cmt_added'] = "Comment added with succes. <br><br>Click <a href='./oreon.php?p=307' class='text11b'>here</a> to return to the comments page. ";
+$lang['cmt_del'] = "Comment deleted with succes. <br><br>Click <a href='./oreon.php?p=307' class='text11b'>here</a> to return to the comments page. ";
+$lang['cmt_del_all'] = "All Comments deleted with succes. <br><br>Click <a href='./oreon.php?p=307' class='text11b'>here</a> to return to the comments page. ";
 $lang['cmt_host_name'] = "Host Name";
 $lang['cmt_service_descr'] = "Services";
 $lang['cmt_entry_time'] = "Entry Time";
@@ -350,9 +350,9 @@ $lang['dtm_host_delete'] = "Delete host downtime";
 /* cmd externe */
 
 #$lang['cmd_utils'] = 'Useful';
-#$lang["cmd_send"] = "Your command has been send";
-#$lang["cmd_ping"] = "Ping";
-#$lang["cmd_traceroute"] = "Traceroute.";
+#$lang['cmd_send'] = "Your command has been send";
+#$lang['cmd_ping'] = "Ping";
+#$lang['cmd_traceroute'] = "Traceroute.";
 
 /* actions & recurrent text */
 
@@ -411,9 +411,9 @@ $lang['forTheSelectedElements'] = "For the selection : ";
 $lang['db_extract'] = "Extract";
 $lang['db_execute'] = "Execute";
 $lang['db_save'] = "Save";
-$lang["DB_status"] = "DataBase Statistics";
-$lang["db_lenght"] = "Lenght";
-$lang["db_nb_entry"] = "Entries Number";
+$lang['DB_status'] = "DataBase Statistics";
+$lang['db_lenght'] = "Lenght";
+$lang['db_nb_entry'] = "Entries Number";
 
 /* Parseenevlog */
 
@@ -421,47 +421,47 @@ $lang['hours'] = "Hours";
 
 /* User_online */
 
-$lang["wi_user"] = "Users";
-$lang["wi_where"] = "Where";
-$lang["wi_last_req"] = "Last Requete";
+$lang['wi_user'] = "Users";
+$lang['wi_where'] = "Where";
+$lang['wi_last_req'] = "Last Requete";
 
 /* About */
 
-$lang["developped"] = "Developed by";
+$lang['developped'] = "Developed by";
 
 /* Date and Time Format */
 
-$lang["date_format"] = "Y/m/d";
-$lang["time_format"] = "H:i:s";
-$lang["header_format"] = "Y/m/d G:i";
-$lang["date_time_format"] = "Y/m/d - H:i:s";
-$lang["date_time_format_status"] = "d/m/Y H:i:s";
-$lang["date_time_format_g_comment"] = "Y/m/d H:i";
+$lang['date_format'] = "Y/m/d";
+$lang['time_format'] = "H:i:s";
+$lang['header_format'] = "Y/m/d G:i";
+$lang['date_time_format'] = "Y/m/d - H:i:s";
+$lang['date_time_format_status'] = "d/m/Y H:i:s";
+$lang['date_time_format_g_comment'] = "Y/m/d H:i";
 
 /* legend */
 
-$lang["lgd_legend"] = " Legend";
-$lang["lgd_force"] = " Force Check";
-$lang["lgd_graph"] = " Graph";
-$lang["lgd_notification"] = " Notification disabled";
-$lang["lgd_passiv"] = " Passiv check enabled";
-$lang["lgd_desactivated"] = " Item Disable";
-$lang["lgd_work"] = " Acknowledged";
-$lang["lgd_delOne"] = " Delete";
-$lang["lgd_delAll"] = " Delete";
-$lang["lgd_duplicate"] = " Duplicate";
-$lang["lgd_view"] = " View";
-$lang["lgd_play"] = " Play";
-$lang["lgd_pause"]= " Pause";
-$lang["lgd_refresh"] = " Refresh";
-$lang["lgd_edit"] = " Modify";
-$lang["lgd_signpost"] = " Detail";
-$lang["lgd_next"] = " Next";
-$lang["lgd_prev"] = " Previous";
-$lang["lgd_on"] = " Enable";
-$lang["lgd_off"] = " Disable";
-$lang["advanced"] = "Advanced >>";
-$lang["quickFormError"] = "impossible to validate, one or more field is incorrect";
-$lang["lgd_more_actions"] = " More Actions...";
+$lang['lgd_legend'] = " Legend";
+$lang['lgd_force'] = " Force Check";
+$lang['lgd_graph'] = " Graph";
+$lang['lgd_notification'] = " Notification disabled";
+$lang['lgd_passiv'] = " Passiv check enabled";
+$lang['lgd_desactivated'] = " Item Disable";
+$lang['lgd_work'] = " Acknowledged";
+$lang['lgd_delOne'] = " Delete";
+$lang['lgd_delAll'] = " Delete";
+$lang['lgd_duplicate'] = " Duplicate";
+$lang['lgd_view'] = " View";
+$lang['lgd_play'] = " Play";
+$lang['lgd_pause']= " Pause";
+$lang['lgd_refresh'] = " Refresh";
+$lang['lgd_edit'] = " Modify";
+$lang['lgd_signpost'] = " Detail";
+$lang['lgd_next'] = " Next";
+$lang['lgd_prev'] = " Previous";
+$lang['lgd_on'] = " Enable";
+$lang['lgd_off'] = " Disable";
+$lang['advanced'] = "Advanced >>";
+$lang['quickFormError'] = "impossible to validate, one or more field is incorrect";
+$lang['lgd_more_actions'] = " More Actions...";
 
 ?>
