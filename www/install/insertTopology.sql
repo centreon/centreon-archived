@@ -192,62 +192,26 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 --
 -- Contenu de la table `topology_JS`
 --
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 3, NULL, './include/common/javascript/ajaxReporting.js', 'initTimeline');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 307, NULL, './include/common/javascript/ajaxReporting.js', 'initTimeline');
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 3, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 307, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', NULL);
+
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20201, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20202, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 202, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', '6', 'a', './include/common/javascript/changetab.js', ' initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 601, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 601, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'c', './include/common/javascript/autocomplete-3-2.js', 'initAutoComplete(''Form'',''city_name'',''sub'')');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 601, 'c', './include/common/javascript/autocomplete-3-2.js', 'initAutoComplete(''Form'',''city_name'',''sub'')');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'c', './include/common/javascript/autocomplete-3-2.js', 'initAutoComplete(''Form'',''city_name'',''sub'')');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 602, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 602, 'c', './include/common/javascript/changetab.js', 'initChangeTab()');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60201, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60201, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60203, 'w', './include/common/javascript/autocomplete-3-2.js  ', 'initAutoComplete(''Form'',''city_name'',''sub'')');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60203, 'c', './include/common/javascript/autocomplete-3-2.js  ', 'initAutoComplete(''Form'',''city_name'',''sub'')');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60201, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60203, 'a', './include/common/javascript/autocomplete-3-2.js    	', 'initAutoComplete(''Form'',''city_name'',''sub'')');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 604, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 604, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 604, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60401, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60401, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60401, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60402, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60402, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60402, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60403, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60403, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60403, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60404, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60404, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60404, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60601, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60601, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60601, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'c', './include/common/javascript/autocomplete-3-2.js  ', 'initAutoComplete(''Form'',''city_name'',''sub'')');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'a', './include/common/javascript/autocomplete-3-2.js ', 'initAutoComplete(''Form'',''city_name'',''sub'')');
+
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'a', './include/common/javascript/autoSelectCommandExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'c', './include/common/javascript/autoSelectCommandExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 602, 'a', './include/common/javascript/autoSelectCommandExample.js', NULL);
@@ -262,27 +226,69 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 601, 'c', './include/common/javascript/autoSelectCommandExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'a', './include/common/javascript/autoSelectCommandExample.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'c', './include/common/javascript/autoSelectCommandExample.js', NULL);
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 50101, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 502, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 502, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 502, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+
+
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', '203', NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20302, NULL, './include/common/javascript/changetab.js        ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20303, NULL, './include/common/javascript/changetab.js        ', 'initChangeTab');
+
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 40204, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 40204, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 40204, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 40205, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 40205, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 40205, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20302, NULL, './include/common/javascript/changetab.js        ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20303, NULL, './include/common/javascript/changetab.js        ', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'c', './include/common/javascript/autocomplete-3-2.js  ', 'initAutoComplete(''Form'',''city_name'',''sub'')');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'a', './include/common/javascript/autocomplete-3-2.js ', 'initAutoComplete(''Form'',''city_name'',''sub'')');
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 502, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 502, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 502, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 50101, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 601, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 601, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 601, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 602, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 602, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 602, 'c', './include/common/javascript/changetab.js', 'initChangeTab()');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 604, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 604, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 604, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 606, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60201, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60201, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60201, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60401, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60401, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60401, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60402, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60402, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60402, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60403, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60403, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60403, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60404, 'c', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60404, 'w', './include/common/javascript/changetab.js  	', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60404, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60405, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60405, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 3, NULL, './include/common/javascript/ajaxReporting.js', 'initTimeline');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 307, NULL, './include/common/javascript/ajaxReporting.js', 'initTimeline');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 602, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 6, 'a', './include/common/javascript/changetab.js  	', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60101, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', '203', NULL, './include/common/javascript/changetab.js', 'initChangeTab');
-
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60601, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60601, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60601, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60602, 'w', './include/common/javascript/changetab.js       ', 'initChangeTab');
