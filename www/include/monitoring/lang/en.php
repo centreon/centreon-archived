@@ -85,7 +85,7 @@ $lang ['m_mon_only_for'] = "Only for host";
 
 /*** service detail ***/
 
-$lang ['m_mon_services_status'] = "Current Status";
+
 $lang ['m_mon_services_attempt'] = "Current Attempt";
 $lang ['m_mon_services_state'] = "State Type";
 $lang ['m_mon_services_last_tcheck'] = "Last Check Type";
@@ -128,7 +128,6 @@ $lang ['ferror'] = "Please correct these fields";
 $lang['m_mon_performance_data'] = "Performance Data";
 $lang['m_mon_current_attempt'] = "Current Attempt";
 $lang['m_mon_state_type'] = "State Type";
-$lang['m_mon_next_check'] = "Next Check";
 $lang['m_mon_check_latency'] = "Latency";
 $lang['m_mon_next_notification'] = "Next Notification";
 $lang['m_mon_obsess_over_host'] = "Obsess Over Host";
