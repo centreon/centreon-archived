@@ -79,14 +79,11 @@ $lang ["m_mon_host_stt_ttl"] = "Hosts Status";
 $lang ["m_mon_svc_stt_ttl"] = "Services Status";
 $lang ["m_mon_address_ip"] = "IP Address";
 $lang ["m_mon_configure"] = "Manage";
-$lang ["m_mon_next_check"] = "Next Check";
 $lang ["m_mon_log_select"] = "Period";
 $lang ["m_mon_only_for"] = "Only for host";
 
 /*** service detail ***/
 
-$lang ["m_mon_services"] = "Services";
-$lang ["m_mon_services_status"] = "Current Status";
 $lang ["m_mon_services_attempt"] = "Current Attempt";
 $lang ["m_mon_services_state"] = "State Type";
 $lang ["m_mon_services_last_tcheck"] = "Last Check Type";

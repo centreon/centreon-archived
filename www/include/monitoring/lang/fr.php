@@ -79,14 +79,11 @@ $lang ["m_mon_host_stt_ttl"] = "Status des hotes";
 $lang ["m_mon_svc_stt_ttl"] = "Status des services";
 $lang ["m_mon_address_ip"] = "Adresse IP";
 $lang ["m_mon_configure"] = "Configurer";
-$lang ["m_mon_next_check"] = "Prochain Contr&ocirc;le";
 $lang ["m_mon_log_select"] = "P&eacute;riode";
 $lang ["m_mon_only_for"] = "Seulement l&acute;host ";
 
 /*** service detail ***/
 
-$lang ["m_mon_services"] = "Services";
-$lang ["m_mon_services_status"] = "Status Courant";
 $lang ["m_mon_services_attempt"] = "Nombre de v&eacute;rification";
 $lang ["m_mon_services_state"] = "Type d&acute;Etat";
 $lang ["m_mon_services_last_tcheck"] = "Derni&egrave;re v&eacute;rification du Type";
