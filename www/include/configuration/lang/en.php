@@ -44,7 +44,6 @@ $lang['ErrNotEnoughtContact'] = "You have to keep at least one contact to access
 $lang['quicksearch'] = "Quick Search";
 $lang['available'] = "Available";
 $lang['selected'] = "Selected";
-$lang['further_infos'] = "Additional Information";
 $lang['comment'] = "Comments";
 $lang['nothing'] = "Empty";
 $lang['formObjMatch'] = "Impacted Elements : ";
@@ -54,6 +53,8 @@ $lang['actionForm'] = "Form";
 $lang['legend1'] = "(*) This Service is used by many Host";
 $lang['previous'] = "previous";
 $lang['next'] = "next";
+$lang['further_infos'] = "Additional Information";
+
 
 /* host */
 
@@ -64,9 +65,9 @@ $lang['h_change'] = "Modify a Host";
 $lang['h_view'] = "View a Host";
 
 $lang['h_extInf'] = "Host Extended Infos";
-$lang["h_ExtInf_add"] = "Add an Host Extended Info";
-$lang["h_ExtInf_change"] = "Modify an Host Extended Info";
-$lang["h_ExtInf_view"] = "View an Host Extended Info";
+$lang['h_ExtInf_add'] = "Add an Host Extended Info";
+$lang['h_ExtInf_change'] = "Modify an Host Extended Info";
+$lang['h_ExtInf_view'] = "View an Host Extended Info";
 
 $lang['h_childs'] = "Linked Services";
 $lang['h_parent'] = "Template parent";
@@ -82,9 +83,9 @@ $lang['h_templateText'] = "Use a Template exempt you to fill require fields";
 $lang['h_dupSvTplAssocText'] = "Create Services linked to the Template too";
 
 $lang['h_head_links'] = "Relations";
-$lang["h_Links_add"] = "Add relations";
-$lang["h_Links_change"] = "Modify relations";
-$lang["h_Links_view"] = "View relations";
+$lang['h_Links_add'] = "Add relations";
+$lang['h_Links_change'] = "Modify relations";
+$lang['h_Links_view'] = "View relations";
 $lang['h_HostGroupMembers'] = "HostGroups Parents";
 $lang['h_HostParents'] = "Hosts Parents";
 $lang['h_HostChilds'] = "Hosts Childs";
@@ -166,13 +167,13 @@ $lang['esc_sort2'] = "Hosts Escalation";
 $lang['esc_sort3'] = "Services Escalation";
 $lang['esc_sort4'] = "Hostgroups Escalation";
 $lang['esc_sort5'] = "Meta Services Escalation";
-$lang["esc_firstNotif"] = "First Notification";
-$lang["esc_lastNotif"] = "Last Notification";
-$lang["esc_notifInt"] = "Notification Interval";
-$lang["esc_escPeriod"] = "Escalation Period";
-$lang["esc_hOpt"] = "Hosts Escalation Options";
-$lang["esc_sOpt"] = "Services Escalation Options";
-$lang["esc_comment"] = "Comment";
+$lang['esc_firstNotif'] = "First Notification";
+$lang['esc_lastNotif'] = "Last Notification";
+$lang['esc_notifInt'] = "Notification Interval";
+$lang['esc_escPeriod'] = "Escalation Period";
+$lang['esc_hOpt'] = "Hosts Escalation Options";
+$lang['esc_sOpt'] = "Services Escalation Options";
+$lang['esc_comment'] = "Comment";
 $lang['esc_appCG'] = "implied Contact Groups";
 $lang['esc_sortHosts'] = "Implied Hosts";
 $lang['esc_sortSv'] = "Implied Services";
@@ -187,10 +188,10 @@ $lang['dep_add'] = "Add a Dependency";
 $lang['dep_change'] = "Modify a Dependency";
 $lang['dep_view'] = "View a Dependency";
 $lang['dep_infos'] = "Informations";
-$lang["dep_inheritsP"] = "Parent relationship";
-$lang["dep_exeFC"] = "Execution Failure Criteria";
-$lang["dep_notifFC"] = "Notification Failure Criteria";
-$lang["dep_comment"] = "Comment";
+$lang['dep_inheritsP'] = "Parent relationship";
+$lang['dep_exeFC'] = "Execution Failure Criteria";
+$lang['dep_notifFC'] = "Notification Failure Criteria";
+$lang['dep_comment'] = "Comment";
 $lang['dep_hPar'] = "Hosts Name";
 $lang['dep_hChi'] = "Dependent Hosts Name";
 $lang['dep_hgPar'] = "HostGroups Name";
@@ -226,9 +227,9 @@ $lang['sv_view'] = "View a Service";
 $lang['sv_parent'] = "Template parent";
 
 $lang['sv_extInf'] = "Service Extended Infos";
-$lang["sv_ExtInf_add"] = "Add an Extended Info";
-$lang["sv_ExtInf_change"] = "Modify an Extended Info";
-$lang["sv_ExtInf_view"] = "View an Extended Info";
+$lang['sv_ExtInf_add'] = "Add an Extended Info";
+$lang['sv_ExtInf_change'] = "Modify an Extended Info";
+$lang['sv_ExtInf_view'] = "View an Extended Info";
 
 $lang['sv_infos'] = "General Informations";
 $lang['sv_hPars'] = "Linked with Hosts";
@@ -239,9 +240,9 @@ $lang['sv_templateText'] = "Use a Template exempt you to fill require fields";
 $lang['sv_traps'] = "Service Trap Relation";
 
 $lang['sv_head_links'] = "Relations";
-$lang["sv_Links_add"] = "Add relations";
-$lang["sv_Links_change"] = "Modify relations";
-$lang["sv_Links_view"] = "View relations";
+$lang['sv_Links_add'] = "Add relations";
+$lang['sv_Links_change'] = "Modify relations";
+$lang['sv_Links_view'] = "View relations";
 $lang['sv_ServiceGroupMembers'] = "ServiceGroups parents";
 
 $lang['sv_head_state'] = "Service State";
@@ -285,9 +286,9 @@ $lang['sv_graphTpl'] = "Graph Template";
 $lang['ms'] = "Meta Service";
 $lang['ms_conf'] = "Configuration";
 $lang['ms_infos'] = "General Informations";
-$lang["ms_add"] = "Add a Meta Service";
-$lang["ms_change"] = "Modify a Meta Service";
-$lang["ms_view"] = "View a Meta Service";
+$lang['ms_add'] = "Add a Meta Service";
+$lang['ms_change'] = "Modify a Meta Service";
+$lang['ms_view'] = "View a Meta Service";
 $lang['ms_name'] = "Meta Service Name";
 $lang['ms_comment'] = "Comment";
 $lang['ms_levelw'] = "Warning Level";
@@ -380,18 +381,18 @@ $lang['cct_lang'] = "Default Lang";
 $lang['cct_oreon'] = "Oreon";
 $lang['cct_oreon_text'] = "AReach Oreon Frontend";
 $lang['cct_admin'] = "Admin";
-$lang["cct_contact_auth_type"] = "Authentification Type";
-$lang["cct_ldap_dn"] = "Ldap DN (Distinguished Name)";
-$lang["cct_ldap_import"] ="LDAP Import";
-$lang["cct_ldap_search_param"] ="Search Options";
-$lang["cct_ldap_search_options"] ="Search Options";
-$lang["cct_ldap_search_result"] ="Search Result";
-$lang["cct_ldap_search_filter"] ="Search Filter";
-$lang["cct_ldap_search_result_output"] ="Result";
-$lang["cct_ldap_search"] = "Search";
-$lang["cct_ldap_import_users"] = "Import";
-$lang["cct_ldap_search_filter_help_title"] ="Filter Examples";
-$lang["cct_ldap_search_filter_help"] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))";
+$lang['cct_contact_auth_type'] = "Authentification Type";
+$lang['cct_ldap_dn'] = "Ldap DN (Distinguished Name)";
+$lang['cct_ldap_import'] ="LDAP Import";
+$lang['cct_ldap_search_param'] ="Search Options";
+$lang['cct_ldap_search_options'] ="Search Options";
+$lang['cct_ldap_search_result'] ="Search Result";
+$lang['cct_ldap_search_filter'] ="Search Filter";
+$lang['cct_ldap_search_result_output'] ="Result";
+$lang['cct_ldap_search'] = "Search";
+$lang['cct_ldap_import_users'] = "Import";
+$lang['cct_ldap_search_filter_help_title'] ="Filter Examples";
+$lang['cct_ldap_search_filter_help'] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))";
 
 /* contact group */
 
@@ -400,9 +401,9 @@ $lang['cg_name'] = "Contact Group Name";
 $lang['cg_alias'] = "Alias";
 $lang['cg_members'] = "Contacts linked";
 $lang['cg_notif'] = "Notification";
-$lang["cg_add"] = "Add a Contact Group";
-$lang["cg_change"] = "Modify a Contact Group";
-$lang["cg_view"] = "View a Contact Group";
+$lang['cg_add'] = "Add a Contact Group";
+$lang['cg_change'] = "Modify a Contact Group";
+$lang['cg_view'] = "View a Contact Group";
 
 /* time period */
 
@@ -417,9 +418,9 @@ $lang['tp_friday'] = "Friday";
 $lang['tp_saturday'] = "Saturday";
 $lang['tp_infos'] = "General Informations";
 $lang['tp_notif'] = "Notification Slice Time";
-$lang["tp_add"] = "Add a Time Period";
-$lang["tp_change"] = "Modify a Time Period";
-$lang["tp_view"] = "View a Time Period";
+$lang['tp_add'] = "Add a Time Period";
+$lang['tp_change'] = "Modify a Time Period";
+$lang['tp_view'] = "View a Time Period";
 
 /* command */
 
@@ -430,12 +431,11 @@ $lang['cmd_notif'] = "Notification Command";
 $lang['cmd_various'] = "Various Command";
 $lang['cmd_checkShort'] = "Check";
 $lang['cmd_notifShort'] = "Notification";
-$lang["cmd_add"] = "Add a Command";
-$lang["cmd_change"] = "Modify a Command";
-$lang["cmd_view"] = "View a Command";
+$lang['cmd_add'] = "Add a Command";
+$lang['cmd_change'] = "Modify a Command";
+$lang['cmd_view'] = "View a Command";
 $lang['cmd_name'] = "Command Name";
 $lang['cmd_line'] = "Command Line";
-$lang['cmd_type'] = "Command Type";
 $lang['cmd_comment'] = "Commands definitions can contain Macros but you have to be sure that they are well validate for the case they'll be used";
 $lang['cmd_help'] = "Plugin Help";
 $lang['cmd_help_output'] = "Help";
@@ -450,134 +450,134 @@ $lang['plg_size'] = "Size";
 
 /* Nagios CFG */
 
-$lang["nagios_add"] = "Add a Nagios Configuration File";
-$lang["nagios_change"] = "Modify a Nagios Configuration File";
-$lang["nagios_view"] = "View a Nagios Configuration File";
+$lang['nagios_add'] = "Add a Nagios Configuration File";
+$lang['nagios_change'] = "Modify a Nagios Configuration File";
+$lang['nagios_view'] = "View a Nagios Configuration File";
 $lang['nagios_infos'] = "Informations";
-$lang["nagios_name"] = "Configuration Name";
-$lang["nagios_comment"] = "Comments";
+$lang['nagios_name'] = "Configuration Name";
+$lang['nagios_comment'] = "Comments";
 
-$lang["nag_logFile"] = "Log file";
-$lang["nag_objConfFile"] = "Object Configuration File";
-$lang["nag_objConfDir"] = "Object Configuration Directory";
-$lang["nag_objCacheFile"] = "Object Cache File";
-$lang["nag_resFile"] = "Resource File";
-$lang["nag_tmpFile"] = "Temp File";
-$lang["nag_p1File"] = "P1 File";
+$lang['nag_logFile'] = "Log file";
+$lang['nag_objConfFile'] = "Object Configuration File";
+$lang['nag_objConfDir'] = "Object Configuration Directory";
+$lang['nag_objCacheFile'] = "Object Cache File";
+$lang['nag_resFile'] = "Resource File";
+$lang['nag_tmpFile'] = "Temp File";
+$lang['nag_p1File'] = "P1 File";
 
-$lang["nag_statusFile"] = "Status File";
-$lang["nag_asuOpt"] = "Aggregated Status Updates Option";
-$lang["nag_asuInt"] = "Aggregated Status Data Update Interval";
+$lang['nag_statusFile'] = "Status File";
+$lang['nag_asuOpt'] = "Aggregated Status Updates Option";
+$lang['nag_asuInt'] = "Aggregated Status Data Update Interval";
 
-$lang["nag_nagUser"] = "Nagios User";
-$lang["nag_nagGroup"] = "Nagios Group";
+$lang['nag_nagUser'] = "Nagios User";
+$lang['nag_nagGroup'] = "Nagios Group";
 
-$lang["nag_notifOpt"] = "Notification Option";
-$lang["nag_svCheckExeOpt"] = "Service Check Execution Option";
-$lang["nag_pasSvCheckAccOpt"] = "Passive Service Check Acceptance Option";
-$lang["nag_hostCheckExeOpt"] = "Host Check Execution Option";
-$lang["nag_pasHostCheckAccOpt"] = "Passive Host Check Acceptance Option";
-$lang["nag_eventHandOpt"] = "Event Handler Option";
+$lang['nag_notifOpt'] = "Notification Option";
+$lang['nag_svCheckExeOpt'] = "Service Check Execution Option";
+$lang['nag_pasSvCheckAccOpt'] = "Passive Service Check Acceptance Option";
+$lang['nag_hostCheckExeOpt'] = "Host Check Execution Option";
+$lang['nag_pasHostCheckAccOpt'] = "Passive Host Check Acceptance Option";
+$lang['nag_eventHandOpt'] = "Event Handler Option";
 
-$lang["nag_logRotMethod"] = "Log Rotation Method";
-$lang["nag_logArchPath"] = "Log Archive Path";
+$lang['nag_logRotMethod'] = "Log Rotation Method";
+$lang['nag_logArchPath'] = "Log Archive Path";
 
-$lang["nag_extCmdCheckOpt"] = "External Command Check Option";
-$lang["nag_extCmdCheckInt"] = "External Command Check Interval";
-$lang["nag_extCmdFile"] = "External Command File";
+$lang['nag_extCmdCheckOpt'] = "External Command Check Option";
+$lang['nag_extCmdCheckInt'] = "External Command Check Interval";
+$lang['nag_extCmdFile'] = "External Command File";
 
-$lang["nag_cmtFile"] = "Comment File";
-$lang["nag_dtFile"] = "Downtime File";
-$lang["nag_lockFile"] = "Lock File";
+$lang['nag_cmtFile'] = "Comment File";
+$lang['nag_dtFile'] = "Downtime File";
+$lang['nag_lockFile'] = "Lock File";
 
-$lang["nag_stateRetOpt"] = "State Retention Option";
-$lang["nag_stateRetFile"] = "State Retention File";
-$lang["nag_autStateRetUpdInt"] = "Automatic State Retention Update Interval";
-$lang["nag_useRetPgmStateOpt"] = "Use Retained Program State Option";
-$lang["nag_useRetSchInfoOpt"] = "Use Retained Scheduling Info Option";
+$lang['nag_stateRetOpt'] = "State Retention Option";
+$lang['nag_stateRetFile'] = "State Retention File";
+$lang['nag_autStateRetUpdInt'] = "Automatic State Retention Update Interval";
+$lang['nag_useRetPgmStateOpt'] = "Use Retained Program State Option";
+$lang['nag_useRetSchInfoOpt'] = "Use Retained Scheduling Info Option";
 
-$lang["nag_SysLogOpt"] = "Syslog Logging Option";
-$lang["nag_notLogOpt"] = "Notification Logging Option";
-$lang["nag_svCheckRtrLogOpt"] = "Service Check Retry Logging Option";
-$lang["nag_hostRtrLogOpt"] = "Host Retry Logging Option";
-$lang["nag_eventHandLogOpt"] = "Event Handler Logging Option";
-$lang["nag_iniStateLogOpt"] = "Initial State Logging Option";
-$lang["nag_extCmdLogOpt"] = "External Command Logging Option";
-$lang["nag_passSvCheckLogOpt"] = "Passive Service Check Logging Option";
-$lang["nag_passCheckLogOpt"] = "Passive Check Logging Option";
+$lang['nag_SysLogOpt'] = "Syslog Logging Option";
+$lang['nag_notLogOpt'] = "Notification Logging Option";
+$lang['nag_svCheckRtrLogOpt'] = "Service Check Retry Logging Option";
+$lang['nag_hostRtrLogOpt'] = "Host Retry Logging Option";
+$lang['nag_eventHandLogOpt'] = "Event Handler Logging Option";
+$lang['nag_iniStateLogOpt'] = "Initial State Logging Option";
+$lang['nag_extCmdLogOpt'] = "External Command Logging Option";
+$lang['nag_passSvCheckLogOpt'] = "Passive Service Check Logging Option";
+$lang['nag_passCheckLogOpt'] = "Passive Check Logging Option";
 
-$lang["nag_glHostEventHand"] = "Global Host Event Handler";
-$lang["nag_glSvEventHand"] = "Global Service Event Handler";
+$lang['nag_glHostEventHand'] = "Global Host Event Handler";
+$lang['nag_glSvEventHand'] = "Global Service Event Handler";
 
-$lang["nag_intCheckSleepTm"] = "Inter-Check Sleep Time";
-$lang["nag_intCheckDelMth"] = "Inter-Check Delay Method";
-$lang["nag_svIntCheckDelMth"] = "Service Inter-Check Delay Method";
-$lang["nag_maxSvCheckSpread"] = "Maximum Service Check Spread";
-$lang["nag_svInterFac"] = "Service Interleave Factor";
-$lang["nag_maxConcSvChecks"] = "Maximum Concurrent Service Checks";
-$lang["nag_svReapFreq"] = "Service Repear Frequency";
-$lang["nag_hostIntCheckDelMth"] = "Host Inter-Check Delay Method";
-$lang["nag_maxHostCheckSpread"] = "Maximum Host Check Spread";
-$lang["nag_tmIntLen"] = "Timing Interval Length";
-$lang["nag_autoRescheOpt"] = "Auto-Rescheduling Option";
-$lang["nag_autoRescheInt"] = "Auto-Rescheduling Interval";
-$lang["nag_autoRescheWnd"] = "Auto-Rescheduling Window";
+$lang['nag_intCheckSleepTm'] = "Inter-Check Sleep Time";
+$lang['nag_intCheckDelMth'] = "Inter-Check Delay Method";
+$lang['nag_svIntCheckDelMth'] = "Service Inter-Check Delay Method";
+$lang['nag_maxSvCheckSpread'] = "Maximum Service Check Spread";
+$lang['nag_svInterFac'] = "Service Interleave Factor";
+$lang['nag_maxConcSvChecks'] = "Maximum Concurrent Service Checks";
+$lang['nag_svReapFreq'] = "Service Repear Frequency";
+$lang['nag_hostIntCheckDelMth'] = "Host Inter-Check Delay Method";
+$lang['nag_maxHostCheckSpread'] = "Maximum Host Check Spread";
+$lang['nag_tmIntLen'] = "Timing Interval Length";
+$lang['nag_autoRescheOpt'] = "Auto-Rescheduling Option";
+$lang['nag_autoRescheInt'] = "Auto-Rescheduling Interval";
+$lang['nag_autoRescheWnd'] = "Auto-Rescheduling Window";
 
-$lang["nag_aggHostCheckOpt"] = "Aggressive Host Checking Option";
+$lang['nag_aggHostCheckOpt'] = "Aggressive Host Checking Option";
 
-$lang["nag_flapDetOpt"] = "Flap Detection Option";
-$lang["nag_lowSvFlapThres"] = "Low Service Flap Threshold";
-$lang["nag_highSvFlapThres"] = "High Service Flap Threshold";
-$lang["nag_lowHostFlapThres"] = "Low Host Flap Threshold";
-$lang["nag_highHostFlapThres"] = "High Host Flap Threshold";
+$lang['nag_flapDetOpt'] = "Flap Detection Option";
+$lang['nag_lowSvFlapThres'] = "Low Service Flap Threshold";
+$lang['nag_highSvFlapThres'] = "High Service Flap Threshold";
+$lang['nag_lowHostFlapThres'] = "Low Host Flap Threshold";
+$lang['nag_highHostFlapThres'] = "High Host Flap Threshold";
 
-$lang["nag_softSvDepOpt"] = "Soft Service Dependencies Option";
+$lang['nag_softSvDepOpt'] = "Soft Service Dependencies Option";
 
-$lang["nag_svCheckTmOut"] = "Service Check Timeout";
-$lang["nag_hostCheckTmOut"] = "Host Check Timeout";
-$lang["nag_eventHandTmOut"] = "Event Handler Timeout";
-$lang["nag_notifTmOut"] = "Notification Timeout";
-$lang["nag_obComSvProcTmOut"] = "Obsessive Compulsive Service Processor Timeout";
-$lang["nag_obComHostProcTmOut"] = "Obsessive Compulsive Host Processor Timeout";
-$lang["nag_perfDataProcCmdTmOut"] = "Performance Data Processor Command Timeout";
+$lang['nag_svCheckTmOut'] = "Service Check Timeout";
+$lang['nag_hostCheckTmOut'] = "Host Check Timeout";
+$lang['nag_eventHandTmOut'] = "Event Handler Timeout";
+$lang['nag_notifTmOut'] = "Notification Timeout";
+$lang['nag_obComSvProcTmOut'] = "Obsessive Compulsive Service Processor Timeout";
+$lang['nag_obComHostProcTmOut'] = "Obsessive Compulsive Host Processor Timeout";
+$lang['nag_perfDataProcCmdTmOut'] = "Performance Data Processor Command Timeout";
 
-$lang["nag_obsOverSvOpt"] = "Obsess Over Services Option";
-$lang["nag_obsComSvProcCmd"] = "Obsessive Compulsive Service Processor Command";
-$lang["nag_obsOverHostOpt"] = "Obsess Over Hosts Option";
-$lang["nag_obsComHostProcCmd"] = "Obsessive Compulsive Host Processor Command";
+$lang['nag_obsOverSvOpt'] = "Obsess Over Services Option";
+$lang['nag_obsComSvProcCmd'] = "Obsessive Compulsive Service Processor Command";
+$lang['nag_obsOverHostOpt'] = "Obsess Over Hosts Option";
+$lang['nag_obsComHostProcCmd'] = "Obsessive Compulsive Host Processor Command";
 
-$lang["nag_perfDataProcOpt"] = "Performance Data Processing Option";
-$lang["nag_hostPerfDataProcCmd"] = "Host Performance Data Processing Command";
-$lang["nag_svPerfDataProcCmd"] = "Service Performance Data Processing Command";
-$lang["nag_hostPerfDataFile"] = "Host Performance Data File";
-$lang["nag_svPerfDataFile"] = "Service Performance Data File";
-$lang["nag_hostPerfDataFileTmp"] = "Host Performance Data File Template";
-$lang["nag_svPerfDataFileTmp"] = "Service Performance Data File Template";
-$lang["nag_hostPerfDataFileMode"] = "Host Performance Data File Mode";
-$lang["nag_svPerfDataFileMode"] = "Service Performance Data File Mode";
-$lang["nag_hostPerfDataFileProcInt"] = "Host Performance Data File Processing Interval";
-$lang["nag_svPerfDataFileProcInt"] = "Service Performance Data File Processing Interval";
-$lang["nag_hostPerfDataFileProcCmd"] = "Host Performance Data File Processing Command";
-$lang["nag_svPerfDataFileProcCmd"] = "Service Performance Data File Processing Command";
+$lang['nag_perfDataProcOpt'] = "Performance Data Processing Option";
+$lang['nag_hostPerfDataProcCmd'] = "Host Performance Data Processing Command";
+$lang['nag_svPerfDataProcCmd'] = "Service Performance Data Processing Command";
+$lang['nag_hostPerfDataFile'] = "Host Performance Data File";
+$lang['nag_svPerfDataFile'] = "Service Performance Data File";
+$lang['nag_hostPerfDataFileTmp'] = "Host Performance Data File Template";
+$lang['nag_svPerfDataFileTmp'] = "Service Performance Data File Template";
+$lang['nag_hostPerfDataFileMode'] = "Host Performance Data File Mode";
+$lang['nag_svPerfDataFileMode'] = "Service Performance Data File Mode";
+$lang['nag_hostPerfDataFileProcInt'] = "Host Performance Data File Processing Interval";
+$lang['nag_svPerfDataFileProcInt'] = "Service Performance Data File Processing Interval";
+$lang['nag_hostPerfDataFileProcCmd'] = "Host Performance Data File Processing Command";
+$lang['nag_svPerfDataFileProcCmd'] = "Service Performance Data File Processing Command";
 
-$lang["nag_OrpSvCheckOpt"] = "Orphaned Service Check Option";
+$lang['nag_OrpSvCheckOpt'] = "Orphaned Service Check Option";
 
-$lang["nag_svFreshCheckOpt"] = "Service Freshness Checking Option";
-$lang["nag_svFreshCheckInt"] = "Service Freshness Check Interval";
-$lang["nag_freshCheckInt"] = "Freshness Check Interval";
-$lang["nag_hostFreshCheckOpt"] = "Host Freshness Checking Option";
-$lang["nag_hostFreshCheckInt"] = "Host Freshness Check Interval";
+$lang['nag_svFreshCheckOpt'] = "Service Freshness Checking Option";
+$lang['nag_svFreshCheckInt'] = "Service Freshness Check Interval";
+$lang['nag_freshCheckInt'] = "Freshness Check Interval";
+$lang['nag_hostFreshCheckOpt'] = "Host Freshness Checking Option";
+$lang['nag_hostFreshCheckInt'] = "Host Freshness Check Interval";
 
-$lang["nag_dateFormat"] = "Date Format";
+$lang['nag_dateFormat'] = "Date Format";
 
-$lang["nag_illObjNameChar"] = "Illegal Object Name Characters";
-$lang["nag_illMacOutChar"] = "Illegal Macro Output Characters";
+$lang['nag_illObjNameChar'] = "Illegal Object Name Characters";
+$lang['nag_illMacOutChar'] = "Illegal Macro Output Characters";
 
-$lang["nag_regExpMatchOpt"] = "Regular Expression Matching Option";
-$lang["nag_trueRegExpMatchOpt"] = "True Regular Expression Matching Option";
+$lang['nag_regExpMatchOpt'] = "Regular Expression Matching Option";
+$lang['nag_trueRegExpMatchOpt'] = "True Regular Expression Matching Option";
 
-$lang["nag_adminEmail"] = "Administrator Email Address";
-$lang["nag_adminPager"] = "Administrator Pager";
+$lang['nag_adminEmail'] = "Administrator Email Address";
+$lang['nag_adminPager'] = "Administrator Pager";
 
 /* Resource CFG */
 
@@ -646,53 +646,53 @@ $lang['cgi_add'] = "Add a CGI Configuration File";
 $lang['cgi_change'] = "Modify a CGI Configuration File";
 $lang['cgi_view'] = "View a CGI Configuration File";
 $lang['cgi_infos'] = "General Informations";
-$lang["cgi_mainConfFile"] = "Main Configuration File Location";
-$lang["cgi_phyHtmlPath"] = "Physical HTML Path";
-$lang["cgi_urlHtmlPath"] = "URL HTML Path";
-$lang["cgi_nagCheckCmd"] = "Nagios Process Check Command";
-$lang["cgi_authUsage"] = "Authentication Usage";
-$lang["cgi_defUserName"] = "Default User Name";
-$lang["cgi_authFSysInfo"] = "System/Process Information Access";
-$lang["cgi_authFSysCmd"] = "System/Process Command Access";
-$lang["cgi_authFConfInf"] = "Configuration Information Access";
-$lang["cgi_authFAllHosts"] = "Global Host Information Access";
-$lang["cgi_authFAllHostCmds"] = "Global Host Command Access";
-$lang["cgi_authFAllSv"] = "Global Service Information Access";
-$lang["cgi_authFAllSvCmds"] = "Global Service Command Access";
-$lang["cgi_smBckImg"] = "Statusmap CGI Background Image";
-$lang["cgi_defSMLayMet"] = "Default Statusmap Layout Method";
-$lang["cgi_statCGIIncWld"] = "Statuswrl CGI Include World";
-$lang["cgi_defStatWRLLay"] = "Default Statuswrl Layout Method";
-$lang["cgi_cgIRefRate"] = "CGI Refresh Rate";
-$lang["cgi_hus"] = "Host Unreachable Sound";
-$lang["cgi_hdu"] = "Host Down Sound";
-$lang["cgi_scs"] = "Service Critical Sound";
-$lang["cgi_sws"] = "Service Warning Sound";
-$lang["cgi_sus"] = "Service Unknown Sound";
-$lang["cgi_pingSyntax"] = "Ping Syntax";
+$lang['cgi_mainConfFile'] = "Main Configuration File Location";
+$lang['cgi_phyHtmlPath'] = "Physical HTML Path";
+$lang['cgi_urlHtmlPath'] = "URL HTML Path";
+$lang['cgi_nagCheckCmd'] = "Nagios Process Check Command";
+$lang['cgi_authUsage'] = "Authentication Usage";
+$lang['cgi_defUserName'] = "Default User Name";
+$lang['cgi_authFSysInfo'] = "System/Process Information Access";
+$lang['cgi_authFSysCmd'] = "System/Process Command Access";
+$lang['cgi_authFConfInf'] = "Configuration Information Access";
+$lang['cgi_authFAllHosts'] = "Global Host Information Access";
+$lang['cgi_authFAllHostCmds'] = "Global Host Command Access";
+$lang['cgi_authFAllSv'] = "Global Service Information Access";
+$lang['cgi_authFAllSvCmds'] = "Global Service Command Access";
+$lang['cgi_smBckImg'] = "Statusmap CGI Background Image";
+$lang['cgi_defSMLayMet'] = "Default Statusmap Layout Method";
+$lang['cgi_statCGIIncWld'] = "Statuswrl CGI Include World";
+$lang['cgi_defStatWRLLay'] = "Default Statuswrl Layout Method";
+$lang['cgi_cgIRefRate'] = "CGI Refresh Rate";
+$lang['cgi_hus'] = "Host Unreachable Sound";
+$lang['cgi_hdu'] = "Host Down Sound";
+$lang['cgi_scs'] = "Service Critical Sound";
+$lang['cgi_sws'] = "Service Warning Sound";
+$lang['cgi_sus'] = "Service Unknown Sound";
+$lang['cgi_pingSyntax'] = "Ping Syntax";
 
 /* Generate File */
 
-$lang["gen_name"] = "Nagios Configuration Files Export";
-$lang["gen_infos"] = "Serveur implied";
-$lang["gen_host"] = "Nagios/Oreon Server";
-$lang["gen_opt"] = "Export Options";
-$lang["gen_ok"] = "Generate Files";
-$lang["gen_level"] = "Relations between Elements";
-$lang["gen_level1"] = "Dependencies Management";
-$lang["gen_level2"] = "Current Activation";
-$lang["gen_level3"] = "None";
-$lang["gen_comment"] = "Include Comments";
-$lang["gen_xml"] = "Export in XML too";
-$lang["gen_result"] = "Result";
-$lang["gen_debug"] = "Run Nagios debug (-v)";
-$lang["gen_move"] = "Move Export Files";
-$lang["gen_restart"] = "Restart Nagios";
-$lang["gen_restart_load"] = "Reload";
-$lang["gen_restart_start"] = "Restart";
-$lang["gen_restart_extcmd"] = "External Command";
-$lang["gen_butOK"] = "Export";
-$lang["gen_status"] = "State";
+$lang['gen_name'] = "Nagios Configuration Files Export";
+$lang['gen_infos'] = "Serveur implied";
+$lang['gen_host'] = "Nagios/Oreon Server";
+$lang['gen_opt'] = "Export Options";
+$lang['gen_ok'] = "Generate Files";
+$lang['gen_level'] = "Relations between Elements";
+$lang['gen_level1'] = "Dependencies Management";
+$lang['gen_level2'] = "Current Activation";
+$lang['gen_level3'] = "None";
+$lang['gen_comment'] = "Include Comments";
+$lang['gen_xml'] = "Export in XML too";
+$lang['gen_result'] = "Result";
+$lang['gen_debug'] = "Run Nagios debug (-v)";
+$lang['gen_move'] = "Move Export Files";
+$lang['gen_restart'] = "Restart Nagios";
+$lang['gen_restart_load'] = "Reload";
+$lang['gen_restart_start'] = "Restart";
+$lang['gen_restart_extcmd'] = "External Command";
+$lang['gen_butOK'] = "Export";
+$lang['gen_status'] = "State";
 $lang['gen_mvOk'] = " - movement OK";
 $lang['gen_mvKo'] = " - movement KO";
 $lang['gen_trapd'] = "Traps SNMP";
@@ -701,106 +701,70 @@ $lang['gen_trapRestart'] = "Red&eacute;marrer snmptrad";
 
 /* Upload File */
 
-$lang["upl_name"] = "Nagios Configuration Upload";
-$lang["upl_infos"] = "Serveur implied";
-$lang["upl_host"] = "Nagios/Oreon Server";
-$lang["upl_opt"] = "Upload Options";
-$lang["upl_del"] = "Delete all configuration for kind of files choose";
-$lang["upl_over"] = "Update definition in same dual definition";
-$lang["upl_comment"] = "Include comments";
-$lang["upl_type"] = "File Type";
-$lang["upl_mis1"] = "For archive upload, be sure that the first line of each file have no importance because it's doesn't manage.<br>Avoid to begin with a definition.";
-$lang["upl_typeNag"] = "nagios.cfg";
-$lang["upl_typeCgi"] = "cgi.cfg";
-$lang["upl_typePerfparse"] = "perfparse.cfg";
-$lang["upl_typeRes"] = "resource.cfg";
-$lang["upl_typeCfg"] = "Template based method file";
-$lang["upl_typeManual"] = "Manual Filling";
-$lang["upl_format"] = "File Type";
-$lang["upl_typeName"] = "Type";
-$lang["upl_typeCmdType"] = "Command Type";
-$lang["upl_typeCmdCheck"] = "Check Command";
-$lang["upl_typeCmdNotif"] = "Notification Command";
-$lang["upl_typeCmdCmt1"] = "You should upload before all the Commands definitions while specifying their type.";
-$lang["upl_typeCmdCmt2"] = "Indeed, it's the only way to make difference between Check or Notification Commands.";
-$lang["upl_file"] = "File (zip, tar or cfg)";
-$lang["upl_manualDef"] = "Manual Filling";
-$lang["upl_result"] = "Result";
-$lang["upl_debug"] = "Run Nagios debug (-v)";
-$lang["upl_butOK"] = "Load";
-$lang["upl_uplOk"] = "File loading OK";
-$lang["upl_uplKo"] = "File loading KO";
-$lang["upl_carrOk"] = "Data recovery OK";
-$lang["upl_carrKo"] = "Data recovery KO";
-$lang["upl_manualDefOk"] = "Manual filling OK";
-$lang["upl_uplBadType"] = "Not supported extension";
-$lang["upl_newEntries"] = "recorded entrie(s)";
+$lang['upl_name'] = "Nagios Configuration Upload";
+$lang['upl_infos'] = "Serveur implied";
+$lang['upl_host'] = "Nagios/Oreon Server";
+$lang['upl_opt'] = "Upload Options";
+$lang['upl_del'] = "Delete all configuration for kind of files choose";
+$lang['upl_over'] = "Update definition in same dual definition";
+$lang['upl_comment'] = "Include comments";
+$lang['upl_type'] = "File Type";
+$lang['upl_mis1'] = "For archive upload, be sure that the first line of each file have no importance because it's doesn't manage.<br>Avoid to begin with a definition.";
+$lang['upl_typeNag'] = "nagios.cfg";
+$lang['upl_typeCgi'] = "cgi.cfg";
+$lang['upl_typePerfparse'] = "perfparse.cfg";
+$lang['upl_typeRes'] = "resource.cfg";
+$lang['upl_typeCfg'] = "Template based method file";
+$lang['upl_typeManual'] = "Manual Filling";
+$lang['upl_format'] = "File Type";
+$lang['upl_typeName'] = "Type";
+$lang['upl_typeCmdType'] = "Command Type";
+$lang['upl_typeCmdCheck'] = "Check Command";
+$lang['upl_typeCmdNotif'] = "Notification Command";
+$lang['upl_typeCmdCmt1'] = "You should upload before all the Commands definitions while specifying their type.";
+$lang['upl_typeCmdCmt2'] = "Indeed, it's the only way to make difference between Check or Notification Commands.";
+$lang['upl_file'] = "File (zip, tar or cfg)";
+$lang['upl_manualDef'] = "Manual Filling";
+$lang['upl_result'] = "Result";
+$lang['upl_debug'] = "Run Nagios debug (-v)";
+$lang['upl_butOK'] = "Load";
+$lang['upl_uplOk'] = "File loading OK";
+$lang['upl_uplKo'] = "File loading KO";
+$lang['upl_carrOk'] = "Data recovery OK";
+$lang['upl_carrKo'] = "Data recovery KO";
+$lang['upl_manualDefOk'] = "Manual filling OK";
+$lang['upl_uplBadType'] = "Not supported extension";
+$lang['upl_newEntries'] = "recorded entrie(s)";
 
-/* Configuration Error */
-
-$lang['requiredFields'] = "<font style='color: red;'>*</font> Requiered field";
-$lang['ErrName'] = "Compulsory Name";
-$lang['ErrAlias'] = "Compulsory Alias";
-$lang['ErrEmail'] = "Valid Email";
-$lang['ErrOpt'] = "Compulsory Option";
-$lang['ErrTp'] = "Compulsory Period";
-$lang['ErrCmd'] = "Compulsory Command";
-$lang['ErrCct'] = "Compulsory Contact";
-$lang['ErrCg'] = "Compulsory Contact Group";
-$lang['ErrCmdLine'] = "Compulsory Command Line";
-$lang['ErrCmdType'] = "Compulsory  Command Type";
-$lang['ErrAlreadyExist'] = "A same Name element already exist";
-$lang['ErrAddress'] = "Compulsory Adress";
-$lang['ErrRequired'] = "Require Field";
-$lang['ErrSvLeast'] = "HostGroup or Host Require";
-$lang['ErrCctPasswd'] = "Passwords are not the same";
-$lang['ErrGenFileProb'] = "Can't access to file needed";
-$lang['ErrCycleDef'] = "Circular Definition";
-
-/* Configuration Menu */
-
-$lang['quicksearch'] = "Quick Search";
-$lang['available'] = "Available";
-$lang['selected'] = "Selected";
-$lang['further_infos'] = "Additional Information";
-$lang['comment'] = "Comments";
-$lang['nothing'] = "Empty";
-$lang['formObjMatch'] = "Impacted Elements : ";
-$lang['action'] = "Post Validation";
-$lang['actionList'] = "List";
-$lang['actionForm'] = "Form";
-$lang['legend1'] = "(*) This Service is used by many Host";
-$lang['previous'] = "previous";
-$lang['next'] = "next";
 
 /* Purge Policy Template */
 
-$lang["mod_purgePolicy"] = "Template Deletion Policy";
-$lang["mod_purgePolicy_add"] = "Add a Template Deletion Policy";
-$lang["mod_purgePolicy_change"] = "Modify a Template Deletion Policy";
-$lang["mod_purgePolicy_view"] = "View a Template Deletion Policy";
+$lang['mod_purgePolicy'] = "Template Deletion Policy";
+$lang['mod_purgePolicy_add'] = "Add a Template Deletion Policy";
+$lang['mod_purgePolicy_change'] = "Modify a Template Deletion Policy";
+$lang['mod_purgePolicy_view'] = "View a Template Deletion Policy";
 
-$lang["mod_purgePolicy_infos"] = "General informations";
-$lang["mod_purgePolicy_name"] = "Policy Name";
-$lang["mod_purgePolicy_alias"] = "Alias";
-$lang["mod_purgePolicy_retain"] = "Retention Period";
-$lang["mod_purgePolicy_raw"] = "Raw Deletion";
-$lang["mod_purgePolicy_raw2"] = "Only raw rows according to the retention period";
-$lang["mod_purgePolicy_bin"] = "Bin Deletion";
-$lang["mod_purgePolicy_bin2"] = "Only bin rows according to the retention period";
-$lang["mod_purgePolicy_metric"] = "Metric Definition Deletion";
-$lang["mod_purgePolicy_metric2"] = "Not link with period, ALL metric + bin";
-$lang["mod_purgePolicy_service"] = "Service Definition Deletion";
-$lang["mod_purgePolicy_service2"] = "Not link with period, ALL Service + Metric + bin + raw";
-$lang["mod_purgePolicy_host"] = "Host Definition Deletion";
-$lang["mod_purgePolicy_host2"] = "Not link with period, ALL Host + Service + Metric + bin + raw";
-$lang["mod_purgePolicy_comment"] = "Comments";
+$lang['mod_purgePolicy_infos'] = "General informations";
+$lang['mod_purgePolicy_name'] = "Policy Name";
+$lang['mod_purgePolicy_alias'] = "Alias";
+$lang['mod_purgePolicy_retain'] = "Retention Period";
+$lang['mod_purgePolicy_raw'] = "Raw Deletion";
+$lang['mod_purgePolicy_raw2'] = "Only raw rows according to the retention period";
+$lang['mod_purgePolicy_bin'] = "Bin Deletion";
+$lang['mod_purgePolicy_bin2'] = "Only bin rows according to the retention period";
+$lang['mod_purgePolicy_metric'] = "Metric Definition Deletion";
+$lang['mod_purgePolicy_metric2'] = "Not link with period, ALL metric + bin";
+$lang['mod_purgePolicy_service'] = "Service Definition Deletion";
+$lang['mod_purgePolicy_service2'] = "Not link with period, ALL Service + Metric + bin + raw";
+$lang['mod_purgePolicy_host'] = "Host Definition Deletion";
+$lang['mod_purgePolicy_host2'] = "Not link with period, ALL Host + Service + Metric + bin + raw";
+$lang['mod_purgePolicy_comment'] = "Comments";
 
-$lang["mod_purgePolicy_listRaw"] = "Raw";
-$lang["mod_purgePolicy_listBin"] = "Bin";
-$lang["mod_purgePolicy_listMetric"] = "Metric";
-$lang["mod_purgePolicy_listService"] = "Service";
-$lang["mod_purgePolicy_listHost"] = "Host";
+$lang['mod_purgePolicy_listRaw'] = "Raw";
+$lang['mod_purgePolicy_listBin'] = "Bin";
+$lang['mod_purgePolicy_listMetric'] = "Metric";
+$lang['mod_purgePolicy_listService'] = "Service";
+$lang['mod_purgePolicy_listHost'] = "Host";
 
 /* Traps SNMP */
 
