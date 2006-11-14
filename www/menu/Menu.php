@@ -72,7 +72,7 @@ For information : contact@oreon-project.org
 								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#");
 		
 
-	$userUrl = "oreon.php?p=50104&o=c".$oreon->user->get_name()." ( ".$oreon->user->get_alias()." ) ";
+	$userUrl = "oreon.php?p=50104&o=c";//.$oreon->user->get_name()." ( ".$oreon->user->get_alias()." ) ";
     
     $logDate = date($lang['header_format']);
     $logOut = $lang['m_logout'];
