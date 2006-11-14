@@ -59,7 +59,9 @@ For information : contact@oreon-project.org
 		isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = NULL;
 		isset($_POST["password"]) ? $passwordP = $_POST["password"] : $passwordP = NULL;
 		$passwordG ? $password = $passwordG : $password = $passwordP;
+		# BugFix  #224
 		$password = ($password == '' ? time() : $password  );
+	    #
 
 		if (!isset($_POST["submit"]))
 			$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
@@ -84,10 +86,20 @@ For information : contact@oreon-project.org
 					$debug_auth = 0;
 
 				$connect = true;
-				if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap") {
+				$fallback = false;
+				if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" ) {
 					$connect = true;
+
+					# BugFix  #265
+					if  ((!(isset($contact['contact_ldap_dn'] )) || $contact['contact_ldap_dn']  == '' ) ) {
+						$contact['contact_ldap_dn']  = "anonymous" ;
+						if ($debug_auth == 1)
+							error_log("[" . date("d/m/Y H:s") ."] LDAP User Mapping : ". $useralias ." don't have LDAP DN information ! Switching to anonymous\n", 3, $debug_path."auth.log");
+					}
+	   				#
+
 					if ($debug_auth == 1)
-						error_log("[" . date("d/m/Y H:s") ."] LDAP User : ". $useralias ." => " . $contact['contact_ldap_dn'] . "\n", 3, $debug_path."auth.log");
+						error_log("[" . date("d/m/Y H:s") ."] LDAP User Mapping : ". $useralias ." => " . $contact['contact_ldap_dn'] . "\n", 3, $debug_path."auth.log");
 
 					if ($ldap_auth['ldap_ssl'])
 						$ldapuri = "ldaps://" ;
