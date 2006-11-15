@@ -18,20 +18,42 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	
+	# Init Logo table
+	
+	$tab_logo = array(	"HOST NOTIFICATION" => "./img/icones/16x16/mail_attachment.gif", 
+						"SERVICE NOTIFICATION" => "./img/icones/16x16/mail_attachment.gif",  
+						"HOST ALERT-UP" => "./img/icones/12x12/recovery.gif", 
+						"HOST ALERT-DOWN" => "./img/icones/12x12/alert.gif", 
+						"HOST ALERT-UNREACHABLE" => "./img/icones/12x12/alert.gif", 
+						"SERVICE ALERT-OK" => "./img/icones/12x12/recovery.gif",
+						"SERVICE ALERT-WARNING" => "./img/icones/12x12/alert.gif", 
+						"SERVICE ALERT-UNKNOWN" => "./img/icones/12x12/alert.gif", 
+						"SERVICE ALERT-CRITICAL" => "./img/icones/12x12/alert.gif", 
+						"EXTERNAL COMMAND" => "./img/icones/14x14/undo.gif", 
+						"CURRENT SERVICE STATE" => "./img/icones/12x12/info.gif", 
+						"CURRENT HOST STATE" => "./img/icones/12x12/info.gif");	
+	
 	$lcaHostByName = getLcaHostByName($pearDB);
 	
 	function getLogData($time_event, $host, $service, $status, $output, $type){
 		global $lang;
+		global $tab_logo;
 		$tab["time"] = date($lang["header_format"], $time_event);
 		$tab["host"] = $host;
 		$tab["service"] = $service;
 		$tab["status"] = $status;
 		$tab["output"] = $output;
 		$tab["type"] = $type;
+		
+				if(!strncmp($type, "SERVICE ALERT", 13) || !strncmp($type, "HOST ALERT", 13))
+					$tab["logo"] = $tab_logo[$type ."-".$status];
+
 		return $tab ;
 	}
 
 	include("./include/monitoring/log/choose_log_file.php");
+
+
 
 	$log = NULL;	
 	$tab_log = array();	
@@ -49,6 +71,10 @@ For information : contact@oreon-project.org
 				if (isset($res[1])) 
 					$res1 = preg_split("/;/", $res[1]);			
 				$type = $res[0];
+				
+
+				
+				
 				if (isset($_POST["host"]) && strlen($_POST["host"])) {
 					$res1[0] = str_replace(" ", "", $res1[0]);
 					if (!strncmp($type, "HOST ALERT", 10) && !strcmp($_POST["host"], $res1[0]) && IsHostReadable($lcaHostByName, $res1[0]))

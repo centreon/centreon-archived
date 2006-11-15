@@ -29,7 +29,7 @@
 		{foreach item=tb from=$tab_log}
 		{if $tb.type == "HOST ALERT"}
 		<tr class={cycle values="list_two, list_one"}>
-			<td class="ListColHeaderCenter"><img src='./img/icones/12x12/alert.gif'></td>
+			<td class="ListColHeaderCenter"><img src='{$tb.logo}'></td>
 			<td class="ListColLeft">{$tb.time}</td>
 			<td class="ListColLeft">{$tb.type}</td>
 			<td class="ListColLeft">{$tb.host}</td>
@@ -52,7 +52,7 @@
 		{foreach item=tb1 from=$tab_log}
 		{if $tb1.type == "SERVICE ALERT"}
 		<tr class={cycle values="list_two, list_one"}>
-			<td class="ListColHeaderCenter"><img src='./img/icones/12x12/alert.gif'></td>
+			<td class="ListColHeaderCenter"><img src='{$tb1.logo}'></td>
 			<td class="ListColLeft">{$tb1.time}</td>
 			<td class="ListColLeft">{$tb1.type}</td>
 			<td class="ListColLeft">{$tb1.host}</td>
