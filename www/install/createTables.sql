@@ -808,6 +808,7 @@ CREATE TABLE `general_opt` (
   `debug_rrdtool` enum('0','1') default NULL,
   `debug_ldap_import` enum('0','1') default NULL,
   `debug_inventory` enum('0','1') default NULL,
+  `gmt` int(11) NOT NULL default '0',
   PRIMARY KEY  (`gopt_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -280,3 +280,5 @@ UPDATE `topology` SET `topology_order` = '10' WHERE `topology_page` = '40202' LI
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_general', './img/icones/16x16/lock_new.gif', 502, 50201, 10, 1, './include/options/LCA/define/lca.php', NULL, '0', '0', '1');
 
 
+
+ALTER TABLE `general_opt` ADD `gmt` INT NOT NULL DEFAULT '0';
