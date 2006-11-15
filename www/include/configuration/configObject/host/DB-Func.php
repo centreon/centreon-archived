@@ -154,8 +154,20 @@ For information : contact@oreon-project.org
 								$serviceNbr[$service["service_service_id"]] = 1;
 							}
 						}
-						# Duplicate the Service list
-						multipleServiceInDB($serviceArr, $serviceNbr, $hostInf);							
+						# Register Host -> Duplicate the Service list
+						if ($row["host_register"])
+							multipleServiceInDB($serviceArr, $serviceNbr, $hostInf);
+						# Host Template -> Link to the existing Service Template List
+						else	{
+							$res =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
+							if (PEAR::isError($res))
+								print "Mysql Error : ".$res->getMessage();
+							while($res->fetchInto($svs)){
+								$res1 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$svs["service_service_id"]."')");
+								if (PEAR::isError($res1))
+									print "Mysql Error : ".$res1->getMessage();
+							}
+						}
 						$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($res))
 							print "Mysql Error : ".$res->getMessage();
