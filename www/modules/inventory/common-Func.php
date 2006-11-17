@@ -153,7 +153,7 @@ For information : contact@oreon-project.org
 	    	$res =& $pearDB->query("UPDATE `inventory_index` SET `os_revision` = '".$RomVersion."' WHERE `host_id` = '".$host_id."' LIMIT 1 ;") ;
     		$res =& $pearDB->query("INSERT INTO `inventory_log` (`id`, `host_id`, `type`, `replaced_value`, `value`, `ctime`) VALUES ('', '".$host_id."', 'os_revision', '".$rLC["os_revision"]."', '".$RomVersion."', '".time()."')");
     	}
-    	if ($debug) print "update -> $sysName \n";
+
     }
 
 
