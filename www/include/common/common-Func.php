@@ -349,6 +349,24 @@ For information : contact@oreon-project.org
 		}
 	}
 
+	function getMyServiceAlias($service_id = NULL)	{
+		if (!$service_id) return;
+		global $pearDB;
+		while(1)	{
+			$res =& $pearDB->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($pearDB)) {
+				print "Mysql Error : ".$pearDB->getMessage();
+			}
+			$row =& $res->fetchRow();
+			if ($row["service_alias"])
+				return $row["service_alias"];
+			else if ($row["service_template_model_stm_id"])
+				$service_id = $row["service_template_model_stm_id"];
+			else
+				break;
+		}
+	}
+
 	function getMyServiceGraphID($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
