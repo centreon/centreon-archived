@@ -192,6 +192,8 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'information', $lang['sv_infos']);
 
 	$form->addElement('text', 'service_description', $lang["sv_description"], $attrsText);
+	$form->addElement('text', 'service_alias', $lang["sv_alias"], $attrsText);
+	$form->addElement('header', 'service_alias_interest', $lang["sv_alias_interest"], $attrsText);
 
 	$form->addElement('select', 'service_template_model_stm_id', $lang['stm_template'], $svTpls);
 	$form->addElement('static', 'tplText', $lang['stm_templateText']);
@@ -416,17 +418,20 @@ For information : contact@oreon-project.org
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
 	}
+	function myReplaceAlias()	{
+		global $form;
+		return (str_replace(" ", "_", $form->getSubmitValue("service_alias")));
+	}
 	$form->applyFilter('_ALL_', 'trim');
 	$form->applyFilter('service_description', 'myReplace');
+	$form->applyFilter('service_alias', 'myReplaceAlias');
 	$form->addRule('service_description', $lang['ErrName'], 'required');
+	$form->addRule('service_alias', $lang['ErrName'], 'required');
 
 	$form->registerRule('exist', 'callback', 'testServiceTemplateExistence');
 	$form->addRule('service_description', $lang['ErrAlreadyExist'], 'exist');
 
 	$form->setRequiredNote($lang['requiredFields']);
-
-
-
 
 	#
 	##End of form definition

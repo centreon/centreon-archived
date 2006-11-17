@@ -211,6 +211,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'information', $lang['sv_infos']);
 
 	$form->addElement('text', 'service_description', $lang["sv_description"], $attrsText);
+	$form->addElement('text', 'service_alias', $lang["sv_alias"], $attrsText);
 
 	$form->addElement('select', 'service_template_model_stm_id', $lang['sv_template'], $svTpls);
 	$form->addElement('static', 'tplText', $lang['sv_templateText']);

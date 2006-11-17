@@ -282,3 +282,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 
 ALTER TABLE `general_opt` ADD `gmt` INT NOT NULL DEFAULT '0';
+
+-- 17/11/2006
+ALTER TABLE `service` ADD `service_alias` VARCHAR( 255 ) NULL AFTER `service_description` ;

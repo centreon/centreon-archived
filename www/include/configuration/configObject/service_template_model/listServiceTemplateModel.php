@@ -49,15 +49,16 @@ $pagination = "maxViewConfiguration";
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_desc", $lang['stm']);
+	$tpl->assign("headerMenu_alias", $lang['sv_alias']);
 	$tpl->assign("headerMenu_parent", $lang['stm_parent']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Service Template Model list
 	if ($search)
-		$rq = "SELECT @tplPar:=(SELECT service_description FROM service WHERE service_id = sv.service_template_model_stm_id) AS tplPar, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @tplPar:=(SELECT service_description FROM service WHERE service_id = sv.service_template_model_stm_id) AS tplPar, sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT @tplPar:=(SELECT service_description FROM service WHERE service_id = sv.service_template_model_stm_id) AS tplPar, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @tplPar:=(SELECT service_description FROM service WHERE service_id = sv.service_template_model_stm_id) AS tplPar, sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
 	if (PEAR::isError($pearDB)) {
 		print "Mysql Error : ".$pearDB->getMessage();
@@ -84,6 +85,7 @@ $pagination = "maxViewConfiguration";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_desc"=>$service["service_description"],
+						"RowMenu_alias"=>$service["service_alias"],
 						"RowMenu_parent"=>$service["service_template_model_stm_id"] ? $service["tplPar"] :  $lang["no"],
 						"RowMenu_link"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_status"=>$service["service_activate"] ? $lang['enable'] : $lang['disable'],

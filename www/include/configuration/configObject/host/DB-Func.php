@@ -156,7 +156,7 @@ For information : contact@oreon-project.org
 						}
 						# Register Host -> Duplicate the Service list
 						if ($row["host_register"])
-							multipleServiceInDB($serviceArr, $serviceNbr, $hostInf);
+							multipleServiceInDB($serviceArr, $serviceNbr, $hostInf, 0);
 						# Host Template -> Link to the existing Service Template List
 						else	{
 							$res =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
@@ -594,9 +594,10 @@ For information : contact@oreon-project.org
 		while (1)	{
 			$res =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
 			while ($res->fetchInto($row))	{
-				$desc =& getMyServiceName($row["service_service_id"]);
-				if (testServiceExistence ($desc, array(0=>$host_id)))	{
-					$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $desc, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
+				//$desc =& getMyServiceName($row["service_service_id"]);
+				$alias =& getMyServiceAlias($row["service_service_id"]);
+				if (testServiceExistence ($alias, array(0=>$host_id)))	{
+					$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
 					$service_id = insertServiceInDB($service);		
 					$rq = "INSERT INTO host_service_relation ";
 					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";

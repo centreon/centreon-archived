@@ -1456,6 +1456,7 @@ CREATE TABLE `service` (
   `timeperiod_tp_id2` int(11) default NULL,
   `purge_policy_id` int(11) default NULL,
   `service_description` varchar(200) default NULL,
+  `service_alias` varchar(255) default NULL,
   `service_is_volatile` enum('0','1','2') default '2',
   `service_max_check_attempts` int(11) default NULL,
   `service_normal_check_interval` int(11) default NULL,

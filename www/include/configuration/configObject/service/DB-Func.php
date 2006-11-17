@@ -132,7 +132,8 @@ For information : contact@oreon-project.org
 		}
 	}
 	
-	function multipleServiceInDB ($services = array(), $nbrDup = array(), $host = NULL)	{
+	function multipleServiceInDB ($services = array(), $nbrDup = array(), $host = NULL, $descKey = 1)	{
+		# $descKey param is a flag. If 1, we know we have to rename description because it's a traditionnal duplication. If 0, we don't have to, beacause we duplicate services for an Host duplication
 		# Foreach Service
 		foreach($services as $key=>$value)	{
 			global $pearDB;
@@ -148,10 +149,12 @@ For information : contact@oreon-project.org
 				$val = null;
 				# Create a sentence which contains all the value
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "service_description" ? ($service_description = $value2 = $value2."_".$i) : $service_description = null;
+					if ($key2 == "service_description" && $descKey)
+						$service_description = $value2 = $value2."_".$i;
+					else if ($key2 == "service_description")
+						$service_description = NULL;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-
 				$h = array('0' => $key);
 
 				if (($row["service_register"] && testServiceExistence($service_description, $h)) || (!$row["service_register"] && testServiceTemplateExistence($service_description)))	{
@@ -262,7 +265,7 @@ For information : contact@oreon-project.org
 		}
 		$rq = "INSERT INTO service " .
 				"(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, purge_policy_id, " .
-				"service_description, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, " .
+				"service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, " .
 				"service_passive_checks_enabled, service_parallelize_check, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
 				"service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
 				"service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
@@ -275,6 +278,7 @@ For information : contact@oreon-project.org
 				isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 				isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 				isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+				isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 				isset($ret["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 				isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL ? $rq .= "'".$ret["service_max_check_attempts"]."', " : $rq .= "NULL, ";
 				isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL ? $rq .= "'".$ret["service_normal_check_interval"]."', ": $rq .= "NULL, ";
@@ -373,6 +377,8 @@ For information : contact@oreon-project.org
 		isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
 		$rq .= "service_description = ";
 		isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "service_alias = ";
+		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "service_is_volatile = ";
 		isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 		$rq .= "service_max_check_attempts = ";
