@@ -36,8 +36,9 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
   </tr>
 
 <?
-  foreach ($pear_module as $module) {
-  $msg = NULL;
+$msg = NULL;  
+foreach ($pear_module as $module) {
+  
 ?>
    <tr>
     <td><b>&nbsp;&nbsp;&nbsp;<? echo $module["name"] ?></b></td>
