@@ -18,6 +18,7 @@
  	<tr class="list_two"><td class="FormRowField">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
  </table>
 {if !$valid}
 	<div id="validForm">

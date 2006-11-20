@@ -62,6 +62,7 @@ For information : contact@oreon-project.org
 	}
 
 	function updateGeneralOpt($gopt_id = null)	{
+		
 		if (!$gopt_id) return;
 		global $form;
 		global $pearDB;
@@ -140,6 +141,10 @@ For information : contact@oreon-project.org
 		isset($ret["AjaxFirstTimeReloadMonitoring"]) && $ret["AjaxFirstTimeReloadMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "AjaxFirstTimeReloadStatistic = ";
 		isset($ret["AjaxFirstTimeReloadStatistic"]) && $ret["AjaxFirstTimeReloadStatistic"] != NULL ? $rq .= "'".htmlentities($ret["AjaxFirstTimeReloadStatistic"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+
+		$rq .= "gmt = ";
+		isset($ret["gmt"]) && $ret["gmt"] != NULL ? $rq .= "'".htmlentities($ret["gmt"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+
 
 		$rq .= "template = ";
 		isset($ret["template"]) && $ret["template"] != NULL ? $rq .= "'".htmlentities($ret["template"], ENT_QUOTES)."', ": $rq .= "NULL, ";

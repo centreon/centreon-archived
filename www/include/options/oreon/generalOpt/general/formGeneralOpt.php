@@ -66,6 +66,9 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', $lang["genOpt_AjaxFirstTimeReloadStatistic"], $attrsText2);
 	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', $lang["genOpt_AjaxFirstTimeReloadMonitoring"], $attrsText2);
 
+	$form->addElement('text', 'gmt', $lang["genOpt_gmt"], $attrsText2);
+
+
 	$templates = array();
 	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
 		while ($file = @readdir($handle))
