@@ -125,6 +125,8 @@ $lang["genOpt_problem_sort_order"] = "Trier les probl&egrave;mes par ordre ";
 $lang["genOpt_problem_order_asc"] = "Ascendant";
 $lang["genOpt_problem_order_desc"] = "Descendant";
 
+$lang["genOpt_gmt"] = "GMT";
+
 # Menu
 
 $lang['menu_infos'] = "Informations sur le Menu";
