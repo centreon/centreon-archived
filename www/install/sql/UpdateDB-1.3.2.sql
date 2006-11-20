@@ -279,9 +279,11 @@ UPDATE `topology` SET `topology_order` = '20' WHERE `topology_page` = '40201' LI
 UPDATE `topology` SET `topology_order` = '10' WHERE `topology_page` = '40202' LIMIT 1 ;
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_general', './img/icones/16x16/lock_new.gif', 502, 50201, 10, 1, './include/options/LCA/define/lca.php', NULL, '0', '0', '1');
 
+-- beta 3
 
-
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', '6', 'a', './include/common/javascript/changetab.js', ' initChangeTab');
 ALTER TABLE `general_opt` ADD `gmt` INT NOT NULL DEFAULT '0';
 
 -- 17/11/2006
+
 ALTER TABLE `service` ADD `service_alias` VARCHAR( 255 ) NULL AFTER `service_description` ;
