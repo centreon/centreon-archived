@@ -21,9 +21,7 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	#
-	## Database retrieve information for LCA
-	#
+
 	$res =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
 	$gopt = array_map("myDecode", $res->fetchRow());
