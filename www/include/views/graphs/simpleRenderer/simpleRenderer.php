@@ -298,7 +298,7 @@ For information : contact@oreon-project.org
 				# Mise en memoire des valeurs remontees de la base de donnees MySQL
 				# Init Lower Value
 				$time_start_mysql = microtime_float();
-				$GMT = 0;
+				$GMT = 1;
 				$lower = 0;
 				$tab_bin = array();
 				foreach ($ppMetrics as $key => $value){
