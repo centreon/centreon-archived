@@ -1,5 +1,4 @@
 {$form.javascript}
-<script type="text/javascript" src="include/configuration/changetab.js"></script>
 <div>
 	<form {$form.attributes}>
 	<table id="ListTableSmall" align="right">
