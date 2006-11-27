@@ -122,7 +122,7 @@ For information : contact@oreon-project.org
 	    }
 	 
 	    function int2array ($seconds, $periods = null)
-	    {        
+	    {
 	        // Define time periods
 	        if (!is_array($periods)) {
 	            $periods = array (
@@ -135,7 +135,7 @@ For information : contact@oreon-project.org
 	                    's' => 1
 	                    );
 	        }
-	 
+
 	        // Loop
 	        $seconds = (int) $seconds;
 	        foreach ($periods as $period => $value) {
@@ -181,13 +181,14 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 
 	$_GET["sort_types"] = $sort_type;
 	$_GET["order"] = $order;
-$_GET["o"] = "svcpb";
+	$_GET["o"] = "svcpb";
 
 	$_GET["sort_typeh"] = $sort_type;
 
 
 	$buffer = null;
-	$buffer  = '<?xml version="1.0"?>';
+	$buffer  = '<?xml version="1.0" encoding="ISO-8859-1"?>';
+
 	$buffer .= '<reponse>';
 
 	$ntime = $time;
@@ -203,53 +204,24 @@ $_GET["o"] = "svcpb";
 	$buffer .= '</infos>';
 
 
-
-
 	if( filectime($file) > $time){		
 		$oreon = "titi";
 
-
 		include("../load_status_log.php");
-/*
-					$buffer .= '<line>';
-					$buffer .= '<order>1</order>';
-					$buffer .= '<flag>1</flag>';
-					$buffer .= '<host_name>1</host_name>';
-					$buffer .= '<service_description>1</service_description>';
-					$buffer .= '<current_state>1</current_state>';
-					$buffer .= '<plugin_output>1</plugin_output>';
-					$buffer .= '<current_attempt>1</current_attempt>';
-					$buffer .= '<notifications_enabled>1</notifications_enabled>';
-					$buffer .= '<problem_has_been_acknowledged>1</problem_has_been_acknowledged>';
-					$buffer .= '<accept_passive_check>1</accept_passive_check>';
-					$buffer .= '<accept_active_check>1</accept_active_check>';
-					$buffer .= '<event_handler_enabled>1</event_handler_enabled>';
-					$buffer .= '<is_flapping>1</is_flapping>';
-					$buffer .= '<flap_detection_enabled>1</flap_detection_enabled>';
-					$buffer .= '<last_check>1</last_check>';
-					$buffer .= '<last_state_change>1</last_state_change>';
-					$buffer .= '</line>';
-*/
-
 
 		$mtab = array();
 		$mtab = explode(',', $arr);
 
 		#
 		## calcul stat for statistic
-		#
-		
+		#		
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
-		
-
 		
 		#
 		## services infos
 		#
-
-		if (isset($service_status) &&  ($type == "service" || $type == "service_problem")){
-			
+		if (isset($service_status) &&  ($type == "service" || $type == "service_problem")){			
 			$gtab = array();
 			for($a=0,$b=1; sizeof($mtab) > $b;$a+=2,$b+=2)
 				$gtab[$mtab[$a] . $mtab[$b]] = $a / 2 + $a % 2;
@@ -287,7 +259,11 @@ $_GET["o"] = "svcpb";
 					$MyLog .= "flag=" . $flag . " host=" . $svc["host_name"] . " svc=" . $svc["service_description"]  . "\n";
 					$passive = ($svc["passive_checks_enabled"] && $svc["active_checks_enabled"] == 0) ? 1 : 0;
 					$active = ($svc["passive_checks_enabled"] == 0 && $svc["active_checks_enabled"] == 0) ? 1 : 0;										
-					$plugin_output = ($svc["plugin_output"]) ? htmlentities($svc["plugin_output"]) : " ";					
+//					$plugin_output = ($svc["plugin_output"]) ? htmlentities($svc["plugin_output"]) : " ";					
+					$plugin_output = ($svc["plugin_output"]) ? $svc["plugin_output"] : " N/A ";
+
+					//$plugin_output = utf8_encode($plugin_output);
+
 					$buffer .= '<line>';
 					$buffer .= '<order>'. $ct++ . '</order>';
 					$buffer .= '<flag>'. $flag . '</flag>';
@@ -319,7 +295,7 @@ $_GET["o"] = "svcpb";
 		}
 	}
 	
-	$buffer = html_entity_decode($buffer);
+//	$buffer = html_entity_decode($buffer);
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
@@ -364,8 +340,10 @@ if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtim
 	}
 }
 
+/*
 if(!$flag)
 	exit(1);
+*/
 
 if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"])){
 	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
@@ -373,7 +351,7 @@ if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && is
 
 else if(isset($_GET["time"])&& isset($_GET["arr"]) && isset($_GET["type"])  && isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])&& isset($_GET["num"])&& isset($_GET["search"]) && isset($_GET["limit"])&& isset($_GET["order"])&& isset($_GET["sort_type"])&& isset($_GET["search_type_service"])&& isset($_GET["search_type_host"])&& isset($_GET["date_time_format_status"]))
 {
-//	read($_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
+	read($_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
 }
 
 else {
