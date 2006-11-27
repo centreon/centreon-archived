@@ -19,18 +19,19 @@ For information : contact@oreon-project.org
 */
 
 	$date = date("d/m/Y");
+
 	if (isset($msg_error))
-		echo "<div style='padding-top: 10px;' class='text12bc'>$msg_error</div>";
+		echo "<div style='padding-top: 60px;'>$msg_error</span></div>";
 	else if (isset($_POST["submit"]))
-		echo "<div style='padding-top: 10px;' class='text12bc'>Invalid user</div>";
+		echo "<div style='padding-top: 60px;'<span class='msg'>Invalid user</span></div>";
 	?>  
-	<form action="./index.php" method="post" name="login">
-	<?
-		if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2)
-			print "<center><span class='msg'>Session Expired.</span></center>";
-		if ($file_install_acces)
-			print "<center><span class='msg'>$error_msg</span></center>";
-	?>
+<form action="./index.php" method="post" name="login">
+<?
+	if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2)
+		print "<div style='padding-top: 60px;'><span class='msg'>Session Expired.</span></div>";
+	if ($file_install_acces)
+		print "<div style='padding-top: 60px;'><span class='msg'>$error_msg</span></div>";
+?>
 <div id="LoginInvit">
 	<table id="logintab1">
 		<tr>
@@ -67,7 +68,3 @@ For information : contact@oreon-project.org
 	</table>
 </form>
 </div>
-
-
-<?
-?>

@@ -206,13 +206,18 @@ For information : contact@oreon-project.org
 			}
 		}
 	}
+	
+	$res =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+	$res->fetchInto($data);
+	$skin = "./Themes/".$data["template"]."/";
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <title>Oreon, Revisited Experience Of Nagios</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="./Themes/Soft_Color/login.css" rel="stylesheet" type="text/css">
+<link href="<? echo $skin; ?>login.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="./img/iconOreon.ico">
 </head>
 <body OnLoad="document.login.useralias.focus();">
