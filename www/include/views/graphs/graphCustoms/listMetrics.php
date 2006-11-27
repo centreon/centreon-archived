@@ -51,7 +51,6 @@ For information : contact@oreon-project.org
 				}
 			}
 		}
-		
 		$res->free();
 	}
 		
@@ -59,8 +58,7 @@ For information : contact@oreon-project.org
 		updateMetricsInDB($compo_id);
 		$o = "cm";
 		$compo_id = NULL;
-	}	
-	else if (isset($_POST["submitA"]) && $_POST["submitA"] && $form1->validate())	{
+	} else if (isset($_POST["submitA"]) && $_POST["submitA"] && $form1->validate())	{
 		insertMetricsInDB();
 	}
 	
@@ -132,16 +130,19 @@ For information : contact@oreon-project.org
 			$res->free();		
 		}
 		
-		# Perfparse OSL comes from DB -> Store in $ppOSLs Array
+		/*# Perfparse OSL comes from DB -> Store in $ppOSLs Array
 		$ppOSLs = array(NULL=>NULL);
 		$res =& $pearDBpp->query("SELECT DISTINCT service_description FROM perfdata_service_metric WHERE host_name = 'OSL_Module' ORDER BY service_description");
-		while($res->fetchInto($ppOSL))	{
-			$id = explode("_", $ppOSL["service_description"]);
-			$res2 =& $pearDB->query("SELECT name FROM osl WHERE osl_id = '".$id[1]."'");
-			$OSL =& $res2->fetchRow();
-			$ppOSLs[$ppOSL["service_description"]] = $OSL["name"];
-			$res2->free();
-		}
+		if ($res->numRows())
+			while($res->fetchInto($ppOSL))	{
+				$id = explode("_", $ppOSL["service_description"]);
+				$res2 =& $pearDB->query("SELECT name FROM osl WHERE osl_id = '".$id[1]."'");
+				if ($res2->numRows()){
+					$OSL =& $res2->fetchRow();
+					$ppOSLs[$ppOSL["service_description"]] = $OSL["name"];
+					$res2->free();
+				}
+			}
 		$res->free();
 		$ppServices4 = array();
 		if ($osl)	{
@@ -151,7 +152,7 @@ For information : contact@oreon-project.org
 				$ppServices4[$ppService["metric_id"]] = $ppService["metric"]."  (".$ppService["unit"].")";
 			$res->free();		
 		}
-	
+	*/
 	
 	$form1->addElement('header', 'title', $lang["mss_add"]);
 	$form1->addElement('select', 'host_name', $lang["h"], $ppHosts, array("onChange"=>"this.form.submit()"));
@@ -161,9 +162,9 @@ For information : contact@oreon-project.org
 	$form1->addElement('select', 'meta_service', $lang["ms"], $ppMSs, array("onChange"=>"this.form.submit()"));
 	$form1->addElement('select', 'metric_sel2', NULL, $ppServices3);
 	$form1->addElement('select', 'compot_2', $lang['giv_ct_name'], $compos);
-	$form1->addElement('select', 'osl', $lang["giv_sr_osl"], $ppOSLs, array("onChange"=>"this.form.submit()"));
-	$form1->addElement('select', 'metric_sel3', NULL, $ppServices4);
-	$form1->addElement('select', 'compot_3', $lang['giv_ct_name'], $compos);
+	//$form1->addElement('select', 'osl', $lang["giv_sr_osl"], $ppOSLs, array("onChange"=>"this.form.submit()"));
+	//$form1->addElement('select', 'metric_sel3', NULL, $ppServices4);
+	//$form1->addElement('select', 'compot_3', $lang['giv_ct_name'], $compos);
 	$form1->addElement('submit', 'submitA', $lang["save"]);
 	$form1->addElement('reset', 'reset', $lang["reset"]);
 
