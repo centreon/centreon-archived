@@ -17,7 +17,7 @@
 								<td class="left"></td>
 								<td class="center">
 								{if $c == 0 }
-									<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}'>&nbsp;{$main_menu}<br><br>
+									<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}' style='padding-bottom:2px;'>&nbsp;{$main_menu}<br><br>
 									{assign var="c" value="1"}
 								{/if}
 									<ul>
@@ -50,7 +50,7 @@
 		<tr class="middle">
 			<td class="left"></td>
 			<td class="center">
-				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}'>&nbsp;{$connected_users} <br><br>
+				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}' style='padding-bottom:2px;'>&nbsp;{$connected_users} <br><br>
   	             	<ul>
 	  	              { foreach item=user from=$tab_user }
 	  	             	{if $user.admin}
