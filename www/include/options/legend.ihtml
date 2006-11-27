@@ -1,15 +1,11 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <br /><br /><br />
 <div id="legend" align="center">
-
 <table id="tabLegend">
-
-<tr>
-<td>
-<img src="./img/icones/16x16/document_exchange.gif" border="0" alt="{$lang.duplicate}">
-&nbsp;=&nbsp;
-{$lang.lgd_duplicate}
-</td>
+	<tr>
+		<td>
+			<img src="./img/icones/16x16/document_exchange.gif" border="0" alt="{$lang.duplicate}">&nbsp;=&nbsp;{$lang.lgd_duplicate}
+		</td>
 
 <td>
 <img src="./img/icones/16x16/element_next.gif" border="0" alt="{$lang.duplicate}">
