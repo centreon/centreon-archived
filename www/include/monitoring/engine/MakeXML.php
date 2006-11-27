@@ -181,6 +181,10 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 
 	$_GET["sort_types"] = $sort_type;
 	$_GET["order"] = $order;
+$_GET["o"] = "svcpb";
+
+	$_GET["sort_typeh"] = $sort_type;
+
 
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
@@ -204,9 +208,28 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 	if( filectime($file) > $time){		
 		$oreon = "titi";
 
-//		include("ReloadForAjax_status_log.php");
-		include("../load_status_log.php");
 
+		include("../load_status_log.php");
+/*
+					$buffer .= '<line>';
+					$buffer .= '<order>1</order>';
+					$buffer .= '<flag>1</flag>';
+					$buffer .= '<host_name>1</host_name>';
+					$buffer .= '<service_description>1</service_description>';
+					$buffer .= '<current_state>1</current_state>';
+					$buffer .= '<plugin_output>1</plugin_output>';
+					$buffer .= '<current_attempt>1</current_attempt>';
+					$buffer .= '<notifications_enabled>1</notifications_enabled>';
+					$buffer .= '<problem_has_been_acknowledged>1</problem_has_been_acknowledged>';
+					$buffer .= '<accept_passive_check>1</accept_passive_check>';
+					$buffer .= '<accept_active_check>1</accept_active_check>';
+					$buffer .= '<event_handler_enabled>1</event_handler_enabled>';
+					$buffer .= '<is_flapping>1</is_flapping>';
+					$buffer .= '<flap_detection_enabled>1</flap_detection_enabled>';
+					$buffer .= '<last_check>1</last_check>';
+					$buffer .= '<last_state_change>1</last_state_change>';
+					$buffer .= '</line>';
+*/
 
 
 		$mtab = array();
@@ -253,20 +276,17 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 			$ct = 0;
 			$flag = 0;
 			
+			
+			
 			foreach ($service_status as $name => $svc)
-//				if(isset($gtab[$svc["host_name"] . $svc["description"]]))
-				{					
-
+				{
 					if((isset($gtab[$svc["host_name"] . $svc["service_description"]]) && $gtab[$svc["host_name"] . $svc["service_description"]] != $ct))
 						$flag = 1;
 					if(!isset($gtab[$svc["host_name"] . $svc["service_description"]]))
 						$flag = 1;
-
 					$MyLog .= "flag=" . $flag . " host=" . $svc["host_name"] . " svc=" . $svc["service_description"]  . "\n";
- 
 					$passive = ($svc["passive_checks_enabled"] && $svc["active_checks_enabled"] == 0) ? 1 : 0;
-					$active = ($svc["passive_checks_enabled"] == 0 && $svc["active_checks_enabled"] == 0) ? 1 : 0;
-										
+					$active = ($svc["passive_checks_enabled"] == 0 && $svc["active_checks_enabled"] == 0) ? 1 : 0;										
 					$plugin_output = ($svc["plugin_output"]) ? htmlentities($svc["plugin_output"]) : " ";					
 					$buffer .= '<line>';
 					$buffer .= '<order>'. $ct++ . '</order>';
@@ -274,7 +294,7 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 					$buffer .= '<host_name>'. $svc["host_name"] . '</host_name>';
 					$buffer .= '<service_description>'. $svc["service_description"] . '</service_description>';
 					$buffer .= '<current_state>'. $svc["current_state"] . '</current_state>';
-					$buffer .= '<plugin_output>'. $plugin_output . '</plugin_output>';
+					$buffer .= '<plugin_output>' . $plugin_output . '</plugin_output>';
 					$buffer .= '<current_attempt>'. $svc["current_attempt"] . '</current_attempt>';
 					$buffer .= '<notifications_enabled>'. $svc["notifications_enabled"] . '</notifications_enabled>';
 					$buffer .= '<problem_has_been_acknowledged>'. $svc["problem_has_been_acknowledged"] . '</problem_has_been_acknowledged>';
@@ -297,46 +317,30 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 					$buffer .= '</line>';
 				}
 		}
-		
 	}
 	
-	
-	
-	
-		
-	
-	
-	
-	
-	
-	
+	$buffer = html_entity_decode($buffer);
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
 
-
 	global $debug;
 	if($debug == 1){
-		
 		$file = "log.xml";
 		$inF = fopen($file,"w");
 		fwrite($inF,$buffer);
 		fclose($inF);
-		
 		$file = "log.txt";
 		$inF = fopen($file,"w");
 		fwrite($inF,"---log:\n ".$MyLog."\n\n");
-		
 		fwrite($inF,"sid:\n ".$sid."\n\n");
 		fwrite($inF,"uid:\n ".$uid."\n\n");
 		fwrite($inF,"admin:\n ".$IsAdmin."\n\n");
 		foreach($oreonLCA as $key => $h)
-			fwrite($inF,"lca h: ".$h."\n\n");	
-		
-		fwrite($inF,$buffer."log:\n----------\n\n");	
-		
+			fwrite($inF,"lca h: ".$h."\n\n");
+		fwrite($inF,$buffer."log:\n----------\n\n");
 		fclose($inF);
-	}	
+	}
 }
 
 #
@@ -349,7 +353,7 @@ if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtim
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
 	if($session =& $res->fetchRow()){
-		$flag = $_POST["slastreload"];		
+		$flag = $_POST["slastreload"];
 		if(time() - $_POST["slastreload"] > ($_POST["smaxtime"] / 4)){		
 			$flag = time();
 			$sql = "UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$_POST["sid"]."' LIMIT 1";
@@ -367,10 +371,9 @@ if(isset($_POST["time"]) && isset($_POST["arr"]) && isset($_POST["type"])  && is
 	read($_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
 }
 
-else if(isset($_GET["time"]) && isset($_GET["type"])  && isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])&& isset($_GET["num"])&& isset($_GET["search"]) && isset($_GET["limit"])&& isset($_GET["order"])&& isset($_GET["sort_type"])&& isset($_GET["search_type_service"])&& isset($_GET["search_type_host"])&& isset($_GET["date_time_format_status"]))
+else if(isset($_GET["time"])&& isset($_GET["arr"]) && isset($_GET["type"])  && isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])&& isset($_GET["num"])&& isset($_GET["search"]) && isset($_GET["limit"])&& isset($_GET["order"])&& isset($_GET["sort_type"])&& isset($_GET["search_type_service"])&& isset($_GET["search_type_host"])&& isset($_GET["date_time_format_status"]))
 {
-//	read($_GET["time"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
-	read($_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
+//	read($_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
 }
 
 else {
