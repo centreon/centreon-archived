@@ -384,7 +384,8 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 }
 
 .consol_button{
-float:left;
+	float:left;
+	margin-top:3px;
 }
 #JS_monitoring_toolbar{
 	float:right;
