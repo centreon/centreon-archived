@@ -183,7 +183,7 @@ function read($time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$
 	$_GET["order"] = $order;
 	$_GET["o"] = "svcpb";
 
-	$_GET["sort_typeh"] = $sort_type;
+	$_GET["sort_typeh"] = 0;
 
 
 	$buffer = null;
