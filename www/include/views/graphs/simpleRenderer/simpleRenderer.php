@@ -216,6 +216,12 @@ For information : contact@oreon-project.org
 
 		# OK go create Graphs and database
 		if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])) || isset($_GET["meta_service"])) && $case)	{
+			# Verify if template exists
+			$res =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
+			if (!$res->numRows()){
+				print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
+			}
+								
 			# Init variable in the page
 			$label = NULL;
 			$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
@@ -301,6 +307,8 @@ For information : contact@oreon-project.org
 				$GMT = 1;
 				$lower = 0;
 				$tab_bin = array();
+				if (isset($GET["step"]) && $ret["step"] == 0)
+					$ret["step"] = 1; 
 				foreach ($ppMetrics as $key => $value){
 					$get = 	"SELECT SQL_BIG_RESULT HIGH_PRIORITY value,ctime FROM `perfdata_service_bin` WHERE `host_name` = '".$ret["host_name"]."' ".
 							"AND `service_description` = '".$ret["service_description"]."' AND `metric` = '".$value["metric"]."' ".

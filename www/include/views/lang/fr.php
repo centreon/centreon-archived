@@ -163,4 +163,8 @@ $lang["m_host_graph"] = "Graphs par Hosts";
 $lang["giv_hg_nbGraph"] = "Nombre de graphs";
 $lang["giv_db_unavailable"] = "Base de donn&eacute;es Inexistante";
 
+# No template
+
+$lang["no_graphtpl"] = "Vous n\'avez pas de mod&egrave;le de graphs : Pensez &agrave; en ajouter un pour voir le graph s\'afficher.";
+
 ?>

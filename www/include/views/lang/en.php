@@ -161,6 +161,10 @@ $lang['giv_ct_invert'] = 'Invert';
 
 $lang["m_host_graph"] = "Graphs By Hosts";
 $lang["giv_hg_nbGraph"] = "Nomber of graphs";
-
 $lang["giv_db_unavailable"] = "Database unavailable";
+
+# No template
+
+$lang["no_graphtpl"] = "There aren't graphs template : please configure your graphs template to show correctly graphs.";
+
 ?>
