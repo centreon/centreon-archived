@@ -231,15 +231,15 @@ For information : contact@oreon-project.org
 	}
 	
 	if (isset($_GET["sort_types"]) && $_GET["sort_types"]){
-	  foreach ($service_status as $key => $row)
-	    $row_data[$key] = $row[$_GET["sort_types"]];
-	  !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $service_status) : array_multisort($row_data, SORT_DESC, $service_status);
+	  	foreach ($service_status as $key => $row)
+	  		$row_data[$key] = $row[$_GET["sort_types"]];
+	  	 if (count($service_status) > 1)
+	  	 	!strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $service_status) : array_multisort($row_data, SORT_DESC, $service_status);
 	}
 
-	if (isset($_GET["sort_typeh"]) && $_GET["sort_typeh"]){
-	  foreach ($host_status as $key => $row)
-	    $row_data[$key] = $row[$_GET["sort_typeh"]];
-	  !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
+	if (isset($_GET["sort_typeh"]) && $_GET["sort_typeh"] && count($host_status) > 2){
+		foreach ($host_status as $key => $row)
+	    	$row_data[$key] = $row[$_GET["sort_typeh"]];
+	    !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
 	}
-	
 ?>
