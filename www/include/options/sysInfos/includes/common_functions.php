@@ -1,4 +1,4 @@
-<?php 
+<?
 // phpSysInfo - A PHP System Information Script
 // http://phpsysinfo.sourceforge.net/
 // This program is free software; you can redistribute it and/or

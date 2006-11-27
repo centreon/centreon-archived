@@ -65,8 +65,8 @@ For information : contact@oreon-project.org
 	
 	$ppHosts = array(NULL=>NULL);
 	$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
-	if (PEAR::isError($pearDBpp))
-		print "Mysql Error : ".$pearDBpp->getMessage();
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while($res->fetchInto($ppHost))
 		if (IsHostReadable($lcaHostByName, $ppHost["host_name"]) && isset($hostsInOreon[$ppHost["host_name"]]))
 			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"];
@@ -74,8 +74,8 @@ For information : contact@oreon-project.org
 
 	$graphTs = array(NULL=>NULL);
 	$res =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
-	if (PEAR::isError($pearDB))
-		print "Mysql Error : ".$pearDB->getMessage();
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while($res->fetchInto($graphT))
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
 	$res->free();
@@ -86,8 +86,8 @@ For information : contact@oreon-project.org
 	if ($host_name && ($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$host_name]))))	{
 		$ppServices = array(NULL=>NULL);
 		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, service_description, metric, unit FROM perfdata_service_metric WHERE host_name = '".$host_name."' ORDER BY host_name");
-		if (PEAR::isError($pearDBpp))
-			print "Mysql Error : ".$pearDBpp->getMessage();
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		while($res->fetchInto($ppService))
 			$ppServices1[$ppService["service_description"]] = $ppService["service_description"];
 		$res->free();
@@ -96,8 +96,8 @@ For information : contact@oreon-project.org
 	# Perfparse Meta Services comes from DB -> Store in $ppMSs Array
 	$ppMSs = array(NULL=>NULL);
 	$res =& $pearDBpp->query("SELECT DISTINCT service_description FROM perfdata_service_metric WHERE host_name = 'Meta_Module' ORDER BY service_description");
-	if (PEAR::isError($pearDBpp))
-		print "Mysql Error : ".$pearDBpp->getMessage();
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
 	while($res->fetchInto($ppMS))	{
 		$id = explode("_", $ppMS["service_description"]);
 		$res2 =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$id[1]."'");
@@ -184,13 +184,13 @@ For information : contact@oreon-project.org
 		$nb_rsp = 0;
 	if (isset($_GET["service_description"]) && $_GET["service_description"]){
 		$verify =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' AND service_description = '".str_replace(" ", "\ ", $_GET["service_description"])."'");
-		if (PEAR::isError($pearDBpp))
-			print "Mysql Error : ".$pearDBpp->getMessage();
+		if (PEAR::isError($res))
+			print "Mysql Error : ".$res->getMessage();
 		$nb_rsp = $verify->numRows();
 	} else if (isset($_GET["meta_service"]) && $_GET["meta_service"]){
 		$verify =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = 'Meta_Module' AND service_description = '".$_GET["meta_service"]."'");
-		if (PEAR::isError($pearDBpp))
-			print "Mysql Error : ".$pearDBpp->getMessage();
+		if (PEAR::isError($verify))
+			print "Mysql Error : ".$verify->getMessage();
 		$nb_rsp = $verify->numRows();
 	}
 
@@ -252,8 +252,8 @@ For information : contact@oreon-project.org
 			$cpt_total_graphed_values = 0;
 			$res =& $pearDBpp->query(	"SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric " .
 										"WHERE host_name = '".$ret["host_name"]."' AND service_description = '".$ret["service_description"]."'");
-			if (PEAR::isError($pearDBpp))
-				print "Mysql Error : ".$pearDBpp->getMessage();
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
 			if ($res->numRows()){
 				# Delete Old DataBase
 				if (file_exists($oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd"))
@@ -306,8 +306,8 @@ For information : contact@oreon-project.org
 							"AND `service_description` = '".$ret["service_description"]."' AND `metric` = '".$value["metric"]."' ".
 							"AND `ctime` >= '".date("Y-m-d G:i:s", $start)."' AND `ctime` <= '".date("Y-m-d G:i:s", $end)."' ORDER BY ctime";
 	 				$req =& $pearDBpp->query($get);
-	 				if (PEAR::isError($pearDBpp))
-	 					print "Mysql Error : ".$pearDBpp->getMessage();
+	 				if (PEAR::isError($req))
+	 					print "Mysql Error : ".$req->getMessage();
 					$r = $str = NULL;
 					for ($cpt = 0,$cpt_real = 0;$r =& $req->fetchRow();$cpt++){
 						preg_match("/^([0-9]*)-([0-9]*)-([0-9]*) ([0-9]*):([0-9]*):([0-9]*)/", $r["ctime"], $matches);
