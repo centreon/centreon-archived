@@ -218,9 +218,8 @@ For information : contact@oreon-project.org
 		if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])) || isset($_GET["meta_service"])) && $case)	{
 			# Verify if template exists
 			$res =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
-			if (!$res->numRows()){
+			if (!$res->numRows())
 				print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
-			}
 								
 			# Init variable in the page
 			$label = NULL;

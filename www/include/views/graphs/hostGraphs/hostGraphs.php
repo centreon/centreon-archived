@@ -135,6 +135,10 @@ For information : contact@oreon-project.org
 
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		if ($form->validate())	{
+			# Verify if template exists
+			$res =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
+			if (!$res->numRows())
+				print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
 			$ret = $form->getsubmitValues();
 			$i = 0;
 			$rrd = array();
