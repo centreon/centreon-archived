@@ -1,3 +1,11 @@
+## Oreon 1.3.2
+
+=> BugFix : delete unused javascript on eventlog page
+=> BugFix : coreecte byg on id cards.
+=> BugFix : remove bug on ajax reloading
+=> BugFix : ACL in ajax reloading engine
+=> Feature : Add picture for help and logout link.
+
 ## Oreon 1.3.2-b2
 
 => Feature : add host arguments for check and event handler
