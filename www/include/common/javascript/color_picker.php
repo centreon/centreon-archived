@@ -1,4 +1,4 @@
-<?php
+<?
 $n ="";
 $name ="";
 $title ="";
@@ -138,10 +138,8 @@ $name2 = $n."_color";
 	
 	</script>
 </head>
-
 <body>
    <form name="colpick_form" action="#" method="post">
-
 	<h2><? echo $title; ?></h2>
 	<h3><? echo $name; ?></h3>
 	<table border="0" cellspacing="0" cellpadding="0" align="center">
@@ -181,7 +179,6 @@ $name2 = $n."_color";
 					
 					</script>
 				</table>
-
 			</td>
 		</tr>
 	</table>
@@ -189,14 +186,9 @@ $name2 = $n."_color";
 	<table align="center">
 		<tr valign="center">
 			<td><input type="button" name="btn_choose_color" value="&nbsp;" style="background-color:#000000; border-color:#000000; width:100px; height:35px;"></td>
-
 			<td><input type="button" name="btn_ok" value="Ok" style="width:70px" onclick="send_color();"></td>
 		</tr>
-		
 	</table>
 	</form>
-
 </body>
 </html>
-
-

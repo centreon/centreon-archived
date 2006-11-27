@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * Usage example for Image_Graph.
  * 
