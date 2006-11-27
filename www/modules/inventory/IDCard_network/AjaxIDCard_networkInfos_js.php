@@ -206,7 +206,8 @@ function get_network_vlan(_host_id)
 			}
 		}
 	}
-
+	_tableAjax.innerHTML = "";
+	
 	var _tableforajax3 = document.getElementById('tab3');
 	var _tableAjax3 = null;
     var childrenNumber3 = _tableforajax3.childNodes.length;
@@ -231,8 +232,7 @@ function get_network_vlan(_host_id)
 			}
 		}
 	}
-
-
+	_tableAjax3.innerHTML = "";
 
 	getXhrIDCard()
 	// On defini ce qu'on va faire quand on aura la reponse
@@ -294,8 +294,8 @@ function get_network_vlan(_host_id)
 				var _text_PhysAddress = document.createTextNode(_PhysAddress);
 				var _text_ipAdress_label = document.createTextNode(_ipAdress_label);
 				var _text_ipAdress = document.createTextNode(_ipAdress);
-				_case_PhysAddress_label.appendChild(_text_PhysAddress_label);	
-				_case_PhysAddress.appendChild(_text_PhysAddress);	
+				_case_PhysAddress_label.appendChild(_text_PhysAddress_label);
+				_case_PhysAddress.appendChild(_text_PhysAddress);
 				_case_ipAdress_label.appendChild(_text_ipAdress_label);	
 				_case_ipAdress.appendChild(_text_ipAdress);	
 				_ligne_1.appendChild(_case_PhysAddress_label);

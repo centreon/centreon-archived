@@ -19,6 +19,8 @@ has been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	$buffer = null;
+	$buffer  = '<?xml version="1.0" encoding="ISO-8859-1"?>';
 	$buffer = "<reponse>";
 
 	require_once("../../../oreon.conf.php");
