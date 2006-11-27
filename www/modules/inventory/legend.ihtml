@@ -1,4 +1,3 @@
-
 <div id="legend" align="center">
 
 <table id="tabLegend">
@@ -30,7 +29,7 @@
 
 
 <td>
-<img src="./img/icones/16x16/arrow_left_blue.png" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/arrow_left_blue.gif" border="0" alt="{$lang.duplicate}">
 &nbsp;=&nbsp;
 {$lang.lgd_prev}
 

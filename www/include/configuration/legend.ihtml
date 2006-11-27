@@ -1,29 +1,15 @@
-
 <div id="legend" align="center">
-
 <table id="tabLegend">
-
 <tr>
-
-<td>
-<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$lang.duplicate}">
-&nbsp;=&nbsp;
-{$lang.lgd_on}
-</td>
-
-<td>
-<img src="./img/icones/16x16/delete.gif" border="0" alt="{$lang.delete}">
-&nbsp;=&nbsp;
-{$lang.lgd_delOne}
-
-</td>
-<td>
-<img src='img/icones/16x16/document_edit.gif' border="0" alt="{$lang.duplicate}">
-&nbsp;=&nbsp;
-{$lang.lgd_edit}
-</td>
-
-
+	<td>
+		<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$lang.duplicate}">&nbsp;=&nbsp;{$lang.lgd_on}
+	</td>	
+	<td>	
+		<img src="./img/icones/16x16/delete.gif" border="0" alt="{$lang.delete}">&nbsp;=&nbsp;{$lang.lgd_delOne}
+	</td>
+	<td>
+		<img src='img/icones/16x16/document_edit.gif' border="0" alt="{$lang.duplicate}">&nbsp;=&nbsp;{$lang.lgd_edit}
+	</td>
 <td>
 <img src="./img/icones/16x16/arrow_left_blue.gif" border="0" alt="{$lang.duplicate}">
 &nbsp;=&nbsp;
