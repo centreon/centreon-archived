@@ -51,15 +51,13 @@ For information : contact@oreon-project.org
 	margin-top:21px;
 }
 
-
-
 #ListTable, #ListTableMedium, #ListTableSmall,
 .ListTable, .ListTableMedium, .ListTableSmall {
-border-collapse:separate;
-empty-cells: show; 
-border-spacing:0px;
-border-width: 1px;
-border-style:solid;
+	border-collapse:separate;
+	empty-cells: show; 
+	border-spacing:0px;
+	border-width: 1px;
+	border-style:solid;
 }
 
 #ListTable td, #ListTableMedium td, #ListTableSmall td,
@@ -67,15 +65,12 @@ border-style:solid;
 	padding-top:2px; padding-bottom:2px;
 }
 
-
-
 .list_one td, .list_two td, .list_three td, .list_four td, .list_lvl_2 td, .list_lvl_1 td{
 	border-top-width: 0.5px;
 	border-top-style:solid;
 	border-left-width: 0.5px;
 	border-left-style:solid;
 }
-
 
 .tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td{
 	border-top-width: 0.5px;
@@ -96,7 +91,7 @@ border-style:solid;
 }
 
 .ListHeader td{
-padding-top:5px;
+	padding-top:5px;
 	height:20px;
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 11px;
@@ -107,11 +102,9 @@ padding-top:5px;
 	border-left-style:solid;
 }
 
-
 .tab table .ListHeader td{
 	border-top-width: 0px;
 }
-
 
 .ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter{
 	border-top-width: 0.1px;
@@ -248,16 +241,15 @@ form{  padding-bottom:10px;}
 	margin:0px;
 }
 .mini_checkbox{
-width:12px;
-height:12px;
+	width:12px;
+	height:12px;
 }
 
 #QuickSearch{
-position:absolute;
-top:86px;
-right:10px;
+	position:absolute;
+	top:86px;
+	right:10px;
 }
-
 
 .page_limit{
 	border: 1px;
@@ -273,10 +265,8 @@ right:10px;
 	padding-bottom: 3px;
 }
 
-
-
 #mainnav{
-position:absolute;
+	position:absolute;
 }
 
 /*tab*/
@@ -397,15 +387,13 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 float:left;
 }
 #JS_monitoring_toolbar{
-float:right;
-width:100%;
+	float:right;
+	width:100%;
 }
 
 .Toolbar_TableTop{
 	width:100%;
 	margin-bottom:5px;
-
-
 }
 
 .Toolbar_TR_Top{
