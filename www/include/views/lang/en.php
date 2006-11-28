@@ -59,7 +59,6 @@ $lang['giv_gg_add'] = "Add a Custom Graph";
 $lang['giv_gg_change'] = "Modify a Custom Graph";
 $lang['giv_gg_view'] = "View a Custom Graph";
 $lang['giv_gg_name'] = "Graph Name";
-$lang['giv_gg_tpl'] = "Template linked";
 $lang['giv_gg_comment'] = "Comment";
 $lang["giv_gg_osl"] = "OSL";
 $lang["giv_gg_ms"] = "Meta Service";

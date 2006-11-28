@@ -63,7 +63,6 @@ $lang['giv_gg_tpl'] = "Template Associ&eacute;";
 $lang['giv_gg_comment'] = "Commentaire";
 $lang["giv_gg_osl"] = "OSL";
 $lang["giv_gg_ms"] = "Meta Service";
-$lang["giv_gg_tpl"] = "Template";
 
 # Oreon Simple Renderer
 
