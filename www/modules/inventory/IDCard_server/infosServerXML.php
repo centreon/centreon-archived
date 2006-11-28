@@ -444,7 +444,7 @@ For information : contact@oreon-project.org
 					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Running Processus  : Application => ". $app . ": Path => ". $path . " : Memory =>  " . $mem  ."\n", 3, $debug_path."inventory.log");
 		    }
 	    } else
-	    	$buffer .= '</runningprocessus><runningprocessus>';
+	    	$buffer .= '<runningprocessus></runningprocessus>';
 	}
 
 
