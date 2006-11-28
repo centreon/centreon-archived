@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 			require_once("./include/views/graphs/simpleRenderer/simpleRenderer.php");
 	} else { 
 		if (!isset($_GET["steps"]))
-			$_GET["steps"] = 0;
+			$_GET["steps"] = 1;
 		
 		if ($oreon->user->admin || !$isRetreint || ($isRetreint && isset($lcaHostByID["LcaHost"][$host_id])))	{
 			$_GET["submitC"] = "Grapher";
