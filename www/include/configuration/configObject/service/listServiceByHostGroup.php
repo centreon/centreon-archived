@@ -17,12 +17,13 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($pearDB))
-		print "Mysql Error : ".$pearDB->getMessage();
-	$gopt = array_map("myDecode", $res->fetchRow());		
+		print "DB Error : SELECT maxViewConfiguration.. : ".$pearDB->getMessage()."<br>";
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -32,12 +33,12 @@ $pagination = "maxViewConfiguration";
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	if ($search)	{
 		if ($oreon->user->admin || !$isRestreint)
-			$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		else
-			$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		while ($res->fetchInto($service))
+			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT service_id, service_description, service_template_model_stm_id.. : ".$DBRESULT->getMessage()."<br>";
+		while ($DBRESULT->fetchInto($service))
 			if (!$service["service_description"])	{
 				$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
 				if (stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
@@ -50,12 +51,12 @@ $pagination = "maxViewConfiguration";
 			}
 	} else	{
 		if ($oreon->user->admin || !$isRestreint)
-			$res = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		else
-			$res = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$rows = $res->numRows();
+			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT service_description FROM service sv, host_service_relation hsr... : ".$DBRESULT->getMessage()."<br>";
+		$rows = $DBRESULT->numRows();
 	}
 	
 	# start quickSearch form
@@ -80,16 +81,16 @@ $pagination = "maxViewConfiguration";
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res)) 
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT)) 
+		print "DB Error : SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation... : ".$DBRESULT->getMessage()."<br>";
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
 	$fgHostgroup = array("value"=>NULL, "print"=>NULL);
-	for ($i = 0; $res->fetchInto($service); $i++) {
+	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
 		$fgHostgroup["value"] != $service["hg_name"] ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"]) : $fgHostgroup["print"] = false;
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
@@ -162,9 +163,6 @@ $pagination = "maxViewConfiguration";
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
-
-	
-	
 	
 	#
 	##Apply a template definition
@@ -174,5 +172,4 @@ $pagination = "maxViewConfiguration";
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listService.ihtml");
-	
 ?>

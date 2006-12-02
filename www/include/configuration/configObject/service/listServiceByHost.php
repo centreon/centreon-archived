@@ -21,11 +21,11 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT maxViewConfiguration FROM general_opt.. : ".$DBRESULT->getMessage()."<br>";
 
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -39,12 +39,12 @@ For information : contact@oreon-project.org
 	if ($search)	{
 		if ($search_type_service) {
 			if ($oreon->user->admin || !$isRestreint)
-				$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
+				$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
 			else
-				$res = & $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.")");	
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			while ($res->fetchInto($service))
+				$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.")");	
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : SELECT service_id, service_description, service_template_model_stm_id.. : ".$DBRESULT->getMessage()."<br>";
+			while ($DBRESULT->fetchInto($service))
 				if (!$service["service_description"])	{
 					$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
 					if (stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
@@ -61,22 +61,22 @@ For information : contact@oreon-project.org
 				$locale_query = "SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
 			else
 				$locale_query = "SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.")";				
-			$res = & $pearDB->query($locale_query);
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			while ($res->fetchInto($service)) {			         
+			$DBRESULT =& $pearDB->query($locale_query);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : SELECT service_id, service_description, service_template_model_stm_id... : ".$DBRESULT->getMessage()."<br>";
+			while ($DBRESULT->fetchInto($service)) {			         
 				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];			          
 				$rows++;				
 			}
 		}
     } else {
     	if ($oreon->user->admin || !$isRestreint)
-			$res =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
+			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
 		else
-			$res =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IN (".$lcaHostStr.") AND hsr.hostgroup_hg_id IS NULL");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$rows = $res->numRows();
+			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IN (".$lcaHostStr.") AND hsr.hostgroup_hg_id IS NULL");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT service_description FROM service sv,... : ".$DBRESULT->getMessage()."<br>";
+		$rows = $DBRESULT->numRows();
 	}
 	
 	# start quickSearch form
@@ -101,16 +101,16 @@ For information : contact@oreon-project.org
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, host.host_name, host.host_template_model_htm_id FROM service sv, host, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND host.host_id = hsr.host_host_id $strLCA AND host.host_register = '1' ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, host.host_name, host.host_template_model_htm_id FROM service sv, host, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND host.host_id = hsr.host_host_id $strLCA AND host.host_register = '1' ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT @nbr:=(SELECT COUNT(*).. : ".$DBRESULT->getMessage()."<br>";
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
 	$fgHost = array("value"=>NULL, "print"=>NULL);
-	for ($i = 0; $res->fetchInto($service); $i++) {
+	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
 		# If the name of our Host is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$service["host_name"])
 			$service["host_name"] = getMyHostName($service['host_template_model_htm_id']);
@@ -188,8 +188,6 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
 	#
@@ -198,5 +196,4 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listService.ihtml");
-
 ?>

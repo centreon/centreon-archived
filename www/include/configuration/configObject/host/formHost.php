@@ -24,11 +24,11 @@ For information : contact@oreon-project.org
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
 		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 		else
-			$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1");
 		# Set base value
-		$host = array_map("myDecode", $res->fetchRow());
+		$host = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Host Notification Options
 		$tmp = explode(',', $host["host_notification_options"]);
 		foreach ($tmp as $key => $value)
@@ -37,97 +37,97 @@ For information : contact@oreon-project.org
 		$tmp = explode(',', $host["host_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$host["host_stalOpts"][trim($value)] = 1;
-		$res->free();
+		$DBRESULT->free();
 		# Set Contact Group
-		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $res->fetchInto($notifCg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
+		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host Parents
-		$res =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $res->fetchInto($parent); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
+		for($i = 0; $DBRESULT->fetchInto($parent); $i++)
 			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host Childs
-		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$host_id."'");
-		for($i = 0; $res->fetchInto($child); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$host_id."'");
+		for($i = 0; $DBRESULT->fetchInto($child); $i++)
 			$host["host_childs"][$i] = $child["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host Group Parents
-		$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $res->fetchInto($hg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
+		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set City name
-		$res =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$host["city_id"]."' AND cny.country_id = '".$host["country_id"]."'");
-		$city = $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$host["city_id"]."' AND cny.country_id = '".$host["country_id"]."'");
+		$city = $DBRESULT->fetchRow();
 		$host["city_name"] = $city["city_name"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Host Templates comes from DB -> Store in $hTpls Array
 	$hTpls = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
-	while($res->fetchInto($hTpl))	{
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
+	while($DBRESULT->fetchInto($hTpl))	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while($res->fetchInto($tp))
+	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	while($res->fetchInto($checkCmd))
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
-	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while($res->fetchInto($notifCg))
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))		
-		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	else
-		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
+		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 
-	while($res->fetchInto($hg))
+	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Host Parents comes from DB -> Store in $hostPs Array
 	$hostPs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
-	while($res->fetchInto($hostP))	{
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
+	while($DBRESULT->fetchInto($hostP))	{
 		if (!$hostP["host_name"])
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Countries comes from DB -> Store in $countries Array
 	$countries = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
-	while($res->fetchInto($country))
+	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
+	while($DBRESULT->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Deletion Policy definition comes from DB -> Store in $ppols Array
 	$ppols = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
-	while($res->fetchInto($ppol))
+	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
+	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -434,13 +434,13 @@ For information : contact@oreon-project.org
 	# Modify a host information
 	else if ($o == "c")	{
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
 	    $form->setDefaults($host);
 	}
 	# Add a host information
 	else if ($o == "a")	{
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0, "perfparse"=>$oreon->optGen["perfparse_installed"]));
 	$tpl->assign('min', $min);

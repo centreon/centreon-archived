@@ -21,10 +21,8 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	$gopt = array_map("myDecode", $res->fetchRow());
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -32,18 +30,18 @@ For information : contact@oreon-project.org
 	
 	if ($search) {
 		if ($oreon->user->admin || !$isRestreint)
-			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND  host_register = '1'");
+			$DBRESULT =& $$DBRESULTDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND  host_register = '1'");
 		else
-			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
 	} else {
 		if ($oreon->user->admin || !$isRestreint)
-			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE  host_register = '1'");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE  host_register = '1'");
 		else 
-			$res = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1'");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1'");
 	}
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	$tmp = & $res->fetchRow();
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT COUNT(*) FROM host : ".$DBRESULT->getMessage()."<br>";
+	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -75,16 +73,16 @@ For information : contact@oreon-project.org
 		else
 		$rq = "SELECT @hTpl:=(SELECT host_name FROM host WHERE host_id = h.host_template_model_htm_id) AS hTpl, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, h.host_template_model_htm_id FROM host h WHERE host_id IN (".$lcaHoststr.") AND h.host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	}
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT @hTpl:=(SELECT host_name : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($host); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($host); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&host_id=".$host['host_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&host_id=".$host['host_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -107,7 +105,6 @@ For information : contact@oreon-project.org
 						"RowMenu_status"=>$host["host_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
-
 
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
@@ -134,8 +131,6 @@ For information : contact@oreon-project.org
 				"this.form.elements['o1'].selectedIndex = 0");
     $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
-
-
 	
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
@@ -149,7 +144,6 @@ For information : contact@oreon-project.org
     $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
@@ -160,14 +154,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
-
-
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listHost.ihtml");
-
 ?>
