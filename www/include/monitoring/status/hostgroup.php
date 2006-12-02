@@ -20,7 +20,6 @@ For information : contact@oreon-project.org
 		exit();
 	
 	$TabLca = getLcaHostByID($pearDB);
-	$isRestreint = hadUserLca($pearDB);
 	$LcaHGStr = getLCAHostStr($TabLca["LcaHostGroup"]);
 	
 	$data = array();

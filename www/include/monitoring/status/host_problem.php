@@ -39,7 +39,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT)) 
 			print "Mysql Error : ".$DBRESULT->getMessage();
 		$DBRESULT->fetchInto($host);
-		if ($oreon->user->admin || HadUserLca($pearDB) == 0 || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$name]))){			
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$name]))){			
 			$host_status[$name]["address"] = $host["host_address"];
 			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["current_state"])];
 			$host_status[$name]["last_check"] = date($lang["date_time_format_status"], $h["last_check"]);
