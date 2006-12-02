@@ -44,12 +44,12 @@ For information : contact@oreon-project.org
 		acknowledgeHostDisable($lang);
 	}
 
-	if ($min)
+	if ($min){
 		switch ($o)	{
 			default : require_once($pathTools."tools.php"); break;
 		}
-	else {		
-			include("./include/monitoring/status/resume.php"); 
+	} else {		
+		include("./include/monitoring/status/resume.php"); 
 		switch ($o)	{
 			case "h" 	: require_once($path."host.php"); 					break;
 			case "hpb" 	: require_once($path."host_problem.php"); 			break;

@@ -15,6 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	if (!isset($oreon))
 		exit(); 
 	
@@ -30,8 +31,7 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl_resume = new Smarty();
 	$tpl_resume = initSmartyTpl($path, $tpl_resume, "/templates/");
-	
-	
+		
 	$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 	$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 	
@@ -52,16 +52,4 @@ For information : contact@oreon-project.org
 	if (isset($statistic_host))
 		foreach ($statistic_host as $key => $stth)
 			$statistic_host_color[$key] = " style='background:" . $oreon->optGen["color_".strtolower($key)] . "'";
-
-
-		/*	
-	$tpl_resume->assign("statistic_service", $statistic_service);
-	$tpl_resume->assign("statistic_host", $statistic_host);
-	$tpl_resume->assign("statistic_service_color", $statistic_service_color);
-	$tpl_resume->assign("statistic_host_color", $statistic_host_color);
-	$tpl_resume->assign("lang", $lang);
-	$tpl_resume->assign("refresh", $oreon->optGen["oreon_refresh"]);
-	$tpl_resume->assign("pgr_nagios_stat", $pgr_nagios_stat);
-*/
-//	$tpl_resume->display("resume.ihtml");
 ?>

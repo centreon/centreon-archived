@@ -47,8 +47,7 @@ For information : contact@oreon-project.org
 	$pathExternal = "./include/monitoring/external_cmd/";
 	$pathDetails = "./include/monitoring/objectDetails/";
 
-	include("./include/monitoring/status/resume.php"); 
-	
+	include("./include/monitoring/status/resume.php"); 	
 	switch ($o)	{
 		case "svc" 		: require_once($path."service.php"); 					break; 
 		case "svcpb" 	: require_once($path."service_problem.php");			break;
