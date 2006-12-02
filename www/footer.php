@@ -15,6 +15,8 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	if (!isset($oreon))
+		exit;
 ?>
 		<div id="footer">
 		<table cellpadding="0" cellspacing="0" height="1" width='100%'>
