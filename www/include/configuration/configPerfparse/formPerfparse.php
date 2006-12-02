@@ -24,14 +24,14 @@ For information : contact@oreon-project.org
 	$pp = array();
 	$ppTemp = array();
 	if (($o == "c" || $o == "w") && $perfparse_id)	{	
-		$res =& $pearDB->query("SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$perfparse_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$perfparse_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$perfparse_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$ppTemp = array_map("myDecode", $res->fetchRow());
+		$ppTemp = array_map("myDecode", $DBRESULT->fetchRow());
 		foreach ($ppTemp as $key=>$value)
 			$pp[strtolower($key)] = $value;
+		$DBRESULT->free();
 	}
 	##########################################################
 	# Var information to format the element

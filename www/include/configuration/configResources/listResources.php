@@ -17,22 +17,22 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$pagination = "maxViewConfiguration";	# set limit
+	$pagination = "maxViewConfiguration";	
+	# set limit
 	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	$gopt = array_map("myDecode", $res->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
 		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	$tmp = & $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM cfg_resource");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT COUNT(*) FROM cfg_resource : ".$DBRESULT->getMessage()."<br>";
+
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -55,16 +55,15 @@ For information : contact@oreon-project.org
 		$rq = "SELECT resource_id, resource_name, resource_line, resource_activate FROM cfg_resource WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT resource_id, resource_name, resource_line, resource_activate FROM cfg_resource ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
-	$elemArr = array();	for ($i = 0; $res->fetchInto($resource); $i++) {
+	$elemArr = array();	for ($i = 0; $DBRESULT->fetchInto($resource); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$resource['resource_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&resource_id=".$resource['resource_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&resource_id=".$resource['resource_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -129,15 +128,12 @@ For information : contact@oreon-project.org
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
-	
 
 	#
 	##Apply a template definition
 	#
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listResources.ihtml");
-
 ?>

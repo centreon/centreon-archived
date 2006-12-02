@@ -16,25 +16,26 @@ incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
-*/	$pagination = "maxViewConfiguration";
+*/	
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_perfparse WHERE perfparse_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_perfparse WHERE perfparse_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_perfparse");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$tmp = & $res->fetchRow();
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_perfparse");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT COUNT(*) FROM cfg_perfparse : ".$DBRESULT->getMessage()."<br>";
+
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -57,17 +58,16 @@ For information : contact@oreon-project.org
 		$rq = "SELECT perfparse_id, perfparse_name, perfparse_comment, perfparse_activate FROM cfg_perfparse WHERE perfparse_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY perfparse_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT perfparse_id, perfparse_name, perfparse_comment, perfparse_activate FROM cfg_perfparse ORDER BY perfparse_name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT perfparse_id, perfparse_name, perfparse_comment, perfparse_activate.. : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($perfparse); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($perfparse); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$perfparse['perfparse_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&perfparse_id=".$perfparse['perfparse_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&perfparse_id=".$perfparse['perfparse_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -134,15 +134,11 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
 	#
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listPerfparse.ihtml");
-
 ?>

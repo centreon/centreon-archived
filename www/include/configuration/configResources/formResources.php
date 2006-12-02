@@ -22,12 +22,12 @@ For information : contact@oreon-project.org
 	## Database retrieve information for Resources CFG
 	#
 	if (($o == "c" || $o == "w") && $resource_id)	{	
-		$res =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$resource_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$resource_id."' LIMIT 1");
+		if (PEAR::isError($pearDB))
+			print "DB Error : SELECT * FROM cfg_resource WHERE resource_id = '".$resource_id."' LIMIT 1 : ".$pearDB->getMessage()."<br>";
 		# Set base value
-		$rs = array_map("myDecode", $res->fetchRow());
+		$rs = array_map("myDecode", $DBRESULT->fetchRow());
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page

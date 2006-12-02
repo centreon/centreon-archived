@@ -75,7 +75,6 @@ For information : contact@oreon-project.org
 			$oreon->Nagioscfg = $DBRESULT->fetchRow();
 			$DBRESULT2->free();
 		}
-		$DBRESULT->free();
 	}
 	
 	function deleteNagiosInDB ($nagios = array())	{
@@ -97,7 +96,6 @@ For information : contact@oreon-project.org
 			$DBRESULT2 =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id["MAX(nagios_id)"]."'");
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id["MAX(nagios_id)"]."' : ".$DBRESULT2->getMessage()."<br>";
-			$DBRESULT2->free();
 		}
 		$DBRESULT->free();
 	}
@@ -123,7 +121,6 @@ For information : contact@oreon-project.org
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : INSERT INTO cfg_nagios VALUES (".$val.") : ".$DBRESULT->getMessage()."<br>";
-					$DBRESULT->free();
 				}
 			}
 		}
