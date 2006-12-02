@@ -21,7 +21,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 	  exit();
 	
-
 	## Nagios 1 functions
 
 	function get_program_data($log, $status_proc){
@@ -243,6 +242,5 @@ For information : contact@oreon-project.org
 	  $svc_data["scheduled_downtime_depth"] = $log[43];
 	  return ($svc_data);
 	}
-
 	
 ?>
