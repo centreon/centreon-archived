@@ -24,8 +24,10 @@ For information : contact@oreon-project.org
 	function getTopologyParent($p)	{
 		global $pearDB;
 		$rqPath = "SELECT topology_url, topology_url_opt, topology_parent, topology_id, topology_name, topology_page FROM topology WHERE topology_page = '".$p."' ORDER BY topology_page";
-		$resPath =& $pearDB->query($rqPath);
-		$redirectPath =& $resPath->fetchRow();
+		$DBRESULT =& $pearDB->query($rqPath);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$redirectPath =& $DBRESULT->fetchRow();
 		return $redirectPath;
 	}
 	
@@ -45,23 +47,25 @@ For information : contact@oreon-project.org
 	}
 	ksort($tabPath);
 
-	$res =& $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
-	$res->fetchInto($current);
+	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$DBRESULT->fetchInto($current);
 	
 	if ($current["topology_url_opt"])
 		$req = "SELECT * FROM topology WHERE topology_url = '".$current["topology_url"]."' AND topology_url_opt = '".$current["topology_url_opt"]."' AND topology_page > '".$p."' ORDER BY topology_page ASC";
 	else
 		$req = "SELECT * FROM topology WHERE topology_url = '".$current["topology_url"]."' AND topology_url_opt is NULL AND topology_page > '".$p."' ORDER BY topology_page ASC";
-	$res =& $pearDB->query($req);
-	while ($res->fetchInto($new_url)){
+	$DBRESULT =& $pearDB->query($req);
+	while ($DBRESULT->fetchInto($new_url)){
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
 		if (isset($lang[$new_url["topology_name"]]))
 			$tabPath[$new_url["topology_page"]] = array();
 			$tabPath[$new_url["topology_page"]]["name"] = $lang[$new_url["topology_name"]];
 			$tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];
 			$tabPath[$new_url["topology_page"]]["page"] = $new_url["topology_page"];
 	}
-	
-
 	
 	$tmp = array();
 	foreach($tabPath as $k => $v){

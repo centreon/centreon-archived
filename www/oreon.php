@@ -58,25 +58,31 @@ For information : contact@oreon-project.org
 	function get_child($id_page, $lcaTStr){
 		global $pearDB;
 		$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt FROM topology WHERE  topology_id IN ($lcaTStr) AND topology_parent = '".$id_page."' ORDER BY topology_order ASC";
-		$res =& $pearDB->query($rq);
-		$res->fetchInto($redirect);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($redirect);
 		return $redirect;
 	}
 
 	require_once ("./include/common/common-Func.php");
+
+	# LCA Init Common Var
+	$idRestreint = HadUserLca($pearDB);
 
 	# Menu
 	if (!$min)
 		require_once ("menu/Menu.php");
 
 	$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'";
-	$res =& $pearDB->query($rq);
-	$redirect =& $res->fetchRow();
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$redirect =& $DBRESULT->fetchRow();
 	
 	if($min != 1)
 		include("pathWay.php");
 	
-	$isRestreint = HadUserLca($pearDB);
 	if ($redirect["topology_page"] < 100){
 		$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 		if (!$ret['topology_page']){
