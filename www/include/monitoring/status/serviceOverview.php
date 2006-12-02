@@ -21,7 +21,6 @@ For information : contact@oreon-project.org
 
 	unset($TabLca);
 	$TabLca = getLcaHostByName($pearDB);
-	$isRestreint = hadUserLca($pearDB);
 	
 	$hg = array();
 	
