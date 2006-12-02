@@ -34,42 +34,39 @@ For information : contact@oreon-project.org
 	$tab_comments_host = array();
 	$tab_comments_svc = array();
 	
-	if (file_exists($oreon->Nagioscfg["comment_file"]))	{
-		
+	if (file_exists($oreon->Nagioscfg["comment_file"]))	{		
 		$log = fopen($oreon->Nagioscfg["comment_file"], "r");
 		$i = 0;
 		$i2 = 0;
-		if ($oreon->user->get_version() == 1)
-		{
-		while ($str = fgets($log))	{
-			$res = preg_split("/;/", $str);
-			if (preg_match("/^\[([0-9]*)\] HOST_COMMENT;/", $str, $matches)){
-				$selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
-				$tab_comments_host[$i] = array();
-				$tab_comments_host[$i]["id"] = $res[1];
-				$tab_comments_host[$i]["host_name"] = $res[2];
-				$tab_comments_host[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
-				$tab_comments_host[$i]["author"] = $res[4];
-				$tab_comments_host[$i]["comment"] = $res[5];
-				$tab_comments_host[$i]["persistent"] = $res[3];
-				$i++;
-			} else if (preg_match("/^\[([0-9]*)\] SERVICE_COMMENT;/", $str, $matches)){
-				$selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
-				$tab_comments_svc[$i] = array();
-				$tab_comments_svc[$i]["id"] = $res[1];
-				$tab_comments_svc[$i]["host_name"] = $res[2];
-				$tab_comments_svc[$i]["service_descr"] = $res[3];
-				$tab_comments_svc[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
-				$tab_comments_svc[$i]["author"] = $res[5];
-				$tab_comments_svc[$i]["comment"] = $res[6];
-				$tab_comments_svc[$i]["persistent"] = $res[4];
-				$i++;
+		if ($oreon->user->get_version() == 1){
+			while ($str = fgets($log))	{
+				$res = preg_split("/;/", $str);
+				if (preg_match("/^\[([0-9]*)\] HOST_COMMENT;/", $str, $matches)){
+					$selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
+					$tab_comments_host[$i] = array();
+					$tab_comments_host[$i]["id"] = $res[1];
+					$tab_comments_host[$i]["host_name"] = $res[2];
+					$tab_comments_host[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
+					$tab_comments_host[$i]["author"] = $res[4];
+					$tab_comments_host[$i]["comment"] = $res[5];
+					$tab_comments_host[$i]["persistent"] = $res[3];
+					$i++;
+				} else if (preg_match("/^\[([0-9]*)\] SERVICE_COMMENT;/", $str, $matches)){
+					$selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
+					$tab_comments_svc[$i] = array();
+					$tab_comments_svc[$i]["id"] = $res[1];
+					$tab_comments_svc[$i]["host_name"] = $res[2];
+					$tab_comments_svc[$i]["service_descr"] = $res[3];
+					$tab_comments_svc[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
+					$tab_comments_svc[$i]["author"] = $res[5];
+					$tab_comments_svc[$i]["comment"] = $res[6];
+					$tab_comments_svc[$i]["persistent"] = $res[4];
+					$i++;
+				}
 			}
-		}
-	}else
-		{
-          $flag_host = 0;
-          $flag_svc = 0;
+		} else {
+			$flag_host = 0;
+          	$flag_svc = 0;
 
 			while ($str = fgets($log))	{
                 if (preg_match("/^hostcomment/", $str)){
@@ -145,6 +142,5 @@ For information : contact@oreon-project.org
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-	
 	$tpl->display("comments.ihtml");
 ?>
