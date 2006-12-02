@@ -31,16 +31,14 @@ For information : contact@oreon-project.org
 		$status_data = array();
 		global $pearDB;
 		
-		$res =& $pearDB->query("SELECT nagios_version FROM general_opt");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		$res->fetchInto($nagios_version);
+		$DBRESULT =& $pearDB->query("SELECT nagios_version FROM general_opt");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($nagios_version);
 		$version = $nagios_version["nagios_version"];
 		
 		$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 		$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
-		
 		
 		if (!$status_file)
 			return $status_data;
@@ -77,7 +75,6 @@ For information : contact@oreon-project.org
 				          			if (!strpos($str2, "}")){      
 					      				if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)[\ \t]*/", $str2, $tab)){
 											$log[$tab[1]] = $tab[2];
-											//print $tab[1] . "->" . $tab[2] . "<br>";
 				          				}
 					    			} else
 					      				break;
@@ -90,7 +87,6 @@ For information : contact@oreon-project.org
 						    	if (!strpos($str2, "}")){
 						      		if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)[\ \t]*/", $str2, $tab)){
 										$log[$tab[1]] = $tab[2];
-										//print $tab[1] . "->" . $tab[2] . "<br>";
 						      		} 
 						    	} else
 						      		break;
@@ -102,5 +98,4 @@ For information : contact@oreon-project.org
 				}			
 		return ($status_data);
 	}
-	
 ?>
