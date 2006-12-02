@@ -28,22 +28,21 @@ For information : contact@oreon-project.org
 	$status_hg = array();
 			
 	if ($oreon->user->admin || !$isRestreint)
-		$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
+		$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
 	else
-		$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' AND hg_id IN (".$LcaHGStr.") ORDER BY hg_name");
-	
-	if (PEAR::isError($ret)) 
-		print "Mysql Error : ".$ret->getMessage();
-	while ($r =& $ret->fetchRow()){	
+		$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' AND hg_id IN (".$LcaHGStr.") ORDER BY hg_name");
+	if (PEAR::isError($DBRESULT)) 
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while ($r =& $DBRESULT->fetchRow()){	
 		$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);	
 		$status_hg_h = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0);	
-		$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
+		$DBRESULT1 =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
 									"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 									"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-		if (PEAR::isError($ret_h)) 
-			print "Mysql Error : ".$ret_h->getMessage();
+		if (PEAR::isError($DBRESULT1)) 
+			print "Mysql Error : ".$DBRESULT1->getMessage();
 		$cpt_host = 0;
-		while ($r_h =& $ret_h->fetchRow()){
+		while ($DBRESULT1->fetchInto($r_h)){
 			if (isset($tab_host_service[$r_h["host_name"]]))
 				foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
 					$status_hg_h[$host_status[$r_h["host_name"]]["current_state"]]++;	

@@ -18,13 +18,13 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$pagination = "maxViewMonitoring";
 	# set limit & num
+	$pagination = "maxViewMonitoring";
 	
-	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
-	if (PEAR::isError($res)) 
-		print "Mysql Error : ".$res->getMessage();
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT)) 
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["search"]) ? $search = 0 : $search = $_GET["search"];
@@ -35,8 +35,10 @@ For information : contact@oreon-project.org
 	foreach ($host_status as $name => $h){
 		$tmp = array();
 		$tmp[0] = $name;			
-		$res =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
-		$res->fetchInto($host);
+		$DBRESULT =& $pearDB->query("SELECT host_address FROM host WHERE host_name = '".$name."'");
+		if (PEAR::isError($DBRESULT)) 
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($host);
 		if ($oreon->user->admin || HadUserLca($pearDB) == 0 || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$name]))){			
 			$host_status[$name]["address"] = $host["host_address"];
 			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["current_state"])];
@@ -64,15 +66,16 @@ For information : contact@oreon-project.org
 			$displayTab[$host_status_num[$i][0]] = $host_status_num[$i][1];
 		}
 	$host_status = $displayTab;
+	
+	# Init QuickFrom
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	
-	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
-	$tpl->assign("mon_host", $lang['mon_host']);
+	$tpl->assign("mon_host", $lang['m_mon_hosts']);
 	$tpl->assign("mon_status", $lang['mon_status']);
 	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
 	$tpl->assign("mon_duration", $lang['mon_duration']);
@@ -86,45 +89,17 @@ For information : contact@oreon-project.org
 	$tpl->assign("order", $_GET["order"]);
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);
-
-/*
-    $ajax = "<script type='text/javascript'>" .
-    "window.onload = function () {" .
-    "setTimeout('init()', 2000);" .
-    "};" .
-    "</script>";
-    
-//    $tpl->assign('ajax', $ajax);
-    $tpl->assign('time', time());
-    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
-	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
-    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
-    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
-    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
-    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
-    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
-    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
-    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
-    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
-
-    $lca =& $oreon->user->lcaHStrName;
-	$version = $oreon->user->get_version();
-	$tpl->assign("lca", $lca);
-	$tpl->assign("version", $version);
-*/
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
-	$res =& $pearDB->query("SELECT * FROM session WHERE" .
-			" CONVERT( `session_id` USING utf8 ) = '". session_id() .
-			"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-	if (PEAR::isError($res)) 
-		print "Mysql Error : ".$res->getMessage();
-	$session =& $res->fetchRow();
+	$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	if (PEAR::isError($DBRESULT)) 
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$session =& $DBRESULT->fetchRow();
+	
     $tpl->assign('sid', session_id());
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
 	$tpl->assign("lang", $lang);
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("host_problem.ihtml");
-	
+	$tpl->display("host_problem.ihtml");	
 ?>	
