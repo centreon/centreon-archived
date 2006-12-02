@@ -24,7 +24,6 @@ For information : contact@oreon-project.org
 	}
 
 	set_time_limit(60);
-
 	$time_start = microtime_float();
 
 	# Define
@@ -83,39 +82,34 @@ For information : contact@oreon-project.org
 	} else {
 
 		# Skin path
-		$res =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
-		$res->fetchInto($data);
+		$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print ("MySQL error : ".$DBRESULT->getMessage());
+		$DBRESULT->fetchInto($data);
 		$skin = "./Themes/".$data["template"]."/";
 		
 		# Delete Session Expired
-		$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
-		$session_expire =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$session_expire =& $DBRESULT->fetchRow();
 		$time_limit = time() - ($session_expire["session_expire"] * 60);
 		
-		$pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
+		$DBRESULT =& $pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
+		if (PEAR::isError($DBRESULT))
+			print ("MySQL error Where deleting Sessions : ".$DBRESULT->getMessage());
 			
-		/* 
-		$res =& $pearDB->query("SELECT * FROM session WHERE last_reload < '".$time_limit."'");
-		while ($session =& $res->fetchRow())
-			$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
-		*/
-
 		# Get session and Check if session is not expired
-
-		$res =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
-		if (!$res->numRows())
+		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		if (!$DBRESULT->numRows())
 			header("Location: index.php?disconnect=2");			
 		if (!isset($_SESSION["oreon"]))
 			header("Location: index.php?disconnect=1");
 
 		# Define Oreon var alias
-		global $oreon;
 		$oreon =& $_SESSION["oreon"];
-
 		if (!is_object($oreon))
 			exit();
 
@@ -125,9 +119,9 @@ For information : contact@oreon-project.org
 		$oreon->initOptGen($pearDB);
 
 		// Update Session Table For last_reload and current_page row
-		$res =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-		if (PEAR::isError($res))
-			print ($res->getMessage());
+		$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error WHERE Updating Session : ".$DBRESULT->getMessage();
 			
 		// Load traduction in the selected language.
 		is_file ("./lang/".$oreon->user->get_lang().".php") ? include_once ("./lang/".$oreon->user->get_lang().".php") : include_once ("./lang/en.php");
@@ -141,9 +135,7 @@ For information : contact@oreon-project.org
 		foreach ($oreon->modules as $module)
 			$module["lang"] ? (is_file ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") ? include_once ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") : include_once ("./modules/".$module["name"]."/lang/en.php")) : NULL;
 		print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";
-
-        $mlang = $oreon->user->get_lang();
-		
+        $mlang = $oreon->user->get_lang();	
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<? echo $mlang; ?>" lang="<? echo $mlang; ?>">
@@ -165,43 +157,44 @@ For information : contact@oreon-project.org
 	if (isset($p) && $p == 310)
 		print "<SCRIPT language='javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>";
 
-/*
- * include javascript
- */
+	/*
+	 * include javascript
+	 */
 
 	$res = null;
-	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-	if (PEAR::isError($res))
-		print ($res->getMessage());
-	while ($res->fetchInto($topology_js))
-		echo "<script language='javascript' src='" . $topology_js['PathName_js'] .  "'></script> ";		
+	$DBRESULT = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+	if (PEAR::isError($DBRESULT))
+		print ($DBRESULT->getMessage());
+	while ($DBRESULT->fetchInto($topology_js))
+		echo "<script language='javascript' src='".$topology_js['PathName_js']."'></script> ";		
 
-/*
- * init javascript
- */
+	/*
+	 * init javascript
+	 */
+	 
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 
-?>
-<script type='text/javascript'>
-    window.onload = function () {
-    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', <?=$tFS?>);
-<?
+	?>
+	<script type='text/javascript'>
+	    window.onload = function () {
+	    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', <?=$tFS?>);
+	<?
 
 	$res = null;
-	$res = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-	if (PEAR::isError($res))
-		print ($res->getMessage());
-	while ($res->fetchInto($topology_js)){
+	$DBRESULT = $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+	if (PEAR::isError($DBRESULT))
+		print ($DBRESULT->getMessage());
+	while ($DBRESULT->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
-		?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', <?=$tFM?>);<?
+			?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', <?=$tFM?>);<?
 		} else if ($topology_js['init'])
 			echo $topology_js['init'] ."();";
 	}
-?>
+	?>
     };
     </script>
 </head>
