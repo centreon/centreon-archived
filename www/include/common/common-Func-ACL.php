@@ -173,8 +173,10 @@ For information : contact@oreon-project.org
 	}
 	
 	function IsHostReadable($lcaHostByName, $host_name){
-		global $oreon, $pearDB;
-		if ($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$host_name])))
+		global $oreon, $pearDB, $isRestreint;
+		if (!isset($isRestreint))
+			$isRestreint = HadUserLca($pearDB);
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])))
 			return 1;
 		return 0;		
 	}
