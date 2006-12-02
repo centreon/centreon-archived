@@ -25,9 +25,7 @@ For information : contact@oreon-project.org
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 	
-	
 ?>
-
 <SCRIPT LANGUAGE="JavaScript">
 
 _time_reload = <?=$tM?>;
@@ -59,63 +57,48 @@ function monitoring_time_msg()	{
 
 
 function monitoring_time()	{
-
 	if(_time_live > 999 && _on)
 	{
 		document.getElementById('time_live').innerHTML = (_time_live / 1000);
 		_time_live = _time_live - 1000;
 		_timeoutID = setTimeout('monitoring_time()', 1000);	
-	}
-	else if(_time_live < 999)
-	{
+	} else if(_time_live < 999) {
 		document.getElementById('time_live').innerHTML = *;
 		_time_live = 0;
 		//_on = 0;
-	}
-	else
-	{
+	} else	{
 		//_on = 0;
 	}
 }
 
 
 function monitoring_refresh()	{	
-monitoring_time_msg();
-_tmp_on = _on;
-_time_live = _time_reload;
-_on = 1;
-window.clearTimeout(_timeoutID);
-//monitoring_time();
-initM(<?=$tM?>,"<?=$sid?>");
-_on = _tmp_on;
+	monitoring_time_msg();
+	_tmp_on = _on;
+	_time_live = _time_reload;
+	_on = 1;
+	window.clearTimeout(_timeoutID);
+	//monitoring_time();
+	initM(<?=$tM?>,"<?=$sid?>");
+	_on = _tmp_on;
 }
 
 function monitoring_play()	{
-monitoring_time_msg();
-document.getElementById('JS_monitoring_play').style.display = 'none';
-document.getElementById('JS_monitoring_pause').style.display = 'block';
-
-document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
-document.getElementById('JS_monitoring_play_gray').style.display = 'block';
-
-
-_on = 1;
-initM(<?=$tM?>,"<?=$sid?>");
+	monitoring_time_msg();
+	document.getElementById('JS_monitoring_play').style.display = 'none';
+	document.getElementById('JS_monitoring_pause').style.display = 'block';	
+	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
+	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
+	_on = 1;
+	initM(<?=$tM?>,"<?=$sid?>");
 }
 
 function monitoring_pause()	{
-
-
-document.getElementById('JS_monitoring_play').style.display = 'block';
-document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
-
-document.getElementById('JS_monitoring_play_gray').style.display = 'none';
-document.getElementById('JS_monitoring_pause').style.display='none';
-
-_on = 0;
-window.clearTimeout(_timeoutID);
+	document.getElementById('JS_monitoring_play').style.display = 'block';
+	document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
+	document.getElementById('JS_monitoring_play_gray').style.display = 'none';
+	document.getElementById('JS_monitoring_pause').style.display='none';
+	_on = 0;
+	window.clearTimeout(_timeoutID);
 }
-
-
-</SCRIPT>
-	
+</SCRIPT>	
