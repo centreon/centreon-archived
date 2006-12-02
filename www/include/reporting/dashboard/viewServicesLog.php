@@ -189,12 +189,10 @@ $tab_svc = array();
 			$tab_svc["PtimeCRITICAL"] = round(($archive_svc_cri+$tab_svc["timeCRITICAL"]) / $tt *100,3);
 
 			$tab_svc["PtimeNONE"] = round( 
-										( 100 - ($tab_svc["PtimeOK"] +
+										 100 - ($tab_svc["PtimeOK"] +
 												 $tab_svc["PtimeWARNING"] + 
 												 $tab_svc["PtimeUNKNOWN"] + 
-												 $tab_svc["PtimeCRITICAL"]))  / $tt *100,3);
-
-
+												 $tab_svc["PtimeCRITICAL"]));
 
 			$tab_svc["timeOK"] += $archive_svc_ok;
 			$tab_svc["timeWARNING"] += $archive_svc_warn;
@@ -214,12 +212,11 @@ $tab_svc = array();
 			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? 0.00 : $tab_svc["PtimeNONE"];
 			#end
 			}
+
 	}
 	else { // today is not in the period		
 		$tab_svc = array();
 
-
-//		$svc_id = getMyServiceID($mservice,getMyHostID($mhost));
 		$svc_id = $mservice;
 
 		$tab_svc_bdd = array();
@@ -229,17 +226,19 @@ $tab_svc = array();
 		$tt = $end_date_select - $start_date_select;
 
 
-		$tab_svc["timeOK"] = $tab_svc_bdd[$svc_id]["Tok"];
-		$tab_svc["timeWARNING"] = $tab_svc_bdd[$svc_id]["Twarn"];
-		$tab_svc["timeUNKNOWN"] = $tab_svc_bdd[$svc_id]["Tunknown"];
-		$tab_svc["timeCRITICAL"] = $tab_svc_bdd[$svc_id]["Tcri"];
-		$tab_svc["timeNONE"] = $tt - ($tab_svc_bdd[$svc_id]["Tok"] + $tab_svc_bdd[$svc_id]["Twarn"] + $tab_svc_bdd[$svc_id]["Tunknown"] + $tab_svc_bdd[$svc_id]["Tcri"]);
 
-		$tab_svc["PtimeOK"] = round($tab_svc_bdd[$svc_id]["Tok"] / $tt *100,3);
-		$tab_svc["PtimeWARNING"] = round( $tab_svc_bdd[$svc_id]["Twarn"]/ $tt *100,3);
-		$tab_svc["PtimeUNKNOWN"] = round( $tab_svc_bdd[$svc_id]["Tunknown"]/ $tt *100,3);
-		$tab_svc["PtimeCRITICAL"] = round( $tab_svc_bdd[$svc_id]["Tcri"]/ $tt *100,3);
-		$tab_svc["PtimeNONE"] = round( ( $tt - ($tab_svc_bdd[$svc_id]["Tok"] + $tab_svc_bdd[$svc_id]["Twarn"] + $tab_svc_bdd[$svc_id]["Tunknown"] + $tab_svc_bdd[$svc_id]["Tcri"])
+		$tab_svc["timeOK"] = (isset($tab_svc_bdd[$svc_id]["Tok"])) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
+		$tab_svc["timeWARNING"] = (isset($tab_svc_bdd[$svc_id]["Twarn"])) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
+		$tab_svc["timeUNKNOWN"] = (isset($tab_svc_bdd[$svc_id]["Tunknown"])) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
+		$tab_svc["timeCRITICAL"] = (isset($tab_svc_bdd[$svc_id]["Tcri"])) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
+
+		$tab_svc["timeNONE"] = $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
+
+		$tab_svc["PtimeOK"] = round($tab_svc["timeOK"] / $tt *100,3);
+		$tab_svc["PtimeWARNING"] = round( $tab_svc["timeOK"]/ $tt *100,3);
+		$tab_svc["PtimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ $tt *100,3);
+		$tab_svc["PtimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ $tt *100,3);
+		$tab_svc["PtimeNONE"] = round( ( $tab_svc["timeNONE"]
 											 )  / $tt *100,3);
 
 		# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
