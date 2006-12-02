@@ -23,26 +23,25 @@ For information : contact@oreon-project.org
 	#
 	$nagios = array();
 	if (($o == "c" || $o == "w") && $nagios_id)	{	
-		$res =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$nagios = array_map("myDecode", $res->fetchRow());
+		$nagios = array_map("myDecode", $DBRESULT->fetchRow());
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array();
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT command_id, command_name FROM command ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
 	$checkCmds = array(NULL=>NULL);
-	while($res->fetchInto($checkCmd))
+	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

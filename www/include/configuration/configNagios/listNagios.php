@@ -16,18 +16,23 @@ incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
-*/$pagination = "maxViewConfiguration";
+*/
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_nagios WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_nagios WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_nagios");
-	$tmp = & $res->fetchRow();
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_nagios");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT COUNT(*) FROM cfg_nagios : ".$DBRESULT->getMessage()."<br>";
+
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -50,14 +55,16 @@ For information : contact@oreon-project.org
 		$rq = "SELECT nagios_id, nagios_name, nagios_comment, nagios_activate FROM cfg_nagios WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT nagios_id, nagios_name, nagios_comment, nagios_activate FROM cfg_nagios ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT nagios_id, nagios_name, nagios_comment, nagios_activate FROM cfg_nagios.. : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($nagios); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($nagios); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$nagios['nagios_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&nagios_id=".$nagios['nagios_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&nagios_id=".$nagios['nagios_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -121,12 +128,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

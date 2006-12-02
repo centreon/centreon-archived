@@ -19,18 +19,17 @@ For information : contact@oreon-project.org
 */
 
 	global $pearDB;
-	$res =& $pearDB->query("SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		die($res->getMessage());
+	$DBRESULT =& $pearDB->query("SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 
-	$debug = $res->fetchRow();
+	$debug = $DBRESULT->fetchRow();
 
 	$debug_nagios_import = $debug['debug_nagios_import'];
 	$debug_path = $debug['debug_path'];
 
 	if (!isset($debug_nagios_import))
 		$debug_nagios_import = 0;
-
 
 	#
 	## Form begin

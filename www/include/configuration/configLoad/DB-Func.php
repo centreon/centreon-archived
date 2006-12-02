@@ -22,55 +22,45 @@ For information : contact@oreon-project.org
 		global $oreon;
 		//echo "delete all cfg conf<br>";
 		$rq = "DELETE FROM command";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM timeperiod";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM contact WHERE contact_id != '".$oreon->user->get_id()."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM contactgroup";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM host";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM service";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM hostgroup";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM servicegroup";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM dependency";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$rq = "DELETE FROM escalation";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 	}
 
 	function insertResourceCFG(& $buf)	{
@@ -104,9 +94,10 @@ For information : contact@oreon-project.org
 
 	function deleteResourceCFG()	{
 		global $pearDB;
-		//echo "delete all resources<br>";
 		$rq = "DELETE * FROM cfg_resource; ";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE * FROM cfg_resource; : ".$DBRESULT->getMessage()."<br>";
 	}
 
 	function insertNagiosCFG(& $buf)	{
@@ -158,9 +149,10 @@ For information : contact@oreon-project.org
 
 	function deleteNagiosCFG()	{
 		global $pearDB;
-		//echo "delete all nagios<br>";
 		$rq = "DELETE FROM cfg_nagios; ";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM cfg_nagios; : ".$DBRESULT->getMessage()."<br>";
 	}
 
 	function insertCgiCFG(& $buf)	{
@@ -190,14 +182,18 @@ For information : contact@oreon-project.org
 	function deleteCgiCFG()	{
 		global $pearDB;
 		$rq = "DELETE FROM cfg_cgi; ";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM cfg_cgi;  : ".$DBRESULT->getMessage()."<br>";
 	}
 
 	function deletePerfparseCFG()	{
 		global $pearDB;
-		//echo "delete all perpar<br>";
 		$rq = "DELETE FROM cfg_perfparse; ";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM cfg_perfparse;  : ".$DBRESULT->getMessage()."<br>";
+	
 	}
 
 	function insertCFG(& $buf, & $ret)	{
