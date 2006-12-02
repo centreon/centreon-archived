@@ -1,7 +1,7 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form action="" method='GET'>
 <hidden name="p" value='{$p}'>
-<br><br><span>{$lang.dtm_host_downtimes}</span><br><br>
+	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$lang.dtm_host_downtimes}</td></tr></table><br><br>
 	<table id="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -35,7 +35,7 @@
 	</table>
 	{$form.hidden}
 	</form>
-	<br><br><span>{$lang.dtm_service_downtimes}</span><br><br>
+	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$lang.dtm_service_downtimes}</td></tr></table><br><br>
 	<form action="" method='GET'>
 	<table id="ListTable">
 		<tr class='ListHeader'>

@@ -1,11 +1,11 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form action="" method='GET'>
 <hidden name="p" value='{$p}'>
-<br><br><span>{$lang.cmt_host_comment}</span><br><br>
+	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$lang.cmt_host_comment}</td></tr></table><br><br>
 	<table id="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderCenter">{$lang.cmt_host_name}</td>
+			<td class="ListColHeaderCenter">{$lang.m_mon_hosts}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_entry_time}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_author}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_comment}</td>
@@ -18,7 +18,7 @@
 			<td class="ListColLeft">{$tch.host_name}</td>
 			<td class="ListColRight">{$tch.time}</td>
 			<td class="ListColCenter">{$tch.author}</td>
-			<td class="ListColLeft">{$tch.comment}</td>
+			<td class="ListColNoWrap">{$tch.comment}</td>
 			<td class="ListColLeft">{$tch.persistent}</td>
 			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=dh&select[{$tch.id}]'><img src='./img/icones/16x16/delete.gif'></a></td>
 		</tr>
@@ -31,12 +31,12 @@
 	</table>
 	{$form.hidden}
 	</form>
-	<br><br><span>{$lang.cmt_service_comment}</span><br><br>
+	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$lang.cmt_service_comment}</td></tr></table><br><br>
 	<form action="" method='GET'>
 	<table id="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderCenter">{$lang.cmt_host_name}</td>
+			<td class="ListColHeaderCenter">{$lang.m_mon_hosts}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_service_descr}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_entry_time}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_author}</td>
@@ -51,7 +51,7 @@
 			<td class="ListColLeft">{$tcs.service_descr}</td>
 			<td class="ListColRight">{$tcs.time}</td>
 			<td class="ListColCenter">{$tcs.author}</td>
-			<td class="ListColLeft">{$tcs.comment}</td>
+			<td class="ListColNoWrap">{$tcs.comment}</td>
 			<td class="ListColLeft">{$tcs.persistent}</td>
 			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=ds&select[{$tcs.id}]'><img src='./img/icones/16x16/delete.gif'></a></td>
 		</tr>
