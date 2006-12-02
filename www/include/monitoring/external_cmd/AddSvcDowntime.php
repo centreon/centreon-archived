@@ -1,11 +1,8 @@
-<?php
+<?
 /** 
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
-
-This unit, called  Oreon Service Level  is developped by Merethis company for Lafarge Group, 
-under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
@@ -43,11 +40,10 @@ For information : contact@oreon-project.org
 	## Database retrieve information for differents elements list we need on the page
 	#
 	$hosts = array(""=>"");
-	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-	while ($res->fetchInto($host)){
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "AddSvcDonwtime RQ 1 - Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($host)){
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
 		if (IsHostReadable($lcaHostByName, $host["host_name"]))
@@ -101,7 +97,6 @@ For information : contact@oreon-project.org
 			$_POST["persistant"] = 0;
 		if (!isset($_POST["comment"]))
 			$_POST["comment"] = 0;
-			
 		AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
     	require_once($path."viewDowntime.php");
 	} else {
@@ -113,8 +108,7 @@ For information : contact@oreon-project.org
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);	
-		
+		$form->accept($renderer);		
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);
 		$tpl->display("AddSvcDowntime.ihtml");

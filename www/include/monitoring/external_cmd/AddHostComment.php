@@ -1,4 +1,4 @@
-<?php
+<?
 /** 
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
@@ -33,10 +33,10 @@ For information : contact@oreon-project.org
 	#
 	
 	$hosts = array(""=>"");
-	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($res)) 
-		print "Mysql Error : ".$res->getMessage();
-	while ($res->fetchInto($host)){
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT)) 
+		print "AddHostComment - Rq 1 Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($host)){
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
 		if (IsHostReadable($lcaHostByName, $host["host_name"]))
@@ -92,8 +92,7 @@ For information : contact@oreon-project.org
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);	
-		
+		$form->accept($renderer);			
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);		
 		$tpl->display("AddHostComment.ihtml");
