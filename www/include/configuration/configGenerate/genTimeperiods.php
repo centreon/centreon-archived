@@ -22,14 +22,13 @@ For information : contact@oreon-project.org
 		exit();
 
 	$handle = create_file($nagiosCFGPath."timeperiods.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM `timeperiod` ORDER BY `tp_name` : ".$DBRESULT->getMessage()."<br>";
 	$timePeriod = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($timePeriod))	{
+	while($DBRESULT->fetchInto($timePeriod))	{
 		$ret["comment"]["comment"] ? ($str .= "# '" . $timePeriod["tp_name"] . "' timeperiod definition " . $i . "\n") : NULL;
 		$str .= "define timeperiod{\n";
 		if ($timePeriod["tp_name"]) $str .= print_line("timeperiod_name", $timePeriod["tp_name"]);
@@ -47,7 +46,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."timeperiods.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 	unset($i);
 ?>

@@ -140,11 +140,10 @@ For information : contact@oreon-project.org
 						require_once($filename);
 			if ($ret["xml"]["xml"])	{
 				require_once($path."genXMLList.php");
-				$pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-		}
+				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			}
 		}
 		if ($ret["debug"]["debug"])	{
 			require_once($path."genNagiosCFG-DEBUG.php");
@@ -179,7 +178,9 @@ For information : contact@oreon-project.org
 				require_once("./include/monitoring/external_cmd/cmd.php");
 				$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
 			}
-			$pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
+			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 	}

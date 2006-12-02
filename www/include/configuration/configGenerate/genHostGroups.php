@@ -17,19 +17,17 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
 	if (!isset($oreon))
 		exit();
 
 	$handle = create_file($nagiosCFGPath."hostgroups.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM hostgroup ORDER BY `hg_name`");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup ORDER BY `hg_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM hostgroup ORDER BY `hg_name` : ".$DBRESULT->getMessage()."<br>";
 	$hostGroup = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($hostGroup))	{
+	while($DBRESULT->fetchInto($hostGroup))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
@@ -51,11 +49,10 @@ For information : contact@oreon-project.org
 			// Host members
 			$host = array();
 			$strTemp = NULL;
-			$res2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			while($res2->fetchInto($host))	{
+			$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host... : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($host))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
 					array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -66,7 +63,7 @@ For information : contact@oreon-project.org
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
 			}
-			$res2->free();
+			$DBRESULT2->free();
 			unset($host);
 			if ($strTemp) $str .= print_line("members", $strTemp);
 			unset($strTemp);
@@ -74,11 +71,10 @@ For information : contact@oreon-project.org
 			if ($oreon->user->get_version() == 1)	{
 				$contactGroup = array();
 				$strTemp = NULL;
-				$res2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_hostgroup_relation cghgr, contactgroup cg WHERE cghgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND cghgr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-				while($res2->fetchInto($contactGroup))	{
+				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_hostgroup_relation cghgr, contactgroup cg WHERE cghgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND cghgr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : SELECT cg.cg_name, cg.cg_id FROM contactgroup_hostgroup_relation cghgr, contactgroup cg... : ".$DBRESULT2->getMessage()."<br>";
+				while($DBRESULT2->fetchInto($contactGroup))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -89,7 +85,7 @@ For information : contact@oreon-project.org
 					if ($BP)
 						$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 				}
-				$res2->free();
+				$DBRESULT2->free();
 				unset($contactGroup);
 				if ($strTemp) $str .= print_line("contact_groups", $strTemp);
 				unset($strTemp);
@@ -101,7 +97,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."hostgroups.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 	unset($i);
 	?>

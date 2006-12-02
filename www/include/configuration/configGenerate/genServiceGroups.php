@@ -22,14 +22,14 @@ For information : contact@oreon-project.org
 		exit();
 
 	$handle = create_file($nagiosCFGPath."servicegroups.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM servicegroup ORDER BY `sg_name` : ".$DBRESULT->getMessage()."<br>";
 	
 	$serviceGroup = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($serviceGroup))	{
+	while($DBRESULT->fetchInto($serviceGroup))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($serviceGroup["sg_id"], $gbArr[5]) ? $BP = true : NULL;
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 			// Service members
 			$service = array();
 			$strTemp = NULL;
-			$res2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
+			$DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
 									"FROM servicegroup_relation, service, host " .
 									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
@@ -59,9 +59,9 @@ For information : contact@oreon-project.org
 									"AND service.service_activate = '1' " .
 									"AND host.host_activate = '1' " .
 									"AND  servicegroup_relation.host_host_id IS NOT NULL");
-			if (PEAR::isError($res2))
-				print "Mysql Error : ".$res2->getMessage();
-			while($res2->fetchInto($service)){
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT service_description, service_id, host_name, host_id.. : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($service)){
 				if ($ret["level"]["level"] == 1)
 					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"] == 2)
@@ -83,7 +83,7 @@ For information : contact@oreon-project.org
 				}
 			}
 
-			$res2 =& $pearDB->query("SELECT service_description, service_id, hg_id " .
+			$DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, hg_id " .
 									"FROM servicegroup_relation, service, hostgroup " .
 									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
@@ -91,9 +91,9 @@ For information : contact@oreon-project.org
 									"AND service.service_activate = '1' " .
 									"AND hostgroup.hg_activate = '1' " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
-			if (PEAR::isError($res2))
-				print "Mysql Error : ".$res2->getMessage();
-			while($res2->fetchInto($service)){
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT service_description, service_id, hg_id... : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($service)){
 				if ($ret["level"]["level"] == 1)
 					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"] == 2)
@@ -110,10 +110,10 @@ For information : contact@oreon-project.org
 						else if ($ret["level"]["level"]	 == 3)
 							$BP = true;
 						if ($BP){
-							$res3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
-							if (PEAR::isError($res3)) 
-								print "Mysql Error : ".$res3->getMessage();
-							while($res3->fetchInto($host))	{
+							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
+							if (PEAR::isError($DBRESULT3)) 
+								print "DB Error : SELECT host_host_id FROM hostgroup_relation... : ".$DBRESULT3->getMessage()."<br>";
+							while($DBRESULT3->fetchInto($host))	{
 								$BP = false;
 								if ($ret["level"]["level"] == 1)
 									isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
@@ -125,11 +125,11 @@ For information : contact@oreon-project.org
 									$strTemp != NULL ? $strTemp .= ", ".getMyHostName($host["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($host["host_host_id"]).", ".$service["service_description"];
 							}
 						}
-						$res3->free();
+						$DBRESULT3->free();
 					}
 				}
 			}
-			$res2->free();
+			$DBRESULT2->free();
 			unset($service);
 			if ($strTemp) $str .= print_line("members", $strTemp);
 			unset($strTemp);
@@ -140,7 +140,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."servicegroups.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 	unset($i);
 ?>

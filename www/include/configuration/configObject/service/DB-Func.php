@@ -86,15 +86,15 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : UPDATE service SET service_activate = '1' WHERE service_id = '".$service_id."' : ".$DBRESULT->getMessage()."<br>";
 	}
 	
 	function disableServiceInDB ($service_id = null)	{
 		if (!$service_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$service_id."'");
+		$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : UPDATE service SET service_activate = '0' WHERE service_id = '".$service_id."' : ".$DBRESULT->getMessage()."<br>";
 	}
 	
 	function deleteServiceInDB ($services = array())	{

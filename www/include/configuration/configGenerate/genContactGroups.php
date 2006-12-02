@@ -22,14 +22,13 @@ For information : contact@oreon-project.org
 		exit();
 
 	$handle = create_file($nagiosCFGPath."contactgroups.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM contactgroup ORDER BY `cg_name`");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT * FROM contactgroup ORDER BY `cg_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM contactgroup ORDER BY `cg_name` : ".$DBRESULT->getMessage()."<br>";
 	$contactGroup = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($contactGroup))	{
+	while($DBRESULT->fetchInto($contactGroup))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -50,8 +49,10 @@ For information : contact@oreon-project.org
 			if ($contactGroup["cg_alias"]) $str .= print_line("alias", $contactGroup["cg_alias"]);
 			$contact = array();
 			$strTemp = NULL;
-			$res2 =& $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id ORDER BY `contact_name`");
-			while($res2->fetchInto($contact))	{
+			$DBRESULT2 =& $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id ORDER BY `contact_name`");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT cct.contact_id, cct.contact_name.. : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($contact))	{
 				$BP = false;				
 				if ($ret["level"]["level"] == 1)
 					array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : $BP = false;
@@ -62,7 +63,7 @@ For information : contact@oreon-project.org
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
 			}
-			$res2->free();
+			$DBRESULT2->free();
 			$str .= print_line("members", $strTemp);
 			unset($contact);
 			unset($strTemp);
@@ -73,7 +74,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."contactgroups.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 	unset($i);
 ?>

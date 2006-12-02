@@ -21,14 +21,13 @@ For information : contact@oreon-project.org
 
 	// Host Extended Information
 	$handle = create_file($nagiosCFGPath."hostextinfo.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT host.host_name, ehi.* FROM host, extended_host_information ehi WHERE host.host_id = ehi.host_host_id AND host.host_register = '1' ORDER BY `host_name`");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT host.host_name, ehi.* FROM host, extended_host_information ehi WHERE host.host_id = ehi.host_host_id AND host.host_register = '1' ORDER BY `host_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT host.host_name, ehi.* FROM host, extended_host_information ehi.. : ".$DBRESULT->getMessage()."<br>";
 	$ehi = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($ehi))	{
+	while($DBRESULT->fetchInto($ehi))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($ehi["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -57,7 +56,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."hostextinfo.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($ehi);
 	unset($str);
 	unset($i);
@@ -68,11 +67,10 @@ For information : contact@oreon-project.org
 	$i = 1;
 	$str = NULL;
 
-	$res =& $pearDB->query("SELECT * FROM extended_service_information");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($esi))	{
+	$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM extended_service_information : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($esi))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($esi["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
@@ -139,7 +137,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."serviceextinfo.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($esi);
 	unset($str);
 	unset($i);

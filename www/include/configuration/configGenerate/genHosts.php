@@ -22,13 +22,13 @@ For information : contact@oreon-project.org
 		exit();
 
 	$handle = create_file($nagiosCFGPath."hosts.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM host ORDER BY `host_register`, `host_name`");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query("SELECT * FROM host ORDER BY `host_register`, `host_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM host ORDER BY `host_register`, `host_name` : ".$DBRESULT->getMessage()."<br>";
 	$host = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($host))	{
+	while($DBRESULT->fetchInto($host))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -54,10 +54,12 @@ For information : contact@oreon-project.org
 			//Template Model Relation
 			if ($host["host_template_model_htm_id"]) {
 				$hostTemplate = array();
-				$res2 =& $pearDB->query("SELECT host.host_name FROM host WHERE host.host_id = '".$host["host_template_model_htm_id"]."'");
-				while($res2->fetchInto($hostTemplate))
+				$DBRESULT2 =& $pearDB->query("SELECT host.host_name FROM host WHERE host.host_id = '".$host["host_template_model_htm_id"]."'");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : SELECT host.host_name FROM host WHERE host.host_id =.. : ".$DBRESULT2->getMessage()."<br>";
+				while($DBRESULT2->fetchInto($hostTemplate))
 					$str .= print_line("use", $hostTemplate["host_name"]);
-				$res2->free();
+				$DBRESULT2->free();
 				unset($hostTemplate);		
 			}
 			//
@@ -66,10 +68,10 @@ For information : contact@oreon-project.org
 			//Parents relation
 			$hostParent = array();
 			$strTemp = NULL;
-			$res2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
-			if (PEAR::isError($res2))
-				print "Mysql Error : ".$res2->getMessage();
-			while($res2->fetchInto($hostParent))	{
+			$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host.. : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($hostParent))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
 					array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -80,7 +82,7 @@ For information : contact@oreon-project.org
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
 			}
-			$res2->free();
+			$DBRESULT2->free();
 			unset($hostParent);
 			if ($strTemp) $str .= print_line("parents", $strTemp);
 			unset($strTemp);
@@ -88,10 +90,10 @@ For information : contact@oreon-project.org
 			if ($oreon->user->get_version() == 2)	{
 				$hostGroup = array();
 				$strTemp = NULL;
-				$res2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
-				if (PEAR::isError($res2))
-					print "Mysql Error : ".$res2->getMessage();
-				while($res2->fetchInto($hostGroup))	{
+				$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg.. : ".$DBRESULT2->getMessage()."<br>";
+				while($DBRESULT2->fetchInto($hostGroup))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
@@ -102,16 +104,16 @@ For information : contact@oreon-project.org
 					if ($BP)
 						$strTemp != NULL ? $strTemp .= ", ".$hostGroup["hg_name"] : $strTemp = $hostGroup["hg_name"];
 				}
-				$res2->free();
+				$DBRESULT2->free();
 				unset($hostGroup);
 				if ($strTemp) $str .= print_line("hostgroups", $strTemp);
 				unset($strTemp);
 			}
 			//Check Command
 			$command = array();
-			$res2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id"]."' LIMIT 1");
-			if (PEAR::isError($res2))
-				print "Mysql Error : ".$res2->getMessage();
+			$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id"]."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT cmd.command_name FROM command cmd WHERE cmd.command_id.. : ".$DBRESULT2->getMessage()."<br>";
 			
 			$host["command_command_id_arg2"] = str_replace('#BR#', "\\n", $host["command_command_id_arg2"]);
 			$host["command_command_id_arg2"] = str_replace('#T#', "\\t", $host["command_command_id_arg2"]);
@@ -119,9 +121,9 @@ For information : contact@oreon-project.org
 			$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
 			$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
 			
-			while($res2->fetchInto($command))
+			while($DBRESULT2->fetchInto($command))
 				$str .= print_line("check_command", $command["command_name"].$host["command_command_id_arg1"]);
-			$res2->free();
+			$DBRESULT2->free();
 			unset($command);
 			//
 			if ($host["host_max_check_attempts"] != NULL) $str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
@@ -133,10 +135,12 @@ For information : contact@oreon-project.org
 				if ($host["host_passive_checks_enabled"] != 2) $str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
 				//Check Period
 				$timePeriod = array();
-				$res2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id"]."' LIMIT 1");
-				while($res2->fetchInto($timePeriod))
+				$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id"]."' LIMIT 1");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : SELECT tp.tp_name FROM timeperiod tp WHERE.. : ".$DBRESULT2->getMessage()."<br>";
+				while($DBRESULT2->fetchInto($timePeriod))
 					$str .= print_line("check_period", $timePeriod["tp_name"]);
-				$res2->free();
+				$DBRESULT2->free();
 				unset($timePeriod);
 				//
 				if ($host["host_obsess_over_host"] != 2) $str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
@@ -145,18 +149,18 @@ For information : contact@oreon-project.org
 			}
 			//Event_handler
 			$command = array();
-			$res2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id2"]."' LIMIT 1");
-			if (PEAR::isError($res2))
-				print "Mysql Error : ".$res2->getMessage();
+			$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id2"]."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT cmd.command_name FROM command cmd.. : ".$DBRESULT2->getMessage()."<br>";
 			$host["command_command_id_arg2"] = str_replace('#BR#', "\\n", $host["command_command_id_arg2"]);
 			$host["command_command_id_arg2"] = str_replace('#T#', "\\t", $host["command_command_id_arg2"]);
 			$host["command_command_id_arg2"] = str_replace('#R#', "\\r", $host["command_command_id_arg2"]);
 			$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
 			$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
 				
-			while($res2->fetchInto($command))
+			while($DBRESULT2->fetchInto($command))
 				$str .= print_line("event_handler", $command["command_name"].$host["command_command_id_arg2"]);
-			$res2->free();
+			$DBRESULT2->free();
 			unset($command);
 			//
 			if ($host["host_event_handler_enabled"] != 2) $str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
@@ -170,11 +174,10 @@ For information : contact@oreon-project.org
 			if ($oreon->user->get_version() == 2)	{
 				$contactGroup = array();
 				$strTemp = NULL;
-				$res2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-				while($res2->fetchInto($contactGroup))	{				
+				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg.. : ".$DBRESULT2->getMessage()."<br>";
+				while($DBRESULT2->fetchInto($contactGroup))	{				
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -185,7 +188,7 @@ For information : contact@oreon-project.org
 					if ($BP)
 						$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 				}
-				$res2->free();
+				$DBRESULT2->free();
 				unset($contactGroup);
 				if ($strTemp) $str .= print_line("contact_groups", $strTemp);
 				unset($strTemp);
@@ -194,13 +197,12 @@ For information : contact@oreon-project.org
 			if ($host["host_notification_interval"] != NULL) $str .= print_line("notification_interval", $host["host_notification_interval"]);
 			// Timeperiod name
 			$timePeriod = array();
-			$res2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id2"]."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			while($res2->fetchInto($timePeriod))
+			$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id2"]."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$host["timeperiod_tp_id2"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($timePeriod))
 				$str .= print_line("notification_period", $timePeriod["tp_name"]);
-			$res2->free();
+			$DBRESULT2->free();
 			unset($timePeriod);
 			//
 			if ($host["host_notification_options"]) $str .= print_line("notification_options", $host["host_notification_options"]);
@@ -214,7 +216,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."hosts.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 	unset($i);
 ?>

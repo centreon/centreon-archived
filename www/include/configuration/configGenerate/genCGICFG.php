@@ -24,15 +24,14 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."cgi.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT cfg_dir FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
+		print "Mysql Error : ".$pearDB->getMessage()."<br>";
 	}
 	$nagios = $res->fetchRow();	
-	$res =& $pearDB->query("SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	if ($res->numRows())
-		$cgi = $res->fetchRow();
+	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+	if ($DBRESULT->numRows())
+		$cgi = $DBRESULT->fetchRow();
 	else
 		$cgi = array();
 	$str = NULL;
@@ -54,6 +53,6 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."cgi.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 ?>

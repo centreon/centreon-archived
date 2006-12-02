@@ -22,14 +22,13 @@ For information : contact@oreon-project.org
 		exit();
 
 	$handle = create_file($nagiosCFGPath."contacts.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM contact ORDER BY `contact_name`");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT * FROM contact ORDER BY `contact_name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM contact ORDER BY `contact_name` : ".$DBRESULT->getMessage()."<br>";
 	$contact = array();
 	$i = 1;
 	$str = NULL;
-	for(;$res->fetchInto($contact);)	{
+	while ($DBRESULT->fetchInto($contact))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : NULL;
@@ -52,8 +51,10 @@ For information : contact@oreon-project.org
 			if ($oreon->user->get_version() == 2)	{
 				$contactGroup = array();
 				$strTemp = NULL;
-				$res2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_contact_relation ccr, contactgroup cg WHERE ccr.contact_contact_id = '".$contact["contact_id"]."' AND ccr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-				while($res2->fetchInto($contactGroup))	{
+				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_contact_relation ccr, contactgroup cg WHERE ccr.contact_contact_id = '".$contact["contact_id"]."' AND ccr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : SELECT cg.cg_name, cg.cg_id FROM contactgroup_contact_relation ccr.. : ".$DBRESULT2->getMessage()."<br>";
+				while($DBRESULT2->fetchInto($contactGroup))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -64,44 +65,44 @@ For information : contact@oreon-project.org
 					if ($BP)
 						$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 				}
-				$res2->free();
+				$DBRESULT2->free();
 				if ($strTemp) $str .= print_line("contactgroups", $strTemp);
 				unset($contactGroup);
 				unset($strTemp);
 			}
 			// Timeperiod for host & service
 			$timeperiod = array();
-			$res2 =& $pearDB->query("SELECT cct.timeperiod_tp_id AS cctTP1, cct.timeperiod_tp_id2 AS cctTP2, tp.tp_id, tp.tp_name FROM contact cct, timeperiod tp WHERE cct.contact_id = '".$contact["contact_id"]."' AND (tp.tp_id = cct.timeperiod_tp_id OR tp.tp_id = cct.timeperiod_tp_id2) ORDER BY `cctTP1`");
-			while($res2->fetchInto($timeperiod))	{
+			$DBRESULT2 =& $pearDB->query("SELECT cct.timeperiod_tp_id AS cctTP1, cct.timeperiod_tp_id2 AS cctTP2, tp.tp_id, tp.tp_name FROM contact cct, timeperiod tp WHERE cct.contact_id = '".$contact["contact_id"]."' AND (tp.tp_id = cct.timeperiod_tp_id OR tp.tp_id = cct.timeperiod_tp_id2) ORDER BY `cctTP1`");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT cct.timeperiod_tp_id AS cctTP1, cct.timeperiod_tp_id2 AS cctTP2,.. : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($timeperiod))	{
 				$timeperiod["cctTP1"] == $timeperiod["tp_id"] ? $str .= print_line("host_notification_period", $timeperiod["tp_name"]) : NULL;
 				$timeperiod["cctTP2"] == $timeperiod["tp_id"] ? $str .= print_line("service_notification_period", $timeperiod["tp_name"]) : NULL;
 			}
-			$res2->free();
+			$DBRESULT2->free();
 			unset($timeperiod);
 			if ($contact["contact_host_notification_options"]) $str .= print_line("host_notification_options", $contact["contact_host_notification_options"]);
 			if ($contact["contact_service_notification_options"]) $str .= print_line("service_notification_options", $contact["contact_service_notification_options"]);
 			// Host & Service notification command
 			$command = array();
 			$strTemp = NULL;
-			$res2 =& $pearDB->query("SELECT cmd.command_name FROM contact_hostcommands_relation chr, command cmd WHERE chr.contact_contact_id = '".$contact["contact_id"]."' AND chr.command_command_id = cmd.command_id ORDER BY `command_name`");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			while($res2->fetchInto($command))
+			$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM contact_hostcommands_relation chr, command cmd WHERE chr.contact_contact_id = '".$contact["contact_id"]."' AND chr.command_command_id = cmd.command_id ORDER BY `command_name`");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT cmd.command_name FROM contact_hostcommands_relation chr, command cmd.. : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($command))
 				$strTemp != NULL ? $strTemp .= ", ".$command["command_name"] : $strTemp = $command["command_name"];
-			$res2->free();
+			$DBRESULT2->free();
 			if ($strTemp) $str .= print_line("host_notification_commands", $strTemp);
 			unset($command);
 			unset($strTemp);
 			$command = array();
 			$strTemp = NULL;
-			$res2 =& $pearDB->query("SELECT cmd.command_name FROM contact_servicecommands_relation csr, command cmd WHERE csr.contact_contact_id = '".$contact["contact_id"]."' AND csr.command_command_id = cmd.command_id ORDER BY `command_name`");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			while($res2->fetchInto($command))
+			$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM contact_servicecommands_relation csr, command cmd WHERE csr.contact_contact_id = '".$contact["contact_id"]."' AND csr.command_command_id = cmd.command_id ORDER BY `command_name`");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT cmd.command_name FROM contact_servicecommands_relation csr, .. : ".$DBRESULT2->getMessage()."<br>";
+			while($DBRESULT2->fetchInto($command))
 				$strTemp != NULL ? $strTemp .= ", ".$command["command_name"] : $strTemp = $command["command_name"];
-			$res2->free();
+			$DBRESULT2->free();
 			if ($strTemp) $str .= print_line("service_notification_commands", $strTemp);
 			unset($command);
 			unset($strTemp);
@@ -114,7 +115,7 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."contacts.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($contact);
 	unset($str);
 	unset($i);

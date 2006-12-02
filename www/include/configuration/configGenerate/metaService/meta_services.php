@@ -21,12 +21,11 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."meta_services.cfg", $oreon->user->get_name());
 	$str = NULL;
 	
-	$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM meta_service WHERE meta_activate = '1' : ".$DBRESULT->getMessage()."<br>";
 	# Write Virtual Services For meta 
-	while ($res->fetchInto($meta))	{
+	while ($DBRESULT->fetchInto($meta))	{
 		$strEval = NULL;
 		$strEval .= "define service{\n";
 		$strEval .= print_line("service_description", "meta_".$meta["meta_id"]);
@@ -38,36 +37,33 @@ For information : contact@oreon-project.org
 		$strEval .= print_line("active_checks_enabled", "1");
 		$strEval .= print_line("passive_checks_enabled", "0");
 		
-		$res2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$period =& $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+		$period =& $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("check_period", $period["tp_name"]);
-		$res2->free();
+		$DBRESULT2->free();
 			
 		$strEval .= print_line("notification_interval", $meta["notification_interval"]);
 		
-		$res2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$period =& $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+		$period =& $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("notification_period", $period["tp_name"]);
-		$res2->free();
+		$DBRESULT2->free();
 	
 		$strEval .= print_line("notification_options", $meta["notification_options"]);
 		if ($meta["notifications_enabled"] != 2) print_line("notifications_enabled", $meta["notifications_enabled"] == 1 ? "1": "0");
 		
 		$contactGroup = array();
 		$strTemp = NULL;
-		$res2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		while($res2->fetchInto($contactGroup))	{				
+		$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr,.. : ".$DBRESULT2->getMessage()."<br>";
+		while($DBRESULT2->fetchInto($contactGroup))	{				
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -78,7 +74,7 @@ For information : contact@oreon-project.org
 			if ($BP)
 				$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 		}
-		$res2->free();
+		$DBRESULT2->free();
 		unset($contactGroup);
 		if ($strTemp) $strEval .= print_line("contact_groups", $strTemp);
 		$strEval .= print_line("register", "1");

@@ -23,15 +23,15 @@ For information : contact@oreon-project.org
 
 	$handle1 = create_file($nagiosCFGPath."misccommands.cfg", $oreon->user->get_name());
 	$handle2 = create_file($nagiosCFGPath."checkcommands.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$pearDB->getMessage();
+	$DBRESULT =& $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
 	$command = array();
 	$i1 = 1;
 	$i2 = 1;
 	$str1 = NULL;
 	$str2 = NULL;
-	while($res->fetchInto($command))	{
+	while($DBRESULT->fetchInto($command))	{
 		$command["command_line"] = str_replace('#BR#', "\\n", $command["command_line"]);
 		$command["command_line"] = str_replace('#T#', "\\t", $command["command_line"]);
 		$command["command_line"] = str_replace('#R#', "\\r", $command["command_line"]);
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 	write_in_file($handle2, html_entity_decode($str2, ENT_QUOTES), $nagiosCFGPath."checkcommands.cfg");
 	fclose($handle1);
 	fclose($handle2);
-	$res->free();
+	$DBRESULT->free();
 	unset($str1);
 	unset($str2);
 ?>

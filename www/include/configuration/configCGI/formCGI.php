@@ -23,26 +23,24 @@ For information : contact@oreon-project.org
 	#
 	$cgi = array();
 	if (($o == "c" || $o == "w") && $cgi_id)	{	
-		$res =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1");
+		if (PEAR::isError($pearDB))
+			print "DB Error : SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1 : ".$pearDB->getMessage()."<br>";
 		# Set base value
-		$cgi = array_map("myDecode", $res->fetchRow());
+		$cgi = array_map("myDecode", $DBRESULT->fetchRow());
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array();
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT command_id, command_name FROM command ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
 	$checkCmds = array(NULL=>NULL);
-	while($res->fetchInto($checkCmd))
+	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

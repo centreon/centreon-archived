@@ -24,21 +24,19 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."meta_dependencies.cfg", $oreon->user->get_name());
 
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmscr WHERE dmscr.dependency_dep_id = dep.dep_id) > 0";
-	$res =& $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*)... : ".$DBRESULT->getMessage()."<br>";
 	$dependency = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($dependency))	{
+	while($DBRESULT->fetchInto($dependency))	{
 		$BP = false;
-		$res2 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT2 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation.. : ".$DBRESULT2->getMessage()."<br>";
 		$metaPar = NULL;
-		while ($res2->fetchInto($metaPar))	{
+		while ($DBRESULT2->fetchInto($metaPar))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($metaPar["meta_service_meta_id"], $gbArr[7]) ? $BP = true : NULL;
@@ -47,12 +45,11 @@ For information : contact@oreon-project.org
 			else if ($ret["level"]["level"] == 3)
 				$BP = true;
 			if ($BP)	{
-				$res3 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
+				$DBRESULT3 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
+				if (PEAR::isError($DBRESULT3))
+					print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation.. : ".$DBRESULT3->getMessage()."<br>";
 				$metaCh = NULL;
-				while ($res3->fetchInto($metaCh))	{					
+				while ($DBRESULT3->fetchInto($metaCh))	{					
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($metaCh["meta_service_meta_id"], $gbArr[7]) ? $BP = true : NULL;
@@ -81,12 +78,13 @@ For information : contact@oreon-project.org
 						$i++;
 					}
 				}
-				$res3->free();
+				$DBRESULT3->free();
 			}
 		}
+		$DBRESULT2->free();
 	}
 	unset($dependency);
-	$res->free();
+	$DBRESULT->free();
 	write_in_file($handle, $str, $nagiosCFGPath."meta_dependencies.cfg");
 	fclose($handle);
 	unset($str);

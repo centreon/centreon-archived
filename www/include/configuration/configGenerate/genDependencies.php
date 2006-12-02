@@ -23,22 +23,20 @@ For information : contact@oreon-project.org
 
 	$handle = create_file($nagiosCFGPath."dependencies.cfg", $oreon->user->get_name());
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhcr WHERE dhcr.dependency_dep_id = dep.dep_id) > 0";
-	$res =& $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr... : ".$DBRESULT->getMessage()."<br>";
 	$dependency = array();
 	$i = 1;
 	$str = NULL;
-	while($res->fetchInto($dependency))	{
+	while($DBRESULT->fetchInto($dependency))	{
 		$BP = false;
-		$res2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host WHERE dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host WHERE dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT DISTINCT host.host_id, host.host_name FROM... : ".$DBRESULT2->getMessage()."<br>";
 		$host = array();
 		$strTemp1 = NULL;
-		while ($res2->fetchInto($host))	{
+		while ($DBRESULT2->fetchInto($host))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -49,13 +47,12 @@ For information : contact@oreon-project.org
 			if ($BP)	
 				$strTemp1 != NULL ? $strTemp1 .= ", ".$host["host_name"] : $strTemp1 = $host["host_name"];
 		}
-		$res2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostChild_relation dhcr, host WHERE dhcr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhcr.host_host_id");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostChild_relation dhcr, host WHERE dhcr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhcr.host_host_id");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT DISTINCT host.host_id, host.host_name FROM.. : ".$DBRESULT2->getMessage()."<br>";
 		$host = array();
 		$strTemp2 = NULL;
-		while ($res2->fetchInto($host))	{
+		while ($DBRESULT2->fetchInto($host))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -66,7 +63,7 @@ For information : contact@oreon-project.org
 			if ($BP)	
 				$strTemp2 != NULL ? $strTemp2 .= ", ".$host["host_name"] : $strTemp2 = $host["host_name"];
 		}
-		$res2->free();			
+		$DBRESULT2->free();			
 		if ($strTemp1 && $strTemp2)	{
 			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' host dependency definition ".$i."\n") : NULL;
 			if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{
@@ -88,23 +85,21 @@ For information : contact@oreon-project.org
 		}
 	}
 	unset($dependency);
-	$res->free();
+	$DBRESULT->free();
 
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgcr WHERE dhgcr.dependency_dep_id = dep.dep_id) > 0";
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$res =& $pearDB->query($rq);
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*)... : ".$DBRESULT->getMessage()."<br>";
 	$dependency = array();
-	while($res->fetchInto($dependency))	{
+	while($DBRESULT->fetchInto($dependency))	{
 		$BP = false;
-		$res2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupParent_relation dhgpr, hostgroup WHERE dhgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgpr.hostgroup_hg_id");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupParent_relation dhgpr, hostgroup WHERE dhgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgpr.hostgroup_hg_id");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name.. : ".$DBRESULT2->getMessage()."<br>";
 		$hg = array();
 		$strTemp1 = NULL;
-		while ($res2->fetchInto($hg))	{
+		while ($DBRESULT2->fetchInto($hg))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
@@ -115,13 +110,13 @@ For information : contact@oreon-project.org
 			if ($BP)	
 				$strTemp1 != NULL ? $strTemp1 .= ", ".$hg["hg_name"] : $strTemp1 = $hg["hg_name"];
 		}
-		$res2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupChild_relation dhgcr, hostgroup WHERE dhgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgcr.hostgroup_hg_id");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT2->free();
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupChild_relation dhgcr, hostgroup WHERE dhgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgcr.hostgroup_hg_id");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name .. : ".$DBRESULT2->getMessage()."<br>";
 		$hg= array();
 		$strTemp2 = NULL;
-		while ($res2->fetchInto($hg))	{
+		while ($DBRESULT2->fetchInto($hg))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
@@ -132,7 +127,7 @@ For information : contact@oreon-project.org
 			if ($BP)	
 				$strTemp2 != NULL ? $strTemp2 .= ", ".$hg["hg_name"] : $strTemp2 = $hg["hg_name"];
 		}
-		$res2->free();			
+		$DBRESULT2->free();			
 		if ($strTemp1 && $strTemp2)	{
 			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' host dependency definition ".$i."\n") : NULL;
 			if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{
@@ -154,13 +149,12 @@ For information : contact@oreon-project.org
 		}
 	}
 	unset($dependency);
-	$res->free();
+	$DBRESULT->free();
 
-	$res2 =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while ($res2->fetchInto($svPar))	{
+	$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM dependency_serviceParent_relation dspr, dependency... : ".$DBRESULT->getMessage()."<br>";
+	while ($DBRESULT->fetchInto($svPar))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($svPar["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
@@ -179,11 +173,10 @@ For information : contact@oreon-project.org
 			if ($BP)						
 				$hPar = getMyHostName($svPar["host_host_id"]);
 			# Service Child
-			$res3 =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			while ($res3->fetchInto($svCh))	{
+			$DBRESULT2 =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : SELECT * FROM dependency_serviceChild_relation WHERE... : ".$DBRESULT2->getMessage()."<br>";
+			while ($DBRESULT2->fetchInto($svCh))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
 					array_key_exists($svCh["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
@@ -223,10 +216,10 @@ For information : contact@oreon-project.org
 					$i++;
 				}
 			}
-			$res3->free();		
+			$DBRESULT2->free();		
 		}		
 	}
-	$res2->free();
+	$DBRESULT->free();
 	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $path ."dependencies.cfg");
 	fclose($handle);

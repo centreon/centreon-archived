@@ -22,23 +22,22 @@ For information : contact@oreon-project.org
 		exit();
 	
 	$handle = create_file($nagiosCFGPath."resource.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1'");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1'");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1' : ".$DBRESULT->getMessage();
 	$str = NULL;
-	while ($res->fetchInto($resource))	{
-		$ret["comment"]["comment"] ? ($str .= "# '".$resource["resource_name"]."'\n") : NULL;
-		if ($ret["comment"]["comment"] && $resource["resource_comment"])	{
+	while ($DBRESULT->fetchInto($DBRESULTource))	{
+		$ret["comment"]["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
+		if ($ret["comment"]["comment"] && $DBRESULTource["resource_comment"])	{
 			$comment = array();
-			$comment = explode("\n", $resource["resource_comment"]);
+			$comment = explode("\n", $DBRESULTource["resource_comment"]);
 			foreach ($comment as $cmt)
 				$str .= "# ".$cmt."\n";
 		}
-		$str .= $resource["resource_line"]."\n";
+		$str .= $DBRESULTource["resource_line"]."\n";
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."resource.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 ?>

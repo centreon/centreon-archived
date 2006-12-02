@@ -22,12 +22,11 @@ For information : contact@oreon-project.org
 		exit();
 
 	$handle = create_file($nagiosCFGPath."perfparse.cfg", $oreon->user->get_name());
-	$res =& $pearDB->query("SELECT * FROM `cfg_perfparse` WHERE `perfparse_activate` = '1' LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	if ($res->numRows())
-		$perfparse = $res->fetchRow();
+	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_perfparse` WHERE `perfparse_activate` = '1' LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT * FROM `cfg_perfparse` WHERE `perfparse_activate` = '1' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+	if ($DBRESULT->numRows())
+		$perfparse = $DBRESULT->fetchRow();
 	else
 		$perfparse = array();
 	$str = NULL;
@@ -127,6 +126,6 @@ For information : contact@oreon-project.org
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."perfparse.cfg");
 	fclose($handle);
-	$res->free();
+	$DBRESULT->free();
 	unset($str);
 ?>

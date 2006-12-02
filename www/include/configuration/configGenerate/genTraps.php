@@ -22,19 +22,17 @@ For information : contact@oreon-project.org
 		exit();
 
 	$i = 0;
-	$res =& $pearDB->query('SELECT snmp_trapd_path_conf FROM `general_opt` LIMIT 1');
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	if ($res->numRows())	{
-		$trap_conf = $res->fetchRow();
+	$DBRESULT =& $pearDB->query('SELECT snmp_trapd_path_conf FROM `general_opt` LIMIT 1');
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	if ($DBRESULT->numRows())	{
+		$trap_conf = $DBRESULT->fetchRow();
 		$handle = create_file($trap_conf["snmp_trapd_path_conf"], $oreon->user->get_name());	
-		$res1 =& $pearDB->query('SELECT * FROM `traps` ORDER BY `traps_name`');
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT1 =& $pearDB->query('SELECT * FROM `traps` ORDER BY `traps_name`');
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM `traps` ORDER BY `traps_name` : ".$DBRESULT->getMessage()."<br>";
 		$str = "\n";
-		while($res1->fetchInto($trap))	{
+		while($DBRESULT1->fetchInto($trap))	{
 			$trap["traps_comments"] ? $str .= "# ".$trap["traps_comments"]."\n" : NULL;
 			$str .= "traphandle ".$trap["traps_oid"]." ".$trap["traps_handler"]." ".$trap["traps_id"]." ".$trap["traps_args"];
 			$str .= "\n";
@@ -43,7 +41,7 @@ For information : contact@oreon-project.org
 		write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $trap_conf);
 		fclose($handle);
 		unset($str);
-		$res1->free();
+		$DBRESULT1->free();
 	}
-	$res->free();
+	$DBRESULT->free();
 ?>
