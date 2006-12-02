@@ -17,14 +17,21 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	if (!isset($oreon))
+		exit;
+		
 	$start_date_select = 0;
 	$end_date_select = 0;
-$tab_svc = array();
+	
+	$tab_svc = array();
+	
 	$path = "./include/reporting/dashboard";
+	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
 	$tpl->assign('o', $o);
+	
 	require_once './class/other.class.php';
 	require_once './include/common/common-Func.php';
 	require_once('simple-func.php');
@@ -33,7 +40,6 @@ $tab_svc = array();
 
 	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
-
 
 	$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL; 
 	$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1; 
@@ -61,8 +67,6 @@ $tab_svc = array();
 	$formService->addElement('hidden', 'start', $start);
 	$formService->addElement('hidden', 'host', $mhost);
 
-
-
 	$serviceList = array();
 	$serviceList = getMyHostServices(getMyHostID($mhost));
 
@@ -86,6 +90,7 @@ $tab_svc = array();
 		#
 		## recupere les log host en base
 		#
+
 		$Tup = NULL;
 		$Tdown = NULL;
 		$Tunreach = NULL;
@@ -100,17 +105,18 @@ $tab_svc = array();
 	#
 	## fourchette de temps
 	#
+
 	$period = array();
 	$period[""] = "";
-	$period["today"] = "Today";
-	$period["yesterday"] = "Yesterday";
-	$period["thisweek"] = "This Week";
-	$period["last7days"] = "Last 7 Days";
-	$period["thismonth"] = "This Month";
-	$period["last30days"] = "Last 30 Days";
-	$period["lastmonth"] = "Last Month";
-	$period["thisyear"] = "This Year";
-	$period["lastyear"] = "Last Year";
+	$period["today"] = $lang["today"];
+	$period["yesterday"] = $lang["yesterday"];
+	$period["thisweek"] = $lang["thisweek"];
+	$period["last7days"] = $lang["last7days"];
+	$period["thismonth"] = $lang["thismonth"];
+	$period["last30days"] = $lang["last30days"];
+	$period["lastmonth"] = $lang["lastmonth"];
+	$period["thisyear"] = $lang["thisyear"];
+	$period["lastyear"] = $lang["lastyear"];
 	
 
 	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p);
@@ -121,13 +127,12 @@ $tab_svc = array();
 	$formPeriod1->addElement('header', 'title', $lang["m_predefinedPeriod"]);
 	$selHost = $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));	
 
-	$formPeriod1->setDefaults(array(
-    'period' => $period1
-	));
+	$formPeriod1->setDefaults(array('period' => $period1));
 
 	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p);
 	isset($mhost) ? $formPeriod2->addElement('hidden', 'host', $mhost) : NULL;
 	isset($mservice) ? $formPeriod2->addElement('hidden', 'service', $mservice) : NULL;
+	
 	$formPeriod2->addElement('header', 'title', $lang["m_customizedPeriod"]);
 	$formPeriod2->addElement('text', 'start', $lang["m_start"]);
 	$formPeriod2->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
@@ -137,32 +142,23 @@ $tab_svc = array();
 	$sub = $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
 	$res = $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
 
-
-
 	if($mhost){
-	#
-	## if today is include in the time period
-	#
-	$tab_log = array();
-	$tab_svc = array();
-	$day = date("d",time());
-	$year = date("Y",time());
-	$month = date("m",time());
-	$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
+		## if today is include in the time period
+		$tab_log = array();
+		$tab_svc = array();
+		$day = date("d",time());
+		$year = date("Y",time());
+		$month = date("m",time());
+		$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
 
-	if($startTimeOfThisDay  < ($end_date_select)){
+	if ($startTimeOfThisDay  < ($end_date_select)){
 		$tmp = $oreon->Nagioscfg["log_file"];
-
 		$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, getMyServiceName($mservice));
 //		$tab_log = $tab["tab_log"];
 
-
-
-		if (isset($tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)]))
-		{
+		if (isset($tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)])){
+			
 			$tab_svc = $tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)];
-
-
 			if(!strncmp($tab_svc["current_state"], "OK", 2))
 				$tab_svc["timeOK"] += (time()-$tab_svc["current_time"]);
 			elseif(!strncmp($tab_svc["current_state"], "WARNING", 7))
@@ -177,7 +173,6 @@ $tab_svc = array();
 			$tt = $end_date_select - $start_date_select;
 			$svc_id = $tab_svc["service_id"];
 
-
 			$archive_svc_ok =  isset($tab_svc_bdd[$svc_id]["Tok"]) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
 			$archive_svc_warn = isset($tab_svc_bdd[$svc_id]["Twarn"]) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
 			$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
@@ -188,20 +183,16 @@ $tab_svc = array();
 			$tab_svc["PtimeUNKNOWN"] = round(($archive_svc_unknown+$tab_svc["timeUNKNOWN"]) / $tt *100,3);
 			$tab_svc["PtimeCRITICAL"] = round(($archive_svc_cri+$tab_svc["timeCRITICAL"]) / $tt *100,3);
 
-			$tab_svc["PtimeNONE"] = round( 
-										 100 - ($tab_svc["PtimeOK"] +
-												 $tab_svc["PtimeWARNING"] + 
-												 $tab_svc["PtimeUNKNOWN"] + 
-												 $tab_svc["PtimeCRITICAL"]));
+			$tab_svc["PtimeNONE"] = round(	100 - ($tab_svc["PtimeOK"] +
+										 	$tab_svc["PtimeWARNING"] + 
+											$tab_svc["PtimeUNKNOWN"] + 
+											$tab_svc["PtimeCRITICAL"]));
 
 			$tab_svc["timeOK"] += $archive_svc_ok;
 			$tab_svc["timeWARNING"] += $archive_svc_warn;
 			$tab_svc["timeUNKNOWN"] += $archive_svc_unknown;
 			$tab_svc["timeCRITICAL"] +=$archive_svc_cri;
-			$tab_svc["timeNONE"] += $tt - ($tab_svc["timeOK"] +
-											$tab_svc["timeWARNING"] + 
-											$tab_svc["timeUNKNOWN"] + 
-											$tab_svc["timeCRITICAL"]);
+			$tab_svc["timeNONE"] += $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
 
 			# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
 			$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
@@ -211,12 +202,9 @@ $tab_svc = array();
 			$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');
 			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? 0.00 : $tab_svc["PtimeNONE"];
 			#end
-			}
-
-	}
-	else { // today is not in the period		
+		}
+	} else { // today is not in the period		
 		$tab_svc = array();
-
 		$svc_id = $mservice;
 
 		$tab_svc_bdd = array();
@@ -224,8 +212,6 @@ $tab_svc = array();
 			
 		$tab_svc["svcName"] = getMyServiceName($mservice);
 		$tt = $end_date_select - $start_date_select;
-
-
 
 		$tab_svc["timeOK"] = (isset($tab_svc_bdd[$svc_id]["Tok"])) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
 		$tab_svc["timeWARNING"] = (isset($tab_svc_bdd[$svc_id]["Twarn"])) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
@@ -238,8 +224,7 @@ $tab_svc = array();
 		$tab_svc["PtimeWARNING"] = round( $tab_svc["timeOK"]/ $tt *100,3);
 		$tab_svc["PtimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ $tt *100,3);
 		$tab_svc["PtimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ $tt *100,3);
-		$tab_svc["PtimeNONE"] = round( ( $tab_svc["timeNONE"]
-											 )  / $tt *100,3);
+		$tab_svc["PtimeNONE"] = round(($tab_svc["timeNONE"])  / $tt *100,3);
 
 		# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
 		$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
@@ -249,57 +234,53 @@ $tab_svc = array();
 		$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');	
 		$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? 0.00 : $tab_svc["PtimeNONE"];
 		#end		
-		}
+	}
+}	
+
+	## calculate service  resume
+	$tab_resume = array();
+	$tab = array();
+	
+	if($mservice && $mhost){
+		
+		$tab["state"] = $lang["m_OKTitle"];
+		$tab["time"] = Duration::toString($tab_svc["timeOK"]);
+		$tab["pourcentTime"] = $tab_svc["PtimeOK"];
+		$tab["pourcentkTime"] = $tab_svc["PtimeOK"];
+		$tab["style"] = " style='background:" . $oreon->optGen["color_ok"]."'";
+		$tab_resume[0] = $tab;
+		
+		$tab["state"] = $lang["m_WarningTitle"];
+		$tab["time"] = Duration::toString($tab_svc["timeWARNING"]);
+		$tab["pourcentTime"] = $tab_svc["PtimeWARNING"];
+		$tab["pourcentkTime"] = $tab_svc["PtimeWARNING"];
+		$tab["style"] = " style='background:" . $oreon->optGen["color_warning"]."'";
+		$tab_resume[1] = $tab;
+		
+		$tab["state"] = $lang["m_UnknownTitle"];
+		$tab["time"] = Duration::toString($tab_svc["timeUNKNOWN"]);
+		$tab["pourcentTime"] = $tab_svc["PtimeUNKNOWN"];
+		$tab["pourcentkTime"] = $tab_svc["PtimeUNKNOWN"];
+		$tab["style"] = " style='background:" . $oreon->optGen["color_unknown"]."'";
+		$tab_resume[2] = $tab;
+		
+		$tab["state"] = $lang["m_CriticalTitle"];
+		$tab["time"] = Duration::toString($tab_svc["timeCRITICAL"]);
+		$tab["pourcentTime"] = $tab_svc["PtimeCRITICAL"];
+		$tab["pourcentkTime"] = $tab_svc["PtimeCRITICAL"];
+		$tab["style"] = " style='background:" . $oreon->optGen["color_critical"]."'";
+		$tab_resume[3] = $tab;
+		
+		$tab["state"] = $lang["m_PendingTitle"];
+		$tab["time"] = Duration::toString($tab_svc["timeNONE"]);
+		$tab["pourcentTime"] = $tab_svc["PtimeNONE"];
+		$tab["pourcentkTime"] = $tab_svc["PtimeNONE"];
+		$tab["style"] = " style='background:" . $oreon->optGen["color_pending"]."'";
+		$tab_resume[4] = $tab;
 	}
 
-	
-
-#
-## calculate service  resume
-#
-$tab_resume = array();
-$tab = array();
-
-if($mservice && $mhost)
-{
-$tab["state"] = $lang["m_OKTitle"];
-$tab["time"] = Duration::toString($tab_svc["timeOK"]);
-$tab["pourcentTime"] = $tab_svc["PtimeOK"];
-$tab["pourcentkTime"] = $tab_svc["PtimeOK"];
-$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'";
-$tab_resume[0] = $tab;
-
-$tab["state"] = $lang["m_WarningTitle"];
-$tab["time"] = Duration::toString($tab_svc["timeWARNING"]);
-$tab["pourcentTime"] = $tab_svc["PtimeWARNING"];
-$tab["pourcentkTime"] = $tab_svc["PtimeWARNING"];
-$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'";
-$tab_resume[1] = $tab;
-
-$tab["state"] = $lang["m_UnknownTitle"];
-$tab["time"] = Duration::toString($tab_svc["timeUNKNOWN"]);
-$tab["pourcentTime"] = $tab_svc["PtimeUNKNOWN"];
-$tab["pourcentkTime"] = $tab_svc["PtimeUNKNOWN"];
-$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";
-$tab_resume[2] = $tab;
-
-$tab["state"] = $lang["m_CriticalTitle"];
-$tab["time"] = Duration::toString($tab_svc["timeCRITICAL"]);
-$tab["pourcentTime"] = $tab_svc["PtimeCRITICAL"];
-$tab["pourcentkTime"] = $tab_svc["PtimeCRITICAL"];
-$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'";
-$tab_resume[3] = $tab;
-
-$tab["state"] = $lang["m_PendingTitle"];
-$tab["time"] = Duration::toString($tab_svc["timeNONE"]);
-$tab["pourcentTime"] = $tab_svc["PtimeNONE"];
-$tab["pourcentkTime"] = $tab_svc["PtimeNONE"];
-$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_pending"]."'";
-$tab_resume[4] = $tab;
-}
-
-$start_date_select = date("d/m/Y G:i:s", $start_date_select);
-$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
+	$start_date_select = date("d/m/Y G:i:s", $start_date_select);
+	$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 
 
 	$path = "./include/reporting/dashboard/";
@@ -314,21 +295,18 @@ $end_date_select =  date("d/m/Y G:i:s", $end_date_select);
 	$tpl->assign('date_start_select', $start_date_select);
 	$tpl->assign('date_end_select', $end_date_select);
 
-if($mservice && $mhost)
-{
-	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));	
-}
+	if($mservice && $mhost)
+		$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));	
 
 	$tpl->assign('periodTitle', $lang["m_selectPeriodTitle"]);
 	$tpl->assign('resumeTitle', $lang["m_serviceResumeTitle"]);
 	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
 	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
-	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'");
-	$tpl->assign('style_warning' , "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'");
-	$tpl->assign('style_critical' , "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'");
-	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
-	$tpl->assign('style_pending' , "class='ListColCenter' style='background:" . $oreon->optGen["color_pending"]."'");
-
+	$tpl->assign('style_ok', "class='ListColCenter' style='background:".$oreon->optGen["color_up"]."'");
+	$tpl->assign('style_warning' , "class='ListColCenter' style='background:".$oreon->optGen["color_warning"]."'");
+	$tpl->assign('style_critical' , "class='ListColCenter' style='background:".$oreon->optGen["color_critical"]."'");
+	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:".$oreon->optGen["color_unknown"]."'");
+	$tpl->assign('style_pending' , "class='ListColCenter' style='background:".$oreon->optGen["color_pending"]."'");
 
 	$tpl->assign('serviceTilte', $lang["m_serviceTilte"]);
 	$tpl->assign('OKTitle', $lang["m_OKTitle"]);
@@ -346,14 +324,10 @@ if($mservice && $mhost)
 	$tpl->assign('HostTitle', $lang["m_HostTitle"]);
 	$tpl->assign('InformationsTitle', $lang["m_InformationsTitle"]);
 
-
 	$tpl->assign('infosTitle1', $mhost);
 	$tpl->assign('infosTitle2', $start_date_select." => ".$end_date_select);		
 	$tpl->assign('host_name', $mhost);		
 	$tpl->assign('service_name', getMyServiceName($mservice));		
-
-
-
 
 	$status = "";
 	foreach ($tab_resume  as $tb)
@@ -361,8 +335,6 @@ if($mservice && $mhost)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];  
         
 	$tpl->assign('status', $status);		
-
-
 	$tpl->assign('hostID', getMyHostID($mhost));
 	$color = array();
 	$color["UNKNOWN"] =  substr($oreon->optGen["color_unknown"], 1);
@@ -370,7 +342,6 @@ if($mservice && $mhost)
 	$color["DOWN"] =  substr($oreon->optGen["color_down"], 1);
 	$color["UNREACHABLE"] =  substr($oreon->optGen["color_unreachable"], 1);
 	$tpl->assign('color', $color);
-
 
 	$renderer1 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod1->accept($renderer1);
@@ -383,16 +354,11 @@ if($mservice && $mhost)
 	#Apply a template definition
 	$renderer3 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formService->accept($renderer3);
+	
 	$tpl->assign('formService', $renderer3->toArray());
-
-
-
 	$tpl->assign("tab_resume", $tab_resume);
 	$tpl->assign("tab_log", $tab_log);
-
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 	$tpl->display("template/viewServicesLog.ihtml");
-
-
 ?>

@@ -35,7 +35,6 @@ For information : contact@oreon-project.org
 	$lcaHostByID = getLcaHostByID($pearDB);
 	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
 
 
 	#
