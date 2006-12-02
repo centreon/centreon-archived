@@ -23,24 +23,29 @@ For information : contact@oreon-project.org
 	function getLCASG($pearDB){
 		if (!$pearDB)
 			return ;
-		if (session_id() == "")
-			$uid = $_POST["sid"];
-		else 
-			$uid = session_id();
-		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
-		$res1->fetchInto($user);
+		if (session_id() == "") $uid = $_POST["sid"] ; else $uid = session_id();
+		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
+		if (PEAR::isError($DBRESULT)) 
+			print "getLCASG RQ 1 : Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($user);
 		$user_id = $user["user_id"];	
 		$lcaServiceGroup = array();
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
-		if ($res1->numRows())	{
-			while($res1->fetchInto($contactGroup))	{
-			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-				 if ($res2->numRows())
-					while ($res2->fetchInto($lca))	{
-						$res3 =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup, lca_define_servicegroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND sg_id = servicegroup_sg_id");	
-						while ($res3->fetchInto($serviceGroup))
+		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
+		if (PEAR::isError($DBRESULT)) 
+			print "getLCASG RQ 2 : Mysql Error : ".$DBRESULT->getMessage();
+		if ($DBRESULT->numRows())	{
+			while($DBRESULT->fetchInto($contactGroup))	{
+			 	$DBRESULT1 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
+				if (PEAR::isError($DBRESULT1)) 
+					print "getLCASG RQ 3 : Mysql Error : ".$DBRESULT1->getMessage();
+				 if ($DBRESULT1->numRows())
+					while ($DBRESULT1->fetchInto($lca))	{
+						$DBRESULT2 =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup, lca_define_servicegroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND sg_id = servicegroup_sg_id");	
+						if (PEAR::isError($DBRESULT2)) 
+							print "getLCASG RQ 4 : Mysql Error : ".$DBRESULT2->getMessage();
+						while ($DBRESULT2->fetchInto($serviceGroup))
 							$lcaServiceGroup[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
-						unset($res3);
+						unset($DBRESULT2);
 					}
 			}
 		}
@@ -50,29 +55,38 @@ For information : contact@oreon-project.org
 	function getLCAHostByID($pearDB){
 		if (!$pearDB)
 			return ;
-		if (session_id() == "")
-			$uid = $_POST["sid"];
-		else 
-			$uid = session_id();
-		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
-		$res1->fetchInto($user);
+		if (session_id() == "") $uid = $_POST["sid"]; else $uid = session_id();
+		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
+		if (PEAR::isError($DBRESULT)) 
+			print "getLCAHostByID RQ 1 : Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($user);
 		$user_id = $user["user_id"];
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
-		if ($res1->numRows())	{
-			while($res1->fetchInto($contactGroup))	{
-			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-				 if ($res2->numRows())
-					while ($res2->fetchInto($lca))	{
-						$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
-						while ($res3->fetchInto($host))
+		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
+		if (PEAR::isError($DBRESULT)) 
+			print "getLCAHostByID RQ 2 : Mysql Error : ".$DBRESULT->getMessage();
+		if ($DBRESULT->numRows())	{
+			while($DBRESULT->fetchInto($contactGroup))	{
+			 	$DBRESULT2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
+				if (PEAR::isError($DBRESULT2)) 
+					print "getLCAHostByID RQ 3 : Mysql Error : ".$DBRESULT2->getMessage();
+				 if ($DBRESULT2->numRows())
+					while ($DBRESULT2->fetchInto($lca))	{
+						$DBRESULT3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
+						if (PEAR::isError($DBRESULT3)) 
+							print "getLCAHostByID RQ 4 : Mysql Error : ".$DBRESULT3->getMessage();
+						while ($DBRESULT3->fetchInto($host))
 							$lcaHost[$host["host_id"]] = $host["host_name"];
-					 	$res3 =& $pearDB->query("SELECT DISTINCT hg_id, hg_name FROM hostgroup, lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND hg_id = hostgroup_hg_id");	
-						while ($res3->fetchInto($hostGroup))	{
+					 	$DBRESULT3 =& $pearDB->query("SELECT DISTINCT hg_id, hg_name FROM hostgroup, lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND hg_id = hostgroup_hg_id");	
+						if (PEAR::isError($DBRESULT3)) 
+							print "getLCAHostByID RQ 5 : Mysql Error : ".$DBRESULT3->getMessage();
+						while ($DBRESULT3->fetchInto($hostGroup))	{
 							$lcaHostGroup[$hostGroup["hg_id"]] = $hostGroup["hg_name"];
 							# Apply the LCA to hosts contains in
 							if ($lca["lca_hg_childs"])	{
-								$res4 =& $pearDB->query("SELECT h.host_name, hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND h.host_id = hgr.host_host_id");	
-								while ($res4->fetchInto($host))	
+								$DBRESULT4 =& $pearDB->query("SELECT h.host_name, hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND h.host_id = hgr.host_host_id");	
+								if (PEAR::isError($DBRESULT4)) 
+									print "getLCAHostByID RQ 6 : Mysql Error : ".$DBRESULT4->getMessage();
+								while ($DBRESULT4->fetchInto($host))	
 									$lcaHost[$host["host_host_id"]] = $host["host_name"];
 							}
 						}
