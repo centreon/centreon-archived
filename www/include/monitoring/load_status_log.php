@@ -55,7 +55,8 @@ For information : contact@oreon-project.org
 	
 	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
-	$isRestreint = HadUserLca($pearDB);
+	if (!isset($isRestreint))
+		$isRestreint = HadUserLca($pearDB);
 	
 	$debug = 0;
 		
