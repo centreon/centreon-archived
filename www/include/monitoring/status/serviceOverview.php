@@ -19,24 +19,25 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$hg = array();
-	
+	unset($TabLca);
 	$TabLca = getLcaHostByName($pearDB);
 	$isRestreint = hadUserLca($pearDB);
 	
-	$ret =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($ret))
-		print "Mysql Error : ".$ret->getMessage();
-	while ($r =& $ret->fetchRow()){
+	$hg = array();
+	
+	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($r)){
 		$cpt_host = 0;
 		if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){		
-			$ret_h =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
+			$DBRESULT1 =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
 										"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
 										"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1'");
-			if (PEAR::isError($r))
-				print "Mysql Error : ".$r->getMessage();
+			if (PEAR::isError($DBRESULT1))
+				print "Mysql Error : ".$DBRESULT1->getMessage();
 			$cpt_host = 0;
-			while ($r_h =& $ret_h->fetchRow()){
+			while ($DBRESULT1->fetchInto($r_h)){
 				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
 					$service_data_str = NULL;	
 					$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a> (" . $r_h["host_alias"] . ")";
@@ -75,6 +76,5 @@ For information : contact@oreon-project.org
 	$tpl->assign("lang", $lang);
 	if(isset($svc_data))
 		$tpl->assign("svc_data", $svc_data);
-
 	$tpl->display("serviceOverview.ihtml");
 ?>

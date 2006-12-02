@@ -18,16 +18,17 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
+		
 	$pagination = "maxViewMonitoring";
 
 	#create javascript for refresh ajax
-	include('makeJS.php');
+	include('./include/monitoring/status/makeJS.php');
 	
 	# set limit & num
-	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	$gopt = array_map("myDecode", $res->fetchRow());
+	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
@@ -66,12 +67,11 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
-	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);
 	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
-	$tpl->assign("mon_host", $lang['mon_host']);
+	$tpl->assign("mon_host", $lang['m_mon_hosts']);
 	$tpl->assign("mon_status", $lang['mon_status']);
 	$tpl->assign("mon_ip", $lang['mon_ip']); 
 	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
@@ -85,9 +85,7 @@ For information : contact@oreon-project.org
 		$displayTab[$service_status_num[$i][0]] = $service_status_num[$i][1];
 		$service_status = $displayTab;
 
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
-	
+	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);	
 	if (isset($service_status))
 		$tpl->assign("service_status", $service_status);
 	if (!isset($_GET["sort_types"]))
@@ -123,10 +121,12 @@ For information : contact@oreon-project.org
 	$version = $oreon->user->get_version();
 
     $tpl->assign("version", $version);
-    $res =& $pearDB->query(	"SELECT * FROM session WHERE" .
-		                    " CONVERT( `session_id` USING utf8 ) = '". session_id() .
-		                    "' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-    $session =& $res->fetchRow();
+    $DBRESULT =& $pearDB->query("SELECT * FROM session WHERE" .
+		                    	" CONVERT( `session_id` USING utf8 ) = '". session_id() .
+		                    	"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+    if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+    $session =& $DBRESULT->fetchRow();
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
     $tpl->assign('limit', $limit);
@@ -147,16 +147,15 @@ For information : contact@oreon-project.org
 	</SCRIPT>
 	<?
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();} ");
-        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
-		$form->setDefaults(array('o1' => NULL));
-			$o1 =& $form->getElement('o1');
-			$o1->setValue(NULL);
-
-		$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();}");
-        $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
-		$form->setDefaults(array('o2' => NULL));
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
+    $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
+	$form->setDefaults(array('o1' => NULL));
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
+	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();}");
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
+	$form->setDefaults(array('o2' => NULL));
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
 
@@ -169,6 +168,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
 	$tpl->assign('lang', $lang);
+
 	if ($oreon->optGen["nagios_version"] == 2 && isset($pgr_nagios_stat["created"])) 	
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);
 	else

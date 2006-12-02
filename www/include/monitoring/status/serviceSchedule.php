@@ -20,8 +20,7 @@ For information : contact@oreon-project.org
 
 	$color_en = array("1" => "#00ff00", "0" => "#ff0000");
 	$color_en_label = array("1" => $lang['enable'], "0" => $lang['disable']);
-?>
-<div align="center"><?
+
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$c = 0;
 	if (isset($service_status))
@@ -36,9 +35,8 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
-	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);
-	$tpl->assign("mon_host", $lang['mon_host']);
+	$tpl->assign("mon_host", $lang['m_mon_hosts']);
 	$tpl->assign("mon_status", $lang['mon_status']);
 	$tpl->assign("mon_ip", $lang['mon_ip']); 
 	$tpl->assign("mon_last_check", $lang['mon_last_check']); 

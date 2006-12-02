@@ -21,13 +21,13 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewMonitoring";		
 
 	#create javascript for refresh ajax
-	include('makeJS.php');
+	include('./include/monitoring/status/makeJS.php');
 
 	# set limit & num
-	$res =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
@@ -79,13 +79,12 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
-	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);
 	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("order", $order);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
-	$tpl->assign("mon_host", $lang['mon_host']);
+	$tpl->assign("mon_host", $lang['m_mon_hosts']);
 	$tpl->assign("mon_status", $lang['mon_status']);
 	$tpl->assign("mon_ip", $lang['mon_ip']); 
 	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
@@ -139,13 +138,13 @@ For information : contact@oreon-project.org
     $tpl->assign("lca", $lca);
     $tpl->assign("version", $version);
 
-    $res =& $pearDB->query(	"SELECT * FROM session WHERE" .
-  		                  	" CONVERT( `session_id` USING utf8 ) = '". session_id() .
-  		                  	"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+    $DBRESULT =& $pearDB->query(	"SELECT * FROM session WHERE" .
+  		      		            	" CONVERT( `session_id` USING utf8 ) = '". session_id() .
+  		      		            	"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
     
-    $session =& $res->fetchRow();
+    $session =& $DBRESULT->fetchRow();
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
     $tpl->assign('limit', $limit);
