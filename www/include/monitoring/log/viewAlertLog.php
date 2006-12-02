@@ -18,8 +18,7 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	
-	# Init Logo table
-	
+	# Init Logo table	
 	$tab_logo = array(	"HOST NOTIFICATION" => "./img/icones/16x16/mail_attachment.gif", 
 						"SERVICE NOTIFICATION" => "./img/icones/16x16/mail_attachment.gif",  
 						"HOST ALERT-UP" => "./img/icones/12x12/recovery.gif", 
@@ -36,24 +35,19 @@ For information : contact@oreon-project.org
 	$lcaHostByName = getLcaHostByName($pearDB);
 	
 	function getLogData($time_event, $host, $service, $status, $output, $type){
-		global $lang;
-		global $tab_logo;
+		global $lang, $tab_logo;
 		$tab["time"] = date($lang["header_format"], $time_event);
 		$tab["host"] = $host;
 		$tab["service"] = $service;
 		$tab["status"] = $status;
 		$tab["output"] = $output;
-		$tab["type"] = $type;
-		
-				if(!strncmp($type, "SERVICE ALERT", 13) || !strncmp($type, "HOST ALERT", 13))
-					$tab["logo"] = $tab_logo[$type ."-".$status];
-
+		$tab["type"] = $type;		
+		if(!strncmp($type, "SERVICE ALERT", 13) || !strncmp($type, "HOST ALERT", 13))
+			$tab["logo"] = $tab_logo[$type ."-".$status];
 		return $tab ;
 	}
 
 	include("./include/monitoring/log/choose_log_file.php");
-
-
 
 	$log = NULL;	
 	$tab_log = array();	
@@ -70,11 +64,7 @@ For information : contact@oreon-project.org
 				$res = preg_split("/:/", $matches[2], 2);
 				if (isset($res[1])) 
 					$res1 = preg_split("/;/", $res[1]);			
-				$type = $res[0];
-				
-
-				
-				
+				$type = $res[0];				
 				if (isset($_POST["host"]) && strlen($_POST["host"])) {
 					$res1[0] = str_replace(" ", "", $res1[0]);
 					if (!strncmp($type, "HOST ALERT", 10) && !strcmp($_POST["host"], $res1[0]) && IsHostReadable($lcaHostByName, $res1[0]))
@@ -86,7 +76,6 @@ For information : contact@oreon-project.org
 						$tab_log[$i] = getLogData($time_event, $res1[0], "", $res1[1], $res1[4], $type);
 					else if (!strncmp($type, "SERVICE ALERT", 13)&& IsHostReadable($lcaHostByName, $res1[0]))
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], $res1[2], $res1[5], $type);
-				
 				}
 			}
 		}

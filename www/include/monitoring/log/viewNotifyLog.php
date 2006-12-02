@@ -60,8 +60,7 @@ For information : contact@oreon-project.org
 					if (!strncmp($type, "HOST NOTIFICATION", 17)/* && IsHostReadable($lcaHostByName, $res1[1])*/)
 						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], "", $res1[2], $res1[4], $res1[3], $type);
 					else if (!strcmp($type, "SERVICE NOTIFICATION") /*&& IsHostReadable($lcaHostByName, $res1[1])*/)
-						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], $res1[2], $res1[3], $res1[5], $res1[4], $type);
-				
+						$tab_log[$i] = getLogData($time_event, $res1[0], $res1[1], $res1[2], $res1[3], $res1[5], $res1[4], $type);			
 				}
 			}		
 		}
@@ -74,16 +73,13 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "templates/");
 	
-	#Apply a template definition	
-		
+	#Apply a template definition			
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);	
-	
-	//$form->display();
-	
 	$tpl->assign('o', $o);		
+	
 	$tpl->assign('form', $renderer->toArray());	
 	$tpl->assign('lang', $lang);				
 	$tpl->assign("tab_log", $tab_log);

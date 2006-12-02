@@ -18,8 +18,8 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	
-	include_once("./include/monitoring/common-Func.php");			
-	include_once("./include/monitoring/external_cmd/cmd.php");
+//	include_once("./include/monitoring/common-Func.php");			
+//	include_once("./include/monitoring/external_cmd/cmd.php");
 
 	function getLogData($time_event, $warning, $type){
 		global $lang;
@@ -59,8 +59,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
-	#Apply a template definition	
-		
+	#Apply a template definition		
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

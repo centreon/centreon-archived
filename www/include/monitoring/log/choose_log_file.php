@@ -50,10 +50,10 @@ For information : contact@oreon-project.org
 	$host = array();
 	
 	$host[""] = "";
-	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while ($res->fetchInto($h))
+	$DBRESULT =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($h))
 		if (IsHostReadable($lcaHostByName, $h['host_name']))
 			$host[$h["host_name"]] = $h["host_name"];
 
