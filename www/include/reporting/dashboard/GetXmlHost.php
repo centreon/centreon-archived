@@ -16,7 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
 	#
 	## pearDB init
 	#
@@ -32,7 +31,7 @@ For information : contact@oreon-project.org
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
 	
 		$oreonPath = $_GET["oreonPath"];
-		include_once($oreonPath . "www/oreon.conf.php");
+		include_once($oreonPath . "/www/oreon.conf.php");
 		$dsn = array(
 			     'phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
