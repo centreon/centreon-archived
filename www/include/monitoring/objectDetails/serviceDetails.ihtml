@@ -3,8 +3,7 @@
 		<tr class='ListHeader'>
 			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;Service : {$svc_description} On Host : {$h.host_name} ({$h.host_alias}) </td>
 		</tr>
-	</table>
-	<br>
+	</table><br>
 	<table width='100%'>
 		<tr>
 			<td style='vertical-align:top;'>
@@ -184,8 +183,7 @@
 				</table>
 			</td>
 		</tr>
-	</table>
-	<br>
+	</table><br>
 	{if $tab_comments_svc}
 	<table id="ListTable">
 		<tr class='ListHeader'>
@@ -211,7 +209,7 @@
 			<td class="ListColLeft">{$tcs.service_descr}</td>
 			<td class="ListColRight">{$tcs.time}</td>
 			<td class="ListColCenter">{$tcs.author}</td>
-			<td class="ListColLeft" style='white-space:none;'>{$tcs.comment}</td>
+			<td class="ListColNoWrap">{$tcs.comment}</td>
 			<td class="ListColLeft">{$tcs.persistent}</td>
 			</tr>
 		{/if}
