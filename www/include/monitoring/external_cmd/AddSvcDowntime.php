@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
     $svc_description = NULL;
 	
 	if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
-		$host_id = array_search($_GET["host_name"], $oreon->user->lcaHost);
+		$host_id = array_search($_GET["host_name"], $lcaHostByName);
 		$svc_description = $_GET["service_description"];
 	} else
 		$host_name = NULL;
