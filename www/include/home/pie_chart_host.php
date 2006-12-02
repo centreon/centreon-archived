@@ -50,12 +50,6 @@
 	
 	// create the dataset
 	
-	/*foreach ($oreon->status_graph_host as $s){
-		if (!isset($tab[strtolower($s["status"])]))
-			$tab[strtolower($s["status"])] = 0;
-		$tab[strtolower($s["status"])]++;
-	}*/
-
 	$tab = array();
 	$tab2 = array();
 	foreach ($oreon->status_graph_host as $key => $value){

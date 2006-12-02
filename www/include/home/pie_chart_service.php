@@ -47,11 +47,6 @@
 	// create the dataset
 	
 	$tab = array();
-	/*foreach ($oreon->status_graph_service as $s){
-		if (!isset($tab[strtolower($s["status"])]))
-			$tab[strtolower($s["status"])] = 0;
-		$tab[strtolower($s["status"])]++;
-	}*/
 	$tab2 = array();
 	foreach ($oreon->status_graph_service as $key => $value){
 		if ($value != 0){
@@ -71,9 +66,7 @@
 	$Plot->setLineColor('gray');
 	
 	// set a standard fill style
-	
-	
-	
+		
 	$FillArray =& Image_Graph::factory('Image_Graph_Fill_Array');
 	$Plot->setFillStyle($FillArray);
 	
@@ -82,7 +75,6 @@
 	}
 
 	$Plot->explode(4);
-	
 	
 	// create a Y data value marker
 	$Marker =& $Plot->addNew('Image_Graph_Marker_Value', IMAGE_GRAPH_PCT_Y_TOTAL);
