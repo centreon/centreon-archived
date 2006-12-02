@@ -30,7 +30,6 @@ For information : contact@oreon-project.org
 		$svc_description = $tab_data[1];
 	}
 	
-	$idRestreint = HadUserLca($pearDB);
 	$lcaHost = getLcaHostByName($pearDB);
 	
 	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
