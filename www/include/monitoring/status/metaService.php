@@ -18,11 +18,10 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 			
-	$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while ($res->fetchInto($meta)){
+	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($meta)){
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["real_name"] = $meta["meta_name"]; 
 		$metaService_status_bis["meta_" . $meta["meta_id"]]["id"] = $meta["meta_id"]; 
 	}
@@ -64,27 +63,6 @@ For information : contact@oreon-project.org
 	if (!isset($_GET["order"]))
 		$_GET["order"] = "sort_asc";
 
-/*
-    $ajax = "<script type='text/javascript'>" .
-    "window.onload = function () {" .
-    "setTimeout('init()', 2000);" .
-    "};" .
-    "</script>";
-    $tpl->assign('ajax', $ajax);
-    $tpl->assign('time', time());
-    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
-	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
-
-
-    $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
-    $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);
-    $tpl->assign('color_WARNING', $oreon->optGen["color_warning"]);
-    $tpl->assign('color_UNKNOWN', $oreon->optGen["color_unknown"]);
-    $tpl->assign('color_PENDING', $oreon->optGen["color_pending"]);
-    $tpl->assign('color_UP', $oreon->optGen["color_up"]);
-    $tpl->assign('color_DOWN', $oreon->optGen["color_down"]);
-    $tpl->assign('color_UNREACHABLE', $oreon->optGen["color_unreachable"]);
-*/
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	!isset($_GET["num"]) ? $begin = 0 : $begin = $_GET["num"];
 	!isset($_GET["limit"]) ? $nb = 20 : $nb = $begin + $_GET["limit"];
