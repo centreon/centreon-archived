@@ -22,7 +22,6 @@ For information : contact@oreon-project.org
 
 	# Path to the configuration dir
 	$path = "./menu/";
-	#require_once ("./include/common/common-Func.php");
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -41,7 +40,6 @@ For information : contact@oreon-project.org
 
 	$fileStatus = $oreon->Nagioscfg["status_file"];
 	$fileOreonConf = $oreon->optGen["oreon_path"];
-
 
 	$color["OK"] = 			$oreon->optGen["color_ok"];
 	$color["CRITICAL"] = 	$oreon->optGen["color_critical"];
@@ -62,30 +60,26 @@ For information : contact@oreon-project.org
 
 	# Grab elements for level 1
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
-	$res =& $pearDB->query($rq);
-
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	for($i = 0; $res->numRows() && $res->fetchInto($elem);$i++)
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print ($DBRESULT->getMessage());
+	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : NULL,
 								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#");
-		
-
-	$userUrl = "oreon.php?p=50104&o=c";//.$oreon->user->get_name()." ( ".$oreon->user->get_alias()." ) ";
-    
+	$userUrl = "oreon.php?p=50104&o=c";
     $logDate = date($lang['header_format']);
     $logOut = $lang['m_logout'];
     $logOutUrl = "index.php?disconnect=1";
 
 	# Grab elements for level 2
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_order";
-	$res2 =& $pearDB->query($rq);
-	if (PEAR::isError($res2)) 
-		print "Mysql Error : ".$res2->getMessage();
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print ($DBRESULT->getMessage());
 	$firstP = NULL;
 	$sep = "&nbsp;";
-	for($i = 0; $res2->numRows() && $res2->fetchInto($elem); $i++)	{
+	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem); $i++)	{
 		$elem["topology_url"] == "./ext/osm/osm_jnlp.php" ? $auth = "?al=".md5($oreon->user->get_alias())."&pwd=".$oreon->user->get_passwd() : $auth = NULL;
 		$firstP ? null : $firstP = $elem["topology_page"];
 	    $elemArr[2][$i] = array("Menu2Sep" => $sep,
@@ -99,10 +93,10 @@ For information : contact@oreon-project.org
 
 	# Grab elements for level 3
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
-	$res3 =& $pearDB->query($rq);
-	if (PEAR::isError($res3))
-		print "Mysql Error : ".$res3->getMessage();
-	for($i = 0; $res3->fetchInto($elem);)	{
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print ($DBRESULT->getMessage());
+	for($i = 0; $DBRESULT->fetchInto($elem);)	{
 		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 || $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 || $elem["topology_page"] == 40202 || $elem["topology_page"] == 60603))
 			;
 		else {
@@ -120,10 +114,10 @@ For information : contact@oreon-project.org
 	# Grab elements for level 4
 	if ($level1 && $level2 && $level3){
 		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
-		$res4 =& $pearDB->query($rq);
-		if (PEAR::isError($res4))
-			print "Mysql Error : ".$res4->getMessage();
-		for ($i = 0; $res4->fetchInto($elem);$i++){
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print ($DBRESULT->getMessage());
+		for ($i = 0; $DBRESULT->fetchInto($elem);$i++){
 			$elemArr[4][$level1.$level2.$level3][$i] = array("Menu4Icone" => $elem["topology_icone"],
 										"Menu4Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 										"Menu4UrlPopup" => $elem["topology_url"],
@@ -164,10 +158,10 @@ For information : contact@oreon-project.org
 
 	# User Online	
 	$tab_user = array();
-	$res =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while ($res->fetchInto($session)){
+	$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
+	if (PEAR::isError($DBRESULT))
+		print ($DBRESULT->getMessage());
+	while ($DBRESULT->fetchInto($session)){
 		$tab_user[$session["user_id"]] = array();
 		$tab_user[$session["user_id"]]["ip"] = $session["ip_address"];
 		$tab_user[$session["user_id"]]["id"] = $session["user_id"];
@@ -182,5 +176,4 @@ For information : contact@oreon-project.org
 	$tpl->display("BlockMenuType1.ihtml");
 	count($elemArr[2]) ? $tpl->display("BlockMenuType2.ihtml") : NULL;
 	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : print '<div id="contener"><!-- begin contener --><table id="Tcontener"><tr><td id="Tmainpage" class="TcTD">';
-	
 ?>
