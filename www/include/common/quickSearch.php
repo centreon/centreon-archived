@@ -17,8 +17,8 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	/* start quickSearch form*/
-	
+
+	/* start quickSearch form */	
 	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
 	
 	$tab = array ("search" => $search, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
