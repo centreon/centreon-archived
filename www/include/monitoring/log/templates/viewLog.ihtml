@@ -19,7 +19,7 @@
 		{foreach item=tb from=$tab_log}
 		<tr class={cycle values="list_two, list_one"}>
 			<td class="ListColRight">{$tb.time}</td>
-			<td class="ListColNoWrap"><img src="{$tb.logo}">&nbsp;&nbsp;{$tb.data}</td>
+			<td class="ListColNoWrap">{if $tb.logo}<img src="{$tb.logo}">{/if}&nbsp;&nbsp;{$tb.data}</td>
 		</tr>
 		{if $tb.output}
 		<tr class={cycle values="list_one,list_two"}>
