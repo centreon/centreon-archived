@@ -23,10 +23,10 @@ For information : contact@oreon-project.org
 
 	$pagination = "maxViewConfiguration";
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($res)) 
-		print "Mysql Error : ".$pearDB->getMessage();
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT)) 
+		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -37,9 +37,8 @@ For information : contact@oreon-project.org
 	else
 		$dir = "";
 	
-	if (isset($_GET["create"]) && $_GET["create"]){
+	if (isset($_GET["create"]) && $_GET["create"])
 		mkdir(str_replace("//", "/", $oreon->optGen["nagios_path_plugins"].$dir.$_GET["new_dir"]));
-	}
 	
 	$plugin_list = return_plugin_list($dir);
 	$plugin_dir = return_plugin_dir("");
@@ -144,26 +143,22 @@ For information : contact@oreon-project.org
 	<?
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');
@@ -175,8 +170,6 @@ For information : contact@oreon-project.org
 	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
-
-
 	
 	#
 	##Apply a template definition

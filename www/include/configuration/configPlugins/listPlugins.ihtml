@@ -5,8 +5,6 @@
 		<tr class="Toolbar_TR_Top">
 			<td class="Toolbar_TDSelectAction_Top">
 				{$msg.options} {$form.o1.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
 
 			<input name="p" value="{$p}" type="hidden">
@@ -44,8 +42,6 @@
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
 				{$msg.options} {$form.o2.html}
-				&nbsp;&nbsp;&nbsp;
-				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 			{php}

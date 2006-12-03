@@ -53,7 +53,4 @@ For information : contact@oreon-project.org
 		closedir($handle);
 		return ($plugins_rep);
 	}
-	
-
-
 ?>
