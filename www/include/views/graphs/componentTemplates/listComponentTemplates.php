@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM giv_components_template");
 	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
+		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	$DBRESULT->fetchInto($tmp);
 	$rows = $tmp["COUNT(*)"];
 
@@ -61,7 +61,7 @@ For information : contact@oreon-project.org
 		$rq = "SELECT @nbr:=(SELECT COUNT(gg_graph_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gc_compo_id = gc.compo_id) AS nbr, compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, default_tpl2 FROM giv_components_template gc ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
+		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines

@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 		global $pearDBpp;
 		$DBRESULT =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '$host_name' AND service_description = '$service_description'");
 		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		return $DBRESULT->numRows();
 	}
 	
@@ -37,11 +37,11 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$DBRESULT->fetchInto($service_ext);
 		$DBRESULT =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$service_ext["graph_id"]."'");
 		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$DBRESULT->fetchInto($graph);
 		return $graph["period"];
 	}
