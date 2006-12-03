@@ -38,7 +38,15 @@ For information : contact@oreon-project.org
 			<td class="LoginInvitLogo" colspan="2"><img src="img/LogoOreon.png" alt="Oreon logo" title="Oreon Logo"></td>
 		</tr>
 		<tr>
-			<td class="LoginInvitVersion"><br><? include("include/version/version.php");  ?></td>
+			<td class="LoginInvitVersion"><br>
+			<?
+			$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
+			$release = $DBRESULT->fetchRow();
+			print $release["value"];
+			?>
+			</td>
 			<td class="LoginInvitDate"><br><? echo $date; ?></td>
 		</tr>
 		<tr>

@@ -22,7 +22,14 @@ For information : contact@oreon-project.org
 	<img src="./img/paris.jpg" alt="Logo Join Community">
 </div>
 <div style="float: left; padding-left: 60px; padding-top: 50px;">
-	<div class="list_one"><h3>Oreon <? include "./include/version/version.php"; ?></h3></div>
+	<div class="list_one"><h3>Oreon 
+	<?
+	$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print $DBRESULT->getDebugInfo()."<br>";
+	$release = $DBRESULT->fetchRow();
+	print $release["value"];
+	?></h3></div>
 	<br>
 	<a href="mailto:rlemerlus@oreon-project.org" class="list_two">Romain Le Merlus (rom)</a><br>
 	<a href="mailto:jmathis@oreon-project.org" class="list_two">Julien Mathis (Julio)</a><br>
