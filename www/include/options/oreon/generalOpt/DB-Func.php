@@ -61,8 +61,7 @@ For information : contact@oreon-project.org
 		updateGeneralOpt($gopt_id);
 	}
 
-	function updateGeneralOpt($gopt_id = null)	{
-		
+	function updateGeneralOpt($gopt_id = null)	{		
 		if (!$gopt_id) return;
 		global $form;
 		global $pearDB;
@@ -184,12 +183,14 @@ For information : contact@oreon-project.org
 		isset($ret["debug_inventory"]) && $ret["debug_inventory"] != NULL ? $rq .= "'".$ret["debug_inventory"]."' ": $rq .= "NULL ";
 
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$oreon->optGen = array();
-		$res =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$oreon->optGen = $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$oreon->optGen = $DBRESULT->fetchRow();
 		$oreon->user->version = $ret["nagios_version"];
 	}
 
@@ -216,12 +217,14 @@ For information : contact@oreon-project.org
 		$rq .= "perfparse_installed = ";
 		isset($ret["perfparse_installed"]["perfparse_installed"]) && $ret["perfparse_installed"]["perfparse_installed"] != NULL ? $rq .= "'".$ret["perfparse_installed"]["perfparse_installed"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$oreon->optGen = array();
-		$res =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$oreon->optGen = $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$oreon->optGen = $DBRESULT->fetchRow();
 		$oreon->user->version = $ret["nagios_version"];
 	}
 
@@ -244,9 +247,9 @@ For information : contact@oreon-project.org
 		$rq .= "snmp_trapd_path_conf = ";
 		isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != NULL ? $rq .= "'".$ret["snmp_trapd_path_conf"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateDebugConfigData($gopt_id = null)	{
@@ -268,9 +271,9 @@ For information : contact@oreon-project.org
 		$rq .= "debug_inventory = ";
 		isset($ret["debug_inventory"]) && $ret["debug_inventory"] != NULL ? $rq .= "'".$ret["debug_inventory"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$oreon->optGen = array();
 	}
 	
@@ -303,9 +306,9 @@ For information : contact@oreon-project.org
 		$rq .= "ldap_search_limit = ";
 		isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? $rq .= "'".htmlentities($ret["ldap_search_limit"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateColorsConfigData($gopt_id = null)	{
@@ -331,9 +334,9 @@ For information : contact@oreon-project.org
 		$rq .= "color_unknown = ";
 		isset($ret["color_unknown"]) && $ret["color_unknown"] != NULL ? $rq .= "'".htmlentities($ret["color_unknown"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateGeneralConfigData($gopt_id = null)	{
@@ -371,9 +374,9 @@ For information : contact@oreon-project.org
 		$rq .= "problem_sort_order = ";
 		isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? $rq .= "'".htmlentities($ret["problem_sort_order"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateRRDToolConfigData($gopt_id = null)	{
@@ -389,8 +392,8 @@ For information : contact@oreon-project.org
 		$rq .= "graph_preferencies = ";
 		isset($ret["graph_preferencies"]["graph_preferencies"]) && $ret["graph_preferencies"]["graph_preferencies"] != NULL ? $rq .= "'".$ret["graph_preferencies"]["graph_preferencies"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 ?>

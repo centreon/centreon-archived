@@ -125,7 +125,7 @@ For information : contact@oreon-project.org
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
 
     $valid = false;
 	if ($form->validate())	{
@@ -133,8 +133,8 @@ For information : contact@oreon-project.org
 		updateGeneralConfigData(1);
 		# Update in Oreon Object
 		$oreon->optGen = array();
-		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen = $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		$oreon->optGen = $DBRESULT2->fetchRow();
 		$o = "w";
    		$valid = true;
 		$form->freeze();

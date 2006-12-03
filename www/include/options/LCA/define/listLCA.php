@@ -21,30 +21,30 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	$pagination = "maxViewConfiguration";
+	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	$lca_reg = NULL;
 	# Not list the LCA the user is registered by || is admin
 	if (!$oreon->user->get_admin())	{
-		$res =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		while($res->fetchInto($contactGroup))	{
-		 	$res2 =& $pearDB->query("SELECT lca.lca_id FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id");	
-			while ($res2->fetchInto($lca))
+		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
+		while($DBRESULT->fetchInto($contactGroup))	{
+		 	$DBRESULT2 =& $pearDB->query("SELECT lca.lca_id FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id");	
+			while ($DBRESULT2->fetchInto($lca))
 				$lca_reg ? $lca_reg .= ", ".$lca["lca_id"] : $lca_reg = $lca["lca_id"];
 		}
 	}
 	$lca_reg ? $lca_reg = $lca_reg : $lca_reg =  '\'\'';
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_name AND lca_id NOT IN (".$lca_reg.") LIKE '%".$search."%'");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_name AND lca_id NOT IN (".$lca_reg.") LIKE '%".$search."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.")");
-	$tmp = & $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.")");
+	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -68,14 +68,14 @@ For information : contact@oreon-project.org
 		$rq = "SELECT lca_id, lca_name, lca_comment, lca_activate  FROM lca_define WHERE lca_name LIKE '%".$search."%' AND lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT lca_id, lca_name, lca_comment, lca_activate FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
+	$DBRESULT =& $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($lca); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($lca); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$lca['lca_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&lca_id=".$lca['lca_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&lca_id=".$lca['lca_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$lca["lca_name"],
-						"RowMenu_link"=>"?p=".$p."&o=w&lca_id=".$lca['lca_id'],
+						"RowMenu_link"=>"?p=".$p."&o=c&lca_id=".$lca['lca_id'],
 						"RowMenu_desc"=>substr($lca["lca_comment"], 0, 40),
 						"RowMenu_status"=>$lca["lca_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
@@ -99,7 +99,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-	
 
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -142,18 +141,13 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
 	#
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("listLCA.ihtml");
-	
-	
+	$tpl->display("listLCA.ihtml");	
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
 	$tpl->assign('lang', $lang);

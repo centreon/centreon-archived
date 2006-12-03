@@ -24,9 +24,9 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for LCA
 	#
-	$res =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
-	$gopt = array_map("myDecode", $res->fetchRow());
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -57,8 +57,7 @@ For information : contact@oreon-project.org
                                     	"color_unknown"=>"genOpt_oSUK",
 					);
 
-	while (list($nameColor, $val) = each($TabColorNameAndLang))
-	{
+	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $lang[$val];
 		$codeColor = $gopt[$nameColor];
 		$title = $lang["genOpt_colorPicker"];
@@ -99,7 +98,7 @@ For information : contact@oreon-project.org
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
 
 	#
 	##Picker Color JS
@@ -120,32 +119,26 @@ For information : contact@oreon-project.org
 	##End of Picker Color
 	#
 
-
-
     $valid = false;
 	if ($form->validate())	{
-
 		# Update in DB
 		updateColorsConfigData($form->getSubmitValue("gopt_id"));
 		# Update in Oreon Object
 		$oreon->optGen = array();
-		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen = $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		$oreon->optGen = $DBRESULT2->fetchRow();
 		$o = "w";
    		$valid = true;
 		$form->freeze();
 	}
-	if (!$form->validate() && isset($_POST["gopt_id"]))	{
+	if (!$form->validate() && isset($_POST["gopt_id"]))
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
-	}
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=colors'"));
-
 
 	#
 	##Apply a template definition
 	#
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

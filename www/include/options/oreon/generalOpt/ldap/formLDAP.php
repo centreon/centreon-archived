@@ -24,9 +24,9 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for LCA
 	#
-	$res =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
-	$gopt = array_map("myDecode", $res->fetchRow());
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -93,7 +93,7 @@ For information : contact@oreon-project.org
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
 
 
     $valid = false;
@@ -103,8 +103,8 @@ For information : contact@oreon-project.org
 		updateLdapConfigData($form->getSubmitValue("gopt_id"));
 		# Update in Oreon Object
 		$oreon->optGen = array();
-		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen = $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		$oreon->optGen = $DBRESULT2->fetchRow();
 		$o = "w";
    		$valid = true;
 		$form->freeze();

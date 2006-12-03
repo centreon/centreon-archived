@@ -23,13 +23,15 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('lca_id');
-		$res =& $pearDB->query("SELECT lca_name, lca_id FROM lca_define WHERE lca_name = '".$name."'");
-		$lca =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT lca_name, lca_id FROM lca_define WHERE lca_name = '".$name."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$lca =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $lca["lca_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $lca["lca_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $lca["lca_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && $lca["lca_id"] != $id)
 			return false;
 		else
 			return true;
@@ -38,33 +40,33 @@ For information : contact@oreon-project.org
 	function enableLCAInDB ($lca_id = null)	{
 		if (!$lca_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("UPDATE lca_define SET lca_activate = '1' WHERE lca_id = '".$lca_id."'");
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
+		$DBRESULT =& $pearDB->query("UPDATE lca_define SET lca_activate = '1' WHERE lca_id = '".$lca_id."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function disableLCAInDB ($lca_id = null)	{
 		if (!$lca_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("UPDATE lca_define SET lca_activate = '0' WHERE lca_id = '".$lca_id."'");
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
+		$DBRESULT =& $pearDB->query("UPDATE lca_define SET lca_activate = '0' WHERE lca_id = '".$lca_id."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function deleteLCAInDB ($lcas = array())	{
 		global $pearDB;
 		foreach($lcas as $key=>$value){
-			$res =& $pearDB->query("DELETE FROM lca_define WHERE lca_id = '".$key."'");
-			if (PEAR::isError($res))
-				print ("MySQL error : ".$res->getMessage());
+			$DBRESULT =& $pearDB->query("DELETE FROM lca_define WHERE lca_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
 	function multipleLCAInDB ($lcas = array(), $nbrDup = array())	{
 		foreach($lcas as $key=>$value)	{
 			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM lca_define WHERE lca_id = '".$key."' LIMIT 1");
-			$row = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT * FROM lca_define WHERE lca_id = '".$key."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			$row["lca_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -75,21 +77,41 @@ For information : contact@oreon-project.org
 				if (testExistence($lca_name))	{
 					$val ? $rq = "INSERT INTO lca_define VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
-					$res =& $pearDB->query("SELECT MAX(lca_id) FROM lca_define");
-					$maxId =& $res->fetchRow();
+					$DBRESULT =& $pearDB->query("SELECT MAX(lca_id) FROM lca_define");
+					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(lca_id)"]))	{
-						$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM lca_define_contactgroup_relation WHERE lca_define_lca_id = '".$key."'");
-						while($res->fetchInto($cg))
-							$pearDB->query("INSERT INTO lca_define_contactgroup_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$cg["contactgroup_cg_id"]."')");
-						$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM lca_define_host_relation WHERE lca_define_lca_id = '".$key."'");
-						while($res->fetchInto($host))
-							$pearDB->query("INSERT INTO lca_define_host_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$host["host_host_id"]."')");
-						$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$key."'");
-						while($res->fetchInto($hg))
-							$pearDB->query("INSERT INTO lca_define_hostgroup_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$hg["hostgroup_hg_id"]."')");
-						$res =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM lca_define_servicegroup_relation WHERE lca_define_lca_id = '".$key."'");
-						while($res->fetchInto($sg))
-							$pearDB->query("INSERT INTO lca_define_servicegroup_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$sg["servicegroup_sg_id"]."')");
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM lca_define_contactgroup_relation WHERE lca_define_lca_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print $DBRESULT->getDebugInfo()."<br>";							
+						while($DBRESULT->fetchInto($cg))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO lca_define_contactgroup_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$cg["contactgroup_cg_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print $DBRESULT2->getDebugInfo()."<br>";						
+						}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM lca_define_host_relation WHERE lca_define_lca_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print $DBRESULT->getDebugInfo()."<br>";						
+						while($DBRESULT->fetchInto($host))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO lca_define_host_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$host["host_host_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print $DBRESULT2->getDebugInfo()."<br>";						
+						}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print $DBRESULT->getDebugInfo()."<br>";						
+						while($DBRESULT->fetchInto($hg)){
+							$DBRESULT2 =& $pearDB->query("INSERT INTO lca_define_hostgroup_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$hg["hostgroup_hg_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print $DBRESULT2->getDebugInfo()."<br>";						
+						}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM lca_define_servicegroup_relation WHERE lca_define_lca_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print $DBRESULT->getDebugInfo()."<br>";						
+						while($DBRESULT->fetchInto($sg))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO lca_define_servicegroup_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$sg["servicegroup_sg_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print $DBRESULT2->getDebugInfo()."<br>";						
+						}
 					}
 				}
 			}
@@ -125,13 +147,13 @@ For information : contact@oreon-project.org
 		$rq .= "(lca_name, lca_comment, lca_hg_childs, lca_activate) ";
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["lca_name"], ENT_QUOTES)."', '".htmlentities($ret["lca_comment"], ENT_QUOTES)."', '".$ret["lca_hg_childs"]["lca_hg_childs"]."', '".$ret["lca_activate"]["lca_activate"]."')";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
-		$res =& $pearDB->query("SELECT MAX(lca_id) FROM lca_define");
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
-		$lca_id = $res->fetchRow();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$DBRESULT =& $pearDB->query("SELECT MAX(lca_id) FROM lca_define");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$lca_id = $DBRESULT->fetchRow();
 		return ($lca_id["MAX(lca_id)"]);
 	}
 	
@@ -147,7 +169,9 @@ For information : contact@oreon-project.org
 				"lca_hg_childs = '".$ret["lca_hg_childs"]["lca_hg_childs"]."', " .
 				"lca_activate = '".$ret["lca_activate"]["lca_activate"]."' " .
 				"WHERE lca_id = '".$lca_id."'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateLCAContactGroups($lca_id = null)	{
@@ -158,7 +182,9 @@ For information : contact@oreon-project.org
 		$lcas = array();
 		$rq = "DELETE FROM lca_define_contactgroup_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -166,7 +192,9 @@ For information : contact@oreon-project.org
 			$rq .= "(lca_define_lca_id, contactgroup_cg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -175,9 +203,9 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_host_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_hosts");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -185,9 +213,9 @@ For information : contact@oreon-project.org
 			$rq .= "(lca_define_lca_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$ret[$i]."')";
-			$res =& $pearDB->query($rq);
-			if (PEAR::isError($res))
-				print ("MySQL error : ".$res->getMessage());
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -196,7 +224,9 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_hostgroup_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_hgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -204,7 +234,9 @@ For information : contact@oreon-project.org
 			$rq .= "(lca_define_lca_id, hostgroup_hg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -213,9 +245,9 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_servicegroup_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_sgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -223,9 +255,9 @@ For information : contact@oreon-project.org
 			$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$ret[$i]."')";
-			$res =& $pearDB->query($rq);
-			if (PEAR::isError($res))
-				print ("MySQL error : ".$res->getMessage());
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -234,9 +266,9 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$rq = "DELETE FROM lca_define_topology_relation ";
 		$rq .= "WHERE lca_define_lca_id = '".$lca_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_topos");
 		$ret = array_keys($ret);		
@@ -246,9 +278,9 @@ For information : contact@oreon-project.org
 				$rq .= "(lca_define_lca_id, topology_topology_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$lca_id."', '".$ret[$i]."')";
-				$res =& $pearDB->query($rq);
-				if (PEAR::isError($res))
-					print ("MySQL error : ".$res->getMessage());
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print $DBRESULT->getDebugInfo()."<br>";
 				//updateLCATopologyParents($ret[$i], $lca_id);
 			}
 		}
@@ -257,21 +289,21 @@ For information : contact@oreon-project.org
 	function updateLCATopologyChilds($topology_id = NULL, $lca_id = NULL)	{
 		if (!$topology_id || !$lca_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT DISTINCT topology_page FROM topology WHERE topology_id = '".$topology_id."'");
-		if (PEAR::isError($res))
-			print ("MySQL error : ".$res->getMessage());
-		$level1 =& $res->fetchRow();
-		$res2 =& $pearDB->query("SELECT topology_id, topology_page FROM topology WHERE topology_parent = '".$level1["topology_page"]."'");
-		if (PEAR::isError($res2))
-			print ("MySQL error : ".$res2->getMessage());
-		while($res2->fetchInto($level2))	{
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT topology_page FROM topology WHERE topology_id = '".$topology_id."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$level1 =& $DBRESULT->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT topology_id, topology_page FROM topology WHERE topology_parent = '".$level1["topology_page"]."'");
+		if (PEAR::isError($DBRESULT2))
+			print ("MySQL error : ".$DBRESULT2->getMessage());
+		while($DBRESULT2->fetchInto($level2))	{
 			$rq = "INSERT INTO lca_define_topology_relation ";
 			$rq .= "(lca_define_lca_id, topology_topology_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$lca_id."', '".$level2["topology_id"]."')";
-			$res =& $pearDB->query($rq);
-			if (PEAR::isError($res))
-				print ("MySQL error : ".$res->getMessage());
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 			updateLCATopologyChilds($level2["topology_id"], $lca_id);
 		}
 	}

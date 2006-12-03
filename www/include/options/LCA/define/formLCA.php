@@ -25,34 +25,34 @@ For information : contact@oreon-project.org
 	## Database retrieve information for LCA
 	#
 	if ($o == "c" || $o == "w")	{
-		$res =& $pearDB->query("SELECT * FROM lca_define WHERE lca_id = '".$lca_id."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM lca_define WHERE lca_id = '".$lca_id."' LIMIT 1");
 		# Set base value
-		$lca = array_map("myDecode", $res->fetchRow());
+		$lca = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Service Groups relations
-		$res =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM lca_define_servicegroup_relation WHERE lca_define_lca_id = '".$lca_id."'");
-		for($i = 0; $res->fetchInto($sg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM lca_define_servicegroup_relation WHERE lca_define_lca_id = '".$lca_id."'");
+		for($i = 0; $DBRESULT->fetchInto($sg); $i++)
 			$lca["lca_sgs"][$i] = $sg["servicegroup_sg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host Groups relations
-		$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca_id."'");
-		for($i = 0; $res->fetchInto($hg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca_id."'");
+		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$lca["lca_hgs"][$i] = $hg["hostgroup_hg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host relations
-		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM lca_define_host_relation WHERE lca_define_lca_id = '".$lca_id."'");
-		for($i = 0; $res->fetchInto($host); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM lca_define_host_relation WHERE lca_define_lca_id = '".$lca_id."'");
+		for($i = 0; $DBRESULT->fetchInto($host); $i++)
 			$lca["lca_hosts"][$i] = $host["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Contact Groups relations
-		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM lca_define_contactgroup_relation WHERE lca_define_lca_id = '".$lca_id."'");
-		for($i = 0; $res->fetchInto($cg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM lca_define_contactgroup_relation WHERE lca_define_lca_id = '".$lca_id."'");
+		for($i = 0; $DBRESULT->fetchInto($cg); $i++)
 			$lca["lca_cgs"][$i] = $cg["contactgroup_cg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Topology relations
-		$res =& $pearDB->query("SELECT topology_topology_id FROM lca_define_topology_relation WHERE lca_define_lca_id = '".$lca_id."'");
-		for($i = 0; $res->fetchInto($topo); $i++)
+		$DBRESULT =& $pearDB->query("SELECT topology_topology_id FROM lca_define_topology_relation WHERE lca_define_lca_id = '".$lca_id."'");
+		for($i = 0; $DBRESULT->fetchInto($topo); $i++)
 			$lca["lca_topos"][$topo["topology_topology_id"]] = 1;
-		$res->free();
+		$DBRESULT->free();
 	}
 	# Init LCA 
 	
@@ -68,39 +68,39 @@ For information : contact@oreon-project.org
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	else
-		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHGStr.") ORDER BY hg_name");
-	while($res->fetchInto($hg))
+		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHGStr.") ORDER BY hg_name");
+	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# Service Groups comes from DB -> Store in $sgs Array
 	$sgs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 	else
-		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name");
-	while($res->fetchInto($sg))
+		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name");
+	while($DBRESULT->fetchInto($sg))
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
-	while($res->fetchInto($host))
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
+	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
-	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while($res->fetchInto($cg))
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	while($DBRESULT->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -184,22 +184,22 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'pages', $lang['lca_appTopo']);
 	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
-	$res1 =& $pearDB->query($rq);
+	$DBRESULT1 =& $pearDB->query($rq);
 	#
 	$lca_topos = array();
-	while ($res1->fetchInto($topo1))	{
+	while ($DBRESULT1->fetchInto($topo1))	{
 	 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo1["topology_id"], null, array_key_exists($topo1["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo1["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px;", "id"=>$topo1["topology_id"]));
 	 	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_id IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
-	 	$res2 =& $pearDB->query($rq);
-		while ($res2->fetchInto($topo2))	{
+	 	$DBRESULT2 =& $pearDB->query($rq);
+		while ($DBRESULT2->fetchInto($topo2))	{
 		 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, array_key_exists($topo2["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo2["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 20px;"));
 		 	$rq = "SELECT topology_id, topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_id IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
-		 	$res3 =& $pearDB->query($rq);
-			while ($res3->fetchInto($topo3)){
+		 	$DBRESULT3 =& $pearDB->query($rq);
+			while ($DBRESULT3->fetchInto($topo3)){
 			 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, array_key_exists($topo3["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo3["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 40px;"));
 				$rq = "SELECT topology_id, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_id IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
-			 	$res4 =& $pearDB->query($rq);
-				while ($res4->fetchInto($topo4))
+			 	$DBRESULT4 =& $pearDB->query($rq);
+				while ($DBRESULT4->fetchInto($topo4))
 				 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo4["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 55px;"));
 		
 			}

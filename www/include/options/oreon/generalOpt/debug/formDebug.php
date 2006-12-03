@@ -24,9 +24,9 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for LCA
 	#
-	$res =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
-	$gopt = array_map("myDecode", $res->fetchRow());
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -36,11 +36,9 @@ For information : contact@oreon-project.org
 	##########################################################
 	# Var information to format the element
 	#
-
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
-
 
 	#
 	## Form begin
@@ -120,8 +118,7 @@ For information : contact@oreon-project.org
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
-
+	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
 
     $valid = false;
 	if ($form->validate())	{
@@ -130,8 +127,8 @@ For information : contact@oreon-project.org
 		updateDebugConfigData($form->getSubmitValue("gopt_id"));
 		# Update in Oreon Object
 		$oreon->optGen = array();
-		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen = $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		$oreon->optGen = $DBRESULT2->fetchRow();
 		$o = "w";
    		$valid = true;
 		$form->freeze();
@@ -151,17 +148,13 @@ For information : contact@oreon-project.org
 		if (isset($_POST["debug_inventory_clear"]))
 			@unlink($oreon->optGen["debug_path"]."inventory.log");
 	}
-	if (!$form->validate() && isset($_POST["gopt_id"]))	{
+	if (!$form->validate() && isset($_POST["gopt_id"]))
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
-	}
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'"));
-
-
 	#
 	##Apply a template definition
 	#
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

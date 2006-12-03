@@ -24,9 +24,9 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for LCA
 	#
-	$res =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
-	$gopt = array_map("myDecode", $res->fetchRow());
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -95,22 +95,19 @@ For information : contact@oreon-project.org
                                     	"color_unknown"=>"genOpt_oSUK",
 					);
 
-	while (list($nameColor, $val) = each($TabColorNameAndLang))
-	{
+	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $lang[$val];
 		$codeColor = $gopt[$nameColor];
 		$title = $lang["genOpt_colorPicker"];
 		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
-		if ($form->validate())	{
+		if ($form->validate())
 			$colorColor = $form->exportValue($nameColor);
-		}
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
-		if (!$form->validate())	{
+		if (!$form->validate())
 			$form->addElement('button', $nameColor.'_modify', $lang['modify'], $attrsText5);
-		}
 	}
 
 	#
@@ -271,15 +268,14 @@ For information : contact@oreon-project.org
 		updateGeneralConfigData(1);
 		# Update in Oreon Object
 		$oreon->optGen = array();
-		$res2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen = $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		$oreon->optGen = $DBRESULT2->fetchRow();
 		$o = "w";
    		$valid = true;
 		$form->freeze();
 	}
-	if (!$form->validate() && isset($_POST["gopt_id"]))	{
+	if (!$form->validate() && isset($_POST["gopt_id"]))
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
-	}
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
 
