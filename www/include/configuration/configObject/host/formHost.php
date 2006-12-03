@@ -24,9 +24,13 @@ For information : contact@oreon-project.org
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
 		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
+			$rq = "SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1";
 		else
-			$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1");
+			$rq = "SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+
 		# Set base value
 		$host = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Host Notification Options
@@ -434,13 +438,13 @@ For information : contact@oreon-project.org
 	# Modify a host information
 	else if ($o == "c")	{
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	    $form->setDefaults($host);
 	}
 	# Add a host information
 	else if ($o == "a")	{
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0, "perfparse"=>$oreon->optGen["perfparse_installed"]));
 	$tpl->assign('min', $min);

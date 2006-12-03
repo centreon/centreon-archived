@@ -22,13 +22,12 @@ For information : contact@oreon-project.org
 	#
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
-		$res =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		if ($res->numRows())	{
-			$host = array_map("myDecode", $res->fetchRow());
+		if ($DBRESULT->numRows())	{
+			$host = array_map("myDecode", $DBRESULT->fetchRow());
 			# Set Host Notification Options
 			$tmp = explode(',', $host["host_notification_options"]);
 			foreach ($tmp as $key => $value)
@@ -37,40 +36,36 @@ For information : contact@oreon-project.org
 			$tmp = explode(',', $host["host_stalking_options"]);
 			foreach ($tmp as $key => $value)
 				$host["host_stalOpts"][trim($value)] = 1;
-			$res->free();
+			$DBRESULT->free();
 			# Set Contact Group
-			$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			for($i = 0; $res->fetchInto($notifCg); $i++)
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
+			if (PEAR::isError($pearDB))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 				$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
-			$res->free();
+			$DBRESULT->free();
 			# Set Host Parents
-			$res =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			for($i = 0; $res->fetchInto($parent); $i++)
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			for($i = 0; $DBRESULT->fetchInto($parent); $i++)
 				$host["host_parents"][$i] = $parent["host_parent_hp_id"];
-			$res->free();
+			$DBRESULT->free();
 			# Set Service Templates Childs
-			$res =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			for($i = 0; $res->fetchInto($svTpl); $i++)
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+				for($i = 0; $DBRESULT->fetchInto($svTpl); $i++)
 				$host["host_svTpls"][$i] = $svTpl["service_service_id"];
-			$res->free();
+			$DBRESULT->free();
 			# Set City name
-			$res =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$host["city_id"]."' AND cny.country_id = '".$host["country_id"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$city = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$host["city_id"]."' AND cny.country_id = '".$host["country_id"]."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			$city = $DBRESULT->fetchRow();
 			$host["city_name"] = $city["city_name"];
 			$host["country_id"] = $city["country_id"];
-			$res->free();
+			$DBRESULT->free();
 		}
 	}
 	#
@@ -78,82 +73,75 @@ For information : contact@oreon-project.org
 	#
 	# Host Templates comes from DB -> Store in $hTpls Array
 	$hTpls = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($hTpl))	{
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($hTpl))	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array();
-	$res =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' ORDER BY service_description");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($svTpl))	{
+	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' ORDER BY service_description");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($svTpl))	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($tp))
+	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($checkCmd))
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
-	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($notifCg))
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$pearDB->getMessage()."<br>";
+	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Host Parents comes from DB -> Store in $hostPs Array
 	/*$hostPs = array();
-	$res =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
-	while($res->fetchInto($hostP))	{
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
+	while($DBRESULT->fetchInto($hostP))	{
 		if (!$hostP["host_name"])
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
 	}
-	$res->free();*/
+	$DBRESULT->free();*/
 	# Countries comes from DB -> Store in $countries Array
 	$countries = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($country))
+	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Deletion Policy definition comes from DB -> Store in $ppols Array
 	$ppols = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($ppol))
+	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -296,8 +284,6 @@ For information : contact@oreon-project.org
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
-
-
 
 	#
 	## Sort 3 - Data treatment

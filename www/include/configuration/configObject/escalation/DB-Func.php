@@ -26,16 +26,15 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('esc_id');
-		$res =& $pearDB->query("SELECT esc_name, esc_id FROM escalation WHERE esc_name = '".$name."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$esc =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT esc_name, esc_id FROM escalation WHERE esc_name = '".$name."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT esc_name, esc_id FROM escalation WHERE esc_name = '".$name."' : ".$DBRESULT->getMessage()."<br>";
+		$esc =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $esc["esc_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $esc["esc_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $esc["esc_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && $esc["esc_id"] != $id)
 			return false;
 		else
 			return true;
@@ -43,23 +42,20 @@ For information : contact@oreon-project.org
 		
 	function deleteEscalationInDB ($escalations = array())	{
 		global $pearDB;
-		foreach($escalations as $key=>$value)
-		{
-			$pearDB->query("DELETE FROM escalation WHERE esc_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach($escalations as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("DELETE FROM escalation WHERE esc_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : DELETE FROM escalation WHERE esc_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 	
 	function multipleEscalationInDB ($escalations = array(), $nbrDup = array())	{
 		foreach($escalations as $key=>$value)	{
 			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : SELECT * FROM escalation WHERE esc_id = '".$key."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			$row = $DBRESULT->fetchRow();
 			$row["esc_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -69,61 +65,53 @@ For information : contact@oreon-project.org
 				}
 				if (testExistence($esc_name))	{
 					$val ? $rq = "INSERT INTO escalation VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$res =& $pearDB->query("SELECT MAX(esc_id) FROM escalation");
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$maxId =& $res->fetchRow();
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : INSERT INTO escalation VALUES (".$val.") : ".$DBRESULT->getMessage()."<br>";
+					$DBRESULT =& $pearDB->query("SELECT MAX(esc_id) FROM escalation");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : SELECT MAX(esc_id) FROM escalation : ".$DBRESULT->getMessage()."<br>";
+					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(esc_id)"]))	{
-						$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
+						while($DBRESULT->fetchInto($cg))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_contactgroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$cg["contactgroup_cg_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : INSERT INTO escalation_contactgroup_relation VALUES .. : ".$DBRESULT2->getMessage()."<br>";
 						}
-						while($res->fetchInto($cg))
-						{
-							$pearDB->query("INSERT INTO escalation_contactgroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$cg["contactgroup_cg_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+						while($DBRESULT->fetchInto($host))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_host_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$host["host_host_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : INSERT INTO escalation_host_relation VALUES.. : ".$DBRESULT2->getMessage()."<br>";
 						}
-						$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
+						while($DBRESULT->fetchInto($hg))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_hostgroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$hg["hostgroup_hg_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : INSERT INTO escalation_hostgroup_relation VALUES.. :".$DBRESULT2->getMessage()."<br>";
 						}
-						while($res->fetchInto($host))
-						{
-							$pearDB->query("INSERT INTO escalation_host_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$host["host_host_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+						$DBRESULT =& $pearDB->query("SELECT * FROM escalation_service_relation WHERE escalation_esc_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : SELECT * FROM escalation_service_relation WHERE escalation_esc_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+						while($DBRESULT->fetchInto($sv))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["service_service_id"]."', '".$sv["host_host_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : INSERT INTO escalation_service_relation VALUES.. : ".$DBRESULT2->getMessage()."<br>";
 						}
-						$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$key."'");
-						while($res->fetchInto($hg))
-						{
-							$pearDB->query("INSERT INTO escalation_hostgroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$hg["hostgroup_hg_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
-						}
-						$res =& $pearDB->query("SELECT * FROM escalation_service_relation WHERE escalation_esc_id = '".$key."'");
-						while($res->fetchInto($sv))
-						{
-							$pearDB->query("INSERT INTO escalation_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["service_service_id"]."', '".$sv["host_host_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
-						}
-						$res =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation WHERE escalation_esc_id = '".$key."'");
-						while($res->fetchInto($sv))
-						{
-							$pearDB->query("INSERT INTO escalation_meta_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["meta_service_meta_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation WHERE escalation_esc_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation.. : ".$DBRESULT->getMessage()."<br>";
+						while($DBRESULT->fetchInto($sv))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_meta_service_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sv["meta_service_meta_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : NSERT INTO escalation_meta_service_relation VALUES.. : ".$DBRESULT2->getMessage()."<br>";
 						}
 					}
 				}
@@ -168,12 +156,13 @@ For information : contact@oreon-project.org
 		isset($ret["escalation_options2"]) && $ret["escalation_options2"] != NULL ? $rq .= "'".implode(",", array_keys($ret["escalation_options2"]))."', " : $rq .= "NULL, ";
 		isset($ret["esc_comment"]) && $ret["esc_comment"] != NULL ? $rq .= "'".htmlentities($ret["esc_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= ")";
-		$pearDB->query($rq);
-		$res =& $pearDB->query("SELECT MAX(esc_id) FROM escalation");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$esc_id = $res->fetchRow();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : INSERT INTO escalation.. : ".$DBRESULT->getMessage()."<br>";
+		$DBRESULT =& $pearDB->query("SELECT MAX(esc_id) FROM escalation");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT MAX(esc_id) FROM escalation : ".$DBRESULT->getMessage()."<br>";
+		$esc_id = $DBRESULT->fetchRow();
 		return ($esc_id["MAX(esc_id)"]);
 	}
 	
@@ -201,10 +190,9 @@ For information : contact@oreon-project.org
 		$rq .= "esc_comment = ";
 		isset($ret["esc_comment"]) && $ret["esc_comment"] != NULL ? $rq .= "'".htmlentities($ret["esc_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= "WHERE esc_id = '".$esc_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : UPDATE escalation SET.. : ".$DBRESULT->getMessage()."<br>";
 	}
 	
 	function updateEscalationContactGroups($esc_id = null)	{
@@ -213,10 +201,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM escalation_contactgroup_relation ";
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM escalation_contactgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("esc_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -224,10 +211,9 @@ For information : contact@oreon-project.org
 			$rq .= "(escalation_esc_id, contactgroup_cg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$esc_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : INSERT INTO escalation_contactgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 	
@@ -237,10 +223,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM escalation_host_relation ";
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM escalation_host_relation.. : ".$DBRESULT->getMessage()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("esc_hosts");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -248,10 +233,9 @@ For information : contact@oreon-project.org
 			$rq .= "(escalation_esc_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$esc_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : INSERT INTO escalation_host_relation.. : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 	
@@ -261,10 +245,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM escalation_hostgroup_relation ";
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM escalation_hostgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("esc_hgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -272,10 +255,9 @@ For information : contact@oreon-project.org
 			$rq .= "(escalation_esc_id, hostgroup_hg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$esc_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : INSERT INTO escalation_hostgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 	
@@ -285,10 +267,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM escalation_service_relation ";
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM escalation_service_relation.. : ".$DBRESULT->getMessage()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("esc_hServices");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -298,10 +279,9 @@ For information : contact@oreon-project.org
 				$rq .= "(escalation_esc_id, service_service_id, host_host_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$esc_id."', '".$exp[1]."', '".$exp[0]."')";
-				$pearDB->query($rq);
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : INSERT INTO escalation_service_relation.. : ".$DBRESULT->getMessage()."<br>";
 			}
 		}
 	}
@@ -312,10 +292,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM escalation_meta_service_relation ";
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : DELETE FROM escalation_meta_service_relation.. : ".$DBRESULT->getMessage()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("esc_metas");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -323,10 +302,9 @@ For information : contact@oreon-project.org
 			$rq .= "(escalation_esc_id, meta_service_meta_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$esc_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : INSERT INTO escalation_meta_service_relation.. : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 ?>

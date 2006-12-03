@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('host_id');
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' : ".$DBRESULT->getMessage()."<br>";
 		$host =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id)	
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '1' WHERE host_id = '".$host_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>"."<br>";
+			print "DB Error : UPDATE host SET host_activate = '1' WHERE host_id = '".$host_id."' : ".$DBRESULT->getMessage()."<br>"."<br>";
 	}
 	
 	function disableHostInDB ($host_id = null)	{
@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '0' WHERE host_id = '".$host_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : UPDATE host SET host_activate = '0' WHERE host_id = '".$host_id."' : ".$DBRESULT->getMessage()."<br>";
 	}
 	
 	function deleteHostInDB ($hosts = array())	{
@@ -63,13 +63,16 @@ For information : contact@oreon-project.org
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr, host WHERE hsr.host_host_id = '".$key."' AND host.host_id = hsr.host_host_id AND host.host_register = '1'";
 			$DBRESULT = & $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation.. : ".$DBRESULT->getMessage()."<br>";
 			while ($DBRESULT->fetchInto($row))
-				if ($row["nbr"] == 1)
-					$pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
+				if ($row["nbr"] == 1)	{
+					$DBRESULT2 =& $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : DELETE FROM service WHERE service_id = '".$row["service_service_id"]."' : ".$DBRESULT2->getMessage()."<br>";
+				}
 			$DBRESULT =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
 			if (PEAR::isError($DBRESULT)) 
-				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : DELETE FROM host WHERE host_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
 			$files = glob($oreon->optGen["oreon_rrdbase_path"].$key."_*.rrd");
 			foreach ($files as $filename)
 				unlink ($filename);
@@ -83,7 +86,7 @@ For information : contact@oreon-project.org
 			global $oreon;
 			$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : SELECT * FROM host WHERE host_id = '".$key."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 			$row = $DBRESULT->fetchRow();
 			$row["host_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -96,20 +99,20 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO host VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getMessage()."<br>";
+						print "DB Error : INSERT INTO host VALUES (".$val.") : ".$DBRESULT->getMessage()."<br>";
 					$DBRESULT =& $pearDB->query("SELECT MAX(host_id) FROM host");
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getMessage()."<br>";
+						print "DB Error : SELECT MAX(host_id) FROM host : ".$DBRESULT->getMessage()."<br>";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(host_id)"]))	{
 						# Update LCA
 						$DBRESULT1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 						if (PEAR::isError($DBRESULT1))
-							print "DB Error : ".$DBRESULT1->getMessage()."<br>";
+							print "DB Error : SELECT contactgroup_cg_id FROM contactgroup_contact_relation.. : ".$DBRESULT1->getMessage()."<br>";
 						while($DBRESULT1->fetchInto($contactGroup))	{
 						 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getMessage()."<br>";
+								print "DB Error : SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr.. : ".$DBRESULT2->getMessage()."<br>";
 							while ($DBRESULT2->fetchInto($lca))	{
 								$rq = "INSERT INTO lca_define_host_relation ";
 								$rq .= "(lca_define_lca_id, host_host_id) ";
@@ -117,17 +120,17 @@ For information : contact@oreon-project.org
 								$rq .= "('".$lca["lca_define_lca_id"]."', '".$maxId["MAX(host_id)"]."')";
 								$DBRESULT3 =& $pearDB->query($rq);
 								if (PEAR::isError($DBRESULT3))
-									print "DB Error : ".$DBRESULT3->getMessage()."<br>";
+									print "DB Error : INSERT INTO lca_define_host_relation.. : ".$DBRESULT3->getMessage()."<br>";
 							}
 						}
 						#
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getMessage()."<br>";
+							print "DB Error : SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation.. ".$DBRESULT->getMessage()."<br>";
 						while($DBRESULT->fetchInto($host)){
 							$DBRESULT1 =& $pearDB->query("INSERT INTO host_hostparent_relation VALUES ('', '".$host["host_parent_hp_id"]."', '".$maxId["MAX(host_id)"]."')");	
 							if (PEAR::isError($DBRESULT1))
-								print "DB Error : ".$DBRESULT1->getMessage()."<br>";
+								print "DB Error : INSERT INTO host_hostparent_relation VALUES.. ".$DBRESULT1->getMessage()."<br>";
 						}
 						# We need to duplicate the entire Service and not only create a new relation for it in the DB / Need Service functions
 						require_once($path."../service/DB-Func.php");
@@ -137,17 +140,17 @@ For information : contact@oreon-project.org
 						# Get all Services link to the Host
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getMessage()."<br>";
+							print "DB Error : SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'.. : ".$DBRESULT->getMessage()."<br>";
 						while($DBRESULT->fetchInto($service))	{
 							# If the Service is link with several Host, we keep this property and don't duplicate it, just create a new relation with the new Host
 							$DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = '".$service["service_service_id"]."'");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getMessage()."<br>";
+								print "DB Error : SELECT COUNT(*) FROM host_service_relation.. ".$DBRESULT2->getMessage()."<br>";
 							$mulHostSv = $DBRESULT2->fetchrow();
 							if ($mulHostSv["COUNT(*)"] > 1)	{
 								$DBRESULT3 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$service["service_service_id"]."')");
 								if (PEAR::isError($DBRESULT3))
-									print "DB Error : ".$DBRESULT3->getMessage()."<br>";
+									print "DB Error : INSERT INTO host_service_relation VALUES.. ".$DBRESULT3->getMessage()."<br>";
 							}
 							else	{
 								$serviceArr[$service["service_service_id"]] = $service["service_service_id"];
@@ -299,7 +302,7 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : INSERT INTO host.. : ".$DBRESULT->getMessage()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(host_id) FROM host");
 		$host_id = $DBRESULT->fetchRow();		
 		# Update LCA
@@ -451,7 +454,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : UPDATE host SET.. : ".$DBRESULT->getMessage()."<br>";
 	}
 	
 	function updateHostHostParent($host_id = null, $ret = array())	{
@@ -547,18 +550,18 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$rq = "DELETE FROM contactgroup_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
-		$DEBUGDB = $pearDB->query($rq);
-		if (PEAR::isError($DEBUGDB))
-			print "DB Error : ".$DEBUGDB->getMessage()."<br>";
+		$DBRESULT = $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		isset($ret["host_cgs"]) ? $ret = $ret["host_cgs"] : $ret = $form->getSubmitValue("host_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contactgroup_host_relation ";
 			$rq .= "(host_host_id, contactgroup_cg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$host_id."', '".$ret[$i]."')";
-			$DEBUGDB = $pearDB->query($rq);
-			if (PEAR::isError($DEBUGDB))
-				print "DB Error : ".$DEBUGDB->getMessage()."<br>";
+			$DBRESULT = $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 	

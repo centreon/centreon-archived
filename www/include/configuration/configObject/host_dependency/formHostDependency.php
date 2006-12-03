@@ -23,14 +23,12 @@ For information : contact@oreon-project.org
 	#
 	
 	$dep = array();
-	if (($o == "c" || $o == "w") && $dep_id)	{
-		
-		$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (($o == "c" || $o == "w") && $dep_id)	{		
+		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$dep = array_map("myDecode", $res->fetchRow());
+		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
 		$dep["notification_failure_criteria"] =& explode(',', $dep["notification_failure_criteria"]);
 		foreach ($dep["notification_failure_criteria"] as $key => $value)
@@ -40,21 +38,19 @@ For information : contact@oreon-project.org
 		foreach ($dep["execution_failure_criteria"] as $key => $value)
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 		# Set Host Parents
-		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($hostP); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."' : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($hostP); $i++)
 			$dep["dep_hostParents"][$i] = $hostP["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host Childs
-		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($hostC); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."' : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($hostC); $i++)
 			$dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -62,15 +58,14 @@ For information : contact@oreon-project.org
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($host))
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name.. : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

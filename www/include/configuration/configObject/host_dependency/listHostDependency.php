@@ -21,11 +21,11 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 	
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -42,10 +42,10 @@ For information : contact@oreon-project.org
 	 
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	$tmp = & $res->fetchRow();
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT COUNT(*) FROM dependency dep.. : ".$DBRESULT->getMessage()."<br>";
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -75,10 +75,9 @@ For information : contact@oreon-project.org
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
-	$res =& $pearDB->query($rq);	
-	
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query($rq);	
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT dep_id, dep_name, dep_description FROM dependency dep.. : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
@@ -86,7 +85,7 @@ For information : contact@oreon-project.org
 	
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($dep); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($dep); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$dep['dep_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&dep_id=".$dep['dep_id']."&o=w&search=".$search."&list=".$list."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&dep_id=".$dep['dep_id']."&o=c&search=".$search."&list=".$list."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -150,8 +149,7 @@ For information : contact@oreon-project.org
 
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

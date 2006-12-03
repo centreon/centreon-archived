@@ -23,12 +23,11 @@ For information : contact@oreon-project.org
 	#
 	$esc = array();
 	if (($o == "c" || $o == "w") && $esc_id)	{	
-		$res =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$esc = array_map("myDecode", $res->fetchRow());
+		$esc = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Host Options
 		$esc["escalation_options1"] =& explode(',', $esc["escalation_options1"]);
 		foreach ($esc["escalation_options1"] as $key => $value)
@@ -38,45 +37,40 @@ For information : contact@oreon-project.org
 		foreach ($esc["escalation_options2"] as $key => $value)
 			$esc["escalation_options2"][trim($value)] = 1;
 		# Set Host Groups relations
-		$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($hg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."' : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host relations
-		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($host); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."' : ".$DBRESULT->getMessage()."<br>";
+		for ($i = 0; $DBRESULT->fetchInto($host); $i++)
 			$esc["esc_hosts"][$i] = $host["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Meta Service
-		$res =& $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($metas); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr.. : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($metas); $i++)
 			$esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host Service
-		$res =& $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($services); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."' : ".$DBRESULT->getMessage()."<br>";
+		for ($i = 0; $DBRESULT->fetchInto($services); $i++)
 			$esc["esc_hServices"][$i] = $services["host_host_id"]."_".$services["service_service_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Contact Groups relations
-		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($cg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($cg); $i++)
 			$esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
-		$res->free();		
+		$DBRESULT->free();		
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -84,72 +78,66 @@ For information : contact@oreon-project.org
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))		
-		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	else
-		$res =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($hg))
+		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name.. : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))		
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($host))
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# Services comes from DB -> Store in $hServices Array	
 	$hServices = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))		
-		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($elem))	{
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name.. : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($elem))	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)
 			$hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Meta Services comes from DB -> Store in $metas Array
 	$metas = array();
-	$res =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($meta))
+	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($meta))
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
-	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($cg))
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# TimePeriods comes from DB -> Store in $tps Array
 	$tps = array();
-	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($tp))
+	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################
