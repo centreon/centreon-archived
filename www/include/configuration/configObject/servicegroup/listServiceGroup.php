@@ -26,10 +26,10 @@ For information : contact@oreon-project.org
 
 	$pagination = "maxViewConfiguration";
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -37,19 +37,19 @@ For information : contact@oreon-project.org
 
 	if ($search){
 		if ($oreon->user->admin || !$isRestreint)		
-			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 		else
-			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaServiceGroupStr.")");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaServiceGroupStr.")");
 	} else {
 		if ($oreon->user->admin || !$isRestreint)		
-			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
 		else
-			$res = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaSGStr.")");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaSGStr.")");
 	}
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
 
-	$tmp = & $res->fetchRow();
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -81,16 +81,16 @@ For information : contact@oreon-project.org
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	}
 
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res)) 
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT)) 
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($sg); $i++) {
+	for ($i = 0; $DBRESULT->fetchInto($sg); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$sg['sg_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&sg_id=".$sg['sg_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&sg_id=".$sg['sg_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -154,7 +154,6 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
 	#
 	##Toolbar select $lang["lgd_more_actions"]
 	#
@@ -199,15 +198,11 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
 	#
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listServiceGroup.ihtml");
-
 ?>

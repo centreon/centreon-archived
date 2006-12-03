@@ -21,8 +21,8 @@ For information : contact@oreon-project.org
 	
 	# set limit
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB))
-		print "DB Error : SELECT maxViewConfiguration.. : ".$pearDB->getMessage()."<br>";
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT maxViewConfiguration.. : ".$DBRESULT->getMessage()."<br>";
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$service["hg_name"],
 						"RowMenu_link"=>"?p=60102&o=c&hg_id=".$service['hg_id'],
-						"RowMenu_link2"=>"?p=".$p."&o=w&service_id=".$service['service_id'],
+						"RowMenu_link2"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_parent"=>$service["service_template_model_stm_id"] ? $lang["yes"] : $lang["no"],
 						"RowMenu_desc"=>$service["service_description"],
 						"RowMenu_status"=>$service["service_activate"] ? $lang['enable'] : $lang['disable'],
@@ -166,8 +166,7 @@ For information : contact@oreon-project.org
 	
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

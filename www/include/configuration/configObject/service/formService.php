@@ -480,13 +480,13 @@ For information : contact@oreon-project.org
 	# Modify a service information
 	else if ($o == "c")	{
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	    $form->setDefaults($service);
 	}
 	# Add a service information
 	else if ($o == "a")	{
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0, "perfparse"=>$oreon->optGen["perfparse_installed"]));

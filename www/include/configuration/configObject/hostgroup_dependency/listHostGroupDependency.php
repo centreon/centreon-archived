@@ -20,11 +20,11 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print " : ".$DBRESULT->getMessage()."<br>";
 
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -42,11 +42,11 @@ For information : contact@oreon-project.org
 	
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
 
-	$tmp = & $res->fetchRow();
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -74,16 +74,16 @@ For information : contact@oreon-project.org
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
-	$res =& $pearDB->query($rq);
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($dep); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($dep); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$dep['dep_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&dep_id=".$dep['dep_id']."&o=w&search=".$search."&list=".$list."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&dep_id=".$dep['dep_id']."&o=c&search=".$search."&list=".$list."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";

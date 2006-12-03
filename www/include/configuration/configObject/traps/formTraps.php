@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 */
 
 	#
-	## Database retrieve information for Command
+	## Database retrieve information for Trap
 	#
 	
 	function myDecodeTrap($arg)	{
@@ -28,14 +28,12 @@ For information : contact@oreon-project.org
 	}
 
 	$trap = array();
-	if (($o == "c" || $o == "w") && $traps_id)	{
-		
-		$res =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (($o == "c" || $o == "w") && $traps_id)	{		
+		$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		# Set base value
-		$trap = array_map("myDecodeTrap", $res->fetchRow());
+		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
 	}
 
 	##########################################################
@@ -69,8 +67,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
 	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
-        $form->setDefaults(array('action'=>'1'));
-
+	$form->setDefaults(array('action'=>'1'));
 
 	#
 	## Further informations

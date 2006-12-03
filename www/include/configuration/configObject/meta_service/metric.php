@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called � Oreon Meta Service � is developped by Merethis company for Lafarge Group, 
-under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -19,7 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
 	#
 	## Database retrieve information
 	#
@@ -28,17 +24,16 @@ For information : contact@oreon-project.org
 	$metric = array();
 	if (($o == "cs" || $o == "ws") && $msr_id)	{	
 		# Set base value
-		$res =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
 		# Set base value
-		$metric1 = array_map("myDecode", $res->fetchRow());
-		$res =& $pearDBpp->query("SELECT * FROM perfdata_service_metric WHERE metric_id = '".$metric1["metric_id"]."'");		
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$metric2 = array_map("myDecode", $res->fetchRow());
+		$metric1 = array_map("myDecode", $DBRESULT->fetchRow());
+		$DBRESULT =& $pearDBpp->query("SELECT * FROM perfdata_service_metric WHERE metric_id = '".$metric1["metric_id"]."'");		
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		$metric2 = array_map("myDecode", $DBRESULT->fetchRow());
 		$metric = array_merge($metric1, $metric2);
 		$host_id = $metric1["host_id"];
 		$metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
@@ -51,14 +46,14 @@ For information : contact@oreon-project.org
 
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($host))
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
+	while($DBRESULT->fetchInto($host))
 		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host["host_name"]])))
 			$hosts[$host["host_id"]] = $host["host_name"];
-	$res->free();
+	$DBRESULT->free();
 	
 	$services1 = array();
 	$services2 = array();
@@ -66,13 +61,13 @@ For information : contact@oreon-project.org
 		$services = array(NULL=>NULL);
 		$services = getMyHostServices($host_id);
 		foreach ($services as $key=>$value)	{
-			$res =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".getMyHostName($host_id)."' AND service_description = '".$value."' ORDER BY metric, unit");
-			while ($res->fetchInto($metricSV))	{
+			$DBRESULT =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".getMyHostName($host_id)."' AND service_description = '".$value."' ORDER BY metric, unit");
+			while ($DBRESULT->fetchInto($metricSV))	{
 				$services1[$key] = $value;
 				$services2[$key][$metricSV["metric_id"]] = $metricSV["metric"]."  (".$metricSV["unit"].")";
 			}
 		}
-		$res->free();
+		$DBRESULT->free();
 	}
 	
 	$debug = 0;

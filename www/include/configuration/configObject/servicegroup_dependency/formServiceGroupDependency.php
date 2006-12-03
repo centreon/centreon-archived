@@ -23,12 +23,11 @@ For information : contact@oreon-project.org
 	#
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
-		$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		# Set base value
-		$dep = array_map("myDecode", $res->fetchRow());
+		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
 		$dep["notification_failure_criteria"] =& explode(',', $dep["notification_failure_criteria"]);
 		foreach ($dep["notification_failure_criteria"] as $key => $value)
@@ -38,21 +37,19 @@ For information : contact@oreon-project.org
 		foreach ($dep["execution_failure_criteria"] as $key => $value)
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 		# Set ServiceGroup Parents
-		$res =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($sgP); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($sgP); $i++)
 			$dep["dep_sgParents"][$i] = $sgP["servicegroup_sg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set ServiceGroup Childs
-		$res =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($sgC); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($sgC); $i++)
 			$dep["dep_sgChilds"][$i] = $sgC["servicegroup_sg_id"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -60,15 +57,14 @@ For information : contact@oreon-project.org
 	# ServiceGroup comes from DB -> Store in $sgs Array
 	$sgs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 	else
-		$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name");
-	if (PEAR::isError($res)) {
-		print "Mysql Error : ".$res->getMessage();
-	}
-	while($res->fetchInto($sg))
+		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while($DBRESULT->fetchInto($sg))
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

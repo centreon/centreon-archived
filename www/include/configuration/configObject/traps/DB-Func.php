@@ -24,16 +24,15 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('traps_id');
-		$res =& $pearDB->query("SELECT traps_name, traps_id FROM traps WHERE traps_name = '".htmlentities($name, ENT_QUOTES)."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		$trap =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT traps_name, traps_id FROM traps WHERE traps_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$trap =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $trap["traps_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $trap["traps_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $trap["traps_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && $trap["traps_id"] != $id)
 			return false;
 		else
 			return true;
@@ -41,23 +40,20 @@ For information : contact@oreon-project.org
 
 	function deleteTrapInDB ($traps = array())	{
 		global $pearDB;
-		foreach($traps as $key=>$value)
-		{
-			$pearDB->query("DELETE FROM traps WHERE traps_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach($traps as $key=>$value)		{
+			$DBRESULT =& $pearDB->query("DELETE FROM traps WHERE traps_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
 	function multipleTrapInDB ($traps = array(), $nbrDup = array())	{
 		foreach($traps as $key=>$value)	{
 			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
+			$row = $DBRESULT->fetchRow();
 			$row["traps_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -67,10 +63,9 @@ For information : contact@oreon-project.org
 				}
 				if (testTrapExistence($traps_name))	{
 					$val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print $DBRESULT->getDebugInfo()."<br>";
 				}
 			}
 		}
@@ -94,10 +89,9 @@ For information : contact@oreon-project.org
 		$rq .= "traps_args = '".htmlentities($ret["traps_args"], ENT_QUOTES)."', ";
 		$rq .= "traps_comments = '".htmlentities($ret["traps_comments"], ENT_QUOTES)."' ";
 		$rq .= "WHERE traps_id = '".$traps_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function insertTrapInDB ($ret = array())	{
@@ -118,12 +112,11 @@ For information : contact@oreon-project.org
 		$rq .= "'".htmlentities($ret["traps_handler"], ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["traps_args"], ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["traps_comments"], ENT_QUOTES)."')";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$res =& $pearDB->query("SELECT MAX(traps_id) FROM traps");
-		$traps_id = $res->fetchRow();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$DBRESULT =& $pearDB->query("SELECT MAX(traps_id) FROM traps");
+		$traps_id = $DBRESULT->fetchRow();
 		return ($traps_id["MAX(traps_id)"]);
 	}
 ?>

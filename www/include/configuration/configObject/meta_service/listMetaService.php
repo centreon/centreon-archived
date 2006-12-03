@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called � Oreon Meta Service � is developped by Merethis company for Lafarge Group, 
-under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -20,23 +17,22 @@ For information : contact@oreon-project.org
 */
 	$pagination = "maxViewConfiguration";
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM meta_service");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$tmp = & $res->fetchRow();
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -64,17 +60,16 @@ For information : contact@oreon-project.org
 		$rq = "SELECT *  FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY meta_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM meta_service ORDER BY meta_name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($ms); $i++) {
+	for ($i = 0; $DBRESULT->fetchInto($ms); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$ms['meta_id']."]");	
 		if ($ms["meta_select_mode"] == 1)
 			$moptions = "<a href='oreon.php?p=".$p."&meta_id=".$ms['meta_id']."&o=ci&search=".$search."'><img src='img/icones/16x16/signpost.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
@@ -150,12 +145,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

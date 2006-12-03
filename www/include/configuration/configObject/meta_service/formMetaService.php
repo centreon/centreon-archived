@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called � Oreon Meta Service � is developped by Merethis company for Lafarge Group,
-under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -24,24 +21,22 @@ For information : contact@oreon-project.org
 
 	$ms = array();
 	if (($o == "c" || $o == "w") && $meta_id)	{
-		$res =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$ms = array_map("myDecode", $res->fetchRow());
+		$ms = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Service Notification Options
 		$tmp = explode(',', $ms["notification_options"]);
 		foreach ($tmp as $key => $value)
 			$ms["ms_notifOpts"][trim($value)] = 1;
 		# Set Contact Group
-		$res =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($notifCg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -49,69 +44,62 @@ For information : contact@oreon-project.org
 	# Perfparse Metric comes from DB -> Store in $metrics Array
 	require_once("./DBPerfparseConnect.php");
 	$metrics = array(NULL=>NULL);
-	$res =& $pearDBpp->query("SELECT DISTINCT metric FROM perfdata_service_metric ORDER BY metric");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($metric))
+	$DBRESULT =& $pearDBpp->query("SELECT DISTINCT metric FROM perfdata_service_metric ORDER BY metric");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($metric))
 		$metrics[$metric["metric"]] = $metric["metric"];
-	$res->free();
+	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
-	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($tp))
+	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($checkCmd))
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
-	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($notifCg))
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Escalations comes from DB -> Store in $escs Array
 	$escs = array();
-	$res =& $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($esc))
+	$DBRESULT =& $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($esc))
 		$escs[$esc["esc_id"]] = $esc["esc_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Meta Service Dependencies comes from DB -> Store in $deps Array
 	$deps = array();
-	$res =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($dep))
+	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($dep))
 		$deps[$dep["meta_id"]] = $dep["meta_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Calc Type
 	$calType = array("AVE"=>$lang['ms_selAvr'], "SOM"=>$lang['ms_selSum'], "MIN"=>$lang['ms_selMin'], "MAX"=>$lang['ms_selMax']);
 	
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($graphTpl))
+	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($graphTpl))
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
-	$res->free();
+	$DBRESULT->free();
 
 	#
 	# End of "database-retrieved" information

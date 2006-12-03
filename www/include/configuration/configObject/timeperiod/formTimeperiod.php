@@ -23,20 +23,13 @@ For information : contact@oreon-project.org
 	#
 	$tp = array();
 	if (($o == "c" || $o == "w") && $tp_id)	{	
-		$res =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		# Set base value
-		$tp = array_map("myDecode", $res->fetchRow());
+		$tp = array_map("myDecode", $DBRESULT->fetchRow());
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	
-	#
-	# End of "database-retrieved" information
-	##########################################################
+
 	##########################################################
 	# Var information to format the element
 	#

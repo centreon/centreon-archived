@@ -26,16 +26,15 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');
-		$res =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$dep =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		$dep =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $dep["dep_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $dep["dep_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id)
 			return false;
 		else
 			return true;
@@ -59,23 +58,20 @@ For information : contact@oreon-project.org
 
 	function deleteMetaServiceDependencyInDB ($dependencies = array())	{
 		global $pearDB;
-		foreach($dependencies as $key=>$value)
-		{
-			$pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach($dependencies as $key=>$value)		{
+			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 	
 	function multipleMetaServiceDependencyInDB ($dependencies = array(), $nbrDup = array())	{
 		foreach($dependencies as $key=>$value)	{
 			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			$row = $DBRESULT->fetchRow();
 			$row["dep_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -85,40 +81,32 @@ For information : contact@oreon-project.org
 				}
 				if (testExistence($dep_name))	{
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$res =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$maxId =& $res->fetchRow();
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getMessage()."<br>";
+					$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getMessage()."<br>";
+					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(dep_id)"]))	{
-						$res =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getMessage()."<br>";
+						while($DBRESULT->fetchInto($ms))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_metaserviceParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : ".$DBRESULT2->getMessage()."<br>";
 						}
-						while($res->fetchInto($ms))
-						{
-							$pearDB->query("INSERT INTO dependency_metaserviceParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
+						$DBRESULT->free();
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getMessage()."<br>";
+						while($DBRESULT->fetchInto($ms)){
+							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_metaserviceChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : ".$DBRESULT2->getMessage()."<br>";
 						}
-						$res->free();
-						$res =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
-						while($res->fetchInto($ms))
-						{
-							$pearDB->query("INSERT INTO dependency_metaserviceChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$ms["meta_service_meta_id"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
-						}
-						$res->free();
+						$DBRESULT->free();
 					}
 				}
 			}
@@ -154,12 +142,13 @@ For information : contact@oreon-project.org
 		isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != NULL ? $rq .= "'".implode(",", array_keys($ret["notification_failure_criteria"]))."', " : $rq .= "NULL, ";
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= ")";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$res =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-		$dep_id = $res->fetchRow();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		$dep_id = $DBRESULT->fetchRow();
 		return ($dep_id["MAX(dep_id)"]);
 	}
 	
@@ -183,10 +172,9 @@ For information : contact@oreon-project.org
 		$rq .= "dep_comment = ";
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES)."' " : $rq .= "NULL ";
 		$rq .= "WHERE dep_id = '".$dep_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 	}
 		
 	function updateMetaServiceDependencyMetaServiceParents($dep_id = null)	{
@@ -195,10 +183,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM dependency_metaserviceParent_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("dep_msParents");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -206,10 +193,9 @@ For information : contact@oreon-project.org
 			$rq .= "(dependency_dep_id, meta_service_meta_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 		
@@ -219,10 +205,9 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "DELETE FROM dependency_metaserviceChild_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("dep_msChilds");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -230,10 +215,9 @@ For information : contact@oreon-project.org
 			$rq .= "(dependency_dep_id, meta_service_meta_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		}
 	}
 ?>

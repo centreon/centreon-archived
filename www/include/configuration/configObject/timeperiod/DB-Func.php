@@ -27,16 +27,15 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('tp_id');
-		$res =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($name, ENT_QUOTES)."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		$tp =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$tp =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $tp["tp_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $tp["tp_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $tp["tp_id"] != $id)	
+		else if ($DBRESULT->numRows() >= 1 && $tp["tp_id"] != $id)	
 			return false;
 		else
 			return true;
@@ -44,23 +43,20 @@ For information : contact@oreon-project.org
 
 	function deleteTimeperiodInDB ($timeperiods = array())	{
 		global $pearDB;
-		foreach($timeperiods as $key=>$value)
-		{
-			$pearDB->query("DELETE FROM timeperiod WHERE tp_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach($timeperiods as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("DELETE FROM timeperiod WHERE tp_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
 	function multipleTimeperiodInDB ($timeperiods = array(), $nbrDup = array())	{
 		foreach($timeperiods as $key=>$value)	{
 			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
+			$row = $DBRESULT->fetchRow();
 			$row["tp_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -68,11 +64,11 @@ For information : contact@oreon-project.org
 					$key2 == "tp_name" ? ($tp_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				if (testTPExistence($tp_name))				
-					$pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+				if (testTPExistence($tp_name))	{	
+					$DBRESULT =& $pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
+					if (PEAR::isError($DBRESULT))
+						print $DBRESULT->getDebugInfo()."<br>";
+				}
 			}
 		}
 	}
@@ -99,10 +95,9 @@ For information : contact@oreon-project.org
 				"tp_friday = '".htmlentities($ret["tp_friday"], ENT_QUOTES)."', " .
 				"tp_saturday = '".htmlentities($ret["tp_saturday"], ENT_QUOTES)."' " .
 				"WHERE tp_id = '".$tp_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function insertTimeperiodInDB ($ret = array())	{
@@ -128,15 +123,13 @@ For information : contact@oreon-project.org
 		isset($ret["tp_friday"]) && $ret["tp_friday"] != NULL ? $rq .= "'".htmlentities($ret["tp_friday"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["tp_saturday"]) && $ret["tp_saturday"] != NULL ? $rq .= "'".htmlentities($ret["tp_saturday"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$res =& $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$tp_id = $res->fetchRow();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$DBRESULT =& $pearDB->query("SELECT MAX(tp_id) FROM timeperiod");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$tp_id = $DBRESULT->fetchRow();
 		return ($tp_id["MAX(tp_id)"]);
 	}
 ?>

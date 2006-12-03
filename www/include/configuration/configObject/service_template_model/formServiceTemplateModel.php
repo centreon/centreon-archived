@@ -17,10 +17,6 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
-	#
-	## Database retrieve information for Service
-	#
 	
 	function myDecodeSvTP($arg)	{
 		$arg = str_replace('#BR#', "\\n", $arg);
@@ -32,14 +28,17 @@ For information : contact@oreon-project.org
 	}
 	
 	$service = array();
-	if (($o == "c" || $o == "w") && $service_id)	{
-		
-		$res =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+	if (($o == "c" || $o == "w") && $service_id)	{		
+		$DBRESULT =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$service = array_map("myDecodeSvTP", $res->fetchRow());
+		$service = array_map("myDecodeSvTP", $DBRESULT->fetchRow());
 		# Grab hostgroup || host
-		$res =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		while ($res->fetchInto($parent))	{
+		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		while ($DBRESULT->fetchInto($parent))	{
 			if ($parent["host_host_id"])
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
 			else if ($parent["hostgroup_hg_id"])
@@ -53,116 +52,105 @@ For information : contact@oreon-project.org
 		$tmp = explode(',', $service["service_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_stalOpts"][trim($value)] = 1;
-		$res->free();
+		$DBRESULT->free();
 		# Set Contact Group
-		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($notifCg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
+		if (PEAR::isError($pearDB))
+			print "DB Error : ".$pearDB->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Service Group Parents
-		$res =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($sg); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
+		if (PEAR::isError($pearDB))
+			print "DB Error : ".$pearDB->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($sg); $i++)
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Traps
-		$res =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($trap); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
+		if (PEAR::isError($pearDB))
+			print "DB Error : ".$pearDB->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($trap); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Host Templates comes from DB -> Store in $hosts Array
 	$hosts = array();
-	$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($host))
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($svTpl))	{
+	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($svTpl))	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($tp))
+	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($checkCmd))
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
-	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($notifCg))
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Service Groups comes from DB -> Store in $hgs Array
 	$sgs = array();
-	$res =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while($res->fetchInto($sg))
+	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	while($DBRESULT->fetchInto($sg))
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($graphTpl))
+	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($graphTpl))
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
-	$res->free();
+	$DBRESULT->free();
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
-	$res =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($trap))
+	$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($trap))
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Deletion Policy definition comes from DB -> Store in $ppols Array
 	$ppols = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($ppol))
+	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

@@ -17,25 +17,25 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sv.service_register = '0'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sv.service_register = '0'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$tmp = & $res->fetchRow();
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
 	# start quickSearch form
@@ -59,16 +59,16 @@ $pagination = "maxViewConfiguration";
 		$rq = "SELECT @tplPar:=(SELECT service_description FROM service WHERE service_id = sv.service_template_model_stm_id) AS tplPar, sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT @tplPar:=(SELECT service_description FROM service WHERE service_id = sv.service_template_model_stm_id) AS tplPar, sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($service); $i++) {
+	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -139,12 +139,9 @@ $pagination = "maxViewConfiguration";
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
 	#
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

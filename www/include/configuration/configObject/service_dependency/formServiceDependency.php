@@ -23,12 +23,11 @@ For information : contact@oreon-project.org
 	#
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
-		$res =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$dep = array_map("myDecode", $res->fetchRow());
+		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
 		$dep["notification_failure_criteria"] =& explode(',', $dep["notification_failure_criteria"]);
 		foreach ($dep["notification_failure_criteria"] as $key => $value)
@@ -38,21 +37,19 @@ For information : contact@oreon-project.org
 		foreach ($dep["execution_failure_criteria"] as $key => $value)
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 		# Set Host Service Childs
-		$res =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($service); $i++)
+		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($service); $i++)
 			$dep["dep_hSvChi"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set Host Service Parents
-		$res =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = '".$dep_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($service); $i++)
+		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = '".$dep_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($service); $i++)
 			$dep["dep_hSvPar"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -61,13 +58,12 @@ For information : contact@oreon-project.org
 	
 	$hServices = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1'  ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1'  ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($elem))	{
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($elem))	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)
 			$hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;

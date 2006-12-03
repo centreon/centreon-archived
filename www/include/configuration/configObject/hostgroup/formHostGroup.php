@@ -24,38 +24,35 @@ For information : contact@oreon-project.org
 	$hg = array();
 	if (($o == "c" || $o == "w") && $hg_id)	{	
 		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$res =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+			$rq = "SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1";
 		else
-			$res =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' AND hg_id IN (".$lcaHostGroupstr.") LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+			$rq = "SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' AND hg_id IN (".$lcaHostGroupstr.") LIMIT 1";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($pearDB))
+			print "DB Error : SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1.. : ".$pearDB->getMessage()."<br>";
 		# Set base value
-		$hg = array_map("myDecode", $res->fetchRow());
+		$hg = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set HostGroup Childs
-		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($hosts); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($hosts); $i++)
 			$hg["hg_hosts"][$i] = $hosts["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Nagios 1 - Set Contact Group Childs
-		$res =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($cgs); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($cgs); $i++)
 			$hg["hg_cgs"][$i] = $cgs["contactgroup_cg_id"];
-		$res->free();
+		$DBRESULT->free();
 		# Set City name
-		$res =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$hg["city_id"]."' AND cny.country_id = '".$hg["country_id"]."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$city = $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$hg["city_id"]."' AND cny.country_id = '".$hg["country_id"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		$city = $DBRESULT->fetchRow();
 		$hg["city_name"] = $city["city_name"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -63,33 +60,30 @@ For information : contact@oreon-project.org
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($host))
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
-	$res =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($cg))
+	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Countries comes from DB -> Store in $countries Array
 	$countries = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($country))
+	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

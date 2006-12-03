@@ -17,25 +17,24 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print $DBRESULT->getDebugInfo()."<br>";
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM timeperiod");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$tmp = & $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod");
+	if (PEAR::isError($DBRESULT))
+		print $DBRESULT->getDebugInfo()."<br>";
+	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -58,16 +57,15 @@ $pagination = "maxViewConfiguration";
 		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT = &$pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print $DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
-	$elemArr = array();	for ($i = 0; $res->fetchInto($timeperiod); $i++) {
+	$elemArr = array();	for ($i = 0; $DBRESULT->fetchInto($timeperiod); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$timeperiod['tp_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&tp_id=".$timeperiod['tp_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&tp_id=".$timeperiod['tp_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -130,15 +128,11 @@ $pagination = "maxViewConfiguration";
 	
 	$tpl->assign('limit', $limit);
 
-
-
 	#
 	##Apply a template definition
 	#
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listTimeperiod.ihtml");
-
 ?>

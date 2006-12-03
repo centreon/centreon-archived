@@ -101,7 +101,7 @@ For information : contact@oreon-project.org
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, host.host_name, host.host_template_model_htm_id FROM service sv, host, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND host.host_id = hsr.host_host_id $strLCA AND host.host_register = '1' ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, host.host_name, host.host_template_model_htm_id FROM service sv, host, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND host.host_id = hsr.host_host_id $strLCA AND host.host_register = '1' ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT = & $pearDB->query($rq);
+	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : SELECT @nbr:=(SELECT COUNT(*).. : ".$DBRESULT->getMessage()."<br>";
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
@@ -132,7 +132,7 @@ For information : contact@oreon-project.org
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$service["host_name"],
 						"RowMenu_link"=>"?p=60101&o=c&host_id=".$service['host_id'],
-						"RowMenu_link2"=>"?p=".$p."&o=w&service_id=".$service['service_id'],
+						"RowMenu_link2"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_parent"=>$service["service_template_model_stm_id"] ? $lang["yes"] : $lang["no"],
 						"RowMenu_desc"=>$service["service_description"],
 						"RowMenu_status"=>$service["service_activate"] ? $lang['enable'] : $lang['disable'],
@@ -142,7 +142,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-
 
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -190,8 +189,7 @@ For information : contact@oreon-project.org
 
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

@@ -27,16 +27,15 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('sg_id');
-		$res =& $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$sg =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$sg =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $sg["sg_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $sg["sg_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] != $id)
 			return false;
 		else
 			return true;
@@ -45,39 +44,35 @@ For information : contact@oreon-project.org
 	function enableServiceGroupInDB ($sg_id = null)	{
 		if (!$sg_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function disableServiceGroupInDB ($sg_id = null)	{
 		if (!$sg_id) return;
 		global $pearDB;
-		$pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function deleteServiceGroupInDB ($serviceGroups = array())	{
 		global $pearDB;
 		foreach($serviceGroups as $key=>$value)
-			$pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+			$DBRESULT =& $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())	{
 		global $pearDB;
 		global $oreon;
 		foreach($serviceGroups as $key=>$value)	{
-			$res =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
+			$row = $DBRESULT->fetchRow();
 			$row["sg_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = NULL;
@@ -88,43 +83,45 @@ For information : contact@oreon-project.org
 				}
 				if (testServiceGroupExistence($sg_name))	{
 					$val ? $rq = "INSERT INTO servicegroup VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$res =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$maxId =& $res->fetchRow();
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print $DBRESULT->getDebugInfo()."<br>";
+					$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
+					if (PEAR::isError($DBRESULT))
+						print $DBRESULT->getDebugInfo()."<br>";
+					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
 						# Update LCA
-						$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-						while($res1->fetchInto($contactGroup))	{
-						 	$res2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
-							while ($res2->fetchInto($lca))	{
+						$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
+						if (PEAR::isError($DBRESULT))
+							print $DBRESULT->getDebugInfo()."<br>";
+						while($DBRESULT->fetchInto($contactGroup))	{
+						 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
+							if (PEAR::isError($DBRESULT2))
+								print $DBRESULT2->getDebugInfo()."<br>";
+							while ($DBRESULT2->fetchInto($lca))	{
 								$rq = "INSERT INTO lca_define_servicegroup_relation ";
 								$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
 								$rq .= "VALUES ";
 								$rq .= "('".$lca["lca_define_lca_id"]."', '".$maxId["MAX(sg_id)"]."')";
-								$pearDB->query($rq);
-								if (PEAR::isError($pearDB)) {
-									print "Mysql Error : ".$pearDB->getMessage();
-								}
+								$DBRESULT3 =& $pearDB->query($rq);
+								if (PEAR::isError($DBRESULT3))
+									print $DBRESULT3->getDebugInfo()."<br>";
 							}
+							$DBRESULT2->free();
 						}
-						#
-						$res =& $pearDB->query("SELECT DISTINCT sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
-						if (PEAR::isError($pearDB)) {
-							print "Mysql Error : ".$pearDB->getMessage();
-						}
-						while($res->fetchInto($service))
-						{
-							$pearDB->query("INSERT INTO servicegroup_relation VALUES ('', '".$service["service_service_id"]."', '".$maxId["MAX(sg_id)"]."')");
-							if (PEAR::isError($pearDB)) {
-								print "Mysql Error : ".$pearDB->getMessage();
-							}
-						}
+						$DBRESULT->free();
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+								print $DBRESULT->getDebugInfo()."<br>";
+						while($DBRESULT->fetchInto($service))	{
+							$val = null;
+							foreach ($service as $key2=>$value2)
+								$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$val.", '".$maxId["MAX(sg_id)"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print $DBRESULT2->getDebugInfo()."<br>";
+						}						
 					}
 				}
 			}
@@ -156,11 +153,10 @@ For information : contact@oreon-project.org
 		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$city = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
+			$city = $DBRESULT->fetchRow();
 			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
 		}	
 		else
@@ -168,34 +164,35 @@ For information : contact@oreon-project.org
 		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 			
-		$res =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$sg_id = $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		$sg_id = $DBRESULT->fetchRow();
 		
 		# Update LCA
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		if (PEAR::isError($res1))
-			print "Mysql Error : ".$res1->getMessage();
-		while($res1->fetchInto($contactGroup))	{
-		 	$res2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			while ($res2->fetchInto($lca))	{
+		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
+		while($DBRESULT->fetchInto($contactGroup))	{
+		 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
+			if (PEAR::isError($DBRESULT2))
+				print $DBRESULT2->getDebugInfo()."<br>";
+			while ($DBRESULT2->fetchInto($lca))	{
 				$rq = "INSERT INTO lca_define_servicegroup_relation ";
 				$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$lca["lca_define_lca_id"]."', '".$sg_id["MAX(sg_id)"]."')";
-				$res =& $pearDB->query($rq);
-				if (PEAR::isError($res))
-					print "Mysql Error : ".$res->getMessage();
+				$DBRESULT3 =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT3))
+					print $DBRESULT3->getDebugInfo()."<br>";
 			}
+			$DBRESULT2->free();
 		}
-		#
+		$DBRESULT->free();
 		return ($sg_id["MAX(sg_id)"]);
 	}
 	
@@ -211,11 +208,10 @@ For information : contact@oreon-project.org
 		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "country_id = '".$ret["country_id"]."', ": $rq .= "country_id = NULL, ";
 		$rq .= "city_id = ";
 		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$res =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$city = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
+			$city = $DBRESULT->fetchRow();
 			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
 		}	
 		else
@@ -223,9 +219,9 @@ For information : contact@oreon-project.org
 		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES)."', " : $rq .= "sg_comment = NULL,";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
 		$rq .= "WHERE sg_id = '".$sg_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateServiceGroupServices($sg_id, $ret = array())	{
@@ -233,26 +229,26 @@ For information : contact@oreon-project.org
 		global $pearDB, $form;
 		$rq  = 	"DELETE FROM servicegroup_relation ";
 		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
-		$res =& $pearDB->query($rq);
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT)) 
+			print $DBRESULT->getDebugInfo()."<br>";
 		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
 				$t = split("\-", $ret[$i]);
 				$rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
-				$res =& $pearDB->query($rq);
-				if (PEAR::isError($res))
-					print "Mysql Error : ".$res->getMessage();
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print $DBRESULT->getDebugInfo()."<br>";
 			}
 		}
 		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
 		for($i = 0; $i < count($ret); $i++)	{
 			$t = split("\-", $ret[$i]);
 			$rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
-			$res =& $pearDB->query($rq);
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 ?>

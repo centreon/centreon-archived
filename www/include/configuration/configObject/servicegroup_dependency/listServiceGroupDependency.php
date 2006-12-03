@@ -17,13 +17,13 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+	$pagination = "maxViewConfiguration";
+	
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print $DBRESULT->getDebugInfo()."<br>";
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -36,11 +36,11 @@ $pagination = "maxViewConfiguration";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($res)) {
-		print "Mysql Error : ".$res->getMessage();
-	}
-	$tmp = & $res->fetchRow();
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print $DBRESULT->getDebugInfo()."<br>";
+
+	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
 	# start quickSearch form
@@ -60,22 +60,22 @@ $pagination = "maxViewConfiguration";
 	#Dependcy list
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 	if ($oreon->user->admin || !HadUserLca($pearDB))
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
 	else
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0";
 	if ($search)
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
-	$rq .= " LIMIT ".$num * $limit.", ".$limit;
-	$res =& $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print $DBRESULT->getDebugInfo()."<br>";
+
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($dep); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($dep); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$dep['dep_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&dep_id=".$dep['dep_id']."&o=w&search=".$search."&list=".$list."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&dep_id=".$dep['dep_id']."&o=c&search=".$search."&list=".$list."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -93,7 +93,6 @@ $pagination = "maxViewConfiguration";
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-
 	#
 	##Toolbar select $lang["lgd_more_actions"]
 	#
@@ -138,16 +137,11 @@ $pagination = "maxViewConfiguration";
 	
 	$tpl->assign('limit', $limit);
 
-
-
-
 	#
 	##Apply a template definition
 	#
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listServiceGroupDependency.ihtml");
-
 ?>

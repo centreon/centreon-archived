@@ -31,47 +31,35 @@ For information : contact@oreon-project.org
 	$sg = array();
 	if (($o == "c" || $o == "w") && $sg_id)	{	
 		if ($oreon->user->admin || !$isRestreint)		
-			$res =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
 		else
-			$res =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$lcaSGStr.") LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
+			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$lcaSGStr.") LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		
 		# Set base value
-		$sg = array_map("myDecode", $res->fetchRow());
+		$sg = array_map("myDecode", $DBRESULT->fetchRow());
 		
-		# Set ServiceGroup Childs
-		
-		$res =& $pearDB->query(	"SELECT host_host_id, service_service_id " .
-								"FROM servicegroup_relation " .
-								"WHERE servicegroup_sg_id = '".$sg_id."' " .
-								"AND host_host_id IS NOT NULL ORDER BY service_service_id");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$i = 0;
-		while ($res->fetchInto($host)){
+		# Set ServiceGroup Childs		
+		$DBRESULT =& $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($host); $i++)
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
-			$i++;
-		}	
-		$res =& $pearDB->query(	"SELECT hostgroup_hg_id, service_service_id " .
-								"FROM servicegroup_relation " .
-								"WHERE servicegroup_sg_id = '".$sg_id."' " .
-								"AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		for($i = 0; $res->fetchInto($services); $i++){
-			print "hg";
+		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($services); $i++)
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
-		}
-		$res->free();
+		$DBRESULT->free();
 
 		# Set City name
-		$res =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$sg["city_id"]."' AND cny.country_id = '".$sg["country_id"]."'");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		$city = $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$sg["city_id"]."' AND cny.country_id = '".$sg["country_id"]."'");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		$city = $DBRESULT->fetchRow();
 		$sg["city_name"] = $city["city_name"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -81,36 +69,29 @@ For information : contact@oreon-project.org
 	$hgServices = array();
 	$initName = NULL;
 	if ($oreon->user->admin || !$isRestreint)		
-		$res =& $pearDB->query(	"SELECT host_name, host_id " .
-								"FROM host " .
-								"WHERE host_register = '1' " .
-								"ORDER BY host_name");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
-		$res =& $pearDB->query(	"SELECT host_name, host_id " .
-								"FROM host " .
-								"WHERE host_register = '1' " .
-								"AND host_id IN (".$lcaHostStr.") " .
-								"ORDER BY host_name");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-	while($res->fetchInto($host))	{
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($host))	{
 		$services = getMyHostServices($host["host_id"]);
 		foreach ($services as $key => $s)
 			$hServices[$host["host_id"]."-".$key] = $host["host_name"]."&nbsp;-&nbsp;".$s;
 	}
-	$res->free();
+	$DBRESULT->free();
 
 	# Host Group LCA
 	$lcaHGStr ? $lcaHGStr = $lcaHGStr : $lcaHGStr =  '\'\'';
 	if ($oreon->user->admin || !$isRestreint)		
-		$res =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
+		$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
 								"FROM host_service_relation hsr, service sv, hostgroup hg " .
 								"WHERE sv.service_register = '1' " .
 								"AND hsr.service_service_id = sv.service_id " .
 								"AND hg.hg_id = hsr.hostgroup_hg_id " .
 								"ORDER BY hg.hg_name, sv.service_description");
 	else
-		$res =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
+		$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
 								"FROM host_service_relation hsr, service sv, hostgroup hg " .
 								"WHERE sv.service_register = '1' " .
 								"AND hsr.service_service_id = sv.service_id " .
@@ -118,24 +99,23 @@ For information : contact@oreon-project.org
 								"AND hg.hg_id IN (".$lcaHGStr.") " .
 								"ORDER BY hg.hg_name, sv.service_description");
 	
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while($res->fetchInto($elem))	{
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($elem))	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
 			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
 		$hgServices[$elem["hg_id"] . '-'.$elem["service_id"]] = $elem["hg_name"]."&nbsp;&nbsp;&nbsp;&nbsp;".$elem["service_description"];
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Countries comes from DB -> Store in $countries Array
 	$countries = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-	while($res->fetchInto($country))
+	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

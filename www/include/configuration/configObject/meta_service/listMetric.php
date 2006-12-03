@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called � Oreon Meta Service � is developped by Merethis company for Lafarge Group, 
-under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -19,16 +16,15 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
 	$calcType = array("AVE"=>$lang['ms_selAvr'], "SOM"=>$lang['ms_selSum'], "MIN"=>$lang['ms_selMin'], "MAX"=>$lang['ms_selMax']);
 
 	$pagination = "maxViewConfiguration";
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
@@ -40,16 +36,16 @@ For information : contact@oreon-project.org
 	
 	require_once("./DBPerfparseConnect.php");
 	
-	$res = & $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$meta =& $res->fetchRow();
+	$DBRESULT = & $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
+	$meta =& $DBRESULT->fetchRow();
 	$tpl->assign("meta", 
 			array("meta"=>$lang["ms"],
 				"name"=>$meta["meta_name"],
 				"calc_type"=>$calcType[$meta["calcul_type"]]));
-	$res->free();
+	$DBRESULT->free();
 
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
@@ -64,16 +60,16 @@ For information : contact@oreon-project.org
 		$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
 	else
 		$rq = "SELECT * FROM `meta_service_relation` WHERE host_id IN (".$lcaHoststr.") AND meta_id = '".$meta_id."' ORDER BY host_id";
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+
 	$form = new HTML_QuickForm('Form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr1 = array();
-	for ($i = 0; $res->fetchInto($metric); $i++) {
+	for ($i = 0; $DBRESULT->fetchInto($metric); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=ws'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=cs'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -82,8 +78,8 @@ For information : contact@oreon-project.org
 			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
 			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
-		$resPp =& $pearDBpp->query("SELECT * FROM perfdata_service_metric WHERE metric_id = '".$metric['metric_id']."'");
-		$row =& $resPp->fetchRow();
+		$DBRESULTPp =& $pearDBpp->query("SELECT * FROM perfdata_service_metric WHERE metric_id = '".$metric['metric_id']."'");
+		$row =& $DBRESULTPp->fetchRow();
 		$elemArr1[$i] = array("MenuClass"=>"list_".$style, 
 					"RowMenu_select"=>$selectedElements->toHtml(),
 					"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES),
@@ -92,7 +88,7 @@ For information : contact@oreon-project.org
 					"RowMenu_metric"=>$row["metric"]." (".$row["unit"].")",
 					"RowMenu_status"=>$metric["activate"] ? $lang['enable'] : $lang['disable'],
 					"RowMenu_options"=>$moptions);
-		$resPp->free();
+		$DBRESULTPp->free();
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr1", $elemArr1);	
@@ -105,7 +101,6 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'meta_id');
 	$tab = array ("p" => $p, "meta_id"=>$meta_id);
 	$form->setDefaults($tab);
-
 
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -152,11 +147,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
