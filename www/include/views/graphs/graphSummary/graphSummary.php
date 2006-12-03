@@ -24,25 +24,27 @@ For information : contact@oreon-project.org
 	include_once("./include/common/common-Func.php");	
 		
 	$lcaHostByID = getLcaHostByID($pearDB);	
-	$isRetreint = HadUserLca($pearDB);
 	
 	function isPerfparseEntry($host_name, $service_description){
 		global $pearDBpp;
-		$res =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '$host_name' AND service_description = '$service_description'");
-		$nb = $res->numRows();
-		return $nb;
+		$DBRESULT =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '$host_name' AND service_description = '$service_description'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		return $DBRESULT->numRows();
 	}
 	
 	function return_period($service_id){
 		global $pearDB;
-		$res =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service_id."'");
-		$res->fetchInto($service_ext);
-		$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$service_ext["graph_id"]."'");
-		$res->fetchInto($graph);
+		$DBRESULT =& $pearDB->query("SELECT graph_id FROM extended_service_information WHERE service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($service_ext);
+		$DBRESULT =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$service_ext["graph_id"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($graph);
 		return $graph["period"];
 	}
-
-	require_once "./include/common/common-Func.php";
 
 	if (isset($_GET["host_name"]))
 		$host_id = getMyHostID($_GET["host_name"]);
