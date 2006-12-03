@@ -15,20 +15,24 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	
+	if (!isset($oreon))
+		exit;
 
 	function testExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('compo_id');
-		$res =& $pearDB->query("SELECT compo_id, name FROM giv_components_template WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
-		$compo =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT compo_id, name FROM giv_components_template WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$compo =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $compo["compo_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $compo["compo_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] != $id)
 			return false;
 		else
 			return true;
@@ -36,49 +40,62 @@ For information : contact@oreon-project.org
 	
 	function deleteComponentTemplateInDB ($compos = array())	{
 		global $pearDB;
-		foreach($compos as $key=>$value)
-			$pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '".$key."'");
+		foreach($compos as $key => $value){
+			$DBRESULT =& $pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getMessage();
+		}
 		defaultOreonGraph();
 		defaultPluginsGraph();
 	}	
 	
 	function defaultOreonGraph ()	{
 		global $pearDB;
-		$rq = "SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'";
-		$res =& $pearDB->query($rq);
-		if (!$res->numRows())	{
-			$rq = "UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1";
-			$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		if (!$DBRESULT->numRows())	{
+			$DBRESULT2 =& $pearDB->query("UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "Mysql Error : ".$DBRESULT2->getMessage();
 		}
 	}
 	
 	function defaultPluginsGraph ()	{
 		global $pearDB;
-		$rq = "SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl2 = '1'";
-		$res =& $pearDB->query($rq);
-		if (!$res->numRows())	{
-			$rq = "UPDATE giv_components_template SET default_tpl2 = '1' LIMIT 1";
-			$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl2 = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		if (!$DBRESULT->numRows())	{
+			$DBRESULT2 =& $pearDB->query("UPDATE giv_components_template SET default_tpl2 = '1' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "Mysql Error : ".$DBRESULT2->getMessage();
 		}
 	}
 	
 	function noDefaultOreonGraph ()	{
 		global $pearDB;
 		$rq = "UPDATE giv_components_template SET default_tpl1 = '0'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
 	}
 	
 	function noDefaultPluginsGraph ()	{
 		global $pearDB;
 		$rq = "UPDATE giv_components_template SET default_tpl2 = '0'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
 	}
 	
 	function multipleComponentTemplateInDB ($compos = array(), $nbrDup = array())	{
-		foreach($compos as $key=>$value)	{
-			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$key."' LIMIT 1");
-			$row = $res->fetchRow();
+		global $pearDB;
+		foreach($compos as $key=>$value) {
+			$DBRESULT =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getMessage();
+			$DBRESULT->fetchInto($row);
 			$row["compo_id"] = '';
 			$row["default_tpl1"] = '0';
 			$row["default_tpl2"] = '0';
@@ -90,7 +107,9 @@ For information : contact@oreon-project.org
 				}
 				if (testExistence($name))	{
 					$val ? $rq = "INSERT INTO giv_components_template VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
+					$DBRESULT2 =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT2))
+						print "Mysql Error : ".$DBRESULT2->getMessage();
 				}
 			}
 		}
@@ -109,8 +128,7 @@ For information : contact@oreon-project.org
 	}
 	
 	function insertComponentTemplate()	{
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if ($ret["default_tpl1"]["default_tpl1"])
@@ -120,8 +138,7 @@ For information : contact@oreon-project.org
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `name` , `ds_order` , `ds_name` , " .
 				"`ds_legend` , `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				"`default_tpl1`, `default_tpl2`, `comment` ) ";
-		$rq .= "VALUES (";
-		$rq .= "NULL, ";
+		$rq .= "VALUES ( NULL, ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
@@ -140,18 +157,21 @@ For information : contact@oreon-project.org
 		isset($ret["default_tpl2"]["default_tpl2"]) && $ret["default_tpl2"]["default_tpl2"] != NULL ? $rq .= "'".$ret["default_tpl2"]["default_tpl2"]."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
 		defaultOreonGraph();
 		defaultPluginsGraph();
-		$res =& $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
+		$DBRESULT =& $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
 		$compo_id = $res->fetchRow();
 		return ($compo_id["MAX(compo_id)"]);
 	}
 	
 	function updateComponentTemplate($compo_id = null)	{
 		if (!$compo_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if ($ret["default_tpl1"]["default_tpl1"])
@@ -194,26 +214,27 @@ For information : contact@oreon-project.org
 		$rq .= "comment = ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE compo_id = '".$compo_id."'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
 		defaultOreonGraph();
 		defaultPluginsGraph();
 	}		
 	
 	function updateGraphParents($compo_id = null)	{
 		if (!$compo_id) return;
-		global $form;
-		global $pearDB;
-		$rq = "DELETE FROM giv_graphT_componentT_relation ";
-		$rq .= "WHERE gc_compo_id = '".$compo_id."'";
-		$pearDB->query($rq);
+		global $form, $pearDB;
+		$rq = "DELETE FROM giv_graphT_componentT_relation WHERE gc_compo_id = '".$compo_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
 		$ret = array();
 		$ret = $form->getSubmitValue("compo_graphs");
 		for($i = 0; $i < count($ret); $i++)	{
-			$rq = "INSERT INTO giv_graphT_componentT_relation ";
-			$rq .= "(gg_graph_id, gc_compo_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$ret[$i]."', '".$compo_id."')";
-			$pearDB->query($rq);
+			$rq = "INSERT INTO giv_graphT_componentT_relation (gg_graph_id, gc_compo_id) VALUES ('".$ret[$i]."', '".$compo_id."')";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getMessage();
 		}
 	}
 ?>

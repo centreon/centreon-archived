@@ -17,15 +17,23 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
+	
+	if (!isset($oreon))
+		exit;
+
+	$pagination = "maxViewConfiguration";
+	
 	!isset ($_GET["limit"]) ? $limit = 20 : $limit = $_GET["limit"];
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
+	
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM giv_components_template WHERE name LIKE '%".$search."%'");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM giv_components_template WHERE name LIKE '%".$search."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM giv_components_template");
-	$tmp = & $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM giv_components_template");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$DBRESULT->fetchInto($tmp);
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
@@ -51,14 +59,16 @@ $pagination = "maxViewConfiguration";
 		$rq = "SELECT @nbr:=(SELECT COUNT(gg_graph_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gc_compo_id = gc.compo_id) AS nbr, compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, default_tpl2 FROM giv_components_template gc WHERE name LIKE '%".$search."%' ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT @nbr:=(SELECT COUNT(gg_graph_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gc_compo_id = gc.compo_id) AS nbr, compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, default_tpl2 FROM giv_components_template gc ORDER BY name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	
+	$DBRESULT = & $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+		
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($compo); $i++) {		
+	for ($i = 0; $DBRESULT->fetchInto($compo); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$compo['compo_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&compo_id=".$compo['compo_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&compo_id=".$compo['compo_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -82,7 +92,6 @@ $pagination = "maxViewConfiguration";
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-
 	#
 	##Toolbar select $lang["lgd_more_actions"]
 	#
@@ -119,13 +128,9 @@ $pagination = "maxViewConfiguration";
     $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
-	
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
 	$tpl->assign('limit', $limit);
-
-
-
 
 	#
 	##Apply a template definition
