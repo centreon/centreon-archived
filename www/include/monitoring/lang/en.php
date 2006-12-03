@@ -110,7 +110,7 @@ $lang ['m_mon_submit_passive'] = "Submit passive check result for this service";
 $lang ['m_mon_accept_passive'] = "accepting passive checks for this service";
 $lang ['m_mon_notification_service'] = "notifications for this service";
 $lang ['m_mon_schedule_downtime'] = "Schedule downtime for this service";
-$lang ['m_mon_schedule_comment'] = "Schedule Comment for this service";
+$lang ['m_mon_schedule_comment'] = "Add a comment for this service";
 
 $lang ['m_mon_acknowledge'] = "Acknowledge this host";
 
