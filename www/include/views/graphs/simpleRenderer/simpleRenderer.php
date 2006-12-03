@@ -40,97 +40,88 @@ For information : contact@oreon-project.org
 	$path = "./include/views/graphs/simpleRenderer/";
 
 	#PHP functions
-	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	require_once("./DBPerfparseConnect.php");
 
 	# LCA 
 	$lcaHostByName = getLcaHostByName($pearDB);
-	$isRestreint = HadUserLca($pearDB);
 	
-	#
 	## Database retrieve information for differents elements list we need on the page
-	#
 	#   Resources comes from DB -> Store in $ppHosts Array
 
 	# Get all host_list
 	
 	$hostsInOreon = array();
-	$res =& $pearDB->query("SELECT DISTINCT host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while($res->fetchInto($hostInOreon))
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while($DBRESULT->fetchInto($hostInOreon))
 		$hostsInOreon[$hostInOreon["host_name"]] = 1;
-	$res->free();
+	$DBRESULT->free();
 	
 	$ppHosts = array(NULL=>NULL);
-	$res =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while($res->fetchInto($ppHost))
+	$DBRESULT =& $pearDBpp->query("SELECT DISTINCT host_name FROM perfdata_service_metric ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while($DBRESULT->fetchInto($ppHost))
 		if (IsHostReadable($lcaHostByName, $ppHost["host_name"]) && isset($hostsInOreon[$ppHost["host_name"]]))
 			$ppHosts[$ppHost["host_name"]] = $ppHost["host_name"];
-	$res->free();
+	$DBRESULT->free();
 
 	$graphTs = array(NULL=>NULL);
-	$res =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while($res->fetchInto($graphT))
+	$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while($DBRESULT->fetchInto($graphT))
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
-	$res->free();
+	$DBRESULT->free();
 
 	# Perfparse Host comes from DB -> Store in $ppHosts Array
 	$ppServices1 = array();
 	$ppServices2 = array();
-	if ($host_name && ($oreon->user->admin || !HadUserLca($pearDB) || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$host_name]))))	{
+	if ($host_name && ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name]))))	{
 		$ppServices = array(NULL=>NULL);
-		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, service_description, metric, unit FROM perfdata_service_metric WHERE host_name = '".$host_name."' ORDER BY host_name");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		while($res->fetchInto($ppService))
+		$DBRESULT =& $pearDBpp->query("SELECT DISTINCT metric_id, service_description, metric, unit FROM perfdata_service_metric WHERE host_name = '".$host_name."' ORDER BY host_name");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		while($DBRESULT->fetchInto($ppService))
 			$ppServices1[$ppService["service_description"]] = $ppService["service_description"];
-		$res->free();
+		$DBRESULT->free();
 	}
 
 	# Perfparse Meta Services comes from DB -> Store in $ppMSs Array
-	$ppMSs = array(NULL=>NULL);
-	$res =& $pearDBpp->query("SELECT DISTINCT service_description FROM perfdata_service_metric WHERE host_name = 'Meta_Module' ORDER BY service_description");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while($res->fetchInto($ppMS))	{
+	$ppMSs = array(NULL => NULL);
+	$DBRESULT =& $pearDBpp->query("SELECT DISTINCT service_description FROM perfdata_service_metric WHERE host_name = 'Meta_Module' ORDER BY service_description");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while($DBRESULT->fetchInto($ppMS))	{
 		$id = explode("_", $ppMS["service_description"]);
-		$res2 =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$id[1]."'");
-		if (PEAR::isError($res2))
-			print "Mysql Error : ".$res2->getMessage();
-		if ($res2->numRows())	{
-			$meta =& $res2->fetchRow();
+		$DBRESULT2 =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$id[1]."'");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getMessage();
+		if ($DBRESULT2->numRows())	{
+			$DBRESULT2->fetchInto($meta);
 			$ppMSs[$ppMS["service_description"]] = $meta["meta_name"];
 		}
-		$res2->free();
+		$DBRESULT2->free();
 	}
-	$res->free();
+	$DBRESULT->free();
 
 	$debug = 0;
 	$attrsTextI		= array("size"=>"3");
 	$attrsText 		= array("size"=>"30");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"50");
 
-
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	#
 	## Form begin
-	#
 
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
 
-	#
 	## Indicator basic information
-	#
 
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -174,6 +165,7 @@ For information : contact@oreon-project.org
 					"20"=>"20",
 					"50"=>"50",
 					"100"=>"100");
+
 	$sel =& $form->addElement('select', 'step', $lang["giv_sr_step"], $steps);
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
@@ -183,15 +175,15 @@ For information : contact@oreon-project.org
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		$nb_rsp = 0;
 	if (isset($_GET["service_description"]) && $_GET["service_description"]){
-		$verify =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' AND service_description = '".str_replace(" ", "\ ", $_GET["service_description"])."'");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$nb_rsp = $verify->numRows();
+		$DBRESULT =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' AND service_description = '".str_replace(" ", "\ ", $_GET["service_description"])."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$nb_rsp = $DBRESULT->numRows();
 	} else if (isset($_GET["meta_service"]) && $_GET["meta_service"]){
-		$verify =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = 'Meta_Module' AND service_description = '".$_GET["meta_service"]."'");
-		if (PEAR::isError($verify))
-			print "Mysql Error : ".$verify->getMessage();
-		$nb_rsp = $verify->numRows();
+		$DBRESULT =& $pearDBpp->query("SELECT * FROM `perfdata_service` WHERE host_name = 'Meta_Module' AND service_description = '".$_GET["meta_service"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$nb_rsp = $DBRESULT->numRows();
 	}
 
 	if ($form->validate() && isset($nb_rsp) && $nb_rsp)	{
@@ -204,8 +196,10 @@ For information : contact@oreon-project.org
 			$ret["host_name"] = "Meta_Module";
 			$ret["service_description"] = $_GET["meta_service"];
 			$id = explode("_", $_GET["meta_service"]);
-			$res2 =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$id[1]."'");
-			$meta =& $res2->fetchRow();
+			$DBRESULT2 =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$id[1]."'");
+			if (PEAR::isError($DBRESULT2))
+				print "Mysql Error : ".$DBRESULT2->getMessage();
+			$meta =& $DBRESULT2->fetchRow();
 			$case = $lang["ms"]." : ".$meta["meta_name"];
 			$res2->free();
 			if (isset($_GET["template_id"]) && $_GET["template_id"])
@@ -217,8 +211,10 @@ For information : contact@oreon-project.org
 		# OK go create Graphs and database
 		if (($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])) || isset($_GET["meta_service"])) && $case)	{
 			# Verify if template exists
-			$res =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
-			if (!$res->numRows())
+			$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getMessage();
+			if (!$DBRESULT->numRows())
 				print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
 								
 			# Init variable in the page
@@ -239,8 +235,10 @@ For information : contact@oreon-project.org
 
 			if (isset($_GET["meta_service"]) && $_GET["meta_service"]){
 				$tab_meta = split("\_", $_GET["meta_service"]);
-				$res =& $pearDB->query("SELECT normal_check_interval FROM meta_service WHERE meta_id = '".$tab_meta[1]."'");
-				$res->fetchInto($meta);
+				$DBRESULT =& $pearDB->query("SELECT normal_check_interval FROM meta_service WHERE meta_id = '".$tab_meta[1]."'");
+				if (PEAR::isError($DBRESULT))
+					print "Mysql Error : ".$DBRESULT->getMessage();
+				$DBRESULT->fetchInto($meta);
 				$len = $meta["normal_check_interval"] * 120;
 			} else if (($service["service_active_checks_enabled"] == 0) || (!$service["service_normal_check_interval"] && !isset($service["service_normal_check_interval"])) || $service["service_normal_check_interval"] == ""){
 				$service["service_normal_check_interval"] = 5;
@@ -255,17 +253,17 @@ For information : contact@oreon-project.org
 			$isAvl = false;
 			$cpt_total_values = 0;
 			$cpt_total_graphed_values = 0;
-			$res =& $pearDBpp->query(	"SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric " .
-										"WHERE host_name = '".$ret["host_name"]."' AND service_description = '".$ret["service_description"]."'");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			if ($res->numRows()){
+			$DBRESULT =& $pearDBpp->query(	"SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric " .
+											"WHERE host_name = '".$ret["host_name"]."' AND service_description = '".$ret["service_description"]."'");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getMessage();
+			if ($DBRESULT->numRows()){
 				# Delete Old DataBase
 				if (file_exists($oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd"))
 					unlink($oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd");
 
 				$isAvl = true;
-				for ($cpt = 0;$res->fetchInto($ppMetric);$cpt++){
+				for ($cpt = 0;$DBRESULT->fetchInto($ppMetric);$cpt++){
 					$form->addElement('checkbox', $ppMetric["metric"], $ppMetric["metric"]);
 					$form->setDefaults(array($ppMetric["metric"] => '1'));
 					$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace(" ", "_", $ppMetric["metric"]);
@@ -285,10 +283,10 @@ For information : contact@oreon-project.org
 					if (!isset($graph["graph_id"]))
 						$period = 86400;
 					else {
-						$res =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
-						if (PEAR::isError($res))
-							print "Mysql Error : ".$res->getMessage();
-						$res->fetchInto($graph);
+						$DBRESULT2 =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
+						if (PEAR::isError($DBRESULT2))
+							print "Mysql Error : ".$DBRESULT2->getMessage();
+						$DBRESULT2->fetchInto($graph);
 						$period = $graph["period"];
 					}
 				} else if ($_GET["period"])
@@ -312,11 +310,11 @@ For information : contact@oreon-project.org
 					$get = 	"SELECT SQL_BIG_RESULT HIGH_PRIORITY value,ctime FROM `perfdata_service_bin` WHERE `host_name` = '".$ret["host_name"]."' ".
 							"AND `service_description` = '".$ret["service_description"]."' AND `metric` = '".$value["metric"]."' ".
 							"AND `ctime` >= '".date("Y-m-d G:i:s", $start)."' AND `ctime` <= '".date("Y-m-d G:i:s", $end)."' ORDER BY ctime";
-	 				$req =& $pearDBpp->query($get);
-	 				if (PEAR::isError($req))
-	 					print "Mysql Error : ".$req->getMessage();
+	 				$DBRESULT3 =& $pearDBpp->query($get);
+	 				if (PEAR::isError($DBRESULT3))
+	 					print "Mysql Error : ".$DBRESULT3->getMessage();
 					$r = $str = NULL;
-					for ($cpt = 0,$cpt_real = 0;$r =& $req->fetchRow();$cpt++){
+					for ($cpt = 0,$cpt_real = 0;$DBRESULT3->fetchInto($r);$cpt++){
 						preg_match("/^([0-9]*)-([0-9]*)-([0-9]*) ([0-9]*):([0-9]*):([0-9]*)/", $r["ctime"], $matches);
 						$time_temp = mktime($matches[4], $matches[5], $matches[6], $matches[2], $matches[3], $matches[1], 1);
 						if ((isset($ret["step"]) && $ret["step"] == "1") || (isset($ret["step"]) && ($cpt % $ret["step"] == 0)) || (!isset($ret["step"]))){
