@@ -27,16 +27,15 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('command_id');
-		$res =& $pearDB->query("SELECT command_name, command_id FROM command WHERE command_name = '".htmlentities($name, ENT_QUOTES)."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$command =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT command_name, command_id FROM command WHERE command_name = '".htmlentities($name, ENT_QUOTES)."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT command_name, command_id FROM command WHERE command_name = '".htmlentities($name, ENT_QUOTES)."' : ".$DBRESULT->getMessage()."<br>";
+		$command =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $command["command_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $command["command_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && $command["command_id"] != $id)
 			return false;
 		else
 			return true;
@@ -44,21 +43,20 @@ For information : contact@oreon-project.org
 
 	function deleteCommandInDB ($commands = array())	{
 		global $pearDB;
-		foreach($commands as $key=>$value)
-			$pearDB->query("DELETE FROM command WHERE command_id = '".$key."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		foreach($commands as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("DELETE FROM command WHERE command_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : DELETE FROM command WHERE command_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+		}
 	}
 	
 	function multipleCommandInDB ($commands = array(), $nbrDup = array())	{
 		foreach($commands as $key=>$value)	{
 			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$key."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row = $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$key."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : SELECT * FROM command WHERE command_id = '".$key."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			$row = $DBRESULT->fetchRow();
 			$row["command_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -68,7 +66,9 @@ For information : contact@oreon-project.org
 				}
 				if (testCmdExistence($command_name))	{
 					$val ? $rq = "INSERT INTO command VALUES (".$val.")" : $rq = null;
-					$pearDB->query($rq);
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : INSERT INTO command VALUES (".$val.") : ".$DBRESULT->getMessage()."<br>";
 				}
 			}
 		}
@@ -102,10 +102,9 @@ For information : contact@oreon-project.org
 				"command_example = '".htmlentities($ret["command_example"], ENT_QUOTES)."', " .
 				"command_type = '".htmlentities($ret["command_type"]["command_type"], ENT_QUOTES)."' " .
 				"WHERE command_id = '".$cmd_id."'";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : UPDATE command.. : ".$pearDB->getMessage()."<br>";
 	}
 	
 	function insertCommandInDB ($ret = array())	{
@@ -133,15 +132,13 @@ For information : contact@oreon-project.org
 		$rq .= "(command_name, command_line, command_example, command_type) ";
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["command_name"], ENT_QUOTES)."', '".htmlentities($ret["command_line"], ENT_QUOTES)."', '".htmlentities($ret["command_example"], ENT_QUOTES)."', '".$ret["command_type"]["command_type"]."')";
-		$pearDB->query($rq);
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$res =& $pearDB->query("SELECT MAX(command_id) FROM command");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		$cmd_id = $res->fetchRow();
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : INSERT INTO command .. : ".$DBRESULT->getMessage()."<br>";
+		$DBRESULT =& $pearDB->query("SELECT MAX(command_id) FROM command");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT MAX(command_id) FROM command : ".$DBRESULT->getMessage()."<br>";
+		$cmd_id = $DBRESULT->fetchRow();
 		return ($cmd_id["MAX(command_id)"]);
 	}
 	

@@ -33,32 +33,32 @@ For information : contact@oreon-project.org
 			$arg = str_replace('#BS#', "\\", $arg);
 			return($arg);
 		}
-		$res =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		if ($res->numRows())
-			$cmd = array_map("myDecodeCommand", $res->fetchRow());
+		if ($DBRESULT->numRows())
+			$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Notification commands comes from DB -> Store in $notifCmds Array
 	$notifCmds = array(null=>null);
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($notifCmd))
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($notifCmd))
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(null=>null);
-	$res =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($checkCmd))
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
-	$res->free();
+	$DBRESULT->free();
 
 	$attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"80");
@@ -93,31 +93,25 @@ For information : contact@oreon-project.org
     
 	#
 	## Further informations
-	#
-	
+	#	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	$min =& $form->addElement('hidden', 'min');
 	$min->setValue(1);
 	
-	#
-	##End of form definition
-	#
-	
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);	
+	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());	
-	$tpl->assign('o', $o);		
-	
+	$tpl->assign('o', $o);	
 	$tpl->display("minCommand.ihtml");
 ?>

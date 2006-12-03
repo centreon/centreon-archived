@@ -18,7 +18,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
  include("../../../../oreon.conf.php");
  include("../../../../include/common/common-Func.php");
  require_once ("../../../../$classdir/Session.class.php");
@@ -90,11 +89,11 @@ require_once 'DB.php';
 
 	$connect = true;
 
-	$res =& $pearDB->query("SELECT debug_path, debug_ldap_import FROM general_opt LIMIT 1");
-	if (PEAR::isError($res))
-		die($res->getMessage());
+	$DBRESULT =& $pearDB->query("SELECT debug_path, debug_ldap_import FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		die($DBRESULT->getMessage());
 
-	$debug = $res->fetchRow();
+	$debug = $DBRESULT->fetchRow();
 
 	$debug_ldap_import = $debug['debug_ldap_import'];
 	$debug_path = $debug['debug_path'];
@@ -230,12 +229,9 @@ if(isset($error))
 	$buffer .= '<error>' . $error . '</error>';
 	$buffer .= '</reponse>';
 }
-
 	header('Content-Type: text/xml');
 	$buffer =  '<?xml version="1.0"?>' . $buffer ;
 	print $buffer;
 	if ($debug_ldap_import == 1)
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : XML Output : $buffer\n", 3, $debug_path."ldapsearch.log");
-
-
 ?>

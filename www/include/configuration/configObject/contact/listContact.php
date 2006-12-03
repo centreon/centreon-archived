@@ -19,31 +19,31 @@ For information : contact@oreon-project.org
 */
 	$pagination = "maxViewConfiguration";
 	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($res)) {
-		print "Mysql Error : ".$res->getMessage();
-	}
-	$gopt = array_map("myDecode", $res->fetchRow());
+	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM contact");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$tmp = & $res->fetchRow();
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT COUNT(*) FROM contact : ".$DBRESULT->getMessage()."<br>";
+
+	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	$res =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	$res->fetchInto($ldap_auth);
-	$res->free();
+	$DBRESULT =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT ldap_auth_enable FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+
+	$DBRESULT->fetchInto($ldap_auth);
+	$DBRESULT->free();
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
@@ -65,17 +65,16 @@ For information : contact@oreon-project.org
 		$rq = "SELECT contact_id, contact_name, contact_alias, contact_activate  FROM contact WHERE contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT contact_id, contact_name, contact_alias, contact_activate FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
-	$res = & $pearDB->query($rq);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT contact_id, contact_name, contact_alias, contact_activate .. : ".$DBRESULT->getMessage()."<br>";
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $res->fetchInto($contact); $i++) {
+	for ($i = 0; $DBRESULT->fetchInto($contact); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");
 		$moptions = "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -96,7 +95,7 @@ For information : contact@oreon-project.org
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'],"options"=>$lang['forTheSelectedElements'],"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>$lang['cct_ldap_import']));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'],"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>$lang['cct_ldap_import']));
 	if ($oreon->optGen['ldap_auth_enable'])
 		$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
 
@@ -144,17 +143,11 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-
-
-
-
 	#
 	##Apply a template definition
 	#
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listContact.ihtml");
-
 ?>

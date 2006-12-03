@@ -23,37 +23,32 @@ For information : contact@oreon-project.org
 	#
 	$cg = array();
 	if (($o == "c" || $o == "w") && $cg_id)	{	
-		$res =& $pearDB->query("SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+		$DBRESULT =& $pearDB->query("SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$cg = array_map("myDecode", $res->fetchRow());
+		$cg = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Contact Childs
-		$res =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."'");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		for($i = 0; $res->fetchInto($contacts); $i++)
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."' : ".$DBRESULT->getMessage()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($contacts); $i++)
 			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
-		$res->free();
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Contacts comes from DB -> Store in $contacts Array
 	$contacts = array();
-	$res =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($contact))
+	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT contact_id, contact_name FROM contact ORDER BY contact_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($contact))
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
-	$res->free();
-	#
-	# End of "database-retrieved" information
-	##########################################################
+	$DBRESULT->free();
+	
 	##########################################################
 	# Var information to format the element
 	#

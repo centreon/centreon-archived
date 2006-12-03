@@ -20,8 +20,7 @@ For information : contact@oreon-project.org
 
 	#
 	## Database retrieve information for Command
-	#
-	
+	#	
 	function myDecodeCommand($arg)	{
 		$arg = html_entity_decode($arg, ENT_QUOTES);
 		$arg = str_replace('#BR#', "\\n", $arg);
@@ -31,42 +30,37 @@ For information : contact@oreon-project.org
 		$arg = str_replace('#BS#', "\\", $arg);
 		return($arg);
 	}
-
+	
 	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
-		
 	$cmd = array();
-	if (($o == "c" || $o == "w") && $command_id)	{
-		
-		$res =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
+	if (($o == "c" || $o == "w") && $command_id)	{		
+		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
 		# Set base value
-		$cmd = array_map("myDecodeCommand", $res->fetchRow());
+		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Resource Macro
 	$resource = array();
-	$res =& $pearDB->query("SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($row))	{
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($row))	{
 		$row["resource_line"] = explode("=", $row["resource_line"]);
 		$resource[$row["resource_line"][0]] = $row["resource_line"][0];
 	}
-	$res->free();
+	$DBRESULT->free();
 	# Nagios Macro
 	$macros = array();
-	$res =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res->fetchInto($row))
+	$DBRESULT =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : SELECT macro_name FROM nagios_macro ORDER BY macro_name : ".$DBRESULT->getMessage()."<br>";
+	while($DBRESULT->fetchInto($row))
 		$macros[$row["macro_name"]] = $row["macro_name"];
-	$res->free();
+	$DBRESULT->free();
 	#
 	# End of "database-retrieved" information
 	##########################################################

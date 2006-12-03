@@ -26,31 +26,18 @@ For information : contact@oreon-project.org
 		$command_name = NULL;
 
 	$command_name = ltrim($command_name,"/");
-
 	$stdout = shell_exec($oreon->optGen["nagios_path_plugins"]. $command_name . " --help");
 	$msg = str_replace ("\n", "<br>", $stdout);
-
+	
 	$attrsText 		= array("size"=>"25");
-
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title',$lang['cmd_help']);
-
 	#
 	## Command information
 	#
 	$form->addElement('header', 'information', $lang['cmd_help_output']);
-
 	$form->addElement('text', 'command_line', $lang['cmd_line'], $attrsText);
 	$form->addElement('text', 'command_help', $lang['cmd_output'], $attrsText);
-
-	#
-	## Further informations
-	#
-
-
-	#
-	##End of form definition
-	#
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -62,7 +49,6 @@ For information : contact@oreon-project.org
 	#
 	##Apply a template definition
 	#
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
