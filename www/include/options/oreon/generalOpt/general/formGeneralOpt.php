@@ -22,33 +22,29 @@ For information : contact@oreon-project.org
 		exit();
 
 
-	$res =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print ("DB error : ".$DBRESULT->getDebugInfo());
+			
 	# Set base value
-	$gopt = array_map("myDecode", $res->fetchRow());
-	#
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+
 	## Database retrieve information for differents elements list we need on the page
-	#
 	#
 	# End of "database-retrieved" information
 	##########################################################
 	##########################################################
 	# Var information to format the element
-	#
 
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
 
-
-	#
 	## Form begin
-	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["genOpt_change"]);
 
-	#
 	## Oreon information
-	#
 	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
 	$form->addElement('text', 'oreon_path', $lang["genOpt_oPath"], $attrsText);
 	$form->addElement('text', 'oreon_web_path', $lang["genOpt_webPath"], $attrsText);
@@ -65,7 +61,6 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', $lang["genOpt_AjaxFirstTimeReloadMonitoring"], $attrsText2);
 
 	$form->addElement('text', 'gmt', $lang["genOpt_gmt"], $attrsText2);
-
 
 	$templates = array();
 	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
@@ -88,9 +83,7 @@ For information : contact@oreon-project.org
 	$sort_order = array("ASC" => $lang["genOpt_problem_order_asc"], "DESC" => $lang["genOpt_problem_order_desc"]);
 	$form->addElement('select', 'problem_sort_order', $lang["genOpt_problem_sort_order"], $sort_order);
 	
-	#
 	## Form Rules
-	#
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";
@@ -114,9 +107,7 @@ For information : contact@oreon-project.org
 	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
 	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
 
-	#
 	##End of form definition
-	#
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -125,7 +116,7 @@ For information : contact@oreon-project.org
 	$form->setDefaults($gopt);
 
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$form->addElement('reset', 'reset', $lang["reset"]);
 
     $valid = false;
 	if ($form->validate())	{
@@ -134,7 +125,9 @@ For information : contact@oreon-project.org
 		# Update in Oreon Object
 		$oreon->optGen = array();
 		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$oreon->optGen = $DBRESULT2->fetchRow();
+		if (PEAR::isError($DBRESULT2))
+			print ("DB error : ".$DBRESULT2->getDebugInfo());
+		$DBRESULT2->fetchInto($oreon->optGen);
 		$o = "w";
    		$valid = true;
 		$form->freeze();
@@ -145,9 +138,7 @@ For information : contact@oreon-project.org
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
 
-	#
-	##Apply a template definition
-	#
+	## Apply a template definition
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
