@@ -1,3 +1,8 @@
+## Oreon 1.3.3
+
+=> BugFix : change all bad mysql error check by new one.
+=> BugFix : Add command arg for host event handler which was forgotten.
+
 ## Oreon 1.3.2
 
 => BugFix : delete unused javascript on eventlog page
