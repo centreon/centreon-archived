@@ -122,6 +122,6 @@ For information : contact@oreon-project.org
 	if (isset($tpl) && $host_id && $sysUpTime)
 		$tpl->display('IDCard_network/infosNetwork.ihtml');
 	else
-		print $lang['profile_error_snmp'];
+		print "<div class='msg' align='center'>".$lang["s_notAvl"]."</div>";
 
 ?>
