@@ -355,7 +355,7 @@ For information : contact@oreon-project.org
 					}
 					$str .= $strtemp;
 					$cpt_data++;
-					if ($cpt_data % 700 == 0 || $cpt_data == count($tab_bin) || $cpt_data % 700 == count($tab_bin)){
+					if ($cpt_data % 100 == 0 || $cpt_data == count($tab_bin) || $cpt_data % 100 == count($tab_bin)){
 						system($oreon->optGen["rrdtool_path_bin"] . " update ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd ".$str . " 2>&1", $return);
 						$str = "";
 					}

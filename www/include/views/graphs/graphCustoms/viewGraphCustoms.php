@@ -145,7 +145,7 @@ For information : contact@oreon-project.org
 		
 	# Mise en memoire des valeurs remont s de la base de donn e MySQL
 	# Init Lower Value
-	$GMT = "0";
+	$GMT = 1;
 	$lower = 0;
 	$tab_bin = array();
 	$cpt_total_values = 0;
