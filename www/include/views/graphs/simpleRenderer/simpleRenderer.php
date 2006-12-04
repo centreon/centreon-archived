@@ -301,7 +301,7 @@ For information : contact@oreon-project.org
 				# Mise en memoire des valeurs remontees de la base de donnees MySQL
 				# Init Lower Value
 				$time_start_mysql = microtime_float();
-				$GMT = 1;
+				$GMT = $oreon->optGen['gmt'];
 				$lower = 0;
 				$tab_bin = array();
 				if (isset($ret["step"]) && $ret["step"] == 0)
