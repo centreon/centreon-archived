@@ -210,9 +210,6 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 
-	//$host_id = 37;
-	//$_POST["type"] = 3;
-
 	 global $pearDB;
      $res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
 	 if (PEAR::isError($res))
