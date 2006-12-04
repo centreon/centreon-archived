@@ -194,6 +194,8 @@ hr{
 
 #logli{
 	position:absolute;
+	width:150px;
+	text-align:right;
 	top:50px;
 	right:10px;
 	color: #525252;	
