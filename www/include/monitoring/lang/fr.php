@@ -142,4 +142,8 @@ $lang['m_mon_passive'] = "Passive";
 $lang['m_mon_hard'] = "Hard";
 $lang['m_mon_soft'] = "Soft";
 
+/* command send */
+
+$lang['cmd_send'] = "Command sent ! ";
+
 ?>

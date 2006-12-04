@@ -136,11 +136,15 @@ $lang['m_mon_host_checks_passive'] = "Passive Checks";
 $lang['m_mon_host_checks_active'] = "Active Checks";
 $lang['m_mon_check_execution_time'] = "Execution Time";
 $lang['m_mon_last_check_type'] = "Last Check Type";
-
+$lang['m_mon_last_check_type'] = "Last check type";
 $lang['m_mon_active'] = "Active";
 $lang['m_mon_passive'] = "Passive";
 
 $lang['m_mon_hard'] = "Hard";
 $lang['m_mon_soft'] = "Soft";
+
+/* command send */
+
+$lang['cmd_send'] = "Command sent ! ";
 
 ?>
