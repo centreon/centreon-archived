@@ -34,7 +34,7 @@ function setArgument(f, l, a) {
 	if(argument.value)
 	argument.value = '';
 
-	if(index > 1) {
+	if(index >= 1) {
 	   var xhr_object = null; 
 	     
 	   if(window.XMLHttpRequest) // Firefox 
