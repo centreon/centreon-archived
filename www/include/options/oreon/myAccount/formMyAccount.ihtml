@@ -1,5 +1,13 @@
 {$form.javascript}
 <form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
 	 <table id="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1_message.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	
@@ -18,7 +26,9 @@
 	</table>
 	<div id="validForm">
 	{if $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else}
+		<p class="oreonbutton">{$form.change.html}</p>
 	{/if}
 	</div>
 	{$form.hidden}

@@ -40,9 +40,11 @@ For information : contact@oreon-project.org
 	#
 	$cct = array();
 	if ($o == "c")	{	
-		$res =& $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		# Set base value
-		$cct = array_map("myDecode", $res->fetchRow());
+		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page

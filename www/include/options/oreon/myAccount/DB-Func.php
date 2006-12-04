@@ -22,13 +22,13 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		global $form;
 		global $oreon;
-		$res =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
-		$contact =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$contact =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
+		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
+		else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
 			return false;
 		else
 			return true;
@@ -38,13 +38,13 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		global $form;
 		global $oreon;
-		$res =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
-		$contact =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
+		$contact =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
+		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $oreon->user->get_id())	
 			return true;
 		#Duplicate entry
-		else if ($res->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
+		else if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] != $oreon->user->get_id())
 			return false;
 		else
 			return true;
@@ -76,7 +76,9 @@ For information : contact@oreon-project.org
 		$rq .= "contact_pager = ";
 		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
-		$pearDB->query($rq);
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print $DBRESULT->getDebugInfo()."<br>";
 		$oreon->user->name = $ret["contact_name"];
 		$oreon->user->alias = $ret["contact_alias"];
 		$oreon->user->lang = $ret["contact_lang"];
