@@ -16,28 +16,26 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-$debug = 0;
+	$debug = 0;
 
-#
-## pearDB init
-#
+	## pearDB init
+
 	require_once 'DB.php';	
 
-$oreonPath = '/srv/oreon/';
-$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : $oreonPath;
-$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
-
-$buffer = "";
-
-if($oreonPath == "")
-{
-	$buffer = null;
-	$buffer .= '<reponse>';	
-	$buffer .= 'none';
-	$buffer .= '</reponse>';
-	header('Content-Type: text/xml');
-	echo $buffer;
-}
+	$oreonPath = '/srv/oreon/';
+	$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : $oreonPath;
+	$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
+	
+	$buffer = "";
+	
+	if($oreonPath == ""){
+		$buffer = null;
+		$buffer .= '<reponse>';	
+		$buffer .= 'none';
+		$buffer .= '</reponse>';
+		header('Content-Type: text/xml');
+		echo $buffer;
+	}
 
 	include_once($oreonPath . "www/oreon.conf.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
@@ -63,20 +61,10 @@ if($oreonPath == "")
 	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-	#
-	## class init
-	#
-	
-	function read($version,$sid,$file)
-	{
-		global $pearDB;
-		global $flag;
-	
+	function read($version,$sid,$file){
+		global $pearDB, $flag;
 		$MyLog = date('l dS \of F Y h:i:s A'). "\n";
-		$uid = GetUid($sid);
-		$oreonLCA = GetLcaHost($uid);
-		$IsAdmin = IsAdmin($uid);
-	
+
 		$buffer = null;
 		$buffer  = '<?xml version="1.0"?>';
 		$buffer .= '<reponse>';
@@ -89,12 +77,10 @@ if($oreonPath == "")
 		$search = "";
 		$search_type_service = 0;
 		$search_type_host = 0;
-	//		include("ReloadForAjax_status_log.php");
-			include("../load_status_log.php");
 	
-		#
+		include("../load_status_log.php");
+	
 		## calcul stat for resume
-		#
 		
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
@@ -117,10 +103,9 @@ if($oreonPath == "")
 		$buffer .= '<statistic_host_down>'.$statistic_host["DOWN"]. '</statistic_host_down>';
 		$buffer .= '<statistic_host_unreachable>'.$statistic_host["UNREACHABLE"]. '</statistic_host_unreachable>';
 		$buffer .= '<statistic_host_pending>'.$statistic_host["PENDING"]. '</statistic_host_pending>';
-		$buffer .= '</stats>';
-	
-	
+		$buffer .= '</stats>';	
 		$buffer .= '</reponse>';
+		
 		header('Content-Type: text/xml');
 		echo $buffer;
 	//echo "la";
@@ -150,25 +135,17 @@ if($oreonPath == "")
 		}
 		*/
 	}
-	
-	
-	if(isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"]))
-	{
+
+	if(isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])){
 		read($_POST["version"],$_POST["sid"],$_POST["fileStatus"]);
-	}
-	
-	elseif(isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"]))
-	{
+	} else if (isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])) {
 		read($_GET["version"],$_GET["sid"],$_GET["fileStatus"]);
-	}
-	else
-	{
+	} else {
 		$buffer = null;
 		$buffer .= '<reponse>';	
 		$buffer .= 'none';	
 		$buffer .= '</reponse>';	
 		header('Content-Type: text/xml');
 		echo $buffer;
-		
 	}
 ?>
