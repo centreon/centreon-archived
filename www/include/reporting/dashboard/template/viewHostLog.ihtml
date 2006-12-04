@@ -46,10 +46,10 @@
 				        </tr>
 						<tr class='list_one'>
 							<td rowspan="3" class="ListColHeaderLeft"><b>{$formPeriod2.header.title}</b></td>
-							<td class="ListColHeaderCenter"><form {$formPeriod2.attributes}><b>{$formPeriod2.start.label} : </b>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</td>
+							<td class="ListColHeaderRight"><form {$formPeriod2.attributes}><span style='padding-right:150px;'><b>{$formPeriod2.start.label} : </b>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</span></td>
 						</tr>
 						<tr class="list_one">
-							<td class="ListColHeaderCenter"><b>{$formPeriod2.end.label} : </b>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</td>
+							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod2.end.label} : </b>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</span></td>
 						</tr>
 						<tr class="list_one">
 							<td class="ListColHeaderCenter">{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}{$formPeriod2.hidden}</form></td>
@@ -86,9 +86,9 @@
 						{foreach item=tb from=$tab_resume}
 						<tr class={cycle values="list_two, list_one"}>
 							<td {$tb.style}>{$tb.state}</td>
-							<td {$tb.style} >{$tb.time}</td>
-							<td {$tb.style}>{$tb.pourcentTime}%</td>
-							<td {$tb.style}>{$tb.pourcentkTime}%</td>
+							<td >{$tb.time}</td>
+							<td >{$tb.pourcentTime}%</td>
+							<td >{$tb.pourcentkTime}%</td>
 						</tr>
 						{/foreach}
 					</table>

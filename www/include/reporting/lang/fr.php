@@ -50,7 +50,7 @@ $lang["m_send"] = "Envoyer";
 
 # Dashboard
 
-$lang["m_view"] = "Vue";
+$lang["m_view"] = "Voire";
 $lang["m_start"] = "Date de d&eacute;but";
 $lang["m_end"] = "Date de fin";
 $lang["m_predefinedPeriod"] = "Pr&eacute;d&eacute;finie:";

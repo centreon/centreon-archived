@@ -221,7 +221,7 @@ For information : contact@oreon-project.org
 				$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 2, '.', '');
 				$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 2, '.', '');
 
-				$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? 0.00 : $tab_tmp["PtimeNONE"];
+				$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? "0.00" : $tab_tmp["PtimeNONE"];
 				/*end*/
 				$tab_svc[$i++] = $tab_tmp;
 			}
