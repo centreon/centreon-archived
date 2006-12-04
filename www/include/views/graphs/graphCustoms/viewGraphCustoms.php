@@ -145,7 +145,7 @@ For information : contact@oreon-project.org
 		
 	# Mise en memoire des valeurs remont s de la base de donn e MySQL
 	# Init Lower Value
-	$GMT = 1;
+	$GMT = $oreon->optGen['gmt'];
 	$lower = 0;
 	$tab_bin = array();
 	$cpt_total_values = 0;
@@ -308,5 +308,4 @@ For information : contact@oreon-project.org
 	$tpl->assign('cpt_total_graphed_values', $cpt_total_graphed_values);
 	$tpl->assign("graphed_values", $lang["giv_sr_gValues"]);
 	$tpl->display("viewGraphCustoms.ihtml");
-
 ?>
