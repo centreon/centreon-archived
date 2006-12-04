@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Inventory » is developped by Merethis company for Lafarge Group,
-under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -28,7 +25,9 @@ For information : contact@oreon-project.org
 		else $manufacturer_id = "'".$manufacturer_id."'";
 		foreach($hosts as $key=>$value)	{
 			$str = "UPDATE `inventory_index` SET `type_ressources` = ".$manufacturer_id." WHERE `host_id` = ".$key;
-			$pearDB->query($str);
+			$DBRESULT =& $pearDB->query($str);
+			if (PEAR::isError($DBRESULT))
+				print $DBRESULT->getDebugInfo()."<br>";
 		}
 	}	
 ?>	

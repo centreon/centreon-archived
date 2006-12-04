@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-This unit, called « Oreon Inventory » is developped by Merethis company for Lafarge Group,
-under the direction of Jean Baptiste Sarrodie <jean-baptiste@sarrodie.org>
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -74,9 +71,9 @@ For information : contact@oreon-project.org
 
   include("inventory_oid_library.php");
 
-  $res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
+ 	$res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
 	if (PEAR::isError($res))
-		die($res->getMessage());
+		print $res->getDebugInfo()."<br>";
 
   $debug = $res->fetchRow();
 
@@ -93,8 +90,10 @@ For information : contact@oreon-project.org
   if ($debug_inventory == 1)
 	error_log("[" . date("d/m/Y H:s") ."] Inventory : Global : SNMP Community : ".  $globalCommunity . ", SNMP Version => ". $globalVersion ."\n", 3, $debug_path."inventory.log");
 
-  $resHost =& $pearDB->query("SELECT * FROM host WHERE host_register= '1'");
-
+  	$resHost =& $pearDB->query("SELECT * FROM host WHERE host_register= '1'");
+	if (PEAR::isError($resHost))
+		print $resHost->getDebugInfo()."<br>";
+		
  print "<table id='ListTable'>\n";
  print "	<tr class='ListHeader'>\n";
  print "		<td class='ListColHeaderLeft'>".$lang['name']."</td>\n";
