@@ -19,19 +19,18 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit;
-		
+
 	$start_date_select = 0;
 	$end_date_select = 0;
-	
+
 	$tab_svc = array();
-	
+
 	$path = "./include/reporting/dashboard";
-	
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
 	$tpl->assign('o', $o);
-	
 	require_once './class/other.class.php';
 	require_once './include/common/common-Func.php';
 	require_once('simple-func.php');
@@ -41,48 +40,45 @@ For information : contact@oreon-project.org
 	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
 
-	$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL; 
-	$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1; 
-	$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-	$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-	$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-	$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-
-
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
-//	isset ($_GET["service"]) ? $mservice = getMyServiceName($_GET["service"]) : $mservice = NULL;
-//	isset ($_POST["service"]) ? $mservice = getMyServiceName($_POST["service"]) : $mservice = $mservice;
 	isset ($_GET["service"]) ? $mservice = $_GET["service"] : $mservice = NULL;
 	isset ($_POST["service"]) ? $mservice = $_POST["service"] : $mservice = $mservice;
 
 	#
-	## Selection de l'host
+	## Selection de l'host/service
 	#
 	$formService = new HTML_QuickForm('formService', 'post', "?p=".$p);
-	$formService->addElement('hidden', 'timeline', "1");
-	$formService->addElement('hidden', 'period', $period1);
-	$formService->addElement('hidden', 'end', $end);
-	$formService->addElement('hidden', 'start', $start);
-	$formService->addElement('hidden', 'host', $mhost);
 
-	$serviceList = array();
-	$serviceList = getMyHostServices(getMyHostID($mhost));
-
-	$selService =& $formService->addElement('select', 'service', $lang["m_svc"], $serviceList, array("onChange" =>"this.form.submit();"));
 
 	#
-	##
+	## period selection
 	#
-
+	$type_period = (isset($_GET["type_period"])) ? $_GET["type_period"] : "predefined";
+	$type_period = (isset($_POST["type_period"])) ? $_POST["type_period"] : $type_period;
+	$period1 = "today";
 	if($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		getDateSelect($end_date_select, $start_date_select, $period1, $start, $end);
-
-		$period1 = is_null($period1) ? "today" : $period1;
-
+		$period1 = 0;
+		if($type_period == "customized") {
+			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
+			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
+			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
+			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;		
+			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
+			$formService->addElement('hidden', 'end', $end);
+			$formService->addElement('hidden', 'start', $start);
+			$period1 = "NULL";
+		}
+		else {
+			$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL; 
+			$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1;
+			getDateSelect_predefined($end_date_select, $start_date_select, $period1);
+			$formService->addElement('hidden', 'period', $period1);
+			$period1 = is_null($period1) ? "today" : $period1;
+		}
 		$host_id = getMyHostID($mhost);
 		$sd = $start_date_select;
 		$ed = $end_date_select;
@@ -90,7 +86,6 @@ For information : contact@oreon-project.org
 		#
 		## recupere les log host en base
 		#
-
 		$Tup = NULL;
 		$Tdown = NULL;
 		$Tunreach = NULL;
@@ -100,12 +95,21 @@ For information : contact@oreon-project.org
 		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
 	}
 
+	#
+	## Selection de l'host/service (suite)
+	#
+	$formService->addElement('hidden', 'timeline', "1");
+	$formService->addElement('hidden', 'host', $mhost);
+	$formService->addElement('hidden', 'type_period', $type_period);
+	$serviceList = array();
+	$serviceList = getMyHostServices(getMyHostID($mhost));
+	$selService =& $formService->addElement('select', 'service', $lang["m_svc"], $serviceList, array("onChange" =>"this.form.submit();"));
+	$formService->setDefaults(array('service' => $mservice));
 
 
 	#
 	## fourchette de temps
 	#
-
 	$period = array();
 	$period[""] = "";
 	$period["today"] = $lang["today"];
@@ -117,31 +121,28 @@ For information : contact@oreon-project.org
 	$period["lastmonth"] = $lang["lastmonth"];
 	$period["thisyear"] = $lang["thisyear"];
 	$period["lastyear"] = $lang["lastyear"];
-	
-
-	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p);
-
+	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
 	isset($mhost) ? $formPeriod1->addElement('hidden', 'host', $mhost) : NULL;
 	isset($mservice) ? $formPeriod1->addElement('hidden', 'service', $mservice) : NULL;
-	
 	$formPeriod1->addElement('header', 'title', $lang["m_predefinedPeriod"]);
 	$selHost = $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));	
-
 	$formPeriod1->setDefaults(array('period' => $period1));
-
-	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p);
+	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p."&type_period=customized");
 	isset($mhost) ? $formPeriod2->addElement('hidden', 'host', $mhost) : NULL;
 	isset($mservice) ? $formPeriod2->addElement('hidden', 'service', $mservice) : NULL;
-	
 	$formPeriod2->addElement('header', 'title', $lang["m_customizedPeriod"]);
 	$formPeriod2->addElement('text', 'start', $lang["m_start"]);
 	$formPeriod2->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
 	$formPeriod2->addElement('text', 'end', $lang["m_end"]);
 	$formPeriod2->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
-
 	$sub = $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
 	$res = $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
 
+	if($type_period == "customized") {
+		$formPeriod2->setDefaults(array('start' => date("d/m/y", $start_date_select)));
+		$formPeriod2->setDefaults(array('end' => date("d/m/Y", $end_date_select)));
+	}
+	
 	if($mhost){
 		## if today is include in the time period
 		$tab_log = array();
@@ -155,9 +156,7 @@ For information : contact@oreon-project.org
 		$tmp = $oreon->Nagioscfg["log_file"];
 		$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, getMyServiceName($mservice));
 //		$tab_log = $tab["tab_log"];
-
 		if (isset($tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)])){
-			
 			$tab_svc = $tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)];
 			if(!strncmp($tab_svc["current_state"], "OK", 2))
 				$tab_svc["timeOK"] += (time()-$tab_svc["current_time"]);
@@ -169,10 +168,8 @@ For information : contact@oreon-project.org
 				$tab_svc["timeCRITICAL"] += (time()-$tab_svc["current_time"]);
 			else
 				$tab_svc["timeNONE"] += (time()-$tab_svc["current_time"]);
-
 			$tt = $end_date_select - $start_date_select;
 			$svc_id = $tab_svc["service_id"];
-
 			$archive_svc_ok =  isset($tab_svc_bdd[$svc_id]["Tok"]) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
 			$archive_svc_warn = isset($tab_svc_bdd[$svc_id]["Twarn"]) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
 			$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
@@ -182,67 +179,56 @@ For information : contact@oreon-project.org
 			$tab_svc["PtimeWARNING"] = round(($archive_svc_warn+$tab_svc["timeWARNING"]) / $tt *100,3);
 			$tab_svc["PtimeUNKNOWN"] = round(($archive_svc_unknown+$tab_svc["timeUNKNOWN"]) / $tt *100,3);
 			$tab_svc["PtimeCRITICAL"] = round(($archive_svc_cri+$tab_svc["timeCRITICAL"]) / $tt *100,3);
-
-			$tab_svc["PtimeNONE"] = round(	100 - ($tab_svc["PtimeOK"] +
-										 	$tab_svc["PtimeWARNING"] + 
-											$tab_svc["PtimeUNKNOWN"] + 
-											$tab_svc["PtimeCRITICAL"]));
-
+			$tab_svc["PtimeNONE"] = round( ( $tt - (($archive_svc_ok+$tab_svc["timeOK"])
+												 + ($archive_svc_warn+$tab_svc["timeWARNING"])
+												 + ($archive_svc_unknown+$tab_svc["timeUNKNOWN"])
+												 + ($archive_svc_cri+$tab_svc["timeCRITICAL"])))  / $tt *100,3);
 			$tab_svc["timeOK"] += $archive_svc_ok;
 			$tab_svc["timeWARNING"] += $archive_svc_warn;
 			$tab_svc["timeUNKNOWN"] += $archive_svc_unknown;
 			$tab_svc["timeCRITICAL"] +=$archive_svc_cri;
 			$tab_svc["timeNONE"] += $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
-
 			# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
 			$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
 			$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 2, '.', '');
 			$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 2, '.', '');
 			$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 2, '.', '');
 			$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');
-			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? 0.00 : $tab_svc["PtimeNONE"];
+			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.00" : $tab_svc["PtimeNONE"];
 			#end
 		}
 	} else { // today is not in the period		
 		$tab_svc = array();
 		$svc_id = $mservice;
-
 		$tab_svc_bdd = array();
-		getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select);
-			
+		getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select);			
 		$tab_svc["svcName"] = getMyServiceName($mservice);
 		$tt = $end_date_select - $start_date_select;
-
 		$tab_svc["timeOK"] = (isset($tab_svc_bdd[$svc_id]["Tok"])) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
 		$tab_svc["timeWARNING"] = (isset($tab_svc_bdd[$svc_id]["Twarn"])) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
 		$tab_svc["timeUNKNOWN"] = (isset($tab_svc_bdd[$svc_id]["Tunknown"])) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
 		$tab_svc["timeCRITICAL"] = (isset($tab_svc_bdd[$svc_id]["Tcri"])) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
-
 		$tab_svc["timeNONE"] = $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
-
 		$tab_svc["PtimeOK"] = round($tab_svc["timeOK"] / $tt *100,3);
 		$tab_svc["PtimeWARNING"] = round( $tab_svc["timeOK"]/ $tt *100,3);
 		$tab_svc["PtimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ $tt *100,3);
 		$tab_svc["PtimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ $tt *100,3);
 		$tab_svc["PtimeNONE"] = round(($tab_svc["timeNONE"])  / $tt *100,3);
-
 		# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
 		$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
 		$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 2, '.', '');
 		$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 2, '.', '');
 		$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 2, '.', '');
 		$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');	
-		$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? 0.00 : $tab_svc["PtimeNONE"];
+		$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.00" : $tab_svc["PtimeNONE"];
 		#end		
 	}
 }	
 
 	## calculate service  resume
 	$tab_resume = array();
-	$tab = array();
-	
+	$tab = array();	
 	if($mservice && $mhost){
-		
 		$tab["state"] = $lang["m_OKTitle"];
 		$tab["time"] = Duration::toString($tab_svc["timeOK"]);
 		$tab["pourcentTime"] = $tab_svc["PtimeOK"];
@@ -279,8 +265,10 @@ For information : contact@oreon-project.org
 		$tab_resume[4] = $tab;
 	}
 
-	$start_date_select = date("d/m/Y G:i:s", $start_date_select);
-	$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
+//	$start_date_select = date("d/m/Y G:i:s", $start_date_select);
+//	$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
+	$start_date_select = date("d/m/Y", $start_date_select);
+	$end_date_select =  date("d/m/Y", $end_date_select);
 
 
 	$path = "./include/reporting/dashboard/";
@@ -294,6 +282,8 @@ For information : contact@oreon-project.org
 	$tpl->assign('actualTitle', $lang["actual"]);
 	$tpl->assign('date_start_select', $start_date_select);
 	$tpl->assign('date_end_select', $end_date_select);
+	$tpl->assign('to', $lang["m_to"]);
+	$tpl->assign('period', $lang["m_period"]);
 
 	if($mservice && $mhost)
 		$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));	

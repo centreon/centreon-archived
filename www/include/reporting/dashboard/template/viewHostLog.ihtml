@@ -1,8 +1,6 @@
-
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
 {$styleB}
-
 <div class="cachediv">
 <FORM id="datareport">
 <INPUT type="hidden" name="hostID" value="{$hostID}"><br>
@@ -12,76 +10,67 @@
 <INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
 </FORM>
 </div>
-
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" style='width:320px; text-align:center;'>
 			<form {$formHost.attributes}>
 				<b>{$formHost.host.label}</b>&nbsp;&nbsp;{$formHost.host.html}{$formHost.hidden}
+				{if $date_start_select != 0}
+				&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} ({$infosTitle})
+				{/if}
 			</form>	
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>
 		<td colspan=2>
-			<table style='width:100%;'>
+			<table style='width:100%'>
 			<tr>
-				<td  rowspan=3 style='width:300px; padding:5px'>
+				<td rowspan=3 style='width:300px; padding:5px'>			
 					<table class="ListTable" >
-						<tr class='ListHeader'>
-						</tr>
+						<tr class='ListHeader'></tr>
 						<tr>
-							<td class="ListColCenter"><img src='./include/reporting/dashboard/pie_chart_host.php?host_name={$host_name}{$status}'></td>					
+							<td class="ListColCenter"><img src='./include/reporting/dashboard/pie_chart_service.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
 						</tr>
 					</table>
 				</td>
 			</tr>
 			<tr>
-				<td style=' padding:5px;'>
+			<td style=' padding:5px;'>
 					<table class="ListTable" >
 						<tr class='ListHeader'>
-							<td colspan=4>{$periodTitle}</td>
-						</tr>	
-
-						<tr class='list_lvl_1'>
-							<td colspan=2  class="ListColHeaderLeft">{$actualTitle}:</td>
-						</tr>
-				        <tr class="list_one">
-					        <td colspan=2>
-					        	{$infosTitle}
-					        </td>
-				        </tr>
-						<tr class='list_lvl_2'>
-							<td colspan=2  class="ListColHeaderLeft">{$formPeriod1.header.title}</td>
-						</tr>
-				        <tr class="list_one">
-					        <td colspan=2>
-						        <form {$formPeriod1.attributes}>
-						        	{$formPeriod1.period.html}
-						        		{$formPeriod1.hidden}
-								</form>
-					        </td>
-				        </tr>
-						<tr class='list_lvl_1' >
-							<td  colspan=2 class="ListColHeaderLeft">{$formPeriod2.header.title}</td>
+							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>
 						</tr>
 						<tr class="list_two">
-							<td>	        <form {$formPeriod2.attributes}>			
-							{$formPeriod2.start.label}&nbsp;&nbsp;({$date_start_select})</td>
-							<td>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</td>
+					        <td class="ListColHeaderLeft"><b>{$formPeriod1.header.title}</b></td>
+				        	<td class="ListColHeaderCenter"><form {$formPeriod1.attributes}>{$formPeriod1.period.html}{$formPeriod1.hidden}</form></td>
+				        </tr>
+						<tr class='list_one'>
+							<td rowspan="3" class="ListColHeaderLeft"><b>{$formPeriod2.header.title}</b></td>
+							<td class="ListColHeaderCenter"><form {$formPeriod2.attributes}><b>{$formPeriod2.start.label} : </b>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</td>
 						</tr>
 						<tr class="list_one">
-							<td>{$formPeriod2.end.label}&nbsp;&nbsp;({$date_end_select})</td>
-							<td>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</td>
+							<td class="ListColHeaderCenter"><b>{$formPeriod2.end.label} : </b>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</td>
 						</tr>
 						<tr class="list_one">
-							<td colspan=2>{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}
-					        		{$formPeriod2.hidden}
-							</form>
-							</td>
+							<td class="ListColHeaderCenter">{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}{$formPeriod2.hidden}</form></td>
 						</tr>
-					</table>
+<!--						
+						<tr class='list_two' >
+							<td  colspan=2 class="ListColHeaderCenter">{$formPeriod2.header.title} : {$date_start_select} {$to} {$date_end_select} ({$infosTitle})</td>
+						</tr>
+					<tr class='list_two'>
+							<td colspan=2 class="ListColHeaderLeft">{$actualTitle}&nbsp;:&nbsp;</td>
+						</tr>
+						<tr class="list_two">
+							<td colspan="2"><form {$formPeriod2.attributes}>{$formPeriod2.start.label}&nbsp;&nbsp;()</td>
+						</tr>
+						<tr class="list_one">
+							<td colspan="2">{$formPeriod2.end.label}&nbsp;&nbsp;()</td>
+						</tr>-->
+					</table>			
 				</td>
 			</tr>
+
 			<tr>
 				<td style='vertical-align:top;padding:5px;'>
 					<table class="ListTable">

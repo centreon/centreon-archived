@@ -15,8 +15,8 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	
-	function getDateSelect(&$end_date_select, &$start_date_select, $period, $start, $end){
+
+	function getDateSelect_predefined(&$end_date_select, &$start_date_select, $period){
 
 		$day = date("d",time());
 		$year = date("Y",time());
@@ -67,6 +67,9 @@ For information : contact@oreon-project.org
 			$start_date_select = mktime(0, 0, 0, $month, $day, $year);
 			$end_date_select = time();
 		}
+	}
+	
+	function getDateSelect_customized(&$end_date_select, &$start_date_select, $start, $end){
 
 		if(!is_null($end) && !is_null($start)){
 			if(!$end){

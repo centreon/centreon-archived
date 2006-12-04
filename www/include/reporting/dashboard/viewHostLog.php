@@ -15,10 +15,16 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
+	if (!isset($oreon))
+		exit;
+		
 	$tt = 0;
 	$start_date_select = 0;
 	$end_date_select = 0;
+
 	$path = "./include/reporting/dashboard";
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
@@ -29,63 +35,47 @@ For information : contact@oreon-project.org
 	require_once('reporting-func.php');
 	include("./include/monitoring/log/choose_log_file.php");
 
-
 	# LCA 
 	$lcaHostByName = getLcaHostByName($pearDB);
 	$lcaHostByID = getLcaHostByID($pearDB);
 	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
+	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
 
 	#
 	## Selection de l'host
 	#
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
-	$formHost->addElement('hidden', 'timeline', "1");
-	$formHost->addElement('header', 'title', "...selection host...");
 
-	$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL;
-	$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1;
-	$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-	$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-	$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-	$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-
-
-	$formHost->addElement('hidden', 'period', $period1);
-	$formHost->addElement('hidden', 'end', $end);
-	$formHost->addElement('hidden', 'start', $start);
-
-	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' AND host_id IN (".$lcaHoststr.") and host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($res))
-		print "Mysql Error : ".$res->getMessage();
-	while ($res->fetchInto($h))
-		if (IsHostReadable($lcaHostByName, $h["host_name"]))
-			$host[$h["host_name"]] = $h["host_name"];
-
-	$selHost =& $formHost->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
-
-	if (isset($_POST["host"])){
-		$formHost->setDefaults(array('host' => $_POST["host"]));
-	}else if (isset($_GET["host"])){
-		$formHost->setDefaults(array('host' => $_GET["host"]));
-	}
 	#
-	##
+	## period selection
 	#
-
-
-
-	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
-	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
-
+	$type_period = (isset($_GET["type_period"])) ? $_GET["type_period"] : "predefined";
+	$type_period = (isset($_POST["type_period"])) ? $_POST["type_period"] : $type_period;
+	$period1 = "today";
 	if($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-
-
-		getDateSelect($end_date_select, $start_date_select, $period1, $start, $end);
-
+		$period1 = 0;
+		if($type_period == "customized") {
+			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
+			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
+			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
+			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;		
+			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
+			$formHost->addElement('hidden', 'end', $end);
+			$formHost->addElement('hidden', 'start', $start);
+			$period1 = "NULL";
+		}
+		else {
+			$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL; 
+			$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1;
+			getDateSelect_predefined($end_date_select, $start_date_select, $period1);
+			$formHost->addElement('hidden', 'period', $period1);
+			$period1 = is_null($period1) ? "today" : $period1;
+		}
 		$host_id = getMyHostID($mhost);
 		$sd = $start_date_select;
 		$ed = $end_date_select;
@@ -102,7 +92,21 @@ For information : contact@oreon-project.org
 		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
 	}
 
+	#
+	## Selection de l'host/service (suite)
+	#
+	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' AND host_id IN (".$lcaHoststr.") and host_register = '1' ORDER BY host_name");
+	while ($res->fetchInto($h))
+		if (IsHostReadable($lcaHostByName, $h["host_name"]))
+			$host[$h["host_name"]] = $h["host_name"];
 
+	$selHost =& $formHost->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
+
+	if (isset($_POST["host"])){
+		$formHost->setDefaults(array('host' => $_POST["host"]));
+	}else if (isset($_GET["host"])){
+		$formHost->setDefaults(array('host' => $_GET["host"]));
+	}
 
 
 	#
@@ -119,12 +123,12 @@ For information : contact@oreon-project.org
 	$period["lastmonth"] = $lang["lastmonth"];
 	$period["thisyear"] = $lang["thisyear"];
 	$period["lastyear"] = $lang["lastyear"];
-	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p);
+	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
 	isset($mhost) ? $formPeriod1->addElement('hidden', 'host', $mhost) : NULL;
 	$formPeriod1->addElement('hidden', 'timeline', "1");
 	$formPeriod1->addElement('header', 'title', $lang["m_predefinedPeriod"]);
 	$selHost =& $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));
-	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p);
+	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p."&type_period=customized");
 	$formPeriod2->addElement('hidden', 'timeline', "1");
 	isset($mhost) ? $formPeriod2->addElement('hidden', 'host', $mhost) : NULL;
 	$formPeriod2->addElement('header', 'title', $lang["m_customizedPeriod"]);
@@ -134,8 +138,6 @@ For information : contact@oreon-project.org
 	$formPeriod2->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
 	$sub =& $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
 	$res =& $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
-
-
 
 	if($mhost){
 	#
@@ -211,10 +213,6 @@ For information : contact@oreon-project.org
 													 + ($archive_svc_warn+$tab_tmp["timeWARNING"])
 													 + ($archive_svc_unknown+$tab_tmp["timeUNKNOWN"])
 													 + ($archive_svc_cri+$tab_tmp["timeCRITICAL"])))  / $tt *100,3);
-
-
-
-
 
 				/* les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... */
 				$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 2, '.', '');
@@ -300,8 +298,8 @@ For information : contact@oreon-project.org
 
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
 
-	$start_date_select = date("d/m/Y G:i:s", $start_date_select);
-	$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
+	$start_date_select = date("d/m/Y ", $start_date_select);
+	$end_date_select =  date("d/m/Y ", $end_date_select);
 
 	$tpl->assign('host_name', $mhost);
 	$status = "";
@@ -321,8 +319,8 @@ For information : contact@oreon-project.org
 
 	$tpl->assign('date_start_select', $start_date_select);
 	$tpl->assign('date_end_select', $end_date_select);
-
-
+	$tpl->assign('to', $lang["m_to"]);
+	$tpl->assign('period_name', $lang["m_period"]);
 
 
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
@@ -353,8 +351,8 @@ For information : contact@oreon-project.org
 	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
 	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
 
-
 	$period1 = (!$period1) ? "today": $period1;
+	$formPeriod1->setDefaults(array('period' => $period1));
 	$tpl->assign('period', "&period=".$period1);
 
 	$tpl->assign('hostID', getMyHostID($mhost));
@@ -364,8 +362,6 @@ For information : contact@oreon-project.org
 	$color["DOWN"] =  substr($oreon->optGen["color_down"], 1);
 	$color["UNREACHABLE"] =  substr($oreon->optGen["color_unreachable"], 1);
 	$tpl->assign('color', $color);
-
-
 
 	$renderer1 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod1->accept($renderer1);

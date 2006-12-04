@@ -54,7 +54,7 @@ $lang["m_view"] = "View";
 $lang["m_start"] = "Begin date";
 $lang["m_end"] = "End date";
 $lang["m_predefinedPeriod"] = "Predefined:";
-$lang["m_customizedPeriod"] = "Customized";
+$lang["m_customizedPeriod"] = "Customized:";
 $lang["m_selectPeriodTitle"] = "Period Selection";
 $lang["m_hostResumeTitle"] = "Host state";
 $lang["m_serviceResumeTitle"] = "Host state";
@@ -82,6 +82,7 @@ $lang["m_EventTitle"] = "Event";
 $lang["m_HostTitle"] = "Host";
 $lang["m_InformationsTitle"] = "Info";
 
+$lang["m_period"] = " Period: ";
 $lang["m_to"] = " to ";
 $lang["m_duration"] = "Duration ";
 
