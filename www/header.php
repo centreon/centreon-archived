@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 		# Skin path
 		$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print ("MySQL error : ".$DBRESULT->getMessage());
+			print ("MySQL error : ".$DBRESULT->getDebugInfo());
 		$DBRESULT->fetchInto($data);
 		$skin = "./Themes/".$data["template"]."/";
 		
