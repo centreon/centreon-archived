@@ -24,8 +24,8 @@ For information : contact@oreon-project.org
 	function write_command($cmd){
 		global $oreon;
 		$str = NULL;
+		$cmd = htmlentities($cmd);
 		$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
-		# print $str;
 		return passthru($str);
 	}
 
@@ -177,6 +177,8 @@ For information : contact@oreon-project.org
 
 	function acknowledgeService($lang){
 		global $pearDB,$tab;
+		$_GET["comment"] = htmlentities($_GET["comment"]);
+		$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
 		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$_GET["host_name"].";".$_GET["service_description"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"]);
 		return $lang["cmd_send"];
 	}

@@ -1,4 +1,4 @@
-<?php
+<?
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
@@ -18,7 +18,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
 	if (!isset($oreon))
 		exit ();
 
@@ -34,7 +33,6 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl);
 	
 	$lcaHostByName = getLcaHostByName($pearDB);
-	$idRestreint = HadUserLca($pearDB);
 	
 	# HOST LCA
 	if ($oreon->user->admin || !$idRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $idRestreint)){
@@ -43,20 +41,16 @@ For information : contact@oreon-project.org
 		require_once "HTML/QuickForm.php";
 		require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-		#
 		## Form begin
-		#
-	
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 		$form->addElement('header', 'title', 'Command Options');
-	
+
 		$tpl->assign('hostlabel', $lang['h_name']);
 		$tpl->assign('hostname', $host_name);
 		$tpl->assign('en', $en);
 		
 		$tpl->assign('servicelabel', $lang['sv']);
 		$tpl->assign('servicedescription', $service_description);
-	
 		$tpl->assign('authorlabel', $lang['cg_alias']);
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 	
@@ -71,14 +65,15 @@ For information : contact@oreon-project.org
 		$form->addElement('hidden', 'en', $en);
 	
 		$form->applyFilter('_ALL_', 'trim');
-		$attrsText = array("rows"=>"10", "cols"=>"55");
-		$form->addElement('textarea', 'comment', 'comment', $attrsText);
+		$attr = array("rows"=>"5", "cols"=>"40");
+		$form->addElement('textarea', 'comment', 'comment', $attr);
 		
 		$form->addRule('comment', $lang["error_msg"], 'required', '', 'client');
 		$form->setJsWarnings($lang["herror"],$lang["ferror"]);
 		
 		$form->addElement('submit', 'submit', ($en == 1) ? $lang["m_mon_ack_add"] : $lang["m_mon_ack_del"]);
 		$form->addElement('reset', 'reset', $lang["reset"]);
+		
 	
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -88,5 +83,6 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', 'svcd');
 		$tpl->display("serviceAcknowledge.ihtml");
-}
+	}
+
 ?>
