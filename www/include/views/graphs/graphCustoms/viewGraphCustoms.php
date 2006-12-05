@@ -150,9 +150,7 @@ For information : contact@oreon-project.org
 	$tab_bin = array();
 	$cpt_total_values = 0;
 	$cpt_total_graphed_values = 0;
-	$i = 1;
 	$ret["step"] = 0;
-	if ($i)
 	foreach ($ppMetrics as $key => $value){
 		$res =& $pearDBpp->query("SELECT * FROM `perfdata_service_metric` WHERE metric_id = '".$key."'");
 		$res->fetchInto($metric_info);
@@ -191,86 +189,80 @@ For information : contact@oreon-project.org
 			print $ret;
 	}
 	
-	
-	#
 	## Metric List
-	#
-	
-		# start header menu
-		$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-		$tpl->assign("headerMenu_name", $lang['name']);
-		$tpl->assign("headerMenu_desc", $lang['description']);
-		$tpl->assign("headerMenu_metric", $lang['giv_ct_metric']);
-		$tpl->assign("headerMenu_compo", $lang["giv_gg_tpl"]);
-		$tpl->assign("headerMenu_options", $lang['options']);
-		# end header menu
-	
-		#List
-		$rq = "SELECT compo_id, pp_metric_id, compot_compo_id FROM giv_components gc WHERE gc.graph_id = '".$graph_id."' ORDER BY ds_order";
-		$res = & $pearDB->query($rq);
 		
-		$form2 = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-		#Different style between each lines
-		$style = "one";
-		#Fill a tab with a mutlidimensionnal Array we put in $tpl
-		$elemArr = array();
-		$nb_entry = $res->numRows();
-		for ($i = 0; $res->fetchInto($metric); $i++) {
-			$moptions = NULL;
-			$res1 =& $pearDBpp->query("SELECT DISTINCT host_name, service_description, metric FROM perfdata_service_metric WHERE metric_id = '".$metric["pp_metric_id"]."'");
-			$ppMetric =& $res1->fetchRow();
-			$selectedElements =& $form2->addElement('checkbox', "select[".$metric['compo_id']."]");	
-			if ($i != 0){
-				$moptions .= "<a href='oreon.php?p=".$p."&graph_id=".$graph_id."&compo_id=".$metric['compo_id']."&o=wup";
-				if (isset($_GET["period"]) && $_GET["period"])
-					$moptions .= "&period=" . $_GET["period"];
-				else
-					$moptions .= "&end=".$_GET["end"]."&start=".$_GET["start"];
-				$moptions .= "'><img src='img/icones/16x16/arrow_up_green.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-				$moptions .= "";
-			}
-			if ($i != ($nb_entry - 1)){
-				$moptions .= "<a href='oreon.php?p=".$p."&graph_id=".$graph_id."&compo_id=".$metric['compo_id']."&o=wdown";
-				if (isset($_GET["period"]) && $_GET["period"])
-					$moptions .= "&period=" . $_GET["period"];
-				else
-					$moptions .= "&end=".$_GET["end"]."&start=".$_GET["start"];
-				$moptions .= "'><img src='img/icones/16x16/arrow_down_green.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-				$moptions .= "";
-			} else
-				$moptions .= "<img src='./img/icones/1x1/blank.gif' width=16 height=16>&nbsp;&nbsp;";
-			//	$moptions .= "<a href='oreon.php?p=".$p."&graph_id=".$graph_id."&compo_id=".$metric['compo_id']."&o=wdown&end=".$end."&start=".$start."'><img src='img/icones/16x16/arrow_down_green.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-			
-			if ($ppMetric["host_name"] == "Meta_Module")	{
-				$host_name = $lang["giv_gg_ms"];
-				$name = explode("_", $ppMetric["service_description"]);
-				$res2 =& $pearDB->query("SELECT DISTINCT meta_name FROM meta_service WHERE meta_id = '".$name[1]."'");
-				$name =& $res2->fetchRow();
-				$ppMetric["service_description"] = $name["meta_name"];
+	# start header menu
+	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
+	$tpl->assign("headerMenu_name", $lang['name']);
+	$tpl->assign("headerMenu_desc", $lang['description']);
+	$tpl->assign("headerMenu_metric", $lang['giv_ct_metric']);
+	$tpl->assign("headerMenu_compo", $lang["giv_gg_tpl"]);
+	$tpl->assign("headerMenu_options", $lang['options']);
+	# end header menu
 
-			}
-			else if ($ppMetric["host_name"] == "OSL_Module")	{
-				$host_name = $lang["giv_gg_osl"];
-				$name = explode("_", $ppMetric["service_description"]);
-				$res2 =& $pearDB->query("SELECT DISTINCT name FROM osl WHERE osl_id = '".$name[1]."'");
-				$name =& $res2->fetchRow();
-				$ppMetric["service_description"] = $name["name"];
-			}
+	#List
+	$rq = "SELECT compo_id, pp_metric_id, compot_compo_id FROM giv_components gc WHERE gc.graph_id = '".$graph_id."' ORDER BY ds_order";
+	$res = & $pearDB->query($rq);
+	
+	$form2 = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+	#Different style between each lines
+	$style = "one";
+	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	$elemArr = array();
+	$nb_entry = $res->numRows();
+	for ($i = 0; $res->fetchInto($metric); $i++) {
+		$moptions = NULL;
+		$res1 =& $pearDBpp->query("SELECT DISTINCT host_name, service_description, metric FROM perfdata_service_metric WHERE metric_id = '".$metric["pp_metric_id"]."'");
+		$ppMetric =& $res1->fetchRow();
+		$selectedElements =& $form2->addElement('checkbox', "select[".$metric['compo_id']."]");	
+		if ($i != 0){
+			$moptions .= "<a href='oreon.php?p=".$p."&graph_id=".$graph_id."&compo_id=".$metric['compo_id']."&o=wup";
+			if (isset($_GET["period"]) && $_GET["period"])
+				$moptions .= "&period=" . $_GET["period"];
 			else
-				$host_name = $ppMetric["host_name"];
-			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
-							"RowMenu_select"=>$selectedElements->toHtml(),
-							"RowMenu_name"=> $host_name,
-							"RowMenu_link"=>"?p=".$p."&o=w&graph_id=".$metric['compo_id'],
-							"RowMenu_desc"=>$ppMetric["service_description"],
-							"RowMenu_metric"=>$ppMetric["metric"],
-							"RowMenu_compo"=>$metric["compot_compo_id"] ? $lang["yes"] : $lang["no"],
-							"RowMenu_options"=>$moptions);
-			$style != "two" ? $style = "two" : $style = "one";
+				$moptions .= "&end=".$_GET["end"]."&start=".$_GET["start"];
+			$moptions .= "'><img src='img/icones/16x16/arrow_up_green.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
+			$moptions .= "";
 		}
-		$tpl->assign("elemArr", $elemArr);
-		#Different messages we put in the template
-		$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+		if ($i != ($nb_entry - 1)){
+			$moptions .= "<a href='oreon.php?p=".$p."&graph_id=".$graph_id."&compo_id=".$metric['compo_id']."&o=wdown";
+			if (isset($_GET["period"]) && $_GET["period"])
+				$moptions .= "&period=" . $_GET["period"];
+			else
+				$moptions .= "&end=".$_GET["end"]."&start=".$_GET["start"];
+			$moptions .= "'><img src='img/icones/16x16/arrow_down_green.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
+			$moptions .= "";
+		} else
+			$moptions .= "<img src='./img/icones/1x1/blank.gif' width=16 height=16>&nbsp;&nbsp;";
+		
+		if ($ppMetric["host_name"] == "Meta_Module")	{
+			$host_name = $lang["giv_gg_ms"];
+			$name = explode("_", $ppMetric["service_description"]);
+			$res2 =& $pearDB->query("SELECT DISTINCT meta_name FROM meta_service WHERE meta_id = '".$name[1]."'");
+			$name =& $res2->fetchRow();
+			$ppMetric["service_description"] = $name["meta_name"];
+		} else if ($ppMetric["host_name"] == "OSL_Module")	{
+			$host_name = $lang["giv_gg_osl"];
+			$name = explode("_", $ppMetric["service_description"]);
+			$res2 =& $pearDB->query("SELECT DISTINCT name FROM osl WHERE osl_id = '".$name[1]."'");
+			$name =& $res2->fetchRow();
+			$ppMetric["service_description"] = $name["name"];
+		}
+		else
+			$host_name = $ppMetric["host_name"];
+		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
+						"RowMenu_select"=>$selectedElements->toHtml(),
+						"RowMenu_name"=> $host_name,
+						"RowMenu_link"=>"?p=".$p."&o=w&graph_id=".$metric['compo_id'],
+						"RowMenu_desc"=>$ppMetric["service_description"],
+						"RowMenu_metric"=>$ppMetric["metric"],
+						"RowMenu_compo"=>$metric["compot_compo_id"] ? $lang["yes"] : $lang["no"],
+						"RowMenu_options"=>$moptions);
+		$style != "two" ? $style = "two" : $style = "one";
+	}
+	$tpl->assign("elemArr", $elemArr);
+	#Different messages we put in the template
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
 	#Element we need when we reload the page
 	$form2->addElement('hidden', 'p');
@@ -278,21 +270,15 @@ For information : contact@oreon-project.org
 	$tab2 = array ("p" => $p);
 	$form2->setDefaults($tab2);	
 
-	#
 	##Apply a template definition
-	#
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form2->accept($renderer);	
 	$tpl->assign('form2', $renderer->toArray());
 	
-	
-	
 	# RRDTool Data base Created.
 	
-	#
 	## Apply a template definition
-	#
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
