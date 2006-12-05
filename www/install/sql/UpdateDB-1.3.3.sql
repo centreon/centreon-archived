@@ -16,3 +16,12 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 30701, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 307, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 3, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', '');
+
+
+-- 
+
+UPDATE `topology` SET `topology_order` = '1'  WHERE `topology_page` = '40203' LIMIT 1 ;
+
+-- 
+
+ALTER TABLE `host` ADD `command_command_id_arg2` TEXT NULL AFTER `command_command_id2` ;
