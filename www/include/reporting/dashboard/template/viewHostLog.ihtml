@@ -75,7 +75,7 @@
 				<td style='vertical-align:top;padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td colspan=4>{$resumeTitle}</td>
+							<td colspan=4>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$StateTitle}</td>
@@ -86,9 +86,9 @@
 						{foreach item=tb from=$tab_resume}
 						<tr class={cycle values="list_two, list_one"}>
 							<td {$tb.style}>{$tb.state}</td>
-							<td >{$tb.time}</td>
-							<td >{$tb.pourcentTime}%</td>
-							<td >{$tb.pourcentkTime}%</td>
+							<td>{$tb.time}</td>
+							<td class='ListColRight'>{$tb.pourcentTime}%</td>
+							<td class='ListColRight'>{$tb.pourcentkTime}%</td>
 						</tr>
 						{/foreach}
 					</table>
@@ -98,7 +98,7 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td class="FormHeader" colspan=6>{$svcTitle}</td>
+							<td class="FormHeader" colspan=6>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$serviceTilte}</td>
@@ -111,11 +111,11 @@
 						{foreach item=tb from=$tab_svc}
 						<tr class={cycle values="list_two, list_one"}>
 							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
-							<td {$style_ok}>{$tb.PtimeOK}%</td>
-							<td {$style_warning}>{$tb.PtimeWARNING}%</td>
-							<td {$style_unknown}>{$tb.PtimeUNKNOWN}%</td>
-							<td {$style_critical}>{$tb.PtimeCRITICAL}%</td>
-							<td {$style_pending}>{$tb.PtimeNONE}%</td>
+							<td class='ListColRight'{$style_ok}>{$tb.PtimeOK}%</td>
+							<td class='ListColRight'{$style_warning}>{$tb.PtimeWARNING}%</td>
+							<td class='ListColRight'{$style_unknown}>{$tb.PtimeUNKNOWN}%</td>
+							<td class='ListColRight'{$style_critical}>{$tb.PtimeCRITICAL}%</td>
+							<td class='ListColRight'{$style_pending}>{$tb.PtimeNONE}%</td>
 						</tr>
 						{/foreach}
 					</table>
@@ -133,7 +133,7 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable" class="left">
 						<tr class='ListHeader'>
-							<td class="FormHeader"colspan=5>{$logTitle}</td>
+							<td class="FormHeader"colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$logTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">&nbsp;</td>
