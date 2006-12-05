@@ -86,7 +86,7 @@
 						{foreach item=tb from=$tab_resume}
 						<tr class={cycle values="list_two, list_one"}>
 							<td {$tb.style}>{$tb.state}</td>
-							<td>{$tb.time}</td>
+							<td class='ListColCenter'>{$tb.time}</td>
 							<td class='ListColRight'>{$tb.pourcentTime}%</td>
 							<td class='ListColRight'>{$tb.pourcentkTime}%</td>
 						</tr>
