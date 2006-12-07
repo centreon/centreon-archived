@@ -229,20 +229,16 @@ For information : contact@oreon-project.org
 		$DBRESULT->free();
 		
 		# OSL
-		$DBRESULT =& $pearDB->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'osl'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'osl' : ".$DBRESULT->getMessage()."<br>";
-		if ($DBRESULT->numRows())	{
+		if (is_dir("./modules/osl"))	{
 			$osl = array();
-			$DBRESULT2 =& $pearDB->query("SELECT osl_id FROM osl WHERE osl_activate = '1'");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT osl_id FROM osl WHERE osl_activate = '1' : ".$DBRESULT2->getMessage()."<br>";
-			while($DBRESULT2->fetchInto($osl))
+			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl WHERE osl_activate = '1'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : SELECT osl_id FROM osl WHERE osl_activate = '1' : ".$DBRESULT->getMessage()."<br>";
+			while($DBRESULT->fetchInto($osl))
 				$oslEnb[$osl["osl_id"]] = 1;
 			unset($osl);
-			$DBRESULT2->free();
+			$DBRESULT->free();
 		}
-		$DBRESULT->free();
 		
 		# Meta Service		
 		$oms = array();
@@ -360,22 +356,18 @@ For information : contact@oreon-project.org
 		unset($serviceGroup);
 		$DBRESULT->free();
 
-		# OSL		
-		$DBRESULT =& $pearDB->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'osl'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'osl' : ".$DBRESULT->getMessage()."<br>";
-		if ($DBRESULT->numRows())	{
+	
+		# OSL
+		if (is_dir("./modules/osl"))	{			
 			$osl = array();
-			$DBRESULT2 =& $pearDB->query("SELECT osl_id FROM osl WHERE osl_activate = '1'");
-			if (PEAR::isError($DBRESULT2)) {
-				print "DB Error : SELECT osl_id FROM osl WHERE osl_activate = '1' : ".$DBRESULT2->getMessage()."<br>";
-			}
-			while($DBRESULT2->fetchInto($osl))
+			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl WHERE osl_activate = '1'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : SELECT osl_id FROM osl WHERE osl_activate = '1' : ".$DBRESULT->getMessage()."<br>";
+			while($DBRESULT->fetchInto($osl))
 				$oslEnb[$osl["osl_id"]] = 1;
 			unset($osl);
-			$DBRESULT2->free();
+			$DBRESULT->free();
 		}
-		$DBRESULT->free();
 			
 		# Meta Service		
 		$oms = array();
@@ -463,21 +455,17 @@ For information : contact@oreon-project.org
 		unset($serviceGroup);
 		$DBRESULT->free();
 
-		# OSL		
-		$DBRESULT =& $pearDB->query("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'osl'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'osl' : ".$DBRESULT->getMessage()."<br>";
-		if ($DBRESULT->numRows())	{
+		# OSL
+		if (is_dir("./modules/osl"))	{	
 			$osl = array();
-			$DBRESULT2 =& $pearDB->query("SELECT osl_id FROM osl");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT osl_id FROM osl : ".$DBRESULT2->getMessage()."<br>";
-			while($DBRESULT2->fetchInto($osl))
+			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : SELECT osl_id FROM osl : ".$DBRESULT->getMessage()."<br>";
+			while($DBRESULT->fetchInto($osl))
 				$oslEnb[$osl["osl_id"]] = 1;
 			unset($osl);
-			$DBRESULT2->free();
+			$DBRESULT->free();
 		}
-		$DBRESULT->free();
 		
 		# Meta Service		
 		$oms = array();
