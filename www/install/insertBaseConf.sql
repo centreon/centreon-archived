@@ -1,6 +1,3 @@
---
--- G�n�r� le : Vendredi 24 Mars 2006 � 16:06
---
 
 --
 -- Contenu de la table `cfg_cgi`
@@ -492,5 +489,5 @@ INSERT INTO `inventory_mac_address` (`mac_address_begin`, `manufacturer`) VALUES
 
 -- insert version
 
-INSERT INTO `oreon_informations` ( `key` , `value` ) VALUES ('version', '1.3.2');
+INSERT INTO `oreon_informations` ( `key` , `value` ) VALUES ('version', '1.3.3');
 
