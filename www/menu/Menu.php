@@ -66,7 +66,10 @@ For information : contact@oreon-project.org
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : NULL,
 								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
-								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#");
+								"Menu1UrlPopup" => $elem["topology_popup"],
+								"Menu1UrlPopupOpen" => $elem["topology_url"],
+								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
+								"Menu1Popup" => $elem["topology_popup"] ? true : false);
 	$userUrl = "oreon.php?p=50104&o=c";
     $logDate = date($lang['header_format']);
     $logOut = $lang['m_logout'];
