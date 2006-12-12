@@ -32,17 +32,17 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
 	if (PEAR::isError($DBRESULT1))
-		print "Mysql Error : ".$DBRESULT1->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
 	$DBRESULT1->fetchInto($user);
 	$user_admin = $user["contact_admin"];
 	
 	// Read 
 	$DBRESULT1 =& $pearDB->query("SELECT nagios_version, problem_sort_order, problem_sort_type FROM general_opt");
 	if (PEAR::isError($DBRESULT1))
-		print "Mysql Error : ".$DBRESULT1->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";	
 	$DBRESULT1->fetchInto($general_opt);
 	$version = $general_opt["nagios_version"];
-	
+
 	# Init tab
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 	if ($version == 1 || $version == 2){
 		$DBRESULT1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
 		if (PEAR::isError($DBRESULT1))
-			print "Mysql Error : ".$DBRESULT1->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
 		$DBRESULT1->fetchInto($nagios_cfg);
 		$file = $nagios_cfg["status_file"];
 	} else
