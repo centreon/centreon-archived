@@ -162,15 +162,11 @@ For information : contact@oreon-project.org
 	 */
 
 	$res = null;
-	$memJSList = array();
-	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT))
 		print $DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($topology_js))	{
-		if (!isset($memJSList[$topology_js['PathName_js']]))
 			echo "<script language='javascript' src='".$topology_js['PathName_js']."'></script> ";
-		else
-			$memJSList[$topology_js['PathName_js']] = $topology_js['PathName_js'];
 	}
 
 	/*
