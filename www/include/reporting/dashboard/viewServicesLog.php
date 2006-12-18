@@ -188,6 +188,7 @@ For information : contact@oreon-project.org
 			$tab_svc["timeUNKNOWN"] += $archive_svc_unknown;
 			$tab_svc["timeCRITICAL"] +=$archive_svc_cri;
 			$tab_svc["timeNONE"] += $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
+
 			# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
 			$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
 			$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 2, '.', '');
@@ -195,6 +196,8 @@ For information : contact@oreon-project.org
 			$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 2, '.', '');
 			$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');
 			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.00" : $tab_svc["PtimeNONE"];
+			
+ 
 			#end
 		}
 	} else { // today is not in the period		
@@ -210,7 +213,7 @@ For information : contact@oreon-project.org
 		$tab_svc["timeCRITICAL"] = (isset($tab_svc_bdd[$svc_id]["Tcri"])) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
 		$tab_svc["timeNONE"] = $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
 		$tab_svc["PtimeOK"] = round($tab_svc["timeOK"] / $tt *100,3);
-		$tab_svc["PtimeWARNING"] = round( $tab_svc["timeOK"]/ $tt *100,3);
+		$tab_svc["PtimeWARNING"] = round( $tab_svc["timeWARNING"]/ $tt *100,3);
 		$tab_svc["PtimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ $tt *100,3);
 		$tab_svc["PtimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ $tt *100,3);
 		$tab_svc["PtimeNONE"] = round(($tab_svc["timeNONE"])  / $tt *100,3);
