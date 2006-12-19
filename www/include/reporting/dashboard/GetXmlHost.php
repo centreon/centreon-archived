@@ -29,7 +29,12 @@ For information : contact@oreon-project.org
 	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["color"]))
 	{
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
-	
+/*
+	$colorUP = "red";
+$colorDOWN = "red"; 
+$colorUNREACHABLE = "red"; 
+$colorUNKNOWN = "red";
+*/	
 		$oreonPath = $_GET["oreonPath"];
 		include_once($oreonPath . "/www/oreon.conf.php");
 		$dsn = array(
@@ -111,8 +116,7 @@ For information : contact@oreon-project.org
 		    }
 		}
 			
-			
-			
+
 			
 		$rq = 'SELECT ' .
 		' * FROM `log_archive_host` WHERE host_id = ' . $_GET["hostID"] .
@@ -122,23 +126,35 @@ For information : contact@oreon-project.org
 			
 		$res = & $pearDB->query($rq);
 	
-		if (PEAR::isError($res)) {
-					print "Mysql Error : ".$res->getMessage();
-		} else 
-		{
-		  while ($h =& $res->fetchRow())
-		  {
+
+		  while ($h =& $res->fetchRow()) {
 			$uptime = $h["UPTimeScheduled"];
 			$downtime = $h["DOWNTimeScheduled"];
 			$unreachalbetime = $h["UNREACHABLETimeScheduled"];
 			$undeterminatetime = $h["UNDETERMINATETimeScheduled"];
 	
-			$tt = 	$uptime + $downtime + $unreachalbetime + $undeterminatetime;
-	
+			$tt = 86400 ;
+			if(($uptime + $downtime + $unreachalbetime + $undeterminatetime) < $tt)
+				$pending = 	$tt - ($uptime + $downtime + $unreachalbetime + $undeterminatetime);
+			else
+			$pending = 0;
+
+			if($uptime > 0)			
 			$pup = 0 +round(($uptime / $tt * 100),2);
+			else
+			$pup = "0.00";
+			if($downtime > 0)
 			$pdown = 0 +round(($downtime / $tt * 100),2);
+			else
+			$pdown = "0.00";
+			if($unreachalbetime > 0)
 			$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
-			$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
+			else
+			$punreach = "0.00";
+			if($pending > 0)
+			$pundet = 0 +round(($pending / $tt * 100),2);
+			else
+			$pundet = "0.00";
 
 
 			$sortTab = array();
@@ -284,7 +300,7 @@ For information : contact@oreon-project.org
 
 	
 		  }
-		}
+		
 	}
 	else
 	{
