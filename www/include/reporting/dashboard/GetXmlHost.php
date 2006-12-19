@@ -29,12 +29,13 @@ For information : contact@oreon-project.org
 	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["color"]))
 	{
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
-/*
-	$colorUP = "red";
-$colorDOWN = "red"; 
-$colorUNREACHABLE = "red"; 
-$colorUNKNOWN = "red";
-*/	
+
+		# use for debug only
+		#$colorUP = "red";
+		#$colorDOWN = "red"; 
+		#$colorUNREACHABLE = "red"; 
+		#$colorUNKNOWN = "red";
+
 		$oreonPath = $_GET["oreonPath"];
 		include_once($oreonPath . "/www/oreon.conf.php");
 		$dsn = array(
@@ -156,38 +157,15 @@ $colorUNKNOWN = "red";
 			else
 			$pundet = "0.00";
 
-
 			$sortTab = array();
 			$ntab = array();
 			$sortTab["#" . $colorUP] = $pup;
 			$sortTab["#" . $colorDOWN] = $pdown;
 			$sortTab["#" . $colorUNREACHABLE] = $punreach;
-			$sortTab["#" . $colorUNKNOWN] = $pundet;
-			
-/*
-			asort($sortTab);
-			$sortTab = array_reverse($sortTab);
-			array_pop($sortTab);
-			array_pop($sortTab);
-			array_pop($sortTab);
-			$sortTab = array_keys($sortTab);
-	*/	
-		
-		/*
-			$buffer .= '<event start="' . date("m d Y G:i:s", $h["date_start"]) . ' GMT" end="' .date("m d Y G:i:s", $h["date_end"]). ' GMT"   color="' . $sortTab[0] . '" isDuration="true" title="">';
-			$buffer .= 'up: ' . $pup . '%';
-			$buffer .= ' down: ' . $pdown . '%';
-			$buffer .= ' unreachable: ' . $punreach . '%';
-			$buffer .= ' undeterminate: ' . $pundet . '%';	
-			$buffer .= '</event>';
-		*/
-
+			$sortTab["#" . $colorUNKNOWN] = $pundet;			
 
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
 			$t = $t - 10000;
-
-
-
 
 			if($punreach > 0){
 				$t1 = round(($t - ($punreach * $t / 100) ),2);
