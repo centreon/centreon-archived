@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 	
 	if ($search) {
 		if ($oreon->user->admin || !$isRestreint)
-			$DBRESULT =& $$DBRESULTDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND  host_register = '1'");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND  host_register = '1'");
 		else
 			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
 	} else {

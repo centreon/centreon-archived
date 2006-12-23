@@ -241,7 +241,9 @@ For information : contact@oreon-project.org
 				$DBRESULT->fetchInto($meta);
 				$len = $meta["normal_check_interval"] * 120;
 			} else if (($service["service_active_checks_enabled"] == 0) || (!$service["service_normal_check_interval"] && !isset($service["service_normal_check_interval"])) || $service["service_normal_check_interval"] == ""){
+				###########
 				$service["service_normal_check_interval"] = 5;
+				###########
 				$len = $service["service_normal_check_interval"] * 120;
 			} else
 				$len = 5 * 120;
@@ -297,6 +299,7 @@ For information : contact@oreon-project.org
 					$end = time() + 10;
 				}
 				$start_create = $start - 200000;
+				//print date("Y-m-d G:i:s", $start) . ' - '. date("Y-m-d G:i:s", $end)."<br>";
 	 			#####################################################################
 				# Mise en memoire des valeurs remontees de la base de donnees MySQL
 				# Init Lower Value
@@ -340,9 +343,10 @@ For information : contact@oreon-project.org
 				################################################################
 				$time_start_create = microtime_float();
 				$cpt_data = 0;
+				$strtemp = "";
 				foreach ($tab_bin as $key => $value){
-					$str .= " ".$key;
-					$strtemp = NULL;
+					$strtemp .= " ".$key;
+					//$strtemp = NULL;
 					$nb = 0;
 					foreach ($value as $metric => $tm){
 						$strtemp .= ":".$value[$metric];
@@ -354,11 +358,15 @@ For information : contact@oreon-project.org
 						$strtemp .= " ";
 					}
 					$str .= $strtemp;
+					//print $oreon->optGen["rrdtool_path_bin"] . " update ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd ".$strtemp . " 2>&1";
+					//system($oreon->optGen["rrdtool_path_bin"] . " update ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd ".$strtemp . " 2>&1", $return);
+					//print date("Y-m-d G:i:s", $key) . " : ".$strtemp."<br>";
 					$cpt_data++;
-					if ($cpt_data % 100 == 0 || $cpt_data == count($tab_bin) || $cpt_data % 100 == count($tab_bin)){
+					if ($cpt_data % 50 == 0 || $cpt_data == count($tab_bin) || $cpt_data % 50 == count($tab_bin)){
 						system($oreon->optGen["rrdtool_path_bin"] . " update ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd ".$str . " 2>&1", $return);
 						$str = "";
 					}
+					$strtemp = "";
 				}
 				$res->free();
 				$time_end_create = microtime_float();

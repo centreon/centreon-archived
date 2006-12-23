@@ -165,7 +165,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		$compo_id = $res->fetchRow();
+		$compo_id = $DBRESULT->fetchRow();
 		return ($compo_id["MAX(compo_id)"]);
 	}
 	

@@ -17,7 +17,7 @@
 					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_host_status_info}</td>
-						<td class="ListColLeft">{$service_data.plugin_output}</td>
+						<td class="ListColNoWrap">{$service_data.plugin_output}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_performance_data}</td>

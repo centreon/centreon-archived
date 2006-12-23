@@ -14,8 +14,8 @@
 		{foreach item=host_list from=$hostgroup.$hg_name.host}
 		{if $svc_data.$hg_name.$host_list }
 			<tr class="{cycle values="list_one,list_two"}">
-				<td>{$h_data.$hg_name.$host_list}</td>
-				<td>{$svc_data.$hg_name.$host_list}</td>
+				<td valign="top">{$h_data.$hg_name.$host_list}</td>
+				<td class='ListColNoWrap'>{$svc_data.$hg_name.$host_list}</td>
 			</tr>
 		{/if}
 		{/foreach}

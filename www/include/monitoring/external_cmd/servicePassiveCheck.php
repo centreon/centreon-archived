@@ -77,6 +77,6 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);			
 		
 		$tpl->assign('form', $renderer->toArray());	
-		$tpl->display($path."servicePassiveCheck.ihtml");
+		$tpl->display(servicePassiveCheck.ihtml");
 	}
 ?>

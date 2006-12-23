@@ -508,7 +508,7 @@ For information : contact@oreon-project.org
 			$hPars =& $form->getElement('service_hPars');
 			$hPars->setValue(array());
 		}		
-		$o = "w";
+		$o = "";
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
