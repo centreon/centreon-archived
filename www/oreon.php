@@ -57,7 +57,11 @@ For information : contact@oreon-project.org
 	
 	function get_child($id_page, $lcaTStr){
 		global $pearDB;
-		$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt FROM topology WHERE  topology_id IN ($lcaTStr) AND topology_parent = '".$id_page."' ORDER BY topology_order ASC";
+		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+				FROM topology 
+				WHERE  topology_id IN ($lcaTStr) 
+				AND topology_parent = '".$id_page."' 
+				ORDER BY topology_order ASC";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -82,41 +86,57 @@ For information : contact@oreon-project.org
 	
 	if($min != 1)
 		include("pathWay.php");
-	
-	if ($redirect["topology_page"] < 100){
-		$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
-		if (!$ret['topology_page']){
-			file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
-		} else {
-			$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
-			if ($ret2["topology_url_opt"]){
-				$tab = split("\=", $ret2["topology_url_opt"]);
-				if (!isset($_GET["o"]))
-					$o = $tab[1];
-				$p = $ret2["topology_page"];
-			}
-			file_exists($ret2["topology_url"]) ? require_once($ret2["topology_url"]) : require_once("./alt_error.php");
-		}
-	} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
-		$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
-		if (!$ret['topology_page']){
-			file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
-		} else {
-			if ($ret["topology_url_opt"]){
-				$tab = split("\=", $ret["topology_url_opt"]);
-				if (!isset($_GET["o"])){
-					$o = $tab[1];
+	if ($idRestreint){
+		$rq = "SELECT topology_id FROM topology WHERE topology_id IN (".$oreon->user->lcaTStr.") AND topology_page = '".$p."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$nb_page =& $DBRESULT->numRows();
+		
+		if (!$nb_page)
+			require_once("./alt_error.php");
+	}
+	if ($nb_page || !$idRestreint){	
+		if ($redirect["topology_page"] < 100){
+			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+			if (!$ret['topology_page']){
+				file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+			} else {
+				$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
+				if ($ret2["topology_url_opt"]){
+					$tab = split("\=", $ret2["topology_url_opt"]);
+					if (!isset($_GET["o"]))
+						$o = $tab[1];
+					$p = $ret2["topology_page"];
 				}
-				$p = $ret["topology_page"];
+				file_exists($ret2["topology_url"])  ? require_once($ret2["topology_url"]) : require_once("./alt_error.php");
+			} 
+		} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
+			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
+			if (!$ret['topology_page']){
+				file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+			} else {
+				if ($ret["topology_url_opt"]){
+					$tab = split("\=", $ret["topology_url_opt"]);
+					if (!isset($_GET["o"])){
+						$o = $tab[1];
+					}
+					$p = $ret["topology_page"];
+				}
+				file_exists($ret["topology_url"]) ? require_once($ret["topology_url"]) : require_once("./alt_error.php");		
 			}
-			file_exists($ret["topology_url"]) ? require_once($ret["topology_url"]) : require_once("./alt_error.php");		
+		} else if ($redirect["topology_page"] >= 1000) {
+			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+				if (!$ret['topology_page']){
+				file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+			} else { 
+				file_exists($redirect["topology_url"]) && $ret['topology_page'] ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+				if (isset($_GET["o"]))
+					$o = $_GET["o"];
+			}
+		} else {
+			print "Unknown operation...";
 		}
-	} else if ($redirect["topology_page"] >= 1000) {
-		file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
-		if (isset($_GET["o"]))
-			$o = $_GET["o"];
-	} else {
-		print "Unknown operation...";
 	}
 		
 	# Display Legend
