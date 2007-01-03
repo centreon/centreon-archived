@@ -1,3 +1,6 @@
+## Oreon 1.3.4
+=> Feature : Add 3 field in topology table for style class/id and javascript Onclik
+
 ## Oreon 1.3.3
 
 => BugFix : change all bad mysql error check by new one.
