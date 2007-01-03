@@ -5,7 +5,6 @@
 		<div id="{$Menu3Color}">
 			<div>
 	    		<div id="{$Menu3ID}">
-					{assign var="c" value="0"}
 						{foreach from=$elemArr3 item=curr_id}
 						<table class="Tmenu3" width="100%">
 							<tr class="top">
@@ -16,14 +15,21 @@
 							<tr class="middle">
 								<td class="left"></td>
 								<td class="center">
-								{if $c == 0 }
-									<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}' style='padding-bottom:2px;'>&nbsp;{$main_menu}<br><br>
-									{assign var="c" value="1"}
-								{/if}
+									<img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;'>&nbsp;{$curr_id.title}<br><br>								
 									<ul>
-										{foreach from=$curr_id item=curr_id2}					
-						                    <li>
-						                    {if $curr_id2.Menu3Icone}<img src='{$curr_id2.Menu3Icone}'>{/if}&nbsp;{if $curr_id2.Menu3Popup}<a href={$curr_id2.Menu3UrlPopup} target="_blank" style="white-space:nowrap;">{$curr_id2.Menu3Name}</a></li>{else}<a href={$curr_id2.Menu3Url} style="white-space:nowrap;">{$curr_id2.Menu3Name}</a></li>{/if}
+										{foreach from=$curr_id.tab item=curr_id2}
+											<li {if $curr_id2.MenuIsOnClick}onclick="{$curr_id2.MenuOnClick}()"{/if} >
+											{if $curr_id2.Menu3Icone}
+												<img src='{$curr_id2.Menu3Icone}'>
+											{/if}
+											&nbsp;
+											{if $curr_id2.Menu3Popup}
+												<a href={$curr_id2.Menu3UrlPopup} target="_blank">{$curr_id2.Menu3Name}</a>											
+											{else}
+												{if $curr_id2.MenuIsOnClick}{$curr_id2.Menu3Name}{else}<a href={$curr_id2.Menu3Url}>{$curr_id2.Menu3Name}</a>{/if}
+											{/if}
+											</li>
+											
 											<ul>
 											{foreach from=$elemArr4[$curr_id2.Menu3ID] item=menu4}
 												<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{if $curr_id2.Menu3Icone}-&nbsp;<!--<img src='{$menu4.Menu4Icone}'>-->&nbsp;{/if}&nbsp;{if $menu4.Menu4Popup}<a href={$menu4.Menu4UrlPopup} target="_blank" style="white-space:nowrap;">{$menu4.Menu4Name}</a></li>{else}<a href={$menu4.Menu4Url} style="white-space:nowrap;">{$menu4.Menu4Name}</a></li>{/if}

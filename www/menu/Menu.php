@@ -95,24 +95,45 @@ For information : contact@oreon-project.org
 	}
 
 	# Grab elements for level 3
-	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+
+	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP).
+			"' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	for($i = 0; $DBRESULT->fetchInto($elem);)	{
-		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 || $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 || $elem["topology_page"] == 40202 || $elem["topology_page"] == 60603))
+		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 ||
+		 $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 ||
+		  $elem["topology_page"] == 40202 || $elem["topology_page"] == 60603))
 			;
 		else {
-		    $elemArr[3][$elem["topology_group"]][$i] = array("Menu3Icone" => $elem["topology_icone"],
-									"Menu3Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
+			# grab menu title for each group
+			$rq_title = "SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"].
+					"' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."'";	
+			$DBRESULT_title =& $pearDB->query($rq_title);
+			if (PEAR::isError($DBRESULT_title))
+				print ($DBRESULT_title->getMessage());
+			$title = "";
+			if($DBRESULT_title->fetchInto($title))
+				$title = $title["topology_name"];
+			else
+				$title = $lang["m_main_menu"];
+
+			$Menu3Url = "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
+			$elemArr[3][$elem["topology_group"]]["title"] = $lang["m_main_menu"];
+		    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
+									"Menu3Url" => $Menu3Url,
 									"Menu3ID" => $elem["topology_page"],
+									"MenuStyleClass" => $elem["topology_style_class"],
+									"MenuStyleID" => $elem["topology_style_id"],
+									"MenuOnClick" => $elem["topology_OnClick"],
+									"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
 									"Menu3UrlPopup" => $elem["topology_url"],
 									"Menu3Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
 									"Menu3Popup" => $elem["topology_popup"] ? true : false);
 			 $i++;
 		}
 	}
-	
 	unset($elem);
 	# Grab elements for level 4
 	if ($level1 && $level2 && $level3){
