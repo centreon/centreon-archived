@@ -1588,6 +1588,9 @@ CREATE TABLE `topology` (
   `topology_popup` enum('0','1') default NULL,
   `topology_modules` enum('0','1') default NULL,
   `topology_show` enum('0','1') default '1',
+  `topology_style_class` varchar(255) default NULL,
+  `topology_style_id` varchar(255) default NULL,
+  `topology_OnClick` varchar(255) default NULL,
   PRIMARY KEY  (`topology_id`),
   KEY `topology_page` (`topology_page`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
