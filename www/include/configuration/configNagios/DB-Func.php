@@ -270,7 +270,6 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : INSERTnagios.. : ".$DBRESULT->getMessage()."<br>";
-		$DBRESULT->free();
 		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : SELECT MAX(nagios_id) FROM cfg_nagios : ".$DBRESULT->getMessage()."<br>";
@@ -280,7 +279,6 @@ For information : contact@oreon-project.org
 			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."' : ".$DBRESULT->getMessage()."<br>";
-			$DBRESULT->free();
 			$oreon->Nagioscfg = array();
 			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
