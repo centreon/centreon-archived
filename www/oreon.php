@@ -86,6 +86,7 @@ For information : contact@oreon-project.org
 	
 	if($min != 1)
 		include("pathWay.php");
+	$nb_page = NULL;
 	if ($idRestreint){
 		$rq = "SELECT topology_id FROM topology WHERE topology_id IN (".$oreon->user->lcaTStr.") AND topology_page = '".$p."'";
 		$DBRESULT =& $pearDB->query($rq);
