@@ -648,4 +648,22 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getMessage()."<br>";
 		}			
 	}
+	
+	function return_image_list($rep){
+		global $oreon;
+		$images = array(NULL=>NULL);
+		$is_not_an_image = array("."=>".", ".."=>"..");
+		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
+			$rep = substr($rep, 1);
+		$handle = @opendir($oreon->optGen["nagios_path_img"].$rep);
+		while (false !== ($filename = @readdir($handle))){
+			if (!is_dir($oreon->optGen["nagios_path_img"].$rep."/".$filename) && !array_key_exists($filename, $is_not_an_image) && substr($filename, -1)!= "~"){
+				$key = substr($oreon->optGen["nagios_path_img"].$rep."/".$filename, strlen($oreon->optGen["nagios_path_img"]));
+				$images[$key] = $key;
+			}
+		}
+		ksort($images);
+		@closedir($handle);
+		return ($images);
+	}
 ?>
