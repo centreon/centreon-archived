@@ -330,7 +330,7 @@ form{  padding-bottom:10px;}
 }
 /*end tab*/
 
-#validForm input	{    color:#666666;  font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    font-weight:normal;    text-align:left;}
+#validForm input	{  font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    font-weight:normal;    text-align:left;}
 #validForm{
 	width:98%;
 	float:right;
