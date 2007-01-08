@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 .FormFooter		{    font-size:12px;    font-weight:bold;    padding-right:10px;}
 
 
-	/* IE BUG ONLY */
+/* IE BUG ONLY */
  * html #ListTable td, #ListTableMedium td, #ListTableSmall td,.ListTable td, .ListTableMedium td, .ListTableSmall td{padding:0px;margin:0px;	padding-left:3px; padding-right:3px;}
 
 	
@@ -151,18 +151,21 @@ For information : contact@oreon-project.org
 .ListColPicker		{	text-align:center;}
 .ListColHeader1    	{	width: 4%;    		text-align:center;}
 .ListColHeader2    	{   text-align:left;    padding-left:40px;}
-.ListColHeader3    	{   text-align:left;    padding-left:10px;}
-.ListColHeader4    	{   text-align:left;    padding-left:10px; 	padding-right:2px;}
-.ListColHeader5    	{   text-align:right;	padding-left:10px;	padding-right:20px}
+.ListColHeader3    	{   text-align:left;    padding-left:3px;}
+.ListColHeader4    	{   text-align:left;    padding-left:3px; 	padding-right:2px;}
+.ListColHeader5    	{   text-align:right;	padding-left:3px;	padding-right:20px}
 /**/
 
 /*NEW*/
 .ListColHeaderPicker{text-align:center;padding-left:3px;padding-right:3px;width:10px;}
-.ListColHeaderCenter{text-align:center; padding-left:10px;}
-.ListColHeaderLeft{text-align:left; padding-left:10px;}
-.ListColHeaderRight{text-align:right; padding-left:10px;padding-right:20px}
-.ListColHeaderWrap{text-align:left; padding-left:10px; white-space:normal;}
+.ListColHeaderCenter{text-align:center; padding-left:3px;}
+.ListColHeaderLeft{text-align:left; padding-left:3px;}
+.ListColHeaderRight{text-align:right; padding-left:3px;padding-right:3px}
+.ListColHeaderWrap{text-align:left; padding-left:3px; white-space:normal;}
 /**/
+
+#ListColHeaderLeft div {padding-left:0px;}
+
 
 .ListColFooter1    {  padding:3px;}
 .ListColFooter2    {}
@@ -184,10 +187,10 @@ For information : contact@oreon-project.org
 .ListCol5    {padding-right:10px;}
 /**/
 
-.ListColCenter{text-align:center; padding-left:10px;}
-.ListColLeft{text-align:left; padding-left:10px;}
-.ListColRight{text-align:right; padding-left:10px;padding-right:10px;}
-.ListColNoWrap{text-align:left; padding-left:10px;white-space:normal;}
+.ListColCenter{text-align:center; padding-left:3px;}
+.ListColLeft{text-align:left; padding-left:3px;}
+.ListColRight{text-align:right; padding-left:3px;padding-right:3px;}
+.ListColNoWrap{text-align:left; padding-left:3px;white-space:normal;}
 
 
 .FormRowField    {padding-left:40px;white-space: normal;}
@@ -348,10 +351,10 @@ form{  padding-bottom:10px;}
 }
 
 #validFormTop{
-position:absolute;
-right:6px;
-top:155px;
-z-index: 10;
+	position:absolute;
+	right:6px;
+	top:155px;
+	z-index: 10;
 }
 
 input[type="submit"],input[type="button"],input[type="reset"]{
@@ -402,7 +405,7 @@ border-style: solid;
 
 
 .Toolbar_pagelimit{
-text-align:right;
+	text-align:right;
 }
 
 .Toolbar_pagination{
