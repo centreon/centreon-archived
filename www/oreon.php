@@ -72,8 +72,8 @@ For information : contact@oreon-project.org
 	require_once ("./include/common/common-Func.php");
 
 	# LCA Init Common Var
-	$idRestreint = HadUserLca($pearDB);
-
+	$isRestreint = HadUserLca($pearDB);
+	
 	# Menu
 	if (!$min)
 		require_once ("menu/Menu.php");
@@ -86,6 +86,8 @@ For information : contact@oreon-project.org
 	
 	if($min != 1)
 		include("pathWay.php");
+
+	
 	$nb_page = NULL;
 	if ($idRestreint){
 		$rq = "SELECT topology_id FROM topology WHERE topology_id IN (".$oreon->user->lcaTStr.") AND topology_page = '".$p."'";
@@ -96,8 +98,11 @@ For information : contact@oreon-project.org
 		
 		if (!$nb_page)
 			require_once("./alt_error.php");
+	} else {
+		$nb_page = 1;	
 	}
-	if ($nb_page || !$idRestreint){	
+	
+	if ((isset($nb_page) && $nb_page) || !$isRestreint){	
 		if ($redirect["topology_page"] < 100){
 			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 			if (!$ret['topology_page']){
