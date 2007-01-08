@@ -354,31 +354,16 @@ top:155px;
 z-index: 10;
 }
 
-/*CSS2*/
 input[type="submit"],input[type="button"],input[type="reset"]{
-    background-position:0px 0px;
-    color:#000000;
-    font-family:Verdana, Tahoma;
-    font-size:11px;
-    width:86px;
-    height:22px;
-    border: 0.5px solid gray;
-    vertical-align:middle;
-    text-align:center;
+border-width : 1px;
+border-style: solid;
 }
 
-/*for IE **/
-.oreonbutton input{
-    background-position:0px 0px;
-    color:#000000;
-    font-family:Verdana, Tahoma;
-    font-size:11px;
-    width:86px;
-    height:22px;
-    border: 0.5px solid gray;
-    vertical-align:middle;
-    text-align:center;
+input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
+border-width : 1px;	
+border-style: solid;
 }
+
 .cachediv {
 	display: none;
 }

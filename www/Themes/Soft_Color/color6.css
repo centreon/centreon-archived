@@ -120,22 +120,22 @@ border-right: 1px solid #6056e8;
 #mainnav li{	background-image: url("./Images/bg_header.gif");}
 
 
-/* w3c */
+input, textarea {
+    font-family : Verdana,Arial,Geneva,Helvetica,sans-serif;
+    font-size : 1em;
+}
+
 input[type="submit"],input[type="button"],input[type="reset"]{
-background-image: url("./Images/bg_input_blue.gif");
-background-position:bottom right;
-background-repeat:no-repeat;
-background-color:#ebf5ff ;
-}
-/* IE */
-.oreonbutton input{
-background: url("./Images/bg_input_blue.gif");
-background-position:bottom right;
-background-repeat:no-repeat;
-background-color:#ebf5ff ;
+background : white;	
+color : #6056e8;
+border-color : #6056e8;
 }
 
-
+input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
+background : #6056e8;
+color : #fff;
+border-color : #6056e8;
+}
 
 .limitPage{
 	background-image:url("./Images/bg_header.gif");

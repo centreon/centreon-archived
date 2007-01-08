@@ -160,15 +160,18 @@ border-color: #fada83;
 	border:1px solid #DDDDDD;
 }
 
-/* w3c */
 input[type="submit"],input[type="button"],input[type="reset"]{
-    background-image: url("./Images/bg_input_gray.gif") ;
+background : white;	
+color : #6056e8;
+border-color : #6056e8;
 }
 
-/* IE */
-.oreonbutton input{
-    background-image: url("./Images/bg_input_gray.gif") ;
+input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
+background : #6056e8;
+color : #fff;
+border-color : #6056e8;
 }
+
 
 #logOut{
 position:absolute;

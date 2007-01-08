@@ -108,14 +108,18 @@ border-right: 1px solid #9C85E3;
 #MainPage textarea, #MainPage input, #MainPage select{    color:#a42ab6;}
 #mainnav li{	background-image: url("./Images/bg_header_pink.gif");}
 
-/* w3c */
 input[type="submit"],input[type="button"],input[type="reset"]{
-    background-image: url("./Images/bg_input_purple.gif") ;
+background : white;	
+color : #6056e8;
+border-color : #6056e8;
 }
-/* IE */
-.oreonbutton input{
-    background-image: url("./Images/bg_input_purple.gif") ;
+
+input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
+background : #6056e8;
+color : #fff;
+border-color : #6056e8;
 }
+
 
 .quick_search{	
 border-color:#eff1f4;	
