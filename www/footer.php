@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 					Generated in <? $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . $lang["time_sec"]; ?><br />
 					<a href="mailto:infos@oreon-project.org" class="text10b">Oreon</a> -
 					<a href="http://www.nagios.org" class="text10b">Nagios</a> -
-					&copy; 2004-2006 <a href="http://www.oreon-project.org" target="_blank" class="text10b">Oreon</a> All Rights Reserved.<br />
+					&copy; 2004-2007 <a href="http://www.oreon-project.org" target="_blank" class="text10b">Oreon</a> All Rights Reserved.<br />
 				</td>
 			</tr>
 			<tr>
