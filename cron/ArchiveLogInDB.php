@@ -367,13 +367,13 @@ foreach($tableFile2 as $key => $time)
 			## last host alert
 			#	
 			if(!strncmp($htab["current_state"], "UP", 2))
-				$htab["timeUP"] += ($time-$htab["current_time"]);
+				$htab["timeUP"] += ($time-$htab["current_time"]) + 1;
 			elseif(!strncmp($htab["current_state"], "DOWN", 4))
-				$htab["timeDOWN"] += ($time-$htab["current_time"]);
+				$htab["timeDOWN"] += ($time-$htab["current_time"]) + 1;
 			elseif(!strncmp($htab["current_state"], "UNREACHABLE", 11))
-				$htab["timeUNREACHABLE"] += ($time-$htab["current_time"]);
+				$htab["timeUNREACHABLE"] += ($time-$htab["current_time"]) + 1;
 			else
-				$htab["timeNONE"] += ($time-$htab["current_time"]);
+				$htab["timeNONE"] += ($time-$htab["current_time"]) + 1;
 			#
 			## insert in db the host time
 			#		
@@ -417,15 +417,15 @@ foreach($tableFile2 as $key => $time)
 			## last service alert
 			#	
 			if(!strncmp($htab["current_state"], "OK", 2))
-				$htab["timeOK"] += ($time-$htab["current_time"]);
+				$htab["timeOK"] += ($time-$htab["current_time"]) + 1;
 			elseif(!strncmp($htab["current_state"], "WARNING", 4))
-				$htab["timeWARNING"] += ($time-$htab["current_time"]);
+				$htab["timeWARNING"] += ($time-$htab["current_time"]) + 1;
 			elseif(!strncmp($htab["current_state"], "UNKNOWN", 11))
-				$htab["timeUNKNOWN"] += ($time-$htab["current_time"]);
+				$htab["timeUNKNOWN"] += ($time-$htab["current_time"]) + 1;
 			elseif(!strncmp($htab["current_state"], "CRITICAL", 11))
-				$htab["timeCRITICAL"] += ($time-$htab["current_time"]);
+				$htab["timeCRITICAL"] += ($time-$htab["current_time"]) + 1;
 			else
-				$htab["timeNONE"] += ($time-$htab["current_time"]);
+				$htab["timeNONE"] += ($time-$htab["current_time"]) + 1;
 
 
 			$host_id = $host_list[trim($host)];
