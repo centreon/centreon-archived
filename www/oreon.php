@@ -123,7 +123,7 @@ For information : contact@oreon-project.org
 						$o = $tab[1];
 					}
 					$p = $ret["topology_page"];
-				}
+				} 
 				file_exists($ret["topology_url"]) ? require_once($ret["topology_url"]) : require_once("./alt_error.php");		
 			}
 		} else if ($redirect["topology_page"] >= 1000) {
