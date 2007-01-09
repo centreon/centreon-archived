@@ -165,9 +165,8 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT))
 		print $DBRESULT->getDebugInfo()."<br>";
-	while ($DBRESULT->fetchInto($topology_js))	{
-			echo "<script language='javascript' src='".$topology_js['PathName_js']."'></script> ";
-	}
+	while ($DBRESULT->fetchInto($topology_js))
+		echo "<script language='javascript' src='".$topology_js['PathName_js']."'></script> ";
 
 	/*
 	 * init javascript
