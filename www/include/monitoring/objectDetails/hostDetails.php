@@ -25,6 +25,7 @@ For information : contact@oreon-project.org
 			$host_name = $key;
 	
 	$lcaHost = getLcaHostByName($pearDB);
+	
 	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
