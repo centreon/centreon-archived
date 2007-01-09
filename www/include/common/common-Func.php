@@ -89,23 +89,6 @@ For information : contact@oreon-project.org
 		}
 	}
 	
-	function getMyHostField($host_id = NULL, $field)	{
-		if (!$host_id) return;
-		global $pearDB;
-		while(1)	{
-			$res =& $pearDB->query("SELECT $field, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
-			if ($row[$field])
-				return $row[$field];
-			else if ($row["host_template_model_htm_id"])
-				$host_id = $row["host_template_model_htm_id"];
-			else
-				break;
-		}
-	}
-	
 	function isAHostTpl($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
