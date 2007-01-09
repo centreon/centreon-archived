@@ -145,6 +145,8 @@ For information : contact@oreon-project.org
 			$elemArr[4][$level1.$level2.$level3][$i] = array("Menu4Icone" => $elem["topology_icone"],
 										"Menu4Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 										"Menu4UrlPopup" => $elem["topology_url"],
+										"MenuOnClick" => $elem["topology_OnClick"],
+										"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
 										"Menu4Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
 										"Menu4Popup" => $elem["topology_popup"] ? true : false);
 		}
