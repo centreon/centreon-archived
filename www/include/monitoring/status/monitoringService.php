@@ -52,8 +52,8 @@ For information : contact@oreon-project.org
 		case "svc" 		: require_once($path."service.php"); 					break; 
 		case "svcpb" 	: require_once($path."service_problem.php");			break;
 		case "svcd" 	: require_once($pathDetails."serviceDetails.php"); 		break; 
-		case "svcak" 	: require_once($pathExternal."serviceAcknowledge.php"); 	break; 
-		case "svcpc" 	: require_once($pathExternal."servicePassiveCheck.php"); 	break; 
+		case "svcak" 	: require_once($pathExternal."serviceAcknowledge.php"); break; 
+		case "svcpc" 	: require_once($pathExternal."servicePassiveCheck.php");break; 
 		case "svcgrid" 	: require_once($path."serviceGrid.php"); 				break; 
 		case "svcOV" 	: require_once($path."serviceOverview.php"); 			break; 
 		case "svcSum" 	: require_once($path."serviceSummary.php"); 			break; 
