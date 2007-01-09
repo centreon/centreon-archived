@@ -32,7 +32,7 @@
 											
 											<ul>
 											{foreach from=$elemArr4[$curr_id2.Menu3ID] item=menu4}
-												<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{if $curr_id2.Menu3Icone}-&nbsp;<!--<img src='{$menu4.Menu4Icone}'>-->&nbsp;{/if}&nbsp;{if $menu4.Menu4Popup}<a href={$menu4.Menu4UrlPopup} target="_blank" style="white-space:nowrap;">{$menu4.Menu4Name}</a></li>{else}<a href={$menu4.Menu4Url} style="white-space:nowrap;">{$menu4.Menu4Name}</a></li>{/if}
+												<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;{if $menu4.Menu4Popup}<a href={$menu4.Menu4UrlPopup} target="_blank" style="white-space:nowrap;">{$menu4.Menu4Name}</a></li>{else}<a href={$menu4.Menu4Url} style="white-space:nowrap;">{$menu4.Menu4Name}</a></li>{/if}
 											{/foreach}
 											</ul>{if $elemArr4[$curr_id2.Menu3ID]}	<br>{/if}
 										{/foreach}
