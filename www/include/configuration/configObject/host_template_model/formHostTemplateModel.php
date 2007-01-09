@@ -142,6 +142,9 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
+	# IMG comes from DB -> Store in $extImg Array
+	$extImg = array();
+	$extImg = return_image_list();
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -361,7 +364,8 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'ehi_notes_url', $lang['h_notesUrl'], $attrsText);
 	if ($oreon->user->get_version() == 2)
 		$form->addElement('text', 'ehi_action_url', $lang['h_actionUrl'], $attrsText);
-	$form->addElement('text', 'ehi_icon_image', $lang['h_iconImg'], $attrsText);
+	$form->addElement('select', 'ehi_icon_image', $lang['h_iconImg'], $extImg);
+//	$form->addElement('text', 'ehi_icon_image', $lang['h_iconImg'], $attrsText);
 	$form->addElement('text', 'ehi_icon_image_alt', $lang['h_iconImgAlt'], $attrsText);
 	$form->addElement('text', 'ehi_vrml_image', $lang['h_vrmlImg'], $attrsText);
 	$form->addElement('text', 'ehi_statusmap_image', $lang['h_nagStatImg'], $attrsText);
