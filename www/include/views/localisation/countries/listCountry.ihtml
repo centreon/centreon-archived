@@ -17,7 +17,7 @@
 	</table>
 	<table id="ListTable">
 		<tr class="ListHeader">
-			<td class="ListColHeaderCenter">{$headerMenu_icone}</td>
+			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
