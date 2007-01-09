@@ -26,20 +26,20 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES)."' : ".$DBRESULT->getMessage()."<br>";
-		$DBRESULTource =& $DBRESULT->fetchRow();
+		$res =& $DBRESULT->fetchRow();
 		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $DBRESULTource["resource_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $res["resource_id"] == $id)	
 			return true;
 		#Duplicate entry
-		else if ($DBRESULT->numRows() >= 1 && $DBRESULTource["resource_id"] != $id)	
+		else if ($DBRESULT->numRows() >= 1 && $res["resource_id"] != $id)	
 			return false;
 		else
 			return true;
 	}
 
-	function deleteResourceInDB ($DBRESULTources = array())	{
+	function deleteResourceInDB ($DBRESULT = array())	{
 		global $pearDB;
-		foreach($DBRESULTources as $key=>$value){
+		foreach($DBRESULT as $key=>$value){
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_resource WHERE resource_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : DELETE FROM cfg_resource WHERE resource_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
@@ -62,8 +62,8 @@ For information : contact@oreon-project.org
 			print "DB Error : UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."' : ".$DBRESULT->getMessage()."<br>";
 	}
 	
-	function multipleResourceInDB ($DBRESULTources = array(), $nbrDup = array())	{
-		foreach($DBRESULTources as $key=>$value)	{
+	function multipleResourceInDB ($DBRESULT = array(), $nbrDup = array())	{
+		foreach($DBRESULT as $key=>$value)	{
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
