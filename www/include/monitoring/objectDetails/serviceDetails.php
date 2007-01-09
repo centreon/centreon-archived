@@ -30,6 +30,9 @@ For information : contact@oreon-project.org
 		$svc_description = $tab_data[1];
 	}
 	
+	if (!isset($_GET["service_description"]))
+		$_GET["service_description"] = $svc_description;
+	
 	$lcaHost = getLcaHostByName($pearDB);
 	
 	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
@@ -40,10 +43,10 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($res)) 
 			print "Mysql Error : ".$res->getMessage();
 		$res->fetchInto($host);	
-		$res =& $pearDB->query("SELECT service_max_check_attempts FROM service WHERE service_description = '".$_GET["service_description"]."'");
-		if (PEAR::isError($pearDB)) 
-			print "Mysql Error : ".$pearDB->getMessage();
-		$res->fetchInto($service);
+		$host_id = getMyHostID($host["host_name"]);
+		$service_id = getMyServiceID($_GET["service_description"], $host_id);
+		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
+		
 		$path = "./include/monitoring/objectDetails/";
 		
 		# Smarty template Init
@@ -162,7 +165,7 @@ For information : contact@oreon-project.org
 		$tpl->assign("color_onoff", $color_onoff);
 		$tpl->assign("color_onoff_inv", $color_onoff_inv);
 		$tpl->assign("en_disable", $en_disable);
-		$tpl->assign("total_current_attempt", $service["service_max_check_attempts"]);
+		$tpl->assign("total_current_attempt", $total_current_attempts);
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
 		$tpl->assign("actpass", array("0"=>$lang["m_mon_active"], "1"=>$lang["m_mon_passive"]));

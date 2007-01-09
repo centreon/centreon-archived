@@ -26,7 +26,7 @@
 					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_current_attempt}</td>
-						<td class="ListColLeft">{$host_data.current_attempt}</td>
+						<td class="ListColLeft">{$host_data.current_attempt} / {$current_attempts}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_state_type}</td>

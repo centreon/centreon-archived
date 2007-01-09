@@ -33,7 +33,8 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
 		$res->fetchInto($hostDB);
-		
+		$current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
+
 		$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$hostDB["host_name"]."'");
 		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
@@ -74,8 +75,7 @@ For information : contact@oreon-project.org
 				$i++;
 			}
 		}
-
-
+		
 		$en = array("0" => "No", "1" => "Yes");
 		
 		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
@@ -91,7 +91,7 @@ For information : contact@oreon-project.org
 
 		$host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
 		$host_status[$host_name]["last_check"] = date($lang["date_time_format"], $host_status[$host_name]["last_check"]);
-		$host_status[$host_name]["next_check"] = date($lang["date_time_format"], $host_status[$host_name]["next_check"]);
+		$host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? date($lang["date_time_format"], $host_status[$host_name]["next_check"]) : "";
 		!$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = date($lang["date_time_format"], $host_status[$host_name]["last_notification"]);
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = Duration::toString(time() - $host_status[$host_name]["last_state_change"]);
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = date($lang["date_time_format"],$host_status[$host_name]["last_state_change"]);
@@ -116,6 +116,7 @@ For information : contact@oreon-project.org
 		$tpl->assign("p", $p);
 		$tpl->assign("en", $en);
 		$tpl->assign("en_inv", $en_inv);
+		$tpl->assign("current_attempts", $current_attempts);
 		$tpl->assign("en_inv_text", $en_inv_text);
 		$tpl->assign("img_en", $img_en);
 		$tpl->assign("color_onoff", $color_onoff);
