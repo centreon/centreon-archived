@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -20,9 +18,6 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 	# set limit
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
-
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -33,14 +28,14 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT COUNT(*) FROM contact : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	$DBRESULT =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT ldap_auth_enable FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 	$DBRESULT->fetchInto($ldap_auth);
 	$DBRESULT->free();
@@ -67,7 +62,7 @@ For information : contact@oreon-project.org
 		$rq = "SELECT contact_id, contact_name, contact_alias, contact_activate FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT contact_id, contact_name, contact_alias, contact_activate .. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
