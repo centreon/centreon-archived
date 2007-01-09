@@ -41,4 +41,5 @@
 	</table>
 </div>
 	{$form.hidden}
+	<input name="o" type="hidden" value="svcd" />
 </form>

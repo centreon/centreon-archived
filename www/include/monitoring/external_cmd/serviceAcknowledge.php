@@ -35,7 +35,7 @@ For information : contact@oreon-project.org
 	$lcaHostByName = getLcaHostByName($pearDB);
 	
 	# HOST LCA
-	if ($oreon->user->admin || !$idRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $idRestreint)){
+	if ($oreon->user->admin || !$isRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $isRestreint)){
 
 		#Pear library
 		require_once "HTML/QuickForm.php";
@@ -63,7 +63,8 @@ For information : contact@oreon-project.org
 		$form->addElement('hidden', 'cmd', $cmd);
 		$form->addElement('hidden', 'p', $p);
 		$form->addElement('hidden', 'en', $en);
-	
+		//$form->addElement('hidden', 'o', "svcd");
+		
 		$form->applyFilter('_ALL_', 'trim');
 		$attr = array("rows"=>"5", "cols"=>"40");
 		$form->addElement('textarea', 'comment', 'comment', $attr);
@@ -74,15 +75,12 @@ For information : contact@oreon-project.org
 		$form->addElement('submit', 'submit', ($en == 1) ? $lang["m_mon_ack_add"] : $lang["m_mon_ack_del"]);
 		$form->addElement('reset', 'reset', $lang["reset"]);
 		
-	
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
-		$tpl->assign('o', 'svcd');
 		$tpl->display("serviceAcknowledge.ihtml");
 	}
-
 ?>
