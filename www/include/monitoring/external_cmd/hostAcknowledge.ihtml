@@ -63,4 +63,5 @@
 	</table>
 </div>	
 	{$form.hidden}
+	<input name="o" type="hidden" value="hd" />
 </form>
