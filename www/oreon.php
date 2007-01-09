@@ -60,8 +60,8 @@ For information : contact@oreon-project.org
 		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 				FROM topology 
 				WHERE  topology_id IN ($lcaTStr) 
-				AND topology_parent = '".$id_page."' 
-				ORDER BY topology_order ASC";
+				AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL 
+				ORDER BY topology_order ASC"; 
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 
 	
 	$nb_page = NULL;
-	if ($idRestreint){
+	if ($isRestreint){
 		$rq = "SELECT topology_id FROM topology WHERE topology_id IN (".$oreon->user->lcaTStr.") AND topology_page = '".$p."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
