@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -64,10 +62,10 @@ For information : contact@oreon-project.org
 	function getMyHostTemplateModel($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
 		if ($row["host_template_model_htm_id"])
 			return $row["host_template_model_htm_id"];
 		else
@@ -78,10 +76,10 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["host_name"])
 				return $row["host_name"];
 			else if ($row["host_template_model_htm_id"])
@@ -94,10 +92,10 @@ For information : contact@oreon-project.org
 	function isAHostTpl($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
 		if ($row["host_register"])
 			return true;
 		else
@@ -108,10 +106,10 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["host_address"])
 				return $row["host_address"];
 			else if ($row["host_template_model_htm_id"])
@@ -125,10 +123,10 @@ For information : contact@oreon-project.org
 		if (!$host_name) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '".$host_name."' LIMIT 1");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '".$host_name."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["host_address"])
 				return $row["host_address"];
 			else if ($row["host_template_model_htm_id"])
@@ -142,20 +140,19 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '".$host_id."'");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$host = clone($res->fetchRow());
-			$res =& $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '".$host_id."'");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			if ($res->numRows())
-				return $res;
+			$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '".$host_id."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$host = clone($DBRESULT->fetchRow());
+			$DBRESULT =& $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '".$host_id."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			if ($DBRESULT->numRows())
+				return $DBRESULT;
 			else if (isset($host["tpl"]) && $host["tpl"])
 				$host_id = $host["tpl"];
 			else
-				return $res;
+				return $DBRESULT;
 		}
 	}	
 
@@ -163,11 +160,10 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB;
 		$hgs = array();
-		$res =& $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '".$host_id."' AND hgr.hostgroup_hg_id = hg.hg_id");
-		if (PEAR::isError($pearDB)) {
-			print "Mysql Error : ".$pearDB->getMessage();
-		}
-		while ($res->fetchInto($hg))
+		$DBRESULT =& $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '".$host_id."' AND hgr.hostgroup_hg_id = hg.hg_id");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($hg))
 			$hgs[$hg["hostgroup_hg_id"]] = $hg["hg_name"];
 		return $hgs;
 	}
@@ -178,11 +174,10 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$host_id_bkp = $host_id;
 		while(1)	{
-			$res =& $pearDB->query("SELECT host_snmp_community, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT host_snmp_community, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["host_snmp_community"])
 				return $row["host_snmp_community"];
 			else if ($row["host_template_model_htm_id"])
@@ -190,19 +185,17 @@ For information : contact@oreon-project.org
 			else	{
 				$hgs = getMyHostGroups($host_id_bkp);
 				foreach ($hgs as $key=>$value)	{
-					$res =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$row =& $res->fetchRow();
+					$DBRESULT =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					$row =& $DBRESULT->fetchRow();
 					if ($row["hg_snmp_community"])
 						return $row["hg_snmp_community"];
 				}
-				$res =& $pearDB->query("SELECT snmp_community FROM general_opt LIMIT 1");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-				$row =& $res->fetchRow();
+				$DBRESULT =& $pearDB->query("SELECT snmp_community FROM general_opt LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				$row =& $DBRESULT->fetchRow();
 				if (isset($row["snmp_community"]))
 					return $row["snmp_community"];
 				return NULL;
@@ -217,11 +210,10 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$host_id_bkp = $host_id;
 		while(1)	{
-			$res =& $pearDB->query("SELECT host_snmp_version, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT host_snmp_version, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["host_snmp_version"])
 				return $row["host_snmp_version"];
 			else if ($row["host_template_model_htm_id"])
@@ -229,19 +221,17 @@ For information : contact@oreon-project.org
 			else	{
 				$hgs = getMyHostGroups($host_id_bkp);
 				foreach ($hgs as $key=>$value)	{
-					$res =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					if (PEAR::isError($pearDB)) {
-						print "Mysql Error : ".$pearDB->getMessage();
-					}
-					$row =& $res->fetchRow();
+					$DBRESULT =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					$row =& $DBRESULT->fetchRow();
 					if ($row["hg_snmp_version"])
 						return $row["hg_snmp_version"];
 				}
-				$res =& $pearDB->query("SELECT snmp_version FROM general_opt LIMIT 1");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-				$row =& $res->fetchRow();
+				$DBRESULT =& $pearDB->query("SELECT snmp_version FROM general_opt LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				$row =& $DBRESULT->fetchRow();
 				if (isset($row["snmp_version"]))
 					return $row["snmp_version"];
 				else
@@ -252,6 +242,41 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 	
+	function getMyHostField($host_id = NULL, $field)	{
+		if (!$host_id) return;
+		global $pearDB;
+		while(1)	{
+			$res =& $pearDB->query("SELECT ".$field.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($pearDB))
+				print "Mysql Error : ".$pearDB->getMessage();
+			$row =& $res->fetchRow();
+			$field_result = $row[$field];
+			if ($row[$field])
+				return $row[$field];
+			else if ($row["host_template_model_htm_id"])
+				$host_id = $row["host_template_model_htm_id"];
+			else
+				break;
+		}
+	}
+	function getMyHostExtendedInfoField($host_id = NULL, $field)	{
+		if (!$host_id) return;
+		global $pearDB;
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT ehi.".$field.", h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
+			$field_result = $row[$field];
+			if ($row[$field])
+				return $row[$field];
+			else if ($row["host_template_model_htm_id"])
+				$host_id = $row["host_template_model_htm_id"];
+			else
+				break;
+		}
+	}
+	
 	#
 	## HOST GROUP
 	#
@@ -259,11 +284,10 @@ For information : contact@oreon-project.org
 	function getMyHostGroupName($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT hg_name FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT hg_name FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
 		if ($row["hg_name"])
 			return $row["hg_name"];
 		return NULL;
@@ -273,24 +297,22 @@ For information : contact@oreon-project.org
 		if (!$hg_id) return;
 		global $pearDB;
 		$hosts = array();
-		$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		while ($res->fetchInto($elem))
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 		return $hosts;
 	}
 	
 	function getMyHostGroupCommunity($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
 		if ($row["hg_snmp_community"])
 			return $row["hg_snmp_community"];
 		return NULL;
@@ -299,11 +321,10 @@ For information : contact@oreon-project.org
 	function getMyHostGroupVersion($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-		$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
 		if ($row["hg_snmp_version"])
 			return $row["hg_snmp_version"];
 		return NULL;
@@ -317,10 +338,28 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($pearDB))
-				print "Mysql Error : ".$pearDB->getMessage();
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
+			$field_result = $row[$field];
+			if ($row[$field])
+				return $row[$field];
+			else if ($row["service_template_model_stm_id"])
+				$service_id = $row["service_template_model_stm_id"];
+			else
+				break;
+		}
+	}
+
+	function getMyServiceExtendedInfoField($service_id = NULL, $field)	{
+		if (!$service_id) return;
+		global $pearDB;
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT esi.".$field.", sv.service_template_model_stm_id FROM service sv, extended_service_information esi WHERE esi.service_service_id = '".$service_id."' AND sv.service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			$field_result = $row[$field];
 			if ($row[$field])
 				return $row[$field];
@@ -335,11 +374,10 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["service_description"])
 				return $row["service_description"];
 			else if ($row["service_template_model_stm_id"])
@@ -353,11 +391,10 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["service_alias"])
 				return $row["service_alias"];
 			else if ($row["service_template_model_stm_id"])
@@ -371,11 +408,10 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["graph_id"])
 				return $row["graph_id"];
 			else if ($row["service_template_model_stm_id"])
@@ -390,31 +426,30 @@ For information : contact@oreon-project.org
 		if (!$service_description && (!$host_id || !$hg_id)) return;
 		global $pearDB;
 		if ($host_id)	{
-			$res =& $pearDB->query(	"SELECT service_id FROM service, host_service_relation hsr " .
+			$DBRESULT =& $pearDB->query(	"SELECT service_id FROM service, host_service_relation hsr " .
 									"WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id " .
 									"AND service_description = '".$service_description."' LIMIT 1");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			# Service is directely link to a host, no problem
 			if ($row["service_id"])
 				return $row["service_id"];
 			# The Service might be link with a HostGroup
-			$res =& $pearDB->query(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+			$DBRESULT =& $pearDB->query(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 									" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 									" AND service_id = hsr.service_service_id AND service_description = '".$service_description."'");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["service_id"])
 				return $row["service_id"];
 		}
 		if ($hg_id)	{
-			$res =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hg_id."' AND hsr.service_service_id = service_id AND service_description = '".$service_description."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hg_id."' AND hsr.service_service_id = service_id AND service_description = '".$service_description."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["service_id"])
 				return $row["service_id"];
 		}
@@ -425,20 +460,20 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB;
 		$hSvs = array();
-		$res =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		while ($res->fetchInto($elem))
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))
 			$hSvs[$elem["service_id"]]	= $elem["service_description"];
-		$res->free();
-		$res =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+		$DBRESULT->free();
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		while ($res->fetchInto($elem))
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))
 			$hSvs[$elem["service_id"]]	= $elem["service_description"];
-		$res->free();
+		$DBRESULT->free();
 		return $hSvs;
 	}
 
@@ -446,22 +481,22 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		$hosts = array();
-		$res =& $pearDB->query("SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		while ($res->fetchInto($elem))	{
+		$DBRESULT =& $pearDB->query("SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))	{
 			if ($elem["host_host_id"])
 				$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 			else if ($elem["hostgroup_hg_id"]){
-				$res2 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$elem["hostgroup_hg_id"]."'");
-				if (PEAR::isError($res2))
-					print "Mysql Error : ".$res2->getMessage();
-				while ($res2->fetchInto($elem2))
+				$DBRESULT2 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$elem["hostgroup_hg_id"]."'");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				while ($DBRESULT2->fetchInto($elem2))
 					$hosts[$elem2["host_host_id"]] = $elem2["host_host_id"];
-				$res2->free();
+				$DBRESULT2->free();
 			}
 		}
-		$res->free();
+		$DBRESULT->free();
 		return $hosts;
 	}
 
@@ -469,13 +504,13 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		$hosts = array();
-		$res =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		while ($res->fetchInto($elem))
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))
 			if ($elem["host_host_id"])
 				$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
-		$res->free();
+		$DBRESULT->free();
 		return $hosts;
 	}
 
@@ -483,23 +518,23 @@ For information : contact@oreon-project.org
 		if (!$service_id) return;
 		global $pearDB;
 		$hgs = array();
-		$res =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		while ($res->fetchInto($elem))
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))
 			if ($elem["hostgroup_hg_id"])
 				$hgs[$elem["hostgroup_hg_id"]] = $elem["hostgroup_hg_id"];
-		$res->free();
+		$DBRESULT->free();
 		return $hgs;
 	}
 
 	function getMyServiceTPLID($service_description = NULL)	{
 		if (!$service_description) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT service_id FROM service WHERE service_description = '".htmlentities($service_description, ENT_QUOTES)."' AND service_register = '0' LIMIT 1");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_description = '".htmlentities($service_description, ENT_QUOTES)."' AND service_register = '0' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
 		if ($row["service_id"])
 			return $row["service_id"];
 		return NULL;
@@ -509,15 +544,15 @@ For information : contact@oreon-project.org
 		if (!$service_id)	return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["command_command_id"])	{
-				$res2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
-				if (PEAR::isError($res))
-					print "Mysql Error : ".$res->getMessage();
-				$row2 =& $res2->fetchRow();
+				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				$row2 =& $DBRESULT2->fetchRow();
 				if (strstr($row2["command_name"], "check_graph_"))
 					return true;
 				else
@@ -541,15 +576,15 @@ For information : contact@oreon-project.org
 		$i = 0;
 		$host_id ? $host_id = "!".$host_id."_".$service_id : NULL;
 		while(1)	{
-			$res =& $pearDB->query("SELECT command_command_id, command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($res))
-				print "Mysql Error : ".$res->getMessage();
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT command_command_id, command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			if ($row["command_command_id"])	{
-				$res2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
-				if (PEAR::isError($res)) 
-					print "Mysql Error : ".$res->getMessage();
-				$row2 =& $res2->fetchRow();
+				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+				if (PEAR::isError($DBRESULT2)) 
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				$row2 =& $DBRESULT2->fetchRow();
 				$row["command_command_id_arg"] = str_replace('#BR#', "\\n", $row["command_command_id_arg"]);
 				$row["command_command_id_arg"] = str_replace('#T#', "\\t", $row["command_command_id_arg"]);
 				$row["command_command_id_arg"] = str_replace('#R#', "\\r", $row["command_command_id_arg"]);
@@ -578,11 +613,11 @@ For information : contact@oreon-project.org
 	function getMyHostID($host_name = NULL)	{
 		if (!$host_name) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT host_id FROM host WHERE host_name = '".htmlentities($host_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT host_id FROM host WHERE host_name = '".htmlentities($host_name, ENT_QUOTES)."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
 			return $row["host_id"];
 		}
 		return NULL;
@@ -591,11 +626,11 @@ For information : contact@oreon-project.org
 	function getMyHostGroupID($hostgroup_name = NULL)	{
 		if (!$hostgroup_name) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '".htmlentities($hostgroup_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '".htmlentities($hostgroup_name, ENT_QUOTES)."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
 			return $row["hg_id"];
 		}
 		return NULL;
@@ -604,11 +639,11 @@ For information : contact@oreon-project.org
 	function getMyServiceGroupID($servicegroup_name = NULL)	{
 		if (!$servicegroup_name) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".htmlentities($servicegroup_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".htmlentities($servicegroup_name, ENT_QUOTES)."' LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
 			return $row["sg_id"];
 		}
 		return NULL;
@@ -617,11 +652,11 @@ For information : contact@oreon-project.org
 	function getMyContactID($contact_name = NULL)	{
 		if (!$contact_name) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '".htmlentities($contact_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '".htmlentities($contact_name, ENT_QUOTES)."' LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
 			return $row["contact_id"];
 		}
 		return NULL;
@@ -630,11 +665,11 @@ For information : contact@oreon-project.org
 	function getMyContactGroupID($cg_name = NULL)	{
 		if (!$cg_name) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '".htmlentities($cg_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '".htmlentities($cg_name, ENT_QUOTES)."' LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
 			return $row["cg_id"];
 		}
 		return NULL;
@@ -643,25 +678,24 @@ For information : contact@oreon-project.org
 	function getMyCommandID($command_name = NULL)	{
 		if (!$command_name) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT command_id FROM command WHERE command_name = '".htmlentities($command_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT command_id FROM command WHERE command_name = '".htmlentities($command_name, ENT_QUOTES)."' LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
 			return $row["command_id"];
 		}
-		$res->free();
 		return NULL;
 	}
 
 	function getMyTPID($tp_name = NULL)	{
 		if (!$tp_name) return;
 		global $pearDB;
-		$res =& $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".htmlentities($tp_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$row =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".htmlentities($tp_name, ENT_QUOTES)."' LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
 			return $row["tp_id"];
 		}
 		return NULL;
@@ -680,26 +714,26 @@ For information : contact@oreon-project.org
 	
 	function getDefaultMetaGraph ($meta_id = NULL)	{
 		global $pearDB;		
-		$res =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		$gt =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$gt =& $DBRESULT->fetchRow();
 		if ($gt["graph_id"])
 			return $gt["graph_id"];	
 		else {
-			$res =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($res)) 
-				print "Mysql Error : ".$res->getMessage();
-			if ($res->numRows())	{
-				$gt =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+			if (PEAR::isError($DBRESULT)) 
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			if ($DBRESULT->numRows())	{
+				$gt =& $DBRESULT->fetchRow();
 				return $gt["graph_id"];
 			}
 		}
-		$res =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$gt =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$gt =& $DBRESULT->fetchRow();
 			return $gt["graph_id"];
 		}
 		return NULL;
@@ -717,35 +751,35 @@ For information : contact@oreon-project.org
 				return $gt["graph_id"];
 		}
 		else	{
-			$res =& $pearDB->query("SELECT grapht_graph_id FROM giv_graphs WHERE graph_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($res)) 
-				print "Mysql Error : ".$res->getMessage();
-			$gt =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT grapht_graph_id FROM giv_graphs WHERE graph_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT)) 
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$gt =& $DBRESULT->fetchRow();
 			if ($gt["grapht_graph_id"])
 				return $gt["grapht_graph_id"];	
 		}
 		if ($rrdType != 2)	{
-			$res =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($res)) 
-				print "Mysql Error : ".$res->getMessage();
-			if ($res->numRows())	{
-				$gt =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+			if (PEAR::isError($DBRESULT)) 
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			if ($DBRESULT->numRows())	{
+				$gt =& $DBRESULT->fetchRow();
 				return $gt["graph_id"];
 			}
 		} else {
-			$res =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl2 = '1' LIMIT 1");
-			if (PEAR::isError($res)) 
-				print "Mysql Error : ".$res->getMessage();
-			if ($res->numRows())	{
-				$gt =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl2 = '1' LIMIT 1");
+			if (PEAR::isError($DBRESULT))  
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			if ($DBRESULT->numRows())	{
+				$gt =& $DBRESULT->fetchRow();
 				return $gt["graph_id"];
 			}
 		}
-		$res =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$gt =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$gt =& $DBRESULT->fetchRow();
 			return $gt["graph_id"];
 		}
 		return NULL;
@@ -759,42 +793,72 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		if (!$rrdType)	$rrdType = 1;
 		$ds = array();
-		$res =& $pearDB->query("SELECT gct.compo_id FROM giv_components_template gct, giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = '".$graph_id."' AND ggcr.gc_compo_id = gct.compo_id ORDER BY gct.ds_order");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
+		$DBRESULT =& $pearDB->query("SELECT gct.compo_id FROM giv_components_template gct, giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = '".$graph_id."' AND ggcr.gc_compo_id = gct.compo_id ORDER BY gct.ds_order");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$cpt = 0;
-		$sum = $res->numRows();
-		while ($res->fetchInto($ds))	{
+		$sum = $DBRESULT->numRows();
+		while ($DBRESULT->fetchInto($ds))	{
 			if ($current_ds == $cpt)
 				return $ds["compo_id"];
 			$cpt++;				 
 		}
 		if ($rrdType != 2)	{
-			$res =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($res)) 
-				print "Mysql Error : ".$res->getMessage();
-			if ($res->numRows())	{
-				$ds =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+			if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			if ($DBRESULT->numRows())	{
+				$ds =& $DBRESULT->fetchRow();
 				return $ds["compo_id"];
 			}
 		}
 		else	{
-			$res =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl2 = '1' LIMIT 1");
-			if (PEAR::isError($res)) 
-				print "Mysql Error : ".$res->getMessage();
-			if ($res->numRows())	{
-				$ds =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl2 = '1' LIMIT 1");
+			if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			if ($DBRESULT->numRows())	{
+				$ds =& $DBRESULT->fetchRow();
 				return $ds["compo_id"];
 			}
 		}
-		$res =& $pearDB->query("SELECT compo_id FROM giv_components_template LIMIT 1");
-		if (PEAR::isError($res)) 
-			print "Mysql Error : ".$res->getMessage();
-		if ($res->numRows())	{
-			$ds =& $res->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template LIMIT 1");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$ds =& $DBRESULT->fetchRow();
 			return $ds["compo_id"];
 		}
 		return NULL;
 	}
 
+	# Nagios Images	
+	function return_image_list($rep = NULL){
+		global $oreon;
+		$elems = array();
+		$images = array(NULL=>NULL);
+		$is_not_an_image = array("."=>".", ".."=>"..", "README"=>"README", "readme"=>"readme", "LICENSE"=>"LICENSE", "license"=>"license");
+		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
+			$rep = substr($rep, 1);
+		if ($rep == NULL)	{
+			$elems = scandir($oreon->optGen["nagios_path_img"]);
+			foreach ($elems as $key => $value)
+				if (!is_dir($oreon->optGen["nagios_path_img"].$value) || $value == "." || $value == "..")
+					$elems[$key] = NULL;
+		}
+		$elems[count($elems)] = $rep;
+		for ($i = 0; $i < count($elems); $i++)	{
+			if ($elems[$i])	{
+				$handle = @opendir($oreon->optGen["nagios_path_img"].$elems[$i]);
+				while (false !== ($filename = @readdir($handle))){
+					if (!is_dir($oreon->optGen["nagios_path_img"].$elems[$i]."/".$filename) && !array_key_exists($filename, $is_not_an_image) && substr($filename, -1)!= "~"){
+						$key = substr($oreon->optGen["nagios_path_img"].$elems[$i]."/".$filename, strlen($oreon->optGen["nagios_path_img"]));
+						$images[$key] = $key;
+					}
+				}
+				ksort($images);
+				@closedir($handle);
+			}
+		}
+		return ($images);
+	}
 ?>
