@@ -27,11 +27,11 @@ For information : contact@oreon-project.org
 	if (!$session->numRows())
 		exit;
 
-	if (isset($_GET["path"]) && $_GET["path"] && is_file($_GET["path"]))    {
-		$fd=fopen($_GET["path"], "r");
-		$buffer=NULL;
+	if (isset($_GET["path"]) && $_GET["path"] && is_file($_GET["path"])){
+		$fd = fopen($_GET["path"], "r");
+		$buffer = NULL;
 		while (!feof($fd))
-		    $buffer.=fgets($fd, 4096);
+		    $buffer .= fgets($fd, 4096);
 		fclose ($fd);
 		print $buffer;
 	}
