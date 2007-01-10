@@ -83,9 +83,9 @@ For information : contact@oreon-project.org
 			$tab_name = spliti("_", $_GET["service_description"]);
 			$res_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$tab_name[1]."'");
 			$res_meta->fetchInto($meta_data);
-			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph Meta Service ".$meta_data["meta_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph Meta Service ".$meta_data["meta_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' --slope-mode ";
 		} else
-			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph ".$_GET["service_description"]." on Host ".$_GET["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+			$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='Graph ".$_GET["service_description"]." on Host ".$_GET["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' --slope-mode ";
 
 		# Init Graph Template Value
 		if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"])
@@ -118,9 +118,11 @@ For information : contact@oreon-project.org
 
 		# Init DS template For each curv
 		$ppMetrics = array();
-		$res =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$_GET["service_description"]."'");
+		$DBRESULT =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$_GET["service_description"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
-		while($res->fetchInto($ppMetric))	{
+		while($DBRESULT->fetchInto($ppMetric))	{
 			$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace("/", "", $ppMetric["metric"]);
 			$ppMetrics[$ppMetric["metric_id"]]["unit"] = $ppMetric["unit"];
 			$ds = getDefaultDS($template_id, $cpt, 1);
