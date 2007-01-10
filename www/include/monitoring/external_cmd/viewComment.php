@@ -139,6 +139,14 @@ For information : contact@oreon-project.org
 	$tpl->assign("tab_comments_host", $tab_comments_host);
 	$tpl->assign("tab_comments_svc", $tab_comments_svc);
 	
+	$tpl->assign("nb_comments_host", count($tab_comments_host));
+	$tpl->assign("nb_comments_svc", count($tab_comments_svc));
+	
+	$tpl->assign("no_host_comments", $lang["no_host_comments"]);
+	$tpl->assign("no_svc_comments", $lang["no_svc_comments"]);
+	
+	$tpl->assign("delete", $lang['delete']);
+	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

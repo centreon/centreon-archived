@@ -167,6 +167,8 @@ For information : contact@oreon-project.org
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_downtime_host", $tab_downtime_host);
 	$tpl->assign("tab_downtime_svc", $tab_downtime_svc);
+	$tpl->assign("nb_downtime_host", count($tab_downtime_host));
+	$tpl->assign("nb_downtime_svc", count($tab_downtime_svc));
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());

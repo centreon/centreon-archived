@@ -1,7 +1,8 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form action="" method='GET'>
 <hidden name="p" value='{$p}'>
-	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$lang.dtm_host_downtimes}</td></tr></table><br><br>
+	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$lang.dtm_host_downtimes}</td>{if !$nb_downtime_host}<td align='right'><a href="{$msgh.addL}">{$msgh.addT}</a></td>{/if}</tr></table><br><br>
+	{if $nb_downtime_host}
 	<table id="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -28,14 +29,18 @@
 		</tr>
 		{/foreach}
 		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="image" name="o" value="dh" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msgh.delConfirm}')"></td>
+			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="dh"><input type="submit" name="{$lang.delete}" value="{$lang.delete}" style="margin-left: 20px;" onclick="return confirm('{$msgh.delConfirm}')"></td>
 			<td class="ListColFooterCenter" colspan="6">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgh.addL}">{$msgh.addT}</a></td>
 		</tr>		
 	</table>
 	{$form.hidden}
+	{else}
+	<center><b>{$lang.no_host_dtm}</b></center>
+	{/if}
 	</form>
-	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$lang.dtm_service_downtimes}</td></tr></table><br><br>
+	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$lang.dtm_service_downtimes}</td>{if !$nb_downtime_svc}<td align='right'><a href="{$msgs.addL}">{$msgs.addT}</a></td>{/if}</tr></table><br><br>
+	{if $nb_downtime_svc}
 	<form action="" method='GET'>
 	<table id="ListTable">
 		<tr class='ListHeader'>
@@ -65,10 +70,13 @@
 		</tr>
 		{/foreach}
 		<tr>
-			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="image" name="o" value="ds" src="./img/icones/16x16/selection_delete.gif" onclick="return confirm('{$msgs.delConfirm}')"></td>
+			<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="{$lang.delete}" value="{$lang.delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
 			<td class="ListColFooterCenter" colspan="7">&nbsp;</td>
 			<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
 		</tr>	
 	</table>
 	{$form.hidden}
+	{else}
+	<center><b>{$lang.no_svc_dtm}</b></center>
+	{/if}
 </form>
