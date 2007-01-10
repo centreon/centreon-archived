@@ -104,14 +104,16 @@ For information : contact@oreon-project.org
 		$host_status[$host_name]["is_flapping"] = $en[$host_status[$host_name]["is_flapping"]];
 
 		$tab_status = array();
-		foreach ($tab_host_service[$host_name] as $key_name => $s){
-			if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
-				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
-			$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
-		}
+		if (isset($tab_host_service[$host_name]) && count($tab_host_service[$host_name]))
+			foreach ($tab_host_service[$host_name] as $key_name => $s){
+				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
+					$tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
+				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
+			}
 		$status = NULL;
-		foreach ($tab_status as $key => $value)
-			$status .= "&value[".$key."]=".$value;
+		if (isset($tab_status))
+			foreach ($tab_status as $key => $value)
+				$status .= "&value[".$key."]=".$value;
 
 		$tpl->assign("lang", $lang);
 		$tpl->assign("p", $p);
