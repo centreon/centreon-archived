@@ -36,9 +36,7 @@ For information : contact@oreon-project.org
 	
 		$data = array("host_id" => getMyHostID($host_name));
 			
-		#
 		## Database retrieve information for differents elements list we need on the page
-		#
 		
 		$hosts = array(""=>"");
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM `host` WHERE host_register = '1' ORDER BY host_name");
@@ -56,16 +54,13 @@ For information : contact@oreon-project.org
 		$attrsText 		= array("size"=>"30");
 		$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 		
-		#
 		## Form begin
-		#
 		
 		$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 		if ($o == "ah")
 			$form->addElement('header', 'title', $lang["cmt_addH"]);
-		#
+
 		## Indicator basic information
-		#
 		
 		$redirect =& $form->addElement('hidden', 'o');
 		$redirect->setValue($o);

@@ -23,6 +23,5 @@
 			<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 		</div>
 		{$form.hidden}
-		<input name="o" type="hidden" value="hd" />
 	</form>
 </div>
