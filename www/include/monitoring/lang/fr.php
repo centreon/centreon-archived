@@ -144,6 +144,8 @@ $lang['m_mon_soft'] = "Soft";
 
 /* command send */
 
-$lang['cmd_send'] = "Command sent ! ";
+$lang['cmd_send'] = "Command envoy&eacute; ! ";
+$lang["no_host_comments"] = "Pas de commentaires pour les hosts.";
+$lang["no_svc_comments"] = "Pas de commentaires pour les services.";
 
 ?>
