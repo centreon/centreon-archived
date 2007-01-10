@@ -14,7 +14,7 @@
 							</tr>
 							<tr class="middle">
 								<td class="left"></td>
-								<td class="center">
+								<td class="center" style="white-space: nowrap;">
 									<img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;'>&nbsp;{$curr_id.title}<br><br>								
 									<ul>
 										{foreach from=$curr_id.tab item=curr_id2}
@@ -59,7 +59,7 @@
 		</tr>
 		<tr class="middle">
 			<td class="left"></td>
-			<td class="center">
+			<td class="center" style="white-space: nowrap;">
 				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}' style='padding-bottom:2px;'>&nbsp;{$connected_users} <br><br>
   	             	<ul>
 	  	              { foreach item=user from=$tab_user }
