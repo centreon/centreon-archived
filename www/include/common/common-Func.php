@@ -832,10 +832,13 @@ For information : contact@oreon-project.org
 	}
 
 	# Nagios Images	
-	function return_image_list($rep = NULL){
+	function return_image_list($rep = NULL, $full = true){
 		global $oreon;
 		$elems = array();
-		$images = array(NULL=>NULL);
+		if ($full)
+			$images = array(NULL=>NULL);
+		else
+			$images = array();
 		$is_not_an_image = array("."=>".", ".."=>"..", "README"=>"README", "readme"=>"readme", "LICENSE"=>"LICENSE", "license"=>"license");
 		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
 			$rep = substr($rep, 1);
