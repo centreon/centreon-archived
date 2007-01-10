@@ -148,5 +148,7 @@ $lang['m_mon_soft'] = "Soft";
 $lang['cmd_send'] = "Command sent ! ";
 $lang["no_host_comments"] = "No Comment for hosts.";
 $lang["no_svc_comments"] = "No Comment for services.";
+$lang["no_host_dtm"] = "No downtime for hosts.";
+$lang["no_svc_dtm"] = "No downtime for services.";
 
 ?>
