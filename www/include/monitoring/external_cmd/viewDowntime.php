@@ -23,7 +23,6 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "templates/");
-
 	$tpl->assign("lang", $lang);
 
 	#Pear library
@@ -74,9 +73,8 @@ For information : contact@oreon-project.org
 				}			
 			}
 		} else {
-          $flag_host = 0;
-          $flag_svc = 0;
-
+			$flag_host = 0;
+          	$flag_svc = 0;
 			while ($str = fgets($log))	{
                 if (preg_match("/^hostdowntime/", $str)){
                 	$tab_downtime_host[$i] = array();
@@ -113,21 +111,15 @@ For information : contact@oreon-project.org
                         if (preg_match('`duration$`', $res[0])){$tab_downtime_host[$i]["len"] = $res[1];}
                         if (preg_match('`author$`', $res[0])){$tab_downtime_host[$i]["author"] = $res[1];}
                         if (preg_match('`comment$`', $res[0])){$tab_downtime_host[$i]["comment"] = $res[1];}
-                        if (preg_match('`}$`', $str))
-                        {
+                        if (preg_match('`}$`', $str)){
                             $flag_host = 0;
                             $i++;
                         }
-                    }
-                    else if($flag_svc == 1)
-                    {
+                    } else if ($flag_svc == 1){
                       $res = preg_split("/=/", $str);
                       $res[0] = trim($res[0]);
                       if (isset($res[1]))
                       	$res[1] = trim($res[1]);
-                      	
-
-                      	
                         if (preg_match('`downtime_id$`', $res[0])){
                             $selectedElements =& $form->addElement('checkbox', "select[".$res[1]."]");
                             $tab_downtime_svc[$i2]["id"] = $res[1];}
@@ -137,8 +129,6 @@ For information : contact@oreon-project.org
                           $tab_downtime_svc[$i2]["host_name"] = $res[1];}
                         if (preg_match('`entry_time$`', $res[0])){
                         	$tab_downtime_svc[$i2]["time"] = date("d-m-Y G:i:s", $res[1]);
-
-
                         	$cmd = "SELECT downtime_id from downtime where entry_time = ".$res[1]." ";
                         	$result =& $pearDB->query($cmd);
                         	if (PEAR::isError($pearDB)) {
@@ -157,16 +147,13 @@ For information : contact@oreon-project.org
                         if (preg_match('`duration$`', $res[0])){$tab_downtime_svc[$i2]["len"] = $res[1];}
                         if (preg_match('`author$`', $res[0])){$tab_downtime_svc[$i2]["author"] = $res[1];}
                         if (preg_match('`comment$`', $res[0])){$tab_downtime_svc[$i2]["comment"] = $res[1];}
-                        if (preg_match('`}$`', $str))
-                        {
+                        if (preg_match('`}$`', $str)){
                             $flag_svc = 0;
-                        $i2++;
+                        	$i2++;
                         }
                     }
                 }
-
-
-				}
+			}
 		}
 	}
 
@@ -180,11 +167,8 @@ For information : contact@oreon-project.org
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_downtime_host", $tab_downtime_host);
 	$tpl->assign("tab_downtime_svc", $tab_downtime_svc);
-	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-	
 	$tpl->display("downtime.ihtml");
-
 ?>
