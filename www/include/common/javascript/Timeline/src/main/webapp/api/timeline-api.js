@@ -19,6 +19,8 @@
  
 var Timeline = new Object();
 Timeline.Platform = new Object();
+
+
     /*
         HACK: We need these 2 things here because we cannot simply append
         a <script> element containing code that accesses Timeline.Platform

@@ -116,6 +116,9 @@ For information : contact@oreon-project.org
 			' AND date_start >=  ' . ($start_date_select-1) .
 			' AND date_end <= ' . $end_date_select;
 
+
+		$ttmp = $end_date_select - $start_date_select;
+
 		$res = & $pearDB->query($rq);
 		if (PEAR::isError($res)){
 		  die($res->getMessage());
@@ -127,6 +130,10 @@ For information : contact@oreon-project.org
 			$Tnone = 0 + $h["Tnone"];
 		  }
 		}		
+
+		echo Duration::toString($Tup) . "<br>";
+
+
 	}
 
 	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select){	

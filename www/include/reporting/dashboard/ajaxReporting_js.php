@@ -18,58 +18,38 @@ For information : contact@oreon-project.org
 
 ?>
 <SCRIPT LANGUAGE="JavaScript">
-
-
-    var tl;
+var tl;
     
 function initTimeline() {
-	var eventSource = new Timeline.DefaultEventSource();
-
-	  var bandInfos = [
-	    Timeline.createBandInfo({
-        	eventSource:    eventSource,
-	        width:          "70%", 
-	        intervalUnit:   Timeline.DateTime.DAY, 
-	        intervalPixels: 300,
-
-            trackHeight:    2.0,
-            trackGap:       0.1,
-	    }),
-	    Timeline.createBandInfo({
-	        showEventText:  false,
-    	    trackHeight:    0.5,
-        	trackGap:       0.2,
-        	eventSource:    eventSource,
-	        width:          "30%", 
-	        intervalUnit:   Timeline.DateTime.MONTH, 
-	        intervalPixels: 300
-	    })
-	  ];
+  var eventSource = new Timeline.DefaultEventSource();
+    var bandInfos = [
+    Timeline.createBandInfo({
+        eventSource:    eventSource,
+        width:          "70%", 
+        intervalUnit:   Timeline.DateTime.DAY, 
+        intervalPixels: 300
+    }),
+    Timeline.createBandInfo({
+        showEventText:  false,
+        eventSource:    eventSource,
+        width:          "30%", 
+        intervalUnit:   Timeline.DateTime.MONTH, 
+        intervalPixels: 300
+    })
+  ];
 	        bandInfos[0].syncWith = 1;
 	        bandInfos[0].multiple = 2;
             bandInfos[0].highlight = false;
 	        bandInfos[1].syncWith = 1;
             bandInfos[1].highlight = false;
 	        bandInfos[1].multiple = 2;
-	  var tl = Timeline.create(document.getElementById('my-timeline'), bandInfos, Timeline.HORIZONTAL);
-
- 
 
 
-
-	_form=document.getElementById('AjaxBankBasic');
-	_formR=document.getElementById('datareport');
-
-	var color = _formR.color_UP.value + ':' +
-	_formR.color_DOWN.value  + ':' +
-	_formR.color_UNREACHABLE.value + ':' +
-	_formR.color_UNKNOWN.value;
-
-	var arg = 'oreonPath=' + _form.fileOreonConf.value +
-	 		  	'&hostID=' + _formR.hostID.value +
-	 		  	'&color=' + color;
+	var arg = 'oreonPath=<?=$oreon->optGen["oreon_path"]?>&hostID=<?=$host_id?>&color=<?=substr($oreon->optGen["color_up"],1)?>:<?=substr($oreon->optGen["color_down"],1)?>:<?=substr($oreon->optGen["color_unreachable"],1)?>:<?=substr($oreon->optGen["color_unknown"],1)?>';
 	 		  	
-	if(_formR.hostID.value)
-  		Timeline.loadXML('./include/reporting/dashboard/GetXmlHost.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });  	
-	}
+  tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+
+  Timeline.loadXML('./include/reporting/dashboard/GetXmlHost.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
+}
+
 </SCRIPT>
