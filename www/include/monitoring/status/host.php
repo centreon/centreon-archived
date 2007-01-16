@@ -43,8 +43,8 @@ For information : contact@oreon-project.org
 		if ($oreon->user->admin || HadUserLca($pearDB) == 0 || (HadUserLca($pearDB) && isset($lcaHostByName["LcaHost"][$name]))){
 			$host_status[$name]["address"] = $host["host_address"];
 			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["current_state"])];
-			$host_status[$name]["last_check"] = date($lang["date_time_format_status"], $h["last_check"]);
-			$host_status[$name]["last_state_change"] = Duration::toString(time() - $h["last_state_change"]);
+			$host_status[$name]["last_check"] = $host_status[$name]["last_check"] ? date($lang["date_time_format_status"], $h["last_check"]) : "" ;
+			$host_status[$name]["last_state_change"] = $host_status[$name]["last_state_change"] ? Duration::toString(time() - $h["last_state_change"]) : "";
 			$host_status[$name]["class"] = $tab_class[$rows % 2];
 			$host_status[$name]["name"] = $name;
 			$tmp[1] = $host_status[$name];

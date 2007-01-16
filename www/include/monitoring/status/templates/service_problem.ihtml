@@ -99,7 +99,7 @@
 				</div>
 				</td>
 				<td class="ListColCenter" style="background-color:{ $s.status_color }" id="tdStatus{$c}"><div id="current_state{$c}">{ $s.current_state }</div></td>
-				<td class="ListColRight"><div id="last_check{$c}">{ $s.last_check }</div></td>
+				<td class="ListColRight" style="white-space:nowrap;"><div id="last_check{$c}">{ $s.last_check }</div></td>
 	            <td class="ListColRight" align="right"><div id="last_state_change{$c}">{ $s.last_state_change }</div></td>
 	            <td class="ListColCenter" align="center"><div id="current_attempt{$c}">{ $s.current_attempt }</div></td>
 	            <td class="ListColNoWrap"><div id="plugin_output{$c}">{ $s.plugin_output}{ $t}</div></td>						
