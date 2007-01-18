@@ -37,12 +37,14 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
 
 <?
 $msg = NULL;  
+$alldeps = NULL;
 foreach ($pear_module as $module) {
   
 ?>
    <tr>
     <td><b>&nbsp;&nbsp;&nbsp;<? echo $module["name"] ?></b></td>
     <td align="right"><?
+    	$msg = NULL;  
     	if (file_exists($pear_path. '/'.$module["path"])) {
           	echo '<b><span class="go">OK</font></b>';
 		} else {
@@ -60,7 +62,7 @@ foreach ($pear_module as $module) {
   <? } ?>
 
   <? } ?>
-  <? if($msg)  { ?>
+  <? if($alldeps)  { ?>
    <tr>
     <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
   </tr>
