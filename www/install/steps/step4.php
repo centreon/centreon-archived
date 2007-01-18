@@ -108,6 +108,18 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 				echo '<b><span class="warning">Warning: xml.so not loaded in php.ini</font></b>';?>
 		</td>
   </tr>
+    <tr>
+    	<td><b>&nbsp;&nbsp;&nbsp;PHP-POSIX</b></td>
+    	<td align="right"><?
+			if (function_exists('posix_getpwuid'))
+          		echo '<b><span class="go">OK</font></b>';
+			else {
+				echo '<b><span class="stop">Critical: php-posix functions are not installed</font></b>';
+				$return_false = 1;	
+			}?>
+		</td>
+  </tr>
+  
   <tr>
 		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
     	<td align="right"><?
@@ -125,8 +137,8 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
     <td align="right"><?
 
 	    if (is_dir($_SESSION['nagios_conf'])) {
-	       $uid = posix_getpwuid (fileowner($_SESSION['nagios_conf']));
-			$gid = posix_getgrgid (filegroup($_SESSION['nagios_conf']));
+	       $uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
+			$gid = @posix_getgrgid (filegroup($_SESSION['nagios_conf']));
 	       $perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
 		if( (strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
 	          	echo '<b><span class="go">OK</font></b>';
