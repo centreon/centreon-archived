@@ -354,25 +354,21 @@ For information : contact@oreon-project.org
 				$errorPaquet =  'In : '.get_snmp_value("1.3.6.1.2.1.2.2.1.14.".$it, "Counter32: ") . " Pkts".' / Out : '.get_snmp_value("1.3.6.1.2.1.2.2.1.20.".$it, "Counter32: ") . " Pkts";
 
 				# IP Interface
-
+				$ipAddress = NULL;
 				$ipInterface_data = walk_snmp_value("1.3.6.1.2.1.4.20.1.1", "IpAddress: ");
-			  	if ($ipInterface_data){
-			    	foreach ($ipInterface_data as $it){
-			    		$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it, "INTEGER: ");
-			    		$ipInterface[$index] = array();
-			    		$ipInterface[$index]["ipIP"] = $it;
-			    		$ipInterface[$index]["ipIndex"] = $index;
-			    		$ipInterface[$index]["ipNetMask"] = get_snmp_value("1.3.6.1.2.1.4.20.1.3.".$it, "IpAddress: ");
-
+				if ($ipInterface_data){
+			    	foreach ($ipInterface_data as $it2){
+			    		$index = get_snmp_value("1.3.6.1.2.1.4.20.1.2.".$it2, "INTEGER: ");
+			    		if ($index == $it)			    
+				    		$ipAddress   = $it2." / ".get_snmp_value("1.3.6.1.2.1.4.20.1.3.".$it2, "IpAddress: ");
 			    		if ($debug_inventory == 1)
 							error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' Index => " . $ipInterface[$index]["ipIndex"] ." : Ip => " .$ipInterface[$index]["ipIP"] . " : NetMask => " .  $ipInterface[$index]["ipNetMask"]  ."\n", 3, $debug_path."inventory.log");
-
+			    		if (isset($ipAddress))
+			    			break;
 			    	}
 			    }
 
-		    	if (isset($ipInterface[$ifTab[$key]["ifIndex"]]) && $ipInterface[$ifTab[$key]["ifIndex"]]["ipIP"])
-					$ipAddress   = $ipInterface[$ifTab[$key]["ifIndex"]]["ipIP"]." / ".$ipInterface[$ifTab[$key]["ifIndex"]]["ipNetMask"];
-				else
+		    	if (!isset($ipAddress))
 					$ipAddress   = "Not Defined";
 
 
