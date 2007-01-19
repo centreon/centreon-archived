@@ -245,9 +245,13 @@ For information : contact@oreon-project.org
 				$service["service_normal_check_interval"] = 5;
 				###########
 				$len = $service["service_normal_check_interval"] * 120;
+			} else if ($service["service_normal_check_interval"]){
+				$len = $service["service_normal_check_interval"] * 120;
 			} else
 				$len = 5 * 120;
-
+			
+			$step = $len;
+			$len *= 2;
 			isset($ret["step"]) && $ret["step"] != 0 ? $time_between_two_values = $len * $ret["step"] : $time_between_two_values = $len;
 
 			# Init
@@ -330,16 +334,17 @@ For information : contact@oreon-project.org
 				}
 				$time_end_mysql = microtime_float();
 				# Create RRDTool DB
-	 			$cmd = $oreon->optGen["rrdtool_path_bin"] . " create ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd --start $start_create ";
+	 			$cmd = $oreon->optGen["rrdtool_path_bin"] . " create ".$oreon->optGen["oreon_path"]."filesGeneration/graphs/simpleRenderer/rrdDB/".str_replace(" ", "-",$ret["host_name"])."_".str_replace(" ", "-",$ret["service_description"]).".rrd --start $start_create --step $step ";
 				$nb_ds = 0;
 				foreach ($ppMetrics as $key => $metric){
+					if ($metric["metric"] == "")
+						$metric["metric"] = "a".$nb_ds;
 					$cmd .= " DS:".str_replace("/", "", addslashes($metric["metric"])).":GAUGE:$time_between_two_values:U:U";
 					$nb_ds++;
 				}
 				$cpt_total_graphed_values_for_rrd = $cpt_total_values + 100;
-				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd . " ";//RRA:MIN:0.5:8:".$cpt_total_graphed_values_for_rrd." RRA:MAX:0.5:8:".$cpt_total_graphed_values_for_rrd;
+				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd . " RRA:MIN:0.5:1:".$cpt_total_graphed_values_for_rrd." RRA:MAX:0.5:8:".$cpt_total_graphed_values_for_rrd . " ";
 				system($cmd, $return);
-
 				################################################################
 				$time_start_create = microtime_float();
 				$cpt_data = 0;
