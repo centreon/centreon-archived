@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -128,13 +126,13 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'information', $lang['lca_infos']);
 	$form->addElement('text', 'lca_name', $lang["lca_name"], $attrsText);
+	$form->addElement('text', 'lca_alias', $lang["alias"], $attrsText);
 /*	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, $lang['lca_tpMenu'], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, $lang['lca_tpRes'], '2');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, $lang['lca_tpBoth'], '3');
 	$form->addGroup($tab, 'lca_type', $lang["lca_type"], '&nbsp;');
 	$form->setDefaults(array('lca_type' => '3')); */
-	$form->addElement('textarea', 'lca_comment', $lang["lca_comment"], $attrsTextarea);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, $lang["enable"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, $lang["disable"], '0');
@@ -151,6 +149,12 @@ For information : contact@oreon-project.org
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
+	#
+	## Further informations
+	#
+	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
+	$form->addElement('textarea', 'lca_comment', $lang["lca_comment"], $attrsTextarea);
+	
 	#
 	## Resources concerned
 	#
@@ -271,7 +275,7 @@ For information : contact@oreon-project.org
 			$lcaObj->setValue(insertLCAInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateLCAInDB($lcaObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&lca_id=".$lcaObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;

@@ -21,10 +21,13 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 	 	
 		<tr class="list_one"><td class="FormRowField">{$form.lca_name.label}</td><td class="FormRowValue">{$form.lca_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.lca_comment.label}</td><td class="FormRowValue">{$form.lca_comment.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.lca_alias.label}</td><td class="FormRowValue">{$form.lca_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lca_activate.label}</td><td class="FormRowValue">{$form.lca_activate.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.cg}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lca_cgs.label}</td><td class="FormRowValue">{$form.lca_cgs.html}</td></tr>
+		
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.lca_comment.label}</td><td class="FormRowValue">{$form.lca_comment.html}</td></tr>
 
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>

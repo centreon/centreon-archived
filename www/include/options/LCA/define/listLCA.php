@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -41,7 +39,7 @@ For information : contact@oreon-project.org
 	}
 	$lca_reg ? $lca_reg = $lca_reg : $lca_reg =  '\'\'';
 	if ($search)
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_name AND lca_id NOT IN (".$lca_reg.") LIKE '%".$search."%'");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") AND (lca_name LIKE '%".$search."%' OR lca_alias LIKE '%".$search."%')");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.")");
 	$tmp =& $DBRESULT->fetchRow();
@@ -58,16 +56,16 @@ For information : contact@oreon-project.org
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
+	$tpl->assign("headerMenu_alias", $lang['alias']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 
 	#List
 	if ($search)
-		$rq = "SELECT lca_id, lca_name, lca_comment, lca_activate  FROM lca_define WHERE lca_name LIKE '%".$search."%' AND lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT lca_id, lca_name, lca_alias, lca_activate  FROM lca_define WHERE (lca_name LIKE '%".$search."%' OR lca_alias LIKE '%".$search."%') AND lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT lca_id, lca_name, lca_comment, lca_activate FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT lca_id, lca_name, lca_alias, lca_activate FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
@@ -91,7 +89,7 @@ For information : contact@oreon-project.org
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$lca["lca_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&lca_id=".$lca['lca_id'],
-						"RowMenu_desc"=>substr($lca["lca_comment"], 0, 40),
+						"RowMenu_alias"=>$lca["lca_alias"],
 						"RowMenu_status"=>$lca["lca_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
