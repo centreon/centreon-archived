@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
@@ -39,14 +37,14 @@ For information : contact@oreon-project.org
 		# Set HostGroup Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($hgP); $i++)
 			$dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
 		$DBRESULT->free();
 		# Set HostGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($hgC); $i++)
 			$dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
 		$DBRESULT->free();
@@ -61,7 +59,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
@@ -93,6 +91,7 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'information', $lang['dep_infos']);
 	$form->addElement('text', 'dep_name', $lang["dep_name"], $attrsText);
+	$form->addElement('text', 'dep_alias', $lang["alias"], $attrsText);
 	$form->addElement('text', 'dep_description', $lang["dep_description"], $attrsText);
 	if ($oreon->user->get_version() == 2)	{
 		$tab = array();
@@ -192,7 +191,7 @@ For information : contact@oreon-project.org
 			$depObj->setValue(insertHostGroupDependencyInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateHostGroupDependencyInDB($depObj->getValue("dep_id"));
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$depObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
