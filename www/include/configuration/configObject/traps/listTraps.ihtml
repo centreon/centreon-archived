@@ -29,7 +29,7 @@
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
-			<td class="ListColLeft">{$elemArr[elem].RowMenu_desc}</td>
+			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColLeft">{$elemArr[elem].RowMenu_handler}</td>
 			<td class="ListColLeft">{$elemArr[elem].RowMenu_args}</td>
 			<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>

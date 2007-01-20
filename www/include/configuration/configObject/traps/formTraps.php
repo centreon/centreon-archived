@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $traps_id)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
 	}
@@ -126,8 +126,7 @@ For information : contact@oreon-project.org
 			$trapObj->setValue(insertTrapInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateTrapInDB($trapObj->getValue());
-		$o = "w";
-		//$trapObj =& $form->getElement('traps_id');
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$trapObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;

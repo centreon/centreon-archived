@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('traps_id');
 		$DBRESULT =& $pearDB->query("SELECT traps_name, traps_id FROM traps WHERE traps_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$trap =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $trap["traps_id"] == $id)	
@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 		foreach($traps as $key=>$value)		{
 			$DBRESULT =& $pearDB->query("DELETE FROM traps WHERE traps_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row = $DBRESULT->fetchRow();
 			$row["traps_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -65,7 +65,7 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print $DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				}
 			}
 		}
@@ -91,7 +91,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE traps_id = '".$traps_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function insertTrapInDB ($ret = array())	{
@@ -114,7 +114,7 @@ For information : contact@oreon-project.org
 		$rq .= "'".htmlentities($ret["traps_comments"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(traps_id) FROM traps");
 		$traps_id = $DBRESULT->fetchRow();
 		return ($traps_id["MAX(traps_id)"]);

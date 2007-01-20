@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps");
 	if (PEAR::isError($DBRESULT))
-		print $DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 		$rq = "SELECT * FROM traps ORDER BY traps_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print $DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('form', 'GET', "?p=".$p);
 	#Different style between each lines
@@ -75,11 +75,11 @@ For information : contact@oreon-project.org
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$trap['traps_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$trap["traps_name"],
+						"RowMenu_name"=>myDecode($trap["traps_name"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&traps_id=".$trap['traps_id'],
-						"RowMenu_desc"=>substr($trap["traps_oid"], 0, 40),
-						"RowMenu_args"=>$trap["traps_args"],
-						"RowMenu_handler"=>$trap["traps_handler"],
+						"RowMenu_desc"=>myDecode(substr($trap["traps_oid"], 0, 40)),
+						"RowMenu_args"=>myDecode($trap["traps_args"]),
+						"RowMenu_handler"=>myDecode($trap["traps_handler"]),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
