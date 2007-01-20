@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 			$rq = "SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 		# Set base value
 		$host = array_map("myDecode", $DBRESULT->fetchRow());
@@ -463,7 +463,7 @@ For information : contact@oreon-project.org
 			$hostObj->setValue(insertHostInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateHostInDB($hostObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
