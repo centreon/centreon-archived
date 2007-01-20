@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $meta_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$ms = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Service Notification Options
@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 		# Set Contact Group
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
 		$DBRESULT->free();
@@ -46,14 +46,14 @@ For information : contact@oreon-project.org
 	$metrics = array(NULL=>NULL);
 	$DBRESULT =& $pearDBpp->query("SELECT DISTINCT metric FROM perfdata_service_metric ORDER BY metric");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($metric))
 		$metrics[$metric["metric"]] = $metric["metric"];
 	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
@@ -61,7 +61,7 @@ For information : contact@oreon-project.org
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
@@ -77,7 +77,7 @@ For information : contact@oreon-project.org
 	$escs = array();
 	$DBRESULT =& $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($esc))
 		$escs[$esc["esc_id"]] = $esc["esc_name"];
 	$DBRESULT->free();
@@ -85,7 +85,7 @@ For information : contact@oreon-project.org
 	$deps = array();
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($dep))
 		$deps[$dep["meta_id"]] = $dep["meta_name"];
 	$DBRESULT->free();
@@ -96,7 +96,7 @@ For information : contact@oreon-project.org
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($graphTpl))
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
@@ -268,7 +268,7 @@ For information : contact@oreon-project.org
 			$msObj->setValue(insertMetaServiceInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateMetaServiceInDB($msObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$msObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
