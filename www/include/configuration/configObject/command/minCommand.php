@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -35,7 +33,7 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		if ($DBRESULT->numRows())
 			$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
@@ -47,7 +45,7 @@ For information : contact@oreon-project.org
 	$notifCmds = array(null=>null);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($notifCmd))
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
@@ -55,7 +53,7 @@ For information : contact@oreon-project.org
 	$checkCmds = array(null=>null);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();

@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -36,7 +34,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $command_id)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
@@ -47,7 +45,7 @@ For information : contact@oreon-project.org
 	$resource = array();
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($row))	{
 		$row["resource_line"] = explode("=", $row["resource_line"]);
 		$resource[$row["resource_line"][0]] = $row["resource_line"][0];
@@ -57,7 +55,7 @@ For information : contact@oreon-project.org
 	$macros = array();
 	$DBRESULT =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT macro_name FROM nagios_macro ORDER BY macro_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($row))
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	$DBRESULT->free();
@@ -219,7 +217,7 @@ For information : contact@oreon-project.org
 			$cmdObj->setValue(insertCommandInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateCommandInDB($cmdObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$cmdObj =& $form->getElement('command_id');
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$cmdObj->getValue()."'"));
 		$form->freeze();
