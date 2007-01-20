@@ -16,11 +16,11 @@
 		{if $nagios == 2}
 			<tr class="list_one"><td class="FormRowField">{$form.inherits_parent.label}</td><td class="FormRowValue">{$form.inherits_parent.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField">{$form.execution_failure_criteria.label}</td><td class="FormRowValue">{$form.execution_failure_criteria.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.notification_failure_criteria.label}</td><td class="FormRowValue">{$form.notification_failure_criteria.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.dep_msParents.label}</td><td class="FormRowValue">{$form.dep_msParents.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.dep_msChilds.label}</td><td class="FormRowValue">{$form.dep_msChilds.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.dep_comment.label}</td><td class="FormRowValue">{$form.dep_comment.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.execution_failure_criteria.label}</td><td class="FormRowValue">{$form.execution_failure_criteria.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.notification_failure_criteria.label}</td><td class="FormRowValue">{$form.notification_failure_criteria.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.dep_msParents.label}</td><td class="FormRowValue">{$form.dep_msParents.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.dep_msChilds.label}</td><td class="FormRowValue">{$form.dep_msChilds.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.dep_comment.label}</td><td class="FormRowValue">{$form.dep_comment.html}</td></tr>
 	</table>
 	</div>
 	<div id="validForm">
