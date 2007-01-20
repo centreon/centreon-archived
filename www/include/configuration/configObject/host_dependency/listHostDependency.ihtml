@@ -20,14 +20,14 @@
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
-			<td class="ListColHeaderLeft">{$headerMenu_description}</td>
+			<td class="ListColHeaderLeft">{$headerMenu_alias}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{section name=elem loop=$elemArr}
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
-			<td class="ListColLeft">{$elemArr[elem].RowMenu_description}</td>
+			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_alias}</a></td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}

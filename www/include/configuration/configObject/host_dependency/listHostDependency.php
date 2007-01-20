@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -23,7 +21,7 @@ For information : contact@oreon-project.org
 	# set limit
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
@@ -44,7 +42,7 @@ For information : contact@oreon-project.org
 		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT COUNT(*) FROM dependency dep.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -59,25 +57,25 @@ For information : contact@oreon-project.org
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_description", $lang['description']);
+	$tpl->assign("headerMenu_alias", $lang['alias']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	
 	#Dependcy list
 	if ($oreon->user->admin || !$isRestreint){
-		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+		$rq = "SELECT dep_id, dep_name, dep_alias, dep_description FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0";
 	} else {
-		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
+		$rq = "SELECT dep_id, dep_name, dep_alias, dep_description FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
 	}
 	
 	if ($search)
-		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);	
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT dep_id, dep_name, dep_description FROM dependency dep.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
@@ -94,9 +92,9 @@ For information : contact@oreon-project.org
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$dep['dep_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$dep["dep_name"],
+						"RowMenu_name"=>myDecode($dep["dep_name"]),
+						"RowMenu_alias"=>myDecode($dep["dep_alias"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
-						"RowMenu_description"=>$dep["dep_description"],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
