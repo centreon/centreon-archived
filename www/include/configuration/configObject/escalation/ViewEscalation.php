@@ -3,8 +3,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -33,15 +31,13 @@ if (!isset($oreon))
 	$tpl = initSmartyTpl($path, $tpl);
 
 	$hostgroup_ary = array(NULL=>NULL);
-	$cmd = "SELECT hg_id, hg_name ".
-			"FROM hostgroup";
-	$res_host = $pearDB->query($cmd);
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
-	}
-	while($res_host->fetchInto($hostgroup))
+	$cmd = "SELECT hg_id, hg_name FROM hostgroup";
+	$DBRESULT = $pearDB->query($cmd);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($hostgroup))
 		$hostgroup_ary[$hostgroup["hg_id"]] = $hostgroup["hg_name"];
-	$res_host->free();
+	$DBRESULT->free();
 	
 	$hgs = array(NULL=>NULL);
 	if (isset($_POST["hostgroup_escalation"]) && $_POST["hostgroup_escalation"] != NULL){

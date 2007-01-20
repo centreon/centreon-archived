@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $esc_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$esc = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Host Options
@@ -39,35 +37,35 @@ For information : contact@oreon-project.org
 		# Set Host Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
 		# Set Host relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for ($i = 0; $DBRESULT->fetchInto($host); $i++)
 			$esc["esc_hosts"][$i] = $host["host_host_id"];
 		$DBRESULT->free();
 		# Set Meta Service
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($metas); $i++)
 			$esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
 		$DBRESULT->free();
 		# Set Host Service
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for ($i = 0; $DBRESULT->fetchInto($services); $i++)
 			$esc["esc_hServices"][$i] = $services["host_host_id"]."_".$services["service_service_id"];
 		$DBRESULT->free();
 		# Set Contact Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($cg); $i++)
 			$esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
 		$DBRESULT->free();		
@@ -82,7 +80,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
@@ -94,7 +92,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
@@ -106,7 +104,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($elem))	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)
@@ -117,7 +115,7 @@ For information : contact@oreon-project.org
 	$metas = array();
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($meta))
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
@@ -125,7 +123,7 @@ For information : contact@oreon-project.org
 	$cgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
@@ -134,7 +132,7 @@ For information : contact@oreon-project.org
 	$tps = array();
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
@@ -167,6 +165,7 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'information', $lang['esc_infos']);
 	$form->addElement('text', 'esc_name', $lang["esc_name"], $attrsText);
+	$form->addElement('text', 'esc_alias', $lang["alias"], $attrsText);
 	$form->addElement('text', 'first_notification', $lang["esc_firstNotif"], $attrsText2);
 	$form->addElement('text', 'last_notification', $lang["esc_lastNotif"], $attrsText2);
 	$form->addElement('text', 'notification_interval', $lang["esc_notifInt"], $attrsText2);
@@ -302,7 +301,7 @@ For information : contact@oreon-project.org
 			$escObj->setValue(insertEscalationInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateEscalationInDB($escObj->getValue("esc_id"));
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$escObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;

@@ -21,12 +21,13 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmark.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.esc_name.label}</td><td class="FormRowValue">{$form.esc_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.first_notification.label}</td><td class="FormRowValue">{$form.first_notification.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.last_notification.label}</td><td class="FormRowValue">{$form.last_notification.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.esc_alias.label}</td><td class="FormRowValue">{$form.esc_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.first_notification.label}</td><td class="FormRowValue">{$form.first_notification.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.last_notification.label}</td><td class="FormRowValue">{$form.last_notification.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.notification_interval.label}</td><td class="FormRowValue">{$form.notification_interval.html}{$time_unit}</td></tr>
 		{if $nagios == 2}
-		<tr class="list_one"><td class="FormRowField">{$form.escalation_period.label}</td><td class="FormRowValue">{$form.escalation_period.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.escalation_options1.label}</td><td class="FormRowValue">{$form.escalation_options1.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.escalation_period.label}</td><td class="FormRowValue">{$form.escalation_period.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.escalation_options1.label}</td><td class="FormRowValue">{$form.escalation_options1.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.escalation_options2.label}</td><td class="FormRowValue">{$form.escalation_options2.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.esc_cgs.label}</td><td class="FormRowValue">{$form.esc_cgs.html}</td></tr>

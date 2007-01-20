@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -23,7 +21,7 @@ For information : contact@oreon-project.org
 	# set limit
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -49,12 +47,12 @@ For information : contact@oreon-project.org
 	}
 	
 	if ($search && $list)
-		$rq .= " AND esc.esc_name LIKE '%".$search."%'";
+		$rq .= " AND (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
 	else if ($search)
-		$rq .= " WHERE esc.esc_name LIKE '%".$search."%'";
+		$rq .= " WHERE (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT COUNT(*) FROM escalation esc.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -69,29 +67,27 @@ For information : contact@oreon-project.org
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
+	$tpl->assign("headerMenu_alias", $lang['alias']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Escalation list
-	$rq = "SELECT esc_id, esc_name, esc_comment FROM escalation esc";
-	if ($list && $list == "h")	{
+	$rq = "SELECT esc_id, esc_name, esc_alias FROM escalation esc";
+	if ($list && $list == "h")
 		$oreon->user->admin || !HadUserLca($pearDB)	? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0" : $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
-	}
 	else if ($list && $list == "sv")
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
-	else if ($list && $list == "hg")	{
+	else if ($list && $list == "hg")
 		$oreon->user->admin || !HadUserLca($pearDB)	? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id) > 0" :  $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id AND ehgr.hostgroup_hg_id IN (".$lcaHostGroupstr.")) > 0";
-	}
 	else if ($list && $list == "ms")
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
 	if ($search && $list)
-		$rq .= " AND esc.esc_name LIKE '%".$search."%'";
+		$rq .= " AND (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
 	else if ($search)
-		$rq .= " WHERE esc.esc_name LIKE '%".$search."%'";
+		$rq .= " WHERE (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
 	$rq .= " ORDER BY esc_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT esc_id, esc_name, esc_comment FROM escalation esc.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
@@ -106,9 +102,9 @@ For information : contact@oreon-project.org
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$esc['esc_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$esc["esc_name"],
+						"RowMenu_name"=>myDecode($esc["esc_name"]),
+						"RowMenu_alias"=>myDecode($esc["esc_alias"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&esc_id=".$esc['esc_id'],
-						"RowMenu_desc"=>substr($esc["esc_comment"], 0, 40),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
