@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,13 +23,13 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $cg_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$cg = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Contact Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($contacts); $i++)
 			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$DBRESULT->free();
@@ -43,7 +41,7 @@ For information : contact@oreon-project.org
 	$contacts = array();
 	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT contact_id, contact_name FROM contact ORDER BY contact_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($contact))
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
@@ -155,7 +153,7 @@ For information : contact@oreon-project.org
 			$cgObj->setValue(insertContactGroupInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateContactGroupInDB($cgObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cgObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
