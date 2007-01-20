@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $tp_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$tp = array_map("myDecode", $DBRESULT->fetchRow());
 	}
@@ -129,7 +127,7 @@ For information : contact@oreon-project.org
 			$tpObj->setValue(insertTimeperiodInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateTimeperiodInDB($tpObj->getValue());
-		$o = "w";		
+		$o = NULL;		
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tpObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
