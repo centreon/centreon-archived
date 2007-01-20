@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $nagios_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$nagios = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -37,7 +35,7 @@ For information : contact@oreon-project.org
 	$checkCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT command_id, command_name FROM command ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$checkCmds = array(NULL=>NULL);
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
@@ -505,7 +503,7 @@ For information : contact@oreon-project.org
 			$nagiosObj->setValue(insertNagiosInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateNagiosInDB($nagiosObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&nagios_id=".$nagiosObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
