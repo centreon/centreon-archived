@@ -45,7 +45,7 @@ $lang['quicksearch'] = "Quick Search";
 $lang['available'] = "Available";
 $lang['selected'] = "Selected";
 $lang['comment'] = "Comments";
-$lang['nothing'] = "Empty";
+$lang['nothing'] = "Default";
 $lang['formObjMatch'] = "Impacted Elements : ";
 $lang['action'] = "Post Validation";
 $lang['actionList'] = "List";
@@ -154,6 +154,8 @@ $lang['hg_HostMembers'] = "Hosts linked";
 $lang['hg_infos'] = "General Informations";
 $lang['hg_links'] = "Relations";
 $lang['hg_notif'] = "Notification";
+$lang['hg_HostAct'] = "Hosts activate";
+$lang['hg_HostDeact'] = "Hosts deactivate";
 
 /* Escalation  */
 
@@ -406,6 +408,7 @@ $lang['cg_notif'] = "Notification";
 $lang['cg_add'] = "Add a Contact Group";
 $lang['cg_change'] = "Modify a Contact Group";
 $lang['cg_view'] = "View a Contact Group";
+$lang['cg_cctNbr'] = "Contacts";
 
 /* time period */
 

@@ -46,7 +46,7 @@ $lang['available'] = "Disponible";
 $lang['selected'] = "S&eacute;lectionn&eacute;";
 $lang['further_infos'] = "Informations compl&eacute;mentaires";
 $lang['comment'] = "Commentaires";
-$lang['nothing'] = "Vide";
+$lang['nothing'] = "D&eacute;faut";
 $lang['formObjMatch'] = "El&eacute;ment impact&eacute; : ";
 $lang['action'] = "Post Validation";
 $lang['actionList'] = "Liste";
@@ -153,6 +153,8 @@ $lang['hg_HostMembers'] = "Hosts rattach&eacute;s";
 $lang['hg_infos'] = "Informations g&eacute;n&eacute;rales";
 $lang['hg_links'] = "Relations";
 $lang['hg_notif'] = "Notification";
+$lang['hg_HostAct'] = "Hosts activ&eacute;s";
+$lang['hg_HostDeact'] = "Hosts d&eacute;sactiv&eacute;s";
 
 /* Escalation  */
 
@@ -404,6 +406,7 @@ $lang['cg_notif'] = "Notification";
 $lang['cg_add'] = "Ajouter un Contact Group";
 $lang['cg_change'] = "Modifier un Contact Group";
 $lang['cg_view'] = "Afficher un Contact Group";
+$lang['cg_cctNbr'] = "Contacts";
 
 /* time period */
 
