@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -19,8 +17,7 @@ For information : contact@oreon-project.org
 */
 	if (!isset ($oreon))
 		exit ();
-	
-	
+
 	function testServiceGroupDependencyExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
@@ -29,7 +26,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('dep_id');
 		$DBRESULT =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$dep =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)	
@@ -62,7 +59,7 @@ For information : contact@oreon-project.org
 		foreach($dependencies as $key=>$value)		{
 			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -71,7 +68,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row = $DBRESULT->fetchRow();
 			$row["dep_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -84,28 +81,28 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print $DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 					$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
 					if (PEAR::isError($DBRESULT))
-						print $DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(dep_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$key."'");
-						if (PEAR::isError($pearDB))
-							print $DBRESULT->getDebugInfo()."<br>";
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 						while($DBRESULT->fetchInto($sg)){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_servicegroupParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print $DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						}
 						$DBRESULT->free();
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print $DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 						while($DBRESULT->fetchInto($sg))	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_servicegroupChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print $DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						}
 						$DBRESULT->free();
 					}
@@ -145,10 +142,10 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$dep_id = $DBRESULT->fetchRow();
 		return ($dep_id["MAX(dep_id)"]);
 	}
@@ -175,7 +172,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 		
 	function updateServiceGroupDependencyServiceGroupParents($dep_id = null, $ret = array())	{
@@ -186,7 +183,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if (isset($ret["dep_sgParents"]))
 			$ret = $ret["dep_sgParents"];
 		else
@@ -197,8 +194,8 @@ For information : contact@oreon-project.org
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 		
@@ -210,7 +207,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if (isset($ret["dep_sgChilds"]))
 			$ret = $ret["dep_sgChilds"];
 		else
@@ -222,7 +219,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 ?>
