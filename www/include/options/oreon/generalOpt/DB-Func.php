@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -87,11 +85,11 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$oreon->optGen = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$oreon->optGen = $DBRESULT->fetchRow();
 		$oreon->user->version = $ret["nagios_version"];
 	}
@@ -115,7 +113,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateDebugConfigData($gopt_id = null)	{
@@ -139,7 +137,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$oreon->optGen = array();
 	}
 	
@@ -174,7 +172,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateColorsConfigData($gopt_id = null)	{
@@ -202,7 +200,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateGeneralConfigData($gopt_id = null)	{
@@ -244,7 +242,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function updateRRDToolConfigData($gopt_id = null)	{
@@ -262,6 +260,6 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 ?>

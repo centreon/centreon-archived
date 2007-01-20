@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -22,7 +20,7 @@ For information : contact@oreon-project.org
 		exit();
 
 	#
-	## Database retrieve information for LCA
+	## Database retrieve information
 	#
 	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
@@ -108,7 +106,7 @@ For information : contact@oreon-project.org
 		$oreon->optGen = array();
 		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
 		$oreon->optGen = $DBRESULT2->fetchRow();
-		$o = "w";
+		$o = NULL;
    		$valid = true;
 		$form->freeze();
 	}
@@ -118,11 +116,9 @@ For information : contact@oreon-project.org
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'"));
 
-
 	#
 	##Apply a template definition
 	#
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
