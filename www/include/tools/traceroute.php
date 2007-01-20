@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -18,39 +16,34 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
- include("../../oreon.conf.php");
- require_once ("../../$classdir/Session.class.php");
- require_once ("../../$classdir/Oreon.class.php");
- Session::start();
+	 include("../../oreon.conf.php");
+	 require_once ("../../$classdir/Session.class.php");
+	 require_once ("../../$classdir/Oreon.class.php");
+	 Session::start();
 
- if (!isset($_SESSION["oreon"])) {
- 	// Quick dirty protection
- 	header("Location: ../../index.php");
- 	//exit();
- }else {
- 	$oreon =& $_SESSION["oreon"];
- }
+	 if (!isset($_SESSION["oreon"])) {
+	 	// Quick dirty protection
+	 	header("Location: ../../index.php");
+	 }
+	 else
+	 	$oreon =& $_SESSION["oreon"];
 
 	if (isset($_GET["host"]))
 		$host = $_GET["host"];
 	else if (isset($_POST["host"]))
 		$host = $_POST["host"];
-	else {
-		print "Bad Request !";
+	else
 		exit;
-	}
 
 	include("Net/Traceroute.php");
 
 	$tr = Net_Traceroute::factory();
 
-	if(!PEAR::isError($tr))
-	{
+	if(!PEAR::isError($tr))	{
 		$tr->setArgs(array('timeout' => 5));
 	    $response = $tr->traceroute($host);
-		foreach ($response->getRawData() as $key => $data) {
+		foreach ($response->getRawData() as $key => $data)
    			$msg .= $data ."<br>";
-		}
 		print $msg;
 	}
 
