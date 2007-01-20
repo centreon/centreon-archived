@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -26,11 +24,11 @@ For information : contact@oreon-project.org
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_register = '0'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '0'");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -53,12 +51,12 @@ For information : contact@oreon-project.org
 	# end header menu
 	#Host Template list
 	if ($search)
-		$rq = "SELECT @nbr:=(SELECT COUNT(service_service_id) FROM host_service_relation hsr WHERE hsr.host_host_id = host_id) AS nbr, host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT @nbr:=(SELECT COUNT(service_service_id) FROM host_service_relation hsr WHERE hsr.host_host_id = host_id) AS nbr, host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT host_id, host_name, host_alias, host_activate, host_template_model_htm_id FROM host WHERE host_register = '0' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
@@ -79,13 +77,24 @@ For information : contact@oreon-project.org
 		# If the name of our Host Model is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
+		/* TPL List */
+		$tplArr = array();
+		$tplStr = NULL;
+		$tplArr = getMyHostTemplateModels($host["host_template_model_htm_id"]);
+		if (count($tplArr))
+			foreach($tplArr as $key =>$value)
+				$tplStr .= "&nbsp;->&nbsp;<a href='oreon.php?p=60103&o=c&host_id=".$key."'>".$value."</a>";
+		/* Service List */
+		$svArr = array();
+		$svStr = NULL;
+		$svArr = getMyHostServices($host['host_id']);
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$host["host_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 						"RowMenu_desc"=>$host["host_alias"],
-						"RowMenu_svChilds"=>$host["nbr"],
-						"RowMenu_parent"=>$host["host_template_model_htm_id"] ? $lang["yes"] : $lang["no"],
+						"RowMenu_svChilds"=>count($svArr),
+						"RowMenu_parent"=>$tplStr,
 						"RowMenu_status"=>$host["host_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}

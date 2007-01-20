@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $host_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		if ($DBRESULT->numRows())	{
 			$host = array_map("myDecode", $DBRESULT->fetchRow());
@@ -39,29 +39,29 @@ For information : contact@oreon-project.org
 			$DBRESULT->free();
 			# Set Contact Group
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-			if (PEAR::isError($pearDB))
-				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 				$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 			$DBRESULT->free();
 			# Set Host Parents
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			for($i = 0; $DBRESULT->fetchInto($parent); $i++)
 				$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 			$DBRESULT->free();
 			# Set Service Templates Childs
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getMessage()."<br>";
-				for($i = 0; $DBRESULT->fetchInto($svTpl); $i++)
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			for($i = 0; $DBRESULT->fetchInto($svTpl); $i++)
 				$host["host_svTpls"][$i] = $svTpl["service_service_id"];
 			$DBRESULT->free();
 			# Set City name
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$host["city_id"]."' AND cny.country_id = '".$host["country_id"]."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$city = $DBRESULT->fetchRow();
 			$host["city_name"] = $city["city_name"];
 			$host["country_id"] = $city["country_id"];
@@ -75,7 +75,7 @@ For information : contact@oreon-project.org
 	$hTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($hTpl))	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 	$svTpls = array();
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' ORDER BY service_description");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($svTpl))	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 	$tps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
@@ -105,7 +105,7 @@ For information : contact@oreon-project.org
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
@@ -113,24 +113,15 @@ For information : contact@oreon-project.org
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$pearDB->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
-	# Host Parents comes from DB -> Store in $hostPs Array
-	/*$hostPs = array();
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
-	while($DBRESULT->fetchInto($hostP))	{
-		if (!$hostP["host_name"])
-			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
-		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
-	}
-	$DBRESULT->free();*/
 	# Countries comes from DB -> Store in $countries Array
 	$countries = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
 	$DBRESULT->free();
@@ -138,7 +129,7 @@ For information : contact@oreon-project.org
 	$ppols = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
@@ -451,7 +442,7 @@ For information : contact@oreon-project.org
 			$hostObj->setValue(insertHostInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateHostInDB($hostObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
