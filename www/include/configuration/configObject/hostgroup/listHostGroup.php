@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -20,8 +18,8 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 	# set limit
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB))
-		print "DB Error : ".$pearDB->getMessage()."<br>";
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -29,9 +27,9 @@ For information : contact@oreon-project.org
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)	{
 		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 		else
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$lcaHostGroupstr.")");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND hg_id IN (".$lcaHostGroupstr.")");
 	}
 	else	{
 		if ($oreon->user->admin || !HadUserLca($pearDB))
@@ -40,7 +38,7 @@ For information : contact@oreon-project.org
 			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.")");
 	}
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT COUNT(*) FROM hostgroup WHERE hg_name.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -56,14 +54,16 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
 	$tpl->assign("headerMenu_status", $lang['status']);
+	$tpl->assign("headerMenu_hostAct", $lang['hg_HostAct']);
+	$tpl->assign("headerMenu_hostDeact", $lang['hg_HostDeact']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Hostgroup list
 	if ($search){
 		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
+			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 		else
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
+			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		if ($oreon->user->admin || !HadUserLca($pearDB))
 			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
@@ -72,7 +72,7 @@ For information : contact@oreon-project.org
 	}
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
@@ -90,12 +90,27 @@ For information : contact@oreon-project.org
 			$moptions .= "<a href='oreon.php?p=".$p."&hg_id=".$hg['hg_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$hg['hg_id']."]'></input>";
+		/* Nbr Host */
+		$nbrhostAct = array();
+		$nbrhostDeact = array();
+		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_relation hgr, host WHERE hostgroup_hg_id = '".$hg['hg_id']."' AND host.host_id = hgr.host_host_id AND host.host_register = '1' AND host.host_activate = '1'";
+		$DBRESULT2 =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";	
+		$nbrhostAct = $DBRESULT2->fetchRow();
+		$rq = "SELECT COUNT(*) as nbr FROM hostgroup_relation hgr, host WHERE hostgroup_hg_id = '".$hg['hg_id']."' AND host.host_id = hgr.host_host_id AND host.host_register = '1' AND host.host_activate = '0'";
+		$DBRESULT2 =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";	
+		$nbrhostDeact = $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$hg["hg_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&hg_id=".$hg['hg_id'],
 						"RowMenu_desc"=>$hg["hg_alias"],
 						"RowMenu_status"=>$hg["hg_activate"] ? $lang['enable'] : $lang['disable'],
+						"RowMenu_hostAct"=>$nbrhostAct["nbr"],
+						"RowMenu_hostDeact"=>$nbrhostDeact["nbr"],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);

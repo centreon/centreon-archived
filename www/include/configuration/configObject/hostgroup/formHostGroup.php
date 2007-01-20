@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -28,28 +26,28 @@ For information : contact@oreon-project.org
 		else
 			$rq = "SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' AND hg_id IN (".$lcaHostGroupstr.") LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($pearDB))
-			print "DB Error : SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1.. : ".$pearDB->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$hg = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set HostGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($hosts); $i++)
 			$hg["hg_hosts"][$i] = $hosts["host_host_id"];
 		$DBRESULT->free();
 		# Nagios 1 - Set Contact Group Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($cgs); $i++)
 			$hg["hg_cgs"][$i] = $cgs["contactgroup_cg_id"];
 		$DBRESULT->free();
 		# Set City name
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$hg["city_id"]."' AND cny.country_id = '".$hg["country_id"]."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$city = $DBRESULT->fetchRow();
 		$hg["city_name"] = $city["city_name"];
 		$DBRESULT->free();
@@ -63,24 +61,24 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $cgs Array
 	$cgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
 	# Countries comes from DB -> Store in $countries Array
 	$countries = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
 	$DBRESULT->free();
@@ -217,7 +215,7 @@ For information : contact@oreon-project.org
 			$hgObj->setValue(insertHostGroupInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateHostGroupInDB($hgObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$hgObj =& $form->getElement('hg_id');
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hgObj->getValue()."'"));
 		$form->freeze();
