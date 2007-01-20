@@ -41,7 +41,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_svNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_svNotifCmds.html}</p></td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
 
