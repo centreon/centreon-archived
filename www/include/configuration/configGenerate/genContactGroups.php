@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -24,7 +22,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."contactgroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM contactgroup ORDER BY `cg_name`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM contactgroup ORDER BY `cg_name` : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$contactGroup = array();
 	$i = 1;
 	$str = NULL;
@@ -51,7 +49,7 @@ For information : contact@oreon-project.org
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id ORDER BY `contact_name`");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT cct.contact_id, cct.contact_name.. : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($contact))	{
 				$BP = false;				
 				if ($ret["level"]["level"] == 1)

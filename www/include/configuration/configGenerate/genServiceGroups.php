@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -24,7 +22,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."servicegroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM servicegroup ORDER BY `sg_name` : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$serviceGroup = array();
 	$i = 1;
@@ -60,7 +58,7 @@ For information : contact@oreon-project.org
 									"AND host.host_activate = '1' " .
 									"AND  servicegroup_relation.host_host_id IS NOT NULL");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT service_description, service_id, host_name, host_id.. : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($service)){
 				if ($ret["level"]["level"] == 1)
 					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
@@ -92,7 +90,7 @@ For information : contact@oreon-project.org
 									"AND hostgroup.hg_activate = '1' " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT service_description, service_id, hg_id... : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($service)){
 				if ($ret["level"]["level"] == 1)
 					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;

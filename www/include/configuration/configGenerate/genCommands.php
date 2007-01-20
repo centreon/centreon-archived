@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 	$handle2 = create_file($nagiosCFGPath."checkcommands.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$command = array();
 	$i1 = 1;
 	$i2 = 1;

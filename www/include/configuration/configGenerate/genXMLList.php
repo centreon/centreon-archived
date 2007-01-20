@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 	foreach($gbArr[2] as $key => $value)	{
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id, host_address, host_register, ehi.city_id FROM host, extended_host_information ehi WHERE host_id = '".$key."' AND ehi.host_host_id = host_id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT host_name, host_template_model_htm_id, host_address, host_register, ehi.city_id.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$host = $DBRESULT->fetchRow();
 		if ($host["host_register"])	{
 			if (!$host["host_name"])
@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 			if ($host["city_id"])	{
 				$DBRESULT2 =& $pearDB->query("SELECT city_lat, city_long FROM view_city WHERE city_id = '".$host["city_id"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT city_lat, city_long FROM view_city WHERE city_id = '".$host["city_id"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				$gps =& $DBRESULT2->fetchRow();
 				if ($gps["city_lat"] && $gps["city_long"])
 					$str .= " gps='true' lat='".$gps["city_lat"]."' long='".$gps["city_long"]."'";
@@ -63,13 +63,13 @@ For information : contact@oreon-project.org
 	foreach($gbArr[3] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM hostgroup WHERE hg_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$hostGroup = $DBRESULT->fetchRow();
 		$str .= "<hg id='".$key."' name='".html_entity_decode($hostGroup["hg_name"], ENT_QUOTES)."'";
 		if ($hostGroup["city_id"])	{
 			$DBRESULT2 =& $pearDB->query("SELECT city_lat, city_long FROM view_city WHERE city_id = '".$hostGroup["city_id"]."' LIMIT 1");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT city_lat, city_long FROM view_city WHERE city_id = '".$hostGroup["city_id"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			$gps =& $DBRESULT2->fetchRow();
 			if ($gps["city_lat"] && $gps["city_long"])
 				$str .= " gps='true' lat='".$gps["city_lat"]."' long='".$gps["city_long"]."'";
@@ -85,7 +85,7 @@ For information : contact@oreon-project.org
 	foreach($gbArr[4] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sv.service_description, sv.service_template_model_stm_id, service_register, hsr.host_host_id, hsr.hostgroup_hg_id FROM service sv, host_service_relation hsr WHERE sv.service_id = '".$key."' AND hsr.service_service_id = sv.service_id");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT DISTINCT sv.service_description, sv.service_template_model_stm_id,... : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($sv))	{
 			if ($sv["service_register"])	{
 				if (!$sv["service_description"])
@@ -95,7 +95,7 @@ For information : contact@oreon-project.org
 				else if ($sv["hostgroup_hg_id"])	{
 					$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$sv["hostgroup_hg_id"]."'");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$sv["hostgroup_hg_id"]."' : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while ($DBRESULT2->fetchInto($host))
 						if (array_key_exists($host["host_host_id"], $gbArr[2]))
 							$str .= "<sv id='".$host["host_host_id"]."_".$key."' name='".$sv["service_description"]."'/>\n";
@@ -110,13 +110,13 @@ For information : contact@oreon-project.org
 	foreach($gbArr[5] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT * FROM servicegroup WHERE sg_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$serviceGroup = $DBRESULT->fetchRow();
 		$str .= "<sg id='".$key."' name='".html_entity_decode($serviceGroup["sg_name"], ENT_QUOTES)."'";
 		if ($serviceGroup["city_id"])	{
 			$DBRESULT2 =& $pearDB->query("SELECT city_lat, city_long FROM view_city WHERE city_id = '".$serviceGroup["city_id"]."' LIMIT 1");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT city_lat, city_long FROM view_city WHERE city_id = '".$serviceGroup["city_id"]."' LIMIT  : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			$gps =& $DBRESULT2->fetchRow();
 			if ($gps["city_lat"] && $gps["city_long"])
 				$str .= " gps='true' lat='".$gps["city_lat"]."' long='".$gps["city_long"]."'";
@@ -132,7 +132,7 @@ For information : contact@oreon-project.org
 	foreach($gbArr[6] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT name FROM osl WHERE osl_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT name FROM osl WHERE osl_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$osl = $DBRESULT->fetchRow();
 		$str .= "<osl id='".$key."' name='".html_entity_decode($osl["name"], ENT_QUOTES)."'/>\n";
 		$DBRESULT->free();
@@ -142,7 +142,7 @@ For information : contact@oreon-project.org
 	foreach($gbArr[7] as $key => $value)	{		
 		$DBRESULT =& $pearDB->query("SELECT meta_name FROM meta_service WHERE meta_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT meta_name FROM meta_service WHERE meta_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$osm = $DBRESULT->fetchRow();
 		$str .= "<ms id='".$key."' name='".html_entity_decode($osm["meta_name"], ENT_QUOTES)."'/>\n";
 		$DBRESULT->free();
@@ -158,7 +158,7 @@ For information : contact@oreon-project.org
 	foreach($gbArr[2] as $key => $value)	{
 		$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id AS tpl, host_register FROM host WHERE host_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT host_template_model_htm_id AS tpl, host_register FROM host WHERE host_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$host = $DBRESULT->fetchRow();
 		$str .= "<h id='".$key."'>\n";
 		## Parents
@@ -166,7 +166,7 @@ For information : contact@oreon-project.org
 		# Host Groups
 		$DBRESULT =& $pearDB->query("SELECT hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.host_host_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.host_host_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($hostGroup))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -182,7 +182,7 @@ For information : contact@oreon-project.org
 		# Hosts
 		$DBRESULT =& $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		//if (!$DBRESULT->numRows() && $host["tpl"])
 		//	$DBRESULT =& getMyHostParents($host["tpl"]);
 		while($DBRESULT->fetchInto($host))	{
@@ -203,7 +203,7 @@ For information : contact@oreon-project.org
 		# Hosts
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($host))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -219,7 +219,7 @@ For information : contact@oreon-project.org
 		# Services from Host
 		$DBRESULT =& $pearDB->query("SELECT hsr.service_service_id FROM host_service_relation hsr WHERE hsr.host_host_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT hsr.service_service_id FROM host_service_relation hsr WHERE hsr.host_host_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($service))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -235,7 +235,7 @@ For information : contact@oreon-project.org
 		# Services from Host Group
 		$DBRESULT =& $pearDB->query("SELECT hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.host_host_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT hgr.hostgroup_hg_id FROM hostgroup_relation hgr WHERE hgr.host_host_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($hostGroup))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -247,7 +247,7 @@ For information : contact@oreon-project.org
 			if ($BP)	{
 				$DBRESULT2 =& $pearDB->query("SELECT hsr.service_service_id FROM host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostGroup["hostgroup_hg_id"]."'");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT hsr.service_service_id FROM host_service_relation hsr... : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($service))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
@@ -276,7 +276,7 @@ For information : contact@oreon-project.org
 		$str .= "<chds>\n";		
 		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($host))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -296,7 +296,7 @@ For information : contact@oreon-project.org
 	foreach($gbArr[4] as $key => $value)	{
 		$DBRESULT =& $pearDB->query("SELECT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT hsr.host_host_id, hsr.hostgroup_hg_id : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($sv))	{
 			if ($sv["host_host_id"])	{
 				$str .= "<sv id='".$sv["host_host_id"]."_".$key."'>\n";								
@@ -312,7 +312,7 @@ For information : contact@oreon-project.org
 			else if ($sv["hostgroup_hg_id"])	{
 				$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$sv["hostgroup_hg_id"]."'");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT DISTINCT host_host_id FROM hostgroup_relation.. : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while ($DBRESULT2->fetchInto($host))
 					if (array_key_exists($host["host_host_id"], $gbArr[2]))	{
 						$str .= "<sv id='".$host["host_host_id"]."_".$key."'>\n";				
@@ -341,7 +341,7 @@ For information : contact@oreon-project.org
 		$str .= "<chds>\n";
 		$DBRESULT =& $pearDB->query("SELECT sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($service))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
@@ -353,7 +353,7 @@ For information : contact@oreon-project.org
 			if ($BP)	{
 				$DBRESULT2 =& $pearDB->query("SELECT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service["service_service_id"]."'");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT hsr.host_host_id, hsr.hostgroup_hg_id.. : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($service2))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)	{
@@ -370,7 +370,7 @@ For information : contact@oreon-project.org
 						if ($service2["hostgroup_hg_id"])	{
 							$DBRESULT3 =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$service2["hostgroup_hg_id"]."'");
 							if (PEAR::isError($DBRESULT3))
-								print "DB Error : SELECT hgr.host_host_id FROM hostgroup_relation hgr.. : ".$DBRESULT3->getMessage()."<br>";
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 							while($DBRESULT3->fetchInto($service3))	{
 								$BP = false;
 								if ($ret["level"]["level"] == 1)
@@ -403,7 +403,7 @@ For information : contact@oreon-project.org
 		$str .= "<prts>\n";
 		$DBRESULT =& $pearDB->query("SELECT id_osl FROM osl_indicator WHERE id_indicator_osl = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT id_osl FROM osl_indicator WHERE id_indicator_osl = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($osl))
 			$str .= "<osl id='".$osl["id_osl"]."'/>";
 		$DBRESULT->free();
@@ -413,7 +413,7 @@ For information : contact@oreon-project.org
 		$str .= "<chds>\n";
 		$DBRESULT =& $pearDB->query("SELECT host_id, service_id, id_indicator_osl, meta_id FROM osl_indicator WHERE id_osl = '".$key."' AND activate = '1'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT host_id, service_id, id_indicator_osl, meta_id.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while($DBRESULT->fetchInto($osl))	{
 			if ($osl["host_id"] && $osl["service_id"])	{
 				$BP = false;
@@ -455,14 +455,14 @@ For information : contact@oreon-project.org
 		$str .= "<chds>\n";
 		$DBRESULT =& $pearDB->query("SELECT meta_select_mode, regexp_str FROM meta_service WHERE meta_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT meta_select_mode, regexp_str FROM meta_service WHERE meta_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$meta =& $DBRESULT->fetchrow();
 		$DBRESULT->free();
 		# Regexp mode
 		if ($meta["meta_select_mode"] == 2)	{
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_description LIKE '".$meta["regexp_str"]."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : SELECT service_id FROM service WHERE service_description LIKE '".$meta["regexp_str"]."' : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			while($DBRESULT->fetchInto($service))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
@@ -474,7 +474,7 @@ For information : contact@oreon-project.org
 				if ($BP)	{
 					$DBRESULT2 =& $pearDB->query("SELECT hsr.host_host_id, hsr.hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service["service_id"]."'");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT hsr.host_host_id, hsr.hostgroup_hg_id.. : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($service2))	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)	{
@@ -491,7 +491,7 @@ For information : contact@oreon-project.org
 							if ($service2["hostgroup_hg_id"])	{
 								$DBRESULT3 =& $pearDB->query("SELECT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$service2["hostgroup_hg_id"]."'");
 								if (PEAR::isError($DBRESULT3))
-									print "DB Error : SELECT hgr.host_host_id FROM hostgroup_relation hgr.. : ".$DBRESULT3->getMessage()."<br>";
+									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 								while($DBRESULT3->fetchInto($service3))	{
 									$BP = false;
 									if ($ret["level"]["level"] == 1)
@@ -519,7 +519,7 @@ For information : contact@oreon-project.org
 			require_once("./DBPerfparseConnect.php");
 			$DBRESULT =& $pearDB->query("SELECT meta_id, host_id, metric_id FROM meta_service_relation msr WHERE meta_id = '".$key."' AND activate = '1'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : SELECT meta_id, host_id, metric_id... : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			while($DBRESULT->fetchInto($metric))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)
@@ -531,7 +531,7 @@ For information : contact@oreon-project.org
 				if ($BP)	{
 					$DBRESULT2 =& $pearDBpp->query("SELECT service_description FROM perfdata_service_metric WHERE metric_id = '".$metric["metric_id"]."'");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT service_description FROM perfdata_service_metric.. : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					$ppService =& $DBRESULT2->fetchRow();
 					$sv_id =& getMyServiceID($ppService["service_description"], $metric["host_id"]);
 					$BP = false;

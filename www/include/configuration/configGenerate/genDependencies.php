@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhcr WHERE dhcr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr... : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$dependency = array();
 	$i = 1;
 	$str = NULL;
@@ -33,7 +31,7 @@ For information : contact@oreon-project.org
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host WHERE dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT host.host_id, host.host_name FROM... : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$host = array();
 		$strTemp1 = NULL;
 		while ($DBRESULT2->fetchInto($host))	{
@@ -49,7 +47,7 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostChild_relation dhcr, host WHERE dhcr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhcr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT host.host_id, host.host_name FROM.. : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$host = array();
 		$strTemp2 = NULL;
 		while ($DBRESULT2->fetchInto($host))	{
@@ -90,13 +88,13 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgcr WHERE dhgcr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*)... : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$dependency = array();
 	while($DBRESULT->fetchInto($dependency))	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupParent_relation dhgpr, hostgroup WHERE dhgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgpr.hostgroup_hg_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name.. : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$hg = array();
 		$strTemp1 = NULL;
 		while ($DBRESULT2->fetchInto($hg))	{
@@ -113,7 +111,7 @@ For information : contact@oreon-project.org
 		$DBRESULT2->free();
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupChild_relation dhgcr, hostgroup WHERE dhgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgcr.hostgroup_hg_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name .. : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$hg= array();
 		$strTemp2 = NULL;
 		while ($DBRESULT2->fetchInto($hg))	{
@@ -153,7 +151,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM dependency_serviceParent_relation dspr, dependency... : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($svPar))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
@@ -175,7 +173,7 @@ For information : contact@oreon-project.org
 			# Service Child
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT * FROM dependency_serviceChild_relation WHERE... : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while ($DBRESULT2->fetchInto($svCh))	{
 				$BP = false;
 				if ($ret["level"]["level"] == 1)

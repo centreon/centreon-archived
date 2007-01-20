@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -24,7 +22,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."services.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM service ORDER BY `service_register`, `service_description`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM service ORDER BY `service_register`, `service_description` : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$service = array();
 	$i = 1;
 	$str = NULL;
@@ -47,7 +45,7 @@ For information : contact@oreon-project.org
 				$hostGroup = array();
 				$DBRESULT2 =& $pearDB->query("SELECT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id ='".$service["service_id"]."'");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT hostgroup_hg_id FROM host_service_relation hsr.. : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($hostGroup))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
@@ -59,7 +57,7 @@ For information : contact@oreon-project.org
 					if ($BP)	{
 						$DBRESULT3 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id ='".$hostGroup["hostgroup_hg_id"]."' AND hgr.host_host_id = host.host_id");
 						if (PEAR::isError($DBRESULT3))
-							print "DB Error : SELECT host.host_id, host.host_name.. : ".$DBRESULT3->getMessage()."<br>";
+							print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 						while($DBRESULT3->fetchInto($host))	{
 							$BP = false;
 							if ($ret["level"]["level"] == 1)
@@ -83,7 +81,7 @@ For information : contact@oreon-project.org
 					$host = array();
 					$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.host_host_id = host.host_id");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT host.host_id, host.host_name.. : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($host))	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)
@@ -122,7 +120,7 @@ For information : contact@oreon-project.org
 						$serviceTemplate = array();
 						$DBRESULT2 =& $pearDB->query("SELECT service.service_description FROM service WHERE service.service_id = '".$service["service_template_model_stm_id"]."'");
 						if (PEAR::isError($DBRESULT2))
-							print "DB Error : SELECT service.service_description FROM service... : ".$DBRESULT2->getMessage()."<br>";
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						while($DBRESULT2->fetchInto($serviceTemplate))
 							$strTMP .= print_line("use", $serviceTemplate["service_description"]);
 						$DBRESULT2->free();
@@ -134,7 +132,7 @@ For information : contact@oreon-project.org
 						$strTMPTemp = NULL;
 						$DBRESULT2 =& $pearDB->query("SELECT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.service_service_id = '".$service["service_id"]."' AND sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
 						if (PEAR::isError($DBRESULT2))
-							print "DB Error : SELECT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr... : ".$DBRESULT2->getMessage()."<br>";
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						while($DBRESULT2->fetchInto($serviceGroup))	{
 							$BP = false;
 							if ($ret["level"]["level"] == 1)
@@ -167,7 +165,7 @@ For information : contact@oreon-project.org
 					$timePeriod = array();
 					$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id"]."' LIMIT 1");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($timePeriod))
 						$strTMP .= print_line("check_period", $timePeriod["tp_name"]);
 					$DBRESULT2->free();
@@ -186,7 +184,7 @@ For information : contact@oreon-project.org
 					$service["command_command_id_arg2"] = str_replace('#BS#', "\\", $service["command_command_id_arg2"]);
 					$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$service["command_command_id2"]."' LIMIT 1");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$service["command_command_id2"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($command))
 						$strTMP .= print_line("event_handler", strstr($command["command_name"], "check_graph_") ? $command["command_name"].$service["command_command_id_arg2"]."!".$service["service_id"] : $command["command_name"].$service["command_command_id_arg2"]);
 					$DBRESULT2->free();
@@ -204,7 +202,7 @@ For information : contact@oreon-project.org
 					$timePeriod = array();
 					$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id2"]."' LIMIT 1");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id2"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($timePeriod))
 						$strTMP .= print_line("notification_period", $timePeriod["tp_name"]);
 					$DBRESULT2->free();
@@ -217,7 +215,7 @@ For information : contact@oreon-project.org
 					$strTMPTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT cg.cg_id, cg.cg_name... : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($contactGroup))	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)
@@ -263,7 +261,7 @@ For information : contact@oreon-project.org
 					$strTMPTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.hostgroup_hg_id = hg.hg_id");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT hg.hg_id, hg.hg_name FROM host_service_relation hsr, hostgroup hg.. : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($hostGroup))	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)
@@ -287,7 +285,7 @@ For information : contact@oreon-project.org
 						$strTMPTemp = NULL;
 						$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_service_relation hsr, host WHERE hsr.service_service_id ='".$service["service_id"]."' AND hsr.host_host_id = host.host_id");
 						if (PEAR::isError($DBRESULT2))
-							print "DB Error : SELECT host.host_id, host.host_name FROM host_service_relation hsr, host... : ".$DBRESULT2->getMessage()."<br>";
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						while($DBRESULT2->fetchInto($host))	{
 							$BP = false;
 							if ($ret["level"]["level"] == 1)
@@ -319,7 +317,7 @@ For information : contact@oreon-project.org
 					$serviceTemplate = array();
 					$DBRESULT2 =& $pearDB->query("SELECT service.service_description FROM service WHERE service.service_id = '".$service["service_template_model_stm_id"]."'");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT service.service_description FROM service.. : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($serviceTemplate))
 						$strTMP .= print_line("use", $serviceTemplate["service_description"]);
 					$DBRESULT2->free();
@@ -331,7 +329,7 @@ For information : contact@oreon-project.org
 					$strTMPTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.service_service_id = '".$service["service_id"]."' AND sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : SELECT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg.. : ".$DBRESULT2->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($serviceGroup))	{
 						$BP = false;
 						if ($ret["level"]["level"] == 1)
@@ -364,7 +362,7 @@ For information : contact@oreon-project.org
 				$timePeriod = array();
 				$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($timePeriod))
 					$strTMP .= print_line("check_period", $timePeriod["tp_name"]);
 				$DBRESULT2->free();
@@ -383,7 +381,7 @@ For information : contact@oreon-project.org
 				$service["command_command_id_arg2"] = str_replace('#BS#', "\\", $service["command_command_id_arg2"]);
 				$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$service["command_command_id2"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$service["command_command_id2"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($command))
 					$strTMP .= print_line("event_handler", strstr($command["command_name"], "check_graph_") ? $command["command_name"].$service["command_command_id_arg2"]."!".$service["service_id"] : $command["command_name"].$service["command_command_id_arg2"]);
 				$DBRESULT2->free();
@@ -401,7 +399,7 @@ For information : contact@oreon-project.org
 				$timePeriod = array();
 				$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id2"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id2"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($timePeriod))
 					$strTMP .= print_line("notification_period", $timePeriod["tp_name"]);
 				$DBRESULT2->free();
@@ -414,7 +412,7 @@ For information : contact@oreon-project.org
 				$strTMPTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT cg.cg_id, cg.cg_name.. : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($contactGroup))	{
 					$BP = false;
 					if ($ret["level"]["level"] == 1)

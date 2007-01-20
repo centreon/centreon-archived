@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."hostextinfo.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT host.host_name, ehi.* FROM host, extended_host_information ehi WHERE host.host_id = ehi.host_host_id AND host.host_register = '1' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT host.host_name, ehi.* FROM host, extended_host_information ehi.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$ehi = array();
 	$i = 1;
 	$str = NULL;
@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM extended_service_information : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($esi))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)

@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -24,7 +22,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath."escalations.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_host_relation ehr, escalation esc WHERE ehr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT DISTINCT esc.* FROM escalation_host_relation ehr, escalation esc.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$escalation = array();
 	$i = 1;
 	$str = NULL;
@@ -32,7 +30,7 @@ For information : contact@oreon-project.org
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM escalation_host_relation ehr, host WHERE ehr.escalation_esc_id = '".$escalation["esc_id"]."' AND host.host_id = ehr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT host.host_id, host.host_name.. : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$host = array();
 		$strTemp = NULL;
 		while ($DBRESULT2->fetchInto($host))	{
@@ -60,8 +58,8 @@ For information : contact@oreon-project.org
 			$cg = array();
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
-			if (PEAR::isError($DBRESULT2)) 
-				print "DB Error : SELECT DISTINCT cg.cg_id, cg.cg_name FROM... : ".$DBRESULT2->getMessage()."<br>";
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($cg))	{
 				$BP = false;				
 				if ($ret["level"]["level"] == 1)
@@ -81,8 +79,8 @@ For information : contact@oreon-project.org
 			// Nagios 2
 			if ($oreon->user->get_version() == 2)	{
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
-				if (PEAR::isError($DBRESULT2)) 
-					print "DB Error : SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."' : ".$DBRESULT2->getMessage()."<br>";
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				$tp =& $DBRESULT2->fetchRow();				
 				if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
 				if ($escalation["escalation_options1"]) $str .= print_line("escalation_options", $escalation["escalation_options1"]);
@@ -97,13 +95,13 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_hostgroup_relation ehgr, escalation esc WHERE ehgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT DISTINCT esc.* FROM escalation_hostgroup_relation ehgr, escalation esc... : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$escalation = array();
 	while($DBRESULT->fetchInto($escalation))	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr,... : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$hg = array();
 		$strTemp = NULL;
 		while ($DBRESULT2->fetchInto($hg))	{
@@ -132,7 +130,7 @@ For information : contact@oreon-project.org
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr.. : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($cg))	{
 				$BP = false;				
 				if ($ret["level"]["level"] == 1)
@@ -153,7 +151,7 @@ For information : contact@oreon-project.org
 			if ($oreon->user->get_version() == 2)	{
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."' : ".$DBRESULT2->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				$tp =& $DBRESULT2->fetchRow();				
 				if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
 				if ($escalation["escalation_options1"]) $str .= print_line("escalation_options", $escalation["escalation_options1"]);
@@ -167,7 +165,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY service.service_description");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id.. : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($service))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
@@ -179,7 +177,7 @@ For information : contact@oreon-project.org
 		if ($BP)	{
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM escalation esc, escalation_service_relation esr WHERE esr.service_service_id = '".$service["service_service_id"]."' AND esc.esc_id = esr.escalation_esc_id ORDER BY esc.esc_name");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT * FROM escalation esc, escalation_service_relation esr... : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			$escalation = array();
 			while($DBRESULT2->fetchInto($escalation))	{
 				$host = array();
@@ -205,7 +203,7 @@ For information : contact@oreon-project.org
 					$strTemp = NULL;
 					$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 					if (PEAR::isError($DBRESULT3))
-						print "DB Error : SELECT DISTINCT cg.cg_id, cg.cg_name... : ".$DBRESULT3->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 					while($DBRESULT3->fetchInto($cg))	{
 						$BP = false;				
 						if ($ret["level"]["level"] == 1)
@@ -226,8 +224,8 @@ For information : contact@oreon-project.org
 					if ($oreon->user->get_version() == 2)	{
 						$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 						if (PEAR::isError($DBRESULT4))
-							print "DB Error : SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."' : ".$DBRESULT4->getMessage()."<br>";
-							$tp =& $DBRESULT4->fetchRow();
+							print "DB Error : ".$DBRESULT4->getDebugInfo()."<br>";
+						$tp =& $DBRESULT4->fetchRow();
 						$DBRESULT4->free();		
 						if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
 						if ($escalation["escalation_options2"]) $str .= print_line("escalation_options", $escalation["escalation_options2"]);

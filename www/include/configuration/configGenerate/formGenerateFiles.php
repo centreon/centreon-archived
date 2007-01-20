@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -142,7 +140,7 @@ For information : contact@oreon-project.org
 				require_once($path."genXMLList.php");
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			}
 		}
 		if ($ret["debug"]["debug"])	{
@@ -180,7 +178,7 @@ For information : contact@oreon-project.org
 			}
 			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 	}
