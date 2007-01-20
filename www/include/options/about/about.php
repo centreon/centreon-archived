@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	<?
 	$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print $DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$release = $DBRESULT->fetchRow();
 	print $release["value"];
 	?></h3></div>
