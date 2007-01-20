@@ -1371,7 +1371,7 @@ CREATE TABLE `nagios_server` (
 CREATE TABLE `oreon_informations` (
 `key` VARCHAR( 25 ) NULL ,
 `value` VARCHAR( 25 ) NULL
-) ENGINE = innodb;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 -- --------------------------------------------------------
