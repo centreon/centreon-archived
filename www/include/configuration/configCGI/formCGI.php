@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -24,8 +22,8 @@ For information : contact@oreon-project.org
 	$cgi = array();
 	if (($o == "c" || $o == "w") && $cgi_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1");
-		if (PEAR::isError($pearDB))
-			print "DB Error : SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1 : ".$pearDB->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$cgi = array_map("myDecode", $DBRESULT->fetchRow());
 	}
@@ -36,7 +34,7 @@ For information : contact@oreon-project.org
 	$checkCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT command_id, command_name FROM command ORDER BY command_name : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$checkCmds = array(NULL=>NULL);
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
@@ -191,7 +189,7 @@ For information : contact@oreon-project.org
 			$cgiObj->setValue(insertCGIInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateCGIInDB($cgiObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cgi_id=".$cgiObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;

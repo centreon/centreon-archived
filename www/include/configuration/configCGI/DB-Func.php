@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('cgi_id');
 		$DBRESULT =& $pearDB->query("SELECT cgi_name, cgi_id FROM cfg_cgi WHERE cgi_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT cgi_name, cgi_id.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$cgi =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $cgi["cgi_id"] == $id)	
@@ -43,10 +41,10 @@ For information : contact@oreon-project.org
 		global $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : UPDATE cfg_cgi SET cgi_activate = '0' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : UPDATE cfg_cgi SET cgi_activate.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function disableCGIInDB ($cgi_id = null)	{
@@ -55,15 +53,15 @@ For information : contact@oreon-project.org
 		global $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id = '".$cgi_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : UPDATE cfg_cgi SET cgi_activate = '0'.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi WHERE cgi_id != '".$cgi_id."'");
-		if (PEAR::isError($pearDB))
-			print "DB Error : SELECT MAX(cgi_id) FROM cfg_cgi.. : ".$DBRESULT->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$maxId =& $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(cgi_id)"]))	{
 			$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$maxId["MAX(cgi_id)"]."'");
-			if (PEAR::isError($pearDB))
-				print "DB Error : UPDATE cfg_cgi SET cgi_activate = '1'.. : ".$DBRESULT->getMessage()."<br>";			
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -72,18 +70,18 @@ For information : contact@oreon-project.org
 		foreach($cgi as $key=>$value)
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_cgi WHERE cgi_id = '".$key."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : DELETE FROM cfg_cgi... : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT cgi_id FROM cfg_cgi WHERE cgi_activate = '1'");		  
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT cgi_id FROM cfg_cgi.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if (!$DBRESULT->numRows())	{
 			$DBRESULT =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : SELECT MAX(cgi_id) FROM cfg_cgi : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$cgi_id = $DBRESULT->fetchRow();
 			$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id["MAX(cgi_id)"]."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : UPDATE cfg_cgi SET cgi_activate = '1'.. : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -92,7 +90,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : SELECT * FROM cfg_cgi.. : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row = $DBRESULT->fetchRow();
 			$row["cgi_id"] = '';
 			$row["cgi_activate"] = '0';
@@ -106,7 +104,7 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO cfg_cgi VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : INSERT INTO cfg_cgi VALUES... : ".$DBRESULT->getMessage()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				}
 			}
 		}
@@ -166,17 +164,17 @@ For information : contact@oreon-project.org
 		isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"] != NULL ? $rq .= "'".$ret["cgi_activate"]["cgi_activate"]."')" : $rq .= "'0')";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : INSERT INTO `cfg_cgi` (.. : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi");
 		$cgi_id = $DBRESULT->fetchRow();
 		if (isset($ret["cgi_activate"]["cgi_activate"]) && $ret["cgi_activate"]["cgi_activate"])	{
 			$DBRESULT =& $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id != '".$cgi_id["MAX(cgi_id)"]."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : UPDATE cfg_cgi SET cgi_activate = '0' WHERE cgi_id != '".$cgi_id["MAX(cgi_id)"]."' : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$oreon->CGIcfg = array();
 			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : SELECT * FROM `cfg_cgi` WHERE `cgi_activate` = '1' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$oreon->CGIcfg = $DBRESULT->fetchRow();
 		}
 		return ($cgi_id["MAX(cgi_id)"]);
@@ -219,7 +217,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE cgi_id = '".$cgi_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : UPDATE cfg_cgi SET... : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($ret["cgi_activate"]["cgi_activate"])
 			enableCGIInDB($cgi_id);
 	}
