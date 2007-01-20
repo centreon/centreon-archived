@@ -135,7 +135,6 @@ For information : contact@oreon-project.org
 		$rq .= "(dep_name, dep_alias, dep_description, inherits_parent, execution_failure_criteria, notification_failure_criteria, dep_comment) ";
 		$rq .= "VALUES (";
 		isset($ret["dep_name"]) && $ret["dep_name"] != NULL ? $rq .= "'".htmlentities($ret["dep_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["dep_alias"]) && $ret["dep_alias"] != NULL ? $rq .= "'".htmlentities($ret["dep_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["dep_description"]) && $ret["dep_description"] != NULL ? $rq .= "'".htmlentities($ret["dep_description"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["inherits_parent"]["inherits_parent"]) && $ret["inherits_parent"]["inherits_parent"] != NULL ? $rq .= "'".$ret["inherits_parent"]["inherits_parent"]."', " : $rq .= "NULL, ";
 		isset($ret["execution_failure_criteria"]) && $ret["execution_failure_criteria"] != NULL ? $rq .= "'".implode(",", array_keys($ret["execution_failure_criteria"]))."', " : $rq .= "NULL, ";
@@ -161,8 +160,6 @@ For information : contact@oreon-project.org
 		$rq = "UPDATE dependency SET ";
 		$rq .= "dep_name = ";
 		isset($ret["dep_name"]) && $ret["dep_name"] != NULL ? $rq .= "'".htmlentities($ret["dep_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		$rq .= "dep_alias = ";
-		isset($ret["dep_alias"]) && $ret["dep_alias"] != NULL ? $rq .= "'".htmlentities($ret["dep_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "dep_description = ";
 		isset($ret["dep_description"]) && $ret["dep_description"] != NULL ? $rq .= "'".htmlentities($ret["dep_description"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "inherits_parent = ";

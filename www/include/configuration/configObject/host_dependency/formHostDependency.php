@@ -92,7 +92,6 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'information', $lang['dep_infos']);
 	$form->addElement('text', 'dep_name', $lang["dep_name"], $attrsText);
-	$form->addElement('text', 'dep_alias', $lang["alias"], $attrsText);
 	$form->addElement('text', 'dep_description', $lang["dep_description"], $attrsText);
 	if ($oreon->user->get_version() == 2)	{
 		$tab = array();
@@ -147,7 +146,7 @@ For information : contact@oreon-project.org
 	#
 	$form->applyFilter('_ALL_', 'trim');
 	$form->addRule('dep_name', $lang['ErrName'], 'required');
-	$form->addRule('dep_alias', $lang['ErrRequired'], 'required');
+	$form->addRule('dep_description', $lang['ErrRequired'], 'required');
 	$form->addRule('dep_hostParents', $lang['ErrRequired'], 'required');
 	$form->addRule('dep_hostChilds', $lang['ErrRequired'], 'required');
 	if ($oreon->user->get_version() == 1)

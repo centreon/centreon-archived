@@ -39,7 +39,7 @@ For information : contact@oreon-project.org
 	}
 	 
 	if ($search)
-		$rq .= " AND dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -57,21 +57,21 @@ For information : contact@oreon-project.org
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_alias", $lang['alias']);
+	$tpl->assign("headerMenu_description", $lang['description']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	
 	#Dependcy list
 	if ($oreon->user->admin || !$isRestreint){
-		$rq = "SELECT dep_id, dep_name, dep_alias, dep_description FROM dependency dep";
+		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0";
 	} else {
-		$rq = "SELECT dep_id, dep_name, dep_alias, dep_description FROM dependency dep";
+		$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
 	}
 	
 	if ($search)
-		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);	
 	if (PEAR::isError($DBRESULT))
@@ -93,7 +93,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>myDecode($dep["dep_name"]),
-						"RowMenu_alias"=>myDecode($dep["dep_alias"]),
+						"RowMenu_description"=>myDecode($dep["dep_description"]),
 						"RowMenu_link"=>"?p=".$p."&o=c&dep_id=".$dep['dep_id'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
