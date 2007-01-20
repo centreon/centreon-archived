@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick
-Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS. OREON makes no representation
 and gives no warranty whatsoever, whether express or implied, and without limitation, 
 with regard to the quality, safety, contents, performance, merchantability, non-infringement
@@ -47,19 +44,18 @@ For information : contact@oreon-project.org
 	);
 	
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) {
+	if (PEAR::isError($pearDB))
 	    die($pearDB->getMessage());
-	}
 	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 	
-	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
-	if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
-	if (!$session->numRows()){
+	$DBRESULT =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+
+	if (!$DBRESULT->numRows())
 		exit;
-	} else {	
+	else {	
 		$Canvas =& Image_Canvas::factory('png',
 		    array(
 		        'width' => 300,
@@ -100,18 +96,17 @@ For information : contact@oreon-project.org
 				
 		$DS1 =& Image_Graph::factory('dataset');
 		
-		$res =& $pearDB->query("SELECT * FROM `servicegroup` WHERE sg_activate = '1'");
-		if (PEAR::isError($res))
-		    die($res->getMessage());
+		$DBRESULT =& $pearDB->query("SELECT * FROM `servicegroup` WHERE sg_activate = '1'");
+		if (PEAR::isError($DBRESULT))
+		    print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		else { 
 			$tab_sg = array();
-			while ($sg =& $res->fetchRow()){
+			while ($sg =& $DBRESULT->fetchRow()){
 				$tab_sg[$sg["sg_name"]] = array();
-				$resS =& $pearDB->query("SELECT service_service_id, service_description FROM servicegroup_relation, service WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND service.service_id = servicegroup_relation.service_service_id");
-				if (PEAR::isError($pearDB)) {
-					print "Mysql Error : ".$pearDB->getMessage();
-				}
-				for ($total = 0, $ok = 0;$rS =& $resS->fetchRow();$total++){
+				$DBRESULT2 =& $pearDB->query("SELECT service_service_id, service_description FROM servicegroup_relation, service WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND service.service_id = servicegroup_relation.service_service_id");
+				if (PEAR::isError($DBRESULT2))
+				    print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				for ($total = 0, $ok = 0;$rS =& $DBRESULT2->fetchRow();$total++){
 					if (!$rS["service_description"])
 						$rS["service_description"] = getMyHostName($rS["service_service_id"]);
 					if (isset($oreon->status_graph_service[$rS["service_description"]]) && !strcmp($oreon->status_graph_service[$rS["service_description"]]["status"], "OK"))

@@ -4,9 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick
-Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS. OREON makes no representation
 and gives no warranty whatsoever, whether express or implied, and without limitation, 
 with regard to the quality, safety, contents, performance, merchantability, non-infringement
@@ -47,19 +44,18 @@ For information : contact@oreon-project.org
 	);
 	
 	$db =& DB::connect($dsn, $options);
-	if (PEAR::isError($db)) {
+	if (PEAR::isError($db))
 	    die($db->getMessage());
-	}
 	
 	$db->setFetchMode(DB_FETCHMODE_ASSOC);
 	
-	$session =& $db->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
-	if (PEAR::isError($db)) {
-				print "Mysql Error : ".$db->getMessage();
-			}
-	if (!$session->numRows()){
+	$DBRESULT =& $db->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+
+	if (!$session->numRows())
 		exit;
-	} else {	
+	else {	
 		$Canvas =& Image_Canvas::factory('png',
 		    array(
 		        'width' => 300,
@@ -96,31 +92,26 @@ For information : contact@oreon-project.org
 		$Plotarea->addNew('Image_Graph_Grid_Polar', IMAGE_GRAPH_AXIS_Y);
 		$Plotarea->setBackgroundColor('#fff9eb');
 
-		// create the dataset
-		
+		// create the dataset		
 		$DS1 =& Image_Graph::factory('dataset');
-		
-		
-		$res =& $db->query("SELECT * FROM `hostgroup` WHERE hg_activate = '1'");
-		
-		if (PEAR::isError($res))
-		    die($res->getMessage());
+
+		$DBRESULT =& $db->query("SELECT * FROM `hostgroup` WHERE hg_activate = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		else { 
 			$tab_hg = array();
-			while ($hg =& $res->fetchRow()){
+			while ($hg =& $DBRESULT->fetchRow()){
 				$tab_hg[$hg["hg_name"]] = array();
-				$resH =& $db->query("SELECT host_host_id, host_name FROM hostgroup_relation, host WHERE hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND host.host_id = hostgroup_relation.host_host_id");
-				if (PEAR::isError($db)) {
-					print "Mysql Error : ".$db->getMessage();
-				}
-				for ($total = 0, $up = 0;$rH =& $resH->fetchRow();$total++)
+				$DBRESULT2 =& $db->query("SELECT host_host_id, host_name FROM hostgroup_relation, host WHERE hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND host.host_id = hostgroup_relation.host_host_id");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				for ($total = 0, $up = 0; $rH =& $DBRESULT2->fetchRow(); $total++)
 					if (!strcmp($oreon->status_graph_host[$rH["host_name"]]["status"], "UP"))
 						$up++;
 				if ($total)
 					$tab_hg[$hg["hg_name"]] = $up / $total * 100;
 			}
-		}
-		
+		}		
 		foreach ($tab_hg as $key => $hg)
 			$DS1->addPoint($key, $hg);
 		
