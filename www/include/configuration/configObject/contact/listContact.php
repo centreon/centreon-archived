@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact");
 	if (PEAR::isError($DBRESULT))
@@ -52,14 +52,16 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
+	$tpl->assign("headerMenu_hostNotif", $lang['cct_hostNotifTp']);
+	$tpl->assign("headerMenu_svNotif", $lang['cct_svNotifTp']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Contact list
 	if ($search)
-		$rq = "SELECT contact_id, contact_name, contact_alias, contact_activate  FROM contact WHERE contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT contact_id, contact_name, contact_alias, contact_activate FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -80,11 +82,25 @@ For information : contact@oreon-project.org
 			$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$contact['contact_id']."]'></input>";
+		/* Get Host Notif Period */
+		$hostTp = NULL;
+		$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$contact["timeperiod_tp_id"]."'");
+		if (PEAR::isError($DBRESULT2)) 
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+		$hostTp = $DBRESULT2->fetchRow();
+		/* Get Service Notif Period */
+		$svTp = NULL;
+		$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$contact["timeperiod_tp_id2"]."'");
+		if (PEAR::isError($DBRESULT2)) 
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+		$svTp = $DBRESULT2->fetchRow();		
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$contact["contact_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&contact_id=".$contact['contact_id'],
 						"RowMenu_desc"=>$contact["contact_alias"],
+						"RowMenu_hostNotif"=>html_entity_decode($hostTp["tp_name"], ENT_QUOTES)." (".$contact["contact_host_notification_options"].")",
+						"RowMenu_svNotif"=>html_entity_decode($svTp["tp_name"], ENT_QUOTES)." (".$contact["contact_service_notification_options"].")",
 						"RowMenu_status"=>$contact["contact_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
