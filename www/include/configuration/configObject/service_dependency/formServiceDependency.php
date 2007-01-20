@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
@@ -39,14 +37,14 @@ For information : contact@oreon-project.org
 		# Set Host Service Childs
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($service); $i++)
 			$dep["dep_hSvChi"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
 		$DBRESULT->free();
 		# Set Host Service Parents
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($service); $i++)
 			$dep["dep_hSvPar"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
 		$DBRESULT->free();
@@ -62,7 +60,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($elem))	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)
@@ -197,7 +195,7 @@ For information : contact@oreon-project.org
 			$depObj->setValue(insertServiceDependencyInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateServiceDependencyInDB($depObj->getValue("dep_id"));
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$depObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
