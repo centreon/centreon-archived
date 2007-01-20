@@ -31,7 +31,7 @@
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_desc}</td>
+			<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_host}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_service}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_metric}</td>
