@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -24,8 +22,8 @@ For information : contact@oreon-project.org
 	$pagination = "maxViewConfiguration";
 	# set limit
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT)) 
-		print "DB Error : SELECT maxViewConfiguration FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -108,13 +106,10 @@ For information : contact@oreon-project.org
 	$file =& $form2->addElement('file', 'filename', $lang["upl_file"]);
 	$form2->addElement('submit', 'load', "Load");
 	
-	if (isset($_GET["filename"])){
+	if (isset($_GET["filename"]))
 		print $_GET["filename"];
-				
-	}
 	
 	if ($form2->validate()) {
-		print "ok !!";
 		$ret = $form2->getSubmitValues();
 		$fDataz = array();
 		$buf = NULL;
