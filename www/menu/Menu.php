@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
-Adapted to Pear library Quickform & Template_PHPLIB by Merethis company, under direction of Cedrick Facon
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -104,7 +102,7 @@ For information : contact@oreon-project.org
 	for($i = 0; $DBRESULT->fetchInto($elem);)	{
 		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 ||
 		 $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 ||
-		  $elem["topology_page"] == 40202 || $elem["topology_page"] == 60603))
+		  $elem["topology_page"] == 40202 || $elem["topology_page"] == 60708))
 			;
 		else {
 			# grab menu title for each group
