@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -34,8 +32,8 @@ For information : contact@oreon-project.org
 			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
 		else
 			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$lcaSGStr.") LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		
 		# Set base value
 		$sg = array_map("myDecode", $DBRESULT->fetchRow());
@@ -43,20 +41,20 @@ For information : contact@oreon-project.org
 		# Set ServiceGroup Childs		
 		$DBRESULT =& $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($host); $i++)
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
 		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($services); $i++)
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
 		$DBRESULT->free();
 
 		# Set City name
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$sg["city_id"]."' AND cny.country_id = '".$sg["country_id"]."'");
-		if (PEAR::isError($DBRESULT)) 
-			print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$city = $DBRESULT->fetchRow();
 		$sg["city_name"] = $city["city_name"];
 		$DBRESULT->free();
@@ -73,7 +71,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($host))	{
 		$services = getMyHostServices($host["host_id"]);
 		foreach ($services as $key => $s)
@@ -100,7 +98,7 @@ For information : contact@oreon-project.org
 								"ORDER BY hg.hg_name, sv.service_description");
 	
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($elem))	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
@@ -112,7 +110,7 @@ For information : contact@oreon-project.org
 	$countries = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($country))
 		$countries[$country["country_id"]] = $country["country_name"];
 	$DBRESULT->free();
@@ -228,7 +226,6 @@ For information : contact@oreon-project.org
 
 	$tpl->assign('nagios', $oreon->user->get_version());
 
-	
 	$valid = false;
 	if ($form->validate())	{
 		$sgObj =& $form->getElement('sg_id');
@@ -236,7 +233,7 @@ For information : contact@oreon-project.org
 			$sgObj->setValue(insertServiceGroupInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateServiceGroupInDB($sgObj->getValue());
-		$o = "w";
+		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sgObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;

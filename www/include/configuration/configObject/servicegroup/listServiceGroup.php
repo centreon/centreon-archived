@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -28,7 +26,7 @@ For information : contact@oreon-project.org
 	# set limit
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
@@ -37,9 +35,9 @@ For information : contact@oreon-project.org
 
 	if ($search){
 		if ($oreon->user->admin || !$isRestreint)		
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 		else
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaServiceGroupStr.")");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sg_id IN (".$lcaServiceGroupStr.")");
 	} else {
 		if ($oreon->user->admin || !$isRestreint)		
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
@@ -47,7 +45,7 @@ For information : contact@oreon-project.org
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE sg_id IN (".$lcaSGStr.")");
 	}
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -71,9 +69,9 @@ For information : contact@oreon-project.org
 	!$isRestreint ? $lcaStr = " AND sg_id IN (".$lcaSGStr.") " : $lcaStr = ""; 
 	if ($search) {
 		if ($oreon->user->admin || !$isRestreint)
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 		else
-			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
+			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		if ($oreon->user->admin || !$isRestreint)
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
@@ -82,8 +80,8 @@ For information : contact@oreon-project.org
 	}
 
 	$DBRESULT = & $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT)) 
-		print "DB Error : ".$DBRESULT->getMessage()."<br>";
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	#Different style between each lines
