@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -26,7 +24,7 @@ For information : contact@oreon-project.org
 		$rqPath = "SELECT topology_url, topology_url_opt, topology_parent, topology_id, topology_name, topology_page FROM topology WHERE topology_page = '".$p."' ORDER BY topology_page";
 		$DBRESULT =& $pearDB->query($rqPath);
 		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$redirectPath =& $DBRESULT->fetchRow();
 		return $redirectPath;
 	}
@@ -49,7 +47,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
 	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$DBRESULT->fetchInto($current);
 	
 	if ($current["topology_url_opt"])
@@ -59,7 +57,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query($req);
 	while ($DBRESULT->fetchInto($new_url)){
 		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if (isset($lang[$new_url["topology_name"]]))
 			$tabPath[$new_url["topology_page"]] = array();
 			$tabPath[$new_url["topology_page"]]["name"] = $lang[$new_url["topology_name"]];
