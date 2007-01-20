@@ -21,7 +21,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-
 	global $num;
 	global $search;
 	
@@ -126,7 +125,6 @@ function setL(_this){
 	$form->addElement('hidden', 'search_type_host');
 	$tab = array ("p" => $p, "search" => $search, "num"=>$num);
 	$form->setDefaults($tab);
-
 
 	# Init QuickForm
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

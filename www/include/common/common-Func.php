@@ -81,7 +81,7 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
 			if ($row["host_name"])
-				return $row["host_name"];
+				return html_entity_decode($row["host_name"], ENT_QUOTES);
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
 			else
@@ -111,7 +111,7 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
 			if ($row["host_address"])
-				return $row["host_address"];
+				return html_entity_decode($row["host_address"], ENT_QUOTES);
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
 			else
@@ -128,7 +128,7 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
 			if ($row["host_address"])
-				return $row["host_address"];
+				return html_entity_decode($row["host_address"], ENT_QUOTES);
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
 			else
@@ -164,7 +164,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($hg))
-			$hgs[$hg["hostgroup_hg_id"]] = $hg["hg_name"];
+			$hgs[$hg["hostgroup_hg_id"]] = html_entity_decode($hg["hg_name"], ENT_QUOTES);
 		return $hgs;
 	}
 	
@@ -190,14 +190,14 @@ For information : contact@oreon-project.org
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 					$row =& $DBRESULT->fetchRow();
 					if ($row["hg_snmp_community"])
-						return $row["hg_snmp_community"];
+						return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES);
 				}
 				$DBRESULT =& $pearDB->query("SELECT snmp_community FROM general_opt LIMIT 1");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$row =& $DBRESULT->fetchRow();
 				if (isset($row["snmp_community"]))
-					return $row["snmp_community"];
+					return html_entity_decode($row["snmp_community"], ENT_QUOTES);
 				return NULL;
 			}
 		}
@@ -226,14 +226,14 @@ For information : contact@oreon-project.org
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 					$row =& $DBRESULT->fetchRow();
 					if ($row["hg_snmp_version"])
-						return $row["hg_snmp_version"];
+						return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES);
 				}
 				$DBRESULT =& $pearDB->query("SELECT snmp_version FROM general_opt LIMIT 1");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$row =& $DBRESULT->fetchRow();
 				if (isset($row["snmp_version"]))
-					return $row["snmp_version"];
+					return html_entity_decode($row["snmp_version"], ENT_QUOTES);
 				else
 					break;
 				break;
@@ -246,10 +246,10 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB;
 		while(1)	{
-			$res =& $pearDB->query("SELECT ".$field.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($pearDB))
-				print "Mysql Error : ".$pearDB->getMessage();
-			$row =& $res->fetchRow();
+			$DBRESULT =& $pearDB->query("SELECT ".$field.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
 			$field_result = $row[$field];
 			if ($row[$field])
 				return $row[$field];
@@ -259,6 +259,7 @@ For information : contact@oreon-project.org
 				break;
 		}
 	}
+	
 	function getMyHostExtendedInfoField($host_id = NULL, $field)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -277,6 +278,27 @@ For information : contact@oreon-project.org
 		}
 	}
 	
+	function getMyHostTemplateModels($host_id = NULL)	{
+		if (!$host_id) return;
+		global $pearDB;
+		$tplArr = array();
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
+			if ($row["host_name"])
+				$tplArr[$host_id] = html_entity_decode($row["host_name"], ENT_QUOTES);
+			else
+				break;
+			if ($row["host_template_model_htm_id"])
+				$host_id = $row["host_template_model_htm_id"];
+			else
+				break;
+		}
+		return ($tplArr);
+	}
+	
 	#
 	## HOST GROUP
 	#
@@ -289,7 +311,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$row =& $DBRESULT->fetchRow();
 		if ($row["hg_name"])
-			return $row["hg_name"];
+			return html_entity_decode($row["hg_name"], ENT_QUOTES);
 		return NULL;
 	}
 	
@@ -314,7 +336,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$row =& $DBRESULT->fetchRow();
 		if ($row["hg_snmp_community"])
-			return $row["hg_snmp_community"];
+			return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES);
 		return NULL;
 	}
 	
@@ -326,7 +348,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$row =& $DBRESULT->fetchRow();
 		if ($row["hg_snmp_version"])
-			return $row["hg_snmp_version"];
+			return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES);
 		return NULL;
 	}
 	
@@ -379,7 +401,7 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
 			if ($row["service_description"])
-				return $row["service_description"];
+				return html_entity_decode($row["service_description"], ENT_QUOTES);
 			else if ($row["service_template_model_stm_id"])
 				$service_id = $row["service_template_model_stm_id"];
 			else
@@ -396,7 +418,7 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
 			if ($row["service_alias"])
-				return $row["service_alias"];
+				return html_entity_decode($row["service_alias"], ENT_QUOTES);
 			else if ($row["service_template_model_stm_id"])
 				$service_id = $row["service_template_model_stm_id"];
 			else
@@ -464,7 +486,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))
-			$hSvs[$elem["service_id"]]	= $elem["service_description"];
+			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
 		$DBRESULT->free();
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
@@ -472,7 +494,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT)) 
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))
-			$hSvs[$elem["service_id"]]	= $elem["service_description"];
+			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
 		$DBRESULT->free();
 		return $hSvs;
 	}
@@ -564,6 +586,27 @@ For information : contact@oreon-project.org
 				return NULL;
 		}
 		return NULL;
+	}
+	
+	function getMyServiceTemplateModels($service_id = NULL)	{
+		if (!$service_id) return;
+		global $pearDB;
+		$tplArr = array();
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
+			if ($row["service_description"])
+				$tplArr[$service_id] = html_entity_decode($row["service_description"], ENT_QUOTES);
+			else
+				break;
+			if ($row["service_template_model_stm_id"])
+				$service_id = $row["service_template_model_stm_id"];
+			else
+				break;
+		}
+		return ($tplArr);
 	}
 	
 	#
