@@ -147,7 +147,7 @@ For information : contact@oreon-project.org
 	#
 	$form->applyFilter('_ALL_', 'trim');
 	$form->addRule('dep_name', $lang['ErrName'], 'required');
-	$form->addRule('dep_description', $lang['ErrRequired'], 'required');
+	$form->addRule('dep_alias', $lang['ErrRequired'], 'required');
 	$form->addRule('dep_hostParents', $lang['ErrRequired'], 'required');
 	$form->addRule('dep_hostChilds', $lang['ErrRequired'], 'required');
 	if ($oreon->user->get_version() == 1)
