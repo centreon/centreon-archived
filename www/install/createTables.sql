@@ -612,6 +612,7 @@ CREATE TABLE `downtime` (
 CREATE TABLE `escalation` (
   `esc_id` int(11) NOT NULL auto_increment,
   `esc_name` varchar(255) default NULL,
+  `esc_alias` varchar(255) default NULL,  
   `first_notification` int(11) default NULL,
   `last_notification` int(11) default NULL,
   `notification_interval` int(11) default NULL,
@@ -1122,6 +1123,7 @@ CREATE TABLE `inventory_manufacturer` (
 CREATE TABLE `lca_define` (
   `lca_id` int(11) NOT NULL auto_increment,
   `lca_name` varchar(255) default NULL,
+  `lca_alias` varchar(255) default NULL,
   `lca_comment` text,
   `lca_hg_childs` enum('0','1') default NULL,
   `lca_activate` enum('0','1') default NULL,
