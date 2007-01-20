@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -25,7 +23,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('resource_id');
 		$DBRESULT =& $pearDB->query("SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".htmlentities($name, ENT_QUOTES)."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$res =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $res["resource_id"] == $id)	
@@ -42,7 +40,7 @@ For information : contact@oreon-project.org
 		foreach($DBRESULT as $key=>$value){
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_resource WHERE resource_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : DELETE FROM cfg_resource WHERE resource_id = '".$key."' : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
 	
@@ -51,7 +49,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_resource SET resource_activate = '1' WHERE resource_id = '".$resource_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : UPDATE cfg_resource SET resource_activate = '1' WHERE resource_id = '".$resource_id."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function disableResourceInDB ($resource_id = null)	{
@@ -59,7 +57,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : UPDATE cfg_resource SET resource_activate = '0' WHERE resource_id = '".$resource_id."' : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function multipleResourceInDB ($DBRESULT = array(), $nbrDup = array())	{
@@ -67,19 +65,20 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : SELECT * FROM cfg_resource WHERE resource_id = '".$key."' LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row = $DBRESULT->fetchRow();
 			$row["resource_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "resource_name" ? ($DBRESULTource_name = $value2 = $value2."_".$i) : null;
+					$key2 == "resource_name" ? ($resource_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				if (testExistence($DBRESULTource_name))
+				if (testExistence($resource_name))	{
 					$DBRESULT =& $pearDB->query($val ? $rq = "INSERT INTO cfg_resource VALUES (".$val.")" : $rq = null);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : INSERT INTO cfg_resource VALUES (".$val.") : ".$DBRESULT->getMessage()."<br>";
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				}
 			}
 		}
 	}
@@ -103,7 +102,7 @@ For information : contact@oreon-project.org
 				"WHERE resource_id = '".$resource_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : UPDATE cfg_resource : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
 	function insertResourceInDB ()	{
@@ -125,11 +124,11 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : INSERT INTO cfg_resource : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");
 		$resource_id = $DBRESULT->fetchRow();
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : SELECT MAX(resource_id) FROM cfg_resource : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		return ($resource_id["MAX(resource_id)"]);
 	}
 ?>
