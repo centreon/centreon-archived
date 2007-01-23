@@ -1,18 +1,27 @@
 <table id="ListTable">
 	<tr class="ListHeader">
 		<td class="ListColHeaderCenter">{$headerMenu_name}</td>
-		<td class="ListColHeaderCenter">{$headerMenu_dir}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_longname}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_dir}</td>		
 		<td class="ListColHeaderCenter">{$headerMenu_gen}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_lang}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_sql}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_action}</td>
 	</tr>
 	{section name=elem loop=$elemArr}
 	<tr class={$elemArr[elem].MenuClass}>
 		<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
+		<td class="ListColCenter">{$elemArr[elem].RowMenu_longname}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_dir}</td>
 		<td class="ListColCenter">{if $elemArr[elem].RowMenu_gen}{$yes}{else}{$no}{/if}</td>
 		<td class="ListColCenter">{if $elemArr[elem].RowMenu_lang}{$yes}{else}{$no}{/if}</td>
 		<td class="ListColCenter">{if $elemArr[elem].RowMenu_sql}{$yes}{else}{$no}{/if}</td>
+		<td class="ListColCenter">
+			<a href="{if $elemArr[elem].RowMenu_action_del}{$elemArr[elem].RowMenu_modules_list_link}{else}{$elemArr[elem].RowMenu_action_del_link}{/if}"   >
+			<img src='./img/icones/16x16/undo.gif' title='{$Action_uninstall}' alt='{$Action_uninstall}' {if $elemArr[elem].RowMenu_action_del} disabled style='opacity: 0.5; filter: alpha(opacity=50);'{/if} ></a>&nbsp;
+			<a href="{if $elemArr[elem].RowMenu_action_install}{$elemArr[elem].RowMenu_modules_list_link}{else}{$elemArr[elem].RowMenu_action_install_link}{/if}"  >
+			<img src='./img/icones/16x16/gears_run.gif' title='{$Action_install}' alt='{$Action_install}' {if $elemArr[elem].RowMenu_action_install} disabled style='opacity: 0.5; filter: alpha(opacity=50);'{/if}></a>
+		</td>		
 	</tr>
 	{/section}	
 </table>

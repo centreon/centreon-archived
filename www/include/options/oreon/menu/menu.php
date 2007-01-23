@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -22,7 +20,10 @@ For information : contact@oreon-project.org
 	
 	isset($_GET["menu_id"]) ? $mG = $_GET["menu_id"] : $mG = NULL;
 	isset($_POST["menu_id"]) ? $mP = $_POST["menu_id"] : $mP = NULL;
+	isset($_GET["name"]) ? $nameG = $_GET["name"] : $nameG = NULL;	
+	isset($_POST["name"]) ? $nameP = $_POST["name"] : $nameP = NULL;
 	$mG ? $menu_id = $mG : $menu_id = $mP;
+	$nameG ? $name = $nameG : $name = $nameP;
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -33,8 +34,12 @@ For information : contact@oreon-project.org
 	$path = "./include/options/oreon/menu/";
 	
 	require_once "./include/common/common-Func.php";
+	require_once $path ."DB-Func.php";
 	
 	switch ($o)	{
+		case "i" : require_once($path."formMenu.php"); break;
+		case "d" : require_once($path."formMenu.php"); break;
+		case "w" : require_once($path."formMenu.php"); break;
 		default : require_once($path."listMenu.php");  break;
 	}
 ?>
