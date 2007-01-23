@@ -1,9 +1,5 @@
 --
--- Generated le : Vendredi 30 Juin 2006 12:36
---
-
---
--- Base de donn�es: `oreon`
+-- Base de données: `oreon`
 --
 
 -- --------------------------------------------------------
@@ -1692,6 +1688,23 @@ CREATE TABLE `topology_JS` (
   KEY `id_page` (`id_page`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
+
+--
+-- Structure de la table `modules_informations`
+--
+
+CREATE TABLE `modules_informations` (
+  `id` int(11) NOT NULL auto_increment,
+  `internal_name` varchar(254) default NULL,
+  `name` varchar(254) default NULL,
+  `version` int(11) default NULL,
+  `is_installed` enum('0','1') default NULL,
+  `is_removeable` enum('0','1') default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
 
 
 --
