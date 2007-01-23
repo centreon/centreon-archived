@@ -2,7 +2,7 @@
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
-Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
+Developped by : Julien Mathis - Romain Le Merlus
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
@@ -141,10 +141,21 @@ $lang['menu_modGen'] = "Generation";
 $lang['menu_modSql'] = "Sql";
 $lang['menu_modLang'] = "Lang Files Available";
 $lang['menu_listName'] = "Name";
+$lang['menu_listLongName'] = "Real Name";
 $lang['menu_listDir'] = "Directory";
 $lang['menu_listGen'] = "Generation";
 $lang['menu_listLang'] = "Lang";
 $lang['menu_listSql'] = "Sql";
+$lang["menu_listAction"] = "Actions";
+$lang["menu_listAction_del"] = "Uninstall";
+$lang["menu_listAction_install"] = "Install";
+$lang["menu_listAction_i"] = "Module has been installed succesfully";
+$lang["menu_listAction_d"] = "Module has been uninstalled succesfully";
+$lang["menu_Module_Title"] = "Module Informations";
+$lang["menu_Module_Name"] = "Name"; 
+$lang["menu_Module_Version"] = "Version"; 	
+$lang["menu_Module_Author"] = "Author"; 
+$lang["menu_Module_additionnals_infos"] = "Additionnals Informations"; 
 $lang['menu_nagios'] = "Nagios";
 $lang['menu_ldap'] = "LDAP";
 $lang['menu_snmp'] = "SNMP";
