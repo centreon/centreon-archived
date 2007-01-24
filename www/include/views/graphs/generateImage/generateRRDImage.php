@@ -123,7 +123,11 @@ For information : contact@oreon-project.org
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
 		while($DBRESULT->fetchInto($ppMetric))	{
-			$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace("/", "", $ppMetric["metric"]);
+			if ($ppMetric["metric"] != ""){
+				$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace("/", "", $ppMetric["metric"]);
+			} else {
+				$ppMetrics[$ppMetric["metric_id"]]["metric"] = "a".$cpt;
+			}
 			$ppMetrics[$ppMetric["metric_id"]]["unit"] = $ppMetric["unit"];
 			$ds = getDefaultDS($template_id, $cpt, 1);
 			$ppMetrics[$ppMetric["metric_id"]]["ds_id"] = $ds;
