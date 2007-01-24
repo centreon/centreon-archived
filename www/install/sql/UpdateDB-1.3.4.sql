@@ -42,6 +42,10 @@ ALTER TABLE `topology` ADD `topology_OnClick` VARCHAR( 255 ) NULL ;
 
 -- 22/01/2007
 
+--
+-- Quand on rajoute, on rajoute a la Fin Merci !
+--
+
 CREATE TABLE `modules_informations` (
   `id` int(11) NOT NULL auto_increment,
   `internal_name` varchar(254) default NULL,
