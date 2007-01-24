@@ -1,14 +1,3 @@
-CREATE TABLE `modules_informations` (
-  `id` int(11) NOT NULL auto_increment,
-  `internal_name` varchar(254) default NULL,
-  `name` varchar(254) default NULL,
-  `version` int(11) default NULL,
-  `is_installed` enum('0','1') default NULL,
-  `is_removeable` enum('0','1') default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 -- 20/01/2007
 UPDATE `oreon_informations` SET `value` = '1.3.4' WHERE CONVERT( `key` USING utf8 ) = 'version' AND CONVERT( `value` USING utf8 ) = '1.3.3' LIMIT 1 ;
 ALTER TABLE `escalation` ADD `esc_alias` VARCHAR( 255 ) NULL AFTER `esc_name` ;
@@ -50,3 +39,16 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 ALTER TABLE `topology` ADD `topology_style_class` VARCHAR( 255 ) NULL ;
 ALTER TABLE `topology` ADD `topology_style_id` VARCHAR( 255 ) NULL ;
 ALTER TABLE `topology` ADD `topology_OnClick` VARCHAR( 255 ) NULL ;
+
+-- 22/01/2007
+
+CREATE TABLE `modules_informations` (
+  `id` int(11) NOT NULL auto_increment,
+  `internal_name` varchar(254) default NULL,
+  `name` varchar(254) default NULL,
+  `version` int(11) default NULL,
+  `is_installed` enum('0','1') default NULL,
+  `is_removeable` enum('0','1') default NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
