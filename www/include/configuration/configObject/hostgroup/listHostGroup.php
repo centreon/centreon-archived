@@ -23,8 +23,6 @@ For information : contact@oreon-project.org
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)	{
 		if ($oreon->user->admin || !HadUserLca($pearDB))
 			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");

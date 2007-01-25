@@ -7,7 +7,6 @@
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
-
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -33,7 +32,6 @@
 			<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}
-	
 	</table>
 	<table class="Toolbar_TableBottom">
 		<tr>
@@ -48,9 +46,7 @@
 			{/php}
 		</tr>
 	</table>
-
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>

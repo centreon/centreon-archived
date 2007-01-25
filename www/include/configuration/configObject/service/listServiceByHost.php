@@ -22,15 +22,33 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());	
+		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-	isset ($_GET["search_type_service"]) ? $search_type_service = $_GET["search_type_service"] : $search_type_service = NULL;
-	isset ($_GET["search_type_host"]) ? $search_type_host = $_GET["search_type_host"] : $search_type_host = NULL;
-
+	if (isset ($_GET["search"]))
+		$search = $_GET["search"];
+	else if ($oreon->historySearch[$url])
+		$search = $oreon->historySearch[$url];
+	else 
+		$search = NULL;
+	
+	if (isset($_GET["search_type_service"])){
+		$search_type_service = $_GET["search_type_service"];
+		$oreon->search_type_service = $_GET["search_type_service"];
+	} else if ($oreon->search_type_service)
+		 $search_type_service = $oreon->search_type_service;
+	else 
+		$search_type_service = NULL;
+		
+	if (isset($_GET["search_type_host"])){
+		$search_type_host = $_GET["search_type_host"];
+		$oreon->search_type_host = $_GET["search_type_host"];
+	} else if ($oreon->search_type_host)
+		 $search_type_host = $oreon->search_type_host;
+	else 
+		$search_type_host = NULL;
+	
 	$rows = 0;
 	$tmp = NULL;
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.

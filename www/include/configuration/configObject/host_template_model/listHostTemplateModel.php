@@ -21,8 +21,6 @@ For information : contact@oreon-project.org
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	if ($search)
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '0'");
 	else

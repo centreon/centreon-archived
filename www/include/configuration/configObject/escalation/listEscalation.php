@@ -25,8 +25,6 @@ For information : contact@oreon-project.org
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
 	$rq = "SELECT COUNT(*) FROM escalation esc";	
