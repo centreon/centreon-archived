@@ -82,6 +82,32 @@ For information : contact@oreon-project.org
 	  	$status_proc = 0;
 	}
 	
+	if (isset($oreon) && is_object($oreon)){
+
+		if (isset ($_GET["search"]))
+			$search = $_GET["search"];
+		else if ($oreon->historySearch[$url])
+			$search = $oreon->historySearch[$url];
+		else 
+			$search = NULL;
+		
+		if (isset($_GET["search_type_service"])){
+			$search_type_service = $_GET["search_type_service"];
+			$oreon->search_type_service = $_GET["search_type_service"];
+		} else if ($oreon->search_type_service)
+			 $search_type_service = $oreon->search_type_service;
+		else 
+			$search_type_service = NULL;
+			
+		if (isset($_GET["search_type_host"])){
+			$search_type_host = $_GET["search_type_host"];
+			$oreon->search_type_host = $_GET["search_type_host"];
+		} else if ($oreon->search_type_host)
+			 $search_type_host = $oreon->search_type_host;
+		else 
+			$search_type_host = NULL;
+	}
+		
 	// init table
 	$service = array();
 	$host_status = array();

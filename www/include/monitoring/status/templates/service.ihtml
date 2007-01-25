@@ -1,6 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
-
 <div class="cachediv">
 <!-- informations bank for ajax -->
 <FORM id="fsave">
@@ -19,14 +17,11 @@
 </FORM>
 </div>
 
-
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">
-		
-		
 			<td class="Toolbar_TDSelectAction_Top">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
 			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
@@ -42,7 +37,6 @@
 			{/if}
 
 			</td>
-
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -74,8 +68,7 @@
 			{elseif $host != $s.host_name}	
 				<td class="ListColLeft"><div class="cachediv" id="host{$c}">{$s.host_name}</div><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
 			{/if}
-
-
+			
 			<td class="ListColLeft">
 			<div class="cachediv" id="service{$c}">{$s.service_description}</div>
 			<a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.service_description}'>{ $s.service_description }</a>
@@ -99,10 +92,7 @@
 			<td class="ListColCenter" style="background-color:{ $s.status_color }" id="tdStatus{$c}"><div id="current_state{$c}">{ $s.current_state }</div></td>
 			<td class="ListColRight" style="white-space:nowrap;"><div id="last_check{$c}">{ $s.last_check }</div></td>
             <td class="ListColRight" align="right"><div id="last_state_change{$c}">{ $s.last_state_change }</div></td>
-
             <td class="ListColCenter" align="center"><div id="current_attempt{$c}">{ $s.current_attempt }</div></td>
-
-                        
             <td class="ListColNoWrap"><div id="plugin_output{$c}">{ $s.plugin_output}{ $t}</div></td>						
 		</tr>
 		{assign var="host" value=$s.host_name}
