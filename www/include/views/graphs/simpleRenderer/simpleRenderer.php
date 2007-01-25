@@ -201,7 +201,7 @@ For information : contact@oreon-project.org
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			$meta =& $DBRESULT2->fetchRow();
 			$case = $lang["ms"]." : ".$meta["meta_name"];
-			$res2->free();
+			$res->free();
 			if (isset($_GET["template_id"]) && $_GET["template_id"])
 				$graph = array("graph_id" => $_GET["template_id"], "name" => "");
 			else
@@ -250,7 +250,7 @@ For information : contact@oreon-project.org
 			} else
 				$len = 5 * 120;
 			
-			$step = $len;
+			$step = $len / 2;
 			$len *= 2;
 			isset($ret["step"]) && $ret["step"] != 0 ? $time_between_two_values = $len * $ret["step"] : $time_between_two_values = $len;
 
@@ -345,6 +345,7 @@ For information : contact@oreon-project.org
 				$cpt_total_graphed_values_for_rrd = $cpt_total_values + 100;
 				$cmd .=  " RRA:LAST:0.5:1:".$cpt_total_graphed_values_for_rrd . " RRA:MIN:0.5:1:".$cpt_total_graphed_values_for_rrd." RRA:MAX:0.5:8:".$cpt_total_graphed_values_for_rrd . " ";
 				system($cmd, $return);
+				
 				################################################################
 				$time_start_create = microtime_float();
 				$cpt_data = 0;
