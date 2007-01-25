@@ -21,18 +21,21 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	global $num;
-	global $search;
+	global $num, $search, $url;
 	
-	global $search_type_service;
-	global $search_type_host;
+	global $search_type_service, $search_type_host;
 	
 	isset ($_GET["search_type_service"]) ? $search_type_service = $_GET["search_type_service"] : $search_type_service = NULL;
 	isset ($_GET["search_type_host"]) ? $search_type_host = $_GET["search_type_host"] : $search_type_host = NULL;
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
-	
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
+		
+	if (isset($_GET["num"]))
+		$num = $_GET["num"];
+	else if (isset($oreon->historyPage[$url]))
+		$num = $oreon->historyPage[$url];
+	else 
+		$num = 0;
+			
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 	
 	global $rows;
@@ -56,7 +59,6 @@ For information : contact@oreon-project.org
 		$sort_type = $_GET["sort_types"];
 	}
 
-
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./include/common/");
@@ -72,18 +74,18 @@ For information : contact@oreon-project.org
 							"label_page"=>"<b>".($i +1)."</b>",
 							"num"=> $i);
 	}
-	if($i > 1)							
+	if ($i > 1)							
 		$tpl->assign("pageArr", $pageArr);
 
 	$tpl->assign("num", $num);
 	$tpl->assign("previous", $lang["previous"]);
 	$tpl->assign("next", $lang["next"]);
 
-	if(($prev = $num - 1) >= 0)
+	if (($prev = $num - 1) >= 0)
 		$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
-	if(($next = $num + 1) < ($rows/$limit))
+	if (($next = $num + 1) < ($rows/$limit))
 		$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
-	if(($rows / $limit) > 0)
+	if (($rows / $limit) > 0)
 		$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
 	else
 		$tpl->assign('pageNumber', ($num)."/".ceil($rows / $limit));
@@ -100,12 +102,9 @@ For information : contact@oreon-project.org
 <SCRIPT LANGUAGE="JavaScript">
 function setL(_this){
 	var _l = document.getElementsByName('l');
-
 	document.forms['form'].elements['limit'].value = _this;
-
 	_l[0].value = _this;
 	_l[1].value = _this;
-
 }
 </SCRIPT>
 <?
