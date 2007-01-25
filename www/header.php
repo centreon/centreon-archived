@@ -115,7 +115,7 @@ For information : contact@oreon-project.org
 		$oreon->user->createLCA($pearDB);
 		$oreon->initNagiosCFG($pearDB);
 		$oreon->initOptGen($pearDB);
-
+	
 		// Update Session Table For last_reload and current_page row
 		$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
