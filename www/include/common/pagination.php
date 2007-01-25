@@ -21,22 +21,16 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	global $num, $search, $url;
-	
+	global $num, $limit, $search, $url, $pearDB;
 	global $search_type_service, $search_type_host;
 	
-	isset ($_GET["search_type_service"]) ? $search_type_service = $_GET["search_type_service"] : $search_type_service = NULL;
-	isset ($_GET["search_type_host"]) ? $search_type_host = $_GET["search_type_host"] : $search_type_host = NULL;
+	//isset ($_GET["search_type_service"]) ? $search_type_service = $_GET["search_type_service"] : $search_type_service = NULL;
+	//isset ($_GET["search_type_host"]) ? $search_type_host = $_GET["search_type_host"] : $search_type_host = NULL;
+	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
-		
-	if (isset($_GET["num"]))
-		$num = $_GET["num"];
-	else if (isset($oreon->historyPage[$url]))
-		$num = $oreon->historyPage[$url];
-	else 
-		$num = 0;
-			
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
+	
+	print "num : $num - limit : $limit <br>";
 	
 	global $rows;
 	global $limit;
