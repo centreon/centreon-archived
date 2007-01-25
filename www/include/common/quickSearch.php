@@ -16,8 +16,17 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	/* start quickSearch form */	
+	if (!isset($oreon))
+		exit();
+		
 	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
+	
+	if (isset($_GET["search"]))
+		$search = $_GET["search"];
+	else if (isset($oreon->historySearch[$url]))
+		$search = $oreon->historySearch[$url];
+	else
+		$search = NULL; 
 	
 	$tab = array ("search" => $search, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
 	$form_search->addElement('text', 'search', $lang["quicksearch"]);
@@ -42,6 +51,4 @@ For information : contact@oreon-project.org
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
 	$tpl->display("quickSearch.ihtml");
-
-	/* end quickSearch form*/	
 ?>
