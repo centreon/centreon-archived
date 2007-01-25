@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 
 		if (isset ($_GET["search"]))
 			$search = $_GET["search"];
-		else if ($oreon->historySearch[$url])
+		else if (isset($oreon->historySearch[$url]))
 			$search = $oreon->historySearch[$url];
 		else 
 			$search = NULL;
@@ -94,7 +94,7 @@ For information : contact@oreon-project.org
 		if (isset($_GET["search_type_service"])){
 			$search_type_service = $_GET["search_type_service"];
 			$oreon->search_type_service = $_GET["search_type_service"];
-		} else if ($oreon->search_type_service)
+		} else if (isset($oreon->search_type_service))
 			 $search_type_service = $oreon->search_type_service;
 		else 
 			$search_type_service = NULL;
@@ -102,7 +102,7 @@ For information : contact@oreon-project.org
 		if (isset($_GET["search_type_host"])){
 			$search_type_host = $_GET["search_type_host"];
 			$oreon->search_type_host = $_GET["search_type_host"];
-		} else if ($oreon->search_type_host)
+		} else if (isset($oreon->search_type_host))
 			 $search_type_host = $oreon->search_type_host;
 		else 
 			$search_type_host = NULL;
