@@ -20,6 +20,7 @@ For information : contact@oreon-project.org
 		exit();
 		
 	$form_search = new HTML_QuickForm('quickSearchForm', 'GET', "?p=".$p."&o=".$o);
+	global $search;
 	
 	if (isset($_GET["search"]))
 		$search = $_GET["search"];

@@ -179,7 +179,8 @@ For information : contact@oreon-project.org
 		
 		if ($user_status["contact_admin"]){
 			return 0;
-		} else {	$user_id = $user["user_id"];
+		} else {
+			$user_id = $user["user_id"];
 			$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
 			if ($res1->numRows())
 				while($res1->fetchInto($contactGroup))	{

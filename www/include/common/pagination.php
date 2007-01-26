@@ -24,31 +24,20 @@ For information : contact@oreon-project.org
 	global $num, $limit, $search, $url, $pearDB;
 	global $search_type_service, $search_type_host;
 	
-	//isset ($_GET["search_type_service"]) ? $search_type_service = $_GET["search_type_service"] : $search_type_service = NULL;
-	//isset ($_GET["search_type_host"]) ? $search_type_host = $_GET["search_type_host"] : $search_type_host = NULL;
-	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
-	
-	print "num : $num - limit : $limit <br>";
-	
-	global $rows;
-	global $limit;
-	global $p;
-	global $lang;
-	global $limit;
-	global $gopt;
-	global $pagination;
+
+	global $rows, $p, $lang, $gopt, $pagination;
 
 	$url_var = "";
 	$url_var .= "&search_type_service=" . $search_type_service;
 	$url_var .= "&search_type_host=" . $search_type_host;
 	
-	if(isset($_GET["order"])){
+	if (isset($_GET["order"])){
 		$url_var .= "&order=".$_GET["order"];
 		$order = $_GET["order"];
 	}
-	if(isset($_GET["sort_types"])){
+	if (isset($_GET["sort_types"])){
 		$url_var .= "&sort_types=".$_GET["sort_types"];
 		$sort_type = $_GET["sort_types"];
 	}
@@ -102,7 +91,6 @@ function setL(_this){
 }
 </SCRIPT>
 <?
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
 	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit('')"));
 	$selLim->setSelected($limit);
@@ -127,7 +115,6 @@ function setL(_this){
 	$tpl->assign("host_name", $host_name);
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	$tpl->assign("status", $status);
-
 	$tpl->assign("limite", $limite);
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
@@ -135,7 +122,6 @@ function setL(_this){
 	$tpl->assign("order", $_GET["order"]);
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);
-
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("pagination.ihtml");
 ?>
