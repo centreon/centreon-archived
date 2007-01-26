@@ -17,11 +17,13 @@ incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
-*/$pagination = "maxViewConfiguration";
-	!isset ($_GET["limit"]) ? $limit = 20 : $limit = $_GET["limit"];
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-	if ($search)
+*/
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
+	
+	if (isset($search))
 		$res = & $pearDB->query("SELECT COUNT(*) FROM view_map WHERE map_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
 		$res = & $pearDB->query("SELECT COUNT(*) FROM view_map");
@@ -93,8 +95,6 @@ For information : contact@oreon-project.org
     $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
-
-	
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
