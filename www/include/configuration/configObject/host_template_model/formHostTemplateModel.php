@@ -359,7 +359,8 @@ For information : contact@oreon-project.org
 //	$form->addElement('text', 'ehi_icon_image', $lang['h_iconImg'], $attrsText);
 	$form->addElement('text', 'ehi_icon_image_alt', $lang['h_iconImgAlt'], $attrsText);
 	$form->addElement('text', 'ehi_vrml_image', $lang['h_vrmlImg'], $attrsText);
-	$form->addElement('text', 'ehi_statusmap_image', $lang['h_nagStatImg'], $attrsText);
+//	$form->addElement('text', 'ehi_statusmap_image', $lang['h_nagStatImg'], $attrsText);
+	$form->addElement('select', 'ehi_statusmap_image', $lang['h_nagStatImg'],$extImg);	
 	$form->addElement('text', 'ehi_2d_coords', $lang['h_nag2dCoords'], $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', $lang['h_nag3dCoords'], $attrsText2);
 
