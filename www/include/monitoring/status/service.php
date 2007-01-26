@@ -20,6 +20,8 @@ For information : contact@oreon-project.org
 		exit();
 		
 	$pagination = "maxViewMonitoring";
+	
+	include("./include/common/autoNumLimit.php");
 
 	#create javascript for refresh ajax
 	include('./include/monitoring/status/makeJS.php');
@@ -30,8 +32,8 @@ For information : contact@oreon-project.org
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
-	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
+	//!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
+	//!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 
 	# start quickSearch form
