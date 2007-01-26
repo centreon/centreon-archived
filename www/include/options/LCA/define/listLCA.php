@@ -18,15 +18,9 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-	$pagination = "maxViewConfiguration";
+		
+	include("./include/common/autoNumLimit.php");
 	
-	# set limit
-	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
 	$lca_reg = NULL;
 	# Not list the LCA the user is registered by || is admin
 	if (!$oreon->user->get_admin())	{
@@ -38,7 +32,7 @@ For information : contact@oreon-project.org
 		}
 	}
 	$lca_reg ? $lca_reg = $lca_reg : $lca_reg =  '\'\'';
-	if ($search)
+	if (isset($search))
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") AND (lca_name LIKE '%".$search."%' OR lca_alias LIKE '%".$search."%')");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.")");
