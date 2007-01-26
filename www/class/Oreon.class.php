@@ -28,12 +28,16 @@ class Oreon	{
 	var $plugins;
 	var $status_graph_service;
 	var $status_graph_host;
-	
+	var $historyPage;
+  	var $historySearch;
+	var $historyLimit;
+  	var $search_type_service;
+	var $search_type_host;
+  
 	function Oreon($user = NULL, $pages = array())	{
 		global $pearDB;
 		
 		$this->user = $user;
-		
 		$this->initNagiosCFG($pearDB);
 		$this->initOptGen($pearDB);
 		
@@ -59,6 +63,14 @@ class Oreon	{
 		}
 		closedir($handle);
 	}
+	
+	function createHistory(){
+  		$this->historyPage = array();
+  		$this->historySearch = array();
+  		$this->historyLimit = array();
+  		$this->search_type_service = 1;
+  		$this->search_type_host = 1;
+  	}
 	
 	function initNagiosCFG($pearDB = NULL)	{
 		if (!$pearDB)	return;

@@ -26,6 +26,8 @@ class User	{
   var $lang;
   var $version;
   var $admin;
+  var $limit;
+  var $num;
   
   ## User LCA
   # Array with elements ID for loop test
