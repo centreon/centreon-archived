@@ -15,15 +15,19 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
+
 	function my_getTimeTamps($dateSTR)
 	{
 		list($m,$d,$y) = split('/',$dateSTR);
 		return (mktime(0,0,0,$m,$d,$y));
 	}
+	
 	function trim_value(&$value)
 	{
 	   $value = trim($value);
 	}
+	
 	function getLogData($time_event, $host, $service, $status, $output, $type){
 		global $lang;
 		$tab_img = array("UP" => './img/icones/12x12/recovery.gif',

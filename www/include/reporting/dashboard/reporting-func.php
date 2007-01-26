@@ -26,8 +26,6 @@ For information : contact@oreon-project.org
 		$second = date("s",time());
 		$start_date_day = mktime(0, 0, 0, $month, $day, $year);
 
-
-	
 		if(!is_null($period)){
 			if($period == "today"){
 				$start_date_select = mktime(0, 0, 0, $month, $day, $year);
