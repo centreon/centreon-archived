@@ -16,16 +16,11 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	$pagination = "maxViewConfiguration";
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
 	
-	# set limit
-	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	
 	if ($oreon->user->admin || !$isRestreint){
@@ -36,7 +31,7 @@ For information : contact@oreon-project.org
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
 	}
 	 
-	if ($search)
+	if (isset($search))
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))

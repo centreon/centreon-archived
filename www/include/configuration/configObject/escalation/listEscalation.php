@@ -15,16 +15,13 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
-	$pagination = "maxViewConfiguration";
 	
-	# set limit
-	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
+	
+	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
 	$rq = "SELECT COUNT(*) FROM escalation esc";	
@@ -44,9 +41,9 @@ For information : contact@oreon-project.org
 			$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
 	}
 	
-	if ($search && $list)
+	if (isset($search) && $list)
 		$rq .= " AND (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
-	else if ($search)
+	else if (isset($search))
 		$rq .= " WHERE (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))

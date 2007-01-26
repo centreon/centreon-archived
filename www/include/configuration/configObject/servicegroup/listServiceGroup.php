@@ -16,20 +16,17 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
+	
 	$lcaHost = getLCAHostByID($pearDB);
 	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
 	$lcaSGStr = getLCASGStr(getLCASG($pearDB));
 	$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
 
-	$pagination = "maxViewConfiguration";
-	# set limit
-	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
-	if ($search){
+	if (isset($search)){
 		if ($oreon->user->admin || !$isRestreint)		
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 		else

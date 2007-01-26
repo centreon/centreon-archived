@@ -17,14 +17,12 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$pagination = "maxViewConfiguration";
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
 	
-	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	$gopt = array_map("myDecode", $res->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
-	if ($search)
+	if (isset($search))
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps");

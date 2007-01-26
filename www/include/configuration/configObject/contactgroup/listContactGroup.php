@@ -15,9 +15,12 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$pagination = "maxViewConfiguration";
-
-	if ($search)
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
+	
+	if (isset($search))
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM contactgroup WHERE (cg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR cg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM contactgroup");

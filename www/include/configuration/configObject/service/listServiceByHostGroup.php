@@ -15,21 +15,10 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$pagination = "maxViewConfiguration";
-	
-	# set limit
-	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
-	if (isset ($_GET["search"]))
-		$search = $_GET["search"];
-	else if ($oreon->historySearch[$url])
-		$search = $oreon->historySearch[$url];
-	else 
-		$search = NULL;
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
 	
 	if (isset($_GET["search_type_service"])){
 		$search_type_service = $_GET["search_type_service"];
@@ -50,7 +39,7 @@ For information : contact@oreon-project.org
 	$rows = 0;
 	$tmp = NULL;
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
-	if ($search)	{
+	if (isset($search))	{
 		if ($oreon->user->admin || !$isRestreint)
 			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		else
