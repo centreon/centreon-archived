@@ -15,36 +15,36 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	if (!isset ($oreon))
-		exit ();
-	$pagination = "maxViewConfiguration";
-
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
+	
 	# LCA
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
-	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
-
-	# set limit & num
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
+	if ($isRestreint){
+		$lcaHostByName = getLcaHostByName($pearDB);
+		$lcaHostByID = getLcaHostByID($pearDB);
+		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
 	}
-	$gopt = array_map("myDecode", $res->fetchRow());
+	
+	if (isset ($_GET["search"]))
+		$search = $_GET["search"];
+	else if ($oreon->historySearch[$url])
+		$search = $oreon->historySearch[$url];
+	else 
+		$search = NULL;
 
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-
-
-
-	if ($search)
-		$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
-			  " AND host_register = '1'";
-	else {
-		if ($oreon->user->admin || !$isRestreint)
+	if (isset($search) && $search){
+		if ($isRestreint)
+			$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
+				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$lcaHoststr.") " .
+				  " AND host_register = '1'";
+		else
+			$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
+				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND host_register = '1'";
+	} else {
+		if (!$isRestreint)
 				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND host_register = '1'";
 		else
 				$rq = "SELECT COUNT(*) FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND h.host_id IN (".$lcaHoststr.") AND host_register = '1'";
@@ -74,12 +74,17 @@ For information : contact@oreon-project.org
 	# end header menu
 
 	#Host list
-	if ($search)
-		$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
-			  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$oreon->user->lcaHStr.") " .
-			  " AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-	else {
-		if ($oreon->user->admin || !$isRestreint)
+	if (isset($search) && $search){
+		if ($isRestreint)
+			$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
+				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$lcaHoststr.") " .
+				  " AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+		else
+			$rq = "SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
+				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' " .
+				  " AND host_register = '1' ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+	} else {
+		if (!$isRestreint)
 			$rq = 	"SELECT ii.*, h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate FROM host h, inventory_index ii WHERE h.host_id = ii.host_id AND ii.type_ressources IS NULL AND" .
 					" host_register = '1' " .
 					" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
@@ -88,6 +93,7 @@ For information : contact@oreon-project.org
 					" h.host_id IN (".$lcaHoststr.") AND host_register = '1' " .
 					" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
 	}
+
 	$res = & $pearDB->query($rq);
 	if (PEAR::isError($res))
 		print "Mysql Error : ".$res->getMessage();
@@ -115,7 +121,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("elemArr", $elemArr);
 	$tpl->assign("limit", $limit);
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL" => "?p=".$p."&o=a", "addT" => $lang['add'], "delConfirm" => $lang['confirm_removing']));
 	
 	#form select host
 	$req = "SELECT id, alias FROM inventory_manufacturer ";
@@ -126,10 +132,8 @@ For information : contact@oreon-project.org
     	$option[$const['id']] = $const['alias'];
     $form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
 
-	#
 	##Apply a template definition
-	#
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('p', $p);

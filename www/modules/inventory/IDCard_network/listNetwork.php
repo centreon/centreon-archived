@@ -15,52 +15,39 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	if (!isset ($oreon))
-		exit ();
-	$pagination = "maxViewConfiguration";		
-
+	if (!isset($oreon))
+		exit();
+		
+	include("./include/common/autoNumLimit.php");
+	
 	# LCA 
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
-	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
-
-	# set limit & num
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($pearDB)) {
-		print "Mysql Error : ".$pearDB->getMessage();
+	if ($isRestreint){
+		$lcaHostByName = getLcaHostByName($pearDB);
+		$lcaHostByID = getLcaHostByID($pearDB);
+		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
 	}
-	$gopt = array_map("myDecode", $res->fetchRow());		
-
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-
-	if ($search)
-	{
-		if ($oreon->user->admin || !$isRestreint)
-			$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  " .
-				  " AND ii.type_ressources";
+	
+	if (isset($search) && $search){
+		if (!$isRestreint)
+			$rq = 	"SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
+				  	" h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  " .
+				  	" AND ii.type_ressources";
 		else
-			$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$lcaHostByID["LcaHost"].") " .
-				  " AND ii.type_ressources";
-	}
-	else
-	{
-		if ($oreon->user->admin || !$isRestreint)
-			$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-					" im.id = ii.type_ressources";
+			$rq = 	"SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
+				  	" h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$lcaHostByID["LcaHost"].") " .
+				  	" AND ii.type_ressources";
+	} else {
+		if (!$isRestreint)
+			$rq = 	"SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
+					" im.id = ii.type_ressources";			
 		else
-			$rq = "SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
+			$rq = 	"SELECT COUNT(*) FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
 					" h.host_id IN (".$lcaHoststr.") AND im.id = ii.type_ressources";
 	}
 	$res =& $pearDB->query($rq);
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
@@ -79,28 +66,28 @@ For information : contact@oreon-project.org
 	# end header menu
 
 	#Host list
-	if ($search)
-	{
-		if ($oreon->user->admin || !$isRestreint)
+	if (isset($search) && $search){
+		if ($isRestreint){
 			$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$lcaHostByID["LcaHost"].") " .
+				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$lcaHoststr.") " .
 				  " AND ii.type_ressources ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-		else
+		} else {
 			$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND h.host_id IN (".$lcaHostByID["LcaHost"].") " .
+				  " h.host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' " .
 				  " AND ii.type_ressources ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+		}
+	} else {
+		if ($isRestreint){
+			$rq = 	"SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
+					" im.id = ii.type_ressources AND h.host_id IN (".$lcaHoststr.") " .
+					" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+		} else {
+			$rq = 	"SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
+					" im.id = ii.type_ressources  " .
+					" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
+		}
 	}
-	else
-	{
-		if ($oreon->user->admin || !$isRestreint)
-		$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				" im.id = ii.type_ressources  " .
-				" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-		else
-		$rq = "SELECT h.host_id, h.host_name, h.host_alias, h.host_address, h.host_activate, im.alias AS manu_alias FROM host h, inventory_index ii, inventory_manufacturer im WHERE h.host_id = ii.host_id AND " .
-				" h.host_id IN (".$lcaHoststr.") AND im.id = ii.type_ressources  " .
-				" ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit;
-	}
+	
 	$res = & $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
