@@ -17,16 +17,19 @@ For information : contact@oreon-project.org
 */
 	
 	# Clean Var	
+	
 	if (isset($_GET["p"]))
 		$p = $_GET["p"];
 	else if (isset($_POST["p"]))
 		$p = $_POST["p"];
+	
 	if (isset($_GET["o"]))
 		$o = $_GET["o"];
 	else if (isset($_POST["o"]))
 		$o = $_POST["o"];
 	else
 		$o = NULL;
+		
 	if (isset($_GET["min"]))
 		$min = $_GET["min"];
 	else if (isset($_POST["min"]))
@@ -99,11 +102,17 @@ For information : contact@oreon-project.org
 		$nb_page = 1;	
 	}
 	
+	# init URL 
+	$url = "";
 	if ((isset($nb_page) && $nb_page) || !$isRestreint){	
 		if ($redirect["topology_page"] < 100){
 			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 			if (!$ret['topology_page']){
-				file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+				if (file_exists($redirect["topology_url"])){
+					$url = $redirect["topology_url"];
+					require_once($redirect["topology_url"]);
+				} else 
+					require_once("./alt_error.php");		
 			} else {
 				$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
 				if ($ret2["topology_url_opt"]){
@@ -112,28 +121,47 @@ For information : contact@oreon-project.org
 						$o = $tab[1];
 					$p = $ret2["topology_page"];
 				}
-				file_exists($ret2["topology_url"])  ? require_once($ret2["topology_url"]) : require_once("./alt_error.php");
+				if (file_exists($ret2["topology_url"])){
+					$url = $ret2["topology_url"];
+					require_once($ret2["topology_url"]);
+				} else
+					require_once("./alt_error.php");
 			} 
 		} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
 			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
 			if (!$ret['topology_page']){
-				file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+				if (file_exists($redirect["topology_url"])){
+					$url = $redirect["topology_url"];
+					require_once($redirect["topology_url"]);
+				} else 
+					require_once("./alt_error.php");		
 			} else {
 				if ($ret["topology_url_opt"]){
 					$tab = split("\=", $ret["topology_url_opt"]);
-					if (!isset($_GET["o"])){
+					if (!isset($_GET["o"]))
 						$o = $tab[1];
-					}
 					$p = $ret["topology_page"];
 				} 
-				file_exists($ret["topology_url"]) ? require_once($ret["topology_url"]) : require_once("./alt_error.php");		
+				if (file_exists($ret["topology_url"])){
+					$url = $ret["topology_url"];
+					require_once($ret["topology_url"]);
+				} else 
+					require_once("./alt_error.php");
 			}
 		} else if ($redirect["topology_page"] >= 1000) {
 			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 				if (!$ret['topology_page']){
-				file_exists($redirect["topology_url"]) ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+				if (file_exists($redirect["topology_url"])){		
+					$url = $redirect["topology_url"];
+					require_once($redirect["topology_url"]);
+				} else 
+					require_once("./alt_error.php");		
 			} else { 
-				file_exists($redirect["topology_url"]) && $ret['topology_page'] ? require_once($redirect["topology_url"]) : require_once("./alt_error.php");		
+				if (file_exists($redirect["topology_url"]) && $ret['topology_page']){	
+					$url = $redirect["topology_url"];
+					require_once($redirect["topology_url"]);
+				} else 
+					require_once("./alt_error.php");		
 				if (isset($_GET["o"]))
 					$o = $_GET["o"];
 			}
@@ -141,7 +169,26 @@ For information : contact@oreon-project.org
 			print "Unknown operation...";
 		}
 	}
-		
+	
+	if (!isset($oreon->historyPage)){
+		$oreon->createHistory();	
+	} 
+	
+	if ($url){
+		if (isset($_GET["num"]))
+			$oreon->historyPage[$url] = $_GET["num"];
+		if (isset($_POST["num"]))
+			$oreon->historyPage[$url] = $_POST["num"];		
+		if (isset($_GET["search"]))
+			$oreon->historySearch[$url] = $_GET["search"];
+		if (isset($_POST["search"]))
+			$oreon->historySearch[$url] = $_POST["search"];
+		if (isset($_GET["limit"]))
+			$oreon->historyLimit[$url] = $_GET["limit"];
+		if (isset($_POST["search"]))
+			$oreon->historyLimit[$url] = $_POST["limit"];
+	}	
+
 	# Display Legend
 	$lg_path = get_path($path);
 	if (file_exists($lg_path."legend.ihtml")){
