@@ -1,0 +1,56 @@
+<script language='javascript' src='./include/common/javascript/tool.js'></script>
+<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
+{$form.javascript}
+{if $title2}
+<form {$form.attributes}>
+<div>
+	<table id="ListTable">
+        <tr class="ListHeader">
+        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name.host_name} Service : {$host_name.service_description}</td>
+        </tr>
+        <tr>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_daily}&end={$end_daily}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_daily}&start={$start_daily}'></a><p style="padding-bottom:4px;font-weight:bold;padding-top:3px;">Daily</p></div>
+    		</td>
+        </tr>
+        <tr>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_weekly}&end={$end_weekly}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_weekly}&start={$start_weekly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Weekly</p></div>
+    		</td>
+        </tr>
+        <tr>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_monthly}&end={$end_monthly}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_monthly}&start={$start_monthly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Monthly</p></div>
+    		</td>
+        </tr>
+        <tr>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_yearly}&end={$end_yearly}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_yearly}&start={$start_yearly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Yearly</p></div>
+    		</td>
+        </tr>
+    </table>
+</div>
+{/if}
+{if !$title}
+<form {$form.attributes}>
+{/if}
+<div style="padding-top: 20px;">
+   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div><br><br><br><br>{/if}
+       	<div>
+       		<table id="ListTable">
+                <tr class="ListHeader">
+                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                </tr>
+                <tr class="list_two">
+            		<td>{$form.template_id.label}</td>
+            		<td>{$form.template_id.html}</td>
+                </tr>
+    	    </table>
+    	  	{if !$title2}
+    		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p><br><br><br><br></div>
+     	   	{/if}
+    	    <br>
+        </div>
+    {$form.hidden}
+</div>    
+</form>
