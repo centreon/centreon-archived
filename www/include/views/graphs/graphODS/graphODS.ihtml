@@ -11,20 +11,23 @@
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div>
-    			{if $isAvl}
-					<img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index_id}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}'><br>
-	    			
-	    			<!--<br>
-	    			{ foreach item=s from=$metrics }
-	    				{$form[$s.metric].html}&nbsp;{$form[$s.metric].label}&nbsp;&nbsp;
-	    			{/foreach}
-    			-->{/if}
-    			</div>
+    			<div><a href='./oreon.php?p={$pZoom}&o=vz&index={$index_id}&start={$start_daily}&end={$end_daily}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index_id}{if $template_id}&template_id={$template_id}{/if}&end={$end_daily}&start={$start_daily}'></a><p style="padding-bottom:4px;font-weight:bold;padding-top:3px;">Daily</p></div>
     		</td>
         </tr>
-        <tr class="list_one">
-    		<td colspan="2" class='ListColCenter'>{$cpt_total_graphed_values}/{$cpt_total_values} {$graphed_values}</b></td>
+        <tr>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div><a href='./oreon.php?p={$pZoom}&o=vz&index={$index_id}&start={$start_weekly}&end={$end_weekly}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index_id}{if $template_id}&template_id={$template_id}{/if}&end={$end_weekly}&start={$start_weekly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Weekly</p></div>
+    		</td>
+        </tr>
+        <tr>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div><a href='./oreon.php?p={$pZoom}&o=vz&index={$index_id}&start={$start_monthly}&end={$end_monthly}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index_id}{if $template_id}&template_id={$template_id}{/if}&end={$end_monthly}&start={$start_monthly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Monthly</p></div>
+    		</td>
+        </tr>
+        <tr>
+    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    			<div><a href='./oreon.php?p={$pZoom}&o=vz&index={$index_id}&start={$start_yearly}&end={$end_yearly}'><img src='./include/views/graphs/graphODS/generateImage/generateODSImage.php?session_id={$session_id}&index={$index_id}{if $template_id}&template_id={$template_id}{/if}&end={$end_yearly}&start={$start_yearly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Yearly</p></div>
+    		</td>
         </tr>
     </table>
 </div>
@@ -57,7 +60,7 @@
 	            		<td>{$form.template_id.label}</td>
 	            		<td>{$form.template_id.html}</td>
 	                </tr>
-	                <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
+	                <!--<tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
 					<tr class="list_two">
 						<td>{$form.start.label}</td>
 						<td>{$form.start.html}&nbsp;&nbsp;{$form.startD.html}</td>
@@ -65,9 +68,8 @@
 					<tr class="list_one">
 						<td>{$form.end.label}</td>
 						<td>{$form.end.html}&nbsp;&nbsp;{$form.endD.html}</td>
-					</tr>
-	                <tr class="list_two"><td>{$form.step.label}</td><td>{$form.step.html}</td></tr>
-	        	</table>
+					</tr>-->
+	            </table>
         	</div>
         </div>
     {$form.hidden}

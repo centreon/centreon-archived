@@ -102,7 +102,8 @@ For information : contact@oreon-project.org
 	$minF->setValue($min);
 
 	$form->addElement('select', 'host_name', $lang["h"], $ppHosts, array("onChange"=>"this.form.submit()"));
-	$form->addElement('select', 'service_description', $lang["sv"], $ppServices);
+	if (isset($ppServices))
+		$form->addElement('select', 'service_description', $lang["sv"], $ppServices);
 	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
 
 	$form->addElement('text', 'start', $lang['giv_gt_start']);
@@ -186,6 +187,7 @@ For information : contact@oreon-project.org
 			$DBRESULT->fetchInto($svc_id);
 			$service_id = $svc_id["service_id"];
 			$index_id = $svc_id["id"];
+			$tpl->assign("index_id", $index_id);
 			
 			$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' ORDER BY `metric_name`");
 			if (PEAR::isError($DBRESULT))
@@ -194,10 +196,9 @@ For information : contact@oreon-project.org
 				$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 				$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
 			}
-			foreach ($metrics as $m){
+			foreach ($metrics as $m)
 				if (file_exists($oreon->optGen["oreon_path"]."filesGeneration/graphs/graphODS/".$m["metric_id"].".rrd"))
 					unlink($oreon->optGen["oreon_path"]."filesGeneration/graphs/graphODS/".$m["metric_id"].".rrd");	
-			}
 			
 			# Create period
 			if (isset($_GET["start"]) && isset($_GET["end"]) && $_GET["start"] && $_GET["end"]){
@@ -219,19 +220,23 @@ For information : contact@oreon-project.org
 				$period = $_GET["period"];
 			
 			if (!isset($start) && !isset($end)){
-				$start = time() - ($period + 30);
-				$end = time() + 10;
+				$tpl->assign('start_daily', $start_daily = time() - 60 * 60 * 24);
+				$tpl->assign('end_daily', $end_daily = time());
+				$tpl->assign('start_weekly', $start_weekly = time() - 60 * 60 * 24 * 7);
+				$tpl->assign('end_weekly', $end_weekly = time());
+				$tpl->assign('start_monthly', $start_monthly = time() - 60 * 60 * 24 * 31);
+				$tpl->assign('end_monthly', $end_monthly = time());
+				$tpl->assign('start_yearly', $start_yearly = time() - 60 * 60 * 24 * 365);
+				$tpl->assign('end_yearly', $end_yearly = time());
 			}
-			$start_create = $start - 200000;
 			
-			//$tpl->assign('cpt_total_values', $cpt_total_values);
-			//$tpl->assign('cpt_total_graphed_values', $cpt_total_graphed_values);
-			$tpl->assign('index_id', $index_id);
-			$tpl->assign('end', $end);
-			$tpl->assign('start', $start);
+			if (isset($en))
+				$tpl->assign('end', $end);
+			if (isset($start))
+				$tpl->assign('start', $start);			
 			if (isset($_GET["template_id"]))
 				$tpl->assign('template_id', $_GET["template_id"]);
-			}
+		}
 	}
 
 	#Apply a template definition
@@ -241,6 +246,8 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
+	$tpl->assign('p', $p);
+	$tpl->assign('pZoom', $p - 1);
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	$tpl->assign("graphed_values", $lang["giv_sr_gValues"]);
