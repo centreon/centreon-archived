@@ -792,8 +792,7 @@ For information : contact@oreon-project.org
 			$gt["graph_id"] = getMyServiceGraphID($service_id);
 			if ($gt["graph_id"])
 				return $gt["graph_id"];
-		}
-		else	{
+		} else {
 			$DBRESULT =& $pearDB->query("SELECT grapht_graph_id FROM giv_graphs WHERE graph_id = '".$service_id."' LIMIT 1");
 			if (PEAR::isError($DBRESULT)) 
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
