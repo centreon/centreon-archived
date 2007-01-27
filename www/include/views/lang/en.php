@@ -44,6 +44,12 @@ $lang['views_map_name'] = "Name";
 $lang['views_map_desc'] = "Description";
 $lang['views_map_comment'] = "Comment";
 
+# Graphs
+$lang["views_title1"] = "Perfparse Graphs";
+$lang["views_title2"] = "Oreon Graphs";
+$lang["views_title3"] = "Graph Plugins";
+$lang["views_title4"] = "Templates";
+
 # Oreon Graph Plugins
 
 $lang["giv_gp_size"] = "Size";
