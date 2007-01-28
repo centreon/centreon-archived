@@ -58,6 +58,7 @@ $lang["genOpt_snmp"] = "Informations sur SNMP";
 $lang["genOpt_various"] = "Informations diverses";
 $lang["genOpt_nagPath"] = "R&eacute;pertoire";
 $lang["genOpt_nagBin"] = "R&eacute;pertoire + Binaire";
+$lang['genOpt_nagScript'] = "Init Script";
 $lang["genOpt_nagImg"] = "R&eacute;pertoire Images";
 $lang["genOpt_nagPlug"] = "R&eacute;pertoire Sondes";
 $lang["genOpt_nagVersion"] = "Version de Nagios";
@@ -151,10 +152,10 @@ $lang["menu_listAction_install"] = "Installer";
 $lang["menu_listAction_i"] = "Le module a &eacute;t&eacute; install&eacute; &agrave; succ&egrave;s";
 $lang["menu_listAction_d"] = "Le module a &eacute;t&eacute; d&eacute;install&eacute; &agrave; succ&egrave;s";
 $lang["menu_Module_Title"] = "Informations du module";
-$lang["menu_Module_Name"] = "Nom"; 
-$lang["menu_Module_Version"] = "Version"; 	
+$lang["menu_Module_Name"] = "Nom";
+$lang["menu_Module_Version"] = "Version";
 $lang["menu_Module_Author"] = "Auteur";
-$lang["menu_Module_additionnals_infos"] = "Informations compl&eacute;mentaires"; 
+$lang["menu_Module_additionnals_infos"] = "Informations compl&eacute;mentaires";
 $lang["menu_nagios"] = "Nagios";
 
 # Session
@@ -186,7 +187,7 @@ $lang["myAcc_change"] = "Modifier mes param&egrave;tres";
 
 $lang["m_task"] = "T&acirc;ches";
 
-# Menu 
+# Menu
 
 $lang["menu_ldap"] = "LDAP";
 $lang["menu_snmp"] = "SNMP";
