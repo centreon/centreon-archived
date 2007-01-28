@@ -882,7 +882,8 @@ For information : contact@oreon-project.org
 		else
 			$images = array();
 		$is_not_an_image = array("."=>".", ".."=>"..", "README"=>"README", "readme"=>"readme", "LICENSE"=>"LICENSE", "license"=>"license");
-		$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg", "gd2"=>"gd2");		
+		//$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg", "gd2"=>"gd2");		
+		$is_a_valid_image = array("png"=>"png");		
 		
 		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
 			$rep = substr($rep, 1);
