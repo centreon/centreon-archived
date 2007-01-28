@@ -60,6 +60,15 @@ For information : contact@oreon-project.org
 		while ($DBRESULT->fetchInto($svc))
 			$ppServices[$svc["service_description"]] = $svc["service_description"];
 		$DBRESULT->free();
+	} else if (isset($_GET["host_id"])) {
+		$ppServices = array( NULL => NULL );
+		$rq = "SELECT service_description FROM index_data WHERE host_id = '".$_GET["host_id"]."' ORDER BY `service_description`";
+		$DBRESULT =& $pearDBO->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		while ($DBRESULT->fetchInto($svc))
+			$ppServices[$svc["service_description"]] = $svc["service_description"];
+		$DBRESULT->free();
 	}
 
 	$graphTs = array(NULL=>NULL);
@@ -78,8 +87,13 @@ For information : contact@oreon-project.org
 	$page->setValue($p);
 	$minF =& $form->addElement('hidden', 'min');
 	$minF->setValue($min);
-
-	$form->addElement('select', 'host_name', $lang["h"], $ppHosts, array("onChange"=>"this.form.submit()"));
+	
+	if (isset($_GET["host_id"])){
+		$minF =& $form->addElement('hidden', 'host_id');
+		$minF->setValue($_GET["host_id"]);
+	}
+	
+	$host_nameForm =& $form->addElement('select', 'host_name', $lang["h"], $ppHosts, array("onChange"=>"this.form.submit()"));
 	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
 
 	$form->addElement('text', 'start', $lang['giv_gt_start']);
@@ -121,7 +135,7 @@ For information : contact@oreon-project.org
 	if (!$DBRESULT->numRows())
 		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
 
-	if ($form->validate() and isset($_GET["host_name"])){
+	if ($form->validate() && (isset($_GET["host_name"]) || isset($_GET["host_id"]))){
 		
 		# Init variable in the page
 		$label = NULL;
@@ -131,20 +145,35 @@ For information : contact@oreon-project.org
 		$tpl->assign("lgGraph", $lang['giv_gt_name']);
 		$tpl->assign("lgMetric", $lang['giv_ct_metric']);
 		$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
-			
 		
 		$elem = array();
-		$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' ORDER BY service_description");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		if (isset($_GET["host_name"])){
+			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' ORDER BY service_description");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		} else if (isset($_GET["host_id"])){
+			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$_GET["host_id"]."' ORDER BY service_description");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		}
+	
 		while ($DBRESULT->fetchInto($index_data)){
 			
-			$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");
+			if (isset($_GET["host_name"])){
+				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
+			} else if (isset($_GET["host_id"])){
+				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$_GET["host_id"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
+			}
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			$DBRESULT2->fetchInto($svc_id);
 			$service_id = $svc_id["service_id"];
 			$index_id = $svc_id["id"];
+			if (isset($_GET["host_name"]))
+				$host_name = $_GET["host_name"];
+			else
+				$host_name = $svc_id["host_name"];
+			
 			$elem[$index_id] = array("index_id" => $index_id, "service_description" => $svc_id["service_description"]);
 			
 			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
@@ -185,6 +214,9 @@ For information : contact@oreon-project.org
 		}
 	}
 	
+	if (isset($host_name))
+		$host_nameForm->setValue($host_name);
+	
 	#Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -195,10 +227,12 @@ For information : contact@oreon-project.org
 	$tpl->assign('p', $p);
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
-	if (isset($_GET["host_name"]))	
-		$tpl->assign('host_name', $_GET["host_name"]);
+	
+	if (isset($host_name))
+		$tpl->assign('host_name', $host_name);
 	if (isset($elem))
 		$tpl->assign('elemArr', $elem);
+	
 	$tpl->assign('session_id', session_id());
 	$tpl->display("graphODSByHost.ihtml");
 ?>

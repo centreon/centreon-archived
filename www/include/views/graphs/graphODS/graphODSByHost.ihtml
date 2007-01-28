@@ -1,8 +1,40 @@
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
-{if $title2}
 <form {$form.attributes}>
+<div style="padding-top: 20px;">
+   		<div>
+       		<table id="ListTable">
+                <tr class="ListHeader">
+                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                </tr>
+                <tr class="list_one">
+            		<td>{$form.host_name.label}</td>
+            		<td>{$form.host_name.html}</td>
+                </tr>
+    	    </table>
+    	  	<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br><br><br><br></div>
+     	   	<br><br><br><br>
+    	    <div id="div1" class="cachediv" {if !$title2}style="padding-top:34px;"{/if}>
+	    	    <table id="ListTable">
+	                <tr class="ListHeader">
+	                	<td class="FormHeader" colspan="2">{$lang.advanced}</td>
+	                <tr>
+	               <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
+					<tr class="list_two">
+						<td>{$form.start.label}</td>
+						<td>{$form.start.html}&nbsp;&nbsp;{$form.startD.html}</td>
+					</tr>
+					<tr class="list_one">
+						<td>{$form.end.label}</td>
+						<td>{$form.end.html}&nbsp;&nbsp;{$form.endD.html}</td>
+					</tr>
+	        	</table>
+        	</div>
+        </div><br><br>
+    {$form.hidden}
+</div>    
+{if $title2}
 <div>
 	<table id="ListTable">
         <tr class="ListHeader">
@@ -23,44 +55,5 @@
 {/if}
 {if !$title}
 <form {$form.attributes}>
-{/if}
-<div style="padding-top: 20px;">
-   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p></div><br><br><br><br>{/if}
-       	<div>
-       		<table id="ListTable">
-                <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
-                </tr>
-                <tr class="list_one">
-            		<td>{$form.host_name.label}/{$form.service_description.label}</td>
-            		<td>{$form.host_name.html}&nbsp;&nbsp;{$form.service_description.html}</td>
-                </tr>
-    	    </table>
-    	  	{if !$title2}
-    		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br><br><br><br></div>
-     	   	{/if}
-    	    <br>
-    	    <div id="div1" class="cachediv" {if !$title2}style="padding-top:34px;"{/if}>
-	    	    <table id="ListTable">
-	                <tr class="ListHeader">
-	                	<td class="FormHeader" colspan="2">{$lang.advanced}</td>
-	                <tr>
-	                <tr class="list_two">
-	            		<td>{$form.template_id.label}</td>
-	            		<td>{$form.template_id.html}</td>
-	                </tr>
-	                <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
-					<tr class="list_two">
-						<td>{$form.start.label}</td>
-						<td>{$form.start.html}&nbsp;&nbsp;{$form.startD.html}</td>
-					</tr>
-					<tr class="list_one">
-						<td>{$form.end.label}</td>
-						<td>{$form.end.html}&nbsp;&nbsp;{$form.endD.html}</td>
-					</tr>
-	        	</table>
-        	</div>
-        </div>
-    {$form.hidden}
-</div>    
+{/if}    
 </form>

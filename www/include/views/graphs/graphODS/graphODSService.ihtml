@@ -6,7 +6,7 @@
 <div>
 	<table id="ListTable">
         <tr class="ListHeader">
-        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name.host_name} Service : {$host_name.service_description}</td>
+        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name.host_name} | Service : {$host_name.service_description}</td>
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>

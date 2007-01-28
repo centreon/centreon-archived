@@ -78,13 +78,22 @@ For information : contact@oreon-project.org
 	$tpl->assign("lgGraph", $lang['giv_gt_name']);
 	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
 	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
+	
+	
 		
 	$elem = array();
 	
-	$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
-	if (PEAR::isError($DBRESULT2))
-		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	$DBRESULT2->fetchInto($svc_id);
+	if (preg_match("/([0-9]*)\_([0-9]*)/", $_GET["index"], $matches)){
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$matches[1]."' AND service_id = '".$matches[2]."'");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		$DBRESULT2->fetchInto($svc_id);
+	} else {
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		$DBRESULT2->fetchInto($svc_id);
+	}
 	
 	$service_id = $svc_id["service_id"];
 	$index_id = $svc_id["id"];
@@ -124,7 +133,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('host_name', $svc_id);
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
-	$tpl->assign('index', $_GET["index"]);
+	$tpl->assign('index', $index_id);
 	$tpl->assign('session_id', session_id());
 	$tpl->display("graphODSService.ihtml");
 ?>
