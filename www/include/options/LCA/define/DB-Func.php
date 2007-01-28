@@ -142,7 +142,7 @@ For information : contact@oreon-project.org
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO lca_define ";
-		$rq .= "(lca_name, lca_alais, lca_comment, lca_hg_childs, lca_activate) ";
+		$rq .= "(lca_name, lca_alias, lca_comment, lca_hg_childs, lca_activate) ";
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["lca_name"], ENT_QUOTES)."', '".htmlentities($ret["lca_alias"], ENT_QUOTES)."', '".htmlentities($ret["lca_comment"], ENT_QUOTES)."', '".$ret["lca_hg_childs"]["lca_hg_childs"]."', '".$ret["lca_activate"]["lca_activate"]."')";
 		$DBRESULT =& $pearDB->query($rq);
