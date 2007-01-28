@@ -298,11 +298,13 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	$conf_installoreon['physical_html_path'] = ($conf_installoreon['physical_html_path'] === "" ?  "/usr/local/nagios/share/images/logo/" : $conf_installoreon['physical_html_path']."/images/logo/");
 	$conf_installoreon['nagios'] = ($conf_installoreon['nagios'] === "" ?  "/usr/local/nagios/" : $conf_installoreon['nagios']);
 	$conf_installoreon['mail'] = ($conf_installoreon['mail'] === "" ?  "/usr/bin/mail" : $conf_installoreon['mail']);
+	$conf_installoreon['nagios_init_script'] = ($conf_installoreon['nagios_init_script'] === "" ?  "/etc/init.d/nagios" : $conf_installoreon['nagios_init_script']);
 //	$conf_installoreon['rrdtool'] = ($conf_installoreon['rrdtool'] === "" ?  "/usr/bin/rrdtool" : $conf_installoreon['rrdtool']);
 
 	$requete = "UPDATE `general_opt` SET `nagios_path_img` = '".$conf_installoreon['physical_html_path']."'";
 	$requete .= ", `nagios_path` = '".$conf_installoreon['nagios']."'";
 	$requete .= ", `nagios_path_bin` = '".$conf_installoreon['nagios_bin']."nagios'";
+	$requete .= ", `nagios_init_script` = '".$conf_installoreon['nagios_init_script'];
 	$requete .= ", `nagios_path_plugins` = '".$_SESSION["nagios_plugins"]."'";
 	$requete .= ", `oreon_path` = '".$_SESSION["oreon_dir"]."'";
 	$requete .= ", `oreon_web_path` = '/oreon/'";
