@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 						$rows++;
 						$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 					}
-				} else if (stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
+				} else if (isset($search) && $search && stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
 					$rows++;
 					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
 				}
