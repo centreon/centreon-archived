@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 	
 	if (isset ($_GET["search"]))
 		$search = $_GET["search"];
-	else if ($oreon->historySearch[$url])
+	else if (isset($oreon->historySearch[$url]))
 		$search = $oreon->historySearch[$url];
 	else 
 		$search = NULL;
