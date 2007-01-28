@@ -608,7 +608,7 @@ CREATE TABLE `downtime` (
 CREATE TABLE `escalation` (
   `esc_id` int(11) NOT NULL auto_increment,
   `esc_name` varchar(255) default NULL,
-  `esc_alias` varchar(255) default NULL,  
+  `esc_alias` varchar(255) default NULL,
   `first_notification` int(11) default NULL,
   `last_notification` int(11) default NULL,
   `notification_interval` int(11) default NULL,
@@ -753,6 +753,7 @@ CREATE TABLE `general_opt` (
   `gopt_id` int(11) NOT NULL auto_increment,
   `nagios_path` varchar(255) default NULL,
   `nagios_path_bin` varchar(255) default NULL,
+  `nagios_init_script` varchar(255) default NULL,
   `nagios_path_img` varchar(255) default NULL,
   `nagios_path_plugins` varchar(255) default NULL,
   `nagios_version` enum('1','2','3') default NULL,
