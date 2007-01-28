@@ -17,19 +17,19 @@ For information : contact@oreon-project.org
 */
 
 	if (!isset($oreon))
-		exit();	
-	
+		exit();
+
 	#
 	## Form begin
 	#
 	$attrSelect = array("style" => "width: 100px;");
-	
+
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["gen_name"]);
-	
+
 	$form->addElement('header', 'infos', $lang["gen_infos"]);
     $form->addElement('select', 'host', $lang["gen_host"], array(0=>"localhost"), $attrSelect);
-    
+
 	$form->addElement('header', 'opt', $lang["gen_opt"]);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, $lang["yes"], '1');
@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, $lang["no"], '0');
 	$form->addGroup($tab, 'xml', $lang["gen_xml"], '&nbsp;');
 	$form->setDefaults(array('xml' => '0'));
-	
+
 	if ($oreon->optGen["snmp_trapd_used"])	{
 		$form->addElement('header', 'traps', $lang['gen_trapd']);
 		$tab = array();
@@ -66,7 +66,7 @@ For information : contact@oreon-project.org
 		$form->addGroup($tab, 'restartTrapd', $lang['gen_trapRestart'], '&nbsp;');
 		$form->setDefaults(array('restartTrapd' => '0'));
 	}
-		
+
 	$form->addElement('header', 'result', $lang["gen_result"]);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["yes"], '1');
@@ -89,18 +89,18 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_extcmd"], '3');
 	$form->addGroup($tab, 'restart_mode', $lang["gen_restart"], '&nbsp;');
 	$form->setDefaults(array('restart_mode' => '1'));
-		
+
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
-	# 
+
+	#
 	##End of form definition
 	#
-	
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	$sub =& $form->addElement('submit', 'submit', $lang["gen_butOK"]);
 	$msg = NULL;
 	$stdout = NULL;
@@ -151,7 +151,7 @@ For information : contact@oreon-project.org
 		if ($ret["move"]["move"])	{
 			$msg .= "<br>";
 			foreach (glob($nagiosCFGPath ."*.cfg") as $filename) {
-				$bool = copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
+				$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
 				$filename = array_pop(explode("/", $filename));
 				$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
 			}
@@ -165,10 +165,13 @@ For information : contact@oreon-project.org
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 		if ($ret["restart"]["restart"])	{
+
+			$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ?  "/etc/init.d/nagios" : $oreon->optGen["nagios_init_script"]);
+
 			if ($ret["restart_mode"]["restart_mode"] == 1)
-				$stdout = shell_exec("sudo /etc/init.d/nagios reload");
+				$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
 			else if ($ret["restart_mode"]["restart_mode"] == 2)
-				$stdout = shell_exec("sudo /etc/init.d/nagios restart");
+				$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
 			else if ($ret["restart_mode"]["restart_mode"] == 3)	{
 				require_once("./include/monitoring/external_cmd/functions.php");
 				$_GET["select"] = array(0=>1);
@@ -182,21 +185,21 @@ For information : contact@oreon-project.org
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 	}
-	
+
 	$form->addElement('header', 'status', $lang["gen_status"]);
 	if ($msg)
 		$tpl->assign('msg', $msg);
 	$tpl->assign('traps_used', $oreon->optGen["snmp_trapd_used"]);
-	
+
 	#
 	##Apply a template definition
 	#
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);	
-	$tpl->assign('form', $renderer->toArray());	
-	$tpl->assign('o', $o);		
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('o', $o);
 	$tpl->display("formGenerateFiles.ihtml");
 ?>
