@@ -166,7 +166,7 @@ For information : contact@oreon-project.org
 		}
 		if ($ret["restart"]["restart"])	{
 
-			$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ?  "/etc/init.d/nagios" : $oreon->optGen["nagios_init_script"]);
+			$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ? $oreon->optGen["nagios_init_script"]   : "/etc/init.d/nagios" );
 
 			if ($ret["restart_mode"]["restart_mode"] == 1)
 				$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
