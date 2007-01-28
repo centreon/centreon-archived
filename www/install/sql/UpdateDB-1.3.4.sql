@@ -86,4 +86,4 @@ UPDATE topology SET topology_group = '3' WHERE topology_page = '40208';
 -- 28/01/2006
 
 ALTER TABLE `general_opt` ADD `nagios_init_script` VARCHAR( 255 ) NULL AFTER `nagios_path_bin` ;
-INSERT INTO `general_opt` (`nagios_init_script`) VALUES ('/etc/init.d/nagios');
+UPDATE `general_opt` SET `nagios_init_script` = '/etc/init.d/nagios';
