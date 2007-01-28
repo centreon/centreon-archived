@@ -51,6 +51,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'nagios', $lang['genOpt_nagios']);
 	$form->addElement('text', 'nagios_path', $lang["genOpt_nagPath"], $attrsText);
 	$form->addElement('text', 'nagios_path_bin', $lang["genOpt_nagBin"], $attrsText);
+	$form->addElement('text', 'nagios_init_script', $lang["genOpt_nagScript"], $attrsText);
 	$form->addElement('text', 'nagios_path_img', $lang["genOpt_nagImg"], $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', $lang["genOpt_nagPlug"], $attrsText);
 	$form->addElement('select', 'nagios_version', $lang["genOpt_nagVersion"], array(1=>"1", 2=>"2"));

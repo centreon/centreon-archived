@@ -72,6 +72,8 @@ For information : contact@oreon-project.org
 		isset($ret["nagios_path"]) && $ret["nagios_path"] != NULL ? $rq .= "'".htmlentities($ret["nagios_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "nagios_path_bin = ";
 		isset($ret["nagios_path_bin"]) && $ret["nagios_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["nagios_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "nagios_init_script = ";
+		isset($ret["nagios_init_script"]) && $ret["nagios_init_script"] != NULL ? $rq .= "'".htmlentities($ret["nagios_init_script"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "nagios_path_img = ";
 		isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? $rq .= "'".htmlentities($ret["nagios_path_img"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "nagios_path_plugins = ";
@@ -115,7 +117,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
-	
+
 	function updateDebugConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
@@ -140,7 +142,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$oreon->optGen = array();
 	}
-	
+
 	function updateLdapConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
@@ -174,7 +176,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
-	
+
 	function updateColorsConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
@@ -202,7 +204,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
-	
+
 	function updateGeneralConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
@@ -244,7 +246,7 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
-	
+
 	function updateRRDToolConfigData($gopt_id = null)	{
 		if (!$gopt_id) return;
 		global $form, $pearDB, $oreon;
