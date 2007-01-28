@@ -1,4 +1,4 @@
--- 03/01/2007 --- 
+-- 03/01/2007 ---
 
 ALTER TABLE `topology` ADD `topology_style_class` VARCHAR( 255 ) NULL ;
 ALTER TABLE `topology` ADD `topology_style_id` VARCHAR( 255 ) NULL ;
@@ -81,3 +81,9 @@ UPDATE topology SET topology_group = '4' WHERE topology_page = '40204';
 UPDATE topology SET topology_group = '4' WHERE topology_page = '40205';
 UPDATE topology SET topology_group = '3' WHERE topology_page = '40203';
 UPDATE topology SET topology_group = '3' WHERE topology_page = '40208';
+
+
+-- 28/01/2006
+
+ALTER TABLE `general_opt` ADD `nagios_init_script` VARCHAR( 255 ) NULL AFTER `nagios_path_bin` ;
+INSERT INTO `general_opt` (`nagios_init_script`) VALUES ('/etc/init.d/nagios');
