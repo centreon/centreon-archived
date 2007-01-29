@@ -1,6 +1,7 @@
 ## Oreon 1.3.4
 => Feature : Add 3 field in topology table for style class/id and javascript Onclik
 => Feature : Add a light module manager
+=> Feature Request  #294 : Manage Nagios2 init script
 
 ## Oreon 1.3.3
 
