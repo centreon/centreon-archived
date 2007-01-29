@@ -48,7 +48,8 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($DBRESULT->fetchInto($hostInOreon))
-		$ppHosts[$hostInOreon["host_name"]] = $hostInOreon["host_name"];
+		if ($hostInOreon["host_name"] != "OSL_Module")
+			$ppHosts[$hostInOreon["host_name"]] = $hostInOreon["host_name"];
 	$DBRESULT->free();
 
 	if (isset($_GET["host_name"])){
