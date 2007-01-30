@@ -18,6 +18,13 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit;
+
+
+	$day = date("d",time());
+	$year = date("Y",time());
+	$month = date("m",time());
+	$today_start = mktime(0, 0, 0, $month, $day, $year);
+	$today_end = time();
 		
 	$tt = 0;
 	$start_date_select = 0;
@@ -139,6 +146,11 @@ For information : contact@oreon-project.org
 	$sub =& $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
 	$res =& $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
 
+	$today_up = 0;
+	$today_down = 0;
+	$today_unreachable = 0;
+	$today_pending = 0;
+
 	if($mhost){
 	#
 	## if today is include in the time period
@@ -149,13 +161,16 @@ For information : contact@oreon-project.org
 	$month = date("m",time());
 	$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
 
+	
+
+
+	$tmp = $oreon->Nagioscfg["log_file"];
+	$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, NULL);
+	$tab_log = $tab["tab_log"];
+
+
 	if($startTimeOfThisDay  < ($end_date_select)){
-		$tmp = $oreon->Nagioscfg["log_file"];
 
-
-
-		$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, NULL);
-		$tab_log = $tab["tab_log"];
 
 
 		if (isset($tab[$mhost]))
@@ -184,6 +199,10 @@ For information : contact@oreon-project.org
 			$tab_svc =array();
 			$i = 0;
 
+			$today_up = $tab[$mhost]["timeUP"];
+			$today_down = $tab[$mhost]["timeDOWN"];
+			$today_unreachable = $tab[$mhost]["timeUNREACHABLE"];
+
 			while (list($key, $value) = each($tab[$mhost]["tab_svc_log"])) {
 				$tab_tmp = $value;
 				$tab_tmp["svcName"] = $key;
@@ -199,6 +218,7 @@ For information : contact@oreon-project.org
 					$tab_tmp["timeNONE"] += (time()-$tab_tmp["current_time"]);
 				$tt = $end_date_select - $start_date_select;
 				$svc_id = $tab_tmp["service_id"];
+
 
 				$archive_svc_ok =  isset($tab_svc_bdd[$svc_id]["Tok"]) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
 				$archive_svc_warn = isset($tab_svc_bdd[$svc_id]["Twarn"]) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
@@ -229,6 +249,28 @@ For information : contact@oreon-project.org
 	}
 	else // today is not in the period
 	{
+		if (isset($tab[$mhost]))// for timeline, calculate log for today
+		{
+			#
+			## last host alert for today
+			#
+			if(!strncmp($tab[$mhost]["current_state"], "UP", 2))
+				$tab[$mhost]["timeUP"] += ($today_end-$tab[$mhost]["current_time"]);
+			elseif(!strncmp($tab[$mhost]["current_state"], "DOWN", 4))
+				$tab[$mhost]["timeDOWN"] += ($today_end-$tab[$mhost]["current_time"]);
+			elseif(!strncmp($tab[$mhost]["current_state"], "UNREACHABLE", 11))
+				$tab[$mhost]["timeUNREACHABLE"] += ($today_end-$tab[$mhost]["current_time"]);
+			else
+				$tab[$mhost]["timeNONE"] += ($today_end-$tab[$mhost]["current_time"]);
+
+			$today_up = $tab[$mhost]["timeUP"];
+			
+			//echo "=>".$today_up . "<br>";
+			
+			$today_down = $tab[$mhost]["timeDOWN"];
+			$today_unreachable = $tab[$mhost]["timeUNREACHABLE"];
+		
+		}		
 		$i=0;
 		foreach($tab_svc_bdd as $svc_id => $tab)
 		{
@@ -370,17 +412,34 @@ For information : contact@oreon-project.org
 	$formPeriod2->accept($renderer2);
 	$tpl->assign('formPeriod2', $renderer2->toArray());
 
-
 	#Apply a template definition
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formHost->accept($renderer);
 	$tpl->assign('formHost', $renderer->toArray());
-
-
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
+	# For today in timeline
+	$tt = 0 + ($today_end - $today_start);
+	$today_pending = $tt - ($today_down + $today_up + $today_unreachable);
+	$today_pending = round(($today_pending/$tt *100),2);
+	$today_up = ($today_up <= 0) ? 0 : round($today_up / $tt *100,2);
+	$today_down = ($today_down <= 0) ? 0 : round($today_down / $tt *100,2);
+	$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable / $tt *100,2);
+	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
+
+if($mhost)	{
 	include('ajaxReporting_js.php');
+}
+else {
+?>
+<SCRIPT LANGUAGE="JavaScript">
+function initTimeline() {
+	;
+}
+</SCRIPT>
+<?
+}
 
 	$tpl->display("template/viewHostLog.ihtml");
 

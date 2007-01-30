@@ -15,7 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
+	
 ?>
 <SCRIPT LANGUAGE="JavaScript">
 var tl;
@@ -45,7 +45,7 @@ function initTimeline() {
 	        bandInfos[1].multiple = 2;
 
 
-	var arg = 'oreonPath=<?=$oreon->optGen["oreon_path"]?>&hostID=<?=$host_id?>&color=<?=substr($oreon->optGen["color_up"],1)?>:<?=substr($oreon->optGen["color_down"],1)?>:<?=substr($oreon->optGen["color_unreachable"],1)?>:<?=substr($oreon->optGen["color_unknown"],1)?>';
+	var arg = 'oreonPath=<?=$oreon->optGen["oreon_path"]?>&hostID=<?=$host_id?>&color=<?=substr($oreon->optGen["color_up"],1)?>:<?=substr($oreon->optGen["color_down"],1)?>:<?=substr($oreon->optGen["color_unreachable"],1)?>:<?=substr($oreon->optGen["color_unknown"],1)?>&today_up=<?=$today_up?>&today_down=<?=$today_down?>&today_unreachable=<?=$today_unreachable?>&today_pending=<?=$today_pending?>';
 	 		  	
   tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
 

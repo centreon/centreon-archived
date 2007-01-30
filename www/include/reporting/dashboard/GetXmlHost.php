@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	$buffer .= '<data>';
 
 
-	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["color"]))
+	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"])&& isset($_GET["today_down"])&& isset($_GET["today_unreachable"])&& isset($_GET["today_pending"]))
 	{
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
 
@@ -165,8 +165,9 @@ For information : contact@oreon-project.org
 			$sortTab["#" . $colorUNKNOWN] = $pundet;			
 
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
+			if($t > 20000)
 			$t = $t - 10000;
-
+			
 			if($punreach > 0){
 				$t1 = round(($t - ($punreach * $t / 100) ),2);
 				$start = $h["date_start"] + 5000;
@@ -270,15 +271,76 @@ For information : contact@oreon-project.org
 				$buffer .= ' title= "" >' ;
 				$buffer .= '</event>';
 			}
-
-
-
-
-
-
-	
 		  }
-		
+
+#
+## Today purcent if period 
+#
+	$day = date("d",time());
+	$year = date("Y",time());
+	$month = date("m",time());
+	$today_start = mktime(0, 0, 0, $month, $day, $year);
+	$today_end = time();
+
+	$t = 0 + ($today_end - $today_start);
+	$t = round(($t - ($t * 0.11574074074)),2);
+	$start = $today_start + 5000;
+
+	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
+	if($_GET["today_pending"] > 0)
+	$end = $today_start + $tp + 5000;
+	else
+	$end = $today_start + 5001;
+	$buffer .= '<event ';
+	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+	$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+	$buffer .= ' isDuration="true" ';
+	$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
+	$buffer .= '</event>';
+
+	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
+	if($_GET["today_unreachable"] > 0)
+	$end = $today_start + $tp + 5000;
+	else
+	$end = $today_start + 5001;
+	$buffer .= '<event ';
+	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+	$buffer .= ' color="#' . $colorUNKNOWN . '"';
+	$buffer .= ' isDuration="true" ';
+	$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
+	$buffer .= '</event>';
+
+
+
+	$tp = round(($_GET["today_down"] * $t / 100 ),2);
+	if($_GET["today_down"] > 0)
+	$end = $today_start + $tp + 5000;
+	else
+	$end = $today_start + 5001;
+	$buffer .= '<event ';
+	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+	$buffer .= ' color="#' . $colorDOWN . '"';
+	$buffer .= ' isDuration="true" ';
+	$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
+	$buffer .= '</event>';
+
+
+	$tp = round(($_GET["today_up"] * $t / 100 ),2);
+	if($_GET["today_up"] > 0)
+	$end = $today_start + $tp + 5000;
+	else
+	$end = $today_start + 5001;
+	$buffer .= '<event ';
+	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
+	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+	$buffer .= ' color="#' . $colorUP . '"';
+	$buffer .= ' isDuration="true" ';
+	$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
+	$buffer .= '</event>';
+
 	}
 	else
 	{

@@ -129,7 +129,6 @@ For information : contact@oreon-project.org
 		  }
 		}		
 
-		echo Duration::toString($Tup) . "<br>";
 
 
 	}
