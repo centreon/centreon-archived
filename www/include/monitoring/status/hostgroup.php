@@ -41,14 +41,16 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT1)) 
 			print "Mysql Error : ".$DBRESULT1->getMessage();
 		$cpt_host = 0;
+				
 		while ($DBRESULT1->fetchInto($r_h)){
-			if (isset($tab_host_service[$r_h["host_name"]]))
-				foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
-					$status_hg_h[$host_status[$r_h["host_name"]]["current_state"]]++;	
+			if (isset($tab_host_service[$r_h["host_name"]])) {
+				$status_hg_h[$host_status[$r_h["host_name"]]["current_state"]]++;
+				foreach ($tab_host_service[$r_h["host_name"]] as $key => $value)
 					$status_hg[$service_status[$r_h["host_name"]. "_" .$key]["current_state"]]++;					
-				}						
+			}				
 			$cpt_host++;
 		}
+	
 		$service_data_str = NULL;	
 		$h_data_str = NULL;	
 		if ($status_hg["OK"] != 0)
