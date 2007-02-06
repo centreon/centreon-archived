@@ -27,6 +27,7 @@
 
 .timeline-event-bubble-time {
     color: #aaa;
+	display:none;
 }
 
 .timeline-event-bubble-image {
