@@ -59,13 +59,17 @@ For information : contact@oreon-project.org
 	#
 	## period selection
 	#
+	
+	
 	$type_period = (isset($_GET["type_period"])) ? $_GET["type_period"] : "predefined";
 	$type_period = (isset($_POST["type_period"])) ? $_POST["type_period"] : $type_period;
+	
+	
 	$period1 = "today";
 	if($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		$period1 = 0;
+		$period1 = "today";
 		if($type_period == "customized") {
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
@@ -77,7 +81,7 @@ For information : contact@oreon-project.org
 			$period1 = "NULL";
 		}
 		else {
-			$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL; 
+			$period1 = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 			$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1;
 			getDateSelect_predefined($end_date_select, $start_date_select, $period1);
 			$formHost->addElement('hidden', 'period', $period1);
@@ -115,6 +119,7 @@ For information : contact@oreon-project.org
 		$formHost->setDefaults(array('host' => $_GET["host"]));
 	}
 
+$formHost->addElement('hidden', 'type_period', $type_period);
 
 	#
 	## fourchette de temps
@@ -418,6 +423,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('formHost', $renderer->toArray());
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
+	$tpl->assign("type_period", $type_period);
 
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);

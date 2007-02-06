@@ -37,12 +37,10 @@ function initTimeline() {
         intervalPixels: 300
     })
   ];
-	        bandInfos[0].syncWith = 1;
-	        bandInfos[0].multiple = 2;
-            bandInfos[0].highlight = false;
-	        bandInfos[1].syncWith = 1;
-            bandInfos[1].highlight = false;
-	        bandInfos[1].multiple = 2;
+
+  bandInfos[1].syncWith = 0;
+  bandInfos[1].highlight = true;
+  bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
 
 
 	var arg = 'oreonPath=<?=$oreon->optGen["oreon_path"]?>&hostID=<?=$host_id?>&color=<?=substr($oreon->optGen["color_up"],1)?>:<?=substr($oreon->optGen["color_down"],1)?>:<?=substr($oreon->optGen["color_unreachable"],1)?>:<?=substr($oreon->optGen["color_unknown"],1)?>&today_up=<?=$today_up?>&today_down=<?=$today_down?>&today_unreachable=<?=$today_unreachable?>&today_pending=<?=$today_pending?>';

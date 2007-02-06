@@ -55,6 +55,29 @@ For information : contact@oreon-project.org
 		  die("Connecting probems with oreon database : " . $pearDB->getMessage());		
 		$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+
+		function create_date_timeline_format($time_unix)
+		{
+//			date("m d Y G:i:s", $start)
+			$tab_month = array(
+			"01" => "Jan",
+			"02" => "Feb",
+			"03"=> "Mar",
+			"04"=> "Apr",
+			"05" => "May",
+			"06"=> "Jun",
+			"07"=> "Jul",
+			"08"=> "Aug",
+			"09"=> "Sep",
+			"10"=> "Oct",
+			"11"=> "Nov",
+			"12"=> "Dec"
+			);
+			$date = date('m', $time_unix);
+			$date = $tab_month[$date] .  date(" d Y G:i:s", $time_unix);
+			return $date;
+		}
+
 		#
 		## class init
 		#			
@@ -121,8 +144,6 @@ For information : contact@oreon-project.org
 			
 		$rq = 'SELECT ' .
 		' * FROM `log_archive_host` WHERE host_id = ' . $_GET["hostID"] .
-	//	' AND date_start >=  ' . ($sd-1) .
-	//	' AND date_end <= ' . $ed .
 		' order by date_start desc';
 			
 		$res = & $pearDB->query($rq);
@@ -134,13 +155,13 @@ For information : contact@oreon-project.org
 			$unreachalbetime = $h["UNREACHABLETimeScheduled"];
 			$undeterminatetime = $h["UNDETERMINATETimeScheduled"];
 	
-			$tt = 86400 ;
+			$tt = 0 + ($h["date_end"] - $h["date_start"]);
 			if(($uptime + $downtime + $unreachalbetime + $undeterminatetime) < $tt)
 				$pending = 	$tt - ($uptime + $downtime + $unreachalbetime + $undeterminatetime);
 			else
 			$pending = 0;
 
-			if($uptime > 0)			
+			if($uptime > 0)
 			$pup = 0 +round(($uptime / $tt * 100),2);
 			else
 			$pup = "0.00";
@@ -164,113 +185,78 @@ For information : contact@oreon-project.org
 			$sortTab["#" . $colorUNREACHABLE] = $punreach;
 			$sortTab["#" . $colorUNKNOWN] = $pundet;			
 
+
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
+/*
 			if($t > 20000)
 			$t = $t - 10000;
+*/
 			
-			if($punreach > 0){
-				$t1 = round(($t - ($punreach * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
-				$end = $h["date_end"] - $t1 -5000;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . $punreach . '%" >' ;
-				$buffer .= '</event>';		
-			}
-			else{
-				$t1 = round(($t - ($punreach * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
+			$t = round(($t - ($t * 0.11574074074)),2);
+			$start = $h["date_start"] + 5000;			
+
+
+			$tp = round(($punreach * $t / 100 ),2);
+			if($punreach > 0)
+				$end = $h["date_start"] + $tp + 5000;
+			else
 				$end = $h["date_start"] + 5001;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "" >' ;
-				$buffer .= '</event>';		
-			}
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($punreach > 0) ? $punreach : "0") . '%" >' ;
+			$buffer .= Duration::toString($tt);
+			$buffer .= '</event>';		
 
-
-
-			if($pundet > 0){
-				
-				$t1 = round(($t - ($pundet * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
-				$end = $h["date_end"] - $t1 -5000;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorUNKNOWN . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . $pundet . '%" >' ;
-				$buffer .= '</event>';		
-			}
-			else{				
-				$t1 = round(($t - ($pundet * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
+			$tp = round(($pundet * $t / 100 ),2);
+			if($pundet > 0)
+				$end = $h["date_start"] + $tp + 5000;
+			else
 				$end = $h["date_start"] + 5001;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorUNKNOWN . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "" >' ;
-				$buffer .= '</event>';		
-			}
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorUNKNOWN . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
+			$buffer .= Duration::toString($tt);
+			$buffer .= '</event>';		
 
 
-			if($pdown > 0){
-				$t1 = round(($t - ($pdown * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
-				$end = $h["date_end"] - $t1 -5000;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorDOWN . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . $pdown . '%" >' ;
-				$buffer .= '</event>';		
-			}
-			else{
-				$t1 = round(($t - ($pdown * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
+			$tp = round(($pdown * $t / 100 ),2);
+			if($pdown > 0)
+				$end = $h["date_start"] + $tp + 5000;
+			else
 				$end = $h["date_start"] + 5001;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorDOWN . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "" >' ;
-				$buffer .= '</event>';
-			}
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorDOWN . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($pdown > 0) ? $pdown : "0") . '%" >' ;
+			$buffer .= Duration::toString($tt);
+			$buffer .= '</event>';	
 
-			if($pup > 0){
-				$t1 = round(($t - ($pup * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
-				$end = $h["date_end"] - $t1 -5000;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorUP . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "' . $pup . '%" >' ;
-				$buffer .= '</event>';
-			}
-			else{
-				$t1 = round(($t - ($pup * $t / 100) ),2);
-				$start = $h["date_start"] + 5000;
+
+			$tp = round(($pup * $t / 100 ),2);
+			if($pup > 0)
+				$end = $h["date_start"] + $tp + 5000;
+			else
 				$end = $h["date_start"] + 5001;
-				$buffer .= '<event ';
-				$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-				$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
-				$buffer .= ' color="#' . $colorUP . '"';
-				$buffer .= ' isDuration="true" ';
-				$buffer .= ' title= "" >' ;
-				$buffer .= '</event>';
-			}
+			$buffer .= '<event ';
+
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorUP . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($pup > 0) ? $pup : "0") .   '%" >' ;
+			$buffer .= ' Duration: ' . Duration::toString($tt);
+			$buffer .= 'Uptime: ' . Duration::toString($uptime);			
+			$buffer .= '</event>';	
+
+
 		  }
 
 #
@@ -292,11 +278,12 @@ For information : contact@oreon-project.org
 	else
 	$end = $today_start + 5001;
 	$buffer .= '<event ';
-	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
 	$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 	$buffer .= ' isDuration="true" ';
 	$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
+			$buffer .= Duration::toString($tt);
 	$buffer .= '</event>';
 
 	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
@@ -305,11 +292,12 @@ For information : contact@oreon-project.org
 	else
 	$end = $today_start + 5001;
 	$buffer .= '<event ';
-	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
 	$buffer .= ' color="#' . $colorUNKNOWN . '"';
 	$buffer .= ' isDuration="true" ';
 	$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
+			$buffer .= Duration::toString($tt);
 	$buffer .= '</event>';
 
 
@@ -320,11 +308,12 @@ For information : contact@oreon-project.org
 	else
 	$end = $today_start + 5001;
 	$buffer .= '<event ';
-	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
 	$buffer .= ' color="#' . $colorDOWN . '"';
 	$buffer .= ' isDuration="true" ';
 	$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
+			$buffer .= Duration::toString($tt);
 	$buffer .= '</event>';
 
 
@@ -334,11 +323,13 @@ For information : contact@oreon-project.org
 	else
 	$end = $today_start + 5001;
 	$buffer .= '<event ';
-	$buffer .= ' start="' .date("m d Y G:i:s", $start) . ' GMT"';
-	$buffer .= ' end="' . date("m d Y G:i:s", $end). ' GMT"';
+//	$buffer .= '< timeZone="-5" ';
+	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
 	$buffer .= ' color="#' . $colorUP . '"';
 	$buffer .= ' isDuration="true" ';
 	$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
+	$buffer .= ' Duration: ' . Duration::toString($tt);
 	$buffer .= '</event>';
 
 	}
@@ -348,6 +339,16 @@ For information : contact@oreon-project.org
 	}
 
 	$buffer .= '</data>';
+
+/*
+$buffer =
+'
+<data>
+<event start="Feb 05 2007 1:23:19 GMT" end="Feb 05 2007 1:23:20 GMT" color="#82CFD8" isDuration="true" title="0%">1d</event>
+<event start="02 1 2007 09:00:00 GMT" end="05 15 2007 09:00:00 GMT" color="#82CFD8" isDuration="true" title="0%">1d</event>
+</data>';
+*/
+
 	header('Content-Type: text/xml');
 	echo $buffer;
 ?>
