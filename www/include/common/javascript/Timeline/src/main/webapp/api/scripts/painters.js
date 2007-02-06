@@ -250,7 +250,6 @@ Timeline.DurationEventPainter.prototype.paint = function() {
                 divLabel.style.color = foreground != null ? foreground : (outside ? eventTheme.label.outsideColor : eventTheme.label.insideColor);
                 divLabel.style.overflow = "hidden";
                 divLabel.appendChild(doc.createTextNode(evt.getText()));
-                
                 eventLayer.appendChild(divLabel);
                 attachClickEvent(divLabel);
             }

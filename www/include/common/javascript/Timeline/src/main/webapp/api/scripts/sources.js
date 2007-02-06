@@ -191,6 +191,10 @@ Timeline.DefaultEventSource.Event = function(
     this._earliestEnd = (earliestEnd != null) ? earliestEnd : (instant ? this._start : this._end);
     
     this._text = text;
+    
+    // Merethis modification by cedrick facon here
+    description = description.replace(/~br~/i, "<br>");
+    
     this._description = description;
     this._image = (image != null && image != "") ? image : null;
     this._link = (link != null && link != "") ? link : null;
@@ -201,6 +205,7 @@ Timeline.DefaultEventSource.Event = function(
 };
 
 Timeline.DefaultEventSource.Event.prototype = {
+
     getID:          function() { return this._id; },
     
     isInstant:      function() { return this._instant; },
@@ -225,7 +230,7 @@ Timeline.DefaultEventSource.Event.prototype = {
     fillDescription: function(elmt) {
         elmt.innerHTML = this._description;
     },
-    fillTime: function(elmt, labeller) {
+    fillTime: function(elmt, labeller) {/* Merethis modification by cedrick facon here
         if (this._instant) {
             if (this.isImprecise()) {
                 elmt.appendChild(elmt.ownerDocument.createTextNode(labeller.labelPrecise(this._start)));
@@ -246,6 +251,6 @@ Timeline.DefaultEventSource.Event.prototype = {
                 elmt.appendChild(elmt.ownerDocument.createElement("br"));
                 elmt.appendChild(elmt.ownerDocument.createTextNode(labeller.labelPrecise(this._end)));
             }
-        }
+        }*/
     }
 };
