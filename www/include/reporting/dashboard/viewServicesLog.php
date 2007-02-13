@@ -152,12 +152,16 @@ For information : contact@oreon-project.org
 		$month = date("m",time());
 		$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
 
+
+	$tab_hosts = array();	
+	$day_current_start = 0;
+	$day_current_end = time() + 1;
+	
+	parseFile($oreon->Nagioscfg["log_file"], $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, 1);	
+
 	if ($startTimeOfThisDay  < ($end_date_select)){
-		$tmp = $oreon->Nagioscfg["log_file"];
-		$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, getMyServiceName($mservice));
-//		$tab_log = $tab["tab_log"];
-		if (isset($tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)])){
-			$tab_svc = $tab[$mhost]["tab_svc_log"][getMyServiceName($mservice)];
+		if (isset($tab_services[getMyServiceName($mservice)][$mhost])){
+			$tab_svc = $tab_services[getMyServiceName($mservice)][$mhost];
 			if(!strncmp($tab_svc["current_state"], "OK", 2))
 				$tab_svc["timeOK"] += (time()-$tab_svc["current_time"]);
 			elseif(!strncmp($tab_svc["current_state"], "WARNING", 7))
@@ -197,7 +201,6 @@ For information : contact@oreon-project.org
 			$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');
 			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.00" : $tab_svc["PtimeNONE"];
 			
- 
 			#end
 		}
 	} else { // today is not in the period		

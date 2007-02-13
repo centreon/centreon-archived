@@ -166,50 +166,48 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$month = date("m",time());
 	$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
 
+
+	$tab_hosts = array();	
+	$day_current_start = 0;
+	$day_current_end = time() + 1;
 	
-
-
-	$tmp = $oreon->Nagioscfg["log_file"];
-	$tab = parseFile($tmp,time(), $startTimeOfThisDay, $mhost, NULL);
-	$tab_log = $tab["tab_log"];
-
+	parseFile($oreon->Nagioscfg["log_file"], $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, 1);	
 
 	if($startTimeOfThisDay  < ($end_date_select)){
-
-
-
-		if (isset($tab[$mhost]))
+		if (isset($tab_hosts[$mhost]))
 		{
 			#
 			## last host alert for today
 			#
-			if(!strncmp($tab[$mhost]["current_state"], "UP", 2))
-				$tab[$mhost]["timeUP"] += ($end_date_select-$tab[$mhost]["current_time"]);
-			elseif(!strncmp($tab[$mhost]["current_state"], "DOWN", 4))
-				$tab[$mhost]["timeDOWN"] += ($end_date_select-$tab[$mhost]["current_time"]);
-			elseif(!strncmp($tab[$mhost]["current_state"], "UNREACHABLE", 11))
-				$tab[$mhost]["timeUNREACHABLE"] += ($end_date_select-$tab[$mhost]["current_time"]);
+			if(!strncmp($tab_hosts[$mhost]["current_state"], "UP", 2))
+				$tab_hosts[$mhost]["timeUP"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
+			elseif(!strncmp($tab_hosts[$mhost]["current_state"], "DOWN", 4))
+				$tab_hosts[$mhost]["timeDOWN"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
+			elseif(!strncmp($tab_hosts[$mhost]["current_state"], "UNREACHABLE", 11))
+				$tab_hosts[$mhost]["timeUNREACHABLE"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
 			else
-				$tab[$mhost]["timeNONE"] += ($end_date_select-$tab[$mhost]["current_time"]);
+				$tab_hosts[$mhost]["timeNONE"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
 
 
 
 			#
 			## add log day
 			#
-			$Tup += $tab[$mhost]["timeUP"];
-			$Tdown += $tab[$mhost]["timeDOWN"];
-		 	$Tunreach += $tab[$mhost]["timeUNREACHABLE"];
+			$Tup += $tab_hosts[$mhost]["timeUP"];
+			$Tdown += $tab_hosts[$mhost]["timeDOWN"];
+		 	$Tunreach += $tab_hosts[$mhost]["timeUNREACHABLE"];
 			$Tnone += (($end_date_select - $start_date_select) - ($Tup + $Tdown + $Tunreach));
 			$tab_svc =array();
 			$i = 0;
 
-			$today_up = $tab[$mhost]["timeUP"];
-			$today_down = $tab[$mhost]["timeDOWN"];
-			$today_unreachable = $tab[$mhost]["timeUNREACHABLE"];
+			$today_up = $tab_hosts[$mhost]["timeUP"];
+			$today_down = $tab_hosts[$mhost]["timeDOWN"];
+			$today_unreachable = $tab_hosts[$mhost]["timeUNREACHABLE"];
 
-			while (list($key, $value) = each($tab[$mhost]["tab_svc_log"])) {
-				$tab_tmp = $value;
+
+			$i = 0;
+			foreach ($tab_services as $key => $htab_svc) {
+				$tab_tmp = $htab_svc[$mhost];
 				$tab_tmp["svcName"] = $key;
 				if(!strncmp($tab_tmp["current_state"], "OK", 2))
 					$tab_tmp["timeOK"] += (time()-$tab_tmp["current_time"]);
@@ -239,7 +237,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 													 + ($archive_svc_unknown+$tab_tmp["timeUNKNOWN"])
 													 + ($archive_svc_cri+$tab_tmp["timeCRITICAL"])))  / $tt *100,3);
 
-				/* les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... */
+				// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
 				$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 2, '.', '');
 				$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 2, '.', '');
 				$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 2, '.', '');
@@ -247,33 +245,33 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 				$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 2, '.', '');
 
 				$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? "0.00" : $tab_tmp["PtimeNONE"];
-				/*end*/
+				//end
 				$tab_svc[$i++] = $tab_tmp;
 			}
 		}
 	}
 	else // today is not in the period
 	{
-		if (isset($tab[$mhost]))// for timeline, calculate log for today
+		if (isset($tab_hosts[$mhost]))// for timeline, calculate log for today
 		{
 			#
 			## last host alert for today
 			#
-			if(!strncmp($tab[$mhost]["current_state"], "UP", 2))
-				$tab[$mhost]["timeUP"] += ($today_end-$tab[$mhost]["current_time"]);
-			elseif(!strncmp($tab[$mhost]["current_state"], "DOWN", 4))
-				$tab[$mhost]["timeDOWN"] += ($today_end-$tab[$mhost]["current_time"]);
-			elseif(!strncmp($tab[$mhost]["current_state"], "UNREACHABLE", 11))
-				$tab[$mhost]["timeUNREACHABLE"] += ($today_end-$tab[$mhost]["current_time"]);
+			if(!strncmp($tab_hosts[$mhost]["current_state"], "UP", 2))
+				$tab_hosts[$mhost]["timeUP"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
+			elseif(!strncmp($tab_hosts[$mhost]["current_state"], "DOWN", 4))
+				$tab_hosts[$mhost]["timeDOWN"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
+			elseif(!strncmp($tab_hosts[$mhost]["current_state"], "UNREACHABLE", 11))
+				$tab_hosts[$mhost]["timeUNREACHABLE"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
 			else
-				$tab[$mhost]["timeNONE"] += ($today_end-$tab[$mhost]["current_time"]);
+				$tab_hosts[$mhost]["timeNONE"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
 
-			$today_up = $tab[$mhost]["timeUP"];
+			$today_up = $tab_hosts[$mhost]["timeUP"];
 			
 			//echo "=>".$today_up . "<br>";
 			
-			$today_down = $tab[$mhost]["timeDOWN"];
-			$today_unreachable = $tab[$mhost]["timeUNREACHABLE"];
+			$today_down = $tab_hosts[$mhost]["timeDOWN"];
+			$today_unreachable = $tab_hosts[$mhost]["timeUNREACHABLE"];
 		
 		}		
 		$i=0;
@@ -283,14 +281,14 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$tab_tmp["svcName"] = getMyServiceName($svc_id);
 			$tab_tmp["service_id"] = $svc_id;
 			$tt = $end_date_select - $start_date_select;
-			$tab_tmp["PtimeOK"] = round($tab["Tok"] / $tt *100,3);
-			$tab_tmp["PtimeWARNING"] = round( $tab["Twarn"]/ $tt *100,3);
-			$tab_tmp["PtimeUNKNOWN"] = round( $tab["Tunknown"]/ $tt *100,3);
-			$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcri"]/ $tt *100,3);
-			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"])
+			$tab_tmp["PtimeOK"] = round($tab_hosts["Tok"] / $tt *100,3);
+			$tab_tmp["PtimeWARNING"] = round( $tab_hosts["Twarn"]/ $tt *100,3);
+			$tab_tmp["PtimeUNKNOWN"] = round( $tab_hosts["Tunknown"]/ $tt *100,3);
+			$tab_tmp["PtimeCRITICAL"] = round( $tab_hosts["Tcri"]/ $tt *100,3);
+			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab_hosts["Tok"] + $tab_hosts["Twarn"] + $tab_hosts["Tunknown"] + $tab_hosts["Tcri"])
 												 )  / $tt *100,3);
 
-			/* les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... */
+			// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
 			$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 2, '.', '');
 			$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 2, '.', '');
 			$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 2, '.', '');
@@ -298,7 +296,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 2, '.', '');
 
 			$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? 0.00 : $tab_tmp["PtimeNONE"];
-			/*end*/
+			//end
 
 			$tab_svc[$i++] = $tab_tmp;
 		}
@@ -312,7 +310,6 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
 	if($Tnone < 0)
 	$Tnone = 0;
-
 
 	$tab["state"] = $lang["m_UpTitle"];
 	$tab["time"] = Duration::toString($Tup);
@@ -401,6 +398,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$period1 = (!$period1) ? "today": $period1;
 	$formPeriod1->setDefaults(array('period' => $period1));
 	$tpl->assign('period', "&period=".$period1);
+
 
 	$tpl->assign('hostID', getMyHostID($mhost));
 	$color = array();

@@ -206,123 +206,125 @@ For information : contact@oreon-project.org
 			}
 	}
 
-	// parser que pour l'host demandé
-	function parseFile($file,$end_time, $startTimeOfThisDay, $mhost, $mservice){
-		$start_time = 0;
-		$log = NULL;
-		$matches = "";
+	#
+	## Parsing file help function
+	#
+	function get_time_start_of_day($time)
+	{
+		$day = date("d",$time);
+		$year = date("Y",$time);
+		$month = date("m",$time);
+		return mktime(0, 0, 0, $month, $day, $year);		
+	}
+	function is_new_day($time_event, $day_current_start, $day_current_end)
+	{
+		if($time_event > $day_current_end || $time_event < $day_current_start)
+		{
+			return true;
+		}
+		return false;
+	}
+	function is_in_today($time_event)
+	{
+		$time = time();
+		$day = date("d",$time);
+		$year = date("Y",$time);
+		$month = date("m",$time);
+				
+		if($time_event >= mktime(0, 0, 0, $month, $day, $year) && $time_event <= mktime(0, 0, 0, $month, $day+1, $year))
+		return true;
+		else
+		return false;
+	}
+
+
+	function parseFile($file, $time, &$tab_hosts, &$tab_services, &$day_current_start, &$day_current_end, $today_mode){	
+	#
+	## if $today_mode = 0 => archivelog else todaylog only  
+	#
+
+		$file_start_time = 0;
+		$day_in_second = 86400;
 	
 		if (file_exists($file) && !($log = fopen($file, "r")))
 			echo "pel_cant_open" . $file . "<br>";
-		$tab_log = array();	
-		$tab_svc_log = array();
-		$tablist = array();
-		$res1 = array();	
-
-	
 		if ($log)
 			for ($a=0, $b= 0, $i = 0; $str = fgets($log); $i++){
-				if (preg_match("/^\[([0-9]*)\] (.+)/", $str, $matches)){				
+				if (preg_match("/^\[([0-9]*)\] (.+)/", $str, $matches)){
 					$time_event = $matches[1];
-					$res = preg_split("/:/", $matches[2], 2);
-				if (isset($res[1]))
-					$res1 = preg_split("/;/", $res[1]);
-				$type = $res[0];
-				
-				
-				//array_walk($res1, 'trim_value');
-				$type = trim($type);
-			$name0 = isset($res1[0]) ? trim($res1[0]) : NULL;
-			$name1 = isset($res1[1]) ? trim($res1[1]) : NULL;
-			$name2 = isset($res1[2]) ? trim($res1[2]) : NULL;
-			$name3 = isset($res1[3]) ? trim($res1[3]) : NULL;
-			$name4 = isset($res1[4]) ? trim($res1[4]) : NULL;
 
-
-
-				#
-				## find the log's start time
-				#
-				if ($i == 0)// take start time
-				$start_time = $time_event;
-				if (!strncmp($type, "LOG ROTATION", 12))
-				{
-						$start_time = $time_event;
-				}
-				else if ($name0 == $mhost && (!strncmp($type, "CURRENT HOST STATE", 18) || !strncmp($type, "INITIAL HOST STATE", 18))
-				/*&& ($time_event+50) >= $startTimeOfThisDay*/){
-					$tablist[$name0] = array();
-					$tablist[$name0]["current_time"] = $start_time;
-					$tablist[$name0]["current_state"] = $name1;
-					$tablist[$name0]["timeUP"] = 0;
-					$tablist[$name0]["timeDOWN"] = 0;
-					$tablist[$name0]["timeUNREACHABLE"] = 0;
-					$tablist[$name0]["timeNONE"] = 0;
-					$tablist[$name0]["start_time"] = $start_time;
-					$tablist[$name0]["tab_svc_log"] = array();
-	
-					if($name0 == $mhost)
-						$tab_log[$a++] = getLogData($time_event, $name0, "", $name1, $res1[4], $type);
-					
-				}
-				else if ($name0 == $mhost && (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21))
-				/*&& ($time_event+50) >= $startTimeOfThisDay*/)
-				{
-					$tablist[$name0]["tab_svc_log"][$name1] = array();
-					$tab_tmp = array();
-					$tab_tmp["current_state"] = $name2;
-					$tab_tmp["current_time"] = $start_time;
-					$tab_tmp["timeOK"] = 0;
-					$tab_tmp["timeWARNING"] = 0;
-					$tab_tmp["timeUNKNOWN"] = 0;
-					$tab_tmp["timeCRITICAL"] = 0;
-					$tab_tmp["timeNONE"] = 0;
-					$tab_tmp["service_id"] = getMyServiceID($name1,getMyHostID($name0));				
-					$tablist[$name0]["tab_svc_log"][$name1] = $tab_tmp;
-				}
-				#
-				## host
-				#
-				else if ($name0 == $mhost && !strncmp($type, "HOST ALERT", 10) /*&& ($time_event+50) >= $startTimeOfThisDay*/)
-				{
-					if(!isset($tablist[$name0]))
+					if($day_current_end == 0)
 					{
-						$tablist[$name0] = array();
-						$tablist[$name0]["current_time"] = $start_time;
-						$tablist[$name0]["current_state"] = "NONE";
-						$tablist[$name0]["timeUP"] = 0;
-						$tablist[$name0]["timeDOWN"] = 0;
-						$tablist[$name0]["timeUNREACHABLE"] = 0;
-						$tablist[$name0]["timeNONE"] = 0;
-						$tablist[$name0]["start_time"] = $start_time;
-						$tablist[$name0]["tab_svc_log"] = array();
+						$day_current_start = get_time_start_of_day($time_event);
+						$day_current_end = get_time_start_of_day($time_event+$day_in_second);
 					}
 
-					//if($startTimeOfThisDay < $time_event){ ## pour essayer d'eviter les problemes quand la rotation na pas pu etre faite..
-						if(!strncmp($tablist[$name0]["current_state"], "UP", 2))
-						$tablist[$name0]["timeUP"] += ($time_event-$tablist[$name0]["current_time"]);
-						elseif(!strncmp($tablist[$name0]["current_state"], "DOWN", 4))
-						$tablist[$name0]["timeDOWN"] += ($time_event-$tablist[$name0]["current_time"]);
-						elseif(!strncmp($tablist[$name0]["current_state"], "UNREACHABLE", 11))
-						$tablist[$name0]["timeUNREACHABLE"] += ($time_event-$tablist[$name0]["current_time"]);
-						else				
-						$tablist[$name0]["timeNONE"] += ($time_event-$tablist[$name0]["current_time"]);
-						if($name0 == $mhost)
-							$tab_log[$a++] = getLogData($time_event, $name0, "", $name1, $res1[4], $type);
-						$tablist[$name0]["current_time"] = $time_event; //save time
-					//}
-					$tablist[$name0]["current_state"] = $name1;
-				}
-				#
-				## services associed
-				#
-				else if ($name0 == $mhost && !strncmp($type, "SERVICE ALERT", 13) /*&& ($time_event+50) >= $startTimeOfThisDay*/)
-				{
-					if(isset($tablist[$name0]["tab_svc_log"][$name1]) && (is_null($mservice) || $name1 == $mservice))
+					#
+					## use for archivelogindb
+					#										
+					if(!$today_mode && is_new_day($time_event, $day_current_start, $day_current_end)){
+						insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end);
+						$tab_hosts = array();
+						$tab_services = array();
+						$day_current_start = get_time_start_of_day($time_event);
+						$day_current_end = get_time_start_of_day($time_event+86400);
+					}
+
+					#
+					## verify if $time_event is in today time for the today usage with viewX.php
+					#
+					if(($today_mode && is_in_today($time_event)) || !$today_mode) {
+					$res = preg_split("/:/", $matches[2], 2);
+					if (isset($res[1]))
+						$res1 = preg_split("/;/", $res[1]);
+					$type = $res[0];
+
+					if(isset($res1) && is_array($res1))
+						array_walk($res1, 'trim_value');
+
+
+					#
+					## Hosts
+					#	
+					if( (!strncmp($type, "CURRENT HOST STATE", 18) ||
+					 	 !strncmp($type, "INITIAL HOST STATE", 18) ||
+					  	 !strncmp($type, "HOST ALERT", 10))
+					  	 )
 					{
-						//if($startTimeOfThisDay < $time_event){ ## pour essayer d'eviter les problemes quand la rotation na pas pu etre faite..
+						if(isset($tab_hosts[$res1[0]])){
+							if(!strncmp($tab_hosts[$res1[0]]["current_state"], "UP", 2))
+								$tab_hosts[$res1[0]]["timeUP"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
+							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "DOWN", 4))
+								$tab_hosts[$res1[0]]["timeDOWN"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
+							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "UNREACHABLE", 11))
+								$tab_hosts[$res1[0]]["timeUNREACHABLE"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
+							else
+								$tab_hosts[$res1[0]]["timeNONE"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
+							$tab_hosts[$res1[0]]["current_state"] = $res1[1];
+							$tab_hosts[$res1[0]]["current_time"] = $time_event; //save time
+						}
+						else {
+							$tab_hosts[$res1[0]] = array();
+							$tab_hosts[$res1[0]]["current_time"] = $time_event;
+							$tab_hosts[$res1[0]]["current_state"] = $res1[1];
+							$tab_hosts[$res1[0]]["timeUP"] = 0;
+							$tab_hosts[$res1[0]]["timeDOWN"] = 0;
+							$tab_hosts[$res1[0]]["timeUNREACHABLE"] = 0;
+							$tab_hosts[$res1[0]]["timeNONE"] = 0;
+							$tab_hosts[$res1[0]]["start_time"] = $day_current_start;
+							$tab_hosts[$res1[0]]["tab_svc_log"] = array();
+						}
+					}
+					
+					#
+					## Services					
+					#
+					else if (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21) || !strncmp($type, "SERVICE ALERT", 13))
+					{
+						if(isset($tab_services[$res1[1]][$res1[0]]))
+						{
 							$tab_tmp = array();
-							$tab_tmp = $tablist[$name0]["tab_svc_log"][$name1];
+							$tab_tmp = $tab_services[$res1[1]][$res1[0]];
 							if(!strncmp($tab_tmp["current_state"], "OK", 2))
 								$tab_tmp["timeOK"] += ($time_event-$tab_tmp["current_time"]);
 							elseif(!strncmp($tab_tmp["current_state"], "WARNING", 7))
@@ -334,17 +336,28 @@ For information : contact@oreon-project.org
 							else
 								$tab_tmp["timeNONE"] += ($time_event-$tab_tmp["current_time"]);
 							$tab_tmp["current_time"] = $time_event; //save time
-							$tab_tmp["current_state"] = $name2; //save time
-							$tablist[$name0]["tab_svc_log"][$name1] = $tab_tmp;
-						//}
+							$tab_tmp["current_state"] = $res1[2]; //save time
+							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
+						}
+						else{
+							$tab_services[$res1[1]][$res1[0]] = array();
+							$tab_tmp = array();
+							$tab_tmp["current_state"] = $res1[2];
+							$tab_tmp["current_time"] = $time_event;
+							$tab_tmp["timeOK"] = 0;
+							$tab_tmp["timeWARNING"] = 0;
+							$tab_tmp["timeUNKNOWN"] = 0;
+							$tab_tmp["timeCRITICAL"] = 0;
+							$tab_tmp["timeNONE"] = 0;
+							$tab_tmp["start_time"] = $day_current_start;
+							$tab_tmp["service_id"] = getMyServiceID($res1[1],getMyHostID($res1[0]));
+							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
+						}
 					}
+				}//end if todaylog
 				}
 			}
-		}
-		$tablist["time_start"] = $start_time;
-		$tablist["tab_log"] = $tab_log;
-
-		return($tablist);
 	}
+
 
 ?>
