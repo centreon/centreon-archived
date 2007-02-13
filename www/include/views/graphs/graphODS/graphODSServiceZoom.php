@@ -51,21 +51,46 @@ For information : contact@oreon-project.org
 	$redirect->setValue($o);
 	$page =& $form->addElement('hidden', 'p');
 	$page->setValue($p);
-	if (isset($_GET["start"])){
+	
+	if (isset($_GET["start"]) && !defined($_GET["period"])){
 		$startF =& $form->addElement('hidden', 'start');
 		$startF->setValue($_GET["start"]);
 	}
-	if (isset($_GET["end"])){
+	if (isset($_GET["end"]) && !defined($_GET["period"])){
 		$endF =& $form->addElement('hidden', 'end');
 		$endF->setValue($_GET["end"]);
 	}
+	
+	if (isset($_GET["period"]))
+		$period =  $_GET["period"];
+	if (isset($_POST["period"]))
+		$period =  $_POST["period"];
 
 	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
 	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
 	
+	$periods = array(	""=>"",
+						"10800"=>$lang["giv_sr_p3h"],
+						"21600"=>$lang["giv_sr_p6h"],
+						"43200"=>$lang["giv_sr_p12h"],
+						"86400"=>$lang["giv_sr_p24h"],
+						"172800"=>$lang["giv_sr_p2d"],
+						"302400"=>$lang["giv_sr_p4d"],
+						"604800"=>$lang["giv_sr_p7d"],
+						"1209600"=>$lang["giv_sr_p14d"],
+						"2419200"=>$lang["giv_sr_p28d"],
+						"2592000"=>$lang["giv_sr_p30d"],
+						"2678400"=>$lang["giv_sr_p31d"],
+						"5184000"=>$lang["giv_sr_p2m"],
+						"10368000"=>$lang["giv_sr_p4m"],
+						"15552000"=>$lang["giv_sr_p6m"],
+						"31104000"=>$lang["giv_sr_p1y"]);
+
+	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
+	
 	$form->addElement('reset', 'reset', $lang["reset"]);
   	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
-
+	
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		$nb_rsp = 0;
 
@@ -117,10 +142,19 @@ For information : contact@oreon-project.org
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
 	$tpl->assign('host_name', $svc_id);
-	if (isset($_GET["start"]))
-		$tpl->assign('start', $_GET["start"]);
-	if (isset($_GET["end"]))
-		$tpl->assign('end', $_GET["end"]);
+	
+	if (isset($period) && $period){
+		$start = time() - ($period + 30);
+		$end = time() + 1;
+	} else if (!$_GET["period"]){
+		$start = $_GET["start"];
+		$end = $_GET["end"];
+	} else {
+			
+	}
+	$tpl->assign('start', $start);
+	$tpl->assign('end', $end);
+	
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $_GET["index"]);
