@@ -20,8 +20,8 @@ For information : contact@oreon-project.org
 	/*
 	 * Set your path here
 	 */
-	$path_oreon = '/usr/local/oreon/';
-	$NagiosPathArchive = "/usr/local/nagios/var/archives";
+	$path_oreon = '/srv/oreon/';
+	$NagiosPathArchive = "/srv/nagios/var/archives";
 
 
 
