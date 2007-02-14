@@ -20,13 +20,13 @@ For information : contact@oreon-project.org
 	/*
 	 * Set your path here
 	 */
-	$path_oreon = '/srv/oreon/';
-	$NagiosPathArchive = "/srv/nagios/var/archives";
-
-
+	$path_oreon = '/usr/local/oreon/';
+	$NagiosPathArchive = "/usr/local/nagios/var/archives";
 
 	require_once 'DB.php';	
 	include_once($path_oreon . "/www/oreon.conf.php");
+	require_once($path_oreon."www/include/reporting/dashboard/reporting-func.php");
+	require_once($path_oreon."www/include/reporting/dashboard/simple-func.php");
 	
 
 	/* Connect to oreon DB */	
@@ -48,6 +48,25 @@ For information : contact@oreon-project.org
 	  die("Connecting probems with oreon database : " . $pearDB->getMessage());
 	
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+
+
+######################
+######################
+######################
+/*
+	$sql = "TRUNCATE TABLE `log_archive_file_name`";
+	$res = $pearDB->query($sql);
+	$sql = "TRUNCATE TABLE `log_archive_host`";
+	$res = $pearDB->query($sql);
+	$sql = "TRUNCATE TABLE `log_archive_service`";
+	$res = $pearDB->query($sql);
+*/
+######################
+######################
+######################
+######################
+
+
 
 
 	function check_file_name_in_db($filename)
@@ -112,11 +131,79 @@ For information : contact@oreon-project.org
 	krsort($tableFile2);
 
 
+	function day_is_in_db($start_day, $end_day, $host_id)
+	{
+		global $pearDB;
+		$sql = "SELECT * FROM `log_archive_host` WHERE `host_id` = ".$host_id." AND `date_start` >= ".$start_day." AND `date_end` <= ". $end_day; 
+		$res = $pearDB->query($sql);
+		if (PEAR::isError($res)){
+		  die($res->getMessage());}
+		if($res->numRows())
+			return true;
+		return false;					
+	}
 
-	#
-	## Parsing file help function
-	#
-	
+	function insert_pending()
+	{
+		global $pearDB;
+		$sql = "SELECT * FROM `log_archive_host` WHERE `date_start` = (SELECT min(`date_start`) FROM `log_archive_host`)"; 
+		$res = $pearDB->query($sql);
+		if (PEAR::isError($res)){
+		  die($res->getMessage());}
+
+
+		$time = time();
+		$start_date_day = $time-1;
+		$end_date_day = $time;
+		while ($h =& $res->fetchRow()){
+			$start_date_day = my_getStartDay($h["date_start"]);
+			$end_date_day = $start_date_day + 86400;
+		  }
+		$sd = $start_date_day;
+		$ed = $end_date_day;
+		
+		$sql = "SELECT distinct(host_id) FROM `log_archive_host`";
+		$res = $pearDB->query($sql);
+		if (PEAR::isError($res)){
+		  die($res->getMessage());}
+
+		while ($res->fetchInto($h)){			
+			while($end_date_day < $time){
+				## if day doesn't exist in bdd
+				$host_id = $h["host_id"];
+				if(!day_is_in_db($start_date_day, $end_date_day,$host_id)){
+					echo date("d/m/Y H:i:s", $start_date_day)." -->";
+					echo date("d/m/Y H:i:s", $end_date_day)."\n";
+
+					$sql = "INSERT INTO `log_archive_host` ( `log_id` , `host_id` ," .
+							" `UPTimeScheduled` , `UPTimeUnScheduled` ," .
+							" `DOWNTimeScheduled` , `DOWNTimeUnScheduled` ," .
+							" `UNREACHABLETimeScheduled` , `UNREACHABLETimeUnScheduled` ," .
+							" `UNDETERMINATETimeScheduled` , `UNDETERMINATETimeUnScheduled` ," .
+							" `date_end`, `date_start` ) VALUES" .
+						" (NULL , '$host_id'," .
+						" '0', '0'," .
+						" '0', '0'," .
+						" '0', '0'," .
+						" '86400', '0'," .
+						" '$end_date_day', '$start_date_day')";
+		
+					$res2 = $pearDB->query($sql);
+					if (PEAR::isError($res2)){
+					  die($res2->getMessage());}
+
+		
+				}			
+		
+				## next day
+				$start_date_day = my_getNextStartDay($start_date_day);
+				$end_date_day = $start_date_day+86400;
+			}
+			$start_date_day = $sd;
+			$end_date_day = $ed;			
+		}
+	}
+
 	
 	function insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end)
 	{
@@ -146,23 +233,6 @@ For information : contact@oreon-project.org
 				else
 					$htab["timeNONE"] += ($day_current_end - $htab["current_time"]);
 
-				/*
-				echo "insert in db => ".date("d/m/Y",$day_current_start)."\n\n";	
-				print_r($htab);
-				echo "start:" . $day_current_start."\n";
-				echo "end  :" . $day_current_end."\n";
-				echo "up=".$htab["timeUP"]."\n";
-				*/
-
-				$sql = "SELECT * FROM `log_archive_host` WHERE `date_end` = " . $day_current_end . " AND `date_start` = " . $day_current_start; 
-				$res = $pearDB->query($sql);
-				if (PEAR::isError($res)){
-				  die($res->getMessage());}
-				if($res->numRows())
-				{
-				//echo $res->numRows() . "\n";
-				}
-
 				#
 				## insert in db the host time
 				#		
@@ -173,7 +243,7 @@ For information : contact@oreon-project.org
 				$DOWNUnsc =$htab["timeDOWN"];
 				$UNREACHABLEsc = $htab["timeUNREACHABLE"];
 				$UNREACHABLEUnsc = $htab["timeUNREACHABLE"];
-				$NONEsc = $htab["timeNONE"];
+				$NONEsc = ($day_current_end - $day_current_start) - ($Upsc+$DOWNsc+$UNREACHABLEsc);
 				$NONEUnsc = $htab["timeNONE"];
 	
 				$sql = "INSERT INTO `log_archive_host` ( `log_id` , `host_id` ," .
@@ -264,8 +334,6 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	require_once($path_oreon."www/include/reporting/dashboard/reporting-func.php");
-	require_once($path_oreon."www/include/reporting/dashboard/simple-func.php");
 
 	$tab_hosts = array();
 	$tab_services = array();
@@ -278,4 +346,8 @@ For information : contact@oreon-project.org
 		insert_file_name_in_db($key);
 		parseFile($key, $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, false);
 	}
+
+	//insert_pending();
+
+
 ?>
