@@ -209,13 +209,6 @@ For information : contact@oreon-project.org
 	#
 	## Parsing file help function
 	#
-	function get_time_start_of_day($time)
-	{
-		$day = date("d",$time);
-		$year = date("Y",$time);
-		$month = date("m",$time);
-		return mktime(0, 0, 0, $month, $day, $year);		
-	}
 	function is_new_day($time_event, $day_current_start, $day_current_end)
 	{
 		if($time_event > $day_current_end || $time_event < $day_current_start)
@@ -231,7 +224,7 @@ For information : contact@oreon-project.org
 		$year = date("Y",$time);
 		$month = date("m",$time);
 				
-		if($time_event >= mktime(0, 0, 0, $month, $day, $year) && $time_event <= mktime(0, 0, 0, $month, $day+1, $year))
+		if($time_event >= mktime(0, 0, 0, $month, $day, $year) && $time_event < mktime(0, 0, 0, $month, $day+1, $year))
 		return true;
 		else
 		return false;
@@ -255,8 +248,8 @@ For information : contact@oreon-project.org
 
 					if($day_current_end == 0)
 					{
-						$day_current_start = get_time_start_of_day($time_event);
-						$day_current_end = get_time_start_of_day($time_event+$day_in_second);
+						$day_current_start = my_getStartDay($time_event);
+						$day_current_end = my_getEndDay($time_event);
 					}
 
 					#
@@ -266,8 +259,8 @@ For information : contact@oreon-project.org
 						insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end);
 						$tab_hosts = array();
 						$tab_services = array();
-						$day_current_start = get_time_start_of_day($time_event);
-						$day_current_end = get_time_start_of_day($time_event+86400);
+						$day_current_start = my_getStartDay($time_event);
+						$day_current_end = my_getEndDay($time_event);
 					}
 
 					#

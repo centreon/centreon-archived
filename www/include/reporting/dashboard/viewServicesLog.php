@@ -20,6 +20,18 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit;
 
+	$day = date("d",time());
+	$year = date("Y",time());
+	$month = date("m",time());
+	$today_start = mktime(0, 0, 0, $month, $day, $year);
+	$today_end = time();
+
+	$today_ok = 0;
+	$today_warning = 0;
+	$today_unknown = 0;
+	$today_critical = 0;
+
+
 	$start_date_select = 0;
 	$end_date_select = 0;
 
@@ -172,6 +184,14 @@ For information : contact@oreon-project.org
 				$tab_svc["timeCRITICAL"] += (time()-$tab_svc["current_time"]);
 			else
 				$tab_svc["timeNONE"] += (time()-$tab_svc["current_time"]);
+
+
+			$today_ok = $tab_svc["timeOK"];
+			$today_warning = $tab_svc["timeWARNING"];
+			$today_unknown = $tab_svc["timeUNKNOWN"];
+			$today_uncritical = $tab_svc["timeCRITICAL"];
+
+				
 			$tt = $end_date_select - $start_date_select;
 			$svc_id = $tab_svc["service_id"];
 			$archive_svc_ok =  isset($tab_svc_bdd[$svc_id]["Tok"]) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
@@ -205,6 +225,26 @@ For information : contact@oreon-project.org
 		}
 	} else { // today is not in the period		
 		$tab_svc = array();
+
+		if (isset($tab_services[getMyServiceName($mservice)][$mhost])){
+			$tab_svc = $tab_services[getMyServiceName($mservice)][$mhost];
+			if(!strncmp($tab_svc["current_state"], "OK", 2))
+				$tab_svc["timeOK"] += (time()-$tab_svc["current_time"]);
+			elseif(!strncmp($tab_svc["current_state"], "WARNING", 7))
+				$tab_svc["timeWARNING"] += (time()-$tab_svc["current_time"]);
+			elseif(!strncmp($tab_svc["current_state"], "UNKNOWN", 7))
+				$tab_svc["timeUNKNOWN"] += (time()-$tab_svc["current_time"]);
+			elseif(!strncmp($tab_svc["current_state"], "CRITICAL", 8))
+				$tab_svc["timeCRITICAL"] += (time()-$tab_svc["current_time"]);
+			else
+				$tab_svc["timeNONE"] += (time()-$tab_svc["current_time"]);
+
+			$today_ok = $tab_svc["timeOK"];
+			$today_warning = $tab_svc["timeWARNING"];
+			$today_unknown = $tab_svc["timeUNKNOWN"];
+			$today_uncritical = $tab_svc["timeCRITICAL"];
+		}
+
 		$svc_id = $mservice;
 		$tab_svc_bdd = array();
 		getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select);			
@@ -257,6 +297,7 @@ For information : contact@oreon-project.org
 		$tab_resume[2] = $tab;
 		
 		$tab["state"] = $lang["m_CriticalTitle"];
+
 		$tab["time"] = Duration::toString($tab_svc["timeCRITICAL"]);
 		$tab["pourcentTime"] = $tab_svc["PtimeCRITICAL"];
 		$tab["pourcentkTime"] = $tab_svc["PtimeCRITICAL"];
@@ -264,7 +305,10 @@ For information : contact@oreon-project.org
 		$tab_resume[3] = $tab;
 		
 		$tab["state"] = $lang["m_PendingTitle"];
+		$tab_svc["timeNONE"] = $tab_svc["timeNONE"] < 0 ? 0 : $tab_svc["timeNONE"];
 		$tab["time"] = Duration::toString($tab_svc["timeNONE"]);
+
+
 		$tab["pourcentTime"] = $tab_svc["PtimeNONE"];
 		$tab["pourcentkTime"] = $tab_svc["PtimeNONE"];
 		$tab["style"] = " style='background:" . $oreon->optGen["color_pending"]."'";
@@ -298,7 +342,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('resumeTitle', $lang["m_serviceResumeTitle"]);
 	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
 	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
-	$tpl->assign('style_ok', "class='ListColCenter' style='background:".$oreon->optGen["color_up"]."'");
+	$tpl->assign('style_ok', "class='ListColCenter' style='background:".$oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_warning' , "class='ListColCenter' style='background:".$oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_critical' , "class='ListColCenter' style='background:".$oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:".$oreon->optGen["color_unknown"]."'");
@@ -356,5 +400,40 @@ For information : contact@oreon-project.org
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
+	
+	
+	# For today in timeline
+	$tt = 0 + ($today_end - $today_start);
+
+	$today_none = $tt - ($today_warning + $today_ok + $today_unknown + $today_critical);
+	$today_none = round(($today_none/$tt *100),2);
+	$today_ok = ($today_ok <= 0) ? 0 : round($today_ok / $tt *100,2);
+	$today_warning = ($today_warning <= 0) ? 0 : round($today_warning / $tt *100,2);
+	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown / $tt *100,2);
+	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical / $tt *100,2);
+
+	$today_none = ($today_none < 0.1) ? "0" : $today_none;
+
+if($mhost)	{
+	$color = substr($oreon->optGen["color_ok"],1) .':'.
+	 		 substr($oreon->optGen["color_warning"],1) .':'.
+	 		 substr($oreon->optGen["color_critical"],1) .':'. 
+	 		 substr($oreon->optGen["color_pending"],1) .':'. 
+	 		 substr($oreon->optGen["color_unknown"],1);
+
+	$today_var = '&serviceID='.$mservice.'&today_ok='.$today_ok . '&today_critical='.$today_critical.'&today_unknown='.$today_unknown. '&today_pending=' . $today_none;
+	$type = 'Service';
+	include('ajaxReporting_js.php');
+}
+else {
+?>
+<SCRIPT LANGUAGE="JavaScript">
+function initTimeline() {
+	;
+}
+</SCRIPT>
+<?
+}	
+	
 	$tpl->display("template/viewServicesLog.ihtml");
 ?>

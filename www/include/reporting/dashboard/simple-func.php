@@ -22,6 +22,34 @@ For information : contact@oreon-project.org
 		list($m,$d,$y) = split('/',$dateSTR);
 		return (mktime(0,0,0,$m,$d,$y));
 	}
+	function my_getStartDay($date)
+	{
+		$d = date("d",$date);
+		$y = date("Y",$date);
+		$m = date("m",$date);
+		return (mktime(0,0,0,$m,$d,$y));
+	}
+	function my_getEndDay($date)
+	{
+		$d = date("d",$date);
+		$y = date("Y",$date);
+		$m = date("m",$date);
+		return (mktime(0,0,0,$m,$d+1,$y));
+	}
+	function my_getNextStartDay($date)
+	{
+		$d = date("d",$date);
+		$y = date("Y",$date);
+		$m = date("m",$date);
+		return (mktime(0,0,0,$m,$d+1,$y));
+	}
+	function my_getNextEndDay($date)
+	{
+		$d = date("d",$date);
+		$y = date("Y",$date);
+		$m = date("m",$date);
+		return (mktime(0,0,0,$m,$d+1,$y));
+	}
 	
 	function trim_value(&$value)
 	{

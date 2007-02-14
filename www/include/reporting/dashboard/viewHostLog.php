@@ -281,11 +281,11 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$tab_tmp["svcName"] = getMyServiceName($svc_id);
 			$tab_tmp["service_id"] = $svc_id;
 			$tt = $end_date_select - $start_date_select;
-			$tab_tmp["PtimeOK"] = round($tab_hosts["Tok"] / $tt *100,3);
-			$tab_tmp["PtimeWARNING"] = round( $tab_hosts["Twarn"]/ $tt *100,3);
-			$tab_tmp["PtimeUNKNOWN"] = round( $tab_hosts["Tunknown"]/ $tt *100,3);
-			$tab_tmp["PtimeCRITICAL"] = round( $tab_hosts["Tcri"]/ $tt *100,3);
-			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab_hosts["Tok"] + $tab_hosts["Twarn"] + $tab_hosts["Tunknown"] + $tab_hosts["Tcri"])
+			$tab_tmp["PtimeOK"] = round($tab["Tok"] / $tt *100,3);
+			$tab_tmp["PtimeWARNING"] = round( $tab["Twarn"]/ $tt *100,3);
+			$tab_tmp["PtimeUNKNOWN"] = round( $tab["Tunknown"]/ $tt *100,3);
+			$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcri"]/ $tt *100,3);
+			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"])
 												 )  / $tt *100,3);
 
 			// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
@@ -433,6 +433,13 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
 if($mhost)	{
+	$color = substr($oreon->optGen["color_up"],1) .':'.
+	 		 substr($oreon->optGen["color_down"],1) .':'.
+	 		 substr($oreon->optGen["color_unreachable"],1) .':'. 
+	 		 substr($oreon->optGen["color_unknown"],1);
+
+	$today_var = '&today_up='.$today_up . '&today_down='.$today_down.'&today_unreachable='.$today_unreachable. '&today_pending=' . $today_pending;
+	$type = 'Host';	
 	include('ajaxReporting_js.php');
 }
 else {

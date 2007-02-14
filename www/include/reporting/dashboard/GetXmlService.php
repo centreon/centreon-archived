@@ -26,15 +26,11 @@ For information : contact@oreon-project.org
 	$buffer .= '<data>';
 
 
-	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"])&& isset($_GET["today_down"])&& isset($_GET["today_unreachable"])&& isset($_GET["today_pending"]))
+	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["serviceID"]) &&
+	   isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"])&& 
+	   isset($_GET["today_unknown"])&& isset($_GET["today_pending"]))
 	{
-		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
-
-		# use for debug only
-		#$colorUP = "red";
-		#$colorDOWN = "red"; 
-		#$colorUNREACHABLE = "red"; 
-		#$colorUNKNOWN = "red";
+		list($colorOK, $colorWARNING, $colorCRITICAL, $colorPENDING, $colorUNKNOWN)= split (":", $_GET["color"], 5);
 
 		$oreonPath = $_GET["oreonPath"];
 		include_once($oreonPath . "/www/oreon.conf.php");
@@ -139,100 +135,86 @@ For information : contact@oreon-project.org
 		        return $str;
 		    }
 		}
-			
 
 			
 		$rq = 'SELECT ' .
-		' * FROM `log_archive_host` WHERE host_id = ' . $_GET["hostID"] .
+		' * FROM `log_archive_service` WHERE host_id = ' . $_GET["hostID"] . ' AND service_id = ' . $_GET["serviceID"] .
 		' order by date_start desc';
 			
 		$res = & $pearDB->query($rq);
 	
 
 		  while ($h =& $res->fetchRow()) {
-			$uptime = $h["UPTimeScheduled"];
-			$downtime = $h["DOWNTimeScheduled"];
-			$unreachalbetime = $h["UNREACHABLETimeScheduled"];
-			$undeterminatetime = $h["UNDETERMINATETimeScheduled"];
+			$oktime = $h["OKTimeScheduled"];
+			$criticaltime = $h["CRITICALTimeScheduled"];
+			$warningtime = $h["WARNINGTimeScheduled"];
+			$unknowntime = $h["UNKNOWNTimeScheduled"];
+			$pendingtime = $h["UNDETERMINATETimeScheduled"];
 	
 			$tt = 0 + ($h["date_end"] - $h["date_start"]);
-
-$pending = $undeterminatetime;
-			/*
-			if(($uptime + $downtime + $unreachalbetime + $undeterminatetime) < $tt)
-				$pending = 	$tt - ($uptime + $downtime + $unreachalbetime + $undeterminatetime);
+			if(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
+				$pending = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime);
 			else
 			$pending = 0;
-			*/
 
-			if(($uptime + $downtime + $unreachalbetime) < $tt)
-				$undeterminatetime = $tt - ($uptime + $downtime + $unreachalbetime);
+			if($oktime > 0)
+			$pok = 0 +round(($oktime / $tt * 100),2);
 			else
-			$undeterminatetime = 0;
-
-
-			if($unreachalbetime > 0)
-			$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
-			else
-			$punreach = "0.00";
-
-
-
-			if($uptime > 0)
-			$pup = 0 +round(($uptime / $tt * 100),2);
-			else
-			$pup = "0.00";
+			$pok = "0.00";
 			
-			if($downtime > 0)
-			$pdown = 0 +round(($downtime / $tt * 100),2);
-			else
-			$pdown = "0.00";
 			
-
-
-			if($undeterminatetime > 0)
-			$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
+			if($criticaltime > 0)
+			$pcritical = 0 +round(($criticaltime / $tt * 100),2);
 			else
-			$pundet = "0.00";
+			$pcritical = "0.00";
 
-			$t = 0 + ($h["date_end"] - $h["date_start"]);			
+			if($warningtime > 0)
+			$pwarning = 0 +round(($warningtime / $tt * 100),2);
+			else
+			$pwarning = "0.00";
+
+			if($unknowntime > 0)
+			$punknown = 0 +round(($unknowntime / $tt * 100),2);
+			else
+			$punknown = "0.00";
+
+			if($pendingtime > 0)
+			$ppending = 0 +round(($pendingtime / $tt * 100),2);
+			else
+			$ppending = "0.00";
+
+			$sortTab = array();
+			$ntab = array();
+			$sortTab["#" . $colorOK] = $pok;
+			$sortTab["#" . $colorCRITICAL] = $pcritical;
+			$sortTab["#" . $colorWARNING] = $pwarning;
+			$sortTab["#" . $colorUNKNOWN] = $punknown;
+			$sortTab["#" . $colorPENDING] = $ppending;
+
+
+			$t = 0 + ($h["date_end"] - $h["date_start"]);
+			
 			$t = round(($t - ($t * 0.11574074074)),2);
 			$start = $h["date_start"] + 5000;			
+			
 
-			$tp = round(($punreach * $t / 100 ),2);
-			if($punreach > 0)
+			$tp = round(($pwarning * $t / 100 ),2);
+			if($pwarning > 0)
 				$end = $h["date_start"] + $tp + 5000;
 			else
 				$end = $h["date_start"] + 5001;
 			$buffer .= '<event ';
 			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+			$buffer .= ' color="#' . $colorWARNING . '"';
 			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($punreach > 0) ? $punreach : "0") . '%" >' ;
+			$buffer .= ' title= "' . (($pwarning > 0) ? $pwarning : "0") . '%" >' ;
 			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ UnReachableTime: ' . $unreachalbetime;		
+			$buffer .= '~br~ WarningTime: ' . Duration::toString($warningtime);		
 			$buffer .= '</event>';		
 
-
-
-			$tp = round(($pdown * $t / 100 ),2);
-			if($pdown > 0)
-				$end = $h["date_start"] + $tp + 5000;
-			else
-				$end = $h["date_start"] + 5001;
-			$buffer .= '<event ';
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorDOWN . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pdown > 0) ? $pdown : "0") . '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ Downtime: ' . $downtime;
-			$buffer .= '</event>';
-
-			$tp = round(($pundet * $t / 100 ),2);
-			if($pundet > 0)
+			$tp = round(($punknown * $t / 100 ),2);
+			if($punknown > 0)
 				$end = $h["date_start"] + $tp + 5000;
 			else
 				$end = $h["date_start"] + 5001;
@@ -241,16 +223,45 @@ $pending = $undeterminatetime;
 			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
 			$buffer .= ' color="#' . $colorUNKNOWN . '"';
 			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
+			$buffer .= ' title= "' . (($punknown > 0) ? $punknown : "0") . '%" >' ;
 			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ PendingTime: ' . $undeterminatetime;		
-//			$buffer .= '~br~ StartTime: ' . $h["date_start"];		
-//			$buffer .= '~br~ EndTime: ' . $h["date_end"];		
-			$buffer .= '</event>';		
+			$buffer .= '~br~ UnknownTime: ' . Duration::toString($unknowntime);		
+			$buffer .= '</event>';	
+
+			$tp = round(($ppending * $t / 100 ),2);
+			if($ppending > 0)
+				$end = $h["date_start"] + $tp + 5000;
+			else
+				$end = $h["date_start"] + 5001;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorPENDING . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
+			$buffer .= ' Duration: ' . Duration::toString($tt);
+			$buffer .= '~br~ PendingTime: ' . Duration::toString($pendingtime);		
+			$buffer .= '</event>';	
 
 
-			$tp = round(($pup * $t / 100 ),2);
-			if($pup > 0)
+			$tp = round(($pcritical * $t / 100 ),2);
+			if($pcritical > 0)
+				$end = $h["date_start"] + $tp + 5000;
+			else
+				$end = $h["date_start"] + 5001;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorCRITICAL . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($pcritical > 0) ? $pcritical : "0") . '%" >' ;
+			$buffer .= ' Duration: ' . Duration::toString($tt);
+			$buffer .= '~br~ Critical: ' . Duration::toString($criticaltime);
+			$buffer .= '</event>';
+
+
+			$tp = round(($pok * $t / 100 ),2);
+			if($pok > 0)
 				$end = $h["date_start"] + $tp + 5000;
 			else
 				$end = $h["date_start"] + 5001;
@@ -258,11 +269,11 @@ $pending = $undeterminatetime;
 
 			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorUP . '"';
+			$buffer .= ' color="#' . $colorOK . '"';
 			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pup > 0) ? $pup : "0") .   '%" >' ;
+			$buffer .= ' title= "' . (($pok > 0) ? $pok : "0") .   '%" >' ;
 			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ Uptime: ' . $uptime;		
+			$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
 			$buffer .= '</event>';	
 
 
@@ -271,6 +282,7 @@ $pending = $undeterminatetime;
 #
 ## Today purcent if period 
 #
+/*
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
@@ -289,7 +301,7 @@ $pending = $undeterminatetime;
 	$buffer .= '<event ';
 	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+	$buffer .= ' color="#' . $colorWARNING . '"';
 	$buffer .= ' isDuration="true" ';
 	$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
 	$buffer .= ' Duration: ' . Duration::toString($tt);
@@ -321,7 +333,7 @@ $pending = $undeterminatetime;
 	$buffer .= '<event ';
 	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorDOWN . '"';
+	$buffer .= ' color="#' . $colorCRITICAL . '"';
 	$buffer .= ' isDuration="true" ';
 	$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
 	$buffer .= ' Duration: ' . Duration::toString($tt);
@@ -337,13 +349,13 @@ $pending = $undeterminatetime;
 	$buffer .= '<event ';
 	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorUP . '"';
+	$buffer .= ' color="#' . $colorOK . '"';
 	$buffer .= ' isDuration="true" ';
 	$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
 	$buffer .= ' Duration: ' . Duration::toString($tt);
 	$buffer .= '~br~ Uptime: ' . Duration::toString($_GET["today_up"] * $tt / 100);	
 	$buffer .= '</event>';
-
+*/
 	}
 	else
 	{

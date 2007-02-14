@@ -43,11 +43,11 @@ function initTimeline() {
   bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
 
 
-	var arg = 'oreonPath=<?=$oreon->optGen["oreon_path"]?>&hostID=<?=$host_id?>&color=<?=substr($oreon->optGen["color_up"],1)?>:<?=substr($oreon->optGen["color_down"],1)?>:<?=substr($oreon->optGen["color_unreachable"],1)?>:<?=substr($oreon->optGen["color_unknown"],1)?>&today_up=<?=$today_up?>&today_down=<?=$today_down?>&today_unreachable=<?=$today_unreachable?>&today_pending=<?=$today_pending?>';
+	var arg = 'oreonPath=<?=$oreon->optGen["oreon_path"]?>&hostID=<?=$host_id?>&color=<?=$color.$today_var?>';
 	 		  	
   tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
 
-  Timeline.loadXML('./include/reporting/dashboard/GetXmlHost.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
+  Timeline.loadXML('./include/reporting/dashboard/GetXml<?=$type?>.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
 }
 
 </SCRIPT>
