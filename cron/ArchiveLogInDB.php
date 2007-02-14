@@ -50,9 +50,9 @@ For information : contact@oreon-project.org
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 
-######################
-######################
-######################
+#################################
+######## clean up table  ########
+#################################
 /*
 	$sql = "TRUNCATE TABLE `log_archive_file_name`";
 	$res = $pearDB->query($sql);
@@ -61,10 +61,9 @@ For information : contact@oreon-project.org
 	$sql = "TRUNCATE TABLE `log_archive_service`";
 	$res = $pearDB->query($sql);
 */
-######################
-######################
-######################
-######################
+#################################
+#################################
+#################################
 
 
 
