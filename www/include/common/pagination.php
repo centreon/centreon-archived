@@ -23,11 +23,13 @@ For information : contact@oreon-project.org
 
 	global $num, $limit, $search, $url, $pearDB;
 	global $search_type_service, $search_type_host;
+
 	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 
 	global $rows, $p, $lang, $gopt, $pagination;
+
 
 	$url_var = "";
 	$url_var .= "&search_type_service=" . $search_type_service;
@@ -59,6 +61,7 @@ For information : contact@oreon-project.org
 	}
 	if ($i > 1)							
 		$tpl->assign("pageArr", $pageArr);
+
 
 	$tpl->assign("num", $num);
 	$tpl->assign("previous", $lang["previous"]);

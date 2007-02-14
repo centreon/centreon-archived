@@ -17,6 +17,12 @@ For information : contact@oreon-project.org
 */
 	
 	# Clean Var	
+
+	if(isset($_GET["search"]) && $_GET["search"]){		
+		$_HOST["num"] = 0;
+		$_GET["num"] = 0;
+		$num = 0;		
+	}
 	
 	if (isset($_GET["p"]))
 		$p = $_GET["p"];

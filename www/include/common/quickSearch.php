@@ -51,5 +51,6 @@ For information : contact@oreon-project.org
 	$form_search->accept($renderer);	
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
+	$tpl->assign("num", 1);	
 	$tpl->display("quickSearch.ihtml");
 ?>
