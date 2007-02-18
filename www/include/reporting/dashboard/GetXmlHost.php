@@ -199,6 +199,30 @@ $pending = $undeterminatetime;
 			$t = round(($t - ($t * 0.11574074074)),2);
 			$start = $h["date_start"] + 5000;			
 
+
+
+
+			$tp = round(($pundet * $t / 100 ),2);
+			if($pundet > 0)
+				$end = $h["date_start"] + $tp + 5000;
+			else
+				$end = $h["date_start"] + 5001;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorUNKNOWN . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
+			$buffer .= ' Duration: ' . Duration::toString($tt);
+			$buffer .= '~br~ PendingTime: ' . $undeterminatetime;		
+//			$buffer .= '~br~ StartTime: ' . $h["date_start"];		
+//			$buffer .= '~br~ EndTime: ' . $h["date_end"];		
+			$buffer .= '</event>';		
+
+
+
+
+
 			$tp = round(($punreach * $t / 100 ),2);
 			if($punreach > 0)
 				$end = $h["date_start"] + $tp + 5000;
@@ -231,22 +255,6 @@ $pending = $undeterminatetime;
 			$buffer .= '~br~ Downtime: ' . $downtime;
 			$buffer .= '</event>';
 
-			$tp = round(($pundet * $t / 100 ),2);
-			if($pundet > 0)
-				$end = $h["date_start"] + $tp + 5000;
-			else
-				$end = $h["date_start"] + 5001;
-			$buffer .= '<event ';
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorUNKNOWN . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ PendingTime: ' . $undeterminatetime;		
-//			$buffer .= '~br~ StartTime: ' . $h["date_start"];		
-//			$buffer .= '~br~ EndTime: ' . $h["date_end"];		
-			$buffer .= '</event>';		
 
 
 			$tp = round(($pup * $t / 100 ),2);
@@ -281,21 +289,6 @@ $pending = $undeterminatetime;
 	$t = round(($t - ($t * 0.11574074074)),2);
 	$start = $today_start + 5000;
 
-	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
-	if($_GET["today_unreachable"] > 0)
-	$end = $today_start + $tp + 5000;
-	else
-	$end = $today_start + 5001;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorUNREACHABLE . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $tt / 100);		
-	$buffer .= '</event>';
-
 	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
 	if($_GET["today_pending"] > 0)
 	$end = $today_start + $tp + 5000;
@@ -311,7 +304,20 @@ $pending = $undeterminatetime;
 	$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $tt / 100);		
 	$buffer .= '</event>';
 
-
+	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
+	if($_GET["today_unreachable"] > 0)
+	$end = $today_start + $tp + 5000;
+	else
+	$end = $today_start + 5001;
+	$buffer .= '<event ';
+	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+	$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+	$buffer .= ' isDuration="true" ';
+	$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
+	$buffer .= ' Duration: ' . Duration::toString($tt);
+	$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $tt / 100);		
+	$buffer .= '</event>';
 
 	$tp = round(($_GET["today_down"] * $t / 100 ),2);
 	if($_GET["today_down"] > 0)
