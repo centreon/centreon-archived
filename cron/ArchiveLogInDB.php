@@ -171,9 +171,10 @@ For information : contact@oreon-project.org
 				## if day doesn't exist in bdd
 				$host_id = $h["host_id"];
 				if(!day_is_in_db($start_date_day, $end_date_day,$host_id)){
+					/*
 					echo date("d/m/Y H:i:s", $start_date_day)." -->";
 					echo date("d/m/Y H:i:s", $end_date_day)."\n";
-
+*/
 					$sql = "INSERT INTO `log_archive_host` ( `log_id` , `host_id` ," .
 							" `UPTimeScheduled` , `UPTimeUnScheduled` ," .
 							" `DOWNTimeScheduled` , `DOWNTimeUnScheduled` ," .
@@ -274,7 +275,7 @@ For information : contact@oreon-project.org
 			if (isset($service_list[trim($svc)]))
 			foreach($htabsvc as $host => $htab)
 			{
-				if (isset($host_list[trim($host)]))
+				if (isset($host_list[trim($host)]) && $htab["service_id"])
 				{
 					#
 					## last service alert
@@ -297,7 +298,10 @@ For information : contact@oreon-project.org
 		}
 		
 					$host_id = $host_list[trim($host)];
-					
+					/*
+					echo "svc: ".$svc ."-\n";
+					echo "svc_id: ".$htab["service_id"] ."\n";
+					*/
 					$service_id = $htab["service_id"];						
 					$OKsc =$htab["timeOK"];
 					$OKUnsc =$htab["timeOK"];
@@ -325,9 +329,11 @@ For information : contact@oreon-project.org
 						" '$NONEsc', '$NONEUnsc'," .
 						" '$day_current_end', '$day_current_start')";
 		
+		//echo $sql."\n";
+		
 					$result = $pearDB->query($sql);
-					if (PEAR::isError($res)){
-					  die($res->getMessage());}
+					if (PEAR::isError($result)){
+					  die($result->getMessage());}
 				}
 			}
 		}
