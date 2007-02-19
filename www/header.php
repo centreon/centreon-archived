@@ -86,6 +86,9 @@ For information : contact@oreon-project.org
 		$DBRESULT->fetchInto($data);
 		$skin = "./Themes/".$data["template"]."/";
 		
+		$color = "color_blue";
+		
+		
 		# Delete Session Expired
 		$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
 		if (PEAR::isError($DBRESULT))
@@ -145,7 +148,7 @@ For information : contact@oreon-project.org
 <link href="<? echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?>color<? echo $level1; ?>.css" rel="stylesheet" type="text/css"/>
+<link href="<? echo $skin; ?>color.css" rel="stylesheet" type="text/css"/>
 <script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>
 <?
 	// Add Template CSS for sysInfos Pages
