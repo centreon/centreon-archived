@@ -157,12 +157,12 @@ For information : contact@oreon-project.org
 			else
 			$pending = 0;
 
+
 			if($oktime > 0)
 			$pok = 0 +round(($oktime / $tt * 100),2);
 			else
 			$pok = "0.00";
-			
-			
+						
 			if($criticaltime > 0)
 			$pcritical = 0 +round(($criticaltime / $tt * 100),2);
 			else
@@ -199,10 +199,8 @@ For information : contact@oreon-project.org
 			
 
 			$tp = round(($pwarning * $t / 100 ),2);
-			if($pwarning > 0)
+			if($pwarning > 0){
 				$end = $h["date_start"] + $tp + 5000;
-			else
-				$end = $h["date_start"] + 5001;
 			$buffer .= '<event ';
 			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
@@ -212,71 +210,62 @@ For information : contact@oreon-project.org
 			$buffer .= ' Duration: ' . Duration::toString($tt);
 			$buffer .= '~br~ WarningTime: ' . Duration::toString($warningtime);		
 			$buffer .= '</event>';		
-
+			}
 			$tp = round(($punknown * $t / 100 ),2);
-			if($punknown > 0)
+			if($punknown > 0){
 				$end = $h["date_start"] + $tp + 5000;
-			else
-				$end = $h["date_start"] + 5001;
-			$buffer .= '<event ';
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorUNKNOWN . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($punknown > 0) ? $punknown : "0") . '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ UnknownTime: ' . Duration::toString($unknowntime);		
-			$buffer .= '</event>';	
+				$buffer .= '<event ';
+				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+				$buffer .= ' color="#' . $colorUNKNOWN . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . (($punknown > 0) ? $punknown : "0") . '%" >' ;
+				$buffer .= ' Duration: ' . Duration::toString($tt);
+				$buffer .= '~br~ UnknownTime: ' . Duration::toString($unknowntime);		
+				$buffer .= '</event>';	
+			}
 
 			$tp = round(($ppending * $t / 100 ),2);
-			if($ppending > 0)
-				$end = $h["date_start"] + $tp + 5000;
-			else
+			if($ppending > 0){
 				$end = $h["date_start"] + 5001;
-			$buffer .= '<event ';
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorPENDING . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ PendingTime: ' . Duration::toString($pendingtime);		
-			$buffer .= '</event>';	
-
+				$buffer .= '<event ';
+				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+				$buffer .= ' color="#' . $colorPENDING . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
+				$buffer .= ' Duration: ' . Duration::toString($tt);
+				$buffer .= '~br~ PendingTime: ' . Duration::toString($pendingtime);		
+				$buffer .= '</event>';	
+			}
 
 			$tp = round(($pcritical * $t / 100 ),2);
-			if($pcritical > 0)
+			if($pcritical > 0){
 				$end = $h["date_start"] + $tp + 5000;
-			else
-				$end = $h["date_start"] + 5001;
-			$buffer .= '<event ';
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorCRITICAL . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pcritical > 0) ? $pcritical : "0") . '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ Critical: ' . Duration::toString($criticaltime);
-			$buffer .= '</event>';
-
+				$buffer .= '<event ';
+				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+				$buffer .= ' color="#' . $colorCRITICAL . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . (($pcritical > 0) ? $pcritical : "0") . '%" >' ;
+				$buffer .= ' Duration: ' . Duration::toString($tt);
+				$buffer .= '~br~ Critical: ' . Duration::toString($criticaltime);
+				$buffer .= '</event>';
+			}
 
 			$tp = round(($pok * $t / 100 ),2);
-			if($pok > 0)
+			if($pok > 0){
 				$end = $h["date_start"] + $tp + 5000;
-			else
-				$end = $h["date_start"] + 5001;
-			$buffer .= '<event ';
-
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorOK . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pok > 0) ? $pok : "0") .   '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
-			$buffer .= '</event>';	
-
-
+				$buffer .= '<event ';
+				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+				$buffer .= ' color="#' . $colorOK . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . (($pok > 0) ? $pok : "0") .   '%" >' ;
+				$buffer .= ' Duration: ' . Duration::toString($tt);
+				$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
+				$buffer .= '</event>';	
+			}
 		  }
 
 #
@@ -356,6 +345,7 @@ For information : contact@oreon-project.org
 	$buffer .= '~br~ Uptime: ' . Duration::toString($_GET["today_up"] * $tt / 100);	
 	$buffer .= '</event>';
 */
+		  
 	}
 	else
 	{

@@ -173,6 +173,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	
 	parseFile($oreon->Nagioscfg["log_file"], $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, 1);	
 
+
 	if($startTimeOfThisDay  < ($end_date_select)){
 		if (isset($tab_hosts[$mhost]))
 		{
@@ -204,8 +205,9 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$today_down = $tab_hosts[$mhost]["timeDOWN"];
 			$today_unreachable = $tab_hosts[$mhost]["timeUNREACHABLE"];
 
-
 			$i = 0;
+						
+
 			foreach ($tab_services as $key => $htab_svc) {
 				if(isset($htab_svc[$mhost])){
 									

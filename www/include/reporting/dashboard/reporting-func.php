@@ -344,17 +344,14 @@ For information : contact@oreon-project.org
 							$tab_tmp["timeNONE"] = 0;
 							$tab_tmp["start_time"] = $day_current_start;
 							$tab_tmp["service_id"] = getMyServiceID($res1[1],getMyHostID($res1[0]));
-
-						if(getMyHostID($res1[0]) == 42){
-							
 /*
-							echo "r host_na: ".$res1[0] ."\n";
-							echo "r host_id: ".getMyHostID($res1[0]) ."\n";
+							echo "r host_na: ".$res1[0] ."<br>";
+							echo "r host_id: ".getMyHostID($res1[0]) ."<br>";
 
-							echo "r svc_na: ".$res1[1] ."\n";
-							echo "r svc_id: ".$tab_tmp["service_id"] ."\n";
-							*/
-						}
+							echo "r svc_na: ".$res1[1] ."<br>";
+							echo "r svc_id: ".$tab_tmp["service_id"] ."<br>";
+*/							
+						
 							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
 						}
 					}
