@@ -116,8 +116,7 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 		
-	$time = time();
-	
+	$time = time();	
 	if ($version == 1){
 	  if ($log_file)
 	    while ($str = fgets($log_file))	{

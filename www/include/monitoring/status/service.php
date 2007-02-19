@@ -44,6 +44,7 @@ For information : contact@oreon-project.org
 	//$res =& $pearDB->query("SELECT * FROM host_extended_info");
 	//if (PEAR::isError($res))
 	//	print "ok : Mysql Error : ".$res->getMessage();
+
 	
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
@@ -52,6 +53,8 @@ For information : contact@oreon-project.org
 		foreach ($service_status as $name => $svc){			
 			$tmp = array();
 			$tmp[0] = $name;
+			$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
+			$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 			if ($svc["last_check"]){
 				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);

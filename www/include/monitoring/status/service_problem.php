@@ -47,6 +47,8 @@ For information : contact@oreon-project.org
 			$tmp = array();
 			$tmp[0] = $name;
 			if (strcmp($svc["current_state"], "OK")){
+				$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
+				$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 				$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 				if ($svc["last_check"]){
 					$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);

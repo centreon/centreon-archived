@@ -39,6 +39,9 @@ For information : contact@oreon-project.org
 	$fileStatus = $oreon->Nagioscfg["status_file"];
 	$fileOreonConf = $oreon->optGen["oreon_path"];
 
+
+	$color = array();
+
 	$color["OK"] = 			$oreon->optGen["color_ok"];
 	$color["CRITICAL"] = 	$oreon->optGen["color_critical"];
 	$color["WARNING"] = 	$oreon->optGen["color_warning"];
