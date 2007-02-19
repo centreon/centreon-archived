@@ -42,6 +42,7 @@ For information : contact@oreon-project.org
 		case "ldap" : require_once($path."ldap/formLDAP.php"); break;
 		case "debug" : require_once($path."debug/formDebug.php"); break;
 		case "general" : require_once($path."general/formGeneralOpt.php"); break;
+		case "css" : require_once($path."css/formCss.php"); break;
 		default : require_once($path."general/formGeneralOpt.php"); break;
 	}
 ?>
