@@ -118,6 +118,8 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
 	var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
 	var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
+	var _host_status = line.getElementsByTagName("host_status")[0].firstChild.nodeValue;
+
 
 	var _search=_form.search.value;
 	var _search_type_service=_form.search_type_service.value;
@@ -134,7 +136,7 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	{
 		ClassName = "list_two";
 	}
-	_ligne.className = ClassName;
+//	_ligne.className = ClassName;
 
 
 
@@ -155,7 +157,7 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
  */
 	var _case_host_name = document.createElement('td');
 	_case_host_name.className = 'ListColLeft';
-
+	_case_host_name.style = 'background-color:#FD8B46;';
 /*
  * service description
  */
@@ -190,7 +192,7 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	   break;
 	  case "CRITICAL":
 	    _case_status.style.backgroundColor = _formBasic.color_CRITICAL.value;
-		_ligne.className = "list_three";
+		_ligne.className = "list_down";
 	   break;
 	  case "UNDETERMINATED":
 	    _case_status.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
@@ -235,7 +237,10 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 
 
 	if(_problem_has_been_acknowledged == 1)
+	{
+	ClassName = "list_four";
 	_case_infos.appendChild(_img1);
+	}
 
 	if(_notifications_enabled == 0)
 	_case_infos.appendChild(mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable"));
@@ -348,6 +353,7 @@ var _p = 20201;
 	_case_plugin_output.appendChild(_text_plugin_output);
 	_case_plugin_output.id = 'plugin_output' + i;
 	 
+	_ligne.className = ClassName; 
 	_ligne.appendChild(_case_checkbox);
 	_ligne.appendChild(_case_host_name);
 	_ligne.appendChild(_case_service_description);
@@ -564,7 +570,7 @@ function goM(_time_reload,_sid){
 					   break;
 					  case "CRITICAL":
 					    _td.style.backgroundColor = _formBasic.color_CRITICAL.value;
-						_tr.className = "list_three";
+						_tr.className = "list_down";
 					   break;
 					  case "UNDETERMINATED":
 					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
@@ -622,7 +628,7 @@ function goM(_time_reload,_sid){
 					   break;
 					  case "UNREACHABLE":
 					    _td.style.backgroundColor = _formBasic.color_UNREACHABLE.value;
-						_tr.className = "list_three";
+						//_tr.className = "list_three";
 					   break;
 					  default:
 					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
@@ -674,7 +680,7 @@ function goM(_time_reload,_sid){
 					   break;
 					  case "CRITICAL":
 					    _td.style.backgroundColor = _formBasic.color_CRITICAL.value;
-						_tr.className = "list_three";
+						_tr.className = "list_down";
 					   break;
 					  case "UNDETERMINATED":
 					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
