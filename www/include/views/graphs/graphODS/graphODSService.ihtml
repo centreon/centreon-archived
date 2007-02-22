@@ -3,6 +3,7 @@
 {$form.javascript}
 {if $title2}
 <form {$form.attributes}>
+{if !$msg}
 <div>
 	<table id="ListTable">
         <tr class="ListHeader">
@@ -10,26 +11,29 @@
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_daily}&end={$end_daily}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_daily}&start={$start_daily}'></a><p style="padding-bottom:4px;font-weight:bold;padding-top:3px;">Daily</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_daily}&end={$end_daily}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_daily}&start={$start_daily}'></a><p style="padding-bottom:4px;font-weight:bold;padding-top:3px;">Daily</p></div>
     		</td>
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_weekly}&end={$end_weekly}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_weekly}&start={$start_weekly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Weekly</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_weekly}&end={$end_weekly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_weekly}&start={$start_weekly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Weekly</p></div>
     		</td>
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_monthly}&end={$end_monthly}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_monthly}&start={$start_monthly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Monthly</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_monthly}&end={$end_monthly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_monthly}&start={$start_monthly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Monthly</p></div>
     		</td>
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_yearly}&end={$end_yearly}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_yearly}&start={$start_yearly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Yearly</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_yearly}&end={$end_yearly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_yearly}&start={$start_yearly}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Yearly</p></div>
     		</td>
         </tr>
     </table>
 </div>
+{else}
+	<div class="warn">{$msg}</div>
+{/if}
 {/if}
 {if !$title}
 <form {$form.attributes}>

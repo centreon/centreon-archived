@@ -97,6 +97,12 @@ For information : contact@oreon-project.org
 	
 	$service_id = $svc_id["service_id"];
 	$index_id = $svc_id["id"];
+	
+	if (!$service_id)
+		$tpl->assign('msg', $lang["no_graph_found"]); 
+	else
+		$tpl->assign('msg', NULL);
+
 	$indexF =& $form->addElement('hidden', 'index');
 	$indexF->setValue($index_id);
 	
@@ -134,6 +140,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $index_id);
+	$tpl->assign('min', $min);	
 	$tpl->assign('session_id', session_id());
 	$tpl->display("graphODSService.ihtml");
 ?>

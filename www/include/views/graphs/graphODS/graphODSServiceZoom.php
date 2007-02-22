@@ -51,6 +51,8 @@ For information : contact@oreon-project.org
 	$redirect->setValue($o);
 	$page =& $form->addElement('hidden', 'p');
 	$page->setValue($p);
+	$page =& $form->addElement('hidden', 'min');
+	$page->setValue($min);
 	
 	if (isset($_GET["start"]) && !defined($_GET["period"])){
 		$startF =& $form->addElement('hidden', 'start');
