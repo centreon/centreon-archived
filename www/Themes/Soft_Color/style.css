@@ -35,6 +35,17 @@ body{
 	color:white; 
 	margin:5px;}
 
+.warn {
+	font-family: Verdana, Arial, sans-serif; 
+	font-size: 12px; 	
+	font-weight: normal; 
+	border: 2px solid white; 
+	padding:3px; 
+	text-align: center;	
+	background-color:orange; 
+	color:white; 
+	margin:5px;}	
+
 #header{
 	height:83px;
 	padding-left:20px;	
