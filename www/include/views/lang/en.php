@@ -172,4 +172,8 @@ $lang["giv_db_unavailable"] = "Database unavailable";
 
 $lang["no_graphtpl"] = "There aren't graphs template : please configure your graphs template to show correctly graphs.";
 
+# No Graph
+
+$lang["no_graph_found"] = "No graph associated to this service."
+
 ?>

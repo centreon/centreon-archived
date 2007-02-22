@@ -172,4 +172,8 @@ $lang["giv_db_unavailable"] = "Base de donn&eacute;es Inexistante";
 
 $lang["no_graphtpl"] = "Vous n\'avez pas de mod&egrave;le de graphs : Pensez &agrave; en ajouter un pour voir le graph s\'afficher.";
 
+# No Graph
+
+$lang["no_graph_found"] = "Ce service n\'a pas de graph associ&eacute;."
+
 ?>
