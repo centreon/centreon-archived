@@ -54,11 +54,11 @@ For information : contact@oreon-project.org
 	$page =& $form->addElement('hidden', 'min');
 	$page->setValue($min);
 	
-	if (isset($_GET["start"]) && !defined($_GET["period"])){
+	if (isset($_GET["start"]) && !isset($_GET["period"])){
 		$startF =& $form->addElement('hidden', 'start');
 		$startF->setValue($_GET["start"]);
 	}
-	if (isset($_GET["end"]) && !defined($_GET["period"])){
+	if (isset($_GET["end"]) && !isset($_GET["period"])){
 		$endF =& $form->addElement('hidden', 'end');
 		$endF->setValue($_GET["end"]);
 	}
@@ -148,7 +148,7 @@ For information : contact@oreon-project.org
 	if (isset($period) && $period){
 		$start = time() - ($period + 30);
 		$end = time() + 1;
-	} else if (!$_GET["period"]){
+	} else if (!isset($_GET["period"])){
 		$start = $_GET["start"];
 		$end = $_GET["end"];
 	} else {
@@ -156,7 +156,6 @@ For information : contact@oreon-project.org
 	}
 	$tpl->assign('start', $start);
 	$tpl->assign('end', $end);
-	
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $_GET["index"]);
