@@ -44,9 +44,11 @@ For information : contact@oreon-project.org
 
 	if (isset($_GET["o"]) && $_GET["o"] == "vs")
 		require_once($path."graphODSService.php");
-	if (isset($_GET["o"]) && $_GET["o"] == "vz")
+	else if (isset($_GET["o"]) && $_GET["o"] == "vz")
 		require_once($path."graphODSServiceZoom.php");
-	if (!isset($_GET["o"]) || $_GET["o"] == "")
+	else if (isset($_GET["o"]) && $_GET["o"] == "gp")
+		require_once($path."displayODSGraphProperties.php");
+	else if (!isset($_GET["o"]) || $_GET["o"] == "")
 		require_once($path."graphODSByHost.php");
-	
+		
 ?>
