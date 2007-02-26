@@ -254,6 +254,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	<tr>
 		<td><b>Database &#146;<? echo $_SESSION["nameOreonDB"]; ?>&#146; : Oreon User Creation</b></td>
 	<?
+	$mysql_msg = '';
 	$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 	@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
 	$req = "SELECT * FROM `contact` WHERE contact_alias = '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."' ";
@@ -304,7 +305,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	$requete = "UPDATE `general_opt` SET `nagios_path_img` = '".$conf_installoreon['physical_html_path']."'";
 	$requete .= ", `nagios_path` = '".$conf_installoreon['nagios']."'";
 	$requete .= ", `nagios_path_bin` = '".$conf_installoreon['nagios_bin']."nagios'";
-	$requete .= ", `nagios_init_script` = '".$conf_installoreon['nagios_init_script'];
+	$requete .= ", `nagios_init_script` = '".$conf_installoreon['nagios_init_script']."'";
 	$requete .= ", `nagios_path_plugins` = '".$_SESSION["nagios_plugins"]."'";
 	$requete .= ", `oreon_path` = '".$_SESSION["oreon_dir"]."'";
 	$requete .= ", `oreon_web_path` = '/oreon/'";
