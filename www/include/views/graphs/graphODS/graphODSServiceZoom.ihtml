@@ -10,7 +10,12 @@
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}'></div>
+    			<div style="text-align:center;" border=1>
+    				<div>
+		    			<span><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}'></span>
+		    			<span style="vertical-align:top;"><img src="./img/icones/16x16/tool.gif"></span>
+		    		</div>
+    			</div>
     		</td>
         </tr>
 	</table>
