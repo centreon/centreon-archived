@@ -401,6 +401,9 @@ $lang['time_days'] = " Days ";
 $lang['size'] = "Size";
 $lang['close'] = "Close";
 $lang['forTheSelectedElements'] = "For the selection : ";
+$lang['mc_mod'] = "Update options";
+$lang['mc_mod_incremental'] = "Incremental";
+$lang['mc_mod_replacement'] = "Replacement";
 
 /* db */
 

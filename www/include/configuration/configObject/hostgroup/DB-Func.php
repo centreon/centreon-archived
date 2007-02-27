@@ -38,20 +38,28 @@ For information : contact@oreon-project.org
 			return true;
 	}
 
-	function enableHostGroupInDB ($hg_id = null)	{
-		if (!$hg_id) return;
+	function enableHostGroupInDB ($hg_id = NULL, $hg_arr = array())	{
+		if (!$hg_id && !count($hg_arr)) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = '".$hg_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($hg_id)
+			$hg_arr = array($hg_id=>"1");
+		foreach($hg_arr as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 	}
 	
-	function disableHostGroupInDB ($hg_id = null)	{
-		if (!$hg_id) return;
+	function disableHostGroupInDB ($hg_id = NULL, $hg_arr = array())	{
+		if (!$hg_id && !count($hg_arr)) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = '".$hg_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($hg_id)
+			$hg_arr = array($hg_id=>"1");
+		foreach($hg_arr as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 	}
 	
 	function deleteHostGroupInDB ($hostGroups = array())	{

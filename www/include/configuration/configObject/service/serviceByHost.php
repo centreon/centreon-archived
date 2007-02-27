@@ -22,6 +22,10 @@ For information : contact@oreon-project.org
 	isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
 	$sG ? $service_id = $sG : $service_id = $sP;
 
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
 	$lcaHost = getLCAHostByID($pearDB);
 	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
 	$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
@@ -45,7 +49,9 @@ For information : contact@oreon-project.org
 		case "w" : require_once($path."formService.php"); break; #Watch a service
 		case "c" : require_once($path."formService.php"); break; #Modify a service
 		case "s" : enableServiceInDB($service_id); require_once($path."listServiceByHost.php"); break; #Activate a service
+		case "ms" : enableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceByHost.php"); break;
 		case "u" : disableServiceInDB($service_id); require_once($path."listServiceByHost.php"); break; #Desactivate a service
+		case "mu" : disableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceByHost.php"); break;
 		case "m" : multipleServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listServiceByHost.php"); break; #Duplicate n services
 		case "d" : deleteServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceByHost.php"); break; #Delete n services
 		default : require_once($path."listServiceByHost.php"); break;

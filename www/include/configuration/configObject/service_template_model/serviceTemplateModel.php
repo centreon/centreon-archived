@@ -22,6 +22,10 @@ For information : contact@oreon-project.org
 	isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
 	$sG ? $service_id = $sG : $service_id = $sP;
 		
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+		
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -40,7 +44,9 @@ For information : contact@oreon-project.org
 		case "w" : require_once($path."formServiceTemplateModel.php"); break; #Watch a Service Template Model
 		case "c" : require_once($path."formServiceTemplateModel.php"); break; #Modify a Service Template Model
 		case "s" : enableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Activate a Service Template Model
+		case "ms" : enableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceTemplateModel.php"); break;
 		case "u" : disableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Desactivate a Service Template Model
+		case "mu" : disableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceTemplateModel.php"); break;
 		case "m" : multipleServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listServiceTemplateModel.php"); break; #Duplicate n Service Template Models
 		case "d" : deleteServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceTemplateModel.php"); break; #Delete n Service Template Models
 		default : require_once($path."listServiceTemplateModel.php"); break;

@@ -78,22 +78,29 @@ For information : contact@oreon-project.org
 		return true;
 	}
 	
-	function enableServiceInDB ($service_id = null)	{
-		if (!$service_id) return;
+	function enableServiceInDB ($service_id = null, $service_arr = array())	{
+		if (!$service_id && !count($service_arr)) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$service_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($service_id)
+			$service_arr = array($service_id=>"1");
+		foreach($service_arr as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 	}
 	
-	function disableServiceInDB ($service_id = null)	{
-		if (!$service_id) return;
+	function disableServiceInDB ($service_id = null, $service_arr = array())	{
+		if (!$service_id && !count($service_arr)) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$service_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($service_id)
+			$service_arr = array($service_id=>"1");
+		foreach($service_arr as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 	}
-	
 	function deleteServiceInDB ($services = array())	{
 		global $pearDB;
 		global $oreon;

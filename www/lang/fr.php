@@ -402,6 +402,9 @@ $lang['time_days'] = " Jours ";
 $lang['size'] = "Taille";
 $lang['close'] = "Fermer";
 $lang['forTheSelectedElements'] = "Pour la s&eacute;lection : ";
+$lang['mc_mod'] = "Type de mise &agrave; jour";
+$lang['mc_mod_incremental'] = "Incrementiel";
+$lang['mc_mod_replacement'] = "Remplacement";
 
 /* db */
 

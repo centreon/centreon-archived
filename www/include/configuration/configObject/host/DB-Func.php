@@ -38,20 +38,28 @@ For information : contact@oreon-project.org
 			return true;
 	}
 	
-	function enableHostInDB ($host_id = null)	{
-		if (!$host_id) return;
+	function enableHostInDB ($host_id = null, $host_arr = array())	{
+		if (!$host_id && !count($host_arr)) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '1' WHERE host_id = '".$host_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($host_id)
+			$host_arr = array($host_id=>"1");
+		foreach($host_arr as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '1' WHERE host_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 	}
 	
-	function disableHostInDB ($host_id = null)	{
-		if (!$host_id) return;
+	function disableHostInDB ($host_id = null, $host_arr = array())	{
+		if (!$host_id && !count($host_arr)) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '0' WHERE host_id = '".$host_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($host_id)
+			$host_arr = array($host_id=>"1");
+		foreach($host_arr as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("UPDATE host SET host_activate = '0' WHERE host_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 	}
 	
 	function deleteHostInDB ($hosts = array())	{
