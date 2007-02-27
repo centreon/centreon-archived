@@ -3,6 +3,7 @@
 => Feature : Add a light module manager
 => Feature Request  #294 : Manage Nagios2 init script
 => Bugfix : #295
+=> BugFix : Availability to reach another page than "Hosts stats" when we arrive with a ACL
 
 ## Oreon 1.3.3
 

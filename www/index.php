@@ -199,7 +199,7 @@ For information : contact@oreon-project.org
 									header("Location: ./oreon.php?".$args."");
 								}
 								else
-									header("Location: ./oreon.php?p=1");
+									header("Location: ./oreon.php");
 								$connect = true;
 						}
 					}

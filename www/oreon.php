@@ -28,6 +28,8 @@ For information : contact@oreon-project.org
 		$p = $_GET["p"];
 	else if (isset($_POST["p"]))
 		$p = $_POST["p"];
+	else
+		$p = NULL;
 	
 	if (isset($_GET["o"]))
 		$o = $_GET["o"];

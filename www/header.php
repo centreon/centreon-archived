@@ -33,20 +33,6 @@ For information : contact@oreon-project.org
 	require_once ("$classdir/Session.class.php");
 	require_once ("$classdir/Oreon.class.php");
 	require_once (SMARTY_DIR."Smarty.class.php");
-
-    # Cut Page ID
-	$level1 = NULL;
-	$level2 = NULL;
-	$level3 = NULL;
-	$level4 = NULL;
-	switch (strlen($p))	{
-		case 1 :  $level1= $p; break;
-		case 3 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
-		case 5 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
-		case 6 :  $level1 = substr($p, 0, 2); $level2 = substr($p, 2, 2); $level3 = substr($p, 3, 2); break;
-		case 7 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); $level4 = substr($p, 5, 2); break;
-		default : $level1= $p; break;
-	}
 	
 	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
@@ -118,7 +104,41 @@ For information : contact@oreon-project.org
 		$oreon->user->createLCA($pearDB);
 		$oreon->initNagiosCFG($pearDB);
 		$oreon->initOptGen($pearDB);
-	
+ 
+	 	function get_my_first_allowed_root_menu($lcaTStr){
+			global $pearDB;
+			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
+					FROM topology 
+					WHERE topology_id IN ($lcaTStr) 
+					AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
+					LIMIT 1"; 
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$root_menu = array();
+			if ($DBRESULT->numRows())
+				$DBRESULT->fetchInto($root_menu);
+			return $root_menu;
+		}
+		if (!$p)	{
+			$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
+			isset($root_menu["topology_page"]) ? $p = $root_menu["topology_page"] : $p = NULL;
+		}
+
+	    # Cut Page ID
+		$level1 = NULL;
+		$level2 = NULL;
+		$level3 = NULL;
+		$level4 = NULL;
+		switch (strlen($p))	{
+			case 1 :  $level1= $p; break;
+			case 3 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
+			case 5 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
+			case 6 :  $level1 = substr($p, 0, 2); $level2 = substr($p, 2, 2); $level3 = substr($p, 3, 2); break;
+			case 7 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); $level4 = substr($p, 5, 2); break;
+			default : $level1= $p; break;
+		}
+		
 		// Update Session Table For last_reload and current_page row
 		$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
