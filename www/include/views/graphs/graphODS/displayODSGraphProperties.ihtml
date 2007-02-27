@@ -4,27 +4,16 @@
 <form {$form.attributes}>
 <div>
 <table id="ListTable">
-	{ foreach item=m from=$metrics }
-	<tr class="list_one">
-		<td class="ListColCenter"><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={$m.order}&metric={$m.metric_id}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}' align="center"></td>
-	</tr>
-	{/foreach}
-</table>
-<table id="ListTable" valign="top" border="1">
 	<tr class="ListHeader">
-		<td class="FormHeader">Activate</td>
-		<td class="FormHeader">Metric</td>
-		<td class="FormCenter">Legende</td>
-		<td class="FormHeader">Average 2 hours</td>
-		<td class="FormHeader">Last update</td>
+		<td class="FormHeader">Properties</td>
 	</tr>
 	{ foreach item=m from=$metrics }
 	<tr class="list_one">
-		<td class="ListColLeft"><input type="checkbox" name="view"{if $m.activate == 1} checked{/if}></td>
-		<td class="ListColLeft">{$m.metric}</td>
-		<td class="ListColCenter">{$m.unit}</td>
-		<td class="ListColLeft">{$m.average} ({$m.nb_values} values)</td>
-		<td class="ListColLeft">{$m.last_update}</td>
+		<td class="ListColCenter">
+			<img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={$m.order}&metric={$m.metric_id}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}' align="center">
+			<br><br><b>Metric : </b>{$m.metric} {if $m.unit}({$m.unit}){/if} - <b>Last update :</b> {$m.last_update}<br>
+			{$m.db_name} : {$m.size} Mo <br> 
+		</td>
 	</tr>
 	{/foreach}
 </table>
