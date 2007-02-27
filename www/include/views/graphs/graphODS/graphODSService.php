@@ -61,16 +61,6 @@ For information : contact@oreon-project.org
 	$form->addElement('reset', 'reset', $lang["reset"]);
   	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
 
-	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
-		$nb_rsp = 0;
-
-	# Verify if template exists
-	$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	if (!$DBRESULT->numRows())
-		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
-	
 	# Init variable in the page
 	$label = NULL;
 	$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
@@ -79,6 +69,16 @@ For information : contact@oreon-project.org
 	$tpl->assign("lgGraph", $lang['giv_gt_name']);
 	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
 	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
+
+	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
+		$nb_rsp = 0;
+
+	# Verify if template exists
+	$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getDebugInfo();
+	if (!$DBRESULT->numRows())
+		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";	
 		
 	$elem = array();
 	if (preg_match("/([0-9]*)\_([0-9]*)/", $_GET["index"], $matches)){
@@ -96,25 +96,10 @@ For information : contact@oreon-project.org
 	$service_id = $svc_id["service_id"];
 	$index_id = $svc_id["id"];
 	
-	if (!$service_id)
-		$tpl->assign('msg', $lang["no_graph_found"]); 
-	else
-		$tpl->assign('msg', NULL);
-
 	$indexF =& $form->addElement('hidden', 'index');
 	$indexF->setValue($index_id);
-		
-	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
-	if (PEAR::isError($DBRESULT2))
-		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	$counter = 0;
-	while ($DBRESULT2->fetchInto($metrics_ret)){
-		$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
-		$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
-		$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
-		$counter++;
-	}
-		
+	
+	if (!$service_id) $tpl->assign('msg', $lang["no_graph_found"]); else $tpl->assign('msg', NULL);	
 	if (!isset($start) && !isset($end)){
 		$tpl->assign('start_daily', $start_daily = time() - 60 * 60 * 24);
 		$tpl->assign('end_daily', $end_daily = time());
@@ -128,10 +113,40 @@ For information : contact@oreon-project.org
 	
 	if (isset($_GET["template_id"]))
 		$tpl->assign('template_id', $_GET["template_id"]);				
-	
+			
+	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
+	if (PEAR::isError($DBRESULT2))
+		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+	$counter = 0;
+	while ($DBRESULT2->fetchInto($metrics_ret)){
+		$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
+		$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
+		$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
+		$counter++;
+	}
+		
 	if (isset($_GET["metric"])){
-		$metric_active =& $_GET["metric"];
-		$tpl->assign('metric_active', $metric_active);	
+		$metrics_active =& $_GET["metric"];
+		$tpl->assign('metric_active', $metrics_active);	
+		$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		foreach ($metrics_active as $key => $metric){
+			$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$_GET["index"]."');");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		}
+	} else {
+		$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."' AND `contact_id` = '".$oreon->user->user_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		$metrics_active = array();
+		if ($DBRESULT->numRows())
+			while ($DBRESULT->fetchInto($metric))
+				$metrics_active[$metric["metric_id"]] = 1;		
+		else
+			foreach ($metrics as $key => $value)
+				$metrics_active[$key] = 1;	
 	}
 	
 	#Apply a template definition
@@ -143,9 +158,11 @@ For information : contact@oreon-project.org
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
-	
 	$tpl->assign('host_name', $svc_id);
+
 	$tpl->assign('metrics', $metrics);
+	$tpl->assign('metrics_active', $metrics_active);
+
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $index_id);

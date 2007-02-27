@@ -12,7 +12,7 @@
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
     			<div style="text-align:center;" border=1>
     				<div>
-		    			<span><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}{foreach item=m_a from=$metric_active key=k}&metric[{$k}]=1{/foreach}'></span>
+		    			<span><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></span>
 		    			<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end}&start={$start}"><img src="./img/icones/16x16/tool.gif"></a></span>
 		    		</div>
     			</div>
@@ -40,7 +40,7 @@
                 	<td class="FormHeader" colspan="2">Activate our Data Source </td>
                 </tr>
                 {foreach item=s from=$metrics}
-	    		<tr class="{$s.class}"><td colspan="2"><input type="checkbox" name="metric[{$s.metric_id}]" checked>&nbsp;{$s.metric_name}&nbsp;</td></tr>
+	    		<tr class="{$s.class}"><td colspan="2"><input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id]} checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td></tr>
 	    		{/foreach}
     	    </table>
     	  	{if !$title2}

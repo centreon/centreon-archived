@@ -11,22 +11,22 @@
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_daily}&end={$end_daily}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_daily}&start={$start_daily}{foreach item=m_a from=$metric_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;font-weight:bold;padding-top:3px;">Daily</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_daily}&end={$end_daily}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_daily}&start={$start_daily}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;font-weight:bold;padding-top:3px;">Daily</p></div>
     		</td>
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_weekly}&end={$end_weekly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_weekly}&start={$start_weekly}{foreach item=m_a from=$metric_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Weekly</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_weekly}&end={$end_weekly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_weekly}&start={$start_weekly}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Weekly</p></div>
     		</td>
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_monthly}&end={$end_monthly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_monthly}&start={$start_monthly}{foreach item=m_a from=$metric_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Monthly</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_monthly}&end={$end_monthly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_monthly}&start={$start_monthly}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Monthly</p></div>
     		</td>
         </tr>
         <tr>
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_yearly}&end={$end_yearly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_yearly}&start={$start_yearly}{foreach item=m_a from=$metric_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Yearly</p></div>
+    			<div><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_yearly}&end={$end_yearly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_yearly}&start={$start_yearly}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a><p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Yearly</p></div>
     		</td>
         </tr>
     </table>
@@ -53,7 +53,7 @@
                 	<td class="FormHeader" colspan="2">Activate our Data Source </td>
                 </tr>
                 {foreach item=s from=$metrics}
-	    		<tr class="{$s.class}"><td colspan="2"><input type="checkbox" name="metric[{$s.metric_id}]" checked>&nbsp;{$s.metric_name}&nbsp;</td></tr>
+	    		<tr class="{$s.class}"><td colspan="2"><input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id]} checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td></tr>
 	    		{/foreach}
     	    </table>
     	  	{if !$title2}
