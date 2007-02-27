@@ -1,21 +1,15 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
-
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
-	<table class="Toolbar_TableTop">
-		<tr class="Toolbar_TR_Top">
-			<td class="Toolbar_TDSelectAction_Top">
-
-			</td>
-
-			<input name="p" value="{$p}" type="hidden">
-			{php}
-			   include('./include/common/pagination.php');
-			{/php}
-		</tr>
-	</table>
-
+<table class="Toolbar_TableTop">
+	<tr class="Toolbar_TR_Top">
+		<td class="Toolbar_TDSelectAction_Top"></td>
+		<input name="p" value="{$p}" type="hidden">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+</table>
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order=sort_asc'>{ $mon_host }</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
@@ -25,7 +19,7 @@
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order=sort_asc'>{ $mon_duration }</a&nbsp;{if $sort_type == "last_state_change"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=plugin_output&order=sort_asc'>{ $mon_status_information }</a>&nbsp;{if $sort_type == "plugin_output"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=plugin_output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 	</tr>
-		{assign var="c" value="0"}
+	{assign var="c" value="0"}
 	{ foreach item=h from=$host_status }
 		<tr class="{$h.class}" id="trStatus{$c}">
 			<td class="ListColLeft">
@@ -39,20 +33,20 @@
 		{assign var="c" value=$c+1}
 	{/foreach}
 </table>
-	<table class="Toolbar_TableBottom">
-		<tr>
-			<td class="Toolbar_TDSelectAction_Bottom">
+<table class="Toolbar_TableBottom">
+	<tr>
+		<td class="Toolbar_TDSelectAction_Bottom">
 
-			</td>
-			<input name="p" value="{$p}" type="hidden">
-			{php}
-			   include('./include/common/pagination.php');
-			{/php}
-		</tr>
-	</table>
+		</td>
+		<input name="p" value="{$p}" type="hidden">
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+</table>
 
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
+
 {$form.hidden}
 </form>

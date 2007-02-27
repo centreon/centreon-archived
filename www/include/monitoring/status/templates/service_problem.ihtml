@@ -1,8 +1,6 @@
 {assign var="o" value="svcpb"}
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 
-
-
 <div class="cachediv">
 <!-- informations bank for ajax -->
 <FORM id="fsave">
@@ -21,12 +19,8 @@
 </FORM>
 </div>
 
-
-
-
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
-
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">
 			<td class="Toolbar_TDSelectAction_Top">
@@ -39,20 +33,16 @@
 			&nbsp;
 			{$form.o1.html}
 			</div>
-
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
 			{/if}
-
 			</td>
-
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
 		</tr>
 	</table>
-
 <div id="forajax">
 <table id="ListTable">
 	<tr class='ListHeader'>
@@ -68,7 +58,6 @@
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=plugin_output&order=sort_asc&search={$search}&search_type_host={$search_type_host}&search_type_service={$search_type_service}'>{ $mon_status_information }</a>&nbsp;{if $sort_type == "plugin_output"}<a href='./oreon.php?p={$p}&o={$o}&num={$num}&limit={$limit}&sort_types=plugin_output&order={$tab_order.$order}&search={$search}&search_type_host={$search_type_host}&search_type_service={$search_type_service}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 	</tr>
 	{assign var="c" value="0"}
-	
 	{ foreach item=s from=$service_status }
 	{if $s.status ne 'OK'}	
 		{if (!$host_name && !$status) || ($host_name == $s.host_name && $status && $status == $s.status) || ($host_name == $s.host_name && !$status)}
