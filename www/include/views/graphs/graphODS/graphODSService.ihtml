@@ -5,6 +5,7 @@
 <form {$form.attributes}>
 {if !$msg}
 <div>
+	<a href="./oreon.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a> <a href="./oreon.php?p={$p}&host_name={$host_name.host_name}">Retour</a>
 	<table id="ListTable">
         <tr class="ListHeader">
         	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name.host_name} | Service : {$host_name.service_description}</td>
@@ -13,7 +14,7 @@
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
     			<div>
     				<span><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_daily}&end={$end_daily}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_daily}&start={$start_daily}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a></span>
-    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_daily}&start={$start_daily}"><img src="./img/icones/16x16/tool.gif" alt="{$lang.giv_ct_properties}"></a></span>
+    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_daily}&start={$start_daily}"><img src="./img/icones/16x16/view.gif" alt="{$lang.giv_ct_properties}"></a></span>
     				<p style="padding-bottom:4px;font-weight:bold;padding-top:3px;">Daily</p>
     			</div>
     		</td>
@@ -22,7 +23,7 @@
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
     			<div>
     				<span><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_weekly}&end={$end_weekly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_weekly}&start={$start_weekly}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a></span>
-    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_weekly}&start={$start_weekly}"><img src="./img/icones/16x16/tool.gif" alt="{$lang.giv_ct_properties}"></a></span>
+    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_weekly}&start={$start_weekly}"><img src="./img/icones/16x16/view.gif" alt="{$lang.giv_ct_properties}"></a></span>
     				<p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Weekly</p>
     			</div>
     		</td>
@@ -31,7 +32,7 @@
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
     			<div>
     				<span><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_monthly}&end={$end_monthly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_monthly}&start={$start_monthly}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a></span>
-    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_monthly}&start={$start_monthly}"><img src="./img/icones/16x16/tool.gif" alt="{$lang.giv_ct_properties}"></a></span>
+    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_monthly}&start={$start_monthly}"><img src="./img/icones/16x16/view.gif" alt="{$lang.giv_ct_properties}"></a></span>
     				<p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Monthly</p>
     			</div>
     		</td>
@@ -40,7 +41,7 @@
     		<td colspan="2" class='ListColCenter' valign="top" align='center'>
     			<div>
     				<span><a href='./oreon.php?p={$p}&o=vz&index={$index}&start={$start_yearly}&end={$end_yearly}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end_yearly}&start={$start_yearly}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></a></span>
-    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_yearly}&start={$start_yearly}"><img src="./img/icones/16x16/tool.gif" alt="{$lang.giv_ct_properties}"></a></span>
+    				<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end_yearly}&start={$start_yearly}"><img src="./img/icones/16x16/view.gif" alt="{$lang.giv_ct_properties}"></a></span>
     				<p style="padding-bottom:4px;padding-top:3px;font-weight:bold;">Yearly</p>
     			</div>
     		</td>
