@@ -13,7 +13,7 @@
     			<div style="text-align:center;" border=1>
     				<div>
 		    			<span><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></span>
-		    			<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end}&start={$start}"><img src="./img/icones/16x16/tool.gif"></a></span>
+		    			<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end}&start={$start}"><img src="./img/icones/16x16/view.gif"></a></span>
 		    		</div>
     			</div>
     		</td>
