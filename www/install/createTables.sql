@@ -1342,7 +1342,6 @@ CREATE TABLE `meta_service_relation` (
 -- Structure de la table `ods_view_details`
 --
 
-
 CREATE TABLE `ods_view_details` (
 `dv_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `index_id` INT NULL ,
