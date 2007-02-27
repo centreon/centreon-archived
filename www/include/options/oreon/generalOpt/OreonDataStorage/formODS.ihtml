@@ -1,0 +1,33 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+<table id="ListTable">
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.oreon_web_path.label}</td><td class="FormRowValue">{$form.oreon_web_path.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.oreon_rrdbase_path.label}</td><td class="FormRowValue">{$form.oreon_rrdbase_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.oreon_refresh.label}</td><td class="FormRowValue">{$form.oreon_refresh.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField">{$form.AjaxFirstTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadStatistic.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.AjaxFirstTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadMonitoring.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
+ </table>
+{if !$valid}
+	<div id="validForm">
+		<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+{else}
+	<div id="validForm">
+		<p>{$form.change.html}</p>
+	</div>
+{/if}
+{$form.hidden}
+</form>
