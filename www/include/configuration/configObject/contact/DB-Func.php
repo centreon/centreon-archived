@@ -78,21 +78,29 @@ For information : contact@oreon-project.org
 		return true;
 	}
 
-	function enableContactInDB ($contact_id = null)	{
-		if (!$contact_id) return;
+	function enableContactInDB ($contact_id = null, $contact_arr = array())	{
+		if (!$contact_id && !count($contact_arr)) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '1' WHERE contact_id = '".$contact_id."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	}
-
-	function disableContactInDB ($contact_id = null)	{
-		if (!$contact_id) return;
-		global $pearDB;
-		if (keepOneContactAtLeast())	{
-			$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$contact_id."'");
+		if ($contact_id)
+			$contact_arr = array($contact_id=>"1");
+		foreach($contact_arr as $key=>$value)	{
+			$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '1' WHERE contact_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
+
+	function disableContactInDB ($contact_id = null, $contact_arr = array())	{
+		if (!$contact_id && !count($contact_arr)) return;
+		global $pearDB;
+		if ($contact_id)
+			$contact_arr = array($contact_id=>"1");
+		foreach($contact_arr as $key=>$value)	{
+			if (keepOneContactAtLeast())	{
+				$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			}
 		}
 	}
 
@@ -160,14 +168,47 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	function updateContactInDB ($contact_id = NULL)	{
+	function updateContactInDB ($contact_id = NULL, $from_MC = false)	{
 		if (!$contact_id) return;
-		updateContact($contact_id);
-		updateContactHostCommands($contact_id);
-		updateContactServiceCommands($contact_id);
-		updateContactContactGroup($contact_id);
+		global $form;
+		$ret = $form->getSubmitValues();
+		# Global function to use
+		if ($from_MC)
+			updateContact_MC($contact_id);
+		else
+			updateContact($contact_id, $from_MC);
+		# Function for updating host commands
+		# 1 - MC with deletion of existing cmds
+		# 2 - MC with addition of new cmds
+		# 3 - Normal update
+		if (isset($ret["mc_mod_hcmds"]["mc_mod_hcmds"]) && $ret["mc_mod_hcmds"]["mc_mod_hcmds"])
+			updateContactHostCommands($contact_id);
+		else if (isset($ret["mc_mod_hcmds"]["mc_mod_hcmds"]) && !$ret["mc_mod_hcmds"]["mc_mod_hcmds"])
+			updateContactHostCommands_MC($contact_id);
+		else
+			updateContactHostCommands($contact_id);
+		# Function for updating service commands
+		# 1 - MC with deletion of existing cmds
+		# 2 - MC with addition of new cmds
+		# 3 - Normal update
+		if (isset($ret["mc_mod_svcmds"]["mc_mod_svcmds"]) && $ret["mc_mod_svcmds"]["mc_mod_svcmds"])
+			updateContactServiceCommands($contact_id);
+		else if (isset($ret["mc_mod_svcmds"]["mc_mod_svcmds"]) && !$ret["mc_mod_svcmds"]["mc_mod_svcmds"])
+			updateContactServiceCommands_MC($contact_id);
+		else
+			updateContactServiceCommands($contact_id);
+		# Function for updating contact groups
+		# 1 - MC with deletion of existing cg
+		# 2 - MC with addition of new cg
+		# 3 - Normal update
+		if (isset($ret["mc_mod_cg"]["mc_mod_cg"]) && $ret["mc_mod_cg"]["mc_mod_cg"])
+			updateContactContactGroup($contact_id);
+		else if (isset($ret["mc_mod_cg"]["mc_mod_cg"]) && !$ret["mc_mod_cg"]["mc_mod_cg"])
+			updateContactContactGroup_MC($contact_id);
+		else
+			updateContactContactGroup($contact_id);
 	}
-
+	
 	function insertContactInDB ($ret = array())	{
 		$contact_id = insertContact($ret);
 		updateContactHostCommands($contact_id, $ret);
@@ -216,7 +257,7 @@ For information : contact@oreon-project.org
 		return ($contact_id["MAX(contact_id)"]);
 	}
 
-	function updateContact($contact_id = null)	{
+	function updateContact($contact_id = null, $from_MC = false)	{
 		if (!$contact_id) return;
 		global $form;
 		global $pearDB;
@@ -227,14 +268,15 @@ For information : contact@oreon-project.org
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 		$rq .= "timeperiod_tp_id2 = ";
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
-		$rq .= "contact_name = ";
-		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "contact_alias = ";
-		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		if (isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] && isset($ret["contact_passwd"]) && $ret["contact_passwd"])
-			$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
-		else if (isset($ret["contact_oreon"]["contact_oreon"]) && !$ret["contact_oreon"]["contact_oreon"])
-			$rq .= "contact_passwd = NULL, ";
+		# If we are doing a MC, we don't have to set name and alias field
+		if (!$from_MC)	{
+			$rq .= "contact_name = ";
+			isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+			$rq .= "contact_alias = ";
+			isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		}
+		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"])
+			$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";	
 		$rq .=	"contact_lang = ";
 		isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL ? $rq .= "'".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= 	"contact_host_notification_options = ";
@@ -265,6 +307,39 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 
+	function updateContact_MC($contact_id = null)	{
+		if (!$contact_id) return;
+		global $form;
+		global $pearDB;
+		$ret = array();
+		$ret = $form->getSubmitValues();
+		$rq = "UPDATE contact SET ";
+		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
+		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) $rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
+		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"])
+			$rq .= "contact_passwd = '".md5($ret["contact_passwd"])."', ";
+		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL) $rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES)."', ";
+		if (isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL) $rq .= "contact_host_notification_options = '".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ";
+		if (isset($ret["contact_svNotifOpts"]) && $ret["contact_svNotifOpts"] != NULL) $rq .= "contact_service_notification_options = '".implode(",", array_keys($ret["contact_svNotifOpts"]))."', ";
+		if (isset($ret["contact_email"]) && $ret["contact_email"] != NULL) $rq .= "contact_email = '".htmlentities($ret["contact_email"], ENT_QUOTES)."', ";
+		if (isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL) $rq .= "contact_pager = '".htmlentities($ret["contact_pager"], ENT_QUOTES)."', ";
+		if (isset($ret["contact_comment"]) && $ret["contact_comment"] != NULL) $rq .= "contact_comment = '".htmlentities($ret["contact_comment"], ENT_QUOTES)."', ";
+		if (isset($ret["contact_oreon"]["contact_oreon"]) && $ret["contact_oreon"]["contact_oreon"] != NULL) $rq .= "contact_oreon = '".$ret["contact_oreon"]["contact_oreon"]."', "; 
+		if (isset($ret["contact_admin"]["contact_admin"]) && $ret["contact_admin"]["contact_admin"] != NULL) $rq .= "contact_admin = '".$ret["contact_admin"]["contact_admin"]."', ";
+		if (isset($ret["contact_type_msg"]) && $ret["contact_type_msg"] != NULL) $rq .= "contact_type_msg = '".$ret["contact_type_msg"]."', ";
+		if (isset($ret["contact_activate"]["contact_activate"]) && $ret["contact_activate"]["contact_activate"] != NULL) $rq .= "contact_activate = '".$ret["contact_activate"]["contact_activate"]."', ";
+		if (isset($ret["contact_auth_type"]) && $ret["contact_auth_type"] != NULL) $rq .= "contact_auth_type = '".$ret["contact_auth_type"]."', ";
+		if (isset($ret["contact_ldap_dn"]) && $ret["contact_ldap_dn"] != NULL) $rq .= "contact_ldap_dn = '".$ret["contact_ldap_dn"]."', ";
+		if (strcmp("UPDATE contact SET ", $rq))	{
+			# Delete last ',' in request
+			$rq[strlen($rq)-2] = " ";
+			$rq .= "WHERE contact_id = '".$contact_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
+
 	function updateContactHostCommands($contact_id = null, $ret = array())	{
 		if (!$contact_id) return;
 		global $form;
@@ -286,6 +361,33 @@ For information : contact@oreon-project.org
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
+
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateContactHostCommands_MC($contact_id = null, $ret = array())	{
+		if (!$contact_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM contact_hostcommands_relation ";
+		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$cmds = array();
+		while($DBRESULT->fetchInto($arr))
+			$cmds[$arr["command_command_id"]] = $arr["command_command_id"];
+		$ret = $form->getSubmitValue("contact_hostNotifCmds");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($cmds[$ret[$i]]))	{
+				$rq = "INSERT INTO contact_hostcommands_relation ";
+				$rq .= "(contact_contact_id, command_command_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$contact_id."', '".$ret[$i]."')";
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			}
 		}
 	}
 
@@ -312,6 +414,33 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
+	
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateContactServiceCommands_MC($contact_id = null, $ret = array())	{
+		if (!$contact_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM contact_servicecommands_relation ";
+		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$cmds = array();
+		while($DBRESULT->fetchInto($arr))
+			$cmds[$arr["command_command_id"]] = $arr["command_command_id"];
+		$ret = $form->getSubmitValue("contact_svNotifCmds");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($cmds[$ret[$i]]))	{
+				$rq = "INSERT INTO contact_servicecommands_relation ";
+				$rq .= "(contact_contact_id, command_command_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$contact_id."', '".$ret[$i]."')";
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			}
+		}
+	}
 
 	function updateContactContactGroup($contact_id = null, $ret = array())	{
 		if (!$contact_id) return;
@@ -334,6 +463,33 @@ For information : contact@oreon-project.org
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
+
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateContactContactGroup_MC($contact_id = null, $ret = array())	{
+		if (!$contact_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM contactgroup_contact_relation ";
+		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$cmds = array();
+		while($DBRESULT->fetchInto($arr))
+			$cmds[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
+		$ret = $form->getSubmitValue("contact_cgNotif");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($cmds[$ret[$i]]))	{
+				$rq = "INSERT INTO contactgroup_contact_relation ";
+				$rq .= "(contact_contact_id, contactgroup_cg_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$contact_id."', '".$ret[$i]."')";
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			}
 		}
 	}
 
