@@ -87,3 +87,18 @@ UPDATE topology SET topology_group = '3' WHERE topology_page = '40208';
 
 ALTER TABLE `general_opt` ADD `nagios_init_script` VARCHAR( 255 ) NULL AFTER `nagios_path_bin` ;
 UPDATE `general_opt` SET `nagios_init_script` = '/etc/init.d/nagios';
+
+
+-- 26/02/2007
+
+CREATE TABLE `ods_view_details` (
+`dv_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`index_id` INT NULL ,
+`metric_id` INT NULL ,
+`contact_id` INT NULL ,
+`all_user` ENUM( "0", "1" ) NULL
+) ENGINE = innodb CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_debug', './img/icones/16x16/nagios.gif', 50101, 5010108, 80, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=ods', '0', '0', '1');
+
+
