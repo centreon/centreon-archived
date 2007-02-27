@@ -25,11 +25,6 @@ For information : contact@oreon-project.org
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 	}
 	
-	$debug = 0;
-	$attrsTextI		= array("size"=>"3");
-	$attrsText 		= array("size"=>"30");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"50");
-
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -37,14 +32,6 @@ For information : contact@oreon-project.org
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
-		
-	$graphTs = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while($DBRESULT->fetchInto($graphT))
-		$graphTs[$graphT["graph_id"]] = $graphT["name"];
-	$DBRESULT->free();
 	
 	## Indicator basic information
 	$redirect =& $form->addElement('hidden', 'o');
@@ -68,34 +55,6 @@ For information : contact@oreon-project.org
 	if (isset($_POST["period"]))
 		$period =  $_POST["period"];
 
-	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
-	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
-	
-	$periods = array(	""=>"",
-						"10800"=>$lang["giv_sr_p3h"],
-						"21600"=>$lang["giv_sr_p6h"],
-						"43200"=>$lang["giv_sr_p12h"],
-						"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);
-
-	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
-	
-	$form->addElement('reset', 'reset', $lang["reset"]);
-  	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
-	
-	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
-		$nb_rsp = 0;
-
 	# Verify if template exists
 	$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
 	if (PEAR::isError($DBRESULT))
@@ -112,8 +71,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
 	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
 		
-	$elem = array();
-	
+	$elem = array();	
 	$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
@@ -131,10 +89,7 @@ For information : contact@oreon-project.org
 		$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 		$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
 	}
-	
-	if (isset($_GET["template_id"]))
-		$tpl->assign('template_id', $_GET["template_id"]);				
-	
+		
 	#Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -144,21 +99,51 @@ For information : contact@oreon-project.org
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
 	$tpl->assign('host_name', $svc_id);
-	
-	if (isset($period) && $period){
-		$start = time() - ($period + 30);
-		$end = time() + 1;
-	} else if (!isset($_GET["period"])){
-		$start = $_GET["start"];
-		$end = $_GET["end"];
-	} else {
-			
+
+	$metrics = array();
+	$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_id");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo();
+
+	$counter = 1;	
+	$metrics = array();	
+	while ($DBRESULT->fetchInto($metric)){
+		$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
+		$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
+		$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];		
+		/*
+		$DBRESULT_data =& $pearDBO->query("SELECT MAX(ctime) FROM data_bin WHERE id_metric = '".$metric["metric_id"]."' LIMIT 1");
+		if (PEAR::isError($DBRESULT_data))
+			print "DB Error : ".$DBRESULT_data->getDebugInfo();
+		
+		$DBRESULT_data->fetchInto($data_bin);
+		$metrics[$metric["metric_id"]]["last_update"] = date($lang["date_time_format_status"], $data_bin["MAX(ctime)"]);
+		$now = time() - 60 * 60 * 2;
+		
+		$DBRESULT_data =& $pearDBO->query("SELECT value FROM data_bin WHERE id_metric = '".$metric["metric_id"]."' AND ctime >= '$now'");
+		if (PEAR::isError($DBRESULT_data))
+			print "DB Error : ".$DBRESULT_data->getDebugInfo();
+		$cpt = 0;
+		$sum = 0;
+		while ($DBRESULT_data->fetchInto($data_bin)){
+			$sum += $data_bin['value'];
+			$cpt++;
+		}
+		$sum /= $cpt;
+		$metrics[$metric["metric_id"]]["average"] = round($sum, 2);
+		$metrics[$metric["metric_id"]]["nb_values"] = $cpt;
+		*/
+		$metrics[$metric["metric_id"]]["order"] = $counter;
+		$counter++;
 	}
-	$tpl->assign('start', $start);
-	$tpl->assign('end', $end);
+	$DBRESULT->free();
+	
+	$tpl->assign('start', $_GET["start"]);
+	$tpl->assign('end', $_GET["end"]);
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $_GET["index"]);
 	$tpl->assign('session_id', session_id());
-	$tpl->display("graphODSServiceZoom.ihtml");
+	$tpl->assign('metrics', $metrics);
+	$tpl->display("displayODSGraphProperties.ihtml");
 ?>

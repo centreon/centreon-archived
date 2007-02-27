@@ -1,47 +1,33 @@
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
-<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
 {if $title2}
 <form {$form.attributes}>
 <div>
-	<table id="ListTable">
-        <tr class="ListHeader">
-        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name.host_name} Service : {$host_name.service_description}</td>
-        </tr>
-        <tr>
-    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
-    			<div style="text-align:center;" border=1>
-    				<div>
-		    			<span><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}'></span>
-		    			<span style="vertical-align:top;"><img src="./img/icones/16x16/tool.gif"></span>
-		    		</div>
-    			</div>
-    		</td>
-        </tr>
-	</table>
+<table id="ListTable">
+	{ foreach item=m from=$metrics }
+	<tr class="list_one">
+		<td class="ListColCenter"><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={$m.order}&metric={$m.metric_id}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}' align="center"></td>
+	</tr>
+	{/foreach}
+</table>
+<table id="ListTable" valign="top" border="1">
+	<tr class="ListHeader">
+		<td class="FormHeader">Activate</td>
+		<td class="FormHeader">Metric</td>
+		<td class="FormCenter">Legende</td>
+		<td class="FormHeader">Average 2 hours</td>
+		<td class="FormHeader">Last update</td>
+	</tr>
+	{ foreach item=m from=$metrics }
+	<tr class="list_one">
+		<td class="ListColLeft"><input type="checkbox" name="view"{if $m.activate == 1} checked{/if}></td>
+		<td class="ListColLeft">{$m.metric}</td>
+		<td class="ListColCenter">{$m.unit}</td>
+		<td class="ListColLeft">{$m.average} ({$m.nb_values} values)</td>
+		<td class="ListColLeft">{$m.last_update}</td>
+	</tr>
+	{/foreach}
+</table>
 </div>
 {/if}
-{if !$title}
-<form {$form.attributes}>
-{/if}
-<div style="padding-top: 20px;">
-   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div><br><br><br><br>{/if}
-       	<div>
-       		<table id="ListTable">
-                <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
-                </tr>
-                <tr class="list_two">
-            		<td>{$form.template_id.label}</td>
-            		<td>{$form.template_id.html}</td>
-                </tr>
-                <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
-    	    </table>
-    	  	{if !$title2}
-    		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p><br><br><br><br></div>
-     	   	{/if}
-    	    <br>
-        </div>
-    {$form.hidden}
-</div>    
 </form>
