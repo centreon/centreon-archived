@@ -29,7 +29,8 @@ For information : contact@oreon-project.org
 	$attrsTextI		= array("size"=>"3");
 	$attrsText 		= array("size"=>"30");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"50");
-
+	$tab_class 		= array("1" => "list_one", "0" => "list_two");
+	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -67,7 +68,7 @@ For information : contact@oreon-project.org
 		$period =  $_GET["period"];
 	if (isset($_POST["period"]))
 		$period =  $_POST["period"];
-
+	
 	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
 	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
 	
@@ -124,16 +125,35 @@ For information : contact@oreon-project.org
 	$indexF =& $form->addElement('hidden', 'index');
 	$indexF->setValue($index_id);
 	
-	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
+	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+	$counter = 0;
 	while ($DBRESULT2->fetchInto($metrics_ret)){
-		$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
-		$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
+		$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
+		$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
+		$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
+		$counter++;
+	}
+
+	if (isset($period) && $period){
+		$start = time() - ($period + 30);
+		$end = time() + 1;
+	} else if (!isset($_GET["period"])){
+		$start = $_GET["start"];
+		$end = $_GET["end"];
+	} else {
+		$start = $_GET["start"];
+		$end = $_GET["end"];	
 	}
 	
 	if (isset($_GET["template_id"]))
 		$tpl->assign('template_id', $_GET["template_id"]);				
+	
+	if (isset($_GET["metric"])){
+		$metric_active =& $_GET["metric"];
+		$tpl->assign('metric_active', $metric_active);	
+	}
 	
 	#Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -145,15 +165,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('p', $p);
 	$tpl->assign('host_name', $svc_id);
 	
-	if (isset($period) && $period){
-		$start = time() - ($period + 30);
-		$end = time() + 1;
-	} else if (!isset($_GET["period"])){
-		$start = $_GET["start"];
-		$end = $_GET["end"];
-	} else {
-			
-	}
+	$tpl->assign('metrics', $metrics);
 	$tpl->assign('start', $start);
 	$tpl->assign('end', $end);
 	$tpl->assign('isAvl', 1);

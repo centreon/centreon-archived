@@ -29,7 +29,8 @@ For information : contact@oreon-project.org
 	$attrsTextI		= array("size"=>"3");
 	$attrsText 		= array("size"=>"30");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"50");
-
+	$tab_class 		= array("1" => "list_one", "0" => "list_two");
+	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -38,7 +39,7 @@ For information : contact@oreon-project.org
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
 		
-	$graphTs = array(NULL=>NULL);
+	$graphTs = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -78,11 +79,8 @@ For information : contact@oreon-project.org
 	$tpl->assign("lgGraph", $lang['giv_gt_name']);
 	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
 	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
-	
-	
 		
 	$elem = array();
-	
 	if (preg_match("/([0-9]*)\_([0-9]*)/", $_GET["index"], $matches)){
 		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$matches[1]."' AND service_id = '".$matches[2]."'");
 		if (PEAR::isError($DBRESULT2))
@@ -105,13 +103,16 @@ For information : contact@oreon-project.org
 
 	$indexF =& $form->addElement('hidden', 'index');
 	$indexF->setValue($index_id);
-	
-	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
+		
+	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+	$counter = 0;
 	while ($DBRESULT2->fetchInto($metrics_ret)){
-		$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
-		$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
+		$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
+		$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
+		$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
+		$counter++;
 	}
 		
 	if (!isset($start) && !isset($end)){
@@ -128,15 +129,23 @@ For information : contact@oreon-project.org
 	if (isset($_GET["template_id"]))
 		$tpl->assign('template_id', $_GET["template_id"]);				
 	
+	if (isset($_GET["metric"])){
+		$metric_active =& $_GET["metric"];
+		$tpl->assign('metric_active', $metric_active);	
+	}
+	
 	#Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
+	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
+	
 	$tpl->assign('host_name', $svc_id);
+	$tpl->assign('metrics', $metrics);
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $index_id);
