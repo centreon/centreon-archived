@@ -19,8 +19,12 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	require_once("./DBOdsConnect.php");
+	
+	if (isset($_POST["o"]) && $_POST["o"])
+		$o = $_POST["o"];
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			
@@ -41,45 +45,22 @@ For information : contact@oreon-project.org
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["genOpt_change"]);
-
+	
+	
+	$gopt["purge_interval"] *= $gopt["sleep_time"];
 	## Oreon information
 	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
-	$form->addElement('text', 'oreon_path', $lang["genOpt_oPath"], $attrsText);
-	$form->addElement('text', 'oreon_web_path', $lang["genOpt_webPath"], $attrsText);
-	$form->addElement('text', 'oreon_rrdbase_path', $lang["genOpt_oRrdbPath"], $attrsText);
-	$form->addElement('text', 'oreon_refresh', $lang["genOpt_oRefresh"], $attrsText2);
-	$form->addElement('text', 'session_expire', $lang["genOpt_oExpire"], $attrsText2);
-
-	$form->addElement('text', 'maxViewMonitoring', $lang["genOpt_maxViewMonitoring"], $attrsText2);
-	$form->addElement('text', 'maxViewConfiguration', $lang["genOpt_maxViewConfiguration"], $attrsText2);
-
-	$form->addElement('text', 'AjaxTimeReloadStatistic', $lang["genOpt_AjaxTimeReloadStatistic"], $attrsText2);
-	$form->addElement('text', 'AjaxTimeReloadMonitoring', $lang["genOpt_AjaxTimeReloadMonitoring"], $attrsText2);
-	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', $lang["genOpt_AjaxFirstTimeReloadStatistic"], $attrsText2);
-	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', $lang["genOpt_AjaxFirstTimeReloadMonitoring"], $attrsText2);
-
-	$form->addElement('text', 'gmt', $lang["genOpt_gmt"], $attrsText2);
-
-	$templates = array();
-	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
-		while ($file = @readdir($handle))
-			if (!is_file($oreon->optGen["oreon_path"]."www/Themes/".$file) && $file != "." && $file != ".." && $file != ".svn")
-				$templates[$file] = $file;
-		@closedir($handle);
-	}
-	$form->addElement('select', 'template', $lang["genOpt_template"], $templates);
+	$form->addElement('text', 'RRDdatabase_path', $lang["ods_rrd_path"], $attrsText);
+	$form->addElement('text', 'len_storage_rrd', $lang["ods_len_storage_rrd"], $attrsText);
+	$form->addElement('checkbox', 'autodelete_rrd_db', $lang['ods_autodelete_rrd_db']);
+	$form->addElement('text', 'sleep_time', $lang["ods_sleep_time"], $attrsText2);
+	$form->addElement('text', 'purge_interval', $lang["ods_purge_interval"], $attrsText2);
 	
-	$sort_type = array(	"last_state_change" => $lang["genOpt_problem_duration"],
-						"host_name" => $lang["genOpt_problem_host"],
-						"service_description" => $lang["genOpt_problem_service"],
-						"current_state" => $lang["genOpt_problem_status"],
-						"last_check" => $lang["genOpt_problem_last_check"],
-						"plugin_output" => $lang["genOpt_problem_output"]);
+	$storage_type = array(0 => "RRDTool", 1 => "MySQL", 2 => "RRDTool & MySQL");	
+	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
 	
-	$form->addElement('select', 'problem_sort_type', $lang["genOpt_problem_sort_type"], $sort_type);
-	
-	$sort_order = array("ASC" => $lang["genOpt_problem_order_asc"], "DESC" => $lang["genOpt_problem_order_desc"]);
-	$form->addElement('select', 'problem_sort_order', $lang["genOpt_problem_sort_order"], $sort_order);
+	$redirect =& $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
 	
 	## Form Rules
 	function slash($elem = NULL)	{
@@ -87,63 +68,46 @@ For information : contact@oreon-project.org
 			return rtrim($elem, "/")."/";
 	}
 	$form->applyFilter('_ALL_', 'trim');
-	$form->applyFilter('nagios_path', 'slash');
-	$form->applyFilter('nagios_path_img', 'slash');
-	$form->applyFilter('nagios_path_plugins', 'slash');
-	$form->applyFilter('oreon_path', 'slash');
-	$form->applyFilter('oreon_web_path', 'slash');
-	$form->applyFilter('oreon_rrdbase_path', 'slash');
-	$form->applyFilter('debug_path', 'slash');
-	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
-	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
-	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
-	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
-	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
-	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
-	$form->addRule('oreon_path', $lang['ErrWrPath'], 'is_valid_path');
-	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
-
+	$form->applyFilter('RRDdatabase_path', 'slash');
+	
+	//$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
+	//form->addRule('RRDdatabase_path', $lang['ErrWrPath'], 'is_valid_path');
 	##End of form definition
 
 	# Smarty template Init
 	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path.'general/', $tpl);
-
+	$tpl = initSmartyTpl($path.'OreonDataStorage/', $tpl);
 	$form->setDefaults($gopt);
-
+	
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 	$form->addElement('reset', 'reset', $lang["reset"]);
 
     $valid = false;
 	if ($form->validate())	{
 		# Update in DB
-		updateGeneralConfigData(1);
+		updateODSConfigData();
+		
 		# Update in Oreon Object
 		$oreon->optGen = array();
-		$DBRESULT2 =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		$DBRESULT2 =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
 			print ("DB error : ".$DBRESULT2->getDebugInfo());
 		$DBRESULT2->fetchInto($oreon->optGen);
-		$o = NULL;
-   		$valid = true;
-		$form->freeze();
+		
+		$o = "ods";
 	}
-	if (!$form->validate() && isset($_POST["gopt_id"]))	{
+	if (!$form->validate() && isset($_POST["gopt_id"]))
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
-	}
 
 	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
 
 	## Apply a template definition
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
+	$tpl->assign('lang', $lang);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign('valid', $valid);
-	$tpl->display("formGeneralOpt.ihtml");
+	$tpl->display("formODS.ihtml");
 ?>

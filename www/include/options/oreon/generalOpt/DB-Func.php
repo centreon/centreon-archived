@@ -264,4 +264,24 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
+	
+	function updateODSConfigData()	{
+		global $form, $pearDBO;
+		$ret = array();
+		$ret = $form->getSubmitValues();
+		if ($ret["sleep_time"] <= 10)
+			$ret["sleep_time"] = 10;
+		if ($ret["purge_interval"] <= 20)
+			$ret["purge_interval"] = 20;
+		$ret["purge_interval"] /= $ret["sleep_time"];
+		$rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
+				`len_storage_rrd` = '".$ret["len_storage_rrd"]."',
+				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',
+				`sleep_time` = '".$ret["sleep_time"]."',
+				`purge_interval` = '".$ret["purge_interval"]."',
+				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
+		$DBRESULT =& $pearDBO->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	}
 ?>
