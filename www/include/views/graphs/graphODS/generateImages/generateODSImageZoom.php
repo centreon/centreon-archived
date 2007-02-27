@@ -63,11 +63,8 @@ For information : contact@oreon-project.org
 		
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
-			
-			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
-			
+			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);	
 			$template_id = getDefaultGraph($svc_id, 1);
-			//print "test : $template_id - $svc_id : ".$index_data_ODS["service_description"]."$host_id _ ".$index_data_ODS["host_name"]."<br>";
 		} else
 			$template_id = $_GET["template_id"];
 			
@@ -114,23 +111,25 @@ For information : contact@oreon-project.org
 		$cpt = 0;
 		$metrics = array();		
 		while ($DBRESULT->fetchInto($metric)){
-			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-			$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
-			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
-			$ds = getDefaultDS($template_id, $cpt, 1);						
-			$metrics[$metric["metric_id"]]["ds_id"] = $ds;
-			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
-			$res_ds->fetchInto($ds_data);
-			foreach ($ds_data as $key => $ds_d){
-				if ($key == "ds_transparency")
-					$metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100);
-				else
-					$metrics[$metric["metric_id"]][$key] = $ds_d;
+			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]]))){
+				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
+				$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
+				$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
+				$ds = getDefaultDS($template_id, $cpt, 1);						
+				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
+				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
+				$res_ds->fetchInto($ds_data);
+				foreach ($ds_data as $key => $ds_d){
+					if ($key == "ds_transparency")
+						$metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100);
+					else
+						$metrics[$metric["metric_id"]][$key] = $ds_d;
+				}
+				$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+				if (strcmp($metric["unit_name"], ""))
+					$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
+				$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
 			}
-			$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
-			if (strcmp($metric["unit_name"], ""))
-				$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-			$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
 			$cpt++;
 		}
 		$DBRESULT->free();
