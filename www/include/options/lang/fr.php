@@ -156,7 +156,9 @@ $lang["menu_Module_Name"] = "Nom";
 $lang["menu_Module_Version"] = "Version";
 $lang["menu_Module_Author"] = "Auteur";
 $lang["menu_Module_additionnals_infos"] = "Informations compl&eacute;mentaires";
+$lang["menu_ODS"] = "OreonDataStorage";
 $lang["menu_nagios"] = "Nagios";
+
 
 # Session
 
@@ -200,5 +202,18 @@ $lang["menu_general"] = "G&ecute;n&ecute;rate";
 # Menu
 
 $lang["m_modules"] = "Modules";
+
+# ODS 
+
+$lang['ods_rrd_path'] = "Chemin d'acc&egrave;s aux bases RRD de stockage";
+$lang['ods_len_storage_rrd'] = "Tailles des Bases RRDTool";
+$lang['ods_autodelete_rrd_db'] = "Auto-Suppression des bases RRD";
+$lang['ods_sleep_time'] = "Sleep Time";
+$lang['ods_purge_interval'] = "Intervale de v&eacute;rification de purges";
+$lang['ods_storage_type'] = "Type de Stockage";
+
+
+$lang['ods_sleep_time_expl'] = "Doit &ecirc;tre supp&eacute;rieur &agrave; 10";
+$lang['ods_purge_interval_expl'] = "Doit &ecirc;tre supp&eacute;rieur &agrave; 2";
 
 ?>

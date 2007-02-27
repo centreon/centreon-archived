@@ -157,6 +157,7 @@ $lang["menu_Module_Name"] = "Name";
 $lang["menu_Module_Version"] = "Version";
 $lang["menu_Module_Author"] = "Author";
 $lang["menu_Module_additionnals_infos"] = "Additionnals Informations";
+$lang['menu_ODS'] = "OreonDataStorage";
 $lang['menu_nagios'] = "Nagios";
 $lang['menu_ldap'] = "LDAP";
 $lang['menu_snmp'] = "SNMP";
@@ -195,5 +196,13 @@ $lang['myAcc_change'] = "Change my settings";
 
 $lang['m_task'] = "Tasks";
 
+# ODS 
+
+$lang['ods_rrd_path'] = "Path to RRDTool Database";
+$lang['ods_len_storage_rrd'] = "RRDTool database size";
+$lang['ods_autodelete_rrd_db'] = "RRDTool auto delete";
+$lang['ods_sleep_time'] = "Sleep Time";
+$lang['ods_purge_interval'] = "Purge check interval";
+$lang['ods_storage_type'] = "Storage Type";
 
 ?>
