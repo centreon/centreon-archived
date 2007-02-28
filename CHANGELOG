@@ -1,5 +1,6 @@
 ## Oreon 1.3.4
-=> Feature : In configuration, availability to enable/disable numbers of elements with "quick select" menu
+=> Feature : In configuration, massive change options for numbers of elements with "quick select" menu (host, service, contact)
+=> Feature : In configuration, availability to enable/disable numbers of elements with "quick select" menu (host, hostgroup, service, contact)
 => Feature : Add 3 field in topology table for style class/id and javascript Onclik
 => Feature : Add a light module manager
 => Feature Request  #294 : Manage Nagios2 init script
