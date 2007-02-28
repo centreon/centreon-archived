@@ -124,7 +124,7 @@ For information : contact@oreon-project.org
 	$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."'");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	$other_services = array(""=>"");
+	$other_services = array();
 	while ($DBRESULT2->fetchInto($selected_service))
 		$other_services[$selected_service["id"]] = $selected_service["service_description"];
 	$DBRESULT2->free();
