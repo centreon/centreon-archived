@@ -62,6 +62,10 @@
                 <tr class="ListHeader">
                 	<td class="FormHeader" colspan="2">{$form.header.title}</td>
                 </tr>
+                 <tr class="list_two">
+            		<td>{$form.index.label}</td>
+            		<td>{$form.index.html}</td>
+                </tr>
                 <tr class="list_two">
             		<td>{$form.template_id.label}</td>
             		<td>{$form.template_id.html}</td>
@@ -70,7 +74,12 @@
                 	<td class="FormHeader" colspan="2">Activate our Data Source </td>
                 </tr>
                 {foreach item=s from=$metrics}
-	    		<tr class="{$s.class}"><td colspan="2"><input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id]} checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td></tr>
+	    		<tr class="{$s.class}">
+	    			<td>&nbsp;&nbsp;<input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id] } checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td>
+	    			{if $cpt == 0}
+	    			<td rowspan="{$nb_metrics}" valign="top" style="padding:10px;"><b><i>Aide : </i></b><br><br>Vous pouvez désactiver une source de données pour qu'elle n'apparaisse plus sur le graphique. <br>Cela peut vous servir lorsque les deux sources de données sont issues d'un même service mais dont les echelles sont completement differentes.</td>{assign var="cpt" value="1"}
+	    			{/if}
+	    		</tr>
 	    		{/foreach}
     	    </table>
     	  	{if !$title2}

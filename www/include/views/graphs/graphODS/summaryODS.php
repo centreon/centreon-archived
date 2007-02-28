@@ -48,6 +48,8 @@ For information : contact@oreon-project.org
 		require_once($path."graphODSServiceZoom.php");
 	else if (isset($_GET["o"]) && $_GET["o"] == "gp")
 		require_once($path."displayODSGraphProperties.php");
+	else if (isset($_GET["o"]) && $_GET["o"] == "cp")
+		require_once($path."changeODSGraphProperties.php");
 	else if (!isset($_GET["o"]) || $_GET["o"] == "")
 		require_once($path."graphODSByHost.php");
 		

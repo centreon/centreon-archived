@@ -119,17 +119,26 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 	$DBRESULT2->fetchInto($svc_id);
+	$DBRESULT2->free();
+	
+	$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."'");
+	if (PEAR::isError($DBRESULT2))
+		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+	$other_services = array(""=>"");
+	while ($DBRESULT2->fetchInto($selected_service))
+		$other_services[$selected_service["id"]] = $selected_service["service_description"];
+	$DBRESULT2->free();
+	$form->addElement('select', 'index', 'Others Services', $other_services);
+	//$form->setDefaults($index);
 	
 	$service_id = $svc_id["service_id"];
 	$index_id = $svc_id["id"];
-	$indexF =& $form->addElement('hidden', 'index');
-	$indexF->setValue($index_id);
 	
 	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 	$counter = 0;
-	while ($DBRESULT2->fetchInto($metrics_ret)){
+	while ($DBRESULT2->fetchInto($metrics_ret)){	
 		$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
 		$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
 		$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
@@ -150,16 +159,28 @@ For information : contact@oreon-project.org
 	if (isset($_GET["template_id"]))
 		$tpl->assign('template_id', $_GET["template_id"]);				
 	
-	if (isset($_GET["metric"])){
-		$metrics_active =& $_GET["metric"];
+	# verify if metrics in parameter is for this index
+	
+	$metrics_active =& $_GET["metric"];
+	$pass = 0;
+	if (isset($metrics_active))
+		foreach ($metrics_active as $key => $value)
+			if (isset($metrics[$key]))
+				$pass = 1;
+	# 
+	
+	
+	if (isset($_GET["metric"]) && $pass){
 		$tpl->assign('metric_active', $metrics_active);	
 		$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		foreach ($metrics_active as $key => $metric){
-			$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$_GET["index"]."');");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			if (isset($metrics_active[$metric["metric_id"]])){
+				$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$_GET["index"]."');");
+				if (PEAR::isError($DBRESULT))
+					print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			}
 		}
 	} else {
 		$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."' AND `contact_id` = '".$oreon->user->user_id."'");
@@ -185,6 +206,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('host_name', $svc_id);
 	
 	$tpl->assign('metrics', $metrics);
+	$tpl->assign('nb_metrics', count($metrics));
 	$tpl->assign('metrics_active', $metrics_active);
 	
 	$tpl->assign('start', $start);

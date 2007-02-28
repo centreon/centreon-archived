@@ -4,6 +4,7 @@
 {if $title2}
 <form {$form.attributes}>
 <div>
+	<a href="./oreon.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a>&nbsp;<a href="./oreon.php?p={$p}&index={$index}&o=vs">Retour</a>
 	<table id="ListTable">
         <tr class="ListHeader">
         	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name.host_name} Service : {$host_name.service_description}</td>
@@ -13,7 +14,10 @@
     			<div style="text-align:center;" border=1>
     				<div>
 		    			<span><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></span>
-		    			<span style="vertical-align:top;"><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end}&start={$start}"><img src="./img/icones/16x16/view.gif"></a></span>
+		    			<span style="vertical-align:top;">
+		    				<span><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end}&start={$start}"><img src="./img/icones/16x16/view.gif"></a></span>
+		    				<span><a href="./oreon.php?p={$p}&o=cp&index={$index}&end={$end}&start={$start}"><img src="./img/icones/16x16/tool.gif"></a></span>
+		    			</span>
 		    		</div>
     			</div>
     		</td>
@@ -29,18 +33,31 @@
        	<div>
        		<table id="ListTable">
                 <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                	<td class="FormHeader" colspan="2">&nbsp;&nbsp;{$form.header.title}</td>
                 </tr>
                 <tr class="list_two">
-            		<td>{$form.template_id.label}</td>
-            		<td>{$form.template_id.html}</td>
+            		<td>&nbsp;&nbsp;{$form.index.label}</td>
+            		<td>&nbsp;&nbsp;{$form.index.html}</td>
                 </tr>
-                <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
+                <tr class="list_two">
+            		<td>&nbsp;&nbsp;{$form.template_id.label}</td>
+            		<td>&nbsp;&nbsp;{$form.template_id.html}</td>
+                </tr>
+                <tr class="list_one">
+                	<td>&nbsp;&nbsp;{$form.period.label}</td>
+                	<td>&nbsp;&nbsp;{$form.period.html}</td>
+                </tr>
 				<tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">Activate our Data Source </td>
+                	<td class="FormHeader" colspan="2">&nbsp;&nbsp;Activate our Data Source </td>
                 </tr>
+                {assign var="cpt" value="0"}
                 {foreach item=s from=$metrics}
-	    		<tr class="{$s.class}"><td colspan="2"><input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id]} checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td></tr>
+	    		<tr class="{$s.class}">
+	    			<td>&nbsp;&nbsp;<input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id] } checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td>
+	    			{if $cpt == 0}
+	    			<td rowspan="{$nb_metrics}" valign="top" style="padding:10px;"><b><i>Aide : </i></b><br><br>Vous pouvez désactiver une source de données pour qu'elle n'apparaisse plus sur le graphique. <br>Cela peut vous servir lorsque les deux sources de données sont issues d'un même service mais dont les echelles sont completement differentes.</td>{assign var="cpt" value="1"}
+	    			{/if}
+	    		</tr>
 	    		{/foreach}
     	    </table>
     	  	{if !$title2}
@@ -48,8 +65,8 @@
      	   	{/if}
     	    <br>
         </div>
-	<input type="hidden" name="end" value="{$end}">
-	<input type="hidden" name="start" value="{$start}">
+		<input type="hidden" name="end" value="{$end}">
+		<input type="hidden" name="start" value="{$start}">
     {$form.hidden}
 </div>    
 </form>

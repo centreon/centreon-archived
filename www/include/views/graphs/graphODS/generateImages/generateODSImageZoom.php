@@ -60,7 +60,6 @@ For information : contact@oreon-project.org
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
 		$DBRESULT->fetchInto($index_data_ODS);
-		
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
 			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);	
@@ -69,7 +68,7 @@ For information : contact@oreon-project.org
 			$template_id = $_GET["template_id"];
 			
 		$command_line = " graph - --start=".$_GET["start"]. " --end=".$_GET["end"];
-
+		
 		# get all template infos
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$DBRESULT->fetchInto($GraphTemplate);
@@ -102,16 +101,26 @@ For information : contact@oreon-project.org
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
 		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
 			$command_line .= "--rigid ";
-
-		# Init DS template For each curv
+		
+		$metrics = array();
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_id");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		$pass = 1;
+		while ($DBRESULT->fetchInto($metric)){
+			if (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]]))
+				$pass = 0;
+		}
+		
 		$metrics = array();
 		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_id");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
 		$metrics = array();		
+		
 		while ($DBRESULT->fetchInto($metric)){
-			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]]))){
+			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]])) || isset($_GET["index_id"]) || $pass){
 				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 				$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
 				$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];

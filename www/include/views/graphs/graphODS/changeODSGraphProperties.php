@@ -52,7 +52,15 @@ For information : contact@oreon-project.org
 	$page->setValue($min);
 	$page =& $form->addElement('hidden', 'index');
 	$page->setValue($_GET["index"]);
-			
+	if (isset($_GET["end"])){
+		$page =& $form->addElement('hidden', 'end');
+		$page->setValue($_GET["end"]);
+	}
+	if (isset($_GET["start"])){
+		$page =& $form->addElement('hidden', 'start');
+		$page->setValue($_GET["start"]);
+	}
+				
 	# Verify if template exists
 	$DBRESULT =& $pearDBO->query("SELECT storage_type,host_name,service_description FROM index_data WHERE id = '".$_GET["index"]."'");
 	if (PEAR::isError($DBRESULT))
@@ -106,6 +114,10 @@ For information : contact@oreon-project.org
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
+	if (isset($_GET["start"]))
+		$tpl->assign('start', $_GET["start"]);
+	if (isset($_GET["end"]))
+		$tpl->assign('end', $_GET["end"]);
 	
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $_GET["index"]);
