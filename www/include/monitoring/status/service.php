@@ -148,20 +148,24 @@ For information : contact@oreon-project.org
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
 		document.forms['form'].elements['cmd'].value = _i;
+		document.forms['form'].elements['o1'].selectedIndex = 0;
 	}
 	</SCRIPT>
 	<?
-	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();} ");
+
+	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();} this.form.elements['o1'].selectedIndex = 0;");
     $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
+	$o1->setSelected(NULL);	
+
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();}");
     $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);
-	
+	$o2->setSelected(NULL);	
 	$tpl->assign('limit', $limit);
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

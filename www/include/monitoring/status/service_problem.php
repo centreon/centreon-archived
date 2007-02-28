@@ -163,6 +163,7 @@ For information : contact@oreon-project.org
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
 		document.forms['form'].elements['cmd'].value = _i;
+		document.forms['form'].elements['o1'].selectedIndex = 0;
 	}
 	</SCRIPT>
 	<?
