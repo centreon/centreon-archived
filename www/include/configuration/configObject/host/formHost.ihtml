@@ -10,8 +10,8 @@
 </ul>
 </div>
 <div id="validFormTop">
-{if $o == "a" || $o == "c"}
-	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{if $o == "a" || $o == "c" || $o == "mc"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p class="oreonbutton">{$form.change.html}</p>
 {/if}
@@ -22,8 +22,10 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.host_name.label}</td><td class="FormRowValue">{$form.host_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.host_alias.label}</td><td class="FormRowValue">{$form.host_alias.html}</td></tr>
+		{if $o != "mc"}
+			<tr class="list_one"><td class="FormRowField">{$form.host_name.label}</td><td class="FormRowValue">{$form.host_name.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.host_alias.label}</td><td class="FormRowValue">{$form.host_alias.html}</td></tr>
+		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_snmp_community.label} && {$form.host_snmp_version.label}</td><td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td></tr>
 		<tr class="list_one">
@@ -101,7 +103,10 @@
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mail_write.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_notifications_enabled.label}</td><td class="FormRowValue">{$form.host_notifications_enabled.html}</td></tr>
 	 	{if $msg.nagios == 2}
-		<tr class="list_two"><td class="FormRowField">{$form.host_cgs.label}</td><td class="FormRowValue">{$form.host_cgs.html}</td></tr>
+			{if $o == "mc"}
+				<tr class="list_two"><td class="FormRowField">{$form.mc_mod_hcg.label}</td><td class="FormRowValue">{$form.mc_mod_hcg.html}</td></tr>
+			{/if}
+			<tr class="list_two"><td class="FormRowField">{$form.host_cgs.label}</td><td class="FormRowValue">{$form.host_cgs.html}</td></tr>
 	 	{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.host_notification_interval.label}</td><td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
@@ -123,11 +128,23 @@
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_client.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
 		{if !$msg.tpl}
-		<tr class="list_one"><td class="FormRowField">{$form.host_hgs.label}</td><td class="FormRowValue">{$form.host_hgs.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.host_parents.label}</td><td class="FormRowValue">{$form.host_parents.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.host_childs.label}</td><td class="FormRowValue">{$form.host_childs.html}</td></tr>
+			{if $o == "mc"}
+				<tr class="list_one"><td class="FormRowField">{$form.mc_mod_hhg.label}</td><td class="FormRowValue">{$form.mc_mod_hhg.html}</td></tr>
+			{/if}
+			<tr class="list_one"><td class="FormRowField">{$form.host_hgs.label}</td><td class="FormRowValue">{$form.host_hgs.html}</td></tr>
+			{if $o == "mc"}
+				<tr class="list_two"><td class="FormRowField">{$form.mc_mod_hpar.label}</td><td class="FormRowValue">{$form.mc_mod_hpar.html}</td></tr>
+			{/if}
+			<tr class="list_two"><td class="FormRowField">{$form.host_parents.label}</td><td class="FormRowValue">{$form.host_parents.html}</td></tr>
+			{if $o == "mc"}
+				<tr class="list_one"><td class="FormRowField">{$form.mc_mod_hch.label}</td><td class="FormRowValue">{$form.mc_mod_hch.html}</td></tr>
+			{/if}
+			<tr class="list_one"><td class="FormRowField">{$form.host_childs.label}</td><td class="FormRowValue">{$form.host_childs.html}</td></tr>
 		{else}
-		<tr class="list_one"><td class="FormRowField">{$form.host_svTpls.label}</td><td class="FormRowValue">{$form.host_svTpls.html}</td></tr>
+			{if $o == "mc"}
+				<tr class="list_one"><td class="FormRowField">{$form.mc_mod_htpl.label}</td><td class="FormRowValue">{$form.mc_mod_htpl.html}</td></tr>
+			{/if}
+			<tr class="list_one"><td class="FormRowField">{$form.host_svTpls.label}</td><td class="FormRowValue">{$form.host_svTpls.html}</td></tr>
 		{/if}		
 	 </table>
 </div>
@@ -189,9 +206,9 @@
 	 </table>
 </div>
 <div id="validForm">
-{if $o == "a" || $o == "c"}
+{if $o == "a" || $o == "c" || $o == "mc"}
 	<p>{$form.action.html}</p>
-	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p class="oreonbutton">{$form.change.html}</p>
 {/if}

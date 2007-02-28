@@ -43,6 +43,7 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formHostTemplateModel.php"); break; #Add a host template model
 		case "w" : require_once($path."formHostTemplateModel.php"); break; #Watch a host template model
 		case "c" : require_once($path."formHostTemplateModel.php"); break; #Modify a host template model
+		case "mc" : require_once($path."formHostTemplateModel.php"); break; #Massive change
 		case "s" : enableHostInDB($host_id); require_once($path."listHostTemplateModel.php"); break; #Activate a host template model
 		case "ms" : enableHostInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHostTemplateModel.php"); break;
 		case "u" : disableHostInDB($host_id); require_once($path."listHostTemplateModel.php"); break; #Desactivate a host template model

@@ -155,14 +155,19 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title', $lang["h_change"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title', $lang["h_view"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title', $lang["mchange"]);
 
 	## Sort 1 - Host Configuration
 	#
 	## Host basic information
 	#
 	$form->addElement('header', 'information', $lang['h_infos']);
-	$form->addElement('text', 'host_name', $lang["h_name"], $attrsText);
-	$form->addElement('text', 'host_alias', $lang["h_alias"], $attrsText);
+	# No possibility to change name and alias, because there's no interest
+	if ($o != "mc")	{
+		$form->addElement('text', 'host_name', $lang["h_name"], $attrsText);
+		$form->addElement('text', 'host_alias', $lang["h_alias"], $attrsText);
+	}
 	$form->addElement('text', 'host_address', $lang["h_address"], $attrsText);
 	$form->addElement('select', 'host_snmp_version', $lang['h_snmpVer'], array(0=>null, 1=>"1", 2=>"2c", 3=>"3"));
 	$form->addElement('text', 'host_snmp_community', $lang['h_snmpCom'], $attrsText);
@@ -172,7 +177,8 @@ For information : contact@oreon-project.org
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, $lang["yes"], '1');
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, $lang["no"], '0');
 	$form->addGroup($dupSvTpl, 'dupSvTplAssoc', $lang['h_checksEnabled'], '&nbsp;');
-	$form->setDefaults(array('dupSvTplAssoc' => '0'));
+	if ($o != "mc")
+		$form->setDefaults(array('dupSvTplAssoc' => '1'));
 	$form->addElement('static', 'dupSvTplAssocText', $lang['h_dupSvTplAssocText']);
 
 	#
@@ -181,11 +187,12 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'check', $lang['h_head_state']);
 	#Nagios 1
 	if ($oreon->user->get_version() == 1)	{
-	$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, $lang["yes"], '1');
-	$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, $lang["no"], '0');
-	$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, $lang["nothing"], '2');
-	$form->addGroup($hostCE, 'host_checks_enabled', $lang['h_checksEnabled'], '&nbsp;');
-	$form->setDefaults(array('host_checks_enabled' => '2'));
+		$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, $lang["yes"], '1');
+		$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, $lang["no"], '0');
+		$hostCE[] = &HTML_QuickForm::createElement('radio', 'host_checks_enabled', null, $lang["nothing"], '2');
+		$form->addGroup($hostCE, 'host_checks_enabled', $lang['h_checksEnabled'], '&nbsp;');
+		if ($o != "mc")
+			$form->setDefaults(array('host_checks_enabled' => '2'));
 	}
 	$form->addElement('select', 'command_command_id', $lang['h_checkCmd'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
 	$form->addElement('text', 'command_command_id_arg1', $lang['sv_args'], $attrsText);
@@ -196,7 +203,8 @@ For information : contact@oreon-project.org
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["no"], '0');
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($hostEHE, 'host_event_handler_enabled', $lang['h_eventHandlerE'], '&nbsp;');
-	$form->setDefaults(array('host_event_handler_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_event_handler_enabled' => '2'));
 	$form->addElement('select', 'command_command_id2', $lang['h_eventHandler'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', $lang['sv_args'], $attrsText);
 	
@@ -208,13 +216,15 @@ For information : contact@oreon-project.org
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, $lang["no"], '0');
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($hostACE, 'host_active_checks_enabled', $lang['h_activeCE'], '&nbsp;');
-	$form->setDefaults(array('host_active_checks_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_active_checks_enabled' => '2'));
 
 	$hostPCE[] = &HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, $lang["yes"], '1');
 	$hostPCE[] = &HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, $lang["no"], '0');
 	$hostPCE[] = &HTML_QuickForm::createElement('radio', 'host_passive_checks_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($hostPCE, 'host_passive_checks_enabled', $lang['h_passiveCE'], '&nbsp;');
-	$form->setDefaults(array('host_passive_checks_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_passive_checks_enabled' => '2'));
 
 	$form->addElement('select', 'timeperiod_tp_id', $lang['h_checkPeriod'], $tps);
 	}
@@ -227,14 +237,23 @@ For information : contact@oreon-project.org
 	$hostNE[] = &HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, $lang["no"], '0');
 	$hostNE[] = &HTML_QuickForm::createElement('radio', 'host_notifications_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($hostNE, 'host_notifications_enabled', $lang['h_notifEnabled'], '&nbsp;');
-	$form->setDefaults(array('host_notifications_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_notifications_enabled' => '2'));
+	
 	#Nagios 2
 	if ($oreon->user->get_version() == 2)	{
-    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', $lang['h_CgMembers'], $notifCgs, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
-	$ams3->setElementTemplate($template);
-	echo $ams3->getElementJs(false);
+		if ($o == "mc")	{
+			$mc_mod_hcg = array();
+			$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, $lang['mc_mod_incremental'], '0');
+			$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, $lang['mc_mod_replacement'], '1');
+			$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', $lang["mc_mod"], '&nbsp;');
+			$form->setDefaults(array('mc_mod_hcg'=>'0'));
+		}
+	    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', $lang['h_CgMembers'], $notifCgs, $attrsAdvSelect);
+		$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
+		$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+		$ams3->setElementTemplate($template);
+		echo $ams3->getElementJs(false);
 	}
 
 	$form->addElement('text', 'host_notification_interval', $lang['h_notifInt'], $attrsText2);
@@ -259,7 +278,8 @@ For information : contact@oreon-project.org
 	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, $lang["enable"], '1');
 	$hostActivation[] = &HTML_QuickForm::createElement('radio', 'host_activate', null, $lang["disable"], '0');
 	$form->addGroup($hostActivation, 'host_activate', $lang["status"], '&nbsp;');
-	$form->setDefaults(array('host_activate' => '1'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_activate' => '1'));
 	$form->addElement('textarea', 'host_comment', $lang["cmt_comment"], $attrsTextarea);
 
 	#
@@ -271,20 +291,43 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title2', $lang["h_Links_change"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title2', $lang["h_Links_view"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title2', $lang["mchange"]);
 
 	$form->addElement('header', 'links', $lang['h_head_links']);
+	if ($o == "mc")	{
+		$mc_mod_hpar = array();
+		$mc_mod_hpar[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_hpar[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hpar', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_hpar, 'mc_mod_hpar', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_hpar'=>'0'));
+	}
     $ams3 =& $form->addElement('advmultiselect', 'host_parents', $lang['h_HostParents'], $hostPs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
+	if ($o == "mc")	{
+		$mc_mod_hch = array();
+		$mc_mod_hch[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hch', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_hch[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hch', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_hch, 'mc_mod_hch', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_hch'=>'0'));
+	}
     $ams3 =& $form->addElement('advmultiselect', 'host_childs', $lang['h_HostChilds'], $hostPs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
+	if ($o == "mc")	{
+		$mc_mod_hhg = array();
+		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hhg', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hhg', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_hhg, 'mc_mod_hhg', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_hhg'=>'0'));
+	}
     $ams3 =& $form->addElement('advmultiselect', 'host_hgs', $lang['h_HostGroupMembers'], $hgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
@@ -300,32 +343,36 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title3', $lang["h_modify_treat"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title3', $lang["h_view_treat"]);
-
+	else if ($o == "mc")
+		$form->addElement('header', 'title3', $lang["mchange"]);
 
 	$form->addElement('header', 'treatment', $lang['h_head_treat']);
 	# Nagios 2
 	if ($oreon->user->get_version() == 2)	{
-	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, $lang["yes"], '1');
-	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, $lang["no"], '0');
-	$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, $lang["nothing"], '2');
-	$form->addGroup($hostOOH, 'host_obsess_over_host', $lang['h_ObsessOH'], '&nbsp;');
-	$form->setDefaults(array('host_obsess_over_host' => '2'));
-
-	$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, $lang["yes"], '1');
-	$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, $lang["no"], '0');
-	$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, $lang["nothing"], '2');
-	$form->addGroup($hostCF, 'host_check_freshness', $lang['h_checkFreshness'], '&nbsp;');
-	$form->setDefaults(array('host_check_freshness' => '2'));
+		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, $lang["yes"], '1');
+		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, $lang["no"], '0');
+		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, $lang["nothing"], '2');
+		$form->addGroup($hostOOH, 'host_obsess_over_host', $lang['h_ObsessOH'], '&nbsp;');
+		if ($o != "mc")
+			$form->setDefaults(array('host_obsess_over_host' => '2'));
+	
+		$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, $lang["yes"], '1');
+		$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, $lang["no"], '0');
+		$hostCF[] = &HTML_QuickForm::createElement('radio', 'host_check_freshness', null, $lang["nothing"], '2');
+		$form->addGroup($hostCF, 'host_check_freshness', $lang['h_checkFreshness'], '&nbsp;');
+		if ($o != "mc")
+			$form->setDefaults(array('host_check_freshness' => '2'));
 	}
 	$hostFDE[] = &HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, $lang["yes"], '1');
 	$hostFDE[] = &HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, $lang["no"], '0');
 	$hostFDE[] = &HTML_QuickForm::createElement('radio', 'host_flap_detection_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($hostFDE, 'host_flap_detection_enabled', $lang['h_flapDetect'], '&nbsp;');
-	$form->setDefaults(array('host_flap_detection_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_flap_detection_enabled' => '2'));
 	# Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() == 2)
 		$form->addElement('text', 'host_freshness_threshold', $lang['h_FreshnessThreshold'], $attrsText2);
-	}
+
 	$form->addElement('text', 'host_low_flap_threshold', $lang['h_lowFT'], $attrsText2);
 	$form->addElement('text', 'host_high_flap_threshold', $lang['h_highFT'], $attrsText2);
 
@@ -333,19 +380,22 @@ For information : contact@oreon-project.org
 	$hostPPD[] = &HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, $lang["no"], '0');
 	$hostPPD[] = &HTML_QuickForm::createElement('radio', 'host_process_perf_data', null, $lang["nothing"], '2');
 	$form->addGroup($hostPPD, 'host_process_perf_data', $lang['h_processPD'], '&nbsp;');
-	$form->setDefaults(array('host_process_perf_data' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_process_perf_data' => '2'));
 
 	$hostRSI[] = &HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, $lang["yes"], '1');
 	$hostRSI[] = &HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, $lang["no"], '0');
 	$hostRSI[] = &HTML_QuickForm::createElement('radio', 'host_retain_status_information', null, $lang["nothing"], '2');
 	$form->addGroup($hostRSI, 'host_retain_status_information', $lang['h_retainSI'], '&nbsp;');
-	$form->setDefaults(array('host_retain_status_information' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_retain_status_information' => '2'));
 
 	$hostRNI[] = &HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, $lang["yes"], '1');
 	$hostRNI[] = &HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, $lang["no"], '0');
 	$hostRNI[] = &HTML_QuickForm::createElement('radio', 'host_retain_nonstatus_information', null, $lang["nothing"], '2');
 	$form->addGroup($hostRNI, 'host_retain_nonstatus_information', $lang['h_retainNI'], '&nbsp;');
-	$form->setDefaults(array('host_retain_nonstatus_information' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('host_retain_nonstatus_information' => '2'));
 
 	if ($oreon->optGen["perfparse_installed"])	{
 		$form->addElement('header', 'purge_policy', $lang["mod_purgePolicy"]);
@@ -361,6 +411,8 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title4', $lang["h_ExtInf_change"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title4', $lang["h_ExtInf_view"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title4', $lang["mchange"]);
 
 	$form->addElement('header', 'nagios', $lang['h_nagios']);
 	if ($oreon->user->get_version() == 2)
@@ -393,6 +445,13 @@ For information : contact@oreon-project.org
 	$host_register = 1;
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+	if (is_array($select))	{
+		$select_str = NULL;
+		foreach ($select as $key => $value)
+			$select_str .= $key.",";
+		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear->setValue($select_str);
+	}
 
 	#
 	## Form Rules
@@ -402,26 +461,28 @@ For information : contact@oreon-project.org
 		return (str_replace(" ", "_", $form->getSubmitValue("host_name")));
 	}
 	$form->applyFilter('_ALL_', 'trim');
-	$form->applyFilter('host_name', 'myReplace');
-	$form->addRule('host_name', $lang['ErrName'], 'required');
-	$form->registerRule('exist', 'callback', 'testHostExistence');
-	$form->addRule('host_name', $lang['ErrAlreadyExist'], 'exist');
-	# If we are using a Template, no need to check the value, we hope there are in the Template
-	if (!$form->getSubmitValue("host_template_model_htm_id"))	{
-		$form->addRule('host_alias', $lang['ErrAlias'], 'required');
-		$form->addRule('host_address', $lang['ErrAddress'], 'required');
-		$form->addRule('host_max_check_attempts', $lang['ErrRequired'], 'required');
-		if ($oreon->user->get_version() == 2)	{
-			$form->addRule('timeperiod_tp_id', $lang['ErrTp'], 'required');
-			$form->addRule('host_cgs', $lang['ErrCg'], 'required');
+	if ($o != "mc")	{
+		$form->applyFilter('host_name', 'myReplace');
+		$form->addRule('host_name', $lang['ErrName'], 'required');
+		$form->registerRule('exist', 'callback', 'testHostExistence');
+		$form->addRule('host_name', $lang['ErrAlreadyExist'], 'exist');
+		# If we are using a Template, no need to check the value, we hope there are in the Template
+		if (!$form->getSubmitValue("host_template_model_htm_id"))	{
+			$form->addRule('host_alias', $lang['ErrAlias'], 'required');
+			$form->addRule('host_address', $lang['ErrAddress'], 'required');
+			$form->addRule('host_max_check_attempts', $lang['ErrRequired'], 'required');
+			if ($oreon->user->get_version() == 2)	{
+				$form->addRule('timeperiod_tp_id', $lang['ErrTp'], 'required');
+				$form->addRule('host_cgs', $lang['ErrCg'], 'required');
+			}
+			$form->addRule('host_notification_interval', $lang['ErrRequired'], 'required');
+			$form->addRule('timeperiod_tp_id2', $lang['ErrTp'], 'required');
+			$form->addRule('host_notifOpts', $lang['ErrOpt'], 'required');
+	
 		}
-		$form->addRule('host_notification_interval', $lang['ErrRequired'], 'required');
-		$form->addRule('timeperiod_tp_id2', $lang['ErrTp'], 'required');
-		$form->addRule('host_notifOpts', $lang['ErrOpt'], 'required');
-
 	}
+	
 	$form->setRequiredNote($lang['requiredFields']);
-
 	#
 	##End of form definition
 	#
@@ -448,6 +509,12 @@ For information : contact@oreon-project.org
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
+	# Massive Change
+	else if ($o == "mc")	{
+		$subMC =& $form->addElement('submit', 'submitMC', $lang["save"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	}
+	
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0, "perfparse"=>$oreon->optGen["perfparse_installed"]));
 	$tpl->assign('min', $min);
 	$tpl->assign("sort1", $lang['h_conf']);
@@ -464,6 +531,12 @@ For information : contact@oreon-project.org
 			$hostObj->setValue(insertHostInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateHostInDB($hostObj->getValue());
+		else if ($form->getSubmitValue("submitMC"))	{
+			$select = explode(",", $select);
+			foreach ($select as $key=>$value)
+				if ($value)
+					updateHostInDB($value, true);
+		}
 		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
 		$form->freeze();

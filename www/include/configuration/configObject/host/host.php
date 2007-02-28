@@ -50,6 +50,7 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formHost.php"); break; #Add a host
 		case "w" : require_once($path."formHost.php"); break; #Watch a host
 		case "c" : require_once($path."formHost.php"); break; #Modify a host
+		case "mc" : require_once($path."formHost.php"); break; # Massive Change
 		case "s" : enableHostInDB($host_id); require_once($path."listHost.php"); break; #Activate a host
 		case "ms" : enableHostInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHost.php"); break;
 		case "u" : disableHostInDB($host_id); require_once($path."listHost.php"); break; #Desactivate a host
