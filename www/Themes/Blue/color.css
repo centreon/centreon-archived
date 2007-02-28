@@ -98,8 +98,8 @@ border-color: #BFD0E2;
 
 .list_up{	background-color:#B2F867;}
 .list_up:hover{	background-color:#B2A867;}
-.list_down {	background-color:#fada83;}
-.list_down:hover {	background-color:#AD8B46;}
+.list_down {	background-color:#ffbbbb;}
+.list_down:hover {	background-color:#dfbbbb;}
 
 
 #page {			color:#592bed;}
