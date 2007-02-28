@@ -1,0 +1,21 @@
+<script language='javascript' src='./include/common/javascript/tool.js'></script>
+{$form.javascript}
+{if $title2}
+<form {$form.attributes}>
+<div>
+<table id="ListTable">
+	<tr class="ListHeader">
+		<td class="FormHeader">Properties</td>
+	</tr>
+	<tr class="list_one">
+		<td class="ListColCenter">
+			<br><br><b>Host Name : </b>{$host_name} Service Description {$service_description}<br>
+			
+		{$form.storage_type.label}{$form.storage_type.html}
+
+		</td>
+	</tr>
+</table>
+</div>
+{/if}
+</form>
