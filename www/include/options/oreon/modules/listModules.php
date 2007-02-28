@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_rname", $lang["mod_menu_module_rname"]);
 	$tpl->assign("headerMenu_release", $lang["mod_menu_module_release"]);
 	$tpl->assign("headerMenu_author", $lang["mod_menu_module_author"]);
-	$tpl->assign("headerMenu_isinstalled", $lang["mod_menu_module_is_intalled"]);
+	$tpl->assign("headerMenu_isinstalled", $lang["mod_menu_module_is_installed"]);
 	$tpl->assign("headerMenu_action", $lang["mod_menu_listAction"]);
 	# end header menu
 	
@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
 				$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_name"=>$moduleinfo["name"],
 						"RowMenu_rname"=>$moduleinfo["rname"],
-						"RowMenu_release"=>$moduleinfo["longname"],
+						"RowMenu_release"=>$moduleinfo["release"],
 						"RowMenu_author"=>$moduleinfo["author"],
 						"RowMenu_isinstalled"=>$lang["yes"],
 						"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],

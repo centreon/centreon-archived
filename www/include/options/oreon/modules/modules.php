@@ -39,7 +39,7 @@ For information : contact@oreon-project.org
 	
 	switch ($o)	{
 		case "i" : require_once($path."formModule.php"); break;
-		case "d" : require_once($path."formModule.php"); break;
+		case "u" : require_once($path."formModule.php"); break;
 		case "w" : require_once($path."formModule.php"); break;
 		default : require_once($path."listModules.php");  break;
 	}

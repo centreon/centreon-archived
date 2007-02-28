@@ -1,3 +1,5 @@
+ {$form1.javascript}
+ <form {$form1.attributes}>
  <table id="ListTable">
 	<tr class="ListHeader">
 		<td class="FormHeader" colspan="2">
@@ -19,8 +21,68 @@
  	<tr class="list_two">
  		<td class="FormRowField">{$headerMenu_infos}</td>
  		<td class="FormRowValue">{$module_infos}</td>
- 	</tr>	 		 		 	
+ 	</tr>
+ 	<tr class="list_one">
+ 		<td colspan="2" align="center">
+ 			{$form1.install.html}
+ 			{if $output1}
+ 				{$output1}<br>
+ 			{/if}
+ 			{if $output2}
+ 				{$output2}<br>
+ 			{/if}
+ 			{if $output3}
+ 				{$output3}<br>
+ 			{/if}
+ 			{if $output4}
+ 				{$output4}<br>
+ 			{/if}
+ 		</td>
+ 	</tr> 			 		 	
  </table>
-{if ( $o == 'i'  || $o == 'd')}
- 	 {$operation_success}
-{/if}
+ {$form1.hidden}
+</form>
+<br><br>
+ {section name=elem loop=$elemArr}
+ 	{$form.javascript}
+ 	<form {$form.attributes}>
+	  <table id="ListTable">
+		<tr class="ListHeader">
+			<td class="FormHeader" colspan="2">
+				<img src='./img/icones/16x16/info.gif'>&nbsp;&nbsp;{$headerMenu_title2}
+			</td>
+		</tr>
+	 	<tr class="list_one">
+	 		<td class="FormRowField">{$headerMenu_rname}</td>
+	 		<td class="FormRowValue">{$elemArr[elem].upgrade_rname}</td>
+	 	</tr>
+	 	<tr class="list_two">
+	 		<td class="FormRowField">{$headerMenu_release_from}</td>
+	 		<td class="FormRowValue">{$elemArr[elem].upgrade_release_from}</td>
+	 	</tr>
+	 	<tr class="list_one">
+	 		<td class="FormRowField">{$headerMenu_release_to}</td>
+	 		<td class="FormRowValue">{$elemArr[elem].upgrade_release_to}</td>
+	 	</tr>
+	 	<tr class="list_two">
+	 		<td class="FormRowField">{$headerMenu_author}</td>
+	 		<td class="FormRowValue">{$elemArr[elem].upgrade_author}</td>
+	 	</tr>
+	 	<tr class="list_one">
+	 		<td class="FormRowField">{$headerMenu_infos}</td>
+	 		<td class="FormRowValue">{$elemArr[elem].upgrade_infos}</td>
+	 	</tr>
+	 	<tr class="list_two">
+	 		<td class="FormRowField">{$headerMenu_isvalid}</td>
+	 		<td class="FormRowValue">{$elemArr[elem].upgrade_is_validUp}</td>
+	 	</tr>
+	 	{if $elemArr[elem].upgrade_choice}
+		 	<tr class="list_one">
+		 		<td colspan="2" align="center">{$form.upgrade.html}</td>
+		 	</tr>
+		 {/if}	 		 	
+	 </table>
+	 {$form.hidden}
+	</form>
+	 <br>
+ {/section}

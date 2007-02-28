@@ -148,3 +148,5 @@ UPDATE `topology` SET `topology_name` = 'm_modules',
 `topology_style_class` = NULL ,
 `topology_style_id` = NULL ,
 `topology_OnClick` = NULL WHERE `topology_page` = 50103 LIMIT 1 ;
+
+ALTER TABLE `modules_informations` CHANGE `release` `release` VARCHAR( 255 ) NULL DEFAULT NULL;

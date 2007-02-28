@@ -1712,7 +1712,7 @@ CREATE TABLE `modules_informations` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) default NULL,
   `rname` varchar(255) default NULL,
-  `release` int(11) default NULL,
+  `release` varchar(255) default NULL,
   `is_removeable` enum('0','1') default NULL,
   `infos` text,
   `author` varchar(255) default NULL,
