@@ -15,23 +15,22 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
 	if (!isset($oreon))
 		exit();
 
-	function getModuleInfoInDB($name) {
-		if (!$name) return;
+	function getModuleInfoInDB($name = NULL, $id = NULL) {
+		if (!$name && !$id) return;
 		global $pearDB;
-		
-		$DBRESULT =& $pearDB->query("SELECT * FROM modules_informations WHERE internal_name='". $name ."'  LIMIT 1");
+		if ($id)
+			$rq = "SELECT * FROM modules_informations WHERE id='".$id."'  LIMIT 1";
+		else if ($name)
+			$rq = "SELECT * FROM modules_informations WHERE name='".$name."' LIMIT 1";		
+		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print $DBRESULT->getDebugInfo()."<br>";
-		# Set base value
-		$moduleinfo =  $DBRESULT->fetchRow();
-
-		return $moduleinfo;	
-	}
-
-
-	
+		if ($DBRESULT->numRows())
+			return ($DBRESULT->fetchRow());
+		else
+			return array();	
+	}	
 ?>

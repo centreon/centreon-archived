@@ -128,35 +128,26 @@ $lang['genOpt_problem_order_desc'] = "Descendant";
 
 $lang['genOpt_gmt'] = "GMT";
 
-
 # Menu
 
-$lang['menu_infos'] = "Menu Information";
-$lang['menu_mod'] = "Modules Availables";
-$lang['menu_modRules'] = "A module can contain information which will be quickly integrate";
-$lang['menu_modRule1'] = "Files to generate -> /MODULES/generate_files/";
-$lang['menu_modRule2'] = "Sql Files -> /MODULES/sql/";
-$lang['menu_modRule3'] = "Lang Files -> /MODULES/lang/";
-$lang['menu_modInfos'] = "Module Informations";
-$lang['menu_modGen'] = "Generation";
-$lang['menu_modSql'] = "Sql";
-$lang['menu_modLang'] = "Lang Files Available";
-$lang['menu_listName'] = "Name";
-$lang['menu_listLongName'] = "Real Name";
-$lang['menu_listDir'] = "Directory";
-$lang['menu_listGen'] = "Generation";
-$lang['menu_listLang'] = "Lang";
-$lang['menu_listSql'] = "Sql";
-$lang["menu_listAction"] = "Actions";
-$lang["menu_listAction_del"] = "Uninstall";
-$lang["menu_listAction_install"] = "Install";
-$lang["menu_listAction_i"] = "Module has been installed succesfully";
-$lang["menu_listAction_d"] = "Module has been uninstalled succesfully";
-$lang["menu_Module_Title"] = "Module Informations";
-$lang["menu_Module_Name"] = "Name";
-$lang["menu_Module_Version"] = "Version";
-$lang["menu_Module_Author"] = "Author";
-$lang["menu_Module_additionnals_infos"] = "Additionnals Informations";
+$lang['mod_menu'] = "Modules Availables";
+$lang['mod_menu_modInfos'] = "Module Informations";
+$lang["mod_menu_module_name"] = "Name";
+$lang["mod_menu_module_rname"] = "Real name";
+$lang["mod_menu_module_release"] = "Release";
+$lang["mod_menu_module_author"] = "Author";
+$lang["mod_menu_module_additionnals_infos"] = "Additionnals Informations";
+$lang["mod_menu_module_is_intalled"] = "Installed";
+$lang["mod_menu_module_invalid"] = "NA";
+$lang["mod_menu_module_impossible"] = "Impossible";
+$lang["mod_menu_listAction"] = "Actions";
+$lang["mod_menu_listAction_del"] = "Uninstall";
+$lang["mod_menu_listAction_install"] = "Install";
+$lang["mod_menu_listAction_upgrade"] = "Upgrade";
+$lang["mod_menu_listAction_i"] = "Module has been installed succesfully";
+$lang["mod_menu_listAction_d"] = "Module has been uninstalled succesfully";
+$lang["mod_menu_listAction_u"] = "Module has been upgraded succesfully";
+
 $lang['menu_ODS'] = "OreonDataStorage";
 $lang['menu_nagios'] = "Nagios";
 $lang['menu_ldap'] = "LDAP";

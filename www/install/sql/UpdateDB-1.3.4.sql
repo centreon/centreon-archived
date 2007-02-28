@@ -125,3 +125,26 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60201, 'mc', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60202, 'mc', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60206, 'mc', './include/common/javascript/changetab.js', 'initChangeTab');
+
+ALTER TABLE `modules_informations` CHANGE `internal_name` `name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `name` `rname` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `version` `release` INT( 11 ) NULL DEFAULT NULL ;
+ALTER TABLE `modules_informations` ADD `infos` TEXT NULL ,
+ADD `author` VARCHAR( 255 ) NULL ,
+ADD `lang_files` ENUM( '0', '1' ) NULL ;
+ALTER TABLE `modules_informations` DROP `is_installed` ;
+
+UPDATE `topology` SET `topology_name` = 'm_modules',
+`topology_icone` = './img/icones/16x16/press.gif',
+`topology_parent` = '501',
+`topology_page` = '50103',
+`topology_order` = '30',
+`topology_group` = '1',
+`topology_url` = './include/options/oreon/modules/modules.php',
+`topology_url_opt` = NULL ,
+`topology_popup` = '0',
+`topology_modules` = '0',
+`topology_show` = '1',
+`topology_style_class` = NULL ,
+`topology_style_id` = NULL ,
+`topology_OnClick` = NULL WHERE `topology_page` = 50103 LIMIT 1 ;

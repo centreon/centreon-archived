@@ -18,11 +18,12 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 	
-	isset($_GET["menu_id"]) ? $mG = $_GET["menu_id"] : $mG = NULL;
-	isset($_POST["menu_id"]) ? $mP = $_POST["menu_id"] : $mP = NULL;
+	isset($_GET["id"]) ? $mG = $_GET["id"] : $mG = NULL;
+	isset($_POST["id"]) ? $mP = $_POST["id"] : $mP = NULL;
+	$mG ? $id = $mG : $id = $mP;
+	
 	isset($_GET["name"]) ? $nameG = $_GET["name"] : $nameG = NULL;	
 	isset($_POST["name"]) ? $nameP = $_POST["name"] : $nameP = NULL;
-	$mG ? $menu_id = $mG : $menu_id = $mP;
 	$nameG ? $name = $nameG : $name = $nameP;
 		
 	#Pear library
@@ -31,15 +32,15 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 	#Path to the options dir
-	$path = "./include/options/oreon/menu/";
+	$path = "./include/options/oreon/modules/";
 	
 	require_once "./include/common/common-Func.php";
 	require_once $path ."DB-Func.php";
 	
 	switch ($o)	{
-		case "i" : require_once($path."formMenu.php"); break;
-		case "d" : require_once($path."formMenu.php"); break;
-		case "w" : require_once($path."formMenu.php"); break;
-		default : require_once($path."listMenu.php");  break;
+		case "i" : require_once($path."formModule.php"); break;
+		case "d" : require_once($path."formModule.php"); break;
+		case "w" : require_once($path."formModule.php"); break;
+		default : require_once($path."listModules.php");  break;
 	}
 ?>

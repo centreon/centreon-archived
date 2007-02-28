@@ -1,0 +1,26 @@
+ <table id="ListTable">
+	<tr class="ListHeader">
+		<td class="FormHeader" colspan="2">
+			<img src='./img/icones/16x16/info.gif'>&nbsp;&nbsp;{$headerMenu_title}
+		</td>
+	</tr>
+ 	<tr class="list_one">
+ 		<td class="FormRowField">{$headerMenu_rname}</td>
+ 		<td class="FormRowValue">{$module_rname}</td>
+ 	</tr>
+ 	<tr class="list_two">
+ 		<td class="FormRowField">{$headerMenu_release}</td>
+ 		<td class="FormRowValue">{$module_release}</td>
+ 	</tr>
+ 	<tr class="list_one">
+ 		<td class="FormRowField">{$headerMenu_author}</td>
+ 		<td class="FormRowValue">{$module_author}</td>
+ 	</tr>
+ 	<tr class="list_two">
+ 		<td class="FormRowField">{$headerMenu_infos}</td>
+ 		<td class="FormRowValue">{$module_infos}</td>
+ 	</tr>	 		 		 	
+ </table>
+{if ( $o == 'i'  || $o == 'd')}
+ 	 {$operation_success}
+{/if}

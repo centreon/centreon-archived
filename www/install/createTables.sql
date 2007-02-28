@@ -1710,13 +1710,15 @@ CREATE TABLE `topology_JS` (
 
 CREATE TABLE `modules_informations` (
   `id` int(11) NOT NULL auto_increment,
-  `internal_name` varchar(254) default NULL,
-  `name` varchar(254) default NULL,
-  `version` int(11) default NULL,
-  `is_installed` enum('0','1') default NULL,
+  `name` varchar(255) default NULL,
+  `rname` varchar(255) default NULL,
+  `release` int(11) default NULL,
   `is_removeable` enum('0','1') default NULL,
+  `infos` text,
+  `author` varchar(255) default NULL,
+  `lang_files` enum('0','1') default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 

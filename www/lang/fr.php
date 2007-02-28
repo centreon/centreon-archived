@@ -123,7 +123,7 @@ $lang['m_views_compoTmp'] = "Courbes Templates";
 $lang['m_opt_conf'] = "Oreon";
 $lang['m_general'] = "Options G&eacute;n&eacute;rales";
 $lang['m_lang'] = "Langues";
-$lang['m_menu'] = "Menu";
+$lang['m_modules'] = "Modules";
 $lang['m_plugins'] = "Sondes";
 $lang['m_myAccount'] = "Mon Compte";
 

@@ -123,7 +123,7 @@ $lang['m_views_compoTmp'] = "Components Templates";
 $lang['m_opt_conf'] = "Oreon";
 $lang['m_general'] = "General Options";
 $lang['m_lang'] = "Language";
-$lang['m_menu'] = "Menu";
+$lang['m_modules'] = "Modules";
 $lang['m_plugins'] = "Plugins";
 $lang['m_myAccount'] = "My Account";
 

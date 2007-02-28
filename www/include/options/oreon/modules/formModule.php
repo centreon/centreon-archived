@@ -22,22 +22,13 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	#
-	# End of "database-retrieved" information
-	##########################################################
 	
-	
-	if (($o == "i" || $o == "d" ) && $name)	{
-	
+	/*
+	 * TESTER QUE C POSSIBLE DE L'INSTALLER => lien pourri...
+	if (($o == "i" || $o == "d" ) && $name)	{	
 		$o == "i" ? $sql_file = "install.sql" :$sql_file = "uninstall.sql";
-		$sql_file_path = "./modules/".$name."/sql/" . $sql_file ;
-		
-		if (file_exists($sql_file_path )) {	
-		
+		$sql_file_path = "./modules/".$name."/sql/" . $sql_file ;		
+		if (file_exists($sql_file_path )) {		
 			$file_sql = file($sql_file_path);
 		            $str = NULL;
 		            for ($i = 0; $i <= count($file_sql) - 1; $i++){
@@ -59,37 +50,32 @@ For information : contact@oreon-project.org
 		}
 		$tpl->assign("operation_success", $lang["menu_listAction_" . $o]);
 	}
-	
-	if ($o == "w"  && $name)	{	
-		if (is_file("./modules/".$name."/conf.php")) 
-			include_once("./modules/".$name."/conf.php");
-		
-		# start header menu
+	*/
+	$tpl->assign("headerMenu_title",$lang["mod_menu_modInfos"]);
+	$tpl->assign("headerMenu_rname", $lang["mod_menu_module_rname"]);
+	$tpl->assign("headerMenu_release", $lang["mod_menu_module_release"]);	
+	$tpl->assign("headerMenu_author", $lang["mod_menu_module_author"]);
+	$tpl->assign("headerMenu_infos", $lang["mod_menu_module_additionnals_infos"]);
+	$tpl->assign("headerMenu_isinstalled", $lang["mod_menu_module_is_intalled"]);
 
-		$tpl->assign("headerMenu_Title",$lang["menu_Module_Title"] );
-		$tpl->assign("headerMenu_name", $lang["menu_Module_Name"]);
-		$tpl->assign("headerMenu_version", $lang["menu_Module_Version"]);	
-		$tpl->assign("headerMenu_author", $lang["menu_Module_Author"]);
-		$tpl->assign("headerMenu_infos", $lang["menu_Module_additionnals_infos"]);
-
-		# end header menu
-
-		$tpl->assign("Menu_name", isset($module_conf[$name]["name"]) ? $module_conf[$name]["name"] : $name );	
-		$tpl->assign("Menu_author",  htmlentities(isset($module_conf[$name]["author"]) ? $module_conf[$name]["author"] : "Oreon Team"), ENT_QUOTES);
-		$tpl->assign("Menu_infos", isset($module_conf[$name]["info"]) ? $module_conf[$name]["info"] : "");		
-	
+	if ($name)	{	
+		include_once("./modules/".$name."/conf.php");
+		$tpl->assign("module_rname", $module_conf[$name]["rname"]);	
+		$tpl->assign("module_release", $module_conf[$name]["release"]);
+		$tpl->assign("module_author", $module_conf[$name]["author"]);
+		$tpl->assign("module_infos", $module_conf[$name]["infos"]);
+		$tpl->assign("module_isinstalled", $lang["no"]);
 	}
-	
-	
-	
+	else if ($id)	{
+		$moduleinfo = getModuleInfoInDB(NULL, $id);
+		$tpl->assign("module_rname", $moduleinfo["rname"]);
+		$tpl->assign("module_release", $moduleinfo["release"]);
+		$tpl->assign("module_author", $moduleinfo["author"]);
+		$tpl->assign("module_infos", $moduleinfo["infos"]);
+		$tpl->assign("module_isinstalled", $lang["yes"]);
+	}
 	#
 	##Apply a template definition
 	#
-	$tpl->assign("o", $o);
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$tpl->display("formMenu.ihtml");
-	
-	
-	
-
+	$tpl->display("formModule.ihtml");
 ?>

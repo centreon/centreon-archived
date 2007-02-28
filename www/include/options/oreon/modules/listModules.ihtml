@@ -1,0 +1,42 @@
+<table id="ListTable">
+	<tr class="ListHeader">
+		<td class="ListColHeaderCenter">{$headerMenu_name}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_rname}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_release}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_author}</td>
+		<td class="ListColHeaderCenter">{$headerMenu_isinstalled}</td>
+		<td class="ListColHeaderRight">{$headerMenu_action}</td>
+	</tr>
+	{section name=elem loop=$elemArr}
+	<tr class={$elemArr[elem].MenuClass}>
+		<td class="ListColCenter">
+			{if $elemArr[elem].RowMenu_link}
+				<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
+			{else}
+				{$elemArr[elem].RowMenu_name}
+			{/if}
+		</td>
+		<td class="ListColCenter">
+			{if $elemArr[elem].RowMenu_link}
+				<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_rname}</a>
+			{else}
+				{$elemArr[elem].RowMenu_rname}
+			{/if}
+		</td>
+		<td class="ListColCenter">{$elemArr[elem].RowMenu_release}</td>
+		<td class="ListColCenter">{$elemArr[elem].RowMenu_author}</td>
+		<td class="ListColCenter">{$elemArr[elem].RowMenu_isinstalled}</td>		
+		<td class="ListColRight">
+			{if $elemArr[elem].RowMenu_link_install}
+				&nbsp;<a href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icones/16x16/gears_run.gif' title='{$action_install}' alt='{$action_install}'></a>&nbsp;
+			{/if}
+			{if $elemArr[elem].RowMenu_link_delete}
+				&nbsp;<a href="{$elemArr[elem].RowMenu_link_delete}"><img src='./img/icones/16x16/undo.gif' title='{$action_delete}' alt='{$action_delete}'></a&nbsp;
+			{/if}
+			{if $elemArr[elem].RowMenu_link_upgrade}
+				&nbsp;<a href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icones/16x16/gears_run.gif' title='{$action_upgrade}' alt='{$action_upgrade}'></a>&nbsp;
+			{/if}
+		</td>		
+	</tr>
+	{/section}	
+</table>

@@ -130,35 +130,26 @@ $lang["genOpt_gmt"] = "GMT";
 
 # Menu
 
-$lang['menu_infos'] = "Informations sur le Menu";
-$lang['menu_mod'] = "Modules disponibles";
-$lang['menu_modRules'] = "Un module peut contenir des informations qui seront int&eacute;gr&eacute;es automatiquement.";
-$lang['menu_modRule1'] = "Des fichiers &agrave; g&eacute;n&eacute;rer -> /MODULES/generate_files/";
-$lang['menu_modRule2'] = "Des fichiers SQL -> /MODULES/sql/";
-$lang['menu_modRule3'] = "Des fichiers de langue -> /MODULES/lang/";
-$lang['menu_modInfos'] = "Informations sur le Module";
-$lang['menu_modGen'] = "G&eacute;n&eacute;ration";
-$lang['menu_modSql'] = "SQL";
-$lang['menu_modLang'] = "Fichier de langue disponible";
-$lang["menu_listName"] = "Nom";
-$lang['menu_listLongName'] = "Nom R&eacute;el";
-$lang["menu_listDir"] = "R&eacute;pertoire";
-$lang["menu_listGen"] = "G&eacute;n&eacute;ration";
-$lang["menu_listLang"] = "Langue";
-$lang["menu_listSql"] = "SQL";
-$lang["menu_listAction"] = "Actions";
-$lang["menu_listAction_del"] = "D&eacuteinstaller";
-$lang["menu_listAction_install"] = "Installer";
-$lang["menu_listAction_i"] = "Le module a &eacute;t&eacute; install&eacute; &agrave; succ&egrave;s";
-$lang["menu_listAction_d"] = "Le module a &eacute;t&eacute; d&eacute;install&eacute; &agrave; succ&egrave;s";
-$lang["menu_Module_Title"] = "Informations du module";
-$lang["menu_Module_Name"] = "Nom";
-$lang["menu_Module_Version"] = "Version";
-$lang["menu_Module_Author"] = "Auteur";
-$lang["menu_Module_additionnals_infos"] = "Informations compl&eacute;mentaires";
+$lang['mod_menu'] = "Modules disponibles";
+$lang['mod_menu_modInfos'] = "Informations sur le Module";
+$lang["mod_menu_module_name"] = "Nom";
+$lang["mod_menu_module_rname"] = "Nom r&eacute;el";
+$lang["mod_menu_module_release"] = "Version";
+$lang["mod_menu_module_author"] = "Auteur";
+$lang["mod_menu_module_additionnals_infos"] = "Informations compl&eacute;mentaires";
+$lang["mod_menu_module_is_intalled"] = "Install&eacute;";
+$lang["mod_menu_module_invalid"] = "ND";
+$lang["mod_menu_module_impossible"] = "Impossible";
+$lang["mod_menu_listAction"] = "Actions";
+$lang["mod_menu_listAction_del"] = "D&eacuteinstaller";
+$lang["mod_menu_listAction_install"] = "Installer";
+$lang["mod_menu_listAction_upgrade"] = "Mettre &agrave; jour";
+$lang["mod_menu_listAction_i"] = "Le module a &eacute;t&eacute; install&eacute; &agrave; succ&egrave;s";
+$lang["mod_menu_listAction_d"] = "Le module a &eacute;t&eacute; d&eacute;install&eacute; &agrave; succ&egrave;s";
+$lang["mod_menu_listAction_u"] = "Le module a &eacute;t&eacute; mis &agrave; succ&egrave;s";
+
 $lang["menu_ODS"] = "OreonDataStorage";
 $lang["menu_nagios"] = "Nagios";
-
 
 # Session
 
