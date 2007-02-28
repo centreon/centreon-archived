@@ -3,19 +3,26 @@
 {if $title2}
 <form {$form.attributes}>
 <div>
-<table id="ListTable">
-	<tr class="ListHeader">
-		<td class="FormHeader">Properties</td>
-	</tr>
-	<tr class="list_one">
-		<td class="ListColCenter">
-			<br><br><b>Host Name : </b>{$host_name} Service Description {$service_description}<br>
-			
-		{$form.storage_type.label}{$form.storage_type.html}
-
-		</td>
-	</tr>
-</table>
+	<a href="./oreon.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a>&nbsp;<a href="./oreon.php?p={$p}&host_name={$host_name}&service_description={$service_description}&o=vz&start={$start}&end={$end}">Retour</a>
+	<table id="ListTable">
+		<tr class="ListHeader">
+			<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;Storage Properties for {$service_description} on {$host_name} </td>
+		</tr>
+		<tr class="list_one">
+			<td class="ListColLeft">{$form.storage_type.label}</td>
+			<td>&nbsp;&nbsp;{$form.storage_type.html}</td>
+		</tr>
+		<tr class="list_one">
+			<td class="ListColLeft" colspan="2">
+				<br><b>Explication :</b>
+				<br><br><u><i>Vous pouvez ici choisir le type de stockage des données remontées par votre plugin pour ce service. Il y a différents type de stockage possible :</i></u>
+				<br><br><b>1. RRDTool : </b>Les metrics seront stockées uniquement dans des bases <a href="http://oss.oetiker.ch/rrdtool/">RRDTool</a>. Ce type de base de données a pour but de prendre assez peu de place par rapport aux base de données classiques. C'est unt base de données circulaire. Au fur et à mesure, les anciennes données sont moyennées.
+				<br><br><b>2. RRDTool & MySQL : </b>Ceci vous permettra de cumuler les possibilité des deux types de remontés : d'une part des bases légères pour une visualisation performantes et et légère et d'autre part un stockage complet des données. Les metrics sont stockées également dans une base <a href="http://www.mysql.com">MySQL</a>. L'intégrité des données est conservé dans la base ce qui vous permettra en fin d'année de pouvoir faire un reporting complet sur les valeurs remontées. 
+			</td>
+		</tr>
+	</table>
 </div>
 {/if}
+{$form.hidden}
+	<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
 </form>

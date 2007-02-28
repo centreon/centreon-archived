@@ -25,6 +25,16 @@ For information : contact@oreon-project.org
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 	}
 	
+	function updateServiceStorageType($index){
+		global $form, $pearDBO;
+		$ret = array();
+		$ret = $form->getSubmitValues();
+		$rq = "UPDATE `index_data` SET `storage_type` = '".$ret["storage_type"]."' WHERE `id` = '".$index."' LIMIT 1 ;";
+		$DBRESULT =& $pearDBO->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	}
+	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -61,12 +71,27 @@ For information : contact@oreon-project.org
 	$indexF =& $form->addElement('hidden', 'index');
 	$indexF->setValue($_GET["index"]);
 		
-	$storage_type = array(0 => "RRDTool", 1 => "MySQL", 2 => "RRDTool & MySQL");	
+	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$tpl->assign('storage_type_possibility', $storage_type);
 	$tpl->assign('storage_type', $index["storage_type"]);
 	
 	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
 	$form->setDefaults($index);
+	
+	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
+	$form->addElement('reset', 'reset', $lang["reset"]);
+    $valid = false;
+	
+	if (isset($_GET["submitC"]) && isset($_GET["storage_type"]))	{
+		# Update in DB
+		updateServiceStorageType($_GET["index"]);
+		# Update in Oreon Object
+		
+		$DBRESULT =& $pearDBO->query("SELECT storage_type,host_name,service_description FROM index_data WHERE id = '".$_GET["index"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		$DBRESULT->fetchInto($index);
+	}
 	
 	#Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

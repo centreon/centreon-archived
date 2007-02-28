@@ -3,20 +3,20 @@
 {if $title2}
 <form {$form.attributes}>
 <div>
-<table id="ListTable">
-	<tr class="ListHeader">
-		<td class="FormHeader">Properties</td>
-	</tr>
-	{ foreach item=m from=$metrics }
-	<tr class="list_one">
-		<td class="ListColCenter">
-			<img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={$m.order}&metric={$m.metric_id}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}' align="center">
-			<br><br><b>Metric : </b>{$m.metric} {if $m.unit}({$m.unit}){/if} - <b>Last update :</b> {$m.last_update}<br>
-			{$m.db_name} : {$m.size} Mo <br> 
-		</td>
-	</tr>
-	{/foreach}
-</table>
+	<table id="ListTable">
+		<tr class="ListHeader">
+			<td class="FormHeader">&nbsp;<img src='./img/icones/16x16/view.gif'>&nbsp;Zoom for {$host_name} on {$service_description}</td>
+		</tr>
+		{ foreach item=m from=$metrics }
+		<tr class="list_one">
+			<td class="ListColCenter">
+				<img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={$m.order}&metric={$m.metric_id}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}' align="center">
+				<br><br><b>Metric : </b>{$m.metric} {if $m.unit}({$m.unit}){/if} - <b>Last update :</b> {$m.last_update}<br>
+				{$m.db_name} : {$m.size} Mo <br> 
+			</td>
+		</tr>
+		{/foreach}
+	</table>
 </div>
 {/if}
 </form>

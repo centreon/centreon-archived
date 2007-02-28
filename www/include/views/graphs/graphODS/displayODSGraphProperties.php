@@ -98,7 +98,8 @@ For information : contact@oreon-project.org
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
-	$tpl->assign('host_name', $svc_id);
+	$tpl->assign('host_name', $svc_id["host_name"]);
+	$tpl->assign('service_description', $svc_id["service_description"]);
 
 	$DBRESULT =& $pearDBO->query("SELECT * FROM config");
 	if (PEAR::isError($DBRESULT))
