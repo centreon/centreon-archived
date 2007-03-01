@@ -15,7 +15,6 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
 	if (!isset($oreon))
 		exit();
 		
@@ -34,44 +33,28 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_isinstalled", $lang["mod_menu_module_is_installed"]);
 	$tpl->assign("headerMenu_isvalid", $lang["mod_menu_module_is_validUp"]);
 
+	# "Name" case, it's not a module which is installed
 	if ($name)	{
 		$flag = false;
 		include_once("./modules/".$name."/conf.php");
 		$tpl->assign("module_rname", $module_conf[$name]["rname"]);	
-		$tpl->assign("module_release", $module_conf[$name]["release"]);
+		$tpl->assign("module_release", $module_conf[$name]["mod_release"]);
 		$tpl->assign("module_author", $module_conf[$name]["author"]);
 		$tpl->assign("module_infos", $module_conf[$name]["infos"]);
 		$tpl->assign("module_isinstalled", $lang["no"]);
-		
+
 		$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
 		if ($form1->validate())	{
 			# Insert Module in DB
-			$flag = insertModuleInDB($name, $module_conf[$name]);
-			if ($flag)	{
+			$insert_ok = insertModuleInDB($name, $module_conf[$name]);
+			if ($insert_ok)	{
 				$tpl->assign("output1", $lang["mod_menu_output1"]);
 				# SQL insert if need
 				$sql_file = "install.sql";
-				$sql_file_path = "./modules/".$name."/sql/".$sql_file;
-				if ($module_conf[$name]["sql_files"] && file_exists($sql_file_path))	{
+				$sql_file_path = "./modules/".$name."/sql/";
+				if ($module_conf[$name]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
 					$tpl->assign("output2", $lang["mod_menu_output2"]);
-					$sql_stream = file($sql_file_path);
-		            $str = NULL;
-		            for ($i = 0; $i <= count($sql_stream) - 1; $i++)	{
-			            $line = $sql_stream[$i];
-			            if ($line[0] != '#')    {
-			                $pos = strrpos($line, ";");
-			                if ($pos != false)      {
-			                    $str .= $line;
-			                    $str = chop ($str);
-			                    $DBRESULT =& $pearDB->query($str);
-			                    if (PEAR::isError($DBRESULT))
-									print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			                    $str = NULL;
-			                }
-			                else
-			                	$str .= $line;
-			            }
-		            }
+					execute_sql_file($sql_file, $sql_file_path);	
 				}
 				# PHP execution if need
 				$php_file = "install.php";
@@ -82,28 +65,23 @@ For information : contact@oreon-project.org
 				}
 			}
 			else
-				$tpl->assign("output4", $lang["mod_menu_output4"]);				
+				$tpl->assign("output4", $lang["mod_menu_output4"]);
 		}
-		if (!$flag)
+		else	{
 			$form1->addElement('submit', 'install', $lang["mod_menu_listAction_install"]);
-		$redirect =& $form1->addElement('hidden', 'o');
-		$redirect->setValue("i");		
+			$redirect =& $form1->addElement('hidden', 'o');
+			$redirect->setValue("i");
+		}
+		$form1->addElement('submit', 'list', $lang["back"]);
 		$hid_name =& $form1->addElement('hidden', 'name');
 		$hid_name->setValue($name);
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form1->accept($renderer);
 		$tpl->assign('form1', $renderer->toArray());
 	}
+	# "ID" case, it's an installed module
 	else if ($id)	{
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
-		$tpl->assign("module_rname", $moduleinfo["rname"]);
-		$tpl->assign("module_release", $moduleinfo["release"]);
-		$tpl->assign("module_author", $moduleinfo["author"]);
-		$tpl->assign("module_infos", $moduleinfo["infos"]);
-		$tpl->assign("module_isinstalled", $lang["yes"]);
-		
-		# Option de suppression
-		# Option de upgrade
 		if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE"))	{
 			$handle = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
 			$i = 0;
@@ -111,21 +89,51 @@ For information : contact@oreon-project.org
 			while (false !== ($filename = readdir($handle)))	{
 				if ($filename != "." && $filename != ".." && strstr($filename, $moduleinfo["name"]."-"))	{
 					include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/conf.php");
-					$elemArr[$i] = array("upgrade_rname" => $upgrade_conf[$moduleinfo["name"]]["rname"],
+					if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
+						$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+						$upgrade_ok = false;			
+						# Upgrade
+						if ($form->validate())	{
+							# DB Upgrade
+							$upgrade_ok = upgradeModuleInDB($id, $upgrade_conf[$moduleinfo["name"]]);
+							if ($upgrade_ok)	{
+								$tpl->assign("output1", $lang["mod_menu_output1"]);
+								# SQL update if need
+								$sql_file = "update.sql";
+								$sql_file_path = "./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
+								if ($upgrade_conf[$moduleinfo["name"]]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
+									$tpl->assign("output2", $lang["mod_menu_output2"]);
+									execute_sql_file($sql_file, $sql_file_path);	
+								}
+								# PHP update if need
+								$php_file = "update.php";
+								$php_file_path = "./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
+								if ($upgrade_conf[$moduleinfo["name"]]["php_files"] && file_exists($php_file_path))	{
+									$tpl->assign("output3", $lang["mod_menu_output3"]);
+									include_once($php_file_path);
+								}
+							}
+							else
+								$tpl->assign("output4", $lang["mod_menu_output4"]);
+						}
+						if (!$upgrade_ok)	{						
+							$form->addElement('submit', 'upgrade', $lang["mod_menu_listAction_upgrade"]);
+							$redirect =& $form->addElement('hidden', 'o');
+							$redirect->setValue("u");							
+						}
+						$elemArr[$i] = array("upgrade_rname" => $upgrade_conf[$moduleinfo["name"]]["rname"],
 							"upgrade_release_from" => $upgrade_conf[$moduleinfo["name"]]["release_from"],
 							"upgrade_release_to" => $upgrade_conf[$moduleinfo["name"]]["release_to"],
 							"upgrade_author" => $upgrade_conf[$moduleinfo["name"]]["author"],
 							"upgrade_infos" => $upgrade_conf[$moduleinfo["name"]]["infos"],
-							"upgrade_is_validUp" => $moduleinfo["release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? $lang["yes"] : $lang["no"],
-							"upgrade_choice" => $moduleinfo["release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);
-					$i++;
-					if ($moduleinfo["release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
-						$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-						$form->addElement('submit', 'upgrade', $lang["mod_menu_listAction_upgrade"]);
-						$redirect =& $form->addElement('hidden', 'o');
-						$redirect->setValue("u");		
+							"upgrade_is_validUp" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? $lang["yes"] : $lang["no"],
+							"upgrade_choice" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);
+						$i++;
 						$hid_id =& $form->addElement('hidden', 'id');
 						$hid_id->setValue($id);
+						$up_name =& $form->addElement('hidden', 'filename');
+						$up_name->setValue($filename);
+						$form->addElement('submit', 'list', $lang["back"]);					
 						$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 						$form->accept($renderer);
 						$tpl->assign('form', $renderer->toArray());
@@ -133,7 +141,19 @@ For information : contact@oreon-project.org
 				}
 			}
 			closedir($handle);
+			$moduleinfo = array();
+			$moduleinfo = getModuleInfoInDB(NULL, $id);
+			$tpl->assign("module_rname", $moduleinfo["rname"]);
+			$tpl->assign("module_release", $moduleinfo["mod_release"]);
+			$tpl->assign("module_author", $moduleinfo["author"]);
+			$tpl->assign("module_infos", $moduleinfo["infos"]);
+			$tpl->assign("module_isinstalled", $lang["yes"]);
 			$tpl->assign("elemArr", $elemArr);
+			$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
+			$form2->addElement('submit', 'list', $lang["back"]);					
+			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+			$form2->accept($renderer);
+			$tpl->assign('form2', $renderer->toArray());	
 		}
 	}
 	#

@@ -17,7 +17,24 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();	
-		
+	
+	if ($id && $o == "d" && testModuleExistence($id))	{
+		$moduleinfo = getModuleInfoInDB(NULL, $id);
+		deleteModuleInDB($id);
+		if ($moduleinfo["is_removeable"])	{
+			#SQL deletion
+			$sql_file = "uninstall.sql";
+			$sql_file_path = "./modules/".$moduleinfo["name"]."/sql/";
+			if ($moduleinfo["sql_files"] && file_exists($sql_file_path.$sql_file))
+				execute_sql_file($sql_file, $sql_file_path);
+			#PHP deletion
+			$php_file = "uninstall.php";
+			$php_file_path = "./modules/".$moduleinfo["name"]."/php/";
+			if ($moduleinfo["php_files"] && file_exists($php_file_path.$php_file))
+				include_once($php_file_path.$php_file);
+		}
+	}
+	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -29,7 +46,8 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_author", $lang["mod_menu_module_author"]);
 	$tpl->assign("headerMenu_isinstalled", $lang["mod_menu_module_is_installed"]);
 	$tpl->assign("headerMenu_action", $lang["mod_menu_listAction"]);
-	# end header menu
+	# end header menu	
+	$tpl->assign("confirm_removing", $lang['confirm_removing']);
 	
 	#Different style between each lines
 	$style = "one";
@@ -45,7 +63,7 @@ For information : contact@oreon-project.org
 				$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_name"=>$moduleinfo["name"],
 						"RowMenu_rname"=>$moduleinfo["rname"],
-						"RowMenu_release"=>$moduleinfo["release"],
+						"RowMenu_release"=>$moduleinfo["mod_release"],
 						"RowMenu_author"=>$moduleinfo["author"],
 						"RowMenu_isinstalled"=>$lang["yes"],
 						"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],
@@ -63,7 +81,7 @@ For information : contact@oreon-project.org
 						$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 								"RowMenu_name"=>$module_conf[$filename]["name"],
 								"RowMenu_rname"=>$module_conf[$filename]["rname"],
-								"RowMenu_release"=>$module_conf[$filename]["release"],
+								"RowMenu_release"=>$module_conf[$filename]["mod_release"],
 								"RowMenu_author"=>$module_conf[$filename]["author"],
 								"RowMenu_isinstalled"=>$lang["no"],
 								"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],

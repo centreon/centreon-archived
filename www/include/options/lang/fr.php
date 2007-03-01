@@ -147,13 +147,13 @@ $lang["mod_menu_module_is_notvalidIn"] = "Installation d&eacute;ja existente";
 $lang["mod_menu_module_invalid"] = "ND";
 $lang["mod_menu_module_impossible"] = "Impossible";
 $lang["mod_menu_listAction"] = "Actions";
-$lang["mod_menu_listAction_del"] = "D&eacuteinstaller";
-$lang["mod_menu_listAction_install"] = "Installer";
+$lang["mod_menu_listAction_del"] = "D&eacuteinstaller le module";
+$lang["mod_menu_listAction_install"] = "Installer le module";
 $lang["mod_menu_listAction_upgrade"] = "Mettre &agrave; jour";
 $lang["mod_menu_output1"] = "Module install&eacute; et enregistr&eacute;";
 $lang["mod_menu_output2"] = "Fichier SQL inclus";
 $lang["mod_menu_output3"] = "Fichier PHP inclus";
-$lang["mod_menu_output4"] = "Probl&egrave;me lors de l'installation du module - Arret lors de l'enregistrement en base";
+$lang["mod_menu_output4"] = "Installation du module impossible";
 
 $lang["menu_ODS"] = "OreonDataStorage";
 $lang["menu_nagios"] = "Nagios";

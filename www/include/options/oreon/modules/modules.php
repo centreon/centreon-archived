@@ -18,6 +18,10 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 	
+	isset($_GET["list"]) ? $mG = $_GET["list"] : $mG = NULL;
+	isset($_POST["list"]) ? $mP = $_POST["list"] : $mP = NULL;
+	$mG ? $list = $mG : $list = $mP;
+	
 	isset($_GET["id"]) ? $mG = $_GET["id"] : $mG = NULL;
 	isset($_POST["id"]) ? $mP = $_POST["id"] : $mP = NULL;
 	$mG ? $id = $mG : $id = $mP;
@@ -37,10 +41,15 @@ For information : contact@oreon-project.org
 	require_once "./include/common/common-Func.php";
 	require_once $path ."DB-Func.php";
 	
-	switch ($o)	{
-		case "i" : require_once($path."formModule.php"); break;
-		case "u" : require_once($path."formModule.php"); break;
-		case "w" : require_once($path."formModule.php"); break;
-		default : require_once($path."listModules.php");  break;
+	if ($list)
+		require_once($path."listModules.php");
+	else	{
+		switch ($o)	{
+			case "i" : require_once($path."formModule.php"); break;
+			case "u" : require_once($path."formModule.php"); break;
+			case "d" : require_once($path."listModules.php"); break;
+			case "w" : require_once($path."formModule.php"); break;
+			default : require_once($path."listModules.php");  break;
+		}
 	}
 ?>

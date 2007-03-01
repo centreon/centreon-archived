@@ -1,4 +1,5 @@
 ## Oreon 1.3.4
+=> Feature : Module manager
 => Feature : In configuration, massive change options for numbers of elements with "quick select" menu (host, service, contact)
 => Feature : In configuration, availability to enable/disable numbers of elements with "quick select" menu (host, hostgroup, service, contact)
 => Feature : Add 3 field in topology table for style class/id and javascript Onclik
