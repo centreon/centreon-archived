@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
+	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["sort_types"]) ? $sort_types = $oreon->OptGen["problem_sort_type"] : $sort_types = $_GET["sort_types"];
 	!isset($_GET["order"]) ? $order = "SORT_".$oreon->OptGen["problem_sort_order"] : $order = $_GET["order"];
@@ -42,46 +42,81 @@ For information : contact@oreon-project.org
 	$rows = 0;
 	$service_status_num = array();
 	
-	if (isset($service_status))
-		foreach ($service_status as $name => $svc){			
-			$tmp = array();
-			$tmp[0] = $name;
-			if (strcmp($svc["current_state"], "OK")){
-				$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
-				$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
-				$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
-				if ($svc["last_check"]){
-					$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-					$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
-				} else {
-					$service_status[$name]["last_check"] = "";
-					$service_status[$name]["last_state_change"] = "";
+	if ($_GET["o"] == "svcpb"){
+		if (isset($service_status))
+			foreach ($service_status as $name => $svc){			
+				$tmp = array();
+				$tmp[0] = $name;
+				if (strcmp($svc["current_state"], "OK")){
+					$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
+					$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
+					$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
+					if ($svc["last_check"]){
+						$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
+						$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
+					} else {
+						$service_status[$name]["last_check"] = "";
+						$service_status[$name]["last_state_change"] = "";
+					}
+					$service_status[$name]["class"] = $tab_class[$rows % 2];
+					$tmp[1] = $service_status[$name];
+					$service_status_num[$rows++] = $tmp;
 				}
-				$service_status[$name]["class"] = $tab_class[$rows % 2];
-				$tmp[1] = $service_status[$name];
-				$service_status_num[$rows++] = $tmp;
 			}
-		}
-	$service_status_num = array();
-	$rows = 0;
-
-	$tmp = array();
-	foreach ($service_status as $name => $svc)
-		if($service_status[$name]["current_state"] != 'OK'){
-			$tmp2 = array();
-			$tmp2[0] = $name;		
-			$tmp[$name] = $service_status[$name];
-			$tmp2[1] = $service_status[$name];
-			$service_status_num[$rows++] = $tmp2;
-		}
+			$service_status_num = array();
+			$rows = 0;
+			$tmp = array();
+			foreach ($service_status as $name => $svc)
+				if($service_status[$name]["current_state"] != 'OK'){
+					$tmp2 = array();
+					$tmp2[0] = $name;		
+					$tmp[$name] = $service_status[$name];
+					$tmp2[1] = $service_status[$name];
+					$service_status_num[$rows++] = $tmp2;
+				}
+	} else {
+		$tab = array("svc_warning" => "WARNING", "svc_unknown" => "UNKNOWN", "svc_critical" => "CRITICAL", "svc_ok" => "OK");
+		if (isset($service_status))
+			foreach ($service_status as $name => $svc){			
+				$tmp = array();
+				$tmp[0] = $name;
+				if (!strcmp($svc["current_state"], $tab[$_GET["o"]])){
+					$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
+					$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
+					$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
+					if ($svc["last_check"]){
+						$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
+						$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
+					} else {
+						$service_status[$name]["last_check"] = "";
+						$service_status[$name]["last_state_change"] = "";
+					}
+					$service_status[$name]["class"] = $tab_class[$rows % 2];
+					$tmp[1] = $service_status[$name];
+					$service_status_num[$rows++] = $tmp;
+				}
+			}
+		$service_status_num = array();
+		$rows = 0;
+		$tmp = array();
+		foreach ($service_status as $name => $svc)
+			if($service_status[$name]["current_state"] == $tab[$_GET["o"]]){
+				$tmp2 = array();
+				$tmp2[0] = $name;		
+				$tmp[$name] = $service_status[$name];
+				$tmp2[1] = $service_status[$name];
+				$service_status_num[$rows++] = $tmp2;
+			}		
+	}
+	
 
 	$service_status = $tmp;
-	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
 	$tpl->assign("p", $p);
+	$tpl->assign('o', $o);
 	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("order", $order);
 	$tpl->assign("num", $num);
@@ -95,8 +130,8 @@ For information : contact@oreon-project.org
 
 	# view tab
 	$displayTab = array();
-	$start = $num*$limit;
-	for($i=$start; $i < ($limit+$start) && isset($service_status_num[$i])  ;$i++)
+	$start = $num * $limit;
+	for($i=$start; $i < ( $limit + $start) && isset($service_status_num[$i])  ;$i++)
 		$displayTab[$service_status_num[$i][0]] = $service_status_num[$i][1];
 		$service_status = $displayTab;
 

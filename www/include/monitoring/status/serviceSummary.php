@@ -24,7 +24,8 @@ For information : contact@oreon-project.org
 	
 	$hg = array();
 	$status_hg = array();
-		
+	$tab_color = array(0=>"list_one", 1=>"list_two");
+	
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT)) 
 		print "Mysql Error : ".$DBRESULT->getMessage();
@@ -36,9 +37,11 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT1)) 
 				print "Mysql Error : ".$DBRESULT1->getMessage();
 			$cpt_host = 0;
+			$counter_host = 0;	
 			while ($DBRESULT1->fetchInto($r_h)){
 				$status_hg = array("OK" => 0, "PENDING" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0);
 				$service_data_str = NULL;	
+				isset($host_status[$r_h["host_name"]]) && $host_status[$r_h["host_name"]]["current_state"] == "DOWN" ? $h_class[$r["hg_name"]][$r_h["host_name"]] = "list_down" : $h_class[$r["hg_name"]][$r_h["host_name"]] = $tab_color[++$counter_host % 2];
 				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
 					if (isset($tab_host_service[$r_h["host_name"]])){
 						foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
@@ -57,10 +60,10 @@ For information : contact@oreon-project.org
 							if (!isset($hg[$r["hg_name"]]))
 								$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
 							$hg[$r["hg_name"]]["host"][$cpt_host] = $r_h["host_name"];
-							$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a> (" . $r_h["host_alias"] . ")";
+							$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a>";
 							$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
 							$status = "color_".strtolower($host_status[$r_h["host_name"]]["current_state"]);
-							$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' style='background:".$oreon->optGen[$status]."'><a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."'>".$host_status[$r_h["host_name"]]["current_state"]."</a></td>";
+							$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' width='70' style='background:".$oreon->optGen[$status]."'><a href='./oreon.php?p=".$p."&host_name=".$r_h["host_name"]."'>".$host_status[$r_h["host_name"]]["current_state"]."</a></td>";
 							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
 						}						
 					}
@@ -82,6 +85,8 @@ For information : contact@oreon-project.org
 		$tpl->assign("h_status_data", $h_status_data);
 	if (isset($svc_data))
 		$tpl->assign("svc_data", $svc_data);
+	if (isset($h_class))
+		$tpl->assign("h_class", $h_class);
 	$tpl->assign("lang", $lang);
 	$tpl->display("serviceSummary.ihtml");
 ?>

@@ -21,13 +21,13 @@ For information : contact@oreon-project.org
 	$color_en = array("1" => "#00ff00", "0" => "#ff0000");
 	$color_en_label = array("1" => $lang['enable'], "0" => $lang['disable']);
 
-	$tab_class = array("0" => "list_one", "1" => "list_two");
+	$tab_color = array("0" => "list_one", "1" => "list_two");
 	$c = 0;
 	if (isset($service_status))
 		foreach ($service_status as $name => $svc){
 			$svc["next_check"] ? $service_status[$name]["next_check"] = date($lang["date_time_format_status"], $svc["next_check"]) : $service_status[$name]["next_check"] = "";
 			$svc["last_check"] ? $service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]) : $service_status[$name]["last_check"] = "";
-			$service_status[$name]["class"] = $tab_class[$c % 2];
+			isset($host_status[$svc["host_name"]]) && $host_status[$svc["host_name"]]["current_state"] == "DOWN" ? $service_status[$name]["class"] = "list_down" : $service_status[$name]["class"] = $tab_color[++$c % 2];
 			$c++;
 		}
 	
