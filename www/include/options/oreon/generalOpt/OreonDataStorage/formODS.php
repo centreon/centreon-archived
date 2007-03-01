@@ -46,8 +46,8 @@ For information : contact@oreon-project.org
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["genOpt_change"]);
 	
-	
 	$gopt["purge_interval"] *= $gopt["sleep_time"];
+	
 	## Oreon information
 	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
 	$form->addElement('text', 'RRDdatabase_path', $lang["ods_rrd_path"], $attrsText);
@@ -56,7 +56,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'sleep_time', $lang["ods_sleep_time"], $attrsText2);
 	$form->addElement('text', 'purge_interval', $lang["ods_purge_interval"], $attrsText2);
 	
-	$storage_type = array(0 => "RRDTool", 1 => "MySQL", 2 => "RRDTool & MySQL");	
+	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
 	
 	$redirect =& $form->addElement('hidden', 'o');
@@ -81,13 +81,14 @@ For information : contact@oreon-project.org
 	
 	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 	$form->addElement('reset', 'reset', $lang["reset"]);
-
     $valid = false;
+    
 	if ($form->validate())	{
+		
 		# Update in DB
 		updateODSConfigData();
-		
 		# Update in Oreon Object
+		
 		$oreon->optGen = array();
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 		if (PEAR::isError($DBRESULT2))

@@ -274,7 +274,6 @@ For information : contact@oreon-project.org
 		if ($ret["purge_interval"] <= 20)
 			$ret["purge_interval"] = 20;
 		$ret["purge_interval"] /= $ret["sleep_time"];
-		print $ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1];
 		if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/")
 			$ret["RRDdatabase_path"] .= "/";
 		$rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
