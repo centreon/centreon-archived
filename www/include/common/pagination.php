@@ -22,14 +22,14 @@ For information : contact@oreon-project.org
 		exit();
 
 	global $num, $limit, $search, $url, $pearDB;
-	global $search_type_service, $search_type_host;
-
+	global $search_type_service, $search_type_host, $host_name;
 	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 
 	global $rows, $p, $lang, $gopt, $pagination;
 
+	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
 	$url_var = "";
 	$url_var .= "&search_type_service=" . $search_type_service;
@@ -55,13 +55,10 @@ For information : contact@oreon-project.org
 	for($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
 		$iend++;
 	for ($i = $istart; $i <= $iend; $i++){
-		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var,
-							"label_page"=>"<b>".($i +1)."</b>",
-							"num"=> $i);
+		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);
 	}
 	if ($i > 1)							
 		$tpl->assign("pageArr", $pageArr);
-
 
 	$tpl->assign("num", $num);
 	$tpl->assign("previous", $lang["previous"]);
@@ -116,14 +113,15 @@ function setL(_this){
 	
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	$tpl->assign("host_name", $host_name);
+	
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
+	
 	$tpl->assign("status", $status);
 	$tpl->assign("limite", $limite);
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
 	$tpl->assign("lang", $lang);
 	$tpl->assign("order", $_GET["order"]);
-	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("pagination.ihtml");
