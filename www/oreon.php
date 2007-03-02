@@ -16,14 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	
-	# Clean Var	
-
-	if(isset($_GET["search"]) && $_GET["search"]){		
-		$_HOST["num"] = 0;
-		$_GET["num"] = 0;
-		$num = 0;		
-	}
-	
 	if (isset($_GET["p"]))
 		$p = $_GET["p"];
 	else if (isset($_POST["p"]))
@@ -110,6 +102,15 @@ For information : contact@oreon-project.org
 		$nb_page = 1;	
 	}
 	
+	function reset_search_page($url){
+		# Clean Vars
+		global $oreon;
+		if (isset($_GET["search"]) && $_GET["search"] != $oreon->historySearch[$url]){		
+			$_POST["num"] = 0;
+			$_GET["num"] = 0;
+		}	
+	}
+	
 	# init URL 
 	$url = "";
 	if ((isset($nb_page) && $nb_page) || !$isRestreint){	
@@ -118,6 +119,7 @@ For information : contact@oreon-project.org
 			if (!$ret['topology_page']){
 				if (file_exists($redirect["topology_url"])){
 					$url = $redirect["topology_url"];
+					reset_search_page($url);
 					require_once($redirect["topology_url"]);
 				} else 
 					require_once("./alt_error.php");		
@@ -131,6 +133,7 @@ For information : contact@oreon-project.org
 				}
 				if (file_exists($ret2["topology_url"])){
 					$url = $ret2["topology_url"];
+					reset_search_page($url);
 					require_once($ret2["topology_url"]);
 				} else
 					require_once("./alt_error.php");
@@ -140,6 +143,7 @@ For information : contact@oreon-project.org
 			if (!$ret['topology_page']){
 				if (file_exists($redirect["topology_url"])){
 					$url = $redirect["topology_url"];
+					reset_search_page($url);
 					require_once($redirect["topology_url"]);
 				} else 
 					require_once("./alt_error.php");		
@@ -152,6 +156,7 @@ For information : contact@oreon-project.org
 				} 
 				if (file_exists($ret["topology_url"])){
 					$url = $ret["topology_url"];
+					reset_search_page($url);
 					require_once($ret["topology_url"]);
 				} else 
 					require_once("./alt_error.php");
@@ -161,12 +166,14 @@ For information : contact@oreon-project.org
 				if (!$ret['topology_page']){
 				if (file_exists($redirect["topology_url"])){		
 					$url = $redirect["topology_url"];
+					reset_search_page($url);
 					require_once($redirect["topology_url"]);
 				} else 
 					require_once("./alt_error.php");		
 			} else { 
 				if (file_exists($redirect["topology_url"]) && $ret['topology_page']){	
 					$url = $redirect["topology_url"];
+					reset_search_page($url);
 					require_once($redirect["topology_url"]);
 				} else 
 					require_once("./alt_error.php");		
