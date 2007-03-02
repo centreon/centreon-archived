@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 			isset($host_status[$data["host_name"]]) && $host_status[$data["host_name"]]["current_state"] == "DOWN" ? $h_class[$data["host_name"]] = "list_down" : $h_class[$data["host_name"]] = $tab_color[++$counter_host % 2];
 			if (isset($tab_host_service[$data["host_name"]]))
 				foreach ($tab_host_service[$data["host_name"]] as $key_svc => $data_svc){
-					$service_data_str .= "<span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp;&nbsp;";
+					$service_data_str .= "<span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp;&nbsp; ";
 					$svc_data[$data["host_name"]] = $service_data_str;
 				}
 		}
