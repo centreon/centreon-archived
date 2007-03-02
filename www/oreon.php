@@ -195,7 +195,7 @@ For information : contact@oreon-project.org
 			$oreon->historyLimit[$url] = $_GET["limit"];
 		if (isset($_POST["search"]))
 			$oreon->historyLimit[$url] = $_POST["limit"];
-	}	
+	}
 
 	# Display Legend
 	$lg_path = get_path($path);
