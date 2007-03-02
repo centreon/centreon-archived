@@ -60,18 +60,18 @@
        	<div>
        		<table id="ListTable">
                 <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_find.gif'>&nbsp;{$form.header.title}</td>
                 </tr>
                  <tr class="list_two">
-            		<td>{$form.index.label}</td>
-            		<td>{$form.index.html}</td>
+            		<td>&nbsp;&nbsp;{$form.index.label}</td>
+            		<td>&nbsp;&nbsp;{$form.index.html}</td>
                 </tr>
                 <tr class="list_two">
-            		<td>{$form.template_id.label}</td>
-            		<td>{$form.template_id.html}</td>
+            		<td>&nbsp;&nbsp;{$form.template_id.label}</td>
+            		<td>&nbsp;&nbsp;{$form.template_id.html}</td>
                 </tr>
                 <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">Activate our Data Source </td>
+                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;Activate our Data Source </td>
                 </tr>
                 {foreach item=s from=$metrics}
 	    		<tr class="{$s.class}">

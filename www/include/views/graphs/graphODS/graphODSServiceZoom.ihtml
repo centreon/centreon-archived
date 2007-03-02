@@ -33,7 +33,7 @@
        	<div>
        		<table id="ListTable">
                 <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">&nbsp;&nbsp;{$form.header.title}</td>
+                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_find.gif'>&nbsp;{$form.header.title}</td>
                 </tr>
                 <tr class="list_two">
             		<td>&nbsp;&nbsp;{$form.index.label}</td>
@@ -48,7 +48,7 @@
                 	<td>&nbsp;&nbsp;{$form.period.html}</td>
                 </tr>
 				<tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">&nbsp;&nbsp;Activate our Data Source </td>
+                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;Activate our Data Source </td>
                 </tr>
                 {assign var="cpt" value="0"}
                 {foreach item=s from=$metrics}

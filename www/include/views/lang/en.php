@@ -174,6 +174,15 @@ $lang["no_graphtpl"] = "There aren't graphs template : please configure your gra
 
 # No Graph
 
-$lang["no_graph_found"] = "No graph associated to this service."
+$lang["no_graph_found"] = "No graph associated to this service.";
+
+# ODS 
+
+$lang["ods_storProper"] = "Storage Properties for";
+$lang["ods_on"] = "on";
+$lang["ods_explain"] = "Help :";
+$lang["ods_choose_storage_type"] = "You can choose here the kind of storage for datas returned by your plugin for this service. There is different kind of storage :";
+$lang["ods_rrdtool_choose"] = "The metrics will be stored only in <a href=\"http://oss.oetiker.ch/rrdtool/\">RRDTool</a> database. The goal of this type of database is to take less place compared to the traditional database. It is a circular databases. Progressively, the old data are realised";
+$lang["ods_mysql_choose"] = "This will enable you the possibility to cumulate the two kind of return : on the one hand light bases for a visualization powerful and and light and on the other hand a complete storage of the data. Metrics are stored also in a  <a href=\"http://www.mysql.com\">MySQL</a> database. The integrity of the data is preserved in mysql database what will give you the possibility to make a complete reporting on our data at the end of the year";
 
 ?>

@@ -174,6 +174,16 @@ $lang["no_graphtpl"] = "Vous n\'avez pas de mod&egrave;le de graphs : Pensez &ag
 
 # No Graph
 
-$lang["no_graph_found"] = "Ce service n\'a pas de graph associ&eacute;."
+$lang["no_graph_found"] = "Ce service n\'a pas de graph associ&eacute;.";
+
+# ODS 
+
+$lang["ods_storProper"] = "Propi&eacute;t&eacute;s de stockage pour ";
+$lang["ods_on"] = "sur ";
+$lang["ods_explain"] = "Aide :";
+$lang["ods_choose_storage_type"] = "Vous pouvez ici choisir le type de stockage des données remontées par votre plugin pour ce service. Il y a différents types de stockage possibles :";
+$lang["ods_rrdtool_choose"] = "Les metrics seront stockées uniquement dans des bases <a href=\"http://oss.oetiker.ch/rrdtool/\">RRDTool</a>. Ce type de bases de données a pour but de prendre assez peu de place par rapport aux base de données classiques. C'est une base de données circulaire. Au fur et à mesure, les anciennes données sont moyennées";
+$lang["ods_mysql_choose"] = "Ceci vous permettra de cumuler les possibilités des deux types de remontés : d'une part des bases légères pour une visualisation performantes et rapide, et d'autre part un stockage complet des données. Les metrics sont stockées également dans une base <a href=\"http://www.mysql.com\">MySQL</a>. L'intégrité des données est conservée dans la base ce qui vous permettra en fin d'année de pouvoir faire un reporting complet sur les valeurs remontées";
+$lang[""] = "";
 
 ?>
