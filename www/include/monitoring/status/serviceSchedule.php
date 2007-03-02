@@ -17,6 +17,10 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
+	
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 
 	$color_en = array("1" => "#00ff00", "0" => "#ff0000");
 	$color_en_label = array("1" => $lang['enable'], "0" => $lang['disable']);

@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 
 	$counter_host = 0;	
 	foreach ($host_status as $key => $data){
-		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHostGroup"][$data["host_name"]]))){	
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$data["host_name"]]))){	
 			$service_data_str = NULL;
 			$h_data[$data["host_name"]] = "<a href='./oreon.php?p=201&o=hd&host_name=".$data["host_name"]."'>".$data["host_name"]."</a>";
 			$h_status[$data["host_name"]]=array("current_state"=>$data["current_state"], "color"=>$oreon->optGen["color_".strtolower($data["current_state"])]);
