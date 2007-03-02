@@ -22,65 +22,36 @@ For information : contact@oreon-project.org
 	unset($TabLca);
 	$TabLca = getLcaHostByName($pearDB);
 	
+	$h_data = array();
+	$h_status = array();
+	$svc_data = array();
 	$tab_color = array(0=>"list_one", 1=>"list_two");
-	
-	$hg = array();
-	
-	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
-	while ($DBRESULT->fetchInto($r)){
-		$cpt_host = 0;
-		if ($oreon->user->admin || !hadUserLca($pearDB) || (hadUserLca($pearDB) && isset($TabLca["LcaHostGroup"][$r["hg_name"]]))){		
-			$DBRESULT1 =& $pearDB->query(	"SELECT host_host_id, host_name, host_alias FROM hostgroup_relation,host,hostgroup ".
-										"WHERE hostgroup_hg_id = '".$r["hg_id"]."' AND hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id ".
-										"AND hostgroup_relation.host_host_id = host.host_id AND host.host_register = '1' AND hostgroup.hg_activate = '1' ORDER BY host_name");
-			if (PEAR::isError($DBRESULT1))
-				print "Mysql Error : ".$DBRESULT1->getMessage();
-			$cpt_host = 0;
-			$counter_host = 0;	
-			while ($DBRESULT1->fetchInto($r_h)){
-				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
-					$service_data_str = NULL;	
-					$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a>";
-					isset($host_status[$r_h["host_name"]]) && $host_status[$r_h["host_name"]]["current_state"] == "DOWN" ? $h_class[$r["hg_name"]][$r_h["host_name"]] = "list_down" : $h_class[$r["hg_name"]][$r_h["host_name"]] = $tab_color[++$counter_host % 2];
-					
-					if(isset($tab_host_service[$r_h["host_name"]])){
-						foreach ($tab_host_service[$r_h["host_name"]] as $key => $value){
-							$service_data_str .= 	"<span style='background:".
-													$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])].";opacity: 0.9;'>".
-													"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
-													"</a></span> &nbsp;&nbsp;";
-							if (!isset($hg[$r["hg_name"]]))
-								$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
-							$hg[$r["hg_name"]]["host"][$cpt_host] = $r_h["host_name"];
-							$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
-							$status = "color_".strtolower($host_status[$r_h["host_name"]]["current_state"]);
-							$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' width='70' style='background:".$oreon->optGen[$status]."'>".$host_status[$r_h["host_name"]]["current_state"]."</td>";
-							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
-						}
-					}
-					$cpt_host++;
+
+	$counter_host = 0;	
+	foreach ($host_status as $key => $data){
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHostGroup"][$data["host_name"]]))){	
+			$service_data_str = NULL;
+			$h_data[$data["host_name"]] = "<a href='./oreon.php?p=201&o=hd&host_name=".$data["host_name"]."'>".$data["host_name"]."</a>";
+			$h_status[$data["host_name"]]=array("current_state"=>$data["current_state"], "color"=>$oreon->optGen["color_".strtolower($data["current_state"])]);
+			# define class
+			isset($host_status[$data["host_name"]]) && $host_status[$data["host_name"]]["current_state"] == "DOWN" ? $h_class[$data["host_name"]] = "list_down" : $h_class[$data["host_name"]] = $tab_color[++$counter_host % 2];
+			if (isset($tab_host_service[$data["host_name"]]))
+				foreach ($tab_host_service[$data["host_name"]] as $key_svc => $data_svc){
+					$service_data_str .= "<span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp;&nbsp;";
+					$svc_data[$data["host_name"]] = $service_data_str;
 				}
-			}
 		}
 	}
 
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
-
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign("p", $p);
-	$tpl->assign("hostgroup", $hg);
-	if (isset($h_data))
-		$tpl->assign("h_data", $h_data);
-	if (isset($h_status_data))
-		$tpl->assign("h_status_data", $h_status_data);
-	if(isset($svc_data))
-		$tpl->assign("svc_data", $svc_data);
-	if(isset($h_class))
-		$tpl->assign("h_class", $h_class);
+	$tpl->assign("h_data", $h_data);
+	$tpl->assign("h_class", $h_class);
+	$tpl->assign("h_status", $h_status);
 	$tpl->assign("lang", $lang);
+	$tpl->assign("svc_data", $svc_data);
 	$tpl->display("serviceOverview.ihtml");
 ?>

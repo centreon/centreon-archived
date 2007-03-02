@@ -32,40 +32,34 @@ For information : contact@oreon-project.org
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 
-	//!isset ($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
-	//!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
-
-	# get monitoring bonus info
-	//$res =& $pearDB->query("SELECT * FROM host_extended_info");
-	//if (PEAR::isError($res))
-	//	print "ok : Mysql Error : ".$res->getMessage();
-
 	
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$service_status_num = array();
 	if (isset($service_status))
-		foreach ($service_status as $name => $svc){			
-			$tmp = array();
-			$tmp[0] = $name;
-			$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
-			$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
-			$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
-			if ($svc["last_check"]){
-				$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
-				$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
-			} else {
-				$service_status[$name]["last_check"] = "";
-				$service_status[$name]["last_state_change"] = "";
+		foreach ($service_status as $name => $svc){
+			if (!isset($_GET["host_name"]) || (isset($_GET["host_name"]) && $_GET["host_name"] == $service_status[$name]["host_name"])){
+				$tmp = array();
+				$tmp[0] = $name;
+				$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
+				$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
+				$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
+				if ($svc["last_check"]){
+					$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
+					$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
+				} else {
+					$service_status[$name]["last_check"] = "";
+					$service_status[$name]["last_state_change"] = "";
+				}
+				$service_status[$name]["class"] = $tab_class[$rows % 2];
+				$tmp[1] = $service_status[$name];
+				$service_status_num[$rows++] = $tmp;
 			}
-			$service_status[$name]["class"] = $tab_class[$rows % 2];
-			$tmp[1] = $service_status[$name];
-			$service_status_num[$rows++] = $tmp;
 		}
 	
 	# Smarty template Init
@@ -101,6 +95,7 @@ For information : contact@oreon-project.org
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	$tpl->assign("host_name", $host_name);
+	
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	$tpl->assign("status", $status);
 
@@ -141,9 +136,7 @@ For information : contact@oreon-project.org
     $tpl->assign('search_type_service', $search_type_service);
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
-	#
 	##Toolbar select $lang["lgd_more_actions"]
-	#
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
@@ -158,6 +151,7 @@ For information : contact@oreon-project.org
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
+
 	$o1->setSelected(NULL);	
 
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();}");

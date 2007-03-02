@@ -88,5 +88,5 @@ For information : contact@oreon-project.org
 	if (isset($h_class))
 		$tpl->assign("h_class", $h_class);
 	$tpl->assign("lang", $lang);
-	$tpl->display("serviceSummary.ihtml");
+	$tpl->display("serviceSummaryByHG.ihtml");
 ?>
