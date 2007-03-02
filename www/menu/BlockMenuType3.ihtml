@@ -1,52 +1,54 @@
 <div id="contener"><!-- begin contener -->
+{assign var="cpt" value=0}
 <table id="Tcontener">
 	<tr>
 		<td id="Tmenu" class="TcTD">
 		<div id="{$Menu3Color}">
 			<div>
 	    		<div id="{$Menu3ID}">
-						{foreach from=$elemArr3 item=curr_id}
-						<table class="Tmenu3" width="100%">
-							<tr class="top">
-								<td class="left"></td>
-								<td class="center"></td>
-								<td class="right"></td>
-							</tr>
-							<tr class="middle">
-								<td class="left"></td>
-								<td class="center" style="white-space: nowrap;">
-									<img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;'>&nbsp;{$curr_id.title}<br><br>								
+				<table class="Tmenu3" width="100%">
+					<tr class="top">
+						<td class="left"></td>
+						<td class="center"></td>
+						<td class="right"></td>
+					</tr>
+					{foreach from=$elemArr3 item=curr_id}
+					<tr class="middle">
+						<td class="left"></td>
+						<td class="center" style="white-space: nowrap;">
+							{if $cpt}<br>{/if}<img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;'>&nbsp;{$curr_id.title}<br><br>								
+							<ul>
+								{foreach from=$curr_id.tab item=curr_id2}
+									<li {if $curr_id2.MenuIsOnClick}onclick="{$curr_id2.MenuOnClick}()"{/if}>
+									{if $curr_id2.Menu3Icone}<img src='{$curr_id2.Menu3Icone}' alt="{$curr_id2.Menu3Name}" style="padding-left:5px;">{/if}
+									{if $curr_id2.Menu3Popup}
+										<a href={$curr_id2.Menu3UrlPopup} target="_blank" title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>											
+									{else}
+										{if $curr_id2.MenuIsOnClick}{$curr_id2.Menu3Name}{else}<a href={$curr_id2.Menu3Url} title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>{/if}
+									{/if}
+									</li>
 									<ul>
-										{foreach from=$curr_id.tab item=curr_id2}
-											<li {if $curr_id2.MenuIsOnClick}onclick="{$curr_id2.MenuOnClick}()"{/if} >
-											{if $curr_id2.Menu3Icone}<img src='{$curr_id2.Menu3Icone}' alt="{$curr_id2.Menu3Name}">{/if}
-											{if $curr_id2.Menu3Popup}
-												<a href={$curr_id2.Menu3UrlPopup} target="_blank" title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>											
-											{else}
-												{if $curr_id2.MenuIsOnClick}{$curr_id2.Menu3Name}{else}<a href={$curr_id2.Menu3Url} title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>{/if}
-											{/if}
-											</li>
-											<ul>
-											{foreach from=$elemArr4[$curr_id2.Menu3ID] item=menu4}
-												<li {if $menu4.MenuIsOnClick}onclick="{$menu4.MenuOnClick}()"{/if}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;
-												{if $menu4.Menu4Popup}{if $menu4.MenuIsOnClick}{$menu4.Menu4Name}{else}<a href={$menu4.Menu4UrlPopup} target="_blank" style="white-space:nowrap;" title="{$menu4.Menu4Name}">{$menu4.Menu4Name}</a>{/if}
-												{else}{if $menu4.MenuIsOnClick}{$menu4.Menu4Name}{else}<a href={$menu4.Menu4Url} style="white-space:nowrap;" title="{$menu4.Menu4Name}">{$menu4.Menu4Name}</a>{/if}
-												{/if}
-												</li>
-											{/foreach}
-											</ul>{if $elemArr4[$curr_id2.Menu3ID]}	<br>{/if}
-										{/foreach}
-						            </ul>
-					        	</td>  
-					        	<td class="right"></td>
-					    	</tr>
-						   	<tr class="bottom">
-								<td class="left"></td>
-								<td class="center"></td>
-								<td class="right"></td>
-							</tr>
-						</table><br>
-{/foreach}
+									{foreach from=$elemArr4[$curr_id2.Menu3ID] item=menu4}
+										<li {if $menu4.MenuIsOnClick}onclick="{$menu4.MenuOnClick}()"{/if}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;
+										{if $menu4.Menu4Popup}{if $menu4.MenuIsOnClick}{$menu4.Menu4Name}{else}<a href={$menu4.Menu4UrlPopup} target="_blank" style="white-space:nowrap;" title="{$menu4.Menu4Name}">{$menu4.Menu4Name}</a>{/if}
+										{else}{if $menu4.MenuIsOnClick}{$menu4.Menu4Name}{else}<a href={$menu4.Menu4Url} style="white-space:nowrap;" title="{$menu4.Menu4Name}">{$menu4.Menu4Name}</a>{/if}
+										{/if}
+										</li>
+									{/foreach}
+									</ul>{if $elemArr4[$curr_id2.Menu3ID]}{/if}
+								{/foreach}
+				            </ul>
+			        	</td>  
+			        	<td class="right"></td>
+			    	</tr>
+			    	{assign var="cpt" value=1}
+					{/foreach}
+				   	<tr class="bottom">
+						<td class="left"></td>
+						<td class="center"></td>
+						<td class="right"></td>
+					</tr>
+				</table><br>
 		<table class="Tmenu3" width="100%">
 		<tr class="top">
 			<td class="left"></td>
