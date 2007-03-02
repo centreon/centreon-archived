@@ -82,6 +82,7 @@ For information : contact@oreon-project.org
 	# "ID" case, it's an installed module
 	else if ($id)	{
 		$moduleinfo = getModuleInfoInDB(NULL, $id);
+		$elemArr = array();
 		if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE"))	{
 			$handle = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
 			$i = 0;
@@ -99,14 +100,14 @@ For information : contact@oreon-project.org
 							if ($upgrade_ok)	{
 								$tpl->assign("output1", $lang["mod_menu_output1"]);
 								# SQL update if need
-								$sql_file = "update.sql";
+								$sql_file = "upgrade.sql";
 								$sql_file_path = "./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
 								if ($upgrade_conf[$moduleinfo["name"]]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
 									$tpl->assign("output2", $lang["mod_menu_output2"]);
 									execute_sql_file($sql_file, $sql_file_path);	
 								}
 								# PHP update if need
-								$php_file = "update.php";
+								$php_file = "upgrade.php";
 								$php_file_path = "./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
 								if ($upgrade_conf[$moduleinfo["name"]]["php_files"] && file_exists($php_file_path))	{
 									$tpl->assign("output3", $lang["mod_menu_output3"]);
@@ -140,21 +141,21 @@ For information : contact@oreon-project.org
 					}
 				}
 			}
-			closedir($handle);
-			$moduleinfo = array();
-			$moduleinfo = getModuleInfoInDB(NULL, $id);
-			$tpl->assign("module_rname", $moduleinfo["rname"]);
-			$tpl->assign("module_release", $moduleinfo["mod_release"]);
-			$tpl->assign("module_author", $moduleinfo["author"]);
-			$tpl->assign("module_infos", $moduleinfo["infos"]);
-			$tpl->assign("module_isinstalled", $lang["yes"]);
-			$tpl->assign("elemArr", $elemArr);
-			$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
-			$form2->addElement('submit', 'list', $lang["back"]);					
-			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-			$form2->accept($renderer);
-			$tpl->assign('form2', $renderer->toArray());	
+			closedir($handle);	
 		}
+		$moduleinfo = array();
+		$moduleinfo = getModuleInfoInDB(NULL, $id);
+		$tpl->assign("module_rname", $moduleinfo["rname"]);
+		$tpl->assign("module_release", $moduleinfo["mod_release"]);
+		$tpl->assign("module_author", $moduleinfo["author"]);
+		$tpl->assign("module_infos", $moduleinfo["infos"]);
+		$tpl->assign("module_isinstalled", $lang["yes"]);
+		$tpl->assign("elemArr", $elemArr);
+		$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
+		$form2->addElement('submit', 'list', $lang["back"]);					
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$form2->accept($renderer);
+		$tpl->assign('form2', $renderer->toArray());
 	}
 	#
 	##Apply a template definition
