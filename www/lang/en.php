@@ -38,6 +38,10 @@ $lang['errCode'][3] = "Object definition has been created";
 $lang['errCode'][4] = "Password has been changed";
 $lang['errCode'][5] = "Host has been duplicated";
 
+# Pagination 
+
+$lang['pagin_page'] = "Page";
+
 # Menu Level 1
 
 $lang['m_home'] = "Home";

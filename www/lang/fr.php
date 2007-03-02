@@ -38,6 +38,10 @@ $lang['errCode'][3] = "La d&eacute;finition a &eacute;t&eacute; enregistr&eacute
 $lang['errCode'][4] = "Le mot de passe a &eacute;t&eacute; modifi&eacute;";
 $lang['errCode'][5] = "L&#146;Host a &eacute;t&eacute; dupliqu&eacute;";
 
+# Pagination 
+
+$lang['pagin_page'] = "Page";
+
 # Menu Level 1
 
 $lang['m_home'] = "Accueil";
