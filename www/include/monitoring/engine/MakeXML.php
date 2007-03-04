@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	$debug = 0;
 	
-	## pearDB init
+	# pearDB init
 	$buffer = '';	
 	
 	require_once 'DB.php';
@@ -53,13 +53,11 @@ For information : contact@oreon-project.org
 			 );
 	
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) 
-	 	die("Connecting probems with oreon database : " . $pearDB->getMessage());
+	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	
-	## class init
-	
+	# class init
 	class Duration
 	{
 		function toString ($duration, $periods = null)
@@ -134,7 +132,6 @@ For information : contact@oreon-project.org
 		$buffer .= '<reponse>';
 	
 		$ntime = $time;
-			
 		if( filectime($file) > $ntime)
 			$ntime = filectime($file);	
 	
@@ -148,19 +145,14 @@ For information : contact@oreon-project.org
 			$oreon = "titi";
 	
 			include("../load_status_log.php");
-	
 			$mtab = array();
 			$mtab = explode(',', $arr);
 	
-			#
-			## calcul stat for statistic
-			#		
+			# calcul stat for statistic
 			$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 			$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 			
-			#
-			## services infos
-			#
+			# services infos
 			if (isset($service_status) &&  ($type == "service" || $type == "service_problem")){			
 				$gtab = array();
 				for($a=0,$b=1; sizeof($mtab) > $b;$a+=2,$b+=2)
@@ -256,9 +248,8 @@ For information : contact@oreon-project.org
 			fclose($inF);
 		}
 	}
-
-	## sessionID check and refresh
 	
+	# sessionID check and refresh
 	$flag = 0;
 	if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtime"])){
 		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_POST["sid"]."'");
@@ -274,7 +265,7 @@ For information : contact@oreon-project.org
 			}
 		}
 	}
-	
+
 	if (!$flag)
 		exit(1);
 	
