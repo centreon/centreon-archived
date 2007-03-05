@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	include_once($path_oreon . "/www/oreon.conf.php");
 	require_once($path_oreon."www/include/reporting/dashboard/reporting-func.php");
 	require_once($path_oreon."www/include/reporting/dashboard/simple-func.php");
-	
+
 
 	/* Connect to oreon DB */	
 	$dsn = array(
@@ -37,30 +37,30 @@ For information : contact@oreon-project.org
 		     'hostspec' => $conf_oreon['host'],
 		     'database' => $conf_oreon['db'],
 		     );
-	
+
 	$options = array(
 			 'debug'       => 2,
 			 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
 			 );
-	
+
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) 
-	  die("Connecting probems with oreon database : " . $pearDB->getMessage());
-	
+		die("Connecting probems with oreon database : " . $pearDB->getMessage());
+
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 
 #################################
 ######## clean up table  ########
 #################################
-/*
+
 	$sql = "TRUNCATE TABLE `log_archive_file_name`";
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_host`";
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_service`";
 	$res = $pearDB->query($sql);
-*/
+
 #################################
 #################################
 #################################
@@ -141,77 +141,12 @@ For information : contact@oreon-project.org
 			return true;
 		return false;					
 	}
-
-	function insert_pending()
-	{
-		global $pearDB;
-		$sql = "SELECT * FROM `log_archive_host` WHERE `date_start` = (SELECT min(`date_start`) FROM `log_archive_host`)"; 
-		$res = $pearDB->query($sql);
-		if (PEAR::isError($res)){
-		  die($res->getMessage());}
-
-
-		$time = time();
-		$start_date_day = $time-1;
-		$end_date_day = $time;
-		while ($h =& $res->fetchRow()){
-			$start_date_day = my_getStartDay($h["date_start"]);
-			$end_date_day = $start_date_day + 86400;
-		  }
-		$sd = $start_date_day;
-		$ed = $end_date_day;
-		
-		$sql = "SELECT distinct(host_id) FROM `log_archive_host`";
-		$res = $pearDB->query($sql);
-		if (PEAR::isError($res)){
-		  die($res->getMessage());}
-
-		while ($res->fetchInto($h)){			
-			while($end_date_day < $time){
-				## if day doesn't exist in bdd
-				$host_id = $h["host_id"];
-				if(!day_is_in_db($start_date_day, $end_date_day,$host_id)){
-					/*
-					echo date("d/m/Y H:i:s", $start_date_day)." -->";
-					echo date("d/m/Y H:i:s", $end_date_day)."\n";
-*/
-					$sql = "INSERT INTO `log_archive_host` ( `log_id` , `host_id` ," .
-							" `UPTimeScheduled` , `UPTimeUnScheduled` ," .
-							" `DOWNTimeScheduled` , `DOWNTimeUnScheduled` ," .
-							" `UNREACHABLETimeScheduled` , `UNREACHABLETimeUnScheduled` ," .
-							" `UNDETERMINATETimeScheduled` , `UNDETERMINATETimeUnScheduled` ," .
-							" `date_end`, `date_start` ) VALUES" .
-						" (NULL , '$host_id'," .
-						" '0', '0'," .
-						" '0', '0'," .
-						" '0', '0'," .
-						" '86400', '0'," .
-						" '$end_date_day', '$start_date_day')";
-		
-					$res2 = $pearDB->query($sql);
-					if (PEAR::isError($res2)){
-					  die($res2->getMessage());}
-
-		
-				}			
-		
-				## next day
-				$start_date_day = my_getNextStartDay($start_date_day);
-				$end_date_day = $start_date_day+86400;
-			}
-			$start_date_day = $sd;
-			$end_date_day = $ed;			
-		}
-	}
-
 	
 	function insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end)
 	{
 		global $host_list;
 		global $service_list;
 		global $pearDB;
-		/* pensez a verifier si day existe deja dans le cas ou les log sont melangé... */
-
 
 		#
 		## Hosts in db
@@ -238,25 +173,21 @@ For information : contact@oreon-project.org
 				#		
 				$host_id = $host_list[trim($host)];
 				$Upsc =$htab["timeUP"];
-				$UpUnsc =$htab["timeUP"];
+				$UPnbEvent =$htab["UPnbEvent"];
 				$DOWNsc =$htab["timeDOWN"];
-				$DOWNUnsc =$htab["timeDOWN"];
+				$DOWNnbEvent =$htab["DOWNnbEvent"];
 				$UNREACHABLEsc = $htab["timeUNREACHABLE"];
-				$UNREACHABLEUnsc = $htab["timeUNREACHABLE"];
-				$NONEsc = ($day_current_end - $day_current_start) - ($Upsc+$DOWNsc+$UNREACHABLEsc);
-				$NONEUnsc = $htab["timeNONE"];
+				$UNREACHABLEnbEvent = $htab["UNREACHABLEnbEvent"];
 	
 				$sql = "INSERT INTO `log_archive_host` ( `log_id` , `host_id` ," .
-						" `UPTimeScheduled` , `UPTimeUnScheduled` ," .
-						" `DOWNTimeScheduled` , `DOWNTimeUnScheduled` ," .
-						" `UNREACHABLETimeScheduled` , `UNREACHABLETimeUnScheduled` ," .
-						" `UNDETERMINATETimeScheduled` , `UNDETERMINATETimeUnScheduled` ," .
+						" `UPTimeScheduled` , `UPnbEvent` ,`UPTimeAverageAck` ,`UPTimeAverageRecovery` ," .
+						" `DOWNTimeScheduled` , `DOWNnbEvent` ,`DOWNTimeAverageAck` ,`DOWNTimeAverageRecovery` ," .
+						" `UNREACHABLETimeScheduled` , `UNREACHABLEnbEvent` ,`UNREACHABLETimeAverageAck` ,`UNREACHABLETimeAverageRecovery` ," .
 						" `date_end`, `date_start` ) VALUES" .
 					" (NULL , '$host_id'," .
-					" '$Upsc', '$UpUnsc'," .
-					" '$DOWNsc', '$DOWNUnsc'," .
-					" '$UNREACHABLEsc', '$UNREACHABLEUnsc'," .
-					" '$NONEsc', '$NONEUnsc'," .
+					" '$Upsc', $UPnbEvent,'0','0'," .
+					" '$DOWNsc', $DOWNnbEvent,'0','0'," .
+					" '$UNREACHABLEsc', $UNREACHABLEnbEvent,'0','0'," .
 					" '$day_current_end', '$day_current_start')";
 	
 				$res = $pearDB->query($sql);
@@ -281,55 +212,35 @@ For information : contact@oreon-project.org
 					## last service alert
 					#	
 					if(!strncmp($htab["current_state"], "OK", 2))
-						$htab["timeOK"] += ($day_current_end-$htab["current_time"]) + 1;
+						$htab["timeOK"] += ($day_current_end-$htab["current_time"]) ;
 					elseif(!strncmp($htab["current_state"], "WARNING", 4))
-						$htab["timeWARNING"] += ($day_current_end-$htab["current_time"]) + 1;
+						$htab["timeWARNING"] += ($day_current_end-$htab["current_time"]) ;
 					elseif(!strncmp($htab["current_state"], "UNKNOWN", 11))
-						$htab["timeUNKNOWN"] += ($day_current_end-$htab["current_time"]) + 1;
+						$htab["timeUNKNOWN"] += ($day_current_end-$htab["current_time"]) ;
 					elseif(!strncmp($htab["current_state"], "CRITICAL", 11))
-						$htab["timeCRITICAL"] += ($day_current_end-$htab["current_time"]) + 1;
+						$htab["timeCRITICAL"] += ($day_current_end-$htab["current_time"]) ;
 					else
-						$htab["timeNONE"] += ($day_current_end-$htab["current_time"]) + 1; // ?? calcul des none et autre pending
-
-
-		if($htab["timeOK"] < 0){
-			//echo "-->negative\n";
-			exit();
-		}
+						$htab["timeNONE"] += ($day_current_end-$htab["current_time"]) ;
 		
 					$host_id = $host_list[trim($host)];
-					/*
-					echo "svc: ".$svc ."-\n";
-					echo "svc_id: ".$htab["service_id"] ."\n";
-					*/
 					$service_id = $htab["service_id"];						
 					$OKsc =$htab["timeOK"];
-					$OKUnsc =$htab["timeOK"];
 					$WARNINGsc =$htab["timeWARNING"];
-					$WARNINGUnsc =$htab["timeWARNING"];
 					$UNKNOWNsc = $htab["timeUNKNOWN"];
-					$UNKNOWNUnsc = $htab["timeUNKNOWN"];
-					$CRITICALsc = $htab["timeCRITICAL"];
-					$CRITICALUnsc = $htab["timeCRITICAL"];
-					$NONEsc = $htab["timeNONE"];
-					$NONEUnsc = $htab["timeNONE"];
+					$CRITICALsc = $htab["timeCRITICAL"];			
 		
 					$sql = "INSERT INTO `log_archive_service` ( `log_id` , `host_id`, `service_id` ," .
-							" `OKTimeScheduled` , `OKTimeUnScheduled` ," .
-							" `WARNINGTimeScheduled` , `WARNINGTimeUnScheduled` ," .
-							" `UNKNOWNTimeScheduled` , `UNKNOWNTimeUnScheduled` ," .
-							" `CRITICALTimeScheduled` , `CRITICALTimeUnScheduled` ," .
-							"`UNDETERMINATETimeScheduled` ,`UNDETERMINATETimeUnScheduled` ," .
+							" `OKTimeScheduled` , `OKnbEvent` ,`OKTimeAverageAck` ,`OKTimeAverageRecovery` ," .
+							" `WARNINGTimeScheduled` , `WARNINGnbEvent` ,`WARNINGTimeAverageAck` ,`WARNINGTimeAverageRecovery` ," .
+							" `UNKNOWNTimeScheduled` , `UNKNOWNnbEvent` ,`UNKNOWNTimeAverageAck` ,`UNKNOWNTimeAverageRecovery` ," .
+							" `CRITICALTimeScheduled` , `CRITICALnbEvent` ,`CRITICALTimeAverageAck` ,`CRITICALTimeAverageRecovery` ," .
 							" `date_end`, `date_start` ) VALUES" .
 						" (NULL , '$host_id', '$service_id'," .
-						" '$OKsc', '$OKUnsc'," .
-						" '$WARNINGsc', '$WARNINGUnsc'," .
-						" '$UNKNOWNsc', '$UNKNOWNUnsc'," .
-						" '$CRITICALsc', '$CRITICALUnsc'," .
-						" '$NONEsc', '$NONEUnsc'," .
+						" '$OKsc', '0','0','0'," .
+						" '$WARNINGsc', '0','0','0'," .
+						" '$UNKNOWNsc', '0','0','0'," .
+						" '$CRITICALsc', '0','0','0'," .
 						" '$day_current_end', '$day_current_start')";
-		
-		//echo $sql."\n";
 		
 					$result = $pearDB->query($sql);
 					if (PEAR::isError($result)){
