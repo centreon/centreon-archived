@@ -155,3 +155,40 @@ ALTER TABLE `modules_informations` CHANGE `release` `release` VARCHAR( 255 ) NUL
 ALTER TABLE `modules_informations` ADD `sql_files` ENUM( '0', '1' ) NULL ,
 ADD `php_files` ENUM( '0', '1' ) NULL ;
 ALTER TABLE `modules_informations` CHANGE `mod_release` `mod_release` VARCHAR( 255 ) NULL DEFAULT NULL;
+
+
+-- 05/02/2007
+-- Table: log_archive_host
+ALTER TABLE `log_archive_host` DROP `UNDETERMINATETimeScheduled` ,
+DROP `UNDETERMINATETimeUnScheduled` ;
+
+ALTER TABLE `log_archive_host` CHANGE `UPTimeUnScheduled` `UPnbEvent` INT( 11 ) NULL DEFAULT NULL ,
+CHANGE `DOWNTimeUnScheduled` `DOWNnbEvent` INT( 11 ) NULL DEFAULT NULL ,
+CHANGE `UNREACHABLETimeUnScheduled` `UNREACHABLEnbEvent` INT( 11 ) NULL DEFAULT NULL 
+
+ALTER TABLE `log_archive_host` ADD `UPAverageTimeAck` INT NOT NULL AFTER `UPnbEvent` ,
+ADD `UPTimeAverageRecovery` INT NOT NULL AFTER `UPAverageTimeAck` ;
+
+ALTER TABLE `log_archive_host` ADD `DOWNAverageTimeAck` INT NOT NULL AFTER `DOWNnbEvent` ,
+ADD `DOWNTimeAverageRecovery` INT NOT NULL AFTER `DOWNAverageTimeAck` ;
+
+ALTER TABLE `log_archive_host` ADD `UNREACHABLEAverageTimeAck` INT NOT NULL AFTER `UNREACHABLEnbEvent` ,
+ADD `UNREACHABLETimeAverageRecovery` INT NOT NULL AFTER `UNREACHABLEAverageTimeAck` ;
+
+-- log_archive_service
+ALTER TABLE `log_archive_service` CHANGE `OKTimeUnScheduled` `OKnbEvent` INT( 11 ) NOT NULL DEFAULT '0',
+CHANGE `WARNINGTimeUnScheduled` `WARNINGnbEvent` INT( 11 ) NOT NULL DEFAULT '0',
+CHANGE `UNKNOWNTimeUnScheduled` `UNKNOWNnbEvent` INT( 11 ) NOT NULL DEFAULT '0',
+CHANGE `CRITICALTimeUnScheduled` `CRITICALnbEvent` INT( 11 ) NOT NULL DEFAULT '0';
+
+ALTER TABLE `log_archive_service` ADD `OKAverageTimeAck` INT NOT NULL AFTER `OKnbEvent` ,
+ADD `OKTimeAverageRecovery` INT NOT NULL AFTER `OKAverageTimeAck` ;
+
+ALTER TABLE `log_archive_service` ADD `WARNINGAverageTimeAck` INT NOT NULL AFTER `WARNINGnbEvent` ,
+ADD `WARNINGTimeAverageRecovery` INT NOT NULL AFTER `WARNINGAverageTimeAck`;
+
+ALTER TABLE `log_archive_service` ADD `UNKNOWNAverageTimeAck` INT NOT NULL AFTER `UNKNOWNnbEvent` ,
+ADD `UNKNOWNTimeAverageRecovery` INT NOT NULL AFTER `UNKNOWNAverageTimeAck`;
+
+ALTER TABLE `log_archive_service` ADD `CRITICALAverageTimeAck` INT NOT NULL AFTER `CRITICALnbEvent` ,
+ADD `CRITICALTimeAverageRecovery` INT NOT NULL AFTER `CRITICALAverageTimeAck`;
