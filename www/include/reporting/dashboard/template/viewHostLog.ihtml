@@ -35,8 +35,8 @@
 				</td>
 			</tr>
 			<tr>
-			<td style=' padding:5px;'>
-					<table class="ListTable" >
+			<td style='padding:5px;'>
+					<table class="ListTable">
 						<tr class='ListHeader'>
 							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>
 						</tr>
@@ -54,19 +54,6 @@
 						<tr class="list_one">
 							<td class="ListColHeaderCenter">{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}{$formPeriod2.hidden}</form></td>
 						</tr>
-<!--						
-						<tr class='list_two' >
-							<td  colspan=2 class="ListColHeaderCenter">{$formPeriod2.header.title} : {$date_start_select} {$to} {$date_end_select} ({$infosTitle})</td>
-						</tr>
-					<tr class='list_two'>
-							<td colspan=2 class="ListColHeaderLeft">{$actualTitle}&nbsp;:&nbsp;</td>
-						</tr>
-						<tr class="list_two">
-							<td colspan="2"><form {$formPeriod2.attributes}>{$formPeriod2.start.label}&nbsp;&nbsp;()</td>
-						</tr>
-						<tr class="list_one">
-							<td colspan="2">{$formPeriod2.end.label}&nbsp;&nbsp;()</td>
-						</tr>-->
 					</table>			
 				</td>
 			</tr>
@@ -88,7 +75,7 @@
 							<td {$tb.style}>{$tb.state}</td>
 							<td class='ListColCenter'>{$tb.time}</td>
 							<td class='ListColRight'>{$tb.pourcentTime}%</td>
-							<td class='ListColRight'>{$tb.pourcentkTime}%</td>
+							<td class='ListColRight'>{$tb.pourcentkTime}</td>
 						</tr>
 						{/foreach}
 					</table>
@@ -104,8 +91,8 @@
 							<td class="ListColHeaderCenter">{$serviceTilte}</td>
 							<td class="ListColHeaderCenter">{$OKTitle}</td>
 							<td class="ListColHeaderCenter">{$WarningTitle}</td>
-							<td class="ListColHeaderCenter">{$UnknownTitle}</td>
 							<td class="ListColHeaderCenter">{$CriticalTitle}</td>
+							<td class="ListColHeaderCenter">{$UnknownTitle}</td>
 							<td class="ListColHeaderCenter">{$PendingTitle}</td>
 						</tr>
 						{foreach item=tb from=$tab_svc}
@@ -113,8 +100,8 @@
 							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
 							<td class='ListColRight'{$style_ok}>{$tb.PtimeOK}%</td>
 							<td class='ListColRight'{$style_warning}>{$tb.PtimeWARNING}%</td>
-							<td class='ListColRight'{$style_unknown}>{$tb.PtimeUNKNOWN}%</td>
 							<td class='ListColRight'{$style_critical}>{$tb.PtimeCRITICAL}%</td>
+							<td class='ListColRight'{$style_unknown}>{$tb.PtimeUNKNOWN}%</td>
 							<td class='ListColRight'{$style_pending}>{$tb.PtimeNONE}%</td>
 						</tr>
 						{/foreach}
@@ -142,14 +129,14 @@
 							<td class="ListColHeaderCenter">{$HostTitle}</td>
 							<td class="ListColHeaderCenter">{$InformationsTitle}</td>
 						</tr>
-						{foreach item=tb from=$tab_log}
-						{if $tb.type eq "HOST ALERT" or $tb.type eq "CURRENT HOST STATE"}
+						{foreach item=log from=$tab_log}
+						{if $log.type eq "HOST ALERT" or $log.type eq "CURRENT HOST STATE"}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderCenter"><img src={$tb.img}></td>
-							<td class="ListColLeft">{$tb.time}</td>
-							<td class="ListColLeft">{$tb.status}</td>
-							<td class="ListColLeft">{$tb.host}</td>
-							<td class="ListColNoWrap">{$tb.output}</td>
+							<td class="ListColHeaderCenter"></td>
+							<td class="ListColLeft">{$log.time}</td>
+							<td class="ListColLeft">{$log.status} &nbsp; ({$log.state})</td>
+							<td class="ListColLeft">{$log.host}</td>
+							<td class="ListColNoWrap">{$log.output}</td>
 						</tr>
 						{/if}
 						{/foreach}

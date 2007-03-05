@@ -149,13 +149,12 @@ For information : contact@oreon-project.org
 			$criticaltime = $h["CRITICALTimeScheduled"];
 			$warningtime = $h["WARNINGTimeScheduled"];
 			$unknowntime = $h["UNKNOWNTimeScheduled"];
-			$pendingtime = $h["UNDETERMINATETimeScheduled"];
 	
 			$tt = 0 + ($h["date_end"] - $h["date_start"]);
 			if(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
-				$pending = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime);
+				$pendingtime = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime);
 			else
-			$pending = 0;
+			$pendingtime = 0;
 
 
 			if($oktime > 0)
@@ -264,7 +263,12 @@ For information : contact@oreon-project.org
 				$buffer .= ' title= "' . (($pok > 0) ? $pok : "0") .   '%" >' ;
 				$buffer .= ' Duration: ' . Duration::toString($tt);
 				$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
-				$buffer .= '</event>';	
+				$buffer .= '~br~ tt: ' . $tt;		
+				$buffer .= '~br~ time: ' . $pendingtime;		
+				$buffer .= '~br~ time: ' . $unknowntime;
+				$buffer .= '~br~ time: ' . $warningtime;
+				$buffer .= '~br~ time: ' . $criticaltime;
+				$buffer .= '</event>';
 			}
 		  }
 

@@ -74,7 +74,7 @@
 						<td class='ListColCenter'{$tb.style}>{$tb.state}</td>
 						<td class='ListColCenter' >{$tb.time}</td>
 						<td class='ListColRight'>{$tb.pourcentTime}&nbsp;%</td>
-						<td class='ListColRight'>{$tb.pourcentkTime}&nbsp;%</td>
+						<td class='ListColRight'>{$tb.pourcentkTime}</td>
 					</tr>
 					{/foreach}
 				</table>

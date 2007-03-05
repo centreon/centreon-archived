@@ -173,6 +173,8 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	
 	parseFile($oreon->Nagioscfg["log_file"], $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, 1);	
 
+	if(isset($tab_hosts[$mhost]["log"]))
+		$tab_log = $tab_hosts[$mhost]["log"];
 
 	if($startTimeOfThisDay  < ($end_date_select)){
 		if (isset($tab_hosts[$mhost]))
@@ -232,23 +234,23 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 					$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
 					$archive_svc_cri = isset($tab_svc_bdd[$svc_id]["Tcri"]) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
 	
-					$tab_tmp["PtimeOK"] = round(($archive_svc_ok +$tab_tmp["timeOK"]) / $tt *100,3);
-					$tab_tmp["PtimeWARNING"] = round(($archive_svc_warn+$tab_tmp["timeWARNING"]) / $tt *100,3);
-					$tab_tmp["PtimeUNKNOWN"] = round(($archive_svc_unknown+$tab_tmp["timeUNKNOWN"]) / $tt *100,3);
-					$tab_tmp["PtimeCRITICAL"] = round(($archive_svc_cri+$tab_tmp["timeCRITICAL"]) / $tt *100,3);
+					$tab_tmp["PtimeOK"] = round(($archive_svc_ok +$tab_tmp["timeOK"]) / $tt *100,2);
+					$tab_tmp["PtimeWARNING"] = round(($archive_svc_warn+$tab_tmp["timeWARNING"]) / $tt *100,2);
+					$tab_tmp["PtimeUNKNOWN"] = round(($archive_svc_unknown+$tab_tmp["timeUNKNOWN"]) / $tt *100,2);
+					$tab_tmp["PtimeCRITICAL"] = round(($archive_svc_cri+$tab_tmp["timeCRITICAL"]) / $tt *100,2);
 					$tab_tmp["PtimeNONE"] = round( ( $tt - (($archive_svc_ok+$tab_tmp["timeOK"])
 														 + ($archive_svc_warn+$tab_tmp["timeWARNING"])
 														 + ($archive_svc_unknown+$tab_tmp["timeUNKNOWN"])
-														 + ($archive_svc_cri+$tab_tmp["timeCRITICAL"])))  / $tt *100,3);
+														 + ($archive_svc_cri+$tab_tmp["timeCRITICAL"])))  / $tt *100,2);
 	
 					// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
-					$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 2, '.', '');
-					$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 2, '.', '');
-					$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 2, '.', '');
-					$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 2, '.', '');
-					$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 2, '.', '');
+					$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 1, '.', '');
+					$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 1, '.', '');
+					$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
+					$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 1, '.', '');
+					$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 1, '.', '');
 	
-					$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? "0.00" : $tab_tmp["PtimeNONE"];
+					$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? "0.0" : $tab_tmp["PtimeNONE"];
 					//end
 					$tab_svc[$i++] = $tab_tmp;
 				}
@@ -286,21 +288,21 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$tab_tmp["svcName"] = getMyServiceName($svc_id);
 			$tab_tmp["service_id"] = $svc_id;
 			$tt = $end_date_select - $start_date_select;
-			$tab_tmp["PtimeOK"] = round($tab["Tok"] / $tt *100,3);
-			$tab_tmp["PtimeWARNING"] = round( $tab["Twarn"]/ $tt *100,3);
-			$tab_tmp["PtimeUNKNOWN"] = round( $tab["Tunknown"]/ $tt *100,3);
-			$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcri"]/ $tt *100,3);
+			$tab_tmp["PtimeOK"] = round($tab["Tok"] / $tt *100,2);
+			$tab_tmp["PtimeWARNING"] = round( $tab["Twarn"]/ $tt *100,2);
+			$tab_tmp["PtimeUNKNOWN"] = round( $tab["Tunknown"]/ $tt *100,2);
+			$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcri"]/ $tt *100,2);
 			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"])
-												 )  / $tt *100,3);
+												 )  / $tt *100,2);
 
 			// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
-			$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 2, '.', '');
-			$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 2, '.', '');
-			$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 2, '.', '');
-			$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 2, '.', '');
-			$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 2, '.', '');
+			$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 1, '.', '');
+			$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 1, '.', '');
+			$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
+			$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 1, '.', '');
+			$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 1, '.', '');
 
-			$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? 0.00 : $tab_tmp["PtimeNONE"];
+			$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? 0.0 : $tab_tmp["PtimeNONE"];
 			//end
 
 			$tab_svc[$i++] = $tab_tmp;
@@ -318,22 +320,22 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 	$tab["state"] = $lang["m_UpTitle"];
 	$tab["time"] = Duration::toString($Tup);
-	$tab["pourcentTime"] = round($Tup/$timeTOTAL*100,2);
-	$tab["pourcentkTime"] = round($Tup/$timeTOTAL*100,2);
+	$tab["pourcentTime"] = round($Tup/$timeTOTAL*100,2) ;
+	$tab["pourcentkTime"] = round($Tup/($timeTOTAL-$Tnone)*100,2). "%";
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 	$tab_resume[0] = $tab;
 
 	$tab["state"] = $lang["m_DownTitle"];
 	$tab["time"] = Duration::toString($Tdown);
 	$tab["pourcentTime"] = round($Tdown/$timeTOTAL*100,2);
-	$tab["pourcentkTime"] = round($Tdown/$timeTOTAL*100,2);
+	$tab["pourcentkTime"] = round($Tdown/($timeTOTAL-$Tnone)*100,2)."%";
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
 	$tab_resume[1] = $tab;
 
 	$tab["state"] = $lang["m_UnreachableTitle"];
 	$tab["time"] = Duration::toString($Tunreach);
 	$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
-	$tab["pourcentkTime"] = round($Tunreach/$timeTOTAL*100,2);
+	$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone)*100,2)."%";
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
 	$tab_resume[2] = $tab;
 
@@ -341,8 +343,8 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tab["state"] = $lang["m_PendingTitle"];
 	$tab["time"] = Duration::toString($Tnone);
 	$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
-	$tab["pourcentkTime"] = round($Tnone/$timeTOTAL*100,2);
-	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";
+	$tab["pourcentkTime"] = null;
+	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_pending"]."'";
 	$tab_resume[3] = $tab;
 
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
@@ -360,9 +362,10 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tpl->assign("tab_resume", $tab_resume);
 	if(isset($tab_svc))
 	$tpl->assign("tab_svc", $tab_svc);
-	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));
 	}## end of period requirement
+
+	$tpl->assign("tab_log", $tab_log);
 
 	$tpl->assign('actualTitle', $lang["actual"]);
 

@@ -106,8 +106,6 @@ For information : contact@oreon-project.org
 			' as Tdown,' .
 			'sum(UNREACHABLETimeScheduled)' .
 			' as Tunreach, ' .				
-			'sum(UNDETERMINATETimeScheduled)' .
-			' as Tnone, ' .
 			'min(date_start) as log_date_start,' .
 			'max(date_end) as log_date_end,' .
 			'sum(UNREACHABLETimeScheduled) as unreach FROM `log_archive_host` WHERE host_id = ' . $host_id  .
@@ -125,12 +123,9 @@ For information : contact@oreon-project.org
 			$Tup = 0 + $h["Tup"];
 			$Tdown = 0 + $h["Tdown"];
 			$Tunreach = 0 + $h["Tunreach"];
-			$Tnone = 0 + $h["Tnone"];
+			$Tnone = 0 + ($end_date_select - $start_date_select) - ($h["Tup"]+$h["Tdown"]+ $h["Tunreach"]);
 		  }
-		}		
-
-
-
+		}
 	}
 
 	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select){	
@@ -144,8 +139,6 @@ For information : contact@oreon-project.org
 			' as Twarn,' .
 			'sum(UNKNOWNTimeScheduled)' .
 			' as Tunknown, ' .				
-			'sum(UNDETERMINATETimeScheduled)' .
-			' as Tnone, ' .
 			'sum(CRITICALTimeScheduled)' .
 			' as Tcri, ' .
 			'min(date_start) as log_date_start,' .
@@ -165,7 +158,7 @@ For information : contact@oreon-project.org
 				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
 				$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];
-				$tab_svc_bdd[$s["service_id"]]["Tnone"] = 0 + $s["Tnone"];
+				$tab_svc_bdd[$s["service_id"]]["Tnone"] = 0 + ($end_date_select - $start_date_select) - ($s["Tok"]+$s["Twarn"]+$s["Tunknown"]);
 				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];
 			  }
 			}
@@ -178,9 +171,7 @@ For information : contact@oreon-project.org
 			'sum(WARNINGTimeScheduled)' .
 			' as Twarn,' .
 			'sum(UNKNOWNTimeScheduled)' .
-			' as Tunknown, ' .				
-			'sum(UNDETERMINATETimeScheduled)' .
-			' as Tnone, ' .
+			' as Tunknown, ' .
 			'sum(CRITICALTimeScheduled)' .
 			' as Tcri, ' .
 			'min(date_start) as log_date_start,' .
@@ -200,7 +191,6 @@ For information : contact@oreon-project.org
 				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
 				$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];
-				$tab_svc_bdd[$s["service_id"]]["Tnone"] = 0 + $s["Tnone"];
 				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];
 			  }
 			}
@@ -285,16 +275,32 @@ For information : contact@oreon-project.org
 					  	 )
 					{
 						if(isset($tab_hosts[$res1[0]])){
-							if(!strncmp($tab_hosts[$res1[0]]["current_state"], "UP", 2))
+							if(!strncmp($tab_hosts[$res1[0]]["current_state"], "UP", 2)){
+								$tab_hosts[$res1[0]]["UPnbEvent"] += 1;
 								$tab_hosts[$res1[0]]["timeUP"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
-							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "DOWN", 4))
+							}
+							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "DOWN", 4)){
+								$tab_hosts[$res1[0]]["DOWNnbEvent"] += 1;
 								$tab_hosts[$res1[0]]["timeDOWN"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
-							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "UNREACHABLE", 11))
+							}
+							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "UNREACHABLE", 11)){
+								$tab_hosts[$res1[0]]["UNREACHABLEnbEvent"] += 1;
 								$tab_hosts[$res1[0]]["timeUNREACHABLE"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
+							}
 							else
 								$tab_hosts[$res1[0]]["timeNONE"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
 							$tab_hosts[$res1[0]]["current_state"] = $res1[1];
 							$tab_hosts[$res1[0]]["current_time"] = $time_event; //save time
+
+
+							$tmp_log = array();
+							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
+							$tmp_log["status"] = $res1[1];
+							$tmp_log["host"] = $res1[0];
+							$tmp_log["type"] = $type;
+							$tmp_log["state"] = $res1[2];
+							$tmp_log["output"] = $res1[4];
+							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
 						}
 						else {
 							$tab_hosts[$res1[0]] = array();
@@ -304,8 +310,20 @@ For information : contact@oreon-project.org
 							$tab_hosts[$res1[0]]["timeDOWN"] = 0;
 							$tab_hosts[$res1[0]]["timeUNREACHABLE"] = 0;
 							$tab_hosts[$res1[0]]["timeNONE"] = 0;
+							$tab_hosts[$res1[0]]["UPnbEvent"] = 0;
+							$tab_hosts[$res1[0]]["DOWNnbEvent"] = 0;
+							$tab_hosts[$res1[0]]["UNREACHABLEnbEvent"] = 0;
 							$tab_hosts[$res1[0]]["start_time"] = $day_current_start;
 							$tab_hosts[$res1[0]]["tab_svc_log"] = array();
+
+							$tmp_log = array();
+							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
+							$tmp_log["status"] = $res1[1];
+							$tmp_log["host"] = $res1[0];
+							$tmp_log["type"] = $type;
+							$tmp_log["state"] = $res1[2];
+							$tmp_log["output"] = $res1[4];
+							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
 						}
 					}
 					
@@ -330,7 +348,21 @@ For information : contact@oreon-project.org
 								$tab_tmp["timeNONE"] += ($time_event-$tab_tmp["current_time"]);
 							$tab_tmp["current_time"] = $time_event; //save time
 							$tab_tmp["current_state"] = $res1[2]; //save time
-							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
+
+							$tmp_log = array();
+							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
+							$tmp_log["status"] = $res1[1];
+
+							$tmp_log["host"] = $res1[0];
+							$tmp_log["host"] = $res1[1];
+
+							$tmp_log["type"] = $type;
+							$tmp_log["state"] = $res1[2];
+							$tmp_log["output"] = $res1[4];
+							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
+
+
+							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;							
 						}
 						else{
 							$tab_services[$res1[1]][$res1[0]] = array();
@@ -344,14 +376,6 @@ For information : contact@oreon-project.org
 							$tab_tmp["timeNONE"] = 0;
 							$tab_tmp["start_time"] = $day_current_start;
 							$tab_tmp["service_id"] = getMyServiceID($res1[1],getMyHostID($res1[0]));
-/*
-							echo "r host_na: ".$res1[0] ."<br>";
-							echo "r host_id: ".getMyHostID($res1[0]) ."<br>";
-
-							echo "r svc_na: ".$res1[1] ."<br>";
-							echo "r svc_id: ".$tab_tmp["service_id"] ."<br>";
-*/							
-						
 							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
 						}
 					}

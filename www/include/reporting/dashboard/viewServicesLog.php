@@ -199,28 +199,46 @@ For information : contact@oreon-project.org
 			$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
 			$archive_svc_cri = isset($tab_svc_bdd[$svc_id]["Tcri"]) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
 
-			$tab_svc["PtimeOK"] = round(($archive_svc_ok +$tab_svc["timeOK"]) / $tt *100,3);
-			$tab_svc["PtimeWARNING"] = round(($archive_svc_warn+$tab_svc["timeWARNING"]) / $tt *100,3);
-			$tab_svc["PtimeUNKNOWN"] = round(($archive_svc_unknown+$tab_svc["timeUNKNOWN"]) / $tt *100,3);
-			$tab_svc["PtimeCRITICAL"] = round(($archive_svc_cri+$tab_svc["timeCRITICAL"]) / $tt *100,3);
-			$tab_svc["PtimeNONE"] = round( ( $tt - (($archive_svc_ok+$tab_svc["timeOK"])
-												 + ($archive_svc_warn+$tab_svc["timeWARNING"])
-												 + ($archive_svc_unknown+$tab_svc["timeUNKNOWN"])
-												 + ($archive_svc_cri+$tab_svc["timeCRITICAL"])))  / $tt *100,3);
 			$tab_svc["timeOK"] += $archive_svc_ok;
 			$tab_svc["timeWARNING"] += $archive_svc_warn;
 			$tab_svc["timeUNKNOWN"] += $archive_svc_unknown;
 			$tab_svc["timeCRITICAL"] +=$archive_svc_cri;
 			$tab_svc["timeNONE"] += $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
 
+
+
+
+			$tab_svc["PtimeOK"] = round(($tab_svc["timeOK"]) / $tt *100,3);
+			$tab_svc["PtimeWARNING"] = round(($tab_svc["timeWARNING"]) / $tt *100,3);
+			$tab_svc["PtimeUNKNOWN"] = round(($tab_svc["timeUNKNOWN"]) / $tt *100,3);
+			$tab_svc["PtimeCRITICAL"] = round(($tab_svc["timeCRITICAL"]) / $tt *100,3);
+			$tab_svc["PtimeNONE"] = round( ( $tt - (($tab_svc["timeOK"])
+												 + ($tab_svc["timeWARNING"])
+												 + ($tab_svc["timeUNKNOWN"])
+												 + ($tab_svc["timeCRITICAL"])))  / $tt *100,3);
+
+			$tab_svc["PktimeOK"] = round(($tab_svc["timeOK"]) / ($tt-$tab_svc["timeNONE"]) *100,3);
+			$tab_svc["PktimeWARNING"] = round(($tab_svc["timeWARNING"]) / ($tt-$tab_svc["timeNONE"]) *100,3);
+			$tab_svc["PktimeUNKNOWN"] = round(($tab_svc["timeUNKNOWN"]) / ($tt-$tab_svc["timeNONE"]) *100,3);
+			$tab_svc["PktimeCRITICAL"] = round(($tab_svc["timeCRITICAL"]) / ($tt-$tab_svc["timeNONE"]) *100,3);
+			$tab_svc["PktimeNONE"] = round( ( $tt - (($tab_svc["timeOK"])
+												 + ($tab_svc["timeWARNING"])
+												 + ($tab_svc["timeUNKNOWN"])
+												 + ($tab_svc["timeCRITICAL"])))  / $tt *100,3);
+
+
 			# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
-			$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
-			$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 2, '.', '');
-			$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 2, '.', '');
-			$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 2, '.', '');
-			$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');
-			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.00" : $tab_svc["PtimeNONE"];
-			
+			$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 1, '.', '');
+			$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 1, '.', '');
+			$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 1, '.', '');
+			$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 1, '.', '');
+			$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 1, '.', '');
+			$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.0" : $tab_svc["PtimeNONE"];
+
+			$tab_svc["PktimeOK"] = number_format($tab_svc["PktimeOK"], 1, '.', '');
+			$tab_svc["PktimeWARNING"] = number_format($tab_svc["PktimeWARNING"], 1, '.', '');
+			$tab_svc["PktimeUNKNOWN"] = number_format($tab_svc["PktimeUNKNOWN"], 1, '.', '');
+			$tab_svc["PktimeCRITICAL"] = number_format($tab_svc["PktimeCRITICAL"], 1, '.', '');
 			#end
 		}
 	} else { // today is not in the period		
@@ -255,18 +273,38 @@ For information : contact@oreon-project.org
 		$tab_svc["timeUNKNOWN"] = (isset($tab_svc_bdd[$svc_id]["Tunknown"])) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
 		$tab_svc["timeCRITICAL"] = (isset($tab_svc_bdd[$svc_id]["Tcri"])) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
 		$tab_svc["timeNONE"] = $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
+
+
+
 		$tab_svc["PtimeOK"] = round($tab_svc["timeOK"] / $tt *100,3);
 		$tab_svc["PtimeWARNING"] = round( $tab_svc["timeWARNING"]/ $tt *100,3);
 		$tab_svc["PtimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ $tt *100,3);
 		$tab_svc["PtimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ $tt *100,3);
 		$tab_svc["PtimeNONE"] = round(($tab_svc["timeNONE"])  / $tt *100,3);
+
+		if($tt != $tab_svc["timeNONE"]){
+			$tab_svc["PktimeOK"] = round($tab_svc["timeOK"] / ($tt-$tab_svc["timeNONE"]) *100,3);
+			$tab_svc["PktimeWARNING"] = round( $tab_svc["timeWARNING"]/ ($tt-$tab_svc["timeNONE"]) *100,3);
+			$tab_svc["PktimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ ($tt-$tab_svc["timeNONE"]) *100,3);
+			$tab_svc["PktimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ ($tt-$tab_svc["timeNONE"]) *100,3);
+		}else {
+			$tab_svc["PktimeOK"] = round(0,3);
+			$tab_svc["PktimeWARNING"] = round(0,3);
+			$tab_svc["PktimeUNKNOWN"] = round(0,3);
+			$tab_svc["PktimeCRITICAL"] = round(0,3);
+		}			
 		# les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde...
-		$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 2, '.', '');
-		$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 2, '.', '');
-		$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 2, '.', '');
-		$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 2, '.', '');
-		$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 2, '.', '');	
-		$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.00" : $tab_svc["PtimeNONE"];
+		$tab_svc["PtimeOK"] = number_format($tab_svc["PtimeOK"], 1, '.', '');
+		$tab_svc["PtimeWARNING"] = number_format($tab_svc["PtimeWARNING"], 1, '.', '');
+		$tab_svc["PtimeUNKNOWN"] = number_format($tab_svc["PtimeUNKNOWN"], 1, '.', '');
+		$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 1, '.', '');
+		$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 1, '.', '');	
+		$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.0" : $tab_svc["PtimeNONE"];
+
+		$tab_svc["PktimeOK"] = number_format($tab_svc["PktimeOK"], 1, '.', '');
+		$tab_svc["PktimeWARNING"] = number_format($tab_svc["PktimeWARNING"], 1, '.', '');
+		$tab_svc["PktimeUNKNOWN"] = number_format($tab_svc["PktimeUNKNOWN"], 1, '.', '');
+		$tab_svc["PktimeCRITICAL"] = number_format($tab_svc["PktimeCRITICAL"], 1, '.', '');
 		#end		
 	}
 }	
@@ -278,39 +316,37 @@ For information : contact@oreon-project.org
 		$tab["state"] = $lang["m_OKTitle"];
 		$tab["time"] = Duration::toString($tab_svc["timeOK"]);
 		$tab["pourcentTime"] = $tab_svc["PtimeOK"];
-		$tab["pourcentkTime"] = $tab_svc["PtimeOK"];
+		$tab["pourcentkTime"] = $tab_svc["PktimeOK"]." %";
 		$tab["style"] = " style='background:" . $oreon->optGen["color_ok"]."'";
 		$tab_resume[0] = $tab;
+
+		$tab["state"] = $lang["m_CriticalTitle"];
+		$tab["time"] = Duration::toString($tab_svc["timeCRITICAL"]);
+		$tab["pourcentTime"] = $tab_svc["PtimeCRITICAL"];
+		$tab["pourcentkTime"] = $tab_svc["PktimeCRITICAL"]." %";
+		$tab["style"] = " style='background:" . $oreon->optGen["color_critical"]."'";
+		$tab_resume[1] = $tab;
 		
 		$tab["state"] = $lang["m_WarningTitle"];
 		$tab["time"] = Duration::toString($tab_svc["timeWARNING"]);
 		$tab["pourcentTime"] = $tab_svc["PtimeWARNING"];
-		$tab["pourcentkTime"] = $tab_svc["PtimeWARNING"];
+		$tab["pourcentkTime"] = $tab_svc["PktimeWARNING"]." %";
 		$tab["style"] = " style='background:" . $oreon->optGen["color_warning"]."'";
-		$tab_resume[1] = $tab;
+		$tab_resume[2] = $tab;
 		
 		$tab["state"] = $lang["m_UnknownTitle"];
 		$tab["time"] = Duration::toString($tab_svc["timeUNKNOWN"]);
 		$tab["pourcentTime"] = $tab_svc["PtimeUNKNOWN"];
-		$tab["pourcentkTime"] = $tab_svc["PtimeUNKNOWN"];
+		$tab["pourcentkTime"] = $tab_svc["PktimeUNKNOWN"]." %";
 		$tab["style"] = " style='background:" . $oreon->optGen["color_unknown"]."'";
-		$tab_resume[2] = $tab;
-		
-		$tab["state"] = $lang["m_CriticalTitle"];
-
-		$tab["time"] = Duration::toString($tab_svc["timeCRITICAL"]);
-		$tab["pourcentTime"] = $tab_svc["PtimeCRITICAL"];
-		$tab["pourcentkTime"] = $tab_svc["PtimeCRITICAL"];
-		$tab["style"] = " style='background:" . $oreon->optGen["color_critical"]."'";
 		$tab_resume[3] = $tab;
 		
 		$tab["state"] = $lang["m_PendingTitle"];
 		$tab_svc["timeNONE"] = $tab_svc["timeNONE"] < 0 ? 0 : $tab_svc["timeNONE"];
 		$tab["time"] = Duration::toString($tab_svc["timeNONE"]);
 
-
 		$tab["pourcentTime"] = $tab_svc["PtimeNONE"];
-		$tab["pourcentkTime"] = $tab_svc["PtimeNONE"];
+		$tab["pourcentkTime"] = null;
 		$tab["style"] = " style='background:" . $oreon->optGen["color_pending"]."'";
 		$tab_resume[4] = $tab;
 	}

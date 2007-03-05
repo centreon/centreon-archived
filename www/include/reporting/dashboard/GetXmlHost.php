@@ -147,19 +147,15 @@ For information : contact@oreon-project.org
 		' order by date_start desc';
 			
 		$res = & $pearDB->query($rq);
-	
 
 		  while ($h =& $res->fetchRow()) {
 			$uptime = $h["UPTimeScheduled"];
 			$downtime = $h["DOWNTimeScheduled"];
 			$unreachalbetime = $h["UNREACHABLETimeScheduled"];
-			$undeterminatetime = $h["UNDETERMINATETimeScheduled"];
-	
-			$tt = 0 + ($h["date_end"] - $h["date_start"]);
-			$pending = $undeterminatetime;
 
+			$tt = 0 + ($h["date_end"] - $h["date_start"]);
 			if(($uptime + $downtime + $unreachalbetime) < $tt)
-				$undeterminatetime = $tt - ($uptime + $downtime + $unreachalbetime);
+				$undeterminatetime = 0 + $tt - ($uptime + $downtime + $unreachalbetime);
 			else
 			$undeterminatetime = 0;
 
@@ -168,8 +164,6 @@ For information : contact@oreon-project.org
 			$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
 			else
 			$punreach = "0.00";
-
-
 
 			if($uptime > 0)
 			$pup = 0 +round(($uptime / $tt * 100),2);
@@ -181,8 +175,6 @@ For information : contact@oreon-project.org
 			else
 			$pdown = "0.00";
 			
-
-
 			if($undeterminatetime > 0)
 			$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
 			else
@@ -193,28 +185,19 @@ For information : contact@oreon-project.org
 			$start = $h["date_start"] + 5000;			
 
 
-
-
 			$tp = round(($pundet * $t / 100 ),2);
-			if($pundet > 0)
+			if($pundet > 0){
 				$end = $h["date_start"] + $tp + 5000;
-			else
-				$end = $h["date_start"] + 5001;
-			$buffer .= '<event ';
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorUNKNOWN . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
-			$buffer .= '~br~ PendingTime: ' . $undeterminatetime;		
-//			$buffer .= '~br~ StartTime: ' . $h["date_start"];		
-//			$buffer .= '~br~ EndTime: ' . $h["date_end"];		
-			$buffer .= '</event>';		
-
-
-
-
+				$buffer .= '<event ';
+				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+				$buffer .= ' color="#' . $colorUNKNOWN . '"';
+				$buffer .= ' isDuration="true" ';
+				$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
+				$buffer .= ' Duration: ' . Duration::toString($tt);
+				$buffer .= '~br~ PendingTime: ' . $undeterminatetime;
+				$buffer .= '</event>';		
+			}
 
 			$tp = round(($punreach * $t / 100 ),2);
 			if($punreach > 0){
@@ -276,42 +259,42 @@ For information : contact@oreon-project.org
 
 	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
 	if($_GET["today_pending"] > 0){
-	$end = $today_start + $tp + 5000;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorUNKNOWN . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $tt / 100);		
-	$buffer .= '</event>';
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorUNKNOWN . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
+		$buffer .= ' Duration: ' . Duration::toString($tt);
+		$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $tt / 100);		
+		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
 	if($_GET["today_unreachable"] > 0){
-	$end = $today_start + $tp + 5000;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorUNREACHABLE . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $tt / 100);		
-	$buffer .= '</event>';
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
+		$buffer .= ' Duration: ' . Duration::toString($tt);
+		$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $tt / 100);		
+		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_down"] * $t / 100 ),2);
 	if($_GET["today_down"] > 0){
-	$end = $today_start + $tp + 5000;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorDOWN . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ Downtime: ' . Duration::toString($_GET["today_down"] * $tt / 100);
-	$buffer .= '</event>';
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorDOWN . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
+		$buffer .= ' Duration: ' . Duration::toString($tt);
+		$buffer .= '~br~ Downtime: ' . Duration::toString($_GET["today_down"] * $tt / 100);
+		$buffer .= '</event>';
 	}
 
 	$tp = round(($_GET["today_up"] * $t / 100 ),2);
