@@ -164,7 +164,7 @@ DROP `UNDETERMINATETimeUnScheduled` ;
 
 ALTER TABLE `log_archive_host` CHANGE `UPTimeUnScheduled` `UPnbEvent` INT( 11 ) NULL DEFAULT NULL ,
 CHANGE `DOWNTimeUnScheduled` `DOWNnbEvent` INT( 11 ) NULL DEFAULT NULL ,
-CHANGE `UNREACHABLETimeUnScheduled` `UNREACHABLEnbEvent` INT( 11 ) NULL DEFAULT NULL 
+CHANGE `UNREACHABLETimeUnScheduled` `UNREACHABLEnbEvent` INT( 11 ) NULL DEFAULT NULL ;
 
 ALTER TABLE `log_archive_host` ADD `UPAverageTimeAck` INT NOT NULL AFTER `UPnbEvent` ,
 ADD `UPTimeAverageRecovery` INT NOT NULL AFTER `UPAverageTimeAck` ;
