@@ -182,13 +182,13 @@ CHANGE `UNKNOWNTimeUnScheduled` `UNKNOWNnbEvent` INT( 11 ) NOT NULL DEFAULT '0',
 CHANGE `CRITICALTimeUnScheduled` `CRITICALnbEvent` INT( 11 ) NOT NULL DEFAULT '0';
 
 ALTER TABLE `log_archive_service` ADD `OKAverageTimeAck` INT NOT NULL AFTER `OKnbEvent` ,
-ADD `OKTimeAverageRecovery` INT NOT NULL AFTER `OKAverageTimeAck` ;
+ADD `OKTimeAverageRecovery` INT NOT NULL AFTER `OKTimeAverageAck` ;
 
-ALTER TABLE `log_archive_service` ADD `WARNINGAverageTimeAck` INT NOT NULL AFTER `WARNINGnbEvent` ,
-ADD `WARNINGTimeAverageRecovery` INT NOT NULL AFTER `WARNINGAverageTimeAck`;
+ALTER TABLE `log_archive_service` ADD `WARNINGTimeAverageAck` INT NOT NULL AFTER `WARNINGnbEvent` ,
+ADD `WARNINGTimeAverageRecovery` INT NOT NULL AFTER `WARNINGTimeAverageAck`;
 
-ALTER TABLE `log_archive_service` ADD `UNKNOWNAverageTimeAck` INT NOT NULL AFTER `UNKNOWNnbEvent` ,
-ADD `UNKNOWNTimeAverageRecovery` INT NOT NULL AFTER `UNKNOWNAverageTimeAck`;
+ALTER TABLE `log_archive_service` ADD `UNKNOWNTimeAverageAck` INT NOT NULL AFTER `UNKNOWNnbEvent` ,
+ADD `UNKNOWNTimeAverageRecovery` INT NOT NULL AFTER `UNKNOWNTimeAverageAck`;
 
-ALTER TABLE `log_archive_service` ADD `CRITICALAverageTimeAck` INT NOT NULL AFTER `CRITICALnbEvent` ,
-ADD `CRITICALTimeAverageRecovery` INT NOT NULL AFTER `CRITICALAverageTimeAck`;
+ALTER TABLE `log_archive_service` ADD `CRITICALTimeAverageAck` INT NOT NULL AFTER `CRITICALnbEvent` ,
+ADD `CRITICALTimeAverageRecovery` INT NOT NULL AFTER `CRITICALTimeAverageAck`;
