@@ -53,14 +53,14 @@ For information : contact@oreon-project.org
 #################################
 ######## clean up table  ########
 #################################
-
+/*
 	$sql = "TRUNCATE TABLE `log_archive_file_name`";
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_host`";
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_service`";
 	$res = $pearDB->query($sql);
-
+*/
 #################################
 #################################
 #################################
@@ -223,11 +223,15 @@ For information : contact@oreon-project.org
 						$htab["timeNONE"] += ($day_current_end-$htab["current_time"]) ;
 		
 					$host_id = $host_list[trim($host)];
-					$service_id = $htab["service_id"];						
+					$service_id = $htab["service_id"];
 					$OKsc =$htab["timeOK"];
+					$OKnbEvent =$htab["OKnbEvent"];
 					$WARNINGsc =$htab["timeWARNING"];
+					$WARNINGnbEvent =$htab["WARNINGnbEvent"];
 					$UNKNOWNsc = $htab["timeUNKNOWN"];
+					$UNKNOWNnbEvent = $htab["UNKNOWNnbEvent"];
 					$CRITICALsc = $htab["timeCRITICAL"];			
+					$CRITICALnbEvent = $htab["CRITICALnbEvent"];			
 		
 					$sql = "INSERT INTO `log_archive_service` ( `log_id` , `host_id`, `service_id` ," .
 							" `OKTimeScheduled` , `OKnbEvent` ,`OKTimeAverageAck` ,`OKTimeAverageRecovery` ," .
@@ -236,10 +240,10 @@ For information : contact@oreon-project.org
 							" `CRITICALTimeScheduled` , `CRITICALnbEvent` ,`CRITICALTimeAverageAck` ,`CRITICALTimeAverageRecovery` ," .
 							" `date_end`, `date_start` ) VALUES" .
 						" (NULL , '$host_id', '$service_id'," .
-						" '$OKsc', '0','0','0'," .
-						" '$WARNINGsc', '0','0','0'," .
-						" '$UNKNOWNsc', '0','0','0'," .
-						" '$CRITICALsc', '0','0','0'," .
+						" '$OKsc', $OKnbEvent,'0','0'," .
+						" '$WARNINGsc', $WARNINGnbEvent,'0','0'," .
+						" '$UNKNOWNsc', $UNKNOWNnbEvent,'0','0'," .
+						" '$CRITICALsc', $CRITICALnbEvent,'0','0'," .
 						" '$day_current_end', '$day_current_start')";
 		
 					$result = $pearDB->query($sql);
