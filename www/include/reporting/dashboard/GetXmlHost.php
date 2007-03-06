@@ -180,9 +180,9 @@ For information : contact@oreon-project.org
 			else
 			$pundet = "0.00";
 
-			$t = 0 + ($h["date_end"] - $h["date_start"]);			
+			$t = 0 + ($h["date_end"] - $h["date_start"]);
 			$t = round(($t - ($t * 0.11574074074)),2);
-			$start = $h["date_start"] + 5000;			
+			$start = $h["date_start"] + 5000;
 
 
 			$tp = round(($pundet * $t / 100 ),2);
@@ -194,8 +194,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUNKNOWN . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
-				$buffer .= '~br~ PendingTime: ' . $undeterminatetime;
+				$buffer .= '~br~ PendingTime: ' . Duration::toString($undeterminatetime);
 				$buffer .= '</event>';		
 			}
 
@@ -208,9 +207,9 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($punreach > 0) ? $punreach : "0") . '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
-				$buffer .= '~br~ UnReachableTime: ' . $unreachalbetime;		
-				$buffer .= '</event>';		
+				$buffer .= '~br~ UnReachableTime: ' . Duration::toString($unreachalbetime) ;
+				$buffer .= '~br~ Alert: ' . $h["UNREACHABLEnbEvent"];
+				$buffer .= '</event>';
 			}
 
 
@@ -223,8 +222,8 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorDOWN . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pdown > 0) ? $pdown : "0") . '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
-				$buffer .= '~br~ Downtime: ' . $downtime;
+				$buffer .= '~br~ Downtime: ' . Duration::toString($downtime) ;
+				$buffer .= '~br~ Alert: ' . $h["DOWNnbEvent"];
 				$buffer .= '</event>';
 			}
 
@@ -238,8 +237,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUP . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pup > 0) ? $pup : "0") .   '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
-				$buffer .= '~br~ Uptime: ' . $uptime;		
+				$buffer .= '~br~ Uptime: ' . Duration::toString($uptime) ;
 				$buffer .= '</event>';	
 			}
 		  }
@@ -266,8 +264,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUNKNOWN . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-		$buffer .= ' Duration: ' . Duration::toString($tt);
-		$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $tt / 100);		
+		$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $t / 100);		
 		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
@@ -279,8 +276,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
-		$buffer .= ' Duration: ' . Duration::toString($tt);
-		$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $tt / 100);		
+		$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $t / 100);		
 		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_down"] * $t / 100 ),2);
@@ -292,8 +288,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorDOWN . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
-		$buffer .= ' Duration: ' . Duration::toString($tt);
-		$buffer .= '~br~ Downtime: ' . Duration::toString($_GET["today_down"] * $tt / 100);
+		$buffer .= '~br~ Downtime: ' . Duration::toString($_GET["today_down"] * $t / 100);
 		$buffer .= '</event>';
 	}
 
@@ -306,8 +301,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUP . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
-		$buffer .= ' Duration: ' . Duration::toString($tt);
-		$buffer .= '~br~ Uptime: ' . Duration::toString($_GET["today_up"] * $tt / 100);	
+		$buffer .= '~br~ Uptime: ' . Duration::toString($_GET["today_up"] * $t / 100);	
 		$buffer .= '</event>';
 	}
 	}

@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 	$month = date("m",time());
 	$today_start = mktime(0, 0, 0, $month, $day, $year);
 	$today_end = time();
-		
+
 	$tt = 0;
 	$start_date_select = 0;
 	$end_date_select = 0;
@@ -355,7 +355,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tpl->assign('host_name', $mhost);
 	$status = "";
 	foreach ($tab_resume  as $tb)
-		if($tb["pourcentTime"] > 0)
+		if($tb["pourcentTime"] >= 0)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
 
 	$tpl->assign('status', $status);

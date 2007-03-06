@@ -407,7 +407,7 @@ For information : contact@oreon-project.org
 
 	$status = "";
 	foreach ($tab_resume  as $tb)
-		if($tb["pourcentTime"] > 0)
+		if($tb["pourcentTime"] >= 0)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];  
         
 	$tpl->assign('status', $status);		

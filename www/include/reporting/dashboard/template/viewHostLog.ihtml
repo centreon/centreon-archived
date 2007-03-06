@@ -29,7 +29,7 @@
 					<table class="ListTable" >
 						<tr class='ListHeader'></tr>
 						<tr>
-							<td class="ListColCenter"><img src='./include/reporting/dashboard/pie_chart_service.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
+							<td class="ListColCenter"><img src='./include/reporting/dashboard/chart_host.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
 						</tr>
 					</table>
 				</td>

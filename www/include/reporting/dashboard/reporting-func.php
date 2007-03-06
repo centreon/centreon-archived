@@ -291,8 +291,7 @@ For information : contact@oreon-project.org
 								$tab_hosts[$res1[0]]["timeNONE"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
 							$tab_hosts[$res1[0]]["current_state"] = $res1[1];
 							$tab_hosts[$res1[0]]["current_time"] = $time_event; //save time
-
-
+/*
 							$tmp_log = array();
 							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
 							$tmp_log["status"] = $res1[1];
@@ -301,6 +300,7 @@ For information : contact@oreon-project.org
 							$tmp_log["state"] = $res1[2];
 							$tmp_log["output"] = $res1[4];
 							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
+*/
 						}
 						else {
 							$tab_hosts[$res1[0]] = array();
@@ -315,7 +315,7 @@ For information : contact@oreon-project.org
 							$tab_hosts[$res1[0]]["UNREACHABLEnbEvent"] = 0;
 							$tab_hosts[$res1[0]]["start_time"] = $day_current_start;
 							$tab_hosts[$res1[0]]["tab_svc_log"] = array();
-
+/*
 							$tmp_log = array();
 							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
 							$tmp_log["status"] = $res1[1];
@@ -324,7 +324,8 @@ For information : contact@oreon-project.org
 							$tmp_log["state"] = $res1[2];
 							$tmp_log["output"] = $res1[4];
 							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
-						}
+*/
+							}
 					}
 					
 					#
@@ -336,32 +337,26 @@ For information : contact@oreon-project.org
 						{
 							$tab_tmp = array();
 							$tab_tmp = $tab_services[$res1[1]][$res1[0]];
-							if(!strncmp($tab_tmp["current_state"], "OK", 2))
+							if(!strncmp($tab_tmp["current_state"], "OK", 2)){
+								$tab_tmp["OKnbEvent"] += 1;
 								$tab_tmp["timeOK"] += ($time_event-$tab_tmp["current_time"]);
-							elseif(!strncmp($tab_tmp["current_state"], "WARNING", 7))
+							}
+							elseif(!strncmp($tab_tmp["current_state"], "WARNING", 7)){
+								$tab_tmp["WARNINGnbEvent"] += 1;
 								$tab_tmp["timeWARNING"] += ($time_event-$tab_tmp["current_time"]);
-							elseif(!strncmp($tab_tmp["current_state"], "UNKNOWN", 7))
+							}
+							elseif(!strncmp($tab_tmp["current_state"], "UNKNOWN", 7)){
+								$tab_tmp["UNKNOWNnbEvent"] += 1;
 								$tab_tmp["timeUNKNOWN"] += ($time_event-$tab_tmp["current_time"]);
-							elseif(!strncmp($tab_tmp["current_state"], "CRITICAL", 8))
+							}
+							elseif(!strncmp($tab_tmp["current_state"], "CRITICAL", 8)){
+								$tab_tmp["CRITICALnbEvent"] += 1;
 								$tab_tmp["timeCRITICAL"] += ($time_event-$tab_tmp["current_time"]);
+							}
 							else
 								$tab_tmp["timeNONE"] += ($time_event-$tab_tmp["current_time"]);
 							$tab_tmp["current_time"] = $time_event; //save time
 							$tab_tmp["current_state"] = $res1[2]; //save time
-
-							$tmp_log = array();
-							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
-							$tmp_log["status"] = $res1[1];
-
-							$tmp_log["host"] = $res1[0];
-							$tmp_log["host"] = $res1[1];
-
-							$tmp_log["type"] = $type;
-							$tmp_log["state"] = $res1[2];
-							$tmp_log["output"] = $res1[4];
-							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
-
-
 							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;							
 						}
 						else{
@@ -370,9 +365,13 @@ For information : contact@oreon-project.org
 							$tab_tmp["current_state"] = $res1[2];
 							$tab_tmp["current_time"] = $time_event;
 							$tab_tmp["timeOK"] = 0;
+							$tab_tmp["OKnbEvent"] = 0;
 							$tab_tmp["timeWARNING"] = 0;
+							$tab_tmp["WARNINGnbEvent"] = 0;
 							$tab_tmp["timeUNKNOWN"] = 0;
+							$tab_tmp["UNKNOWNnbEvent"] = 0;
 							$tab_tmp["timeCRITICAL"] = 0;
+							$tab_tmp["CRITICALnbEvent"] = 0;
 							$tab_tmp["timeNONE"] = 0;
 							$tab_tmp["start_time"] = $day_current_start;
 							$tab_tmp["service_id"] = getMyServiceID($res1[1],getMyHostID($res1[0]));
