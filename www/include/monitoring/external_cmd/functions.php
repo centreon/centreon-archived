@@ -211,5 +211,102 @@ For information : contact@oreon-project.org
 		return $lang["cmd_send"];
 	}
 	
+	#############################################################################
+	# Monitoring Quick Actions
+	#############################################################################
+	
+	/* Aknowledge */
+	
+	function autoAcknowledgeServiceStart($key, $lang){
+		global $pearDB,$tab,$oreon;
+		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
+		$ressource = split(";", $key);
+		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$ressource[0].";".$ressource[1].";1;1;1;".$oreon->user->alias.";".$comment);
+		return $lang["cmd_send"];
+	}
+	
+	function autoAcknowledgeServiceStop($key, $lang){
+		global $pearDB,$tab,$oreon;
+		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
+		$ressource = split(";", $key);
+		$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$ressource[0].";".$ressource[1]);
+		return $lang["cmd_send"];
+	}
+	
+	function autoAcknowledgeHostStart($key, $lang){
+		global $pearDB,$tab,$oreon;
+		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
+		$ressource = split(";", $key);
+		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$ressource[0].";1;1;1;".$oreon->user->alias.";".$comment);
+		return $lang["cmd_send"];
+	}
+	
+	function autoAcknowledgeHostStop($key, $lang){
+		global $pearDB,$tab,$oreon;
+		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
+		$ressource = split(";", $key);
+		$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$ressource[0]);
+		return $lang["cmd_send"];
+	}
+	
+	/* Notification */
+	
+	function autoNotificationServiceStart($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" ENABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1]);
+		return $lang["cmd_send"];
+	}
+	
+	function autoNotificationServiceStop($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" DISABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1]);
+		return $lang["cmd_send"];
+	}
+	
+	function autoNotificationHostStart($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" ENABLE_HOST_NOTIFICATIONS;".$ressource[0]);
+		return $lang["cmd_send"];
+	}
+	
+	function autoNotificationHostStop($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" DISABLE_HOST_NOTIFICATIONS;".$ressource[0]);
+		return $lang["cmd_send"];
+	}
+	
+	/* Check */
+	
+	function autoCheckServiceStart($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" ENABLE_SVC_CHECK;".$ressource[0].";".$ressource[1]);
+		return $lang["cmd_send"];
+	}
+	
+	function autoCheckServiceStop($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" DISABLE_SVC_CHECK;".$ressource[0].";".$ressource[1]);
+		return $lang["cmd_send"];
+	}
+	
+	function autoCheckHostStart($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" ENABLE_HOST_CHECK;".$ressource[0]);
+		return $lang["cmd_send"];
+	}
+	
+	function autoCheckHostStop($key, $lang){
+		global $pearDB,$tab;
+		$ressource = split(";", $key);
+		$flg = write_command(" DISABLE_HOST_CHECK;".$ressource[0]);
+		return $lang["cmd_send"];
+	}
 	
 ?>
