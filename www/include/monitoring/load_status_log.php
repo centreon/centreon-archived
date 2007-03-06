@@ -179,6 +179,7 @@ For information : contact@oreon-project.org
 				      			}
 							}
 			      		}
+			      		unset($svc_data);
 			      	##################### HOST #########################
 					} else if (preg_match("/^host/", $str)){ // get host stat
 						$host_data = array();
@@ -194,6 +195,7 @@ For information : contact@oreon-project.org
 							if (is_object($oreon))
 								$oreon->status_graph_host[$host_data['current_state']]++;
 			      		}
+			      		unset($host_data);
 			      	################## PROGRAM ############################
 					} else if (preg_match("/^program/", $str)){
 		          		while ($str2 = fgets($log_file))
@@ -248,7 +250,7 @@ For information : contact@oreon-project.org
 		$_GET["order"] = "SORT_ASC";
 	}
 	
-	if (isset($_GET["o"]) && $_GET["o"] == "svcpb"){
+	if (isset($_GET["o"]) && ($_GET["o"] == "svcpb" || $_GET["o"] == "svc_warning" || $_GET["o"] == "svc_critical" || $_GET["o"] == "svc_unknown")){
 		if (!isset($_GET["sort_types"])){
 			$_GET["sort_types"] = $general_opt["problem_sort_type"];
 			if ($_GET["sort_types"] == "last_state_change")
