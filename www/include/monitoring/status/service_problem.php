@@ -210,10 +210,15 @@ For information : contact@oreon-project.org
 													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
 													"80" 	=> 	$lang['m_mon_notification_svc_en'], 
 													"81" 	=> 	$lang['m_mon_notification_svc_dis'],
+													"90" 	=> 	$lang['m_mon_check_svc_en'], 
+													"91" 	=> 	$lang['m_mon_check_svc_dis'],
 													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
 													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'], 
 													"82" 	=> 	$lang['m_mon_notification_host_en'],
-													"83" 	=> 	$lang['m_mon_notification_host_dis']), $attrs);
+													"83" 	=> 	$lang['m_mon_notification_host_dis'],
+													"92" 	=> 	$lang['m_mon_check_host_en'],
+													"93" 	=> 	$lang['m_mon_check_host_dis']), $attrs);
+	
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
@@ -226,10 +231,14 @@ For information : contact@oreon-project.org
 													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
 													"80" 	=> 	$lang['m_mon_notification_svc_en'], 
 													"81" 	=> 	$lang['m_mon_notification_svc_dis'],
+													"90" 	=> 	$lang['m_mon_check_svc_en'], 
+													"91" 	=> 	$lang['m_mon_check_svc_dis'],
 													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
 													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'], 
 													"82" 	=> 	$lang['m_mon_notification_host_en'],
-													"83" 	=> 	$lang['m_mon_notification_host_dis']), $attrs);
+													"83" 	=> 	$lang['m_mon_notification_host_dis'],
+													"92" 	=> 	$lang['m_mon_check_host_en'],
+													"93" 	=> 	$lang['m_mon_check_host_dis']), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);

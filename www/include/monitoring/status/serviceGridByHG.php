@@ -70,9 +70,12 @@ For information : contact@oreon-project.org
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 	$tpl->assign("p", $p);
 	$tpl->assign("hostgroup", $hg);
-	$tpl->assign("h_data", $h_data);
-	$tpl->assign("h_class", $h_class);
+	if (isset($h_data))
+		$tpl->assign("h_data", $h_data);
+	if (isset($h_class))
+		$tpl->assign("h_class", $h_class);
 	$tpl->assign("lang", $lang);
-	$tpl->assign("svc_data", $svc_data);
+	if (isset($svc_data))
+		$tpl->assign("svc_data", $svc_data);
 	$tpl->display("serviceGridByHG.ihtml");
 ?>
