@@ -206,7 +206,6 @@ For information : contact@oreon-project.org
 			$buffer .= ' color="#' . $colorWARNING . '"';
 			$buffer .= ' isDuration="true" ';
 			$buffer .= ' title= "' . (($pwarning > 0) ? $pwarning : "0") . '%" >' ;
-			$buffer .= ' Duration: ' . Duration::toString($tt);
 			$buffer .= '~br~ WarningTime: ' . Duration::toString($warningtime);		
 			$buffer .= '</event>';		
 			}
@@ -219,7 +218,6 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUNKNOWN . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($punknown > 0) ? $punknown : "0") . '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
 				$buffer .= '~br~ UnknownTime: ' . Duration::toString($unknowntime);		
 				$buffer .= '</event>';	
 			}
@@ -233,7 +231,6 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorPENDING . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
 				$buffer .= '~br~ PendingTime: ' . Duration::toString($pendingtime);		
 				$buffer .= '</event>';	
 			}
@@ -247,8 +244,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorCRITICAL . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pcritical > 0) ? $pcritical : "0") . '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
-				$buffer .= '~br~ Critical: ' . Duration::toString($criticaltime);
+				$buffer .= '~br~ CriticalTime: ' . Duration::toString($criticaltime);
 				$buffer .= '</event>';
 			}
 
@@ -261,13 +257,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorOK . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pok > 0) ? $pok : "0") .   '%" >' ;
-				$buffer .= ' Duration: ' . Duration::toString($tt);
 				$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
-				$buffer .= '~br~ tt: ' . $tt;		
-				$buffer .= '~br~ time: ' . $pendingtime;		
-				$buffer .= '~br~ time: ' . $unknowntime;
-				$buffer .= '~br~ time: ' . $warningtime;
-				$buffer .= '~br~ time: ' . $criticaltime;
 				$buffer .= '</event>';
 			}
 		  }
@@ -275,7 +265,6 @@ For information : contact@oreon-project.org
 #
 ## Today purcent if period 
 #
-/*
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
@@ -286,69 +275,70 @@ For information : contact@oreon-project.org
 	$t = round(($t - ($t * 0.11574074074)),2);
 	$start = $today_start + 5000;
 
-	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
-	if($_GET["today_unreachable"] > 0)
-	$end = $today_start + $tp + 5000;
-	else
-	$end = $today_start + 5001;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorWARNING . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $tt / 100);		
-	$buffer .= '</event>';
 
 	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
-	if($_GET["today_pending"] > 0)
-	$end = $today_start + $tp + 5000;
-	else
-	$end = $today_start + 5001;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorUNKNOWN . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $tt / 100);		
-	$buffer .= '</event>';
+	if($_GET["today_pending"] > 0){
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorUNKNOWN . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
+		$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $t / 100);		
+		$buffer .= '</event>';
+	}
+	$tp = round(($_GET["today_warning"] * $t / 100 ),2);
+	if($_GET["today_warning"] > 0){
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorWARNING . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_warning"] . '%" >' ;
+		$buffer .= '~br~ Warnning: ' . Duration::toString(0+$_GET["today_warning"] * $t / 100);		
+		$buffer .= '</event>';
+	}
+	$tp = round(($_GET["today_unknown"] * $t / 100 ),2);
+	if($_GET["today_unknown"] > 0){
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorUNKNOWN . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_unknown"] . '%" >' ;
+		$buffer .= '~br~ Unknown: ' . Duration::toString(0+$_GET["today_unknown"] * $t / 100);		
+		$buffer .= '</event>';
+	}
+	
+	$tp = round(($_GET["today_critical"] * $t / 100 ),2);
+	if($_GET["today_critical"] > 0){
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorCRITICAL . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_critical"] . '%" >' ;
+		$buffer .= '~br~ Criticaltime: ' . Duration::toString($_GET["today_critical"] * $t / 100);
+		$buffer .= '</event>';
+	}
 
+	$tp = round(($_GET["today_ok"] * $t / 100 ),2);
+	if($_GET["today_ok"] > 0){
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorOK . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_ok"] . '%" >' ;
+		$buffer .= '~br~ OKtime: ' . Duration::toString($_GET["today_ok"] * $t / 100);	
+		$buffer .= '</event>';
+	}
 
-
-	$tp = round(($_GET["today_down"] * $t / 100 ),2);
-	if($_GET["today_down"] > 0)
-	$end = $today_start + $tp + 5000;
-	else
-	$end = $today_start + 5001;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorCRITICAL . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ Downtime: ' . Duration::toString($_GET["today_down"] * $tt / 100);
-	$buffer .= '</event>';
-
-
-	$tp = round(($_GET["today_up"] * $t / 100 ),2);
-	if($_GET["today_up"] > 0)
-	$end = $today_start + $tp + 5000;
-	else
-	$end = $today_start + 5001;
-	$buffer .= '<event ';
-	$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-	$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-	$buffer .= ' color="#' . $colorOK . '"';
-	$buffer .= ' isDuration="true" ';
-	$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
-	$buffer .= ' Duration: ' . Duration::toString($tt);
-	$buffer .= '~br~ Uptime: ' . Duration::toString($_GET["today_up"] * $tt / 100);	
-	$buffer .= '</event>';
-*/
 		  
 	}
 	else
@@ -357,15 +347,6 @@ For information : contact@oreon-project.org
 	}
 
 	$buffer .= '</data>';
-
-/*
-$buffer =
-'
-<data>
-<event start="Jan 28 2007 1:23:19 GMT" end="Jan 28 2007 22:19:19 GMT" color="#19EE11" isDuration="true" title="98.64%">
- Duration: 1d ~br~ Uptime: 23h 40m 25s</event>
-</data>';
-*/
 
 	header('Content-Type: text/xml');
 	echo $buffer;

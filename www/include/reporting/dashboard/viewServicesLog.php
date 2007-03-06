@@ -457,7 +457,7 @@ if($mhost)	{
 	 		 substr($oreon->optGen["color_pending"],1) .':'. 
 	 		 substr($oreon->optGen["color_unknown"],1);
 
-	$today_var = '&serviceID='.$mservice.'&today_ok='.$today_ok . '&today_critical='.$today_critical.'&today_unknown='.$today_unknown. '&today_pending=' . $today_none;
+	$today_var = '&serviceID='.$mservice.'&today_ok='.$today_ok . '&today_critical='.$today_critical.'&today_unknown='.$today_unknown. '&today_pending=' . $today_none. '&today_warning=' . $today_warning;
 	$type = 'Service';
 	include('ajaxReporting_js.php');
 }
