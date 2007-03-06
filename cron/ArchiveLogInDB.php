@@ -154,7 +154,7 @@ For information : contact@oreon-project.org
 		if(is_array($tab_hosts))
 		foreach($tab_hosts as $host => $htab)
 		{
-			if (isset($host_list[trim($host)]))
+			if (isset($host_list[trim($host)]) && isset($htab["current_state"]))
 			{
 				#
 				## last host alert
