@@ -57,6 +57,7 @@ $lang ['m_mon_enable'] = "Enable";
 $lang ['m_mon_disable'] = "Disable";
 $lang ['m_mon_enabled'] = "Enabled";
 $lang ['m_mon_disabled'] = "Disabled";
+$lang ['m_mon_servicegroup'] = "Servicegroups";
 
 $lang ['m_mon_services'] = "Services";
 $lang ['m_mon_status'] = "Status";
@@ -150,5 +151,19 @@ $lang["no_host_comments"] = "No Comment for hosts.";
 $lang["no_svc_comments"] = "No Comment for services.";
 $lang["no_host_dtm"] = "No downtime for hosts.";
 $lang["no_svc_dtm"] = "No downtime for services.";
+
+/* Monitoring */
+
+$lang["mon_details"] = "Gird";
+$lang["mon_svc_warning"] = "Warning";
+$lang["mon_svc_critical"] = "Criticail";
+$lang["mon_svc_unknown"] = "Unknown";
+$lang["mon_svc_ok"] = "Ok";
+$lang["mon_svc_all"] = "All Services";
+
+$lang["mon_details_HG"] = "Details by Hostgroup";
+
+$lang["mon_nagios"] = "Nagios";
+$lang["mon_service_group"] = "Details by Servicegroup";
 
 ?>
