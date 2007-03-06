@@ -202,26 +202,39 @@ For information : contact@oreon-project.org
 	}
 	</SCRIPT>
 	<?
-	$attrs = array(
-		'onchange'=>"javascript: ".
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");
-        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
-		$form->setDefaults(array('o1' => NULL));
-			$o1 =& $form->getElement('o1');
-			$o1->setValue(NULL);
+	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();} ");
+    $form->addElement('select', 'o1', NULL, array(	NULL	=>	$lang["lgd_more_actions"], 
+													"1"		=>	$lang['m_mon_resubmit_im_checks'], 
+													"2"		=>	$lang['m_mon_resubmit_im_checks_f'], 
+													"70" 	=> 	$lang['m_mon_acknoledge_thos_svc_pb'], 
+													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
+													"80" 	=> 	$lang['m_mon_notification_svc_en'], 
+													"81" 	=> 	$lang['m_mon_notification_svc_dis'],
+													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
+													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'], 
+													"82" 	=> 	$lang['m_mon_notification_host_en'],
+													"83" 	=> 	$lang['m_mon_notification_host_dis']), $attrs);
+	$form->setDefaults(array('o1' => NULL));
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
 
-		$attrs = array(
-		'onchange'=>"javascript: " .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"");
-        $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "1"=>$lang['m_mon_resubmit_im_checks'], "2"=>$lang['m_mon_resubmit_im_checks_f']), $attrs);
-		$form->setDefaults(array('o2' => NULL));
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
+	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();} ");
+    $form->addElement('select', 'o2', NULL, array(	NULL	=>	$lang["lgd_more_actions"], 
+													"1"		=>	$lang['m_mon_resubmit_im_checks'], 
+													"2"		=>	$lang['m_mon_resubmit_im_checks_f'], 
+													"70" 	=> 	$lang['m_mon_acknoledge_thos_svc_pb'], 
+													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
+													"80" 	=> 	$lang['m_mon_notification_svc_en'], 
+													"81" 	=> 	$lang['m_mon_notification_svc_dis'],
+													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
+													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'], 
+													"82" 	=> 	$lang['m_mon_notification_host_en'],
+													"83" 	=> 	$lang['m_mon_notification_host_dis']), $attrs);
+	$form->setDefaults(array('o2' => NULL));
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	
