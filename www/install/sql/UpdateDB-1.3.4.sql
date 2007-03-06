@@ -166,14 +166,14 @@ ALTER TABLE `log_archive_host` CHANGE `UPTimeUnScheduled` `UPnbEvent` INT( 11 ) 
 CHANGE `DOWNTimeUnScheduled` `DOWNnbEvent` INT( 11 ) NULL DEFAULT NULL ,
 CHANGE `UNREACHABLETimeUnScheduled` `UNREACHABLEnbEvent` INT( 11 ) NULL DEFAULT NULL ;
 
-ALTER TABLE `log_archive_host` ADD `UPAverageTimeAck` INT NOT NULL AFTER `UPnbEvent` ,
-ADD `UPTimeAverageRecovery` INT NOT NULL AFTER `UPAverageTimeAck` ;
+ALTER TABLE `log_archive_host` ADD `UPTimeAverageAck` INT NOT NULL AFTER `UPnbEvent` ,
+ADD `UPTimeAverageRecovery` INT NOT NULL AFTER `UPTimeAverageAck` ;
 
-ALTER TABLE `log_archive_host` ADD `DOWNAverageTimeAck` INT NOT NULL AFTER `DOWNnbEvent` ,
-ADD `DOWNTimeAverageRecovery` INT NOT NULL AFTER `DOWNAverageTimeAck` ;
+ALTER TABLE `log_archive_host` ADD `DOWNTimeAverageAck` INT NOT NULL AFTER `DOWNnbEvent` ,
+ADD `DOWNTimeAverageRecovery` INT NOT NULL AFTER `DOWNTimeAverageAck` ;
 
-ALTER TABLE `log_archive_host` ADD `UNREACHABLEAverageTimeAck` INT NOT NULL AFTER `UNREACHABLEnbEvent` ,
-ADD `UNREACHABLETimeAverageRecovery` INT NOT NULL AFTER `UNREACHABLEAverageTimeAck` ;
+ALTER TABLE `log_archive_host` ADD `UNREACHABLETimeAverageAck` INT NOT NULL AFTER `UNREACHABLEnbEvent` ,
+ADD `UNREACHABLETimeAverageRecovery` INT NOT NULL AFTER `UNREACHABLETimeAverageAck` ;
 
 -- log_archive_service
 ALTER TABLE `log_archive_service` CHANGE `OKTimeUnScheduled` `OKnbEvent` INT( 11 ) NOT NULL DEFAULT '0',
@@ -181,7 +181,7 @@ CHANGE `WARNINGTimeUnScheduled` `WARNINGnbEvent` INT( 11 ) NOT NULL DEFAULT '0',
 CHANGE `UNKNOWNTimeUnScheduled` `UNKNOWNnbEvent` INT( 11 ) NOT NULL DEFAULT '0',
 CHANGE `CRITICALTimeUnScheduled` `CRITICALnbEvent` INT( 11 ) NOT NULL DEFAULT '0';
 
-ALTER TABLE `log_archive_service` ADD `OKAverageTimeAck` INT NOT NULL AFTER `OKnbEvent` ,
+ALTER TABLE `log_archive_service` ADD `OKTimeAverageAck` INT NOT NULL AFTER `OKnbEvent` ,
 ADD `OKTimeAverageRecovery` INT NOT NULL AFTER `OKTimeAverageAck` ;
 
 ALTER TABLE `log_archive_service` ADD `WARNINGTimeAverageAck` INT NOT NULL AFTER `WARNINGnbEvent` ,

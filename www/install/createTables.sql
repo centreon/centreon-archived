@@ -1217,25 +1217,25 @@ CREATE TABLE `log_archive_file_name` (
 
 -- --------------------------------------------------------
 
---
+-- 
 -- Structure de la table `log_archive_host`
---
+-- 
 
 CREATE TABLE `log_archive_host` (
   `log_id` int(11) NOT NULL auto_increment,
   `host_id` int(11) default NULL,
   `UPTimeScheduled` int(11) default NULL,
-  `UPnbEvent` int(11) NOT NULL default '0',
-  `UPTimeAverageAck` int(11) NOT NULL default '0',
-  `UPTimeAverageRecovery` int(11) NOT NULL default '0',
+  `UPnbEvent` int(11) default NULL,
+  `UPTimeAverageAck` int(11) NOT NULL,
+  `UPTimeAverageRecovery` int(11) NOT NULL,
   `DOWNTimeScheduled` int(11) default NULL,
-  `DOWNnbEvent` int(11) NOT NULL default '0',
-  `DOWNTimeAverageAck` int(11) NOT NULL default '0',
-  `DOWNTimeAverageRecovery` int(11) NOT NULL default '0',
+  `DOWNnbEvent` int(11) default NULL,
+  `DOWNTimeAverageAck` int(11) NOT NULL,
+  `DOWNTimeAverageRecovery` int(11) NOT NULL,
   `UNREACHABLETimeScheduled` int(11) default NULL,
-  `UNREACHABLEnbEvent` int(11) NOT NULL default '0',
-  `UNREACHABLETimeAverageAck` int(11) NOT NULL default '0',
-  `UNREACHABLETimeAverageRecovery` int(11) NOT NULL default '0',
+  `UNREACHABLEnbEvent` int(11) default NULL,
+  `UNREACHABLETimeAverageAck` int(11) NOT NULL,
+  `UNREACHABLETimeAverageRecovery` int(11) NOT NULL,
   `date_end` int(11) default NULL,
   `date_start` int(11) default NULL,
   PRIMARY KEY  (`log_id`),
@@ -1243,11 +1243,12 @@ CREATE TABLE `log_archive_host` (
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
---
+-- 
 -- Structure de la table `log_archive_service`
---
+-- 
 
 CREATE TABLE `log_archive_service` (
   `log_id` int(11) NOT NULL auto_increment,
@@ -1269,6 +1270,8 @@ CREATE TABLE `log_archive_service` (
   `CRITICALnbEvent` int(11) NOT NULL default '0',
   `CRITICALTimeAverageAck` int(11) NOT NULL,
   `CRITICALTimeAverageRecovery` int(11) NOT NULL,
+  `UNDETERMINATETimeScheduled` int(11) NOT NULL default '0',
+  `UNDETERMINATETimeUnScheduled` int(11) NOT NULL default '0',
   `date_start` int(11) default NULL,
   `date_end` int(11) default NULL,
   PRIMARY KEY  (`log_id`),
@@ -1277,6 +1280,7 @@ CREATE TABLE `log_archive_service` (
   KEY `date_end_index` (`date_end`),
   KEY `date_start_index` (`date_start`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
