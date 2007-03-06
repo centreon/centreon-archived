@@ -50,7 +50,13 @@ $lang ['m_mon_ed_flapping_detect'] = "la d&eacute;tection des oscillations";
 $lang ['m_mon_tips'] = "Acc&egrave;s rapide";
 $lang ['m_mon_view_identity_file'] = "Voir la Fiche d&acute;identit&eacute;";
 $lang ['hosts_command'] = "Actions sur cet host";
-$lang ['m_mon_acknoledge_thos_pb'] = "Prendre en Compte le probl&egrave;";
+
+$lang ['m_mon_acknoledge_thos_pb'] = "Prendre en compte les probl&egrave;mes";
+$lang ['m_mon_acknoledge_thos_svc_pb'] = "Services : Prendre en compte";
+$lang ['m_mon_acknoledge_thos_host_pb'] = "Hosts : Prendre en compte";
+$lang ['m_mon_stop_acknoledge_svc_pb'] = "Services : Enlever la prise en compte";
+$lang ['m_mon_stop_acknoledge_host_pb'] = "Hosts : Enlever la prise en compte";
+
 $lang ['m_mon_host_statistics'] = "Statistiques de l&acute;host";
 $lang ['m_mon_add_comment'] = "Ajouter un commentaire pour cet host";
 $lang ['m_mon_enable'] = "Activer";
@@ -109,6 +115,17 @@ $lang ['m_mon_schedule_force'] = "Plannifier une v&eacute;rification imm&eacute;
 $lang ['m_mon_submit_passive'] = "soumission manuelle d&acute;&eacute;tat pour ce service";
 $lang ['m_mon_accept_passive'] = "la v&eacute;rification du service en passif";
 $lang ['m_mon_notification_service'] = "les notifications pour le service";
+
+$lang ['m_mon_notification_svc_en']  = "Services : Activer Notification";
+$lang ['m_mon_notification_svc_dis'] = "Services : Desactiver Notification";
+$lang ['m_mon_notification_host_en']  = "Hosts : Activer Notification";
+$lang ['m_mon_notification_host_dis'] = "Hosts : Desactiver Notification";
+
+$lang ['m_mon_check_svc_en']  = "Services : Activer v&eacute;rification";
+$lang ['m_mon_check_svc_dis'] = "Services : Desactiver v&eacute;rification";
+$lang ['m_mon_check_host_en']  = "Hosts : Activer v&eacute;rification";
+$lang ['m_mon_check_host_dis'] = "Hosts : Desactiver v&eacute;rification";
+
 $lang ['m_mon_schedule_downtime'] = "Plannifier une p&eacute;riode d&acute;arr&ecirc;t";
 $lang ['m_mon_schedule_comment'] = "Ajouter un commentaire pour ce service";
 
@@ -155,7 +172,8 @@ $lang["no_svc_dtm"] = "Pas de temps d'arret pour les services.";
 
 $lang["mon_details"] = "Grille de D&eacute;tails";
 $lang["mon_svc_warning"] = "Warning";
-$lang["mon_svc_critical"] = "Criticail";
+$lang["mon_svc_critical"] = "Critical";
+$lang["mon_svc_acknowledged"] = "Pris en compte";
 $lang["mon_svc_unknown"] = "Unknown";
 $lang["mon_svc_ok"] = "Ok";
 $lang["mon_svc_all"] = "Tous les Services";

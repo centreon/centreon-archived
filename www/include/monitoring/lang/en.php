@@ -50,7 +50,18 @@ $lang ['m_mon_ed_flapping_detect'] = "Flap detection for this host";
 $lang ['m_mon_tips'] = "Tips";
 $lang ['m_mon_view_identity_file'] = "View identity file";
 $lang ['hosts_command'] = "Hosts Command";
-$lang ['m_mon_acknoledge_thos_pb'] = "Acknowledge this Host problem";
+$lang ['m_mon_acknoledge_thos_pb'] = "Acknowledge problems";
+
+$lang ['m_mon_acknoledge_thos_svc_pb'] = "Services : Acknowledge";
+$lang ['m_mon_acknoledge_thos_host_pb'] = "Hosts : Acknowledge";
+$lang ['m_mon_stop_acknoledge_svc_pb'] = "Services : Diacknowledge";
+$lang ['m_mon_stop_acknoledge_host_pb'] = "Hosts : Diacknowledge";
+
+$lang ['m_mon_check_svc_en']  = "Services : Enable Check";
+$lang ['m_mon_check_svc_dis'] = "Services : Disable Check";
+$lang ['m_mon_check_host_en']  = "Hosts : Enable Check";
+$lang ['m_mon_check_host_dis'] = "Hosts : Disable Check";
+
 $lang ['m_mon_host_statistics'] = "Host statistics";
 $lang ['m_mon_add_comment'] = "Add Comment for this host";
 $lang ['m_mon_enable'] = "Enable";
@@ -110,6 +121,12 @@ $lang ['m_mon_schedule_force'] = "Re-schedule the next check of this service (fo
 $lang ['m_mon_submit_passive'] = "Submit passive check result for this service";
 $lang ['m_mon_accept_passive'] = "accepting passive checks for this service";
 $lang ['m_mon_notification_service'] = "notifications for this service";
+
+$lang ['m_mon_notification_svc_en']  = "Services : Activer Notification";
+$lang ['m_mon_notification_svc_dis'] = "Services : Desactiver Notification";
+$lang ['m_mon_notification_host_en']  = "Hosts : Activer Notification";
+$lang ['m_mon_notification_host_dis'] = "Hosts : Desactiver Notification";
+
 $lang ['m_mon_schedule_downtime'] = "Schedule downtime for this service";
 $lang ['m_mon_schedule_comment'] = "Add a comment for this service";
 
@@ -156,7 +173,8 @@ $lang["no_svc_dtm"] = "No downtime for services.";
 
 $lang["mon_details"] = "Gird";
 $lang["mon_svc_warning"] = "Warning";
-$lang["mon_svc_critical"] = "Criticail";
+$lang["mon_svc_critical"] = "Critical";
+$lang["mon_svc_acknowledged"] = "Acknowledged";
 $lang["mon_svc_unknown"] = "Unknown";
 $lang["mon_svc_ok"] = "Ok";
 $lang["mon_svc_all"] = "All Services";
