@@ -194,6 +194,8 @@ Timeline.DefaultEventSource.Event = function(
     
     // Merethis modification by cedrick facon here
     description = description.replace(/~br~/i, "<br>");
+    description = description.replace(/~br~/i, "<br>");
+    description = description.replace(/~br~/i, "<br>");
     
     this._description = description;
     this._image = (image != null && image != "") ? image : null;
