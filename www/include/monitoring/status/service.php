@@ -121,9 +121,7 @@ For information : contact@oreon-project.org
 	$version = $oreon->user->get_version();
 
     $tpl->assign("version", $version);
-    $DBRESULT =& $pearDB->query("SELECT * FROM session WHERE" .
-		                    	" CONVERT( `session_id` USING utf8 ) = '". session_id() .
-		                    	"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+    $DBRESULT =& $pearDB->query("SELECT * FROM session WHERE CONVERT( `session_id` USING utf8 ) = '". session_id() ."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
     if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
     $session =& $DBRESULT->fetchRow();
