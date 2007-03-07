@@ -39,11 +39,16 @@ For information : contact@oreon-project.org
 			$tab_svc = array();
 			if (isset($tab_host_service[$data["host_name"]]))
 				foreach ($tab_host_service[$data["host_name"]] as $key_svc => $data_svc){
-					if (!isset($tab_svc[$service_status[$data["host_name"]."_".$key_svc]["current_state"]]))				
-						$tab_svc[$service_status[$data["host_name"]."_".$key_svc]["current_state"]] = 1;
-					else
-						$tab_svc[$service_status[$data["host_name"]."_".$key_svc]["current_state"]]++;
-					$svc_data[$data["host_name"]] = $service_data_str;
+					if ((isset($_GET["problem"]) && $service_status[$data["host_name"]."_".$key_svc]["current_state"] != "OK") 
+							|| 	(!isset($_GET["problem"]) && !isset($_GET["acknowledge"])) 
+							|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 1 && $service_status[$data["host_name"]."_".$key_svc]["problem_has_been_acknowledged"] == 1)
+							|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 0 && $service_status[$data["host_name"]."_".$key_svc]["problem_has_been_acknowledged"] == 0 && $service_status[$data["host_name"]."_".$key_svc]["current_state"] != "OK" )){
+						if (!isset($tab_svc[$service_status[$data["host_name"]."_".$key_svc]["current_state"]]))				
+							$tab_svc[$service_status[$data["host_name"]."_".$key_svc]["current_state"]] = 1;
+						else
+							$tab_svc[$service_status[$data["host_name"]."_".$key_svc]["current_state"]]++;
+						$svc_data[$data["host_name"]] = $service_data_str;
+					}
 				}
 			if (isset($tab_svc["OK"]) && $tab_svc["OK"] != 0)
 				$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&status=OK'>OK</a></span> ";

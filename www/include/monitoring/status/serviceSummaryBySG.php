@@ -46,27 +46,32 @@ For information : contact@oreon-project.org
 				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$host_name]))){
 					# Get Servicce description
 					$service_description = getMyServiceName($sg_relation["service_service_id"]);
-					if (isset($service_status[$host_name."_".$service_description])){	
-						if (!isset($h_data[$r["sg_name"]]))
-							$h_data[$r["sg_name"]] = array();
-						$h_data[$r["sg_name"]][$host_name] = "<a href='./oreon.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
-						
-						$h_status[$host_name] = array("current_state"=>$host_status[$host_name]["current_state"], "color"=>$oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])]);
-						if (!isset($svc_data[$r["sg_name"]]))
-							$svc_data[$r["sg_name"]] = array();
-						if (!isset($svc_status[$host_name]))
-							$svc_status[$host_name] = array();
-						
-						if (!isset($svc_status[$host_name][$service_status[$host_name."_".$service_description]["current_state"]]))
-							$svc_status[$host_name][$service_status[$host_name."_".$service_description]["current_state"]] = 1;
-						else
-							$svc_status[$host_name][$service_status[$host_name."_".$service_description]["current_state"]]++;
+					if ((isset($_GET["problem"]) && $service_status[$host_name."_".$service_description]["current_state"] != "OK") 
+					|| 	(!isset($_GET["problem"]) && !isset($_GET["acknowledge"])) 
+					|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 1 && $service_status[$host_name."_".$service_description]["problem_has_been_acknowledged"] == 1)
+					|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 0 && $service_status[$host_name."_".$service_description]["problem_has_been_acknowledged"] == 0 && $service_status[$host_name."_".$service_description]["current_state"] != "OK" )){			
+						if (isset($service_status[$host_name."_".$service_description])){	
+							if (!isset($h_data[$r["sg_name"]]))
+								$h_data[$r["sg_name"]] = array();
+							$h_data[$r["sg_name"]][$host_name] = "<a href='./oreon.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
 							
-						if (!isset($svc_data[$r["sg_name"]][$host_name]))
-							$svc_data[$r["sg_name"]][$host_name] = "";
-						
-						# define class
-						isset($host_status[$host_name]) && $host_status[$host_name]["current_state"] == "DOWN" ? $h_class[$r["sg_name"]][$host_name] = "list_down" : $h_class[$r["sg_name"]][$host_name] = $tab_color[++$counter_host % 2];
+							$h_status[$host_name] = array("current_state"=>$host_status[$host_name]["current_state"], "color"=>$oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])]);
+							if (!isset($svc_data[$r["sg_name"]]))
+								$svc_data[$r["sg_name"]] = array();
+							if (!isset($svc_status[$host_name]))
+								$svc_status[$host_name] = array();
+							
+							if (!isset($svc_status[$host_name][$service_status[$host_name."_".$service_description]["current_state"]]))
+								$svc_status[$host_name][$service_status[$host_name."_".$service_description]["current_state"]] = 1;
+							else
+								$svc_status[$host_name][$service_status[$host_name."_".$service_description]["current_state"]]++;
+								
+							if (!isset($svc_data[$r["sg_name"]][$host_name]))
+								$svc_data[$r["sg_name"]][$host_name] = "";
+							
+							# define class
+							isset($host_status[$host_name]) && $host_status[$host_name]["current_state"] == "DOWN" ? $h_class[$r["sg_name"]][$host_name] = "list_down" : $h_class[$r["sg_name"]][$host_name] = $tab_color[++$counter_host % 2];
+						}
 					}
 				}
 			}

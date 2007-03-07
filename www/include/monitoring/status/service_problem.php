@@ -31,9 +31,13 @@ For information : contact@oreon-project.org
 
 	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-	!isset($_GET["sort_types"]) ? $sort_types = $oreon->OptGen["problem_sort_type"] : $sort_types = $_GET["sort_types"];
-	!isset($_GET["order"]) ? $order = "SORT_".$oreon->OptGen["problem_sort_order"] : $order = $_GET["order"];
-
+	if ($_GET["o"] != "svc_ok"){
+		!isset($_GET["sort_types"]) ? $sort_types = $oreon->OptGen["problem_sort_type"] : $sort_types = $_GET["sort_types"];
+		!isset($_GET["order"]) ? $order = "SORT_".$oreon->OptGen["problem_sort_order"] : $order = $_GET["order"];
+	} else {
+		$sort_types = "host_name";
+		$order = "DESC";
+	}
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
@@ -41,7 +45,6 @@ For information : contact@oreon-project.org
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$service_status_num = array();
-	
 	if ($_GET["o"] == "svcpb"){
 		if (isset($service_status))
 			foreach ($service_status as $name => $svc){			
@@ -116,9 +119,11 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
 	$tpl->assign("p", $p);
-	$tpl->assign('o', $o);
-	$tpl->assign("sort_types", $sort_types);
-	$tpl->assign("order", $order);
+	$tpl->assign('o', $_GET["o"]);
+	if (isset($sort_types))	
+		$tpl->assign("sort_types", $sort_types);
+	if (isset($order))
+		$tpl->assign("order", $order);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", $lang['m_mon_hosts']);
@@ -175,9 +180,7 @@ For information : contact@oreon-project.org
     $tpl->assign("lca", $lca);
     $tpl->assign("version", $version);
 
-    $DBRESULT =& $pearDB->query(	"SELECT * FROM session WHERE" .
-  		      		            	" CONVERT( `session_id` USING utf8 ) = '". session_id() .
-  		      		            	"' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+    $DBRESULT =& $pearDB->query("SELECT * FROM session WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
     
@@ -191,9 +194,7 @@ For information : contact@oreon-project.org
     $tpl->assign('search_type_service', $search_type_service);
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
 
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
+	## Toolbar select $lang["lgd_more_actions"]
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {

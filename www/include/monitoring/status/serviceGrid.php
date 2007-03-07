@@ -25,18 +25,23 @@ For information : contact@oreon-project.org
 	$h_data = array();
 	$svc_data = array();
 	$tab_color = array(0=>"list_one", 1=>"list_two");
-
+	
 	$counter_host = 0;	
 	foreach ($host_status as $key => $data){
-		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$data["host_name"]]))){	
+		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$data["host_name"]]))){
 			$service_data_str = NULL;
 			$h_data[$data["host_name"]] = "<a href='./oreon.php?p=201&o=hd&host_name=".$data["host_name"]."'>".$data["host_name"]."</a>";
 			# define class
 			isset($host_status[$data["host_name"]]) && $host_status[$data["host_name"]]["current_state"] == "DOWN" ? $h_class[$data["host_name"]] = "list_down" : $h_class[$data["host_name"]] = $tab_color[++$counter_host % 2];
 			if (isset($tab_host_service[$data["host_name"]]))
 				foreach ($tab_host_service[$data["host_name"]] as $key_svc => $data_svc){
-					$service_data_str .= " <span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp; \n";
-					$svc_data[$data["host_name"]] = $service_data_str;
+					if ((isset($_GET["problem"]) && $service_status[$data["host_name"]."_".$key_svc]["current_state"] != "OK") 
+						|| 	(!isset($_GET["problem"]) && !isset($_GET["acknowledge"])) 
+						|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 1 && $service_status[$data["host_name"]."_".$key_svc]["problem_has_been_acknowledged"] == 1)
+						|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 0 && $service_status[$data["host_name"]."_".$key_svc]["problem_has_been_acknowledged"] == 0 && $service_status[$data["host_name"]."_".$key_svc]["current_state"] != "OK" )){
+						$service_data_str .= " <span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp; \n";
+						$svc_data[$data["host_name"]] = $service_data_str;
+					}
 				}
 		}
 	}

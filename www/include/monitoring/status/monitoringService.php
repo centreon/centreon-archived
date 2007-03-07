@@ -50,11 +50,12 @@ For information : contact@oreon-project.org
 	include("./include/monitoring/status/resume.php"); 	
 	switch ($o)	{
 		case "svc" 			: require_once($path."service.php"); 					break; 
-		case "svcpb" 		: require_once($path."service_problem.php");			break;
 		
+		case "svcpb" 		: require_once($path."service_problem.php");			break;
 		case "svc_warning" 	: require_once($path."service_problem.php");			break;
 		case "svc_critical" : require_once($path."service_problem.php");			break;
 		case "svc_unknown" 	: require_once($path."service_problem.php");			break;
+		case "svc_ok" 		: require_once($path."service_problem.php");			break;
 		
 		case "svcd" 		: require_once($pathDetails."serviceDetails.php"); 		break; 
 		case "svcak" 		: require_once($pathExternal."serviceAcknowledge.php"); break; 
@@ -64,13 +65,13 @@ For information : contact@oreon-project.org
 		case "svcOV" 		: require_once($path."serviceOverview.php"); 			break; 
 		case "svcSum" 		: require_once($path."serviceSummary.php"); 			break; 
 		
-		case "svcgridSG" 		: require_once($path."serviceGridBySG.php"); 		break; 
+		case "svcgridSG" 	: require_once($path."serviceGridBySG.php"); 			break; 
 		case "svcOVSG" 		: require_once($path."serviceOverviewBySG.php"); 		break; 
-		case "svcSumSG" 		: require_once($path."serviceSummaryBySG.php"); 	break; 
+		case "svcSumSG" 	: require_once($path."serviceSummaryBySG.php"); 		break; 
 		
-		case "svcgridHG" 		: require_once($path."serviceGridByHG.php"); 		break; 
+		case "svcgridHG" 	: require_once($path."serviceGridByHG.php"); 			break; 
 		case "svcOVHG" 		: require_once($path."serviceOverviewByHG.php"); 		break; 
-		case "svcSumHG" 		: require_once($path."serviceSummaryByHG.php"); 	break; 
+		case "svcSumHG" 	: require_once($path."serviceSummaryByHG.php"); 		break; 
 		
 		case "meta" 		: require_once($path."metaService.php"); 				break;
 		case "svcSch" 		: require_once($path."serviceSchedule.php"); 			break; 
