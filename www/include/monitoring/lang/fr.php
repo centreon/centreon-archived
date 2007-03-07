@@ -182,4 +182,13 @@ $lang["mon_details_HG"] = "D&eacute;tails par Hostgroups";
 
 $lang["mon_nagios"] = "Nagios";
 $lang["mon_service_group"] = "D&eacute;tails par Servicegroups";
+
+$lang["mon_problems"] = "Probl&egrave;mes";
+$lang["mon_acknowloedge"] = "Pris en compte";
+$lang["mon_not_acknowloedge"] = "Non pris en compte";
+
+/* Logs */
+
+
+
 ?>

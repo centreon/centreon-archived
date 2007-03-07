@@ -171,7 +171,7 @@ $lang["no_svc_dtm"] = "No downtime for services.";
 
 /* Monitoring */
 
-$lang["mon_details"] = "Gird";
+$lang["mon_details"] = "Grid";
 $lang["mon_svc_warning"] = "Warning";
 $lang["mon_svc_critical"] = "Critical";
 $lang["mon_svc_acknowledged"] = "Acknowledged";
@@ -183,5 +183,11 @@ $lang["mon_details_HG"] = "Details by Hostgroup";
 
 $lang["mon_nagios"] = "Nagios";
 $lang["mon_service_group"] = "Details by Servicegroup";
+
+$lang["mon_problems"] = "Problems";
+$lang["mon_acknowloedge"] = "Acknowledged";
+$lang["mon_not_acknowloedge"] = "Non Acknowledged";
+
+/* Logs */
 
 ?>
