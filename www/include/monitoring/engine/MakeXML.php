@@ -136,6 +136,7 @@ For information : contact@oreon-project.org
 			$ntime = filectime($file);	
 	
 		$buffer .= '<infos>';
+		$buffer .= '<host_name_1>'. $host_name . '</host_name_1>';
 		$buffer .= '<flag>'. $flag . '</flag>';
 		$buffer .= '<time>'.$ntime. '</time>';
 		$buffer .= '<filetime>'.filectime($file). '</filetime>';
@@ -151,6 +152,7 @@ For information : contact@oreon-project.org
 			# calcul stat for statistic
 			$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 			$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
+
 			
 			# services infos
 			if (isset($service_status) &&  (
@@ -163,14 +165,14 @@ For information : contact@oreon-project.org
 				$service_status_num = array();
 				if (isset($service_status))
 					foreach ($service_status as $name => $svc){
-						if(($type == "svc" ||
-						 ($type == "svc_ok" && $svc["current_state"] == "OK") ||
-						 (($type == "svcpb" || $type == "svc_warning") && $svc["current_state"] == "WARNING") ||
-						 (($type == "svcpb" || $type == "svc_unknown") && $svc["current_state"] == "UNKNOWN") ||
-						 (($type == "svcpb" || $type == "svc_critical") && $svc["current_state"] == "CRITICAL")
-						) && (							
-							$host_name != "none" && $svc["host_name"] == $host_name)
-						)
+					if( ($host_name != "none" && $svc["host_name"] == $host_name) || $host_name == "none")
+						if( ($type == "svc" ||
+						     	($type == "svc_ok" && $svc["current_state"] == "OK") ||
+						 		(($type == "svcpb" || $type == "svc_warning") && $svc["current_state"] == "WARNING") ||
+						 		(($type == "svcpb" || $type == "svc_unknown") && $svc["current_state"] == "UNKNOWN") ||
+						 		(($type == "svcpb" || $type == "svc_critical") && $svc["current_state"] == "CRITICAL")
+							) 
+						   )
 						{
 							$tmp = array();
 							$tmp[0] = $name;		
@@ -285,10 +287,10 @@ For information : contact@oreon-project.org
 		}
 	}
 
-
+/*
 	if (!$flag)
 		exit(1);
-
+*/
 	
 	if (isset($_POST["time"]) && isset($_POST["host_name"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"])){
 		read($_POST["host_name"], $_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);

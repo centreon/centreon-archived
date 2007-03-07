@@ -15,18 +15,29 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
-
-
-
-
 // JavaScript Document
+
+ function getVar (nomVariable)
+ {
+	 var infos = location.href.substring(location.href.indexOf("?")+1, location.href.length)+"&"
+	 if (infos.indexOf("#")!=-1)
+	 infos = infos.substring(0,infos.indexOf("#"))+"&"
+	 var variable='none'
+	 {
+	 nomVariable = nomVariable + "="
+	 var taille = nomVariable.length
+	 if (infos.indexOf(nomVariable)!=-1)
+	 variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length).substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
+	 }
+	 return variable
+ } 
+
 
 //var xhrM = null; 
 var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
 var _timeoutID =	0;
 var _on = 1;
-	 
+
 function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
 	   var xhrM = new XMLHttpRequest(); 
@@ -374,10 +385,12 @@ function initM(_time_reload,_sid,_o){
 
 function goM(_time_reload,_sid,_o){
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
-//alert(_o);
+
 
 	if(_on)
 	{
+	_host_name = 'none';
+	_host_name = getVar('host_name');
 	_formBasic=document.getElementById('AjaxBankBasic');		       
 	_version=_formBasic.version.value;
 	_fileStatus=_formBasic.fileStatus.value;
@@ -432,21 +445,17 @@ function goM(_time_reload,_sid,_o){
 		}
 	}
 
-
-//					document.getElementById('log').innerHTML += '<br><br>';
-
 	var xhrM = getXhrM();
 
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
 
-_var = "date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+	_var = "host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 	xhrM.send(_var);
 
 //	document.getElementById('header').innerHTML = "-->"+_var;
 
-	//alert("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
 
 	// On defini ce qu'on va faire quand on aura la reponse
