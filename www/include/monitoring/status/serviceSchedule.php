@@ -18,6 +18,11 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	
+	!isset($_GET["num"]) ? $begin = 0 : $begin = $_GET["num"];
+	!isset($_GET["limit"]) ? $nb = 20 : $nb = $begin + $_GET["limit"];
+	
+	include("./include/common/autoNumLimit.php");
+	
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
@@ -54,9 +59,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort_type", $_GET["sort_types"]);
 	if (!isset($_GET["order"]))
 		$_GET["order"] = "sort_asc";
-	
-	!isset($_GET["num"]) ? $begin = 0 : $begin = $_GET["num"];
-	!isset($_GET["limit"]) ? $nb = 20 : $nb = $begin + $_GET["limit"];
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	$tpl->assign("host_name", $host_name);
