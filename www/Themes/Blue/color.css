@@ -85,10 +85,10 @@ border-color: #BFD0E2;
 	border-top-color: #AAAAEE;
 }
 
-.list_one{		background-color:#F7FAFF;} /*C1DDF6;}ebf4ff*/
-.list_one:hover {	background-color:#FDF0D5;}/*cbd4ff*/
-.list_two {		background-color:#EDF4FF; }/*C4E5FB;} e6f2fe;} d8e4f2*/
-.list_two:hover {		background-color:#FDF0D5;} /*e6f2fe;}93DCF8*/
+.list_one{		background-color:#F7FAFF;} 
+.list_one:hover {	background-color:#FDF0D5;}
+.list_two {		background-color:#EDF4FF; }
+.list_two:hover {		background-color:#FDF0D5;}
 
 
 .list_three {	background-color:#fada83;}
@@ -201,6 +201,7 @@ left:0px;
 width:100%;
 height:100%;
 }
+
 .msg_isloading{
 font-size:14px;
 position:absolute;
