@@ -42,7 +42,7 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";	
 	$DBRESULT1->fetchInto($general_opt);
 	$version = $general_opt["nagios_version"];
-
+	
 	# Init tab
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -83,7 +83,6 @@ For information : contact@oreon-project.org
 	}
 	
 	if (isset($oreon) && is_object($oreon)){
-
 		if (isset ($_GET["search"]))
 			$search = $_GET["search"];
 		else if (isset($oreon->historySearch[$url]))
@@ -222,7 +221,9 @@ For information : contact@oreon-project.org
 		      	// set last update 
 		     	$last_update = date("d-m-Y h:i:s");
 		      	$log = split("#", $str);
-				if (preg_match("/^s/", $str)){
+				if (preg_match("/^p\#/", $str)){
+			  		$program_data = getProgramDataParsed($log, $status_proc);
+			  	} else if (preg_match("/^s/", $str)){
 					if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) 
 							&& strcmp($log[1], "OSL_Module") && strcmp($log[1], "Meta_Module")){
 						$service_status[$log["1"]."_".$log["2"]] = getServiceDataParsed($log);
@@ -238,8 +239,7 @@ For information : contact@oreon-project.org
 			    		if (is_object($oreon))
 				    		$oreon->status_graph_host[$host_status[$log["1"]]['current_state']]++;
 			  		}
-				} else if (preg_match("/^p/", $str))
-			  		$program_data = getProgramDataParsed($log, $status_proc);
+				}
 		      	unset($str);
 			}
 	}
@@ -260,6 +260,9 @@ For information : contact@oreon-project.org
 		}
 		if (!isset($_GET["order"]))
 			$_GET["order"] = "SORT_".$general_opt["problem_sort_order"];
+	} else {
+		$_GET["sort_types"] = "host_name";
+		$_GET["order"] = "SORT_ASC";
 	}
 	
 	if (isset($_GET["sort_types"]) && $_GET["sort_types"]){
