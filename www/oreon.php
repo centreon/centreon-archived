@@ -105,7 +105,7 @@ For information : contact@oreon-project.org
 	function reset_search_page($url){
 		# Clean Vars
 		global $oreon;
-		if (isset($_GET["search"]) && $_GET["search"] != $oreon->historySearch[$url]){		
+		if (isset($_GET["search"]) && isset($oreon->historySearch[$url]) && $_GET["search"] != $oreon->historySearch[$url]){		
 			$_POST["num"] = 0;
 			$_GET["num"] = 0;
 		}	
