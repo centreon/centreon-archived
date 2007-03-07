@@ -1,6 +1,4 @@
-{assign var="o" value="svcpb"}
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
 <div class="cachediv">
 <!-- informations bank for ajax -->
 <FORM id="fsave">
@@ -18,31 +16,26 @@
        	sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br>
 </FORM>
 </div>
-
 <form name='form'>
-<input name="p" value="{$p}" type="hidden">
-	<table class="Toolbar_TableTop">
-		<tr class="Toolbar_TR_Top">
-			<td class="Toolbar_TDSelectAction_Top">
-			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
-			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
-			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
-			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
-			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
-			<div style="text-align:left;padding-top:5px;">
-			&nbsp;
-			{$form.o1.html}
-			</div>
-			{if $pgr_nagios_stat.created != 0}
-				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
-			{/if}
-			</td>
-			<input name="p" value="{$p}" type="hidden">
-			{php}
-			   include('./include/common/pagination.php');
-			{/php}
-		</tr>
-	</table>
+<table class="Toolbar_TableTop">
+	<tr class="Toolbar_TR_Top">
+		<td class="Toolbar_TDSelectAction_Top">
+		<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
+		<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
+		<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
+		<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
+		<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
+		<div style="text-align:left;padding-top:5px;">&nbsp;{$form.o1.html}</div>
+		{if $pgr_nagios_stat.created != 0}
+			<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
+		{/if}
+		<input name="p" value="{$p}" type="hidden">		
+		</td>
+		{php}
+		   include('./include/common/pagination.php');
+		{/php}
+	</tr>
+</table>
 <div id="forajax">
 <table id="ListTable">
 	<tr class='ListHeader'>
@@ -92,28 +85,19 @@
 	{/foreach}
 </table>
 </div>
-
-	<table class="Toolbar_TableBottom">
-		<tr>
-			<td class="Toolbar_TDSelectAction_Bottom">
-			<div style="text-align:left;padding-top:5px;">
-			{$form.o2.html}
-			</div>
+<table class="Toolbar_TableBottom">
+	<tr>
+		<td class="Toolbar_TDSelectAction_Bottom">
+			<div style="text-align:left;padding-top:5px;">{$form.o2.html}</div>
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
-			{/if}
-
-			</td>
-			<input name="p" value="{$p}" type="hidden">
-			{php}
-			   include('./include/common/pagination.php');
-			{/php}
-		</tr>
-	</table>
-
-<input name="o" value="{$o}" type="hidden">
+			{/if}<input name="p" value="{$p}" type="hidden">	
+		</td>
+		{php}include('./include/common/pagination.php');{/php}
+	</tr>
+</table>
 <input name='cmd' value='0' type='hidden'>
-
+<input name='o' value='{$o}' type='hidden'>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>

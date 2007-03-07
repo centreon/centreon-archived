@@ -87,14 +87,8 @@
 <table class="Toolbar_TableBottom">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Bottom">
-		<div style="text-align:left;padding-top:5px;">
-		{$form.o2.html}
-
-		</div>
-		{if $pgr_nagios_stat.created != 0}
-			<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
-		{/if}
-
+			<div style="text-align:left;padding-top:5px;">{$form.o2.html}</div>
+			{if $pgr_nagios_stat.created != 0}<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>{/if}
 		</td>
 		<input name="p" value="{$p}" type="hidden">
 		{php}
