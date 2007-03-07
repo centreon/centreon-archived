@@ -41,24 +41,6 @@ function getXhrM(){
 	return xhrM;
 }	 
 
-/*	 
-function getXhrM(){
-	if(window.XMLHttpRequest) // Firefox et autres
-	   xhrM = new XMLHttpRequest(); 
-	else if(window.ActiveXObject){ // Internet Explorer 
-	   try {
-                xhrM = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                xhrM = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-	}
-	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest..."); 
-	   xhrM = false; 
-	} 
-}
-*/
-
 function take_value(_type)
 {
 	var myArray=new Array();
@@ -101,8 +83,7 @@ function mk_img(_src, _alt)
 }
 
 
-
-function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_host_name){
+function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_host_name, _o){
 
 	var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 	var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
@@ -157,7 +138,7 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
  */
 	var _case_host_name = document.createElement('td');
 	_case_host_name.className = 'ListColLeft';
-	_case_host_name.style = 'background-color:#FD8B46;';
+//	_case_host_name.style.background-color = 'FD8B46';
 /*
  * service description
  */
@@ -235,12 +216,16 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	var _img7 = mk_img(_formBasic.icone_undo.value, "re-check");
 
 
+	if(_host_status == "CRITICAL"){
+		ClassName = "list_down";
+	}	
 
 	if(_problem_has_been_acknowledged == 1)
 	{
 	ClassName = "list_four";
 	_case_infos.appendChild(_img1);
 	}
+	
 
 	if(_notifications_enabled == 0)
 	_case_infos.appendChild(mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable"));
@@ -259,26 +244,16 @@ _case_infos.id = 'infos' + i;
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!p!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 var _p = 20201;
 
-
-
-
 /*
  * actions
  */
-	var _linkaction_recheck = document.createElement("a");
-  	_linkaction_recheck.href = './oreon.php?p=' + _p + '&o=svc&cmd=2&select[' + _host_name + ':' + _service_description + ']=1' +
-  			'&num='+_num+'&limit='+_limit+'&sort_types='+_sort_types+'&order='+_order+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service;
-	_linkaction_recheck.appendChild(_img7);
 
 	var _linkaction_graph = document.createElement("a"); 
   	_linkaction_graph.href = './oreon.php?p=40207&host_name_name=' + _host_name + '&service_description=' + _service_description + '&submitC=Grapher';
 	_linkaction_graph.appendChild(_img6);
 
-	_case_actions.appendChild(_linkaction_recheck);
 	_case_actions.appendChild(_linkaction_graph);
 	_case_actions.id = 'action' + i;
-
-
 
 
 /*
@@ -365,21 +340,46 @@ var _p = 20201;
 	_ligne.appendChild(_case_current_attempt);
 	_ligne.appendChild(_case_plugin_output);
 	
-	_tableAjax.appendChild(_ligne);
+	if(_o == "svc_unknown" && _status == "UNKNOWN")
+	{
+		_tableAjax.appendChild(_ligne);
+	}
+	else if(_o == "svc_warning" && _status == "WARNING")
+	{
+		_tableAjax.appendChild(_ligne);
+	}
+	else if(_o == "svc_critical" && _status == "CRITICAL")
+	{
+		_tableAjax.appendChild(_ligne);
+	}
+	else if(_o == "svc_ok" && _status == "OK")
+	{
+		_tableAjax.appendChild(_ligne);
+	}
+	else if(_o == "svcpb")
+	{
+		_tableAjax.appendChild(_ligne);
+	}
+	else
+	{
+		//_tableAjax.appendChild(_ligne);		
+	}
+	
 }
 
 
-function initM(_time_reload,_sid){
+function initM(_time_reload,_sid,_o){
 	_form=document.getElementById('fsave');
 	_time=parseInt(_form.time.value);
 	_form.time.value = _time - 1000;
 
-	goM(_time_reload,_sid);
+	goM(_time_reload,_sid,_o);
 }
 
 
-function goM(_time_reload,_sid){
+function goM(_time_reload,_sid,_o){
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
+//alert(_o);
 
 	if(_on)
 	{
@@ -405,7 +405,7 @@ function goM(_time_reload,_sid){
 	_search_type_host=_form.search_type_host.value;
 	_num=_form.num.value;
 	_previous_host_name = '';
-				
+
 	var myArray = take_value(_type);
 
 
@@ -444,7 +444,7 @@ function goM(_time_reload,_sid){
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
-	xhrM.send("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
+	xhrM.send("o="+_o+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
 //	document.getElementById('header').innerHTML = "-->date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 
@@ -531,8 +531,6 @@ function goM(_time_reload,_sid){
 					var _infohtml = '';	
 					if(_problem_has_been_acknowledged == 1)
 						_infohtml += '<img src=' + _formBasic.icone_problem_has_been_acknowledged.value + ' alt=problem_has_been_acknowledged title=problem_has_been_acknowledged>';
-					if(_notifications_enabled == 0)
-						_infohtml += '<img src=' + _formBasic.icone_notifications_enabled.value + ' alt=notification_enable title=notification_enable>';
 					if(_is_flapping == 1)
 						_infohtml += '<img src=' + _formBasic.icone_flapping.value + ' alt=is_flapping title=is_flapping>';
 					var _current_state = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
@@ -545,6 +543,8 @@ function goM(_time_reload,_sid){
 						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_passive_check title=accept_passive_check>';
 					if(_accept_active_check == 1)
 						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_active_check title=accept_active_check>';					
+					if(_notifications_enabled == 0)
+						_infohtml += '<img src=' + _formBasic.icone_notifications_enabled.value + ' alt=notification_enable title=notification_enable>';
 
 					document.getElementById('infos'+order).innerHTML = _infohtml;
 					document.getElementById('current_state'+order).innerHTML = _status;
@@ -592,13 +592,12 @@ function goM(_time_reload,_sid){
 //					document.getElementById('log').innerHTML += 'modifi la ligne ' + i + '<br>';
 
 				}
-				if((_type == 'service' || _type == 'service_problem') && _flag == 1)
+				if((_type == 'service' || _type == 'service_problem') )//&& _flag == 1)
 				{
-					
 					DelOneLine(i);
-					addLineToTab_Service(_tableAjax, line, i, _form,_formBasic, _previous_host_name);
+					addLineToTab_Service(_tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
-				}				
+				}
 
 				if(_type == 'host_name')
 				{
@@ -716,9 +715,7 @@ function goM(_time_reload,_sid){
 		}
 	}
 
-
-
-	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'")', _time_reload);
+	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
 //	monitoring_time();

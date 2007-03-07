@@ -211,7 +211,7 @@ For information : contact@oreon-project.org
 		print $DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<?=$tM?>,"<?=$sid?>")', <?=$tFM?>);<?
+			?>setTimeout('initM(<?=$tM?>,"<?=$sid?>","<?=$o?>")', <?=$tFM?>);<?
 		} else if ($topology_js['init'])
 			echo $topology_js['init'] ."();";
 	}

@@ -79,7 +79,7 @@ function monitoring_refresh()	{
 	_on = 1;
 	window.clearTimeout(_timeoutID);
 	//monitoring_time();
-	initM(<?=$tM?>,"<?=$sid?>");
+	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
 	_on = _tmp_on;
 }
 
@@ -90,7 +90,7 @@ function monitoring_play()	{
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
 	_on = 1;
-	initM(<?=$tM?>,"<?=$sid?>");
+	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
 }
 
 function monitoring_pause()	{
