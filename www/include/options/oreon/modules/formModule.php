@@ -41,7 +41,13 @@ For information : contact@oreon-project.org
 		$tpl->assign("module_release", $module_conf[$name]["mod_release"]);
 		$tpl->assign("module_author", $module_conf[$name]["author"]);
 		$tpl->assign("module_infos", $module_conf[$name]["infos"]);
-		$tpl->assign("module_isinstalled", $lang["no"]);
+		if (is_dir("./modules/".$name."/infos") && is_file("./modules/".$name."/infos/infos.txt"))	{
+			$infos_streams = file("./modules/".$name."/infos/infos.txt");
+			$infos_streams = implode("<br>", $infos_streams);
+			$tpl->assign("module_infosTxt", $infos_streams);
+		}
+		else
+			$tpl->assign("module_infosTxt", false);		
 
 		$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
 		if ($form1->validate())	{
@@ -122,13 +128,21 @@ For information : contact@oreon-project.org
 							$redirect =& $form->addElement('hidden', 'o');
 							$redirect->setValue("u");							
 						}
+						if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt"))	{
+							$infos_streams = file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
+							$infos_streams = implode("<br>", $infos_streams);
+							$upgrade_infosTxt = $infos_streams;
+						}
+						else
+							$upgrade_infosTxt = false;	
 						$elemArr[$i] = array("upgrade_rname" => $upgrade_conf[$moduleinfo["name"]]["rname"],
 							"upgrade_release_from" => $upgrade_conf[$moduleinfo["name"]]["release_from"],
 							"upgrade_release_to" => $upgrade_conf[$moduleinfo["name"]]["release_to"],
 							"upgrade_author" => $upgrade_conf[$moduleinfo["name"]]["author"],
 							"upgrade_infos" => $upgrade_conf[$moduleinfo["name"]]["infos"],
+							"upgrade_infosTxt" => $upgrade_infosTxt,
 							"upgrade_is_validUp" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? $lang["yes"] : $lang["no"],
-							"upgrade_choice" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);
+							"upgrade_choice" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);	
 						$i++;
 						$hid_id =& $form->addElement('hidden', 'id');
 						$hid_id->setValue($id);
