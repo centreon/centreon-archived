@@ -15,14 +15,17 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+
+
+
+
+
 // JavaScript Document
 
 //var xhrM = null; 
 var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
 var _timeoutID =	0;
 var _on = 1;
-
-
 	 
 function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
@@ -64,6 +67,16 @@ function DelAllLine(i)
 	}
 }
 
+function removeAllLine(i)
+{
+	for(i=0; document.getElementById('trStatus'+i) ;i++)
+	{
+		var _del = document.getElementById('trStatus'+i);
+		_del.parentNode.removeChild(_del);
+	}
+
+}
+
 function DelOneLine(i)
 {
 	if(document.getElementById('trStatus'+i))
@@ -86,6 +99,7 @@ function mk_img(_src, _alt)
 function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_host_name, _o){
 
 	var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
+	var _host_color = line.getElementsByTagName("host_color")[0].firstChild.nodeValue;
 	var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
 	var _last_state_change = line.getElementsByTagName("last_state_change")[0].firstChild.nodeValue;
 	var _status = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
@@ -100,7 +114,6 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
 	var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 	var _host_status = line.getElementsByTagName("host_status")[0].firstChild.nodeValue;
-
 
 	var _search=_form.search.value;
 	var _search_type_service=_form.search_type_service.value;
@@ -138,7 +151,10 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
  */
 	var _case_host_name = document.createElement('td');
 	_case_host_name.className = 'ListColLeft';
-//	_case_host_name.style.background-color = 'FD8B46';
+	if(_host_status == "DOWN" && _host_color != 'normal')
+	{
+		_case_host_name.style.backgroundColor = _host_color;
+	}
 /*
  * service description
  */
@@ -188,12 +204,14 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
  */
 	var _case_lastcheck = document.createElement('td');
 	_case_lastcheck.className = 'ListColRight';
+	_case_lastcheck.noWrap = true;
 
 /*
  * last change
  */
 	var _case_time = document.createElement('td');
 	_case_time.className = 'ListColRight';
+	_case_time.noWrap = true;
 
 /*
  * current_state
@@ -216,7 +234,7 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	var _img7 = mk_img(_formBasic.icone_undo.value, "re-check");
 
 
-	if(_host_status == "CRITICAL"){
+	if(_status == "CRITICAL"){
 		ClassName = "list_down";
 	}	
 
@@ -340,30 +358,7 @@ var _p = 20201;
 	_ligne.appendChild(_case_current_attempt);
 	_ligne.appendChild(_case_plugin_output);
 	
-	if(_o == "svc_unknown" && _status == "UNKNOWN")
-	{
-		_tableAjax.appendChild(_ligne);
-	}
-	else if(_o == "svc_warning" && _status == "WARNING")
-	{
-		_tableAjax.appendChild(_ligne);
-	}
-	else if(_o == "svc_critical" && _status == "CRITICAL")
-	{
-		_tableAjax.appendChild(_ligne);
-	}
-	else if(_o == "svc_ok" && _status == "OK")
-	{
-		_tableAjax.appendChild(_ligne);
-	}
-	else if(_o == "svcpb")
-	{
-		_tableAjax.appendChild(_ligne);
-	}
-	else
-	{
-		//_tableAjax.appendChild(_ligne);		
-	}
+	_tableAjax.appendChild(_ligne);		
 	
 }
 
@@ -406,6 +401,7 @@ function goM(_time_reload,_sid,_o){
 	_num=_form.num.value;
 	_previous_host_name = '';
 
+
 	var myArray = take_value(_type);
 
 
@@ -444,9 +440,11 @@ function goM(_time_reload,_sid,_o){
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
-	xhrM.send("o="+_o+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
-//	document.getElementById('header').innerHTML = "-->date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+_var = "date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+	xhrM.send(_var);
+
+//	document.getElementById('header').innerHTML = "-->"+_var;
 
 	//alert("date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_type+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value));
 
@@ -457,9 +455,9 @@ function goM(_time_reload,_sid,_o){
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 
 		if(xhrM && xhrM.readyState && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
-		{	
+		{
+	
 			reponse = xhrM.responseXML.documentElement;
-			//_test=document.getElementById('test');
 			
 			var infos = reponse.getElementsByTagName("infos");
 			for (var i = 0 ; i < infos.length ; i++) {
@@ -471,51 +469,19 @@ function goM(_time_reload,_sid,_o){
 				_form.slastreload.value = parseInt(_newreload);
 			}
 
-			// ici je recupere les statistiques
-/*
-			var stats = reponse.getElementsByTagName("stats");
-			for (var i = 0 ; i < stats.length ; i++) {
-				var stat = stats[i];
-				var _statistic_service_ok = stat.getElementsByTagName("statistic_service_ok")[0].firstChild.nodeValue;
-				var _statistic_service_warning = stat.getElementsByTagName("statistic_service_warning")[0].firstChild.nodeValue;
-				var _statistic_service_critical = stat.getElementsByTagName("statistic_service_critical")[0].firstChild.nodeValue;
-				var _statistic_service_unknown = stat.getElementsByTagName("statistic_service_unknown")[0].firstChild.nodeValue;
-				var _statistic_service_pending = stat.getElementsByTagName("statistic_service_pending")[0].firstChild.nodeValue;
-				var _statistic_host_up = stat.getElementsByTagName("statistic_host_up")[0].firstChild.nodeValue;
-				var _statistic_host_down = stat.getElementsByTagName("statistic_host_down")[0].firstChild.nodeValue;
-				var _statistic_host_unreachable = stat.getElementsByTagName("statistic_host_unreachable")[0].firstChild.nodeValue;
-				var _statistic_host_pending = stat.getElementsByTagName("statistic_host_pending")[0].firstChild.nodeValue;
-
-				if(_type != 'metaservice')
-				{
-					document.getElementById('host_up').innerHTML = _statistic_host_up;
-					document.getElementById('host_down').innerHTML = _statistic_host_down;
-					document.getElementById('host_unreachable').innerHTML = _statistic_host_unreachable;
-					document.getElementById('host_pending').innerHTML = _statistic_host_pending;
-					document.getElementById('service_ok').innerHTML = _statistic_service_ok;
-					document.getElementById('service_warning').innerHTML = _statistic_service_warning;
-					document.getElementById('service_critical').innerHTML = _statistic_service_critical;
-					document.getElementById('service_unknown').innerHTML = _statistic_service_unknown;
-					document.getElementById('service_pending').innerHTML = _statistic_service_pending;
-				}
-			}
-*/
-
-
 			// a partir d'ici je recupere les informations principales
 			var lines = reponse.getElementsByTagName("line");
 			var order =0;
+
+			DelAllLine(0);
+
 			for (var i = 0 ; i < lines.length ; i++) 
 			{
 				var line = lines[i];
 				order = line.getElementsByTagName("order")[0].firstChild.nodeValue;
-				var _flag = parseInt(line.getElementsByTagName("flag")[0].firstChild.nodeValue);								
+				var _flag = parseInt(line.getElementsByTagName("flag")[0].firstChild.nodeValue);
 
-//					document.getElementById('log').innerHTML += _flag + '->' + order + ' = ';
-
-
-
-
+/*
 				if((_type == 'service' || _type == 'service_problem') && _flag == 0)
 				{
 					var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;								
@@ -592,13 +558,15 @@ function goM(_time_reload,_sid,_o){
 //					document.getElementById('log').innerHTML += 'modifi la ligne ' + i + '<br>';
 
 				}
+				*/
 				if((_type == 'service' || _type == 'service_problem') )//&& _flag == 1)
 				{
-					DelOneLine(i);
+//					DelOneLine(i);
 					addLineToTab_Service(_tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 				}
 
+/*
 				if(_type == 'host_name')
 				{
 					var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
@@ -638,7 +606,8 @@ function goM(_time_reload,_sid,_o){
 					document.getElementById('last_state_change'+order).innerHTML = _last_state_change;
 					document.getElementById('plugin_output'+order).innerHTML = _plugin_output;				
 				}
-
+*/
+/*
 				if(_type == 'metaservice')
 				{
 					var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
@@ -695,10 +664,12 @@ function goM(_time_reload,_sid,_o){
 					document.getElementById('last_state_change'+order).innerHTML = _last_state_change;
 					document.getElementById('plugin_output'+order).innerHTML = _plugin_output;
 				}//fin metaservice
+*/
 			}//fin du for pour les infos principale
+/*
 			if(i > 0)
 			DelAllLine(i);
-//			setTimeout('monitoring_time_Del_msg()', 1000);
+*/
 			monitoring_time_Del_msg();
 		}
 		else if(xhrM && xhrM.readyState && xhrM.readyState == 4)
