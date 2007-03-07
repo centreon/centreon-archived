@@ -439,7 +439,7 @@ $lang['date_format'] = "d/m/Y";
 $lang['time_format'] = "H:i:s";
 $lang['header_format'] = "d/m/Y G:i";
 $lang['date_time_format'] = "d/m/Y - H:i:s";
-$lang['date_time_format_status'] = "d/m/Y H:i:s";
+$lang['date_time_format_status'] = "d/m/y H:i:s";
 $lang['date_time_format_g_comment'] = "d/m/Y H:i";
 
 /* legend */
