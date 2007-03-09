@@ -9,8 +9,8 @@
 	</ul>
 </div>
 <div id="validFormTop">
-{if $o == "a" || $o == "c"}
-	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+{if $o == "a" || $o == "c" || $o == "mc"}
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p class="oreonbutton">{$form.change.html}</p>
 {/if}
@@ -21,9 +21,11 @@
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		{if $msg.tpl}
-		<tr class="list_one"><td class="FormRowField">{$form.service_alias.label}<br>{$form.header.service_alias_interest}</td><td class="FormRowValue">{$form.service_alias.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.service_alias.label}<br>{$form.header.service_alias_interest}</td><td class="FormRowValue">{$form.service_alias.html}</td></tr>
 		{/if}
-		<tr class="list_two"><td class="FormRowField">{$form.service_description.label}</td><td class="FormRowValue">{$form.service_description.html}</td></tr>
+		{if $o != "mc"}
+			<tr class="list_two"><td class="FormRowField">{$form.service_description.label}</td><td class="FormRowValue">{$form.service_description.html}</td></tr>
+		{/if}
 		<tr class="list_one">
 			<td class="FormRowField">
 				<div style='text-decoration: underline;'>{$form.service_template_model_stm_id.label}</div>
@@ -79,6 +81,9 @@
 			 			
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mail_write.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_notifications_enabled.label}</td><td class="FormRowValue">{$form.service_notifications_enabled.html}</td></tr>
+		{if $o == "mc"}
+			<tr class="list_two"><td class="FormRowField">{$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
+		{/if}
 		<tr class="list_two"><td class="FormRowField">{$form.service_cgs.label}</td><td class="FormRowValue">{$form.service_cgs.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_notification_interval.label}</td><td class="FormRowValue">{$form.service_notification_interval.html}{$time_unit}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
@@ -99,12 +104,21 @@
 	<table id="ListTable">	 	
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
+		{if $o == "mc"}
+			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
+		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
 		{if !$msg.tpl}
-		<tr class="list_two"><td class="FormRowField">{$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
+			{if $o == "mc"}
+				<tr class="list_one"><td class="FormRowField">{$form.mc_mod_sgs.label}</td><td class="FormRowValue">{$form.mc_mod_sgs.html}</td></tr>
+			{/if}
+			<tr class="list_one"><td class="FormRowField">{$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
 	 	{/if}
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.traps}</td></tr>
+		{if $o == "mc"}
+			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_traps.label}</td><td class="FormRowValue">{$form.mc_mod_traps.html}</td></tr>
+		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.service_traps.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_traps.html}</p></td></tr>
 	 </table>
 </div>
@@ -148,9 +162,9 @@
 	 </table>
 </div>
 <div id="validForm">
-{if $o == "a" || $o == "c"}
+{if $o == "a" || $o == "c" || $o == "mc"}
 	<p>{$form.action.html}</p>
-	<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 {else if $o == "w"}
 	<p class="oreonbutton">{$form.change.html}</p>
 {/if}

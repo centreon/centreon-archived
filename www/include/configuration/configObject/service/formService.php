@@ -197,6 +197,8 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title', $lang["sv_change"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title', $lang["sv_view"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title', $lang["mchange"]);
 
 	# Sort 1
 	#
@@ -204,9 +206,11 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'information', $lang['sv_infos']);
 
-	$form->addElement('text', 'service_description', $lang["sv_description"], $attrsText);
+	# No possibility to change name and alias, because there's no interest
+	if ($o != "mc")
+		$form->addElement('text', 'service_description', $lang["sv_description"], $attrsText);
 	$form->addElement('text', 'service_alias', $lang["sv_alias"], $attrsText);
-
+	
 	$form->addElement('select', 'service_template_model_stm_id', $lang['sv_template'], $svTpls);
 	$form->addElement('static', 'tplText', $lang['sv_templateText']);
 	
@@ -219,8 +223,8 @@ For information : contact@oreon-project.org
 	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, $lang["no"], '0');
 	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, $lang["nothing"], '2');
 	$form->addGroup($serviceIV, 'service_is_volatile', $lang['sv_isVolatile'], '&nbsp;');
-	$form->setDefaults(array('service_is_volatile' => '2'));
-
+	if ($o != "mc")
+		$form->setDefaults(array('service_is_volatile' => '2'));
 
 	$form->addElement('select', 'command_command_id', $lang['sv_checkCmd'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');	
 	$form->addElement('text', 'command_command_id_arg', $lang['sv_args'], $attrsText);
@@ -232,22 +236,24 @@ For information : contact@oreon-project.org
 	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, $lang["no"], '0');
 	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($serviceEHE, 'service_event_handler_enabled', $lang['sv_eventHandlerE'], '&nbsp;');
-	$form->setDefaults(array('service_event_handler_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_event_handler_enabled' => '2'));
 	$form->addElement('select', 'command_command_id2', $lang['sv_eventHandler'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', $lang['sv_args'], $attrsText);
-
 
 	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, $lang["yes"], '1');
 	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, $lang["no"], '0');
 	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($serviceACE, 'service_active_checks_enabled', $lang['sv_activeCE'], '&nbsp;');
-	$form->setDefaults(array('service_active_checks_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_active_checks_enabled' => '2'));
 
 	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, $lang["yes"], '1');
 	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, $lang["no"], '0');
 	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($servicePCE, 'service_passive_checks_enabled', $lang['sv_passiveCE'], '&nbsp;');
-	$form->setDefaults(array('service_passive_checks_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_passive_checks_enabled' => '2'));
 
 	$form->addElement('select', 'timeperiod_tp_id', $lang['sv_checkPeriod'], $tps);
 
@@ -259,8 +265,16 @@ For information : contact@oreon-project.org
 	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, $lang["no"], '0');
 	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($serviceNE, 'service_notifications_enabled', $lang['sv_notifEnabled'], '&nbsp;');
-	$form->setDefaults(array('service_notifications_enabled' => '2'));
-
+	if ($o != "mc")
+		$form->setDefaults(array('service_notifications_enabled' => '2'));
+	
+	if ($o == "mc")	{
+		$mc_mod_cgs = array();
+		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_cgs'=>'0'));
+	}
     $ams3 =& $form->addElement('advmultiselect', 'service_cgs', $lang['sv_CgMembers'], $notifCgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
@@ -291,7 +305,8 @@ For information : contact@oreon-project.org
 	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, $lang["enable"], '1');
 	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, $lang["disable"], '0');
 	$form->addGroup($serviceActivation, 'service_activate', $lang["status"], '&nbsp;');
-	$form->setDefaults(array('service_activate' => '1'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_activate' => '1'));
 	$form->addElement('textarea', 'service_comment', $lang["cmt_comment"], $attrsTextarea);
 	
 	#
@@ -303,7 +318,16 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title2', $lang["sv_Links_change"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title2', $lang["sv_Links_view"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title2', $lang["mchange"]);
 
+	if ($o == "mc")	{
+		$mc_mod_Pars = array();
+		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_Pars'=>'0'));
+	}
     $ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_hPars'], $hosts, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
@@ -318,6 +342,13 @@ For information : contact@oreon-project.org
 	
 	# Service relations
 	$form->addElement('header', 'links', $lang['sv_head_links']);
+	if ($o == "mc")	{
+		$mc_mod_sgs = array();
+		$mc_mod_sgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_sgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_sgs, 'mc_mod_sgs', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_sgs'=>'0'));
+	}
     $ams3 =& $form->addElement('advmultiselect', 'service_sgs', $lang['sv_ServiceGroupMembers'], $sgs, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
@@ -325,6 +356,13 @@ For information : contact@oreon-project.org
 	echo $ams3->getElementJs(false);
 
 	$form->addElement('header', 'traps', $lang['gen_trapd']);
+ 	if ($o == "mc")	{
+		$mc_mod_traps = array();
+		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_traps, 'mc_mod_traps', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_traps'=>'0'));
+	}
     $ams3 =& $form->addElement('advmultiselect', 'service_traps', $lang['sv_traps'], $traps, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
@@ -340,6 +378,8 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title3', $lang["h_modify_treat"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title3', $lang["h_view_treat"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title2', $lang["mchange"]);
 
 	$form->addElement('header', 'treatment', $lang['sv_head_treat']);
 
@@ -347,25 +387,29 @@ For information : contact@oreon-project.org
 	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, $lang["no"], '0');
 	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, $lang["nothing"], '2');
 	$form->addGroup($servicePC, 'service_parallelize_check', $lang['sv_paraCheck'], '&nbsp;');
-	$form->setDefaults(array('service_parallelize_check' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_parallelize_check' => '2'));
 
 	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, $lang["yes"], '1');
 	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, $lang["no"], '0');
 	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, $lang["nothing"], '2');
 	$form->addGroup($serviceOOS, 'service_obsess_over_service', $lang['sv_ObsessOS'], '&nbsp;');
-	$form->setDefaults(array('service_obsess_over_service' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_obsess_over_service' => '2'));
 
 	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, $lang["yes"], '1');
 	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, $lang["no"], '0');
 	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, $lang["nothing"], '2');
 	$form->addGroup($serviceCF, 'service_check_freshness', $lang['sv_checkFreshness'], '&nbsp;');
-	$form->setDefaults(array('service_check_freshness' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_check_freshness' => '2'));
 
 	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, $lang["yes"], '1');
 	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, $lang["no"], '0');
 	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, $lang["nothing"], '2');
 	$form->addGroup($serviceFDE, 'service_flap_detection_enabled', $lang['sv_flapDetect'], '&nbsp;');
-	$form->setDefaults(array('service_flap_detection_enabled' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_flap_detection_enabled' => '2'));
 
 	$form->addElement('text', 'service_freshness_threshold', $lang['sv_FreshnessThreshold'], $attrsText2);
 	$form->addElement('text', 'service_low_flap_threshold', $lang['sv_lowFT'], $attrsText2);
@@ -375,19 +419,22 @@ For information : contact@oreon-project.org
 	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, $lang["no"], '0');
 	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, $lang["nothing"], '2');
 	$form->addGroup($servicePPD, 'service_process_perf_data', $lang['sv_processPD'], '&nbsp;');
-	$form->setDefaults(array('service_process_perf_data' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_process_perf_data' => '2'));
 
 	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, $lang["yes"], '1');
 	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, $lang["no"], '0');
 	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, $lang["nothing"], '2');
 	$form->addGroup($serviceRSI, 'service_retain_status_information', $lang['sv_retainSI'], '&nbsp;');
-	$form->setDefaults(array('service_retain_status_information' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_retain_status_information' => '2'));
 
 	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, $lang["yes"], '1');
 	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, $lang["no"], '0');
 	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, $lang["nothing"], '2');
 	$form->addGroup($serviceRNI, 'service_retain_nonstatus_information', $lang['sv_retainNI'], '&nbsp;');
-	$form->setDefaults(array('service_retain_nonstatus_information' => '2'));
+	if ($o != "mc")
+		$form->setDefaults(array('service_retain_nonstatus_information' => '2'));
 
 	if ($oreon->optGen["perfparse_installed"])	{
 		$form->addElement('header', 'purge_policy', $lang["mod_purgePolicy"]);
@@ -403,6 +450,8 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title4', $lang["sv_ExtInf_change"]);
 	else if ($o == "w")
 		$form->addElement('header', 'title4', $lang["sv_ExtInf_view"]);
+	else if ($o == "mc")
+		$form->addElement('header', 'title3', $lang["mchange"]);
 
 	$form->addElement('header', 'nagios', $lang['h_nagios']);
 	if ($oreon->user->get_version() == 2)
@@ -432,6 +481,13 @@ For information : contact@oreon-project.org
 	$page->setValue($p);
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+	if (is_array($select))	{
+		$select_str = NULL;
+		foreach ($select as $key => $value)
+			$select_str .= $key.",";
+		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear->setValue($select_str);
+	}
 	
 	#
 	## Form Rules
@@ -441,31 +497,33 @@ For information : contact@oreon-project.org
 		return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
 	}
 	$form->applyFilter('_ALL_', 'trim');
-	//$form->applyFilter('service_description', 'myReplace');
-	$form->addRule('service_description', $lang['ErrName'], 'required');
-	# If we are using a Template, no need to check the value, we hope there are in the Template
-	if (!$form->getSubmitValue("service_template_model_stm_id"))	{
-		$form->addRule('command_command_id', $lang['ErrCmd'], 'required');
-		$form->addRule('service_max_check_attempts', $lang['ErrRequired'], 'required');
-		$form->addRule('service_normal_check_interval', $lang['ErrRequired'], 'required');
-		$form->addRule('service_retry_check_interval', $lang['ErrRequired'], 'required');
-		$form->addRule('timeperiod_tp_id', $lang['ErrTp'], 'required');
-		$form->addRule('service_cgs', $lang['ErrCg'], 'required');
-		$form->addRule('service_notification_interval', $lang['ErrRequired'], 'required');
-		$form->addRule('timeperiod_tp_id2', $lang['ErrTp'], 'required');
-		$form->addRule('service_notifOpts', $lang['ErrOpt'], 'required');
+	if ($o != "mc")	{
+		//$form->applyFilter('service_description', 'myReplace');
+		$form->addRule('service_description', $lang['ErrName'], 'required');
+		# If we are using a Template, no need to check the value, we hope there are in the Template
+		if (!$form->getSubmitValue("service_template_model_stm_id"))	{
+			$form->addRule('command_command_id', $lang['ErrCmd'], 'required');
+			$form->addRule('service_max_check_attempts', $lang['ErrRequired'], 'required');
+			$form->addRule('service_normal_check_interval', $lang['ErrRequired'], 'required');
+			$form->addRule('service_retry_check_interval', $lang['ErrRequired'], 'required');
+			$form->addRule('timeperiod_tp_id', $lang['ErrTp'], 'required');
+			$form->addRule('service_cgs', $lang['ErrCg'], 'required');
+			$form->addRule('service_notification_interval', $lang['ErrRequired'], 'required');
+			$form->addRule('timeperiod_tp_id2', $lang['ErrTp'], 'required');
+			$form->addRule('service_notifOpts', $lang['ErrOpt'], 'required');
+			if (!$form->getSubmitValue("service_hPars"))
+			$form->addRule('service_hgPars', $lang['ErrSvLeast'], 'required');
+			if (!$form->getSubmitValue("service_hgPars"))
+			$form->addRule('service_hPars', $lang['ErrSvLeast'], 'required');
+		}
 		if (!$form->getSubmitValue("service_hPars"))
 		$form->addRule('service_hgPars', $lang['ErrSvLeast'], 'required');
 		if (!$form->getSubmitValue("service_hgPars"))
 		$form->addRule('service_hPars', $lang['ErrSvLeast'], 'required');
+		$form->registerRule('exist', 'callback', 'testServiceExistence');
+		$form->addRule('service_description', $lang['ErrSvConflict'], 'exist');
+		$form->setRequiredNote($lang['requiredFields']);
 	}
-	if (!$form->getSubmitValue("service_hPars"))
-	$form->addRule('service_hgPars', $lang['ErrSvLeast'], 'required');
-	if (!$form->getSubmitValue("service_hgPars"))
-	$form->addRule('service_hPars', $lang['ErrSvLeast'], 'required');
-	$form->registerRule('exist', 'callback', 'testServiceExistence');
-	$form->addRule('service_description', $lang['ErrSvConflict'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
 
 	#
 	##End of form definition
@@ -493,6 +551,11 @@ For information : contact@oreon-project.org
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
+	# Massive Change
+	else if ($o == "mc")	{
+		$subMC =& $form->addElement('submit', 'submitMC', $lang["save"]);
+		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0, "perfparse"=>$oreon->optGen["perfparse_installed"]));
 	$tpl->assign("sort1", $lang['sv_conf']);
@@ -508,11 +571,17 @@ For information : contact@oreon-project.org
 		if ($form->getSubmitValue("submitA"))
 			$serviceObj->setValue(insertServiceInDB());
 		else if ($form->getSubmitValue("submitC"))
-			updateServiceInDB($serviceObj->getValue());
+			updateServiceInDB($serviceObj->getValue());	
+		else if ($form->getSubmitValue("submitMC"))	{
+			$select = explode(",", $select);
+			foreach ($select as $key=>$value)
+				if ($value)
+					updateServiceInDB($value, true);
+		}
 		if (count($form->getSubmitValue("service_hgPars")))	{
 			$hPars =& $form->getElement('service_hPars');
 			$hPars->setValue(array());
-		}		
+		}
 		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();

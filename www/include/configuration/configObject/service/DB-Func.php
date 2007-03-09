@@ -218,14 +218,61 @@ For information : contact@oreon-project.org
 		}
 	}
 	
-	function updateServiceInDB ($service_id = NULL)	{
+	function updateServiceInDB ($service_id = NULL, $from_MC = false)	{
 		if (!$service_id) return;
-		updateService($service_id);
-		updateServiceContactGroup($service_id);
-		updateServiceHost($service_id);
-		updateServiceServiceGroup($service_id);
-		updateServiceExtInfos($service_id);
-		updateServiceTrap($service_id);
+		global $form;
+		$ret = $form->getSubmitValues();
+		if ($from_MC)
+			updateService_MC($service_id);
+		else
+			updateService($service_id, $from_MC);
+		# Function for updating cg
+		# 1 - MC with deletion of existing cg
+		# 2 - MC with addition of new cg
+		# 3 - Normal update
+		if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && $ret["mc_mod_cgs"]["mc_mod_cgs"])
+			updateServiceContactGroup($service_id);
+		else if (isset($ret["mc_mod_cgs"]["mc_mod_cgs"]) && !$ret["mc_mod_cgs"]["mc_mod_cgs"])
+			updateServiceContactGroup_MC($service_id);	
+		else
+			updateServiceContactGroup($service_id);	
+
+		# Function for updating host/hg parent
+		# 1 - MC with deletion of existing host/hg parent
+		# 2 - MC with addition of new host/hg parent
+		# 3 - Normal update
+		if (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && $ret["mc_mod_Pars"]["mc_mod_Pars"])
+			updateServiceHost($service_id);
+		else if (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && !$ret["mc_mod_Pars"]["mc_mod_Pars"])
+			updateServiceHost_MC($service_id);
+		else
+			updateServiceHost($service_id);
+					
+		# Function for updating sg
+		# 1 - MC with deletion of existing sg
+		# 2 - MC with addition of new sg
+		# 3 - Normal update
+		if (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && $ret["mc_mod_sgs"]["mc_mod_sgs"])
+			updateServiceServiceGroup($service_id);
+		else if (isset($ret["mc_mod_sgs"]["mc_mod_sgs"]) && !$ret["mc_mod_sgs"]["mc_mod_sgs"])
+			updateServiceServiceGroup_MC($service_id);
+		else
+			updateServiceServiceGroup($service_id);
+
+		if ($from_MC)
+			updateServiceExtInfos_MC($service_id);
+		else
+			updateServiceExtInfos($service_id);
+		# Function for updating traps
+		# 1 - MC with deletion of existing traps
+		# 2 - MC with addition of new traps
+		# 3 - Normal update
+		if (isset($ret["mc_mod_traps"]["mc_mod_traps"]) && $ret["mc_mod_traps"]["mc_mod_traps"])
+			updateServiceTrap($service_id);
+		else if (isset($ret["mc_mod_traps"]["mc_mod_traps"]) && $ret["mc_mod_traps"]["mc_mod_traps"])
+			updateServiceTrap_MC($service_id);
+		else
+			updateServiceTrap($service_id);
 	}	
 	
 	function insertServiceInDB ($ret = array())	{
@@ -333,7 +380,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
 	
-	function updateService($service_id = null)	{
+	function updateService($service_id = null, $from_MC = false)	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
@@ -366,8 +413,11 @@ For information : contact@oreon-project.org
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 		$rq .= "purge_policy_id = ";
 		isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL ? $rq .= "'".$ret["purge_policy_id"]."', ": $rq .= "NULL, ";
-		$rq .= "service_description = ";
-		isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		# If we are doing a MC, we don't have to set name and alias field
+		if (!$from_MC)	{
+			$rq .= "service_description = ";
+			isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		}
 		$rq .= "service_alias = ";
 		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "service_is_volatile = ";
@@ -427,6 +477,70 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	}
+	
+	function updateService_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$ret = array();
+		$ret = $form->getSubmitValues();
+		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
+			$ret["command_command_id_arg"] = str_replace("\n", "#BR#", $ret["command_command_id_arg"]);
+			$ret["command_command_id_arg"] = str_replace("\t", "#T#", $ret["command_command_id_arg"]);
+			$ret["command_command_id_arg"] = str_replace("\r", "#R#", $ret["command_command_id_arg"]);
+			$ret["command_command_id_arg"] = str_replace('/', "#S#", $ret["command_command_id_arg"]);
+			$ret["command_command_id_arg"] = str_replace('\\', "#BS#", $ret["command_command_id_arg"]);
+		}		
+		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
+			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);"', " ;
+			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
+			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
+		}
+		$rq = "UPDATE service SET ";
+		if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL) $rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
+		if (isset($ret["command_command_id"]) && $ret["command_command_id"] != NULL) $rq .= "command_command_id = '".$ret["command_command_id"]."', ";
+		if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL) $rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
+		if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL) $rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
+		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) $rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
+		if (isset($ret["purge_policy_id"]) && $ret["purge_policy_id"] != NULL) $rq .= "purge_policy_id = '".$ret["purge_policy_id"]."', ";
+		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL) $rq .= "service_alias = '".$ret["service_alias"]."', ";
+		if (isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2) $rq .= "service_is_volatile = '".$ret["service_is_volatile"]["service_is_volatile"]."', ";
+		if (isset($ret["service_max_check_attempts"]) && $ret["service_max_check_attempts"] != NULL) $rq .= "service_max_check_attempts = '".$ret["service_max_check_attempts"]."', ";
+		if (isset($ret["service_normal_check_interval"]) && $ret["service_normal_check_interval"] != NULL) $rq .= "service_normal_check_interval = '".$ret["service_normal_check_interval"]."', ";
+		if (isset($ret["service_retry_check_interval"]) && $ret["service_retry_check_interval"] != NULL) $rq .= "service_retry_check_interval = '".$ret["service_retry_check_interval"]."', ";
+		if (isset($ret["service_active_checks_enabled"]["service_active_checks_enabled"])) $rq .= "service_active_checks_enabled = '".$ret["service_active_checks_enabled"]["service_active_checks_enabled"]."', ";
+		if (isset($ret["service_passive_checks_enabled"]["service_passive_checks_enabled"])) $rq .= "service_passive_checks_enabled = '".$ret["service_passive_checks_enabled"]["service_passive_checks_enabled"]."', ";
+		if (isset($ret["service_parallelize_check"]["service_parallelize_check"])) $rq .= "service_parallelize_check = '".$ret["service_parallelize_check"]["service_parallelize_check"]."', ";
+		if (isset($ret["service_obsess_over_service"]["service_obsess_over_service"])) $rq .= "service_obsess_over_service = '".$ret["service_obsess_over_service"]["service_obsess_over_service"]."', ";
+		if (isset($ret["service_check_freshness"]["service_check_freshness"])) $rq .= "service_check_freshness = '".$ret["service_check_freshness"]["service_check_freshness"]."', ";
+		if (isset($ret["service_freshness_threshold"]) && $ret["service_freshness_threshold"] != NULL) $rq .= "service_freshness_threshold = '".$ret["service_freshness_threshold"]."', ";
+		if (isset($ret["service_event_handler_enabled"]["service_event_handler_enabled"])) $rq .= "service_event_handler_enabled = '".$ret["service_event_handler_enabled"]["service_event_handler_enabled"]."', ";
+		if (isset($ret["service_low_flap_threshold"]) && $ret["service_low_flap_threshold"] != NULL) $rq .= "service_low_flap_threshold = '".$ret["service_low_flap_threshold"]."', ";
+		if (isset($ret["service_high_flap_threshold"]) && $ret["service_high_flap_threshold"] != NULL) $rq .= "service_high_flap_threshold = '".$ret["service_high_flap_threshold"]."', ";
+		if (isset($ret["service_flap_detection_enabled"]["service_flap_detection_enabled"])) $rq .= "service_flap_detection_enabled = '".$ret["service_flap_detection_enabled"]["service_flap_detection_enabled"]."', ";
+		if (isset($ret["service_process_perf_data"]["service_process_perf_data"])) $rq .= "service_process_perf_data = '".$ret["service_process_perf_data"]["service_process_perf_data"]."', ";
+		if (isset($ret["service_retain_status_information"]["service_retain_status_information"])) $rq .= "service_retain_status_information = '".$ret["service_retain_status_information"]["service_retain_status_information"]."', ";
+		if (isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"])) $rq .= "service_retain_nonstatus_information = '".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', ";
+		if (isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL) $rq .= "service_notification_interval = '".$ret["service_notification_interval"]."', ";
+		if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) $rq .= "service_notification_options = '".implode(",", array_keys($ret["service_notifOpts"]))."', ";
+		if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) $rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
+		if (isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL) $rq .= "service_stalking_options = '".implode(",", array_keys($ret["service_stalOpts"]))."', ";
+		if (isset($ret["service_comment"]) && $ret["service_comment"] != NULL) $rq .= "service_comment = '".htmlentities($ret["service_comment"], ENT_QUOTES)."', ";
+		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL) $rq .= "command_command_id_arg = '".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', ";
+		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL) $rq .= "command_command_id_arg2 = '".htmlentities($ret["command_command_id_arg2"], ENT_QUOTES)."', ";
+		if (isset($ret["service_register"]["service_register"]) && $ret["service_register"]["service_register"] != NULL) $rq .= "service_register = '".$ret["service_register"]["service_register"]."', ";
+		if (isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL) $rq .= "service_activate = '".$ret["service_activate"]["service_activate"]."', ";
+		if (strcmp("UPDATE service SET ", $rq))	{
+			# Delete last ',' in request
+			$rq[strlen($rq)-2] = " ";
+			$rq .= "WHERE service_id = '".$service_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
 		
 	function updateServiceContactGroup($service_id = null, $ret = array())	{
 		if (!$service_id) return;
@@ -451,6 +565,33 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
 	}
+
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateServiceContactGroup_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM contactgroup_service_relation ";
+		$rq .= "WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$cgs = array();
+		while($DBRESULT->fetchInto($arr))
+			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
+		$ret = $form->getSubmitValue("service_cgs");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($cgs[$ret[$i]]))	{
+				$rq = "INSERT INTO contactgroup_service_relation ";
+				$rq .= "(contactgroup_cg_id, service_service_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$ret[$i]."', '".$service_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			}
+		}
+	}
 	
 	function updateServiceServiceGroup($service_id = null, $ret = array())	{
 		if (!$service_id) return;
@@ -466,34 +607,84 @@ For information : contact@oreon-project.org
 		else
 			$ret = $form->getSubmitValue("service_sgs");
 		for($i = 0; $i < count($ret); $i++)	{
-			/* We need to record each relation for host / hostgroup selected */
+			/* We need to record each relation for host / hostgroup selected */			
 			if (isset($ret["service_hPars"]))
 				$ret1 = $ret["service_hPars"];
 			else
-				$ret1 = $form->getSubmitValue("service_hPars");
+				$ret1 = getMyServiceHosts($service_id);
 			if (isset($ret["service_hgPars"]))
 				$ret2 = $ret["service_hgPars"];
 			else
-				$ret2 = $form->getSubmitValue("service_hgPars");
+				$ret2 = getMyServiceHostGroups($service_id);
 			 if (count($ret2))
-				for($j = 0; $j < count($ret2); $j++)	{
+				foreach($ret2 as $key=>$value)	{
 					$rq = "INSERT INTO servicegroup_relation ";
 					$rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
 					$rq .= "VALUES ";
-					$rq .= "(NULL, '".$ret2[$j]."', '".$service_id."', '".$ret[$i]."')";
+					$rq .= "(NULL, '".$value."', '".$service_id."', '".$ret[$i]."')";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				}
 			else if (count($ret1))
-				for($j = 0; $j < count($ret1); $j++)	{
+				foreach($ret1 as $key=>$value)	{
 					$rq = "INSERT INTO servicegroup_relation ";
 					$rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
 					$rq .= "VALUES ";
-					$rq .= "('".$ret1[$j]."', NULL, '".$service_id."', '".$ret[$i]."')";
+					$rq .= "('".$value."', NULL, '".$service_id."', '".$ret[$i]."')";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				}
+		}
+	}	
+
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateServiceServiceGroup_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM servicegroup_relation ";
+		$rq .= "WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$hsgs = array();
+		$hgsgs = array();
+		while($DBRESULT->fetchInto($arr))	{
+			if ($arr["host_host_id"])
+				$hsgs[$arr["host_host_id"]] = $arr["host_host_id"];
+			if ($arr["hostgroup_hg_id"])
+				$hgsgs[$arr["hostgroup_hg_id"]] = $arr["hostgroup_hg_id"];
+		}
+		$ret = $form->getSubmitValue("service_sgs");
+		for($i = 0; $i < count($ret); $i++)	{
+			/* We need to record each relation for host / hostgroup selected */
+			$ret1 = getMyServiceHosts($service_id);
+			$ret2 = getMyServiceHostGroups($service_id);
+			 if (count($ret2))
+				foreach($ret2 as $hg)	{
+					if (!isset($hgsgs[$hg]))	{
+						$rq = "INSERT INTO servicegroup_relation ";
+						$rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
+						$rq .= "VALUES ";
+						$rq .= "(NULL, '".$hg."', '".$service_id."', '".$ret[$i]."')";
+						$DBRESULT =& $pearDB->query($rq);
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					}
+				}
+			else if (count($ret1))
+				foreach($ret1 as $h) 	{
+					if (!isset($hsgs[$h]))	{
+						$rq = "INSERT INTO servicegroup_relation ";
+						$rq .= "(host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) ";
+						$rq .= "VALUES ";
+						$rq .= "('".$h."', NULL, '".$service_id."', '".$ret[$i]."')";
+						$DBRESULT =& $pearDB->query($rq);
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					}
 				}
 		}
 	}	
@@ -519,6 +710,33 @@ For information : contact@oreon-project.org
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}	
+	
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateServiceTrap_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM traps_service_relation ";
+		$rq .= "WHERE service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$traps = array();
+		while($DBRESULT->fetchInto($arr))
+			$traps[$arr["traps_id"]] = $arr["traps_id"];
+		$ret = $form->getSubmitValue("service_traps");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($traps[$ret[$i]]))	{
+				$rq = "INSERT INTO traps_service_relation ";
+				$rq .= "(traps_id, service_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$ret[$i]."', '".$service_id."')";
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			}
 		}
 	}
 	
@@ -563,6 +781,64 @@ For information : contact@oreon-project.org
 			}
 	}
 	
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateServiceHost_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM host_service_relation ";
+		$rq .= "WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$hsvs = array();
+		$hgsvs = array();
+		while($DBRESULT->fetchInto($arr))	{
+			if ($arr["host_host_id"])
+				$hsvs[$arr["host_host_id"]] = $arr["host_host_id"];
+			if ($arr["hostgroup_hg_id"])
+				$hgsvs[$arr["hostgroup_hg_id"]] = $arr["hostgroup_hg_id"];
+		}
+		$ret1 = array();
+		$ret2 = array();
+		$ret1 = $form->getSubmitValue("service_hPars");
+		$ret2 = $form->getSubmitValue("service_hgPars");
+		 if (count($ret2))
+			for($i = 0; $i < count($ret2); $i++)	{
+				if (!isset($hgsvs[$ret2[$i]]))	{
+					$rq = "DELETE FROM host_service_relation ";
+					$rq .= "WHERE service_service_id = '".$service_id."' AND host_host_id IS NOT NULL";
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					$rq = "INSERT INTO host_service_relation ";
+					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+					$rq .= "VALUES ";
+					$rq .= "('".$ret2[$i]."', NULL, NULL, '".$service_id."')";
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				}
+			}
+		else if (count($ret1))
+			for($i = 0; $i < count($ret1); $i++)	{
+				if (!isset($hsvs[$ret1[$i]]))	{
+					$rq = "DELETE FROM host_service_relation ";
+					$rq .= "WHERE service_service_id = '".$service_id."' AND hostgroup_hg_id IS NOT NULL";
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					$rq = "INSERT INTO host_service_relation ";
+					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+					$rq .= "VALUES ";
+					$rq .= "(NULL, '".$ret1[$i]."', NULL, '".$service_id."')";
+					$DBRESULT =& $pearDB->query($rq);
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				}
+			}
+	}
+	
 	function updateServiceExtInfos($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form;
@@ -586,6 +862,28 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	}
+	
+	function updateServiceExtInfos_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		$ret = $form->getSubmitValues();
+		$rq = "UPDATE extended_service_information SET ";
+		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL) $rq .= "esi_notes = '".htmlentities($ret["esi_notes"], ENT_QUOTES)."', ";
+		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL) $rq .= "esi_notes_url = '".htmlentities($ret["esi_notes_url"], ENT_QUOTES)."', ";
+		if (isset($ret["esi_action_url"]) && $ret["esi_action_url"] != NULL) $rq .= "esi_action_url = '".htmlentities($ret["esi_action_url"], ENT_QUOTES)."', ";
+		if (isset($ret["esi_icon_image"]) && $ret["esi_icon_image"] != NULL) $rq .= "esi_icon_image = '".htmlentities($ret["esi_icon_image"], ENT_QUOTES)."', ";
+		if (isset($ret["esi_icon_image_alt"]) && $ret["esi_icon_image_alt"] != NULL) $rq .= "esi_icon_image_alt = '".htmlentities($ret["esi_icon_image_alt"], ENT_QUOTES)."', ";
+		if (isset($ret["graph_id"]) && $ret["graph_id"] != NULL) $rq .= "graph_id = '".htmlentities($ret["graph_id"], ENT_QUOTES)."', ";
+		if (strcmp("UPDATE extended_service_information SET ", $rq))	{
+			# Delete last ',' in request
+			$rq[strlen($rq)-2] = " ";
+			$rq .= "WHERE service_service_id = '".$service_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 	}
 	
 	function updateServiceTemplateUsed($useTpls = array())	{

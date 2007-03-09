@@ -43,6 +43,7 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formServiceTemplateModel.php"); break; #Add a Service Template Model
 		case "w" : require_once($path."formServiceTemplateModel.php"); break; #Watch a Service Template Model
 		case "c" : require_once($path."formServiceTemplateModel.php"); break; #Modify a Service Template Model
+		case "mc" : require_once($path."formServiceTemplateModel.php"); break; #Massive change
 		case "s" : enableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Activate a Service Template Model
 		case "ms" : enableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceTemplateModel.php"); break;
 		case "u" : disableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Desactivate a Service Template Model
