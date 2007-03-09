@@ -122,18 +122,6 @@ For information : contact@oreon-project.org
 		*/
 	}
 	
-	# sessionID check and refresh
-	if(isset($_POST["sid"])){
-		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_POST["sid"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		if($session =& $DBRESULT->fetchRow()){
-			$DBRESULT2 =& $pearDB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$_POST["sid"]."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-		}
-	}
-	
 	if(isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])){
 		read($_POST["version"],$_POST["sid"],$_POST["fileStatus"]);
 	} else if (isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])) {
