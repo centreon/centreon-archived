@@ -190,4 +190,12 @@ $lang["mon_not_acknowloedge"] = "Non Acknowledged";
 
 /* Logs */
 
+$lang['m_log_day'] = "Date";
+$lang['m_log_time'] = "time";
+$lang['m_log_Host_name'] = "Host name";
+$lang['m_log_Service_desc'] = "Service Description";
+$lang['m_log_status'] = "Status";
+$lang['m_log_retry'] = "Retry";
+$lang['m_log_informations'] = "Informations";
+
 ?>

@@ -1,0 +1,33 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<FORM {$form.attributes}>
+<table id="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderLeft"><img src='./img/icones/16x16/text_view.gif'>&nbsp;{$lang.m_log_select_errors}</td>
+	</tr>
+	<tr class='ListColLeft'>
+		<td class='list_two' style="padding-left:40px;">{$form.start.label}&nbsp;{$form.start.html} : {$form.start_time.html}&nbsp;{$form.startD.html}&nbsp;&nbsp;&nbsp;{$form.end.label}&nbsp;{$form.end.html} : {$form.end_time.html}&nbsp;{$form.endD.html}</td>
+	</tr>
+	<tr class='list_one'>
+		<td valign="top" style="padding-left:40px;">{$form.search1.label}&nbsp;{$form.search1.html} </td>
+	</tr>
+	<tr class='list_two'>
+		<td class="ListColCenter">{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
+	</tr>
+</table>
+{$form.hidden}
+</FORM>
+<br>
+<table id="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderCenter">{$lang.m_log_day}</td>
+		<td class="ListColHeaderCenter">{$lang.m_log_time}</td>
+		<td class="ListColHeaderLeft" colspan="2">{ $lang.mon_status_information }</td>
+	</tr>
+	{foreach item=log from=$logs }
+		<tr class="{$log.class}" id="trStatus{$c}">
+			<td class="ListColCenter">{$log.date}</td>
+			<td class="ListColRight">{$log.time}</td>
+			<td class="ListColNoWrap">{ $log.line }</td>
+		</tr>
+	{/foreach}
+</table>

@@ -1,0 +1,49 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<FORM {$form.attributes}>
+<table id="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/text_view.gif'>&nbsp;{$lang.m_log_select_errors}</td>
+	</tr>
+	<tr class='ListColLeft'>
+		<td class='list_two' colspan="2" style="padding-left:40px;">{$form.start.label}&nbsp;{$form.start.html} : {$form.start_time.html}&nbsp;{$form.startD.html}&nbsp;&nbsp;&nbsp;{$form.end.label}&nbsp;{$form.end.html} : {$form.end_time.html}&nbsp;{$form.endD.html}</td>
+	</tr>
+	<tr class='list_one'>
+		<td rowspan="3" valign="top" style="padding-left:40px;"> Recherche : </td>
+		<td class="ListColLeft">{$form.sort_type1.label}{$form.sort_type1.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search1.html} </td>
+	</tr>
+	<tr class='list_two'>
+		<td class="ListColLeft">{$form.sort_type2.label}{$form.sort_type2.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search2.html} </td>
+	</tr>
+	<tr class='list_one'>
+		<td class="ListColLeft">{$form.sort_type3.label}{$form.sort_type3.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search3.html} </td>
+	</tr>
+	<tr class='list_two'>
+		<td class="ListColCenter" colspan="2">{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
+	</tr>
+</table>
+{$form.hidden}
+</FORM>
+<br>
+<table id="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderCenter">{$lang.m_log_day}</td>
+		<td class="ListColHeaderCenter">{$lang.m_log_time}</td>
+		<td class="ListColHeaderCenter" colspan="2"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order=sort_asc'>{$lang.m_mon_hosts}</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_check&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "last_check"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order=sort_asc'>{$lang.m_mon_try}</a&nbsp;{if $sort_type == "last_state_change"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=plugin_output&order=sort_asc'>{ $lang.mon_status_information }</a>&nbsp;{if $sort_type == "plugin_output"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=plugin_output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+	</tr>
+	{foreach item=alert from=$alerts }
+		<tr class="{$alert.class}" id="trStatus{$c}">
+			<td class="ListColCenter">{$alert.date}</td>
+			<td class="ListColRight">{$alert.time}</td>
+			<td class="ListColLeft"{if !$alert.service_description} colspan="2"{/if}><a href='oreon.php?p=201&o=hd&host_name={$alert.host_name}'>{ $alert.host_name }</a></td>
+			{if $alert.service_description}
+			<td class="ListColLeft">{ $alert.service_description }</td>
+			{/if}
+			<td class="ListColCenter" width="70" style="background-color:{$alert.background};">{ $alert.status }</td>
+			<td class="ListColCenter">{ $alert.retry }</td>
+			<td class="ListColNoWrap">{ $alert.output }</td>
+		</tr>
+	{/foreach}
+</table>

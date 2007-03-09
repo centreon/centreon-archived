@@ -189,6 +189,28 @@ $lang["mon_not_acknowloedge"] = "Non pris en compte";
 
 /* Logs */
 
+$lang['m_log_day'] = "Date";
+$lang['m_log_time'] = "Heure";
+$lang['m_log_Host_name'] = "Hosts";
+$lang['m_log_Service_desc'] = "Services";
+$lang['m_log_status'] = "Status";
+$lang['m_log_retry'] = "Essais";
+$lang['m_log_informations'] = "Informations";
+$lang['m_log_select1'] = "Champ recherch&eacute; 1 : ";
+$lang['m_log_select2'] = "Champ recherch&eacute; 2 : ";
+$lang['m_log_select3'] = "Champ recherch&eacute; 3 : ";
 
+$lang['m_log_search1'] = "Recherche : ";
+
+$lang["m_log_date_search"] = "d/m/y H:i";
+$lang["m_log_view"] = "Visualiser";
+
+$lang["m_from"] = "De";
+$lang["m_to"] = "&agrave;";
+$lang["m_log_day"] = "Date";
+$lang["m_log_Hour"] = "Heures";
+$lang['m_log_select_errors'] = "Selectionnez vos param&egrave;tres : ";
+$lang["m_log_notification_cmd"] = "Commande de notification";
+$lang["m_log_notification_contact"] = "Contact";
 
 ?>
