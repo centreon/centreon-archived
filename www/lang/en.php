@@ -436,6 +436,7 @@ $lang['developped'] = "Developed by";
 
 $lang['date_format'] = "Y/m/d";
 $lang['time_format'] = "H:i:s";
+$lang['time_formatWOs'] = "H:i";
 $lang['header_format'] = "Y/m/d G:i";
 $lang['date_time_format'] = "Y/m/d - H:i:s";
 $lang['date_time_format_status'] = "d/m/Y H:i:s";
