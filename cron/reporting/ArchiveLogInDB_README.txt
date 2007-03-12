@@ -5,6 +5,6 @@ Create a cron task as the following sample:
 Open the following file: /your_oreon_path/cron/ArchiveLogInDB.php
 And modify path variables for your config:
 
-$path_oreon = '/usr/local/oreon/';
-$NagiosPathArchive = "/var/log/nagios/archives";
+$path_oreon = '/your_oreon_path/';
+$NagiosPathArchive = "/your_nagios_path/";
 

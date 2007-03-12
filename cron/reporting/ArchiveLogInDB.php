@@ -148,6 +148,22 @@ For information : contact@oreon-project.org
 		global $service_list;
 		global $pearDB;
 
+
+
+		#
+		## Api insert in db type
+		#
+		if ($handle  = @opendir("./api"))	{
+			while ($file = @readdir($handle))
+				if (is_file("./api"."/$file"))	{
+					include("./api"."/$file");
+				}
+			@closedir($handle);
+		}
+		
+
+
+/*
 		#
 		## Hosts in db
 		#
@@ -252,6 +268,9 @@ For information : contact@oreon-project.org
 				}
 			}
 		}
+		
+*/		
+		
 	}
 
 
