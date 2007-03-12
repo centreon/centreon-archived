@@ -53,14 +53,14 @@ For information : contact@oreon-project.org
 #################################
 ######## clean up table  ########
 #################################
-/*
+
 	$sql = "TRUNCATE TABLE `log_archive_file_name`";
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_host`";
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_service`";
 	$res = $pearDB->query($sql);
-*/
+
 #################################
 #################################
 #################################
