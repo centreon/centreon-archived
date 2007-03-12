@@ -18,6 +18,7 @@ For information : contact@oreon-project.org
 
 	$debug = 0;
 
+
 	## pearDB init
 	require_once 'DB.php';	
 
@@ -50,6 +51,51 @@ For information : contact@oreon-project.org
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+
+
+
+	#
+	## Session...
+	#
+		$debug_session = 'KO';
+
+
+
+#
+## sessionID check and refresh
+#
+
+$flag = 0;
+if(isset($_POST["sid"]) && isset($_POST["slastreload"]) && isset($_POST["smaxtime"])){
+	$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_POST["sid"]."'");
+	if (PEAR::isError($res))
+		print "Mysql Error : ".$res->getMessage();
+	if($session =& $res->fetchRow()){
+		$flag = $_POST["slastreload"];		
+		if(time() - $_POST["slastreload"] > ($_POST["smaxtime"] / 4)){		
+			$flag = time();
+			$sql = "UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$_POST["sid"]."' LIMIT 1";
+			$res =& $pearDB->query($sql);
+			if (PEAR::isError($res))
+				print "Mysql Error : ".$res->getMessage();
+		}
+	}
+}
+
+/*
+	Session::start();	
+	if (isset($_SESSION["oreon"])) {	// already connected
+		$oreon = & $_SESSION["oreon"];
+		$pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
+		Session::stop();
+		Session::start();
+		
+		$debug_session = 'OK';
+	}
+*/
+
+
+
 
 	function read($version,$sid,$file){
 		global $pearDB, $flag;
@@ -86,7 +132,9 @@ For information : contact@oreon-project.org
 		$buffer .= '<statistic_service_critical>'.$statistic_service["CRITICAL"].'</statistic_service_critical>';
 		$buffer .= '<statistic_service_unknown>'.$statistic_service["UNKNOWN"].'</statistic_service_unknown>';
 		$buffer .= '<statistic_service_pending>'.$statistic_service["PENDING"].'</statistic_service_pending>';
-		$buffer .= '<statistic_host_up>'.$statistic_host["UP"].'</statistic_host_up>';
+global $debug_session;
+		$buffer .= '<statistic_host_up>'.$debug_session.'</statistic_host_up>';
+//		$buffer .= '<statistic_host_up>'.$statistic_host["UP"].'</statistic_host_up>';
 		$buffer .= '<statistic_host_down>'.$statistic_host["DOWN"].'</statistic_host_down>';
 		$buffer .= '<statistic_host_unreachable>'.$statistic_host["UNREACHABLE"].'</statistic_host_unreachable>';
 		$buffer .= '<statistic_host_pending>'.$statistic_host["PENDING"].'</statistic_host_pending>';

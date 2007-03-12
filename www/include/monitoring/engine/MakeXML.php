@@ -16,6 +16,9 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+#
+## if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+#
 	$debug = 0;
 	
 	# pearDB init
@@ -117,8 +120,11 @@ For information : contact@oreon-project.org
 	    }
 	}
 
-	function read($host_name, $time,$arr,$flag,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status){
-		global $pearDB, $flag;
+	function read($host_name, $time,$arr,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status){
+
+
+		global $pearDB;
+		$flag = 0;
 	
 		$MyLog = date('l dS \of F Y h:i:s A'). "\n";
 	
@@ -137,7 +143,6 @@ For information : contact@oreon-project.org
 	
 		$buffer .= '<infos>';
 		$buffer .= '<host_name_1>'. $host_name . '</host_name_1>';
-		$buffer .= '<flag>'. $flag . '</flag>';
 		$buffer .= '<time>'.$ntime. '</time>';
 		$buffer .= '<filetime>'.filectime($file). '</filetime>';
 		$buffer .= '</infos>';
@@ -146,6 +151,7 @@ For information : contact@oreon-project.org
 			$oreon = "oreon";
 	
 			include("../load_status_log.php");
+			
 			$mtab = array();
 			$mtab = explode(',', $arr);
 	
@@ -202,7 +208,6 @@ For information : contact@oreon-project.org
 					$MyLog .= "flag=" . $flag . " host=" . $svc["host_name"] . " svc=" . $svc["service_description"]  . "\n";
 					$passive = ($svc["passive_checks_enabled"] && $svc["active_checks_enabled"] == 0) ? 1 : 0;
 					$active = ($svc["passive_checks_enabled"] == 0 && $svc["active_checks_enabled"] == 0) ? 1 : 0;										
-	//					$plugin_output = ($svc["plugin_output"]) ? htmlentities($svc["plugin_output"]) : " ";					
 					$plugin_output = ($svc["plugin_output"]) ? $svc["plugin_output"] : " N/A ";
 
 					if($host_status[$svc["host_name"]]["current_state"] == "DOWN" && !isset($tab_color_host[$svc["host_name"]])){
@@ -211,7 +216,6 @@ For information : contact@oreon-project.org
 					}
 					else
 						$color_host = 'normal';
-
 
 					$buffer .= '<line>';
 					$buffer .= '<order>'. $ct++ . '</order>';
@@ -245,6 +249,8 @@ For information : contact@oreon-project.org
 				}
 			}
 		}
+
+
 		
 	//	$buffer = html_entity_decode($buffer);
 		$buffer .= '</reponse>';
@@ -252,7 +258,7 @@ For information : contact@oreon-project.org
 		echo $buffer;
 	
 		global $debug;
-		if($debug == 1){
+		if($debug == 2){
 			$file = "log.xml";
 			$inF = fopen($file,"w");
 			fwrite($inF,$buffer);
@@ -270,17 +276,42 @@ For information : contact@oreon-project.org
 		}
 	}
 	
-	
-
-	if (!$flag)
-		exit(1);
 
 	
-	if (isset($_POST["time"]) && isset($_POST["host_name"]) && isset($_POST["arr"]) && isset($_POST["type"])  && isset($_POST["version"]) && isset($_POST["sid"])&& isset($_POST["fileStatus"])&& isset($_POST["num"])&& isset($_POST["search"]) && isset($_POST["limit"])&& isset($_POST["order"])&& isset($_POST["sort_type"])&& isset($_POST["search_type_service"])&& isset($_POST["search_type_host"])&& isset($_POST["date_time_format_status"])){
-		read($_POST["host_name"], $_POST["time"], $_POST["arr"],$flag,$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
-	} else if(isset($_GET["host_name"]) && isset($_GET["time"])&& isset($_GET["arr"]) && isset($_GET["type"])  && isset($_GET["version"]) && isset($_GET["sid"])&& isset($_GET["fileStatus"])&& isset($_GET["num"])&& isset($_GET["search"]) && isset($_GET["limit"])&& isset($_GET["order"])&& isset($_GET["sort_type"])&& isset($_GET["search_type_service"])&& isset($_GET["search_type_host"])&& isset($_GET["date_time_format_status"])){
+	if (isset($_POST["time"]) && 
+			isset($_POST["host_name"]) && 
+			isset($_POST["arr"]) && 
+			isset($_POST["type"])  && 
+			isset($_POST["version"]) && 
+			isset($_POST["sid"])&& 
+			isset($_POST["fileStatus"])&& 
+			isset($_POST["num"])&& 
+			isset($_POST["search"]) && 
+			isset($_POST["limit"])&& 
+			isset($_POST["order"])&& 
+			isset($_POST["sort_type"])&& 
+			isset($_POST["search_type_service"])&& 
+			isset($_POST["search_type_host"])&& 
+			isset($_POST["date_time_format_status"])){
+		read($_POST["host_name"], $_POST["time"], $_POST["arr"],$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
+	} else if($debug && 
+			isset($_GET["host_name"]) && 
+			isset($_GET["time"])&& 
+			isset($_GET["arr"]) && 
+			isset($_GET["type"])  && 
+			isset($_GET["version"]) && 
+			isset($_GET["sid"])&& 
+			isset($_GET["fileStatus"])&& 
+			isset($_GET["num"])&& 
+			isset($_GET["search"]) && 
+			isset($_GET["limit"])&& 
+			isset($_GET["order"])&& 
+			isset($_GET["sort_type"])&& 
+			isset($_GET["search_type_service"])&& 
+			isset($_GET["search_type_host"])&& 
+			isset($_GET["date_time_format_status"])){
 		$_POST["sid"] = $_GET["sid"];
-		read($_GET["host_name"], $_GET["time"], $_GET["arr"],$flag,$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
+		read($_GET["host_name"], $_GET["time"], $_GET["arr"],$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
 	} else {
 		$buffer = null;
 		$buffer .= '<reponse>';	

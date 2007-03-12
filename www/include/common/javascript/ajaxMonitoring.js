@@ -398,7 +398,6 @@ function goM(_time_reload,_sid,_o){
 	_date_time_format_status = _formBasic.date_time_format_status.value;
 	_form=document.getElementById('fsave');
 	_form.len.value = parseInt(_form.len.value) + 1;
-	_slastreload = parseInt(_form.slastreload.value);
 	_smaxtime = parseInt(_form.smaxtime.value);
 	_time=parseInt(_form.time.value);
 	_order=_form.order.value;
@@ -451,7 +450,7 @@ function goM(_time_reload,_sid,_o){
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
 
-	_var = "host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&slastreload="+parseInt(_form.slastreload.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+	_var = "host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 	xhrM.send(_var);
 
 //	document.getElementById('header').innerHTML = "-->"+_var;
@@ -472,10 +471,8 @@ function goM(_time_reload,_sid,_o){
 			for (var i = 0 ; i < infos.length ; i++) {
 				var info = infos[i];
 				var _atime = info.getElementsByTagName("time")[0].firstChild.nodeValue;
-				var _newreload = info.getElementsByTagName("flag")[0].firstChild.nodeValue;
 				var _filetime = info.getElementsByTagName("filetime")[0].firstChild.nodeValue;
 				_form.time.value = parseInt(_atime);
-				_form.slastreload.value = parseInt(_newreload);
 			}
 
 			// a partir d'ici je recupere les informations principales
