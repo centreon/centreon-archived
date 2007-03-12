@@ -202,3 +202,13 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 307, NULL, './include/common/javascript/datePicker.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 30701, NULL, './include/common/javascript/datePicker.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 30702, NULL, './include/common/javascript/datePicker.js', '');
+
+ALTER TABLE `session` ADD `s_nbHostsUp` INT NULL ,
+ADD `s_nbHostsDown` INT NULL ,
+ADD `s_nbHostsUnreachable` INT NULL ,
+ADD `s_nbHostsPending` INT NULL ,
+ADD `s_nbServicesOk` INT NULL ,
+ADD `s_nbServicesWarning` INT NULL ,
+ADD `s_nbServicesCritical` INT NULL ,
+ADD `s_nbServicesPending` INT NULL ,
+ADD `s_nbServicesUnknown` INT NULL ;

@@ -1571,8 +1571,18 @@ CREATE TABLE `session` (
   `current_page` int(11) default NULL,
   `last_reload` int(11) default NULL,
   `ip_address` varchar(16) default NULL,
+  `s_nbHostsUp` int(11) default NULL,
+  `s_nbHostsDown` int(11) default NULL,
+  `s_nbHostsUnreachable` int(11) default NULL,
+  `s_nbHostsPending` int(11) default NULL,
+  `s_nbServicesOk` int(11) default NULL,
+  `s_nbServicesWarning` int(11) default NULL,
+  `s_nbServicesCritical` int(11) default NULL,
+  `s_nbServicesPending` int(11) default NULL,
+  `s_nbServicesUnknown` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- --------------------------------------------------------
 
