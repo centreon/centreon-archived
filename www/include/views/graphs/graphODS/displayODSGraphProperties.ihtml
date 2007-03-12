@@ -3,7 +3,7 @@
 {if $title2}
 <form {$form.attributes}>
 <div>
-	<a href="./oreon.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a>&nbsp;<a href="./oreon.php?p={$p}&index={$index}&o=vz&start={$start}&end={$end}">Retour</a>
+	<!--<a href="./oreon.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a>&nbsp;<a href="./oreon.php?p={$p}&index={$index}&o=vz&start={$start}&end={$end}">Retour</a>-->
 	<table id="ListTable">
 		<tr class="ListHeader">
 			<td class="FormHeader">&nbsp;<img src='./img/icones/16x16/view.gif'>&nbsp;Zoom for {$host_name} on {$service_description}</td>
