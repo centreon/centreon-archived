@@ -149,6 +149,8 @@ function reloadStatusCounter(_relaod_time,_sid){
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf);
 
+//	document.getElementById('header').innerHTML = "-->"+"sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf;
+
 //document.getElementById('log').innerHTML = "sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf;
 	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
 	//ce timer correspond au tps entre chaque check de la date de modif du fichier

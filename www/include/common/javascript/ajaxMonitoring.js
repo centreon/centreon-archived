@@ -455,8 +455,6 @@ function goM(_time_reload,_sid,_o){
 
 //	document.getElementById('header').innerHTML = "-->"+_var;
 
-
-
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrM.onreadystatechange = function()
 	{	
@@ -479,7 +477,10 @@ function goM(_time_reload,_sid,_o){
 			var lines = reponse.getElementsByTagName("line");
 			var order =0;
 
-			DelAllLine(0);
+
+			if(lines.length > 0){
+				DelAllLine(0);
+			}
 
 			for (var i = 0 ; i < lines.length ; i++) 
 			{
