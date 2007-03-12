@@ -37,11 +37,33 @@ For information : contact@oreon-project.org
 	$user_admin = $user["contact_admin"];
 	
 	// Read 
-	$DBRESULT1 =& $pearDB->query("SELECT nagios_version, problem_sort_order, problem_sort_type FROM general_opt");
+	$DBRESULT1 =& $pearDB->query("SELECT session_expire, nagios_version, problem_sort_order, problem_sort_type FROM general_opt");
 	if (PEAR::isError($DBRESULT1))
 		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";	
 	$DBRESULT1->fetchInto($general_opt);
 	$version = $general_opt["nagios_version"];
+	
+	// reload Session
+	$session_id_cache = session_id(); 
+	if (isset($_POST["sid"]) && $_POST["sid"])
+		$session_id = $_POST["sid"];
+	else if (isset($session_id_cache))
+		$session_id = session_id();
+	else $session_id = NULL;
+	
+	if (isset($session_id) && $session_id){
+		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$session_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if($session =& $DBRESULT->fetchRow()){
+			$time_limit = time() - $general_opt["session_expire"] * 60;
+			if ($session["last_reload"] >= $time_limit){
+				$DBRESULT2 =& $pearDB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$session_id."' LIMIT 1");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			}
+		}
+	}
 	
 	# Init tab
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
