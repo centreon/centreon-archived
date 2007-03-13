@@ -60,6 +60,8 @@ For information : contact@oreon-project.org
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_service`";
 	$res = $pearDB->query($sql);
+	$sql = "TRUNCATE TABLE `log_archive_osl`";
+	$res = $pearDB->query($sql);
 
 #################################
 #################################

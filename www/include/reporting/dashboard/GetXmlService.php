@@ -224,7 +224,7 @@ For information : contact@oreon-project.org
 
 			$tp = round(($ppending * $t / 100 ),2);
 			if($ppending > 0){
-				$end = $h["date_start"] + 5001;
+				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';

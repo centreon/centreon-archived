@@ -19,17 +19,17 @@ For information : contact@oreon-project.org
 ?>
 <SCRIPT LANGUAGE="JavaScript">
 var tl;
-    
+
 function initTimeline() {
-  var eventSource = new Timeline.DefaultEventSource();
-    var bandInfos = [
-    Timeline.createBandInfo({
-        eventSource:    eventSource,
-        width:          "70%", 
-        intervalUnit:   Timeline.DateTime.DAY, 
-        intervalPixels: 300
+	var eventSource = new Timeline.DefaultEventSource();
+	var bandInfos = [
+	Timeline.createBandInfo({
+		eventSource:    eventSource,
+		width:          "70%", 
+		intervalUnit:   Timeline.DateTime.DAY, 
+		intervalPixels: 300
     }),
-    Timeline.createBandInfo({
+	Timeline.createBandInfo({
         showEventText:  false,
         eventSource:    eventSource,
         width:          "30%", 
