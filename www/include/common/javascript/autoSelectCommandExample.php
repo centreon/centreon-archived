@@ -23,7 +23,15 @@ For information : contact@oreon-project.org
 
 	require_once("../../../oreon.conf.php");
 	require_once("../../../DBconnect.php");
-	
+
+	function myDecodeService($arg)	{
+		$arg = str_replace('#BR#', "\\n", $arg);
+		$arg = str_replace('#T#', "\\t", $arg);
+		$arg = str_replace('#R#', "\\r", $arg);
+		$arg = str_replace('#S#', "/", $arg);
+		$arg = str_replace('#BS#', "\\", $arg);
+		return html_entity_decode($arg, ENT_QUOTES);
+	}	
 	
 	header('Content-type: text/html; charset=iso-8859-1');
 
@@ -36,7 +44,7 @@ For information : contact@oreon-project.org
 			print "Mysql Error : ".$res->getMessage();
 		}
 		while($res->fetchInto($arg))
-			echo utf8_encode($arg["command_example"]);
+			echo utf8_encode(myDecodeService($arg["command_example"]));
 
 		$pearDB->disconnect();
 	}	
