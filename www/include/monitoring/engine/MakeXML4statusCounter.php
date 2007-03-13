@@ -73,17 +73,6 @@ $session_expire = isset($_POST["session_expire"]) ? $_POST["session_expire"] : 3
 $session_expire = isset($_GET["session_expire"]) ? $_GET["session_expire"] : $session_expire;
 
 
-	$session =& $pearDB->query("UPDATE session SET " .
-			" s_nbHostsUp = 1" . 
-			" s_nbHostsDown = 1" . 
-			" s_nbHostsUnreachable = 1" . 
-			" s_nbHostsPending = 1" . 
-			" s_nbServicesOk = 1" . 
-			" s_nbServicesWarning = 1" . 
-			" s_nbServicesCritical = 1" . 
-			" s_nbServicesUnknown = 1" . 
-			" s_nbServicesPending = 1" . 
-			"WHERE session_id = 1");	
 
 
 
@@ -132,6 +121,16 @@ exit(0);
 		{
 			$flag_reset = 0;
 		}
+	}else {
+		$session["s_nbServicesOk"]= 1;
+		$session["s_nbServicesWarning"]= 1;
+		$session["s_nbServicesCritical"]= 1;
+		$session["s_nbServicesUnknown"]= 1;
+		$session["s_nbServicesPending"]= 1;
+		$session["s_nbHostsUp"]= 1;
+		$session["s_nbHostsDown"]= 1;
+		$session["s_nbHostsUnreachable"]= 1;
+		$session["s_nbHostsPending"] = 1;
 	}
 }
 
@@ -207,7 +206,7 @@ exit(0);
 		$buffer .= '<statistic_host_down>'.$session["s_nbHostsDown"].'</statistic_host_down>';
 		$buffer .= '<statistic_host_unreachable>'.$session["s_nbHostsUnreachable"].'</statistic_host_unreachable>';
 		$buffer .= '<statistic_host_pending>'.$session["s_nbHostsPending"].'</statistic_host_pending>';
-		$buffer .= '</stats>';	
+		$buffer .= '</stats>';
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
 		echo $buffer;
