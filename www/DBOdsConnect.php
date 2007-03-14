@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 	    'username' => $conf_oreon["user"],
 	    'password' => $conf_oreon["password"],
 	    'hostspec' => $conf_oreon["host"],
-	    'database' => "ODS",
+	    'database' => $conf_oreon["ods"],
 	);
 	
 	$options = array(
