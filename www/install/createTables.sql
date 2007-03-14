@@ -1305,6 +1305,7 @@ CREATE TABLE `meta_contactgroup_relation` (
 CREATE TABLE `meta_service` (
   `meta_id` int(11) NOT NULL auto_increment,
   `meta_name` varchar(254) default NULL,
+  `meta_display` varchar(254) default NULL,
   `check_period` int(11) default NULL,
   `max_check_attempts` int(11) default NULL,
   `normal_check_interval` int(11) default NULL,
