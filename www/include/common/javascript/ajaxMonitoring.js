@@ -278,7 +278,7 @@ var _p = 20201;
  */
 
 	var _linkaction_graph = document.createElement("a"); 
-  	_linkaction_graph.href = './oreon.php?p=40207&host_name_name=' + _host_name + '&service_description=' + _service_description + '&submitC=Grapher';
+  	_linkaction_graph.href = './oreon.php?p=40207&host_name=' + _host_name + '&service_description=' + _service_description + '&submitC=Grapher';
 	_linkaction_graph.appendChild(_img6);
 
 	_case_actions.appendChild(_linkaction_graph);
