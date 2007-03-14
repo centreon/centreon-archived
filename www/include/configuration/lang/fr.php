@@ -293,6 +293,7 @@ $lang['ms_add'] = "Ajouter un Meta Service";
 $lang['ms_change'] = "Modifier un Meta Service";
 $lang['ms_view'] = "Afficher un Meta Service";
 $lang['ms_name'] = "Nom du Meta Service";
+$lang['ms_display'] = "Format d'affichage";
 $lang['ms_comment'] = "Commentaire";
 $lang['ms_levelw'] = "Niveau Warning";
 $lang['ms_levelc'] = "Niveau Critical";

@@ -294,6 +294,7 @@ $lang['ms_add'] = "Add a Meta Service";
 $lang['ms_change'] = "Modify a Meta Service";
 $lang['ms_view'] = "View a Meta Service";
 $lang['ms_name'] = "Meta Service Name";
+$lang['ms_display'] = "Display format";
 $lang['ms_comment'] = "Comment";
 $lang['ms_levelw'] = "Warning Level";
 $lang['ms_levelc'] = "Critical Level";
