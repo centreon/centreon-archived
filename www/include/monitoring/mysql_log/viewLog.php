@@ -27,6 +27,19 @@
 		
 	if (is_file("./DBOdsConnect.php"))
 		include_once("./DBOdsConnect.php");
+
+
+	# pagination
+	# set limit & num
+	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
+
+	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
+	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
+	# pagination
+
 	
 	$attrsTextDate 	= array("size"=>"11", "style"=>"border:1;");
 	$attrsTextHour 	= array("size"=>"5");
@@ -39,7 +52,7 @@
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 	$tab_status_service = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN");
 	
-	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
+	$form = new HTML_QuickForm('form', 'get', "?p=".$p); # pagination use form name ='form'
 	$tab = array ("contact_email" => "oreon");
 
 
@@ -69,31 +82,43 @@
 		$sort_str1 = " AND `host_name` LIKE '%".$_GET["search1"]."%' OR `service_description` LIKE '%".$_GET["search1"]."%' OR `output` LIKE '%".$_GET["search1"]."%' OR `notification_cmd` LIKE '%".$_GET["search1"]."%' OR `notification_contact` LIKE '%".$_GET["search1"]."%'";
 	else 
 		$sort_str1 = "";
-	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1 ORDER BY log_id DESC , ctime DESC LIMIT 1, 20";
+
+	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1";
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
-	for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
+	$rows = $DBRESULT->numrows();
+
+	if(($num * $limit) > $rows)
+		$num = round($rows / $limit) - 1;
+	$lstart = $num * $limit;
+
+	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1 ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
+	$DBRESULT =& $pearDBO->query($req);
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	for ($cpts = 0;$DBRESULT->fetchInto($log);$cpts++){
 		if ($log["msg_type"] == 0){ # Service Alerte
-			$logs[$cpt] = array("class" => $tab_class[$cpt % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
+			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
 								"line" => "SERVICE ALERT: ".$log["host_name"].";".$log["service_description"].";".$tab_status_service[$log["status"]].";".$tab_type[$log["type"]].";".$log["retry"].";".$log["output"]);
 		} else if ($log["msg_type"] == 1){ # Host Alerte
-			$logs[$cpt] = array("class" => $tab_class[$cpt % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
+			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
 								"line" => "HOST ALERT: ".$log["host_name"].";".$tab_status_host[$log["status"]].";".$tab_type[$log["type"]].";".$log["retry"].";".$log["output"]);
 		} else if ($log["msg_type"] == 2){ # Service Notifi
-			$logs[$cpt] = array("class" => $tab_class[$cpt % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
+			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
 								"line" => "SERVICE NOTIFICATION: ".$log["notification_contact"].";".$log["host_name"].";".$log["service_description"].";".$tab_status_service[$log["status"]].";".$log["notification_cmd"].";".$log["output"]);
 		} else if ($log["msg_type"] == 3){	# Host notifi
-			$logs[$cpt] = array("class" => $tab_class[$cpt % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
+			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
 								"line" => "HOST NOTIFICATION: ".$log["notification_contact"].";".$log["host_name"].";".$tab_status_host[$log["status"]].";".$log["notification_cmd"].";".$log["output"]);
 		} else if ($log["msg_type"] == 4){ # Warning
-			$logs[$cpt] = array("class" => $tab_class[$cpt % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),"line" => $log["output"]);
+			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),"line" => $log["output"]);
 		} else if ($log["msg_type"] == 5){ # Others logs
-			$logs[$cpt] = array("class" => $tab_class[$cpt % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),"line" => $log["output"]);
+			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),"line" => $log["output"]);
 		}
 	}
 	$tab_value = array("end"=> date("m/d/Y", $end), "start" =>date("m/d/Y", $start), "end_time"=> date($lang["time_formatWOs"], $end), "start_time" =>date($lang["time_formatWOs"], $start));
-	
+
+
 	$form->addElement('text', 'start', $lang["m_from"], $attrsTextDate);
 	$form->addElement('text', 'start_time', $lang["m_from"], $attrsTextHour);
 	$form->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
@@ -110,7 +135,7 @@
    	$form->addElement('select', 'sort_type3', $lang["m_log_select3"], $sort_type);    	
    	$form->setDefaults($tab_value);
    	
-   	$sub =& $form->addElement('submit', 'submit', $lang["m_log_view"]);
+   	$sub =& $form->addElement('submit', 'ssubmit', $lang["m_log_view"]);
 	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	
 	# Smarty template Init
@@ -119,6 +144,19 @@
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
+
+	# pagination
+	$tpl->assign('limit', $limit);
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$form->accept($renderer);
+	
+	$tpl->assign("num", $num);
+	$tpl->assign("limit", $limit);
+	$tpl->assign("p", $p);
+	$tpl->assign('o', $o);
+	# pagination
+
+
 	
    	$tpl->assign('form', $renderer->toArray());
 	

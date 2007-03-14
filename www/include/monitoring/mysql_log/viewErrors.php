@@ -27,6 +27,18 @@
 		
 	if (is_file("./DBOdsConnect.php"))
 		include_once("./DBOdsConnect.php");
+
+	# pagination
+	# set limit & num
+	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
+
+	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
+	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
+	# pagination
+
 	
 	$attrsTextDate 	= array("size"=>"11", "style"=>"border:1;");
 	$attrsTextHour 	= array("size"=>"5");
@@ -65,11 +77,33 @@
 	isset($_GET["end"]) && $_GET["end"] ? $end = $_GET["end"] : $end = time();
 	isset($_GET["start"]) && $_GET["start"] ? $start = $_GET["start"] : $start = time() - (60*60*24);
 	
+
+
+
+
+	if (isset($_GET["search"]) && $_GET["search"])
+		$req = "SELECT * FROM log WHERE  `output` LIKE '%".$_GET["search"]."%' AND ctime > '$start' AND ctime <= '$end' AND msg_type = '4'";
+	else
+		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '4'";
+
+	$DBRESULT =& $pearDBO->query($req);
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	$rows = $DBRESULT->numrows();
+
+	if(($num * $limit) > $rows)
+		$num = round($rows / $limit) - 1;
+	$lstart = $num * $limit;
+
+
+
+
 	$alerts = array();	
 	if (isset($_GET["search"]) && $_GET["search"])
-		$req = "SELECT * FROM log WHERE  `output` LIKE '%".$_GET["search"]."%' AND ctime > '$start' AND ctime <= '$end' AND msg_type = '4' ORDER BY log_id DESC , ctime DESC";
+		$req = "SELECT * FROM log WHERE  `output` LIKE '%".$_GET["search"]."%' AND ctime > '$start' AND ctime <= '$end' AND msg_type = '4' ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
 	else
-		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '4' ORDER BY log_id DESC , ctime DESC";
+		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '4' ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
+
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
@@ -93,12 +127,23 @@
 	$form->addElement('text', 'search', $lang["quicksearch"], $attrsText);
    	$form->setDefaults($tab_value);
    	
-   	$sub =& $form->addElement('submit', 'submit', $lang["m_log_view"]);
+   	$sub =& $form->addElement('ssubmit', 'submit', $lang["m_log_view"]);
 	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./include/monitoring/mysql_log/templates/", $tpl);
+
+	# pagination
+	$tpl->assign('limit', $limit);
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$form->accept($renderer);
+	
+	$tpl->assign("num", $num);
+	$tpl->assign("limit", $limit);
+	$tpl->assign("p", $p);
+	$tpl->assign('o', $o);
+	# pagination
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	

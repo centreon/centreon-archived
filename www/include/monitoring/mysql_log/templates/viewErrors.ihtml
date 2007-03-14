@@ -1,6 +1,6 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<FORM {$form.attributes}>
+<form name='form'>
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/text_view.gif'>&nbsp;{$lang.m_log_select_errors}</td>
@@ -9,12 +9,19 @@
 		<td class="ListColLeft" style="padding-left:40px;">{$form.start.label}&nbsp;{$form.start.html} : {$form.start_time.html}{$form.startD.html}&nbsp;&nbsp;&nbsp;{$form.end.label}&nbsp;{$form.end.html} : {$form.end_time.html}{$form.endD.html}</td><td class="ListColLeft">{$form.search.label} : {$form.search.html} </td>
 	</tr>
 	<tr class='list_one'>
-		<td class="ListColCenter" colspan="2">{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
+		<td class="ListColCenter" colspan="2">{$form.ssubmit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
 	</tr>
 </table>
-{$form.hidden}
-</FORM>
+
 <br>
+<table class="Toolbar_TableTop">
+	<tr class="Toolbar_TR_Top">
+		{php}
+			include('./include/common/pagination.php');
+		{/php}
+	</tr>
+</table>
+
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter">{$lang.m_log_day}</td>
@@ -29,3 +36,14 @@
 		</tr>
 	{/foreach}
 </table>
+<table class="Toolbar_TableBottom">
+	<tr>
+		{php}include('./include/common/pagination.php');{/php}
+	</tr>
+</table>
+
+
+
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
+{$form.hidden}
+</form>
