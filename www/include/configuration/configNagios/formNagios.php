@@ -397,6 +397,9 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'admin_email', $lang["nag_adminEmail"], $attrsText);
 	$form->addElement('text', 'admin_pager', $lang["nag_adminPager"], $attrsText);
 		
+	## Part 22
+	$form->addElement('text', 'broker_module', $lang["nag_broker_module"], $attrsText2);
+	
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');

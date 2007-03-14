@@ -161,7 +161,7 @@ For information : contact@oreon-project.org
 				"`service_perfdata_file_processing_interval` , `host_perfdata_file_processing_command` , `service_perfdata_file_processing_command` , " .
 				"`check_for_orphaned_services` , `check_service_freshness` , `service_freshness_check_interval` , `freshness_check_interval` , " .
 				"`check_host_freshness` , `host_freshness_check_interval` , `date_format` , `illegal_object_name_chars` , `illegal_macro_output_chars` , " .
-				"`use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate` ) ";
+				"`use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, `broker_module` ) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
@@ -264,7 +264,8 @@ For information : contact@oreon-project.org
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "'".htmlentities($ret["admin_pager"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."')" : $rq .= "'0')";
-		$DBRESULT =& $pearDB->query($rq);
+		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "'".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+        $DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
@@ -392,6 +393,7 @@ For information : contact@oreon-project.org
         isset($ret["admin_email"]) && $ret["admin_email"] != NULL ? $rq .= "admin_email = '".htmlentities($ret["admin_email"], ENT_QUOTES)."',  " : $rq .= "admin_email = NULL, ";
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "admin_pager = '".htmlentities($ret["admin_pager"], ENT_QUOTES)."', " : $rq .= "admin_pager = NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "nagios_comment = '".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "nagios_comment = NULL, ";
+		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "broker_module = '".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "broker_module = NULL, ";
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
 		$DBRESULT =& $pearDB->query($rq);
