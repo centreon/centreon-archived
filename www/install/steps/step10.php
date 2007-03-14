@@ -83,12 +83,13 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);
 	$file[20] = "\$conf_oreon['user'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
 	$file[21] = "\$conf_oreon['password'] = \"". $_SESSION["pwdOreonDB"] . "\";\n";
 	$file[22] = "\$conf_oreon['db'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
-	$file[23] = "\n\n";
-	$file[24] = "// path to classes\n";
-	$file[25] = "\$classdir='./class';\n";
+	$file[23] = "\$conf_oreon['ods'] = \"". $_SESSION["nameOdsDB"] . "\";\n";
+	$file[24] = "\n\n";
+	$file[25] = "// path to classes\n";
+	$file[26] = "\$classdir='./class';\n";
 
 	if ($fd = fopen($_SESSION["oreon_dir_www"]."oreon.conf.php", "w"))	{
-		for ($i = 0; $i <= 25; $i++)
+		for ($i = 0; $i <= 26; $i++)
 			fwrite ($fd, $file[$i]);
 		fclose ($fd);
 		echo '<b><span class="go">OK</b>';

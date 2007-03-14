@@ -34,27 +34,28 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
     <th style="text-align: right;">Status</th>
   </tr>
   <tr>
-		<td><b>Database : Connection</b></td>
+	<td><b>Database : Connection</b></td>
   <?
 	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
 	$mysql_msg = $res['1'];
-
 	if ($mysql_msg == '') {
 		echo '<td align="right"><b><span class="go">OK</b></td></tr>';
-
 	?>
-
 	<tr>
 		<td><b>Database &#146;<? echo $_SESSION["nameOreonDB"] ; ?>&#146; : Creation</b></td>
  <?
-
-	//	$requete =  "USE ". $_SESSION["nameOreonDB"] . ";";
-	//	if ($DEBUG) print $requete . "<br>";
-	//	$usedb = mysql_query($requete, $res['0'])  or ( $mysql_msg= mysql_error());
-		$usedb = mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
-
+	$usedb = mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
 	if (!$usedb)  {
 		$requete = "CREATE DATABASE ". $_SESSION["nameOreonDB"] . ";";
+		if ($DEBUG) print $requete . "<br>";
+		@mysql_query($requete, $res['0']);
+		echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+	?>
+	<tr>
+		<td><b>Database &#146;<? echo $_SESSION["nameOdsDB"] ; ?>&#146; : Creation</b></td>
+ 	<?
+	if (!$usedb)  {
+		$requete = "CREATE DATABASE ". $_SESSION["nameOdsDB"] . ";";
 		if ($DEBUG) print $requete . "<br>";
 		@mysql_query($requete, $res['0']);
 		echo '<td align="right"><b><span class="go">OK</b></td></tr>';
@@ -65,30 +66,39 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	// http://dev.mysql.com/doc/refman/5.0/en/old-client.html
 
 	$mysql_msg = '';
+	# Oreon 
 	$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOreonDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
 	if ($DEBUG) print $requete. "<br>";
 	mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 	$mysql_msg = $res['1'];
+	# ODS
+	$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOdsDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
+	if ($DEBUG) print $requete. "<br>";
+	mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
+	$mysql_msg .= $res['1'];
+	
 	if ($_SESSION["mysqlVersion"] == "2")	{
         $requete = "UPDATE mysql.user SET Password = OLD_PASSWORD('". $_SESSION["pwdOreonDB"] ."') WHERE User = '". $_SESSION["nameOreonDB"] ."'";
+        @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
+        $requete = "UPDATE mysql.user SET Password = OLD_PASSWORD('". $_SESSION["pwdOreonDB"] ."') WHERE User = '". $_SESSION["nameOdsDB"] ."'";
         @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
         $requete = "FLUSH PRIVILEGES";
         @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 		$mysql_msg = $res['1'];
 	}
+	######################################################################################
+	# Oreon Database creation
+	######################################################################################
 	@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
 	$mysql_msg = $res['1'];
-
 	if ($mysql_msg == '') {
 		echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 	} else {
 		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
-	    $return_false = 1;
-	?>
+	    $return_false = 1;		?>
 	<tr>
         <td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
 	</tr>
-
 <?	} ?>
 	<tr>
 		<td><b>Database &#146;<? echo $_SESSION["nameOreonDB"]; ?>&#146; : Schema Creation</b></td>
@@ -119,12 +129,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	    $return_false = 1;
 	?>
 	<tr>
-        <td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
-	</tr>
-	<?	} ?>
-	<tr>
 		<td><b>Database &#146;<? echo $_SESSION["nameOreonDB"]; ?>&#146; : Command and Timeperiod Creation</b></td>
-<?
+	<?
 	$mysql_msg = '';
 	$file_sql = file("./insertCmd-Tps.sql");
     $str = NULL;
@@ -362,6 +368,52 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 
 <? }
 
+	######################################################################################
+	# Oreon Database creation
+	######################################################################################
+	@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
+	$mysql_msg = $res['1'];
+	if ($mysql_msg == '') {
+		echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+	} else {
+		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
+	    $return_false = 1;
+	?>
+	<tr>
+        <td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
+	</tr>
+<?	} ?>
+	<tr>
+		<td><b>Database &#146;<? echo $_SESSION["nameOreonDB"]; ?>&#146; : Schema Creation</b></td>
+<?
+	$mysql_msg = '';
+	$file_sql = file("./createTablesODS.sql");
+    $str = NULL;
+    for ($i = 0; $i <= count($file_sql) - 1; $i++){
+        $line = $file_sql[$i];
+        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
+            $pos = strrpos($line, ";");
+            if ($pos != false)      {
+                $str .= $line;
+                $str = chop ($str);
+  				if ($DEBUG) print $str . "<br>";
+                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+                $str = NULL;
+            } else
+            	$str .= $line;
+        }
+    }
+
+	if ($mysql_msg == '') {
+		echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+	} else {
+		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
+	    $return_false = 1;
+	?>
+	<tr>
+        <td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
+	</tr>
+	<?	} 
 } else {
 			echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
 	    $return_false = 1;
