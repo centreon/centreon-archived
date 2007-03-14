@@ -584,6 +584,8 @@ $lang['nag_trueRegExpMatchOpt'] = "True Regular Expression Matching Option";
 $lang['nag_adminEmail'] = "Administrator Email Address";
 $lang['nag_adminPager'] = "Administrator Pager";
 
+$lang['nag_broker_module'] = "Broker Module";
+
 /* Resource CFG */
 
 $lang['rs_add'] = "Add a Resource";
