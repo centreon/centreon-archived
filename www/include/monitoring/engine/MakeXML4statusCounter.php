@@ -17,7 +17,7 @@ For information : contact@oreon-project.org
 */
 
 	$debug = 0;
-	$flag_reset = 1;
+	$flag_reset = 0;
 
 	## pearDB init
 	require_once 'DB.php';	
@@ -69,10 +69,12 @@ For information : contact@oreon-project.org
 $sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
 $sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
 
+
 $session_expire = isset($_POST["session_expire"]) ? $_POST["session_expire"] : 30;
 $session_expire = isset($_GET["session_expire"]) ? $_GET["session_expire"] : $session_expire;
 
 
+//$session_expire = 5;
 
 
 
@@ -97,50 +99,36 @@ function restore_session($statistic_service = 'null', $statistic_host = 'null'){
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 }
 
-if($sid){
-
-	$debug_session = $sid;
-	$time = time();
-
-	$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-
-
-	if($res->fetchInto($session))
-	{
-/*
-echo $time . "<br>";
-echo $session["last_reload"] . "<br>";
-echo ($time - $session["last_reload"]);
-exit(0);
-*/
-	if(($time - $session["last_reload"]) > $session_expire)
-		 {
-			$flag_reset = 1;	 	
-		 }
-		else
-		{
+	if($sid){
+		$debug_session = $sid;
+		$time = time();
+		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+	
+		if(($res->fetchInto($session) && (($time - $session["last_reload"]) > $session_expire))  || isset($session["s_nbServicesOk"]) ){
+			$flag_reset = 1;
+		}
+		else if($res->fetchInto($session) && isset($session["s_nbServicesOk"]) && $session["s_nbServicesOk"] && (($time - $session["last_reload"]) <= $session_expire)){
 			$flag_reset = 0;
 		}
-	}else {
-		$session["s_nbServicesOk"]= 1;
-		$session["s_nbServicesWarning"]= 1;
-		$session["s_nbServicesCritical"]= 1;
-		$session["s_nbServicesUnknown"]= 1;
-		$session["s_nbServicesPending"]= 1;
-		$session["s_nbHostsUp"]= 1;
-		$session["s_nbHostsDown"]= 1;
-		$session["s_nbHostsUnreachable"]= 1;
-		$session["s_nbHostsPending"] = 1;
+		else {
+			$flag_reset = 0;
+			$session["s_nbServicesOk"]= 1;
+			$session["s_nbServicesWarning"]= 1;
+			$session["s_nbServicesCritical"]= 1;
+			$session["s_nbServicesUnknown"]= 1;
+			$session["s_nbServicesPending"]= 1;
+			$session["s_nbHostsUp"]= 1;
+			$session["s_nbHostsDown"]= 1;
+			$session["s_nbHostsUnreachable"]= 1;
+			$session["s_nbHostsPending"] = 1;
+		}
 	}
-}
 
 
 	function read($version,$sid,$file){
 		global $pearDB, $flag;
 		$_POST["sid"] = $sid;
 		$_GET["sid"] = $sid;
-		
-		
 		
 		$oreon = "";
 		$search = "";
@@ -189,11 +177,13 @@ exit(0);
 
 	}
 	
+
 	if(!$flag_reset){
 		$buffer = null;
 		$buffer  = '<?xml version="1.0"?>';
 		$buffer .= '<reponse>';
 		$buffer .= '<infos>';
+		$buffer .= '<expire>'.$session_expire.'</expire>';
 		$buffer .= '<filetime>'.$session["last_reload"].'</filetime>';
 		$buffer .= '</infos>';
 		$buffer .= '<stats>';

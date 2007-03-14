@@ -147,15 +147,9 @@ function reloadStatusCounter(_relaod_time,_sid){
 
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf);
+	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&session_expire="+(_relaod_time/1000));
 
-//	document.getElementById('header').innerHTML = "-->"+"sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf;
-
-//document.getElementById('log').innerHTML = "sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf;
 	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
-	//ce timer correspond au tps entre chaque check de la date de modif du fichier
-	//le fichier sera parser dans le .php ssi il vient a etre modifiÃ�Â© par nagios
 
 
 }
-
