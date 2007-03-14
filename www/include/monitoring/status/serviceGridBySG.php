@@ -74,10 +74,10 @@ For information : contact@oreon-project.org
 					if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$host_name]))){
 						# Get Servicce description
 						$service_description = getMyServiceName($sg_relation["service_service_id"]);
-						if ((isset($_GET["problem"]) && $service_status[$host_name."_".$service_description]["current_state"] != "OK") 
+						if (isset($service_status[$host_name."_".$service_description]) && ((isset($_GET["problem"]) && $service_status[$host_name."_".$service_description]["current_state"] != "OK") 
 						|| 	(!isset($_GET["problem"]) && !isset($_GET["acknowledge"])) 
 						|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 1 && $service_status[$host_name."_".$service_description]["problem_has_been_acknowledged"] == 1)
-						|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 0 && $service_status[$host_name."_".$service_description]["problem_has_been_acknowledged"] == 0 && $service_status[$host_name."_".$service_description]["current_state"] != "OK" )){							
+						|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 0 && $service_status[$host_name."_".$service_description]["problem_has_been_acknowledged"] == 0 && $service_status[$host_name."_".$service_description]["current_state"] != "OK" ))){							
 							if (isset($service_status[$host_name."_".$service_description])){	
 								if (!isset($h_data[$r["sg_name"]]))
 									$h_data[$r["sg_name"]] = array();
@@ -107,7 +107,8 @@ For information : contact@oreon-project.org
 	$tpl->assign("lang", $lang);
 	$tpl->assign("servicegroup", $servicegroup);
 	$tpl->assign("h_data", $h_data);
-	$tpl->assign("h_class", $h_class);
+	if (isset($h_class))
+		$tpl->assign("h_class", $h_class);
 	$tpl->assign("svc_data", $svc_data);
 	$tpl->display("serviceGridBySG.ihtml");
 ?>
