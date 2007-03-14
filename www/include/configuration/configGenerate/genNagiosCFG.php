@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 			}
 	$str .= "resource_file=".$nagios["cfg_dir"]."resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
-	foreach ($nagios as $key=>$value)	{
+	foreach ($nagios as $key => $value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_comment" && $key != "nagios_activate")	{	
 			if ($key == "aggregate_status_updates" && $value == 2);
 			else if ($key == "enable_notifications" && $value == 2);	
@@ -163,9 +163,9 @@ For information : contact@oreon-project.org
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
-			}
-			else
+			} else {
 				$str .= $key."=".$value."\n";
+			}
 		}
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."nagios.cfg");
