@@ -13,12 +13,13 @@
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.meta_name.label}</td><td class="FormRowValue">{$form.meta_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.warning.label}</td><td class="FormRowValue">{$form.warning.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.critical.label}</td><td class="FormRowValue">{$form.critical.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.calcul_type.label}</td><td class="FormRowValue">{$form.calcul_type.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.meta_select_mode.label}</td><td class="FormRowValue">{$form.meta_select_mode.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.regexp_str.label}</td><td class="FormRowValue">{$form.regexp_str.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.metric.label}</td><td class="FormRowValue">{$form.metric.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.meta_display.label}</td><td class="FormRowValue">{$form.meta_display.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.warning.label}</td><td class="FormRowValue">{$form.warning.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.critical.label}</td><td class="FormRowValue">{$form.critical.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.calcul_type.label}</td><td class="FormRowValue">{$form.calcul_type.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.meta_select_mode.label}</td><td class="FormRowValue">{$form.meta_select_mode.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.regexp_str.label}</td><td class="FormRowValue">{$form.regexp_str.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.metric.label}</td><td class="FormRowValue">{$form.metric.html}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.check_period.label}</td><td class="FormRowValue">{$form.check_period.html}</td></tr>

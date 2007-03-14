@@ -188,11 +188,12 @@ For information : contact@oreon-project.org
 		else
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO meta_service " .
-				"(meta_name, check_period, max_check_attempts, normal_check_interval, retry_check_interval, notification_interval, " .
+				"(meta_name, meta_display, check_period, max_check_attempts, normal_check_interval, retry_check_interval, notification_interval, " .
 				"notification_period, notification_options, notifications_enabled, calcul_type, meta_select_mode, regexp_str, metric, warning, critical, " .
 				"graph_id, meta_comment, meta_activate) " .
 				"VALUES ( ";
 				isset($ret["meta_name"]) && $ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+				isset($ret["meta_display"]) && $ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 				isset($ret["check_period"]) && $ret["check_period"] != NULL ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
 				isset($ret["max_check_attempts"]) && $ret["max_check_attempts"] != NULL ? $rq .= "'".$ret["max_check_attempts"]."', " : $rq .= "NULL, ";
 				isset($ret["normal_check_interval"]) && $ret["normal_check_interval"] != NULL ? $rq .= "'".$ret["normal_check_interval"]."', ": $rq .= "NULL, ";
@@ -230,6 +231,8 @@ For information : contact@oreon-project.org
 		$rq = "UPDATE meta_service SET " ;
 		$rq .= "meta_name = ";
 		$ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "meta_display = ";
+		$ret["meta_display"] != NULL ? $rq .= "'".htmlentities($ret["meta_display"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "check_period = ";
 		$ret["check_period"] != NULL ? $rq .= "'".$ret["check_period"]."', ": $rq .= "NULL, ";
 		$rq .= "max_check_attempts = ";

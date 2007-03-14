@@ -131,6 +131,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'information', $lang['ms_infos']);
 
 	$form->addElement('text', 'meta_name', $lang['ms_name'], $attrsText);
+	$form->addElement('text', 'meta_display', $lang['ms_display'], $attrsText);
 	$form->addElement('text', 'warning', $lang['ms_levelw'], $attrsText2);
 	$form->addElement('text', 'critical', $lang['ms_levelc'], $attrsText2);
 	$form->addElement('select', 'calcul_type', $lang['ms_calType'], $calType);
