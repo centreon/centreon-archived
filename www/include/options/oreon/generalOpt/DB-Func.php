@@ -273,7 +273,10 @@ For information : contact@oreon-project.org
 			$ret["sleep_time"] = 10;
 		if ($ret["purge_interval"] <= 20)
 			$ret["purge_interval"] = 20;
-		$ret["purge_interval"] /= $ret["sleep_time"];
+		if (!isset($ret["auto_drop"]))
+			$ret["auto_drop"] = "0";
+		if (!$ret["purge_interval"])
+			$ret["purge_interval"] = 60;
 		if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/")
 			$ret["RRDdatabase_path"] .= "/";
 		$rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
@@ -281,6 +284,8 @@ For information : contact@oreon-project.org
 				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',
 				`sleep_time` = '".$ret["sleep_time"]."',
 				`purge_interval` = '".$ret["purge_interval"]."',
+				`auto_drop` = '".$ret["auto_drop"]."',
+				`drop_file` = '".$ret["drop_file"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))

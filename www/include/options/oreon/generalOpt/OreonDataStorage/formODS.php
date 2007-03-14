@@ -46,8 +46,6 @@ For information : contact@oreon-project.org
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["genOpt_change"]);
 	
-	$gopt["purge_interval"] *= $gopt["sleep_time"];
-	
 	## Oreon information
 	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
 	$form->addElement('text', 'RRDdatabase_path', $lang["ods_rrd_path"], $attrsText);
@@ -55,6 +53,8 @@ For information : contact@oreon-project.org
 	$form->addElement('checkbox', 'autodelete_rrd_db', $lang['ods_autodelete_rrd_db']);
 	$form->addElement('text', 'sleep_time', $lang["ods_sleep_time"], $attrsText2);
 	$form->addElement('text', 'purge_interval', $lang["ods_purge_interval"], $attrsText2);
+	$form->addElement('checkbox', 'auto_drop', $lang["ods_auto_drop"]);
+	$form->addElement('text', 'drop_file', $lang["ods_drop_file"], $attrsText);
 	
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
@@ -70,8 +70,6 @@ For information : contact@oreon-project.org
 	$form->applyFilter('_ALL_', 'trim');
 	$form->applyFilter('RRDdatabase_path', 'slash');
 	
-	//$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
-	//form->addRule('RRDdatabase_path', $lang['ErrWrPath'], 'is_valid_path');
 	##End of form definition
 
 	# Smarty template Init
