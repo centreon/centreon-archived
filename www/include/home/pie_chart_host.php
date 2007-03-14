@@ -1,4 +1,4 @@
-<?php
+<?
 /**
  * Usage example for Image_Graph.
  * 
@@ -29,6 +29,7 @@
 	// set the font size to 11 pixels
 	$Font->setSize(7);
 	$Graph->setFont($Font);
+	$Graph->setBackgroundColor('#fff9eb');
 	
 	// setup the plotarea, legend and their layout
 	$Graph->add(
@@ -42,10 +43,10 @@
 	      10
 	   )
 	);
-	$Graph->setBackgroundColor('#fff9eb');
-	$Legend->setPlotArea($Plotarea);
-	
+
+	$Legend->setPlotArea($Plotarea);	
 	$Plotarea->hideAxis();
+
 	$Plotarea->setBackgroundColor('#fff9eb');
 	
 	// create the dataset
@@ -63,6 +64,7 @@
 	
 	// create the 1st plot as smoothed area chart using the 1st dataset
 	$Plot =& $Plotarea->addNew('Image_Graph_Plot_Pie', $Dataset);
+	
 	$Plot->Radius = 2;
 	// set a line color
 	$Plot->setLineColor('gray');
