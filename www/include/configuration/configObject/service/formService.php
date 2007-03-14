@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 		$arg = str_replace('#BS#', "\\", $arg);
 		return html_entity_decode($arg, ENT_QUOTES);
 	}
-	
+
 	$service = array();
 	if (($o == "c" || $o == "w") && $service_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
