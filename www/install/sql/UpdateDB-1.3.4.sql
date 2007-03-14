@@ -212,3 +212,11 @@ ADD `s_nbServicesWarning` INT NULL ,
 ADD `s_nbServicesCritical` INT NULL ,
 ADD `s_nbServicesPending` INT NULL ,
 ADD `s_nbServicesUnknown` INT NULL ;
+
+-- 14/03/2007
+
+ALTER TABLE `meta_service` ADD `meta_display` VARCHAR( 255 ) NULL AFTER `meta_name` ;
+
+
+
+
