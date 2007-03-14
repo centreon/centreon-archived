@@ -399,7 +399,7 @@ function goM(_time_reload,_sid,_o){
 	_form=document.getElementById('fsave');
 	_form.len.value = parseInt(_form.len.value) + 1;
 	_smaxtime = parseInt(_form.smaxtime.value);
-	_time=parseInt(_form.time.value);
+	//_time=parseInt(_form.time.value);
 	_order=_form.order.value;
 	_sort_types=_form.sort_types.value;
 	_type=_form.type.value;
@@ -462,7 +462,6 @@ function goM(_time_reload,_sid,_o){
 
 		if(xhrM && xhrM.readyState && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
 		{
-	
 			reponse = xhrM.responseXML.documentElement;
 			
 			var infos = reponse.getElementsByTagName("infos");
