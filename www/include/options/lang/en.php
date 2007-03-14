@@ -201,5 +201,7 @@ $lang['ods_autodelete_rrd_db'] = "RRDTool auto delete";
 $lang['ods_sleep_time'] = "Sleep Time";
 $lang['ods_purge_interval'] = "Purge check interval";
 $lang['ods_storage_type'] = "Storage Type";
+$lang['ods_auto_drop'] = "Drop Data in another file";
+$lang['ods_drop_file'] = "Drop file";
 
 ?>
