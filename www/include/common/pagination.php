@@ -28,7 +28,8 @@ For information : contact@oreon-project.org
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 
 	global $rows, $p, $lang, $gopt, $pagination;
-
+	
+	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
 	$url_var = "";
@@ -92,7 +93,7 @@ function setL(_this){
 </SCRIPT>
 <?
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
-	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit('')"));
+	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);
 	
 	#Element we need when we reload the page
