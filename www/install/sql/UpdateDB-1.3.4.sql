@@ -216,7 +216,6 @@ ADD `s_nbServicesUnknown` INT NULL ;
 -- 14/03/2007
 
 ALTER TABLE `meta_service` ADD `meta_display` VARCHAR( 255 ) NULL AFTER `meta_name` ;
-
-
+ALTER TABLE `cfg_nagios` ADD `broker_module` VARCHAR( 255 ) NULL ;
 
 
