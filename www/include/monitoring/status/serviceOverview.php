@@ -25,12 +25,14 @@ For information : contact@oreon-project.org
 	$h_data = array();
 	$h_status = array();
 	$svc_data = array();
+	$svc_data_ack = array();
 	$tab_color = array(0=>"list_one", 1=>"list_two");
 
 	$counter_host = 0;	
 	foreach ($host_status as $key => $data){
 		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$data["host_name"]]))){	
 			$service_data_str = NULL;
+			$service_data_str_ack = NULL;
 			$h_data[$data["host_name"]] = "<a href='./oreon.php?p=201&o=hd&host_name=".$data["host_name"]."'>".$data["host_name"]."</a>";
 			$h_status[$data["host_name"]]=array("current_state"=>$data["current_state"], "color"=>$oreon->optGen["color_".strtolower($data["current_state"])]);
 			# define class
@@ -41,10 +43,19 @@ For information : contact@oreon-project.org
 					|| 	(!isset($_GET["problem"]) && !isset($_GET["acknowledge"])) 
 					|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 1 && $service_status[$data["host_name"]."_".$key_svc]["problem_has_been_acknowledged"] == 1)
 					|| 	(!isset($_GET["problem"]) && isset($_GET["acknowledge"]) && $_GET["acknowledge"] == 0 && $service_status[$data["host_name"]."_".$key_svc]["problem_has_been_acknowledged"] == 0 && $service_status[$data["host_name"]."_".$key_svc]["current_state"] != "OK" )){
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp;&nbsp; ";
-						$svc_data[$data["host_name"]] = $service_data_str;
+						if (isset($_GET["problem"])){
+							if ($service_status[$data["host_name"]."_".$key_svc]["problem_has_been_acknowledged"] == 0)
+								$service_data_str .= "<span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp;&nbsp; ";
+							else
+								$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp;&nbsp; ";
+						} else
+							$service_data_str .= "<span style='background:".$oreon->optGen["color_".strtolower($service_status[$data["host_name"]."_".$key_svc]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$data["host_name"]."&service_description=".$key_svc."'>".$key_svc."</a></span>&nbsp;&nbsp; ";		
 					}
 				}
+				if (isset($service_data_str_ack))
+					$svc_data_ack[$data["host_name"]] = $service_data_str_ack;
+				if (isset($service_data_str))
+					$svc_data[$data["host_name"]] = $service_data_str;
 		}
 	}
 
@@ -58,5 +69,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("h_status", $h_status);
 	$tpl->assign("lang", $lang);
 	$tpl->assign("svc_data", $svc_data);
+	$tpl->assign("svc_data_ack", $svc_data_ack);
 	$tpl->display("serviceOverview.ihtml");
 ?>
