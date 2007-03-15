@@ -53,6 +53,7 @@ For information : contact@oreon-project.org
 
 	$tpl->assign("urlLogo", $skin.'Images/logo_oreon.gif');
 	$tpl->assign("lang", $lang);
+	$tpl->assign("p", $p);
 	$tpl->assign("color", $color);
 	$tpl->assign("version", $version);
 	$tpl->assign("fileStatus", $fileStatus);
