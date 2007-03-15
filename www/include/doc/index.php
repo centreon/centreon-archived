@@ -26,8 +26,28 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./");	
-		
-	$tpl->assign("session", session_id());
-	$tpl->display("index.ihtml");
+	
+	$flag_begin = 0;
+	$flag_end = 0;
+	print "<div style='padding=20px'>";
+	$doc = fopen("../doc/".$oreon->user->get_lang()."/".$_GET["page"], "r");	
+	while ($line = fgets($doc)){
+		if ($flag_begin && !$flag_end){
+			$line = preg_replace("/href\=\"/", "href=\"./oreon.php?p=$p&doc=1&page=", $line);
+			$line = preg_replace("/page\=\#/", "page=".$_GET["page"]."#", $line);
+			$line = preg_replace("/\<ul\>/", "<ul style=\"padding-left:40px;\">", $line);
+			$line = preg_replace("/\<li\>/", "<li style=\"padding-left:30px;\">", $line);
+			$line = preg_replace("/\<strong\>/", "<strong style=\"padding-left:20px;\">", $line);
+			$line = preg_replace("/\<p\>/", "<p style=\"text-align:justify;padding-left:20px;padding-right:10px;padding-top:5px;padding-bottom:10px;\">", $line);
+			$line = preg_replace("/\<img src\=\"images\//", "<img src=./include/doc/get_image.php?lang=".$oreon->user->get_lang()."&img=", $line);
+			$line = preg_replace("/\<table border\=\"0\"/", "<table border=\"1\"", $line);
+			print $line;
+		}
+		if (preg_match("/\<body[.]*/", $line))
+			$flag_begin = 1;
+		if (preg_match("/\<\/body[.]*/", $line))
+			$flag_end = 1;
+	}
+	print "</div>";
 ?>
 
