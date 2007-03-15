@@ -115,78 +115,81 @@ For information : contact@oreon-project.org
 	
 	# init URL 
 	$url = "";
-	if ((isset($nb_page) && $nb_page) || !$isRestreint){	
-		if ($redirect["topology_page"] < 100){
-			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
-			if (!$ret['topology_page']){
-				if (file_exists($redirect["topology_url"])){
-					$url = $redirect["topology_url"];
-					reset_search_page($url);
-					require_once($redirect["topology_url"]);
-				} else 
-					require_once("./alt_error.php");		
-			} else {
-				$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
-				if ($ret2["topology_url_opt"]){
-					$tab = split("\=", $ret2["topology_url_opt"]);
-					if (!isset($_GET["o"]))
-						$o = $tab[1];
-					$p = $ret2["topology_page"];
-				}
-				if (file_exists($ret2["topology_url"])){
-					$url = $ret2["topology_url"];
-					reset_search_page($url);
-					require_once($ret2["topology_url"]);
-				} else
-					require_once("./alt_error.php");
-			} 
-		} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
-			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
-			if (!$ret['topology_page']){
-				if (file_exists($redirect["topology_url"])){
-					$url = $redirect["topology_url"];
-					reset_search_page($url);
-					require_once($redirect["topology_url"]);
-				} else 
-					require_once("./alt_error.php");		
-			} else {
-				if ($ret["topology_url_opt"]){
-					$tab = split("\=", $ret["topology_url_opt"]);
-					if (!isset($_GET["o"]))
-						$o = $tab[1];
-					$p = $ret["topology_page"];
-				} 
-				if (file_exists($ret["topology_url"])){
-					$url = $ret["topology_url"];
-					reset_search_page($url);
-					require_once($ret["topology_url"]);
-				} else 
-					require_once("./alt_error.php");
-			}
-		} else if ($redirect["topology_page"] >= 1000) {
-			$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+	if (!isset($_GET["doc"])){
+		if ((isset($nb_page) && $nb_page) || !$isRestreint){	
+			if ($redirect["topology_page"] < 100){
+				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 				if (!$ret['topology_page']){
-				if (file_exists($redirect["topology_url"])){		
-					$url = $redirect["topology_url"];
-					reset_search_page($url);
-					require_once($redirect["topology_url"]);
-				} else 
-					require_once("./alt_error.php");		
-			} else { 
-				if (file_exists($redirect["topology_url"]) && $ret['topology_page']){	
-					$url = $redirect["topology_url"];
-					reset_search_page($url);
-					require_once($redirect["topology_url"]);
-				} else 
-					require_once("./alt_error.php");		
-				if (isset($_GET["o"]))
-					$o = $_GET["o"];
+					if (file_exists($redirect["topology_url"])){
+						$url = $redirect["topology_url"];
+						reset_search_page($url);
+						require_once($redirect["topology_url"]);
+					} else 
+						require_once("./alt_error.php");		
+				} else {
+					$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
+					if ($ret2["topology_url_opt"]){
+						$tab = split("\=", $ret2["topology_url_opt"]);
+						if (!isset($_GET["o"]))
+							$o = $tab[1];
+						$p = $ret2["topology_page"];
+					}
+					if (file_exists($ret2["topology_url"])){
+						$url = $ret2["topology_url"];
+						reset_search_page($url);
+						require_once($ret2["topology_url"]);
+					} else
+						require_once("./alt_error.php");
+				} 
+			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
+				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
+				if (!$ret['topology_page']){
+					if (file_exists($redirect["topology_url"])){
+						$url = $redirect["topology_url"];
+						reset_search_page($url);
+						require_once($redirect["topology_url"]);
+					} else 
+						require_once("./alt_error.php");		
+				} else {
+					if ($ret["topology_url_opt"]){
+						$tab = split("\=", $ret["topology_url_opt"]);
+						if (!isset($_GET["o"]))
+							$o = $tab[1];
+						$p = $ret["topology_page"];
+					} 
+					if (file_exists($ret["topology_url"])){
+						$url = $ret["topology_url"];
+						reset_search_page($url);
+						require_once($ret["topology_url"]);
+					} else 
+						require_once("./alt_error.php");
+				}
+			} else if ($redirect["topology_page"] >= 1000) {
+				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
+					if (!$ret['topology_page']){
+					if (file_exists($redirect["topology_url"])){		
+						$url = $redirect["topology_url"];
+						reset_search_page($url);
+						require_once($redirect["topology_url"]);
+					} else 
+						require_once("./alt_error.php");		
+				} else { 
+					if (file_exists($redirect["topology_url"]) && $ret['topology_page']){	
+						$url = $redirect["topology_url"];
+						reset_search_page($url);
+						require_once($redirect["topology_url"]);
+					} else 
+						require_once("./alt_error.php");		
+					if (isset($_GET["o"]))
+						$o = $_GET["o"];
+				}
+			} else {
+				print "Unknown operation...";
 			}
-		} else {
-			print "Unknown operation...";
 		}
+	} else {
+		require_once("./include/doc/index.php");
 	}
-	
 	if (!isset($oreon->historyPage)){
 		$oreon->createHistory();	
 	} 
