@@ -30,7 +30,7 @@ use threads;
 use threads::shared;
 use RRDs;
 
-my $installedPath = "/srv/oreon/cron/ODataStorage/";
+my $installedPath = "/srv/oreon/ODataStorage/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
