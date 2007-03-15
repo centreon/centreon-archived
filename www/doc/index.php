@@ -17,20 +17,17 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit(); 
-	
-	include_once("./include/monitoring/common-Func.php");
-	include_once("./include/monitoring/status/resume.php"); 
-
+		
 	unset($tpl);
 	unset($path);
 
-	$path = "./include/home/";
+	$path = "./include/doc/";
 		
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./");	
 		
 	$tpl->assign("session", session_id());
-	$tpl->display("home.ihtml");
+	$tpl->display("index.ihtml");
 ?>
 
