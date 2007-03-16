@@ -69,6 +69,12 @@ if [ ! -f $ODSBin ]; then
     exit 1
 fi
 
+# Check lock file
+if [ ! -f $ODSRunFile ]; then
+    echo "Error : $ODSRunFile already Exists."
+    exit 1
+fi
+
 # Check that ods.cfg exists.
 if [ ! -f $ODSCfgFile ]; then
     echo "Configuration file $ODSCfgFile not found.  Exiting."
@@ -80,7 +86,6 @@ case "$1" in
 
     start)
 	echo "Starting ODS Collector : ods_daemon"
-	touch $ODSRunFile
 	chown $NagiosUser:$NagiosGroup $ODSRunFile
 	su - $NagiosUser -c "$ODSBin &"
 	if [ -d $ODSLockDir ]; then touch $ODSLockDir/$ODSLockFile; fi
