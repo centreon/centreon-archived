@@ -1,4 +1,18 @@
-## Oreon 1.3.4
+## Oreon 1.4
+
+=> Feature : Keep in memory for each page search field
+=> Feature : ODS for easy and performed graphs
+=> Feature : Auto install ODS + init script
+=> Feature : Auto install crontab (Not for perfparse script)
+=> Feature : New view in log watch : filters, log in DB
+=> Feature : keep page in memory
+=> Feature : Add view by service group in monitoring
+=> Feature : All view are sort by 4 filters : ALL, problems, acknowledged, and not acknowledged
+=> Feature : best filters for service details
+=> Feature : Add color for acknoledged service in service details
+=> Bugfix  : Quickest ajax in monitoring
+=> BugFix  : Best reporting (many bug fix and add counter for alerts)
+=> Feature : Add timeline for service in dashboard
 => Feature : Module manager
 => Feature : In configuration, massive change options for numbers of elements with "quick select" menu (host, service, contact)
 => Feature : In configuration, availability to enable/disable numbers of elements with "quick select" menu (host, hostgroup, service, contact)
