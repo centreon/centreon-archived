@@ -16,24 +16,18 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	
 	aff_header("Oreon Setup Wizard", "Licence", 2);
 
 	$license_file_name = "./LICENSE.txt";
-
 	$fh = fopen( $license_file_name, 'r' ) or die( "License file not found!" );
 	$license_file = fread( $fh, filesize( $license_file_name ) );
 	fclose( $fh );
 
 	$str = "<textarea cols='80' rows='20' readonly>".$license_file."</textarea>";
-	?>
-		</td>
-	</tr>
-	<tr>
-		<td align=left><input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href='javascript:void(0)' onClick='document.getElementById('button_next').disabled = false;'>I Accept</a></td>
-		<td align=right>&nbsp;</td>
-	</tr>
-	<?
+	print $str . "</td></tr><tr><td align=left><input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href='javascript:void(0)' onClick='document.getElementById('button_next').disabled = false;'>I Accept</a></td><td align=right>&nbsp;</td></tr>";
 	aff_middle();
 	print "<input class='button' type='submit' name='goto' value='Next' id='button_next' disabled='disabled' />";
 	aff_footer();
+
 ?>

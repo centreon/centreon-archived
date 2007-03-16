@@ -19,51 +19,47 @@ For information : contact@oreon-project.org
 aff_header("Oreon Setup Wizard", "Environment Configuration", 3);   ?>
 In order for your Oreon installation to function properly, please complete the following fields.<br><br>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-  <tr>
-    <th style="padding-left:20px " colspan="2">Environment Configurations</th>
-  </tr>
-  <tr>
-    <td style="padding-left:50px ">Nagios user</td>
-	<td><input name="nagios_user" type="text" value="<? echo (isset($_SESSION["nagios_user"]) ?  $_SESSION["nagios_user"]  : (isset($conf_installoreon['nagios_user']) ?  $conf_installoreon['nagios_user']  : "nagios" ) );?>"></td>
-  </tr>
-  <tr>
-    <td style="padding-left:50px ">Nagios group</td>
-	<td><input name="nagios_group" type="text" value="<? echo (isset($_SESSION["nagios_group"]) ?  $_SESSION["nagios_group"]  : (isset($conf_installoreon["nagios_group"]) ?  $conf_installoreon["nagios_group"]  : "nagios" ) );?>"></td>
-  </tr>
- <tr>
-    <td style="padding-left:50px ">Apache User</td>
-	<td><input name="apache_user" type="text" value="<? echo (isset($_SESSION["apache_user"]) ?  $_SESSION["apache_user"]  : (isset($conf_installoreon["apache_user"]) ?  $conf_installoreon["apache_user"]  : "apache" ) );?>"></td>
-  </tr>
-  <tr>
-    <td style="padding-left:50px ">Apache Group</td>
-	<td><input name="apache_group" type="text" value="<? echo (isset($_SESSION["apache_group"]) ?  $_SESSION["apache_group"]  : (isset($conf_installoreon["apache_group"]) ?  $conf_installoreon["apache_group"]  : "apache" ) );?>"></td>
-  </tr>
-  <tr>
-    <td style="padding-left:50px ">Nagios Version</td>
-	<td>
+  	<tr>
+    	<th style="padding-left:20px " colspan="2">Environment Configurations</th>
+  	</tr>
+  	<tr>
+    	<td style="padding-left:50px ">Nagios user</td>
+		<td><input name="nagios_user" type="text" value="<? echo (isset($_SESSION["nagios_user"]) ?  $_SESSION["nagios_user"]  : (isset($conf_installoreon['nagios_user']) ?  $conf_installoreon['nagios_user']  : "nagios" ) );?>"></td>
+  	</tr>
+  	<tr>
+    	<td style="padding-left:50px ">Nagios group</td>
+		<td><input name="nagios_group" type="text" value="<? echo (isset($_SESSION["nagios_group"]) ?  $_SESSION["nagios_group"]  : (isset($conf_installoreon["nagios_group"]) ?  $conf_installoreon["nagios_group"]  : "nagios" ) );?>"></td>
+  	</tr>
+ 	<tr>
+    	<td style="padding-left:50px ">Apache User</td>
+		<td><input name="apache_user" type="text" value="<? echo (isset($_SESSION["apache_user"]) ?  $_SESSION["apache_user"]  : (isset($conf_installoreon["apache_user"]) ?  $conf_installoreon["apache_user"]  : "apache" ) );?>"></td>
+  	</tr>
+  	<tr>
+    	<td style="padding-left:50px ">Apache Group</td>
+		<td><input name="apache_group" type="text" value="<? echo (isset($_SESSION["apache_group"]) ?  $_SESSION["apache_group"]  : (isset($conf_installoreon["apache_group"]) ?  $conf_installoreon["apache_group"]  : "apache" ) );?>"></td>
+  	</tr>
+  	<tr>
+    	<td style="padding-left:50px ">Nagios Version</td>
+		<td>
 		<select name="nagios_version">
     		<option value="1" <? if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "1") print "selected"; else if (!isset($_SESSION["nagios_version"])) print "selected"; ?>>1.x</option>
     		<option value="2" <? if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "2") print "selected"; ?>>2.x</option>
     	<!--	<option value="3" <? if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "3") print "selected"; ?>>3.x</option>-->
     	</select>
-	</td>
-  </tr>
-  <tr>
-    <td style="padding-left:50px ">Nagios configuration directory</td>
-	<td><input name="nagios_conf" type="text" value="<? echo (isset($_SESSION["nagios_conf"]) ?  $_SESSION["nagios_conf"]  : (isset($conf_installoreon["nagios_conf"]) ?  $conf_installoreon["nagios_conf"]  : "/usr/local/nagios/etc/" ) );?>" size="40"></td>
-  </tr>
-  <tr>
-    <td style="padding-left:50px ">Nagios plugins</td>
-	<td><input name="nagios_plugins" type="text" value="<? echo (isset($_SESSION["nagios_plugins"]) ?  $_SESSION["nagios_plugins"]  : (isset($conf_installoreon["nagios_plugins"]) ?  $conf_installoreon["nagios_plugins"]  : "/usr/local/nagios/libexec/" ) );?>" size="40"></td>
-  </tr>
-  <tr>
-    <td style="padding-left:50px ">RRDTool binary</td>
-	<td><input name="rrdtool_dir" type="text" value="<? echo (isset($_SESSION["rrdtool_dir"]) ?  $_SESSION["rrdtool_dir"]  : (isset($conf_installoreon["rrdtool_dir"]) ?  $conf_installoreon["rrdtool_dir"]  : "/usr/bin/rrdtool" ) );?>" size="40"></td>
-  </tr>
- <!-- <tr>
-    <td style="padding-left:50px ">SNMP binary path</td>
-	<td><input name="snmp_dir" type="text" value="<? echo (isset($_SESSION["snmp_dir"]) ?  $_SESSION["snmp_dir"]  : (isset($conf_installoreon["snmp_dir"]) ?  $conf_installoreon["snmp_dir"]  : "/usr/local/bin" ) );?>" size="40"></td>
-  </tr> -->
+		</td>
+  	</tr>
+  	<tr>
+    	<td style="padding-left:50px ">Nagios configuration directory</td>
+		<td><input name="nagios_conf" type="text" value="<? echo (isset($_SESSION["nagios_conf"]) ?  $_SESSION["nagios_conf"]  : (isset($conf_installoreon["nagios_conf"]) ?  $conf_installoreon["nagios_conf"]  : "/usr/local/nagios/etc/" ) );?>" size="40"></td>
+  	</tr>
+  	<tr>
+    	<td style="padding-left:50px ">Nagios plugins</td>
+		<td><input name="nagios_plugins" type="text" value="<? echo (isset($_SESSION["nagios_plugins"]) ?  $_SESSION["nagios_plugins"]  : (isset($conf_installoreon["nagios_plugins"]) ?  $conf_installoreon["nagios_plugins"]  : "/usr/local/nagios/libexec/" ) );?>" size="40"></td>
+  	</tr>
+  	<tr>
+    	<td style="padding-left:50px ">RRDTool binary</td>
+		<td><input name="rrdtool_dir" type="text" value="<? echo (isset($_SESSION["rrdtool_dir"]) ?  $_SESSION["rrdtool_dir"]  : (isset($conf_installoreon["rrdtool_dir"]) ?  $conf_installoreon["rrdtool_dir"]  : "/usr/bin/rrdtool" ) );?>" size="40"></td>
+  	</tr>
 </table>
 <?
 aff_middle();
