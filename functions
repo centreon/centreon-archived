@@ -397,13 +397,18 @@ function install_ods(){
     echo "Start ODS Installation"
     echo "------------------------"
 	
-	echo "sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl"
-	
-	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl`
+	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g'`
+	#`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl`
 	
 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
 	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
-	mkdir $INSTALL_DIR_OREON/OreonDataStorage
+
+	if test -d $INSTALL_DIR_OREON/OreonDataStorage ; then
+	echo_passed "ODS data Directory already exists" "PASSED"
+    else
+	mkdir $INSTALL_DIR_OREON/OreonDataStorage >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON/OreonDataStorage'" "OK"
+    fi
 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/OreonDataStorage
 	chmod 775 $INSTALL_DIR_OREON/OreonDataStorage
 	
