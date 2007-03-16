@@ -66,7 +66,7 @@ writeLogFile("Starting ODS engine...\n");
 writeLogFile("PID : ".$$."\n");
 
 # Writing PID
-open (PID, "> ".$PID) || print "can't write PID: $!";
+open (PID, ">> ".$PID) || print "can't write PID : $!";
 print PID $$ ;
 close PID or warn $!;
 
