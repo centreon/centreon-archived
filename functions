@@ -401,6 +401,9 @@ function install_ods(){
 	
 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
 	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
+	mkdir $INSTALL_DIR_OREON/OreonDataStorage
+	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/OreonDataStorage
+	chmod 775 $INSTALL_DIR_OREON/OreonDataStorage
 	
 }
 
