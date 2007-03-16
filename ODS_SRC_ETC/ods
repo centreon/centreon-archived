@@ -54,7 +54,7 @@ fi
 prefix=@OREON_PATH@/ODS
 exec_prefix=${prefix}
 ODSBin=${exec_prefix}/ods.pl
-ODSCfgFile=${prefix}/etc/oreon.pm
+ODSCfgFile=${prefix}/etc/conf.pm
 ODSVarDir=${prefix}/var/
 ODSRunFile=${prefix}/var/ods.pid
 ODSLockDir=/var/lock/subsys
