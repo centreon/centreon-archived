@@ -23,6 +23,7 @@ For information : contact@oreon-project.org
 	$TabLca = getLcaHostByName($pearDB);
 
 	$h_data = array();
+	$h_class = array();
 	$svc_data = array();
 	$servicegroup = array();
 	$tab_color = array(0=>"list_one", 1=>"list_two");

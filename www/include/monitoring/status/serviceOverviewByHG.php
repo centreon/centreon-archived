@@ -24,6 +24,7 @@ For information : contact@oreon-project.org
 	
 	$tab_color = array(0=>"list_one", 1=>"list_two");
 	
+	$h_class = array();
 	$hg = array();
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_activate = '1' ORDER BY hg_name");

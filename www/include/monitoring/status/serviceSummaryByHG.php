@@ -24,6 +24,7 @@ For information : contact@oreon-project.org
 	
 	$hg = array();
 	$status_hg = array();
+	$h_class = array();
 	$status_hg_ack = array();
 	$tab_color = array(0=>"list_one", 1=>"list_two");
 	
