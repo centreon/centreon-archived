@@ -397,10 +397,9 @@ function install_ods(){
     echo "Start ODS Installation"
     echo "------------------------"
 	
-	$INSTALL_DIR_QUOTED = `sed -e 's/\//\\\/' $INSTALL_DIR_OREON`
-	echo "sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_QUOTED"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl"
+	echo "sed -e 's|@OREON_PATH@|$INSTALL_DIR_OREON|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl"
 	
-	`sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_QUOTED"'|g $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl`
+	`sed -e 's|@OREON_PATH@|$INSTALL_DIR_OREON|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl`
 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
 	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
 	echo_success "Replace ODS Macro " "OK"
