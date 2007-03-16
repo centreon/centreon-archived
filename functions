@@ -435,6 +435,20 @@ function install_oreon()
 	  echo_success "Copy '$directory'" "OK"
       fi
     done
+    
+    echo ""
+    echo "Replace Macro In cron script"
+    echo "----------------------------"
+	
+	echo "sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php"
+	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php`
+	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
+
+	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log.pl`
+	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
+	echo "---------------------------------------------------"
 
 
 #  cp -Rf $SRC_OREON/* $INSTALL_DIR_OREON  >> $LOG_FILE 2>> $LOG_FILE
@@ -452,14 +466,6 @@ function install_oreon()
     chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $INSTALL_DIR_OREON/rrd/*  >> $LOG_FILE 2>> $LOG_FILE
 
-# trafficMap data directory configuration
-
-#  chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/include/trafficMap/average >> $LOG_FILE 2>> $LOG_FILE
-#  chmod 775 $INSTALL_DIR_OREON/include/trafficMap/average  >> $LOG_FILE 2>> $LOG_FILE
-#  chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/include/trafficMap/bg >> $LOG_FILE 2>> $LOG_FILE
-#  chmod 775 $INSTALL_DIR_OREON/include/trafficMap/bg  >> $LOG_FILE 2>> $LOG_FILE
-#  chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/include/trafficMap/png >> $LOG_FILE 2>> $LOG_FILE
-#  chmod 775 $INSTALL_DIR_OREON/include/trafficMap/png  >> $LOG_FILE 2>> $LOG_FILE
 
     install_oreon_plugins
 
@@ -492,18 +498,4 @@ function install_oreon()
 
     chmod 775 $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
-
-	echo ""
-    echo "Replace Macro In cron script"
-    echo "----------------------------"
-	
-	echo "sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php"
-	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php`
-	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
-
-	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log.pl`
-	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
-	echo "---------------------------------------------------"
 }
