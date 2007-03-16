@@ -60,8 +60,8 @@ ODSVarDir=${prefix}/var/
 ODSRunFile=${prefix}/var/ods.pid
 ODSLockDir=/var/lock/subsys
 ODSLockFile=ods
-NagiosUser=root
-NagiosGroup=root
+NagiosUser=@NAGIOS_USER@
+NagiosGroup=@NAGIOS_GROUP@
           
 
 # Check that ods exists.
