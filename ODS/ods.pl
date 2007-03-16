@@ -30,7 +30,7 @@ use threads;
 use threads::shared;
 use RRDs;
 
-my $installedPath = "@OREON_PATH@";
+my $installedPath = "@OREON_PATH@/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
