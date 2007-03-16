@@ -397,7 +397,7 @@ function install_ods(){
     echo "Start ODS Installation"
     echo "------------------------"
 	
-	`sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON/ODS/"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl`
+	`sed -e 's|@OREON_PATH@|$INSTALL_DIR_OREON|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl`
 	
 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
 	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
@@ -418,7 +418,7 @@ function install_oreon()
 	echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON'" "OK"
     fi
 
-    for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "rrd" "www" "cron"
+    for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "rrd" "www" "cron" "ODS"
       do
       if test -d $directory ; then
 	  cp -Rf $directory $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
