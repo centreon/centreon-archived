@@ -118,26 +118,24 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 	</tr>
     <tr>
 	    <td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir_www"].'oreon.conf.php'; ?></td>
-	    <td align="right"><b><?
-	   		echo $msg ;
-    		?></b></td>
+	    <td align="right"><b><? echo $msg ;	?></b></td>
  	</tr>
  	<tr>
 		<td><b>Generate ODS configuration file</b></td>
 		<td align="right"><?
-			$file[0] = "\$mysql_host = \"". $_SESSION["dbLocation"] ."\";\n";
-			$file[1] = "\$mysql_user = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file[3] = "\$mysql_passwd = \"". $_SESSION["pwdOreonDB"] . "\";\n";
-			$file[4] = "\$mysql_database_oreon = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file[5] = "\$mysql_database_ods = \"". $_SESSION["nameOdsDB"] . "\";\n";
-			$file[6] = "1;\n";
+			$file_pm[0] = "\$mysql_host = \"". $_SESSION["dbLocation"] ."\";\n";
+			$file_pm[1] = "\$mysql_user = \"". $_SESSION["nameOreonDB"] . "\";\n";
+			$file_pm[3] = "\$mysql_passwd = \"". $_SESSION["pwdOreonDB"] . "\";\n";
+			$file_pm[4] = "\$mysql_database_oreon = \"". $_SESSION["nameOreonDB"] . "\";\n";
+			$file_pm[5] = "\$mysql_database_ods = \"". $_SESSION["nameOdsDB"] . "\";\n";
+			$file_pm[6] = "1;\n";
 			if ($fd = fopen($_SESSION["oreon_dir"]."ODS/etc/oreon.pm", "w"))	{
 				for ($i = 0; $i <= 6; $i++)
-					fwrite ($fd, $file[$i]);
+					fwrite ($fd, $file_pm[$i]);
 				fclose ($fd);
 				echo '<b><span class="go">OK</b>';
 			} else {
-			   echo '<b><span class="stop">Critical: Can\'t create file</font></b>';
+			   echo '<b><span class="stop">Critical: Can\'t create file for ODS</font></b>';
 		          	$msg =  $php_errormsg;
 				    $return_false = 1;
 			}	?>
