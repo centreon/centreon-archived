@@ -1,41 +1,37 @@
 <?
-/**
-Oreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/gpl.txt
-Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf - Cedrick Facon
-
-Adapted to Pear library Quickform & Template_PHPLIB by Merethis company, under direction of Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
-	/*
-	 * Set your path here
-	 */
-	$path_oreon = '/srv/oreon/';
-	$NagiosPathArchive = '/srv/nagios/var/archives';
-
+/*
+ * 
+ * Oreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/gpl.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * OREON makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * safety, contents, performance, merchantability, non-infringement or suitability for
+ * any particular or intended purpose of the Software found on the OREON web site.
+ * In no event will OREON be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if OREON has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ * 
+ */
+	
+	
+	$path_oreon = '@OREON_PATH@';
 	require_once 'DB.php';	
+	
 	include_once($path_oreon . "/www/oreon.conf.php");
 	require_once($path_oreon."www/include/reporting/dashboard/reporting-func.php");
 	require_once($path_oreon."www/include/reporting/dashboard/simple-func.php");
 
 	/* Connect to oreon DB */	
-	$dsn = array(
-		     'phptype'  => 'mysql',
-		     'username' => $conf_oreon['user'],
-		     'password' => $conf_oreon['password'],
-		     'hostspec' => $conf_oreon['host'],
-		     'database' => $conf_oreon['db'],
-		     );
+	$dsn = array(	'phptype'  => 'mysql',
+				    'username' => $conf_oreon['user'],
+				    'password' => $conf_oreon['password'],
+				    'hostspec' => $conf_oreon['host'],
+				    'database' => $conf_oreon['db']);
 
 	$options = array(	'debug'       => 2,
 			 			'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
@@ -45,7 +41,10 @@ For information : contact@oreon-project.org
 		die("Connecting probems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-
+	$res = $pearDB->query("SELECT log_archive_path FROM cfg_nagios WHERE nagios_activate = '1'");
+	$res->fetchInto($nagios_cfg);
+	$NagiosPathArchive = $nagios_cfg["log_archive_path"];
+	
 	#################################
 	######## clean up table  ########
 	#################################
