@@ -14,6 +14,8 @@ CREATE TABLE `config` (
   `auto_drop` enum('0','1') NOT NULL default '0',
   `drop_file` varchar(255) default NULL,
   `perfdata_file` varchar(255) default NULL,
+  `archive_log` enum('0','1') NOT NULL default '0',
+  `archive_retention` int(11) default '31',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

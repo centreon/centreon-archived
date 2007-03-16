@@ -1,8 +1,4 @@
 --
--- Base de donnￜes: `oreon`
---
-
---
 -- Contenu de la table `topology`
 --
 
@@ -113,7 +109,6 @@ INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `t
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES (NULL , 'mon_acknowloedge', NULL , '20213', '2021302', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcSumSG&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES (NULL , 'mon_not_acknowloedge', NULL , '20213', '2021302', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcSumSG&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
 
-
 -- logs
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_event_log', NULL, 2, 203, 30, 1, './include/monitoring/log/viewAlertLog.php', NULL, '0', '0', '1');
@@ -124,7 +119,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_service', '', 20312, 2031202, 20, 2, './include/monitoring/mysql_log/viewNotifyLog.php', '&o=notif_host', NULL, NULL, '1');
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_alerts_log', './img/icones/16x16/loudspeaker.gif', 203, 20313, 30, 2, './include/monitoring/mysql_log/viewAlertLog.php', NULL, '0', '0', '1');
-
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_warning_log', './img/icones/16x16/oszillograph.gif', 203, 20314, 40, 2, './include/monitoring/mysql_log/viewWarnLog.php', NULL, '0', '0', '1');
 
 --
@@ -247,17 +241,17 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphs', NULL, 4, 402, 10, 1, './include/views/graphs/graphSummary/graphSummary.php', NULL, '0', '0', '1');
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'views_title1', NULL, 402, NULL, NULL, 1, NULL, NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphCustom', './img/icones/16x16/chart.gif', 402, 40201, 30, 1, './include/views/graphs/graphCustoms/graphCustoms.php', NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphShow', './img/icones/16x16/column-chart.gif', 402, 40202, 20, 1, './include/views/graphs/simpleRenderer/simpleRenderer.php', NULL, '0', '0', '1');
-
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'views_title2', NULL, 402, NULL, NULL, 2, NULL, NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'views_title2', NULL, 402, NULL, NULL, 1, NULL, NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_host_graph', './img/icones/16x16/dot-chart.gif', 402, 40210, 10, 2, './include/views/graphs/graphODS/summaryODS.php', NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphShow', './img/icones/16x16/column-chart.gif', 402, 40502, 20, 2, './include/views/graphs/graphODS/graphODS.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphShow', './img/icones/16x16/column-chart.gif', 402, 40211, 20, 2, './include/views/graphs/graphODS/graphODS.php', NULL, '0', '0', '1');
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'views_title1', NULL, 402, NULL, NULL, 2, NULL, NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphShow', './img/icones/16x16/column-chart.gif', 402, 40202, 30, 1, './include/views/graphs/simpleRenderer/simpleRenderer.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphCustom', './img/icones/16x16/chart.gif', 402, 40201, 40, 1, './include/views/graphs/graphCustoms/graphCustoms.php', NULL, '0', '0', '1');
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'views_title3', NULL, 402, NULL, NULL, 3, NULL, NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphPlu', './img/icones/16x16/line-chart.gif', 402, 40203, 10, 3, './include/views/graphs/graphPlugins/graphPlugins.php', NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_host_graph','./img/icones/16x16/dot-chart.gif', 402, 40208, 20, 3, './include/views/graphs/hostGraphs/hostGraphs.php',NULL,'0','0','1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphPlu', './img/icones/16x16/line-chart.gif', 402, 40203, 50, 3, './include/views/graphs/graphPlugins/graphPlugins.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_host_graph','./img/icones/16x16/dot-chart.gif', 402, 40208, 60, 3, './include/views/graphs/hostGraphs/hostGraphs.php',NULL,'0','0','1');
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'views_title4', NULL, 402, NULL, NULL, 4, NULL, NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_graphTmp', './img/icones/16x16/layout_vertical.gif', 402, 40204, 40, 4, './include/views/graphs/graphTemplates/graphTemplates.php', NULL, '0', '0', '1');
