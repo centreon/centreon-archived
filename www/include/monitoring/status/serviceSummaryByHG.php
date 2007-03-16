@@ -118,11 +118,9 @@ For information : contact@oreon-project.org
 	
 	foreach ($hg as $key => $value){
 		$flag = 0;
-		foreach ($value['host'] as $h){
-			if ((isset($svc_data[$key][$h]) && $svc_data[$key][$h]) || (isset($svc_data_ack[$key][$h]) && $svc_data_ack[$key][$h])){
-				$flag = 1;	
-			}
-		}
+		foreach ($value['host'] as $h)
+			if ((isset($svc_data[$key][$h]) && $svc_data[$key][$h]) || (isset($svc_data_ack[$key][$h]) && $svc_data_ack[$key][$h]))
+				$flag = 1;
 		if (!$flag)
 			unset($hg[$key]);
 	}
