@@ -441,17 +441,15 @@ function install_oreon()
     echo "Replace Macro In cron script"
     echo "----------------------------"
 	
-	#echo "sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php"
-	#`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php`
-	#chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
-    #chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
-
-	#echo "sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log.pl'"
-	#`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log.pl'`
-	#chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
-    #chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
-	echo "---------------------------------------------------"
-
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php
+	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php "OK"
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log.pl
+	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl "OK"
+	
 
 #  cp -Rf $SRC_OREON/* $INSTALL_DIR_OREON  >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/ >> $LOG_FILE 2>> $LOG_FILE
