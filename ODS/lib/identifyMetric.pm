@@ -45,11 +45,10 @@ sub identify_metric($$$$$){ # perfdata index status time type
 		    if (!defined($5)){$5 = "";}			
 		    @data = ($1, $2, $3, $4, $5); # metric, value, unit, warn, critical
 		}
-		if ($1 && $2){			
+		if ($1 && defined($2)){			
 			# Check if metric is known...
 			my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
 			if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-			
 			if ($sth1->rows() eq 0){
 				$just_insert = 1;   				
 				undef($sth1);
