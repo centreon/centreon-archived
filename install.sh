@@ -4,7 +4,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0.txt
 # Developped by : Julien Mathis - Romain Le Merlus
 #                 Christophe Coraboeuf - Mathieu Chateau
-
+#
 # The Software is provided to you AS IS and WITH ALL FAULTS.
 # OREON makes no representation and gives no warranty whatsoever,
 # whether express or implied, and without limitation, with regard to the quality,
@@ -347,7 +347,7 @@ EOF
     /etc/init.d/apache restart >> $LOG_FILE 2>> $LOG_FILE
     else if test -x /etc/init.d/httpd ; then
     /etc/init.d/httpd restart
-  else if test -e /etc/init.d/apache2 ; then
+  	else if test -e /etc/init.d/apache2 ; then
     /etc/init.d/apache2 restart >> $LOG_FILE 2>> $LOG_FILE
     else
       echo_warning "Unable to restart apache server" "WARNING"
@@ -376,6 +376,7 @@ function confirm_oreon()
 	      exit
 	  else if [ $answer == 'y' ]; then
 	      install_oreon
+	      install_ods
 	      config_sudo
 	      #restart_mysql
 	  else
@@ -385,6 +386,7 @@ function confirm_oreon()
 	  fi
     else
 	    install_oreon
+	    install_ods
 	    config_sudo
 	    #restart_mysql
     fi
@@ -399,15 +401,15 @@ function restart_mysql()
     echo ""
     echo "Restart Mysql server"
     echo "-------------------"
-  if test -x /etc/init.d/mysqld ; then
+  	if test -x /etc/init.d/mysqld ; then
       /etc/init.d/mysqld restart
-  else if test -x /etc/init.d/mysql ; then
+  	else if test -x /etc/init.d/mysql ; then
       /etc/init.d/mysql restart
-  else
+  	else
       echo_failure "We don't find Mysql server. OREON will not run." "FAILURE"
       exit
-  fi
-  fi
+  	fi
+ 	fi
 }
 
 function config_sudo()
