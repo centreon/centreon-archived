@@ -6,7 +6,7 @@
    		<div>
        		<table id="ListTable">
                 <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$form.header.title}</td>
                 </tr>
                 <tr class="list_one">
             		<td>{$form.host_name.label}</td>
@@ -38,7 +38,7 @@
 <div>
 	<table id="ListTable">
         <tr class="ListHeader">
-        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name}</td>
+        	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name}</td>
         </tr>
         {foreach from=$elemArr item=curr_id key=key}
         <tr class="list_one">

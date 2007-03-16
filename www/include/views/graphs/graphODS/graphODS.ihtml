@@ -40,7 +40,7 @@
        	<div>
        		<table id="ListTable">
                 <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">{$form.header.title}</td>
+                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$form.header.title}</td>
                 </tr>
                 <tr class="list_one">
             		<td>{$form.host_name.label}{if $form.service_description.label}/{$form.service_description.label}{/if}</td>
