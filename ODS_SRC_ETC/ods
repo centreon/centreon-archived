@@ -1,0 +1,150 @@
+#!/bin/sh
+# Copyright (c) 2007, Merethis at Paris, France.
+#
+# Author: Julien Mathis <jmathis@merethis.com>
+#
+# /etc/init.d/ods
+#
+#
+### BEGIN INIT INFO
+# Provides:       ods
+# Required-Start:
+# Required-Stop:
+# Default-Start:  2 3 5
+# Default-Stop:
+# Description:    Start the Oreon Database Storage collector
+### END INIT INFO
+
+status_ods ()
+{
+    if test ! -f $ODSRunFile; then
+		echo "No lock file found in $ODSRunFile"
+		return 1
+    fi
+    
+    ODSPID=`head -n 1 $ODSRunFile`
+    if ps -p $ODSPID; then
+		return 0
+    else
+		return 1
+    fi
+    return 1
+}
+
+
+killproc_ods ()
+{
+    if test ! -f $ODSRunFile; then
+		echo "No lock file found in $ODSRunFile"
+		return 1
+    fi    
+    ODSPID=`head -n 1 $ODSRunFile`
+    kill $ODSPID
+}
+
+
+# Source function library
+# Solaris doesn't have an rc.d directory, so do a test first
+if [ -f /etc/rc.d/init.d/functions ]; then
+	. /etc/rc.d/init.d/functions
+elif [ -f /etc/init.d/functions ]; then
+	. /etc/init.d/functions
+fi
+
+prefix=/srv/oreon/cron/ODataStorage
+exec_prefix=${prefix}
+ODSBin=${exec_prefix}/ods.pl
+ODSCfgFile=${prefix}/etc/ods.cfg
+ODSVarDir=${prefix}/var/
+ODSRunFile=${prefix}/var/ods.pid
+ODSLockDir=/var/lock/subsys
+ODSLockFile=ods
+NagiosUser=root
+NagiosGroup=root
+          
+
+# Check that ods exists.
+if [ ! -f $ODSBin ]; then
+    echo "Executable file $ODSBin not found.  Exiting."
+    exit 1
+fi
+
+# Check that ods.cfg exists.
+if [ ! -f $ODSCfgFile ]; then
+    echo "Configuration file $ODSCfgFile not found.  Exiting."
+    exit 1
+fi
+          
+# See how we were called.
+case "$1" in
+
+    start)
+	echo "Starting ODS Collector : ods_daemon"
+	touch $ODSRunFile
+	chown $NagiosUser:$NagiosGroup $ODSRunFile
+	su - $NagiosUser -c "$ODSBin &"
+	if [ -d $ODSLockDir ]; then touch $ODSLockDir/$ODSLockFile; fi
+			#sleep 1
+			#status_nagios nagios
+	exit 0
+	;;
+    
+    stop)
+	echo "Stopping ODS Collector : ods_daemon"
+	killproc_ods ods
+	
+ 		# now we have to wait for nagios to exit and remove its
+ 		# own NagiosRunFile, otherwise a following "start" could
+ 		# happen, and then the exiting nagios will remove the
+ 		# new NagiosRunFile, allowing multiple nagios daemons
+ 		# to (sooner or later) run - John Sellens
+	echo -n 'Waiting for ods to exit .'
+	for i in 1 2 3 4 5 6 7 8 9 10 ; do
+	    if status_ods > /dev/null; then
+		echo -n ' .'
+		sleep 1
+	    else
+		break
+	    fi
+	done
+	if status_ods > /dev/null; then
+	    echo ''
+	    echo 'Warning - running ods did not exit in time'
+	else
+	    echo ' done.'
+	fi
+	
+	rm -f $ODSRunFile $ODSLockDir/$ODSLockFile
+	;;
+
+    status)
+	status_ods ods
+	;;
+
+    restart)
+	$0 stop
+	$0 start
+	;;
+    
+    reload|force-reload)
+	if test ! -f $ODSRunFile; then
+	    $0 start
+	else
+	    ODSPID=`head -n 1 $ODSRunFile`
+	    if status_ods > /dev/null; then
+		killproc_ods ods -HUP
+		echo "done"
+	    else
+		$0 stop
+		$0 start
+	    fi
+	fi
+	;;
+    
+    *)
+	echo "Usage: ods {start|stop|restart|reload|force-reload|status}"
+	exit 1
+	;;
+    
+esac
+# End of this script
