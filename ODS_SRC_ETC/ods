@@ -51,7 +51,7 @@ elif [ -f /etc/init.d/functions ]; then
 	. /etc/init.d/functions
 fi
 
-prefix=/srv/oreon/cron/ODataStorage
+prefix=@OREON_PATH@/ODS
 exec_prefix=${prefix}
 ODSBin=${exec_prefix}/ods.pl
 ODSCfgFile=${prefix}/etc/ods.cfg
