@@ -397,6 +397,8 @@ function install_ods(){
     echo "Start ODS Installation"
     echo "------------------------"
 	
+	echo "sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl"
+	
 	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl`
 	
 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
@@ -485,7 +487,8 @@ function install_oreon()
 
     chmod 775 $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
-
+	
+	echo "sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php"
 	`sed -e 's/@OREON_PATH@/$INSTALL_DIR_OREON/g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php`
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
