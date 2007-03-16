@@ -413,8 +413,13 @@ function install_ods(){
     fi
 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/OreonDataStorage
 	chmod 775 $INSTALL_DIR_OREON/OreonDataStorage
+	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS_SRC_ETC/ods > /etc/init.d/ods
 	chmod 755 /etc/init.d/ods
+	
+	chmod -r 755 $INSTALL_DIR_OREON/ODS/var
+	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/var
+	
 	rm -Rf $INSTALL_DIR_OREON/ODS_SRC_ETC
 }
 
