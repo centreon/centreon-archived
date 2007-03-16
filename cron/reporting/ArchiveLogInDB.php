@@ -28,7 +28,6 @@ For information : contact@oreon-project.org
 	require_once($path_oreon."www/include/reporting/dashboard/reporting-func.php");
 	require_once($path_oreon."www/include/reporting/dashboard/simple-func.php");
 
-
 	/* Connect to oreon DB */	
 	$dsn = array(
 		     'phptype'  => 'mysql',
@@ -38,22 +37,19 @@ For information : contact@oreon-project.org
 		     'database' => $conf_oreon['db'],
 		     );
 
-	$options = array(
-			 'debug'       => 2,
-			 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-			 );
+	$options = array(	'debug'       => 2,
+			 			'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) 
 		die("Connecting probems with oreon database : " . $pearDB->getMessage());
-
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 
-#################################
-######## clean up table  ########
-#################################
-
+	#################################
+	######## clean up table  ########
+	#################################
+	/*
 	$sql = "TRUNCATE TABLE `log_archive_file_name`";
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_host`";
@@ -62,61 +58,48 @@ For information : contact@oreon-project.org
 	$res = $pearDB->query($sql);
 	$sql = "TRUNCATE TABLE `log_archive_osl`";
 	$res = $pearDB->query($sql);
+	*/
+	#################################
+	#################################
+	#################################
 
-#################################
-#################################
-#################################
-
-
-
-
-	function check_file_name_in_db($filename)
-	{
+	function check_file_name_in_db($filename){
 		global $pearDB;
 		$res = $pearDB->query("SELECT * FROM log_archive_file_name WHERE file_name = '".$filename."'");
 		if ($res->numRows())
 			return $res;
 	}
-	function 	insert_file_name_in_db($key)
-	{
+	
+	function 	insert_file_name_in_db($key){
 		global $pearDB;
 		$date = time();
-		$sql = "INSERT INTO `log_archive_file_name` (`id_log_file`, `file_name`, `date`)" .
-				" VALUES(NULL , '$key','$date')";
+		$sql = "INSERT INTO `log_archive_file_name` (`id_log_file`, `file_name`, `date`) VALUES(NULL , '$key','$date')";
 		$res = $pearDB->query($sql);
-				
-		if (PEAR::isError($res)){			
-			die($res->getMessage());		  
-		  }
+		if (PEAR::isError($res)){die($res->getMessage());}
 	}
 
-
-
-	
 	$tablist = array();
 	$h = array();
 	$host_list = array();
 	$res =& $pearDB->query('SELECT host_name, host_id FROM `host`');
 	if (PEAR::isError($res)){
-	  die($res->getMessage());
+	  	die($res->getMessage());
 	} else { 
-	  while ($h =& $res->fetchRow()){
-		$tablist[$h["host_name"]] = array();
-	    $host_list[$h["host_name"]] = $h["host_id"];
-	  }
+	  	while ($h =& $res->fetchRow()){
+			$tablist[$h["host_name"]] = array();
+	    	$host_list[$h["host_name"]] = $h["host_id"];
+	  	}
 	}
 	
 	$service_list = array();
 	$res =& $pearDB->query('SELECT service_description, service_id FROM `service`');
 	if (PEAR::isError($res)){
-	  die($res->getMessage());
+	  	die($res->getMessage());
 	} else { 
-	  while ($s =& $res->fetchRow()){
-	    $service_list[$s["service_description"]] = $s["service_id"];
-	  }
+	  	while ($s =& $res->fetchRow())
+	  		$service_list[$s["service_description"]] = $s["service_id"];
 	}	
 	require_once $path_oreon . 'www/include/common/common-Func.php';
-
 
 	$tableFile2 = array();
 	if ($handle  = @opendir($NagiosPathArchive))	{
@@ -125,15 +108,14 @@ For information : contact@oreon-project.org
 				preg_match("/nagios\-([0-9]*)\-([0-9]*)\-([0-9]*)\-([0-9]*).log/", $file, $matches);
 				$time = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3]) - 1;				
 				if(!check_file_name_in_db($NagiosPathArchive."/$file"))
-				$tableFile2[$NagiosPathArchive."/$file"] =  "  " . $time . " ";
+					$tableFile2[$NagiosPathArchive."/$file"] =  "  " . $time . " ";
 			}
 		@closedir($handle);
 	}
 	krsort($tableFile2);
 
 
-	function day_is_in_db($start_day, $end_day, $host_id)
-	{
+	function day_is_in_db($start_day, $end_day, $host_id){
 		global $pearDB;
 		$sql = "SELECT * FROM `log_archive_host` WHERE `host_id` = ".$host_id." AND `date_start` >= ".$start_day." AND `date_end` <= ". $end_day; 
 		$res = $pearDB->query($sql);
@@ -144,17 +126,10 @@ For information : contact@oreon-project.org
 		return false;					
 	}
 	
-	function insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end)
-	{
-		global $host_list;
-		global $service_list;
-		global $pearDB;
-
-
-
-		#
+	function insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end){
+		global $host_list, $service_list, $pearDB;
+		
 		## Api insert in db type
-		#
 		if ($handle  = @opendir("./api"))	{
 			while ($file = @readdir($handle))
 				if (is_file("./api"."/$file"))	{
@@ -162,9 +137,6 @@ For information : contact@oreon-project.org
 				}
 			@closedir($handle);
 		}
-		
-
-
 /*
 		#
 		## Hosts in db
@@ -271,24 +243,16 @@ For information : contact@oreon-project.org
 			}
 		}
 		
-*/		
-		
+*/				
 	}
 
-
 	$tab_hosts = array();
-	$tab_services = array();
-	
+	$tab_services = array();	
 	$day_current_start = 0;
 	$day_current_end = 0;
 	
-	foreach($tableFile2 as $key => $time)
-	{
+	foreach($tableFile2 as $key => $time){
 		insert_file_name_in_db($key);
 		parseFile($key, $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, false);
 	}
-
-	//insert_pending();
-
-
 ?>
