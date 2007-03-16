@@ -25,43 +25,15 @@ use warnings;
 use DBI;
 use File::stat;
 
-# Get Configuration
-# Init parameter
+my $installedPath = "@OREON_PATH@";
 
-my $DBuser;
-my $DBpass;
-my $server;
-my $dbname;
+require $installedPath."etc/conf.pm";
 
-if ( !(-r "/srv/test_mat/LoadGenerator/OSync.conf")) {
-    print "Error : cannot open database configuration file \n";
-    exit (0);
-}
-open(FILE, "/srv/test_mat/LoadGenerator/OSync.conf");
-while (<FILE>){
-    if ($_ =~ m/^<conf>/){
-		while (<FILE>){
-		    if ($_ =~ m/^\<DBuser\>([a-zA-Z0-9\_\-\.\@]*)\<\/DBuser\>\n/){
-				$DBuser = $1;
-		    } elsif ($_ =~ m/^\<DBpass\>([a-zA-Z0-9\_\-\.\@\#]+)\<\/DBpass\>\n/){
-				$DBpass = $1;
-		    } elsif ($_ =~ m/^\<server\>([a-zA-Z0-9\_\-\.\@]*)\<\/server\>\n/){
-				$server = $1;
-	    	} elsif ($_ =~ m/^\<DBname\>([a-zA-Z0-9\_\-\.\@]*)\<\/DBname\>\n/){
-				$dbname = $1;
-	    	} elsif ($_ =~ m/^\<\/conf\>/) {
-				;
-	    	}
-		}
-    }
-}
-
-#close(FILE);
 ## Init Date
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
 
 # Init MySQL Connexion
-my $dbh = DBI->connect("DBI:mysql:database=".$dbname.";host=".$server, $DBuser, $DBpass, {'RaiseError' => 1});
+my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
 # Get conf Data
 my $sth = $dbh->prepare("SELECT retention_time, nagios_log_file  FROM config;");
@@ -146,11 +118,9 @@ if ($retention ne 0){
     my $sth1 = $dbh->prepare("DELETE FROM log WHERE ctime < '$last_log'");
     if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
 }
-
 # Update statistics and flags
 my $sth1 = $dbh->prepare("UPDATE `config` SET `last_line_read` = '".$cpt."'");
 if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
 close(FILE);
-
 # Good Bye
 exit;
