@@ -58,6 +58,8 @@ For information : contact@oreon-project.org
 	
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
+	$form->addElement('checkbox', 'archive_log', $lang["ods_archive_log"]);
+	$form->addElement('text', 'archive_retention', $lang["ods_log_retention"], $attrsText2);
 	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);

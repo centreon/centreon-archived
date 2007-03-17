@@ -275,6 +275,8 @@ For information : contact@oreon-project.org
 			$ret["purge_interval"] = 20;
 		if (!isset($ret["auto_drop"]))
 			$ret["auto_drop"] = "0";
+		if (!isset($ret["archive_log"]))
+			$ret["archive_log"] = "0";
 		if (!$ret["purge_interval"])
 			$ret["purge_interval"] = 60;
 		if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/")
@@ -286,6 +288,8 @@ For information : contact@oreon-project.org
 				`purge_interval` = '".$ret["purge_interval"]."',
 				`auto_drop` = '".$ret["auto_drop"]."',
 				`drop_file` = '".$ret["drop_file"]."',
+				`archive_log` = '".$ret["archive_log"]."',
+				`archive_retention` = '".$ret["archive_retention"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))

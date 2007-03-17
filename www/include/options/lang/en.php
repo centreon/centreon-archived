@@ -203,5 +203,9 @@ $lang['ods_purge_interval'] = "Purge check interval";
 $lang['ods_storage_type'] = "Storage Type";
 $lang['ods_auto_drop'] = "Drop Data in another file";
 $lang['ods_drop_file'] = "Drop file";
+$lang['ods_archive_log'] = "Archive Nagios Logs";
+$lang['ods_log_retention'] = "Logs retetion duration";
+$lang['ods_log_retention_unit'] = "days";
+
 
 ?>
