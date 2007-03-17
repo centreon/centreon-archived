@@ -16,12 +16,14 @@ CREATE TABLE `config` (
   `perfdata_file` varchar(255) default NULL,
   `archive_log` enum('0','1') NOT NULL default '0',
   `archive_retention` int(11) default '31',
+  `nagios_log_file` varchar(255) default NULL,
+  `last_line_read` int(11) default '31',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
-INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`) VALUES (1, '/srv/oreon/OreonDataStorage/', 31536000, '0', 10, 60, 0, '1', '/srv/nagios/var/service-perfdata.tmp', '/srv/nagios/var/service-perfdata');
+INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`, `nagios_log_file`) VALUES (1, '/srv/oreon/OreonDataStorage/', 31536000, '0', 10, 60, 0, '1', '/srv/nagios/var/service-perfdata.tmp', '/srv/nagios/var/service-perfdata', '/srv/nagios/var/nagios.log');
 
 -- 
 -- Structure de la table `data_bin`
@@ -61,14 +63,22 @@ CREATE TABLE `index_data` (
 -- 
 
 CREATE TABLE `log` (
-  `log_id` int(11) NOT NULL default '0',
+  `log_id` int(11) NOT NULL auto_increment,
   `ctime` int(11) default NULL,
-  `host_id` int(11) default NULL,
-  `service_id` int(11) default NULL,
-  `status` enum('0','1','2','3','4') default NULL,
-  `output` varchar(254) default NULL,
-  PRIMARY KEY  (`log_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `host_name` varchar(255) default NULL,
+  `service_description` varchar(255) default NULL,
+  `status` enum('0','1','2','3') default NULL,
+  `output` text,
+  `notification_cmd` varchar(255) default NULL,
+  `notification_contact` varchar(255) default NULL,
+  `type` enum('0','1') NOT NULL,
+  `retry` int(255) NOT NULL,
+  `msg_type` enum('0','1','2','3','4','5') NOT NULL,
+  PRIMARY KEY  (`log_id`),
+  KEY `host_name` (`host_name`(64)),
+  KEY `service_description` (`service_description`(64)),
+  KEY `status` (`status`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=43156 ;
 
 -- --------------------------------------------------------
 
