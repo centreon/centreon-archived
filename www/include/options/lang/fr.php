@@ -203,6 +203,8 @@ $lang["m_modules"] = "Modules";
 
 # ODS 
 
+$lang['m_log_advanced'] = "Logs Avanc&eacute;s";
+$lang['m_log_lite'] = "Event Logs";
 $lang['ods_rrd_path'] = "Chemin d'acc&egrave;s aux bases RRD de stockage";
 $lang['ods_len_storage_rrd'] = "Tailles des Bases RRDTool";
 $lang['ods_autodelete_rrd_db'] = "Auto-Suppression des bases RRD";

@@ -195,6 +195,8 @@ $lang['m_task'] = "Tasks";
 
 # ODS 
 
+$lang['m_log_advanced'] = "Avanced Logs";
+$lang['m_log_lite'] = "Event Logs";
 $lang['ods_rrd_path'] = "Path to RRDTool Database";
 $lang['ods_len_storage_rrd'] = "RRDTool database size";
 $lang['ods_autodelete_rrd_db'] = "RRDTool auto delete";
