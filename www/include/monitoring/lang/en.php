@@ -198,4 +198,21 @@ $lang['m_log_status'] = "Status";
 $lang['m_log_retry'] = "Retry";
 $lang['m_log_informations'] = "Informations";
 
+$lang['m_log_select1'] = "Search 1 : ";
+$lang['m_log_select2'] = "Search 2 : ";
+$lang['m_log_select3'] = "Search 3 : ";
+
+$lang['m_log_search1'] = "Search : ";
+
+$lang["m_log_date_search"] = "d/m/y H:i";
+$lang["m_log_view"] = "View";
+
+$lang["m_from"] = "From";
+$lang["m_to"] = "To";
+$lang["m_log_day"] = "Date";
+$lang["m_log_Hour"] = "Hours";
+$lang['m_log_select_errors'] = "Select your parameters : ";
+$lang["m_log_notification_cmd"] = "Notification Commands";
+$lang["m_log_notification_contact"] = "Contact";
+
 ?>
