@@ -38,9 +38,11 @@ my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
 my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
 # Get conf Data
-my $sth = $dbh->prepare("SELECT archive_retention, nagios_log_file  FROM config");
+my $sth = $dbh->prepare("SELECT archive_log, archive_retention, nagios_log_file  FROM config");
 if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
 my $data = $sth->fetchrow_hashref();
+
+if ($data->{'archive_log'}){exit();}
 
 my $retention = $data->{'archive_retention'};
 my $LOG_FILE = $data->{'nagios_log_file'};
