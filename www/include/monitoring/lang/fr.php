@@ -204,6 +204,7 @@ $lang['m_log_search1'] = "Recherche : ";
 
 $lang["m_log_date_search"] = "d/m/y H:i";
 $lang["m_log_view"] = "Visualiser";
+$lang["m_mon_type"] = "Type";
 
 $lang["m_from"] = "De";
 $lang["m_to"] = "&agrave;";
