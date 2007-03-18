@@ -23,8 +23,8 @@
 	require_once 'DB.php';	
 	
 	include_once($path_oreon . "/www/oreon.conf.php");
-	require_once($path_oreon."www/include/reporting/dashboard/reporting-func.php");
-	require_once($path_oreon."www/include/reporting/dashboard/simple-func.php");
+	require_once($path_oreon ."/www/include/reporting/dashboard/reporting-func.php");
+	require_once($path_oreon ."/www/include/reporting/dashboard/simple-func.php");
 
 	/* Connect to oreon DB */	
 	$dsn = array(	'phptype'  => 'mysql',
@@ -98,7 +98,7 @@
 	  	while ($s =& $res->fetchRow())
 	  		$service_list[$s["service_description"]] = $s["service_id"];
 	}	
-	require_once $path_oreon . 'www/include/common/common-Func.php';
+	require_once $path_oreon . '/www/include/common/common-Func.php';
 
 	$tableFile2 = array();
 	if ($handle  = @opendir($NagiosPathArchive))	{
