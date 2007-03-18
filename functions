@@ -460,8 +460,16 @@ function install_oreon(){
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl" "OK"
-	echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER
-	echo_success "in cron installation for parsing_log.pl" "OK"
+
+	
+	sudo=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_log.pl > /dev/null; echo $?`
+
+  	if [ $sudo == '1' ]; then
+  		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER
+		echo_success "in cron installation for parsing_log.pl" "OK"
+  	else
+      echo_passed "in cron installation for parsing_log.pl" "PASSED"
+  	fi
 	
 
 #  cp -Rf $SRC_OREON/* $INSTALL_DIR_OREON  >> $LOG_FILE 2>> $LOG_FILE
