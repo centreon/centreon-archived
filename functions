@@ -301,48 +301,49 @@ function install_oreon_plugins()
 	# install plugins oreon
     echo ""
     if test -d $NAGIOS_PLUGIN ; then
-	echo_passed "$NAGIOS_PLUGIN already exists" "PASSED"
+		echo_passed "$NAGIOS_PLUGIN already exists" "PASSED"
     else
-	mkdir $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-	echo_success "Creating Nagios Plugin Directory '$NAGIOS_PLUGIN'" "OK"
+		mkdir $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating Nagios Plugin Directory '$NAGIOS_PLUGIN'" "OK"
     fi
+    
     echo "Preparing Oreon Plugins..."
     if [ -n "$PLUGINS_DIR" ]; then
-	rm -f $PLUGINS_DIR/*.pl 2> /dev/null
-	rm -f $PLUGINS_DIR/*.pm 2> /dev/null
-	rm -f $PLUGINS_DIR/*.conf 2> /dev/null
+		rm -f $PLUGINS_DIR/*.pl 2> /dev/null
+		rm -f $PLUGINS_DIR/*.pm 2> /dev/null
+		rm -f $PLUGINS_DIR/*.conf 2> /dev/null
     else
-	rm -f *.pl 2> /dev/null
-	rm -f *.pm 2> /dev/null
-	rm -f *.conf 2> /dev/null
+		rm -f *.pl 2> /dev/null
+		rm -f *.pm 2> /dev/null
+		rm -f *.conf 2> /dev/null
     fi
 
     if [ -n "$PLUGINS_DIR" ]; then
-	for fichier in ${PLUGINS_DIR}src/*
-	  do
-	  if [ -d "$fichier" ]; then
-	      echo "$fichier is a directory"
-	  else
-	      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-	      echo "-> $filename"
-	      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
-	  fi
-	done
-	echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
-	cp $PLUGINS_DIR/*.pl $NAGIOS_PLUGIN
+		for fichier in ${PLUGINS_DIR}src/*
+		  do
+		  if [ -d "$fichier" ]; then
+		      echo "$fichier is a directory"
+		  else
+		      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		      echo "-> $filename"
+		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
+		  fi
+		done
+		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
+		cp $PLUGINS_DIR/*.pl $NAGIOS_PLUGIN
     else
-	for fichier in src/*
-	  do
-	  if [ -d "$fichier" ]; then
-	      echo "$fichier is a directory"
-	  else
-	      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-	      echo "	-> $filename"
-	      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
-	  fi
-	done
-	echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
-	cp *.pl $NAGIOS_PLUGIN
+		for fichier in src/*
+		  do
+		  if [ -d "$fichier" ]; then
+		      echo "$fichier is a directory"
+		  else
+		      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		      echo "	-> $filename"
+		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
+		  fi
+		done
+		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
+		cp *.pl $NAGIOS_PLUGIN
     fi
 
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
@@ -355,44 +356,44 @@ function install_oreon_plugins()
 	else
 	    mkdir $NAGIOS_PLUGIN/traps
 	fi
-	for fichier in $PLUGINS_DIR/src/traps/*
-	  do
-	  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-	  echo "-> $filename"
-	  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
-	done
-	cp $PLUGINS_DIR/src/traps/* $NAGIOS_PLUGIN/traps
-	chmod 775 $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
-	echo "Installing Oreon Traps Plugins on "
-	echo_success "$NAGIOS_PLUGIN/traps'" "OK"
-
+		for fichier in $PLUGINS_DIR/src/traps/*
+		  do
+		  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		  echo "-> $filename"
+		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
+		done
+		cp $PLUGINS_DIR/src/traps/* $NAGIOS_PLUGIN/traps
+		chmod 775 $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
+		echo "Installing Oreon Traps Plugins on "
+		echo_success "$NAGIOS_PLUGIN/traps'" "OK"
     fi
 
     if test -a $NAGIOS_PLUGIN/oreon.conf ; then
-	echo ""
-	echo_success "Finding Oreon Plugins configuration file 'oreon.conf' :" "OK"
-	echo "You already seem to have installed the plugins Oreon."
-	echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
-	echo -n "[y/n], default to [n]:"
-	read temp
-	if [ -z $temp ];then
-	    temp=n
-	fi
+		echo ""
+		echo_success "Finding Oreon Plugins configuration file 'oreon.conf' :" "OK"
+		echo "You already seem to have installed the plugins Oreon."
+		echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
+		echo -n "[y/n], default to [n]:"
+		read temp
+		if [ -z $temp ];then
+		    temp=n
+		fi
     else
-	temp=y
+		temp=y
     fi
 
     if [ $temp = "y" ];then
-	cp ${PLUGINS_DIR}oreon.conf $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-	chmod 775 $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
-	chown $WEB_USER:$WEB_GROUP $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
-  fi
+		cp ${PLUGINS_DIR}oreon.conf $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
+		chmod 775 $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
+		chown $WEB_USER:$WEB_GROUP $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
+	fi
 
     cp ${PLUGINS_DIR}oreon.pm $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_PLUGIN/oreon.pm >> $LOG_FILE 2>> $LOG_FILE
 }
 
 function install_ods(){
+	
 	echo ""
     echo "Start ODS Installation"
     echo "------------------------"
@@ -419,29 +420,28 @@ function install_ods(){
 	
 	chmod -r 755 $INSTALL_DIR_OREON/ODS/var
 	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/var
-	
 	rm -Rf $INSTALL_DIR_OREON/ODS_SRC_ETC
 }
 
 
-function install_oreon()
-{
+function install_oreon(){
+
     echo ""
     echo "Start Oreon Installation"
     echo "------------------------"
 
     if test -d $INSTALL_DIR_OREON ; then
-	echo_passed "Oreon Directory already exists" "PASSED"
+		echo_passed "Oreon Directory already exists" "PASSED"
     else
-	mkdir $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
-	echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON'" "OK"
+		mkdir $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON'" "OK"
     fi
 
     for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "rrd" "www" "cron" "ODS" "ODS_SRC_ETC"
       do
       if test -d $directory ; then
-	  cp -Rf $directory $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
-	  echo_success "Copy '$directory'" "OK"
+		  cp -Rf $directory $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
+		  echo_success "Copy '$directory'" "OK"
       fi
     done
     
@@ -460,6 +460,8 @@ function install_oreon()
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl" "OK"
+	echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER
+	echo_success "in cron installation for parsing_log.pl" "OK"
 	
 
 #  cp -Rf $SRC_OREON/* $INSTALL_DIR_OREON  >> $LOG_FILE 2>> $LOG_FILE
