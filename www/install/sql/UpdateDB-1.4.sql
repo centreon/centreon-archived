@@ -216,7 +216,7 @@ ALTER TABLE `cfg_nagios` ADD `broker_module` VARCHAR( 255 ) NULL ;
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'm_service_detail', NULL , '202', NULL , NULL , '7', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'mon_details', NULL , '202', NULL , NULL , '8', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'm_meta_service', NULL , '202', NULL , NULL , '10', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
-INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'mon_nagios', NULL , '202', NULL , NULL , '12', NULL , NULL , NULL , NULL , '1', NULL , NULL , NUL);
+INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'mon_nagios', NULL , '202', NULL , NULL , '12', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'mon_service_group', NULL , '202', NULL , NULL , '10', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'mon_details_HG', NULL , '202', NULL , NULL , '9', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
 
@@ -351,4 +351,15 @@ UPDATE `topology` SET `topology_group` = '41' WHERE `topology`.`topology_page` =
 
 UPDATE `topology` SET `topology_group` = '41' WHERE `topology`.`topology_group` = 1 AND `topology`.`topology_page` IS NULL  LIMIT 1 ;
 UPDATE `topology` SET `topology_group` = '40' WHERE `topology`.`topology_group` = 3 AND `topology`.`topology_page` IS NULL  LIMIT 1 ;
+
+UPDATE `topology` SET `topology_group` = '41' WHERE `topology`.`topology_group` = 1 AND `topology`.`topology_page` IS NULL  LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '40' WHERE `topology`.`topology_group` = 3 AND `topology`.`topology_page` IS NULL  LIMIT 1 ;
+
+
+UPDATE `general_opt` SET `template` = 'Blue' WHERE `general_opt`.`gopt_id` =1 LIMIT 1 ;
+
+UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_page` = 40203 LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '43' WHERE `topology`.`topology_page` = 40204 LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '43' WHERE `topology`.`topology_page` = 40205 LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_page` = 40207 LIMIT 1 ;
 
