@@ -75,11 +75,18 @@ For information : contact@oreon-project.org
 		$start_date_select= 0;
 		$period1 = 0;
 		if($type_period == "customized") {
-			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;		
-			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
+
+			if(isset($_POST["start"]) && isset($_POST["end"])){
+				$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
+				$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
+				getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
+			}
+			else{
+				$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
+				$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
+				$end_date_select = $end;
+				$start_date_select = $start;
+			}
 			$formService->addElement('hidden', 'end', $end);
 			$formService->addElement('hidden', 'start', $start);
 			$period1 = "NULL";

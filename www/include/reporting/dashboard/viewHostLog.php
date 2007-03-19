@@ -74,8 +74,15 @@ For information : contact@oreon-project.org
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;		
+			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
+			
+			echo $start . "--" . $end . "<br>";
+						
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
+			echo $start_date_select . "--" . $end_date_select . "<br>";
+
+			echo date("d/Y/m H:i:s", $start_date_select) ."--". date("d/Y/m H:i:s", $end_date_select) . "<br>";
+
 			$formHost->addElement('hidden', 'end', $end);
 			$formHost->addElement('hidden', 'start', $start);
 			$period1 = "NULL";
@@ -405,7 +412,16 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 	$period1 = (!$period1) ? "today": $period1;
 	$formPeriod1->setDefaults(array('period' => $period1));
+
+
+	
+if($type_period == "customized") {
+	$tpl->assign('period', "&start=" . $sd . "&end=".$ed."&type_period=".$type_period);
+//	$tpl->assign('period', "&start=" . $start . "&end=".$end."&type_period=".$type_period);
+}
+else{
 	$tpl->assign('period', "&period=".$period1);
+}
 
 
 	$tpl->assign('hostID', getMyHostID($mhost));

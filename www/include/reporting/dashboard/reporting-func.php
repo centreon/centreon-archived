@@ -68,7 +68,6 @@ For information : contact@oreon-project.org
 	}
 	
 	function getDateSelect_customized(&$end_date_select, &$start_date_select, $start, $end){
-
 		if(!is_null($end) && !is_null($start)){
 			if(!$end){
 				$end = time();
@@ -79,6 +78,7 @@ For information : contact@oreon-project.org
 				$endminute = date("i",$end);
 				$endsecond = date("s",$end);
 				$end_date_select = mktime($endhour, $endminute, $endsecond, $endmonth, $endday, $endyear);
+				$end_date_select = mktime(23, 59, 59, $endmonth, $endday, $endyear);
 			}
 			else{
 				$end = my_getTimeTamps($end);
@@ -109,8 +109,8 @@ For information : contact@oreon-project.org
 			'min(date_start) as log_date_start,' .
 			'max(date_end) as log_date_end,' .
 			'sum(UNREACHABLETimeScheduled) as unreach FROM `log_archive_host` WHERE host_id = ' . $host_id  .
-			' AND date_start >=  ' . ($start_date_select-1) .
-			' AND date_end <= ' . $end_date_select;
+			' AND date_start >=  ' . ($start_date_select - 1) .
+			' AND date_end <= ' . ($end_date_select + 1);
 
 
 		$ttmp = $end_date_select - $start_date_select;
@@ -145,7 +145,7 @@ For information : contact@oreon-project.org
 			'max(date_end) as log_date_end' .
 			' FROM `log_archive_service` WHERE host_id = ' . $host_id  .
 			' AND date_start >=  ' . ($start_date_select-1) .
-			' AND date_end <= ' . $end_date_select .
+			' AND date_end <= ' . ($end_date_select + 1) .
 			' GROUP BY service_id';
 			$res = & $pearDB->query($rq);
 			$tab_svc_bdd = array();
@@ -179,7 +179,7 @@ For information : contact@oreon-project.org
 			' FROM `log_archive_service` WHERE host_id = ' . $host_id  .			
 			' AND service_id =  ' . $svc_id .
 			' AND date_start >=  ' . ($start_date_select-1) .
-			' AND date_end <= ' . $end_date_select .
+			' AND date_end <= ' . ($end_date_select + 1) .
 			' GROUP BY service_id';
 			$res = & $pearDB->query($rq);
 			$tab_svc_bdd = array();
