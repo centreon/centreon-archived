@@ -63,8 +63,11 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($elem))	{
 		$services = getMyHostServices($elem["host_id"]);
-		foreach ($services as $key=>$index)
+		foreach ($services as $key=>$index)	{						
+			$index = str_replace('#S#', "/", $index);
+			$index = str_replace('#BS#', "\\", $index);
 			$hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
+		}
 	}
 	#
 	# End of "database-retrieved" information
