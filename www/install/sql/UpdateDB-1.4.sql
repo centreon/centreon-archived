@@ -248,9 +248,9 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_status_summary', './img/icones/16x16/column.gif', 202, 20213, 30, 10, './include/monitoring/status/monitoringService.php', '&o=svcSumSG', '0', '0', '1');
 -- Ajoute menu 
 
---Grid
--- Grille de status 
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES ('' , 'mon_problems', NULL , '20203', '2020301', '10', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgrid&problem=1', '0', '0', '1', NULL , NULL , NULL);
+
+
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES ('' , 'mon_acknowloedge', NULL , '20203', '2020302', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgrid&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES ('' , 'mon_not_acknowloedge', NULL , '20203', '2020303', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgrid&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
 
