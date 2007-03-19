@@ -15,9 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	if (!isset($oreon))
-		exit();
-
+	
 	// This file have to be included whenever we want to connect to the DB
 		
 	require_once("DB.php");
