@@ -269,6 +269,10 @@ For information : contact@oreon-project.org
 		global $form, $pearDBO;
 		$ret = array();
 		$ret = $form->getSubmitValues();
+		if (!isset($ret["len_storage_rrd"]))
+			$ret["len_storage_rrd"] = 0;
+		if (!isset($ret["autodelete_rrd_db"]))
+			$ret["autodelete_rrd_db"] = 0;
 		if ($ret["sleep_time"] <= 10)
 			$ret["sleep_time"] = 10;
 		if ($ret["purge_interval"] <= 20)
