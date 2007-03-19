@@ -73,7 +73,6 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDBO)) die("Connecting problems with oreon database : " . $pearDBO->getMessage());
 	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 	
-	
 	# class init
 	class Duration
 	{
@@ -137,7 +136,7 @@ For information : contact@oreon-project.org
 	function read($host_name, $time,$arr,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status){
 
 
-		global $pearDB;
+		global $pearDB; $pearDBO;
 		$flag = 0;
 	
 		$MyLog = date('l dS \of F Y h:i:s A'). "\n";
