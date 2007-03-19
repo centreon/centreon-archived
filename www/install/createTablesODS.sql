@@ -18,6 +18,7 @@ CREATE TABLE `config` (
   `archive_retention` int(11) default '31',
   `nagios_log_file` varchar(255) default NULL,
   `last_line_read` int(11) default '31',
+  `fast_parsing` enum('0','1') default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
