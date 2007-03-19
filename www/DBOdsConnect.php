@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 		
 	require_once("DB.php");
 	
-//	if (isset($conf_oreon["ods"])){ 
+	if (isset($conf_oreon["ods"])){ 
 		// Pear connection
 		
 		$debug = 0;
@@ -45,5 +45,5 @@ For information : contact@oreon-project.org
 		    
 		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 		// End of Pear connection
-//	}
+	}
 ?>
