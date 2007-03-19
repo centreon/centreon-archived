@@ -76,12 +76,8 @@ For information : contact@oreon-project.org
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
 			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
 			
-			echo $start . "--" . $end . "<br>";
 						
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
-			echo $start_date_select . "--" . $end_date_select . "<br>";
-
-			echo date("d/Y/m H:i:s", $start_date_select) ."--". date("d/Y/m H:i:s", $end_date_select) . "<br>";
 
 			$formHost->addElement('hidden', 'end', $end);
 			$formHost->addElement('hidden', 'start', $start);
