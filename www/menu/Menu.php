@@ -78,7 +78,7 @@ For information : contact@oreon-project.org
     $logOutUrl = "index.php?disconnect=1";
 
 	# Grab elements for level 2
-	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_order";
+	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
