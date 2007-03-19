@@ -114,15 +114,15 @@ For information : contact@oreon-project.org
 		}
 		else {
 			$flag_reset = 0;
-			$session["s_nbServicesOk"]= 1;
-			$session["s_nbServicesWarning"]= 1;
-			$session["s_nbServicesCritical"]= 1;
-			$session["s_nbServicesUnknown"]= 1;
-			$session["s_nbServicesPending"]= 1;
-			$session["s_nbHostsUp"]= 1;
-			$session["s_nbHostsDown"]= 1;
-			$session["s_nbHostsUnreachable"]= 1;
-			$session["s_nbHostsPending"] = 1;
+			$session["s_nbServicesOk"]= 0;
+			$session["s_nbServicesWarning"]= 0;
+			$session["s_nbServicesCritical"]= 0;
+			$session["s_nbServicesUnknown"]= 0;
+			$session["s_nbServicesPending"]= 0;
+			$session["s_nbHostsUp"]= 0;
+			$session["s_nbHostsDown"]= 0;
+			$session["s_nbHostsUnreachable"]= 0;
+			$session["s_nbHostsPending"] = 0;
 		}
 	}
 
