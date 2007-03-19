@@ -20,28 +20,30 @@ For information : contact@oreon-project.org
 		
 	require_once("DB.php");
 	
-	// Pear connection
-	
-	$debug = 0;
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_oreon["user"],
-	    'password' => $conf_oreon["password"],
-	    'hostspec' => $conf_oreon["host"],
-	    'database' => $conf_oreon["ods"],
-	);
-	
-	$options = array(
-	    'debug'       => 2,
-	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE, 
-	);
-	
-	global $pearDB0;
-	
-	$pearDBO =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDBO))
-	    die($pearDBO->getMessage());
-	    
-	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-	// End of Pear connection
+	if (isset($conf_oreon["ods"])){ 
+		// Pear connection
+		
+		$debug = 0;
+		$dsn = array(
+		    'phptype'  => 'mysql',
+		    'username' => $conf_oreon["user"],
+		    'password' => $conf_oreon["password"],
+		    'hostspec' => $conf_oreon["host"],
+		    'database' => $conf_oreon["ods"],
+		);
+		
+		$options = array(
+		    'debug'       => 2,
+		    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE, 
+		);
+		
+		global $pearDB0;
+		
+		$pearDBO =& DB::connect($dsn, $options);
+		if (PEAR::isError($pearDBO))
+		    die($pearDBO->getMessage());
+		    
+		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
+		// End of Pear connection
+	}
 ?>
