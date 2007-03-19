@@ -88,12 +88,18 @@ For information : contact@oreon-project.org
 	unset ($host_status);
 	unset ($service_status);
 	
-	$DBRESULT =& $pearDBO->query("SELECT fast_parsing FROM config");
-	if (PEAR::isError($DBRESULT))
+	if (isset($pearDBO))
+		$DBRESULT =& $pearDBO->query("SELECT fast_parsing FROM config");
+	if (PEAR::isError($DBRESULT)){
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	$DBRESULT->fetchInto($config);
-	$fast_parsing = $config['fast_parsing'];
-	
+		$fast_parsing = 0;
+	} else {
+		$DBRESULT->fetchInto($config);
+		if (isset($config['fast_parsing']))
+			$fast_parsing = $config['fast_parsing'];		
+		else 
+			$fast_parsing = 0;
+	}
 	# Read File
 	$DBRESULT1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
 	if (PEAR::isError($DBRESULT1))
