@@ -400,15 +400,15 @@ function restart_mysql()
     echo ""
     echo "Restart Mysql server"
     echo "-------------------"
-  if test -x /etc/init.d/mysqld ; then
-      /etc/init.d/mysqld restart
-  else if test -x /etc/init.d/mysql ; then
-      /etc/init.d/mysql restart
-  else
-      echo_failure "We don't find Mysql server. OREON will not run." "FAILURE"
-      exit
-  fi
-  fi
+  	if test -x /etc/init.d/mysqld ; then
+      	/etc/init.d/mysqld restart
+  	else if test -x /etc/init.d/mysql ; then
+      	/etc/init.d/mysql restart
+  	else
+     	echo_failure "We don't find Mysql server. OREON will not run." "FAILURE"
+      	exit
+  	fi
+  	fi
 }
 
 function config_sudo()
@@ -454,53 +454,63 @@ function oreon_post_install()
     echo "Post Install"
     echo "------------"
 
-      #BIN_MAIL=`whereis -b mail | cut -d : -f2`
-      #BIN_MAIL=${BIN_MAIL# }
-	  echo_success "Finding mail binary : $BIN_MAIL " "OK"
+    #BIN_MAIL=`whereis -b mail | cut -d : -f2`
+    #BIN_MAIL=${BIN_MAIL# }
+	echo_success "Finding mail binary : $BIN_MAIL " "OK"
 
-	  #BIN_RRDTOOL=`whereis -b rrdtool | cut -d : -f2 | cut -d " " -f2`
-      #BIN_RRDTOOL=${BIN_RRDTOOL# }
-	  echo_success "Finding rrdtool binary : $BIN_RRDTOOL " "OK"
+	#BIN_RRDTOOL=`whereis -b rrdtool | cut -d : -f2 | cut -d " " -f2`
+    #BIN_RRDTOOL=${BIN_RRDTOOL# }
+	echo_success "Finding rrdtool binary : $BIN_RRDTOOL " "OK"
 
 
-	  INSTALL_DIR_OREON_CONF="$INSTALL_DIR_OREON/www/install/installoreon.conf.php"
-      echo "<?" > $INSTALL_DIR_OREON_CONF
-      echo "/**" >> $INSTALL_DIR_OREON_CONF
-      echo "Oreon is developped with GPL Licence 2.0 :" >> $INSTALL_DIR_OREON_CONF
-      echo "http://www.gnu.org/licenses/gpl.txt" >> $INSTALL_DIR_OREON_CONF
-      echo "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf" >> $INSTALL_DIR_OREON_CONF
-      echo "" >> $INSTALL_DIR_OREON_CONF
-      echo "The Software is provided to you AS IS and WITH ALL FAULTS." >> $INSTALL_DIR_OREON_CONF
-      echo "OREON makes no representation and gives no warranty whatsoever," >> $INSTALL_DIR_OREON_CONF
-      echo "whether express or implied, and without limitation, with regard to the quality," >> $INSTALL_DIR_OREON_CONF
-      echo "safety, contents, performance, merchantability, non-infringement or suitability for" >> $INSTALL_DIR_OREON_CONF
-      echo "any particular or intended purpose of the Software found on the OREON web site." >> $INSTALL_DIR_OREON_CONF
-      echo "In no event will OREON be liable for any direct, indirect, punitive, special," >> $INSTALL_DIR_OREON_CONF
-      echo "incidental or consequential damages however they may arise and even if OREON has" >> $INSTALL_DIR_OREON_CONF
-      echo "been previously advised of the possibility of such damages." >> $INSTALL_DIR_OREON_CONF
-      echo "" >> $INSTALL_DIR_OREON_CONF
-      echo "For information : contact@oreon-project.org" >> $INSTALL_DIR_OREON_CONF
-      echo "	*/" >> $INSTALL_DIR_OREON_CONF
-      echo "" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['oreon_dir'] = \"$INSTALL_DIR_OREON/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['oreon_dir_www'] = \"$INSTALL_DIR_OREON/www/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['oreon_dir_rrd'] = \"$INSTALL_DIR_OREON/rrd/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios'] = \"$INSTALL_DIR_NAGIOS/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_conf'] = \"$NAGIOS_ETC/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_plugins'] = \"$NAGIOS_PLUGIN/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_bin'] = \"$NAGIOS_BIN/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_init_script'] = \"$NAGIOS_INIT_SCRIPT\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['apache_user'] = \"$WEB_USER\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['apache_group'] = \"$WEB_GROUP\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_user'] = \"$NAGIOS_USER\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_group'] = \"$NAGIOS_GROUP\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['mail'] = \"$BIN_MAIL\";" >> $INSTALL_DIR_OREON_CONF
-      #echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['pear_dir'] = \"$PEAR_PATH\";" >> $INSTALL_DIR_OREON_CONF
+	INSTALL_DIR_OREON_CONF="$INSTALL_DIR_OREON/www/install/installoreon.conf.php"
+    echo "<?" > $INSTALL_DIR_OREON_CONF
+    echo "/**" >> $INSTALL_DIR_OREON_CONF
+    echo "Oreon is developped with GPL Licence 2.0 :" >> $INSTALL_DIR_OREON_CONF
+    echo "http://www.gnu.org/licenses/gpl.txt" >> $INSTALL_DIR_OREON_CONF
+    echo "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf" >> $INSTALL_DIR_OREON_CONF
+    echo "" >> $INSTALL_DIR_OREON_CONF
+    echo "The Software is provided to you AS IS and WITH ALL FAULTS." >> $INSTALL_DIR_OREON_CONF
+    echo "OREON makes no representation and gives no warranty whatsoever," >> $INSTALL_DIR_OREON_CONF
+    echo "whether express or implied, and without limitation, with regard to the quality," >> $INSTALL_DIR_OREON_CONF
+    echo "safety, contents, performance, merchantability, non-infringement or suitability for" >> $INSTALL_DIR_OREON_CONF
+    echo "any particular or intended purpose of the Software found on the OREON web site." >> $INSTALL_DIR_OREON_CONF
+    echo "In no event will OREON be liable for any direct, indirect, punitive, special," >> $INSTALL_DIR_OREON_CONF
+    echo "incidental or consequential damages however they may arise and even if OREON has" >> $INSTALL_DIR_OREON_CONF
+    echo "been previously advised of the possibility of such damages." >> $INSTALL_DIR_OREON_CONF
+    echo "" >> $INSTALL_DIR_OREON_CONF
+    echo "For information : contact@oreon-project.org" >> $INSTALL_DIR_OREON_CONF
+    echo "	*/" >> $INSTALL_DIR_OREON_CONF
+    echo "" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['oreon_dir'] = \"$INSTALL_DIR_OREON/\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['oreon_dir_www'] = \"$INSTALL_DIR_OREON/www/\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['oreon_dir_rrd'] = \"$INSTALL_DIR_OREON/rrd/\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['nagios'] = \"$INSTALL_DIR_NAGIOS/\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['nagios_conf'] = \"$NAGIOS_ETC/\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['nagios_plugins'] = \"$NAGIOS_PLUGIN/\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['nagios_bin'] = \"$NAGIOS_BIN/\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['nagios_init_script'] = \"$NAGIOS_INIT_SCRIPT\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['apache_user'] = \"$WEB_USER\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['apache_group'] = \"$WEB_GROUP\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['nagios_user'] = \"$NAGIOS_USER\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['nagios_group'] = \"$NAGIOS_GROUP\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['mail'] = \"$BIN_MAIL\";" >> $INSTALL_DIR_OREON_CONF
+    #echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
+    echo "\$conf_installoreon['pear_dir'] = \"$PEAR_PATH\";" >> $INSTALL_DIR_OREON_CONF
 
-      for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
-      do
+    for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
+    do
+    	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
+	    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
+    	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+      	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
+      	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
+        echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+      	echo "\";" >> $INSTALL_DIR_OREON_CONF
+    done
+    for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
+    do
       	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
 	    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
     	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
@@ -508,9 +518,9 @@ function oreon_post_install()
       	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
         echo -n $tmp >> $INSTALL_DIR_OREON_CONF
       	echo "\";" >> $INSTALL_DIR_OREON_CONF
-      done
-      for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
-      do
+    done
+    for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
+    do
       	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
 	    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
     	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
@@ -518,22 +528,12 @@ function oreon_post_install()
       	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
         echo -n $tmp >> $INSTALL_DIR_OREON_CONF
       	echo "\";" >> $INSTALL_DIR_OREON_CONF
-      done
-        for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
-      do
-      	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
-	    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
-    	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
-      	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
-        echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo "\";" >> $INSTALL_DIR_OREON_CONF
-      done
+    done
 
-      echo "?>" >> $INSTALL_DIR_OREON_CONF
-      echo_success "Create $INSTALL_DIR_OREON_CONF" "OK"
+    echo "?>" >> $INSTALL_DIR_OREON_CONF
+    echo_success "Create $INSTALL_DIR_OREON_CONF" "OK"
 
-     echo "INSTALL_DIR_OREON=$INSTALL_DIR_OREON" > $OREON_CONF
+    echo "INSTALL_DIR_OREON=$INSTALL_DIR_OREON" > $OREON_CONF
      echo "NAGIOS_ETC=$NAGIOS_ETC" >> $OREON_CONF
      echo "NAGIOS_PLUGIN=$NAGIOS_PLUGIN" >> $OREON_CONF
      echo "NAGIOS_BIN=$NAGIOS_BIN" >> $OREON_CONF
@@ -583,6 +583,9 @@ function install_ods(){
     echo "------------------------"
 	
 	echo "sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl"
+	
+	mkdir $INSTALL_DIR_OREON/ODS
+	mkdir $INSTALL_DIR_OREON/ODS/etc
 	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl
 	mv $INSTALL_DIR_OREON/ODS/ods_new.pl $INSTALL_DIR_OREON/ODS/ods.pl
