@@ -149,12 +149,11 @@ UPDATE `topology` SET `topology_name` = 'm_modules',
 `topology_style_id` = NULL ,
 `topology_OnClick` = NULL WHERE `topology_page` = 50103 LIMIT 1 ;
 
-ALTER TABLE `modules_informations` CHANGE `release` `release` VARCHAR( 255 ) NULL DEFAULT NULL;
+ALTER TABLE `modules_informations` CHANGE `release` `mod_release` VARCHAR( 255 ) NULL DEFAULT NULL;
 
 -- 01/03/2007
 ALTER TABLE `modules_informations` ADD `sql_files` ENUM( '0', '1' ) NULL ,
 ADD `php_files` ENUM( '0', '1' ) NULL ;
-ALTER TABLE `modules_informations` CHANGE `mod_release` `mod_release` VARCHAR( 255 ) NULL DEFAULT NULL;
 
 
 -- 05/02/2007
