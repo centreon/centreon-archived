@@ -40,6 +40,8 @@ For information : contact@oreon-project.org
 	$tmp = NULL;
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	if (isset($search))	{
+		$search = str_replace('/', "#S#", $search);
+		$search = str_replace('\\', "#BS#", $search);
 		if ($oreon->user->admin || !$isRestreint)
 			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		else
@@ -113,6 +115,10 @@ For information : contact@oreon-project.org
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$service["service_description"])
 			$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
+		else	{
+			$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
+			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);			
+		}
 		/* TPL List */
 		$tplArr = array();
 		$tplStr = NULL;

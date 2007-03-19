@@ -110,6 +110,8 @@ For information : contact@oreon-project.org
 					}
 					$strTMP .= "define service{\n";
 					$strTMP .= print_line("host_name", $value);
+					$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
+					$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 					if (!$service["service_register"] && $service["service_description"])	{
 						$strTMP .= print_line("name", $service["service_description"]);
 						$strTMP .= print_line("service_description", $service["service_description"]);

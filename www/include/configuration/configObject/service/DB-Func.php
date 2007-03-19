@@ -24,6 +24,8 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('service_id');
+		$name = str_replace('/', "#S#", $name);
+		$name = str_replace('\\', "#BS#", $name);
 		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -55,6 +57,8 @@ For information : contact@oreon-project.org
 			else
 				$hgPars = array();
 		}
+		$name = str_replace('/', "#S#", $name);
+		$name = str_replace('\\', "#BS#", $name);
 		foreach ($hPars as $host)	{
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
 			if (PEAR::isError($DBRESULT))
@@ -304,6 +308,10 @@ For information : contact@oreon-project.org
 			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
 		}
+		if (isset($ret["service_description"]) && $ret["service_description"] != NULL)		{
+			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
+			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
+		}
 		$rq = "INSERT INTO service " .
 				"(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, purge_policy_id, " .
 				"service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, " .
@@ -399,6 +407,10 @@ For information : contact@oreon-project.org
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
+		}		
+		if (isset($ret["service_description"]) && $ret["service_description"] != NULL)		{
+			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
+			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
 		}
 		$rq = "UPDATE service SET " ;
 		$rq .= "service_template_model_stm_id = ";
@@ -497,6 +509,10 @@ For information : contact@oreon-project.org
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);"', " ;
 			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
+		}		
+		if (isset($ret["service_description"]) && $ret["service_description"] != NULL)		{
+			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
+			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
 		}
 		$rq = "UPDATE service SET ";
 		if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL) $rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
