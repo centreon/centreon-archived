@@ -61,6 +61,8 @@ For information : contact@oreon-project.org
 	$form->addElement('checkbox', 'archive_log', $lang["ods_archive_log"]);
 	$form->addElement('text', 'archive_retention', $lang["ods_log_retention"], $attrsText2);
 	
+	$form->addElement('checkbox', 'fast_parsing', $lang["ods_fast_parsing"]);
+	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
