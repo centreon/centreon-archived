@@ -158,8 +158,8 @@ For information : contact@oreon-project.org
 	$res = $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
 
 	if($type_period == "customized") {
-		$formPeriod2->setDefaults(array('start' => date("d/m/Y", $start_date_select)));
-		$formPeriod2->setDefaults(array('end' => date("d/m/Y", $end_date_select)));
+		$formPeriod2->setDefaults(array('start' => date("m/d/Y", $start_date_select)));
+		$formPeriod2->setDefaults(array('end' => date("m/d/Y", $end_date_select)));
 	}
 	
 	if($mhost){

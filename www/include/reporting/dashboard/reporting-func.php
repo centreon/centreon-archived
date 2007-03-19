@@ -78,7 +78,6 @@ For information : contact@oreon-project.org
 				$endminute = date("i",$end);
 				$endsecond = date("s",$end);
 				$end_date_select = mktime($endhour, $endminute, $endsecond, $endmonth, $endday, $endyear);
-				$end_date_select = mktime(23, 59, 59, $endmonth, $endday, $endyear);
 			}
 			else{
 				$end = my_getTimeTamps($end);

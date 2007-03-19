@@ -186,15 +186,13 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			## last host alert for today
 			#
 			if(!strncmp($tab_hosts[$mhost]["current_state"], "UP", 2))
-				$tab_hosts[$mhost]["timeUP"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
+				$tab_hosts[$mhost]["timeUP"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
 			elseif(!strncmp($tab_hosts[$mhost]["current_state"], "DOWN", 4))
-				$tab_hosts[$mhost]["timeDOWN"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
+				$tab_hosts[$mhost]["timeDOWN"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
 			elseif(!strncmp($tab_hosts[$mhost]["current_state"], "UNREACHABLE", 11))
-				$tab_hosts[$mhost]["timeUNREACHABLE"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
+				$tab_hosts[$mhost]["timeUNREACHABLE"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
 			else
-				$tab_hosts[$mhost]["timeNONE"] += ($end_date_select-$tab_hosts[$mhost]["current_time"]);
-
-
+				$tab_hosts[$mhost]["timeNONE"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
 
 			#
 			## add log day
@@ -205,7 +203,6 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$Tnone += (($end_date_select - $start_date_select) - ($Tup + $Tdown + $Tunreach));
 			$tab_svc =array();
 			$i = 0;
-
 			$today_up = $tab_hosts[$mhost]["timeUP"];
 			$today_down = $tab_hosts[$mhost]["timeDOWN"];
 			$today_unreachable = $tab_hosts[$mhost]["timeUNREACHABLE"];
