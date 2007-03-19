@@ -59,6 +59,20 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+	/* Connect to ods DB */	
+	
+	$dsn = array('phptype'  => 'mysql',
+			     'username' => $conf_oreon['user'],
+			     'password' => $conf_oreon['password'],
+			     'hostspec' => $conf_oreon['host'],
+			     'database' => $conf_oreon['ods'],);
+	
+	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
+	
+	$pearDBO =& DB::connect($dsn, $options);
+	if (PEAR::isError($pearDBO)) die("Connecting problems with oreon database : " . $pearDBO->getMessage());
+	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
+	
 	
 	# class init
 	class Duration

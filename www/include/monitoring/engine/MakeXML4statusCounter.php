@@ -46,60 +46,62 @@ For information : contact@oreon-project.org
 			     'hostspec' => $conf_oreon['host'],
 			     'database' => $conf_oreon['db'],);
 	
-	$options = array('debug'       => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
+	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
 	
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-
-
-
-	#
-	## Session...
-	#
-		$debug_session = 'KO';
-
-
-
-#
-## sessionID check and refresh
-#
-
-
-$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
-$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
-
-
-$session_expire = isset($_POST["session_expire"]) ? $_POST["session_expire"] : 30;
-$session_expire = isset($_GET["session_expire"]) ? $_GET["session_expire"] : $session_expire;
-
-
-//$session_expire = 5;
-
-
-
-function restore_session($statistic_service = 'null', $statistic_host = 'null'){
-	global $pearDB;
 	
-	if(isset($statistic_service) && !is_null($statistic_service))
-		$sql = "UPDATE session SET " .
-				" s_nbHostsUp = '".$statistic_host["UP"]."'," . 
-				" s_nbHostsDown = '".$statistic_host["DOWN"]."'," . 
-				" s_nbHostsUnreachable = '".$statistic_host["UNREACHABLE"]."'," . 
-				" s_nbHostsPending = '".$statistic_host["PENDING"]."'," . 
-				" s_nbServicesOk = '".$statistic_service["OK"]."'," . 
-				" s_nbServicesWarning = '".$statistic_service["WARNING"]."'," . 
-				" s_nbServicesCritical = '".$statistic_service["CRITICAL"]."'," . 
-				" s_nbServicesUnknown = '".$statistic_service["UNKNOWN"]."'," . 
-				" s_nbServicesPending = '".$statistic_service["PENDING"]."'" . 
-				" WHERE session_id = '".$_POST["sid"]."'";	
+	/* Connect to ods DB */	
+	
+	$dsn = array('phptype'  => 'mysql',
+			     'username' => $conf_oreon['user'],
+			     'password' => $conf_oreon['password'],
+			     'hostspec' => $conf_oreon['host'],
+			     'database' => $conf_oreon['ods'],);
+	
+	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
+	
+	$pearDBO =& DB::connect($dsn, $options);
+	if (PEAR::isError($pearDBO)) die("Connecting problems with oreon database : " . $pearDBO->getMessage());
+	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 
+	# Session...
+	
+	$debug_session = 'KO';
+
+	# sessionID check and refresh
+
+	$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
+	$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
+	
+	
+	$session_expire = isset($_POST["session_expire"]) ? $_POST["session_expire"] : 30;
+	$session_expire = isset($_GET["session_expire"]) ? $_GET["session_expire"] : $session_expire;
+
+	//$session_expire = 5;
+
+	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
+		global $pearDB;
+		if(isset($statistic_service) && !is_null($statistic_service)){
+			$sql = "UPDATE session SET " .
+					" s_nbHostsUp = '".$statistic_host["UP"]."'," . 
+					" s_nbHostsDown = '".$statistic_host["DOWN"]."'," . 
+					" s_nbHostsUnreachable = '".$statistic_host["UNREACHABLE"]."'," . 
+					" s_nbHostsPending = '".$statistic_host["PENDING"]."'," . 
+					" s_nbServicesOk = '".$statistic_service["OK"]."'," . 
+					" s_nbServicesWarning = '".$statistic_service["WARNING"]."'," . 
+					" s_nbServicesCritical = '".$statistic_service["CRITICAL"]."'," . 
+					" s_nbServicesUnknown = '".$statistic_service["UNKNOWN"]."'," . 
+					" s_nbServicesPending = '".$statistic_service["PENDING"]."'" . 
+					" WHERE session_id = '".$_POST["sid"]."'";	
 			$DBRESULT =& $pearDB->query($sql);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-}
+		}
+	}
 
-	if($sid){
+	if ($sid){
 		$debug_session = $sid;
 		$time = time();
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
@@ -174,7 +176,6 @@ function restore_session($statistic_service = 'null', $statistic_host = 'null'){
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
 		echo $buffer;
-
 	}
 	
 
