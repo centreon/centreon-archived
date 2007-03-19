@@ -29,6 +29,8 @@ For information : contact@oreon-project.org
 	// Is User Admin ?
 	if (!isset($pearDB))
 		global $pearDB;
+	if (!isset($pearDBO))
+		global $pearDBO;
 	
 	$DBRESULT1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
 	if (PEAR::isError($DBRESULT1))
@@ -93,15 +95,15 @@ For information : contact@oreon-project.org
 	$fast_parsing = $config['fast_parsing'];
 	
 	# Read File
-	if (($version == 1 || $version == 2) && $fast_parsing == 0){
-		$DBRESULT1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
-		if (PEAR::isError($DBRESULT1))
-			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
-		$DBRESULT1->fetchInto($nagios_cfg);
+	$DBRESULT1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
+	if (PEAR::isError($DBRESULT1))
+		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
+	$DBRESULT1->fetchInto($nagios_cfg);
+	
+	if (($version == 1 || $version == 2) && $fast_parsing == 0)
 		$file = $nagios_cfg["status_file"];
-	} else if (($version == 1 || $version == 2) && $fast_parsing == 1) {
+ 	else if ($version == 2 && $fast_parsing == 1)
 		$file = $nagios_cfg["status_file"]."_light";
-	}
 	
 	// Open File
 	if (file_exists($file)){
