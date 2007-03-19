@@ -1,0 +1,27 @@
+######################################################
+# How to upgrade your 1.3.3 in 1.4 ?
+######################################################
+
+login on mysql 
+
+consider : 
+	ods = table for oreon data storage
+	root = login mysql for root
+	mysql-password = mysql password
+	oreon = oreon user mysql
+
+$>mysql -u root -pmysql-password
+mysql> CREATE DATABASE `ods` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> GRANT ALL PRIVILEGES ON `ods` . * TO 'oreon'@'localhost';
+mysql> exit 
+
+$> mysql -u root -pmysql-password -B ods < ./y6F7e2/createTablesODS.sql
+
+After all this request, add in oreon.conf.php file in www directory of oreon this line :
+
+$conf_oreon['ods'] = "ods";
+
+juste after 
+
+$conf_oreon['db'] = "oreon";
+
