@@ -1,5 +1,8 @@
 ## Oreon 1.4
 
+=> Bugfix : #311
+=> Bugfix : #286
+=> Bugfix : #322
 => Feature : Keep in memory for each page search field
 => Feature : ODS for easy and performed graphs
 => Feature : Auto install ODS + init script
