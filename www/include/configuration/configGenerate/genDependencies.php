@@ -102,7 +102,7 @@ For information : contact@oreon-project.org
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 			else if ($ret["level"]["level"] == 2)
-				array_key_exists($host["hg_id"], $gbArr[3]) ? $BP = true : NULL;
+				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 			else if ($ret["level"]["level"] == 3)
 				$BP = true;
 			if ($BP)	
@@ -127,7 +127,7 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();			
 		if ($strTemp1 && $strTemp2)	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' host dependency definition ".$i."\n") : NULL;
+			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' hostgroup dependency definition ".$i."\n") : NULL;
 			if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $dependency["dep_comment"]);
@@ -218,7 +218,71 @@ For information : contact@oreon-project.org
 		}		
 	}
 	$DBRESULT->free();
-	
+
+	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgcr WHERE dsgcr.dependency_dep_id = dep.dep_id) > 0";
+	$DBRESULT =& $pearDB->query($rq);
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	$dependency = array();
+	while($DBRESULT->fetchInto($dependency))	{
+		$BP = false;
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupParent_relation dsgpr, servicegroup WHERE dsgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgpr.servicegroup_sg_id");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+		$sg = array();
+		$strTemp1 = NULL;
+		while ($DBRESULT2->fetchInto($sg))	{
+			$BP = false;
+			if ($ret["level"]["level"] == 1)
+				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
+			else if ($ret["level"]["level"] == 2)
+				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
+			else if ($ret["level"]["level"] == 3)
+				$BP = true;
+			if ($BP)	
+				$strTemp1 != NULL ? $strTemp1 .= ", ".$sg["sg_name"] : $strTemp1 = $sg["sg_name"];
+		}
+		$DBRESULT2->free();
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupChild_relation dsgcr, servicegroup WHERE dsgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgcr.servicegroup_sg_id");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+		$sg= array();
+		$strTemp2 = NULL;
+		while ($DBRESULT2->fetchInto($sg))	{
+			$BP = false;
+			if ($ret["level"]["level"] == 1)
+				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
+			else if ($ret["level"]["level"] == 2)
+				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
+			else if ($ret["level"]["level"] == 3)
+				$BP = true;
+			if ($BP)	
+				$strTemp2 != NULL ? $strTemp2 .= ", ".$sg["sg_name"] : $strTemp2 = $sg["sg_name"];
+		}
+		$DBRESULT2->free();			
+		if ($strTemp1 && $strTemp2)	{
+			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' servicegroup dependency definition ".$i."\n") : NULL;
+			if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{
+				$comment = array();
+				$comment = explode("\n", $dependency["dep_comment"]);
+				foreach ($comment as $cmt)
+					$str .= "# ".$cmt."\n";
+			}
+			$str .= "define servicedependency{\n";
+			$str .= print_line("dependent_servicegroup_name", $strTemp2);
+			$str .= print_line("servicegroup_name", $strTemp1);
+			if ($oreon->user->get_version() == 2)	{
+				if (isset($dependency["inherits_parent"]["inherits_parent"]) && $dependency["inherits_parent"]["inherits_parent"] != NULL) $str .= print_line("inherits_parent", $dependency["inherits_parent"]["inherits_parent"]);
+				if (isset($dependency["execution_failure_criteria"]) && $dependency["execution_failure_criteria"] != NULL) $str .= print_line("execution_failure_criteria", $dependency["execution_failure_criteria"]);
+			}
+			if (isset($dependency["notification_failure_criteria"]) && $dependency["notification_failure_criteria"] != NULL) $str .= print_line("notification_failure_criteria", $dependency["notification_failure_criteria"]);
+			$str .= "}\n\n";
+			$i++;
+		}
+	}
+	unset($dependency);
+	$DBRESULT->free();
+		
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $path ."dependencies.cfg");
 	fclose($handle);
 	unset($str);
