@@ -13,6 +13,9 @@
 => Bugfix  : Quickest ajax in monitoring
 => BugFix  : Best reporting (many bug fix and add counter for alerts)
 => Feature : Add timeline for service in dashboard
+=> Feature : new version of engine dashboard
+=> Feature : new version of engine dashboard
+=> Bugfix : command argument example and ' " / \
 => Feature : Module manager
 => Feature : In configuration, massive change options for numbers of elements with "quick select" menu (host, service, contact)
 => Feature : In configuration, availability to enable/disable numbers of elements with "quick select" menu (host, hostgroup, service, contact)
