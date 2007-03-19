@@ -582,11 +582,6 @@ function install_ods(){
     echo "Start ODS Installation"
     echo "------------------------"
 	
-	echo "sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl"
-	
-	mkdir $INSTALL_DIR_OREON/ODS
-	mkdir $INSTALL_DIR_OREON/ODS/etc
-	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl
 	mv $INSTALL_DIR_OREON/ODS/ods_new.pl $INSTALL_DIR_OREON/ODS/ods.pl
  	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
