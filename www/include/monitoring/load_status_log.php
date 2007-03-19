@@ -92,9 +92,10 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
 		$DBRESULT1->fetchInto($nagios_cfg);
 		$file = $nagios_cfg["status_file"];
-	} else
-		$file = "/srv/nagios/var/status_oreon.log";
-
+	} else {
+		$file = "/srv/nagios/var/status.log_light";
+	}
+	
 	// Open File
 	if (file_exists($file)){
 		$log_file = fopen($file, "r");
@@ -246,9 +247,10 @@ For information : contact@oreon-project.org
 				if (preg_match("/^p\#/", $str)){
 			  		$program_data = getProgramDataParsed($log, $status_proc);
 			  	} else if (preg_match("/^s/", $str)){
-					if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) 
-							&& strcmp($log[1], "OSL_Module") && strcmp($log[1], "Meta_Module")){
-						$service_status[$log["1"]."_".$log["2"]] = getServiceDataParsed($log);
+					if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log['1']]))) && strcmp($log[1], "OSL_Module") && strcmp($log[1], "Meta_Module")){
+						$svc_data = getServiceDataParsed($log);
+						//$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
+						$service_status[$log["1"]."_".$log["2"]] = $svc_data;
 				   		$tab_host_service[$log["1"]][$log["2"]] = "1";
 				   		if (is_object($oreon))
 					   		$oreon->status_graph_service[$service_status[$log["1"]."_".$log["2"]]['current_state']]++;
@@ -257,7 +259,10 @@ For information : contact@oreon-project.org
 				} else if (preg_match("/^h*/", $str) && strcmp($log[1], "OSL_Module")){ // get host stat
 			  		if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
 			    		$tab_host_service[$log["1"]] = array();
-			    		$host_status[$log["1"]] = getHostDataParsed($log);
+			    		$host_data = getHostDataParsed($log);
+			    		//$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
+			    		$host_status[$log["1"]] = $host_data;
+			    		unset($host_data);
 			    		if (is_object($oreon))
 				    		$oreon->status_graph_host[$host_status[$log["1"]]['current_state']]++;
 			  		}

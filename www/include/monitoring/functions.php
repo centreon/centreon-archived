@@ -132,39 +132,40 @@ For information : contact@oreon-project.org
 	}
 		
 	function getHostDataParsed($log){
-		global $tab_status_host;
-	  $host_data["host_name"] = 								$log['1'];
-	  $host_data["modified_attributes"] = 						$log['2'];
-	  $host_data["check_command"] = 							$log['3'];
-	  $host_data["event_handler"] = 							$log['4'];
-	  $host_data["has_been_checked"] = 							$log['5'];
-	  $host_data["should_be_scheduled"] = 						$log['6'];
-	  $host_data["check_execution_time"] = 						$log['7'];
-	  $host_data["check_latency"] = 							$log['8'];
-	  $host_data["check_type"] = 								$log['9'];
-	  $host_data["current_state"] = 							$tab_status_host[$log['10']];
-	  $host_data["last_hard_state"] = 							$log['11'];
-	  $host_data["plugin_output"] = 							$log['12'];
-	  $host_data["performance_data"] = 							$log['13'];
-	  $host_data["last_check"] = 								$log['14'];
-	  $host_data["next_check"] = 								$log['15'];
-	  $host_data["current_attempt"] = 							$log['16'];
-	  $host_data["max_attempts"] = 								$log['17'];
-	  $host_data["state_type"] = 								$log['18'];
-	  $host_data["last_state_change"] = 						$log['19'];
-	  $host_data["last_hard_state_change"] = 					$log['20'];
-	  $host_data["last_time_up"] = 								$log['21'];
-	  $host_data["last_time_down"] = 							$log['22'];
-	  $host_data["last_time_unreachable"] =	 					$log['23'];
-	  if (isset($log['24']))
-		  $host_data["last_notification"] = 					$log['24'];
-	  if (isset($log['25']))
-		  $host_data["next_notification"] = 					$log['25'];
-	  if (isset($log['26']))
-		  $host_data["no_more_notifications"] = 				$log['26'];
-	  if (isset($log['27']))
-		  $host_data["current_notification_number"] = 			$log['27'];
-	  if (isset($log['28']))
+		
+		$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+	  	$host_data["host_name"] = 								$log['1'];
+	  	$host_data["modified_attributes"] = 						$log['2'];
+	  	$host_data["check_command"] = 							$log['3'];
+	  	$host_data["event_handler"] = 							$log['4'];
+	  	$host_data["has_been_checked"] = 							$log['5'];
+	  	$host_data["should_be_scheduled"] = 						$log['6'];
+	  	$host_data["check_execution_time"] = 						$log['7'];
+	  	$host_data["check_latency"] = 							$log['8'];
+	  	$host_data["check_type"] = 								$log['9'];
+	  	$host_data["current_state"] = 							$tab_status_host[$log['10']];
+	  	$host_data["last_hard_state"] = 							$log['11'];
+	  	$host_data["plugin_output"] = 							$log['12'];
+	  	$host_data["performance_data"] = 							$log['13'];
+	  	$host_data["last_check"] = 								$log['14'];
+	  	$host_data["next_check"] = 								$log['15'];
+	  	$host_data["current_attempt"] = 							$log['16'];
+	  	$host_data["max_attempts"] = 								$log['17'];
+	  	$host_data["state_type"] = 								$log['18'];
+	  	$host_data["last_state_change"] = 						$log['19'];
+	  	$host_data["last_hard_state_change"] = 					$log['20'];
+	  	$host_data["last_time_up"] = 								$log['21'];
+	  	$host_data["last_time_down"] = 							$log['22'];
+	  	$host_data["last_time_unreachable"] =	 					$log['23'];
+	  	if (isset($log['24']))
+			$host_data["last_notification"] = 					$log['24'];
+	  	if (isset($log['25']))
+		  	$host_data["next_notification"] = 					$log['25'];
+	  	if (isset($log['26']))
+		  	$host_data["no_more_notifications"] = 				$log['26'];
+	  	if (isset($log['27']))
+		  	$host_data["current_notification_number"] = 			$log['27'];
+	  	if (isset($log['28']))
 		  $host_data["notifications_enabled"] = 				$log['28'];
 	  if (isset($log['29']))
 		  $host_data["problem_has_been_acknowledged"] = 		$log['29'];
@@ -196,51 +197,51 @@ For information : contact@oreon-project.org
 	}
 	
 	function getServiceDataParsed($log){
-		global $tab_status_svc;
-	  $svc_data["host_name"] = 				$log[1];
-	  $svc_data["service_description"] = 	$log[2];
-	  $svc_data["modified_attributes"] = 	$log[3];
-	  $svc_data["check_command"] = 			$log[4];
-	  $svc_data["event_handler"] = 			$log[5];
-	  $svc_data["has_been_checked"] = 		$log[6];
-	  $svc_data["should_be_scheduled"] = 	$log[7];
-	  $svc_data["check_execution_time"] = 	$log[8];
-	  $svc_data["check_latency"] = 			$log[9];
-	  $svc_data["check_type"] = 			$log[10];
-	  $svc_data["current_state"] = 			$tab_status_svc[$log[11]];
-	  $svc_data["last_hard_state"] = 		$log[12];
-	  $svc_data["current_attempt"] = 		$log[13];
-	  $svc_data["max_attempts"] = 			$log[14];
-	  $svc_data["state_type"] = 			$log[15];
-	  $svc_data["last_state_change"] = 		$log[16];
-	  $svc_data["last_hard_state_change"] = $log[17];
-	  $svc_data["last_time_ok"] = 			$log[18];
-	  $svc_data["last_time_warning"] = 		$log[19];
-	  $svc_data["last_time_unknown"] = 		$log[20];
-	  $svc_data["last_time_critical"] = 	$log[21];
-	  $svc_data["plugin_output"] = 			$log[22];
-	  $svc_data["performance_data"] = 		$log[23];
-	  $svc_data["last_check"] = 			$log[24];
-	  $svc_data["next_check"] = 			$log[25];
-	  $svc_data["current_notification_number"] = $log[26];
-	  $svc_data["last_notification"] = 		$log[27];
-	  $svc_data["next_notification"] = 		$log[28];
-	  $svc_data["no_more_notifications"] = 	$log[29];
-	  $svc_data["notifications_enabled"] = 	$log[30];
-	  $svc_data["active_checks_enabled"] = 	$log[31];
-	  $svc_data["passive_checks_enabled"] = $log[32];
-	  $svc_data["event_handler_enabled"] = 	$log[33];
-	  $svc_data["problem_has_been_acknowledged"] = $log[34];
-	  $svc_data["acknowledgement_type"] = 	$log[35];
-	  $svc_data["flap_detection_enabled"] = $log[36];
-	  $svc_data["failure_prediction_enabled"] = $log[37];
-	  $svc_data["process_performance_data"] = $log[38];
-	  $svc_data["obsess_over_service"] = 	$log[39];
-	  $svc_data["last_update"] = 			$log[40];
-	  $svc_data["is_flapping"] = 			$log[41];
-	  $svc_data["percent_state_change"] = 	$log[42];
-	  $svc_data["scheduled_downtime_depth"] = $log[43];
-	  return ($svc_data);
+		$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
+	  	$svc_data["host_name"] = 				$log[1];
+		$svc_data["service_description"] = 		$log[2];
+		$svc_data["modified_attributes"] = 		$log[3];
+		$svc_data["check_command"] = 			$log[4];
+		$svc_data["event_handler"] = 			$log[5];
+		$svc_data["has_been_checked"] = 		$log[6];
+		$svc_data["should_be_scheduled"] = 		$log[7];
+		$svc_data["check_execution_time"] = 	$log[8];
+		$svc_data["check_latency"] = 			$log[9];
+		$svc_data["check_type"] = 				$log[10];
+		$svc_data["current_state"] = 			$tab_status_svc[$log[11]];
+		$svc_data["last_hard_state"] = 			$log[12];
+		$svc_data["current_attempt"] = 			$log[13];
+		$svc_data["max_attempts"] = 			$log[14];
+		$svc_data["state_type"] = 				$log[15];
+		$svc_data["last_state_change"] = 		$log[16];
+		$svc_data["last_hard_state_change"] = 	$log[17];
+		$svc_data["last_time_ok"] = 			$log[18];
+		$svc_data["last_time_warning"] = 		$log[19];
+		$svc_data["last_time_unknown"] = 		$log[20];
+		$svc_data["last_time_critical"] = 		$log[21];
+		$svc_data["plugin_output"] = 			$log[22];
+		$svc_data["performance_data"] = 		$log[23];
+		$svc_data["last_check"] = 				$log[24];
+		$svc_data["next_check"] = 				$log[25];
+		$svc_data["current_notification_number"] = $log[26];
+		$svc_data["last_notification"] = 		$log[27];
+		$svc_data["next_notification"] = 		$log[28];
+		$svc_data["no_more_notifications"] = 	$log[29];
+		$svc_data["notifications_enabled"] = 	$log[30];
+		$svc_data["active_checks_enabled"] = 	$log[31];
+		$svc_data["passive_checks_enabled"] = 	$log[32];
+		$svc_data["event_handler_enabled"] = 	$log[33];
+		$svc_data["problem_has_been_acknowledged"] = $log[34];
+		$svc_data["acknowledgement_type"] = 	$log[35];
+		$svc_data["flap_detection_enabled"] = 	$log[36];
+		$svc_data["failure_prediction_enabled"] = $log[37];
+		$svc_data["process_performance_data"] = $log[38];
+		$svc_data["obsess_over_service"] = 		$log[39];
+		$svc_data["last_update"] = 				$log[40];
+		$svc_data["is_flapping"] = 				$log[41];
+		$svc_data["percent_state_change"] = 	$log[42];
+		$svc_data["scheduled_downtime_depth"] = $log[43];
+		return ($svc_data);
 	}
 	
 ?>
