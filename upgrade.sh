@@ -548,11 +548,64 @@ function oreon_post_install()
      echo "BIN_MAIL=$BIN_MAIL" >> $OREON_CONF
      echo "PEAR_PATH=$PEAR_PATH" >> $OREON_CONF
 
-
      echo_success "Create $OREON_CONF " "OK"
      echo_success "Configuring Oreon post-install" "OK"
+
+	sudo=`cat /var/spool/cron/$NAGIOS_USER | grep ArchiveLogInDB.pl > /dev/null; echo $?`
+
+  	if [ $sudo == '1' ]; then
+  		echo "0 0 1-31 * * $INSTALL_DIR_OREON/cron/ArchiveLogInDB.pl >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER
+		echo_success "in cron installation for ArchiveLogInDB.pl" "OK"
+  	else
+      	echo_passed "in cron installation for ArchiveLogInDB.pl" "PASSED"
+  	fi
+	
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log_new.pl
+	mv $INSTALL_DIR_OREON/cron/parsing_log_new.pl $INSTALL_DIR_OREON/cron/parsing_log.pl
+	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl" "OK"
+	
+	sudo=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_log.pl > /dev/null; echo $?`
+
+  	if [ $sudo == '1' ]; then
+  		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER
+		echo_success "in cron installation for parsing_log.pl" "OK"
+  	else
+      	echo_passed "in cron installation for parsing_log.pl" "PASSED"
+  	fi
 }
 
+function install_ods(){
+	
+	echo ""
+    echo "Start ODS Installation"
+    echo "------------------------"
+	
+	echo "sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods.pl"
+	
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl
+	mv $INSTALL_DIR_OREON/ODS/ods_new.pl $INSTALL_DIR_OREON/ODS/ods.pl
+ 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
+	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
+	echo_success "Replace ODS Macro " "OK"
+    
+	if test -d $INSTALL_DIR_OREON/OreonDataStorage ; then
+		echo_passed "ODS data Directory already exists" "PASSED"
+    else
+		mkdir $INSTALL_DIR_OREON/OreonDataStorage >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON/OreonDataStorage'" "OK"
+    fi
+	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/OreonDataStorage
+	chmod 775 $INSTALL_DIR_OREON/OreonDataStorage
+	
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' $INSTALL_DIR_OREON/ODS_SRC_ETC/ods > /etc/init.d/ods
+	chmod 755 /etc/init.d/ods
+	
+	chmod -r 755 $INSTALL_DIR_OREON/ODS/var
+	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/var
+	rm -Rf $INSTALL_DIR_OREON/ODS_SRC_ETC
+}
 
 ##
 ## INSTALL
@@ -596,6 +649,7 @@ fi
 #check_group_nagiocmd
 #configure_apache
 confirm_oreon
+install_ods
 oreon_post_install
 
 echo ""
