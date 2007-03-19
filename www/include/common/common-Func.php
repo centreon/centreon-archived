@@ -400,8 +400,11 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
-			if ($row["service_description"])
+			if ($row["service_description"])	{
+				$row["service_description"] = str_replace('#S#', "/", $row["service_description"]);
+				$row["service_description"] = str_replace('#BS#', "\\", $row["service_description"]);
 				return html_entity_decode($row["service_description"], ENT_QUOTES);
+			}
 			else if ($row["service_template_model_stm_id"])
 				$service_id = $row["service_template_model_stm_id"];
 			else
@@ -417,8 +420,11 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
-			if ($row["service_alias"])
+			if ($row["service_alias"])	{
+				$row["service_alias"] = str_replace('#S#', "/", $row["service_alias"]);
+				$row["service_alias"] = str_replace('#BS#', "\\", $row["service_alias"]);
 				return html_entity_decode($row["service_alias"], ENT_QUOTES);
+			}
 			else if ($row["service_template_model_stm_id"])
 				$service_id = $row["service_template_model_stm_id"];
 			else
@@ -447,8 +453,10 @@ For information : contact@oreon-project.org
 	function getMyServiceID($service_description = NULL, $host_id = NULL, $hg_id = NULL)	{
 		if (!$service_description && (!$host_id || !$hg_id)) return;
 		global $pearDB;
+		$service_description = str_replace('/', '#S#', $service_description);
+		$service_description = str_replace('\\', '#BS#', $service_description);
 		if ($host_id)	{
-			$DBRESULT =& $pearDB->query(	"SELECT service_id FROM service, host_service_relation hsr " .
+			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr " .
 									"WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id " .
 									"AND service_description = '".$service_description."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
@@ -458,7 +466,7 @@ For information : contact@oreon-project.org
 			if ($row["service_id"])
 				return $row["service_id"];
 			# The Service might be link with a HostGroup
-			$DBRESULT =& $pearDB->query(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+			$DBRESULT =& $pearDB->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 									" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 									" AND service_id = hsr.service_service_id AND service_description = '".$service_description."'");
 			if (PEAR::isError($DBRESULT))
@@ -485,8 +493,11 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		while ($DBRESULT->fetchInto($elem))
+		while ($DBRESULT->fetchInto($elem))	{
+			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
+		}
 		$DBRESULT->free();
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
