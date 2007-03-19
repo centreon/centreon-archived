@@ -34,7 +34,7 @@ if (isset($passwd_error) && $passwd_error)
     <td align="right"><input type="text" name="nameOreonDB" value="<? if (isset($_SESSION["nameOreonDB"])) print $_SESSION["nameOreonDB"]; ?>"></td>
   </tr>
   <tr>
-    <td><b>Oreon Data Sotrage Database Name</b></td>
+    <td><b>Oreon Data Storage Database Name</b></td>
     <td align="right"><input type="text" name="nameOdsDB" value="<? if (isset($_SESSION["nameOdsDB"])) print $_SESSION["nameOdsDB"]; ?>"></td>
   </tr>
   <tr>
