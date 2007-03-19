@@ -29,6 +29,9 @@
 		include_once("./DBOdsConnect.php");
 
 
+	include("./include/common/autoNumLimit.php");
+
+
 	# pagination
 	# set limit & num
 	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
@@ -36,10 +39,7 @@
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 
-	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
-	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	# pagination
-
 	
 	$attrsTextDate 	= array("size"=>"11", "style"=>"border:1;");
 	$attrsTextHour 	= array("size"=>"5");

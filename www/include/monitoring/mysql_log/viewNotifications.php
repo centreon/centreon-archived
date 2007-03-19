@@ -35,9 +35,8 @@
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 
-	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
-	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	# pagination
+	include("./include/common/autoNumLimit.php");
 	
 	$attrsTextDate 	= array("size"=>"11", "style"=>"border:1;");
 	$attrsTextHour 	= array("size"=>"5");
