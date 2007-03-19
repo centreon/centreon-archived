@@ -16,7 +16,7 @@
 	<tr class="list_one"><td class="FormRowField">{$form.archive_log.label}</td><td class="FormRowValue">{$form.archive_log.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.archive_retention.label}</td><td class="FormRowValue">{$form.archive_retention.html}{$lang.ods_log_retention_unit}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;Monitoring</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.fast_parsing.label}</td><td class="FormRowValue">{$form.fats_parsing.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.fast_parsing.label}</td><td class="FormRowValue">{$form.fast_parsing.html}</td></tr>
 </table>	
 {$form.hidden}
 	<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
