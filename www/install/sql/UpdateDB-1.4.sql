@@ -16,7 +16,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_service_template_model', './img/icones/16x16/element_template.gif', 602, 60206, 50, 1, './include/configuration/configObject/service_template_model/serviceTemplateModel.php', NULL, '0', '0', '1');
 UPDATE topology SET topology_group = 2 WHERE topology_page = 60705;
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'mod_purgePolicy', './img/icones/16x16/data_down.gif', '607', '60708', '60', '2', './include/configuration/configObject/purgePolicy/purgePolicy.php', NULL , '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_perfparse', NULL, 607, NULL, NULL, 2, NULL, NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_perfparse', NULL, 607, NULL, NULL, 31, NULL, NULL, '0', '0', '1');
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60103, 'a', './include/common/javascript/changetab.js       ', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60103, 'c', './include/common/javascript/changetab.js       ', 'initChangeTab');
@@ -61,12 +61,12 @@ CREATE TABLE `modules_informations` (
 
 -- 27/01/2006
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title1', NULL, 402, NULL, NULL, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title2', NULL, 402, NULL, NULL, 2, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_host_graph', './img/icones/16x16/dot-chart.gif', 402, 40210, 10, 2, './include/views/graphs/graphODS/summaryODS.php', NULL, '0', '0', '1', NULL, NULL, NULL);
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_views_graphShow', './img/icones/16x16/column-chart.gif', 402, 40211, 20, 2, './include/views/graphs/graphODS/graphODS.php', NULL, '0', '0', '1', NULL, NULL, NULL);
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title3', NULL, 402, NULL, NULL, 3, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title4', NULL, 402, NULL, NULL, 4, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title1', NULL, 402, NULL, NULL, 41, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title2', NULL, 402, NULL, NULL, 40, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_host_graph', './img/icones/16x16/dot-chart.gif', 402, 40210, 10, 40, './include/views/graphs/graphODS/summaryODS.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_views_graphShow', './img/icones/16x16/column-chart.gif', 402, 40211, 20, 40, './include/views/graphs/graphODS/graphODS.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title3', NULL, 402, NULL, NULL, 42, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'views_title4', NULL, 402, NULL, NULL, 43, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 4, NULL, './include/common/javascript/datePicker.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 402, NULL, './include/common/javascript/datePicker.js', '');
@@ -99,7 +99,7 @@ CREATE TABLE `ods_view_details` (
 `all_user` ENUM( "0", "1" ) NULL
 ) ENGINE = innodb CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_ODS', './img/icones/16x16/nagios.gif', 50101, 5010110, 100, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=ods', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_ODS', '', 50101, 5010110, 100, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=ods', '0', '0', '1');
 
 -- 28/02/2007
 
@@ -152,8 +152,8 @@ UPDATE `topology` SET `topology_name` = 'm_modules',
 ALTER TABLE `modules_informations` CHANGE `release` `mod_release` VARCHAR( 255 ) NULL DEFAULT NULL;
 
 -- 01/03/2007
-ALTER TABLE `modules_informations` ADD `sql_files` ENUM( '0', '1' ) NULL ,
-ADD `php_files` ENUM( '0', '1' ) NULL ;
+
+ALTER TABLE `modules_informations` ADD `sql_files` ENUM( '0', '1' ) NULL , ADD `php_files` ENUM( '0', '1' ) NULL ;
 
 
 -- 05/02/2007
@@ -347,3 +347,16 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_warning_log', './img/icones/16x16/scroll_delete.gif', 203, 20314, 40, 31, './include/monitoring/mysql_log/viewErrors.php', NULL, '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init` ) VALUES (NULL , '20314', NULL , './include/common/javascript/datePicker.js', NULL);
+
+UPDATE `topology` SET `topology_url` = '' WHERE `topology`.`topology_id` =4 LIMIT 1 ;
+UPDATE `topology` SET `topology_url` = '' WHERE `topology`.`topology_id` =110 LIMIT 1 ;
+
+UPDATE `topology` SET `topology_group` = '40' WHERE `topology`.`topology_page` = '40210' LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '40' WHERE `topology`.`topology_page` = '40211' LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '41' WHERE `topology`.`topology_page` = '40201' LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '41' WHERE `topology`.`topology_page` = '40202' LIMIT 1 ;
+
+
+UPDATE `topology` SET `topology_group` = '41' WHERE `topology`.`topology_group` = 1 AND `topology`.`topology_page` IS NULL  LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '40' WHERE `topology`.`topology_group` = 3 AND `topology`.`topology_page` IS NULL  LIMIT 1 ;
+
