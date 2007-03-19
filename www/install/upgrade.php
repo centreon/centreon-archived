@@ -23,7 +23,6 @@ For information : contact@oreon-project.org
 	Session::start();
 	$DEBUG = 0;
 
-
 	if (isset($_POST["Recheck"]))
 		 $_POST["step"] = 3;
 	if (isset($_POST["goto"]) && !strcmp($_POST["goto"], "Back"))
