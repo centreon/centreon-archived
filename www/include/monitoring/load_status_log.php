@@ -49,7 +49,8 @@ For information : contact@oreon-project.org
 		$session_id = $_POST["sid"];
 	else if (isset($session_id_cache))
 		$session_id = session_id();
-	else $session_id = NULL;
+	else 
+		$session_id = NULL;
 	
 	if (isset($session_id) && $session_id){
 		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$session_id."'");
@@ -69,7 +70,7 @@ For information : contact@oreon-project.org
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 	
-	// Stats
+	# Stats
 	if (is_object($oreon)){
 		$oreon->status_graph_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 		$oreon->status_graph_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => "0");
@@ -85,15 +86,21 @@ For information : contact@oreon-project.org
 	unset ($host_status);
 	unset ($service_status);
 	
+	$DBRESULT =& $pearDBO->query("SELECT fast_parsing FROM config");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	$DBRESULT->fetchInto($config);
+	$fast_parsing = $config['fast_parsing'];
+	
 	# Read File
-	if ($version == 1 || $version == 2){
+	if (($version == 1 || $version == 2) && $fast_parsing == 0){
 		$DBRESULT1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
 		if (PEAR::isError($DBRESULT1))
 			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
 		$DBRESULT1->fetchInto($nagios_cfg);
 		$file = $nagios_cfg["status_file"];
-	} else {
-		$file = "/srv/nagios/var/status.log_light";
+	} else if (($version == 1 || $version == 2) && $fast_parsing == 1) {
+		$file = $nagios_cfg["status_file"]."_light";
 	}
 	
 	// Open File
@@ -139,7 +146,7 @@ For information : contact@oreon-project.org
 	$tab_host_service = array();
 		
 	$time = time();	
-	if ($version == 1){
+	if ($version == 1 && $fast_parsing){
 	  if ($log_file)
 	    while ($str = fgets($log_file))	{
       	  	// set last update 
@@ -163,7 +170,7 @@ For information : contact@oreon-project.org
 		  	}
 	      	unset($str);
 		}
-	} else if ($version == 2){
+	} else if ($version == 2 && !$fast_parsing){
 		if ($log_file)
 	    	while ($str = fgets($log_file)) {
 	      		$last_update = date("d-m-Y h:i:s");
@@ -238,8 +245,10 @@ For information : contact@oreon-project.org
 					unset($str);	
 	      		}
 	    	}
-	} else {
-		if ($log_file)
+	} else if ($fast_parsing){
+		if ($version == 1)
+			print "Can't enable fast parsing status log for nagios 1";
+		if ($log_file && $version == 2)
 		    while ($str = fgets($log_file))	{
 		      	// set last update 
 		     	$last_update = date("d-m-Y h:i:s");
