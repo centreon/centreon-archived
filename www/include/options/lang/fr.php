@@ -218,5 +218,6 @@ $lang['ods_drop_file'] = "Fichier de drop des donn&eacute;es";
 $lang['ods_archive_log'] = "Archiver les logs de Nagios";
 $lang['ods_log_retention'] = "Dur&eacute;e de r&eacute;tention des logs";
 $lang['ods_log_retention_unit'] = "days";
+$lang['ods_fast_parsing'] = "Lecture rapide des Status";
 
 ?>
