@@ -199,7 +199,6 @@
 			$sort_str3 = "";
 		*/
 		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type >= '2' AND msg_type <= '3' ".$sort_str1.$sort_str2;
-		print $req;
 		
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
