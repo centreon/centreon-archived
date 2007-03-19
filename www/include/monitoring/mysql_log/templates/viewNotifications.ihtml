@@ -14,9 +14,10 @@
 	<tr class='list_two'>
 		<td class="ListColLeft">{$form.sort_type2.label}{$form.sort_type2.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search2.html} </td>
 	</tr>
+	<!--
 	<tr class='list_one'>
 		<td class="ListColLeft">{$form.sort_type3.label}{$form.sort_type3.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search3.html} </td>
-	</tr>
+	</tr>-->
 	<tr class='list_two'>
 		<td class="ListColCenter" colspan="2">{$form.ssubmit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
 	</tr>
@@ -34,11 +35,11 @@
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter">Day</td>
 		<td class="ListColHeaderCenter">Hour</td>
-		<td class="ListColHeaderCenter" colspan="2"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order=sort_asc'>{$lang.m_mon_hosts}</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_check&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "last_check"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order=sort_asc'>{$lang.m_mon_try}</a&nbsp;{if $sort_type == "last_state_change"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order=sort_asc'>{$lang.m_mon_try}</a&nbsp;{if $sort_type == "last_state_change"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=plugin_output&order=sort_asc'>{ $lang.mon_status_information }</a>&nbsp;{if $sort_type == "plugin_output"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=plugin_output&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+		<td class="ListColHeaderCenter" colspan="2">{$lang.m_mon_hosts}</td>
+		<td class="ListColHeaderCenter">{$lang.m_mon_status}</td>
+		<td class="ListColHeaderCenter">{$lang.m_mon_try}</td>
+		<td class="ListColHeaderCenter">{$lang.m_mon_try}</td>
+		<td class="ListColHeaderCenter">{$lang.mon_status_information }</td>
 	</tr>
 	{foreach item=alert from=$alerts }
 		<tr class="{$alert.class}" id="trStatus{$c}">

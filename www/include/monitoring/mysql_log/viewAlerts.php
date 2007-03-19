@@ -76,19 +76,22 @@
 	$alerts = array();	
 	if (isset($_GET["o"]) && $_GET["o"] == "alerts_host"){
 		if (isset($_GET["search1"]) && isset($_GET["sort_type1"]) && $_GET["search1"] && $_GET["sort_type1"])
-			$sort_str1 = " AND `".$_GET["sort_type1"]."` LIKE '%".$_GET["search1"]."%' ";
+			$sort_str1 = " AND (`".$_GET["sort_type1"]."` LIKE '%".$_GET["search1"]."%' ";
 		else 
 			$sort_str1 = "";
+		if (isset($_GET["sort_type2"]) && isset($_GET["sort_type1"]) && $_GET["sort_type2"] == $_GET["sort_type1"])
+			$sort_str2 = " OR ";
+		if (isset($_GET["sort_type2"]) && isset($_GET["sort_type1"]) && $_GET["sort_type2"] != $_GET["sort_type1"] && $_GET["search2"] != "")
+			$sort_str2 = " AND ";
+		else if ($sort_str1 && ($_GET["sort_type2"] == "" || $_GET["search2"] == ""))
+			$sort_str1 .= ") ";
+			
 		if (isset($_GET["search2"]) && isset($_GET["sort_type2"]) && $_GET["search2"] && $_GET["sort_type2"])
-			$sort_str2 = " AND `".$_GET["sort_type2"]."` LIKE '%".$_GET["search2"]."%' ";
+			$sort_str2 .= " `".$_GET["sort_type2"]."` LIKE '%".$_GET["search2"]."%') ";
 		else 
 			$sort_str2 = "";
-		if (isset($_GET["search3"]) && isset($_GET["sort_type3"]) && $_GET["search3"] && $_GET["sort_type3"])
-			$sort_str3 = " AND `".$_GET["sort_type3"]."` LIKE '%".$_GET["search3"]."%' ";
-		else 
-			$sort_str3 = "";
 
-		$req = "SELECT ctime FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '1' ".$sort_str1.$sort_str2.$sort_str3;
+		$req = "SELECT ctime FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '1' ".$sort_str1.$sort_str2;
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -98,7 +101,7 @@
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
 
-		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,output,retry FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '1' ".$sort_str1.$sort_str2.$sort_str3."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit");
+		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,output,retry FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '1' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
@@ -115,19 +118,22 @@
 	    }
 	} else if (isset($_GET["o"]) && $_GET["o"] == "alerts_svc"){
 		if (isset($_GET["search1"]) && isset($_GET["sort_type1"]) && $_GET["search1"] && $_GET["sort_type1"])
-			$sort_str1 = " AND `".$_GET["sort_type1"]."` LIKE '%".$_GET["search1"]."%' ";
+			$sort_str1 = " AND (`".$_GET["sort_type1"]."` LIKE '%".$_GET["search1"]."%' ";
 		else 
 			$sort_str1 = "";
+		if (isset($_GET["sort_type2"]) && isset($_GET["sort_type1"]) && $_GET["sort_type2"] == $_GET["sort_type1"])
+			$sort_str2 = " OR ";
+		if (isset($_GET["sort_type2"]) && isset($_GET["sort_type1"]) && $_GET["sort_type2"] != $_GET["sort_type1"] && $_GET["search2"] != "")
+			$sort_str2 = " AND ";
+		else if ($sort_str1 && ($_GET["sort_type2"] == "" || $_GET["search2"] == ""))
+			$sort_str1 .= ") ";
+			
 		if (isset($_GET["search2"]) && isset($_GET["sort_type2"]) && $_GET["search2"] && $_GET["sort_type2"])
-			$sort_str2 = " AND `".$_GET["sort_type2"]."` LIKE '%".$_GET["search2"]."%' ";
+			$sort_str2 .= " `".$_GET["sort_type2"]."` LIKE '%".$_GET["search2"]."%') ";
 		else 
 			$sort_str2 = "";
-		if (isset($_GET["search3"]) && isset($_GET["sort_type3"]) && $_GET["search3"] && $_GET["sort_type3"])
-			$sort_str3 = " AND `".$_GET["sort_type3"]."` LIKE '%".$_GET["search3"]."%' ";
-		else 
-			$sort_str3 = "";
 
-		$req = "SELECT ctime FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '0' ".$sort_str1.$sort_str2.$sort_str3;
+		$req = "SELECT ctime FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '0' ".$sort_str1.$sort_str2;
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -137,7 +143,7 @@
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
 			
-		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,service_description,output,retry,type FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '0' ".$sort_str1.$sort_str2.$sort_str3."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit");
+		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,service_description,output,retry,type FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '0' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
@@ -155,19 +161,22 @@
 	    }
 	} else if (!isset($_GET["o"]) || (isset($_GET["o"]) && !$_GET["o"])) {
 		if (isset($_GET["search1"]) && isset($_GET["sort_type1"]) && $_GET["search1"] && $_GET["sort_type1"])
-			$sort_str1 = " AND `".$_GET["sort_type1"]."` LIKE '%".$_GET["search1"]."%' ";
+			$sort_str1 = " AND (`".$_GET["sort_type1"]."` LIKE '%".$_GET["search1"]."%' ";
 		else 
 			$sort_str1 = "";
+		if (isset($_GET["sort_type2"]) && isset($_GET["sort_type1"]) && $_GET["sort_type2"] == $_GET["sort_type1"])
+			$sort_str2 = " OR ";
+		if (isset($_GET["sort_type2"]) && isset($_GET["sort_type1"]) && $_GET["sort_type2"] != $_GET["sort_type1"] && $_GET["search2"] != "")
+			$sort_str2 = " AND ";
+		else if ($sort_str1 && ($_GET["sort_type2"] == "" || $_GET["search2"] == ""))
+			$sort_str1 .= ") ";
+			
 		if (isset($_GET["search2"]) && isset($_GET["sort_type2"]) && $_GET["search2"] && $_GET["sort_type2"])
-			$sort_str2 = " AND `".$_GET["sort_type2"]."` LIKE '%".$_GET["search2"]."%' ";
+			$sort_str2 .= " `".$_GET["sort_type2"]."` LIKE '%".$_GET["search2"]."%') ";
 		else 
 			$sort_str2 = "";
-		if (isset($_GET["search3"]) && isset($_GET["sort_type3"]) && $_GET["search3"] && $_GET["sort_type3"])
-			$sort_str3 = " AND `".$_GET["sort_type3"]."` LIKE '%".$_GET["search3"]."%' ";
-		else 
-			$sort_str3 = "";
 
-		$req = "SELECT ctime FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type <= '1' ".$sort_str1.$sort_str2.$sort_str3;
+		$req = "SELECT ctime FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type <= '1' ".$sort_str1.$sort_str2;
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -177,7 +186,7 @@
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
 
-		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,service_description,output,retry,type FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type <= '1' ".$sort_str1.$sort_str2.$sort_str3."ORDER BY log_id DESC, ctime DESC LIMIT $lstart,$limit");
+		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,service_description,output,retry,type FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type <= '1' ".$sort_str1.$sort_str2."ORDER BY log_id DESC, ctime DESC LIMIT $lstart,$limit");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
