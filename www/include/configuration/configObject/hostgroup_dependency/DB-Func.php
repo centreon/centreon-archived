@@ -131,7 +131,7 @@ For information : contact@oreon-project.org
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO dependency ";
-		$rq .= "(dep_name, dep_alias, dep_description, inherits_parent, execution_failure_criteria, notification_failure_criteria, dep_comment) ";
+		$rq .= "(dep_name, dep_description, inherits_parent, execution_failure_criteria, notification_failure_criteria, dep_comment) ";
 		$rq .= "VALUES (";
 		isset($ret["dep_name"]) && $ret["dep_name"] != NULL ? $rq .= "'".htmlentities($ret["dep_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["dep_description"]) && $ret["dep_description"] != NULL ? $rq .= "'".htmlentities($ret["dep_description"], ENT_QUOTES)."', " : $rq .= "NULL, ";
