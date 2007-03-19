@@ -111,15 +111,19 @@ INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `t
 
 -- logs
 
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('' , 'm_log_advanced', NULL , '203', NULL , NULL , '30', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('' , 'm_log_lite', NULL , '203', NULL , NULL , '31', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
+
+
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_event_log', NULL, 2, 203, 30, 1, './include/monitoring/log/viewAlertLog.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_all_logs', './img/icones/16x16/index.gif', 203, 20301, 10, 1, './include/monitoring/log/viewLog.php', NULL, '0', '0', '1');
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_notify_logs', './img/icones/16x16/mail_attachment.gif', 203, 20312, 20, 2, './include/monitoring/mysql_log/viewNotifyLog.php', NULL, NULL, NULL, '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_host', '', 20312, 2031201, 10, 2, './include/monitoring/mysql_log/viewNotifyLog.php', '&o=notif_svc', NULL, NULL, '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_service', '', 20312, 2031202, 20, 2, './include/monitoring/mysql_log/viewNotifyLog.php', '&o=notif_host', NULL, NULL, '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_notify_logs', './img/icones/16x16/mail_attachment.gif', 203, 20312, 20, 30, './include/monitoring/mysql_log/viewNotifyLog.php', NULL, NULL, NULL, '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_host', '', 20312, 2031201, 10, 30, './include/monitoring/mysql_log/viewNotifyLog.php', '&o=notif_svc', NULL, NULL, '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_service', '', 20312, 2031202, 20, 30, './include/monitoring/mysql_log/viewNotifyLog.php', '&o=notif_host', NULL, NULL, '1');
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_alerts_log', './img/icones/16x16/loudspeaker.gif', 203, 20313, 30, 2, './include/monitoring/mysql_log/viewAlertLog.php', NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_warning_log', './img/icones/16x16/oszillograph.gif', 203, 20314, 40, 2, './include/monitoring/mysql_log/viewWarnLog.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_alerts_log', './img/icones/16x16/loudspeaker.gif', 203, 20313, 30, 30, './include/monitoring/mysql_log/viewAlertLog.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_warning_log', './img/icones/16x16/oszillograph.gif', 203, 20314, 40, 30, './include/monitoring/mysql_log/viewWarnLog.php', NULL, '0', '0', '1');
 
 --
 -- Configuration
@@ -288,6 +292,12 @@ INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init`
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', '203', NULL, './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20302, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20303, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20311, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20312, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20313, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20314, NULL, './include/common/javascript/datePicker.js', '');
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 3, NULL, './include/common/javascript/datePicker.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 307, NULL, './include/common/javascript/datePicker.js', '');
