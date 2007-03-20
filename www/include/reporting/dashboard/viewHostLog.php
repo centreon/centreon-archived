@@ -110,10 +110,14 @@ For information : contact@oreon-project.org
 	## Selection de l'host/service (suite)
 	#
 	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' AND host_id IN (".$lcaHoststr.") and host_register = '1' ORDER BY host_name");
-	while ($res->fetchInto($h))
+
+	while ($res->fetchInto($h)){
+		
+		print_r($host);
+		echo "<br>";
 		if (IsHostReadable($lcaHostByName, $h["host_name"]))
 			$host[$h["host_name"]] = $h["host_name"];
-
+	}
 	$selHost =& $formHost->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
 
 	if (isset($_POST["host"])){
@@ -180,6 +184,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 		$tab_log = $tab_hosts[$mhost]["log"];
 
 	if($startTimeOfThisDay  < ($end_date_select)){
+		$end_date_select = time();	
 		if (isset($tab_hosts[$mhost]))
 		{
 			#

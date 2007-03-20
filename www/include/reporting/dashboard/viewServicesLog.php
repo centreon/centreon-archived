@@ -178,6 +178,7 @@ For information : contact@oreon-project.org
 	parseFile($oreon->Nagioscfg["log_file"], $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, 1);	
 
 	if ($startTimeOfThisDay  < ($end_date_select)){
+		$end_date_select = time();
 		if (isset($tab_services[getMyServiceName($mservice)][$mhost])){
 			$tab_svc = $tab_services[getMyServiceName($mservice)][$mhost];
 			if(!strncmp($tab_svc["current_state"], "OK", 2))
