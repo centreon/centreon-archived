@@ -15,6 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	
 	# Bench
 	function microtime_float() 	{
 	   list($usec, $sec) = explode(" ", microtime());
@@ -34,6 +35,8 @@ For information : contact@oreon-project.org
 	require_once ("$classdir/Session.class.php");
 	require_once ("$classdir/Oreon.class.php");
 	require_once (SMARTY_DIR."Smarty.class.php");
+
+
 	
 	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
@@ -66,16 +69,6 @@ For information : contact@oreon-project.org
 			include("./include/options/db/extractDB/extract_sub.php");exit();}
 	} else {
 
-		# Skin path
-		$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
-		$DBRESULT->fetchInto($data);
-		$skin = "./Themes/".$data["template"]."/";
-		
-		$color = "color_blue";
-		
-		
 		# Delete Session Expired
 		$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
 		if (PEAR::isError($DBRESULT))
@@ -139,6 +132,23 @@ For information : contact@oreon-project.org
 			case 7 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); $level4 = substr($p, 5, 2); break;
 			default : $level1= $p; break;
 		}
+
+		# Skin path
+		$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
+		$DBRESULT->fetchInto($data);
+		$skin = "./Themes/".$data["template"]."/";
+		
+		$colorfile = "Color/blue_css.php";
+
+		$rq = "SELECT css_name FROM css_color_menu WHERE menu_nb = '".$level1."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print ($DBRESULT->getMessage());
+		if($DBRESULT->numRows() && $DBRESULT->fetchInto($elem)){
+			$colorfile = "Color/".$elem["css_name"];
+		}
 		
 		// Update Session Table For last_reload and current_page row
 		$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
@@ -169,7 +179,7 @@ For information : contact@oreon-project.org
 <link href="<? echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?>color.css" rel="stylesheet" type="text/css"/>
+<link href="<? echo $skin; ?><? echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>
 <?
 	// Add Template CSS for sysInfos Pages
