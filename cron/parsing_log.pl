@@ -149,33 +149,32 @@ sub parseArchive() {
 sub parseLogFile() {
     my $LOG_FILE = $data->{'nagios_log_file'};
     if (!(-r $LOG_FILE)) {
-	print "Error : cannot open $LOG_FILE\n";
-	exit(0);
+		print "Error : cannot open $LOG_FILE\n";
+		exit(0);
     }
     if ($data->{'archive_log'}){exit();}
-# Decide if we have to read the nagios.log from the begining 
+	# Decide if we have to read the nagios.log from the begining 
     if ($hour eq 0 && $min eq 0){
-	$last_line_read = 0;
-	$sth = $dbh->prepare("UPDATE config SET `last_line_read` = '0'");
-	if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
-	$data = $sth->fetchrow_hashref();
+		$last_line_read = 0;
+		$sth = $dbh->prepare("UPDATE config SET `last_line_read` = '0'");
+		if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
+		$data = $sth->fetchrow_hashref();
     }
 
-    $sth = $dbh->prepare("SELECT last_line_read FROM config");
-    if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
-    $data = $sth->fetchrow_hashref();
-    $last_line_read = $data->{'last_line_read'};
-    if (!defined($last_line_read)){$last_line_read = 0;} 
-    parseFile($LOG_FILE);
-# Update statistics and flags
-    my $sth1 = $dbh->prepare("UPDATE `config` SET `last_line_read` = '".$cpt."'");
-    if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
-
+   	$sth = $dbh->prepare("SELECT last_line_read FROM config");
+   	if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
+   	$data = $sth->fetchrow_hashref();
+ 	$last_line_read = $data->{'last_line_read'};
+   	if (!defined($last_line_read)){$last_line_read = 0;} 
+   	parseFile($LOG_FILE);
+	# Update statistics and flags
+   	my $sth1 = $dbh->prepare("UPDATE `config` SET `last_line_read` = '".$cpt."'");
+   	if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
 }
 
 if ($opt_a) {
     parseArchive;
-}else {
+} else {
     parseLogFile;
 }
 
