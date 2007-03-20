@@ -19,6 +19,10 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+
 	unset($TabLca);
 	$TabLca = getLcaHostByName($pearDB);
 	
