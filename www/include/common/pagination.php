@@ -83,16 +83,16 @@ For information : contact@oreon-project.org
 	$select[$rows]=$rows;
 	ksort($select);
 
-?>
-<SCRIPT LANGUAGE="JavaScript">
-function setL(_this){
-	var _l = document.getElementsByName('l');
-	document.forms['form'].elements['limit'].value = _this;
-	_l[0].value = _this;
-	_l[1].value = _this;
-}
-</SCRIPT>
-<?
+	?>
+	<SCRIPT LANGUAGE="JavaScript">
+	function setL(_this){
+		var _l = document.getElementsByName('l');
+		document.forms['form'].elements['limit'].value = _this;
+		_l[0].value = _this;
+		_l[1].value = _this;
+	}
+	</SCRIPT>
+	<?
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
 	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);
