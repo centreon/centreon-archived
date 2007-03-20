@@ -66,8 +66,10 @@ For information : contact@oreon-project.org
 
 	if (($prev = $num - 1) >= 0)
 		$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+	
 	if (($next = $num + 1) < ($rows/$limit))
 		$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+	
 	if (($rows / $limit) > 0)
 		$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
 	else
