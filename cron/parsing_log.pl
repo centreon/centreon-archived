@@ -27,9 +27,10 @@ use File::stat;
 use Getopt::Long;
 use POSIX;
 
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data);
 
 my $installedPath = "@OREON_PATH@";
+#my $installedPath = "/usr/local/oreon";
 require $installedPath."/ODS/etc/conf.pm";
 
 ## Init Date
@@ -42,6 +43,7 @@ Getopt::Long::Configure('bundling');
 GetOptions
     ("h" => \$opt_h,            "help" => \$opt_h,
      "a" => \$opt_a,            "archives" => \$opt_a);
+
 if($opt_h) {
     print "Usage : $0 :\n";
     print "       -a (--archives) load data from log archives to database\n";
@@ -52,7 +54,7 @@ if($opt_h) {
 # Get conf Data
 my $sth = $dbh->prepare("SELECT archive_log, archive_retention, nagios_log_file  FROM config");
 if (!$sth->execute) {die "Error:" . $sth->errstr . "\n";}
-my $data = $sth->fetchrow_hashref();
+$data = $sth->fetchrow_hashref();
 
 
 my $cpt = 0;
@@ -61,7 +63,7 @@ my $last_line_read;
 
 # Parsing nagios.log
 sub parseFile ($) {
-    if (!open (FILE, $_[0])) {
+	 if (!open (FILE, $_[0])) {
 		print "Cannot open file : $_[0]\n";
     }
     if (!$opt_a) {
@@ -147,13 +149,13 @@ sub parseArchive() {
 }
 
 sub parseLogFile() {
-    my $LOG_FILE = $data->{'nagios_log_file'};
+	my $LOG_FILE = $data->{'nagios_log_file'};
     if (!(-r $LOG_FILE)) {
 		print "Error : cannot open $LOG_FILE\n";
 		exit(0);
     }
-    if ($data->{'archive_log'}){exit();}
-	# Decide if we have to read the nagios.log from the begining 
+    if (!$data->{'archive_log'}){exit();}
+    # Decide if we have to read the nagios.log from the begining 
     if ($hour eq 0 && $min eq 0){
 		$last_line_read = 0;
 		$sth = $dbh->prepare("UPDATE config SET `last_line_read` = '0'");
@@ -175,7 +177,7 @@ sub parseLogFile() {
 if ($opt_a) {
     parseArchive;
 } else {
-    parseLogFile;
+	parseLogFile();
 }
 
 # if ($retention ne 0){
