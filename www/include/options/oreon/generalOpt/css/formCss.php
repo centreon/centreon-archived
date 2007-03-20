@@ -130,7 +130,7 @@ For information : contact@oreon-project.org
 
 	## Apply a template definition
 
-
+	$tpl->assign('submitTitle', $lang["save"]);
 	$tpl->assign('nameTitle', $lang["genOpt_menu_name"]);
 	$tpl->assign('fileTitle', $lang["genOpt_file_name"]);
 	$tpl->assign('o', $o);

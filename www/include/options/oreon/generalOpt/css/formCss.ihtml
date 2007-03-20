@@ -11,7 +11,9 @@
 		</tr>
 		{/section}
 	</table>
-<input type=submit >
+	<div id="validForm">
+		<input type=submit value="{$submitTitle}">
+	</div>
 <input type=hidden name=p value={$p}>
 <input type=hidden name=o value={$o}>
 </form>
