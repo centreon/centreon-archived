@@ -139,8 +139,20 @@ For information : contact@oreon-project.org
 			print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT->fetchInto($data);
 		$skin = "./Themes/".$data["template"]."/";
+
+
+		$tab_file_css = array();
+		$i = 0;
+		if ($handle  = @opendir($skin."Color"))	{
+			while ($file = @readdir($handle)){
+				if (is_file($skin."Color"."/$file"))	{
+					$tab_file_css[$i++] = $file;
+				}
+			}
+			@closedir($handle);
+		}
 		
-		$colorfile = "Color/blue_css.php";
+		$colorfile = "Color/". $tab_file_css[0];
 
 		$rq = "SELECT css_name FROM css_color_menu WHERE menu_nb = '".$level1."'";
 		$DBRESULT =& $pearDB->query($rq);
