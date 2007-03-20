@@ -223,3 +223,4 @@ color:<?=$color14?>;
 .Toolbar_TableBottom{
 	border-color:<?=$menu1_bgcolor?>;
 }
+#mainnav li{	background-image: url("<?=$bg_image_header?>");}
