@@ -19,9 +19,26 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	# Skin path
+	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
+	$DBRESULT->fetchInto($data);
+	$skin = "./Themes/".$data["template"]."/";
+	
+	$tab_file_css = array();
+	$i = 0;
+	if ($handle  = @opendir($skin."Color"))	{
+		while ($file = @readdir($handle)){
+			if (is_file($skin."Color"."/$file"))	{
+				$tab_file_css[$i++] = $file;
+			}
+		}
+		@closedir($handle);
+	}
 
 
-	$css_default = "blue.css";
+	$css_default = $tab_file_css[0];
 	$rq = "SELECT * FROM css_color_menu";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -68,32 +85,6 @@ For information : contact@oreon-project.org
 	#
 	## Get css_file_name list
 	#
-	# Skin path
-	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
-	$DBRESULT->fetchInto($data);
-	$skin = "./Themes/".$data["template"]."/";
-	
-	$tab_file_css = array();
-	$i = 0;
-	if ($handle  = @opendir($skin."Color"))	{
-		while ($file = @readdir($handle)){
-			if (is_file($skin."Color"."/$file"))	{
-				$tab_file_css[$i++] = $file;
-			}
-		}
-		@closedir($handle);
-	}
-
-/*
-	$tab_file_css[0] = "blue_css.php";
-	$tab_file_css[1] = "yellow_css.php";
-	$tab_file_css[2] = "green_css.php";
-	$tab_file_css[3] = "red_css.php";
-	$tab_file_css[4] = "pink_css.php";
-*/
-
 
 	#
 	## Get menu_css_bdd list
