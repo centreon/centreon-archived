@@ -29,7 +29,6 @@ For information : contact@oreon-project.org
 
 	global $rows, $p, $lang, $gopt, $pagination;
 	
-	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
 	$url_var = "";
