@@ -1,0 +1,17 @@
+<form action="oreon.php" method=get>
+	<table id="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderLeft">{$nameTitle}</td>
+			<td class="ListColHeaderLeft">{$fileTitle}</td>
+		</tr>
+		{section name=elem loop=$elemArr}
+		<tr class={$elemArr[elem].MenuClass}>
+			<td class="ListColLeft">{$elemArr[elem].menuName}</td>
+			<td class="ListColLeft">{$elemArr[elem].select}</td>
+		</tr>
+		{/section}
+	</table>
+<input type=submit >
+<input type=hidden name=p value={$p}>
+<input type=hidden name=o value={$o}>
+</form>
