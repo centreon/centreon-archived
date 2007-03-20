@@ -356,7 +356,7 @@ UPDATE `topology` SET `topology_group` = '41' WHERE `topology`.`topology_group` 
 UPDATE `topology` SET `topology_group` = '40' WHERE `topology`.`topology_group` = 3 AND `topology`.`topology_page` IS NULL  LIMIT 1 ;
 
 
-UPDATE `general_opt` SET `template` = 'Blue' WHERE `general_opt`.`gopt_id` =1 LIMIT 1 ;
+UPDATE `general_opt` SET `template` = 'Basic' WHERE `general_opt`.`gopt_id` =1 LIMIT 1 ;
 
 UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_page` = 40203 LIMIT 1 ;
 UPDATE `topology` SET `topology_group` = '43' WHERE `topology`.`topology_page` = 40204 LIMIT 1 ;
