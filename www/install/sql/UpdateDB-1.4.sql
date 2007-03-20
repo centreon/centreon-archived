@@ -388,3 +388,4 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2031301, 'alerts_host', './include/common/javascript/datePicker.js', '');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2031302, 'alerts_svc', './include/common/javascript/datePicker.js', '');
 
+UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_id` =116 LIMIT 1 ;
