@@ -462,6 +462,19 @@ function install_oreon(){
       	echo_passed "in cron installation for ArchiveLogInDB.php" "PASSED"
   	fi
 	
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_status.pl > $INSTALL_DIR_OREON/cron/parsing_status_new.pl
+	mv $INSTALL_DIR_OREON/cron/parsing_status_new.pl $INSTALL_DIR_OREON/cron/parsing_status.pl
+	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_status.pl >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/cron/parsing_status.pl >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $INSTALL_DIR_OREON/cron/parsing_status.pl" "OK"
+	
+	if [ $sudo == '1' ]; then
+  		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> /var/spool/cron/$NAGIOS_USER
+		echo_success "in cron installation for parsing_status.pl" "OK"
+  	else
+      	echo_passed "in cron installation for parsing_status.pl" "PASSED"
+  	fi
+	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log_new.pl
 	mv $INSTALL_DIR_OREON/cron/parsing_log_new.pl $INSTALL_DIR_OREON/cron/parsing_log.pl
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
