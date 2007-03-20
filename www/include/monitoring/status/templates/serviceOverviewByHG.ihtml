@@ -4,7 +4,7 @@
 	{foreach key=hg_name item=hstg from=$hostgroup}
 	<table id="ListTable">
 		<tr class='list_lvl_1'>
-			<td class='ListColHeaderLeft' colspan="4">	{$lang.m_mon_hostgroup}{$hg_name} ({$hostgroup.$hg_name.alias})</td>
+			<td class='ListColHeaderLeft' colspan="4">{$lang.m_mon_hostgroup}{$hg_name} ({$hostgroup.$hg_name.alias})</td>
 		</tr>
 		<tr class='ListHeader'>
 			<td class='ListColHeaderLeft'>{$lang.m_mon_hosts}</td>

@@ -76,6 +76,8 @@ For information : contact@oreon-project.org
 								}
 							}
 							
+							if (!isset($hg[$r["hg_name"]]))
+								$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
 							if ($host_status[$r_h["host_name"]]["current_state"]){
 								$hg[$r["hg_name"]]["host"][$cpt_host] = $r_h["host_name"];
 								$h_data[$r["hg_name"]][$r_h["host_name"]] = $host_data_str;
@@ -83,12 +85,8 @@ For information : contact@oreon-project.org
 								$h_status_data[$r["hg_name"]][$r_h["host_name"]] = "<td class='ListColCenter' width='70' style='background:".$oreon->optGen[$status]."'>".$host_status[$r_h["host_name"]]["current_state"]."</td>";
 							}
 						}
-						if ((isset($service_data_str) || isset($service_data_str_ack)) && !isset($hg[$r["hg_name"]])){
-							$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());
-						}								
 						if (isset($service_data_str))
 							$svc_data[$r["hg_name"]][$r_h["host_name"]] = $service_data_str;
-						
 						if (isset($service_data_str_ack))
 							$svc_data_ack[$r["hg_name"]][$r_h["host_name"]] = $service_data_str_ack;
 					}
