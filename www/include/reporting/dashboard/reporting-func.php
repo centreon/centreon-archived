@@ -54,8 +54,8 @@ For information : contact@oreon-project.org
 			} else if($period == "thismonth") {
 				$start_date_select = mktime(23, 59, 60, $month, 0, $year);
 				$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
-			} else if($period == "thisyear"){
-				$start_date_select = mktime(0, 0, 0, 0, 0, $year);
+			} else if($period == "thisyear"){				
+				$start_date_select = mktime(0, 0, 0, 1, 1, $year);
 				$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
 			} else { // lastmonth
 				$start_date_select = mktime(23, 59, 60, $month-1, 0, $year);
