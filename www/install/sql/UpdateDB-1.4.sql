@@ -377,5 +377,4 @@ CREATE TABLE `css_color_menu` (
   PRIMARY KEY  (`id_css_color_menu`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES (253, 'genOpt_css', './img/icones/16x16/colors.gif', 50101, 5010109, 90, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=css', '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'genOpt_css', './img/icones/16x16/colors.gif', 50101, 5010109, 90, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=css', '0', '0', '1');

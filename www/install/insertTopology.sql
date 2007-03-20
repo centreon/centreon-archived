@@ -215,6 +215,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_rrdtool', './img/icones/16x16/column-chart.gif', 50101, 5010106, 60, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=rrdtool', '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_debug', './img/icones/16x16/nagios.gif', 50101, 5010107, 70, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=debug', '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'menu_ODS', './img/icones/16x16/nagios.gif', 50101, 5010110, 100, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=ods', '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'genOpt_css', './img/icones/16x16/colors.gif', 50101, 5010109, 90, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=css', '0', '0', '1');
 
 --
 -- Reporting
@@ -272,6 +273,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_id_serv', NULL, 701, 70101, 10, 1, './modules/inventory/inventory.php', '&o=s', '0', '1', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_id_network', NULL, 701, 70102, 20, 1, './modules/inventory/inventory.php', '&o=n', '0', '1', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_idUpdate', NULL, 701, 70103, 40, 1, './modules/inventory/inventory.php', '&o=u', NULL, NULL, '1');
+
 
 
 --
@@ -436,6 +438,3 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60503, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
-
-
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES (253, 'genOpt_css', './img/icones/16x16/colors.gif', 50101, 5010109, 90, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=css', '0', '0', '1', NULL, NULL, NULL);
