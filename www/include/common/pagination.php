@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 	$pageArr = array();
 	$istart = 0;
 	for($i = 5, $istart = $num; $istart && $i > 0; $i--)
-		$istart--;		
+		$istart--;
 	for($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
 		$iend++;
 	for ($i = $istart; $i <= $iend; $i++){
