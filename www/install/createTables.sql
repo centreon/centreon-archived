@@ -4,6 +4,17 @@
 
 -- --------------------------------------------------------
 
+-- 
+-- Structure de la table `css_color_menu`
+-- 
+
+CREATE TABLE `css_color_menu` (
+  `id_css_color_menu` int(11) NOT NULL auto_increment,
+  `menu_nb` int(11) default NULL,
+  `css_name` varchar(255) character set utf8 default NULL,
+  PRIMARY KEY  (`id_css_color_menu`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 --
 -- Structure de la table `cfg_cgi`
 --

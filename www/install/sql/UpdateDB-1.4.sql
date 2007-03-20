@@ -254,7 +254,7 @@ INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `t
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES ('' , 'mon_acknowloedge', NULL , '20203', '2020302', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgrid&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES ('' , 'mon_not_acknowloedge', NULL , '20203', '2020303', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgrid&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
 
--- Grille de resumé 
+-- Grille de resumï¿½ 
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_problems', NULL , '20204', '2020401', '10', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOV&problem=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_acknowloedge', NULL , '20204', '2020402', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOV&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_not_acknowloedge', NULL , '20204', '2020403', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOV&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
@@ -271,7 +271,7 @@ INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `t
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_acknowloedge', NULL , '20208', '2020802', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgridHG&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_not_acknowloedge', NULL , '20208', '2020803', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgridHG&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
 
--- Grille de resumé 
+-- Grille de resumï¿½ 
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_problems', NULL , '20209', '2020901', '10', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOVHG&problem=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_acknowloedge', NULL , '20209', '2020902', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOVHG&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_not_acknowloedge', NULL , '20209', '2020903', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOVHG&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
@@ -287,7 +287,7 @@ INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `t
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_acknowloedge', NULL , '20211', '2021102', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgridSG&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_not_acknowloedge', NULL , '20211', '2021103', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcgridSG&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
 
--- Grille de resumé 
+-- Grille de resumï¿½ 
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_problems', NULL , '20212', '2021201', '10', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOVSG&problem=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_acknowloedge', NULL , '20212', '2021202', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOVSG&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_not_acknowloedge', NULL , '20212', '2021203', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcOVSG&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
@@ -363,3 +363,16 @@ UPDATE `topology` SET `topology_group` = '43' WHERE `topology`.`topology_page` =
 UPDATE `topology` SET `topology_group` = '43' WHERE `topology`.`topology_page` = 40205 LIMIT 1 ;
 UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_page` = 40207 LIMIT 1 ;
 
+
+-- le 20/03/2007
+
+-- 
+-- Structure de la table `css_color_menu`
+-- 
+
+CREATE TABLE `css_color_menu` (
+  `id_css_color_menu` int(11) NOT NULL auto_increment,
+  `menu_nb` int(11) default NULL,
+  `css_name` varchar(255) character set utf8 default NULL,
+  PRIMARY KEY  (`id_css_color_menu`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
