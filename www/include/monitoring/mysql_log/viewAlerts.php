@@ -100,21 +100,25 @@
 		if(($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
+	
+		if ($lstart <= 0)
+			$lstart = 0;
 
-		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,output,retry FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '1' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit");
+		$req = "SELECT ctime,status,host_name,output,retry,type FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '1' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
+		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
-			$tab_status_host[$log["status"]] != "UP" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
+			$log["status"] != "UP" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 			$alerts[$cpt] = array(	"class"=>$class, 
-									"date"=>date($lang["date_format"], $log["ctime"]), 
+									"date"=> date($lang["date_format"], $log["ctime"]), 
 									"time" => date($lang["time_format"], $log["ctime"]), 
-									"status" => $tab_status_host[$log["status"]], 
-									"type" => $tab_type[$log["type"]], 
+									"status" => $log["status"], 
+									"type" => $log["type"], 
 									"host_name" => $log["host_name"], 
 									"output" => $log["output"], 
 									"retry" => $log["retry"], 
-									"background" => $oreon->optGen["color_".strtolower($tab_status_host[$log["status"]])]);
+									"background" => $oreon->optGen["color_".strtolower($log["status"])]);
 	    }
 	} else if (isset($_GET["o"]) && $_GET["o"] == "alerts_svc"){
 		if (isset($_GET["search1"]) && isset($_GET["sort_type1"]) && $_GET["search1"] && $_GET["sort_type1"])
@@ -142,22 +146,25 @@
 		if(($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
+		
+		if ($lstart <= 0)
+			$lstart = 0;
 			
 		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,service_description,output,retry,type FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '0' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
-			$tab_status_service[$log["status"]] == "CRITICAL" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
+			$log["status"] == "CRITICAL" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 			$alerts[$cpt] = array(	"class"=>$class, 
 									"date"=>date($lang["date_format"], $log["ctime"]), 
 									"time" => date($lang["time_format"], $log["ctime"]), 
-									"status" => $tab_status_service[$log["status"]], 
-									"type" => $tab_type[$log["type"]], 
+									"status" => $log["status"], 
+									"type" => $log["type"], 
 									"host_name" => $log["host_name"],
 									"service_description" => $log["service_description"], 
 									"output" => $log["output"], 
 									"retry" => $log["retry"], 
-									"background" => $oreon->optGen["color_".strtolower($tab_status_service[$log["status"]])]);
+									"background" => $oreon->optGen["color_".strtolower($log["status"])]);
 	    }
 	} else if (!isset($_GET["o"]) || (isset($_GET["o"]) && !$_GET["o"])) {
 		if (isset($_GET["search1"]) && isset($_GET["sort_type1"]) && $_GET["search1"] && $_GET["sort_type1"])
@@ -186,33 +193,36 @@
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
 
+		if ($lstart <= 0)
+			$lstart = 0;
+			
 		$DBRESULT =& $pearDBO->query("SELECT ctime,status,host_name,service_description,output,retry,type FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type <= '1' ".$sort_str1.$sort_str2."ORDER BY log_id DESC, ctime DESC LIMIT $lstart,$limit");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
 			if (isset($log["service_description"]) && !$log["service_description"]){
-				$tab_status_host[$log["status"]] != "UP" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
+				$log["status"] != "UP" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 				$alerts[$cpt] = array(	"class"=>$class, 
 										"date"=>date($lang["date_format"], $log["ctime"]), 
 										"time" => date($lang["time_format"], $log["ctime"]), 
-										"status" => $tab_status_host[$log["status"]], 
-										"type" => $tab_type[$log["type"]], 
+										"status" => $log["status"], 
+										"type" => $log["type"], 
 										"host_name" => $log["host_name"], 
 										"output" => $log["output"], 
 										"retry" => $log["retry"], 
-										"background" => $oreon->optGen["color_".strtolower($tab_status_host[$log["status"]])]);
+										"background" => $oreon->optGen["color_".strtolower($log["status"])]);
 			} else { 
-				$tab_status_service[$log["status"]] == "CRITICAL" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
+				$log["status"] == "CRITICAL" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 				$alerts[$cpt] = array(	"class"=>$class, 
 										"date"=>date($lang["date_format"], $log["ctime"]), 
 										"time" => date($lang["time_format"], $log["ctime"]), 
-										"status" => $tab_status_service[$log["status"]], 
-										"type" => $tab_type[$log["type"]], 
+										"status" => $log["status"], 
+										"type" => $log["type"], 
 										"host_name" => $log["host_name"],
 										"service_description" => $log["service_description"], 
 										"output" => $log["output"], 
 										"retry" => $log["retry"], 
-										"background" => $oreon->optGen["color_".strtolower($tab_status_service[$log["status"]])]);
+										"background" => $oreon->optGen["color_".strtolower($log["status"])]);
 			}
 	    }
 	}
