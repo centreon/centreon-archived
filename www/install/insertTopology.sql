@@ -284,6 +284,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 202, NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 
 -- Monitoring filtered
+
 INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init` )VALUES ('' , '2020101', NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init` )VALUES ('' , '2020201', NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
 INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init` )VALUES ('' , '2020202', NULL, './include/common/javascript/ajaxMonitoring.js', 'initM');
