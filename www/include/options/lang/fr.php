@@ -128,6 +128,10 @@ $lang["genOpt_problem_order_desc"] = "Descendant";
 
 $lang["genOpt_gmt"] = "GMT";
 
+$lang['genOpt_css'] = "CSS";
+$lang['genOpt_menu_name'] = "Menu";
+$lang['genOpt_file_name'] = "Fichier css";
+
 # Menu
 
 $lang['mod_menu'] = "Modules disponibles";
