@@ -363,7 +363,6 @@ UPDATE `topology` SET `topology_group` = '43' WHERE `topology`.`topology_page` =
 UPDATE `topology` SET `topology_group` = '43' WHERE `topology`.`topology_page` = 40205 LIMIT 1 ;
 UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_page` = 40207 LIMIT 1 ;
 
-
 -- le 20/03/2007
 
 -- 
@@ -378,3 +377,14 @@ CREATE TABLE `css_color_menu` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'genOpt_css', './img/icones/16x16/colors.gif', 50101, 5010109, 90, 1, './include/options/oreon/generalOpt/generalOpt.php', '&o=css', '0', '0', '1');
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20311, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20312, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20313, NULL, './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 20314, NULL, './include/common/javascript/datePicker.js', '');
+
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2031201, 'notif_host', './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2031202, 'notif_svc', './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2031301, 'alerts_host', './include/common/javascript/datePicker.js', '');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2031302, 'alerts_svc', './include/common/javascript/datePicker.js', '');
+
