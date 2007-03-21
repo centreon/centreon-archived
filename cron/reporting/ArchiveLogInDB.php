@@ -17,11 +17,11 @@
  * For information : contact@oreon-project.org
  * 
  */
-	
-	
+
+
 	$path_oreon = '@OREON_PATH@';
 	require_once 'DB.php';	
-	
+
 	include_once($path_oreon . "/www/oreon.conf.php");
 	require_once($path_oreon ."/www/include/reporting/dashboard/reporting-func.php");
 	require_once($path_oreon ."/www/include/reporting/dashboard/simple-func.php");
@@ -140,9 +140,12 @@
 	$tab_services = array();	
 	$day_current_start = 0;
 	$day_current_end = 0;
-	
 	foreach($tableFile2 as $key => $time){
 		insert_file_name_in_db($key);
 		parseFile($key, $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, false);
 	}
+	if($day_current_start > 0)
+		insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end);
+
+
 ?>
