@@ -389,3 +389,13 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 2031302, 'alerts_svc', './include/common/javascript/datePicker.js', '');
 
 UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_id` =116 LIMIT 1 ;
+
+
+-- 21/03/2007
+
+DELETE FROM `topology` WHERE `topology_parent` = '307' OR `topology_page` = '307';
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_dashboard', NULL , '307', NULL , NULL , '50', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_dashboard', NULL, 3, 307, 3, 1, '', NULL, '0', '0', '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_dashboardHost', './img/icones/16x16/text_rich_marked.gif', 307, 30701, 10, 50, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1', NULL , NULL , NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_dashboardService', './img/icones/16x16/text_rich_marked.gif', 307, 30702, 20, 50, './include/reporting/dashboard/viewServicesLog.php', NULL, '0', '0', '0', NULL , NULL , NULL);
+
