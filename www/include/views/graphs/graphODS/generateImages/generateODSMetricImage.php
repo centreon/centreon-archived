@@ -56,13 +56,24 @@ For information : contact@oreon-project.org
 	if (!$session->numRows()){
 		exit;
 	} else {
+		$session->free();
 		include_once("../../../../../DBOdsConnect.php");
+		
+		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		$DBRESULT->fetchInto($config);
+		$RRDdatabase_path = $config["RRDdatabase_path"];
+		$DBRESULT->free();
+		unset($config);
 		
 		$DBRESULT =& $pearDBO->query("SELECT index_id, metric_name FROM metrics WHERE metric_id = '".$_GET["metric"]."' LIMIT 1");
 		$DBRESULT->fetchInto($metric_ODS);
+		$DBRESULT->free();
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$metric_ODS["index_id"]."' LIMIT 1");
 		$DBRESULT->fetchInto($index_data_ODS);
+		$DBRESULT->free();
 		
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
@@ -78,27 +89,6 @@ For information : contact@oreon-project.org
 		
 		$command_line .= " --interlaced --width=500"/*.$GraphTemplate["width"]*/." --height=120"/*.$GraphTemplate["height"].*/." --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]." metric ".$metric_ODS["metric_name"] ."' --vertical-label='".$GraphTemplate["vertical_label"]."' --slope-mode ";
 
-		# Init Graph Template Value
-		/*	
-	 	if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"])
-			$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
-		if (isset($GraphTemplate["bg_color"]) && $GraphTemplate["bg_color"])
-			$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
-		if (isset($GraphTemplate["police_color"]) && $GraphTemplate["police_color"])
-			$command_line .= "--color FONT".$GraphTemplate["police_color"]." ";
-		if (isset($GraphTemplate["grid_main_color"]) && $GraphTemplate["grid_main_color"])
-			$command_line .= "--color MGRID".$GraphTemplate["grid_main_color"]." ";
-		if (isset($GraphTemplate["grid_sec_color"]) && $GraphTemplate["grid_sec_color"])
-			$command_line .= "--color GRID".$GraphTemplate["grid_sec_color"]." ";
-		if (isset($GraphTemplate["contour_cub_color"]) && $GraphTemplate["contour_cub_color"])
-			$command_line .= "--color FRAME".$GraphTemplate["contour_cub_color"]." ";
-		if (isset($GraphTemplate["col_arrow"]) && $GraphTemplate["col_arrow"])
-			$command_line .= "--color ARROW".$GraphTemplate["col_arrow"]." ";
-		if (isset($GraphTemplate["col_top"]) && $GraphTemplate["col_top"])
-			$command_line .= "--color SHADEA".$GraphTemplate["col_top"]." ";
-		if (isset($GraphTemplate["col_bot"]) && $GraphTemplate["col_bot"])
-			$command_line .= "--color SHADEB".$GraphTemplate["col_bot"]." ";
-		*/
 		if (isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL)
 			$command_line .= "--lower-limit ".$GraphTemplate["lower_limit"]." ";
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
@@ -111,7 +101,6 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE metric_id = '".$_GET["metric"]."' ORDER BY metric_id");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		
 		$cpt = 1;
 		$order = $_GET["cpt"] - 1; 
 		$metrics = array();		
@@ -140,23 +129,15 @@ For information : contact@oreon-project.org
 		$cpt = 0;
 		$longer = 0;
 		foreach ($metrics as $key => $tm){
-			if (isset($tm["ds_invert"]) && $tm["ds_invert"]){
-				$command_line .= " DEF:va".$cpt."=/srv/oreon/OData/".$key.".rrd:metric:AVERAGE ";
-				$command_line .= " CDEF:v".$cpt."=va".$cpt.",-1,* ";
-			} else
-				$command_line .= " DEF:v".$cpt."=/srv/oreon/OData/".$key.".rrd:metric:AVERAGE ";
+			if (isset($tm["ds_invert"]) && $tm["ds_invert"])
+				$command_line .= " DEF:va".$cpt."=".$RRDdatabase_path.$key.".rrd:metric:AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*";
+			else
+				$command_line .= " DEF:v".$cpt."=".$RRDdatabase_path.$key.".rrd:metric:AVERAGE ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
 			$cpt++;
 		}
 
-		# Add Comments
-		/*$rrd_time  = addslashes(date("d\/m\/Y G:i", $_GET["start"])) ;
-		$rrd_time = str_replace(":", "\:", $rrd_time);
-		$rrd_time2 = addslashes(date("d\/m\/Y G:i", $_GET["end"])) ;
-		$rrd_time2 = str_replace(":", "\:", $rrd_time2);
-		$command_line .= " COMMENT:\" \\c\" COMMENT:\" From  $rrd_time to $rrd_time2 \\c\" COMMENT:\" \\c\" ";
-		*/
 		# Create Legende
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
