@@ -469,7 +469,8 @@ function goM(_time_reload,_sid,_o){
 				var info = infos[i];
 				var _atime = info.getElementsByTagName("time")[0].firstChild.nodeValue;
 				var _filetime = info.getElementsByTagName("filetime")[0].firstChild.nodeValue;
-				_form.time.value = parseInt(_atime);
+				if(_atime)
+					_form.time.value = parseInt(_atime);
 			}
 
 			// a partir d'ici je recupere les informations principales
