@@ -42,7 +42,6 @@ INSERT INTO `command` VALUES ('', 'check_service_state', '$USER1$#S#check_nt -H 
 INSERT INTO `command` VALUES ('', 'check_users', '$USER1$#S#check_users -H $HOSTADDRESS$ -w 3 -c 5', '', 2);
 INSERT INTO `command` VALUES ('', 'check_http2', '$USER1$#S#check_http -I $HOSTADDRESS$ -u $ARG1$', '', 2);
 
-
 INSERT INTO `command` VALUES ('', 'host-notify-by-email-ng1', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;***** Oreon *****Notification#BR#Type:$NOTIFICATIONTYPE$#BR# Host: $HOSTNAME$#BR#State: $HOSTSTATE$Address: $HOSTADDRESS$#BR#Info: $OUTPUT$#BR#Date#S#Time: $DATETIME$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$', '', 1);
 INSERT INTO `command` VALUES ('', 'notify-by-email-ng1', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;***** Oreon  *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Date#S#Time: $DATETIME$#BR##BR#Additional Info:#BR##BR#$OUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$#S#$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$', '', 1);
 INSERT INTO `command` VALUES ('', 'host-notify-by-email-ng2', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;***** Oreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date#S#Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$', '', 1);
@@ -50,7 +49,6 @@ INSERT INTO `command` VALUES ('', 'notify-by-email-ng2', '#S#usr#S#bin#S#printf 
 
 INSERT INTO `command` VALUES ('', 'notify-by-epager', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$#S#$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$', '', 1);
 INSERT INTO `command` VALUES ('', 'host-notify-by-epager', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$#BS#&quot; | @MAILER@ -s #BS#&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$#BS#&quot; $CONTACTPAGER$', '', 1);
-
 
 INSERT INTO `command` VALUES ('', 'submit-host-check-result', '$USER1$#S#submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039;$HOSTOUTPUT$&#039;', '', 2);
 INSERT INTO `command` VALUES ('', 'submit-service-check-result', '$USER1$#S#submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039;$SERVICEOUTPUT$&#039;', '', 2);
