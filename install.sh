@@ -575,8 +575,8 @@ check_group_apache
 check_user_apache
 check_group_nagios
 check_user_nagios
-echo ""
 
+echo ""
 echo "------------------------------------------------------------------------"
 echo "                              Other Stuff"
 echo "------------------------------------------------------------------------"
