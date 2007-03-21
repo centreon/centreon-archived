@@ -18,6 +18,26 @@
  * 
  */
 
+	$option = false;	
+
+	if ($argc == 2 && in_array($argv[1], array('-h', '--help')) ) {
+	?>
+	
+	This is a command line PHP script with one option.
+	
+	  Usage:
+	  <?php echo $argv[0]; ?> <option>
+	
+	  <option>
+	  -d delete value in db and insert all file
+	  -h or --help for this help
+	<?
+	}
+	else if ($argc == 2 && in_array($argv[1], array('-d')) ) {
+	$option = true;
+	}
+	else
+	;
 
 	$path_oreon = '@OREON_PATH@';
 	require_once 'DB.php';	
@@ -48,14 +68,14 @@
 	#################################
 	######## clean up table  ########
 	#################################
-	/*
-	$sql = "TRUNCATE TABLE `log_archive_file_name`";
-	$res = $pearDB->query($sql);
-	$sql = "TRUNCATE TABLE `log_archive_host`";
-	$res = $pearDB->query($sql);
-	$sql = "TRUNCATE TABLE `log_archive_service`";
-	$res = $pearDB->query($sql);
-	*/
+	if($option){
+		$sql = "TRUNCATE TABLE `log_archive_file_name`";
+		$res = $pearDB->query($sql);
+		$sql = "TRUNCATE TABLE `log_archive_host`";
+		$res = $pearDB->query($sql);
+		$sql = "TRUNCATE TABLE `log_archive_service`";
+		$res = $pearDB->query($sql);
+	}
 	#################################
 	#################################
 	#################################
