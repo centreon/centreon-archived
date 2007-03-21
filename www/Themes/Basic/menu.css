@@ -43,7 +43,11 @@ For information : contact@oreon-project.org
 #menu_3 a:hover{    color:#E8AB5C;}
 #menu_3 li{    		padding-left:1px; list-style-type: none;}
 
-#menu_3 {    		padding-bottom:5px;}
+#menu_3 {    		
+padding-bottom:5px;
+padding-left:50px;
+
+}
 
 
 
@@ -75,20 +79,20 @@ For information : contact@oreon-project.org
 
 .Tmenu3 {  border-collapse: collapse; background-color: white;}
 .Tmenu3 td {padding: 0px; }
-.Tmenu3 .top .left, .Tmenu3 .top .right, .Tmenu3 .bottom .left, .Tmenu3 .bottom .right {height: 12px;	width: 15px; }
+.Tmenu3 .top .left, .Tmenu3 .top .right, .Tmenu3 .bottom .left, .Tmenu3 .bottom .right {height: 9px;	width: 10px; }
 
-.Tmenu3 .top .left{width:15px;padding-left:15px;}
-.Tmenu3 .top .right{width:15px;padding-left:15px;}
+.Tmenu3 .top .left{width:10px;padding-left:10px;}
+.Tmenu3 .top .right{width:10px;padding-left:10px;}
 
-.Tmenu3 .right{width:15px;}
-.Tmenu3 .left{width:15px;}
+.Tmenu3 .right{width:10px;}
+.Tmenu3 .left{width:10px;}
 .Tmenu3 .center{width:100%;}
 
 
-.Tmenu3 .top .left { background-image: url(Images/topleft.gif);}
-.Tmenu3 .top .right { background-image: url(Images/topright.gif);}
-.Tmenu3 .bottom .left { background-image: url(Images/bottomleft.gif); }
-.Tmenu3 .bottom .right { background-image: url(Images/bottomright.gif); }
+.Tmenu3 .top .left { background-image: url(Images/topleft2.gif);}
+.Tmenu3 .top .right { background-image: url(Images/topright2.gif);}
+.Tmenu3 .bottom .left { background-image: url(Images/bottomleft2.gif); }
+.Tmenu3 .bottom .right { background-image: url(Images/bottomright2.gif); }
 
 .Tmenu3 .bottom .center{ background: url(Images/line.gif) bottom right repeat-x; }
 .Tmenu3 .top .center{ background: url(Images/line.gif) top right repeat-x; }
