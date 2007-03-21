@@ -24,7 +24,7 @@ consider :
 	mysql-password = mysql password
 	oreon = oreon user mysql
 
-$>mysql -u root -pmysql-password
+$>mysql -u root -p
 mysql> CREATE DATABASE `ods` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> GRANT ALL PRIVILEGES ON `ods` . * TO 'oreon'@'localhost';
 mysql> exit 
