@@ -205,9 +205,35 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Bacis Configuration</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Basic Configuration</b></td>';
 		$mysql_msg = '';
 		$file_sql = file("./insertBaseConf.sql");
+	    $str = NULL;
+	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
+	        $line = $file_sql[$i];
+	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
+	            $pos = strrpos($line, ";");
+	            if ($pos != false)      {
+	                $str .= $line;
+	                $str = chop ($str);
+	  				if ($DEBUG) print $str . "<br>";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+	                $str = NULL;
+	            } else
+	            	$str .= $line;
+	        }
+	    }	
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Insert Commands</b></td>';
+		$mysql_msg = '';
+		$file_sql = file("./insertCmd-Tps.sql");
 	    $str = NULL;
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
