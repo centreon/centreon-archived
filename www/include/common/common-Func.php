@@ -896,26 +896,33 @@ For information : contact@oreon-project.org
 		//$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg", "gd2"=>"gd2");		
 		$is_a_valid_image = array("png"=>"png");		
 		
-		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
-			$rep = substr($rep, 1);
-		if ($rep == NULL)	{
+//		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
+//			$rep = substr($rep, 1);
+		if ($oreon->optGen["nagios_path_img"])	{
 			# Caution ! scandir only exist on php5
 			$elems = @scandir($oreon->optGen["nagios_path_img"]);
-			if ($elems) {
-			foreach ($elems as $key => $value) {
-				if ( $value == "." || $value == "..")  
-					$elems[$key] = NULL;
-				} 
-			}
+			if (is_array($elems))
+				foreach ($elems as $key => $value)
+					if ( $value == "." || $value == "..")
+						$elems[$key] = NULL;
 		}
-		$elems[count($elems)] = $rep;
+		else if ($rep)	{
+			# Caution ! scandir only exist on php5
+			$elems = @scandir($rep);
+			if (is_array($elems))
+				foreach ($elems as $key => $value)
+					if ( $value == "." || $value == "..")
+						$elems[$key] = NULL;
+			
+		}
+		//$elems[count($elems)] = $rep;
 		for ($i = 0; $i < count($elems); $i++)	{
 			if ($elems[$i])	{
 				if (!is_dir($oreon->optGen["nagios_path_img"].$elems[$i]) && !array_key_exists($elems[$i], $is_not_an_image) && in_array(array_pop(explode('.',strtolower($elems[$i]))), $is_a_valid_image) && substr($elems[$i], -1)!= "~"){
-						$key = substr($oreon->optGen["nagios_path_img"].$elems[$i], strlen($oreon->optGen["nagios_path_img"]));
-						$images[$key] = $key;
-						
-				} else {				
+					$key = substr($oreon->optGen["nagios_path_img"].$elems[$i], strlen($oreon->optGen["nagios_path_img"]));
+					$images[$key] = $key;
+				} 
+				else {				
 					$handle = @opendir($oreon->optGen["nagios_path_img"].$elems[$i]);					
 					while (false !== ($filename = @readdir($handle))){
 						if (!is_dir($oreon->optGen["nagios_path_img"].$elems[$i]."/".$filename) && !array_key_exists($filename, $is_not_an_image) && in_array(array_pop(explode('.',strtolower($filename))), $is_a_valid_image) && substr($filename, -1)!= "~"){
