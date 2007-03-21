@@ -29,6 +29,9 @@ For information : contact@oreon-project.org
 	else
 		$search = NULL; 
 	
+	if (!isset($limit))
+		$limit = 20;
+	
 	$tab = array ("search" => $search, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
 	$form_search->addElement('text', 'search', $lang["quicksearch"]);
 	$form_search->addElement('hidden', 'p');
