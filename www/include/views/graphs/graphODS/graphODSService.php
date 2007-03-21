@@ -126,16 +126,13 @@ For information : contact@oreon-project.org
 	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	$counter = 0;
-	while ($DBRESULT2->fetchInto($metrics_ret)){
+	for ($counter = 0;$DBRESULT2->fetchInto($metrics_ret); $counter++){
 		$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
 		$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
 		$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
-		$counter++;
 	}
 		
 	# verify if metrics in parameter is for this index
-	
 	$metrics_active =& $_GET["metric"];
 	$pass = 0;
 	if (isset($metrics_active))
@@ -151,7 +148,7 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			foreach ($metrics_active as $key => $metric){
-				if (isset($metrics_active[$metric["metric_id"]])){
+				if (isset($metrics_active[$key])){
 					$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$_GET["index"]."');");
 					if (PEAR::isError($DBRESULT))
 						print "Mysql Error : ".$DBRESULT->getDebugInfo();
