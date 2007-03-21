@@ -47,7 +47,7 @@ $lang['views_map_comment'] = "Comment";
 # Graphs
 $lang["views_title1"] = "Perfparse Graphs";
 $lang["views_title2"] = "Oreon Graphs";
-$lang["views_title3"] = "Graph Plugins";
+$lang["views_title3"] = "Graph By Plugins";
 $lang["views_title4"] = "Templates";
 $lang["views_perfparse"] = "Perfparse";
 
