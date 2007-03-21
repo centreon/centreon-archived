@@ -100,16 +100,16 @@
 	for ($cpts = 0;$DBRESULT->fetchInto($log);$cpts++){
 		if ($log["msg_type"] == 0){ # Service Alerte
 			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
-								"line" => "SERVICE ALERT: ".$log["host_name"].";".$log["service_description"].";".$tab_status_service[$log["status"]].";".$tab_type[$log["type"]].";".$log["retry"].";".$log["output"]);
+								"line" => "SERVICE ALERT: ".$log["host_name"].";".$log["service_description"].";".$log["status"].";".$log["type"].";".$log["retry"].";".$log["output"]);
 		} else if ($log["msg_type"] == 1){ # Host Alerte
 			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
-								"line" => "HOST ALERT: ".$log["host_name"].";".$tab_status_host[$log["status"]].";".$tab_type[$log["type"]].";".$log["retry"].";".$log["output"]);
+								"line" => "HOST ALERT: ".$log["host_name"].";".$log["status"].";".$log["type"].";".$log["retry"].";".$log["output"]);
 		} else if ($log["msg_type"] == 2){ # Service Notifi
 			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
-								"line" => "SERVICE NOTIFICATION: ".$log["notification_contact"].";".$log["host_name"].";".$log["service_description"].";".$tab_status_service[$log["status"]].";".$log["notification_cmd"].";".$log["output"]);
+								"line" => "SERVICE NOTIFICATION: ".$log["notification_contact"].";".$log["host_name"].";".$log["service_description"].";".$log["status"].";".$log["notification_cmd"].";".$log["output"]);
 		} else if ($log["msg_type"] == 3){	# Host notifi
 			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),
-								"line" => "HOST NOTIFICATION: ".$log["notification_contact"].";".$log["host_name"].";".$tab_status_host[$log["status"]].";".$log["notification_cmd"].";".$log["output"]);
+								"line" => "HOST NOTIFICATION: ".$log["notification_contact"].";".$log["host_name"].";".$log["status"].";".$log["notification_cmd"].";".$log["output"]);
 		} else if ($log["msg_type"] == 4){ # Warning
 			$logs[$cpts] = array("class" => $tab_class[$cpts % 2], "date"=>date($lang["date_format"], $log["ctime"]), "time" => date($lang["time_format"], $log["ctime"]),"line" => $log["output"]);
 		} else if ($log["msg_type"] == 5){ # Others logs
