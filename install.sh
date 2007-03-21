@@ -19,7 +19,7 @@ cat <<EOF
 #                    OREON Project (www.oreon-project.org)                    #
 #                            Thanks for using OREON                           #
 #                                                                             #
-#                                    v 1.3                                    #
+#                                   v 1.3.x                                   #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
@@ -33,93 +33,88 @@ cat <<EOF
 ###############################################################################
 EOF
 
-#Load install script functions
-if [ -z "$BASH" ]; then # Test if BASH is in path
-    if ! which bash > /dev/null 2>&1; then
-	echo "Install bash and try `bash install.sh`."
-    fi # Exit if we are not in BASH
-    echo "Error: The script must be run with BASH shell. Try:"
-    echo "# bash install.sh"
-    exit 1
-fi
-. functions
-
-##
-## VARIABLES
-##
-## Make sure you know what you do if you modify it !!
-
-SRC_OREON="oreon_src"
-
-PLUGINS_DIR="Plugins/"
-
-PWD=`pwd`
-
-LOG_FILE="$PWD/log/install_oreon.log"
-
-date > $LOG_FILE
-
-TRUETYPE="/usr/X11R6/lib/X11/fonts/truetype"
-
-
-echo ""
-$SETCOLOR_WARNING
-echo "                     Make sure you have root permissions !"
-echo ""
-echo ""
-echo " WARNING : Setup will delete all previous informations in your OREON DATABASE. "
-$SETCOLOR_NORMAL
-echo ""
-echo "Are you sure to continue ?"
-echo -n "[y/n], default to [n]:"
-read temp
-if [ -z $temp ];then
-    temp=n
-fi
-
-if [ $temp = "n" ];then
-    echo "Okay... have a nice day!"
-    exit
-fi
-
-test_answer()
-{
-    #$1 variable to fill
-    #$2 text typed by user
-    if [ ! -z $2 ];then
-        if [ $2 != "" ];then
-      eval $1=$2
-        fi
-    fi
-}
-
-##
-## CONFIGURATION
-##
-if test -a $OREON_CONF ; then
+	#Load install script functions
+	if [ -z "$BASH" ]; then # Test if BASH is in path
+	    if ! which bash > /dev/null 2>&1; then
+		echo "Install bash and try `bash install.sh`."
+	    fi # Exit if we are not in BASH
+	    echo "Error: The script must be run with BASH shell. Try:"
+	    echo "# bash install.sh"
+	    exit 1
+	fi
+	. functions
+	
+	#
+	# VARIABLES
+	# Make sure you know what you do if you modify it !!
+	
+	SRC_OREON="oreon_src"
+	PLUGINS_DIR="Plugins/"
+	PWD=`pwd`
+	LOG_FILE="$PWD/log/install_oreon.log"
+	date > $LOG_FILE
+	TRUETYPE="/usr/X11R6/lib/X11/fonts/truetype"
+	
 	echo ""
-	echo_success "Finding Oreon configuration file '$OREON_CONF' :" "OK"
-	echo "You already seem to have to install Oreon."
-    echo "Do you want use last Oreon install parameters ?"
-	echo -n "[y/n], default to [y]:"
+	$SETCOLOR_WARNING
+	echo "                     Make sure you have root permissions !"
+	echo ""
+	echo ""
+	echo " WARNING : Setup will delete all previous informations in your OREON DATABASE. "
+	$SETCOLOR_NORMAL
+	echo ""
+	echo "Are you sure to continue ?"
+	echo -n "[y/n], default to [n]:"
 	read temp
 	if [ -z $temp ];then
-	    temp=y
+	    temp=n
+	fi
+	
+	if [ $temp = "n" ];then
+	    echo "Okay... have a nice day!"
+	    exit
+	fi
+	
+	test_answer() {
+	    #$1 variable to fill
+	    #$2 text typed by user
+	    if [ ! -z $2 ];then
+	        if [ $2 != "" ];then
+	      		eval $1=$2
+	        fi
+	    fi
+	}
+	
+	## CONFIGURATION
+	
+	# Test if there are a conf file
+	if test -a $OREON_CONF ; then
+		echo ""
+		echo_success "Finding Oreon configuration file '$OREON_CONF' :" "OK"
+		echo "Oreon seems to be already installed."
+	    echo "Do you want use last Oreon install parameters ?"
+		echo -n "[y/n], default to [y]:"
+		read temp
+		if [ -z $temp ];then
+		    temp=y
+		fi
+	
+		if [ $temp = "y" ];then
+		    echo ""
+			echo_passed "Using '$OREON_CONF' :" "PASSED"
+		    . $OREON_CONF
+		    echo ""
+		else
+			echo "----------------------------------------------"
+			echo "           First, let's talk about you !"
+			echo "----------------------------------------------"
+			echo ""
+		fi
 	fi
 
-	if [ $temp = "y" ];then
-	    echo ""
-		echo_passed "Using '$OREON_CONF' :" "PASSED"
-	    . $OREON_CONF
-	    echo ""
-	else
-		echo ""
-		echo "First, let's talk about you !"
-		echo "-----------------------------"
-		echo ""
-	fi
-fi
+	# Test if each value is set
 
+	# Nagios Installed Dir
 	if [ -z $INSTALL_DIR_NAGIOS ];then
 		INSTALL_DIR_NAGIOS="/usr/local/nagios"
 		echo "Where is installed Nagios ?"
@@ -129,7 +124,8 @@ fi
 		INSTALL_DIR_NAGIOS=${INSTALL_DIR_NAGIOS%/}
 		echo ""
 	fi
-
+	
+	#Nagios Config File
 	if [ -z $NAGIOS_ETC ];then
 		#nagios etc directory for oreon
 		NAGIOS_ETC="$INSTALL_DIR_NAGIOS/etc"
@@ -150,7 +146,8 @@ fi
 		fi
 		echo ""
 	fi
-
+	
+	# Nagios Plugin Path
 	if [ -z $NAGIOS_PLUGIN ];then
 		#nagios plugins directory for oreon
 		NAGIOS_PLUGIN="$INSTALL_DIR_NAGIOS/libexec"
@@ -162,6 +159,7 @@ fi
 		echo ""
 	fi
 
+	# Nagios Binary path
 	if [ -z $NAGIOS_BIN ];then
 		#nagios plugins directory for oreon
 		NAGIOS_BIN="$INSTALL_DIR_NAGIOS/bin"
@@ -173,6 +171,7 @@ fi
 		echo ""
 	fi
 
+	# Oreon Path
 	if [ -z $INSTALL_DIR_OREON ];then
 		#setup directory for oreon
 		INSTALL_DIR_OREON="/usr/local/oreon"
@@ -270,320 +269,309 @@ fi
 		fi
 		echo ""
 	fi
+	#############################################################
+	#    Functions Declaration Section
+	#############################################################
 
+	# When exit on error
+	function error(){
+	    echo "ERROR"
+	    exit 2
+	}
 
-##
-## Functions
-##
-
-# When exit on error
-
-function error()
-{
-    echo "ERROR"
-    exit 2
-}
-
-# Check apache version, and configure it. Ask to restart apache server
-# Make a copy of the original file as httpd.conf.initial
-
-function configure_apache()
-{
-    echo ""
-    echo "Configure Apache server"
-    echo "-----------------------"
-
-  if test -d $INSTALL_DIR_OREON ; then
-      echo_passed "$INSTALL_DIR_OREON already exists" "PASSED"
-  else
-      mkdir $INSTALL_DIR_OREON 2>&1 >> ${LOG_FILE}
-      echo_success "Creating $INSTALL_DIR_OREON" "OK"
-  fi
-
-    # configure httpd.conf
-    if test -e $DIR_APACHE_CONF/oreon.conf ; then
-	   	echo "Finding Apache Oreon configuration file"
-	   	echo_success "'$DIR_APACHE_CONF/oreon.conf' :" "OK"
-	    echo "Do you want rewrite Apache configuration file ?"
-		echo -n "[y/n], default to [y]:"
-		read temp
-		if [ -z $temp ];then
+	# Check apache version, and configure it. Ask to restart apache server
+	# Make a copy of the original file as httpd.conf.initial
+	function configure_apache(){
+	    echo "----------------------------------------------"
+	    echo "           Configure Apache server"
+	    echo "----------------------------------------------"
+	   
+	  	if test -d $INSTALL_DIR_OREON ; then
+	      	echo_passed "$INSTALL_DIR_OREON already exists" "PASSED"
+	  	else
+	      	mkdir $INSTALL_DIR_OREON 2>&1 >> ${LOG_FILE}
+	      	echo_success "Creating $INSTALL_DIR_OREON" "OK"
+	  	fi
+	
+	    # configure httpd.conf
+	    if test -e $DIR_APACHE_CONF/oreon.conf ; then
+		   	echo "Finding Apache Oreon configuration file"
+		   	echo_success "'$DIR_APACHE_CONF/oreon.conf' :" "OK"
+		    echo "Do you want rewrite Apache configuration file ?"
+			echo -n "[y/n], default to [y]:"
+			read temp
+			if [ -z $temp ];then
+			    temp=y
+			fi
+		else
 		    temp=y
 		fi
+	
+		if [ $temp = "y" ];then
+		     echo "" > $DIR_APACHE_CONF/oreon.conf
+		     cat << EOF >> $DIR_APACHE_CONF/oreon.conf
+	
+			# Section add by OREON Auto Install Script
+			
+			AddType application/x-java-jnlp-file .jnlp
+			Alias /oreon/ $INSTALL_DIR_OREON/www/
+			<Directory "$INSTALL_DIR_OREON/www">
+			    Options None
+			    AllowOverride AuthConfig Options
+			    Order allow,deny
+			    Allow from all
+			</Directory>
+	
+			EOF
+	
+			echo_success "Create '$DIR_APACHE_CONF/oreon.conf'" "OK"
+			echo_success "Configuring Apache" "OK"
+		else
+			echo_passed "Apache is already configurated" "PASSED"
+		fi
+	
+	    # add apache user to nagios group
+	    usermod -G $NAGIOS_GROUP,$WEB_USER $WEB_USER >> $LOG_FILE 2>> $LOG_FILE
+	    echo_success "User $WEB_USER added to nagios group" "OK"
+	    echo ""
+	
+	    #restart apache !
+	    if test -x /etc/init.d/apache ; then
+	    	/etc/init.d/apache restart >> $LOG_FILE 2>> $LOG_FILE
+	    elsif if test -x /etc/init.d/httpd ; then
+	    	/etc/init.d/httpd restart
+	  	elsif if test -e /etc/init.d/apache2 ; then
+	    	/etc/init.d/apache2 restart >> $LOG_FILE 2>> $LOG_FILE
+	    else
+	    	echo_warning "Unable to restart apache server" "WARNING"
+	    fi
+	}
+
+	# install OREON interface
+	function confirm_oreon(){
+	    if test -f $INSTALL_DIR_OREON/www/oreon.conf.php ; then
+			echo ""
+		  	echo "Oreon is already install on your server !"
+		  	echo ""
+		  	echo -n "Are you sure you want to install OREON ?"
+	      	echo -n "[y/n], default to [n]:"
+		  	read answer
+		  	if [ -z $answer ];then
+		  		answer=n
+		  	fi
+		  	if [ $answer == 'n' ]; then
+		    	echo "Ok, so bye bye !! "
+		      	echo "If you want more information about Oreon Project"
+		      	echo "Go on Our Web Site : "
+		      	echo "        - http://www.oreon-project.org"
+		      	echo ""
+		      	echo "Or contact Oreon Team : "
+		      	echo "        - infos@oreon-project.org"
+		      	echo ""
+		      	exit
+		  	elsif [ $answer == 'y' ]; then
+		      	install_oreon
+		      	install_ods
+		      	config_sudo
+		  	else
+		      	echo "Please answer y or n ! "
+		      	confirm_oreon
+		  	fi
+	    else
+		    install_oreon
+		    install_ods
+		    config_sudo
+	    fi
+	}
+
+	function restart_mysql(){
+	  	# restart mysql to be sure that mysqld is running !
+	    echo "----------------------------------------------"
+	    echo "           Restart Mysql server"
+	    echo "----------------------------------------------"
+	    if test -x /etc/init.d/mysqld ; then
+	      	/etc/init.d/mysqld restart
+	  	elsif test -x /etc/init.d/mysql ; then
+	      	/etc/init.d/mysql restart
+	  	else
+	      	echo_failure "We don't find Mysql server. OREON will not run." "FAILURE"
+	      	exit
+	 	fi
+	}
+
+	function config_sudo(){
+		# modify sudoers file
+	    echo "----------------------------------------------"
+		echo "           Restart Configure Sudo"
+		echo "----------------------------------------------"
+		
+		# Find Nagios Init Script
+		check_nagios_init_script
+	
+	  	sudo=`cat $SUDO_FILE | grep OREON > /dev/null; echo $?`
+	
+	  	if [ $sudo == '1' ]; then
+	      	echo "#Add by OREON installation script" >> $SUDO_FILE
+	      	echo "User_Alias      OREON= $WEB_USER" >> $SUDO_FILE
+	      	echo "## Nagios Restart" >> $SUDO_FILE
+	      	echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
+	      	echo "## Nagios reload" >> $SUDO_FILE
+	      	echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
+	      	echo "## Snmptrapd Restart" >> $SUDO_FILE
+	      	echo "OREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
+	  		echo "" >> $SUDO_FILE
+	      	echo_success "Configuring Sudo" "OK"
+	  	else
+	      	echo_passed "Sudo is already configurated" "PASSED"
+	  	fi
+	}
+
+	function oreon_post_install(){
+		echo "----------------------------------------------"
+		echo "           Oreon Post Installation"
+		echo "----------------------------------------------"
+	
+	    #BIN_MAIL=`whereis -b mail | cut -d : -f2`
+	    #BIN_MAIL=${BIN_MAIL# }
+		echo_success "Finding mail binary : $BIN_MAIL " "OK"
+	
+		#BIN_RRDTOOL=`whereis -b rrdtool | cut -d : -f2 | cut -d " " -f2`
+	    #BIN_RRDTOOL=${BIN_RRDTOOL# }
+		echo_success "Finding rrdtool binary : $BIN_RRDTOOL " "OK"
+
+		INSTALL_DIR_OREON_CONF="$INSTALL_DIR_OREON/www/install/installoreon.conf.php"
+		echo "<?" > $INSTALL_DIR_OREON_CONF
+		echo "/**" >> $INSTALL_DIR_OREON_CONF
+		echo "Oreon is developped with GPL Licence 2.0 :" >> $INSTALL_DIR_OREON_CONF
+		echo "http://www.gnu.org/licenses/gpl.txt" >> $INSTALL_DIR_OREON_CONF
+		echo "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf" >> $INSTALL_DIR_OREON_CONF
+		echo "" >> $INSTALL_DIR_OREON_CONF
+		echo "The Software is provided to you AS IS and WITH ALL FAULTS." >> $INSTALL_DIR_OREON_CONF
+		echo "OREON makes no representation and gives no warranty whatsoever," >> $INSTALL_DIR_OREON_CONF
+		echo "whether express or implied, and without limitation, with regard to the quality," >> $INSTALL_DIR_OREON_CONF
+		echo "safety, contents, performance, merchantability, non-infringement or suitability for" >> $INSTALL_DIR_OREON_CONF
+		echo "any particular or intended purpose of the Software found on the OREON web site." >> $INSTALL_DIR_OREON_CONF
+		echo "In no event will OREON be liable for any direct, indirect, punitive, special," >> $INSTALL_DIR_OREON_CONF
+		echo "incidental or consequential damages however they may arise and even if OREON has" >> $INSTALL_DIR_OREON_CONF
+		echo "been previously advised of the possibility of such damages." >> $INSTALL_DIR_OREON_CONF
+		echo "" >> $INSTALL_DIR_OREON_CONF
+		echo "For information : contact@oreon-project.org" >> $INSTALL_DIR_OREON_CONF
+		echo "	*/" >> $INSTALL_DIR_OREON_CONF
+		echo "" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['oreon_dir'] = \"$INSTALL_DIR_OREON/\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['oreon_dir_www'] = \"$INSTALL_DIR_OREON/www/\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['oreon_dir_rrd'] = \"$INSTALL_DIR_OREON/rrd/\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['nagios'] = \"$INSTALL_DIR_NAGIOS/\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['nagios_conf'] = \"$NAGIOS_ETC/\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['nagios_plugins'] = \"$NAGIOS_PLUGIN/\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['nagios_bin'] = \"$NAGIOS_BIN/\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['nagios_init_script'] = \"$NAGIOS_INIT_SCRIPT\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['apache_user'] = \"$WEB_USER\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['apache_group'] = \"$WEB_GROUP\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['nagios_user'] = \"$NAGIOS_USER\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['nagios_group'] = \"$NAGIOS_GROUP\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['mail'] = \"$BIN_MAIL\";" >> $INSTALL_DIR_OREON_CONF
+		#echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
+		echo "\$conf_installoreon['pear_dir'] = \"$PEAR_PATH\";" >> $INSTALL_DIR_OREON_CONF
+
+	    for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
+	    do
+	    	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
+		    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
+	    	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+	      	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
+	      	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
+	        echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+	      	echo "\";" >> $INSTALL_DIR_OREON_CONF
+	    done
+	    for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
+	    do
+	     	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
+		    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
+	    	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+	      	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
+	      	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
+	        echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+	      	echo "\";" >> $INSTALL_DIR_OREON_CONF
+	    done
+	    for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
+	    do
+	     	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
+		 	tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
+	   		echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+	    	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
+	     	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
+	     	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
+	    	echo "\";" >> $INSTALL_DIR_OREON_CONF
+	    done
+	
+	    echo "?>" >> $INSTALL_DIR_OREON_CONF
+	    echo_success "Create $INSTALL_DIR_OREON_CONF" "OK"
+	
+	    echo "INSTALL_DIR_OREON=$INSTALL_DIR_OREON" > $OREON_CONF
+	    echo "NAGIOS_ETC=$NAGIOS_ETC" >> $OREON_CONF
+	    echo "NAGIOS_PLUGIN=$NAGIOS_PLUGIN" >> $OREON_CONF
+	    echo "NAGIOS_BIN=$NAGIOS_BIN" >> $OREON_CONF
+	    echo "INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS" >> $OREON_CONF
+	    echo "RRD_PERL=$RRD_PERL" >> $OREON_CONF
+	    echo "SUDO_FILE=$SUDO_FILE" >> $OREON_CONF
+	    echo "WEB_USER=$WEB_USER" >> $OREON_CONF
+	    echo "WEB_GROUP=$WEB_GROUP" >> $OREON_CONF
+	    echo "NAGIOS_USER=$NAGIOS_USER" >> $OREON_CONF
+	    echo "NAGIOS_GROUP=$NAGIOS_GROUP" >> $OREON_CONF
+	    echo "BIN_RRDTOOL=$BIN_RRDTOOL" >> $OREON_CONF
+	    echo "BIN_MAIL=$BIN_MAIL" >> $OREON_CONF
+	    echo "PEAR_PATH=$PEAR_PATH" >> $OREON_CONF
+	    
+	    echo_success "Create $OREON_CONF " "OK"
+	    echo_success "Configuring Oreon post-install" "OK"
+	}
+
+	#############################################################
+	#    Install
+	#############################################################
+
+
+	echo "----------------------------------------------"
+	echo "             User Management"
+	echo "----------------------------------------------"
+	
+	# check for httpd directory
+	check_httpd_directory
+	## group apache
+	check_group_apache
+	## user apache
+	check_user_apache
+	check_group_nagios
+	check_user_nagios
+	echo ""
+
+	echo "----------------------------------------------"
+	echo "               Other Stuff"
+	echo "----------------------------------------------"
+	
+	if test -d $NAGIOS_PLUGIN ; then
+	    echo_success "Nagios libexec directory" "OK"
 	else
-	    temp=y
+	    mkdir -p $NAGIOS_PLUGIN > /dev/null
+	    echo_success "Nagios libexec directory created" "OK"
 	fi
-
-	if [ $temp = "y" ];then
-	     echo "" > $DIR_APACHE_CONF/oreon.conf
-	     cat << EOF >> $DIR_APACHE_CONF/oreon.conf
-##
-## Section add by OREON Install Setup
-##
-
-AddType application/x-java-jnlp-file .jnlp
-Alias /oreon/ $INSTALL_DIR_OREON/www/
-<Directory "$INSTALL_DIR_OREON/www">
-    Options None
-    AllowOverride AuthConfig Options
-    Order allow,deny
-    Allow from all
-</Directory>
-
-EOF
-	    echo_success "Create '$DIR_APACHE_CONF/oreon.conf'" "OK"
-	    echo_success "Configuring Apache" "OK"
-    else
-	    echo_passed "Apache is already configurated" "PASSED"
-    fi
-
-    # add apache user to nagios group
-    usermod -G $NAGIOS_GROUP,$WEB_USER $WEB_USER >> $LOG_FILE 2>> $LOG_FILE
-    echo_success "User $WEB_USER added to nagios group" "OK"
-    echo ""
-
-    #restart apache !
-    if test -x /etc/init.d/apache ; then
-    /etc/init.d/apache restart >> $LOG_FILE 2>> $LOG_FILE
-    else if test -x /etc/init.d/httpd ; then
-    /etc/init.d/httpd restart
-  	else if test -e /etc/init.d/apache2 ; then
-    /etc/init.d/apache2 restart >> $LOG_FILE 2>> $LOG_FILE
-    else
-      echo_warning "Unable to restart apache server" "WARNING"
-    fi
-    fi
-    fi
-
-}
-
-# install OREON interface
-
-function confirm_oreon()
-{
-    if test -f $INSTALL_DIR_OREON/www/oreon.conf.php ; then
-	  echo ""
-	  echo "Oreon is already install on your server !"
-
-	  echo -n "Are you sure you want to install OREON ?"
-      echo -n "[y/n], default to [n]:"
-	  read answer
-	  if [ -z $answer ];then
-	  	answer=n
-	  fi
-	  if [ $answer == 'n' ]; then
-	      echo "Ok, so bye bye !! "
-	      exit
-	  else if [ $answer == 'y' ]; then
-	      install_oreon
-	      install_ods
-	      config_sudo
-	      #restart_mysql
-	  else
-	      echo "Please answer y or n ! "
-	      confirm_oreon
-	  fi
-	  fi
-    else
-	    install_oreon
-	    install_ods
-	    config_sudo
-	    #restart_mysql
-    fi
-}
-
-## old install_oreon
-
-
-function restart_mysql()
-{
-  # restart mysql to be sure that mysqld is running !
-    echo ""
-    echo "Restart Mysql server"
-    echo "-------------------"
-  	if test -x /etc/init.d/mysqld ; then
-      /etc/init.d/mysqld restart
-  	else if test -x /etc/init.d/mysql ; then
-      /etc/init.d/mysql restart
-  	else
-      echo_failure "We don't find Mysql server. OREON will not run." "FAILURE"
-      exit
-  	fi
- 	fi
-}
-
-function config_sudo()
-{
-# modify sudoers file
-    echo ""
-    echo "Configure Sudo"
-    echo "--------------"
-
-	# Find Nagios Init Script
-	check_nagios_init_script
-
-  sudo=`cat $SUDO_FILE | grep OREON > /dev/null; echo $?`
-
-  if [ $sudo == '1' ]; then
-      echo "#Add by OREON installation script" >> $SUDO_FILE
-      echo "User_Alias      OREON= $WEB_USER" >> $SUDO_FILE
-      echo "## Nagios Restart" >> $SUDO_FILE
-      echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
-      echo "## Nagios reload" >> $SUDO_FILE
-      echo "OREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
-      echo "## Snmptrapd Restart" >> $SUDO_FILE
-      echo "OREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
-      echo "" >> $SUDO_FILE
-      echo_success "Configuring Sudo" "OK"
-  else
-      echo_passed "Sudo is already configurated" "PASSED"
-  fi
-}
-
-function oreon_post_install()
-{
-    echo ""
-    echo "Post Install"
-    echo "------------"
-
-      #BIN_MAIL=`whereis -b mail | cut -d : -f2`
-      #BIN_MAIL=${BIN_MAIL# }
-	  echo_success "Finding mail binary : $BIN_MAIL " "OK"
-
-	  #BIN_RRDTOOL=`whereis -b rrdtool | cut -d : -f2 | cut -d " " -f2`
-      #BIN_RRDTOOL=${BIN_RRDTOOL# }
-	  echo_success "Finding rrdtool binary : $BIN_RRDTOOL " "OK"
-
-
-	  INSTALL_DIR_OREON_CONF="$INSTALL_DIR_OREON/www/install/installoreon.conf.php"
-      echo "<?" > $INSTALL_DIR_OREON_CONF
-      echo "/**" >> $INSTALL_DIR_OREON_CONF
-      echo "Oreon is developped with GPL Licence 2.0 :" >> $INSTALL_DIR_OREON_CONF
-      echo "http://www.gnu.org/licenses/gpl.txt" >> $INSTALL_DIR_OREON_CONF
-      echo "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf" >> $INSTALL_DIR_OREON_CONF
-      echo "" >> $INSTALL_DIR_OREON_CONF
-      echo "The Software is provided to you AS IS and WITH ALL FAULTS." >> $INSTALL_DIR_OREON_CONF
-      echo "OREON makes no representation and gives no warranty whatsoever," >> $INSTALL_DIR_OREON_CONF
-      echo "whether express or implied, and without limitation, with regard to the quality," >> $INSTALL_DIR_OREON_CONF
-      echo "safety, contents, performance, merchantability, non-infringement or suitability for" >> $INSTALL_DIR_OREON_CONF
-      echo "any particular or intended purpose of the Software found on the OREON web site." >> $INSTALL_DIR_OREON_CONF
-      echo "In no event will OREON be liable for any direct, indirect, punitive, special," >> $INSTALL_DIR_OREON_CONF
-      echo "incidental or consequential damages however they may arise and even if OREON has" >> $INSTALL_DIR_OREON_CONF
-      echo "been previously advised of the possibility of such damages." >> $INSTALL_DIR_OREON_CONF
-      echo "" >> $INSTALL_DIR_OREON_CONF
-      echo "For information : contact@oreon-project.org" >> $INSTALL_DIR_OREON_CONF
-      echo "	*/" >> $INSTALL_DIR_OREON_CONF
-      echo "" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['oreon_dir'] = \"$INSTALL_DIR_OREON/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['oreon_dir_www'] = \"$INSTALL_DIR_OREON/www/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['oreon_dir_rrd'] = \"$INSTALL_DIR_OREON/rrd/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios'] = \"$INSTALL_DIR_NAGIOS/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_conf'] = \"$NAGIOS_ETC/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_plugins'] = \"$NAGIOS_PLUGIN/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_bin'] = \"$NAGIOS_BIN/\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_init_script'] = \"$NAGIOS_INIT_SCRIPT\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['apache_user'] = \"$WEB_USER\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['apache_group'] = \"$WEB_GROUP\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_user'] = \"$NAGIOS_USER\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['nagios_group'] = \"$NAGIOS_GROUP\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['mail'] = \"$BIN_MAIL\";" >> $INSTALL_DIR_OREON_CONF
-      #echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
-      echo "\$conf_installoreon['pear_dir'] = \"$PEAR_PATH\";" >> $INSTALL_DIR_OREON_CONF
-
-      for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
-      do
-      	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
-	    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
-    	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
-      	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
-        echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo "\";" >> $INSTALL_DIR_OREON_CONF
-      done
-      for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
-      do
-      	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
-	    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
-    	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
-      	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
-        echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo "\";" >> $INSTALL_DIR_OREON_CONF
-      done
-        for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
-      do
-      	echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
-	    tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
-    	echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
-      	tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
-        echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-      	echo "\";" >> $INSTALL_DIR_OREON_CONF
-      done
-
-      echo "?>" >> $INSTALL_DIR_OREON_CONF
-      echo_success "Create $INSTALL_DIR_OREON_CONF" "OK"
-
-     echo "INSTALL_DIR_OREON=$INSTALL_DIR_OREON" > $OREON_CONF
-     echo "NAGIOS_ETC=$NAGIOS_ETC" >> $OREON_CONF
-     echo "NAGIOS_PLUGIN=$NAGIOS_PLUGIN" >> $OREON_CONF
-     echo "NAGIOS_BIN=$NAGIOS_BIN" >> $OREON_CONF
-     echo "INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS" >> $OREON_CONF
-     echo "RRD_PERL=$RRD_PERL" >> $OREON_CONF
-     echo "SUDO_FILE=$SUDO_FILE" >> $OREON_CONF
-     echo "WEB_USER=$WEB_USER" >> $OREON_CONF
-     echo "WEB_GROUP=$WEB_GROUP" >> $OREON_CONF
-     echo "NAGIOS_USER=$NAGIOS_USER" >> $OREON_CONF
-     echo "NAGIOS_GROUP=$NAGIOS_GROUP" >> $OREON_CONF
-     echo "BIN_RRDTOOL=$BIN_RRDTOOL" >> $OREON_CONF
-     echo "BIN_MAIL=$BIN_MAIL" >> $OREON_CONF
-     echo "PEAR_PATH=$PEAR_PATH" >> $OREON_CONF
-
-
-     echo_success "Create $OREON_CONF " "OK"
-     echo_success "Configuring Oreon post-install" "OK"
-}
-
-
-##
-## INSTALL
-##
-echo "Users Management"
-echo "----------------"
-# check for httpd directory
-check_httpd_directory
-## group apache
-check_group_apache
-## user apache
-check_user_apache
-check_group_nagios
-check_user_nagios
-echo ""
-
-echo "Other Stuff"
-echo "------------"
-if test -d $NAGIOS_PLUGIN ; then
-    echo_success "Nagios libexec directory" "OK"
-else
-    mkdir -p $NAGIOS_PLUGIN > /dev/null
-    echo_success "Nagios libexec directory created" "OK"
-fi
-
-if test -d $TRUETYPE ; then
-    cp truetype/verdanab.ttf $TRUETYPE/verdanab.ttf > /dev/null
-    echo_success "TrueType verdana installed" "OK"
-else
-    mkdir -p $TRUETYPE > /dev/null
-    echo_success "TrueType directory created" "OK"
-    cp truetype/verdanab.ttf $TRUETYPE/verdanab.ttf > /dev/null
-    echo_success "TrueType verdana installed" "OK"
-fi
-
-  #PEAR_PATH=`whereis -b pear | cut -d : -f2 | cut -d " " -f4`
- # PEAR_PATH=${PEAR_PATH# }
- # PEAR_PATH=${PEAR_PATH%/}
-  echo_success "Finding PEAR Path : $PEAR_PATH " "OK"
+	
+	if test -d $TRUETYPE ; then
+	    cp truetype/verdanab.ttf $TRUETYPE/verdanab.ttf > /dev/null
+	    echo_success "TrueType verdana installed" "OK"
+	else
+	    mkdir -p $TRUETYPE > /dev/null
+	    echo_success "TrueType directory created" "OK"
+	    cp truetype/verdanab.ttf $TRUETYPE/verdanab.ttf > /dev/null
+	    echo_success "TrueType verdana installed" "OK"
+	fi
+	
+  	#PEAR_PATH=`whereis -b pear | cut -d : -f2 | cut -d " " -f4`
+ 	#PEAR_PATH=${PEAR_PATH# }
+ 	#PEAR_PATH=${PEAR_PATH%/}
+  	echo_success "Finding PEAR Path : $PEAR_PATH " "OK"
 	if test -d "$PEAR_PATH/Image/Canvas/Fonts" ; then
 		cp truetype/arial.ttf $PEAR_PATH/Image/Canvas/Fonts/arial.ttf > /dev/null
   		cp truetype/fontmap.txt $PEAR_PATH/Image/Canvas/Fonts/fontmap.txt > /dev/null
@@ -602,24 +590,24 @@ fi
 
 
 
-# installation script
-
-#check_group_nagiocmd
-configure_apache
-confirm_oreon
-oreon_post_install
-
-echo ""
-cat <<EOF
-###############################################################################
-#      Go to the URL : http://your-server/oreon/  to finish the setup         #
-#                                                                             #
-#                    Report bugs at bugs@oreon-project.org                    #
-#                                                                             #
-#                             Thanks for using OREON.                         #
-#                             -----------------------                         #
-#                        Contact : infos@oreon-project.org                    #
-#                           http://www.oreon-project.org                      #
-###############################################################################
-EOF
-
+	# installation script
+	
+	#check_group_nagiocmd
+	configure_apache
+	confirm_oreon
+	oreon_post_install
+	
+	echo ""
+	cat <<EOF
+	###############################################################################
+	#      Go to the URL : http://your-server/oreon/  to finish the setup         #
+	#                                                                             #
+	#                    Report bugs at bugs@oreon-project.org                    #
+	#                                                                             #
+	#                             Thanks for using OREON.                         #
+	#                             -----------------------                         #
+	#                        Contact : infos@oreon-project.org                    #
+	#                           http://www.oreon-project.org                      #
+	###############################################################################
+	EOF
+	
