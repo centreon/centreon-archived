@@ -468,9 +468,9 @@ function install_ods(){
     chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php" "OK"
 	
-	sudo=`cat /var/spool/cron/$NAGIOS_USER | grep ArchiveLogInDB.php > /dev/null; echo $?`
+	cron=`cat /var/spool/cron/$NAGIOS_USER | grep ArchiveLogInDB.php > /dev/null; echo $?`
 
-  	if [ $sudo == '1' ]; then
+  	if [ $cron == '1' ]; then
   		echo "0 0 1-31 * * php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER >> $LOG_FILE 2>> $LOG_FILE
 		echo_success "Setup Cron for ArchiveLogInDB.php" "OK"
   	else
@@ -483,7 +483,9 @@ function install_ods(){
     chmod 775 $INSTALL_DIR_OREON/cron/parsing_status.pl >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/parsing_status.pl" "OK"
 	
-	if [ $sudo == '1' ]; then
+	cron=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_status.pl > /dev/null; echo $?`
+	
+	if [ $cron == '1' ]; then
   		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> /var/spool/cron/$NAGIOS_USER >> $LOG_FILE 2>> $LOG_FILE
 		echo_success "Setup Cron for parsing_status.pl" "OK"
   	else
@@ -496,9 +498,9 @@ function install_ods(){
     chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl" "OK"
 	
-	sudo=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_log.pl > /dev/null; echo $?`
+	cron=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_log.pl > /dev/null; echo $?`
 
-  	if [ $sudo == '1' ]; then
+  	if [ $cron == '1' ]; then
   		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER >> $LOG_FILE 2>> $LOG_FILE
 		echo_success "Setup Cron for parsing_log.pl" "OK"
   	else

@@ -19,7 +19,7 @@ cat <<EOF
 #                    OREON Project (www.oreon-project.org)                    #
 #                            Thanks for using OREON                           #
 #                                                                             #
-#                                    v 1.3                                    #
+#                                    v 1.4                                    #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
@@ -98,8 +98,14 @@ test_answer()
 ##
 if test -a $OREON_CONF ; then
 	echo ""
+	echo "------------------------------------------------------------------------"
+	echo "                   Detecting old Installation"
+	echo "------------------------------------------------------------------------"
+	echo ""
+	echo ""
 	echo_success "Finding Oreon configuration file '$OREON_CONF' :" "OK"
 	echo "You already seem to have to install Oreon."
+	echo ""
     echo "Do you want use last Oreon install parameters ?"
 	echo -n "[y/n], default to [y]:"
 	read temp
@@ -113,10 +119,11 @@ if test -a $OREON_CONF ; then
 	    . $OREON_CONF
 	    echo ""
 	else
+		echo "------------------------------------------------------------------------"
+		echo "                     First, let's talk about you !"
+		echo "------------------------------------------------------------------------"
 		echo ""
-		echo "First, let's talk about you !"
-		echo "-----------------------------"
-		echo ""
+		echo ""		
 	fi
 fi
 
@@ -290,8 +297,11 @@ function error()
 function configure_apache()
 {
     echo ""
-    echo "Configure Apache server"
-    echo "-----------------------"
+    echo "------------------------------------------------------------------------"
+    echo "                        Configure Apache server"
+    echo "------------------------------------------------------------------------"
+	echo ""
+	echo ""
 
   if test -d $INSTALL_DIR_OREON ; then
       echo_passed "$INSTALL_DIR_OREON already exists" "PASSED"
@@ -398,8 +408,11 @@ function restart_mysql()
 {
   # restart mysql to be sure that mysqld is running !
     echo ""
-    echo "Restart Mysql server"
-    echo "-------------------"
+    echo "------------------------------------------------------------------------"
+    echo "                         Restart Mysql server"
+    echo "------------------------------------------------------------------------"
+  	echo ""
+	echo ""
   	if test -x /etc/init.d/mysqld ; then
       	/etc/init.d/mysqld restart
   	else if test -x /etc/init.d/mysql ; then
@@ -413,10 +426,12 @@ function restart_mysql()
 
 function config_sudo()
 {
-# modify sudoers file
     echo ""
-    echo "Configure Sudo"
-    echo "--------------"
+    echo "------------------------------------------------------------------------"
+	echo "                            Configure Sudo"
+	echo "------------------------------------------------------------------------"
+	echo ""
+	echo ""
 
     # Find Nagios Init Script
 	check_nagios_init_script
@@ -450,9 +465,12 @@ function config_sudo()
 
 function oreon_post_install()
 {
-    echo ""
-    echo "Post Install"
-    echo "------------"
+	echo ""
+	echo "------------------------------------------------------------------------"
+	echo "                          Oreon Post Install"
+	echo "------------------------------------------------------------------------"
+	echo ""
+	echo ""
 
     #BIN_MAIL=`whereis -b mail | cut -d : -f2`
     #BIN_MAIL=${BIN_MAIL# }
@@ -576,40 +594,13 @@ function oreon_post_install()
   	fi
 }
 
-function install_ods(){
-	
-	echo ""
-    echo "Start ODS Installation"
-    echo "------------------------"
-	
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl
-	mv $INSTALL_DIR_OREON/ODS/ods_new.pl $INSTALL_DIR_OREON/ODS/ods.pl
- 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
-	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
-	echo_success "Replace ODS Macro " "OK"
-    
-	if test -d $INSTALL_DIR_OREON/OreonDataStorage ; then
-		echo_passed "ODS data Directory already exists" "PASSED"
-    else
-		mkdir $INSTALL_DIR_OREON/OreonDataStorage >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON/OreonDataStorage'" "OK"
-    fi
-	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/OreonDataStorage
-	chmod 775 $INSTALL_DIR_OREON/OreonDataStorage
-	
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' $INSTALL_DIR_OREON/ODS_SRC_ETC/ods > /etc/init.d/ods
-	chmod 755 /etc/init.d/ods
-	
-	chmod -r 755 $INSTALL_DIR_OREON/ODS/var
-	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/var
-	rm -Rf $INSTALL_DIR_OREON/ODS_SRC_ETC
-}
 
 ##
 ## INSTALL
 ##
-echo "Users Management"
-echo "----------------"
+echo "------------------------------------------------------------------------"
+echo "                           User Management"
+echo "------------------------------------------------------------------------"
 # check for httpd directory
 check_httpd_directory
 ## group apache
@@ -620,8 +611,12 @@ check_group_nagios
 check_user_nagios
 echo ""
 
-echo "Other Stuff"
-echo "------------"
+echo ""
+echo "------------------------------------------------------------------------"
+echo "                              Other Stuff"
+echo "------------------------------------------------------------------------"
+echo ""
+echo ""
 if test -d $NAGIOS_PLUGIN ; then
     echo_success "Nagios libexec directory" "OK"
 else
