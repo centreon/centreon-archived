@@ -3,10 +3,9 @@
 # functions     This file contains functions to be used by Oreon install scripts
 #
 
-##
-## COLOR FUNCTIONS
-##
-
+######################################################
+# Init Color Functions
+######################################################
 
 RES_COL=60
 MOVE_TO_COL="echo -en \\033[${RES_COL}G"
@@ -62,82 +61,69 @@ function echo_warning() {
     $SETCOLOR_NORMAL
     echo -e "\r"
 }
+####################################################
+#                    FUNCTIONS
+####################################################
 
-##
-## FUNCTION
-##
 # Find the user and group nagios in nagios.cfg and ask if we don't find
-function find_user_nagios()
-{
+function find_user_nagios(){
     NAGIOS_USER=`more $NAGIOS_ETC/nagios.cfg | grep ^nagios_user | cut -d = -f 2`
-
     if [ -z "$NAGIOS_USER"  ] ; then
-	for fichier in $NAGIOS_ETC/*.cfg
-      do
-	  if [ -f "$fichier" ];	then
-	      NAGIOS_USER_TEMP=`more $fichier | grep ^nagios_user | cut -d = -f 2`
-	      if [ -n "$NAGIOS_USER_TEMP" ]; then
-		  NAGIOS_USER=$NAGIOS_USER_TEMP
+		for fichier in $NAGIOS_ETC/*.cfg
+    	do
+	  		if [ -f "$fichier" ];	then
+	      		NAGIOS_USER_TEMP=`more $fichier | grep ^nagios_user | cut -d = -f 2`
+	      		if [ -n "$NAGIOS_USER_TEMP" ]; then
+		  			NAGIOS_USER=$NAGIOS_USER_TEMP
+    			fi
+	  		fi
+		done
     fi
-	  fi
-	done
-    fi
-
-    if [ -z "$NAGIOS_USER"  ] ; then
-	#Nagios User
-	NAGIOS_USER="nagios"
-	echo_passed "Sorry, we don't found nagios user" "PASSED"
-	echo "Which is your nagios user ?"
-	echo -n "default to [$NAGIOS_USER]:"
-	read temp
-	test_answer NAGIOS_USER $temp
-	echo ""
+	if [ -z "$NAGIOS_USER"  ] ; then
+		NAGIOS_USER="nagios"
+		echo_passed "Sorry, we don't found nagios user" "PASSED"
+		echo "Which is your nagios user ?"
+		echo -n "default to [$NAGIOS_USER]:"
+		read temp
+		test_answer NAGIOS_USER $temp
+		echo ""
     else
-	echo_info "Finding Nagios user :" "$NAGIOS_USER"
+		echo_info "Finding Nagios user :" "$NAGIOS_USER"
     fi
-
 }
 
-function find_group_nagios()
-{
+function find_group_nagios(){
     NAGIOS_GROUP=`more $NAGIOS_ETC/nagios.cfg | grep ^nagios_group | cut -d = -f 2`
-
     if [ -z "$NAGIOS_GROUP"  ] ; then
-	for fichier in $NAGIOS_ETC/*.cfg
-      do
-	  if [ -f "$fichier" ];	then
-	      NAGIOS_GROUP_TEMP=`more $fichier | grep ^nagios_group | cut -d = -f 2`
-	      if [ -n "$NAGIOS_GROUP_TEMP" ]; then
-		  NAGIOS_GROUP=$NAGIOS_GROUP_TEMP
-	      fi
-	  fi
-    done
+		for fichier in $NAGIOS_ETC/*.cfg
+     	do
+	  		if [ -f "$fichier" ];	then
+	      		NAGIOS_GROUP_TEMP=`more $fichier | grep ^nagios_group | cut -d = -f 2`
+	      		if [ -n "$NAGIOS_GROUP_TEMP" ]; then
+		  			NAGIOS_GROUP=$NAGIOS_GROUP_TEMP
+	      		fi
+	  		fi
+    	done
     fi
-
     if [ -z "$NAGIOS_GROUP"  ] ; then
-	#Nagios Group
-	NAGIOS_GROUP="nagiocmd"
-	echo_passed "Sorry, we don't found nagios group" "PASSED"
-	echo "Which is your nagios group ?"
-	echo -n "default to [$NAGIOS_GROUP]:"
-	read temp
-	test_answer NAGIOS_GROUP $temp
-	echo ""
+		NAGIOS_GROUP="nagiocmd"
+		echo_passed "Sorry, we don't found nagios group" "PASSED"
+		echo "Which is your nagios group ?"
+		echo -n "default to [$NAGIOS_GROUP]:"
+		read temp
+		test_answer NAGIOS_GROUP $temp
+		echo ""
     else
-	echo_info "Finding Nagios group :" "$NAGIOS_GROUP"
+		echo_info "Finding Nagios group :" "$NAGIOS_GROUP"
     fi
-
 }
 
 # Check the user and group nagios and create it if necessary
+function check_user_nagios(){
 
-function check_user_nagios()
-{
 	# Try to find nagios user/group from nagios.cfg file.
     # If not, we ask...
     find_user_nagios
-
-
     nagios_user_grep=`grep $NAGIOS_USER /etc/passwd > /dev/null; echo $?`
     if [ $nagios_user_grep == 0 ]; then
     	echo_success "Finding nagios user '$NAGIOS_USER' in /etc/passwd" "YES"
@@ -147,62 +133,55 @@ function check_user_nagios()
   		if [ $? == 0 ]; then
 		    echo_success  "Creating nagios user '$NAGIOS_USER'" "OK"
 		else
-		    echo_failure  "error creating nagios user '$NAGIOS_USER' check you environnement" "ERROR"
-		    exit
+			echo_failure  "error creating nagios user '$NAGIOS_USER' check you environnement" "ERROR"
+			exit
 		fi
     fi
 }
 
-function check_group_nagios()
-{
+function check_group_nagios(){
 	# Try to find nagios user/group from nagios.cfg file.
 	# If not, we ask...
     find_group_nagios
-
     nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
     if [ $nagios_group_grep == 0 ]; then
     	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "YES"
     else
     	echo_warning "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "NOT FOUND"
-	groupadd $NAGIOS_GROUP
-	if [ $? == 0 ]; then
-      echo_success  "Creating nagios group '$NAGIOS_GROUP'" "OK"
-	else
-	    echo_failure  "error creating group $NAGIOS_GROUP check you environnement" "ERROR"
-	    exit
-	fi
+		groupadd $NAGIOS_GROUP
+		if [ $? == 0 ]; then
+    		echo_success  "Creating nagios group '$NAGIOS_GROUP'" "OK"
+		else
+	    	echo_failure  "error creating group $NAGIOS_GROUP check you environnement" "ERROR"
+	    	exit
+		fi
     fi
 }
 
-function check_group_nagiocmd()
-{
+function check_group_nagiocmd(){
     nagios_group=`grep nagiocmd /etc/group > /dev/null; echo $?`
     if [ $nagios_group == 0 ]; then
-	echo_success "Finding nagios group 'nagiocmd' in /etc/group" "YES"
+		echo_success "Finding nagios group 'nagiocmd' in /etc/group" "YES"
     else
-	echo_warning "Finding nagios group 'nagiocmd' in /etc/group" "NO"
-	groupadd nagiocmd
-	if [ $? == 0 ]; then
-	    echo_passed  "Creating nagios group 'nagiocmd'" "OK"
-	else
-	    echo_failure  "error creating nagios group 'nagiocmd' check you environnement" "ERROR"
-	    exit
-	fi
+		echo_warning "Finding nagios group 'nagiocmd' in /etc/group" "NO"
+		groupadd nagiocmd
+		if [ $? == 0 ]; then
+	    	echo_passed  "Creating nagios group 'nagiocmd'" "OK"
+		else
+	    	echo_failure  "error creating nagios group 'nagiocmd' check you environnement" "ERROR"
+	    	exit
+		fi
     fi
 }
 
-
-function check_nagios_init_script()
-{
+function check_nagios_init_script(){
     if [ -x "/etc/init.d/nagios" ]; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
-    else if [ -x "/etc/init.d/nagios2" ] ; then
+    elsif [ -x "/etc/init.d/nagios2" ] ; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-    fi
     fi
 
     if [ -z "$NAGIOS_INIT_SCRIPT" ] ; then
-		#Nagios init script
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
 		echo_passed "Sorry, we don't found nagios init script" "PASSED"
 		echo "Which is your nagios init script ?"
@@ -216,90 +195,79 @@ function check_nagios_init_script()
 
 }
 
-function check_httpd_directory()
-{
+function check_httpd_directory(){
     if test -d /etc/apache/conf ; then
 		DIR_APACHE="/etc/apache/conf"
 		DIR_APACHE_CONF="/etc/apache/conf.d"
 		HTPASSWD="htpasswd"
-    else if test -d /usr/local/apache2/conf ; then
+    elsif test -d /usr/local/apache2/conf ; then
 		DIR_APACHE="/usr/local/apache2/conf"
 		DIR_APACHE_CONF="/usr/local/apache2/conf"
 		HTPASSWD="htpasswd2"
-    else if test -d /etc/apache2 ; then
+    elsif test -d /etc/apache2 ; then
 		DIR_APACHE="/etc/apache2"
 		DIR_APACHE_CONF="/etc/apache2/conf.d"
 		HTPASSWD="htpasswd2"
-    else if test -d /etc/httpd/conf ; then
+    elsif test -d /etc/httpd/conf ; then
 		DIR_APACHE="/etc/httpd/conf"
 		DIR_APACHE_CONF="/etc/httpd/conf.d"
 		HTPASSWD="htpasswd"
-    else if test -d /usr/local/etc/apache ; then
+    elsif test -d /usr/local/etc/apache ; then
 		DIR_APACHE="/usr/local/etc/apache"
 		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
 		HTPASSWD="htpasswd"
-    else if test -d /usr/local/etc/apache2 ; then
+    elsif test -d /usr/local/etc/apache2 ; then
 		DIR_APACHE="/usr/local/etc/apache2"
 		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
 		HTPASSWD="htpasswd"
     fi
-    fi
-    fi
-    fi
-    fi
-    fi
-
+    
     if test -e $DIR_APACHE/apache2.conf ; then
 		APACHE_CONF="apache2.conf"
-    else if test -e $DIR_APACHE/commondhttpd.conf ; then
+    elsif test -e $DIR_APACHE/commondhttpd.conf ; then
 		APACHE_CONF="commondhttpd.conf"
-    else if test -e $DIR_APACHE/httpd.conf ; then
+    elsif test -e $DIR_APACHE/httpd.conf ; then
 		APACHE_CONF="httpd.conf"
-    fi
-    fi
     fi
 }
 
-function check_user_apache()
-{
+function check_user_apache(){
     WEB_USER=`more $DIR_APACHE/$APACHE_CONF | grep -w ^User | cut -d " " -f 2`
-
     if [ -z "$WEB_USER"  ] ; then
-	for fichier in $DIR_APACHE/*
-	  do
-	  if [ -f "$fichier" ];	then
-	      WEB_USER_TEMP=`more $fichier | grep -w ^User | cut -d " " -f 2`
-	      if [ -n "$WEB_USER_TEMP" ]; then
-		  WEB_USER=$WEB_USER_TEMP
-	      fi
-	  fi
-	done
+		for fichier in $DIR_APACHE/*
+	  	do
+	  		if [ -f "$fichier" ];	then
+	      		WEB_USER_TEMP=`more $fichier | grep -w ^User | cut -d " " -f 2`
+	      	if [ -n "$WEB_USER_TEMP" ]; then
+		  		WEB_USER=$WEB_USER_TEMP
+	      	fi
+	  		fi
+		done
     fi
     echo_info "Finding Apache user :" "$WEB_USER"
 }
 
-function check_group_apache()
-{
+function check_group_apache(){
     WEB_GROUP=`more $DIR_APACHE/$APACHE_CONF | grep -w ^Group | cut -d " " -f 2`
-
     if [ -z "$WEB_GROUP"  ] ; then
-	for fichier in $DIR_APACHE/*
-	  do
-	  if [ -f "$fichier" ];	then
-	      WEB_GROUP_TEMP=`more $fichier | grep -w ^Group | cut -d " " -f 2`
-	      if [ -n "$WEB_GROUP_TEMP" ]; then
-		  WEB_GROUP=$WEB_GROUP_TEMP
-	      fi
-	  fi
-	done
+		for fichier in $DIR_APACHE/*
+	  	do
+	  		if [ -f "$fichier" ];	then
+	      		WEB_GROUP_TEMP=`more $fichier | grep -w ^Group | cut -d " " -f 2`
+	      	if [ -n "$WEB_GROUP_TEMP" ]; then
+		  		WEB_GROUP=$WEB_GROUP_TEMP
+	      	fi
+	  		fi
+		done
     fi
     echo_info "Finding Apache group :" "$WEB_GROUP"
 }
 
-function install_oreon_plugins()
-{
-	# install plugins oreon
-    echo ""
+function install_oreon_plugins(){
+	echo ""
+	echo "----------------------------------------------"
+	echo "          Installing Oreon Plugins "
+	echo "----------------------------------------------"
     if test -d $NAGIOS_PLUGIN ; then
 		echo_passed "$NAGIOS_PLUGIN already exists" "PASSED"
     else
@@ -308,39 +276,40 @@ function install_oreon_plugins()
     fi
     
     echo "Preparing Oreon Plugins..."
-    if [ -n "$PLUGINS_DIR" ]; then
-		rm -f $PLUGINS_DIR/*.pl 2> /dev/null
-		rm -f $PLUGINS_DIR/*.pm 2> /dev/null
-		rm -f $PLUGINS_DIR/*.conf 2> /dev/null
-    else
-		rm -f *.pl 2> /dev/null
-		rm -f *.pm 2> /dev/null
-		rm -f *.conf 2> /dev/null
-    fi
+    echo "$PLUGINS_DIR"
+    #if [ -n "$PLUGINS_DIR" ]; then
+	#	rm -f $PLUGINS_DIR/*.pl 2> /dev/null
+	#	rm -f $PLUGINS_DIR/*.pm 2> /dev/null
+	#	rm -f $PLUGINS_DIR/*.conf 2> /dev/null
+    #else
+	#	rm -f *.pl 2> /dev/null
+	#	rm -f *.pm 2> /dev/null
+	#	rm -f *.conf 2> /dev/null
+    #fi
 
     if [ -n "$PLUGINS_DIR" ]; then
 		for fichier in ${PLUGINS_DIR}src/*
-		  do
-		  if [ -d "$fichier" ]; then
-		      echo "$fichier is a directory"
-		  else
-		      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-		      echo "-> $filename"
-		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
-		  fi
+		do
+			if [ -d "$fichier" ]; then
+		      	echo "$fichier is a directory"
+		  	else
+		      	filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		      	echo "-> $filename"
+		      	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
+		  	fi
 		done
 		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		cp $PLUGINS_DIR/*.pl $NAGIOS_PLUGIN
     else
 		for fichier in src/*
-		  do
-		  if [ -d "$fichier" ]; then
-		      echo "$fichier is a directory"
-		  else
-		      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-		      echo "	-> $filename"
-		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
-		  fi
+		do
+			if [ -d "$fichier" ]; then
+		    	echo "$fichier is a directory"
+		  	else
+		    	filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		    	echo "	-> $filename"
+		    	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
+		  	fi
 		done
 		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		cp *.pl $NAGIOS_PLUGIN
@@ -351,23 +320,22 @@ function install_oreon_plugins()
     chmod 775 $NAGIOS_PLUGIN/* >> $LOG_FILE 2>> $LOG_FILE
 
     if [ -n "$PLUGINS_DIR/traps" ]; then
-	if [ -e "$NAGIOS_PLUGIN/traps" ]; then
-	    echo "$NAGIOS_PLUGIN/traps already exists"
-	else
-	    mkdir $NAGIOS_PLUGIN/traps
-	fi
+		if [ -e "$NAGIOS_PLUGIN/traps" ]; then
+	    	echo "$NAGIOS_PLUGIN/traps already exists"
+		else
+	    	mkdir $NAGIOS_PLUGIN/traps
+		fi
 		for fichier in $PLUGINS_DIR/src/traps/*
-		  do
-		  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-		  echo "-> $filename"
-		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
+		do
+			filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		  	echo "-> $filename"
+		  	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
 		done
 		cp $PLUGINS_DIR/src/traps/* $NAGIOS_PLUGIN/traps
 		chmod 775 $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
 		echo "Installing Oreon Traps Plugins on "
 		echo_success "$NAGIOS_PLUGIN/traps'" "OK"
     fi
-
     if test -a $NAGIOS_PLUGIN/oreon.conf ; then
 		echo ""
 		echo_success "Finding Oreon Plugins configuration file 'oreon.conf' :" "OK"
@@ -381,13 +349,11 @@ function install_oreon_plugins()
     else
 		temp=y
     fi
-
     if [ $temp = "y" ];then
 		cp ${PLUGINS_DIR}oreon.conf $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
 		chmod 775 $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
 		chown $WEB_USER:$WEB_GROUP $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
 	fi
-
     cp ${PLUGINS_DIR}oreon.pm $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_PLUGIN/oreon.pm >> $LOG_FILE 2>> $LOG_FILE
 }
