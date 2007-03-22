@@ -16,12 +16,9 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
-	require_once 'Image/Graph.php';
-	
+	require_once 'Image/Graph.php';	
 	require_once ("../../../class/Session.class.php");
 	require_once ("../../../class/Oreon.class.php");
-
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -33,30 +30,25 @@ For information : contact@oreon-project.org
 	// set the font size to 11 pixels
 	$Font->setSize(7);
 	$Graph->setFont($Font);
+	$Graph->setBackgroundColor('#F2F2F2');
 
-
-$Graph->add(
-    Image_Graph::vertical(
-        Image_Graph::factory('title', array('Service '.$_GET["service_name"] . " on Host " .$_GET["host_name"], 10)),
-        Image_Graph::horizontal(               
-            $Plotarea = Image_Graph::factory('plotarea'),           
-   	         $Legend = Image_Graph::factory('legend'),
-         90
-        ),           
-        5            
-    )
-); 
-
-
-
+	$Graph->add(
+	    Image_Graph::vertical(
+	        Image_Graph::factory('title', array('Service '.$_GET["service_name"] . " on Host " .$_GET["host_name"], 10)),
+	        Image_Graph::horizontal(               
+	            $Plotarea = Image_Graph::factory('plotarea'),           
+	   	         $Legend = Image_Graph::factory('legend'),
+	         90
+	        ),           
+	        5            
+	    )
+	);
 
 	$value = NULL;
 	$value =& $_GET["value"];
 
-
 	$i=0;
-	foreach($value as $key => $val)
-	{
+	foreach($value as $key => $val)	{
 		$Dataset[$i] =& Image_Graph::factory('dataset');
 		$Dataset[$i++]->addPoint($key, $val);
 	}
@@ -72,14 +64,12 @@ $Graph->add(
 	$FillArray->addColor($oreon->optGen["color_unknown"] . '@0.2', 'Unknow');
 	$FillArray->addColor($oreon->optGen["color_pending"] . '@0.2', 'Pending');
 	$Plot->setFillStyle($FillArray);
+	$Plot->setBackgroundColor('#F2F2F2');
 	
 	$Graph->done(); 
 
 /*
 	$Plot->setFillStyle($FillArray); 
-
-
-
 	// set a standard fill style
 	$FillArray =& Image_Graph::factory('Image_Graph_Fill_Array');
 	$Plot->setFillStyle($FillArray);
@@ -89,11 +79,9 @@ $Graph->add(
 	$FillArray->addColor($oreon->optGen["color_unreachable"] . '@0.2', 'Unreachable');
 	$FillArray->addColor($oreon->optGen["color_pending"] . '@0.2', 'Pending');
 	
-	
 	$FillArray->addColor('black@0.2', 'rest'); 	
 	// set a standard fill style
 	
-
 	$FillArray->addColor("40@0.2");
 	$FillArray->addColor("60@0.2");
 

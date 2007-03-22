@@ -29,7 +29,7 @@
 	// set the font size to 11 pixels
 	$Font->setSize(7);
 	$Graph->setFont($Font);
-	$Graph->setBackgroundColor('#fff9eb');
+	$Graph->setBackgroundColor('#F2F2F2');
 	
 	// setup the plotarea, legend and their layout
 	$Graph->add(
@@ -47,7 +47,7 @@
 	$Legend->setPlotArea($Plotarea);	
 	$Plotarea->hideAxis();
 
-	$Plotarea->setBackgroundColor('#fff9eb');
+	$Plotarea->setBackgroundColor('#F2F2F2');
 	
 	// create the dataset
 	

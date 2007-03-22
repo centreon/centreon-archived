@@ -38,11 +38,11 @@
 	         $Plotarea = Image_Graph::factory('plotarea'),
 	         $Legend = Image_Graph::factory('legend'), 80),10)
 	);
-	$Graph->setBackgroundColor('#fff9eb');
+	$Graph->setBackgroundColor('#F2F2F2');
 	$Legend->setPlotArea($Plotarea);
 	
 	$Plotarea->hideAxis();
-	$Plotarea->setBackgroundColor('#fff9eb');
+	$Plotarea->setBackgroundColor('#F2F2F2');
 	
 	// create the dataset
 	
