@@ -496,6 +496,11 @@ INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `t
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_acknowloedge', NULL , '20213', '2021302', '20', NULL , './include/monitoring/status/monitoringService.php', '&o=svcSumSG&acknowledge=1', '0', '0', '1', NULL , NULL , NULL);
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` )VALUES ('' , 'mon_not_acknowloedge', NULL , '20213', '2021302', '30', NULL , './include/monitoring/status/monitoringService.php', '&o=svcSumSG&acknowledge=0', '0', '0', '1', NULL , NULL , NULL);
 
-
+-- 22/03/2007
+UPDATE `topology` SET `topology_url` = './include/inventory/inventory.php' WHERE `topology`.`topology_page` = '7';
+UPDATE `topology` SET `topology_url` = './include/inventory/inventory.php' WHERE `topology`.`topology_page` = '701';
+UPDATE `topology` SET `topology_url` = './include/inventory/inventory.php' WHERE `topology`.`topology_page` = '70101';
+UPDATE `topology` SET `topology_url` = './include/inventory/inventory.php' WHERE `topology`.`topology_page` = '70102';
+UPDATE `topology` SET `topology_url` = './include/inventory/inventory.php' WHERE `topology`.`topology_page` = '70103';
 
 
