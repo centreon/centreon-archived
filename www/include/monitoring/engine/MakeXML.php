@@ -16,9 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-#
-## if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-#
+	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	$debug = 0;
 	
 	# pearDB init
@@ -26,9 +24,15 @@ For information : contact@oreon-project.org
 	
 	require_once 'DB.php';
 
-	$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : "";
-	$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
+//	$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : "";
+//	$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
 
+	$oreonPath = "";
+	if (isset($_GET["fileOreonConf"]))
+		$oreonPath = $_GET["fileOreonConf"];
+	if (isset($_POST["fileOreonConf"]))
+		$oreonPath = $_POST["fileOreonConf"];
+			
 	if($oreonPath == ""){
 		$buffer .= '<reponse>';	
 		$buffer .= 'none';

@@ -22,9 +22,11 @@ For information : contact@oreon-project.org
 	## pearDB init
 	require_once 'DB.php';	
 
-	$oreonPath = '/srv/oreon/';
-	$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : $oreonPath;
-	$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
+	$oreonPath = "";
+	if (isset($_GET["fileOreonConf"]))
+		$oreonPath = $_GET["fileOreonConf"];
+	if (isset($_POST["fileOreonConf"]))
+		$oreonPath = $_POST["fileOreonConf"];
 		
 	if($oreonPath == ""){
 		$buffer = null;
