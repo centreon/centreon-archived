@@ -114,10 +114,11 @@ For information : contact@oreon-project.org
 		}
 		if (!$p)	{
 			$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
-			isset($root_menu["topology_page"]) ? $p = $root_menu["topology_page"] : $p = NULL;
-			if (isset($root_menu["topology_url_opt"]))	{
+			if (isset($root_menu["topology_page"])) $p = $root_menu["topology_page"] ; else $p = NULL;
+			if (isset($root_menu["topology_url_opt"])){
 				$tab = split("\=", $root_menu["topology_url_opt"]);
-				$o = $tab[1];
+				if (isset($tab[1]))
+					$o = $tab[1];
 			}	
 		}
 
