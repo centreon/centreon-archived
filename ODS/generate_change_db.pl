@@ -111,7 +111,7 @@ for (my $i = 0; defined($ARGV[$i]) ; $i++ ){
 	my $cpt = 0;
 	while ($data = $sth2->fetchrow_hashref()){
 		if (!$flag){
-			unlink($RRDdatabase_path.$ARGV[$i].".rrd");
+			system("mv ".$RRDdatabase_path.$ARGV[$i].".rrd ".$RRDdatabase_path."old/".$ARGV[$i].".rrd");
 			my $begin = $data->{'ctime'} - 200;
 			RRDs::create($RRDdatabase_path.$ARGV[$i].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$len_storage_rrd, "RRA:MIN:0.5:12:".$len_storage_rrd, "RRA:MAX:0.5:12:".$len_storage_rrd);
 			print "Creation de la Base : " .$RRDdatabase_path.$ARGV[$i].".rrd\n";
