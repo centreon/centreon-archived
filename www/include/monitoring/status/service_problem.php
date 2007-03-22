@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 
 	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-	if ($_GET["o"] != "svc_ok"){
+	if ($o != "svc_ok"){
 		!isset($_GET["sort_types"]) ? $sort_types = $oreon->OptGen["problem_sort_type"] : $sort_types = $_GET["sort_types"];
 		!isset($_GET["order"]) ? $order = "SORT_".$oreon->OptGen["problem_sort_order"] : $order = $_GET["order"];
 	} else {
@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	$service_status_num = array();
-	if ($_GET["o"] == "svcpb"){
+	if ($o == "svcpb"){
 		if (isset($service_status))
 			foreach ($service_status as $name => $svc){			
 				$tmp = array();
@@ -83,7 +83,7 @@ For information : contact@oreon-project.org
 			foreach ($service_status as $name => $svc){			
 				$tmp = array();
 				$tmp[0] = $name;
-				if (!strcmp($svc["current_state"], $tab[$_GET["o"]])){
+				if (!strcmp($svc["current_state"], $tab[$o])){
 					$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
 					$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 					$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
@@ -103,7 +103,7 @@ For information : contact@oreon-project.org
 		$rows = 0;
 		$tmp = array();
 		foreach ($service_status as $name => $svc)
-			if($service_status[$name]["current_state"] == $tab[$_GET["o"]]){
+			if($service_status[$name]["current_state"] == $tab[$o]){
 				$tmp2 = array();
 				$tmp2[0] = $name;		
 				$tmp[$name] = $service_status[$name];
@@ -119,7 +119,7 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
 	$tpl->assign("p", $p);
-	$tpl->assign('o', $_GET["o"]);
+	$tpl->assign('o', $o);
 	if (isset($sort_types))	
 		$tpl->assign("sort_types", $sort_types);
 	if (isset($order))

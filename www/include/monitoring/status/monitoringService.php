@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
-Adapted to Pear library Quickform & Template_PHPLIB by Merethis company, under direction of Cedrick Facon
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -47,7 +45,7 @@ For information : contact@oreon-project.org
 	$pathExternal = "./include/monitoring/external_cmd/";
 	$pathDetails = "./include/monitoring/objectDetails/";
 
-	include("./include/monitoring/status/resume.php"); 	
+	include("./include/monitoring/status/resume.php");
 	switch ($o)	{
 		case "svc" 			: require_once($path."service.php"); 					break; 
 		
