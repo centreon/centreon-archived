@@ -205,7 +205,7 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_host_statistics}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr>
 						<td class="ListColCenter"><img src='./include/monitoring/objectDetails/generate_images/pie_chart_service.php?o={$o}{$status}&host_name={$h.host_name}'></td>
 					</tr>
 				</table>
