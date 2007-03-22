@@ -12,12 +12,14 @@
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
-		<td class="ListColHeaderLeft" style='width:320px; text-align:center;'>
+		<td class="ListColHeaderLeft" style='text-align:center;'>
 			<form {$formHost.attributes}>
+				<div style='white-space: nowrap;'>
 				<b>{$formHost.host.label}</b>&nbsp;&nbsp;{$formHost.host.html}{$formHost.hidden}
 				{if $date_start_select != 0}
 				&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} ({$infosTitle})
 				{/if}
+				</div>
 			</form>	
 		</td>
 	</tr>
@@ -25,13 +27,15 @@
 		<td colspan=2>
 			<table style='width:100%'>
 			<tr>
-				<td rowspan=3 style='width:300px; padding:5px'>			
-					<table class="ListTable" >
-						<tr class='ListHeader'></tr>
-						<tr>
-							<td class="ListColCenter"><img src='./include/reporting/dashboard/chart_host.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
-						</tr>
-					</table>
+				<td rowspan=3 style='width:300px; padding:5px'>
+					{if $host_name}	
+						<table class="ListTable" >
+							<tr class='ListHeader'></tr>
+							<tr>
+								<td class="ListColCenter"><img src='./include/reporting/dashboard/chart_host.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
+							</tr>
+						</table>
+					{/if}
 				</td>
 			</tr>
 			<tr>
