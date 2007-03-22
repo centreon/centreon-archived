@@ -30,8 +30,8 @@ For information : contact@oreon-project.org
 
 	# Include
 	require_once ("./oreon.conf.php");
-	require_once ("DBconnect.php");
-	require_once ("DBOdsConnect.php");
+	require_once ("./DBconnect.php");
+	require_once ("./DBOdsConnect.php");
 	require_once ("$classdir/Session.class.php");
 	require_once ("$classdir/Oreon.class.php");
 	require_once (SMARTY_DIR."Smarty.class.php");
