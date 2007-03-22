@@ -37,7 +37,6 @@ For information : contact@oreon-project.org
 		@closedir($handle);
 	}
 
-
 	$css_default = $tab_file_css[0];
 	$rq = "SELECT * FROM css_color_menu";
 	$DBRESULT =& $pearDB->query($rq);
@@ -46,8 +45,6 @@ For information : contact@oreon-project.org
 	$tab_css = array();
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++){
 		$tab_css[$i] = $elem;
-
-
 		if(isset($_GET["css_color_".$elem["id_css_color_menu"]])){
 			$name = $_GET["css_color_".$elem["id_css_color_menu"]];			
 			$id = $elem["id_css_color_menu"];
@@ -58,14 +55,14 @@ For information : contact@oreon-project.org
 		}		
 	}
 	
-	$rq = "SELECT topology_id,topology_name,topology_page FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+//	$rq = "SELECT topology_id,topology_name,topology_page FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+	$rq = "SELECT topology_id, topology_name, topology_page FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$tab_menu = array();
-	for(; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);){
+	for(; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);)
 		$tab_menu[$elem["topology_page"]] = $elem;
-	}
 
 	## insert new menu in table css_color_menu
 	$tab_create_menu = array();
@@ -96,9 +93,8 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	#Different style between each lines
 	$style = "one";
-
-
 	
+	//print_r($tab_menu);
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
 	{
 		$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
@@ -107,26 +103,18 @@ For information : contact@oreon-project.org
 			$select_list .= '<option value="'.$tab_file_css[$j].'"   "' . $selected . '">'.$tab_file_css[$j].'</option>';
 		}
 		$select_list .= '</select>';
-
-
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 							 "select"=> $select_list,
 							 "menuName"=> $lang[$tab_menu[$elem["menu_nb"]]["topology_name"]],
 							 "css_name"=> $elem["css_name"]);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
-
 	//print_r($elemArr);
 	
-
-
-
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path.'css/', $tpl);
-
 	$tpl->assign("elemArr", $elemArr);
-
 
 	## Apply a template definition
 
@@ -135,6 +123,5 @@ For information : contact@oreon-project.org
 	$tpl->assign('fileTitle', $lang["genOpt_file_name"]);
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
-	$tpl->display("formCss.ihtml");
-	
+	$tpl->display("formCss.ihtml");	
 ?>
