@@ -50,6 +50,7 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$DBRESULT->fetchInto($current);
 	
+	
 	if ($current["topology_url_opt"])
 		$req = "SELECT * FROM topology WHERE topology_url = '".$current["topology_url"]."' AND topology_url_opt = '".$current["topology_url_opt"]."' AND topology_page > '".$p."' ORDER BY topology_page ASC";
 	else
@@ -75,17 +76,19 @@ For information : contact@oreon-project.org
 			$tmp[$k] = $v;
 	}
 	$tabPath = $tmp;
+			
+	if (isset($oreon->user->lcaTopo[$p])){	
+		$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlueStart.gif" alt="" class="imgPathWay">&nbsp;';
+		foreach ($tabPath as $cle => $valeur){
+			echo $flag;
+			?><a href="oreon.php?p=<? echo $cle.$valeur["opt"]; ?>" class="pathWay" ><? echo $valeur["name"]; ?></a><?
+			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
+		}
 	
-	$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlueStart.gif" alt="" class="imgPathWay">&nbsp;';
-	foreach ($tabPath as $cle => $valeur){
-		echo $flag;
-		?><a href="oreon.php?p=<? echo $cle.$valeur["opt"]; ?>" class="pathWay" ><? echo $valeur["name"]; ?></a><?
-		$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
-	}
-
-	if(isset($_GET["host_id"]))	{
-		echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
-		echo getMyHostName($_GET["host_id"]);
+		if(isset($_GET["host_id"]))	{
+			echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
+			echo getMyHostName($_GET["host_id"]);
+		}
 	}
 ?>
 <hr><br>
