@@ -112,7 +112,7 @@ For information : contact@oreon-project.org
 				$DBRESULT->fetchInto($root_menu);
 			return $root_menu;
 		}
-		if (!$p)	{
+		if (!$p){
 			$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
 			if (isset($root_menu["topology_page"])) $p = $root_menu["topology_page"] ; else $p = NULL;
 			if (isset($root_menu["topology_url_opt"])){
