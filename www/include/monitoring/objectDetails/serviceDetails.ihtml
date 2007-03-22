@@ -125,7 +125,7 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
 					</tr>
-					<tr class='list_one'>
+					<tr>
 						<td class="ListColLeft"><a href='./oreon.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
 					</tr>
 				</table>
