@@ -51,7 +51,7 @@ sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
 			my $begin = $_[4] - 200000;
 			$interval = getServiceCheckInterval($_[1]);
 			if (!defined($interval)){$interval = 3};
-			$interval = $interval * 120;
+			$interval = $interval * 60;
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
