@@ -87,6 +87,11 @@ For information : contact@oreon-project.org
 		$sysUpTime =  get_snmp_value(".1.3.6.1.2.1.1.3.0", "STRING: ");
 		$tpl->assign("sysUpTime", $sysUpTime);
 		$tpl->assign("sysUpTimelabel", $lang["s_uptime"]);
+
+		$tpl->assign("Datelabel", $lang['s_Date']);
+		$tpl->assign("Objectlabel", $lang['s_Object']);
+		$tpl->assign("Beforelabel", $lang['s_Before']);
+		$tpl->assign("Afterlabel", $lang['s_After']);
 	}
 
 	if (isset($host_id)){

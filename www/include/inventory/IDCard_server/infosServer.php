@@ -110,7 +110,11 @@ For information : contact@oreon-project.org
 		$tpl->assign("Softwarelabel",$lang["s_Software"]);
 		$tpl->assign("MermoryUsedlabel",$lang["s_MermoryUsed"]);
 		$tpl->assign("Pathlabel",$lang["s_Path"]);
-
+		
+		$tpl->assign("Datelabel", $lang['s_Date']);
+		$tpl->assign("Objectlabel", $lang['s_Object']);
+		$tpl->assign("Beforelabel", $lang['s_Before']);
+		$tpl->assign("Afterlabel", $lang['s_After']);
 	}
 	if ($host_id){
 		$res =& $pearDB->query("SELECT ctime,replaced_value,value,type FROM inventory_log WHERE host_id = '".$host_id."' ORDER BY ctime DESC");
