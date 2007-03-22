@@ -53,9 +53,10 @@ class User	{
    	if(!$pearDB)
   		return; 
   	if ($this->admin){
-	  	$res3 =& $pearDB->query("SELECT topology_id FROM topology");	
+	  	$res3 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
 		while ($res3->fetchInto($topo))
-			$this->lcaTopo[$topo["topology_id"]] = $topo["topology_id"];			
+			if (isset($topo["topology_page"]))
+				$this->lcaTopo[$topo["topology_page"]] = 1;			
 		unset($res3);
   	} else {
   		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$this->user_id."'");
@@ -66,24 +67,37 @@ class User	{
 					$have_an_lca = 1;
 					while ($res2->fetchInto($lca))	{
   						$res3 =& $pearDB->query("SELECT topology_topology_id FROM lca_define_topology_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."'");	
-						while ($res3->fetchInto($topo))
-							$this->lcaTopo[$topo["topology_topology_id"]] = $topo["topology_topology_id"];
+						while ($res3->fetchInto($topo)){
+							$res4 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_id = '".$topo["topology_topology_id"]."' AND topology_page IS NOT NULL");	
+							while ($res4->fetchInto($topo_page))						
+								$this->lcaTopo[$topo_page["topology_page"]] = 1;
+							unset($res4);
+						}
 						unset($res3);
 					}
 				}
+				unset($res2);
 			}
+			unset($res1);
 		}
   	}
   	if (!$num || !$have_an_lca) {
-		$res3 =& $pearDB->query("SELECT topology_id FROM topology");	
+		$res3 =& $pearDB->query("SELECT topology_page FROM topology");	
 		while ($res3->fetchInto($topo))
-			$this->lcaTopo[$topo["topology_id"]] = $topo["topology_id"];			
+			$this->lcaTopo[$topo["topology_page"]] = 1;
 		unset($res3);			
 	}
   	$this->lcaTStr = NULL;
-  	foreach ($this->lcaTopo as $tmp)
-  		$this->lcaTStr ? $this->lcaTStr .= ", ".$tmp : $this->lcaTStr = $tmp;
-  	if (!$this->lcaTStr) $this->lcaTStr = '\'\'';
+  	foreach ($this->lcaTopo as $key => $tmp){
+  		if (isset($key) && $key){
+	  		if ($this->lcaTStr)
+	  			$this->lcaTStr .= ", ".$key;
+	  		else
+	  			$this->lcaTStr = $key;
+  		}
+  	}
+  	if (!$this->lcaTStr) 
+  		$this->lcaTStr = '\'\'';
   	
   }
   
