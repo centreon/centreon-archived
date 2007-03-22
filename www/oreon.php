@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 				FROM topology 
-				WHERE  topology_id IN ($lcaTStr) 
+				WHERE  topology_page IN ($lcaTStr) 
 				AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
 				ORDER BY topology_order, topology_group "; 
 		$DBRESULT =& $pearDB->query($rq);
@@ -74,7 +74,7 @@ For information : contact@oreon-project.org
 	# LCA Init Common Var
 	global $isRestreint;
 	$isRestreint = HadUserLca($pearDB);
-	
+		
 	# Menu
 	if (!$min)
 		require_once ("menu/Menu.php");
@@ -90,15 +90,12 @@ For information : contact@oreon-project.org
 
 	$nb_page = NULL;
 	if ($isRestreint){
-		$rq = "SELECT topology_id FROM topology WHERE topology_id IN (".$oreon->user->lcaTStr.") AND topology_page = '".$p."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$nb_page =& $DBRESULT->numRows();
-		if (!$nb_page)
+		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
+			$nb_page = 0;
 			require_once("./alt_error.php");
-	}
-	else
+		} else
+			$nb_page = 1;	
+	} else
 		$nb_page = 1;
 	
 	function reset_search_page($url){
@@ -186,12 +183,11 @@ For information : contact@oreon-project.org
 				print "Unknown operation";
 			}
 		}
-	} else {
+	} else
 		require_once("./include/doc/index.php");
-	}
-	if (!isset($oreon->historyPage)){
-		$oreon->createHistory();	
-	} 
+
+	if (!isset($oreon->historyPage))
+		$oreon->createHistory();	 
 	
 	if (isset($url) && $url){
 		if (isset($_GET["num"]))
