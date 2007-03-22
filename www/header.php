@@ -174,6 +174,7 @@ For information : contact@oreon-project.org
 		is_file ("./include/monitoring/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/monitoring/lang/".$oreon->user->get_lang().".php") : include_once ("./include/monitoring/lang/en.php");
 		is_file ("./include/options/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/options/lang/".$oreon->user->get_lang().".php") : include_once ("./include/options/lang/en.php");
 		is_file ("./include/reporting/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/reporting/lang/".$oreon->user->get_lang().".php") : include_once ("./include/reporting/lang/en.php");
+		is_file ("./include/inventory/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/inventory/lang/".$oreon->user->get_lang().".php") : include_once ("./include/inventory/lang/en.php");
 		is_file ("./include/views/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/views/lang/".$oreon->user->get_lang().".php") : include_once ("./include/views/lang/en.php");
 		is_file ("./include/tools/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/tools/lang/".$oreon->user->get_lang().".php") : include_once ("./include/tools/lang/en.php");
 
