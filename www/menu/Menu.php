@@ -61,7 +61,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("date_time_format_status", $lang["date_time_format_status"]);
 
 	# Grab elements for level 1
-	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
@@ -78,7 +78,7 @@ For information : contact@oreon-project.org
     $logOutUrl = "index.php?disconnect=1";
 
 	# Grab elements for level 2
-	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_group, topology_order";
+	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
@@ -98,15 +98,14 @@ For information : contact@oreon-project.org
 
 	# Grab elements for level 3
 
-	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP).
-			"' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
+	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	for($i = 0; $DBRESULT->fetchInto($elem);)	{
 		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 ||
-		 $elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 ||
-		  $elem["topology_page"] == 40202 || $elem["topology_page"] == 60708))
+		 	$elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 ||
+		 	 $elem["topology_page"] == 40202 || $elem["topology_page"] == 60708))
 			;
 		else {
 			# grab menu title for each group
@@ -115,7 +114,7 @@ For information : contact@oreon-project.org
 			$DBRESULT_title =& $pearDB->query($rq_title);
 			if (PEAR::isError($DBRESULT_title))
 				print ($DBRESULT_title->getMessage());
-			$title = NULL;
+			$title = "";
 			if ($title = $DBRESULT_title->fetchRow())
 				$title = $lang[$title["topology_name"]];
 			else
@@ -139,7 +138,7 @@ For information : contact@oreon-project.org
 	unset($elem);
 	# Grab elements for level 4
 	if ($level1 && $level2 && $level3){
-		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());
