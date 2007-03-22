@@ -95,12 +95,11 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$nb_page =& $DBRESULT->numRows();
-		
 		if (!$nb_page)
 			require_once("./alt_error.php");
-	} else {
-		$nb_page = 1;	
 	}
+	else
+		$nb_page = 1;
 	
 	function reset_search_page($url){
 		# Clean Vars
@@ -128,10 +127,11 @@ For information : contact@oreon-project.org
 						require_once("./alt_error.php");		
 				} else {
 					$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
-					if ($ret2["topology_url_opt"]){
-						$tab = split("\=", $ret2["topology_url_opt"]);
-						if (!isset($_GET["o"]))
+					if ($ret2["topology_url_opt"])	{
+						if (!$o)	{
+							$tab = split("\=", $ret2["topology_url_opt"]);
 							$o = $tab[1];
+						}
 						$p = $ret2["topology_page"];
 					}
 					if (file_exists($ret2["topology_url"])){
@@ -152,9 +152,10 @@ For information : contact@oreon-project.org
 						require_once("./alt_error.php");		
 				} else {
 					if ($ret["topology_url_opt"]){
-						$tab = split("\=", $ret["topology_url_opt"]);
-						if (!isset($_GET["o"]))
+						if (!$o)	{
+							$tab = split("\=", $ret["topology_url_opt"]);
 							$o = $tab[1];
+						}
 						$p = $ret["topology_page"];
 					} 
 					if (file_exists($ret["topology_url"])){
@@ -179,12 +180,10 @@ For information : contact@oreon-project.org
 						reset_search_page($url);
 						require_once($redirect["topology_url"]);
 					} else 
-						require_once("./alt_error.php");		
-					if (isset($_GET["o"]))
-						$o = $_GET["o"];
+						require_once("./alt_error.php");
 				}
 			} else {
-				print "Unknown operation...";
+				print "Unknown operation";
 			}
 		}
 	} else {

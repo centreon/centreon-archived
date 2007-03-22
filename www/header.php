@@ -36,8 +36,6 @@ For information : contact@oreon-project.org
 	require_once ("$classdir/Oreon.class.php");
 	require_once (SMARTY_DIR."Smarty.class.php");
 
-
-	
 	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
 	    eval('
@@ -67,8 +65,8 @@ For information : contact@oreon-project.org
 		}
 		if (isset($_POST["s"]) && ($_POST["s"] == 1 || $_POST["s"] == 2 || $_POST["s"] == 4))	{
 			include("./include/options/db/extractDB/extract_sub.php");exit();}
-	} else {
-
+	} 
+	else {
 		# Delete Session Expired
 		$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
 		if (PEAR::isError($DBRESULT))
@@ -117,6 +115,10 @@ For information : contact@oreon-project.org
 		if (!$p)	{
 			$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
 			isset($root_menu["topology_page"]) ? $p = $root_menu["topology_page"] : $p = NULL;
+			if (isset($root_menu["topology_url_opt"]))	{
+				$tab = split("\=", $root_menu["topology_url_opt"]);
+				$o = $tab[1];
+			}	
 		}
 
 	    # Cut Page ID
@@ -139,7 +141,6 @@ For information : contact@oreon-project.org
 			print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT->fetchInto($data);
 		$skin = "./Themes/".$data["template"]."/";
-
 
 		$tab_file_css = array();
 		$i = 0;
@@ -176,6 +177,7 @@ For information : contact@oreon-project.org
 		is_file ("./include/views/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/views/lang/".$oreon->user->get_lang().".php") : include_once ("./include/views/lang/en.php");
 		is_file ("./include/tools/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/tools/lang/".$oreon->user->get_lang().".php") : include_once ("./include/tools/lang/en.php");
 
+		# Take this part again and get infos in module table
 		foreach ($oreon->modules as $module)
 			$module["lang"] ? (is_file ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") ? include_once ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") : include_once ("./modules/".$module["name"]."/lang/en.php")) : NULL;
 		print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";
@@ -234,7 +236,7 @@ For information : contact@oreon-project.org
 		print $DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<?=$tM?>,"<?=$sid?>","<?=$o?>")', <?=$tFM?>);<?
+			?>setTimeout('initM(<? echo $tM; ?>,"<? echo $sid; ?>","<? echo $o;?>")', <? echo $tFM; ?>);<?
 		} else if ($topology_js['init'])
 			echo $topology_js['init'] ."();";
 	}

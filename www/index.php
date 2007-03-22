@@ -74,17 +74,13 @@ For information : contact@oreon-project.org
 					$res =& $pearDB->query("SELECT debug_path, debug_auth  FROM general_opt LIMIT 1");
 					if (PEAR::isError($res))
 		    			die($res->getMessage());
-
 				$debug = $res->fetchRow();
-
 				$res =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable FROM general_opt LIMIT 1");
 				$ldap_auth = $res->fetchRow();
-
 				$debug_auth = $debug['debug_auth'];
 				$debug_path = $debug['debug_path'];
 				if (!isset($debug_auth))
 					$debug_auth = 0;
-
 				$connect = true;
 				$fallback = false;
 				if ($ldap_auth['ldap_auth_enable'] == 1 && $contact['contact_auth_type'] == "ldap" ) {
@@ -163,50 +159,47 @@ For information : contact@oreon-project.org
 					if ($debug_auth == 1)
 						error_log("[" . date("d/m/Y H:s") ."] LDAP AUTH : Local password updated with LDAP password for $useralias \n", 3, $debug_path."auth.log");
 				}
-
-
-					if ($connect || $fallback) {
+				if ($connect || $fallback) {
+					if ($debug_auth == 1)
+						error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, $debug_path."auth.log");
+					// Autologin case => contact_alias is MD5 format
+					if (!isset($_POST["submit"]))
+						$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".htmlentities($password, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
+					// Normal auth
+					else
+						$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5(htmlentities($password, ENT_QUOTES))."' AND contact_activate = '1' LIMIT 1");
+					if ($res->numRows() ) {
 						if ($debug_auth == 1)
-							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : Local Auth or LDAP Fallback\n", 3, $debug_path."auth.log");
-						// Autologin case => contact_alias is MD5 format
-						if (!isset($_POST["submit"]))
-							$res =& $pearDB->query("SELECT * FROM contact WHERE MD5(contact_alias)='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".htmlentities($password, ENT_QUOTES)."' AND contact_activate = '1' LIMIT 1");
-						// Normal auth
-						else
-							$res =& $pearDB->query("SELECT * FROM contact WHERE contact_alias='".htmlentities($useralias, ENT_QUOTES)."' and contact_passwd='".md5(htmlentities($password, ENT_QUOTES))."' AND contact_activate = '1' LIMIT 1");
-
-						if ($res->numRows() ) {
-								if ($debug_auth == 1)
-									error_log("[" . date("d/m/Y H:s") ."] Local AUTH : User " . $useralias ." Successfully authentificated\n", 3, $debug_path."auth.log");
-								global $oreon;
-								$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
-								$version = $res2->fetchRow();
-								$user =& new User($res->fetchRow(), $version["nagios_version"]);
-								//$user->createLCA($pearDB);
-								$oreon = new Oreon($user);
-								$_SESSION["oreon"] =& $oreon;
-								$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
-								$session_expire =& $res->fetchRow();
-								$res =& $pearDB->query("SELECT * FROM session");
-								while ($session =& $res->fetchRow())
-									if ($session["last_reload"] + ($session_expire["session_expire"] * 60) <= time())
-										$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
-									$pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
-								if (!isset($_POST["submit"]))	{
-									$args = NULL;
-									foreach($_GET as $key=>$value)
-										$args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
-									header("Location: ./oreon.php?".$args."");
-								}
-								else
-									header("Location: ./oreon.php");
-								$connect = true;
+							error_log("[" . date("d/m/Y H:s") ."] Local AUTH : User " . $useralias ." Successfully authentificated\n", 3, $debug_path."auth.log");
+						global $oreon;
+						$res2 =& $pearDB->query("SELECT nagios_version FROM general_opt");
+						$version = $res2->fetchRow();
+						$user =& new User($res->fetchRow(), $version["nagios_version"]);
+						//$user->createLCA($pearDB);
+						$oreon = new Oreon($user);
+						$_SESSION["oreon"] =& $oreon;
+						$res =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
+						$session_expire =& $res->fetchRow();
+						$res =& $pearDB->query("SELECT * FROM session");
+						while ($session =& $res->fetchRow())
+							if ($session["last_reload"] + ($session_expire["session_expire"] * 60) <= time())
+								$pearDB->query("DELETE FROM session WHERE session_id = '".$session["session_id"]."'");
+							$pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$oreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+						if (!isset($_POST["submit"]))	{
+							$args = NULL;
+							foreach($_GET as $key=>$value)
+								$args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+							header("Location: ./oreon.php?".$args."");
 						}
+						else
+							header("Location: ./oreon.php");
+						$connect = true;
 					}
+				}
 			}
 		}
 	}
-	
+
 	$res =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
 	$res->fetchInto($data);
 	$skin = "./Themes/".$data["template"]."/";
@@ -224,4 +217,3 @@ For information : contact@oreon-project.org
 <? include_once("./login.php"); ?>
 </body>
 </html>
-
