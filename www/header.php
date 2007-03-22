@@ -101,7 +101,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
 					FROM topology 
-					WHERE topology_id IN ($lcaTStr) 
+					WHERE topology_page IN ($lcaTStr) 
 					AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
 					LIMIT 1"; 
 			$DBRESULT =& $pearDB->query($rq);
