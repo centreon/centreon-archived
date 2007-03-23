@@ -462,13 +462,19 @@ function install_ods(){
 	echo ""
 	echo ""
 	
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php > $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update_new.php	
+	mv $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update_new.php $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php
+	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php" "OK"
+	
+	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB_new.php	
 	mv $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB_new.php $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php" "OK"
 	
-
 	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_status.pl > $INSTALL_DIR_OREON/cron/parsing_status_new.pl
 	mv $INSTALL_DIR_OREON/cron/parsing_status_new.pl $INSTALL_DIR_OREON/cron/parsing_status.pl
@@ -477,7 +483,6 @@ function install_ods(){
 	echo_success "in $INSTALL_DIR_OREON/cron/parsing_status.pl" "OK"
 	
 
-	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log_new.pl
 	mv $INSTALL_DIR_OREON/cron/parsing_log_new.pl $INSTALL_DIR_OREON/cron/parsing_log.pl
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
