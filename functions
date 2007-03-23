@@ -333,7 +333,7 @@ function install_oreon_plugins()
 		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
 		  fi
 		done
-		echo "Do you want to install Oreon Pugins ? "
+		echo "Do you want to install Oreon Plugins ? "
 		echo ""
 		echo -n "[y/n], default to [y]:"
 		read temp
@@ -385,7 +385,7 @@ function install_oreon_plugins()
 		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
 		done
 		echo ""
-		echo "Do you want to install Oreon Pugins ? "
+		echo "Do you want to install Oreon Traps Plugins ? "
 		echo ""
 		echo -n "[y/n], default to [y]:"
 		read temp
@@ -468,14 +468,7 @@ function install_ods(){
     chmod 775 $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php" "OK"
 	
-	cron=`cat /var/spool/cron/$NAGIOS_USER | grep ArchiveLogInDB.php > /dev/null; echo $?`
 
-  	if [ $cron == '1' ]; then
-  		echo "0 0 1-31 * * php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Setup Cron for ArchiveLogInDB.php" "OK"
-  	else
-      	echo_passed "Setup Cron for ArchiveLogInDB.php" "PASSED"
-  	fi
 	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_status.pl > $INSTALL_DIR_OREON/cron/parsing_status_new.pl
 	mv $INSTALL_DIR_OREON/cron/parsing_status_new.pl $INSTALL_DIR_OREON/cron/parsing_status.pl
@@ -483,14 +476,7 @@ function install_ods(){
     chmod 775 $INSTALL_DIR_OREON/cron/parsing_status.pl >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/parsing_status.pl" "OK"
 	
-	cron=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_status.pl > /dev/null; echo $?`
-	
-	if [ $cron == '1' ]; then
-  		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> /var/spool/cron/$NAGIOS_USER >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Setup Cron for parsing_status.pl" "OK"
-  	else
-      	echo_passed "Setup Cron for parsing_status.pl" "PASSED"
-  	fi
+
 	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log_new.pl
 	mv $INSTALL_DIR_OREON/cron/parsing_log_new.pl $INSTALL_DIR_OREON/cron/parsing_log.pl
@@ -498,15 +484,76 @@ function install_ods(){
     chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
 	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl" "OK"
 	
-	cron=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_log.pl > /dev/null; echo $?`
 
-  	if [ $cron == '1' ]; then
-  		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER >> $LOG_FILE 2>> $LOG_FILE
+}
+
+function config_cron(){
+
+    echo ""
+	echo "------------------------------------------------------------------------"
+	echo "                         Start Oreon Cron Configuration"
+	echo "------------------------------------------------------------------------"
+	echo ""
+	echo ""
+
+if test -f /etc/crontab ; then
+
+	CRON=`cat /etc/crontab | grep ArchiveLogInDB.php | grep -v \# > /dev/null; echo $?`
+	
+ 	if [ $CRON == '1' ]; then	
+  		echo "0 0 1-31 * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/crontab 
+		echo_success "Setup Cron for ArchiveLogInDB.php" "OK"
+  	else
+      	echo_passed "Setup Cron for ArchiveLogInDB.php" "PASSED"
+  	fi
+
+	CRON=''
+	CRON=`cat /etc/crontab | grep parsing_status.pl | grep -v \# > /dev/null; echo $?`
+	
+ 	if [ $CRON == '1' ]; then	
+  		echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> /etc/crontab 
+		echo_success "Setup Cron for parsing_status.pl" "OK"
+  	else
+      	echo_passed "Setup Cron for parsing_status.pl" "PASSED"
+  	fi
+
+	CRON=''
+	CRON=`cat /etc/crontab | grep parsing_log.pl | grep -v \# > /dev/null; echo $?`
+
+ 	if [ $CRON == '1' ]; then
+  		echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/crontab 
 		echo_success "Setup Cron for parsing_log.pl" "OK"
   	else
       	echo_passed "Setup Cron for parsing_log.pl" "PASSED"
   	fi
+  	
+  	restart_cron
+  	
+else
+	echo_failure "Unable to find '/etc/crontab' file" "ERROR"
+    echo "Please add these lines in your cron file"
+	echo "0 0 1-31 * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log"
+    echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status"	
+	echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log"
+fi
 }
+
+function restart_cron()
+{
+ 
+    echo ""
+    echo "------------------------------------------------------------------------"
+    echo "                         Restart Cron deamon"
+    echo "------------------------------------------------------------------------"
+  	echo ""
+	echo ""
+  	if test -x /etc/init.d/cron ; then
+      /etc/init.d/cron restart
+   	else
+      echo_passed "We don't find Mysql server. OREON will not run." "PASSED"
+   	fi
+}
+
 
 
 function install_oreon(){
@@ -540,7 +587,7 @@ function install_oreon(){
     chmod -R 775 $INSTALL_DIR_NAGIOS  >> $LOG_FILE 2>> $LOG_FILE
     chmod -R 775 $INSTALL_DIR_NAGIOS/*  >> $LOG_FILE 2>> $LOG_FILE
     if test -d /etc/nagios ; then
-	chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
+		chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
     fi
 
     chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE

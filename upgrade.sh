@@ -568,30 +568,6 @@ function oreon_post_install()
 
      echo_success "Create $OREON_CONF " "OK"
      echo_success "Configuring Oreon post-install" "OK"
-
-	sudo=`cat /var/spool/cron/$NAGIOS_USER | grep ArchiveLogInDB.php > /dev/null; echo $?`
-
-  	if [ $sudo == '1' ]; then
-  		echo "0 0 1-31 * * php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER
-		echo_success "in cron installation for ArchiveLogInDB.pl" "OK"
-  	else
-      	echo_passed "in cron installation for ArchiveLogInDB.pl" "PASSED"
-  	fi
-	
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log_new.pl
-	mv $INSTALL_DIR_OREON/cron/parsing_log_new.pl $INSTALL_DIR_OREON/cron/parsing_log.pl
-	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
-	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl" "OK"
-	
-	sudo=`cat /var/spool/cron/$NAGIOS_USER | grep parsing_log.pl > /dev/null; echo $?`
-
-  	if [ $sudo == '1' ]; then
-  		echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /var/spool/cron/$NAGIOS_USER
-		echo_success "in cron installation for parsing_log.php" "OK"
-  	else
-      	echo_passed "in cron installation for parsing_log.php" "PASSED"
-  	fi
 }
 
 
@@ -643,6 +619,7 @@ fi
 #configure_apache
 confirm_oreon
 install_ods
+config_cron
 oreon_post_install
 
 echo ""

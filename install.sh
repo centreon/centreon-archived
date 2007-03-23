@@ -386,6 +386,7 @@ function confirm_oreon()
 	  else if [ $answer == 'y' ]; then
 	      install_oreon
 	      install_ods
+	      config_cron
 	      config_sudo
 	      #restart_mysql
 	  else
@@ -396,6 +397,7 @@ function confirm_oreon()
     else
 	    install_oreon
 	    install_ods
+        config_cron
 	    config_sudo
 	    #restart_mysql
     fi
