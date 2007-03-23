@@ -392,47 +392,57 @@ For information : contact@oreon-project.org
 	} else if($type == 4 && $host_id){
 		$hrSWInstalled = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.1", "INTEGER: ");
 	   	$hrSWInstalledName = walk_snmp_value("1.3.6.1.2.1.25.6.3.1.2", "STRING: ");
+	   	$buffer_tmp = array();
+	   	$buffer_cpt = 0;
 	   	if ($hrSWInstalled)
 			foreach ($hrSWInstalled as $key => $SWI){
-		    	$buffer .= '<software>';
 				if (isset($hrSWInstalledName[$key]) && !strstr($hrSWInstalledName[$key], "Hex-")) {
 		    		$hrSWInstalled["hrSWInstalledName"] = str_replace("\"", "", $hrSWInstalledName[$key]);
 		    		$hrSWInstalled["hrSWInstalledName"] = str_replace("\n", "", $hrSWInstalledName[$key]);
 		    		$hrSWInstalled["hrSWInstalledName"] = str_replace("\r", "", $hrSWInstalledName[$key]);
-		    		}
-
+		    	}
 		    	if ($hrSWInstalled["hrSWInstalledName"])
-			    	$buffer.= '<name>'.htmlentities($hrSWInstalled["hrSWInstalledName"], ENT_QUOTES) .'</name>';
+			    	$buffer_tmp[$buffer_cpt] = '<software><name>'.htmlentities($hrSWInstalled["hrSWInstalledName"], ENT_QUOTES) .'</name></software>';
 			    else
-			    	$buffer.= '<name>N/A</name>';
-
-				$buffer .= '</software>';
+			    	$buffer_tmp[$buffer_cpt] = '<software><name>N/A</name></software>';
 				if ($debug_inventory == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Software => ". $hrSWInstalled["hrSWInstalledName"] ."\n", 3, $debug_path."inventory.log");
-		    }
+				$buffer_cpt++;
+			}
+		# Sort by alphabetic string
+		sort($buffer_tmp);
+		$buffer .=implode("", $buffer_tmp);
+		unset($buffer_tmp);
+		unset($buffer_cpt);
 	} else if($type == 5 && $host_id){
 		$hrSWRun = walk_snmp_value("1.3.6.1.2.1.25.4.2.1.1", "INTEGER: ");
+		$buffer_tmp = array();
+	   	$buffer_cpt = 0;
 	    if ($hrSWRun){
-		    foreach ($hrSWRun as $key => $SWR){
-		    	$buffer .= '<runningprocessus>';
+		    foreach ($hrSWRun as $key => $SWR){	    	
 		    	$app = str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.2.".$SWR, "STRING: "));
-				$buffer .= '<application>'.htmlentities($app, ENT_QUOTES).'</application>';
+				$buffer_tmp[$buffer_cpt] = '<runningprocessus><application>'.htmlentities($app, ENT_QUOTES).'</application>';
 
+		    	$mem = get_snmp_value("1.3.6.1.2.1.25.5.1.1.2.".$SWR, "INTEGER: ");
+		    	$buffer_tmp[$buffer_cpt] .= '<mem> '.$mem.'</mem>';
+		    	
 				$path = str_replace("\"", "", get_snmp_value("1.3.6.1.2.1.25.4.2.1.4.".$SWR, "STRING: "));
 		    	$path = str_replace("\\\\", "\\", $path);
 
 				if ($path)
-					$buffer .= '<path> '.htmlentities($path, ENT_QUOTES).'</path>';
+					$buffer_tmp[$buffer_cpt] .= '<path> '.htmlentities($path, ENT_QUOTES).'</path></runningprocessus>';
 				else
-					$buffer .= '<path>N/A</path>';
-
-				$mem =	 get_snmp_value("1.3.6.1.2.1.25.5.1.1.2.".$SWR, "INTEGER: ");
-		    	$buffer .= '<mem> '.$mem.'</mem>';
-				$buffer .= '</runningprocessus>';
+					$buffer_tmp[$buffer_cpt] .= '<path>N/A</path></runningprocessus>';
 
 				if ($debug_inventory == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Inventory : Host '".  $address . "' : Running Processus  : Application => ". $app . ": Path => ". $path . " : Memory =>  " . $mem  ."\n", 3, $debug_path."inventory.log");
-		    }
+				$buffer_cpt++;
+			}
+		# Sort by numeric string
+		sort($buffer_tmp);
+		$buffer .=implode("", $buffer_tmp);
+		unset($buffer_tmp);
+		unset($buffer_cpt);
 	    } else
 	    	$buffer .= '<runningprocessus></runningprocessus>';
 	}
