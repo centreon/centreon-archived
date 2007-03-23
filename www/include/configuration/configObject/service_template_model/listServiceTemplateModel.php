@@ -89,7 +89,37 @@ For information : contact@oreon-project.org
 						"RowMenu_link"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
 						"RowMenu_status"=>$service["service_activate"] ? $lang['enable'] : $lang['disable'],
 						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";
+	}
+	# Header title for same name - Ajust pattern lenght with (0, 4) param
+	$pattern = NULL;
+	for ($i = 0; $i < count($elemArr); $i++)	{
+		# Searching for a pattern wich n+1 elem
+		if (isset($elemArr[$i+1]["RowMenu_desc"]) && strstr($elemArr[$i+1]["RowMenu_desc"], substr($elemArr[$i]["RowMenu_desc"], 0, 4)) && !$pattern)	{
+			for ($j = 0; isset($elemArr[$i]["RowMenu_desc"][$j]); $j++)
+				if (isset($elemArr[$i+1]["RowMenu_desc"][$j]) && $elemArr[$i+1]["RowMenu_desc"][$j] == $elemArr[$i]["RowMenu_desc"][$j])
+					;
+				else
+					break;
+			$pattern = substr($elemArr[$i]["RowMenu_desc"], 0, $j);
+		}
+		if (strstr($elemArr[$i]["RowMenu_desc"], $pattern))
+			$elemArr[$i]["pattern"] = $pattern;
+		else	{
+			$elemArr[$i]["pattern"] = NULL;
+			$pattern = NULL;			
+			if (isset($elemArr[$i+1]["RowMenu_desc"]) && strstr($elemArr[$i+1]["RowMenu_desc"], substr($elemArr[$i]["RowMenu_desc"], 0, 4)) && !$pattern)	{
+				for ($j = 0; isset($elemArr[$i]["RowMenu_desc"][$j]); $j++)	{
+					if (isset($elemArr[$i+1]["RowMenu_desc"][$j]) && $elemArr[$i+1]["RowMenu_desc"][$j] == $elemArr[$i]["RowMenu_desc"][$j])
+						;
+					else
+						break;
+				}
+				$pattern = substr($elemArr[$i]["RowMenu_desc"], 0, $j);
+				$elemArr[$i]["pattern"] = $pattern;
+			}
+		}
+	}
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
