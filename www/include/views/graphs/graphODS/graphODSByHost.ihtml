@@ -9,7 +9,7 @@
                 	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$form.header.title}</td>
                 </tr>
                 <tr class="list_one">
-            		<td>{$form.host_name.label}</td>
+            		<td style="padding-left:20px" width='100'>{$form.host_name.label}</td>
             		<td>{$form.host_name.html}</td>
                 </tr>
     	    </table>
