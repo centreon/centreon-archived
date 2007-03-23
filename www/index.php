@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 
 	if (!file_exists("./oreon.conf.php"))
 		header("Location: ./install/setup.php");
-	elseif (file_exists("./oreon.conf.php") && is_dir('install'))
+	else if (file_exists("./oreon.conf.php") && is_dir('install'))
 		header("Location: ./install/upgrade.php");
 	else
 		require_once ("./oreon.conf.php");
