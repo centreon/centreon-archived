@@ -498,6 +498,16 @@ function config_cron(){
 
 if test -f /etc/crontab ; then
 
+	CRON=`cat /etc/crontab | grep inventory_cron_update.php | grep -v \# > /dev/null; echo $?`
+	
+ 	if [ $CRON == '1' ]; then	
+  		echo "0 0 * * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/crontab 
+		echo_success "Setup Cron for inventory_cron_update.php" "OK"
+  	else
+      	echo_passed "Setup Cron for inventory_cron_update.php" "PASSED"
+  	fi
+	
+	CRON=''
 	CRON=`cat /etc/crontab | grep ArchiveLogInDB.php | grep -v \# > /dev/null; echo $?`
 	
  	if [ $CRON == '1' ]; then	
