@@ -129,7 +129,7 @@ For information : contact@oreon-project.org
 		$tpl->assign("status", $status);
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
-		
+		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
 		$tpl->assign("h", $hostDB);
 		$tpl->assign("url_id", $url_id);
 		$tpl->assign("tab_comments_host", $tab_comments_host);

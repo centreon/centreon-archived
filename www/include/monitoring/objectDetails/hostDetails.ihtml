@@ -1,7 +1,7 @@
 <div>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$lang.m_mon_host} : {$host_data.host_name} ({$h.host_alias}) - {$h.host_address} </td>
+			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$lang.m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address} </td>
 		</tr>
 	</table>
 	<br>
@@ -85,7 +85,7 @@
 						<td class="ListColLeft">{$host_data.last_update}</td>
 					</tr>
 				</table>
-				<br><br>
+				<br>
 				<table id="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter" colspan="2">{$lang.options}</td>
@@ -122,21 +122,25 @@
 					</tr>
 					{/if}
 				</table>
-				<br><br>
+				{if $lcaTopo.6 || $lcaTopo.7}
+				<br>
 				<table id="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
 					</tr>
+					{if $lcaTopo.6}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='./oreon.php?p=6&host_id={$h.host_id}&o=c'>{$lang.m_mon_configure} {$h.host_name}</a></td>
 					</tr>
-					{if $url_id}
+					{/if}
+					{if $url_id && $lcaTopo.7}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='./oreon.php?p=7&o=q&host_id={$h.host_id}'>{$lang.m_mon_view_identity_file} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 				</table>
-				<br><br>
+				{/if}
+				<br>
 				<table id="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
