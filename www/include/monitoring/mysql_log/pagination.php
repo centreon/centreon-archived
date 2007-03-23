@@ -28,21 +28,22 @@ For information : contact@oreon-project.org
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 
 	global $rows, $p, $lang, $gopt, $pagination;
+
+	$start = time() - 60*60*24;
 	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
-
 	if (isset($_GET["start"]) && $_GET["start"])
 		if (strpos($_GET["start"], "/"))
 			$url_var  .= "&start=" . $_GET["start"];
 		else
 			$url_var  .= "&start=" . date("m/d/Y", $_GET["start"]);
 	else
-		$url_var  .= "&start=";
+		$url_var  .= "&start=".date("m/d/Y", $start);
 	
 	if (isset($_GET["start_time"]) && $_GET["start_time"])
 		$url_var  .= "&start_time=" . $_GET["start_time"];
 	else
-		$url_var  .= "&start_time=";
+		$url_var  .= "&start_time=".date($lang["time_formatWOs"], $start);
 		
 	if (isset($_GET["end"]) && $_GET["end"])
 		if (strpos($_GET["end"], "/"))
@@ -50,12 +51,12 @@ For information : contact@oreon-project.org
 		else
 			$url_var  .= "&end=" . date("m/d/Y", $_GET["end"]);
 	else
-		$url_var  .= "&end=";
+		$url_var  .= "&end=".date("m/d/Y");
 		
 	if (isset($_GET["end_time"]) && $_GET["end_time"])
 		$url_var  .= "&end_time=" . $_GET["end_time"];
 	else
-		$url_var  .= "&end_time=";
+		$url_var  .= "&end_time=".date($lang["time_formatWOs"], time());
 	if (isset($_GET["search1"]) && $_GET["search1"])
 		$url_var  .= "&search1=" . $_GET["search1"];
 	else

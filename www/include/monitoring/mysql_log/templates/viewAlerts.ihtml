@@ -42,7 +42,7 @@
 		<tr class="{$alert.class}" id="trStatus{$c}">
 			<td class="ListColCenter">{$alert.date}</td>
 			<td class="ListColRight">{$alert.time}</td>
-			<td class="ListColLeft"{if !$alert.service_description} colspan="2"{/if}><a href='oreon.php?p=201&o=hd&host_name={$alert.host_name}'>{ $alert.host_name }</a></td>
+			<td class="ListColLeft"{if !$alert.service_description} colspan="2"{/if}>{if $alert.host_name != "OSL_Module" && $alert.host_name != "Meta_Module"}<a href='oreon.php?p=201&o=hd&host_name={$alert.host_name}'>{/if}{ $alert.host_name }{if $alert.host_name != "OSL_Module" && $alert.host_name != "Meta_Module"}</a>{/if}</td>
 			{if $alert.service_description}
 			<td class="ListColLeft">{ $alert.service_description }</td>
 			{/if}
