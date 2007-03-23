@@ -93,8 +93,12 @@ For information : contact@oreon-project.org
 			exit();
 
 		# Init differents elements we need in a lot of pages
+		unset($oreon->user->lcaTopo);
+		unset($oreon->user->lcaTStr);
 		$oreon->user->createLCA($pearDB);
+		unset($oreon->Nagioscfg);
 		$oreon->initNagiosCFG($pearDB);
+		unset($oreon->optGen);
 		$oreon->initOptGen($pearDB);
  
 	 	function get_my_first_allowed_root_menu($lcaTStr){
