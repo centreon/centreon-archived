@@ -18,6 +18,7 @@ For information : contact@oreon-project.org
 
 $lang ['m_mon_hosts'] = "Hosts";
 $lang ['m_mon_host'] = "Host";
+$lang ['m_mon_on_host'] = "de l'host";
 $lang ['m_mon_host_info'] = "Host Informations";
 $lang ['m_mon_host_status'] = "Host Status";
 $lang ['m_mon_host_status_info'] = "Status Informations";
@@ -94,6 +95,7 @@ $lang ['m_mon_configure'] = "Manage";
 $lang ['m_mon_next_check'] = "Next Check";
 $lang ['m_mon_log_select'] = "Period";
 $lang ['m_mon_only_for'] = "Only for host";
+$lang ['m_comment_for_service'] = "All Comments of this service";
 
 /*** service detail ***/
 

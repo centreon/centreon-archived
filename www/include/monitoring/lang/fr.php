@@ -18,6 +18,7 @@ For information : contact@oreon-project.org
 
 $lang ['m_mon_hosts'] = "Hosts";
 $lang ['m_mon_host'] = "Host";
+$lang ['m_mon_on_host'] = "de l'host";
 $lang ['m_mon_host_info'] = "Informations de l&acute;host ";
 $lang ['m_mon_host_status'] = "Status de l&acute;host ";
 $lang ['m_mon_host_status_info'] = "Information sur le status";
@@ -99,7 +100,7 @@ $lang ['m_mon_services_active_check'] = "Prochain Ordonnancement Actif";
 $lang ['m_mon_services_latency'] = "Latence";
 $lang ['m_mon_services_duration'] = "Dur&eacute;e de la v&eacute;rification";
 $lang ['m_mon_last_notification_serv'] = "Derni&egrave;re notification du service";
-$lang ['m_mon_services_flapping'] = "Ce Service est Volatile ?";
+$lang ['m_mon_services_flapping'] = "Ce Service est oscillant ?";
 
 $lang ['m_mon_services_en_check_active'] = "V&eacute;rification des Services :";
 $lang ['m_mon_services_en_check_passif'] = "V&eacute;rification Passive :";
@@ -139,6 +140,7 @@ $lang['m_mon_ack_del'] = "Supprimer";
 $lang ['error_msg'] = "le champ comment doit etre renseign&eacute;";
 $lang ['herror'] = "Erreur de saisie";
 $lang ['ferror'] = "Veuillez corriger";
+$lang ['m_comment_for_service'] = "Les Commentaires de ce service";
 
 /*** Host Details ***/
 
