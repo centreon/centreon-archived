@@ -2,7 +2,7 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 {$form.javascript}
 <form {$form.attributes}>
-<div style="padding-top: 20px;">
+<div style="padding-top: 0px;">
    		<div>
        		<table id="ListTable">
                 <tr class="ListHeader">
@@ -14,8 +14,9 @@
                 </tr>
     	    </table>
     	  	<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}&nbsp;&nbsp;&nbsp;{$form.advanced.html}</p><br><br><br><br></div>
-     	   	<br><br><br><br>
-    	    <div id="div1" class="cachediv" {if !$title2}style="padding-top:34px;"{/if}>
+     	   	<br><br>
+    	    <div id="div1" class="cachediv" {if !$title2}style="padding-top:20px;"{/if}>
+	    	    <br><br>
 	    	    <table id="ListTable">
 	                <tr class="ListHeader">
 	                	<td class="FormHeader" colspan="2">{$lang.advanced}</td>

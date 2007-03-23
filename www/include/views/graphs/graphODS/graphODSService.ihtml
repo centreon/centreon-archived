@@ -5,7 +5,6 @@
 <form {$form.attributes}>
 {if !$msg}
 <div>
-	<!--<a href="./oreon.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a> <a href="./oreon.php?p={$p}&host_name={$host_name.host_name}">Retour</a>-->
 	<table id="ListTable">
         <tr class="ListHeader">
         	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;{$title2} - Host : {$host_name.host_name} | Service : {$host_name.service_description}</td>
@@ -55,38 +54,38 @@
 {if !$title}
 <form {$form.attributes}>
 {/if}
-<div style="padding-top: 20px;">
-   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div><br><br><br><br>{/if}
-       	<div>
-       		<table id="ListTable">
-                <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_find.gif'>&nbsp;{$form.header.title}</td>
-                </tr>
-                 <tr class="list_two">
-            		<td>&nbsp;&nbsp;{$form.index.label}</td>
-            		<td>&nbsp;&nbsp;{$form.index.html}</td>
-                </tr>
-                <tr class="list_two">
-            		<td>&nbsp;&nbsp;{$form.template_id.label}</td>
-            		<td>&nbsp;&nbsp;{$form.template_id.html}</td>
-                </tr>
-                <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;Activate our Data Source </td>
-                </tr>
-                {foreach item=s from=$metrics}
-	    		<tr class="{$s.class}">
-	    			<td>&nbsp;&nbsp;<input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id] } checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td>
-	    			{if $cpt == 0}
-	    			<td rowspan="{$nb_metrics}" valign="top" style="padding:10px;"><b><i>Aide : </i></b><br><br>Vous pouvez désactiver une source de données pour qu'elle n'apparaisse plus sur le graphique. <br>Cela peut vous servir lorsque les deux sources de données sont issues d'un même service mais dont les echelles sont completement differentes.</td>{assign var="cpt" value="1"}
-	    			{/if}
-	    		</tr>
-	    		{/foreach}
-    	    </table>
-    	  	{if !$title2}
-    		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p><br><br><br><br></div>
-     	   	{/if}
-    	    <br>
-        </div>
-    {$form.hidden}
-</div>    
+	<div style="padding-top: 5px;">
+	   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div><br><br><br><br>{/if}
+	       	<div>
+	       		<table id="ListTable">
+	                <tr class="ListHeader">
+	                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_find.gif'>&nbsp;{$form.header.title}</td>
+	                </tr>
+	                 <tr class="list_two">
+	            		<td>&nbsp;&nbsp;{$form.index.label}</td>
+	            		<td>&nbsp;&nbsp;{$form.index.html}</td>
+	                </tr>
+	                <tr class="list_two">
+	            		<td>&nbsp;&nbsp;{$form.template_id.label}</td>
+	            		<td>&nbsp;&nbsp;{$form.template_id.html}</td>
+	                </tr>
+	                <tr class="ListHeader">
+	                	<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;Activate our Data Source </td>
+	                </tr>
+	                {foreach item=s from=$metrics}
+		    		<tr class="{$s.class}">
+		    			<td>&nbsp;&nbsp;<input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id] } checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td>
+		    			{if $cpt == 0}
+		    			<td rowspan="{$nb_metrics}" valign="top" style="padding:10px;"><b><i>Aide : </i></b><br><br>Vous pouvez désactiver une source de données pour qu'elle n'apparaisse plus sur le graphique. <br>Cela peut vous servir lorsque les deux sources de données sont issues d'un même service mais dont les echelles sont completement differentes.</td>{assign var="cpt" value="1"}
+		    			{/if}
+		    		</tr>
+		    		{/foreach}
+	    	    </table>
+	    	  	{if !$title2}
+	    		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p><br><br><br><br></div>
+	     	   	{/if}
+	    	    <br>
+	        </div>
+	    {$form.hidden}
+	</div>    
 </form>
