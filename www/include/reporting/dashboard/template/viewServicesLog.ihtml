@@ -12,12 +12,12 @@
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
-		<td class="ListColHeaderLeft" style='text-align:center;'>
-			<form {$formService.attributes}>
-				<b>{$hostTitle}:</b>&nbsp;&nbsp;<input type=text value="{$mhost}" name="hostname" disabled>
+		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
+			<form {$formService.attributes} style="margin:0px;padding:0px;">
+				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$hostTitle}&nbsp;:&nbsp;&nbsp;<input type=text value="{$mhost}" name="hostname" disabled>
 				<b>{$formService.service.label}:</b>&nbsp;&nbsp;{$formService.service.html}
 				{$formService.hidden}
-			&nbsp;&nbsp;&nbsp;{$period}{$date_start_select} {$to} {$date_end_select} ({$infosTitle})
+			&nbsp;&nbsp;&nbsp;{$period}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
 			</form>	
 		</td>
 	</tr>
@@ -35,7 +35,7 @@
 				</td>
 			</tr>
 			<tr>
-			<td style=' padding:5px;'>
+				<td style=' padding:5px;vertical-align:top;'>
 					<table class="ListTable" >
 						<tr class='ListHeader'>
 							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>

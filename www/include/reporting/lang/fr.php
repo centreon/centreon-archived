@@ -72,19 +72,19 @@ $lang["m_UpTitle"] = "Up";
 $lang["m_DownTitle"] = "Down";
 $lang["m_UnreachableTitle"] = "Unreachable";
 
-$lang["m_StateTitle"] = "State";
+$lang["m_StateTitle"] = "Etat";
 $lang["m_TimeTitle"] = "Temps";
 $lang["m_TimeTotalTitle"] = "Temps Total";
 $lang["m_KnownTimeTitle"] = "Temps connus";
 
 $lang["m_DateTitle"] = "Date";
-$lang["m_EventTitle"] = "Evenement";
+$lang["m_EventTitle"] = "Ev&egrave;nement";
 $lang["m_HostTitle"] = "Host";
 $lang["m_InformationsTitle"] = "Informations";
 
-$lang["m_period"] = " Periode: ";
-$lang["m_to"] = " &agrave; ";
-$lang["m_duration"] = "Dur&eacute;e ";
+$lang["m_period"] = " P&eacute;riode du ";
+$lang["m_to"] = " au ";
+$lang["m_duration"] = "Dur&eacute;e : ";
 
 $lang["m_svc"] = " Service ";
 $lang["m_h"] = " Host ";

@@ -82,9 +82,9 @@ $lang["m_EventTitle"] = "Event";
 $lang["m_HostTitle"] = "Host";
 $lang["m_InformationsTitle"] = "Info";
 
-$lang["m_period"] = " Period: ";
+$lang["m_period"] = " From ";
 $lang["m_to"] = " to ";
-$lang["m_duration"] = "Duration ";
+$lang["m_duration"] = "Duration : ";
 
 $lang["m_svc"] = " Service ";
 $lang["m_h"] = " Host ";

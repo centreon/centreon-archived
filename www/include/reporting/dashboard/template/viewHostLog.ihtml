@@ -12,14 +12,12 @@
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
-		<td class="ListColHeaderLeft" style='text-align:center;'>
-			<form {$formHost.attributes}>
-				<div style='white-space: nowrap;'>
-				<b>{$formHost.host.label}</b>&nbsp;&nbsp;{$formHost.host.html}{$formHost.hidden}
+		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
+			<form {$formHost.attributes} style="margin:0px;padding:0px;">
+				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$formHost.host.label}&nbsp;&nbsp;{$formHost.host.html}{$formHost.hidden}
 				{if $date_start_select != 0}
-				&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} ({$infosTitle})
+				&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
 				{/if}
-				</div>
 			</form>	
 		</td>
 	</tr>
@@ -30,7 +28,6 @@
 				<td rowspan=3 style='width:300px; padding:5px'>
 					{if $host_name}	
 						<table class="ListTable" >
-							<tr class='ListHeader'></tr>
 							<tr>
 								<td class="ListColCenter"><img src='./include/reporting/dashboard/chart_host.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
 							</tr>
@@ -39,7 +36,7 @@
 				</td>
 			</tr>
 			<tr>
-			<td style='padding:5px;'>
+			<td style='padding:5px;vertical-align:top;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
 							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>
