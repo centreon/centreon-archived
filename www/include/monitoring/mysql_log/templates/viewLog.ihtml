@@ -16,15 +16,13 @@
 	</tr>
 </table>
 <br>
-
 <table class="Toolbar_TableTop">
 	<tr class="Toolbar_TR_Top">
 		{php}
-		   include('./include/common/pagination.php');
+		   include('./include/monitoring/mysql_log/pagination.php');
 		{/php}
 	</tr>
 </table>
-
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter">{$lang.m_log_day}</td>
@@ -41,7 +39,7 @@
 </table>
 <table class="Toolbar_TableBottom">
 	<tr>
-		{php}include('./include/common/pagination.php');{/php}
+		{php}include('./include/monitoring/mysql_log/pagination.php');{/php}
 	</tr>
 </table>
 

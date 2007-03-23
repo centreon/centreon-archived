@@ -38,12 +38,12 @@
 	# pagination
 	include("./include/common/autoNumLimit.php");
 
-	
-	$attrsTextDate 	= array("size"=>"11", "style"=>"border:1;");
-	$attrsTextHour 	= array("size"=>"5");
-	$attrsText 		= array("size"=>"30");
-	$attrsText2 	= array("size"=>"60");
-	$attrsAdvSelect = array("style"=>"width: 200px; height: 100px;");
+	$attrsTextDate 	= array("size"=>"11", "style"=>"font-family:Verdana, Tahoma;font-size:9px;height:13px;border: 0.5px solid gray;");
+	$attrsTextHour 	= array("size"=>"5", "style"=>"font-family:Verdana, Tahoma;font-size:9px;height:13px;border: 0.5px solid gray;");
+	$attrsText 		= array("size"=>"30", "style" => "font-family:Verdana, Tahoma;font-size:9px;height:13px;border: 0.5px solid gray;");
+	$attrsText2 	= array("size"=>"60", "style" => "font-family:Verdana, Tahoma;font-size:9px;height:13px;border: 0.5px solid gray;");
+	$inputstyle		= array("style"=>"font-family:Verdana, Tahoma;font-size:9px;width:130px;height:13px;border: 0.5px solid gray;");
+	$attrsAdvSelect = array("style"=>"width:200px; height:100px;");
 	
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -51,7 +51,6 @@
 	
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$tab = array ("contact_email" => "oreon");
-
 
 	$sort_type = array(	""=>NULL,
 						"date" => $lang['m_log_day'], 
@@ -64,24 +63,34 @@
 	$form->addElement('hidden', 'p', $p);
 	$form->addElement('hidden', 'o', $o);
 	
+	if (isset($_GET["end"]) && !$_GET["end"])
+		$_GET["end"] = time();
+	if (isset($_GET["start"]) && !$_GET["start"])
+		$_GET["start"] = time() - 60*60*24;
+		
 	if (isset($_GET["end"]) && isset($_GET["start"])){
-		$_GET["end"] .= " ".$_GET["end_time"];
-		$_GET["start"] .= " ".$_GET["start_time"];
-		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)\ ([0-9]*):([0-9]*)/", $_GET["start"] , $matches);
-		$_GET["start"] = mktime($matches[4], $matches[5], "0", $matches[1], $matches[2], $matches[3]) ;
-		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)\ ([0-9]*):([0-9]*)/", $_GET["end"], $matches);
-		$_GET["end"] = mktime($matches[4], $matches[5], "59", $matches[1], $matches[2], $matches[3]);
+		$start_formated = $_GET["start"];
+		$end_formated = $_GET["end"];
+		if (strpos($_GET["end"], "/")){
+			$_GET["end"] .= " ".$_GET["end_time"];
+			$_GET["start"] .= " ".$_GET["start_time"];
+			preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)\ ([0-9]*):([0-9]*)/", $_GET["start"] , $matches);
+			$_GET["start"] = mktime($matches[4], $matches[5], "0", $matches[1], $matches[2], $matches[3]);
+			preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)\ ([0-9]*):([0-9]*)/", $_GET["end"], $matches);
+			$_GET["end"] = mktime($matches[4], $matches[5], "59", $matches[1], $matches[2], $matches[3]);
+		} else {
+			$tab_end = split("/:/", $_GET["end_time"]);
+			$tab_start = split("/:/", $_GET["start_time"]);
+			$end = $_GET["end"] + $tab_end[0]*60 + $tab_end[1];
+			$start = $_GET["start"] + $tab_start[0]*60 + $tab_start[1];
+		}	
 	}
 	
 	isset($_GET["end"]) && $_GET["end"] ? $end = $_GET["end"] : $end = time();
 	isset($_GET["start"]) && $_GET["start"] ? $start = $_GET["start"] : $start = time() - (60*60*24);
-	
 
-
-
-
-	if (isset($_GET["search"]) && $_GET["search"])
-		$req = "SELECT * FROM log WHERE  `output` LIKE '%".$_GET["search"]."%' AND ctime > '$start' AND ctime <= '$end' AND msg_type = '4'";
+	if (isset($_GET["search1"]) && $_GET["search1"])
+		$req = "SELECT * FROM log WHERE  `output` LIKE '%".$_GET["search1"]."%' AND ctime > '$start' AND ctime <= '$end' AND msg_type = '4'";
 	else
 		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '4'";
 
@@ -94,15 +103,14 @@
 		$num = round($rows / $limit) - 1;
 	$lstart = $num * $limit;
 
-
-
+	if ($lstart <= 0)
+		$lstart = 0;
 
 	$alerts = array();	
-	if (isset($_GET["search"]) && $_GET["search"])
-		$req = "SELECT * FROM log WHERE  `output` LIKE '%".$_GET["search"]."%' AND ctime > '$start' AND ctime <= '$end' AND msg_type = '4' ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
+	if (isset($_GET["search1"]) && $_GET["search1"])
+		$req = "SELECT * FROM log WHERE  `output` LIKE '%".$_GET["search1"]."%' AND ctime > '$start' AND ctime <= '$end' AND msg_type = '4' ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
 	else
 		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '4' ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
-
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
@@ -123,32 +131,25 @@
 	$form->addElement('text', 'end_time', $lang["m_to"], $attrsTextHour);
 	$form->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
 	
-	$form->addElement('text', 'search', $lang["quicksearch"], $attrsText);
+	$form->addElement('text', 'search1', $lang["quicksearch"], $inputstyle);
    	$form->setDefaults($tab_value);
    	
-   	$sub =& $form->addElement('ssubmit', 'submit', $lang["m_log_view"]);
+   	$sub =& $form->addElement('submit', 'submit', $lang["m_log_view"]);
 	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./include/monitoring/mysql_log/templates/", $tpl);
 
-	# pagination
-	$tpl->assign('limit', $limit);
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
-	
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("p", $p);
 	$tpl->assign('o', $o);
-	# pagination
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	
    	$tpl->assign('form', $renderer->toArray());
-	
 	$tpl->assign("alerts", $alerts);
 	$tpl->assign("lang", $lang);
 	$tpl->display("viewErrors.ihtml");

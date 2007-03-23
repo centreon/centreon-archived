@@ -9,7 +9,7 @@
 		<td class='list_two' colspan="2" style="padding-left:40px;">{$form.start.label}&nbsp;{$form.start.html} : {$form.start_time.html}&nbsp;{$form.startD.html}&nbsp;&nbsp;&nbsp;{$form.end.label}&nbsp;{$form.end.html} : {$form.end_time.html}&nbsp;{$form.endD.html}</td>
 	</tr>
 	<tr class='list_one'>
-		<td rowspan="3" valign="top" style="padding-left:40px;"> Recherche : </td>
+		<td rowspan="2" valign="top" style="padding-left:40px;"> Recherche : </td>
 		<td class="ListColLeft">{$form.sort_type1.label}{$form.sort_type1.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search1.html} </td>
 	</tr>
 	<tr class='list_two'>
@@ -23,19 +23,16 @@
 		<td class="ListColCenter" colspan="2">{$form.ssubmit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
 	</tr>
 </table>
-
 <br>
 <table class="Toolbar_TableTop">
 	<tr class="Toolbar_TR_Top">
-		{php}
-		   include('./include/common/pagination.php');
-		{/php}
+		{php}include('./include/monitoring/mysql_log/pagination.php');{/php}
 	</tr>
 </table>
 <table id="ListTable">
 	<tr class='ListHeader'>
-		<td class="ListColHeaderCenter">Day</td>
-		<td class="ListColHeaderCenter">Hour</td>
+		<td class="ListColHeaderCenter" width="70">Day</td>
+		<td class="ListColHeaderCenter" width="60">Hour</td>
 		<td class="ListColHeaderCenter" colspan="2">{$lang.m_mon_hosts}</td>
 		<td class="ListColHeaderCenter">{$lang.m_mon_status}</td>
 		<td class="ListColHeaderCenter">{$lang.m_mon_try}</td>
@@ -59,12 +56,9 @@
 </table>
 <table class="Toolbar_TableBottom">
 	<tr>
-		{php}include('./include/common/pagination.php');{/php}
+		{php}include('./include/monitoring/mysql_log/pagination.php');{/php}
 	</tr>
 </table>
-
-
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>

@@ -6,22 +6,20 @@
 		<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/text_view.gif'>&nbsp;{$lang.m_log_select_errors}</td>
 	</tr>
 	<tr class='list_two'>
-		<td class="ListColLeft" style="padding-left:40px;">{$form.start.label}&nbsp;{$form.start.html} : {$form.start_time.html}{$form.startD.html}&nbsp;&nbsp;&nbsp;{$form.end.label}&nbsp;{$form.end.html} : {$form.end_time.html}{$form.endD.html}</td><td class="ListColLeft">{$form.search.label} : {$form.search.html} </td>
+		<td class="ListColLeft" style="padding-left:40px;">{$form.start.label}&nbsp;{$form.start.html} : {$form.start_time.html}{$form.startD.html}&nbsp;&nbsp;&nbsp;{$form.end.label}&nbsp;{$form.end.html} : {$form.end_time.html}{$form.endD.html}</td><td class="ListColLeft">{$form.search1.label} : {$form.search1.html} </td>
 	</tr>
 	<tr class='list_one'>
-		<td class="ListColCenter" colspan="2">{$form.ssubmit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
+		<td class="ListColCenter" colspan="2">{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
 	</tr>
 </table>
-
 <br>
 <table class="Toolbar_TableTop">
 	<tr class="Toolbar_TR_Top">
 		{php}
-			include('./include/common/pagination.php');
+			include('./include/monitoring/mysql_log/pagination.php');
 		{/php}
 	</tr>
 </table>
-
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter">{$lang.m_log_day}</td>
@@ -38,12 +36,9 @@
 </table>
 <table class="Toolbar_TableBottom">
 	<tr>
-		{php}include('./include/common/pagination.php');{/php}
+		{php}include('./include/monitoring/mysql_log/pagination.php');{/php}
 	</tr>
 </table>
-
-
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
