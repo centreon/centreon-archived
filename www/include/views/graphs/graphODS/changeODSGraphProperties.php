@@ -119,6 +119,8 @@ For information : contact@oreon-project.org
 	if (isset($_GET["end"]))
 		$tpl->assign('end', $_GET["end"]);
 	
+	$tpl->assign('admin', $oreon->user->admin);
+	
 	$tpl->assign('lang', $lang);
 	$tpl->assign('index', $_GET["index"]);
 	$tpl->assign('session_id', session_id());

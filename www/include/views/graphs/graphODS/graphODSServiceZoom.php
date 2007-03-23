@@ -205,6 +205,8 @@ For information : contact@oreon-project.org
 	$tpl->assign('p', $p);
 	$tpl->assign('host_name', $svc_id);
 	
+	$tpl->assign('admin', $oreon->user->admin);
+	
 	$tpl->assign('metrics', $metrics);
 	$tpl->assign('nb_metrics', count($metrics));
 	$tpl->assign('metrics_active', $metrics_active);

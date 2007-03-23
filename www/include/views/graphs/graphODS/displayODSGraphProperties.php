@@ -138,6 +138,8 @@ For information : contact@oreon-project.org
 	$tpl->assign('storage_type_possibility', $storage_type);
 	$tpl->assign('storage_type', $conf["storage_type"]);
 	
+	$tpl->assign('admin', $oreon->user->admin);
+	
 	$tpl->assign('start', $_GET["start"]);
 	$tpl->assign('end', $_GET["end"]);
 	$tpl->assign('isAvl', 1);
