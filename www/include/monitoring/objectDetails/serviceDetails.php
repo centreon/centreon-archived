@@ -95,7 +95,7 @@ For information : contact@oreon-project.org
                         if (preg_match('`comment_id$`', $res[0]))
                             $tab_comments_svc[$i]["id"] = $res[1];
                         if (preg_match('`service_description$`', $res[0])){
-                          $tab_comments_svc[$i]["service_descr"] = $res[1];}
+                          $tab_comments_svc[$i]["service_description"] = $res[1];}
                         if (preg_match('`host_name$`', $res[0]))
                           $tab_comments_svc[$i]["host_name"] = $res[1];
                         if (preg_match('`entry_time$`', $res[0]))
@@ -117,6 +117,12 @@ For information : contact@oreon-project.org
 			}
 		}
 		
+		foreach ($tab_comments_svc as $key => $value){
+			if (($value["host_name"] == $_GET["host_name"]) && ($value["service_description"] == $_GET["service_description"]))
+				;
+			else
+				unset($tab_comments_svc[$key]);
+		}
 		
 		$en = array("0" => "No", "1" => "Yes");
 		
@@ -172,6 +178,8 @@ For information : contact@oreon-project.org
 		$tpl->assign("harsof", array("0"=>$lang["m_mon_soft"], "1"=>$lang["m_mon_hard"]));
 		$tpl->assign("status", $status);
 		$tpl->assign("h", $host);
+		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);
+		$tpl->assign("count_comments_svc", count($tab_comments_svc));
 		$tpl->assign("tab_comments_svc", $tab_comments_svc);
 		$tpl->assign("service_id", getMyServiceID($svc_description, $host["host_id"]));
 		$tpl->assign("host_data", $host_status[$host_name]);

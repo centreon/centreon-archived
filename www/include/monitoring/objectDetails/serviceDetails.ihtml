@@ -1,7 +1,7 @@
 <div>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;Service : {$svc_description} On Host : {$h.host_name} ({$h.host_alias}) </td>
+			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]</td>
 		</tr>
 	</table><br>
 	<table width='100%'>
@@ -121,6 +121,7 @@
 					{/if}
 				</table>
 				<br><br>
+				{if $lcaTopo.602}
 				<table id="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
@@ -129,6 +130,7 @@
 						<td class="ListColLeft"><a href='./oreon.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
 					</tr>
 				</table>
+				{/if}
 			</td>
 			<td style='width:20px;'>&nbsp;</td>
 			<td style='vertical-align:top;'>
@@ -184,16 +186,16 @@
 			</td>
 		</tr>
 	</table><br>
-	{if $tab_comments_svc}
+	{if $count_comments_svc}
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderCenter" colspan="3">Comments For this Service</td>
+			<td class="ListColHeaderLeft" colspan="3">&nbsp;<img src="./img/icones/16x16/messages.gif">&nbsp;{$lang.m_comment_for_service}</td>
 		</tr>
 	</table>
 	<br>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderCenter"><input type="checkbox" disabled checked></td>
+			<td class="ListColHeaderPicker"><input type="checkbox" disabled checked></td>
 			<td class="ListColHeaderCenter">{$lang.cmt_host_name}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_service_descr}</td>
 			<td class="ListColHeaderCenter">{$lang.cmt_entry_time}</td>
@@ -204,13 +206,13 @@
 		{foreach item=tcs from=$tab_comments_svc}
 		{if $tcs.host_name == $h.host_name}
 		<tr class={cycle values="list_two, list_one"}>
-			<td class="ListColHeaderCenter"><input type="checkbox" name='select[{$tcs.id}]'></td>
-			<td class="ListColLeft">{$tcs.host_name}</td>
-			<td class="ListColLeft">{$tcs.service_descr}</td>
-			<td class="ListColRight">{$tcs.time}</td>
-			<td class="ListColCenter">{$tcs.author}</td>
+			<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.id}]'></td>
+			<td class="ListColLeft" width="120">{$tcs.host_name}</td>
+			<td class="ListColLeft" width="120">{$tcs.service_description}</td>
+			<td class="ListColRight" width="150" style="white-space:nowrap;">{$tcs.time}</td>
+			<td class="ListColCenter" width="100">{$tcs.author}</td>
 			<td class="ListColNoWrap">{$tcs.comment}</td>
-			<td class="ListColLeft">{$tcs.persistent}</td>
+			<td class="ListColLeft" width="50">{$tcs.persistent}</td>
 			</tr>
 		{/if}
 		{/foreach}
