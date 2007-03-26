@@ -50,7 +50,7 @@ For information : contact@oreon-project.org
 	$i=0;
 	foreach($value as $key => $val)	{
 		$Dataset[$i] =& Image_Graph::factory('dataset');
-		$Dataset[$i++]->addPoint($key, $val);
+		$Dataset[$i++]->addPoint($key, $val, $key);
 	}
 	$Dataset[$i] =& Image_Graph::factory('dataset');
 	$Dataset[$i]->addPoint('', 0);

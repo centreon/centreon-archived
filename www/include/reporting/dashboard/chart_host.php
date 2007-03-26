@@ -50,7 +50,8 @@ For information : contact@oreon-project.org
 	$i=0;
 	foreach($value as $key => $val)	{
 		$Dataset[$i] =& Image_Graph::factory('dataset');
-		$Dataset[$i++]->addPoint($key, $val);
+		$Dataset[$i++]->addPoint($key, $val, $key);
+		//echo $key."<br>";
 	}
 	$Dataset[$i] =& Image_Graph::factory('dataset');
 	$Dataset[$i]->addPoint('', 0);
@@ -63,28 +64,10 @@ For information : contact@oreon-project.org
 	$FillArray->addColor($oreon->optGen["color_unreachable"] . '@0.2', 'Unreachable');
 	$FillArray->addColor($oreon->optGen["color_pending"] . '@0.2', 'Pending');
 	$Plot->setFillStyle($FillArray);
+	
 	$Plot->setBackgroundColor('#F2F2F2');
+
 	
 	$Graph->done(); 
 
-/*
-	$Plot->setFillStyle($FillArray); 
-	// set a standard fill style
-	$FillArray =& Image_Graph::factory('Image_Graph_Fill_Array');
-	$Plot->setFillStyle($FillArray);
-
-	$FillArray->addColor($oreon->optGen["color_up"] . ' @0.2', 'Up');
-	$FillArray->addColor($oreon->optGen["color_down"] . '@0.2', 'Down');
-	$FillArray->addColor($oreon->optGen["color_unreachable"] . '@0.2', 'Unreachable');
-	$FillArray->addColor($oreon->optGen["color_pending"] . '@0.2', 'Pending');
-	
-	$FillArray->addColor('black@0.2', 'rest'); 	
-	// set a standard fill style
-	
-	$FillArray->addColor("40@0.2");
-	$FillArray->addColor("60@0.2");
-
-	// output the Graph
-	$Graph->done();
-*/
 ?>
