@@ -1,3 +1,4 @@
+<div align="center">
 <form id="Form">
 	{if $msg}
 		<span class="msg">{ $msg }</span>
@@ -23,3 +24,4 @@
 		{/foreach}
 	</table>
 </form>
+</div>
