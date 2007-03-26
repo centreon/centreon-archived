@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 		print ($DBRESULT->getMessage());
 	$tab_css = array();
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++){
-		$tab_css[$i] = $elem;
+		$tab_css[$elem["menu_nb"]] = $elem;
 		if(isset($_GET["css_color_".$elem["id_css_color_menu"]])){
 			$name = $_GET["css_color_".$elem["id_css_color_menu"]];			
 			$id = $elem["id_css_color_menu"];
