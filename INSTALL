@@ -1,10 +1,12 @@
 To use graphic plugins, you need to have on your server :
+
 - RRDTOOL
 - perl/RRDTOOL (RRDs.pm)
 - Net::SNMP
 
 To use Oreon, you need to have on your server :
-- php4 or php5
+
+- php4 or php5 (php5 recommended)
 - php-mysql
 - php-pear
 - php-snmp
