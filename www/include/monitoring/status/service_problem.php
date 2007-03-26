@@ -31,6 +31,7 @@ For information : contact@oreon-project.org
 
 	!isset($_GET["limit"]) ? $limit = $gopt["maxViewMonitoring"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
+
 	if ($o != "svc_ok"){
 		!isset($_GET["sort_types"]) ? $sort_types = $oreon->OptGen["problem_sort_type"] : $sort_types = $_GET["sort_types"];
 		!isset($_GET["order"]) ? $order = "SORT_".$oreon->OptGen["problem_sort_order"] : $order = $_GET["order"];
@@ -38,6 +39,7 @@ For information : contact@oreon-project.org
 		$sort_types = "host_name";
 		$order = "DESC";
 	}
+	
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form

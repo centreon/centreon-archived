@@ -54,15 +54,15 @@ For information : contact@oreon-project.org
 		$service_data_str = NULL;	
 		$h_data_str = NULL;	
 		if ($status_hg["OK"] != 0)
-			$service_data_str .= "<span style='background:".$oreon->optGen["color_ok"]."'>" . $status_hg["OK"] . " OK</span> ";
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_ok"]."'><a href='./oreon.php?p=2020101&o=svc_ok&hg_name=".$r["hg_name"]."'>" . $status_hg["OK"] . " OK</a></span> ";
 		if ($status_hg["WARNING"] != 0)
-			$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>" . $status_hg["WARNING"] . " WARNING</span> ";
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'><a href='./oreon.php?p=2020101&o=svc_warning&hg_name=".$r["hg_name"]."'>" . $status_hg["WARNING"] . " WARNING</a></span> ";
 		if ($status_hg["CRITICAL"] != 0)
-			$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>" . $status_hg["CRITICAL"] . " CRITICAL</span> ";
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'><a href='./oreon.php?p=2020101&o=svc_critical&hg_name=".$r["hg_name"]."'>" . $status_hg["CRITICAL"] . " CRITICAL</a></span> ";
 		if ($status_hg["PENDING"] != 0)
 			$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>" . $status_hg["PENDING"] . " PENDING</span> ";
 		if ($status_hg["UNKNOWN"] != 0)
-			$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>" . $status_hg["UNKNOWN"] . " UNKNOWN</span> ";
+			$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'><a href='./oreon.php?p=2020101&o=svc_unknown&hg_name=".$r["hg_name"]."'>" . $status_hg["UNKNOWN"] . " UNKNOWN</a></span> ";
 		if (!isset($hg[$r["hg_name"]]))
 			$hg[$r["hg_name"]] = array("name" => $r["hg_name"], 'alias' => $r["hg_alias"], "host" => array());			
 		$data[$r["hg_name"]]["service"] = $service_data_str;
