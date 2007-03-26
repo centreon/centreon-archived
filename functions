@@ -452,7 +452,7 @@ function install_ods(){
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' $INSTALL_DIR_OREON/ODS_SRC_ETC/ods > /etc/init.d/ods
 	chmod 755 /etc/init.d/ods
 	
-	chmod -R 644 $INSTALL_DIR_OREON/ODS/var/
+	chmod -R 775 $INSTALL_DIR_OREON/ODS/var/
 	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/var
 	rm -Rf $INSTALL_DIR_OREON/ODS_SRC_ETC
 	
