@@ -44,12 +44,9 @@ For information : contact@oreon-project.org
 #menu_3 li{    		padding-left:1px; list-style-type: none;}
 
 #menu_3 {    		
-padding-bottom:5px;
-padding-left:50px;
-
+	padding-bottom:5px;
+	padding-left:50px;
 }
-
-
 
 #topright {			float: right;}
 #bottomright {		float: right;}
