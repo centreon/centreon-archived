@@ -50,7 +50,7 @@ For information : contact@oreon-project.org
 
 
 	$page_max = ceil($rows / $limit);
-	if ($num > $page_max)
+	if ($num > $page_max && $rows)
 		$num = $page_max - 1;
 		
 	$pageArr = array();

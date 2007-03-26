@@ -68,4 +68,5 @@ For information : contact@oreon-project.org
 	$tpl->assign('p', $p);
 	$tpl->assign("num", 1);	
 	$tpl->display("quickSearch.ihtml");
+	
 ?>
