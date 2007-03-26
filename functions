@@ -596,7 +596,6 @@ function install_oreon(){
       fi
     done
     
-#  cp -Rf $SRC_OREON/* $INSTALL_DIR_OREON  >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/ >> $LOG_FILE 2>> $LOG_FILE
     chmod -R 775 $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
     chmod -R 775 $INSTALL_DIR_OREON/* >> $LOG_FILE 2>> $LOG_FILE
@@ -609,14 +608,13 @@ function install_oreon(){
     chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $INSTALL_DIR_OREON/rrd/*  >> $LOG_FILE 2>> $LOG_FILE
 
-
     install_oreon_plugins
 
     if test -d $NAGIOS_ETC ; then
-	echo_passed "$NAGIOS_ETC already exists" "PASSED"
+		echo_passed "$NAGIOS_ETC already exists" "PASSED"
     else
-	mkdir  $NAGIOS_ETC  >> $LOG_FILE 2>> $LOG_FILE
-	echo_success "Creating '$NAGIOS_ETC'" "OK"
+		mkdir  $NAGIOS_ETC  >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating '$NAGIOS_ETC'" "OK"
     fi
 
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_ETC >> $LOG_FILE 2>> $LOG_FILE
