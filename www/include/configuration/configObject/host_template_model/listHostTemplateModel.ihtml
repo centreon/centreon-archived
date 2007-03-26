@@ -31,23 +31,16 @@
 				{assign var="pattern_mode" value="0"}
 			{/if}
 			{if $elemArr[elem].pattern && $pattern_mode == 0}
-				<tr class={$elemArr[elem].MenuClass}>
-					<td class="ListColLeft" colspan="2"><b>{$elemArr[elem].pattern}</b></td>
-					<td class="ListColLeft"></td>
-					<td class="ListColCenter"></td>
-					<td class="ListColCenter"></td>
-					<td class="ListColCenter"></td>
-					<td class="ListColRight" align="right"></td>
+				<tr class="list_lvl_1">
+					<td class="ListColLeft" colspan="7"><b>{$elemArr[elem].pattern}</b></td>
 				</tr>
 				{assign var="pattern_mode" value="1"}
 				{assign var="pattern_value" value=$elemArr[elem].pattern}
 			{/if}
-			<tr class={$elemArr[elem].MenuClass}>
+			<tr class="{$elemArr[elem].MenuClass}">
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListCol2Left">
-					{if $elemArr[elem].pattern}
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					{/if}
+					{if $elemArr[elem].pattern}&nbsp;&nbsp;&nbsp;&nbsp;{/if}
 					<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
