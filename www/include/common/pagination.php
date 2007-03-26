@@ -48,6 +48,11 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./include/common/");
 
+
+	$page_max = ceil($rows / $limit);
+	if ($num > $page_max)
+		$num = $page_max - 1;
+		
 	$pageArr = array();
 	$istart = 0;
 	for($i = 5, $istart = $num; $istart && $i > 0; $i--)
@@ -82,7 +87,7 @@ For information : contact@oreon-project.org
 	$select[$gopt[$pagination]]=$gopt[$pagination];
 	$select[$rows]=$rows;
 	ksort($select);
-
+		
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setL(_this){
