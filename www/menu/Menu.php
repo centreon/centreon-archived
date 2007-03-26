@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 	}
 
 	# Grab elements for level 3
-
+	
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -105,7 +105,7 @@ For information : contact@oreon-project.org
 	for($i = 0; $DBRESULT->fetchInto($elem);)	{
 		if (!$oreon->optGen["perfparse_installed"] && ($elem["topology_page"] == 60204 || $elem["topology_page"] == 60405 ||
 		 	$elem["topology_page"] == 60505 || $elem["topology_page"] == 20206 || $elem["topology_page"] == 40201 ||
-		 	 $elem["topology_page"] == 40202 || $elem["topology_page"] == 60708))
+		 	$elem["topology_page"] == 40202 || $elem["topology_page"] == 60708))
 			;
 		else {
 			# grab menu title for each group
