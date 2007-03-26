@@ -17,22 +17,22 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-body{			background-color:#fff9eb;font-family: Verdana;	font-size: 11px;
+body{		background-color:#fff9eb;font-family: Verdana;	font-size: 11px;
 			margin: 0; /* pour viter les marges */
 			text-align: center; /* pour corriger le bug de centrage IE */
 }
 /* General */ 
-img {					border:0;}
-table{					empty-cells: show; border-spacing:0px; border-collapse:collapse;}
-input	{				font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; border-style: none; padding:2px;}
-textarea	{			font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;}
-checkbox	{			font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; padding: 2px;}
-select	{ font-family: Verdana, Arial, sans-serif; font-size: 10px; font-weight: normal; border-style: none;}
-option	{				font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;}
-td	{    				padding:1px; color: #525252; font-family: Verdana, Arial, sans-serif; font-size: 9px;	white-space: nowrap;}
-tr	{ 					}
-a	{					text-decoration: none;}
-a:hover	{				text-decoration: underline;}
+img 		{border:0;}
+table		{empty-cells: show; border-spacing:0px; border-collapse:collapse;}
+input		{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; border-style: none; padding:2px;}
+textarea	{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;}
+checkbox	{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; padding: 2px;}
+select		{font-family: Verdana, Arial, sans-serif; font-size: 10px; font-weight: normal; border-style: none;}
+option		{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal;}
+td			{padding:1px; color: #525252; font-family: Verdana, Arial, sans-serif; font-size: 9px;	white-space: nowrap;}
+tr			{}
+a			{text-decoration: none;}
+a:hover		{text-decoration: underline;}
 
 
  
