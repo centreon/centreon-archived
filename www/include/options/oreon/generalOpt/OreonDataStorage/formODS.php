@@ -55,6 +55,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'purge_interval', $lang["ods_purge_interval"], $attrsText2);
 	$form->addElement('checkbox', 'auto_drop', $lang["ods_auto_drop"]);
 	$form->addElement('text', 'drop_file', $lang["ods_drop_file"], $attrsText);
+	$form->addElement('text', 'perfdata_file', $lang["ods_perfdata_file"], $attrsText);
 	
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);

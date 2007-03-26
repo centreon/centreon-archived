@@ -211,6 +211,7 @@ $lang['ods_sleep_time_expl'] = "in seconds - Must be higher than 10";
 $lang['ods_purge_interval_expl'] = "in seconds - Must be higher than 2";
 $lang['ods_auto_drop'] = "Drop Data in another file";
 $lang['ods_drop_file'] = "Drop file";
+$lang['ods_perfdata_file'] = "Perfdata";
 $lang['ods_archive_log'] = "Archive Nagios Logs";
 $lang['ods_log_retention'] = "Logs retetion duration";
 $lang['ods_log_retention_unit'] = "days";

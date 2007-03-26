@@ -294,6 +294,7 @@ For information : contact@oreon-project.org
 				`purge_interval` = '".$ret["purge_interval"]."',
 				`auto_drop` = '".$ret["auto_drop"]."',
 				`drop_file` = '".$ret["drop_file"]."',
+				`perfdata_file` = '".$ret["perfdata_file"]."',
 				`archive_log` = '".$ret["archive_log"]."',
 				`fast_parsing` = '".$ret["fast_parsing"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',

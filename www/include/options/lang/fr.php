@@ -219,6 +219,7 @@ $lang['ods_sleep_time_expl'] = "en secondes  - Doit &ecirc;tre supp&eacute;rieur
 $lang['ods_purge_interval_expl'] = "en secondes  -  Doit &ecirc;tre supp&eacute;rieur &agrave; 2";
 $lang['ods_auto_drop'] = "D&eacute;placer les donn&eacute;es apr&egrave;s lecture";
 $lang['ods_drop_file'] = "Fichier de drop des donn&eacute;es";
+$lang['ods_perfdata_file'] = "Fichier de donn&eacute;es de performances";
 $lang['ods_archive_log'] = "Archiver les logs de Nagios";
 $lang['ods_log_retention'] = "Dur&eacute;e de r&eacute;tention des logs";
 $lang['ods_log_retention_unit'] = "days";
