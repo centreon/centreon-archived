@@ -19,22 +19,24 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 	
-	if (isset($search))
+	
+	if (isset($search)){
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM command WHERE command_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
-	else if ($type)
+	} else if ($type){
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM command WHERE command_type = '".$type."'");
-	else
+	} else {
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM command");
+	}
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 

@@ -47,14 +47,13 @@ For information : contact@oreon-project.org
 			case "h" : require_once($path."minHelpCommand.php"); break; #Show Help Command	# Wistof
 			default : require_once($path."minCommand.php"); break;
 		}
-
 	else
-	switch ($o)	{
-		case "a" : require_once($path."formCommand.php"); break; #Add a Command
-		case "w" : require_once($path."formCommand.php"); break; #Watch a Command
-		case "c" : require_once($path."formCommand.php"); break; #Modify a Command
-		case "m" : multipleCommandInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listCommand.php"); break; #Duplicate n Commands
-		case "d" : deleteCommandInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listCommand.php"); break; #Delete n Commands
-		default : require_once($path."listCommand.php"); break;
-	}
+		switch ($o)	{
+			case "a" : require_once($path."formCommand.php"); break; #Add a Command
+			case "w" : require_once($path."formCommand.php"); break; #Watch a Command
+			case "c" : require_once($path."formCommand.php"); break; #Modify a Command
+			case "m" : multipleCommandInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listCommand.php"); break; #Duplicate n Commands
+			case "d" : deleteCommandInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listCommand.php"); break; #Delete n Commands
+			default : require_once($path."listCommand.php"); break;
+		}
 ?>
