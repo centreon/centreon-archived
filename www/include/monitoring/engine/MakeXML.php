@@ -24,9 +24,6 @@ For information : contact@oreon-project.org
 	
 	require_once 'DB.php';
 
-//	$oreonPath = isset($_POST["fileOreonConf"]) ? $_POST["fileOreonConf"] : "";
-//	$oreonPath = isset($_GET["fileOreonConf"]) ? $_GET["fileOreonConf"] : $oreonPath;
-
 	$oreonPath = "";
 	if (isset($_GET["fileOreonConf"]))
 		$oreonPath = $_GET["fileOreonConf"];
@@ -35,10 +32,11 @@ For information : contact@oreon-project.org
 			
 	if($oreonPath == ""){
 		$buffer .= '<reponse>';	
-		$buffer .= 'none';
+		$buffer .= 'no oreonPath';
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
 		echo $buffer;
+		exit();
 	}
 
 	include_once($oreonPath . "www/oreon.conf.php");
@@ -137,8 +135,8 @@ For information : contact@oreon-project.org
 	    }
 	}
 
-	function read($host_name, $time,$arr,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status){
-
+	function read($hg_name, $host_name, $atime,$arr,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status){
+//$hg_name = "Reseaux";
 
 		global $pearDB; $pearDBO;
 		$flag = 0;
@@ -154,20 +152,26 @@ For information : contact@oreon-project.org
 		$buffer  = '<?xml version="1.0" encoding="ISO-8859-1"?>';
 		$buffer .= '<reponse>';
 	
-		$ntime = $time;
-		if( filectime($file) > $ntime)
-			$ntime = filectime($file);	
+		$new_time = $atime;
+		if( filectime($file) > $atime)
+			$new_time = filectime($file);	
 	
 		$buffer .= '<infos>';
 		$buffer .= '<host_name_1>'. $host_name . '</host_name_1>';
-		$buffer .= '<time>'.$ntime. '</time>';
+		$buffer .= '<hg>'.$hg_name. '</hg>';
+		$buffer .= '<time>'.$new_time. '</time>';
 		$buffer .= '<filetime>'.filectime($file). '</filetime>';
 		$buffer .= '</infos>';
 	
-		if( filectime($file) > $time){		
+		if( filectime($file) > $atime){
+
+
+
 			$oreon = "oreon";
 	
 			include("../load_status_log.php");
+
+
 			
 			$mtab = array();
 			$mtab = explode(',', $arr);
@@ -296,7 +300,6 @@ For information : contact@oreon-project.org
 
 	
 	if (isset($_POST["time"]) && 
-			isset($_POST["host_name"]) && 
 			isset($_POST["arr"]) && 
 			isset($_POST["type"])  && 
 			isset($_POST["version"]) && 
@@ -310,9 +313,10 @@ For information : contact@oreon-project.org
 			isset($_POST["search_type_service"])&& 
 			isset($_POST["search_type_host"])&& 
 			isset($_POST["date_time_format_status"])){
-		read($_POST["host_name"], $_POST["time"], $_POST["arr"],$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
+			$hg_name = isset($_POST["hg_name"]) ? $_POST["hg_name"] : "";
+			$h_name = isset($_POST["host_name"]) ? $_POST["host_name"] : "";
+		read($hg_name,$h_name, $_POST["time"], $_POST["arr"],$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
 	} else if($debug && 
-			isset($_GET["host_name"]) && 
 			isset($_GET["time"])&& 
 			isset($_GET["arr"]) && 
 			isset($_GET["type"])  && 
@@ -328,7 +332,9 @@ For information : contact@oreon-project.org
 			isset($_GET["search_type_host"])&& 
 			isset($_GET["date_time_format_status"])){
 		$_POST["sid"] = $_GET["sid"];
-		read($_GET["host_name"], $_GET["time"], $_GET["arr"],$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
+		$hg_name = isset($_GET["hg_name"]) ? $_GET["hg_name"] : "";
+		$h_name = isset($_GET["host_name"]) ? $_GET["host_name"] : "";
+		read($hg_name,$h_name, $_GET["time"], $_GET["arr"],$_GET["type"],$_GET["version"],$_GET["sid"],$_GET["fileStatus"],$_GET["num"],$_GET["search"],$_GET["limit"],$_GET["sort_type"],$_GET["order"],$_GET["search_type_host"],$_GET["search_type_service"],$_GET["date_time_format_status"]);
 	} else {
 		$buffer = null;
 		$buffer .= '<reponse>';	
@@ -338,3 +344,4 @@ For information : contact@oreon-project.org
 		echo $buffer;
 	}
 ?>
+

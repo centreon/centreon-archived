@@ -15,6 +15,68 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+
+<!-- Début
+// ********************************************
+// Récupération de paramètre d'une requête HTTP
+// ou récupération des données d'un formulaire.
+// Auteur : Oznog (www.trucsweb.com)
+// ********************************************
+
+// NE PAS MODIFIER CE CODE
+var paramOk = true;
+
+function FaitTableau(n) {
+  // Création d'un tableau (array)
+  // aux dimensions du nombre de paramètres.
+  this.length = n;
+  for (var i = 0; i <= n; i++) {
+    this[i] = 0
+  }
+  return this
+}
+
+function ParamValeur(nValeur) {
+  // Récupération de la valeur d'une variable
+  // Pour créer la variable en Javascript.
+  var nTemp = "";
+  for (var i=0;i<(param.length+1);i++) {
+    if (param[i].substring(0,param[i].indexOf("=")) == nValeur)
+      nTemp = param[i].substring(param[i].indexOf("=")+1,param[i].length)
+  }
+  return Decode(nTemp)
+}
+
+// Extraction des paramètres de la requête HTTP
+// et initialise la variable "paramOk" à false
+// s'il n'y a aucun paramètre.
+if (!location.search) {
+  paramOk = false;
+}
+else {
+  // Éliminer le "?"
+  nReq = location.search.substring(1,location.search.length)
+  // Extrait les différents paramètres avec leur valeur.
+  nReq = nReq.split("&");
+  param = new FaitTableau(nReq.length-1)
+  for (var i=0;i<(nReq.length);i++) {
+    param[i] = nReq[i]
+  }
+}
+
+// Décoder la requête HTTP
+// manuellement pour le signe (+)
+function Decode(tChaine) {
+  while (true) {
+    var i = tChaine.indexOf('+');
+    if (i < 0) break;
+    tChaine = tChaine.substring(0,i) + '%20' + tChaine.substring(i + 1, tChaine.length);
+  }
+  return unescape(tChaine)
+}
+// End -->
+
+
 // JavaScript Document
 
  function getVar (nomVariable)
@@ -126,13 +188,40 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 	var _host_status = line.getElementsByTagName("host_status")[0].firstChild.nodeValue;
 
-	var _search=_form.search.value;
+	if(_form.search && _form.search.value)
+		_search=_form.search.value;
+	else
+	_search = "";
+
+	if(_form.search_type_service && _form.search_type_service.value)
 	var _search_type_service=_form.search_type_service.value;
+	else
+	var _search_type_service= "";
+
+	if(_form.search_type_host && _form.search_type_host.value)
 	var _search_type_host=_form.search_type_host.value;
+	else
+	var _search_type_host="";
+
+	if(_form.num && _form.num.value)
 	var _num=_form.num.value;
+	else
+	var _num="";
+	
+	if(_form.limit && _form.limit.value)
 	var _limit=_form.limit.value;
+	else
+	var _limit="";
+	
+	if(_form.order && _form.order.value)
 	var _order=_form.order.value;
+	else
+	var _order="";
+	
+	if(_form.sort_types && _form.sort_types.value)
 	var _sort_types=_form.sort_types.value;
+	else
+	var _sort_types="";
 
 	var _ligne = document.createElement('tr');
 	_ligne.id = 'trStatus'+ i;
@@ -386,7 +475,6 @@ function initM(_time_reload,_sid,_o){
 function goM(_time_reload,_sid,_o){
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
 
-
 	if(_on)
 	{
 	_host_name = 'none';
@@ -407,11 +495,21 @@ function goM(_time_reload,_sid,_o){
 	_fileStatus=_formBasic.fileStatus.value;
 	_fileOreonConf=_formBasic.fileOreonConf.value;
 	_limit=_form.limit.value;
-	_search=_form.search.value;
+//	_hg_name=_form.hg_name.value;
+
+	if(_form.search && _form.search.value)
+		_search=_form.search.value;
+	else
+	_search = "";
 	_search_type_service=_form.search_type_service.value;
 	_search_type_host=_form.search_type_host.value;
 	_num=_form.num.value;
 	_previous_host_name = '';
+
+	_hg_name = '';
+	if (paramOk) {
+	  _hg_name = ParamValeur("hg_name");
+	}
 
 
 	var myArray = take_value(_type);
@@ -450,7 +548,7 @@ function goM(_time_reload,_sid,_o){
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 
 
-	_var = "host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
+	_var = "hg_name="+_hg_name+"&host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 	xhrM.send(_var);
 
 //	document.getElementById('header').innerHTML = "-->"+_var;
@@ -469,7 +567,7 @@ function goM(_time_reload,_sid,_o){
 				var info = infos[i];
 				var _atime = info.getElementsByTagName("time")[0].firstChild.nodeValue;
 				var _filetime = info.getElementsByTagName("filetime")[0].firstChild.nodeValue;
-				if(_atime)
+				if(_atime && _form.time)
 					_form.time.value = parseInt(_atime);
 			}
 
@@ -488,195 +586,13 @@ function goM(_time_reload,_sid,_o){
 				order = line.getElementsByTagName("order")[0].firstChild.nodeValue;
 				var _flag = parseInt(line.getElementsByTagName("flag")[0].firstChild.nodeValue);
 
-/*
-				if((_type == 'service' || _type == 'service_problem') && _flag == 0)
-				{
-					var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;								
-					var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
-					var _last_state_change = line.getElementsByTagName("last_state_change")[0].firstChild.nodeValue;
-					var _status = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
-					var _plugin_output = line.getElementsByTagName("plugin_output")[0].firstChild.nodeValue;	
-					var _service_description = line.getElementsByTagName("service_description")[0].firstChild.nodeValue;
-					var _notifications_enabled = line.getElementsByTagName("notifications_enabled")[0].firstChild.nodeValue;
-					var _problem_has_been_acknowledged = line.getElementsByTagName("problem_has_been_acknowledged")[0].firstChild.nodeValue;
-					var _is_flapping = line.getElementsByTagName("is_flapping")[0].firstChild.nodeValue;
-
-					var _infohtml = '';	
-					if(_problem_has_been_acknowledged == 1)
-						_infohtml += '<img src=' + _formBasic.icone_problem_has_been_acknowledged.value + ' alt=problem_has_been_acknowledged title=problem_has_been_acknowledged>';
-					if(_is_flapping == 1)
-						_infohtml += '<img src=' + _formBasic.icone_flapping.value + ' alt=is_flapping title=is_flapping>';
-					var _current_state = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
-					var _current_attempt = line.getElementsByTagName("current_attempt")[0].firstChild.nodeValue;
-					var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
-					var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
-					var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
-	
-					if(_accept_passive_check == 1)					
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_passive_check title=accept_passive_check>';
-					if(_accept_active_check == 1)
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_active_check title=accept_active_check>';					
-					if(_notifications_enabled == 0)
-						_infohtml += '<img src=' + _formBasic.icone_notifications_enabled.value + ' alt=notification_enable title=notification_enable>';
-
-					document.getElementById('infos'+order).innerHTML = _infohtml;
-					document.getElementById('current_state'+order).innerHTML = _status;
-					document.getElementById('current_attempt'+order).innerHTML = _current_attempt;
-
-					//bg color
-					_td=document.getElementById('tdStatus'+order);
-					_tr=document.getElementById('trStatus'+order);
-
-					var ClassName = "list_one";
-					if(i % 2)
-						ClassName = "list_two";
-
-					switch (_status)
-					{
-					  case "OK":
-					    _td.style.backgroundColor = _formBasic.color_OK.value;
-						_tr.className = ClassName;
-					   break;
-					  case "WARNING":
-					    _td.style.backgroundColor = _formBasic.color_WARNING.value;
-						_tr.className = ClassName;
-					   break;
-					  case "CRITICAL":
-					    _td.style.backgroundColor = _formBasic.color_CRITICAL.value;
-						_tr.className = "list_down";
-					   break;
-					  case "UNDETERMINATED":
-					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
-						_tr.className = ClassName;
-					   break;
-					  default:
-					    _td.style.backgroundColor = _formBasic.color_UNKNOWN.value;
-						_tr.className = ClassName;
-					   break;
-					}
-					if(_problem_has_been_acknowledged == 1)
-						_tr.className = "list_four";
-						
-					document.getElementById('current_state'+order).innerHTML = _current_state;
-					document.getElementById('last_check'+order).innerHTML = _last_check;
-					document.getElementById('last_state_change'+order).innerHTML = _last_state_change;
-					document.getElementById('plugin_output'+order).innerHTML = _plugin_output;					
-
-//					document.getElementById('log').innerHTML += 'modifi la ligne ' + i + '<br>';
-
-				}
-				*/
 				if((_type == 'service' || _type == 'service_problem') )//&& _flag == 1)
 				{
 //					DelOneLine(i);
 					addLineToTab_Service(_tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 				}
-
-/*
-				if(_type == 'host_name')
-				{
-					var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
-
-					var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
-					var _last_state_change = line.getElementsByTagName("last_state_change")[0].firstChild.nodeValue;
-					var _status = line.getElementsByTagName("status")[0].firstChild.nodeValue;
-					var _plugin_output = line.getElementsByTagName("plugin_output")[0].firstChild.nodeValue;
-	
-					document.getElementById('status'+order).innerHTML = _status;
-					_td=document.getElementById('tdStatus'+order);
-					_tr=document.getElementById('trStatus'+order);
-					var ClassName = "list_one";
-					if(i % 2)
-						ClassName = "list_two";
-
-					switch (_status)
-					{
-					  case "UP":
-					    _td.style.backgroundColor = _formBasic.color_UP.value;
-						_tr.className = ClassName;
-					   break;
-					  case "DOWN":
-					    _td.style.backgroundColor = _formBasic.color_DOWN.value;
-						_tr.className = ClassName;
-					   break;
-					  case "UNREACHABLE":
-					    _td.style.backgroundColor = _formBasic.color_UNREACHABLE.value;
-						//_tr.className = "list_three";
-					   break;
-					  default:
-					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
-						_tr.className = ClassName;
-					   break;
-					}
-					document.getElementById('last_check'+order).innerHTML = _last_check;
-					document.getElementById('last_state_change'+order).innerHTML = _last_state_change;
-					document.getElementById('plugin_output'+order).innerHTML = _plugin_output;				
-				}
-*/
-/*
-				if(_type == 'metaservice')
-				{
-					var _last_check = line.getElementsByTagName("last_check")[0].firstChild.nodeValue;
-					var _last_state_change = line.getElementsByTagName("last_state_change")[0].firstChild.nodeValue;
-					var _status = line.getElementsByTagName("status")[0].firstChild.nodeValue;
-					var _plugin_output = line.getElementsByTagName("plugin_output")[0].firstChild.nodeValue;
-
-					var _infohtml = '';
-
-					var _current_state = line.getElementsByTagName("current_state")[0].firstChild.nodeValue;
-					var _accept_passive_check = line.getElementsByTagName("accept_passive_check")[0].firstChild.nodeValue;
-					var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
-					var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
-
-					if(_accept_passive_check == 1)
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check1.value + ' alt=accept_passive_check title=accept_passive_check>';
-					if(_accept_active_check == 1)
-						_infohtml += '<img src=' + _formBasic.icone_accept_passive_check0.value + ' alt=accept_active_check title=accept_active_check>';					
-
-					document.getElementById('infos'+order).innerHTML = _infohtml;
-				
-					document.getElementById('status'+order).innerHTML = _status;
-					_td=document.getElementById('tdStatus'+order);
-					_tr=document.getElementById('trStatus'+order);
-					var ClassName = "list_one";
-					if(i % 2)
-						ClassName = "list_two";
-
-					switch (_status)
-					{
-					  case "OK":
-					    _td.style.backgroundColor = _formBasic.color_OK.value;
-						_tr.className = ClassName;
-					   break;
-					  case "WARNING":
-					    _td.style.backgroundColor = _formBasic.color_WARNING.value;
-						_tr.className = ClassName;
-					   break;
-					  case "CRITICAL":
-					    _td.style.backgroundColor = _formBasic.color_CRITICAL.value;
-						_tr.className = "list_down";
-					   break;
-					  case "UNDETERMINATED":
-					    _td.style.backgroundColor = _formBasic.color_UNDETERMINATED.value;
-						_tr.className = ClassName;
-					   break;
-					  default:
-					    _td.style.backgroundColor = _formBasic.color_UNKNOWN.value;
-						_tr.className = ClassName;
-					   break;
-					}
-					document.getElementById('current_state'+order).innerHTML = _current_state;
-					document.getElementById('last_check'+order).innerHTML = _last_check;
-					document.getElementById('last_state_change'+order).innerHTML = _last_state_change;
-					document.getElementById('plugin_output'+order).innerHTML = _plugin_output;
-				}//fin metaservice
-*/
 			}//fin du for pour les infos principale
-/*
-			if(i > 0)
-			DelAllLine(i);
-*/
 			monitoring_time_Del_msg();
 		}
 		else if(xhrM && xhrM.readyState && xhrM.readyState == 4)
