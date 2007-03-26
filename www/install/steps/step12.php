@@ -25,24 +25,31 @@ For information : contact@oreon-project.org
 	$_SESSION["oreonlang"] = $_POST["oreonlang"];
 }*/
 
-aff_header("Oreon Setup Wizard", "Post-Installation", 12);
+aff_header("Oreon Setup Wizard", "Post-Installation", 12);	?>
 
-?>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
   <tr>
-	<td colspan="2" ><b>Manual Configuration</b></td>
+	<td colspan="2" ><b>End of Setup</b></td>
   </tr>
   <tr>
-	<td colspan="2">To finish the installation of Oreon, you must still carry out some manuals actions :</td>
+	<td colspan="2"><br>
+	Oreon Setup is finished. Now you can use your monitoring Solution.<br><br>Thanks for using Oreon
+	<br><br>
+	<b>Self service and commercial Support.</b><br><br>
+	There are various way to get informations about Oreon ; the documentation, the wiki, forum and other stuffs.
+	<ul>
+		<li> Oreon WebSite : <a href="http://www.oreon-project.org">www.oreon-project.org</a></li>
+		<li> Oreon Forum : <a href="http://forum.oreon-project.org">forum.oreon-project.org</a></li></li>
+		<li> Oreon Wiki : <a href="http://wiki.oreon-project.org">wiki.oreon-project.org</a></li>
+	</ul>
+	<br><p align="justify">
+	If your company needs professional consulting and services for Oreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a href="http://www.oreon-services.com">Oreon support center</a></b>.
+	</p>
+	</td>
   </tr>
    <tr>
 	<td colspan="2">&nbsp;</td>
   </tr>
-  <tr>
-    <td><img src='../img/icones/16x16/arrow_right_blue.gif'></td>
-    <td>Go into Oreon /cron directory,  read ArchiveLogInDB_README.txt and deleteDB_README.txt </td>
-  </tr>
-
 <?
 // end last code
 aff_middle();
