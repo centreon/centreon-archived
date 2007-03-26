@@ -24,12 +24,12 @@ For information : contact@oreon-project.org
 	else if (file_exists("../functions.php"))
 		include_once("../functions.php");
 	
-	// Is User Admin ?
 	if (!isset($pearDB))
 		global $pearDB;
 	if (!isset($pearDBO))
 		global $pearDBO;
 	
+	// Is User Admin ?
 	$DBRESULT1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
 	if (PEAR::isError($DBRESULT1))
 		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
@@ -221,6 +221,7 @@ For information : contact@oreon-project.org
 									if (isset($svc_data['host_name']) && strcmp($svc_data['host_name'], "OSL_Module") && ($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_data['host_name']])))
 										&& (($search && $search_type_host == 1 &&  strpos(strtolower($svc_data['host_name']), strtolower($search)) !== false)||($search &&$search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
 										||($search_type_service == NULL && $search_type_host == NULL)|| !$search)){
+						      			
 						      			$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 						      			$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
 						      			$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
