@@ -52,6 +52,8 @@ For information : contact@oreon-project.org
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 
+	include("./include/common/checkPagination.php");
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);

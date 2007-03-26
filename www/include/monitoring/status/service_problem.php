@@ -114,6 +114,7 @@ For information : contact@oreon-project.org
 			}		
 	}
 	
+	include("./include/common/checkPagination.php");
 
 	$service_status = $tmp;
 	# Smarty template Init

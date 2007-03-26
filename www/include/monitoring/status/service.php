@@ -62,6 +62,8 @@ For information : contact@oreon-project.org
 			}
 		}
 	
+	include("./include/common/checkPagination.php");
+	
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");

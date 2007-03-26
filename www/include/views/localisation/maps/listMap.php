@@ -30,6 +30,8 @@ For information : contact@oreon-project.org
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
+	include("./include/common/checkPagination.php");
+
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form

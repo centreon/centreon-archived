@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
  	else if ($version == 2 && $fast_parsing == 1)
 		$file = $nagios_cfg["status_file"]."_light";
 	
-	if (isset($_GET["hg_name"]) || isset($_POST["hg_name"])){
+	if ((isset($_GET["hg_name"]) && $_GET["hg_name"])|| (isset($_POST["hg_name"]) && $_POST["hg_name"])){
 		if (isset($_GET["hg_name"]) && $_GET["hg_name"])
 			$hg_name = $_GET["hg_name"];
 		if (isset($_POST["hg_name"]) && $_POST["hg_name"])
@@ -210,6 +210,7 @@ For information : contact@oreon-project.org
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
 			      			if ((isset($hostgroup) && isset($hostgroup[$svc_data['host_name']])) || (!isset($hostgroup))){
+								$svc_data['plugin_output']=  str_replace("&", "", $svc_data['plugin_output']);
 								if (isset($_GET["host_name"]) && strcmp($_GET["host_name"], "OSL_Module") && $_GET["host_name"] == $svc_data["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"] == $svc_data["service_description"]){
 									$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 							      	$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
@@ -241,13 +242,13 @@ For information : contact@oreon-project.org
 									$host_data[$tab[1]] = $tab[2];
 				    		} else
 				      			break;
-			      		if (	(!isset($hostgroup) && isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && strcmp($host_data['host_name'], "Meta_Module") && ($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']]))))
-			      			||	( isset($hostgroup) && isset($hostgroup[$host_data['host_name']]) && isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && strcmp($host_data['host_name'], "Meta_Module") && ($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']]))))
-			      			){
-				      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
-							$host_status[$host_data["host_name"]] = $host_data;
-							if (is_object($oreon))
-								$oreon->status_graph_host[$host_data['current_state']]++;
+			      		if ((!isset($hostgroup) && isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && strcmp($host_data['host_name'], "Meta_Module") && ($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']]))))||( isset($hostgroup) && isset($hostgroup[$host_data['host_name']]) && isset($host_data['host_name']) && strcmp($host_data['host_name'], "OSL_Module") && strcmp($host_data['host_name'], "Meta_Module") && ($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_data['host_name']]))))){
+			      				if ((isset($hostgroup) && isset($hostgroup[$host_data['host_name']])) || (!isset($hostgroup))){						      			
+						      		$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
+									$host_status[$host_data["host_name"]] = $host_data;
+									if (is_object($oreon))
+										$oreon->status_graph_host[$host_data['current_state']]++;
+			      				}
 			      		}
 			      		unset($host_data);
 			      	################## PROGRAM ############################
@@ -288,6 +289,7 @@ For information : contact@oreon-project.org
 							||	($search && $search_type_service == 1 && strpos(strtolower($svc_data['service_description']), strtolower($search)) !== false) 
 							||	($search_type_service == NULL && $search_type_host == NULL)
 							|| 	!$search){
+							$svc_data['plugin_output']=  str_replace("&", "", $svc_data['plugin_output']);
 							$service_status[$log["1"]."_".$log["2"]] = $svc_data;
 					   		$tab_host_service[$log["1"]][$log["2"]] = "1";
 					   		if (is_object($oreon))

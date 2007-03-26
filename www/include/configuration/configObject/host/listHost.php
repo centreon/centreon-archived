@@ -41,7 +41,8 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
+	
+	include("./include/common/checkPagination.php");
 
 	# Smarty template Init
 	$tpl = new Smarty();

@@ -56,7 +56,6 @@
 	$sort_type = array(	""=>NULL,"host_name" => $lang['m_log_Host_name']);
 	if (isset($_GET["o"]) && $_GET["o"] == "notif_svc") 
 		$sort_type["service_description"] = $lang['m_log_Service_desc'];
-	//$sort_type["status"] = $lang['m_log_status'];
 	$sort_type["notification_contact"] = $lang['m_log_notification_contact'];
 	$sort_type["notification_cmd"] = $lang['m_log_notification_cmd'];
 	$sort_type["output"] = $lang['m_log_informations'];
@@ -119,7 +118,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 		$rows = $DBRESULT->numrows();
-	
+		include("./include/common/checkPagination.php");
 		if(($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
@@ -165,7 +164,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
 		$rows = $DBRESULT->numrows();
-	
+		include("./include/common/checkPagination.php");
 		if(($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;
@@ -213,6 +212,8 @@
 			print "Mysql Error : ".$DBRESULT->getMessage();
 		$rows = $DBRESULT->numrows();
 	
+		include("./include/common/checkPagination.php");
+		
 		if(($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
 		$lstart = $num * $limit;

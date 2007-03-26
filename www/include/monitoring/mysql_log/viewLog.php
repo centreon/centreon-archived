@@ -28,10 +28,8 @@
 	if (is_file("./DBOdsConnect.php"))
 		include_once("./DBOdsConnect.php");
 
-
 	include("./include/common/autoNumLimit.php");
-
-
+	
 	# pagination
 	# set limit & num
 	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
@@ -101,6 +99,8 @@
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$rows = $DBRESULT->numrows();
+	
+	include("./include/common/checkPagination.php");
 
 	if(($num * $limit) > $rows)
 		$num = round($rows / $limit) - 1;

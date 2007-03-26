@@ -99,6 +99,8 @@
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$rows = $DBRESULT->numrows();
 
+	include("./include/common/checkPagination.php");
+
 	if(($num * $limit) > $rows)
 		$num = round($rows / $limit) - 1;
 	$lstart = $num * $limit;
