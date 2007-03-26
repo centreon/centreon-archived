@@ -87,7 +87,7 @@ case "$1" in
 		echo "Error : $ODSRunFile already Exists."
 		exit 1
 	fi
-	su - $NagiosUser -c "$ODSBin &"
+	$ODSBin &
 	if [ -d $ODSLockDir ]; then touch $ODSLockDir/$ODSLockFile; fi
 			#sleep 1
 			#status_nagios nagios
