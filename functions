@@ -605,9 +605,6 @@ function install_oreon(){
 		chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
     fi
 
-    chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/rrd/*  >> $LOG_FILE 2>> $LOG_FILE
-
     install_oreon_plugins
 
     if test -d $NAGIOS_ETC ; then
@@ -639,4 +636,8 @@ function install_oreon(){
 
     chmod 775 $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
+
+	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/rrd/*  >> $LOG_FILE 2>> $LOG_FILE
+	
 }
