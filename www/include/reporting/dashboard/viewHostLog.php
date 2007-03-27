@@ -43,10 +43,12 @@ For information : contact@oreon-project.org
 	include("./include/monitoring/log/choose_log_file.php");
 
 	# LCA 
+	
 	$lcaHostByName = getLcaHostByName($pearDB);
 	$lcaHostByID = getLcaHostByID($pearDB);
 	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
@@ -112,9 +114,6 @@ For information : contact@oreon-project.org
 	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' AND host_id IN (".$lcaHoststr.") and host_register = '1' ORDER BY host_name");
 
 	while ($res->fetchInto($h)){
-		
-		print_r($host);
-		echo "<br>";
 		if (IsHostReadable($lcaHostByName, $h["host_name"]))
 			$host[$h["host_name"]] = $h["host_name"];
 	}
