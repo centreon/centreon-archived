@@ -899,20 +899,26 @@ For information : contact@oreon-project.org
 //		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
 //			$rep = substr($rep, 1);
 		if ($oreon->optGen["nagios_path_img"])	{
-			# Caution ! scandir only exist on php5
-			$elems = @scandir($oreon->optGen["nagios_path_img"]);
+			//$elems = @scandir($oreon->optGen["nagios_path_img"]);
+			$dh  = opendir($oreon->optGen["nagios_path_img"]);
+			while (false !== ($filename = readdir($dh)))
+			    $elems[] = $filename;
+			sort($elems);
 			if (is_array($elems))
 				foreach ($elems as $key => $value)
 					if ( $value == "." || $value == "..")
 						$elems[$key] = NULL;
+			closedir($dh);
 		}
 		else if ($rep)	{
-			# Caution ! scandir only exist on php5
-			$elems = @scandir($rep);
+			$dh  = opendir($rep);
+			while (false !== ($filename = readdir($dh)))
+			    $elems[] = $filename;
 			if (is_array($elems))
 				foreach ($elems as $key => $value)
 					if ( $value == "." || $value == "..")
 						$elems[$key] = NULL;
+			closedir($dh);
 			
 		}
 		//$elems[count($elems)] = $rep;
