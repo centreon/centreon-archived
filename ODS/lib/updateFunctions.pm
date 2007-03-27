@@ -39,7 +39,9 @@ sub checkAndUpdate($){
 sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
-
+	my $nb_value;
+	my $interval_length;
+	
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
 		$_[3] =~ s/\,/\./g;
@@ -51,8 +53,16 @@ sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
 			my $begin = $_[4] - 200000;
 			$interval = getServiceCheckInterval($_[1]);
 			if (!defined($interval)){$interval = 3};
-			$interval = $interval * 60;
-			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
+			CheckMySQLConnexion();
+			my $sth2 = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate");
+			if (!$sth2->execute) {writeLogFile("Error when getting interval_length : " . $sth2->errstr . "\n");}
+			$data = $sth2->fetchrow_hashref();
+			$interval_length = $interval * $data->{'interval_length'};
+			undef($data);
+			undef($sth2);
+			$nb_value =  $_[5] * 24 * 60 * 60 / ($interval_length * $interval);
+			writeLogFile("nb value : $nb_value \n");
+			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
 			$_[3] =~ s/\,/\./g;
