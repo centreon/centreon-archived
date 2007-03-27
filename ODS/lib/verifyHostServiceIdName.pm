@@ -76,10 +76,14 @@ sub purgeRrdDB(){
     closedir DIR;
     for (@files) {
 		if (!defined($base{$_})){
-			if (unlink($some_dir."/".$_)){
-				writeLogFile("Warning : ".$some_dir."/".$_." removed \n");
-			} else {
-				writeLogFile("Error : Unable to remove ".$some_dir.$_ ."\n");
+			if (-d $some_dir."/".$_){
+				;
+			} else { 
+				if (unlink($some_dir."/".$_)){
+					writeLogFile("Warning : ".$some_dir."/".$_." removed \n");
+				} else {
+					writeLogFile("Error : Unable to remove ".$some_dir.$_ ."\n");
+				}
 			}
 		}
 	}     
