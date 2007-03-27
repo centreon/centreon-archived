@@ -28,27 +28,39 @@ For information : contact@oreon-project.org
 	# HOST LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
 	
-	if ($oreon->user->admin || !$idRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $idRestreint)){
+	if ($oreon->user->admin || !$isRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $isRestreint)){
 
 		#Pear library
 		require_once "HTML/QuickForm.php";
 		require_once 'HTML/QuickForm/advmultiselect.php';
 		require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-		#
-		## Form begin
-		#	
-
 		$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 		$form->addElement('header', 'title', 'Command Options');
-/*
-		$tpl->assign('hostlabel', $lang['h_name']);	
-		$tpl->assign('hostname', $host_name);	
-	
-		$tpl->assign('authorlabel', $lang['cg_alias']);	
-		$tpl->assign('authoralias', $oreon->user->get_alias());	
-		$tpl->assign('servicelabel', $lang['sv']);
-		$tpl->assign('service_description', $service_description);	
+
+		$hosts = array($host_name=>$host_name);
+
+		$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' ORDER BY host_name");
+		if (PEAR::isError($DBRESULT))
+			print "AddSvcComment - RQ1 - Mysql Error : ".$DBRESULT->getMessage();
+		$DBRESULT->fetchInto($host);
+		$host_id = $host["host_id"];
+		
+		$services = array();
+		if (isset($host_id))
+			$services_id = getMyHostServices($host_id);
+		
+		$services = array();	
+		foreach ($services_id as $id => $value){
+			$svc_desc = getMyServiceName($id);
+			$services[$svc_desc] = $svc_desc;
+		}
+		
+		$form->addElement('select', 'host_name', $lang["cmt_host_name"], $hosts, array("onChange" =>"this.form.submit();"));
+		$form->addElement('select', 'service_description', $lang["cmt_service_descr"], $services);
+	   	
+		$form->addRule('host_name', $lang['ErrRequired'], 'required');
+		$form->addRule('service_description', $lang['ErrRequired'], 'required');
 	
 		$return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");
 	
@@ -56,16 +68,14 @@ For information : contact@oreon-project.org
 		$form->addElement('text', 'output', $lang["mon_checkOutput"]);
 		$form->addElement('text', 'dataPerform', $lang["mon_dataPerform"]);
 	
-		$form->addElement('hidden', 'host_name', $host_name);
-		$form->addElement('hidden', 'service_description', $service_description);
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());
 		$form->addElement('hidden', 'cmd', $cmd);
 		$form->addElement('hidden', 'p', $p);
-	//	$form->addElement('hidden', 'o', 'svcd');
+		$form->addElement('hidden', 'o', 'svcd');
 	
 		$form->addElement('submit', 'submit', $lang["save"]);
 		$form->addElement('reset', 'reset', $lang["reset"]);
-*/		
+		
 		# Smarty template Init
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl);
@@ -77,6 +87,6 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);			
 		
 		$tpl->assign('form', $renderer->toArray());	
-		$tpl->display(servicePassiveCheck.ihtml");
+		$tpl->display("servicePassiveCheck.ihtml");
 	}
 ?>

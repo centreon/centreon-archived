@@ -6,12 +6,12 @@
 		 	<td class="FormHeader" colspan="2">{$form.header.title}</td>
 	 	</tr>
 		<tr class="list_one">
-			<td class="FormRowField">{$hostlabel}</td>
-			<td class="FormRowValue">{$hostname}</td>
+			<td class="FormRowField">{$form.host_name.label}</td>
+			<td class="FormRowValue">{$form.host_name.html}</td>
 		</tr>
 		<tr class="list_one">
-			<td class="FormRowField">{$servicelabel}</td>
-			<td class="FormRowValue">{$service_description}</td>
+			<td class="FormRowField">{$form.service_description.label}</td>
+			<td class="FormRowValue">{$form.service_description.html}</td>
 		</tr>
 		<tr class="list_two">
 			<td class="FormRowField">{$form.return_code.label}</td>
