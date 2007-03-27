@@ -1,9 +1,9 @@
 ## Oreon 1.4
 
-=> Bugfix  : remove bug where we do a passive check Submission 
-=> Feature : ODS configuration : database where created for a during in days and not for a number of values
-=> Feature : Add possibility to change host or service configuration from monitoring : quick action select
-=> Feature : remove & char in ajax monitoring in order to remove bug in ajax ; special char in javascript
+=> Bugfix  : remove bug when we do a passive check Submission 
+=> Feature : ODS configuration : database where created for a period in days and not for a number of values
+=> Feature : Add possibility to change host or service configurations from monitoring : quick action select
+=> Feature : remove & char monitoring in order to remove bug in ajax ; special char in javascript
 => Feature : Add in nagios_cfg file field for ndo 
 => Bugfix  : #311
 => Bugfix  : #286
