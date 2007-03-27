@@ -122,20 +122,30 @@
 					</tr>
 					{/if}
 				</table>
-				{if $lcaTopo.6 || $lcaTopo.7}
+				{if $lcaTopo.6 || $lcaTopo.7 || $lcaTopo.20201 || $lcaTopo.40210}
 				<br>
 				<table id="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
 					</tr>
 					{if $lcaTopo.6}
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft"><a href='./oreon.php?p=6&host_id={$h.host_id}&o=c'>{$lang.m_mon_configure} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.7}
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='./oreon.php?p=7&o=q&host_id={$h.host_id}'>{$lang.m_mon_view_identity_file} {$h.host_name}</a></td>
+					</tr>
+					{/if}
+					{if $url_id && $lcaTopo.20201}
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./oreon.php?p=20201&o=svc&host_name={$h.host_name}'>{$lang.m_mon_all_services} {$h.host_name}</a></td>
+					</tr>
+					{/if}
+					{if $url_id && $lcaTopo.40210}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./oreon.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$lang.m_mon_all_graphs} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 				</table>

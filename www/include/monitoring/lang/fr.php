@@ -215,5 +215,7 @@ $lang["m_log_Hour"] = "Heures";
 $lang['m_log_select_errors'] = "Selectionnez vos param&egrave;tres : ";
 $lang["m_log_notification_cmd"] = "Commande de notification";
 $lang["m_log_notification_contact"] = "Contact";
+$lang['m_mon_all_services'] = "Voir tous les services de ";
+$lang['m_mon_all_graphs'] = "Voir tous les graphiques de ";
 
 ?>
