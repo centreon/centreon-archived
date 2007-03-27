@@ -1,5 +1,6 @@
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 {$form.javascript}
+{if $admin}
 {if $title2}
 <form {$form.attributes}>
 <div>
@@ -25,4 +26,5 @@
 {$form.hidden}
 	<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
 </form>
+{/if}
 {/if}
