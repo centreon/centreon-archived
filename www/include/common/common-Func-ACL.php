@@ -140,7 +140,7 @@ For information : contact@oreon-project.org
 	function getLCAHostStr($lcaHost){
 		$lcaHStr = NULL;
 	  	foreach ($lcaHost as $key=>$value)
-	  		$lcaHStr ? $lcaHStr .= ", ".$key : $lcaHStr = $key;
+	  		$lcaHStr ? $lcaHStr .= ", '".$key."'" : $lcaHStr = "'".$key."'";
 	  	if (!$lcaHStr) 
 	  		$lcaHStr = '\'\'';
   	  	return $lcaHStr;
@@ -149,7 +149,7 @@ For information : contact@oreon-project.org
 	function getLCAHGStr($lcaHostGroup){
 		$lcaHGStr = NULL;
 		foreach ($lcaHostGroup as $key=>$value)
-	  		$lcaHGStr ? $lcaHGStr .= ", ".$key : $lcaHGStr = $key;
+	  		$lcaHGStr ? $lcaHGStr .= ", '".$key."'" : $lcaHGStr = "'".$key."'";
 	  	if (!$lcaHGStr) 
 	  		$lcaHGStr = '\'\'';
 	  	return $lcaHGStr;
@@ -158,7 +158,7 @@ For information : contact@oreon-project.org
 	function getLCASGStr($lcaServiceGroup){
 		$lcaSGStr = NULL;
 	  	foreach ($lcaServiceGroup as $key=>$value)
-	  		$lcaSGStr ? $lcaSGStr .= ", ".$key : $lcaSGStr = $key;
+	  		$lcaSGStr ? $lcaSGStr .= ", '".$key."'" : $lcaSGStr = "'".$key."'";
 	  	if (!$lcaSGStr) 
 	  		$lcaSGStr = '\'\'';
 		return $lcaSGStr;
