@@ -61,6 +61,18 @@ date > $LOG_FILE
 
 TRUETYPE="/usr/X11R6/lib/X11/fonts/truetype"
 
+test_yes_or_not(){
+    if [ $1 != "y" ] && [ $1 != "n" ] && [ ! -z $1 ] ;then
+	res=$1
+	while [ $res != "y" ] && [ $res != "n" ] && [ ! -z $res ]
+	  do
+	  echo $2
+	  echo -n $3
+	  read res
+	done
+	eval $1=$res
+    fi
+}
 
 echo ""
 $SETCOLOR_WARNING
@@ -73,10 +85,17 @@ echo ""
 echo "Are you sure to continue ?"
 echo -n "[y/n], default to [n]:"
 read temp
-if [ -z $temp ];then
-    temp=n
+if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ] ;then
+    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ]
+      do
+      echo "Are you sure to continue ?"
+      echo -n "[y/n], default to [n]:"
+      read temp
+    done
 fi
-
+if [ -z $temp ];then
+    temp="n"
+fi
 if [ $temp = "n" ];then
     echo "Okay... have a nice day!"
     exit
@@ -108,10 +127,18 @@ if test -a $OREON_CONF ; then
     echo "Do you want use last Oreon install parameters ?"
 	echo -n "[y/n], default to [y]:"
 	read temp
+	if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
+	    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+	      do
+	      echo "Do you want use last Oreon install parameters ?"
+	      echo -n "[y/n], default to [y]:"
+	      read temp
+	    done
+	fi
 	if [ -z $temp ];then
 	    temp=y
 	fi
-
+	
 	if [ $temp = "y" ];then
 	    echo ""
 		echo_passed "Using '$OREON_CONF' :" "PASSED"
@@ -316,11 +343,19 @@ function configure_apache()
 	    echo "Do you want rewrite Apache configuration file ?"
 		echo -n "[y/n], default to [y]:"
 		read temp
+		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
+		    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+		      do
+		      echo "Do you want rewrite Apache configuration file ?"
+		      echo -n "[y/n], default to [y]:"
+		      read temp
+		    done
+		fi
 		if [ -z $temp ];then
 		    temp=y
 		fi
-	else
-	    temp=y
+    else
+	temp=y
 	fi
 
 	if [ $temp = "y" ];then
@@ -377,6 +412,14 @@ function confirm_oreon()
 	  echo -n "Are you sure you want to install OREON ?"
       echo -n "[y/n], default to [n]:"
 	  read answer
+	  if [ "$answer" != "y" ] && [ "$answer" != "n" ] && [ ! -z $answer ] ;then
+	      while [ "$answer" != "y" ] && [ "$answer" != "n" ] && [ ! -z $answer ]
+		do
+		echo "Are you sure you want to install OREON ?"
+		echo -n "[y/n], default to [n]:"
+		read answer
+	      done
+	  fi
 	  if [ -z $answer ];then
 	  	answer=n
 	  fi

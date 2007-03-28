@@ -337,6 +337,14 @@ function install_oreon_plugins()
 		echo ""
 		echo -n "[y/n], default to [y]:"
 		read temp
+		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
+                    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+                      do
+                      echo "Do you want to install Oreon Plugins ? "
+                      echo -n "[y/n], default to [y]:"
+                      read temp
+                    done
+		fi
 		if [ -z $temp ];then
 		    temp=y
 		fi
@@ -390,6 +398,14 @@ function install_oreon_plugins()
 		echo ""
 		echo -n "[y/n], default to [y]:"
 		read temp
+		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
+                    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+                      do
+                      echo "Do you want to install Oreon Traps Plugins ? "
+                      echo -n "[y/n], default to [y]:"
+                      read temp
+                    done
+                fi
 		if [ -z $temp ];then
 		    temp=y
 		fi
@@ -408,6 +424,14 @@ function install_oreon_plugins()
 		echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
 		echo -n "[y/n], default to [n]:"
 		read temp
+		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
+                    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+                      do
+                      echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
+                      echo -n "[y/n], default to [n]:"
+                      read temp
+                    done
+                fi
 		if [ -z $temp ];then
 		    temp=n
 		fi
@@ -501,57 +525,49 @@ function config_cron(){
 	echo "------------------------------------------------------------------------"
 	echo ""
 	echo ""
-
-if test -f /etc/crontab ; then
-
-	CRON=`cat /etc/crontab | grep inventory_cron_update.php | grep -v \# > /dev/null; echo $?`
 	
- 	if [ $CRON == '1' ]; then	
-  		echo "0 0 * * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/inventory_update.php >> $INSTALL_DIR_OREON/log/inventory_update_log 2>> $INSTALL_DIR_OREON/log/inventory_update_log" >> /etc/crontab 
+	CRON=0
+	if test -f /etc/cron.d/oreon ; then
+	    CRON=`cat /etc/cron.d/oreon | grep inventory_cron_update.php | grep -v \# > /dev/null; echo $?`
+	fi
+ 	if [ $CRON == '1' ] || [ ! -f /etc/cron.d/oreon ] ; then	
+  		echo "0 0 * * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
 		echo_success "Setup Cron for inventory_cron_update.php" "OK"
   	else
       	echo_passed "Setup Cron for inventory_cron_update.php" "PASSED"
   	fi
 	
-	CRON=''
-	CRON=`cat /etc/crontab | grep ArchiveLogInDB.php | grep -v \# > /dev/null; echo $?`
+	CRON=0
+	CRON=`cat /etc/cron.d/oreon | grep ArchiveLogInDB.php | grep -v \# > /dev/null; echo $?`
 	
- 	if [ $CRON == '1' ]; then	
-  		echo "0 0 1-31 * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/crontab 
+ 	if [ $CRON == '1' ] || [ ! -f /etc/cron.d/oreon ] ; then	
+  		echo "0 0 1-31 * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
 		echo_success "Setup Cron for ArchiveLogInDB.php" "OK"
   	else
       	echo_passed "Setup Cron for ArchiveLogInDB.php" "PASSED"
   	fi
 
-	CRON=''
-	CRON=`cat /etc/crontab | grep parsing_status.pl | grep -v \# > /dev/null; echo $?`
+	CRON=0
+	CRON=`cat /etc/cron.d/oreon | grep parsing_status.pl | grep -v \# > /dev/null; echo $?`
 	
- 	if [ $CRON == '1' ]; then	
-  		echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> /etc/crontab 
+ 	if [ $CRON == '1' ] || [ ! -f /etc/cron.d/oreon ] ; then	
+  		echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> /etc/cron.d/oreon 
 		echo_success "Setup Cron for parsing_status.pl" "OK"
   	else
       	echo_passed "Setup Cron for parsing_status.pl" "PASSED"
   	fi
 
-	CRON=''
-	CRON=`cat /etc/crontab | grep parsing_log.pl | grep -v \# > /dev/null; echo $?`
+	CRON=0
+	CRON=`cat /etc/cron.d/oreon | grep parsing_log.pl | grep -v \# > /dev/null; echo $?`
 
- 	if [ $CRON == '1' ]; then
-  		echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/crontab 
+ 	if [ $CRON == '1' ] || [ ! -f /etc/cron.d/oreon ] ; then
+  		echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
 		echo_success "Setup Cron for parsing_log.pl" "OK"
   	else
       	echo_passed "Setup Cron for parsing_log.pl" "PASSED"
   	fi
   	
   	restart_cron
-  	
-else
-	echo_failure "Unable to find '/etc/crontab' file" "ERROR"
-    echo "Please add these lines in your cron file"
-	echo "0 0 1-31 * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log"
-    echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status"	
-	echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log"
-fi
 }
 
 function restart_cron()
@@ -605,6 +621,9 @@ function install_oreon(){
 		chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
     fi
 
+    chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $INSTALL_DIR_OREON/rrd/*  >> $LOG_FILE 2>> $LOG_FILE
+
     install_oreon_plugins
 
     if test -d $NAGIOS_ETC ; then
@@ -636,8 +655,4 @@ function install_oreon(){
 
     chmod 775 $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
-
-	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/rrd >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/rrd/*  >> $LOG_FILE 2>> $LOG_FILE
-	
 }
