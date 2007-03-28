@@ -64,7 +64,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if ($DEBUG) print $requete. "<br>";
 		mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 		$mysql_msg = $res['1'];
-		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOreonDB"] . "` . * TO `". $_SESSION["nameOdsDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
+		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOreonDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
 		if ($DEBUG) print $requete. "<br>";
 		mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 		$mysql_msg .= $res['1'];		
@@ -75,8 +75,6 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	}	
 	if ($_SESSION["mysqlVersion"] == "2")	{
         $requete = "UPDATE mysql.user SET Password = OLD_PASSWORD('". $_SESSION["pwdOreonDB"] ."') WHERE User = '". $_SESSION["nameOreonDB"] ."'";
-        @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
-        $requete = "UPDATE mysql.user SET Password = OLD_PASSWORD('". $_SESSION["pwdOreonDB"] ."') WHERE User = '". $_SESSION["nameOdsDB"] ."'";
         @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
         $requete = "FLUSH PRIVILEGES";
         @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
