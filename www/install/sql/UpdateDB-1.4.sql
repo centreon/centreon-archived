@@ -504,3 +504,5 @@ INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `t
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES ('' , 'm_nagios', NULL, 203, NULL, NULL, 34, NULL, NULL, '0', '0', '1', NULL , NULL , NULL);
 
 UPDATE `topology` SET `topology_group` = '1' WHERE `topology_group` IS NULL;
+UPDATE `topology` SET `topology_group` = '42' WHERE `topology`.`topology_page` =40208 LIMIT 1 ;
+
