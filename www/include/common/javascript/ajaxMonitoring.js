@@ -328,8 +328,8 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
 	var _img1 = mk_img(_formBasic.icone_problem_has_been_acknowledged.value, "problem_has_been_acknowledged");
 	var _img2 = mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable");
 	var _img3 = mk_img(_formBasic.icone_is_flapping.value, "is_flapping");
-	var _img4 = mk_img(_formBasic.icone_accept_passive_check1.value, "accept_passive_check");
-	var _img5 = mk_img(_formBasic.icone_accept_passive_check0.value, "accept_active_check");
+	var _img4 = mk_img(_formBasic.icone_accept_passive_check1.value, "accept_active_check");
+	var _img5 = mk_img(_formBasic.icone_accept_passive_check0.value, "accept_pasive_check");
 	var _img6 = mk_img(_formBasic.icone_graph.value, "graph");
 	var _img7 = mk_img(_formBasic.icone_undo.value, "re-check");
 
