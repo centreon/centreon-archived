@@ -24,7 +24,7 @@ CREATE TABLE `config` (
 
 -- --------------------------------------------------------
 
-INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`, `nagios_log_file`) VALUES (1, '/srv/oreon/OreonDataStorage/', 172000, '0', 10, 60, 0, '1', '/srv/nagios/var/service-perfdata.tmp', '/srv/nagios/var/service-perfdata', '/srv/nagios/var/nagios.log');
+INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`, `nagios_log_file`) VALUES (1, '/srv/oreon/OreonDataStorage/', 365, '0', 10, 60, 0, '1', '/srv/nagios/var/service-perfdata.tmp', '/srv/nagios/var/service-perfdata', '/srv/nagios/var/nagios.log');
 
 -- 
 -- Structure de la table `data_bin`
