@@ -110,6 +110,14 @@ For information : contact@oreon-project.org
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT topology_topology_id FROM lca_define_topology_relation WHERE lca_define_lca_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						while($DBRESULT->fetchInto($sg))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO lca_define_topology_relation VALUES ('', '".$maxId["MAX(lca_id)"]."', '".$sg["topology_topology_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+						}
 					}
 				}
 			}
