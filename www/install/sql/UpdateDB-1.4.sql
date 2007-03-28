@@ -1,12 +1,8 @@
--- 03/01/2007 ---
 
 ALTER TABLE `topology` ADD `topology_style_class` VARCHAR( 255 ) NULL ;
 ALTER TABLE `topology` ADD `topology_style_id` VARCHAR( 255 ) NULL ;
 ALTER TABLE `topology` ADD `topology_OnClick` VARCHAR( 255 ) NULL ;
 
--- PO here
-
--- 19/01/2007
 DELETE FROM topology WHERE topology_page = '60601';
 DELETE FROM topology WHERE topology_page = '60602';
 DELETE FROM topology WHERE topology_page = '60603';
@@ -38,8 +34,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', 60103, 'a', './include/common/javascript/autocomplete-3-2.js', 'initAutoComplete(''Form'',''city_name'',''sub'')');
 
 -- 20/01/2007
-UPDATE `oreon_informations` SET `value` = '1.4' WHERE CONVERT( `key` USING utf8 ) = 'version' AND CONVERT( `value` USING utf8 ) = '1.3.4' LIMIT 1 ;
-UPDATE `oreon_informations` SET `value` = '1.4' WHERE CONVERT( `key` USING utf8 ) = 'version' AND CONVERT( `value` USING utf8 ) = '1.3.3' LIMIT 1 ;
+UPDATE `oreon_informations` SET `value` = '1.4' WHERE CONVERT( `key` USING utf8 ) = 'version' ;
 ALTER TABLE `escalation` ADD `esc_alias` VARCHAR( 255 ) NULL AFTER `esc_name` ;
 ALTER TABLE `lca_define` ADD `lca_alias` VARCHAR( 255 ) NULL AFTER `lca_name` ;
 
@@ -404,7 +399,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 -- About
 
-DELETE FROM `topology` WHERE `topology_page` = '506' OR `topology_parent` = '506'
+DELETE FROM `topology` WHERE `topology_page` = '506' OR `topology_parent` = '506';
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_about', NULL, 506, NULL, NULL, 80, NULL, NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_about', NULL, 5, 506, 10, 1, './include/options/about/about.php', NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_about', './img/icones/16x16/earth2.gif', 506, 50601, 10, 80, './include/options/about/about.php', NULL, '0', '0', '1');
