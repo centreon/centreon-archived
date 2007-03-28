@@ -94,6 +94,13 @@
 		$end_formated = $end;
 		$start_formated = $start;	
 	}
+	if ($isRestreint){
+		$lcaHostByName = getLcaHostByName($pearDB);
+		$lcaHostByNameStr = getLCAHostStr($lcaHostByName["LcaHost"]);
+		$restrict = " AND `host_name` IN ($lcaHostByNameStr) ";
+		//print $lcaHostByNameStr;
+	} else
+		$restrict = "";
 	
 	$alerts = array();	
 	if (isset($_GET["o"]) && $_GET["o"] == "notif_host"){
@@ -113,7 +120,7 @@
 		else 
 			$sort_str2 = "";
 
-		$req = "SELECT ctime,status,host_name,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '3' ".$sort_str1.$sort_str2."";
+		$req = "SELECT ctime,status,host_name,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '3' ".$sort_str1.$sort_str2.$restrict."";
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -125,8 +132,8 @@
 
 		if ($lstart <= 0)
 			$lstart = 0;
-	
-		$req = "SELECT ctime,status,host_name,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '3' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
+		
+		$req = "SELECT ctime,status,host_name,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '3' ".$sort_str1.$sort_str2.$restrict."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -159,7 +166,7 @@
 		else 
 			$sort_str2 = "";
 
-		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '2' ".$sort_str1.$sort_str2;	
+		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '2' ".$sort_str1.$sort_str2.$restrict;	
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -172,7 +179,7 @@
 		if ($lstart <= 0)
 			$lstart = 0;
 		
-		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '2' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";	
+		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type = '2' ".$sort_str1.$sort_str2.$restrict."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";	
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -206,7 +213,7 @@
 		else 
 			$sort_str2 = "";
 			
-		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type >= '2' AND msg_type <= '3' ".$sort_str1.$sort_str2;
+		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type >= '2' AND msg_type <= '3' ".$sort_str1.$sort_str2.$restrict;
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
@@ -221,7 +228,7 @@
 		if ($lstart <= 0)
 			$lstart = 0;
 	
-		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type >= '2' AND msg_type <= '3' ".$sort_str1.$sort_str2."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";		
+		$req = "SELECT ctime,status,host_name,service_description,notification_cmd,notification_contact,output FROM log WHERE ctime > '$start' AND ctime <= '$end' AND msg_type >= '2' AND msg_type <= '3' ".$sort_str1.$sort_str2.$restrict."ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";		
 		$DBRESULT =& $pearDBO->query($req);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getMessage();
