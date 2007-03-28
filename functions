@@ -526,12 +526,26 @@ function config_cron(){
 	echo ""
 	echo ""
 	
+	PHP_FLG=`which php > /dev/null 2> /dev/null; echo $?`
+	if [ "$PHP_FLG" = "0" ] ; then
+	    PHP_BIN="php"
+	else
+	
+	    PHP_FLG=`which php5 > /dev/null 2> /dev/null; echo $?`
+	    if [ "$PHP_FLG" == '0' ] ; then
+	        PHP_BIN="php5"
+	    else
+	        echo "PHP not found. Oreon take php by default"
+	        PHP_BIN="php"
+	    fi
+	fi
+	
 	CRON=0
 	if test -f /etc/cron.d/oreon ; then
 	    CRON=`cat /etc/cron.d/oreon | grep inventory_cron_update.php | grep -v \# > /dev/null; echo $?`
 	fi
  	if [ $CRON == '1' ] || [ ! -f /etc/cron.d/oreon ] ; then	
-  		echo "0 0 * * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
+  		echo "0 0 * * * $NAGIOS_USER $PHP_BIN -q $INSTALL_DIR_OREON/cron/reporting/inventory_cron_update.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
 		echo_success "Setup Cron for inventory_cron_update.php" "OK"
   	else
       	echo_passed "Setup Cron for inventory_cron_update.php" "PASSED"
@@ -542,7 +556,7 @@ function config_cron(){
 	
 
  	if [ $CRON == '1' ] || [ ! -f /etc/cron.d/oreon ] ; then	
-  		echo "0 0 1-31 * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
+  		echo "0 0 1-31 * * $NAGIOS_USER $PHP_BIN -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
 		echo_success "Setup Cron for ArchiveLogInDB.php" "OK"
   	else
       	echo_passed "Setup Cron for ArchiveLogInDB.php" "PASSED"
