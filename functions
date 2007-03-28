@@ -540,6 +540,7 @@ function config_cron(){
 	CRON=0
 	CRON=`cat /etc/cron.d/oreon | grep ArchiveLogInDB.php | grep -v \# > /dev/null; echo $?`
 	
+
  	if [ $CRON == '1' ] || [ ! -f /etc/cron.d/oreon ] ; then	
   		echo "0 0 1-31 * * $NAGIOS_USER php -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> /etc/cron.d/oreon 
 		echo_success "Setup Cron for ArchiveLogInDB.php" "OK"
