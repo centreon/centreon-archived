@@ -29,15 +29,17 @@ use POSIX qw(mkfifo);
 use threads;
 use threads::shared;
 use RRDs;
+use File::Copy;
 
 my $installedPath = "@OREON_PATH@/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
-my $debug = 0;
 
 # Init Globals
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $con_ods $con_oreon $generalcounter);
+use vars qw($debug $mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $con_ods $con_oreon $generalcounter);
+
+$debug = 0;
 
 # Init value
 my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
