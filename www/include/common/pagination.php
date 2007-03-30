@@ -84,8 +84,10 @@ For information : contact@oreon-project.org
 
 	for ($i = 10; $i <= 100; $i = $i +10)
 		$select[$i]=$i;
-	$select[$gopt[$pagination]]=$gopt[$pagination];
-	$select[$rows]=$rows;
+	if (isset($gopt[$pagination]) && $gopt[$pagination])
+		$select[$gopt[$pagination]]=$gopt[$pagination];
+	if (isset($rows) && $rows)
+		$select[$rows]=$rows;
 	ksort($select);
 		
 	?>
