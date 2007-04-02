@@ -224,5 +224,6 @@ $lang['ods_archive_log'] = "Archiver les logs de Nagios";
 $lang['ods_log_retention'] = "Dur&eacute;e de r&eacute;tention des logs";
 $lang['ods_log_retention_unit'] = "days";
 $lang['ods_fast_parsing'] = "Lecture rapide des Status";
+$lang['ods_nagios_log_file'] = "Fichier de log de nagios &agrave; parser";
 
 ?>
