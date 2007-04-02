@@ -31,6 +31,29 @@ For information : contact@oreon-project.org
 	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
+	if (isset($_GET["search_type_service"])){
+		$search_type_service = $_GET["search_type_service"];
+		$oreon->search_type_service = $_GET["search_type_service"];
+	} else if (isset($oreon->search_type_service))
+		 $search_type_service = $oreon->search_type_service;
+	else 
+		$search_type_service = NULL;
+		
+	if (isset($_GET["search_type_host"])){
+		$search_type_host = $_GET["search_type_host"];
+		$oreon->search_type_host = $_GET["search_type_host"];
+	} else if (isset($oreon->search_type_host))
+		 $search_type_host = $oreon->search_type_host;
+	else 
+		$search_type_host = NULL;
+	
+	if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) && !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)){
+		$search_type_host = 1;
+		$oreon->search_type_host = 1;
+		$search_type_service = 1;
+		$oreon->search_type_service = 1;
+	}
+
 	$url_var = "";
 	$url_var .= "&search_type_service=" . $search_type_service;
 	$url_var .= "&search_type_host=" . $search_type_host;
