@@ -73,7 +73,7 @@ For information : contact@oreon-project.org
 				}
 				if (isset($_GET["problem"])){
 					if (isset($tab_svc["OK"]) && $tab_svc["OK"] != 0)
-						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&status=OK'>OK</a></span> ";
+						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
 					if (isset($tab_svc["WARNING"]) && $tab_svc["WARNING"] != 0)
 						$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc["WARNING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
 					if (isset($tab_svc["CRITICAL"]) && $tab_svc["CRITICAL"] != 0)
@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 						$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>".$tab_svc["UNKNOWN"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_unknown'>UNKNOWN</a></span> ";
 					
 					if (isset($tab_svc_ack["OK"]) && $tab_svc_ack["OK"] != 0)
-						$service_data_str_ack = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc_ack["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&status=OK'>OK</a></span> ";
+						$service_data_str_ack = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc_ack["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
 					if (isset($tab_svc_ack["WARNING"]) && $tab_svc_ack["WARNING"] != 0)
 						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc_ack["WARNING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
 					if (isset($tab_svc_ack["CRITICAL"]) && $tab_svc_ack["CRITICAL"] != 0)
@@ -96,7 +96,7 @@ For information : contact@oreon-project.org
 				
 				} else {
 					if (isset($tab_svc["OK"]) && $tab_svc["OK"] != 0)
-						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&status=OK'>OK</a></span> ";
+						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
 					if (isset($tab_svc["WARNING"]) && $tab_svc["WARNING"] != 0)
 						$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc["WARNING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
 					if (isset($tab_svc["CRITICAL"]) && $tab_svc["CRITICAL"] != 0)

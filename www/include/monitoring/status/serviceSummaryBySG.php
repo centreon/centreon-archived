@@ -125,7 +125,7 @@ For information : contact@oreon-project.org
 			foreach ($svc_status as $key => $value){
 				$svc_data[$r["sg_name"]][$key] = "";
 				foreach ($value as $key_stt => $value_stt){
-					$svc_data[$r["sg_name"]][$key] .= "<span style='background:".$oreon->optGen["color_".strtolower($key_stt)]."'>$value_stt <a href='./oreon.php?p=202&o=svcd&host_name=".""."&service_description=".""."'>".$key_stt."</a></span>&nbsp; \n";
+					$svc_data[$r["sg_name"]][$key] .= "<span style='background:".$oreon->optGen["color_".strtolower($key_stt)]."'>$value_stt <a href='./oreon.php?p=202&o=svc_".strtolower($key_stt)."&host_name=$key'>".$key_stt."</a></span>&nbsp; \n";
 				}
 			}
 	}
