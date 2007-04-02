@@ -297,6 +297,7 @@ For information : contact@oreon-project.org
 				`perfdata_file` = '".$ret["perfdata_file"]."',
 				`archive_log` = '".$ret["archive_log"]."',
 				`fast_parsing` = '".$ret["fast_parsing"]."',
+				`nagios_log_file` = '".$ret["nagios_log_file"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT =& $pearDBO->query($rq);
