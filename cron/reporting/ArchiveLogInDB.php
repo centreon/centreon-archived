@@ -32,12 +32,10 @@
 	  -d delete value in db and insert all file
 	  -h or --help for this help
 	<?
-	}
-	else if ($argc == 2 && in_array($argv[1], array('-d')) ) {
-	$option = true;
-	}
-	else
-	;
+	} else if ($argc == 2 && in_array($argv[1], array('-d')) ) {
+		$option = true;
+	} else
+		;
 
 	$path_oreon = '@OREON_PATH@';
 	require_once 'DB.php';	
@@ -143,15 +141,15 @@
 		return false;					
 	}
 	
-	function insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end){
-		global $host_list, $service_list, $pearDB;
+	function insert_in_db($file, $tab_hosts, $tab_services, $day_current_start, $day_current_end){
+		global $host_list, $service_list, $pearDB, $path_oreon;
 		
 		## Api insert in db type
-		if ($handle  = @opendir("./api"))	{
-			while ($file = @readdir($handle))
-				if (is_file("./api"."/$file"))	{
-					include("./api"."/$file");
-				}
+		if ($handle  = opendir("$path_oreon/cron/reporting/api"))	{
+			while ($file = @readdir($handle)){
+				if (is_file("$path_oreon/cron/reporting/api/$file"))
+					include("$path_oreon/cron/reporting/api/$file");
+			}
 			@closedir($handle);
 		}
 	}
@@ -160,12 +158,17 @@
 	$tab_services = array();	
 	$day_current_start = 0;
 	$day_current_end = 0;
-	foreach($tableFile2 as $key => $time){
-		insert_file_name_in_db($key);
-		parseFile($key, $time, $tab_hosts, $tab_services,$day_current_start, $day_current_end, false);
-	}
-	if($day_current_start > 0)
-		insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end);
 
+	foreach($tableFile2 as $key => $time){
+		parseFile($key, $time, $tab_hosts, $tab_services, $day_current_start, $day_current_end, false);
+		insert_in_db($key, $tab_hosts, $tab_services, $day_current_start, $day_current_end);
+		insert_file_name_in_db($key);
+	
+	}
+
+	//if($day_current_start > 0){
+	//	
+	//	print "insert_in_db";
+	//}
 
 ?>
