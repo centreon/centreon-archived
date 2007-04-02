@@ -82,10 +82,10 @@ For information : contact@oreon-project.org
 	} else {
 		$tab = array("svc_warning" => "WARNING", "svc_unknown" => "UNKNOWN", "svc_critical" => "CRITICAL", "svc_ok" => "OK");
 		if (isset($service_status))
-			foreach ($service_status as $name => $svc){			
+			foreach ($service_status as $name => $svc){		
 				$tmp = array();
 				$tmp[0] = $name;
-				if (!strcmp($svc["current_state"], $tab[$o])){
+				if (!strcmp($svc["current_state"], $tab[$o]) && (!isset($_GET["host_name"]) || (isset($_GET["host_name"]) && $service_status[$name]["host_name"] == $_GET["host_name"]))){
 					$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
 					$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 					$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
@@ -99,7 +99,8 @@ For information : contact@oreon-project.org
 					$service_status[$name]["class"] = $tab_class[$rows % 2];
 					$tmp[1] = $service_status[$name];
 					$service_status_num[$rows++] = $tmp;
-				}
+				} else
+					unset($service_status[$name]);
 			}
 		$service_status_num = array();
 		$rows = 0;
