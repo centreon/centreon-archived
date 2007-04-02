@@ -44,6 +44,14 @@ For information : contact@oreon-project.org
 	else 
 		$search_type_host = NULL;
 	
+	
+	if (!isset($search_type_service) && !isset($search_type_host)){
+		$search_type_host = 1;
+		$oreon->search_type_host = 1;
+		$search_type_service = 1;
+		$oreon->search_type_service = 1;
+	}
+	
 	$rows = 0;
 	$tmp = NULL;
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
@@ -101,6 +109,9 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl);
 	
 	include("./include/common/checkPagination.php");
+
+	$tpl->assign("search_type_service", $search_type_service);
+	$tpl->assign("search_type_host", $search_type_host);
 
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
