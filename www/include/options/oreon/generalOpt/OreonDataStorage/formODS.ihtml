@@ -14,8 +14,9 @@
 	<tr class="list_two"><td class="FormRowField">{$form.auto_drop.label}</td><td class="FormRowValue">{$form.auto_drop.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.drop_file.label}</td><td class="FormRowValue">{$form.drop_file.html}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;Logs</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.archive_log.label}</td><td class="FormRowValue">{$form.archive_log.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.archive_log.label}</td><td class="FormRowValue">{$form.archive_log.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.archive_retention.label}</td><td class="FormRowValue">{$form.archive_retention.html}{$lang.ods_log_retention_unit}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField">{$form.nagios_log_file.label}</td><td class="FormRowValue">{$form.nagios_log_file.html}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;Monitoring</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.fast_parsing.label}</td><td class="FormRowValue">{$form.fast_parsing.html}</td></tr>
 </table>	

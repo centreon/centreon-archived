@@ -61,6 +61,7 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
 	$form->addElement('checkbox', 'archive_log', $lang["ods_archive_log"]);
 	$form->addElement('text', 'archive_retention', $lang["ods_log_retention"], $attrsText2);
+	$form->addElement('text', 'nagios_log_file', $lang["ods_nagios_log_file"], $attrsText);
 	
 	$form->addElement('checkbox', 'fast_parsing', $lang["ods_fast_parsing"]);
 	
