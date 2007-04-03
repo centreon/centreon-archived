@@ -24,14 +24,25 @@ For information : contact@oreon-project.org
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 	
+	if (!isset($_GET["type"]))
+		$type = 2;	
 	
+	if ($type)
+		$type_str = " command_type = '".$type."'";
+	else
+		$type_str = "";
+		
 	if (isset($search)){
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM command WHERE command_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		if ($type_str)
+			$type_str = " AND " . $type_str;
+		$req = "SELECT COUNT(*) FROM command WHERE command_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str";
 	} else if ($type){
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM command WHERE command_type = '".$type."'");
+		$req = "SELECT COUNT(*) FROM command WHERE $type_str";
 	} else {
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM command");
+		$req ="SELECT COUNT(*) FROM command";
 	}
+
+	$DBRESULT =& $pearDB->query($req);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
