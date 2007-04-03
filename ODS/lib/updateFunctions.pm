@@ -57,7 +57,7 @@ sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
 			my $sth2 = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate");
 			if (!$sth2->execute) {writeLogFile("Error when getting interval_length : " . $sth2->errstr . "\n");}
 			$data = $sth2->fetchrow_hashref();
-			$interval = $interval * $data->{'interval_length'};
+			$interval = $interval * $data->{'interval_length'} * 2;
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
