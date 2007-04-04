@@ -161,14 +161,14 @@
 
 	foreach($tableFile2 as $key => $time){
 		parseFile($key, $time, $tab_hosts, $tab_services, $day_current_start, $day_current_end, false);
-		insert_in_db($key, $tab_hosts, $tab_services, $day_current_start, $day_current_end);
+//		insert_in_db($key, $tab_hosts, $tab_services, $day_current_start, $day_current_end);
 		insert_file_name_in_db($key);
 	
 	}
 
-	//if($day_current_start > 0){
-	//	
+	if($day_current_start > 0){
+		insert_in_db($key, $tab_hosts, $tab_services, $day_current_start, $day_current_end);
 	//	print "insert_in_db";
-	//}
+	}
 
 ?>
