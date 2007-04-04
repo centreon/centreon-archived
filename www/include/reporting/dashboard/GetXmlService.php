@@ -228,10 +228,10 @@ For information : contact@oreon-project.org
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 				$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-				$buffer .= ' color="#' . $colorPENDING . '"';
+				$buffer .= ' color="#cccccc"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
-				$buffer .= '~br~ PendingTime: ' . Duration::toString($pendingtime);		
+				$buffer .= '~br~ UndeterminatedTime: ' . Duration::toString($pendingtime);		
 				$buffer .= '</event>';	
 			}
 
@@ -282,10 +282,10 @@ For information : contact@oreon-project.org
 		$buffer .= '<event ';
 		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
 		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-		$buffer .= ' color="#' . $colorUNKNOWN . '"';
+		$buffer .= ' color="#cccccc"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-		$buffer .= '~br~ PendingTime: ' . Duration::toString($_GET["today_pending"] * $t / 100);		
+		$buffer .= '~br~ UndeterminatedTime: ' . Duration::toString($_GET["today_pending"] * $t / 100);		
 		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_warning"] * $t / 100 ),2);

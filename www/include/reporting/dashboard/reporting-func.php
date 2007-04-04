@@ -43,10 +43,10 @@ For information : contact@oreon-project.org
 				$start_date_select = mktime(0, 0, 0, $month, $day-$ct, $year);
 				$end_date_select = time();
 			} else if($period == "last7days"){
-				$start_date_select = mktime($hour, $minute, $second, $month, $day-7, $year);
+				$start_date_select = mktime(0, 0, 0, $month, $day-7, $year);
 				$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
 			} else if($period == "last30days"){// attention au 31 
-				$start_date_select = mktime($hour, $minute, $second, $month, $day-30, $year);
+				$start_date_select = mktime(0, 0, 0, $month, $day-30, $year);
 				$end_date_select = mktime($hour, $minute, $second, $month, $day, $year);
 			} else if($period == "lastyear"){// attention au 31 
 				$start_date_select = mktime(23, 59, 60, 12, 31, $year-2);
@@ -245,7 +245,7 @@ For information : contact@oreon-project.org
 					## use for archivelogindb
 					#										
 					if(!$today_mode && is_new_day($time_event, $day_current_start, $day_current_end)){
-						insert_in_db($tab_hosts, $tab_services, $day_current_start, $day_current_end);
+						insert_in_db($file, $tab_hosts, $tab_services, $day_current_start, $day_current_end);
 						$tab_hosts = array();
 						$tab_services = array();
 						$day_current_start = my_getStartDay($time_event);

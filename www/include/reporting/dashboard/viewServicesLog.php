@@ -353,15 +353,12 @@ For information : contact@oreon-project.org
 
 		$tab["pourcentTime"] = $tab_svc["PtimeNONE"];
 		$tab["pourcentkTime"] = null;
-		$tab["style"] = " style='background:" . $oreon->optGen["color_pending"]."'";
+		$tab["style"] = " style='background:#cccccc'";
 		$tab_resume[4] = $tab;
 	}
 
-//	$start_date_select = date("d/m/Y G:i:s", $start_date_select);
-//	$end_date_select =  date("d/m/Y G:i:s", $end_date_select);
-	$start_date_select = date("d/m/Y", $start_date_select);
-	$end_date_select =  date("d/m/Y", $end_date_select);
-
+	$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
+	$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
 
 	$path = "./include/reporting/dashboard/";
 	# Smarty template Init

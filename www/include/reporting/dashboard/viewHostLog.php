@@ -211,10 +211,8 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$today_up = $tab_hosts[$mhost]["timeUP"];
 			$today_down = $tab_hosts[$mhost]["timeDOWN"];
 			$today_unreachable = $tab_hosts[$mhost]["timeUNREACHABLE"];
-
 			$i = 0;
-						
-
+			
 			foreach ($tab_services as $key => $htab_svc) {
 				if(isset($htab_svc[$mhost])){
 									
@@ -238,6 +236,11 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 					$archive_svc_warn = isset($tab_svc_bdd[$svc_id]["Twarn"]) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
 					$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
 					$archive_svc_cri = isset($tab_svc_bdd[$svc_id]["Tcri"]) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
+
+
+					$tab_tmp["timeNONE"] = ($tab_tmp["timeNONE"] <= 1) ? 0 : $tab_tmp["timeNONE"];
+
+
 	
 					$tab_tmp["PtimeOK"] = round(($archive_svc_ok +$tab_tmp["timeOK"]) / $tt *100,2);
 					$tab_tmp["PtimeWARNING"] = round(($archive_svc_warn+$tab_tmp["timeWARNING"]) / $tt *100,2);
@@ -248,14 +251,31 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 														 + ($archive_svc_unknown+$tab_tmp["timeUNKNOWN"])
 														 + ($archive_svc_cri+$tab_tmp["timeCRITICAL"])))  / $tt *100,2);
 	
+					$tmp_none = $tt - (($archive_svc_ok+$tab_tmp["timeOK"])
+														 + ($archive_svc_warn+$tab_tmp["timeWARNING"])
+														 + ($archive_svc_unknown+$tab_tmp["timeUNKNOWN"])
+														 + ($archive_svc_cri+$tab_tmp["timeCRITICAL"]));
+	
+	
+					$tab_tmp["PktimeOK"] = round(($archive_svc_ok +$tab_tmp["timeOK"]) / ($tt - $tmp_none) *100,2);
+					$tab_tmp["PktimeWARNING"] = round(($archive_svc_warn+$tab_tmp["timeWARNING"]) / ($tt - $tmp_none) *100,2);
+					$tab_tmp["PktimeUNKNOWN"] = round(($archive_svc_unknown+$tab_tmp["timeUNKNOWN"]) / ($tt - $tmp_none) *100,2);
+					$tab_tmp["PktimeCRITICAL"] = round(($archive_svc_cri+$tab_tmp["timeCRITICAL"]) / ($tt - $tmp_none) *100,2);
+
+	
 					// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
 					$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 1, '.', '');
 					$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 1, '.', '');
 					$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
 					$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 1, '.', '');
-					$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 1, '.', '');
-	
+					$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 1, '.', '');	
 					$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? "0.0" : $tab_tmp["PtimeNONE"];
+
+					$tab_tmp["PktimeOK"] = number_format($tab_tmp["PktimeOK"], 1, '.', '');
+					$tab_tmp["PktimeWARNING"] = number_format($tab_tmp["PktimeWARNING"], 1, '.', '');
+					$tab_tmp["PktimeUNKNOWN"] = number_format($tab_tmp["PktimeUNKNOWN"], 1, '.', '');
+					$tab_tmp["PktimeCRITICAL"] = number_format($tab_tmp["PktimeCRITICAL"], 1, '.', '');
+
 					//end
 					$tab_svc[$i++] = $tab_tmp;
 				}
@@ -299,6 +319,14 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$tab_tmp["PtimeCRITICAL"] = round( $tab["Tcri"]/ $tt *100,2);
 			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"])
 												 )  / $tt *100,2);
+			$tmp_none = $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"]);
+
+
+			$tab_tmp["PktimeOK"] = round($tab["Tok"] / ($tt - $tmp_none) *100,2);
+			$tab_tmp["PktimeWARNING"] = round( $tab["Twarn"]/ ($tt - $tmp_none) *100,2);
+			$tab_tmp["PktimeUNKNOWN"] = round( $tab["Tunknown"]/ ($tt - $tmp_none) *100,2);
+			$tab_tmp["PktimeCRITICAL"] = round( $tab["Tcri"]/ ($tt - $tmp_none) *100,2);
+
 
 			// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
 			$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 1, '.', '');
@@ -306,8 +334,13 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
 			$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 1, '.', '');
 			$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 1, '.', '');
-
 			$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? 0.0 : $tab_tmp["PtimeNONE"];
+
+			$tab_tmp["PktimeOK"] = number_format($tab_tmp["PktimeOK"], 1, '.', '');
+			$tab_tmp["PktimeWARNING"] = number_format($tab_tmp["PktimeWARNING"], 1, '.', '');
+			$tab_tmp["PktimeUNKNOWN"] = number_format($tab_tmp["PktimeUNKNOWN"], 1, '.', '');
+			$tab_tmp["PktimeCRITICAL"] = number_format($tab_tmp["PktimeCRITICAL"], 1, '.', '');
+
 			//end
 
 			$tab_svc[$i++] = $tab_tmp;
@@ -319,8 +352,9 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tab_resume = array();
 	$tab = array();
 	$timeTOTAL = $end_date_select - $start_date_select;
+
 	$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
-	if($Tnone < 0)
+	if($Tnone <= 1)
 	$Tnone = 0;
 
 	$tab["state"] = $lang["m_UpTitle"];
@@ -349,13 +383,13 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tab["time"] = Duration::toString($Tnone);
 	$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = null;
-	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_pending"]."'";
+	$tab["style"] = "class='ListColCenter' style='background:#cccccc'";
 	$tab_resume[3] = $tab;
 
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
 
-	$start_date_select = date("d/m/Y ", $start_date_select);
-	$end_date_select =  date("d/m/Y ", $end_date_select);
+	$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
+	$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
 
 	$tpl->assign('host_name', $mhost);
 	$status = "";
@@ -384,7 +418,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tpl->assign('style_warning' , "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_critical' , "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'");
-	$tpl->assign('style_pending' , "class='ListColCenter' style='background:" . $oreon->optGen["color_pending"]."'");
+	$tpl->assign('style_pending' , "class='ListColCenter' style='background:#cccccc'");
 
 	$tpl->assign('serviceTilte', $lang["m_serviceTilte"]);
 	$tpl->assign('OKTitle', $lang["m_OKTitle"]);

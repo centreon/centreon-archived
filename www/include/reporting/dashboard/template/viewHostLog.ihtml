@@ -99,10 +99,10 @@
 						{foreach item=tb from=$tab_svc}
 						<tr class={cycle values="list_two, list_one"}>
 							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
-							<td class='ListColRight'{$style_ok}>{$tb.PtimeOK}%</td>
-							<td class='ListColRight'{$style_warning}>{$tb.PtimeWARNING}%</td>
-							<td class='ListColRight'{$style_critical}>{$tb.PtimeCRITICAL}%</td>
-							<td class='ListColRight'{$style_unknown}>{$tb.PtimeUNKNOWN}%</td>
+							<td class='ListColRight'{$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
+							<td class='ListColRight'{$style_warning}>{$tb.PtimeWARNING}% ({$tb.PktimeWARNING}%)</td>
+							<td class='ListColRight'{$style_critical}>{$tb.PtimeCRITICAL}% ({$tb.PktimeCRITICAL}%)</td>
+							<td class='ListColRight'{$style_unknown}>{$tb.PtimeUNKNOWN}% ({$tb.PktimeUNKNOWN}%)</td>
 							<td class='ListColRight'{$style_pending}>{$tb.PtimeNONE}%</td>
 						</tr>
 						{/foreach}

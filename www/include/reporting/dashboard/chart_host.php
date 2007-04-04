@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 	$FillArray->addColor($oreon->optGen["color_up"] . ' @0.2', 'Up');
 	$FillArray->addColor($oreon->optGen["color_down"] . '@0.2', 'Down');
 	$FillArray->addColor($oreon->optGen["color_unreachable"] . '@0.2', 'Unreachable');
-	$FillArray->addColor($oreon->optGen["color_pending"] . '@0.2', 'Pending');
+	$FillArray->addColor('#cccccc', 'Undeterminated');
 	$Plot->setFillStyle($FillArray);
 	
 	$Plot->setBackgroundColor('#F2F2F2');
