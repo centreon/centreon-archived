@@ -16,11 +16,12 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	function manageDependencies()	{
+	function manageDependencies($ret = array())	{
 		global $pearDB;
 		global $form;
-		$gbArr = array();	
-		$ret = $form->getSubmitValues();
+		$gbArr = array();
+		if (!count($ret))
+			$ret = $form->getSubmitValues();
 		if ($ret["level"]["level"] == 1)
 			$gbArr = checkDependenciesStrong();
 		else if ($ret["level"]["level"] == 2)
