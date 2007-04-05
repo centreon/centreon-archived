@@ -318,6 +318,9 @@ For information : contact@oreon-project.org
 		$_GET["order"] = "SORT_ASC";
 	}
 	
+	if ((!isset($_GET["o"]) || !$_GET["o"]) && isset($o))
+		$_GET["o"] = $o;
+	
 	if (isset($_GET["o"]) && ($_GET["o"] == "svcpb" || $_GET["o"] == "svc_warning" || $_GET["o"] == "svc_critical" || $_GET["o"] == "svc_unknown")){
 		if (!isset($_GET["sort_types"])){
 			$_GET["sort_types"] = $general_opt["problem_sort_type"];
