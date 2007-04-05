@@ -187,7 +187,7 @@ For information : contact@oreon-project.org
 	## Topology concerned
 	#
 	$form->addElement('header', 'pages', $lang['lca_appTopo']);
-	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
+	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 	$DBRESULT1 =& $pearDB->query($rq);
 	#
 	$lca_topos = array();
