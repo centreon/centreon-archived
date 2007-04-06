@@ -45,6 +45,7 @@ For information : contact@oreon-project.org
 
 	# LCA 
 	$lcaHostByID = getLcaHostByID($pearDB);
+	$lcaHostByName = getLcaHostByName($pearDB);
 	$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 
 	$debug = 0;
@@ -160,6 +161,8 @@ For information : contact@oreon-project.org
 			$case = str_replace(" ", "\ ",$ret["host_name"])." / ".str_replace(" ", "\ ",$ret["service_description"]);
 			isset($_GET["template_id"]) && $_GET["template_id"] ? $graph = array("graph_id" => $_GET["template_id"], "name" => "") : $graph = array("graph_id" => getDefaultGraph($service_id, 2), "name" => "");
 		} 
+		
+		
 		
 		# Create Graphs and database
 		if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])) && $case)	{
