@@ -23,15 +23,15 @@
 # need in paramter : host_id, service_description
 
 sub getServiceID($$){
-	print $_[0] . " - " .$_[1];
-   	my $sth2 = $con_oreon->prepare(	"SELECT service_id FROM service, host_service_relation hsr ".
+	my $sth2 = $con_oreon->prepare(	"SELECT service_id FROM service, host_service_relation hsr ".
 									"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
 									"AND service_description = '".$_[1]."' LIMIT 1");
+	
 	if (!$sth2->execute) {writeLogFile("Error when getting service id : " . $sth2->errstr . "\n");}
 	my $data = $sth2->fetchrow_hashref();
-	$service_id = $data->{'service_id'};
 	undef($sth2);
-	if (!defined($service_id)){
+	
+	if (!defined($data->{'service_id'}) && !$data->{'service_id'}){
 		$sth2 = $con_oreon->prepare("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 									" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 									" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."'");
@@ -41,7 +41,7 @@ sub getServiceID($$){
 		undef($data);
 		undef($data2);
 		undef($sth2);
-		if (!defined($service_id)){
+		if (defined($service_id)){
 			return $service_id;
 		} else {
 			return 0;
