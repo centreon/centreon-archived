@@ -30,7 +30,6 @@ use POSIX;
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data);
 
 my $installedPath = "@OREON_PATH@";
-#my $installedPath = "/usr/local/oreon";
 require $installedPath."/ODS/etc/conf.pm";
 
 ## Init Date
@@ -72,37 +71,37 @@ sub parseFile ($) {
 		}
     }
     while (<FILE>) {
-		if ($_ =~ /^\[([0-9]*)\]\sSERVICE ALERT\:\ ([a-zA-Z0-9\.\-\_\ \%\'\"\(\[\]\)\{\}\,\;\:\/\=\<\>\*\$\^\~\@\+\#\!\?]*)/){
+		if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
 		    $tab[5] =~ s/\'/\\\'/g; 
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		} elsif ($_ =~ /^\[([0-9]*)\]\sHOST ALERT\:\ ([a-zA-Z0-9\.\-\_\ \%\'\"\(\[\]\)\{\}\,\;\:\/\=\<\>\*\$\^\~\@\+\#\!\?\*]*)/){
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
 		    $tab[4] =~ s/\'/\\\'/g; 
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`) VALUES ('1', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		} elsif ($_ =~ /^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\ ([a-zA-Z0-9\.\-\_\ \%\'\"\(\[\]\)\{\}\,\;\:\/\=\<\>\*\$\^\~\@\+\#\!\?\*]*)/){
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
 		    $tab[5] =~ s/\'/\\\'/g; 
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		} elsif ($_ =~ /^\[([0-9]*)\]\sHOST NOTIFICATION\:\ ([a-zA-Z0-9\.\-\_\ \%\'\"\(\[\]\)\{\}\,\;\:\/\=\<\>\*\$\^\~\@\+\#\!\?\*]*)/){
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
 		    $tab[4] =~ s/\'/\\\'/g; 
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		} elsif ($_ =~ /^\[([0-9]*)\]\sWarning\:\ ([a-zA-Z0-9\.\-\_\ \%\'\"\(\[\]\)\{\}\,\;\:\/\=\<\>\*\$\^\~\@\+\#\!\?\*]*)/){
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/){
 		    my $tab = $2;
 		    $ctime = $1;
 		    $tab =~ s/\'/\\\'/g; 
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `output`) VALUES ('4','$ctime', '".$tab."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
-		} elsif ($_ =~ /^\[([0-9]*)\]\ ([a-zA-Z0-9\.\-\_\ \%\'\"\(\[\]\)\{\}\,\;\:\/\=\<\>\*\$\^\~\@\+\#\!\?\*]*)/) {
+		} elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/) {
 		    $ctime = $1;
 		    my $tab = $2;
 		    $tab =~ s/\'/\\\'/g; 
