@@ -91,6 +91,8 @@ For information : contact@oreon-project.org
 				if ($BP && isAHostTpl($value))	{
 					$host_name = getMyHostName($value);
 					$service_description = getMyServiceName($esi["service_service_id"]);
+					$service_description = str_replace('#S#', "/", $service_description);
+					$service_description = str_replace('#BS#', "\\", $service_description);
 					$str .= "# '" . $host_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
 					$str .= "define serviceextinfo{\n";
 					if ($host_name) $str .= print_line("host_name", $host_name);
@@ -118,6 +120,8 @@ For information : contact@oreon-project.org
 				if ($BP)	{
 					$hostgroup_name = getMyHostGroupName($value);
 					$service_description = getMyServiceName($esi["service_service_id"]);
+					$service_description = str_replace('#S#', "/", $service_description);
+					$service_description = str_replace('#BS#', "\\", $service_description);
 					$str .= "# '" . $hostgroup_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
 					$str .= "define serviceextinfo{\n";
 					if ($hostgroup_name) $str .= print_line("hostgroup_name", $hostgroup_name);

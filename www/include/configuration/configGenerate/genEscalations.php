@@ -188,6 +188,8 @@ For information : contact@oreon-project.org
 					array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"] == 3)
 					$BP = true;
+				$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
+				$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 				if ($BP)	{
 					$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
 					if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
