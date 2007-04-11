@@ -163,7 +163,8 @@ For information : contact@oreon-project.org
 		$buffer .= '<filetime>'.filectime($file). '</filetime>';
 		$buffer .= '</infos>';
 	
-		if( filectime($file) > $atime){
+//		if( filectime($file) > $atime){
+		if( $atime){
 
 
 
