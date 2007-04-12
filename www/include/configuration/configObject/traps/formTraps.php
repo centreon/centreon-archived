@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Traps unit developped by Nicolas Cordier for Merethis company. <ncordier@merethis.com>
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -61,6 +59,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'traps_oid', $lang["m_traps_oid"], $attrsText);
 	$form->addElement('text', 'traps_handler', $lang["m_traps_handler"], $attrsText);
 	$form->addElement('text', 'traps_args', $lang["m_traps_args"], $attrsText);
+	$form->addElement('select', 'traps_status', $lang["m_traps_status"], array(0=>$lang['m_mon_ok'], 1=>$lang['m_mon_warning'], 2=>$lang['m_mon_critical'], 3=>$lang['m_mon_unknown']));
 	$form->addElement('textarea', 'traps_comments', $lang["m_traps_comments"], $attrsTextarea);
 
 	$tab = array();
@@ -87,7 +86,7 @@ For information : contact@oreon-project.org
 	$form->applyFilter('traps_name', 'myReplace');
 	$form->addRule('traps_name', $lang['ErrName'], 'required');
 	$form->addRule('traps_oid', $lang['ErrName'], 'required');
-	$form->addRule('traps_handler', $lang['ErrName'], 'required');
+	//$form->addRule('traps_handler', $lang['ErrName'], 'required');
 	$form->addRule('traps_args', $lang['ErrName'], 'required');
 	$form->registerRule('exist', 'callback', 'testTrapExistence');
 	$form->addRule('traps_name', $lang['ErrAlreadyExist'], 'exist');

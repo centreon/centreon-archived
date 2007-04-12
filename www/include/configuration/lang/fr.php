@@ -783,6 +783,7 @@ $lang['m_traps_name'] = "Nom de la Trap";
 $lang['m_traps_oid'] = "OID";
 $lang['m_traps_handler'] = "Handler";
 $lang['m_traps_args'] = "Arguments";
+$lang['m_traps_status'] = "Status";
 $lang['m_traps_comments'] = "Commentaires";
 
 $lang['m_traps_add'] = "Ajouter une d&eacute;finition de Trap";

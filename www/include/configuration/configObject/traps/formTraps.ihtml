@@ -16,7 +16,8 @@
 		<tr class="list_two"><td class="FormRowField">{$form.traps_oid.label}</td><td class="FormRowValue">{$form.traps_oid.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.traps_handler.label}</td><td class="FormRowValue">{$form.traps_handler.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.traps_args.label}</td><td class="FormRowValue">{$form.traps_args.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.traps_comments.label}</td><td class="FormRowValue">{$form.traps_comments.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.traps_status.label}</td><td class="FormRowValue">{$form.traps_status.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.traps_comments.label}</td><td class="FormRowValue">{$form.traps_comments.html}</td></tr>
 
 	</table>
 	</div>
