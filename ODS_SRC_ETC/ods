@@ -55,9 +55,11 @@ fi
 prefix=@OREON_PATH@/ODS
 exec_prefix=${prefix}
 ODSBin=${exec_prefix}/ods.pl
+ODSStopFile=${exec_prefix}/stopods.flag
 ODSCfgFile=${prefix}/etc/conf.pm
 ODSVarDir=${prefix}/var/
 ODSRunFile=${prefix}/var/ods.pid
+ODSDemLog=${prefix}/var/ods_demon.log
 ODSLockDir=/var/lock/subsys
 ODSLockFile=ods
 NagiosUser=@NAGIOS_USER@
@@ -87,7 +89,7 @@ case "$1" in
 		echo "Error : $ODSRunFile already Exists."
 		exit 1
 	fi
-	$ODSBin &
+	$ODSBin 2> $ODSDemLog &
 	if [ -d $ODSLockDir ]; then touch $ODSLockDir/$ODSLockFile; fi
 			#sleep 1
 			#status_nagios nagios
@@ -96,7 +98,8 @@ case "$1" in
     
     stop)
 	echo "Stopping ODS Collector : ods_daemon"
-	killproc_ods ods
+	#killproc_ods ods
+	touch $ODSStopFile
 	
  		# now we have to wait for nagios to exit and remove its
  		# own NagiosRunFile, otherwise a following "start" could
@@ -104,7 +107,7 @@ case "$1" in
  		# new NagiosRunFile, allowing multiple nagios daemons
  		# to (sooner or later) run - John Sellens
 	echo -n 'Waiting for ods to exit .'
-	for i in 1 2 3 4 5 6 7 8 9 10 ; do
+	for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; do
 	    if status_ods > /dev/null; then
 		echo -n ' .'
 		sleep 1
@@ -118,6 +121,8 @@ case "$1" in
 	else
 	    echo ' done.'
 	fi
+	rm -f $ODSRunFile
+    rm -f $ODSStopFile
 	;;
 
     status)
