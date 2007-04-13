@@ -36,16 +36,18 @@ sub identify_service($$){
 					$host_id = getHostID($_[0]);
 					if ($host_id){
 						$service_id = getServiceID($host_id, $_[1]);
-						$sth1 = $con_ods->prepare("SELECT * FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."'");
-						if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-						if ($sth1->rows() == 0){
-							$sth1 = $con_ods->prepare("INSERT INTO `index_data` (`host_name`, `host_id`, `service_description`, `service_id`) VALUES ('".$_[0]."', '".$host_id."', '".$_[1]."', '".$service_id."')");
+						if ($service_id){
+							$sth1 = $con_ods->prepare("SELECT * FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."'");
 							if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-						} else {
-							$sth1 = $con_ods->prepare("UPDATE `index_data` SET `host_name` = '".$_[0]."' , `service_description` = '".$_[1]."' where `host_id` = '".$host_id."' AND `service_id` = '".$service_id."'");
-							if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+							if ($sth1->rows() == 0){
+								$sth1 = $con_ods->prepare("INSERT INTO `index_data` (`host_name`, `host_id`, `service_description`, `service_id`) VALUES ('".$_[0]."', '".$host_id."', '".$_[1]."', '".$service_id."')");
+								if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+							} else {
+								$sth1 = $con_ods->prepare("UPDATE `index_data` SET `host_name` = '".$_[0]."' , `service_description` = '".$_[1]."' where `host_id` = '".$host_id."' AND `service_id` = '".$service_id."'");
+								if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+							}
+							undef($sth1);
 						}
-						undef($sth1);
 					}
 				}
 			}

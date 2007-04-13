@@ -47,6 +47,7 @@ sub getServiceID($$){
 			return 0;
 		}
 	} else {
+		$service_id = $data->{'service_id'};
 		undef($data);
 		undef($sth2);
 		return $service_id;

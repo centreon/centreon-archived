@@ -61,7 +61,6 @@ sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
-			writeLogFile("interval : ".$_[5]." - nb value : $nb_value \n");
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
@@ -98,7 +97,16 @@ sub updateRrdDBforHiddenSVC($$$$$$$){ # Path metric_id value timestamp interval 
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			my $begin = $_[4] - 200000;
-			$interval = 120;
+			$interval = getServiceCheckInterval($_[1]);
+			if (!defined($interval)){$interval = 3};
+			CheckMySQLConnexion();
+			my $sth2 = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate");
+			if (!$sth2->execute) {writeLogFile("Error when getting interval_length : " . $sth2->errstr . "\n");}
+			$data = $sth2->fetchrow_hashref();
+			$interval = $interval * $data->{'interval_length'} + 10;
+			undef($data);
+			undef($sth2);
+			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 			RRDs::create ($_[0]."/".$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]/$_[1].rrd : $ERR\n");}	

@@ -20,9 +20,18 @@
 ####################################################################
  
 sub CheckRestart(){
-	use vars qw($con_oreon $con_ods);
+	my ($sth2, $data, $purgeinterval);
 	my $last_restart;
 	my $last_restart_stt;
+	
+	CheckMySQLConnexion();
+	$sth2 = $con_oreon->prepare("SELECT oreon_path FROM general_opt LIMIT 1");
+	if (!$sth2->execute) {writeLogFile("Error when getting oreon Path : " . $sth2->errstr . "\n");}
+	$data = $sth2->fetchrow_hashref();
+	my $STOPFILE = $data->{'oreon_path'} . "ODS/stopods.flag";
+	undef($sth2);
+	undef($data);
+	
 	while(2){
 		CheckMySQLConnexion();
 		$last_restart = getLastRestart();
@@ -32,7 +41,16 @@ sub CheckRestart(){
 			purgeRrdDB() if (getPurgeConfig());	
 			check_HostServiceID();	
 		}
-		sleep(getPurgeInterval());
+		
+		$purgeinterval = getPurgeInterval();
+		for (my $i = 0;$i <= $purgeinterval;$i++){
+			# Check if ods must leave
+			return () if (-r $STOPFILE);
+			# Sleep Time between To check
+			sleep(1);	
+		}
+		undef($purgeinterval);
+		undef($i);	
 	}
 }
 
@@ -62,8 +80,9 @@ sub CheckMySQLDrain(){
 	}
 	undef($data);
 	undef($sth2);
-	undef($sth3);	
-
+	undef($sth3);
+	undef($data_hg);
+	
 	$sth2 = $con_ods->prepare("SELECT host_id, service_id FROM index_data WHERE `host_name` != 'OSL_Module' AND `host_name` != 'META_Module'");
 	if (!$sth2->execute) {writeLogFile("Error in Drain function 3 : " . $sth2->errstr . "\n");}
 	while ($data = $sth2->fetchrow_hashref()){
