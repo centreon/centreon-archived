@@ -41,9 +41,9 @@ sub GetPerfData(){
 			}
 			if (open(PFDT, "< $PFDT"."_read")){
 				CheckMySQLConnexion();
-	
+
 				$sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
-				if (!$sth2->execute) {writeLogFile("Error when getting drop and perfdata properties : " . $sth2->errstr . "\n");}
+				if (!$sth2->execute) {writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n");}
 				$data = $sth2->fetchrow_hashref();
 	
 				$PFDT = $data->{'perfdata_file'};
