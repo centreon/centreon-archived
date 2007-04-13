@@ -20,10 +20,15 @@
 ####################################################################
 
 sub GetPerfData(){
-	my ($line_tab, $sth2, $data, $flag_drop);
-	use vars qw($con_oreon $con_ods);
+	my ($line_tab, $sth2, $data, $flag_drop, $sleeptime);
 	
 	CheckMySQLConnexion();
+	$sth2 = $con_oreon->prepare("SELECT oreon_path FROM general_opt LIMIT 1");
+	if (!$sth2->execute) {writeLogFile("Error when getting oreon Path : " . $sth2->errstr . "\n");}
+	$data = $sth2->fetchrow_hashref();
+	my $STOPFILE = $data->{'oreon_path'} . "ODS/stopods.flag";
+	undef($sth2);
+	undef($data);
 	
 	$sth2 = $con_ods->prepare("SELECT perfdata_file FROM config");
 	if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
@@ -74,11 +79,20 @@ sub GetPerfData(){
 				
 				if ($flag_drop == 1){close(DROP);}
 				undef($line_tab);
+				undef($flag_drop);
 			} else {
 				writeLogFile("Error When reading data in tmp read file : $!");
 			}
 		}
-		sleep(getSleepTime());
+		$sleeptime = getSleepTime();
+		for (my $i = 0;$i <= $sleeptime;$i++){
+			# Check if ods must leave
+			return () if (-r $STOPFILE);
+			# Sleep Time between To check
+			sleep(1);	
+		}
+		undef($sleeptime);
+		undef($i);
 	}
 } 
 
