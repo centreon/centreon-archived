@@ -1,4 +1,4 @@
-#! /usr/bin/perl -w 
+#! /usr/bin/perl -w
 ###################################################################
 # Oreon is developped with GPL Licence 2.0 
 #
@@ -23,7 +23,8 @@
 # Script init
 #
 
-use strict;
+#use strict;
+#use warnings;
 use DBI;
 use POSIX qw(mkfifo);
 use threads;
@@ -37,7 +38,7 @@ my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
 
 # Init Globals
-use vars qw($debug $mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $con_ods $con_oreon $generalcounter);
+use vars qw($debug $mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $generalcounter);
 
 $debug = 0;
 
@@ -86,11 +87,10 @@ require $installedPath."lib/verifyHostServiceIdName.pm";
 require $installedPath."lib/identifyMetric.pm";
 require $installedPath."lib/updateFunctions.pm";
 
-my $thread_perfdata 		= threads->create("GetPerfData");
-my $thread_check_restart	= threads->create("CheckRestart");
+my $thread_perfdata 		= threads->new("GetPerfData");
+my $thread_check_restart	= threads->new("CheckRestart");
 
-while (1){
-	#CheckMySQLConnexion();
-	sleep(60);
-}
-exit;
+$thread_perfdata->join;
+$thread_check_restart->join;
+writeLogFile("Stopping ODS engine...\n");
+exit(1);
