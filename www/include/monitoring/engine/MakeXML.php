@@ -140,6 +140,9 @@ For information : contact@oreon-project.org
 
 		global $pearDB; $pearDBO;
 		$flag = 0;
+
+		if(!$type)
+			$type = 'svcpb';
 	
 		$MyLog = date('l dS \of F Y h:i:s A'). "\n";
 	
@@ -165,6 +168,9 @@ For information : contact@oreon-project.org
 	
 //		if( filectime($file) > $atime){
 		if( $atime){
+		$buffer .= '<debug>';
+		$buffer .= '<a>'.$type.'</a>';
+		$buffer .= '</debug>';
 
 
 

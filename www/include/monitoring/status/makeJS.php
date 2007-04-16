@@ -31,54 +31,11 @@ For information : contact@oreon-project.org
 _time_reload = <?=$tM?>;
 _time_live = <?=$tFM?>;
 
-function monitoring_time_msg_failled(_msg) {
-	/*
-	var _tmp = document.getElementById('time_live');
-	_tmp.innerHTML = _msg;
-	_tmp.className = 'failled_msg';
-	*/
-}
-
-function monitoring_time_Del_msg()	{
-	/*
-		var _tmp = document.getElementById('time_live');
-		_tmp.innerHTML = '';
-		_tmp.className = 'cachediv';
-		*/
-}
-
-function monitoring_time_msg()	{
-	/*
-		var _tmp = document.getElementById('time_live');
-		_tmp.innerHTML = ' Loading in progress...';
-		_tmp.className = 'ok_msg';
-		*/
-}
-
-
-function monitoring_time()	{
-	if(_time_live > 999 && _on)
-	{
-		document.getElementById('time_live').innerHTML = (_time_live / 1000);
-		_time_live = _time_live - 1000;
-		_timeoutID = setTimeout('monitoring_time()', 1000);	
-	} else if(_time_live < 999) {
-		document.getElementById('time_live').innerHTML = *;
-		_time_live = 0;
-		//_on = 0;
-	} else	{
-		//_on = 0;
-	}
-}
-
-
 function monitoring_refresh()	{	
-	monitoring_time_msg();
 	_tmp_on = _on;
 	_time_live = _time_reload;
 	_on = 1;
 	window.clearTimeout(_timeoutID);
-	//monitoring_time();
 	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
 	_on = _tmp_on;
 }
