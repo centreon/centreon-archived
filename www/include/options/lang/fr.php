@@ -226,4 +226,31 @@ $lang['ods_log_retention_unit'] = "days";
 $lang['ods_fast_parsing'] = "Lecture rapide des Status";
 $lang['ods_nagios_log_file'] = "Fichier de log de nagios &agrave; parser";
 
+$lang['m_patch'] = "Mise &agrave; jour";
+$lang['m_checkVersion'] = "V&eacute;rification";
+$lang['m_patchOptions'] = "Options";
+$lang['patchOption_change'] = "Modifier les options pour la mise &agrave; jour";
+$lang['patchOption_check_stable'] = "V&eacute;rifier les stables";
+$lang['patchOption_check_security'] = "V&eacute;rifier les patchs de s&eacute;curit&eacute;";
+$lang['patchOption_check_patch'] = "V&eacute;rifier les patchs";
+$lang['patchOption_check_rc'] = "V&eacute;rifier les Release Candidate";
+$lang['patchOption_check_beta'] = "V&eacute;rifier les b&eacute;tas";
+$lang['patchOption_path_download'] = "Chemin pour le t&eacute;l&eacute;chargement des patchs";
+$lang['checkVersion_msgErr01'] = "Probl&egrave; dans la r&eacute;cup&eacute;ration de la derni&egrave;re version.";
+$lang['updateSecu'] = "Mise &agrave; de s&eacute;curit&eacute; disponible";
+$lang['update'] = "Mise &agrave; disponible";
+$lang['uptodate'] = "Le logiciel est &agrave; jour";
+$lang['preUpdate_msgErr01'] = "Probl&egrave; dans la r&eacute;cup&eacute;ration de la liste des fichiers.";
+$lang['preUpdate_msgErr02'] = "Probl&egrave; dans la r&eacute;cup&eacute;ration du fichier.";
+$lang['preUpdate_msgErr03'] = "Aucune version n'est d&eacute;finie.";
+$lang['preUpdate_msgErr04'] = "Impossible d'ouvrir le fichier /etc/oreon.conf";
+$lang['preUpdate_msgErr05'] = "Probl&egrave; la derni&egrave; version disponible.";
+$lang['preUpdate_fileDownloaded'] = "Le fichier %s est t&eacute;l&eacute;charg&eacute;.<br/>";
+$lang['preUpdate_installArchive'] = "Pour l'install de la mise à jour %s, décompressez l'archive et suivez le UPGRADE.\n";
+$lang['preUpdate_shellPatch'] = "Exécutez le shell %s en root.\n";
+$lang['batchPatch_begin'] = "Début de l'éxecution des patchs";
+$lang['batchPatch_end'] = "Fin de l'éxecution des patchs";
+$lang['batchPatch_ok01'] = "Le patch %s est appliqué.";
+$lang['batchPatch_err01'] = "Erreur dans l'application du patch %s.";
+
 ?>
