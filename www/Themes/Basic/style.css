@@ -224,6 +224,47 @@ hr{
 	font-family: Verdana, Arial, sans-serif; 
 	font-size: 10px;
 	font-weight: bold;}
+	
+	
+div.uptodate {
+	margin: 3px;
+	padding: 3px;
+	background-color: #DFF9E0;
+	border: 1px #ADC7A1 solid;
+	-moz-border-radius: 4px;
+}
+
+div.updateSecu {
+	margin: 3px;
+	padding: 3px;
+	background-color: #F9EDED;
+	border: 1px #E3858C solid;
+	-moz-border-radius: 4px;
+}
+
+div.update {
+	margin: 3px;
+	padding: 3px;
+	background-color: #FEF7DB;
+	border: 1px #FDC11E solid;
+	-moz-border-radius: 4px;
+}
+
+div.update_readme {
+	margin: 3px;
+	padding: 3px;
+	background-color: white;
+	border: 1px #AEAEAE solid;
+	-moz-border-radius: 4px;
+}
+
+div.update_output {
+	margin: 3px;
+	padding: 3px;
+	background-color: white;
+	border: 1px #AEAEAE solid;
+	-moz-border-radius: 4px;
+}
 
 #debug{
 	overflow: auto;
