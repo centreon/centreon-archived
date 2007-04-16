@@ -141,8 +141,6 @@ For information : contact@oreon-project.org
 		global $pearDB; $pearDBO;
 		$flag = 0;
 
-		if(!$type)
-			$type = 'svcpb';
 	
 		$MyLog = date('l dS \of F Y h:i:s A'). "\n";
 	
@@ -226,6 +224,7 @@ For information : contact@oreon-project.org
 				$ct = 0;
 				$flag = 0;
 							
+				$host_name_tmp = $svc[""];
 
 				$tab_color_host = array();
 				foreach ($service_status as $name => $svc){
@@ -235,15 +234,14 @@ For information : contact@oreon-project.org
 						$flag = 1;
 					$MyLog .= "flag=" . $flag . " host=" . $svc["host_name"] . " svc=" . $svc["service_description"]  . "\n";
 					$passive = ($svc["passive_checks_enabled"] && $svc["active_checks_enabled"] == 0) ? 1 : 0;
-					$active = ($svc["passive_checks_enabled"] == 0 && $svc["active_checks_enabled"] == 0) ? 1 : 0;										
+					$active = ($svc["passive_checks_enabled"] == 0 && $svc["active_checks_enabled"] == 0) ? 1 : 0;
 					$plugin_output = ($svc["plugin_output"]) ? $svc["plugin_output"] : " N/A ";
 
-					if($host_status[$svc["host_name"]]["current_state"] == "DOWN" && !isset($tab_color_host[$svc["host_name"]])){
-						$tab_color_host[$svc["host_name"]] = 1;
-						$color_host = '#FD8B46';
+					if($host_status[$svc["host_name"]]["current_state"] == "DOWN" && $svc["host_name"] == $host_name_tmp){
+						$color_host = 'normal';
 					}
 					else
-						$color_host = 'normal';
+						$color_host = '#FD8B46';
 
 					$buffer .= '<line>';
 					$buffer .= '<order>'. $ct++ . '</order>';
@@ -269,11 +267,13 @@ For information : contact@oreon-project.org
 					$buffer .= '<last_check>'. $last_check . '</last_check>';
 	
 					$duration = " ";
-					if($svc["last_state_change"] > 0) 
+					if($svc["last_state_change"] > 0)
 						$duration = Duration::toString(time() - $svc["last_state_change"]);
 	
 					$buffer .= '<last_state_change>'. $duration . '</last_state_change>';
 					$buffer .= '</line>';
+					$host_name_tmp = $svc["host_name"];
+
 				}
 			}
 		}
