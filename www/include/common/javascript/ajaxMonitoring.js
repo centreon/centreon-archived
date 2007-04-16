@@ -15,6 +15,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+_debug = 0;
+_nb = 0;
 
 <!-- Début
 // ********************************************
@@ -462,19 +464,46 @@ var _p = 20201;
 	
 }
 
+function viewDebugInfo(_str){
+	if(_debug)
+	{
+		_nb = _nb + 1;
+		var mytable=document.getElementById("debugtable")
+		var newrow=mytable.insertRow(0) //add new row to end of table
+		var newcell=newrow.insertCell(0) //insert new cell to row
+		newcell.innerHTML='<td>line:' + _nb + ' ' + _str + '</td>';
+	}
+}
 
 function initM(_time_reload,_sid,_o){
 	_form=document.getElementById('fsave');
 	_time=parseInt(_form.time.value);
 	_form.time.value = _time - 1000;
 
+
+	if(document.getElementById('debug'))
+	{
+		viewDebugInfo('--RESTART--');
+		viewDebugInfo('');
+	}
+	else{
+		var _divdebug = document.createElement("div");
+		_divdebug.id = 'debug';
+		var _debugtable = document.createElement("table");
+		_debugtable.id = 'debugtable';
+		var _debugtr = document.createElement("tr");
+		_debugtable.appendChild(_debugtr);
+		_divdebug.appendChild(_debugtable);
+		_header = document.getElementById('header');
+		_header.appendChild(_divdebug);
+		viewDebugInfo('--INIT--');
+	}
 	goM(_time_reload,_sid,_o);
 }
 
-
 function goM(_time_reload,_sid,_o){
 	// ici je recupere les couples host_name/service affichÃ�Â© sur ma page
-
+	viewDebugInfo('entre dans goM');
 	if(_on)
 	{
 	_host_name = 'none';
@@ -495,8 +524,6 @@ function goM(_time_reload,_sid,_o){
 	_fileStatus=_formBasic.fileStatus.value;
 	_fileOreonConf=_formBasic.fileOreonConf.value;
 	_limit=_form.limit.value;
-//	_hg_name=_form.hg_name.value;
-
 	if(_form.search && _form.search.value)
 		_search=_form.search.value;
 	else
@@ -510,15 +537,8 @@ function goM(_time_reload,_sid,_o){
 	if (paramOk) {
 	  _hg_name = ParamValeur("hg_name");
 	}
-
-
 	var myArray = take_value(_type);
-
-
 	_log = document.getElementById('log');
-
-
-
 	var _tableforajax = document.getElementById('forajax');
 	var _tableAjax = null;
 
@@ -541,27 +561,19 @@ function goM(_time_reload,_sid,_o){
 			}
 		}
 	}
-
 	var xhrM = getXhrM();
-
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-
-
 	_var = "hg_name="+_hg_name+"&host_name="+_host_name+"&date_time_format_status="+_date_time_format_status+"&search_type_service="+_search_type_service+"&search_type_host="+_search_type_host+"&order="+_order+"&sort_type="+_sort_types+"&arr="+myArray + "&num="+_num+"&search="+_search+"&limit="+_limit+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&version="+_version+"&type="+_o+"&smaxtime="+parseInt(_form.smaxtime.value)+"&sid="+_sid+"&time="+parseInt(_form.time.value);
 	xhrM.send(_var);
-
 //	document.getElementById('header').innerHTML = "-->"+_var;
-
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrM.onreadystatechange = function()
 	{	
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
-
 		if(xhrM && xhrM.readyState && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
 		{
-			reponse = xhrM.responseXML.documentElement;
-			
+			reponse = xhrM.responseXML.documentElement;			
 			var infos = reponse.getElementsByTagName("infos");
 			for (var i = 0 ; i < infos.length ; i++) {
 				var info = infos[i];
@@ -570,50 +582,29 @@ function goM(_time_reload,_sid,_o){
 				if(_atime && _form.time)
 					_form.time.value = parseInt(_atime);
 			}
-
 			// a partir d'ici je recupere les informations principales
 			var lines = reponse.getElementsByTagName("line");
 			var order =0;
-
-
 			if(lines.length > 0){
 				DelAllLine(0);
 			}
-
 			for (var i = 0 ; i < lines.length ; i++) 
 			{
 				var line = lines[i];
 				order = line.getElementsByTagName("order")[0].firstChild.nodeValue;
 				var _flag = parseInt(line.getElementsByTagName("flag")[0].firstChild.nodeValue);
-
 				if((_type == 'service' || _type == 'service_problem') )//&& _flag == 1)
 				{
-//					DelOneLine(i);
 					addLineToTab_Service(_tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 				}
 			}//fin du for pour les infos principale
-			monitoring_time_Del_msg();
 		}
-		else if(xhrM && xhrM.readyState && xhrM.readyState == 4)
-		{
-			monitoring_time_msg_failled('failled');
-		}
-		else if(xhrM && xhrM.readyState && xhrM.status != 200)
-		{
-			monitoring_time_msg_failled('timeout');
-		}
-		else
-		{
-			monitoring_time_Del_msg();			
-		}
+			viewDebugInfo('readyState=' + xhrM.readyState + ' -- status=' + xhrM.status);
 	}
 
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
-//	monitoring_time();
-	//ce timer correspond au tps entre chaque check de la date de modif du fichier
-	//le fichier sera parser dans le .php ssi il vient a etre modifiÃ�Â© par nagios
 }
 }
