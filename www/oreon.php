@@ -120,7 +120,6 @@ For information : contact@oreon-project.org
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
 						require_once($redirect["topology_url"]);
-						print "ok";
 					} else 
 						require_once("./alt_error.php");		
 				} else {
