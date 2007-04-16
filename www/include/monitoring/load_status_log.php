@@ -210,7 +210,10 @@ For information : contact@oreon-project.org
 			      			$metaService_status[$svc_data["service_description"]] = $svc_data;
 			      		} else {
 			      			if ((isset($hostgroup) && isset($hostgroup[$svc_data['host_name']])) || (!isset($hostgroup))){
-								$svc_data['plugin_output']=  str_replace("&", "", $svc_data['plugin_output']);
+								if (isset($svc_data['plugin_output']) && $svc_data['plugin_output'])
+									$svc_data['plugin_output'] =  str_replace("&", "", $svc_data['plugin_output']);
+								else
+									$svc_data['plugin_output'] = "";
 								if (isset($_GET["host_name"]) && strcmp($_GET["host_name"], "OSL_Module") && $_GET["host_name"] == $svc_data["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"] == $svc_data["service_description"]){
 									$svc_data["current_state"] = $tab_status_svc[$svc_data['current_state']];
 							      	$service_status[$svc_data["host_name"] . "_" . $svc_data["service_description"]] = $svc_data;
