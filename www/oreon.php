@@ -120,6 +120,7 @@ For information : contact@oreon-project.org
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
 						require_once($redirect["topology_url"]);
+						print "ok";
 					} else 
 						require_once("./alt_error.php");		
 				} else {
@@ -134,6 +135,10 @@ For information : contact@oreon-project.org
 					if (file_exists($ret2["topology_url"])){
 						$url = $ret2["topology_url"];
 						reset_search_page($url);
+						if ($ret2["topology_url_opt"]){
+							$tab = split("\=", $ret2["topology_url_opt"]);
+							$o = $tab[1];
+						}
 						require_once($ret2["topology_url"]);
 					} else
 						require_once("./alt_error.php");
