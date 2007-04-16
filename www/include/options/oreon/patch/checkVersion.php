@@ -17,57 +17,59 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-if (!isset($oreon)) {
-	exit();
-}
 
-require_once('SOAP/Client.php');
-require_once('functions.php');
+	if (!isset($oreon))
+		exit();
 
-$path = dirname(__FILE__);
+	require_once('SOAP/Client.php');
+	require_once('functions.php');
 
-/* Récupération des informations */
-$confPatch = getConfigPatch();
-$urlSoapServer = $confPatch['patch_url_service'];
-$installedVersion = getCurrentVersion();
-$branch = getBranch($installedVersion);
+	$path = dirname(__FILE__);
 
-/* Initialisation du client SOAP */
-$soapClient = new SOAP_Client($urlSoapServer);
+	$newVersionInfo = '';
 
-/* Récupération du dernier patch de sécurité pour la branche installé */
-$params = array('project' => 'oreon', 'branch' => $branch, 'clientVersion' => $installedVersion);
-$secu = $soapClient->call('getSecurity', $params);
-if (PEAR::isError($secu)) {
-	$msgErr = $lang['checkVersion_msgErr01'];
-	$secu = '';
-}
-if ($confPatch['patch_type_secu'] == 'N') {
-	$secu = '';
-}
-
-/* Récupération de la dernière version dsponible */
-$params = array('project' => 'oreon', 'clientVersion' => $installedVersion);
-$listVersion = $soapClient->call('getListVersion', $params);
-if (PEAR::isError($listVersion)) {
-	$msgErr = $lang['checkVersion_msgErr01'];
-} else {
-	$newVersionInfo = checkNewVersion($listVersion, $confPatch);
-}
-
-if ($newVersionInfo == '') {
-	$hasUpdate = false;
-} else {
-	$hasUpdate = true;
-}
-
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
-$tpl->assign('msgErr', $msgErr);
-$tpl->assign('hasUpdate', $hasUpdate);
-$tpl->assign('security', $secu);
-$tpl->assign('lastVersion', $newVersionInfo);
-$tpl->assign('lastVersionType', getVersionType($newVersionInfo));
-$tpl->assign('lang', $lang);
-$tpl->display("checkVersion.ihtml");
+	/* Récupération des informations */
+	$confPatch = getConfigPatch();
+	$urlSoapServer = $confPatch['patch_url_service'];
+	$installedVersion = getCurrentVersion();
+	$branch = getBranch($installedVersion);
+	
+	/* Initialisation du client SOAP */
+	$soapClient = new SOAP_Client($urlSoapServer);
+	
+	/* Récupération du dernier patch de sécurité pour la branche installé */
+	$params = array('project' => 'oreon', 'branch' => $branch, 'clientVersion' => $installedVersion);
+	$secu = $soapClient->call('getSecurity', $params);
+	if (PEAR::isError($secu)) {
+		$msgErr = $lang['checkVersion_msgErr01'];
+		$secu = '';
+	}
+	if ($confPatch['patch_type_secu'] == 'N') {
+		$secu = '';
+	}
+	
+	/* Récupération de la dernière version dsponible */
+	$params = array('project' => 'oreon', 'clientVersion' => $installedVersion);
+	$listVersion = $soapClient->call('getListVersion', $params);
+	if (PEAR::isError($listVersion)) {
+		$msgErr = $lang['checkVersion_msgErr01'];
+	} else {
+		$newVersionInfo = checkNewVersion($listVersion, $confPatch);
+	}
+	
+	if (isset($newVersionInfo) && $newVersionInfo == '') {
+		$hasUpdate = false;
+	} else {
+		$hasUpdate = true;
+	}
+	
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl);
+	$tpl->assign('msgErr', $msgErr);
+	$tpl->assign('hasUpdate', $hasUpdate);
+	$tpl->assign('security', $secu);
+	$tpl->assign('lastVersion', $newVersionInfo);
+	$tpl->assign('lastVersionType', getVersionType($newVersionInfo));
+	$tpl->assign('lang', $lang);
+	$tpl->display("checkVersion.ihtml");
 ?>
