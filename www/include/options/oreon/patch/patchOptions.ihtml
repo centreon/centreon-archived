@@ -1,5 +1,4 @@
 {$form.javascript}
-
 {$colorJS}
 <form {$form.attributes}>
 <div id="tab1" class="tab">
