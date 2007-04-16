@@ -36,6 +36,9 @@ For information : contact@oreon-project.org
 	require_once ("$classdir/Oreon.class.php");
 	require_once (SMARTY_DIR."Smarty.class.php");
 
+	ini_set("session.cache_limiter", "public");
+    ini_set("session.cache_expire", "31536000");
+
 	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
 	    eval('
@@ -235,7 +238,6 @@ For information : contact@oreon-project.org
 	    window.onload = function () {
 	    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', <?=$tFS?>);
 	<?
-	ini_set("session.gc_maxlifetime", "31536000"); 
 	$res = null;
 	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT))
