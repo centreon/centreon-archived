@@ -36,9 +36,8 @@ For information : contact@oreon-project.org
 	require_once ("$classdir/Oreon.class.php");
 	require_once (SMARTY_DIR."Smarty.class.php");
 
-	ini_set("session.cache_limiter", "public");
-    ini_set("session.cache_expire", "31536000");
-
+	ini_set("session.gc_maxlifetime", "31536000");
+	
 	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
 	    eval('

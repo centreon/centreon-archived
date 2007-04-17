@@ -34,8 +34,7 @@ For information : contact@oreon-project.org
 		$file_install_acces = 1;
 	}
 
-	ini_set("session.cache_limiter", "public");
-    	ini_set("session.cache_expire", "31536000");
+	ini_set("session.gc_maxlifetime", "31536000");
 	
 	Session::start();
 	if (isset($_GET["disconnect"])) {
