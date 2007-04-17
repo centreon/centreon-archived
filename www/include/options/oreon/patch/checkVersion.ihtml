@@ -6,12 +6,12 @@
 {if $hasUpdate}
 {if $security != ''}
 <div class="updateSecu">
-{$lang.updateSecu} : <a href="http://10.1.7.129/oreon/oreon.php?p=5010503&version={$security}">{$security}</a>
+{$lang.updateSecu} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$security}">{$security}</a>
 </div>
 {/if}
 {if $security != $lastVersion}
 <div class="update">
-{$lang.update} : <a href="http://10.1.7.129/oreon/oreon.php?p=5010503&version={$lastVersion}">{$lastVersion} ({$lastVersionType})</a>
+{$lang.update} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$lastVersion}">{$lastVersion} ({$lastVersionType})</a>
 </div>
 {/if}
 {else}

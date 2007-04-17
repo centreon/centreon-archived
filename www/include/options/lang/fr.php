@@ -245,6 +245,7 @@ $lang['preUpdate_msgErr02'] = "Probl&egrave; dans la r&eacute;cup&eacute;ration 
 $lang['preUpdate_msgErr03'] = "Aucune version n'est d&eacute;finie.";
 $lang['preUpdate_msgErr04'] = "Impossible d'ouvrir le fichier /etc/oreon.conf";
 $lang['preUpdate_msgErr05'] = "Probl&egrave; la derni&egrave; version disponible.";
+$lang['preUpdate_msgErr06'] = "Impossible d'ouvrir le patch";
 $lang['preUpdate_fileDownloaded'] = "Le fichier %s est t&eacute;l&eacute;charg&eacute;.<br/>";
 $lang['preUpdate_installArchive'] = "Pour l'install de la mise à jour %s, décompressez l'archive et suivez le UPGRADE.\n";
 $lang['preUpdate_shellPatch'] = "Exécutez le shell %s en root.\n";

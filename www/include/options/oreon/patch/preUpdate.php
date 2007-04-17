@@ -74,11 +74,10 @@ if (ini_get("allow_url_fopen")) {
 /* Tableau pour le changement des variables sys */
 $oreon_etc = "/etc/oreon.conf";
 $fd = @fopen($oreon_etc, 'r');
-if ($fd === false) {
+if (!$fd) {
 	$msgErr = $lang['preUpdate_msgErr04'];
 	$tpl->assign('msgErr', $msgErr);
 	$tpl->display('preUpdate.ihtml');
-	exit();
 }
 $sysvar = array();
 while ($line = fgets($fd)) {
@@ -91,6 +90,7 @@ while ($line = fgets($fd)) {
 fclose($fd);
 $sysvar['source'][] = '@OREON_PATH@';
 $sysvar['dest'][] = $oreon->optGen['oreon_path'];
+
 
 /* Téléchargement des fichiers */
 $outputString = '';
@@ -117,7 +117,7 @@ foreach ($listFiles->files as $file) {
 }
 
 if ($lastVersion == '') {
-	$msgErr = $lang['preUpdate_msgErr04'];
+	$msgErr = $lang['preUpdate_msgErr06'];
 	$tpl->assign('msgErr', $msgErr);
 	$tpl->display('preUpdate.ihtml');
 	exit();
