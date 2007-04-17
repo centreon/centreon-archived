@@ -93,7 +93,6 @@ For information : contact@oreon-project.org
 		$query .= ", `patch_type_beta` = '" . $ret['patch_type_beta']['patch_type_beta'] . "'";
 		$query .= ", `patch_path_download`= '" . htmlentities($ret['patch_path_download'], ENT_QUOTES) . "'";
 		$query .= " WHERE `gopt_id`=1";
-		print $query;
 		$pearDB->query($query);
 	}
 	
