@@ -204,10 +204,11 @@ For information : contact@oreon-project.org
 	function setO(_i) {
 		document.forms['form'].elements['cmd'].value = _i;
 		document.forms['form'].elements['o1'].selectedIndex = 0;
+		document.forms['form'].elements['o2'].selectedIndex = 0;
 	}
 	</SCRIPT>
 	<?
-	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();} ");
+	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit(); ");
     $form->addElement('select', 'o1', NULL, array(	NULL	=>	$lang["lgd_more_actions"], 
 													"1"		=>	$lang['m_mon_resubmit_im_checks'], 
 													"2"		=>	$lang['m_mon_resubmit_im_checks_f'], 
@@ -228,7 +229,7 @@ For information : contact@oreon-project.org
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 
-	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();} ");
+	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit(); ");
     $form->addElement('select', 'o2', NULL, array(	NULL	=>	$lang["lgd_more_actions"], 
 													"1"		=>	$lang['m_mon_resubmit_im_checks'], 
 													"2"		=>	$lang['m_mon_resubmit_im_checks_f'], 
