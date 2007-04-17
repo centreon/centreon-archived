@@ -96,11 +96,10 @@
 		{/php}
 	</tr>
 </table>
-<input type='hidden' name='o' id='o' value='42'>
 {if $host_name}
 <input type='hidden' name='host_name' value='{$host_name}'>
 {/if}
-<input name='cmd' value='0' type='hidden'>
+<input name='cmd' id='cmd' value='42' type='hidden'>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
