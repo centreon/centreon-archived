@@ -1654,7 +1654,7 @@ CREATE TABLE `traps` (
   `traps_oid` varchar(255) default NULL,
   `traps_handler` varchar(255) default NULL,
   `traps_args` varchar(255) default NULL,
-  `traps_status` smallint(6) default NULL,
+  `traps_status` ENUM( '-1', '0', '1', '2', '3' ) default NULL,
   `traps_comments` varchar(255) default NULL,
   UNIQUE KEY `traps_name` (`traps_name`),
   KEY `traps_id` (`traps_id`)
