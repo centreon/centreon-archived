@@ -116,7 +116,11 @@ foreach ($listFiles->files as $file) {
 	}
 }
 
-if ($lastVersion == '') {
+if ($msgErr != '') {
+       $tpl->assign('msgErr', $msgErr);
+       $tpl->display('preUpdate.ihtml');
+       exit();
+} elseif ($lastVersion == '') {
 	$msgErr = $lang['preUpdate_msgErr06'];
 	$tpl->assign('msgErr', $msgErr);
 	$tpl->display('preUpdate.ihtml');
