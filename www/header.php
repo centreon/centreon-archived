@@ -86,9 +86,9 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if (!$DBRESULT->numRows())
 			header("Location: index.php?disconnect=2");			
-		if (!isset($_SESSION["oreon"]))
+		if (!isset($_SESSION["oreon"])){
 			header("Location: index.php?disconnect=1");
-
+		}
 		# Define Oreon var alias
 		$oreon =& $_SESSION["oreon"];
 		if (!is_object($oreon))
