@@ -68,6 +68,12 @@ sub writeLogFile($){
 writeLogFile("Starting ODS engine...\n");
 writeLogFile("PID : ".$$."\n");
 
+# checking if pid file exists.
+if (-x $PID){
+	writeLogFile("ods already runnig. can't launch again....\n");
+	exit(2);
+}
+
 # Writing PID
 open (PID, ">> ".$PID) || print "can't write PID : $!";
 print PID $$ ;
