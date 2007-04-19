@@ -68,8 +68,8 @@ For information : contact@oreon-project.org
 		</tr>
 		<tr>
 			<td id="LoginInvitcpy" colspan="2">
-				<a href="http://www.nagios.org/contact/">&copy; Nagios</a> - <a href="mailto:infos@oreon-project.org">&copy; Oreon</a><br>
-				All Rights Reserved.
+				<br>
+				&copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Oreon</a>
 			</td>
 		</tr>
 	</table>
