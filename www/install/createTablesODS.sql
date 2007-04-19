@@ -38,7 +38,7 @@ CREATE TABLE `data_bin` (
   `status` enum('0','1','2','3','4') default NULL,
   PRIMARY KEY  (`id_bin`),
   KEY `index_metric` (`id_metric`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -55,7 +55,7 @@ CREATE TABLE `index_data` (
   `special` enum('0','1') default '0',
   `storage_type` enum('0','1','2') default '2',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -79,7 +79,7 @@ CREATE TABLE `log` (
   KEY `host_name` (`host_name`(64)),
   KEY `service_description` (`service_description`(64)),
   KEY `status` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=43156 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -97,7 +97,7 @@ CREATE TABLE `metrics` (
   `rrdDataBase_Path` varchar(255) default NULL,
   PRIMARY KEY  (`metric_id`),
   KEY `index` (`index_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -116,24 +116,3 @@ CREATE TABLE `statistics` (
   `average` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- 
-
-INSERT INTO `statistics` (`id`, `ctime`, `last_insert_duration`, `average_duration`, `last_nb_line`, `cpt`, `last_restart`, `average`) VALUES (1, 0, 0, 0, 0, 0, 0, 0);
-
-
--- 
--- Contraintes pour les tables exportées
--- 
-
--- 
--- Contraintes pour la table `data_bin`
--- 
-ALTER TABLE `data_bin`
-  ADD CONSTRAINT `data_bin_ibfk_1` FOREIGN KEY (`id_metric`) REFERENCES `metrics` (`metric_id`) ON DELETE CASCADE;
-
--- 
--- Contraintes pour la table `metrics`
--- 
-ALTER TABLE `metrics`
-  ADD CONSTRAINT `metrics_ibfk_1` FOREIGN KEY (`index_id`) REFERENCES `index_data` (`id`) ON DELETE CASCADE;
