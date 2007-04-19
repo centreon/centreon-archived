@@ -319,7 +319,7 @@ For information : contact@oreon-project.org
 		if (!$hg_id) return;
 		global $pearDB;
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		if (PEAR::isError($DBRESULT)) 
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))
@@ -350,6 +350,58 @@ For information : contact@oreon-project.org
 		if ($row["hg_snmp_version"])
 			return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES);
 		return NULL;
+	}
+	
+	#
+	## SERVICE GROUP
+	#
+	
+	function getMyServiceGroupName($sg_id = NULL)	{
+		if (!$sg_id) return;
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT sg_name FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
+		if ($row["sg_name"])
+			return html_entity_decode($row["sg_name"], ENT_QUOTES);
+		return NULL;
+	}
+	
+	function getMyServiceGroupServices($sg_id = NULL)	{
+		if (!$sg_id) return;
+		global $pearDB;
+		$svs = array();
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id " .
+									"FROM servicegroup_relation, service " .
+									"WHERE servicegroup_sg_id = '".$sg_id."' " .
+									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
+									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND servicegroup_relation.host_host_id IS NOT NULL");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))	{
+			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
+			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["service_description"];
+		}
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id " .
+									"FROM servicegroup_relation, service " .
+									"WHERE servicegroup_sg_id = '".$sg_id."' " .
+									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
+									"AND service.service_id = servicegroup_relation.service_service_id " .
+									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($elem))	{
+			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
+			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
+			foreach ($hosts as $key=>$value)
+				$svs[$key."_".$elem["service_id"]] = $elem["service_description"];			
+		}
+		$DBRESULT->free();
+		return $svs;
 	}
 	
 	#
