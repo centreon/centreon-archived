@@ -31,8 +31,7 @@ For information : contact@oreon-project.org
 			<tr>
 				<td align='center' class='copyRight'>
 					Generated in <? $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . $lang["time_sec"]; ?><br />
-					Copyright &copy; 1999-2007 Nagios - <a href="http://www.nagios.org/contact/">Ethan Galstad</a><br>
-					Copyright &copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Oreon</a><br>
+					Copyright &copy; 1999-2007 Nagios - <a href="http://www.nagios.org/contact/">Ethan Galstad</a> | Copyright &copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Oreon</a><br>
 					All Rights Reserved<br />
 				</td>
 			</tr>
