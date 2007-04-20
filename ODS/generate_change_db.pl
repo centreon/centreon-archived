@@ -52,6 +52,10 @@ sub writeLogFile($){
 sub getMyServiceField($$)	{
 	my $service_id = $_[0];
 	my $field = $_[1];
+	
+	if (!defined($service_id) || !$service_id){
+		return 1;
+	}
 		
 	while(1){
 		my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
@@ -91,6 +95,19 @@ CheckMySQLConnexion();
 
 my ($sth2, $data, $ERR);
 
+if ($ARGV[0] == "-a"){
+    undef($ARGV);
+    $sth2 = $con_ods->prepare("SELECT metric_id FROM metrics ORDER BY metric_id");
+    if (!$sth2->execute) {writeLogFile("Error when getting metrics list : " . $sth2->errstr . "\n");}
+    my $t;
+    for ($t = 0;$data = $sth2->fetchrow_hashref();$t++){
+		$ARGV[$t] = $data->{'metric_id'};
+    }
+    undef($sth2);
+    undef($t);
+    undef($data);
+}
+
 $sth2 = $con_ods->prepare("SELECT * FROM config");
 if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
 $data = $sth2->fetchrow_hashref();
@@ -102,9 +119,10 @@ for (my $i = 0; defined($ARGV[$i]) ; $i++ ){
 	if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
 	$data = $sth2->fetchrow_hashref();
 	my $index_id = $data->{'index_id'};
+	my $metric_name = $data->{'metric_name'};
 	undef($sth2);
 	undef($data);
-	my $interval = getServiceCheckInterval($ARGV[$i]) * 120;
+	my $interval = getServiceCheckInterval($ARGV[$i]) * 60 + 10;
 	$sth2 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$ARGV[$i]."'");
 	if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
 	my $flag = 0;
@@ -113,7 +131,7 @@ for (my $i = 0; defined($ARGV[$i]) ; $i++ ){
 		if (!$flag){
 			system("mv ".$RRDdatabase_path.$ARGV[$i].".rrd ".$RRDdatabase_path."old/".$ARGV[$i].".rrd");
 			my $begin = $data->{'ctime'} - 200;
-			RRDs::create($RRDdatabase_path.$ARGV[$i].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$len_storage_rrd, "RRA:MIN:0.5:12:".$len_storage_rrd, "RRA:MAX:0.5:12:".$len_storage_rrd);
+			RRDs::create($RRDdatabase_path.$ARGV[$i].".rrd", "-b ".$begin, "-s ".$interval, "DS:$metric_name:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$len_storage_rrd, "RRA:MIN:0.5:12:".$len_storage_rrd, "RRA:MAX:0.5:12:".$len_storage_rrd);
 			print "Creation de la Base : " .$RRDdatabase_path.$ARGV[$i].".rrd\n";
 			print "begin : " .$begin ." \n";
 			print "Interval : ".$interval."\n";
@@ -122,7 +140,7 @@ for (my $i = 0; defined($ARGV[$i]) ; $i++ ){
 			undef($begin);
 			$flag++;
 		}
-		RRDs::update ($RRDdatabase_path.$ARGV[$i].".rrd" , "--template", "metric", $data->{'ctime'}.":".$data->{'value'});
+		RRDs::update ($RRDdatabase_path.$ARGV[$i].".rrd" , "--template", $metric_name, $data->{'ctime'}.":".$data->{'value'});
 		$ERR = RRDs::error;
 		if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$ARGV[$i]."_new.rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
 		$cpt++;
