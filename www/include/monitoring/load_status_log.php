@@ -167,7 +167,7 @@ For information : contact@oreon-project.org
 	$tab_host_service = array();
 		
 	$time = time();	
-	if ($version == 1 && $fast_parsing){
+	if ($version == 1 && !$fast_parsing){
 	  if ($log_file)
 	    while ($str = fgets($log_file))	{
       	  	// set last update 
