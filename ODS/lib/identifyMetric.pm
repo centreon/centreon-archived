@@ -74,14 +74,14 @@ sub identify_metric($$$$$){ # perfdata index status time type
 			$begin = $_[3] - 200;
 			if (defined($data[1])){
 				if (defined($_[4]) && $_[4] eq 1){
-					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'});
+					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
 					$generalcounter++;
 				} elsif (defined($_[4]) && $_[4] eq 0) {   # Insert Data In Mysql 
 					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				} else {
-					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'});
-					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
+					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
+					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				}
 			}
@@ -150,13 +150,12 @@ sub identify_hidden_metric($$$$$){ # perfdata index status time type
 			$begin = $_[3] - 200;
 			if (defined($data[1])){
 				if (defined($_[4]) && $_[4] eq 1){
-					updateRrdDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'});
-					$generalcounter++;
+					updateRrdDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});$generalcounter++;
 				} elsif (defined($_[4]) && $_[4] eq 0) {   # Insert Data In Mysql 
 					updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				} else {
-					updateRrdDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'});
+					updateRrdDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});					
 					updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
 					$generalcounter++;
 				}
