@@ -36,7 +36,7 @@ sub checkAndUpdate($){
 	undef(@param);
 }
 
-sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
+sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
 	my $nb_value;
@@ -45,7 +45,7 @@ sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
 		$_[3] =~ s/\,/\./g;
-		RRDs::update ($_[0].$_[1].".rrd" , "--template", "metric", $_[2].":".sprintf("%e", $_[3]));
+		RRDs::update ($_[0].$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
 		if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}
 	} else {
@@ -61,11 +61,11 @@ sub updateRrdDB($$$$$$$){ # Path metric_id value timestamp interval type
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
-			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
+			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".$_[6].":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
 			$_[3] =~ s/\,/\./g;
-			RRDs::update ($_[0].$_[1].".rrd" , "--template", "metric", $_[2].":".sprintf("%e", $_[3]));
+			RRDs::update ($_[0].$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}	
 			undef($begin);
@@ -84,14 +84,14 @@ sub updateMysqlDB($$$$){ # connexion value timestamp
 }
 
 
-sub updateRrdDBforHiddenSVC($$$$$$$){ # Path metric_id value timestamp interval type
+sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
 
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
 		$_[3] =~ s/\,/\./g;
-		RRDs::update ($_[0]."/".$_[1].".rrd" , "--template", "metric", $_[2].":".sprintf("%e", $_[3]));
+		RRDs::update ($_[0]."/".$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
 		if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}
 	} else {
@@ -107,11 +107,11 @@ sub updateRrdDBforHiddenSVC($$$$$$$){ # Path metric_id value timestamp interval 
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
-			RRDs::create ($_[0]."/".$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:metric:GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
+			RRDs::create ($_[0]."/".$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".$_[6].":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]/$_[1].rrd : $ERR\n");}	
 			$_[3] =~ s/\,/\./g;
-			RRDs::update ($_[0]."/".$_[1].".rrd" , "--template", "metric", $_[2].":".sprintf("%e", $_[3]));
+			RRDs::update ($_[0]."/".$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}	
 			undef($begin);
