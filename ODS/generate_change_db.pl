@@ -25,9 +25,6 @@
 
 use strict;
 use DBI;
-use POSIX qw(mkfifo);
-use threads;
-use threads::shared;
 use RRDs;
 
 #my $installedPath = "@OREON_PATH@/ODS/";
