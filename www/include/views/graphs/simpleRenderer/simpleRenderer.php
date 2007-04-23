@@ -339,7 +339,7 @@ For information : contact@oreon-project.org
 				foreach ($ppMetrics as $key => $metric){
 					if ($metric["metric"] == "")
 						$metric["metric"] = "a".$nb_ds;
-					$cmd .= " DS:".str_replace("/", "", addslashes($metric["metric"])).":GAUGE:$time_between_two_values:U:U";
+					$cmd .= " DS:".str_replace("/", "slash_", addslashes($metric["metric"])).":GAUGE:$time_between_two_values:U:U";
 					$nb_ds++;
 				}
 				$cpt_total_graphed_values_for_rrd = $cpt_total_values + 100;

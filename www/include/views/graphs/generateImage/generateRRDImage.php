@@ -124,7 +124,7 @@ For information : contact@oreon-project.org
 		$cpt = 0;
 		while($DBRESULT->fetchInto($ppMetric))	{
 			if ($ppMetric["metric"] != ""){
-				$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace("/", "", $ppMetric["metric"]);
+				$ppMetrics[$ppMetric["metric_id"]]["metric"] = str_replace("/", "slash_", $ppMetric["metric"]);
 			} else {
 				$ppMetrics[$ppMetric["metric_id"]]["metric"] = "a".$cpt;
 			}
