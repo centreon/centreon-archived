@@ -115,7 +115,10 @@ For information : contact@oreon-project.org
 						$metrics[$metric["metric_id"]][$key] = $ds_d;
 				}
 				$res_ds->free();
-				$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+				if (preg_match('/DS/', $ds_data["ds_name"], $matches))
+					$metrics[$metric["metric_id"]]["legend"] = $metric["metric_name"];
+                else
+                	$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
 				if (strcmp($metric["unit_name"], ""))
 					$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
 				$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
@@ -127,9 +130,9 @@ For information : contact@oreon-project.org
 		$longer = 0;
 		foreach ($metrics as $key => $tm){
 			if (isset($tm["ds_invert"]) && $tm["ds_invert"])
-				$command_line .= " DEF:va".$cpt."=".$RRDdatabase_path.$key.".rrd:metric:AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,* ";
+				$command_line .= " DEF:va".$cpt."=".$RRDdatabase_path.$key.".rrd:".$metrics[$key]["metric"].":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,* ";
 			else
-				$command_line .= " DEF:v".$cpt."=".$RRDdatabase_path.$key.".rrd:metric:AVERAGE ";
+				$command_line .= " DEF:v".$cpt."=".$RRDdatabase_path.$key.".rrd:".$metrics[$key]["metric"].":AVERAGE ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
 			$cpt++;
