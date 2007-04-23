@@ -21,6 +21,7 @@ For information : contact@oreon-project.org
 
 	# LCA 
 	if ($isRestreint){
+		$lcaHostByName = getLcaHostByName($pearDB);
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 	}
@@ -134,84 +135,85 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	if (!$DBRESULT->numRows())
-		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
-
+		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";	
+		
 	if ($form->validate() && (isset($_GET["host_name"]) || isset($_GET["host_id"]))){
-		
-		# Init variable in the page
-		$label = NULL;
-		$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
-		if (isset($graph))
-			$tpl->assign("graph", $graph["name"]);
-		$tpl->assign("lgGraph", $lang['giv_gt_name']);
-		$tpl->assign("lgMetric", $lang['giv_ct_metric']);
-		$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
-		
-		$elem = array();
-		if (isset($_GET["host_name"])){
-			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' ORDER BY service_description");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		} else if (isset($_GET["host_id"])){
-			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$_GET["host_id"]."' ORDER BY service_description");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		}
-	
-		while ($DBRESULT->fetchInto($index_data)){
+		if (!$isRestreint || ($isRestreint && ((isset($_GET["host_name"]) && isset($lcaHostByName["LcaHost"][$_GET["host_name"]]))||(isset($_GET["host_id"]) && isset($lcaHostByName["LcaHost"][$_GET["host_id"]]))))) {
+			# Init variable in the page
+			$label = NULL;
+			$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
+			if (isset($graph))
+				$tpl->assign("graph", $graph["name"]);
+			$tpl->assign("lgGraph", $lang['giv_gt_name']);
+			$tpl->assign("lgMetric", $lang['giv_ct_metric']);
+			$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
 			
+			$elem = array();
 			if (isset($_GET["host_name"])){
-				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
+				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' ORDER BY service_description");
+				if (PEAR::isError($DBRESULT))
+					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			} else if (isset($_GET["host_id"])){
-				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$_GET["host_id"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
+				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$_GET["host_id"]."' ORDER BY service_description");
+				if (PEAR::isError($DBRESULT))
+					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			}
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			$DBRESULT2->fetchInto($svc_id);
-			$service_id = $svc_id["service_id"];
-			$index_id = $svc_id["id"];
-			if (isset($_GET["host_name"]))
-				$host_name = $_GET["host_name"];
-			else
-				$host_name = $svc_id["host_name"];
-			
-			$elem[$index_id] = array("index_id" => $index_id, "service_description" => $svc_id["service_description"]);
-			
-			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			while ($DBRESULT2->fetchInto($metrics_ret)){
-				$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
-				$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
-			}
-			
-			# Create period
-			if (isset($_GET["start"]) && isset($_GET["end"]) && $_GET["start"] && $_GET["end"]){
-				preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["start"], $matches);
-				$start = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3], 1) ;
-				preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
-				$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
-			} else if (!isset($_GET["period"]) || (isset($_GET["period"]) && !$_GET["period"])){
-				if (!isset($graph["graph_id"]))
-					$period = 86400;
-				else {
-					$DBRESULT2 =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-					$DBRESULT2->fetchInto($graph);
-					$period = $graph["period"];
+		
+			while ($DBRESULT->fetchInto($index_data)){
+				
+				if (isset($_GET["host_name"])){
+					$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
+				} else if (isset($_GET["host_id"])){
+					$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$_GET["host_id"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
 				}
-			} else if ($_GET["period"])
-				$period = $_GET["period"];
-			
-			if (!isset($start) && !isset($end)){
-				$start = time() - ($period + 30);
-				$end = time() + 10;
-			}			
-			$tpl->assign('end', $end);
-			$tpl->assign('start', $start);
-			if (isset($_GET["template_id"]))
-				$elem[$index_id]['template_id'] = $_GET["template_id"];				
+				if (PEAR::isError($DBRESULT2))
+					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+				$DBRESULT2->fetchInto($svc_id);
+				$service_id = $svc_id["service_id"];
+				$index_id = $svc_id["id"];
+				if (isset($_GET["host_name"]))
+					$host_name = $_GET["host_name"];
+				else
+					$host_name = $svc_id["host_name"];
+				
+				$elem[$index_id] = array("index_id" => $index_id, "service_description" => $svc_id["service_description"]);
+				
+				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
+				if (PEAR::isError($DBRESULT2))
+					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+				while ($DBRESULT2->fetchInto($metrics_ret)){
+					$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
+					$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
+				}
+				
+				# Create period
+				if (isset($_GET["start"]) && isset($_GET["end"]) && $_GET["start"] && $_GET["end"]){
+					preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["start"], $matches);
+					$start = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3], 1) ;
+					preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
+					$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
+				} else if (!isset($_GET["period"]) || (isset($_GET["period"]) && !$_GET["period"])){
+					if (!isset($graph["graph_id"]))
+						$period = 86400;
+					else {
+						$DBRESULT2 =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
+						if (PEAR::isError($DBRESULT2))
+							print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+						$DBRESULT2->fetchInto($graph);
+						$period = $graph["period"];
+					}
+				} else if ($_GET["period"])
+					$period = $_GET["period"];
+				
+				if (!isset($start) && !isset($end)){
+					$start = time() - ($period + 30);
+					$end = time() + 10;
+				}			
+				$tpl->assign('end', $end);
+				$tpl->assign('start', $start);
+				if (isset($_GET["template_id"]))
+					$elem[$index_id]['template_id'] = $_GET["template_id"];				
+			}
 		}
 	}
 	

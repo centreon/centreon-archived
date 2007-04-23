@@ -21,6 +21,7 @@ For information : contact@oreon-project.org
 
 	# LCA 
 	if ($isRestreint){
+		$lcaHostByName = getLcaHostByName($pearDB);
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 	}
@@ -101,51 +102,53 @@ For information : contact@oreon-project.org
 	$tpl->assign('host_name', $svc_id["host_name"]);
 	$tpl->assign('service_description', $svc_id["service_description"]);
 
-	$DBRESULT =& $pearDBO->query("SELECT * FROM config");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo();
-	$DBRESULT->fetchInto($config);
-	$tpl->assign('config', $config);
+	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
+		$DBRESULT =& $pearDBO->query("SELECT * FROM config");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo();
+		$DBRESULT->fetchInto($config);
+		$tpl->assign('config', $config);
+		
+		$metrics = array();
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_id");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo();
 	
-	$metrics = array();
-	$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_id");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo();
-
-	$counter = 1;	
-	$metrics = array();	
-	while ($DBRESULT->fetchInto($metric)){
-		$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-		$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
-		$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];		
-		if ($tab_stat = stat($config["RRDdatabase_path"].$metric["metric_id"].".rrd")){
-			$metrics[$metric["metric_id"]]["last_update"] = date($lang["date_time_format_status"],$tab_stat[9]);
-			$metrics[$metric["metric_id"]]["size"] = round($tab_stat[7] / 1024 / 1024, 2);	
-			$metrics[$metric["metric_id"]]["db_name"] = $config["RRDdatabase_path"].$metric["metric_id"].".rrd";
+		$counter = 1;	
+		$metrics = array();	
+		while ($DBRESULT->fetchInto($metric)){
+			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
+			$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
+			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];		
+			if ($tab_stat = stat($config["RRDdatabase_path"].$metric["metric_id"].".rrd")){
+				$metrics[$metric["metric_id"]]["last_update"] = date($lang["date_time_format_status"],$tab_stat[9]);
+				$metrics[$metric["metric_id"]]["size"] = round($tab_stat[7] / 1024 / 1024, 2);	
+				$metrics[$metric["metric_id"]]["db_name"] = $config["RRDdatabase_path"].$metric["metric_id"].".rrd";
+			}
+			$metrics[$metric["metric_id"]]["order"] = $counter;
+			$counter++;
 		}
-		$metrics[$metric["metric_id"]]["order"] = $counter;
-		$counter++;
+		$DBRESULT->free();
+		
+		$DBRESULT_data =& $pearDBO->query("SELECT storage_type FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
+		if (PEAR::isError($DBRESULT_data))
+			print "DB Error : ".$DBRESULT_data->getDebugInfo();
+		$DBRESULT_data->fetchInto($conf);
+		$DBRESULT_data->free();
+		
+		$storage_type = array(0 => "RRDTool", 1 => "MySQL", 2 => "RRDTool & MySQL");	
+		$tpl->assign('storage_type_possibility', $storage_type);
+		$tpl->assign('storage_type', $conf["storage_type"]);
+		
+		$tpl->assign('admin', $oreon->user->admin);
+		
+		$tpl->assign('start', $_GET["start"]);
+		$tpl->assign('end', $_GET["end"]);
+		$tpl->assign('isAvl', 1);
+		$tpl->assign('lang', $lang);
+		$tpl->assign('index', $_GET["index"]);
+		$tpl->assign('session_id', session_id());
+		$tpl->assign('metrics', $metrics);
+		$tpl->display("displayODSGraphProperties.ihtml");
 	}
-	$DBRESULT->free();
-	
-	$DBRESULT_data =& $pearDBO->query("SELECT storage_type FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
-	if (PEAR::isError($DBRESULT_data))
-		print "DB Error : ".$DBRESULT_data->getDebugInfo();
-	$DBRESULT_data->fetchInto($conf);
-	$DBRESULT_data->free();
-	
-	$storage_type = array(0 => "RRDTool", 1 => "MySQL", 2 => "RRDTool & MySQL");	
-	$tpl->assign('storage_type_possibility', $storage_type);
-	$tpl->assign('storage_type', $conf["storage_type"]);
-	
-	$tpl->assign('admin', $oreon->user->admin);
-	
-	$tpl->assign('start', $_GET["start"]);
-	$tpl->assign('end', $_GET["end"]);
-	$tpl->assign('isAvl', 1);
-	$tpl->assign('lang', $lang);
-	$tpl->assign('index', $_GET["index"]);
-	$tpl->assign('session_id', session_id());
-	$tpl->assign('metrics', $metrics);
-	$tpl->display("displayODSGraphProperties.ihtml");
 ?>

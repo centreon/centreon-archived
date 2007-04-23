@@ -22,6 +22,7 @@ For information : contact@oreon-project.org
 	# LCA 
 	if ($isRestreint){
 		$lcaHostByID = getLcaHostByID($pearDB);
+		$lcaHostByName = getLcaHostByName($pearDB);
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 	}
 	
@@ -95,96 +96,98 @@ For information : contact@oreon-project.org
 		$DBRESULT2->fetchInto($svc_id);
 	}
 	
-	$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
-	if (PEAR::isError($DBRESULT2))
-		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	$other_services = array();
-	while ($DBRESULT2->fetchInto($selected_service))
-		$other_services[$selected_service["id"]] = $selected_service["service_description"];
-	$DBRESULT2->free();
-	$form->addElement('select', 'index', 'Others Services', $other_services);
-	$form->setDefaults($_GET);
-	
-	$service_id = $svc_id["service_id"];
-	$index_id = $svc_id["id"];
-	
-	if (!$service_id) {$tpl->assign('msg', $lang["no_graph_found"]);$msg_error = 1;} else {$tpl->assign('msg', NULL);}	
-	if (!isset($start) && !isset($end)){
-		$tpl->assign('start_daily', $start_daily = time() - 60 * 60 * 24);
-		$tpl->assign('end_daily', $end_daily = time());
-		$tpl->assign('start_weekly', $start_weekly = time() - 60 * 60 * 24 * 7);
-		$tpl->assign('end_weekly', $end_weekly = time());
-		$tpl->assign('start_monthly', $start_monthly = time() - 60 * 60 * 24 * 31);
-		$tpl->assign('end_monthly', $end_monthly = time());
-		$tpl->assign('start_yearly', $start_yearly = time() - 60 * 60 * 24 * 365);
-		$tpl->assign('end_yearly', $end_yearly = time());
-	}
-	
-	if (isset($_GET["template_id"]))
-		$tpl->assign('template_id', $_GET["template_id"]);				
-			
-	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
-	if (PEAR::isError($DBRESULT2))
-		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-	for ($counter = 0;$DBRESULT2->fetchInto($metrics_ret); $counter++){
-		$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
-		$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
-		$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
-	}
+	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		$other_services = array();
+		while ($DBRESULT2->fetchInto($selected_service))
+			$other_services[$selected_service["id"]] = $selected_service["service_description"];
+		$DBRESULT2->free();
+		$form->addElement('select', 'index', 'Others Services', $other_services);
+		$form->setDefaults($_GET);
 		
-	# verify if metrics in parameter is for this index
-	$metrics_active =& $_GET["metric"];
-	$pass = 0;
-	if (isset($metrics_active))
-		foreach ($metrics_active as $key => $value)
-			if (isset($metrics[$key]))
-				$pass = 1;
-	# 
-	
-	if ($msg_error == 0){
-		if (isset($_GET["metric"]) && $pass){
-			$tpl->assign('metric_active', $metrics_active);	
-			$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			foreach ($metrics_active as $key => $metric){
-				if (isset($metrics_active[$key])){
-					$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$_GET["index"]."');");
-					if (PEAR::isError($DBRESULT))
-						print "Mysql Error : ".$DBRESULT->getDebugInfo();
-				}
-			}
-		} else {
-			$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."' AND `contact_id` = '".$oreon->user->user_id."'");
-			if (PEAR::isError($DBRESULT))
-				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			$metrics_active = array();
-			if ($DBRESULT->numRows())
-				while ($DBRESULT->fetchInto($metric))
-					$metrics_active[$metric["metric_id"]] = 1;		
-			else
-				foreach ($metrics as $key => $value)
-					$metrics_active[$key] = 1;	
+		$service_id = $svc_id["service_id"];
+		$index_id = $svc_id["id"];
+		
+		if (!$service_id) {$tpl->assign('msg', $lang["no_graph_found"]);$msg_error = 1;} else {$tpl->assign('msg', NULL);}	
+		if (!isset($start) && !isset($end)){
+			$tpl->assign('start_daily', $start_daily = time() - 60 * 60 * 24);
+			$tpl->assign('end_daily', $end_daily = time());
+			$tpl->assign('start_weekly', $start_weekly = time() - 60 * 60 * 24 * 7);
+			$tpl->assign('end_weekly', $end_weekly = time());
+			$tpl->assign('start_monthly', $start_monthly = time() - 60 * 60 * 24 * 31);
+			$tpl->assign('end_monthly', $end_monthly = time());
+			$tpl->assign('start_yearly', $start_yearly = time() - 60 * 60 * 24 * 365);
+			$tpl->assign('end_yearly', $end_yearly = time());
 		}
-		$tpl->assign('metrics', $metrics);
-		$tpl->assign('nb_metrics', count($metrics));
-		$tpl->assign('metrics_active', $metrics_active);
+		
+		if (isset($_GET["template_id"]))
+			$tpl->assign('template_id', $_GET["template_id"]);				
+				
+		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		for ($counter = 0;$DBRESULT2->fetchInto($metrics_ret); $counter++){
+			$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
+			$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
+			$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
+		}
+			
+		# verify if metrics in parameter is for this index
+		$metrics_active =& $_GET["metric"];
+		$pass = 0;
+		if (isset($metrics_active))
+			foreach ($metrics_active as $key => $value)
+				if (isset($metrics[$key]))
+					$pass = 1;
+		# 
+		
+		if ($msg_error == 0){
+			if (isset($_GET["metric"]) && $pass){
+				$tpl->assign('metric_active', $metrics_active);	
+				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."'");
+				if (PEAR::isError($DBRESULT))
+					print "Mysql Error : ".$DBRESULT->getDebugInfo();
+				foreach ($metrics_active as $key => $metric){
+					if (isset($metrics_active[$key])){
+						$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$_GET["index"]."');");
+						if (PEAR::isError($DBRESULT))
+							print "Mysql Error : ".$DBRESULT->getDebugInfo();
+					}
+				}
+			} else {
+				$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."' AND `contact_id` = '".$oreon->user->user_id."'");
+				if (PEAR::isError($DBRESULT))
+					print "Mysql Error : ".$DBRESULT->getDebugInfo();
+				$metrics_active = array();
+				if ($DBRESULT->numRows())
+					while ($DBRESULT->fetchInto($metric))
+						$metrics_active[$metric["metric_id"]] = 1;		
+				else
+					foreach ($metrics as $key => $value)
+						$metrics_active[$key] = 1;	
+			}
+			$tpl->assign('metrics', $metrics);
+			$tpl->assign('nb_metrics', count($metrics));
+			$tpl->assign('metrics_active', $metrics_active);
+		}
+		
+		#Apply a template definition
+		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+		$form->accept($renderer);
+		
+		$tpl->assign('form', $renderer->toArray());
+		$tpl->assign('o', $o);
+		$tpl->assign('p', $p);
+		$tpl->assign('host_name', $svc_id);
+		$tpl->assign('isAvl', 1);
+		$tpl->assign('lang', $lang);
+		$tpl->assign('index', $index_id);
+		$tpl->assign('min', $min);	
+		$tpl->assign('session_id', session_id());
+		$tpl->display("graphODSService.ihtml");
 	}
-	
-	#Apply a template definition
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('o', $o);
-	$tpl->assign('p', $p);
-	$tpl->assign('host_name', $svc_id);
-	$tpl->assign('isAvl', 1);
-	$tpl->assign('lang', $lang);
-	$tpl->assign('index', $index_id);
-	$tpl->assign('min', $min);	
-	$tpl->assign('session_id', session_id());
-	$tpl->display("graphODSService.ihtml");
 ?>
