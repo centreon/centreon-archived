@@ -121,7 +121,6 @@ case "$1" in
 	else
 	    echo ' done.'
 	fi
-	rm -f $ODSRunFile
     rm -f $ODSStopFile
 	;;
 
