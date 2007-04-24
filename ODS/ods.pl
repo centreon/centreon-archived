@@ -32,7 +32,7 @@ use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "@OREON_PATH@/ODS/";
+my $installedPath = "/srv/oreon/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -99,4 +99,5 @@ my $thread_check_restart	= threads->new("CheckRestart");
 $thread_perfdata->join;
 $thread_check_restart->join;
 writeLogFile("Stopping ODS engine...\n");
+if (!unlink($PID)){writeLogFile("Error When removing pid file : $!");}
 exit(1);
