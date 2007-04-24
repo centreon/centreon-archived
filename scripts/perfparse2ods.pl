@@ -28,7 +28,7 @@ use DBI;
 use RRDs;
 use POSIX;
 
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "@OREON_PATH@/ODS/";
 
 # Init Globals
 use vars qw($len_storage_rrd $RRDdatabase_path $LOG %stat $con_ods $con_oreon $generalcounter);
