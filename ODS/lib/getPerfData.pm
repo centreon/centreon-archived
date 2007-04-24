@@ -40,18 +40,17 @@ sub GetPerfData(){
 	while (1) {
 		if (-r $PFDT){
 			if (copy($PFDT, $PFDT."_read")){
-				unlink($PFDT);
+				if (!unlink($PFDT)){writeLogFile("Error When removing service-perfdata file : $!");}
 			} else {
 				writeLogFile("Error When moving data in tmp read file : $!");
 			}
 			if (open(PFDT, "< $PFDT"."_read")){
 				CheckMySQLConnexion();
-
 				$sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
 				if (!$sth2->execute) {writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n");}
-				$data = $sth2->fetchrow_hashref();
-	
+				$data = $sth2->fetchrow_hashref();	
 				$PFDT = $data->{'perfdata_file'};
+				
 				$flag_drop = 1;
 				if ($data->{'auto_drop'} == 1 && defined($data->{'drop_file'})){
 					if (!open(DROP, ">> ".$data->{'drop_file'})){
@@ -66,6 +65,7 @@ sub GetPerfData(){
 				while (<PFDT>){
 					if ($debug){writeLogFile($_);}
 					if ($flag_drop == 1){print DROP $_ ;}
+			    	print $_;
 			    	@line_tab = split('\t');
 			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
 						CheckMySQLConnexion();
@@ -73,10 +73,10 @@ sub GetPerfData(){
 					}
 					$line_tab[5] = '';
 				}
-				
-				unlink($PFDT."_read");
 				close(PFDT);
-				
+				if (!unlink($PFDT."_read")){
+					writeLogFile("Error When removing service-perfdata file : $!");
+				}
 				if ($flag_drop == 1){close(DROP);}
 				undef($line_tab);
 				undef($flag_drop);
@@ -85,7 +85,8 @@ sub GetPerfData(){
 			}
 		}
 		$sleeptime = getSleepTime();
-		for (my $i = 0;$i <= $sleeptime;$i++){
+		for (my $i = 0; $i <= $sleeptime ; $i++){
+			print ".";
 			# Check if ods must leave
 			return () if (-r $STOPFILE);
 			# Sleep Time between To check
