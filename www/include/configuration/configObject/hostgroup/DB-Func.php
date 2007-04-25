@@ -248,12 +248,33 @@ For information : contact@oreon-project.org
 	function updateHostGroupHosts($hg_id, $ret = array())	{
 		if (!$hg_id) return;
 		global $form, $pearDB;
+		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies, osl
+		# Get initial Host list to make a diff after deletion
+		$rq = "SELECT host_host_id FROM hostgroup_relation ";
+		$rq .= "WHERE hostgroup_hg_id = '".$hg_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$hostsOLD = array();
+		while ($DBRESULT->fetchInto($host))
+			$hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
+		# Get service lists linked to hostgroup
+		$rq = "SELECT service_service_id FROM host_service_relation ";
+		$rq .= "WHERE hostgroup_hg_id = '".$hg_id."' AND host_host_id IS NULL";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$hgSVS = array();
+		while ($DBRESULT->fetchInto($sv))
+			$hgSVS[$sv["service_service_id"]] = $sv["service_service_id"];
+		#
 		$rq = "DELETE FROM hostgroup_relation ";
 		$rq .= "WHERE hostgroup_hg_id = '".$hg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		isset($ret["hg_hosts"]) ? $ret = $ret["hg_hosts"] : $ret = $form->getSubmitValue("hg_hosts");
+		$hostsNEW = array();
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO hostgroup_relation ";
 			$rq .= "(hostgroup_hg_id, host_host_id) ";
@@ -262,7 +283,39 @@ For information : contact@oreon-project.org
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$hostsNEW[$ret[$i]] = $ret[$i];
 		}
+		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies, osl
+		if (count($hgSVS))
+			foreach ($hostsOLD as $host)
+				if (!isset($hostsNEW[$host]))	{
+					foreach ($hgSVS as $sv)	{
+						# Delete in escalation
+						$rq = "DELETE FROM escalation_service_relation ";
+						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
+						$DBRESULT =& $pearDB->query($rq);
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";						
+						# Delete in dependencies
+						$rq = "DELETE FROM dependency_serviceChild_relation ";
+						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
+						$DBRESULT =& $pearDB->query($rq);
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						$rq = "DELETE FROM dependency_serviceParent_relation ";
+						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
+						$DBRESULT =& $pearDB->query($rq);
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						# Delete in OSL
+						$rq = "DELETE FROM osl_indicator ";
+						$rq .= "WHERE host_id = '".$host."' AND service_id = '".$sv."'";
+						$DBRESULT =& $pearDB->query($rq);
+						//if (PEAR::isError($DBRESULT))
+						//	print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+					}
+				}
+		#
 	}
 	
 	function updateHostGroupContactGroups($hg_id, $ret = array())	{
