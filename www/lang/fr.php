@@ -161,6 +161,8 @@ $lang['m_serviceByHostGroup'] = "Services par Host Group";
 $lang['m_servicegroup'] = "Service Groups";
 $lang['m_service_extended_info'] = "Service Informations Etendues";
 $lang['m_meta_service'] = "Meta Services";
+$lang['m_mnftr'] = "Constructeur";
+$lang['m_mibs'] = "Charger MIBs";
 
 $lang['m_notification'] = "Utilisateurs";
 $lang['m_contact'] = "Utilisateurs";
