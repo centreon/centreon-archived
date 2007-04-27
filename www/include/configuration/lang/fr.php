@@ -785,10 +785,31 @@ $lang['m_traps_handler'] = "Handler";
 $lang['m_traps_args'] = "Arguments";
 $lang['m_traps_status'] = "Status";
 $lang['m_traps_comments'] = "Commentaires";
+$lang['m_traps_manufacturer'] = "Constructeur";
+$lang['m_traps_desc'] = "Description";
+$lang['m_traps_alias'] = "Alias";
 
 $lang['m_traps_add'] = "Ajouter une d&eacute;finition de Trap";
 $lang['m_traps_change'] = "Modifier une d&eacute;finition de Trap";
 $lang['m_traps_view'] = "Voir une d&eacute;finition de Trap";
+
+/* Manufacturer */
+	
+$lang['m_mnftr_name'] = "Nom du Constructeur";
+$lang['m_mnftr_alias'] = "Alias";
+$lang['m_mnftr_desc'] = "Description";
+
+$lang['m_mnftr_add'] = "Ajouter un Constructeur";
+$lang['m_mnftr_change'] = "Modifier un Constructeur";
+$lang['m_mnftr_view'] = "Voir un Constructeur";
+
+/* Mibs */
+	
+$lang['m_mibs_mnftr'] = "Nom du Constructeur";
+$lang['m_mibs_file'] = "Fichier (.mib)";
+$lang['m_mibs_title'] = "Charger une MIB";
+$lang['load'] = "Charger";
+$lang['mibs_status'] = "Statut";
 
 /* GANTT Escalation */
 
