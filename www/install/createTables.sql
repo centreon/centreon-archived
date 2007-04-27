@@ -1120,6 +1120,7 @@ CREATE TABLE `inventory_manufacturer` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(254) default NULL,
   `alias` varchar(254) default NULL,
+  `description` TEXT default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
