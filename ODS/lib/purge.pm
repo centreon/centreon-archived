@@ -19,40 +19,8 @@
 #    For information : contact@merethis.com
 ####################################################################
  
-sub CheckRestart(){
-	my ($sth2, $data, $purgeinterval);
-	my $last_restart;
-	my $last_restart_stt;
-	
-	CheckMySQLConnexion();
-	$sth2 = $con_oreon->prepare("SELECT oreon_path FROM general_opt LIMIT 1");
-	if (!$sth2->execute) {writeLogFile("Error when getting oreon Path : " . $sth2->errstr . "\n");}
-	$data = $sth2->fetchrow_hashref();
-	my $STOPFILE = $data->{'oreon_path'} . "ODS/stopods.flag";
-	undef($sth2);
-	undef($data);
-	
-	while(2){
-		CheckMySQLConnexion();
-		$last_restart = getLastRestart();
-    	$last_restart_stt = getLastRestartInMemory();
-		if (!$last_restart_stt || $last_restart ne $last_restart_stt){
-			CheckMySQLDrain();
-			purgeRrdDB() if (getPurgeConfig());	
-			check_HostServiceID();	
-		}
-		
-		$purgeinterval = getPurgeInterval();
-		for (my $i = 0;$i <= $purgeinterval;$i++){
-			# Check if ods must leave
-			return () if (-r $STOPFILE);
-			# Sleep Time between To check
-			sleep(1);	
-		}
-		undef($purgeinterval);
-		undef($i);	
-	}
-}
+
+ 
 
 sub CheckMySQLDrain(){
 	my %base;
