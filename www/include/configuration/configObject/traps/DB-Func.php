@@ -83,10 +83,10 @@ For information : contact@oreon-project.org
 		$rq = "UPDATE traps ";
 		$rq .= "SET traps_name = '".htmlentities($ret["traps_name"], ENT_QUOTES)."', ";
 		$rq .= "traps_oid = '".htmlentities($ret["traps_oid"], ENT_QUOTES)."', ";
-		$rq .= "traps_handler = '".htmlentities($ret["traps_handler"], ENT_QUOTES)."', ";
 		$rq .= "traps_args = '".htmlentities($ret["traps_args"], ENT_QUOTES)."', ";
 		$rq .= "traps_status = '".htmlentities($ret["traps_status"], ENT_QUOTES)."', ";
-		$rq .= "traps_comments = '".htmlentities($ret["traps_comments"], ENT_QUOTES)."' ";
+		$rq .= "traps_comments = '".htmlentities($ret["traps_comments"], ENT_QUOTES)."', ";
+		$rq .= "manufacturer_id = '".htmlentities($ret["manufacturer_id"], ENT_QUOTES)."' ";
 		$rq .= "WHERE traps_id = '".$traps_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -104,14 +104,14 @@ For information : contact@oreon-project.org
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO traps ";
-		$rq .= "(traps_name, traps_oid, traps_handler, traps_args, traps_status, traps_comments) ";
+		$rq .= "(traps_name, traps_oid, traps_args, traps_status, traps_comments, manufacturer_id) ";
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["traps_name"], ENT_QUOTES)."',";
 		$rq .= "'".htmlentities($ret["traps_oid"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_handler"], ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["traps_args"], ENT_QUOTES)."', ";
 		$rq .= "'".htmlentities($ret["traps_status"], ENT_QUOTES)."', ";
-		$rq .= "'".htmlentities($ret["traps_comments"], ENT_QUOTES)."')";
+		$rq .= "'".htmlentities($ret["traps_comments"], ENT_QUOTES)."', ";
+		$rq .= "'".htmlentities($ret["manufacturer_id"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";

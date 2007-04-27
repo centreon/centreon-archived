@@ -2,7 +2,7 @@
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
-Developped by : Julien Mathis - Romain Le Merlus
+Developped by : Sugumaran Mathavarajan - Julien Mathis - Romain Lemerlus
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
@@ -20,12 +20,10 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
-	if (isset($search)) {
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ".
-									"OR manufacturer_id IN (SELECT id FROM inventory_manufacturer WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
-	}
+	if (isset($search))
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM inventory_manufacturer WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') OR (name LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM inventory_manufacturer");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$tmp = & $DBRESULT->fetchRow();
@@ -43,20 +41,17 @@ For information : contact@oreon-project.org
 	
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['m_traps_oid']);
-	$tpl->assign("headerMenu_manufacturer", $lang['m_traps_manufacturer']);
-	$tpl->assign("headerMenu_args", $lang['m_traps_args']);
+	$tpl->assign("headerMenu_name", $lang['m_mnftr_name']);
+	$tpl->assign("headerMenu_alias", $lang['m_mnftr_alias']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 
 	#List of elements - Depends on different criteria
 	if ($search)
-		$rq = "SELECT * FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ".
-									"OR manufacturer_id IN (SELECT id FROM inventory_manufacturer WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ".
-									"ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT * FROM inventory_manufacturer WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ".
+				" OR (name LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY name, alias LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT * FROM traps ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT * FROM inventory_manufacturer ORDER BY name, alias LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -65,25 +60,18 @@ For information : contact@oreon-project.org
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $DBRESULT->fetchInto($trap); $i++) {
-		$selectedElements =& $form->addElement('checkbox', "select[".$trap['traps_id']."]");
-		$moptions = "<a href='oreon.php?p=".$p."&traps_id=".$trap['traps_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&traps_id=".$trap['traps_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&traps_id=".$trap['traps_id']."&o=d&select[".$trap['traps_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
+	for ($i = 0; $DBRESULT->fetchInto($mnftr); $i++) {
+		$selectedElements =& $form->addElement('checkbox', "select[".$mnftr['id']."]");
+		$moptions = "<a href='oreon.php?p=".$p."&id=".$mnftr['id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='oreon.php?p=".$p."&id=".$mnftr['id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='oreon.php?p=".$p."&id=".$mnftr['id']."&o=d&select[".$mnftr['id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$trap['traps_id']."]'></input>";
-		$DBRESULT2 =& $pearDB->query("select alias from inventory_manufacturer where id='".$trap['manufacturer_id']."' LIMIT 1");
-		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-		$DBRESULT2->fetchInto($mnftr);
-		$DBRESULT2->free();
+		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$mnftr['id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>myDecode($trap["traps_name"]),
-						"RowMenu_link"=>"?p=".$p."&o=c&traps_id=".$trap['traps_id'],
-						"RowMenu_desc"=>myDecode(substr($trap["traps_oid"], 0, 40)),
-						"RowMenu_args"=>myDecode($trap["traps_args"]),
-						"RowMenu_manufacturer"=>myDecode($mnftr["alias"]),
+						"RowMenu_name"=>myDecode($mnftr["name"]),
+						"RowMenu_link"=>"?p=".$p."&o=c&id=".$mnftr['id'],
+						"RowMenu_alias"=>myDecode($mnftr["alias"]),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
@@ -141,5 +129,5 @@ For information : contact@oreon-project.org
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("listTraps.ihtml");
+	$tpl->display("listMnftr.ihtml");
 ?>

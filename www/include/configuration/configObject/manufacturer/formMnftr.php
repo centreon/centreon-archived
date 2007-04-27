@@ -2,7 +2,7 @@
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
-Developped by : Julien Mathis - Romain Le Merlus
+Developped by : Sugumaran Mathavarajan - Julien Mathis - Romain Le Merlus
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
@@ -17,32 +17,23 @@ For information : contact@oreon-project.org
 */
 
 	#
-	## Database retrieve information for Trap
+	## Database retrieve information for Manufacturer
 	#
 	
-	function myDecodeTrap($arg)	{
+	function myDecodeMnftr($arg)	{
 		$arg = html_entity_decode($arg, ENT_QUOTES);
 		return($arg);
 	}
 
-	$trap = array();
-	$mnftr = array(NULL=>NULL);
-	$mnftr_id = -1;
-	if (($o == "c" || $o == "w") && $traps_id)	{		
-		$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
+	$mnftr = array();
+	if (($o == "c" || $o == "w") && $id)	{		
+		$DBRESULT =& $pearDB->query("SELECT * FROM inventory_manufacturer WHERE id = '".$id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
-		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
+		$mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
 		$DBRESULT->free();
 	}
-	$DBRESULT =& $pearDB->query("SELECT id, alias FROM inventory_manufacturer");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	while($DBRESULT->fetchInto($rmnftr)){
-		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
-	}
-	$DBRESULT->free();
 	
 	##########################################################
 	# Var information to format the element
@@ -54,21 +45,18 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["m_traps_add"]);
+		$form->addElement('header', 'title', $lang["m_mnftr_add"]);
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["m_traps_change"]);
+		$form->addElement('header', 'title', $lang["m_mnftr_change"]);
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["m_traps_view"]);
+		$form->addElement('header', 'title', $lang["m_mnftr_view"]);
 
 	#
-	## Command information
+	## Manufacturer information
 	#
-	$form->addElement('text', 'traps_name', $lang["m_traps_name"], $attrsText);
-	$form->addElement('text', 'traps_oid', $lang["m_traps_oid"], $attrsText);
-	$form->addElement('text', 'traps_args', $lang["m_traps_args"], $attrsText);
-	$form->addElement('select', 'traps_status', $lang["m_traps_status"], array(0=>$lang['m_mon_ok'], 1=>$lang['m_mon_warning'], 2=>$lang['m_mon_critical'], 3=>$lang['m_mon_unknown']));
-	$form->addElement('select', 'manufacturer_id', $lang["m_traps_manufacturer"], $mnftr);
-	$form->addElement('textarea', 'traps_comments', $lang["m_traps_comments"], $attrsTextarea);
+	$form->addElement('text', 'name', $lang["m_mnftr_name"], $attrsText);
+	$form->addElement('text', 'alias', $lang["m_mnftr_alias"], $attrsText);
+	$form->addElement('textarea', 'description', $lang["m_mnftr_desc"], $attrsTextarea);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
@@ -79,7 +67,7 @@ For information : contact@oreon-project.org
 	#
 	## Further informations
 	#
-	$form->addElement('hidden', 'traps_id');
+	$form->addElement('hidden', 'id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
@@ -88,16 +76,14 @@ For information : contact@oreon-project.org
 	#
 	function myReplace()	{
 		global $form;
-		return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
+		return (str_replace(" ", "_", $form->getSubmitValue("name")));
 	}
 	$form->applyFilter('_ALL_', 'trim');
-	$form->applyFilter('traps_name', 'myReplace');
-	$form->addRule('traps_name', $lang['ErrName'], 'required');
-	$form->addRule('traps_oid', $lang['ErrName'], 'required');
-	$form->addRule('manufacturer_id', $lang['ErrName'], 'required');
-	$form->addRule('traps_args', $lang['ErrName'], 'required');
-	$form->registerRule('exist', 'callback', 'testTrapExistence');
-	$form->addRule('traps_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->applyFilter('name', 'myReplace');
+	$form->addRule('name', $lang['ErrName'], 'required');
+	$form->addRule('alias', $lang['ErrName'], 'required');
+	$form->registerRule('exist', 'callback', 'testMnftrExistence');
+	$form->addRule('name', $lang['ErrAlreadyExist'], 'exist');
 	$form->setRequiredNote($lang['requiredFields']);
 
 	#
@@ -110,15 +96,15 @@ For information : contact@oreon-project.org
 
 	# Just watch a Command information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
-	    $form->setDefaults($trap);
+		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
+	    $form->setDefaults($mnftr);
 		$form->freeze();
 	}
 	# Modify a Command information
 	else if ($o == "c")	{
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
-	    $form->setDefaults($trap);
+	    $form->setDefaults($mnftr);
 	}
 	# Add a Command information
 	else if ($o == "a")	{
@@ -128,19 +114,19 @@ For information : contact@oreon-project.org
 
 	$valid = false;
 	if ($form->validate())	{
-		$trapObj =& $form->getElement('traps_id');
+		$mnftrObj =& $form->getElement('id');
 		if ($form->getSubmitValue("submitA")) 
-			$trapObj->setValue(insertTrapInDB());
+			$mnftrObj->setValue(insertMnftrInDB());
 		else if ($form->getSubmitValue("submitC"))
-			updateTrapInDB($trapObj->getValue());
+			updateMnftrInDB($mnftrObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$trapObj->getValue()."'"));
+		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$mnftrObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}
 	$action =& $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
-		require_once($path."listTraps.php");
+		require_once($path."listMnftr.php");
 	else	{
 		##Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -149,6 +135,6 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
-		$tpl->display("formTraps.ihtml");
+		$tpl->display("formMnftr.ihtml");
 	}
 ?>
