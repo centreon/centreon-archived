@@ -23,7 +23,7 @@
 # Script init
 #
 
-#use strict;
+use strict;
 #use warnings;
 use DBI;
 use threads;
@@ -31,13 +31,14 @@ use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "@OREON_PATH@/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
 
 # Init Globals
 use vars qw($debug $mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $generalcounter);
+use vars qw($con_oreon $con_ods);
 
 $debug = 0;
 
@@ -52,7 +53,6 @@ require $installedPath."etc/conf.pm";
 
 sub catch_zap {
 	$stop = 0;
-	writeLogFile($LOG, "Somebody sent me a kill signal...\n");
 	writeLogFile($LOG, "Stopping ODS engine...\n");
 }
 
@@ -90,32 +90,100 @@ require $installedPath."lib/verifyHostServiceIdName.pm";
 require $installedPath."lib/identifyMetric.pm";
 require $installedPath."lib/updateFunctions.pm";
 
+sub CheckMySQLConnexion(){
+	while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
+		if (!defined($con_oreon)) {
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_oreon);
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
+		}
+		if (!defined($con_ods)) {
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_ods);
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		}
+	}
+}
+
+sub CheckMySQLConnexionForODS(){
+	while (!defined($con_ods) || !$con_ods->ping){
+		if (!defined($con_ods)) {
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_ods);
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		}
+	}
+}
+
+sub CheckMySQLConnexionForOreon(){
+	while (!defined($con_oreon) || !$con_oreon->ping){
+		if (!defined($con_oreon)) {
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_oreon);
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
+		}
+	}
+}
+
+sub getPerfDataFile(){
+	my ($filename, $sth2, $data, $con_ods);
+
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	$sth2 = $con_ods->prepare("SELECT perfdata_file FROM config");
+	writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n") if (!$sth2->execute);
+	$data = $sth2->fetchrow_hashref();
+	undef($sth2);
+	$filename = $data->{'perfdata_file'};
+	undef($data);
+	$con_ods->close();
+	undef($con_ods);
+	return $filename;
+}
+
+sub movePerfDataFile($){
+	if (copy($_[0], $_[0]."_read")){
+		writeLogFile("Error When removing service-perfdata file : $!") if (!unlink($_[0]));
+		return(1);
+	} else {
+		writeLogFile("Error When moving data in tmp read file : $!");
+		return(0);
+	}
+}
+
+sub getConfig(){
+	my ($sth2, $data, $con_ods);
+	
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	$sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
+	writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
+	$data = $sth2->fetchrow_hashref();	
+	undef($sth2);
+	$con_ods->close();
+	undef($con_ods);
+	return($data);
+}
 
 sub GetPerfData(){
+	# Init Var
 	my ($line_tab, $sth2, $data, $flag_drop, $sleeptime);
+	use vars qw($con_oreon $con_ods);
 	
-	CheckMySQLConnexion();	
-	$sth2 = $con_ods->prepare("SELECT perfdata_file FROM config");
-	if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
-	$data = $sth2->fetchrow_hashref();
-	my $PFDT = $data->{'perfdata_file'};
-	undef($sth2);
-	undef($data);
-
+	my $PFDT = getPerfDataFile();
 	while ($stop) {
 		if (-r $PFDT){
-			if (copy($PFDT, $PFDT."_read")){
-				if (!unlink($PFDT)){writeLogFile("Error When removing service-perfdata file : $!");}
-			} else {
-				writeLogFile("Error When moving data in tmp read file : $!");
-			}
+			# Move perfdata File befor reading
+			movePerfDataFile($PFDT);			
 			if (open(PFDT, "< $PFDT"."_read")){
-				CheckMySQLConnexion();
-				$sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
-				if (!$sth2->execute) {writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n");}
-				$data = $sth2->fetchrow_hashref();	
+				$data = getConfig();
 				$PFDT = $data->{'perfdata_file'};
-				
 				$flag_drop = 1;
 				if ($data->{'auto_drop'} == 1 && defined($data->{'drop_file'})){
 					if (!open(DROP, ">> ".$data->{'drop_file'})){
@@ -128,7 +196,8 @@ sub GetPerfData(){
 				undef($data);
 				
 				while (<PFDT>){
-					if (!stop){
+					print $_;
+					if (!$stop){
 						if (!open(BCKP, ">> /srv/oreon/ODS/var/perfdata.bckp")){
 							writeLogFile("can't write in /srv/oreon/ODS/var/perfdata.bckp : $!");
 						}
@@ -137,30 +206,28 @@ sub GetPerfData(){
 						}
 						return;
 					}
-					if ($debug){
-						writeLogFile($_);
-					}
-					if ($flag_drop == 1){print DROP $_ ;}
+					print DROP $_  if ($flag_drop == 1);
 			    	@line_tab = split('\t');
 			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
 						CheckMySQLConnexion();
 						checkAndUpdate(@line_tab);
 					}
-					$line_tab[5] = '';
+					undef($line_tab);
 				}
 				close(PFDT);
 				if (!unlink($PFDT."_read")){
 					writeLogFile("Error When removing service-perfdata file : $!");
 				}
-				if ($flag_drop == 1){close(DROP);}
+				close(DROP) if ($flag_drop == 1);
 				undef($line_tab);
 				undef($flag_drop);
 			} else {
 				writeLogFile("Error When reading data in tmp read file : $!");
 			}
 		}
+		my $i,
 		$sleeptime = getSleepTime();
-		for (my $i = 0; $i <= $sleeptime && $stop; $i++){
+		for ($i = 0; $i <= $sleeptime && $stop; $i++){
 			sleep(1);	
 		}
 		undef($sleeptime);
@@ -169,49 +236,53 @@ sub GetPerfData(){
 } 
 
 sub CheckRestart(){
-	my ($sth2, $data, $purgeinterval);
-	my $last_restart;
-	my $last_restart_stt;
-	
-	CheckMySQLConnexion();
-	$sth2 = $con_oreon->prepare("SELECT oreon_path FROM general_opt LIMIT 1");
-	if (!$sth2->execute) {writeLogFile("Error when getting oreon Path : " . $sth2->errstr . "\n");}
-	$data = $sth2->fetchrow_hashref();
-	my $STOPFILE = $data->{'oreon_path'} . "ODS/stopods.flag";
-	undef($sth2);
-	undef($data);
+	my ($last_restart_stt, $last_restart, $sth2, $data, $purgeinterval);
+	use vars qw($con_oreon $con_ods);
 	
 	while($stop){
 		CheckMySQLConnexion();
 		$last_restart = getLastRestart();
     	$last_restart_stt = getLastRestartInMemory();
 		if (!$last_restart_stt || $last_restart ne $last_restart_stt){
-			CheckMySQLDrain();
-			purgeRrdDB() if (getPurgeConfig());	
 			check_HostServiceID();	
 		}
-		
-		$purgeinterval = getPurgeInterval();
-		for (my $i = 0;$i <= $purgeinterval && $stop;$i++){
-			sleep(1);	
-		}
-		undef($purgeinterval);
-		undef($i);	
 	}
 }
 
-my $thread_perfdata 		= threads->new("GetPerfData");
-my $thread_check_restart	= threads->new("CheckRestart");
-
-while ($stop){
-	sleep(1);
+sub CheckNagiosStats(){
+	while ($stop){
+		sleep(1);
+	}
 }
 
-$thread_perfdata->join;
-$thread_check_restart->join;
+my $threadPerfdata 		= threads->new("GetPerfData");
+my $threadCheckRestart	= threads->new("CheckRestart");
+my $threadCheckNagiosStats	= threads->new("CheckNagiosStats");
 
+my $y = 0;
+
+CheckMySQLConnexion();
+my $purgeinterval = getPurgeInterval();
+while ($stop){
+	if ($y % $purgeinterval eq 0){
+		$purgeinterval = getPurgeInterval();
+		CheckMySQLDrain();
+		purgeRrdDB() if (getPurgeConfig());	
+	}
+	sleep(1);
+	$y++;
+}
+
+# Waiting All threads
+$threadPerfdata->join;
+$threadCheckRestart->join;
+$threadCheckNagiosStats->join;
+
+# Write in log file 
 writeLogFile("Stopping ODS engine...\n");
 
-if (!unlink($PID)){writeLogFile("Error When removing pid file : $!");}
-
+#Delete PID File
+if (!unlink($PID)){
+	writeLogFile("Error When removing pid file : $!");
+}
 exit(1);
