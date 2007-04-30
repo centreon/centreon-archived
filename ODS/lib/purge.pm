@@ -19,15 +19,8 @@
 #    For information : contact@merethis.com
 ####################################################################
  
-
- 
-
 sub CheckMySQLDrain(){
-	my %base;
-	my $data;
-	my $data_hg;
-	my %srv_list;
-	my $sth3;
+	my ($data, $data_hg, $sth3, %base, %srv_list);
 	
 	my $sth2 = $con_oreon->prepare("SELECT service_service_id, host_host_id FROM host_service_relation WHERE hostgroup_hg_id IS NULL ");
 	if (!$sth2->execute) {writeLogFile("Error in Drain function 2 : " . $sth2->errstr . "\n");}
@@ -51,14 +44,44 @@ sub CheckMySQLDrain(){
 	undef($sth3);
 	undef($data_hg);
 	
-	$sth2 = $con_ods->prepare("SELECT host_id, service_id FROM index_data WHERE `host_name` != 'OSL_Module' AND `host_name` != 'META_Module'");
-	if (!$sth2->execute) {writeLogFile("Error in Drain function 3 : " . $sth2->errstr . "\n");}
-	while ($data = $sth2->fetchrow_hashref()){
+	my $flg = 0;
+	my $sth;
+	$sth = $con_ods->prepare("SELECT host_id, service_id FROM index_data WHERE `host_name` != 'OSL_Module' AND `host_name` != 'META_Module'");
+	if (!$sth->execute) {writeLogFile("Error in Drain function 3 : " . $sth->errstr . "\n");}
+	while ($data = $sth->fetchrow_hashref()){
 		if ($data->{'service_id'} && $data->{'host_id'} && !defined($srv_list{$data->{'host_id'}."_".$data->{'service_id'}})){
-			my $sth2 = $con_ods->prepare("DELETE FROM index_data WHERE `service_id` = '".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'}."'");
-			if (!$sth2->execute) {writeLogFile("Error in Drain function 4 :" . $sth2->errstr . "\n");}
+			my $data_svc;
+			writeLogFile("SELECT metric_id FROM index_data, metrics WHERE index_data.host_id = '".$data->{'host_id'}."' AND index_data.service_id = '".$data->{'service_id'}."' AND metrics.index_id = index_data.id\n");
+			my $sth1 = $con_ods->prepare("SELECT metric_id FROM index_data, metrics WHERE index_data.host_id = '".$data->{'host_id'}."' AND index_data.service_id = '".$data->{'service_id'}."' AND metrics.index_id = index_data.id");
+			if (!$sth1->execute) {writeLogFile("Error in Drain function 3 : " . $sth1->errstr . "\n");}
+			while ($data_svc = $sth1->fetchrow_hashref()){
+				writeLogFile("DELETE FROM data_bin WHERE data_bin.id_metric = '".$data_svc->{'metric_id'}."'\n");
+				$sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE data_bin.id_metric = '".$data_svc->{'metric_id'}."'");	
+				if (!$sth2->execute) {
+					writeLogFile("Error when deleting Data for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." m : ".$data_svc->{'metric_id'}." :" . $sth2->errstr . "\n");
+				}
+				undef($sth2);
+				writeLogFile("DELETE FROM metrics WHERE metric_id = '".$data_svc->{'metric_id'}."'\n");
+				$sth2 = $con_ods->prepare("DELETE FROM metrics WHERE metric_id = '".$data_svc->{'metric_id'}."'");	
+				if (!$sth2->execute) {
+					writeLogFile("Error when deleting Metrics for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." m : ".$data_svc->{'metric_id'}." : " . $sth2->errstr . "\n");
+				}
+				undef($sth2);
+				$t++;
+			}
+			
+			if ($t){
+				writeLogFile("DELETE FROM index_data WHERE `service_id` = '".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'}."'\n");
+				$sth2 = $con_ods->prepare("DELETE FROM index_data WHERE `service_id` = '".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'}."'");
+				if (!$sth2->execute) {
+					writeLogFile("Error when index for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." :" . $sth2->errstr . "\n");
+				}
+			}
+			undef($sth2);
+			undef($data_svc);
 		}
 	}
+	undef($sth);
 	undef($sth2);
 	undef(%srv_list);
 	undef($data);

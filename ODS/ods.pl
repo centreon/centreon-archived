@@ -24,14 +24,14 @@
 #
 
 use strict;
-#use warnings;
+use warnings;
 use DBI;
 use threads;
 use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "@OREON_PATH@/ODS/";
+my $installedPath = "/srv/oreon/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -53,7 +53,7 @@ require $installedPath."etc/conf.pm";
 
 sub catch_zap {
 	$stop = 0;
-	writeLogFile($LOG, "Stopping ODS engine...\n");
+	writeLogFile("Receiving order to stop...\n");
 }
 
 sub writeLogFile($){
@@ -143,7 +143,6 @@ sub getPerfDataFile(){
 	undef($sth2);
 	$filename = $data->{'perfdata_file'};
 	undef($data);
-	$con_ods->close();
 	undef($con_ods);
 	return $filename;
 }
@@ -166,7 +165,6 @@ sub getConfig(){
 	writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
 	$data = $sth2->fetchrow_hashref();	
 	undef($sth2);
-	$con_ods->close();
 	undef($con_ods);
 	return($data);
 }
@@ -179,9 +177,8 @@ sub GetPerfData(){
 	my $PFDT = getPerfDataFile();
 	while ($stop) {
 		if (-r $PFDT){
-			# Move perfdata File befor reading
-			movePerfDataFile($PFDT);			
-			if (open(PFDT, "< $PFDT"."_read")){
+			# Move perfdata File befor reading		
+			if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
 				$data = getConfig();
 				$PFDT = $data->{'perfdata_file'};
 				$flag_drop = 1;
@@ -194,9 +191,8 @@ sub GetPerfData(){
 					$flag_drop = 0;
 				}
 				undef($data);
-				
+				print "######### Update #########\n";
 				while (<PFDT>){
-					print $_;
 					if (!$stop){
 						if (!open(BCKP, ">> /srv/oreon/ODS/var/perfdata.bckp")){
 							writeLogFile("can't write in /srv/oreon/ODS/var/perfdata.bckp : $!");
@@ -236,16 +232,30 @@ sub GetPerfData(){
 } 
 
 sub CheckRestart(){
-	my ($last_restart_stt, $last_restart, $sth2, $data, $purgeinterval);
+	my ($last_restart_stt, $last_restart, $sth2, $data, $purgeinterval, $y);
 	use vars qw($con_oreon $con_ods);
 	
+	CheckMySQLConnexion();
+	$y = 1;
+	$purgeinterval = getPurgeInterval();
 	while($stop){
 		CheckMySQLConnexion();
 		$last_restart = getLastRestart();
     	$last_restart_stt = getLastRestartInMemory();
+		print "####### Check Last Restart  ##########\n";
+		print $last_restart_stt . " - " . $last_restart . "\n";
 		if (!$last_restart_stt || $last_restart ne $last_restart_stt){
-			check_HostServiceID();	
+			print "-> check_HostServiceID(); \n";
+			check_HostServiceID();
+			if (getPurgeConfig()){
+				$purgeinterval = getPurgeInterval();
+				CheckMySQLDrain();
+				purgeRrdDB();	
+			}
+			saveLastRestartInMemory($last_restart);
 		}
+		$y++;
+		sleep(5);
 	}
 }
 
@@ -255,22 +265,14 @@ sub CheckNagiosStats(){
 	}
 }
 
-my $threadPerfdata 		= threads->new("GetPerfData");
-my $threadCheckRestart	= threads->new("CheckRestart");
-my $threadCheckNagiosStats	= threads->new("CheckNagiosStats");
+# launch all threads
+my $threadPerfdata 		= 		threads->new("GetPerfData");
+my $threadCheckRestart	= 		threads->new("CheckRestart");
+my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
-my $y = 0;
-
-CheckMySQLConnexion();
-my $purgeinterval = getPurgeInterval();
+# Check purge
 while ($stop){
-	if ($y % $purgeinterval eq 0){
-		$purgeinterval = getPurgeInterval();
-		CheckMySQLDrain();
-		purgeRrdDB() if (getPurgeConfig());	
-	}
 	sleep(1);
-	$y++;
 }
 
 # Waiting All threads
@@ -282,7 +284,6 @@ $threadCheckNagiosStats->join;
 writeLogFile("Stopping ODS engine...\n");
 
 #Delete PID File
-if (!unlink($PID)){
-	writeLogFile("Error When removing pid file : $!");
-}
+writeLogFile("Error When removing pid file : $!") if (!unlink($PID));
+
 exit(1);

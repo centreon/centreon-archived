@@ -105,6 +105,7 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
+			writeLogFile("Creation of $_[0]/$_[1].rrd\n");
 			RRDs::create ($_[0]."/".$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".$_[6].":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]/$_[1].rrd : $ERR\n");}	

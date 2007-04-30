@@ -39,6 +39,12 @@ sub getLastRestartInMemory(){
     return $data->{'last_restart'};
 }
 
+sub saveLastRestartInMemory($){
+	my $sth = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$_[0]."'");
+    if (!$sth->execute) {writeLogFile("Error:" . $sth->errstr . "\n");}
+    undef($sth);
+}
+
 # Get if purge is activ
 
 sub getPurgeConfig(){
