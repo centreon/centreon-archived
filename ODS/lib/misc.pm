@@ -21,28 +21,11 @@
 
 # Check if MySQL connexion (ODS and oreon) are OK
 
-sub CheckMySQLConnexion(){
-	while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
-		if (!defined($con_oreon)) {
-			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-		} else {
-			sleep(2);
-			undef($con_oreon);
-			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
-		}
-		if (!defined($con_ods)) {
-			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-		} else {
-			sleep(2);
-			undef($con_ods);
-			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-		}
-	}
-}
-
 sub getPurgeInterval(){
 	my $data;
 	my $purge_interval;
+
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	my $sth2 = $con_ods->prepare("SELECT purge_interval FROM config");
 	if (!$sth2->execute) {writeLogFile("Error : " . $sth2->errstr . "\n");}
 	$data = $sth2->fetchrow_hashref();
@@ -59,6 +42,8 @@ sub getPurgeInterval(){
 sub getSleepTime(){
 	my $data;
 	my $sleep_time;
+
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	my $sth2 = $con_ods->prepare("SELECT sleep_time FROM config");
 	if (!$sth2->execute) {writeLogFile("Error : " . $sth2->errstr . "\n");}
 	$data = $sth2->fetchrow_hashref();
