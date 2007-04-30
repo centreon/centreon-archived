@@ -39,8 +39,7 @@ killproc_ods ()
 		return 1
     fi    
     ODSPID=`head -n 1 $ODSRunFile`
-    kill $ODSPID
-    rm -f $ODSRunFile
+    kill -H -s INT $ODSPID
 }
 
 
@@ -98,8 +97,7 @@ case "$1" in
     
     stop)
 	echo "Stopping ODS Collector : ods_daemon"
-	#killproc_ods ods
-	touch $ODSStopFile
+	killproc_ods ods
 	
  		# now we have to wait for nagios to exit and remove its
  		# own NagiosRunFile, otherwise a following "start" could
@@ -109,7 +107,7 @@ case "$1" in
 	echo -n 'Waiting for ods to exit .'
 	for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; do
 	    if status_ods > /dev/null; then
-		echo -n ' .'
+		echo -n '.'
 		sleep 1
 	    else
 		break
@@ -121,7 +119,6 @@ case "$1" in
 	else
 	    echo ' done.'
 	fi
-    rm -f $ODSStopFile
 	;;
 
     status)
