@@ -42,11 +42,16 @@ use vars qw($con_oreon $con_ods);
 
 $debug = 0;
 
-my $stop : shared;
-$stop = 1;
+# Flag for stoping ods
+my $stop : shared = 1;
+
+# Ods Stats
+my $lineRead : shared = 0;
+my $valueRecorded : shared = 0;
 
 # Init value
 my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
+
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
 require $installedPath."etc/conf.pm";
@@ -193,10 +198,9 @@ sub GetPerfData(){
 				undef($data);
 				print "######### Update #########\n";
 				while (<PFDT>){
+					$lineRead++;
 					if (!$stop){
-						if (!open(BCKP, ">> /srv/oreon/ODS/var/perfdata.bckp")){
-							writeLogFile("can't write in /srv/oreon/ODS/var/perfdata.bckp : $!");
-						}
+						writeLogFile("can't write in /srv/oreon/ODS/var/perfdata.bckp : $!") if (!open(BCKP, ">> /srv/oreon/ODS/var/perfdata.bckp"));
 						while (<PFDT>){
 							print BCKP $_;
 						}
@@ -270,8 +274,16 @@ my $threadPerfdata 		= 		threads->new("GetPerfData");
 my $threadCheckRestart	= 		threads->new("CheckRestart");
 my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
-# Check purge
+# here make statistics
+my $y = 0;
+my ($lineReadpermin, $valueRecordedpermin);
 while ($stop){
+	if ($y % 60 eq 0){
+		$lineReadpermin = $lineRead / 60;
+		print "line read : ".$lineRead . "\n";
+		$valueRecordedpermin = $valueRecorded / 60;
+		print "value recorder : ".$valueRecorded . "\n";
+	}
 	sleep(1);
 }
 

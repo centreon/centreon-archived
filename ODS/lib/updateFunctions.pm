@@ -42,12 +42,14 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 	
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
+		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		RRDs::update ($_[0].$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
 		if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
+			$valueRecorded++;
 			my $begin = $_[4] - 200000;
 			$interval = getServiceCheckInterval($_[1]);
 			if (!defined($interval)){$interval = 3};
@@ -88,12 +90,14 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
+		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		RRDs::update ($_[0]."/".$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
 		if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
+			$valueRecorded++;
 			my $begin = $_[4] - 200000;
 			$interval = getServiceCheckInterval($_[1]);
 			if (!defined($interval)){$interval = 3};
