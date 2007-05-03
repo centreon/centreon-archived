@@ -82,7 +82,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$DBRESULT->fetchInto($GraphTemplate);
 		
-		$command_line .= " --interlaced --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		$command_line .= " --interlaced --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($oreon->optGen["rrdtool_version"] == "1.2")
 			$command_line .= " --slope-mode ";
 
