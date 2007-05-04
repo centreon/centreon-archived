@@ -31,7 +31,7 @@ use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "@OREON_PATH@/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -276,14 +276,28 @@ my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
 # here make statistics
 my $y = 0;
-my ($lineReadpermin, $valueRecordedpermin);
+my ($lineReadpermin, $valueRecordedpermin, $lastlineRead, $lastvalueRecorded);
+$lastlineRead = 0;
+$lastvalueRecorded = 0;
 while ($stop){
 	if ($y % 60 eq 0){
-		$lineReadpermin = $lineRead / 60;
-		print "line read : ".$lineRead . "\n";
-		$valueRecordedpermin = $valueRecorded / 60;
-		print "value recorder : ".$valueRecorded . "\n";
+		if ($lastvalueRecorded){
+			$lineReadpermin = $lineRead - $lastlineRead;
+		} else {
+			$lineReadpermin = $lineRead;
+		}
+		$lastlineRead = $lineRead;
+		print "line read : ".$lineReadpermin . "/min\n";
+
+		if ($lastvalueRecorded){
+			$valueRecordedpermin = $valueRecorded - $lastvalueRecorded;
+		} else {
+			$valueRecordedpermin = $valueRecorded;
+		}
+		$lastvalueRecorded = $valueRecorded;
+		print "value recorder : ".$valueRecordedpermin . "/min\n";
 	}
+	$y++;
 	sleep(1);
 }
 
