@@ -58,8 +58,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'mailer_path_bin', $lang["genOpt_mailer"], $attrsText);
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["yes"], '1');
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["no"], '0');
-	$form->addGroup($ppUse, 'perfparse_installed', $lang["genOpt_perfparse"], '&nbsp;');
-
+	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);

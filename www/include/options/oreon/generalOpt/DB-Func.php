@@ -82,8 +82,6 @@ For information : contact@oreon-project.org
 		isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $rq .= "'".$ret["nagios_version"]."', ": $rq .= "NULL, ";
 		$rq .= "mailer_path_bin = ";
 		isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["mailer_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "perfparse_installed = ";
-		isset($ret["perfparse_installed"]["perfparse_installed"]) && $ret["perfparse_installed"]["perfparse_installed"] != NULL ? $rq .= "'".$ret["perfparse_installed"]["perfparse_installed"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
