@@ -397,11 +397,12 @@ For information : contact@oreon-project.org
 	if ($o != "mc")
 		$form->setDefaults(array('host_retain_nonstatus_information' => '2'));
 
+	/*	
 	if ($oreon->optGen["perfparse_installed"])	{
 		$form->addElement('header', 'purge_policy', $lang["mod_purgePolicy"]);
 		$form->addElement('select', 'purge_policy_id', $lang["mod_purgePolicy_name"], $ppols);
 	}
-	
+	*/
 	#
 	## Sort 4 - Extended Infos
 	#
@@ -515,7 +516,7 @@ For information : contact@oreon-project.org
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
 	
-	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0, "perfparse"=>$oreon->optGen["perfparse_installed"]));
+	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));
 	$tpl->assign('min', $min);
 	$tpl->assign("sort1", $lang['h_conf']);
 	$tpl->assign("sort2", $lang['h_head_links']);
