@@ -254,9 +254,7 @@ For information : contact@oreon-project.org
 		$rq .= "rrdtool_path_bin = ";
 		isset($ret["rrdtool_path_bin"]) && $ret["rrdtool_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["rrdtool_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "rrdtool_version = ";
-		isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? $rq .= "'".htmlentities($ret["rrdtool_version"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "graph_preferencies = ";
-		isset($ret["graph_preferencies"]["graph_preferencies"]) && $ret["graph_preferencies"]["graph_preferencies"] != NULL ? $rq .= "'".$ret["graph_preferencies"]["graph_preferencies"]."' ": $rq .= "NULL ";
+		isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? $rq .= "'".htmlentities($ret["rrdtool_version"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
