@@ -314,7 +314,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
 	
-		$conf_installoreon['physical_html_path'] = ($conf_installoreon['physical_html_path'] === "" ?  "/usr/local/nagios/share/images/logo/" : $conf_installoreon['physical_html_path']."/images/logo/");
+		$conf_installoreon['physical_html_path'] = ($conf_installoreon['physical_html_path'] === "" ?  "/usr/local/nagios/share/images/logos/" : $conf_installoreon['physical_html_path']."/images/logos/");
 		$conf_installoreon['nagios'] = ($conf_installoreon['nagios'] === "" ?  "/usr/local/nagios/" : $conf_installoreon['nagios']);
 		$conf_installoreon['mail'] = ($conf_installoreon['mail'] === "" ?  "/usr/bin/mail" : $conf_installoreon['mail']);
 		$conf_installoreon['nagios_init_script'] = ($conf_installoreon['nagios_init_script'] === "" ?  "/etc/init.d/nagios" : $conf_installoreon['nagios_init_script']);
