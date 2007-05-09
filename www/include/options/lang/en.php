@@ -218,4 +218,32 @@ $lang['ods_log_retention_unit'] = "days";
 $lang['ods_fast_parsing'] = "Fast status log parsing";
 $lang['ods_nagios_log_file'] = "Nagios current log file to parse.";
 
+$lang['m_patch'] = "Update";
+$lang['m_checkVersion'] = "Check";
+$lang['m_patchOptions'] = "Options";
+$lang['patchOption_change'] = "Change update options";
+$lang['patchOption_check_stable'] = "Checks stable versions";
+$lang['patchOption_check_security'] = "Check secu-patchs";
+$lang['patchOption_check_patch'] = "Check patchs";
+$lang['patchOption_check_rc'] = "Check Release candidate";
+$lang['patchOption_check_beta'] = "Check Betas";
+$lang['patchOption_path_download'] = "Patchs Download path";
+$lang['checkVersion_msgErr01'] = "Can't get last version.";
+$lang['updateSecu'] = "Security patch available";
+$lang['update'] = "Update patch available";
+$lang['uptodate'] = "Oreon is updated.";
+$lang['preUpdate_msgErr01'] = "Can't get list files.";
+$lang['preUpdate_msgErr02'] = "Can't get file.";
+$lang['preUpdate_msgErr03'] = "No version defined.";
+$lang['preUpdate_msgErr04'] = "Can't open configuration file : /etc/oreon.conf";
+$lang['preUpdate_msgErr05'] = "Probl&egrave;me la derni&egrave; version disponible.";
+$lang['preUpdate_msgErr06'] = "Can't open patch";
+$lang['preUpdate_fileDownloaded'] = "%s is downloaded.<br/>";
+$lang['preUpdate_installArchive'] = "For completing your upgrade (%s), unzip downloaded file, and follow README instructions\n";
+$lang['preUpdate_shellPatch'] = "launch %s with root permissions.\n";
+$lang['batchPatch_begin'] = "Execution start";
+$lang['batchPatch_end'] = "Execution end";
+$lang['batchPatch_ok01'] = "%s patch is installed.";
+$lang['batchPatch_err01'] = "Error when installing patch : %s.";
+
 ?>
