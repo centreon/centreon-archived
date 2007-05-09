@@ -13,7 +13,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick` ) VALUES (NULL , 'm_mibs', './img/icones/16x16/component_add.gif', '602', '60208', '70', '2', './include/configuration/configObject/mibs/mibs.php', NULL , '0', '0', '1', NULL , NULL , NULL);
 
--- 30/05/2007
+-- 30/04/2007
 ALTER TABLE `general_opt` DROP `perfparse_installed`;
 DELETE FROM `topology` WHERE `topology`.`topology_page` = 40202 LIMIT 1;
 DELETE FROM `topology` WHERE `topology`.`topology_page` = 40201 LIMIT 1;
@@ -24,3 +24,21 @@ DELETE FROM `topology` WHERE `topology`.`topology_page` IS NULL AND `topology`.`
 DELETE FROM `topology` WHERE `topology`.`topology_page` = 60708 LIMIT 1;
 
 UPDATE `oreon_informations` SET `value` = '1.4.1' WHERE CONVERT( `key` USING utf8 ) = 'version' LIMIT 1 ;
+
+-- 10/05/2007
+
+ALTER TABLE `general_opt` ADD `patch_type_stable` enum('Y','N') default 'Y' AFTER `gmt`  ;
+ALTER TABLE `general_opt` ADD `patch_type_RC` enum('Y','N') default 'N' AFTER `patch_type_stable`;
+ALTER TABLE `general_opt` ADD `patch_type_patch` enum('Y','N') default 'N'  AFTER `patch_type_RC`;
+ALTER TABLE `general_opt` ADD `patch_type_secu` enum('Y','N') default 'Y'  AFTER `patch_type_patch`;
+ALTER TABLE `general_opt` ADD `patch_type_beta` enum('Y','N') default 'N' AFTER `patch_type_secu`;
+ALTER TABLE `general_opt` ADD `patch_url_service` varchar(255) default NULL AFTER `patch_type_beta`;
+ALTER TABLE `general_opt` ADD `patch_url_download` varchar(255) default NULL AFTER `patch_url_service`;
+ALTER TABLE `general_opt` ADD `patch_path_download` varchar(255) default NULL AFTER `patch_url_downl
+
+UPDATE `general_opt` SET patch_type_stable = 'Y',  `patch_type_RC` = 'Y', `patch_type_patch` = 'Y',  `patch_type_secu`= 'Y',  `patch_type_beta` = 'Y',  `patch_url_service`= 'http://update.oreon-project.org/version.php', `patch_url_download` = 'http://update.oreon-project.org/patch/', `patch_path_download` = '/tmp/';
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_patch', './img/icones/16x16/download.gif', 501, 50105, 11, 1, './include/options/oreon/upGrade/checkVersion.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_checkVersion', '', 50105, 5010501, 1, 1, './include/options/oreon/upGrade/checkVersion.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_patchOptions', '', 50105, 5010502, 2, 1, './include/options/oreon/upGrade/patchOptions.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_preUpdate', '', 50105, 5010503, 3, 1, './include/options/oreon/upGrade/preUpdate.php', NULL, '0', '0', '0', NULL, NULL, NULL);
