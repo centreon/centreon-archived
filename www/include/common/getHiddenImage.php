@@ -22,13 +22,20 @@ For information : contact@oreon-project.org
 	require_once ("../../$classdir/Oreon.class.php");
 	
 	Session::start();
+	$oreon =& $_SESSION["oreon"];
 	
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".session_id()."'");
 	if (!$session->numRows())
 		exit;
+	
+	$logos_path = "";
+	
+	if (isset($_GET["logo"]) && $_GET["logo"] && ($_GET["logo"] == "1")){
+		$logos_path = $oreon->optGen["nagios_path_img"];
+	}
 
-	if (isset($_GET["path"]) && $_GET["path"] && is_file($_GET["path"])){
-		$fd = fopen($_GET["path"], "r");
+	if (isset($_GET["path"]) && $_GET["path"] && is_file($logos_path . $_GET["path"])){
+		$fd = fopen($logos_path . $_GET["path"], "r");
 		$buffer = NULL;
 		while (!feof($fd))
 		    $buffer .= fgets($fd, 4096);
