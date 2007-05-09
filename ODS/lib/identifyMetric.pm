@@ -27,9 +27,9 @@
 # - timestamp
 # - storage_type
 
-sub identify_metric($$$$$){ # perfdata index status time type
-    my (@data, $begin, $just_insert);
-
+sub identify_metric($$$$$$){ # perfdata index status time type
+    my (@data, $begin, $just_insert, $generalcounter);
+	$generalcounter = $_[5];
 	$just_insert = 0;   				
 	# Get conf Data
 	my $sth1 = $con_ods->prepare("SELECT * FROM config");
@@ -93,7 +93,7 @@ sub identify_metric($$$$$){ # perfdata index status time type
     undef($tab);
     undef(@data);
     undef($begin);
-    return;
+    return $generalcounter;
 }
 
 # identifier la metric
@@ -104,9 +104,9 @@ sub identify_metric($$$$$){ # perfdata index status time type
 # - timestamp
 # - storage_type
 
-sub identify_hidden_metric($$$$$){ # perfdata index status time type
-    my (@data, $begin, $just_insert);
-
+sub identify_hidden_metric($$$$$$){ # perfdata index status time type
+    my (@data, $begin, $just_insert, $generalcounter);
+	$generalcounter = $_[5];
 	$just_insert = 0;   				
 	# Get conf Data
 	my $sth1 = $con_ods->prepare("SELECT * FROM config");
@@ -153,6 +153,7 @@ sub identify_hidden_metric($$$$$){ # perfdata index status time type
 			if (defined($data[1])){
 				if (defined($_[4]) && $_[4] eq 1){
 					updateRrdDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});$generalcounter++;
+					$generalcounter++;
 				} elsif (defined($_[4]) && $_[4] eq 0) {   # Insert Data In Mysql 
 					updateMysqlDBforHiddenSVC($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
@@ -168,7 +169,7 @@ sub identify_hidden_metric($$$$$){ # perfdata index status time type
     undef($tab);
     undef(@data);
     undef($begin);
-    return;
+    return $generalcounter;
 }
 
 1;
