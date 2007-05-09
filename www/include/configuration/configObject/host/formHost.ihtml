@@ -1,5 +1,5 @@
-
 {$form.javascript}
+{$javascript}
 <form {$form.attributes}>
 <div>
 <ul id="mainnav">
@@ -197,10 +197,10 @@
 		<tr class="list_two"><td class="FormRowField">{$form.ehi_notes.label}</td><td class="FormRowValue">{$form.ehi_notes.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ehi_action_url.label}</td><td class="FormRowValue">{$form.ehi_action_url.html}</td></tr>
 	 	{/if}
-		<tr class="list_two"><td class="FormRowField">{$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}&nbsp;&nbsp;<img id='ehi_icon_image_img' src=''></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ehi_icon_image_alt.label}</td><td class="FormRowValue">{$form.ehi_icon_image_alt.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ehi_vrml_image.label}</td><td class="FormRowValue">{$form.ehi_vrml_image.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src=''></td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
 	 </table>

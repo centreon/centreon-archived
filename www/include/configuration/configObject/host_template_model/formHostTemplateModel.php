@@ -387,12 +387,10 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'ehi_notes_url', $lang['h_notesUrl'], $attrsText);
 	if ($oreon->user->get_version() == 2)
 		$form->addElement('text', 'ehi_action_url', $lang['h_actionUrl'], $attrsText);
-	$form->addElement('select', 'ehi_icon_image', $lang['h_iconImg'], $extImg);
-//	$form->addElement('text', 'ehi_icon_image', $lang['h_iconImg'], $attrsText);
+	$form->addElement('select', 'ehi_icon_image', $lang['h_iconImg'], $extImg, array("onChange"=>"showLogo('ehi_icon_image',this.form.elements['ehi_icon_image'].value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', $lang['h_iconImgAlt'], $attrsText);
 	$form->addElement('text', 'ehi_vrml_image', $lang['h_vrmlImg'], $attrsText);
-//	$form->addElement('text', 'ehi_statusmap_image', $lang['h_nagStatImg'], $attrsText);
-	$form->addElement('select', 'ehi_statusmap_image', $lang['h_nagStatImg'],$extImg);	
+	$form->addElement('select', 'ehi_statusmap_image', $lang['h_nagStatImg'],$extImg, array("onChange"=>"showLogo('ehi_statusmap_image',this.form.elements['ehi_statusmap_image'].value)"));	
 	$form->addElement('text', 'ehi_2d_coords', $lang['h_nag2dCoords'], $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', $lang['h_nag3dCoords'], $attrsText2);
 
@@ -479,6 +477,10 @@ For information : contact@oreon-project.org
 							init();
 							initAutoComplete('Form','city_name','sub');
 							};</script>");
+
+	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {".
+	"var _img = document.getElementById(_img_dst + '_img');".
+	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
 	$valid = false;

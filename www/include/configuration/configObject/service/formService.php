@@ -459,8 +459,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'esi_notes_url', $lang['h_notesUrl'], $attrsText);
 	if ($oreon->user->get_version() == 2)
 		$form->addElement('text', 'esi_action_url', $lang['h_actionUrl'], $attrsText);
-//	$form->addElement('text', 'esi_icon_image', $lang['h_iconImg'], $attrsText);
-	$form->addElement('select', 'esi_icon_image', $lang['h_iconImg'], $extImg);
+	$form->addElement('select', 'esi_icon_image', $lang['h_iconImg'], $extImg, array("onChange"=>"showLogo('esi_icon_image',this.form.elements['esi_icon_image'].value)"));
 	$form->addElement('text', 'esi_icon_image_alt', $lang['h_iconImgAlt'], $attrsText);
 
 	$form->addElement('header', 'oreon', $lang['h_oreon']);
@@ -563,6 +562,10 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort3", $lang['sv_head_links']);
 	$tpl->assign("sort3", $lang['sv_head_treat']);
 	$tpl->assign("sort4", $lang['sv_extInf']);
+	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {".
+	"var _img = document.getElementById(_img_dst + '_img');".
+	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
+		
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
 	$valid = false;
