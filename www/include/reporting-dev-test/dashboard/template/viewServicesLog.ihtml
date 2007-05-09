@@ -1,0 +1,93 @@
+<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
+{$form.javascript}
+{$styleB}
+<div class="cachediv">
+<FORM id="datareport">
+	<INPUT type="hidden" name="hostID" value="{$hostID}"><br>
+	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	        
+	<INPUT type="hidden" name="color_UP" value="{$color.UP}">
+	<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
+	<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
+</FORM>
+</div>
+<table style='width:100%;' class="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
+			<form {$formService.attributes} style="margin:0px;padding:0px;">
+				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$hostTitle}&nbsp;:&nbsp;&nbsp;<input type=text value="{$mhost}" name="hostname" disabled>
+				<b>{$formService.service.label}:</b>&nbsp;&nbsp;{$formService.service.html}
+				{$formService.hidden}
+			&nbsp;&nbsp;&nbsp;{$period}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
+			</form>	
+		</td>
+	</tr>
+	<tr class='list_lvl_3'>
+		<td colspan=2>
+			<table style='width:100%'>
+			<tr>
+				<td rowspan=3 style='width:300px; padding:5px'>			
+					<table class="ListTable" >
+						<tr class='ListHeader'></tr>
+						<tr>
+							<td class="ListColCenter"><img src='./include/reporting/dashboard/chart_service.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td style=' padding:5px;vertical-align:top;'>
+					<table class="ListTable" >
+						<tr class='ListHeader'>
+							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>
+						</tr>
+						<tr class="list_two">
+					        <td class="ListColHeaderLeft"><b>{$formPeriod1.header.title}</b></td>
+				        	<td class="ListColHeaderCenter"><form {$formPeriod1.attributes}>{$formPeriod1.period.html}{$formPeriod1.hidden}</form></td>
+				        </tr>
+						<tr class='list_one'>
+							<td rowspan="3" class="ListColHeaderLeft"><b>{$formPeriod2.header.title}</b></td>
+							<td class="ListColHeaderRight"><form {$formPeriod2.attributes}><span style='padding-right:150px;'><b>{$formPeriod2.start.label} : </b>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</span></td>
+						</tr>
+						<tr class="list_one">
+							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod2.end.label} : </b>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</span></td>
+						</tr>
+						<tr class="list_one">
+							<td class="ListColHeaderCenter">{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}{$formPeriod2.hidden}</form></td>
+						</tr>
+					</table>			
+				</td>
+			</tr>
+			<tr>
+				<td style='vertical-align:top;padding:5px;'>
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td colspan=4>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
+					</tr>
+					<tr class='list_lvl_1'>
+						<td class="ListColHeaderCenter">{$StateTitle}</td>
+						<td class="ListColHeaderCenter">{$TimeTitle}</td>
+						<td class="ListColHeaderCenter">{$TimeTotalTitle}</td>
+						<td class="ListColHeaderCenter">{$KnownTimeTitle}</td>
+					</tr>
+					{foreach item=tb from=$tab_resume}
+					<tr class={cycle values="list_two, list_one"}>
+						<td class='ListColCenter'{$tb.style}>{$tb.state}</td>
+						<td class='ListColCenter' >{$tb.time}</td>
+						<td class='ListColRight'>{$tb.pourcentTime}&nbsp;%</td>
+						<td class='ListColRight'>{$tb.pourcentkTime}</td>
+					</tr>
+					{/foreach}
+				</table>
+				</td>
+			</tr>
+			<tr>
+
+				<td colspan=2 style=' padding:5px;'>
+					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
+				</td>
+			</tr>
+
+			</table>
+		</td>
+	</tr>
+</table>

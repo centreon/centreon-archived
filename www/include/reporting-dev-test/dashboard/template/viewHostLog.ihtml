@@ -1,0 +1,152 @@
+<link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
+{$form.javascript}
+{$styleB}
+<div class="cachediv">
+<FORM id="datareport">
+<INPUT type="hidden" name="hostID" value="{$hostID}"><br>
+<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	        
+<INPUT type="hidden" name="color_UP" value="{$color.UP}">
+<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
+<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
+</FORM>
+</div>
+<table style='width:100%;' class="ListTable">
+	<tr class='ListHeader'>
+		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
+			<form {$formHost.attributes} style="margin:0px;padding:0px;">
+				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$formHost.host.label}&nbsp;&nbsp;{$formHost.host.html}{$formHost.hidden}
+				{if $date_start_select != 0}
+				&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
+				{/if}
+			</form>	
+		</td>
+	</tr>
+	<tr class='list_lvl_3'>
+		<td colspan=2>
+			<table style='width:100%'>
+			<tr>
+				<td rowspan=3 style='width:300px; padding:5px'>
+					{if $host_name}	
+						<table class="ListTable" >
+							<tr>
+								<td class="ListColCenter"><img src='./include/reporting/dashboard/chart_host.php?service_name={$service_name}&host_name={$host_name}{$status}'></td>					
+							</tr>
+						</table>
+					{/if}
+				</td>
+			</tr>
+			<tr>
+			<td style='padding:5px;vertical-align:top;'>
+					<table class="ListTable">
+						<tr class='ListHeader'>
+							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>
+						</tr>
+						<tr class="list_two">
+					        <td class="ListColHeaderLeft"><b>{$formPeriod1.header.title}</b></td>
+				        	<td class="ListColHeaderCenter"><form {$formPeriod1.attributes}>{$formPeriod1.period.html}{$formPeriod1.hidden}</form></td>
+				        </tr>
+						<tr class='list_one'>
+							<td rowspan="3" class="ListColHeaderLeft"><b>{$formPeriod2.header.title}</b></td>
+							<td class="ListColHeaderRight"><form {$formPeriod2.attributes}><span style='padding-right:150px;'><b>{$formPeriod2.start.label} : </b>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</span></td>
+						</tr>
+						<tr class="list_one">
+							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod2.end.label} : </b>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</span></td>
+						</tr>
+						<tr class="list_one">
+							<td class="ListColHeaderCenter">{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}{$formPeriod2.hidden}</form></td>
+						</tr>
+					</table>			
+				</td>
+			</tr>
+
+			<tr>
+				<td style='vertical-align:top;padding:5px;'>
+					<table class="ListTable">
+						<tr class='ListHeader'>
+							<td colspan=4>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
+						</tr>
+						<tr class='list_lvl_1'>
+							<td class="ListColHeaderCenter">{$StateTitle}</td>
+							<td class="ListColHeaderCenter">{$TimeTitle}</td>
+							<td class="ListColHeaderCenter">{$TimeTotalTitle}</td>
+							<td class="ListColHeaderCenter">{$KnownTimeTitle}</td>
+						</tr>
+						{foreach item=tb from=$tab_resume}
+						<tr class={cycle values="list_two, list_one"}>
+							<td {$tb.style}>{$tb.state}</td>
+							<td class='ListColCenter'>{$tb.time}</td>
+							<td class='ListColRight'>{$tb.pourcentTime}%</td>
+							<td class='ListColRight'>{$tb.pourcentkTime}</td>
+						</tr>
+						{/foreach}
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 style=' padding:5px;'>
+					<table class="ListTable">
+						<tr class='ListHeader'>
+							<td class="FormHeader" colspan=6>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+						</tr>
+						<tr class='list_lvl_1'>
+							<td class="ListColHeaderCenter">{$serviceTilte}</td>
+							<td class="ListColHeaderCenter">{$OKTitle}</td>
+							<td class="ListColHeaderCenter">{$WarningTitle}</td>
+							<td class="ListColHeaderCenter">{$CriticalTitle}</td>
+							<td class="ListColHeaderCenter">{$UnknownTitle}</td>
+							<td class="ListColHeaderCenter">{$PendingTitle}</td>
+						</tr>
+						{foreach item=tb from=$tab_svc}
+						<tr class={cycle values="list_two, list_one"}>
+							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
+							<td class='ListColRight'{$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
+							<td class='ListColRight'{$style_warning}>{$tb.PtimeWARNING}% ({$tb.PktimeWARNING}%)</td>
+							<td class='ListColRight'{$style_critical}>{$tb.PtimeCRITICAL}% ({$tb.PktimeCRITICAL}%)</td>
+							<td class='ListColRight'{$style_unknown}>{$tb.PtimeUNKNOWN}% ({$tb.PktimeUNKNOWN}%)</td>
+							<td class='ListColRight'{$style_pending}>{$tb.PtimeNONE}%</td>
+						</tr>
+						{/foreach}
+					</table>
+				</td>
+			</tr>
+
+			<tr>
+
+				<td colspan=2 style=' padding:5px;'>
+					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan=2 style=' padding:5px;'>
+					<table class="ListTable" class="left">
+						<tr class='ListHeader'>
+							<td class="FormHeader"colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$logTitle}</td>
+						</tr>
+						<tr class='list_lvl_1'>
+							<td class="ListColHeaderCenter">&nbsp;</td>
+							<td class="ListColHeaderCenter">{$DateTitle}</td>
+							<td class="ListColHeaderCenter">{$EventTitle}</td>
+							<td class="ListColHeaderCenter">{$HostTitle}</td>
+							<td class="ListColHeaderCenter">{$InformationsTitle}</td>
+						</tr>
+						{foreach item=log from=$tab_log}
+						{if $log.type eq "HOST ALERT" or $log.type eq "CURRENT HOST STATE"}
+						<tr class={cycle values="list_two, list_one"}>
+							<td class="ListColHeaderCenter"></td>
+							<td class="ListColLeft">{$log.time}</td>
+							<td class="ListColLeft">{$log.status} &nbsp; ({$log.state})</td>
+							<td class="ListColLeft">{$log.host}</td>
+							<td class="ListColNoWrap">{$log.output}</td>
+						</tr>
+						{/if}
+						{/foreach}
+					</table>
+				</td>
+			</tr>			
+			</table>
+		</td>
+	</tr>
+</table>
+
+
