@@ -279,6 +279,16 @@ INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `to
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_id_network', NULL, 701, 70102, 20, 1, './include/inventory/inventory.php', '&o=n', '0', '1', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_idUpdate', NULL, 701, 70103, 40, 1, './include/inventory/inventory.php', '&o=u', NULL, NULL, '1');
 
+-- 
+-- Upgrade 
+-- 
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_patch', './img/icones/16x16/download.gif', 501, 50105, 11, 1, './include/options/oreon/upGrade/checkVersion.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_checkVersion', '', 50105, 5010501, 1, 1, './include/options/oreon/upGrade/checkVersion.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_patchOptions', '', 50105, 5010502, 2, 1, './include/options/oreon/upGrade/patchOptions.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES ('', 'm_preUpdate', '', 50105, 5010503, 3, 1, './include/options/oreon/upGrade/preUpdate.php', NULL, '0', '0', '0', NULL, NULL, NULL);
+
+
 --
 -- Contenu de la table `topology_JS`
 --
