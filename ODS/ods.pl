@@ -31,7 +31,7 @@ use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "@OREON_PATH@/ODS/";
+my $installedPath = "/srv/oreon/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -246,8 +246,6 @@ sub CheckRestart(){
 		CheckMySQLConnexion();
 		$last_restart = getLastRestart();
     	$last_restart_stt = getLastRestartInMemory();
-		print "####### Check Last Restart  ##########\n";
-		print $last_restart_stt . " - " . $last_restart . "\n";
 		if (!$last_restart_stt || $last_restart ne $last_restart_stt){
 			print "-> check_HostServiceID(); \n";
 			check_HostServiceID();
@@ -262,6 +260,21 @@ sub CheckRestart(){
 		sleep(5);
 	}
 }
+
+sub checkAndUpdate($){
+	my $data_service;
+	if ($_[5]){
+		if ($_[1] =~ /[a-zA-Z]*_Module/){
+			@data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
+			$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded); # perfdata index status time type
+		} else {
+			@data_service = identify_service($_[1], $_[2]); # return index_id and storage
+			$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded); # perfdata index status time type
+		}
+	}
+	undef(@data_service);
+}
+
 
 sub CheckNagiosStats(){
 	while ($stop){
@@ -279,16 +292,17 @@ my $y = 0;
 my ($lineReadpermin, $valueRecordedpermin, $lastlineRead, $lastvalueRecorded);
 $lastlineRead = 0;
 $lastvalueRecorded = 0;
+my $sth2;
 while ($stop){
 	if ($y % 60 eq 0){
-		if ($lastvalueRecorded){
+		CheckMySQLConnexion();
+		if ($lastlineRead){
 			$lineReadpermin = $lineRead - $lastlineRead;
 		} else {
 			$lineReadpermin = $lineRead;
 		}
 		$lastlineRead = $lineRead;
 		print "line read : ".$lineReadpermin . "/min\n";
-
 		if ($lastvalueRecorded){
 			$valueRecordedpermin = $valueRecorded - $lastvalueRecorded;
 		} else {
@@ -296,6 +310,8 @@ while ($stop){
 		}
 		$lastvalueRecorded = $valueRecorded;
 		print "value recorder : ".$valueRecordedpermin . "/min\n";
+		$sth2 = $con_ods->prepare("UPDATE statistics SET `lineRead` = '$lineReadpermin', `valueReccorded` = '$valueRecordedpermin' LIMIT 1");
+		writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
 	}
 	$y++;
 	sleep(1);

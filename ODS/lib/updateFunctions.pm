@@ -19,21 +19,6 @@
 #    For information : contact@merethis.com
 ####################################################################
 
-sub checkAndUpdate($){
-	my $data_service;
-	if ($_[5]){
-		if ($_[1] =~ /[a-zA-Z]*_Module/){
-			@data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
-			identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1]); # perfdata index status time type
-		} else {
-			@data_service = identify_service($_[1], $_[2]); # return index_id and storage
-			identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1]); # perfdata index status time type
-		}
-	}
-	undef(@data_service);
-	undef(@param);
-}
-
 sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
