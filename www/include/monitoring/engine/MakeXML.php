@@ -224,7 +224,7 @@ For information : contact@oreon-project.org
 				$ct = 0;
 				$flag = 0;
 							
-				$host_name_tmp = $svc[""];
+				$host_name_tmp = $svc["host_name"];
 
 				$tab_color_host = array();
 				foreach ($service_status as $name => $svc){
