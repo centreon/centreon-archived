@@ -819,6 +819,14 @@ CREATE TABLE `general_opt` (
   `debug_ldap_import` enum('0','1') default NULL,
   `debug_inventory` enum('0','1') default NULL,
   `gmt` int(11) NOT NULL default '0',
+  `patch_type_stable` enum('Y','N') default 'Y',
+  `patch_type_RC` enum('Y','N') default 'N',
+  `patch_type_patch` enum('Y','N') default 'N',
+  `patch_type_secu` enum('Y','N') default 'Y',
+  `patch_type_beta` enum('Y','N') default 'N',
+  `patch_url_service` varchar(255) default NULL,
+  `patch_url_download` varchar(255) default NULL,
+  `patch_path_download` varchar(255) default NULL,
   PRIMARY KEY  (`gopt_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
