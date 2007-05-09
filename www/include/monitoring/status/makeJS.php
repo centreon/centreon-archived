@@ -41,7 +41,6 @@ function monitoring_refresh()	{
 }
 
 function monitoring_play()	{
-	monitoring_time_msg();
 	document.getElementById('JS_monitoring_play').style.display = 'none';
 	document.getElementById('JS_monitoring_pause').style.display = 'block';	
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
