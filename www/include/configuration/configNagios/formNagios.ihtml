@@ -162,7 +162,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.process_performance_data.label}</td><td class="FormRowValue">{$form.process_performance_data.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_command.label}</td><td class="FormRowValue">{$form.host_perfdata_command.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_command.label}</td><td class="FormRowValue">{$form.service_perfdata_command.html}</td></tr>
-	{if $msg.nagios == 2}	
+		{if $msg.nagios == 2}	
 			<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file.label}</td><td class="FormRowValue">{$form.host_perfdata_file.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file.label}</td><td class="FormRowValue">{$form.service_perfdata_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_template.label}</td><td class="FormRowValue">{$form.host_perfdata_file_template.html}</td></tr>
