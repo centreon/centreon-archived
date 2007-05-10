@@ -16,10 +16,68 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-		session_destroy();
-		$tmpfname = tempnam("", "");
-		@unlink($tmpfname);
-		@rename(getcwd(), realpath("..")."/".basename($tmpfname ));
-		header("Location: ../index.php");
 
+aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
+
+
+?>
+<table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
+  <tr>
+    <th align="left">Component</th>
+    <th style="text-align: right;">Status</th>
+  </tr>
+  <tr>
+    <td><b>PHP Pear Extension</b></td>
+    <td align="right">&nbsp;</td>
+  </tr>
+
+<?
+$msg = NULL;  
+$alldeps = NULL;
+foreach ($pear_module as $module) {
+  
+?>
+   <tr>
+    <td><b>&nbsp;&nbsp;&nbsp;<? echo $module["name"] ?></b></td>
+    <td align="right"><?
+    	$msg = NULL;  
+    	if (file_exists($pear_path. '/'.$module["path"])) {
+          	echo '<b><span class="go">OK</font></b>';
+		} else {
+			echo '<b><span class="stop">Failed</font></b>';
+			$msg ="Need " . $module["name"] . "-" . $module["version"];
+			$alldeps =  $alldeps . " " . $module["name"];
+		    $return_false = 1;
+		}
+		?></td>
+  </tr>
+  <? if($msg)  { ?>
+  <tr>
+    <td align="right" colspan="2"><? echo $msg ; ?></td>
+  </tr>
+  <? } ?>
+
+  <? } ?>
+  <? if($alldeps)  { ?>
+   <tr>
+    <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
+  </tr>
+  <tr>
+    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <? echo $alldeps; ?> </span></td>
+  </tr>
+   <? } ?>
+
+</table>
+<?
+
+aff_middle();
+$str = '';
+if (isset($return_false))
+	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
+$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
+if ($return_false)
+	$str .= " disabled";
+$str .= " />";
+print $str;
+aff_footer();
 ?>
