@@ -21,20 +21,25 @@ For information : contact@oreon-project.org
 	include_once ("../class/Session.class.php");
 
 	Session::start();
+	// Pear Modules Management
+	if (file_exists("pear_module.conf.php")) {
+	   include_once ("pear_module.conf.php");
+	}
+	
 	$DEBUG = 0;
 
-	if (isset($_POST["Recheck"]))
-		 $_POST["step"] = 3;
+	if (isset($_POST["Recheck"]) && $_POST["step"] == 5)
+		 $_POST["step"] = 4;
 	if (isset($_POST["goto"]) && !strcmp($_POST["goto"], "Back"))
 		 $_POST["step"] -= 2;
-	if (isset($_POST["step"]) && isset($_POST["pwdOreonDB"])&& $_POST["step"] == 5 && strcmp($_POST["pwdOreonDB"], $_POST["pwdOreonDB2"])){
+/*	if (isset($_POST["step"]) && isset($_POST["pwdOreonDB"])&& $_POST["step"] == 5 && strcmp($_POST["pwdOreonDB"], $_POST["pwdOreonDB2"])){
 		$_POST["step"] = 4;
 		$passwd_error = "Password not confimed correctly.";
-	}
-	if (isset($_POST["step"]) && $_POST["step"] == 6 && strcmp($_POST["oreonpasswd"], $_POST["oreonpasswd2"])){
+	}*/
+/*	if (isset($_POST["step"]) && $_POST["step"] == 6 && strcmp($_POST["oreonpasswd"], $_POST["oreonpasswd2"])){
 		$_POST["step"] = 5;
 		$passwd_error = "Password not confimed correctly.";
-	}
+	}*/
 	
 	if (!isset($_POST["step"])){
 		include("./step_upgrade/step1.php");
@@ -46,6 +51,8 @@ For information : contact@oreon-project.org
 		include("./step_upgrade/step4.php");
 	} else if (isset($_POST["step"]) && $_POST["step"] == 4){
 		include("./step_upgrade/step5.php");
+	} else if (isset($_POST["step"]) && $_POST["step"] == 5){
+		include("./step_upgrade/step6.php");
 	}
 	exit();
 ?>
