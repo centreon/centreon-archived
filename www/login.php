@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 <div id="LoginInvit">
 	<table id="logintab1">
 		<tr>
-			<td class="LoginInvitLogo" colspan="2"><img src="img/LogoOreon.png" alt="Oreon logo" title="Oreon Logo"></td>
+			<td class="LoginInvitLogo" colspan="2"><img src="img/LogoOreon.gif" alt="Oreon logo" title="Oreon Logo"></td>
 		</tr>
 		<tr>
 			<td class="LoginInvitVersion"><br>
