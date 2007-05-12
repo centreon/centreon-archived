@@ -54,7 +54,7 @@ if(is_array($tab_hosts))
 		}
 	}
 ## Services in db
-if(is_array($tab_services))
+if (is_array($tab_services))
 	foreach($tab_services as $svc => $htabsvc){
 		if (isset($service_list[trim($svc)]))
 			foreach($htabsvc as $host => $htab){

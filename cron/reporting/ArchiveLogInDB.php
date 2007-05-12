@@ -66,7 +66,7 @@
 	#################################
 	######## clean up table  ########
 	#################################
-	if($option){
+	if ($option){
 		$sql = "TRUNCATE TABLE `log_archive_file_name`";
 		$res = $pearDB->query($sql);
 		$sql = "TRUNCATE TABLE `log_archive_host`";
@@ -85,7 +85,7 @@
 			return $res;
 	}
 	
-	function 	insert_file_name_in_db($key){
+	function insert_file_name_in_db($key){
 		global $pearDB;
 		$date = time();
 		$sql = "INSERT INTO `log_archive_file_name` (`id_log_file`, `file_name`, `date`) VALUES(NULL , '$key','$date')";
