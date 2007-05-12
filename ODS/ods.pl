@@ -87,7 +87,6 @@ $SIG{INT}  = \&catch_zap;
 
 require $installedPath."lib/misc.pm";
 require $installedPath."lib/purge.pm";
-require $installedPath."lib/getPerfData.pm";
 require $installedPath."lib/getHostData.pm";
 require $installedPath."lib/getServiceData.pm";
 require $installedPath."lib/indentifyService.pm";
