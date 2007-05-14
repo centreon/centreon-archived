@@ -149,6 +149,7 @@ For information : contact@oreon-project.org
 		}
 
 		# Create Legende
+		$i = 0;
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
 			if ($metrics[$key]["ds_filled"])
@@ -156,6 +157,7 @@ For information : contact@oreon-project.org
 			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $metrics[$key]["legend"];
+			
 			for ($i = $metrics[$key]["legend_len"]; $i != $longer + 1; $i++)
 				$command_line .= " ";
 			$command_line .= "\"";
