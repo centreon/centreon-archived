@@ -171,7 +171,7 @@ function mk_img(_src, _alt)
 }
 
 
-function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_host_name, _o){
+function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBasic, _previous_host_name, _o){
 
 	var _host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 	var _host_color = line.getElementsByTagName("host_color")[0].firstChild.nodeValue;
@@ -245,8 +245,11 @@ function addLineToTab_Service(_tableAjax, line, i, _form, _formBasic, _previous_
   	cbx.type = "checkbox";
   	cbx.id = "myCBX";
   	cbx.value = "1";
-	_case_checkbox.appendChild(cbx);
 
+	if(tableCheckbox['select['+_host_name+';'+_service_description+']'])
+		cbx.checked = tableCheckbox['select['+_host_name+';'+_service_description+']'];
+	cbx.name = 'select['+_host_name+';'+_service_description+']';
+	_case_checkbox.appendChild(cbx);
 
 /*
  * host_name
@@ -561,6 +564,18 @@ function goM(_time_reload,_sid,_o){
 			}
 		}
 	}
+
+
+	var table = document.getElementsByTagName("input");
+	var tableCheckbox = new Array();
+	for(var i=0;i<table.length;i++){
+		if(table[i].type == 'checkbox'){
+			tableCheckbox[table[i].name] = table[i].checked;
+		}
+}
+	
+	
+
 	var xhrM = getXhrM();
 	xhrM.open("POST",_addrSearchM,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -595,7 +610,7 @@ function goM(_time_reload,_sid,_o){
 				var _flag = parseInt(line.getElementsByTagName("flag")[0].firstChild.nodeValue);
 				if((_type == 'service' || _type == 'service_problem') )//&& _flag == 1)
 				{
-					addLineToTab_Service(_tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
+					addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 				}
 			}//fin du for pour les infos principale
