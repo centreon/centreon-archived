@@ -31,7 +31,6 @@ For information : contact@oreon-project.org
 	$nagios_plugins = "/etc/nagios/libexec";
 
 	#PHP functions
-	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
 	switch ($o)	{
