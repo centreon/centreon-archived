@@ -461,7 +461,7 @@ For information : contact@oreon-project.org
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
 	
-	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min"=>$min, "perfparse"=>$oreon->optGen["perfparse_installed"]));
+	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min"=>$min));
 	$tpl->assign('min', $min);
 	$tpl->assign("sort1", $lang['h_conf']);
 	$tpl->assign("sort2", $lang['h_head_links']);
