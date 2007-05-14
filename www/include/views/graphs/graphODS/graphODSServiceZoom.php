@@ -19,6 +19,11 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	# include js for zoombox
+	include('./include/views/graphs/graphODS/zoombox.php');
+	include('./include/views/graphs/graphODS/javascript.php');
+		
+		
 	# LCA 
 	if ($isRestreint){
 		$lcaHostByName = getLcaHostByName($pearDB);
