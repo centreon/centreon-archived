@@ -49,7 +49,7 @@ For information : contact@oreon-project.org
 		$str .= "cfg_file=".$nagios["cfg_dir"]."serviceextinfo.cfg\n";
 	}
 	# Include for Meta Service the cfg file
-	if ($oreon->optGen["perfparse_installed"] && ($files = glob("./include/configuration/configGenerate/metaService/*.php")))
+	if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 		foreach ($files as $filename)	{
 			$cfg = NULL;
 			$file =& basename($filename);

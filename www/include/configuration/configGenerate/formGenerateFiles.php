@@ -111,8 +111,7 @@ For information : contact@oreon-project.org
 			require_once($path."genCGICFG.php");
 			require_once($path."genNagiosCFG.php");
 			require_once($path."genResourceCFG.php");
-			if($oreon->optGen["perfparse_installed"])
-				require_once($path."genPerfparseCFG.php");
+			require_once($path."genPerfparseCFG.php");
 			require_once($path."genTimeperiods.php");
 			require_once($path."genCommands.php");
 			require_once($path."genContacts.php");
@@ -127,10 +126,9 @@ For information : contact@oreon-project.org
 			require_once($path."genDependencies.php");
 			require_once($path."oreon_pm.php");
 			# Meta Module
-			if($oreon->optGen["perfparse_installed"])
-				if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
-					foreach ($files as $filename)
-						require_once($filename);
+			if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
+				foreach ($files as $filename)
+					require_once($filename);
 			# Oreon Modules
 			foreach ($oreon->modules as $key=>$value)
 				if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
