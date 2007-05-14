@@ -16,7 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	
 	if (isset($_GET["p"]))
 		$p = $_GET["p"];
 	else if (isset($_POST["p"]))
