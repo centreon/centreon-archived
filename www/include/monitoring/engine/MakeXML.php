@@ -17,10 +17,10 @@ For information : contact@oreon-project.org
 */
 
 	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-	$debug = 0;
+	$debugXML = 0;
 	
 	# pearDB init
-	$buffer = '';	
+	$buffer = '';
 	
 	require_once 'DB.php';
 
@@ -138,7 +138,7 @@ For information : contact@oreon-project.org
 	function read($hg_name, $host_name, $atime,$arr,$type,$version,$sid,$file,$num, $search, $limit,$sort_type,$order,$search_type_host,$search_type_service,$date_time_format_status){
 //$hg_name = "Reseaux";
 
-		global $pearDB; $pearDBO;
+		global $pearDB, $pearDBO, $debugXML;
 		$flag = 0;
 
 	
@@ -165,19 +165,14 @@ For information : contact@oreon-project.org
 		$buffer .= '</infos>';
 	
 //		if( filectime($file) > $atime){
-		if( $atime){
-		$buffer .= '<debug>';
-		$buffer .= '<a>'.$type.'</a>';
-		$buffer .= '</debug>';
-
-
-
-			$oreon = "oreon";
-	
+		if($atime){
+			if($debugXML){
+				$buffer .= '<debug>';
+				$buffer .= '<a>'.$type.'</a>';
+				$buffer .= '</debug>';			
+			}
+			$oreon = "oreon";	
 			include("../load_status_log.php");
-
-
-			
 			$mtab = array();
 			$mtab = explode(',', $arr);
 	
@@ -185,11 +180,13 @@ For information : contact@oreon-project.org
 			$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 			$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 
-			
 			# services infos
 			if (isset($service_status) &&  (
 			$type == "svc" || $type == "svcpb" || $type == "svc_ok" || $type == "svc_warning" || $type == "svc_critical" || $type == "svc_unknown"
 			)){
+
+
+
 				$gtab = array();
 				for($a=0,$b=1; sizeof($mtab) > $b;$a+=2,$b+=2)
 					$gtab[$mtab[$a] . $mtab[$b]] = $a / 2 + $a % 2;
@@ -285,8 +282,8 @@ For information : contact@oreon-project.org
 		header('Content-Type: text/xml');
 		echo $buffer;
 	
-		global $debug;
-		if($debug == 2){
+		global $debugXML;
+		if($debugXML == 2){
 			$file = "log.xml";
 			$inF = fopen($file,"w");
 			fwrite($inF,$buffer);
@@ -323,7 +320,7 @@ For information : contact@oreon-project.org
 			$hg_name = isset($_POST["hg_name"]) ? $_POST["hg_name"] : "";
 			$h_name = isset($_POST["host_name"]) ? $_POST["host_name"] : "";
 		read($hg_name,$h_name, $_POST["time"], $_POST["arr"],$_POST["type"],$_POST["version"],$_POST["sid"],$_POST["fileStatus"],$_POST["num"],$_POST["search"],$_POST["limit"],$_POST["sort_type"],$_POST["order"],$_POST["search_type_host"],$_POST["search_type_service"],$_POST["date_time_format_status"]);
-	} else if($debug && 
+	} else if($debugXML && 
 			isset($_GET["time"])&& 
 			isset($_GET["arr"]) && 
 			isset($_GET["type"])  && 
