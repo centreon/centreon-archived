@@ -18,9 +18,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	 if ($oreon->optGen["perfparse_installed"])
-		require_once("./DBPerfparseConnect.php");
-
 	$sql = "SELECT VERSION() AS mysql_version";
 	
 	if($res =& $pearDB->query($sql)){
@@ -47,35 +44,6 @@ For information : contact@oreon-project.org
 			$datafree = NULL;
 		}
 	}
-	if (isset($pearDBpp)) {
-		$sql = "SELECT VERSION() AS mysql_version";
-		if($res =& $pearDBpp->query($sql)){
-			$row =& $res->fetchRow();
-			$versionpp = $row['mysql_version'];
-			if(preg_match("/^(3\.23|4\.|5\.)/", $versionpp)){
-				$respp =& $pearDB->query("SELECT DB_Name FROM cfg_perfparse WHERE perfparse_activate = '1'");
-				$respp->fetchInto($retpp);
-				$dbpp = $retpp["DB_Name"];
-				$db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $versionpp) ) ? "`$dbpp`" : $dbpp;
-				$sql = "SHOW TABLE STATUS FROM " . $dbpp;
-				if($res =& $pearDBpp->query($sql))
-				{
-					$dbsizepp = 0;
-					$rowspp = 0;
-					$datafreepp = 0;
-					while ($tabledata_ary =& $res->fetchRow()){
-						$dbsizepp += $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
-						$rowspp += $tabledata_ary['Rows'];
-						$datafreepp += $tabledata_ary['Data_free'];
-					}
-				}
-			} else {
-				$dbsizepp = NULL;
-				$rowspp = NULL;
-				$datafreepp = NULL;
-			}
-		}
-	}
 ?>
  <table id="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;&nbsp;Oreon&nbsp;<? print $lang["DB_status"]; ?></td></tr>
@@ -89,11 +57,4 @@ For information : contact@oreon-project.org
 			<input name="export_sub_list" type="submit" value="<? echo $lang['db_extract']; ?>">
 		</form>
 	</p>
-</div><br><br><br><br><br>
-<? if (isset($pearDBpp)) {?>
-<table id="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;&nbsp;Perfparse&nbsp;<? print $lang["DB_status"]; ?></td></tr>
- 	<tr class="list_one"><td class="FormRowField"><? print $lang["db_lenght"] ; ?></td><td class="FormRowValue"><? $dbsizepp /= 1024; print round($dbsizepp, 2); ?>Ko</td></tr>
-	<tr class="list_two"><td class="FormRowField"><? print $lang["db_nb_entry"] ; ?></td><td class="FormRowValue"><? print $rowspp; ?></td></tr>
-</table>
-<? }?>
+</div>
