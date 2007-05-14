@@ -15,7 +15,6 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	
 	# Bench
 	function microtime_float() 	{
 	   list($usec, $sec) = explode(" ", microtime());
@@ -202,8 +201,13 @@ For information : contact@oreon-project.org
 <link href="<? echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?><? echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
+
+<?
+if($min != 1){
+?>
 <script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>
 <?
+}
 	// Add Template CSS for sysInfos Pages
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 	  echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
@@ -235,8 +239,13 @@ For information : contact@oreon-project.org
 	?>
 	<script type='text/javascript'>
 	    window.onload = function () {
+	
+	<?
+	if($min != 1){
+	?>
 	    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', <?=$tFS?>);
 	<?
+	}
 	$res = null;
 	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT))

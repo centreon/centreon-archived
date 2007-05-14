@@ -15,6 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	$cmd = array("command_type"=>null, "command_name"=>null, "command_line"=>null);
 	if (isset($_POST["command_id1"]) && $_POST["command_id1"])
 		$command_id = $_POST["command_id1"];
@@ -109,7 +110,8 @@ For information : contact@oreon-project.org
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());	
-	$tpl->assign('o', $o);	
+	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('o', $o);
+	$tpl->assign('command_id', $command_id);
 	$tpl->display("minCommand.ihtml");
 ?>
