@@ -69,6 +69,7 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
 	$tpl->assign("p", $p);
+	$tpl->assign('o', $o);
 	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
