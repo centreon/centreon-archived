@@ -29,6 +29,7 @@ For information : contact@oreon-project.org
 	else
 		$search = NULL; 
 	
+	
 	if (!isset($limit))
 		$limit = 20;
 	
@@ -38,6 +39,7 @@ For information : contact@oreon-project.org
 	$form_search->addElement('hidden', 'limit');
 	$form_search->addElement('hidden', 'list');
 	$form_search->addElement('hidden', 'o', $o);
+
 
 	if (	$p == 602 || $p == 60201 || $p == 20201 || $p == 20202 || 
 			$p == 20207 || $p == 2020201 ||$p == 2020202 ||$p == 2020203 ||	

@@ -36,15 +36,15 @@ For information : contact@oreon-project.org
 		$oreon->search_type_service = $_GET["search_type_service"];
 	} else if (isset($oreon->search_type_service))
 		 $search_type_service = $oreon->search_type_service;
-	else 
+	else
 		$search_type_service = NULL;
-		
+
 	if (isset($_GET["search_type_host"])){
 		$search_type_host = $_GET["search_type_host"];
 		$oreon->search_type_host = $_GET["search_type_host"];
 	} else if (isset($oreon->search_type_host))
 		 $search_type_host = $oreon->search_type_host;
-	else 
+	else
 		$search_type_host = NULL;
 	
 	if (!isset($_GET["search_type_host"]) && !isset($oreon->search_type_host) && !isset($_GET["search_type_service"]) && !isset($oreon->search_type_service)){
@@ -134,15 +134,13 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'order');
 	$form->addElement('hidden', 'type');
 	$form->addElement('hidden', 'sort_types');
-	$form->addElement('hidden', 'search_type_service');
-	$form->addElement('hidden', 'search_type_host');
 	$tab = array ("p" => $p, "search" => $search, "num"=>$num);
 	$form->setDefaults($tab);
 
 	# Init QuickForm
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
-	
+
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
 	$tpl->assign("host_name", $host_name);
 	
@@ -157,4 +155,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("tab_order", $tab_order);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("pagination.ihtml");
+
+
 ?>
