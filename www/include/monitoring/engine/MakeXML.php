@@ -246,6 +246,7 @@ For information : contact@oreon-project.org
 					$buffer .= '<host_color>'.$color_host.'</host_color>';
 					$buffer .= '<host_name>'. $svc["host_name"] . '</host_name>';
 					$buffer .= '<host_status>'. $host_status[$svc["host_name"]]["current_state"]  . '</host_status>';///
+					$buffer .= '<host_has_been_acknowledged>'. $host_status[$svc["host_name"]]["problem_has_been_acknowledged"]  . '</host_has_been_acknowledged>';///
 					$buffer .= '<service_description>'. $svc["service_description"] . '</service_description>';
 					$buffer .= '<current_state>'. $svc["current_state"] . '</current_state>';
 					$buffer .= '<plugin_output>' . $plugin_output . '</plugin_output>';
