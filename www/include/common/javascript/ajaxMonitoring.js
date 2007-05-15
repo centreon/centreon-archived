@@ -189,6 +189,7 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	var _accept_active_check = line.getElementsByTagName("accept_active_check")[0].firstChild.nodeValue;
 	var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 	var _host_status = line.getElementsByTagName("host_status")[0].firstChild.nodeValue;
+	var _host_has_been_acknowledged = line.getElementsByTagName("host_has_been_acknowledged")[0].firstChild.nodeValue;
 
 	if(_form.search && _form.search.value)
 		_search=_form.search.value;
@@ -260,6 +261,8 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	{
 		_case_host_name.style.backgroundColor = _host_color;
 	}
+
+
 /*
  * service description
  */
@@ -337,6 +340,7 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	var _img5 = mk_img(_formBasic.icone_accept_passive_check0.value, "accept_pasive_check");
 	var _img6 = mk_img(_formBasic.icone_graph.value, "graph");
 	var _img7 = mk_img(_formBasic.icone_undo.value, "re-check");
+	var _img8 = mk_img(_formBasic.icone_host_has_been_acknowledged.value, "host_has_been_acknowledged");
 
 
 	if(_status == "CRITICAL"){
@@ -347,8 +351,7 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	{
 	ClassName = "list_four";
 	_case_infos.appendChild(_img1);
-	}
-	
+	}	
 
 	if(_notifications_enabled == 0)
 	_case_infos.appendChild(mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable"));
@@ -395,11 +398,16 @@ var _p = 20201;
 
 	if(_previous_host_name != _host_name)
 	{
-		var _text_host_name = document.createTextNode(_host_name);
+		var _text_host_name = document.createTextNode(_host_name+' ');
 		var _linkhost_name = document.createElement("a"); 
   		_linkhost_name.href = './oreon.php?p=201&o=hd&host_name=' + _host_name;
 		_linkhost_name.appendChild(_text_host_name);
 		_case_host_name.appendChild(_linkhost_name);
+
+		if(_host_has_been_acknowledged == 1)
+		{
+			_case_host_name.appendChild(_img8);
+		}
 	}
 	else
 	{

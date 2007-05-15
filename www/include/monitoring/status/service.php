@@ -47,6 +47,7 @@ For information : contact@oreon-project.org
 				$tmp = array();
 				$tmp[0] = $name;
 				$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
+				$service_status[$name]["host_has_been_acknowledged"] = $host_status[$service_status[$name]["host_name"]]["problem_has_been_acknowledged"];
 				$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 				$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 				if ($svc["last_check"]){
@@ -61,7 +62,7 @@ For information : contact@oreon-project.org
 				$service_status_num[$rows++] = $tmp;
 			}
 		}
-	
+		
 	include("./include/common/checkPagination.php");
 	
 	# Smarty template Init
@@ -86,6 +87,7 @@ For information : contact@oreon-project.org
 	for($i=$start ; $i < ($limit+$start) && isset($service_status_num[$i]) ;$i++)
 		$displayTab[$service_status_num[$i][0]] = $service_status_num[$i][1];
 		$service_status = $displayTab;
+
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);	
 	if (isset($service_status))
