@@ -49,14 +49,8 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'snmp', $lang["genOpt_snmp"]);
 	$form->addElement('text', 'snmp_community', $lang["genOpt_snmpCom"], $attrsText);
-	$form->addElement('select', 'snmp_version', $lang["genOpt_snmpVer"], array("0"=>"1", "1"=>"2", "2"=>"2c"), $attrsAdvSelect);
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'snmp_trapd_used', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'snmp_trapd_used', null, $lang["no"], '0');
-	$form->addGroup($tab, 'snmp_trapd_used', $lang["genOpt_snmp_trapd_used"], '&nbsp;');
-	$form->setDefaults(array('snmp_trapd_used' => '0'));
+	$form->addElement('select', 'snmp_version', $lang["genOpt_snmpVer"], array("0"=>"1", "1"=>"2", "2"=>"2c", "3"=>"3"), $attrsAdvSelect);
 	$form->addElement('text', 'snmp_trapd_path_conf', $lang["genOpt_snmp_trapd_pathConf"], $attrsText);
-	$form->addElement('text', 'snmp_trapd_path_daemon', $lang["genOpt_snmp_trapd_pathBin"], $attrsText);
 	#
 	## Form Rules
 	#
@@ -65,30 +59,9 @@ For information : contact@oreon-project.org
 			return rtrim($elem, "/")."/";
 	}
 	$form->applyFilter('_ALL_', 'trim');
-	$form->applyFilter('nagios_path', 'slash');
-	//$form->applyFilter('nagios_path_bin', 'slash');
-	$form->applyFilter('nagios_path_img', 'slash');
-	$form->applyFilter('nagios_path_plugins', 'slash');
-	$form->applyFilter('oreon_path', 'slash');
-	$form->applyFilter('oreon_web_path', 'slash');
-	$form->applyFilter('oreon_rrdbase_path', 'slash');
-	$form->applyFilter('debug_path', 'slash');
-	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
-	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
-	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
-	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
-	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
-	$form->addRule('oreon_path', $lang['ErrWrPath'], 'is_valid_path');
-	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
-	$form->addRule('nagios_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
-	$form->addRule('mailer_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
-	$form->addRule('rrdtool_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
-	$form->addRule('oreon_rrdbase_path', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('debug_path', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrFile'], 'is_writable_file_if_exist');
+	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrPath'], 'is_writable_path');
+	$form->addRule('snmp_trapd_path_conf', $lang['ErrRequired'], 'required');
 
 	#
 	##End of form definition

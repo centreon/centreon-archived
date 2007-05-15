@@ -702,7 +702,6 @@ $lang['gen_mvOk'] = " - d&eacute;placement OK";
 $lang['gen_mvKo'] = " - d&eacute;placement KO";
 $lang['gen_trapd'] = "Traps SNMP";
 $lang['gen_genTrap'] = "G&eacute;n&eacute;rer les Traps";
-$lang['gen_trapRestart'] = "Red&eacute;marrer snmptrad";
 
 /* Upload File */
 

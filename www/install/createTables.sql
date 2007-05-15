@@ -771,8 +771,6 @@ CREATE TABLE `general_opt` (
   `nagios_version` enum('1','2','3') default NULL,
   `snmp_community` varchar(255) default NULL,
   `snmp_version` varchar(255) default NULL,
-  `snmp_trapd_used` enum('0','1') default NULL,
-  `snmp_trapd_path_daemon` varchar(255) default NULL,
   `snmp_trapd_path_conf` varchar(255) default NULL,
   `mailer_path_bin` varchar(255) default NULL,
   `rrdtool_path_bin` varchar(255) default NULL,

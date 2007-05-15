@@ -104,10 +104,6 @@ For information : contact@oreon-project.org
 		isset($ret["snmp_community"]) && $ret["snmp_community"] != NULL ? $rq .= "'".$ret["snmp_community"]."', ": $rq .= "NULL, ";
 		$rq .= "snmp_version = ";
 		isset($ret["snmp_version"]) && $ret["snmp_version"] != NULL ? $rq .= "'".$ret["snmp_version"]."', ": $rq .= "NULL, ";
-		$rq .= "snmp_trapd_used = ";
-		isset($ret["snmp_trapd_used"]["snmp_trapd_used"]) && $ret["snmp_trapd_used"]["snmp_trapd_used"] != NULL ? $rq .= "'".$ret["snmp_trapd_used"]["snmp_trapd_used"]."', ": $rq .= "NULL, ";
-		$rq .= "snmp_trapd_path_daemon = ";
-		isset($ret["snmp_trapd_path_daemon"]) && $ret["snmp_trapd_path_daemon"] != NULL ? $rq .= "'".$ret["snmp_trapd_path_daemon"]."', ": $rq .= "NULL, ";
 		$rq .= "snmp_trapd_path_conf = ";
 		isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != NULL ? $rq .= "'".$ret["snmp_trapd_path_conf"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
