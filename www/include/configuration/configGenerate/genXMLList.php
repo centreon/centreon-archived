@@ -516,7 +516,7 @@ For information : contact@oreon-project.org
 			$DBRESULT->free();
 		}
 		else if ($meta["meta_select_mode"] == 1)	{
-			require_once("./DBPerfparseConnect.php");
+			require_once("./DBOdsConnect.php");
 			$DBRESULT =& $pearDB->query("SELECT meta_id, host_id, metric_id FROM meta_service_relation msr WHERE meta_id = '".$key."' AND activate = '1'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -529,11 +529,11 @@ For information : contact@oreon-project.org
 				else if ($ret["level"]["level"] == 3)
 					$BP = true;
 				if ($BP)	{
-					$DBRESULT2 =& $pearDBpp->query("SELECT service_description FROM perfdata_service_metric WHERE metric_id = '".$metric["metric_id"]."'");
+					$DBRESULT2 =& $pearDBO->query("SELECT service_description FROM metrics m, index_data i WHERE m.metric_id = '".$metric["metric_id"]."' and m.index_id=i.id");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-					$ppService =& $DBRESULT2->fetchRow();
-					$sv_id =& getMyServiceID($ppService["service_description"], $metric["host_id"]);
+					$OService =& $DBRESULT2->fetchRow();
+					$sv_id =& getMyServiceID($OService["service_description"], $metric["host_id"]);
 					$BP = false;
 					if ($ret["level"]["level"] == 1)
 						array_key_exists($sv_id, $gbArr[4]) ? $BP = true : NULL;
