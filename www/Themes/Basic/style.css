@@ -225,7 +225,34 @@ hr{
 	font-size: 10px;
 	font-weight: bold;}
 	
-	
+
+.bubultab{
+	width:100%;
+	border-collapse:separate;
+}
+
+.bubultab td{
+	background-color:#e0e0ea;
+	border-collapse:separate;
+	border: 0.5px solid white;
+}
+
+.bubul{
+	font-size:12px;
+	padding:2px;
+	padding-right:5px;
+	padding-left:5px;
+	text-align:right;
+}
+
+.bubuleft{
+	font-size:12px;
+	padding:2px;
+	padding-right:5px;
+	padding-left:5px;
+	text-align:left;
+}
+
 div.uptodate {
 	margin: 3px;
 	padding: 3px;
