@@ -42,13 +42,13 @@ For information : contact@oreon-project.org
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Perfparse Metric comes from DB -> Store in $metrics Array
-	require_once("./DBPerfparseConnect.php");
+	require_once("./DBOdsConnect.php");
 	$metrics = array(NULL=>NULL);
-	$DBRESULT =& $pearDBpp->query("SELECT DISTINCT metric FROM perfdata_service_metric ORDER BY metric");
+	$DBRESULT =& $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($metric))
-		$metrics[$metric["metric"]] = $metric["metric"];
+		$metrics[$metric["metric_name"]] = $metric["metric_name"];
 	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");

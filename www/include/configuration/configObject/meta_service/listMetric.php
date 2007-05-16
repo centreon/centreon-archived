@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	require_once("./DBPerfparseConnect.php");
+	require_once("./DBOdsConnect.php");
 	
 	$DBRESULT = & $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
 	if (PEAR::isError($DBRESULT))
@@ -71,17 +71,17 @@ For information : contact@oreon-project.org
 			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
 			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
-		$DBRESULTPp =& $pearDBpp->query("SELECT * FROM perfdata_service_metric WHERE metric_id = '".$metric['metric_id']."'");
-		$row =& $DBRESULTPp->fetchRow();
+		$DBRESULTO =& $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id = '".$metric['metric_id']."' and m.index_id=i.id");
+		$row =& $DBRESULTO->fetchRow();
 		$elemArr1[$i] = array("MenuClass"=>"list_".$style, 
 					"RowMenu_select"=>$selectedElements->toHtml(),
 					"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES),
 					"RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$metric['msr_id'],
 					"RowMenu_service"=>htmlentities($row["service_description"], ENT_QUOTES),
-					"RowMenu_metric"=>$row["metric"]." (".$row["unit"].")",
+					"RowMenu_metric"=>$row["metric_name"]." (".$row["unit_name"].")",
 					"RowMenu_status"=>$metric["activate"] ? $lang['enable'] : $lang['disable'],
 					"RowMenu_options"=>$moptions);
-		$DBRESULTPp->free();
+		$DBRESULTO->free();
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr1", $elemArr1);	

@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information
 	#
-	require_once("./DBPerfparseConnect.php");
+	require_once("./DBOdsConnect.php");
 	
 	$metric = array();
 	if (($o == "cs" || $o == "ws") && $msr_id)	{	
@@ -30,13 +30,14 @@ For information : contact@oreon-project.org
 
 		# Set base value
 		$metric1 = array_map("myDecode", $DBRESULT->fetchRow());
-		$DBRESULT =& $pearDBpp->query("SELECT * FROM perfdata_service_metric WHERE metric_id = '".$metric1["metric_id"]."'");		
+		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id=index_data.id");		
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$metric2 = array_map("myDecode", $DBRESULT->fetchRow());
 		$metric = array_merge($metric1, $metric2);
 		$host_id = $metric1["host_id"];
 		$metric["metric_sel"][0] = getMyServiceID($metric["service_description"], $metric["host_id"]);
+		
 		$metric["metric_sel"][1] = $metric["metric_id"];		
 	}
 	
@@ -61,10 +62,12 @@ For information : contact@oreon-project.org
 		$services = array(NULL=>NULL);
 		$services = getMyHostServices($host_id);
 		foreach ($services as $key=>$value)	{
-			$DBRESULT =& $pearDBpp->query("SELECT DISTINCT metric_id, metric, unit FROM perfdata_service_metric WHERE host_name = '".getMyHostName($host_id)."' AND service_description = '".$value."' ORDER BY metric, unit");
+			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value."' and i.id=m.index_id ORDER BY metric_name, unit_name");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			while ($DBRESULT->fetchInto($metricSV))	{
 				$services1[$key] = $value;
-				$services2[$key][$metricSV["metric_id"]] = $metricSV["metric"]."  (".$metricSV["unit"].")";
+				$services2[$key][$metricSV["metric_id"]] = $metricSV["metric_name"]."  (".$metricSV["unit_name"].")";
 			}
 		}
 		$DBRESULT->free();
@@ -166,7 +169,7 @@ For information : contact@oreon-project.org
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);	
+		$form->accept($renderer);
 		
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);
