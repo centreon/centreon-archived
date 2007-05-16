@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 	$color["DOWN"] =  		$oreon->optGen["color_down"];
 	$color["UNREACHABLE"] = $oreon->optGen["color_unreachable"];
 
-	$tpl->assign("urlLogo", $skin.'Images/logo_oreon.gif');
+	$tpl->assign("urlLogo", 'img/logo_oreon.gif');
 	$tpl->assign("lang", $lang);
 	$tpl->assign("p", $p);
 	$tpl->assign("color", $color);
