@@ -192,10 +192,12 @@ Timeline.DefaultEventSource.Event = function(
     
     this._text = text;
     
+    
     // Merethis modification by cedrick facon here
-    description = description.replace(/~br~/i, "<br>");
-    description = description.replace(/~br~/i, "<br>");
-    description = description.replace(/~br~/i, "<br>");
+    
+//    description = description.replace(/~br~/ig, "<br>");
+    description = description.replace(/{/ig, "<");
+    description = description.replace(/}/ig, ">");
     
     this._description = description;
     this._image = (image != null && image != "") ? image : null;
@@ -232,7 +234,7 @@ Timeline.DefaultEventSource.Event.prototype = {
     fillDescription: function(elmt) {
         elmt.innerHTML = this._description;
     },
-    fillTime: function(elmt, labeller) {/* Merethis modification by cedrick facon here
+    fillTime: function(elmt, labeller) {/* Merethis modification by cedrick Facon here
         if (this._instant) {
             if (this.isImprecise()) {
                 elmt.appendChild(elmt.ownerDocument.createTextNode(labeller.labelPrecise(this._start)));

@@ -195,20 +195,21 @@ For information : contact@oreon-project.org
 			
 			$t = round(($t - ($t * 0.11574074074)),2);
 			$start = $h["date_start"] + 5000;			
+
+
+			#
+			## make bubul
+			#
+			$bubultab = '{table class=bubultab}';
+			$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bubul}'. Duration::toString($oktime) .'{/td}{td class=bubul}'.(($pok > 0) ? $pok : "0").'%{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bubul}'. Duration::toString($criticaltime) .'{/td}{td class=bubul}'.(($pcritical > 0) ? $pcritical : "0").'%{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bubul}'. Duration::toString($warningtime) .'{/td}{td class=bubul}'.(($pwarning > 0) ? $pwarning : "0").'%{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;"  }Unknown:{/td}{td class=bubul}'. Duration::toString($pendingtime) .'{/td}{td class=bubul}'.(($ppending > 0) ? $ppending : "0").'%{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNKNOWN.';"  }Undeterminated:{/td}{td class=bubul}'. Duration::toString($unknowntime) .'{/td}{td class=bubul}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
+			$bubultab .= '{/table}';
 			
 
-			$tp = round(($pwarning * $t / 100 ),2);
-			if($pwarning > 0){
-				$end = $h["date_start"] + $tp + 5000;
-			$buffer .= '<event ';
-			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-			$buffer .= ' color="#' . $colorWARNING . '"';
-			$buffer .= ' isDuration="true" ';
-			$buffer .= ' title= "' . (($pwarning > 0) ? $pwarning : "0") . '%" >' ;
-			$buffer .= '~br~ WarningTime: ' . Duration::toString($warningtime);		
-			$buffer .= '</event>';		
-			}
 			$tp = round(($punknown * $t / 100 ),2);
 			if($punknown > 0){
 				$end = $h["date_start"] + $tp + 5000;
@@ -218,7 +219,8 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUNKNOWN . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($punknown > 0) ? $punknown : "0") . '%" >' ;
-				$buffer .= '~br~ UnknownTime: ' . Duration::toString($unknowntime);		
+//				$buffer .= '~br~ UnknownTime: ' . Duration::toString($unknowntime);
+				$buffer .= $bubultab;
 				$buffer .= '</event>';	
 			}
 
@@ -231,9 +233,25 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#cccccc"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
-				$buffer .= '~br~ UndeterminatedTime: ' . Duration::toString($pendingtime);		
+				$buffer .= $bubultab;
+//				$buffer .= '~br~ UndeterminatedTime: ' . Duration::toString($pendingtime);		
 				$buffer .= '</event>';	
 			}
+
+			$tp = round(($pwarning * $t / 100 ),2);
+			if($pwarning > 0){
+				$end = $h["date_start"] + $tp + 5000;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorWARNING . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . (($pwarning > 0) ? $pwarning : "0") . '%" >' ;
+			$buffer .= $bubultab;
+//			$buffer .= '~br~ WarningTime: ' . Duration::toString($warningtime);		
+			$buffer .= '</event>';		
+			}
+
 
 			$tp = round(($pcritical * $t / 100 ),2);
 			if($pcritical > 0){
@@ -244,7 +262,8 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorCRITICAL . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pcritical > 0) ? $pcritical : "0") . '%" >' ;
-				$buffer .= '~br~ CriticalTime: ' . Duration::toString($criticaltime);
+//				$buffer .= '~br~ CriticalTime: ' . Duration::toString($criticaltime);
+				$buffer .= $bubultab;
 				$buffer .= '</event>';
 			}
 
@@ -257,7 +276,8 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorOK . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pok > 0) ? $pok : "0") .   '%" >' ;
-				$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
+				$buffer .= $bubultab;
+//				$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
 				$buffer .= '</event>';
 			}
 		  }
@@ -276,6 +296,18 @@ For information : contact@oreon-project.org
 	$start = $today_start + 5000;
 
 
+	#
+	## make bubul
+	#
+	$bubultab = '{table class=bubultab}';
+	$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bubul}'.Duration::toString($_GET["today_ok"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_ok"] > 0) ? $_GET["today_ok"] : "0").'%{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bubul}'.Duration::toString($_GET["today_critical"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_critical"] > 0) ? $_GET["today_critical"] : "0").'%{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bubul}'. Duration::toString($_GET["today_warning"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_warning"] > 0) ? $_GET["today_warning"] : "0").'%{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNKNOWN.';"  }Unknown:{/td}{td class=bubul}'. Duration::toString($_GET["today_unknown"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_unknown"] > 0) ? $_GET["today_unknown"] : "0").'%{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;"  }Undeterminated:{/td}{td class=bubul}'.  Duration::toString($_GET["today_pending"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_pending"] > 0) ? $_GET["today_pending"] : "0").'%{/td}{/tr}';
+	$bubultab .= '{/table}';
+
 	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
 	if($_GET["today_pending"] > 0){
 		$end = $today_start + $tp + 5000;
@@ -285,19 +317,8 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#cccccc"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-		$buffer .= '~br~ UndeterminatedTime: ' . Duration::toString($_GET["today_pending"] * $t / 100);		
-		$buffer .= '</event>';
-	}
-	$tp = round(($_GET["today_warning"] * $t / 100 ),2);
-	if($_GET["today_warning"] > 0){
-		$end = $today_start + $tp + 5000;
-		$buffer .= '<event ';
-		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-		$buffer .= ' color="#' . $colorWARNING . '"';
-		$buffer .= ' isDuration="true" ';
-		$buffer .= ' title= "' . $_GET["today_warning"] . '%" >' ;
-		$buffer .= '~br~ Warnning: ' . Duration::toString(0+$_GET["today_warning"] * $t / 100);		
+//		$buffer .= '~br~ UndeterminatedTime: ' . Duration::toString($_GET["today_pending"] * $t / 100);		
+		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_unknown"] * $t / 100 ),2);
@@ -309,7 +330,21 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUNKNOWN . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_unknown"] . '%" >' ;
-		$buffer .= '~br~ Unknown: ' . Duration::toString(0+$_GET["today_unknown"] * $t / 100);		
+//		$buffer .= '~br~ Unknown: ' . Duration::toString(0+$_GET["today_unknown"] * $t / 100);		
+		$buffer .= $bubultab;
+		$buffer .= '</event>';
+	}
+	$tp = round(($_GET["today_warning"] * $t / 100 ),2);
+	if($_GET["today_warning"] > 0){
+		$end = $today_start + $tp + 5000;
+		$buffer .= '<event ';
+		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+		$buffer .= ' color="#' . $colorWARNING . '"';
+		$buffer .= ' isDuration="true" ';
+		$buffer .= ' title= "' . $_GET["today_warning"] . '%" >' ;
+//		$buffer .= '~br~ Warnning: ' . Duration::toString(0+$_GET["today_warning"] * $t / 100);		
+		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
 	
@@ -322,7 +357,8 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorCRITICAL . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_critical"] . '%" >' ;
-		$buffer .= '~br~ Criticaltime: ' . Duration::toString($_GET["today_critical"] * $t / 100);
+//		$buffer .= '~br~ Criticaltime: ' . Duration::toString($_GET["today_critical"] * $t / 100);
+		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
 
@@ -335,7 +371,8 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorOK . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_ok"] . '%" >' ;
-		$buffer .= '~br~ OKtime: ' . Duration::toString($_GET["today_ok"] * $t / 100);	
+//		$buffer .= '~br~ OKtime: ' . Duration::toString($_GET["today_ok"] * $t / 100);	
+		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
 

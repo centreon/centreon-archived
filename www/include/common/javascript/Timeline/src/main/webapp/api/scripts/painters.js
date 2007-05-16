@@ -331,6 +331,8 @@ Timeline.DurationEventPainter.prototype._showBubble = function(x, y, evt) {
     
     var doc = this._timeline.getDocument();
     
+    /* merethis modification here*/
+    
     var title = evt.getText();
     var link = evt.getLink();
     var image = evt.getImage();
@@ -342,7 +344,7 @@ Timeline.DurationEventPainter.prototype._showBubble = function(x, y, evt) {
         this._theme.event.bubble.imageStyler(img);
         div.appendChild(img);
     }
-    
+    /*
     var divTitle = doc.createElement("div");
     var textTitle = doc.createTextNode(title);
     if (link != null) {
@@ -355,14 +357,16 @@ Timeline.DurationEventPainter.prototype._showBubble = function(x, y, evt) {
     }
     this._theme.event.bubble.titleStyler(divTitle);
     div.appendChild(divTitle);
-    
+*/
     var divBody = doc.createElement("div");
     evt.fillDescription(divBody);
     this._theme.event.bubble.bodyStyler(divBody);
     div.appendChild(divBody);
-    
+
+/*    
     var divTime = doc.createElement("div");
     evt.fillTime(divTime, this._band.getLabeller());
     this._theme.event.bubble.timeStyler(divTime);
     div.appendChild(divTime);
+   */ 
 };
