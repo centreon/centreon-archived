@@ -92,8 +92,7 @@ For information : contact@oreon-project.org
 								$values["name"].".conf -m ".htmlentities($ret["mnftr"], ENT_QUOTES)." 2>&1");
 			shell_exec("rm /tmp/".$values["name"].".conf /tmp/".$values["name"]);
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
-			$stdout = shell_exec("sudo ".$oreon->optGen["nagios_path_plugins"]."traps/genSnmpttConfFile.pl 2>&1");
-			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
+			$msg .= "<br>Generate Traps configuration files from Nagios configuration Tab.";
 			if ($msg)
 				$tpl->assign('msg', $msg);
 		}	
