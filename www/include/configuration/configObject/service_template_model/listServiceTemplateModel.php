@@ -83,7 +83,13 @@ For information : contact@oreon-project.org
 		if (count($tplArr))
 			foreach($tplArr as $key =>$value)
 				$tplStr .= "&nbsp;->&nbsp;<a href='oreon.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
+			
+			$service["service_description"] = str_replace("#BR#", "\n", $service["service_description"]);
+			$service["service_description"] = str_replace("#T#", "\t", $service["service_description"]);
+			$service["service_description"] = str_replace("#R#", "\r", $service["service_description"]);
+			$service["service_description"] = str_replace("#S#", '/', $service["service_description"]);
+			$service["service_description"] = str_replace("#BS#", '\\', $service["service_description"]);			
+			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_desc"=>$service["service_description"],
 						"RowMenu_alias"=>$service["service_alias"],
