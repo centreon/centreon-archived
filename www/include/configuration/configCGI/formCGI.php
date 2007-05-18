@@ -79,8 +79,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'url_html_path', $lang["cgi_urlHtmlPath"], $attrsText2);
 	
 	## Part 2
-	if ($oreon->user->get_version() == 1)
-		$form->addElement('text', 'nagios_check_command', $lang["cgi_nagCheckCmd"], $attrsText2);
+	$form->addElement('text', 'nagios_check_command', $lang["cgi_nagCheckCmd"], $attrsText2);
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, $lang["yes"], '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, $lang["no"], '0');

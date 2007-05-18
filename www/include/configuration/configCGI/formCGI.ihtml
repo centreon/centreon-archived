@@ -24,9 +24,7 @@
 		
 		<!-- Part 2 -->
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;&nbsp;</td></tr>
-		{if $nagios == 1}
-			<tr class="list_one"><td class="FormRowField">{$form.nagios_check_command.label}</td><td class="FormRowValue">{$form.nagios_check_command.html}</td></tr>
-		{/if}
+		<tr class="list_one"><td class="FormRowField">{$form.nagios_check_command.label}</td><td class="FormRowValue">{$form.nagios_check_command.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.use_authentication.label}</td><td class="FormRowValue">{$form.use_authentication.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.default_user_name.label}</td><td class="FormRowValue">{$form.default_user_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.authorized_for_system_information.label}</td><td class="FormRowValue">{$form.authorized_for_system_information.html}</td></tr>
