@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
 	} else {
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE id = '".$_GET["index"]."'");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
@@ -110,7 +110,13 @@ For information : contact@oreon-project.org
 		$service_id = $svc_id["service_id"];
 		$index_id = $svc_id["id"];
 		
-		if (!$service_id) {$tpl->assign('msg', $lang["no_graph_found"]);$msg_error = 1;} else {$tpl->assign('msg', NULL);}	
+		if ($service_id || $svc_id["special"]) {
+			$tpl->assign('msg', NULL);
+		} else {
+			$tpl->assign('msg', $lang["no_graph_found"]);
+			$msg_error = 1;
+		}	
+		
 		if (!isset($start) && !isset($end)){
 			$tpl->assign('start_daily', $start_daily = time() - 60 * 60 * 24);
 			$tpl->assign('end_daily', $end_daily = time());
