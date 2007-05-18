@@ -45,3 +45,18 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 -- 15/05/2007
 ALTER TABLE `general_opt`  DROP `snmp_trapd_used`,   DROP `snmp_trapd_path_daemon`;
+
+
+-- 18/05/2007
+
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_service', NULL, 602, NULL, NULL, 1, NULL, NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_meta_service', NULL, 602, NULL, NULL, 2, NULL, NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_traps_command', NULL, 602, NULL, NULL, 3, NULL, NULL, '0', '0', '1');
+
+UPDATE `topology` SET `topology_group` = '2' WHERE `topology`.`topology_page` = 60204 LIMIT 1 ;
+UPDATE `topology` SET `topology_group` = '2' WHERE `topology`.`topology_page` = 60205 LIMIT 1 ;
+
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_mnftr', './img/icones/16x16/factory.gif', '602', '60207', '60', '3', './include/configuration/configObject/traps-manufacturer/mnftr.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_mibs', './img/icones/16x16/component_add.gif', '602', '60208', '70', '3', './include/configuration/configObject/mibs/mibs.php', NULL , '0', '0', '1');
+
+
