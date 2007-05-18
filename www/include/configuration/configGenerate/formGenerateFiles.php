@@ -65,6 +65,11 @@ For information : contact@oreon-project.org
 	$form->addGroup($tab, 'debug', $lang["gen_debug"], '&nbsp;');
 	$form->setDefaults(array('debug' => '1'));
 	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["yes"], '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["no"], '0');
+	$form->addGroup($tab, 'optimize', $lang["gen_optimize"], '&nbsp;');
+	$form->setDefaults(array('optimize' => '0'));
+	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, $lang["yes"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, $lang["no"], '0');
 	$form->addGroup($tab, 'move', $lang["gen_move"], '&nbsp;');
@@ -136,6 +141,11 @@ For information : contact@oreon-project.org
 			require_once($path."genNagiosCFG-DEBUG.php");
 			$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath."nagiosCFG.DEBUG");
 			$msg .= str_replace ("\n", "<br>", $stdout);
+		}
+		if ($ret["optimize"]["optimize"])	{
+			require_once($path."genNagiosCFG-DEBUG.php");
+			$stdout_perf = shell_exec($oreon->optGen["nagios_path_bin"] . " -s ".$nagiosCFGPath."nagiosCFG.DEBUG");
+			$msg .= str_replace ("\n", "<br>", $stdout_perf);
 		}
 		if ($ret["move"]["move"])	{
 			$msg .= "<br>";

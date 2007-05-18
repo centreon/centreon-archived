@@ -20,6 +20,7 @@
 		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>	 	
 		<tr class="list_one"><td class="FormRowField">{$form.debug.label}</td><td class="FormRowValue">{$form.debug.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.optimize.label}</td><td class="FormRowValue">{$form.optimize.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.move.label}</td><td class="FormRowValue">{$form.move.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.restart.label}</td><td class="FormRowValue">{$form.restart.html}<br><br>{$form.restart_mode.html}</td></tr>
 

@@ -693,6 +693,7 @@ $lang['gen_comment'] = "Include Comments";
 $lang['gen_xml'] = "Export in XML too";
 $lang['gen_result'] = "Result";
 $lang['gen_debug'] = "Run Nagios debug (-v)";
+$lang['gen_optimize'] = "Run Optimisation test (-s)";
 $lang['gen_move'] = "Move Export Files";
 $lang['gen_restart'] = "Restart Nagios";
 $lang['gen_restart_load'] = "Reload";
