@@ -66,28 +66,27 @@ For information : contact@oreon-project.org
 		}
 		if (isset($_POST["s"]) && ($_POST["s"] == 1 || $_POST["s"] == 2 || $_POST["s"] == 4))	{
 			include("./include/options/db/extractDB/extract_sub.php");exit();}
-	} 
-	else {
+	} else {
+
 		# Delete Session Expired
 		$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$session_expire =& $DBRESULT->fetchRow();
+		if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$DBRESULT->fetchInto($session_expire);
 		$time_limit = time() - ($session_expire["session_expire"] * 60);
 		
 		$DBRESULT =& $pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br>";
+		if (PEAR::isError($DBRESULT)) print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br>";
 			
 		# Get session and Check if session is not expired
 		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		
 		if (!$DBRESULT->numRows())
 			header("Location: index.php?disconnect=2");			
-		if (!isset($_SESSION["oreon"])){
+		
+		if (!isset($_SESSION["oreon"]))
 			header("Location: index.php?disconnect=1");
-		}
+
 		# Define Oreon var alias
 		$oreon =& $_SESSION["oreon"];
 		if (!is_object($oreon))
@@ -101,22 +100,7 @@ For information : contact@oreon-project.org
 		$oreon->initNagiosCFG($pearDB);
 		unset($oreon->optGen);
 		$oreon->initOptGen($pearDB);
- 
-	 	function get_my_first_allowed_root_menu($lcaTStr){
-			global $pearDB;
-			$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-					FROM topology 
-					WHERE topology_page IN ($lcaTStr) 
-					AND topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
-					LIMIT 1"; 
-			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$root_menu = array();
-			if ($DBRESULT->numRows())
-				$DBRESULT->fetchInto($root_menu);
-			return $root_menu;
-		}
+
 		if (!$p){
 			$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
 			if (isset($root_menu["topology_page"])) $p = $root_menu["topology_page"] ; else $p = NULL;
@@ -161,20 +145,18 @@ For information : contact@oreon-project.org
 		
 		$colorfile = "Color/". $tab_file_css[0];
 
-		$rq = "SELECT css_name FROM css_color_menu WHERE menu_nb = '".$level1."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT =& $pearDB->query("SELECT css_name FROM css_color_menu WHERE menu_nb = '".$level1."'");
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());
-		if($DBRESULT->numRows() && $DBRESULT->fetchInto($elem)){
+		if($DBRESULT->numRows() && $DBRESULT->fetchInto($elem))
 			$colorfile = "Color/".$elem["css_name"];
-		}
 		
-		// Update Session Table For last_reload and current_page row
+		# Update Session Table For last_reload and current_page row
 		$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error WHERE Updating Session : ".$DBRESULT->getDebugInfo()."<br>";
 			
-		// Load traduction in the selected language.
+		# Load traduction in the selected language.
 		is_file ("./lang/".$oreon->user->get_lang().".php") ? include_once ("./lang/".$oreon->user->get_lang().".php") : include_once ("./lang/en.php");
 		is_file ("./include/configuration/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/configuration/lang/".$oreon->user->get_lang().".php") : include_once ("./include/configuration/lang/en.php");
 		is_file ("./include/monitoring/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/monitoring/lang/".$oreon->user->get_lang().".php") : include_once ("./include/monitoring/lang/en.php");
@@ -187,78 +169,7 @@ For information : contact@oreon-project.org
 		# Take this part again and get infos in module table
 		foreach ($oreon->modules as $module)
 			$module["lang"] ? (is_file ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") ? include_once ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") : include_once ("./modules/".$module["name"]."/lang/en.php")) : NULL;
-		print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>";
+		
         $mlang = $oreon->user->get_lang();	
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<? echo $mlang; ?>" lang="<? echo $mlang; ?>">
-<head>
-<title>Supervision Tool - Powered By Oreon</title>
-<link rel="shortcut icon" href="./img/iconOreon.ico"/>
-<link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-<link href="<? echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?><? echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
-
-<?
-if($min != 1){
-?>
-<script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>
-<?
-}
-	// Add Template CSS for sysInfos Pages
-	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
-	  echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
-
-	if (isset($p) && $p == 310)
-		print "<SCRIPT language='javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>";
-
-	/*
-	 * include javascript
-	 */
-
-	$res = null;
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-	if (PEAR::isError($DBRESULT))
-		print $DBRESULT->getDebugInfo()."<br>";
-	while ($DBRESULT->fetchInto($topology_js))
-		echo "<script language='javascript' src='".$topology_js['PathName_js']."'></script> ";
-
-	/*
-	 * init javascript
-	 */
-	 
-	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
-	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-
-	?>
-	<script type='text/javascript'>
-	    window.onload = function () {
-	
-	<?
-	if($min != 1){
-	?>
-	    setTimeout('reloadStatusCounter(<?=$tS?>,"<?=$sid?>")', <?=$tFS?>);
-	<?
 	}
-	$res = null;
-	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-	if (PEAR::isError($DBRESULT))
-		print $DBRESULT->getDebugInfo()."<br>";
-	while ($DBRESULT->fetchInto($topology_js)){
-		if($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<? echo $tM; ?>,"<? echo $sid; ?>","<? echo $o;?>")', <? echo $tFM; ?>);<?
-		} else if ($topology_js['init'])
-			echo $topology_js['init'] ."();";
-	}
-	?>
-    };
-    </script>
-</head>
-<body>
-<? } ?>
+?>

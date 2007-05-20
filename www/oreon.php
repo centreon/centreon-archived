@@ -40,76 +40,21 @@ For information : contact@oreon-project.org
 	if (isset($_GET["AutoLogin"]) && $_GET["AutoLogin"])
 		print $_GET["AutoLogin"];
 		 
-	# header html
-	require_once ("./header.php");
-
-	# function 
-	function get_path($abs_path){
-		$len = strlen($abs_path);
-		for ($i = 0, $flag = 0; $i < $len; $i++){
-			if ($flag == 3)
-				break;
-			if ($abs_path{$i} == "/")
-				$flag++;
-		}
-		return substr($abs_path, 0, $i);
-	}
-	
-	function get_child($id_page, $lcaTStr){
-		global $pearDB;
-		$rq = "	SELECT topology_parent,topology_name,topology_id,topology_url,topology_page,topology_url_opt 
-				FROM topology 
-				WHERE  topology_page IN ($lcaTStr) 
-				AND topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
-				ORDER BY topology_order, topology_group "; 
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$DBRESULT->fetchInto($redirect);
-		return $redirect;
-	}
-
+	# Include all func
+	require_once ("./func.php");
 	require_once ("./include/common/common-Func.php");
-
+	
+	require_once ("./header.php");
+	
 	# LCA Init Common Var
 	global $isRestreint;
 	$isRestreint = HadUserLca($pearDB);
-		
-	# Menu
-	if (!$min)
-		require_once ("menu/Menu.php");
 
-	$rq = "SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'";
-	$DBRESULT =& $pearDB->query($rq);
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
+	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$redirect =& $DBRESULT->fetchRow();
-	
-	if($min != 1)
-		include("pathWay.php");
 
-	$nb_page = NULL;
-	if ($isRestreint){
-		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
-			$nb_page = 0;
-			require_once("./alt_error.php");
-		} else
-			$nb_page = 1;	
-	} else
-		$nb_page = 1;
-	
-	function reset_search_page($url){
-		# Clean Vars
-		global $oreon;
-		if (!isset($url))
-			return;
-		if (isset($_GET["search"]) && isset($oreon->historySearch[$url]) && $_GET["search"] != $oreon->historySearch[$url]){		
-			$_POST["num"] = 0;
-			$_GET["num"] = 0;
-		}	
-	}
-	
-	# init URL 
+	# Init URL 
 	$url = "";
 	if (!isset($_GET["doc"])){
 		if ((isset($nb_page) && $nb_page) || !$isRestreint){	
@@ -119,13 +64,12 @@ For information : contact@oreon-project.org
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-						require_once($redirect["topology_url"]);
 					} else 
-						require_once("./alt_error.php");		
+						$url = "./alt_error.php";		
 				} else {
 					$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
 					if ($ret2["topology_url_opt"])	{
-						if (!$o)	{
+						if (!$o) {
 							$tab = split("\=", $ret2["topology_url_opt"]);
 							$o = $tab[1];
 						}
@@ -138,9 +82,8 @@ For information : contact@oreon-project.org
 							$tab = split("\=", $ret2["topology_url_opt"]);
 							$o = $tab[1];
 						}
-						require_once($ret2["topology_url"]);
 					} else
-						require_once("./alt_error.php");
+						$url = "./alt_error.php";
 				} 
 			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
 				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
@@ -148,12 +91,11 @@ For information : contact@oreon-project.org
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-						require_once($redirect["topology_url"]);
 					} else 
-						require_once("./alt_error.php");		
+						$url = "./alt_error.php";		
 				} else {
 					if ($ret["topology_url_opt"]){
-						if (!$o)	{
+						if (!$o) {
 							$tab = split("\=", $ret["topology_url_opt"]);
 							$o = $tab[1];
 						}
@@ -162,33 +104,52 @@ For information : contact@oreon-project.org
 					if (file_exists($ret["topology_url"])){
 						$url = $ret["topology_url"];
 						reset_search_page($url);
-						require_once($ret["topology_url"]);
 					} else 
-						require_once("./alt_error.php");
+						$url = "./alt_error.php";
 				}
 			} else if ($redirect["topology_page"] >= 1000) {
 				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
-					if (!$ret['topology_page']){
+				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){		
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-						require_once($redirect["topology_url"]);
 					} else 
-						require_once("./alt_error.php");		
+						$url = "./alt_error.php";		
 				} else { 
 					if (file_exists($redirect["topology_url"]) && $ret['topology_page']){	
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-						require_once($redirect["topology_url"]);
 					} else 
-						require_once("./alt_error.php");
+						$url = "./alt_error.php";
 				}
-			} else {
-				print "Unknown operation";
 			}
 		}
 	} else
-		require_once("./include/doc/index.php");
+		$url = "./include/doc/index.php";
+
+	# Header HTML
+	require_once ("./htmlHeader.php");
+			
+	# Display Menu
+	if (!$min)
+		require_once ("menu/Menu.php");
+
+	# Display PathWay	
+	if($min != 1)
+		include("pathWay.php");
+
+	$nb_page = NULL;
+	if ($isRestreint){
+		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
+			$nb_page = 0;
+			$url = "./alt_error.php";
+		} else
+			$nb_page = 1;	
+	} else
+		$nb_page = 1;
+	
+	# Go on our page 
+	require_once($url);
 
 	if (!isset($oreon->historyPage))
 		$oreon->createHistory();	 
@@ -216,12 +177,10 @@ For information : contact@oreon-project.org
 		$tpl->assign('lang', $lang);
 		$tpl->display($lg_path."legend.ihtml");
 	}
-?>
-			</td>
-		</tr>
-	</table>
-</div><!-- end contener -->
-<?
+
+	print "\t\t\t</td>\t\t</tr>\t</table>\n</div><!-- end contener -->";
+	
+	# Display Footer
 	if (!$min)
 		require_once("footer.php");
 ?>
