@@ -35,6 +35,8 @@ sub identify_service($$){
 				if ($_[0] && $_[1]){
 					$host_id = getHostID($_[0]);
 					if ($host_id){
+						$_[1] = s/\//\#S\#/g;
+						$_[1] = s/\\/\#BS\#/g;
 						$service_id = getServiceID($host_id, $_[1]);
 						if ($service_id){
 							$sth1 = $con_ods->prepare("SELECT * FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."'");

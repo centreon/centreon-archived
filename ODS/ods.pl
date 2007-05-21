@@ -199,7 +199,7 @@ sub GetPerfData(){
 				while (<PFDT>){
 					$lineRead++;
 					if (!$stop){
-						writeLogFile("can't write in /srv/oreon/ODS/var/perfdata.bckp : $!") if (!open(BCKP, ">> /srv/oreon/ODS/var/perfdata.bckp"));
+						writeLogFile("can't write in ".$installedPath."var/perfdata.bckp : $!") if (!open(BCKP, ">> ".$installedPath."/var/perfdata.bckp"));
 						while (<PFDT>){
 							print BCKP $_;
 						}
@@ -282,8 +282,8 @@ sub CheckNagiosStats(){
 }
 
 # launch all threads
-my $threadPerfdata 		= 		threads->new("GetPerfData");
-my $threadCheckRestart	= 		threads->new("CheckRestart");
+my $threadPerfdata 			= 	threads->new("GetPerfData");
+my $threadCheckRestart		= 	threads->new("CheckRestart");
 my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
 # here make statistics
