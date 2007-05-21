@@ -146,7 +146,8 @@ For information : contact@oreon-project.org
 	
 		$_GET["sort_types"] = $sort_type;
 		$_GET["order"] = $order;
-		$_GET["o"] = "svcpb";
+//		$_GET["o"] = $type;
+		$o = $type;
 		$_GET["sort_typeh"] = 0;
 	
 		$buffer = null;
@@ -156,7 +157,7 @@ For information : contact@oreon-project.org
 		$new_time = $atime;
 		if( filectime($file) > $atime)
 			$new_time = filectime($file);	
-	
+
 		$buffer .= '<infos>';
 		$buffer .= '<host_name_1>'. $host_name . '</host_name_1>';
 		$buffer .= '<hg>'.$hg_name. '</hg>';
@@ -168,7 +169,8 @@ For information : contact@oreon-project.org
 		if($atime){
 			if($debugXML){
 				$buffer .= '<debug>';
-				$buffer .= '<a>'.$type.'</a>';
+				$buffer .= '<type>'.$type.'</type>';
+				$buffer .= '<o>'.$o.'</o>';
 				$buffer .= '</debug>';			
 			}
 			$oreon = "oreon";	

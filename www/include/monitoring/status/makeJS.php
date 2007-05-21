@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 _time_reload = <?=$tM?>;
 _time_live = <?=$tFM?>;
 
-function monitoring_refresh()	{	
+function monitoring_refresh()	{
 	_tmp_on = _on;
 	_time_live = _time_reload;
 	_on = 1;

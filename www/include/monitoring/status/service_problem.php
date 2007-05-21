@@ -90,6 +90,7 @@ For information : contact@oreon-project.org
 					$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
 					$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 					$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
+					$service_status[$name]["host_has_been_acknowledged"] = $host_status[$service_status[$name]["host_name"]]["problem_has_been_acknowledged"];
 					if ($svc["last_check"]){
 						$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
 						$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
