@@ -430,8 +430,12 @@ For information : contact@oreon-project.org
 			$rq .= "service_description = ";
 			isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		}
-		$rq .= "service_alias = ";
-		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		if (isset($ret["service_alias"])){
+			$ret["service_alias"] = str_replace("/", "#S#", $ret["service_alias"]);
+			$ret["service_alias"] = str_replace("\\", "#BS#", $ret["service_alias"]);
+			$rq .= "service_alias = ";
+			isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		}
 		$rq .= "service_is_volatile = ";
 		isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 		$rq .= "service_max_check_attempts = ";

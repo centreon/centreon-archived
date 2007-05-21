@@ -91,6 +91,13 @@ For information : contact@oreon-project.org
 			$service["service_description"] = str_replace("#R#", "\r", $service["service_description"]);
 			$service["service_description"] = str_replace("#S#", '/', $service["service_description"]);
 			$service["service_description"] = str_replace("#BS#", '\\', $service["service_description"]);			
+
+			$service["service_alias"] = str_replace("#BR#", "\n", $service["service_alias"]);
+			$service["service_alias"] = str_replace("#T#", "\t", $service["service_alias"]);
+			$service["service_alias"] = str_replace("#R#", "\r", $service["service_alias"]);
+			$service["service_alias"] = str_replace("#S#", '/', $service["service_alias"]);
+			$service["service_alias"] = str_replace("#BS#", '\\', $service["service_alias"]);			
+
 			$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_desc"=>$service["service_description"],
