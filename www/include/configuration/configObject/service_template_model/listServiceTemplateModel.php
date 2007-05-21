@@ -81,9 +81,11 @@ For information : contact@oreon-project.org
 		$tplStr = NULL;
 		$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
 		if (count($tplArr))
-			foreach($tplArr as $key =>$value)
+			foreach($tplArr as $key =>$value){
+				$value = str_replace('#S#', "/", $value);
+				$value = str_replace('#BS#', "\\", $value);
 				$tplStr .= "&nbsp;->&nbsp;<a href='oreon.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
-			
+			}
 			$service["service_description"] = str_replace("#BR#", "\n", $service["service_description"]);
 			$service["service_description"] = str_replace("#T#", "\t", $service["service_description"]);
 			$service["service_description"] = str_replace("#R#", "\r", $service["service_description"]);

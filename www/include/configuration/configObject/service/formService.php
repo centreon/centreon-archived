@@ -101,6 +101,8 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($svTpl))	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
+		$svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
+		$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
 	$DBRESULT->free();

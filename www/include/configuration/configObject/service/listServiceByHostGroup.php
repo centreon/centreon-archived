@@ -126,8 +126,11 @@ For information : contact@oreon-project.org
 		$tplStr = NULL;
 		$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
 		if (count($tplArr))
-			foreach($tplArr as $key =>$value)
+			foreach($tplArr as $key =>$value){
 				$tplStr .= "&nbsp;->&nbsp;<a href='oreon.php?p=60206&o=c&service_id=".$key."'>".$value."</a>";
+				$value = str_replace('#S#', "/", $value);
+				$value = str_replace('#BS#', "\\", $value);
+			}
 		$elemArr[$i] = array("MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style), 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$service["hg_name"],
