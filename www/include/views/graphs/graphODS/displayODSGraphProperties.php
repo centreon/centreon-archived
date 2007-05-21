@@ -100,7 +100,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);
 	$tpl->assign('host_name', $svc_id["host_name"]);
-	$tpl->assign('service_description', $svc_id["service_description"]);
+	$tpl->assign('service_description', str_replace("#s#", "/", $svc_id["service_description"]));
 
 	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT =& $pearDBO->query("SELECT * FROM config");

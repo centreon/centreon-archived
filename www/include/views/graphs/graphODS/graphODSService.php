@@ -96,6 +96,8 @@ For information : contact@oreon-project.org
 		$DBRESULT2->fetchInto($svc_id);
 	}
 	
+	$svc_id["service_description"] = str_replace("#s#", "/", $svc_id["service_description"]);
+	
 	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
 		if (PEAR::isError($DBRESULT2))

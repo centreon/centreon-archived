@@ -108,7 +108,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	
 	$tpl->assign('host_name', $index["host_name"]);
-	$tpl->assign('service_description', $index["service_description"]);
+	$tpl->assign('service_description', str_replace("#s#", "/", $index["service_description"]));
 	
 	
 	$tpl->assign('form', $renderer->toArray());

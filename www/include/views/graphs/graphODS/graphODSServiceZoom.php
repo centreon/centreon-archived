@@ -141,6 +141,8 @@ For information : contact@oreon-project.org
 		$service_id = $svc_id["service_id"];
 		$index_id = $svc_id["id"];
 		
+		$svc_id["service_description"] = str_replace("#s#", "/", $svc_id["service_description"]);
+		
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();

@@ -176,7 +176,7 @@ For information : contact@oreon-project.org
 				else
 					$host_name = $svc_id["host_name"];
 				
-				$elem[$index_id] = array("index_id" => $index_id, "service_description" => $svc_id["service_description"]);
+				$elem[$index_id] = array("index_id" => $index_id, "service_description" => str_replace("#s#", "/", $svc_id["service_description"]));
 				
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
 				if (PEAR::isError($DBRESULT2))
