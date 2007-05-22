@@ -691,7 +691,6 @@ $lang['gen_comment'] = "Inclure les commentaires";
 $lang['gen_xml'] = "G&eacute;n&eacute;rer aussi au format XML";
 $lang['gen_result'] = "R&eacute;sultat";
 $lang['gen_debug'] = "Lancer le debug de Nagios (-v)";
-$lang['gen_debug'] = "Lancer le test d'optimisation (-s)";
 $lang['gen_move'] = "D&eacute;placer les fichiers";
 $lang['gen_restart'] = "Recharger Nagios";
 $lang['gen_restart_load'] = "Reload";
