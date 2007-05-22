@@ -312,6 +312,10 @@ For information : contact@oreon-project.org
 			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
 			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
 		}
+		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL)		{
+			$ret["service_alias"] = str_replace('/', "#S#", $ret["service_alias"]);
+			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
+		}
 		$rq = "INSERT INTO service " .
 				"(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, purge_policy_id, " .
 				"service_description, service_alias, service_is_volatile, service_max_check_attempts, service_normal_check_interval, service_retry_check_interval, service_active_checks_enabled, " .
@@ -412,6 +416,10 @@ For information : contact@oreon-project.org
 			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
 			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
 		}
+		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL)		{
+			$ret["service_alias"] = str_replace('/', "#S#", $ret["service_alias"]);
+			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
+		}
 		$rq = "UPDATE service SET " ;
 		$rq .= "service_template_model_stm_id = ";
 		isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
@@ -430,12 +438,8 @@ For information : contact@oreon-project.org
 			$rq .= "service_description = ";
 			isset($ret["service_description"]) && $ret["service_description"] != NULL ? $rq .= "'".htmlentities($ret["service_description"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		}
-		if (isset($ret["service_alias"])){
-			$ret["service_alias"] = str_replace("/", "#S#", $ret["service_alias"]);
-			$ret["service_alias"] = str_replace("\\", "#BS#", $ret["service_alias"]);
-			$rq .= "service_alias = ";
-			isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		}
+		$rq .= "service_alias = ";
+		isset($ret["service_alias"]) && $ret["service_alias"] != NULL ? $rq .= "'".htmlentities($ret["service_alias"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "service_is_volatile = ";
 		isset($ret["service_is_volatile"]["service_is_volatile"]) && $ret["service_is_volatile"]["service_is_volatile"] != 2 ? $rq .= "'".$ret["service_is_volatile"]["service_is_volatile"]."', ": $rq .= "'2', ";
 		$rq .= "service_max_check_attempts = ";
@@ -517,6 +521,10 @@ For information : contact@oreon-project.org
 		if (isset($ret["service_description"]) && $ret["service_description"] != NULL)		{
 			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
 			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
+		}
+		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL)		{
+			$ret["service_alias"] = str_replace('/', "#S#", $ret["service_alias"]);
+			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
 		}
 		$rq = "UPDATE service SET ";
 		if (isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL) $rq .= "service_template_model_stm_id = '".$ret["service_template_model_stm_id"]."', ";
