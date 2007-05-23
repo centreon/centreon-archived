@@ -271,6 +271,7 @@ For information : contact@oreon-project.org
 					if( (!strncmp($type, "CURRENT HOST STATE", 18) ||
 					 	 !strncmp($type, "INITIAL HOST STATE", 18) ||
 					  	 !strncmp($type, "HOST ALERT", 10))
+						&& !strncmp($res1[2], "HARD", 4)
 					  	 )
 					{
 						if(isset($tab_hosts[$res1[0]])){
@@ -330,7 +331,9 @@ For information : contact@oreon-project.org
 					#
 					## Services					
 					#
-					else if (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21) || !strncmp($type, "SERVICE ALERT", 13))
+					else if ( (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21) || !strncmp($type, "SERVICE ALERT", 13))
+							&& !strncmp($res1[3], "HARD", 4)
+							)
 					{
 						if(isset($tab_services[$res1[1]][$res1[0]]))
 						{
