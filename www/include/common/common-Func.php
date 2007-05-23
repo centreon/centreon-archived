@@ -616,6 +616,8 @@ For information : contact@oreon-project.org
 	function getMyServiceTPLID($service_description = NULL)	{
 		if (!$service_description) return;
 		global $pearDB;
+		$service_description = str_replace('/', "#S#", $service_description);
+		$service_description = str_replace('\\', "#BS#", $service_description);
 		$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_description = '".htmlentities($service_description, ENT_QUOTES)."' AND service_register = '0' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
