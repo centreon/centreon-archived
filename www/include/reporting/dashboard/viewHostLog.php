@@ -172,6 +172,17 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$month = date("m",time());
 	$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
 
+	$tab_svc_average = array();
+	$tab_svc_average["PTOK"] = 0;
+	$tab_svc_average["PTW"] = 0;
+	$tab_svc_average["PTU"] = 0;
+	$tab_svc_average["PTC"] = 0;
+	$tab_svc_average["PTN"] = 0;
+	$tab_svc_average["PKTOK"] = 0;
+	$tab_svc_average["PKTW"] = 0;
+	$tab_svc_average["PKTU"] = 0;
+	$tab_svc_average["PKTC"] = 0;
+	$tab_svc_average["nb_svc"] = 0;
 
 	$tab_hosts = array();	
 	$day_current_start = 0;
@@ -275,8 +286,22 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 					$tab_tmp["PktimeWARNING"] = number_format($tab_tmp["PktimeWARNING"], 1, '.', '');
 					$tab_tmp["PktimeUNKNOWN"] = number_format($tab_tmp["PktimeUNKNOWN"], 1, '.', '');
 					$tab_tmp["PktimeCRITICAL"] = number_format($tab_tmp["PktimeCRITICAL"], 1, '.', '');
-
 					//end
+
+					#
+					## fill average svc table
+					#
+					$tab_svc_average["PTOK"] += $tab_tmp["PtimeOK"];
+					$tab_svc_average["PTW"] += $tab_tmp["PtimeWARNING"];
+					$tab_svc_average["PTU"] += $tab_tmp["PtimeUNKNOWN"];
+					$tab_svc_average["PTC"] += $tab_tmp["PtimeCRITICAL"];
+					$tab_svc_average["PTN"] += $tab_tmp["PtimeNONE"];
+					$tab_svc_average["PKTOK"] += $tab_tmp["PktimeOK"];
+					$tab_svc_average["PKTW"] += $tab_tmp["PktimeWARNING"];
+					$tab_svc_average["PKTU"] += $tab_tmp["PktimeUNKNOWN"];
+					$tab_svc_average["PKTC"] += $tab_tmp["PktimeCRITICAL"];
+					$tab_svc_average["nb_svc"] += 1;
+
 					$tab_svc[$i++] = $tab_tmp;
 				}
 			}
@@ -343,9 +368,47 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 			//end
 
+			#
+			## fill average svc table
+			#
+			$tab_svc_average["PTOK"] += $tab_tmp["PtimeOK"];
+			$tab_svc_average["PTW"] += $tab_tmp["PtimeWARNING"];
+			$tab_svc_average["PTU"] += $tab_tmp["PtimeUNKNOWN"];
+			$tab_svc_average["PTC"] += $tab_tmp["PtimeCRITICAL"];
+			$tab_svc_average["PTN"] += $tab_tmp["PtimeNONE"];
+			$tab_svc_average["PKTOK"] += $tab_tmp["PktimeOK"];
+			$tab_svc_average["PKTW"] += $tab_tmp["PktimeWARNING"];
+			$tab_svc_average["PKTU"] += $tab_tmp["PktimeUNKNOWN"];
+			$tab_svc_average["PKTC"] += $tab_tmp["PktimeCRITICAL"];
+			$tab_svc_average["nb_svc"] += 1;
+
 			$tab_svc[$i++] = $tab_tmp;
 		}
 	}
+
+	#
+	## calculate svc average
+	#
+	if($tab_svc_average["PTOK"] > 0)
+	$tab_svc_average["PTOK"] = number_format($tab_svc_average["PTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PTW"] > 0)
+	$tab_svc_average["PTW"] = number_format($tab_svc_average["PTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PTU"] > 0)
+	$tab_svc_average["PTU"] = number_format($tab_svc_average["PTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PTC"] > 0)
+	$tab_svc_average["PTC"] = number_format($tab_svc_average["PTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PTN"] > 0)
+	$tab_svc_average["PTN"] = number_format($tab_svc_average["PTN"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PKTOK"] > 0)
+	$tab_svc_average["PKTOK"] = number_format($tab_svc_average["PKTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PKTW"] > 0)
+	$tab_svc_average["PKTW"] = number_format($tab_svc_average["PKTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PKTU"] > 0)
+	$tab_svc_average["PKTU"] = number_format($tab_svc_average["PKTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
+	if($tab_svc_average["PKTC"] > 0)
+	$tab_svc_average["PKTC"] = number_format($tab_svc_average["PKTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
+
+
 	#
 	## calculate host %
 	#
@@ -359,6 +422,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 	$tab["state"] = $lang["m_UpTitle"];
 	$tab["time"] = Duration::toString($Tup);
+	$tab["timestamp"] = $Tup;
 	$tab["pourcentTime"] = round($Tup/($timeTOTAL+1)*100,2) ;
 	$tab["pourcentkTime"] = round($Tup/($timeTOTAL-$Tnone+1)*100,2). "%";
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
@@ -366,6 +430,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 	$tab["state"] = $lang["m_DownTitle"];
 	$tab["time"] = Duration::toString($Tdown);
+	$tab["timestamp"] = $Tdown;
 	$tab["pourcentTime"] = round($Tdown/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = round($Tdown/($timeTOTAL-$Tnone+1)*100,2)."%";
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
@@ -373,6 +438,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 	$tab["state"] = $lang["m_UnreachableTitle"];
 	$tab["time"] = Duration::toString($Tunreach);
+	$tab["timestamp"] = $Tunreach;
 	$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone+1)*100,2)."%";
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
@@ -381,10 +447,12 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 	$tab["state"] = $lang["m_PendingTitle"];
 	$tab["time"] = Duration::toString($Tnone);
+	$tab["timestamp"] = $Tnone;
 	$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = null;
 	$tab["style"] = "class='ListColCenter' style='background:#cccccc'";
 	$tab_resume[3] = $tab;
+
 
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
 
@@ -394,14 +462,25 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 
 	$tpl->assign('host_name', $mhost);
 	$status = "";
-	foreach ($tab_resume  as $tb)
+	$totalTime = 0;
+	$totalpTime = 0;
+	$totalpkTime = 0;
+	foreach ($tab_resume  as $tb){
 		if($tb["pourcentTime"] >= 0)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
+		$totalTime += $tb["timestamp"];
+		$totalpTime += $tb["pourcentTime"];
+		$totalpkTime += $tb["pourcentkTime"];
+	}
+	$tpl->assign('totalTime', Duration::toString($totalTime));
+	$tpl->assign('totalpTime', $totalpTime);
+	$tpl->assign('totalpkTime', $totalpkTime);
 
 	$tpl->assign('status', $status);
 	$tpl->assign("tab_resume", $tab_resume);
 	if(isset($tab_svc))
 	$tpl->assign("tab_svc", $tab_svc);
+	$tpl->assign("tab_svc_average", $tab_svc_average);
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));
 	}## end of period requirement
 
@@ -422,6 +501,8 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tpl->assign('style_pending' , "class='ListColCenter' style='background:#cccccc'");
 
 	$tpl->assign('serviceTilte', $lang["m_serviceTilte"]);
+	$tpl->assign("allTilte",  $lang["m_allTilte"]);
+
 	$tpl->assign('OKTitle', $lang["m_OKTitle"]);
 	$tpl->assign('WarningTitle', $lang["m_WarningTitle"]);
 	$tpl->assign('UnknownTitle', $lang["m_UnknownTitle"]);

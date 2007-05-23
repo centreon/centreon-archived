@@ -63,6 +63,7 @@ $lang["m_serviceLogTitle"] = "service today log";
 $lang["m_hostSvcAssocied"] = "State Breakdowns For Host Services";
 
 $lang["m_serviceTilte"] = "Service";
+$lang["m_allTilte"] = "All";
 $lang["m_OKTitle"] = "OK";
 $lang["m_WarningTitle"] = "Warning";
 $lang["m_UnknownTitle"] = "Unknown";

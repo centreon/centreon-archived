@@ -79,6 +79,12 @@
 							<td class='ListColRight'>{$tb.pourcentkTime}</td>
 						</tr>
 						{/foreach}
+						<tr class='list_lvl_2'>
+							<td class="ListColHeaderCenter">{$allTilte}</td>
+							<td class='ListColCenter'>{$totalTime}</td>
+							<td class='ListColRight'>{$totalpTime}%</td>
+							<td class='ListColRight'>{$totalpkTime}%</td>
+						</tr>
 					</table>
 				</td>
 			</tr>
@@ -106,6 +112,14 @@
 							<td class='ListColRight'{$style_pending}>{$tb.PtimeNONE}%</td>
 						</tr>
 						{/foreach}
+						<tr class="list_lvl_2">
+							<td class="ListColHeaderCenter">{$allTilte}</td>
+							<td class='ListColRight'{$style_ok}>{$tab_svc_average.PTOK}% ({$tab_svc_average.PKTOK}%)</td>
+							<td class='ListColRight'{$style_warning}>{$tab_svc_average.PTW}% ({$tab_svc_average.PKTW}%)</td>
+							<td class='ListColRight'{$style_critical}>{$tab_svc_average.PTC}% ({$tab_svc_average.PKTC}%)</td>
+							<td class='ListColRight'{$style_unknown}>{$tab_svc_average.PTU}% ({$tab_svc_average.PKTU}%)</td>
+							<td class='ListColRight'{$style_pending}>{$tab_svc_average.PTN}%</td>
+						</tr>
 					</table>
 				</td>
 			</tr>
