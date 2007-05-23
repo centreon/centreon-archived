@@ -188,11 +188,11 @@ For information : contact@oreon-project.org
 			## make bubul
 			#
 			$bubultab = '{table class=bubultab}';
-			$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bubuleft }Alert:{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($uptime) .'{/td}{td class=bubul}'.(($pup > 0) ? $pup : "0").'%{/td}{td cospan=2 class=bubul}-{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($downtime).'{/td}{td class=bubul}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td cospan=2 class=bubul}'.$h["DOWNnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString($unreachalbetime).'{/td}{td class=bubul}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td cospan=2 class=bubul}'.$h["UNREACHABLEnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($undeterminatetime).'{/td}{td class=bubul}'.(($pundet > 0) ? $pundet : "0").'%{/td}{td cospan=2 class=bubul}-{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($uptime) .'{/td}{td class=bubul}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($downtime).'{/td}{td class=bubul}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bubul}'.$h["DOWNnbEvent"].'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString($unreachalbetime).'{/td}{td class=bubul}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bubul}'.$h["UNREACHABLEnbEvent"].'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($undeterminatetime).'{/td}{td class=bubul}'.(($pundet > 0) ? $pundet : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
 			$bubultab .= '{/table}';
 
 
@@ -269,16 +269,17 @@ For information : contact@oreon-project.org
 	$start = $today_start + 5000;
 
 	$NbAlert = "Unknown";
+
+
 	#
 	## make bubul
 	#
 	$bubultab = '{table class=bubultab}';
-	$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bubul}'.$_GET["today_up"].'%{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bubul}'.$_GET["today_down"].'%{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bubul}'.$_GET["today_unreachable"].'%{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bubul}'.$_GET["today_pending"].'%{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft }Alert Number:{/td}{td cospan=2 class=bubul}'.$NbAlert.'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bubul}'.$_GET["today_up"].'%{/td}{td class=bubul}-{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bubul}'.$_GET["today_down"].'%{/td}{td class=bubul}'.$_GET["today_DOWNnbEvent"].'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bubul}'.$_GET["today_unreachable"].'%{/td}{td class=bubul}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bubul}'.$_GET["today_pending"].'%{/td}{td class=bubul}-{/td}{/tr}';
 	$bubultab .= '{/table}';
 
 	$t = round(($t - ($t * 0.11574074074)),2);
