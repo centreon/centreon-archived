@@ -389,6 +389,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
 
 	$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
+	$end_date_select_save_timestamp =  $end_date_select;
 	$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
 
 	$tpl->assign('host_name', $mhost);
@@ -495,6 +496,7 @@ if($mhost)	{
 	 		 substr($oreon->optGen["color_unknown"],1);
 
 	$today_var = '&today_up='.$today_up . '&today_down='.$today_down.'&today_unreachable='.$today_unreachable. '&today_pending=' . $today_pending;
+
 	$type = 'Host';	
 	include('ajaxReporting_js.php');
 }
