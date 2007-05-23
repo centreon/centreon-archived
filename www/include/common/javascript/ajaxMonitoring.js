@@ -352,10 +352,6 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	ClassName = "list_four";
 	_case_infos.appendChild(_img1);
 	}	
-
-	if(_notifications_enabled == 0)
-	_case_infos.appendChild(mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable"));
-
 	if(_is_flapping == 1)
 	_case_infos.appendChild(_img3);
 
@@ -364,6 +360,11 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	
 	if(_accept_active_check == 1)
 	_case_infos.appendChild(_img4);
+
+	if(_notifications_enabled == 0)
+	_case_infos.appendChild(mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable"));
+
+
 
 _case_infos.id = 'infos' + i;
 
