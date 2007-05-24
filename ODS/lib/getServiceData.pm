@@ -79,7 +79,9 @@ sub getServiceName($){
 sub getMyServiceField($$)	{
 	my $service_id = $_[0];
 	my $field = $_[1];
-		
+	
+	print "|Service Field|".$field."|".$service_id."|\n";
+	
 	while(1){
 		my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
     	if (!$sth1->execute) {writeLogFile("Error When ods get service field : " . $sth1->errstr . "\n");}

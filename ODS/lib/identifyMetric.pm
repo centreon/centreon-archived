@@ -39,7 +39,7 @@ sub identify_metric($$$$$$){ # perfdata index status time type
 	
     foreach my $tab (split(' ', $_[0])){	
     	# Cut perfdata    	
-		if ($tab =~ /([a-zA-Z0-9\_\-\/\:\\]+)\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)/){
+		if ($tab =~ /([a-zA-Z0-9\_\-\/\:]+)\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)/){
 		    if (!defined($3)){$3 = "";}			
 		    if (!defined($4)){$4 = "";}			
 		    if (!defined($5)){$5 = "";}			
@@ -105,7 +105,7 @@ sub identify_metric($$$$$$){ # perfdata index status time type
 # - storage_type
 
 sub identify_hidden_metric($$$$$$){ # perfdata index status time type
-    my (@data, $begin, $just_insert, $generalcounter);
+	my (@data, $begin, $just_insert, $generalcounter);
 	$generalcounter = $_[5];
 	$just_insert = 0;   				
 	# Get conf Data

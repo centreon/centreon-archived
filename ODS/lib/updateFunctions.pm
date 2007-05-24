@@ -84,8 +84,7 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
 			my $begin = $_[4] - 200000;
-			$interval = getServiceCheckInterval($_[1]);
-			if (!defined($interval)){$interval = 3};
+			$interval = 1;
 			CheckMySQLConnexion();
 			my $sth2 = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate");
 			if (!$sth2->execute) {writeLogFile("Error when getting interval_length : " . $sth2->errstr . "\n");}

@@ -181,6 +181,7 @@ sub GetPerfData(){
 	my $PFDT = getPerfDataFile();
 	while ($stop) {
 		if (-r $PFDT){
+			print $PFDT."_read\n";
 			# Move perfdata File befor reading		
 			if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
 				$data = getConfig();
@@ -207,6 +208,9 @@ sub GetPerfData(){
 					}
 					print DROP $_  if ($flag_drop == 1);
 			    	@line_tab = split('\t');
+			    	$line_tab[2] =~ s/\\/\#BS\#/g;
+			    	$line_tab[2] =~ s/\//\#S\#/g;
+			    	print '|'.$line_tab[1].'|->'.$line_tab[2]."\n";
 			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
 						CheckMySQLConnexion();
 						checkAndUpdate(@line_tab);
@@ -264,6 +268,7 @@ sub checkAndUpdate($){
 	my $data_service;
 	if ($_[5]){
 		if ($_[1] =~ /[a-zA-Z]*_Module/){
+			print "HIDDEN \n";
 			@data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
 			$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded); # perfdata index status time type
 		} else {
@@ -283,8 +288,8 @@ sub CheckNagiosStats(){
 
 # launch all threads
 my $threadPerfdata 			= 	threads->new("GetPerfData");
-my $threadCheckRestart		= 	threads->new("CheckRestart");
-my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
+#my $threadCheckRestart		= 	threads->new("CheckRestart");
+#my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
 # here make statistics
 my $y = 0;
@@ -318,8 +323,8 @@ while ($stop){
 
 # Waiting All threads
 $threadPerfdata->join;
-$threadCheckRestart->join;
-$threadCheckNagiosStats->join;
+#$threadCheckRestart->join;
+#$threadCheckNagiosStats->join;
 
 # Write in log file 
 writeLogFile("Stopping ODS engine...\n");
