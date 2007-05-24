@@ -120,7 +120,7 @@ $lang ['m_mon_service_command'] = "Service Commands";
 $lang ['m_mon_check_this_service'] = "Checks of this service";
 $lang ['m_mon_schedule'] = "Re-schedule the next check of this service";
 $lang ['m_mon_schedule_force'] = "Re-schedule the next check of this service (forced)";
-$lang ['m_mon_submit_passive'] = "Submit passive check result for this service";
+$lang ['m_mon_submit_passive'] = "Submit result for this service";
 $lang ['m_mon_accept_passive'] = "accepting passive checks for this service";
 $lang ['m_mon_notification_service'] = "notifications for this service";
 

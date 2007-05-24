@@ -16,6 +16,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+$o = "svcd";
+
 	if (!isset ($oreon))
 		exit ();
 
@@ -71,7 +73,6 @@ For information : contact@oreon-project.org
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());
 		$form->addElement('hidden', 'cmd', $cmd);
 		$form->addElement('hidden', 'p', $p);
-		$form->addElement('hidden', 'o', 'svcd');
 	
 		$form->addElement('submit', 'submit', $lang["save"]);
 		$form->addElement('reset', 'reset', $lang["reset"]);

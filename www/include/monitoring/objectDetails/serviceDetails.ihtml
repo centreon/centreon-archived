@@ -142,10 +142,10 @@
 						<td class="ListColLeft">{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=7&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.active_checks_enabled]}'>{$en_inv_text[$service_data.active_checks_enabled]} {$lang.m_mon_check_this_service}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=3&select[{$h.host_name};{$svc_description}]=1'>{$lang.m_mon_schedule}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=3&select[{$h.host_name};{$svc_description}]=1&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_schedule}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=4&select[{$h.host_name};{$svc_description}]=1'>{$lang.m_mon_schedule_force}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=4&select[{$h.host_name};{$svc_description}]=1&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_schedule_force}</a></td>
 					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_submit_passive}</a></td>

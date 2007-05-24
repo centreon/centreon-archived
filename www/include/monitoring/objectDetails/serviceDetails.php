@@ -116,9 +116,9 @@ For information : contact@oreon-project.org
 			
 			}
 		}
-		
+
 		foreach ($tab_comments_svc as $key => $value){
-			if (($value["host_name"] == $_GET["host_name"]) && ($value["service_description"] == $_GET["service_description"]))
+			if ( ($value["host_name"] == $_GET["host_name"]) && ($value["service_description"] == $_GET["service_description"]))
 				;
 			else
 				unset($tab_comments_svc[$key]);
