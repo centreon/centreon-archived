@@ -82,13 +82,12 @@ case "$1" in
 
     start)
 	echo "Starting ODS Collector : ods_daemon"
-	#chown $NagiosUser:$NagiosGroup $ODSRunFile
 	# Check lock file
 	if test -f $ODSRunFile; then
 		echo "Error : $ODSRunFile already Exists."
 		exit 1
 	fi
-	$ODSBin 2> $ODSDemLog &
+	$ODSBin 2>> $ODSDemLog &
 	if [ -d $ODSLockDir ]; then touch $ODSLockDir/$ODSLockFile; fi
 			#sleep 1
 			#status_nagios nagios
