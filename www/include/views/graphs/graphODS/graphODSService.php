@@ -96,15 +96,18 @@ For information : contact@oreon-project.org
 		$DBRESULT2->fetchInto($svc_id);
 	}
 	
-	$svc_id["service_description"] = str_replace("#s#", "/", $svc_id["service_description"]);
+	$svc_id["service_description"] = str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"]));
 	
 	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$other_services = array();
-		while ($DBRESULT2->fetchInto($selected_service))
+		while ($DBRESULT2->fetchInto($selected_service)){
+			$selected_service["service_description"] = str_replace("#S#", "/", $selected_service["service_description"]);
+			$selected_service["service_description"] = str_replace("#BS#", "\\", $selected_service["service_description"]);
 			$other_services[$selected_service["id"]] = $selected_service["service_description"];
+		}
 		$DBRESULT2->free();
 		$form->addElement('select', 'index', 'Others Services', $other_services);
 		$form->setDefaults($_GET);

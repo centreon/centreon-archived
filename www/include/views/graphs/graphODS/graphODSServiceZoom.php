@@ -132,8 +132,11 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$other_services = array();
-		while ($DBRESULT2->fetchInto($selected_service))
+		while ($DBRESULT2->fetchInto($selected_service)){
+			$selected_service["service_description"] = str_replace("#S#", "/", $selected_service["service_description"]);
+			$selected_service["service_description"] = str_replace("#BS#", "\\", $selected_service["service_description"]);
 			$other_services[$selected_service["id"]] = $selected_service["service_description"];
+		}
 		$DBRESULT2->free();
 		$form->addElement('select', 'index', 'Others Services', $other_services);
 		//$form->setDefaults($index);
@@ -141,7 +144,7 @@ For information : contact@oreon-project.org
 		$service_id = $svc_id["service_id"];
 		$index_id = $svc_id["id"];
 		
-		$svc_id["service_description"] = str_replace("#s#", "/", $svc_id["service_description"]);
+		$svc_id["service_description"] = str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"]));
 		
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
 		if (PEAR::isError($DBRESULT2))
