@@ -312,15 +312,6 @@ function install_oreon_plugins()
     fi
     echo 	""
     echo "Preparing Oreon Plugins..."
-    if [ -n "$PLUGINS_DIR" ]; then
-		rm -f $PLUGINS_DIR/*.pl 2> /dev/null
-		rm -f $PLUGINS_DIR/*.pm 2> /dev/null
-		rm -f $PLUGINS_DIR/*.conf 2> /dev/null
-    else
-		rm -f *.pl 2> /dev/null
-		rm -f *.pm 2> /dev/null
-		rm -f *.conf 2> /dev/null
-    fi
 
     if [ -n "$PLUGINS_DIR" ]; then
 		for fichier in ${PLUGINS_DIR}src/*
@@ -349,7 +340,17 @@ function install_oreon_plugins()
 		    temp=y
 		fi
 		if [ $temp = "y" ];then
+			for fichier in ${PLUGINS_DIR}src/*
+			  do
+			  if [ -d "$fichier" ]; then
+			      echo ""
+			  else
+			      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+			      echo_success "  -> $filename" "OK"
+			  fi
+			done
 			cp $PLUGINS_DIR/*.pl $NAGIOS_PLUGIN
+			cp $PLUGINS_DIR/process-service-perfdata $NAGIOS_PLUGIN
 			echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		fi
     else
@@ -358,13 +359,14 @@ function install_oreon_plugins()
 		  if [ -d "$fichier" ]; then
 		      echo "$fichier is a directory"
 		  else
-		      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		      filename=`echo $fichier | sed -e 's|.*\/\(.*\)|\1|'`
 		      echo_success "  -> $filename" "OK"
 		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
 		  fi
 		done
 		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		cp *.pl $NAGIOS_PLUGIN
+		cp $PLUGINS_DIR/process-service-perfdata $NAGIOS_PLUGIN
     fi
 
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
@@ -425,13 +427,13 @@ function install_oreon_plugins()
 		echo -n "[y/n], default to [n]:"
 		read temp
 		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
-                    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
-                      do
-                      echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
-                      echo -n "[y/n], default to [n]:"
-                      read temp
-                    done
-                fi
+            while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+              do
+              echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
+              echo -n "[y/n], default to [n]:"
+              read temp
+            done
+        fi
 		if [ -z $temp ];then
 		    temp=n
 		fi
@@ -458,20 +460,42 @@ function install_ods(){
 	echo ""
 	echo ""
 	
+	echo "Checking ODS data folder : "
+	if test -d /var/lib/ods ; then
+		echo_passed "ODS Directory already exists" "PASSED"
+    else
+		mkdir /var/lib/ods/ >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating Oreon Directory '/var/lib/ods'" "OK"
+    fi
+	
+	echo "Checking ODS database folder : "
+	if test -d /var/lib/ods/database/ ; then
+		echo_passed "ODS Directory already exists" "PASSED"
+    else
+		mkdir /var/lib/ods/database/ >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating Oreon Directory '/var/lib/ods/database/'" "OK"
+    fi
+    
+    echo "Checking ODS log folder : "
+	if test -d /var/log/ods/ ; then
+		echo_passed "ODS Directory already exists" "PASSED"
+    else
+		mkdir /var/log/ods/ >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating Oreon Directory '/var/log/ods/'" "OK"
+    fi
+	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl
+	echo_success "Replace ODS Macro " "OK"
+
 	mv $INSTALL_DIR_OREON/ODS/ods_new.pl $INSTALL_DIR_OREON/ODS/ods.pl
+	echo_success "Install ODS Binary  " "OK"
+
  	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
 	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
-	echo_success "Replace ODS Macro " "OK"
+    echo_success "Set ODS properties " "OK"
     
-	if test -d $INSTALL_DIR_OREON/OreonDataStorage ; then
-		echo_passed "ODS data Directory already exists" "PASSED"
-    else
-		mkdir $INSTALL_DIR_OREON/OreonDataStorage >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON/OreonDataStorage'" "OK"
-    fi
-	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/OreonDataStorage
-	chmod 775 $INSTALL_DIR_OREON/OreonDataStorage
+	chown $NAGIOS_USER:$NAGIOS_GROUP /var/lib/ods/database/
+	chmod 775 /var/lib/ods/database/
 	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' $INSTALL_DIR_OREON/ODS_SRC_ETC/ods > /etc/init.d/ods
 	chmod 755 /etc/init.d/ods
@@ -530,7 +554,6 @@ function config_cron(){
 	if [ "$PHP_FLG" = "0" ] ; then
 	    PHP_BIN="php"
 	else
-	
 	    PHP_FLG=`which php5 > /dev/null 2> /dev/null; echo $?`
 	    if [ "$PHP_FLG" == '0' ] ; then
 	        PHP_BIN="php5"
@@ -539,6 +562,37 @@ function config_cron(){
 	        PHP_BIN="php"
 	    fi
 	fi
+	
+	# Pour la migration
+	if test -f /etc/cron.d/oreon ; then
+  		CRON=`cat /etc/cron.d/oreon | grep inventory_update.php | grep -v \# > /dev/null; echo $?`
+ 	fi
+  	if [ $CRON == '1' ] ; then
+    	
+    	## sauvegarde de la cron nagios
+    	CRONSAV=$(mktemp /tmp/crontab_nagios.XXXX)
+    	CRONTMP=$(mktemp /tmp/crontab_nagios.XXXX)
+    	
+    	crontab -u $NAGIOS_USER -l >> $CRONSAV
+    	# on vire ce qui était de OREON
+    	cat $CRONSAV | grep -v "inventory_cron_update" -v "inventory_update" -v "ArchiveLogInDB.php" -v "parsing_status.pl" -v "parsing_log.pl" > $CRONTMP
+    	# et on remet les nouveau
+    	echo "0 0 * * * $NAGIOS_USER $PHP_BIN -q $INSTALL_DIR_OREON/cron/inventory_update.php >> $INSTALL_DIR_OREON/log/Inventory_log 2>> $INSTALL_DIR_OREON/log/Inventory_log" >> $CRONTMP
+    	echo "0 1 1-31 * * $NAGIOS_USER $PHP_BIN -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log" >> $CRONTMP
+    	echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> $CRONTMP
+    	echo "* * * * * $NAGIOS_USER $INSTALL_DIR_OREON/cron/parsing_log.pl >> $INSTALL_DIR_OREON/log/ods_parsing_log 2>> $INSTALL_DIR_OREON/log/ods_parsing_log" >> $CRONTMP
+    	# on soumet la nouvelle version du cron
+    	crontab -u $NAGIOS_USER $CRONTMP
+    	rm -f $CRONSAV $CRONTMP /etc/cron.d/oreon
+  	fi
+	
+	
+	echo "Get all installed crontab"  
+
+	crontab -u root | grep -v no crontab for nagios | grep -v inventory_update.php | grep -v ArchiveLogInDB.php | grep -v parsing_status | grep -v parsing_log > ./root_cron_old 
+	crontab -u root ./root_cron_old 
+	
+	crontab -u $NAGIOS_USER | grep -v "no crontab for nagios" | grep -v inventory_update.php | grep -v ArchiveLogInDB.php | grep -v parsing_status | grep -v parsing_log > ./cron_old 
 	
 	CRON=0
 	if test -f /etc/cron.d/oreon ; then
@@ -582,15 +636,15 @@ function config_cron(){
       	echo_passed "Setup Cron for parsing_log.pl" "PASSED"
   	fi
   	
-  	restart_cron
+  	install_cron
 }
 
-function restart_cron()
+function install_cron()
 {
  
     echo ""
     echo "------------------------------------------------------------------------"
-    echo "                         Restart Cron deamon"
+    echo "                         Install Cron for Oreon "
     echo "------------------------------------------------------------------------"
   	echo ""
 	echo ""
@@ -619,7 +673,7 @@ function install_oreon(){
 		echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON'" "OK"
     fi
 
-    for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "rrd" "www" "cron" "ODS" "ODS_SRC_ETC" "doc"
+    for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "www" "cron" "ODS" "ODS_SRC_ETC" "doc"
       do
       if test -d $directory ; then
 		  cp -Rf $directory $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
@@ -632,6 +686,7 @@ function install_oreon(){
     chmod -R 775 $INSTALL_DIR_OREON/* >> $LOG_FILE 2>> $LOG_FILE
     chmod -R 775 $INSTALL_DIR_NAGIOS  >> $LOG_FILE 2>> $LOG_FILE
     chmod -R 775 $INSTALL_DIR_NAGIOS/*  >> $LOG_FILE 2>> $LOG_FILE
+
     if test -d /etc/nagios ; then
 		chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
     fi
@@ -649,10 +704,10 @@ function install_oreon(){
     chmod 775 $NAGIOS_ETC >> $LOG_FILE 2>> $LOG_FILE
 
     if test -d $INSTALL_DIR_OREON/filesGeneration/nagiosCFG ; then
-	echo_passed "$INSTALL_DIR_OREON/filesGeneration/nagiosCFG already exists" "PASSED"
+		echo_passed "$INSTALL_DIR_OREON/filesGeneration/nagiosCFG already exists" "PASSED"
     else
-	echo_success "Creating '$INSTALL_DIR_OREON/filesGeneration/nagiosCFG'" "OK"
-	mkdir $INSTALL_DIR_OREON/filesGeneration/nagiosCFG
+		echo_success "Creating '$INSTALL_DIR_OREON/filesGeneration/nagiosCFG'" "OK"
+		mkdir $INSTALL_DIR_OREON/filesGeneration/nagiosCFG
     fi
 
     chmod 775 $INSTALL_DIR_OREON/filesGeneration >> $LOG_FILE 2>> $LOG_FILE
