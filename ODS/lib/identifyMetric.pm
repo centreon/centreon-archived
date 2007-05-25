@@ -40,15 +40,13 @@ sub identify_metric($$$$$$){ # perfdata index status time type
     foreach my $tab (split(' ', $_[0])){	
     	# Cut perfdata    	
 		if ($tab =~ /([a-zA-Z0-9\_\-\/\:]+)\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)/){
-		    if (!defined($3)){$3 = "";}			
-		    if (!defined($4)){$4 = "";}			
-		    if (!defined($5)){$5 = "";}			
+		    if (!defined($3)){$3 = "";}
+		    if (!defined($4)){$4 = "";}
+		    if (!defined($5)){$5 = "";}
 		    @data = ($1, $2, $3, $4, $5); # metric, value, unit, warn, critical
 		}
 		if ($1 && defined($2)){			
 			# Check if metric is known...
-			$data[0] =~ s/\:/\ /g;
-			$data[0] =~ s/\//slash/g;
 			my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
 			if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 			if ($sth1->rows() eq 0){
@@ -116,10 +114,10 @@ sub identify_hidden_metric($$$$$$){ # perfdata index status time type
 	
     foreach my $tab (split(' ', $_[0])){	
     	# Cut perfdata    	
-		if ($tab =~ /([a-zA-Z0-9\_\-]+)\=([0-9\.\,]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)/){
+		if ($tab =~ /([a-zA-Z0-9\_\-\/\\]+)\=([0-9\.\,]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)[\;]*([0-9\.\,]*)/){
 		    if (!defined($3)){$3 = "";}			
 		    if (!defined($4)){$4 = "";}			
-		    if (!defined($5)){$5 = "";}			
+		    if (!defined($5)){$5 = "";}	
 		    @data = ($1, $2, $3, $4, $5); # metric, value, unit, warn, critical
 		}
 		if ($1 && defined($2)){			
