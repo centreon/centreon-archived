@@ -181,7 +181,6 @@ sub GetPerfData(){
 	my $PFDT = getPerfDataFile();
 	while ($stop) {
 		if (-r $PFDT){
-			print $PFDT."_read\n";
 			# Move perfdata File befor reading		
 			if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
 				$data = getConfig();
@@ -196,7 +195,6 @@ sub GetPerfData(){
 					$flag_drop = 0;
 				}
 				undef($data);
-				print "######### Update #########\n";
 				while (<PFDT>){
 					$lineRead++;
 					if (!$stop){
@@ -288,7 +286,7 @@ sub CheckNagiosStats(){
 
 # launch all threads
 my $threadPerfdata 			= 	threads->new("GetPerfData");
-#my $threadCheckRestart		= 	threads->new("CheckRestart");
+my $threadCheckRestart		= 	threads->new("CheckRestart");
 #my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
 # here make statistics
@@ -306,14 +304,12 @@ while ($stop){
 			$lineReadpermin = $lineRead;
 		}
 		$lastlineRead = $lineRead;
-		print "line read : ".$lineReadpermin . "/min\n";
 		if ($lastvalueRecorded){
 			$valueRecordedpermin = $valueRecorded - $lastvalueRecorded;
 		} else {
 			$valueRecordedpermin = $valueRecorded;
 		}
 		$lastvalueRecorded = $valueRecorded;
-		print "value recorder : ".$valueRecordedpermin . "/min\n";
 		$sth2 = $con_ods->prepare("UPDATE statistics SET `lineRead` = '$lineReadpermin', `valueReccorded` = '$valueRecordedpermin' LIMIT 1");
 		writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
 	}
@@ -323,7 +319,7 @@ while ($stop){
 
 # Waiting All threads
 $threadPerfdata->join;
-#$threadCheckRestart->join;
+$threadCheckRestart->join;
 #$threadCheckNagiosStats->join;
 
 # Write in log file 
