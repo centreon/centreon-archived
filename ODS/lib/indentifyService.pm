@@ -24,7 +24,6 @@
 sub identify_service($$){
 	while (!$con_ods->ping){;}
 	if ($con_ods->ping){
-	    print "SELECT id, storage_type FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'\n";
 	    my $sth1 = $con_ods->prepare("SELECT id, storage_type FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
 	    if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 	    

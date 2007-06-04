@@ -31,7 +31,7 @@ use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "@OREON_PATH@/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -208,7 +208,6 @@ sub GetPerfData(){
 			    	@line_tab = split('\t');
 			    	$line_tab[2] =~ s/\\/\#BS\#/g;
 			    	$line_tab[2] =~ s/\//\#S\#/g;
-			    	print '|'.$line_tab[1].'|->'.$line_tab[2]."\n";
 			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
 						CheckMySQLConnexion();
 						checkAndUpdate(@line_tab);
@@ -248,7 +247,6 @@ sub CheckRestart(){
 		$last_restart = getLastRestart();
     	$last_restart_stt = getLastRestartInMemory();
 		if (!$last_restart_stt || $last_restart ne $last_restart_stt){
-			print "-> check_HostServiceID(); \n";
 			check_HostServiceID();
 			if (getPurgeConfig()){
 				$purgeinterval = getPurgeInterval();
