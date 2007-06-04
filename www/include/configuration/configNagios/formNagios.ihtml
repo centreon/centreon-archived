@@ -209,7 +209,7 @@
 		<!-- Part 22 -->
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;&nbsp;NDO</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.broker_module.label}</td><td class="FormRowValue">{$form.broker_module.html}</td></tr>
-		
+		<tr class="list_two"><td class="FormRowField">{$form.event_broker_options.label}</td><td class="FormRowValue">{$form.event_broker_options.html}</td></tr>		
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
