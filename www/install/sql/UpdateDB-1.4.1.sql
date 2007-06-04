@@ -66,3 +66,6 @@ UPDATE `topology` SET `topology_group` = '2' WHERE `topology`.`topology_page` = 
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_mnftr', './img/icones/16x16/factory.gif', '602', '60207', '60', '3', './include/configuration/configObject/traps-manufacturer/mnftr.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_mibs', './img/icones/16x16/component_add.gif', '602', '60208', '70', '3', './include/configuration/configObject/mibs/mibs.php', NULL , '0', '0', '1');
 
+-- 04/06/2007
+
+ALTER TABLE `cfg_nagios` ADD `event_broker_options` VARCHAR( 255 ) NULL ;
