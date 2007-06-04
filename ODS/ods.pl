@@ -52,8 +52,10 @@ my $valueRecorded : shared = 0;
 # Init value
 my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
 
+# Init status tab
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
+# Include Configuration Data
 require $installedPath."etc/conf.pm";
 
 sub catch_zap {
@@ -137,9 +139,12 @@ sub CheckMySQLConnexionForOreon(){
 	}
 }
 
+########################################
+# return perfdata file path
+########################################
+
 sub getPerfDataFile(){
 	my ($filename, $sth2, $data, $con_ods);
-
 	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	$sth2 = $con_ods->prepare("SELECT perfdata_file FROM config");
 	writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n") if (!$sth2->execute);
@@ -151,6 +156,10 @@ sub getPerfDataFile(){
 	return $filename;
 }
 
+########################################
+# Move perfdata file to tmp file 
+########################################
+
 sub movePerfDataFile($){
 	if (copy($_[0], $_[0]."_read")){
 		writeLogFile("Error When removing service-perfdata file : $!") if (!unlink($_[0]));
@@ -161,9 +170,12 @@ sub movePerfDataFile($){
 	}
 }
 
+########################################
+# Get ODS config data  
+########################################
+
 sub getConfig(){
 	my ($sth2, $data, $con_ods);
-	
 	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	$sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
 	writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
@@ -177,7 +189,7 @@ sub GetPerfData(){
 	# Init Var
 	my ($line_tab, $sth2, $data, $flag_drop, $sleeptime);
 	use vars qw($con_oreon $con_ods);
-	
+	CheckMySQLConnexion();				
 	my $PFDT = getPerfDataFile();
 	while ($stop) {
 		if (-r $PFDT){
@@ -215,9 +227,9 @@ sub GetPerfData(){
 					undef($line_tab);
 				}
 				close(PFDT);
-				if (!unlink($PFDT."_read")){
-					writeLogFile("Error When removing service-perfdata file : $!");
-				}
+				# Remove Read File
+				writeLogFile("Error When removing service-perfdata file : $!") if (!unlink($PFDT."_read"));
+				# Drop Data
 				close(DROP) if ($flag_drop == 1);
 				undef($line_tab);
 				undef($flag_drop);
@@ -235,13 +247,18 @@ sub GetPerfData(){
 	}
 } 
 
+########################################
+# Check if nagios restart and if we 
+# must to check configuration and 
+# launch purge process  
+########################################
+
 sub CheckRestart(){
-	my ($last_restart_stt, $last_restart, $sth2, $data, $purgeinterval, $y);
+	my ($last_restart_stt, $last_restart, $sth2, $data, $y);
 	use vars qw($con_oreon $con_ods);
 	
 	CheckMySQLConnexion();
 	$y = 1;
-	$purgeinterval = getPurgeInterval();
 	while($stop){
 		CheckMySQLConnexion();
 		$last_restart = getLastRestart();
@@ -249,7 +266,6 @@ sub CheckRestart(){
 		if (!$last_restart_stt || $last_restart ne $last_restart_stt){
 			check_HostServiceID();
 			if (getPurgeConfig()){
-				$purgeinterval = getPurgeInterval();
 				CheckMySQLDrain();
 				purgeRrdDB();	
 			}
@@ -323,7 +339,7 @@ $threadCheckRestart->join;
 # Write in log file 
 writeLogFile("Stopping ODS engine...\n");
 
-#Delete PID File
+# Delete PID File
 writeLogFile("Error When removing pid file : $!") if (!unlink($PID));
 
 exit(1);
