@@ -178,7 +178,7 @@ For information : contact@oreon-project.org
 	$DBRESULT->free();
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
-	$extImg = return_image_list();
+	$extImg = return_image_list(1);
 	#
 	# End of "database-retrieved" information
 	##########################################################

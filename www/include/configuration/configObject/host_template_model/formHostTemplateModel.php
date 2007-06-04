@@ -133,7 +133,9 @@ For information : contact@oreon-project.org
 	$DBRESULT->free();
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
-	$extImg = return_image_list();
+	$extImg = return_image_list(1);
+	$extImgStatusmap = array();
+	$extImgStatusmap = return_image_list(2);	
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -384,8 +386,8 @@ For information : contact@oreon-project.org
 		$form->addElement('text', 'ehi_action_url', $lang['h_actionUrl'], $attrsText);
 	$form->addElement('select', 'ehi_icon_image', $lang['h_iconImg'], $extImg, array("onChange"=>"showLogo('ehi_icon_image',this.form.elements['ehi_icon_image'].value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', $lang['h_iconImgAlt'], $attrsText);
-	$form->addElement('text', 'ehi_vrml_image', $lang['h_vrmlImg'], $attrsText);
-	$form->addElement('select', 'ehi_statusmap_image', $lang['h_nagStatImg'],$extImg, array("onChange"=>"showLogo('ehi_statusmap_image',this.form.elements['ehi_statusmap_image'].value)"));	
+	$form->addElement('select', 'ehi_vrml_image', $lang['h_vrmlImg'], $extImg, array("onChange"=>"showLogo('ehi_vrml_image',this.form.elements['ehi_vrml_image'].value)"));
+	$form->addElement('select', 'ehi_statusmap_image', $lang['h_nagStatImg'],$extImgStatusmap, array("onChange"=>"showLogo('ehi_statusmap_image',this.form.elements['ehi_statusmap_image'].value)"));	
 	$form->addElement('text', 'ehi_2d_coords', $lang['h_nag2dCoords'], $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', $lang['h_nag3dCoords'], $attrsText2);
 
