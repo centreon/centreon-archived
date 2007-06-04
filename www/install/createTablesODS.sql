@@ -108,6 +108,8 @@ CREATE TABLE `metrics` (
 CREATE TABLE `statistics` (
   `id` int(11) NOT NULL auto_increment,
   `ctime` int(11) default NULL,
+  `lineRead` int(11) default NULL,
+  `valueReccorded` int(11) default NULL,
   `last_insert_duration` int(11) default NULL,
   `average_duration` int(11) default NULL,
   `last_nb_line` int(11) default NULL,
@@ -116,3 +118,4 @@ CREATE TABLE `statistics` (
   `average` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
