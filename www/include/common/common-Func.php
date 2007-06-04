@@ -939,17 +939,30 @@ For information : contact@oreon-project.org
 	}
 
 	# Nagios Images	
-	function return_image_list($rep = NULL, $full = true){
+	function return_image_list($mode = 0, $rep = NULL, $full = true){
 		global $oreon;
 		$elems = array();
 		if ($full)
 			$images = array(NULL=>NULL);
 		else
 			$images = array();
-		$is_not_an_image = array("."=>".", ".."=>"..", "README"=>"README", "readme"=>"readme", "LICENSE"=>"LICENSE", "license"=>"license");
-		//$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg", "gd2"=>"gd2");		
-		$is_a_valid_image = array("png"=>"png");		
 		
+		$is_not_an_image = array("."=>".", ".."=>"..", "README"=>"README", "readme"=>"readme", "LICENSE"=>"LICENSE", "license"=>"license");
+		
+		switch($mode) {
+			case 0:
+				$is_a_valid_image = array("png"=>"png");
+				break;
+			case 1:
+				$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg");
+				break;
+			case 2:
+				$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg", "gd2"=>"gd2");
+				break;			
+			default:
+				$is_a_valid_image = array("png"=>"png");
+		}
+	
 //		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
 //			$rep = substr($rep, 1);
 		if ($oreon->optGen["nagios_path_img"])	{
