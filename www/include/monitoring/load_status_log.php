@@ -201,7 +201,7 @@ For information : contact@oreon-project.org
 				  		$log = array();
 				  		while ($str2 = fgets($log_file))
 		          			if (!strpos($str2, "}")){      
-			      				if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)[\ \t]*/", $str2, $tab))
+			      				if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)/", $str2, $tab))
 									$svc_data[$tab[1]] = $tab[2];	
 			    			} else
 			      				break;
@@ -231,7 +231,7 @@ For information : contact@oreon-project.org
 						      			$tab_host_service[$svc_data["host_name"]][$svc_data["service_description"]] = "1";
 						      			if (is_object($oreon))
 						      				$oreon->status_graph_service[$svc_data['current_state']]++;
-					      			}
+						  			}
 								}
 			      			}
 			      		}
@@ -304,7 +304,6 @@ For information : contact@oreon-project.org
 			  		if (($user_admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$log["1"]])))){
 			    		$tab_host_service[$log["1"]] = array();
 			    		$host_data = getHostDataParsed($log);
-			    		//$host_data["current_state"] = $tab_status_host[$host_data['current_state']];
 			    		$host_status[$log["1"]] = $host_data;
 			    		unset($host_data);
 			    		if (is_object($oreon))
