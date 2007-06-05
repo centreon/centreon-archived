@@ -315,14 +315,14 @@ function install_oreon_plugins()
 
     if [ -n "$PLUGINS_DIR" ]; then
 		for fichier in ${PLUGINS_DIR}src/*
-		  do
-		  if [ -d "$fichier" ]; then
-		      echo ""
-		  else
-		      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-		      echo_success "  -> $filename" "OK"
-		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
-		  fi
+		  	do
+		  	if [ -d "$fichier" ]; then
+		      	echo ""
+		  	else
+		      	filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+		      	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
+		  		echo_success "  -> $filename" "OK"  
+		  	fi
 		done
 		echo "Do you want to install Oreon Plugins ? "
 		echo ""
