@@ -349,8 +349,7 @@ function install_oreon_plugins()
 			      echo_success "  -> $filename" "OK"
 			  fi
 			done
-			cp $PLUGINS_DIR/*.pl $NAGIOS_PLUGIN
-			cp $PLUGINS_DIR/process-service-perfdata $NAGIOS_PLUGIN
+			cp $PLUGINS_DIR/* $NAGIOS_PLUGIN
 			echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		fi
     else
@@ -365,8 +364,7 @@ function install_oreon_plugins()
 		  fi
 		done
 		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
-		cp *.pl $NAGIOS_PLUGIN
-		cp $PLUGINS_DIR/process-service-perfdata $NAGIOS_PLUGIN
+		cp * $NAGIOS_PLUGIN
     fi
 
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
