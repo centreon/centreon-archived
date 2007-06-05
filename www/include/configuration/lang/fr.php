@@ -701,7 +701,7 @@ $lang['gen_status'] = "Statuts";
 $lang['gen_mvOk'] = " - d&eacute;placement OK";
 $lang['gen_mvKo'] = " - d&eacute;placement KO";
 $lang['gen_trapd'] = "Traps SNMP";
-$lang['gen_genTrap'] = "Mettre a jour les fichiers de configuration";
+$lang['gen_genTrap'] = "G&eacute;n&eacute;rer les fichiers de configuration";
 
 /* Upload File */
 

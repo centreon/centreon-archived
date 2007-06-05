@@ -12,11 +12,8 @@
 		<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.xml.label}</td><td class="FormRowValue">{$form.xml.html}</td></tr>
 
-		{if $traps_used}
-		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.traps}</td></tr>	 	
-			<tr class="list_one"><td class="FormRowField">{$form.genTraps.label}</td><td class="FormRowValue">{$form.genTraps.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.restartTrapd.label}</td><td class="FormRowValue">{$form.restartTrapd.html}</td></tr>
-		{/if}
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.traps}</td></tr>	 	
+		<tr class="list_one"><td class="FormRowField">{$form.genTraps.label}</td><td class="FormRowValue">{$form.genTraps.html}</td></tr>
 		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>	 	
 		<tr class="list_one"><td class="FormRowField">{$form.debug.label}</td><td class="FormRowValue">{$form.debug.html}</td></tr>
