@@ -31,6 +31,8 @@ INSERT INTO `command` VALUES ('', 'check_local_procs', '$USER1$#S#check_procs -w
 INSERT INTO `command` VALUES ('', 'check_local_users', '$USER1$#S#check_users -w $ARG1$ -c $ARG2$', '', 2);
 
 INSERT INTO `command` VALUES ('', 'check_nt_memuse', '$USER1$#S#check_nt -H $HOSTADDRESS$ -v MEMUSE -s &quot;public&quot;', '', 2);
+INSERT INTO `command` VALUES ('', 'check_nt_cpu', '$USER1$#S#check_nt -H $HOSTADDRESS$ -v CPULOAD -s &quot;public&quot; -l 2,90,95', '', 2);
+INSERT INTO `command` VALUES ('', 'check_nt_disk', '$USER1$#S#check_nt -H $HOSTADDRESS$ -v USEDDISKSPACE -s &quot;public&quot; -l C: -w 80 -c 90', '', 2);
 INSERT INTO `command` VALUES ('', 'check_nt_service_state', '$USER1$#S#check_nt -H $HOSTADDRESS$ -v SERVICESTATE -l $ARG1$ -s &quot;public&quot;', '', 2);
 
 INSERT INTO `command` VALUES ('', 'check_tcp', '$USER1$#S#check_tcp -H $HOSTADDRESS$ -p $ARG1$ -w $ARG2$ -c $ARG3$', '', 2);
