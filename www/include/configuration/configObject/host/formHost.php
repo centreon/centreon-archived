@@ -179,7 +179,11 @@ For information : contact@oreon-project.org
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, $lang["yes"], '1');
 	$dupSvTpl[] = &HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, $lang["no"], '0');
 	$form->addGroup($dupSvTpl, 'dupSvTplAssoc', $lang['h_checksEnabled'], '&nbsp;');
-	if ($o != "mc")
+	if ($o == "c")
+		$form->setDefaults(array('dupSvTplAssoc' => '0'));
+	else if ($o == "w")
+		;
+	else if ($o != "mc")
 		$form->setDefaults(array('dupSvTplAssoc' => '1'));
 	$form->addElement('static', 'dupSvTplAssocText', $lang['h_dupSvTplAssocText']);
 
