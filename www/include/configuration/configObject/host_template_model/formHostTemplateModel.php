@@ -88,6 +88,10 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($svTpl))	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
+		else	{
+			$svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
+			$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);			
+		}
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
 	$DBRESULT->free();
@@ -145,6 +149,7 @@ For information : contact@oreon-project.org
 	$attrsText 		= array("size"=>"30");
 	$attrsText2		= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
+	$attrsAdvSelect2 = array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
@@ -299,7 +304,7 @@ For information : contact@oreon-project.org
 		$form->addGroup($mc_mod_htpl, 'mc_mod_htpl', $lang["mc_mod"], '&nbsp;');
 		$form->setDefaults(array('mc_mod_htpl'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'host_svTpls', $lang['htm_childs'], $svTpls, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'host_svTpls', $lang['htm_childs'], $svTpls, $attrsAdvSelect2);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
