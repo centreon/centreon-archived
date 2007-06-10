@@ -27,9 +27,11 @@ For information : contact@oreon-project.org
 	isset($_GET["type"]) ? $typeG = $_GET["type"] : $typeG = NULL;
 	isset($_POST["type"]) ? $typeP = $_POST["type"] : $typeP = NULL;
 	$typeG ? $type = $typeG : $type = $typeP;
-	$type == "C" ? $type = 2 : NULL;
-	$type == "N" ? $type = 1 : NULL;
 	isset($_POST["command_type"]) ? $type = $_POST["command_type"]["command_type"] : null;
+	if ($type == "C")
+		$type = 2;
+	else if ($type == "N")
+		$type = 1;
 
 	#Pear library
 	require_once "HTML/QuickForm.php";

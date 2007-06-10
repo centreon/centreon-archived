@@ -24,9 +24,6 @@ For information : contact@oreon-project.org
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 	
-	if (!isset($_GET["type"]))
-		$type = 2;	
-	
 	if ($type)
 		$type_str = " command_type = '".$type."'";
 	else
@@ -36,11 +33,10 @@ For information : contact@oreon-project.org
 		if ($type_str)
 			$type_str = " AND " . $type_str;
 		$req = "SELECT COUNT(*) FROM command WHERE command_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' $type_str";
-	} else if ($type){
+	} else if ($type)
 		$req = "SELECT COUNT(*) FROM command WHERE $type_str";
-	} else {
+	else
 		$req ="SELECT COUNT(*) FROM command";
-	}
 
 	$DBRESULT =& $pearDB->query($req);
 	if (PEAR::isError($DBRESULT))
@@ -71,6 +67,7 @@ For information : contact@oreon-project.org
 		$rq = "SELECT command_id, command_name, command_line, command_type FROM command WHERE command_type = '".$type."' ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT command_id, command_name, command_line, command_type FROM command ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
+
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
