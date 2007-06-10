@@ -192,7 +192,7 @@ $lang['m_load_nagios'] = "Importer";
 $lang['m_gen_nagios'] = "Exporter";
 
 $lang['m_commandNotif'] = "Commandes de Notification";
-$lang['m_commandCheck'] = "Commandes de V&eacute;rifcations";
+$lang['m_commandCheck'] = "Commandes de V&eacute;rifications";
 $lang['m_commandMisc'] = "Commandes Diverses";
 $lang['m_commands'] = "Commandes";
 
