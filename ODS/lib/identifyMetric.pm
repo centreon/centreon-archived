@@ -39,7 +39,7 @@ sub identify_metric($$$$$$){ # perfdata index status time type
 	
     foreach my $tab (split(' ', $_[0])){	
     	# Cut perfdata    	
-		if ($tab =~ /([a-zA-Z0-9\_\-\/\:]+)\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)/){
+    	if ($tab =~ /([a-zA-Z0-9\_\-\/\:]+)\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)/){
 		    if (!defined($3)){$3 = "";}
 		    if (!defined($4)){$4 = "";}
 		    if (!defined($5)){$5 = "";}
@@ -80,7 +80,7 @@ sub identify_metric($$$$$$){ # perfdata index status time type
 					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				} else {
-					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});	
+					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
 					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				}
