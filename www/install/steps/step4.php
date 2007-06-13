@@ -187,33 +187,6 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
     	<td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION['nagios_plugins']; ?></td>
     	<td align="right"><b><? echo  $msg ; ?></td>
   </tr>
-  <tr>
-    	<td><b>Writable Directory for Graphical plugins</b></td>
-    	<td align="right"><?
-		     if (is_dir($_SESSION["oreon_dir_rrd"])) {
-		           $uid = posix_getpwuid (fileowner($_SESSION["oreon_dir_rrd"]));
-		           $gid = posix_getgrgid (filegroup($_SESSION["oreon_dir_rrd"]));
-		           $perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir_rrd"])), -3) ;
-					if((strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['nagios_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
-		              	echo '<b><span class="go">OK</font></b>';
-		              	$msg ='';
-					} else {
-		              	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
-		              	$msg = $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-		              	$msg .=  '<br>Should be '. $_SESSION['nagios_user'].':'.$_SESSION['nagios_group'].' (775)';
-						$return_false = 1;
-		           }
-		      } else {
-		      	echo '<b><span class="stop">Critical: Directory not exist</font></b>';
-				$msg =  '';
-				$return_false = 1;
-		      }?>
-		</td>
-  </tr>
-  <tr>
-    	<td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir_rrd"]; ?></td>
-    	<td align="right"><b><?  echo  $msg ; ?></td>
-  </tr>
 </table>
 <?
 aff_middle();
