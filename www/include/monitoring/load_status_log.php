@@ -346,8 +346,10 @@ For information : contact@oreon-project.org
 	}
 
 	if (isset($_GET["sort_typeh"]) && $_GET["sort_typeh"] && count($host_status) > 2){
+		$row_data = array();
 		foreach ($host_status as $key => $row)
 	    	$row_data[$key] = $row[$_GET["sort_typeh"]];
+
 	    !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
 	}
 ?>
