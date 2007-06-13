@@ -610,7 +610,9 @@ function config_cron(){
    	cat $CRONSAV | grep -v "inventory_cron_update" | grep  -v "inventory_update" | grep -v "ArchiveLogInDB.php" | grep -v "parsing_status.pl" | grep -v "parsing_log.pl" > $CRONTMP
    	# rewrite file with new cron line
 	CRONTAB_EXEC_USER=""
-	[ "$CRONTAB_USER" != "nagios" ] &&  then CRONTAB_EXEC_USER="nagios"
+	if [ "$CRONTAB_USER" != "nagios" ] then 
+		CRONTAB_EXEC_USER="nagios"
+	fi
 	echo "0 0 * * * $CRONTAB_EXEC_USER $PHP_BIN -q $INSTALL_DIR_OREON/cron/inventory_update.php >> $INSTALL_DIR_OREON/log/Inventory_log 2>> $INSTALL_DIR_OREON/log/Inventory_log" >> $CRONTMP
 	echo "0 1 1-31 * * $CRONTAB_EXEC_USER $PHP_BIN -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php >> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log 2>> $INSTALL_DIR_OREON/log/ArchiveLogInDB_log" >> $CRONTMP
 	echo "* * * * * $CRONTAB_EXEC_USER $INSTALL_DIR_OREON/cron/parsing_status.pl >> $INSTALL_DIR_OREON/log/ods_parsing_status 2>> $INSTALL_DIR_OREON/log/ods_parsing_status" >> $CRONTMP
