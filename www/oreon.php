@@ -54,6 +54,16 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$redirect =& $DBRESULT->fetchRow();
 
+	$nb_page = NULL;
+	if ($isRestreint){
+		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
+			$nb_page = 0;
+			require_once("./alt_error.php");
+		} else
+			$nb_page = 1;	
+	} else
+		$nb_page = 1;
+
 	# Init URL 
 	$url = "";
 	if (!isset($_GET["doc"])){
@@ -137,19 +147,13 @@ For information : contact@oreon-project.org
 	# Display PathWay	
 	if($min != 1)
 		include("pathWay.php");
-
-	$nb_page = NULL;
-	if ($isRestreint){
-		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
-			$nb_page = 0;
-			$url = "./alt_error.php";
-		} else
-			$nb_page = 1;	
-	} else
-		$nb_page = 1;
 	
 	# Go on our page 
-	require_once($url);
+	if (isset($url) && $url)
+    	require_once($url);
+    else
+        echo "Problem with url generated";
+
 
 	if (!isset($oreon->historyPage))
 		$oreon->createHistory();	 

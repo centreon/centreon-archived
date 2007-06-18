@@ -16,7 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	
-
 	# function 
 	function get_path($abs_path){
 		$len = strlen($abs_path);
