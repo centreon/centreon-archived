@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 
 	#Path to the configuration dir
 	$path = "./include/configuration/configObject/mibs/";
-	$nagios_plugins = "/etc/nagios/libexec";
+	//$nagios_plugins = "/etc/nagios/libexec";
 
 	#PHP functions
 	require_once "./include/common/common-Func.php";
