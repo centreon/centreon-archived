@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	#Path to the configuration dir
-	$path = "./include/configuration/configObject/manufacturer/";
+	$path = "./include/configuration/configObject/traps-manufacturer/";
 
 	#PHP functions
 	require_once $path."DB-Func.php";

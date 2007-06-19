@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
-		$DBRESULT =& $pearDB->query("SELECT name, id FROM inventory_manufacturer WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT name, id FROM traps_vendor WHERE name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$mnftr =& $DBRESULT->fetchRow();
@@ -39,7 +39,7 @@ For information : contact@oreon-project.org
 	function deleteMnftrInDB ($mnftr = array())	{
 		global $pearDB;
 		foreach($mnftr as $key=>$value)		{
-			$DBRESULT =& $pearDB->query("DELETE FROM inventory_manufacturer WHERE id = '".htmlentities($key, ENT_QUOTES)."'");
+			$DBRESULT =& $pearDB->query("DELETE FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES)."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 	function multipleMnftrInDB ($mnftr = array(), $nbrDup = array())	{
 		foreach($mnftr as $key=>$value)	{
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT * FROM inventory_manufacturer WHERE id = '".htmlentities($key, ENT_QUOTES)."' LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES)."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row = $DBRESULT->fetchRow();
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 				if (testMnftrExistence($name)) {
-					$val ? $rq = "INSERT INTO inventory_manufacturer VALUES (".$val.")" : $rq = null;
+					$val ? $rq = "INSERT INTO traps_vendor VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -80,7 +80,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE inventory_manufacturer ";
+		$rq = "UPDATE traps_vendor ";
 		$rq .= "SET name = '".htmlentities($ret["name"], ENT_QUOTES)."', ";
 		$rq .= "alias = '".htmlentities($ret["alias"], ENT_QUOTES)."', ";
 		$rq .= "description = '".htmlentities($ret["description"], ENT_QUOTES)."' ";
@@ -100,7 +100,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO inventory_manufacturer ";
+		$rq = "INSERT INTO traps_vendor ";
 		$rq .= "(name, alias, description) ";
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($ret["name"], ENT_QUOTES)."', ";
@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM inventory_manufacturer");
+		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM traps_vendor");
 		$mnftr_id = $DBRESULT->fetchRow();
 		return ($mnftr_id["MAX(id)"]);
 	}

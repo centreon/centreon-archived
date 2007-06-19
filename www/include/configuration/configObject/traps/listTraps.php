@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 	$mnftr_id = NULL;
 	if (isset($search)) {
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ".
-									"OR manufacturer_id IN (SELECT id FROM inventory_manufacturer WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
+									"OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	}
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps");
@@ -53,7 +53,7 @@ For information : contact@oreon-project.org
 	#List of elements - Depends on different criteria
 	if ($search)
 		$rq = "SELECT * FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ".
-									"OR manufacturer_id IN (SELECT id FROM inventory_manufacturer WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ".
+									"OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ".
 									"ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM traps ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;
@@ -72,7 +72,7 @@ For information : contact@oreon-project.org
 		$moptions .= "<a href='oreon.php?p=".$p."&traps_id=".$trap['traps_id']."&o=d&select[".$trap['traps_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$trap['traps_id']."]'></input>";
-		$DBRESULT2 =& $pearDB->query("select alias from inventory_manufacturer where id='".$trap['manufacturer_id']."' LIMIT 1");
+		$DBRESULT2 =& $pearDB->query("select alias from traps_vendor where id='".$trap['manufacturer_id']."' LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$DBRESULT2->fetchInto($mnftr);

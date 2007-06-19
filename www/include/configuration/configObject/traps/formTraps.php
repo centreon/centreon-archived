@@ -36,7 +36,7 @@ For information : contact@oreon-project.org
 		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
 		$DBRESULT->free();
 	}
-	$DBRESULT =& $pearDB->query("SELECT id, alias FROM inventory_manufacturer");
+	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($rmnftr)){

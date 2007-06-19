@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 
 	$mnftr = array();
 	if (($o == "c" || $o == "w") && $id)	{		
-		$DBRESULT =& $pearDB->query("SELECT * FROM inventory_manufacturer WHERE id = '".$id."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value

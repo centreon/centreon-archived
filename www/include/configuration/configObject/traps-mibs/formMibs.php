@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	}
 
 	$mnftr = array(NULL=>NULL);	
-	$DBRESULT =& $pearDB->query("SELECT id, alias FROM inventory_manufacturer order by alias");
+	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	# Set base value
