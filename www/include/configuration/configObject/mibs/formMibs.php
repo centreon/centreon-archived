@@ -88,7 +88,7 @@ For information : contact@oreon-project.org
 								$values["name"].".conf 2>&1");
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 			$msg .= "<br>Moving traps in DataBase...";	
-			$stdout = shell_exec($oreon->optGen["nagios_path_plugins"]."traps/fill_trapDB.pl -f /tmp/".
+			$stdout = shell_exec($oreon->optGen["nagios_path_plugins"]."traps/fill_trapDB -f /tmp/".
 								$values["name"].".conf -m ".htmlentities($ret["mnftr"], ENT_QUOTES)." 2>&1");
 			shell_exec("rm /tmp/".$values["name"].".conf /tmp/".$values["name"]);
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
