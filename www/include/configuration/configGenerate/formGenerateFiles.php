@@ -156,7 +156,7 @@ For information : contact@oreon-project.org
 			}
 		}
 		if (isset($ret["genTraps"]["genTraps"]) && $ret["genTraps"]["genTraps"])	{
-			$stdout = shell_exec($oreon->optGen["nagios_path_plugins"]."traps/genSnmpttConfFile.pl 2>&1");
+			$stdout = shell_exec($oreon->optGen["nagios_path_plugins"]."/traps/genSnmpttConfFile 2>&1");
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 		if ($ret["restart"]["restart"])	{
