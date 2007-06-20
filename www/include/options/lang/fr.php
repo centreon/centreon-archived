@@ -133,6 +133,24 @@ $lang["genOpt_display_options"] = "Options d'affichage'";
 $lang["genOpt_time_zone"] = "Zone Horraire";
 $lang["genOpt_expiration_properties"] = "Propri&ecute;t&ecute; des Sessions ";
 
+$lang["genOpt_nagios_properties"] = "Propi&eacute;t&eacute de Nagios";
+$lang["genOpt_nagios_version"] = "Version de Nagios";
+$lang["genOpt_nagios_init_script"] = "Script d'initialisation";
+$lang["genOpt_nagios_direstory"] = "R&eacute;pertoires de Nagios";
+$lang["genOpt_mailer_path"] = "Chemin d'acces au mailer";
+
+$lang["genOpt_colors_properties"] = "Propri&eacute;t&eacute;s des couleurs des status";
+
+$lang["genOpt_rrdtool_properties"] = "Propi&eacute;t&eacute;s de RRDTool ";
+
+$lang["optGen_ldap_properties"] = "Propi&eacute;t&eacute;s de LDAP";
+
+$lang["optGen_CSS_properties"] = "Configuration des CSS";
+
+$lang["genOpt_debug_options"] = "Options de Debug";
+
+$lang["genOpt_ODS_config"] = "Configuration de ODS";
+
 $lang['genOpt_css'] = "CSS";
 $lang['genOpt_menu_name'] = "Menu";
 $lang['genOpt_file_name'] = "Fichier css";

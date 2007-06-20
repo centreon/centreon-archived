@@ -133,6 +133,25 @@ $lang["genOpt_display_options"] = "Display Options";
 $lang["genOpt_time_zone"] = "Time Zone";
 $lang["genOpt_expiration_properties"] = "Sessions Properties";
 
+$lang["genOpt_nagios_properties"] = "Nagios Properties";
+$lang["genOpt_nagios_version"] = "Nagios version";
+$lang["genOpt_nagios_init_script"] = "Initialisation Script ";
+$lang["genOpt_nagios_direstory"] = "Nagios Directories";
+$lang["genOpt_mailer_path"] = "Mailer path";
+
+$lang["genOpt_colors_properties"] = "Status Properties Colors";
+
+$lang["genOpt_rrdtool_properties"] = "RRDTool Properties";
+$lang["genOpt_rrdtool_configurations"] = "RRDTool Configuration";
+
+$lang["optGen_ldap_properties"] = "LDAP Properties";
+
+$lang["optGen_CSS_properties"] = "CSS configuration";
+
+$lang["genOpt_debug_options"] = "Debug Properties";
+
+$lang["genOpt_ODS_config"] = "ODS Configuration";
+
 $lang['genOpt_css'] = "CSS";
 $lang['genOpt_menu_name'] = "Menu";
 $lang['genOpt_file_name'] = "CSS file";
