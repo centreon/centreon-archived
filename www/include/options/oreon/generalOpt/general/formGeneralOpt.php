@@ -19,7 +19,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-
 	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -46,7 +45,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
 	$form->addElement('text', 'oreon_path', $lang["genOpt_oPath"], $attrsText);
 	$form->addElement('text', 'oreon_web_path', $lang["genOpt_webPath"], $attrsText);
-	$form->addElement('text', 'oreon_rrdbase_path', $lang["genOpt_oRrdbPath"], $attrsText);
+
 	$form->addElement('text', 'oreon_refresh', $lang["genOpt_oRefresh"], $attrsText2);
 	$form->addElement('text', 'session_expire', $lang["genOpt_oExpire"], $attrsText2);
 
@@ -92,7 +91,6 @@ For information : contact@oreon-project.org
 	$form->applyFilter('nagios_path_plugins', 'slash');
 	$form->applyFilter('oreon_path', 'slash');
 	$form->applyFilter('oreon_web_path', 'slash');
-	$form->applyFilter('oreon_rrdbase_path', 'slash');
 	$form->applyFilter('debug_path', 'slash');
 	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
@@ -144,6 +142,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
+	$tpl->assign('lang', $lang);
 	$tpl->assign('valid', $valid);
 	$tpl->display("formGeneralOpt.ihtml");
 ?>
