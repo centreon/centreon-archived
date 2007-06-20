@@ -58,7 +58,7 @@ $lang["genOpt_snmp"] = "Informations sur SNMP";
 $lang["genOpt_various"] = "Informations diverses";
 $lang["genOpt_nagPath"] = "R&eacute;pertoire";
 $lang["genOpt_nagBin"] = "R&eacute;pertoire + Binaire";
-$lang['genOpt_nagScript'] = "Init Script";
+$lang["genOpt_nagScript"] = "Init Script";
 $lang["genOpt_nagImg"] = "R&eacute;pertoire Images";
 $lang["genOpt_nagPlug"] = "R&eacute;pertoire Sondes";
 $lang["genOpt_nagVersion"] = "Version de Nagios";
@@ -66,7 +66,7 @@ $lang["genOpt_oPath"] = "R&eacute;pertoire";
 $lang["genOpt_webPath"] = "R&eacute;pertoire Web";
 $lang["genOpt_oRrdbPath"] = "R&eacute;pertoire des Bases rrd";
 $lang["genOpt_oRefresh"] = "Fr&eacute;quence de rafraichissement de l&#146;interface (en secondes)";
-$lang["genOpt_oExpire"] = "Expiration des Sessions (en minutes)";
+$lang["genOpt_oExpire"] = "Expiration des Sessions";
 $lang["genOpt_oHCUP"] = "Couleur Host UP";
 $lang["genOpt_oHCDW"] = "Couleur Host DOWN";
 $lang["genOpt_oHCUN"] = "Couleur Host UNREACHABLE";
@@ -125,6 +125,13 @@ $lang["genOpt_problem_order_asc"] = "Ascendant";
 $lang["genOpt_problem_order_desc"] = "Descendant";
 
 $lang["genOpt_gmt"] = "GMT";
+
+$lang["genOpt_max_page_size"] = "Taille des pages maximum";
+$lang["genOpt_refresh_properties"] = "Propri&ecute;t&ecute; de rafra&icirc;chissement";
+$lang["genOpt_template"] = "Mod&egrave;le d'affichage'";
+$lang["genOpt_display_options"] = "Options d'affichage'";
+$lang["genOpt_time_zone"] = "Zone Horraire";
+$lang["genOpt_expiration_properties"] = "Propri&ecute;t&ecute; des Sessions ";
 
 $lang['genOpt_css'] = "CSS";
 $lang['genOpt_menu_name'] = "Menu";
