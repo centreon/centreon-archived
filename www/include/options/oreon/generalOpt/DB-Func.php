@@ -209,8 +209,6 @@ For information : contact@oreon-project.org
 		isset($ret["oreon_path"]) && $ret["oreon_path"] != NULL ? $rq .= "'".htmlentities($ret["oreon_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "oreon_web_path = ";
 		isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != NULL ? $rq .= "'".htmlentities($ret["oreon_web_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "oreon_rrdbase_path = ";
-		isset($ret["oreon_rrdbase_path"]) && $ret["oreon_rrdbase_path"] != NULL ? $rq .= "'".htmlentities($ret["oreon_rrdbase_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "oreon_refresh = ";
 		isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? $rq .= "'".htmlentities($ret["oreon_refresh"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "session_expire = ";
