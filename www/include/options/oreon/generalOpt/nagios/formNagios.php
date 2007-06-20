@@ -125,6 +125,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
+	$tpl->assign('lang', $lang);
 	$tpl->assign('valid', $valid);
 	$tpl->display("formNagios.ihtml");
 ?>
