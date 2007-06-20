@@ -2,7 +2,7 @@
 {$colorJS}
 <form {$form.attributes}>
 <table id="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$lang.optGen_ldap_properties}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.ldap}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ldap_auth_enable.label}</td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.ldap_host.label}</td><td class="FormRowValue">{$form.ldap_host.html}</td></tr>

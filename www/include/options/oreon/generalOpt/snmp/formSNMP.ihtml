@@ -2,10 +2,11 @@
 {$colorJS}
 <form {$form.attributes}>
 <table id="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
- 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.snmp}</td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$form.header.snmp}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;snmpd</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.snmp_community.label}</td><td class="FormRowValue">{$form.snmp_community.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.snmp_version.label}</td><td class="FormRowValue">{$form.snmp_version.html}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;snmptrapd</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
 </table>
 {if !$valid}

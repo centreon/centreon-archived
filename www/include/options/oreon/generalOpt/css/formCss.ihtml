@@ -1,12 +1,13 @@
 <form action="oreon.php" method=get>
 	<table id="ListTable">
-		<tr class="ListHeader">
-			<td class="ListColHeaderLeft">{$nameTitle}</td>
-			<td class="ListColHeaderLeft">{$fileTitle}</td>
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$lang.optGen_CSS_properties}</td></tr>
+		<tr class="list_lvl_1">
+			<td class="ListColLvl1_name">{$nameTitle}</td>
+			<td class="ListColLvl1_name">{$fileTitle}</td>
 		</tr>
 		{section name=elem loop=$elemArr}
 		<tr class={$elemArr[elem].MenuClass}>
-			<td class="ListColLeft">{$elemArr[elem].menuName}</td>
+			<td class="FormRowField">{$elemArr[elem].menuName}</td>
 			<td class="ListColLeft">{$elemArr[elem].select}</td>
 		</tr>
 		{/section}
