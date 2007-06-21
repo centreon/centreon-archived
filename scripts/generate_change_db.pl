@@ -27,7 +27,7 @@ use strict;
 use DBI;
 use RRDs;
 
-my $installedPath = "@OREON_PATH@/ODS/";
+my $installedPath = "/srv/oreon/ODS/";
 
 # Init Globals
 use vars qw($len_storage_rrd $RRDdatabase_path $mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $con_ods $con_oreon $generalcounter);
@@ -89,7 +89,9 @@ CheckMySQLConnexion();
 
 my ($sth2, $data, $ERR);
 
-if ($ARGV[0] == "-a"){
+print $ARGV[0] . "\n";
+
+if ($ARGV[0] eq "-a"){
     undef($ARGV);
     $sth2 = $con_ods->prepare("SELECT metric_id FROM metrics ORDER BY metric_id");
     if (!$sth2->execute) {writeLogFile("Error when getting metrics list : " . $sth2->errstr . "\n");}
@@ -116,7 +118,8 @@ for (my $i = 0; defined($ARGV[$i]) ; $i++ ){
 	my $metric_name = $data->{'metric_name'};
 	undef($sth2);
 	undef($data);
-	my $interval = getServiceCheckInterval($ARGV[$i]) * 60 + 10;
+	my $interval = getServiceCheckInterval($ARGV[$i]) * 60 + 30;
+	print 'interval : $interval \n';
 	$sth2 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$ARGV[$i]."'");
 	if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
 	my $flag = 0;
@@ -134,6 +137,7 @@ for (my $i = 0; defined($ARGV[$i]) ; $i++ ){
 			undef($begin);
 			$flag++;
 		}
+		#print $data->{'ctime'}."\n";
 		RRDs::update ($RRDdatabase_path.$ARGV[$i].".rrd" , "--template", $metric_name, $data->{'ctime'}.":".$data->{'value'});
 		$ERR = RRDs::error;
 		if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$ARGV[$i]."_new.rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
