@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 		if ($fileObj->isUploadedFile()) {
 			$fileObj->moveUploadedFile("/tmp/");
 			$values = $fileObj->getValue();
-			$stdout = shell_exec("export LD_LIBRARY_PATH=/usr/local/lib && snmpttconvertmib --in=/tmp/".$values["name"]." --out=/tmp/".
+			$stdout = shell_exec("export LD_LIBRARY_PATH=/usr/local/lib && /usr/sbin/snmpttconvertmib --in=/tmp/".$values["name"]." --out=/tmp/".
 								$values["name"].".conf 2>&1");
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 			$msg .= "<br>Moving traps in DataBase...";	
@@ -92,7 +92,7 @@ For information : contact@oreon-project.org
 								$values["name"].".conf -m ".htmlentities($ret["mnftr"], ENT_QUOTES)." 2>&1");
 			shell_exec("rm /tmp/".$values["name"].".conf /tmp/".$values["name"]);
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
-			$msg .= "<br>Generate Traps configuration files from Nagios configuration Tab.";
+			$msg .= "<br>Generate Traps configuration files from Nagios configuration form!";
 			if ($msg)
 				$tpl->assign('msg', $msg);
 		}	
