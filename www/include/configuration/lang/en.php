@@ -90,7 +90,7 @@ $lang['h_HostGroupMembers'] = "HostGroups Parents";
 $lang['h_HostParents'] = "Hosts Parents";
 $lang['h_HostChilds'] = "Hosts Childs";
 
-$lang['h_head_state'] = "Host state";
+$lang['h_head_state'] = "Host Check Properties";
 $lang['h_checkCmd'] = "Check Command";
 $lang['h_checkMca'] = "Max Check Attempts";
 $lang['h_checkInterval'] = "Normal Check Interval";

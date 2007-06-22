@@ -89,7 +89,7 @@ $lang['h_HostGroupMembers'] = "HostGroups parents";
 $lang['h_HostParents'] = "Hosts parents";
 $lang['h_HostChilds'] = "Hosts enfants";
 
-$lang['h_head_state'] = "Status de l'Host";
+$lang['h_head_state'] = "Propi&eacute;t&eacute;s des v&eacute;rifications de l'H&ocirc;te";
 $lang['h_checkCmd'] = "Commande de check";
 $lang['h_checkMca'] = "Nombre maximum d'essais";
 $lang['h_checkInterval'] = "Ordonnancement r&eacute;gulier";
