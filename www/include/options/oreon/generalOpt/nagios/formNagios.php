@@ -54,8 +54,10 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'nagios_init_script', $lang["genOpt_nagScript"], $attrsText);
 	$form->addElement('text', 'nagios_path_img', $lang["genOpt_nagImg"], $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', $lang["genOpt_nagPlug"], $attrsText);
-	$form->addElement('select', 'nagios_version', $lang["genOpt_nagVersion"], array(1=>"1", 2=>"2"));
 	$form->addElement('text', 'mailer_path_bin', $lang["genOpt_mailer"], $attrsText);
+	
+	$form->addElement('select', 'nagios_version', $lang["genOpt_nagVersion"], array(1=>"1", 2=>"2"));
+	
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["yes"], '1');
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["no"], '0');
 	
@@ -74,14 +76,16 @@ For information : contact@oreon-project.org
 	$form->applyFilter('nagios_path', 'slash');
 	$form->applyFilter('nagios_path_img', 'slash');
 	$form->applyFilter('nagios_path_plugins', 'slash');
+	
 	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
+	
 	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
+	$form->addRule('nagios_path_img', $lang['ErrValidPath'], 'is_valid_path');
 	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
 	$form->addRule('nagios_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
 
