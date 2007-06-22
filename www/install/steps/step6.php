@@ -64,9 +64,9 @@ if (isset($passwd_error) && $passwd_error)
     <td><b>MySQL Client version (Password Haching Changes)</b></td>
     <td align="right">
     	<select name="mysqlVersion">
-    		<option value="1" <? if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "1") print "selected"; else if (!isset($_SESSION["mysqlVersion"])) print "selected"; ?>>3.x</option>
-    		<option value="2" <? if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "2") print "selected"; ?>>>= 4.1 - OLD_PASSWORD()</option>
     		<option value="3" <? if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "3") print "selected"; ?>>>= 4.1 - PASSWORD()</option>
+    		<option value="2" <? if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "2") print "selected"; ?>>>= 4.1 - OLD_PASSWORD()</option>
+    		<option value="1" <? if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "1") print "selected"; else if (!isset($_SESSION["mysqlVersion"])) print "selected"; ?>>3.x</option>
     	</select>
    	</td>
   </tr>
