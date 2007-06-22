@@ -27,7 +27,7 @@ use strict;
 use DBI;
 use RRDs;
 
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "@OREON_PATH@/ODS/";
 
 # Init Globals
 use vars qw($len_storage_rrd $RRDdatabase_path $mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $con_ods $con_oreon $generalcounter);
