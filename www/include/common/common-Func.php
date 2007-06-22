@@ -965,7 +965,7 @@ For information : contact@oreon-project.org
 	
 //		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
 //			$rep = substr($rep, 1);
-		if ($oreon->optGen["nagios_path_img"])	{
+		if ($oreon->optGen["nagios_path_img"] && is_dir($oreon->optGen["nagios_path_img"]))	{
 			//$elems = @scandir($oreon->optGen["nagios_path_img"]);
 			$dh  = opendir($oreon->optGen["nagios_path_img"]);
 			while (false !== ($filename = readdir($dh)))
