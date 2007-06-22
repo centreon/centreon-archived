@@ -34,14 +34,20 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
 <?
 $msg = NULL;  
 $alldeps = NULL;
-foreach ($pear_module as $module) {
-  
-?>
+
+$include_path = get_include_path();
+$tab = preg_split('/\:/', $include_path);
+foreach ($tab as $path){
+	if (is_dir($path))
+		$pear_path = $path;	
+}
+
+foreach ($pear_module as $module) {	?>
    <tr>
     <td><b>&nbsp;&nbsp;&nbsp;<? echo $module["name"] ?></b></td>
     <td align="right"><?
     	$msg = NULL;  
-    	if (file_exists($pear_path. '/'.$module["path"])) {
+    	if (file_exists($pear_path."/".$module["path"])) {
           	echo '<b><span class="go">OK</font></b>';
 		} else {
 			echo '<b><span class="stop">Failed</font></b>';
