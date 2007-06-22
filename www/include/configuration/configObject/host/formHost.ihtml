@@ -21,7 +21,7 @@
 	 <table id="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		{if $o != "mc"}
 			<tr class="list_one"><td class="FormRowField">{$form.host_name.label}</td><td class="FormRowValue">{$form.host_name.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField">{$form.host_alias.label}</td><td class="FormRowValue">{$form.host_alias.html}</td></tr>
@@ -45,7 +45,7 @@
 			<td class="FormRowValue">{$form.dupSvTplAssoc.html}</td>
 		</tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
 	 	{if $msg.nagios == 1}
 		<tr class="list_one"><td class="FormRowField">{$form.host_checks_enabled.label}</td><td class="FormRowValue">{$form.host_checks_enabled.html}</td></tr>
 	 	{/if}
@@ -72,32 +72,15 @@
 		{/if}
 		<tr class="list_one"><td class="FormRowField">{$form.host_max_check_attempts.label}</td><td class="FormRowValue">{$form.host_max_check_attempts.html}</td></tr>
 		{if $msg.nagios == 2}
-		<tr class="list_two"><td class="FormRowField">{$form.host_check_interval.label}</td><td class="FormRowValue">{$form.host_check_interval.html}</td></tr>
-		{/if}
-		<tr class="list_one"><td class="FormRowField">{$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
-		<tr class="list_two">
-			<td class="FormRowField">{$form.command_command_id2.label}</td>
-			<td class="FormRowValue">
-				{$form.command_command_id2.html}
-				{if $o == "a" || $o == "c"}
-					&nbsp;<img src='./img/icones/16x16/exchange.gif' onClick="window.open('oreon.php?p=60706&command_id='+ document.Form.elements['command_command_id2'].options[document.Form.elements['command_command_id2'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
-				{/if}
-			</td>
-		</tr>
-		{if $msg.nagios == 2}
-		<tr class="list_one"><td class="FormRowField">{$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
-			{if $o == "a" || $o == "c"}
-			&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" alt="*"  onClick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
-			{/if}</td>
-		</tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_check_interval.label}</td><td class="FormRowValue">{$form.host_check_interval.html} {$time_unit}</td></tr>
 		{/if}
 		
 		{if $msg.nagios == 2}
-		<tr class="list_two"><td class="FormRowField">{$form.host_active_checks_enabled.label}</td><td class="FormRowValue">{$form.host_active_checks_enabled.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.host_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.host_active_checks_enabled.label}</td><td class="FormRowValue">{$form.host_active_checks_enabled.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_passive_checks_enabled.label}</td><td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td></tr>
 	 	{/if}
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mail_write.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_notifications_enabled.label}</td><td class="FormRowValue">{$form.host_notifications_enabled.html}</td></tr>
 	 	{if $msg.nagios == 2}
 			{if $o == "mc"}
@@ -110,7 +93,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.host_notifOpts.label}</td><td class="FormRowValue">{$form.host_notifOpts.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 		
@@ -166,6 +149,24 @@
 		{if $msg.perfparse}
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_down.gif'>&nbsp;&nbsp;{$form.header.purge_policy}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.purge_policy_id.label}</td><td class="FormRowValue">{$form.purge_policy_id.html}</td></tr>
+		{/if}
+		
+		<tr class="list_one"><td class="FormRowField">{$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.command_command_id2.label}</td>
+			<td class="FormRowValue">
+				{$form.command_command_id2.html}
+				{if $o == "a" || $o == "c"}
+					&nbsp;<img src='./img/icones/16x16/exchange.gif' onClick="window.open('oreon.php?p=60706&command_id='+ document.Form.elements['command_command_id2'].options[document.Form.elements['command_command_id2'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=1000, height=200');">
+				{/if}
+			</td>
+		</tr>
+		{if $msg.nagios == 2}
+		<tr class="list_one"><td class="FormRowField">{$form.command_command_id_arg2.label}</td><td class="FormRowValue">{$form.command_command_id_arg2.html}
+			{if $o == "a" || $o == "c"}
+			&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" alt="*"  onClick="set_arg('example2','command_command_id_arg2');"></a><input type="text" name="example2" disabled>
+			{/if}</td>
+		</tr>
 		{/if}
 	 </table>
 </div>
