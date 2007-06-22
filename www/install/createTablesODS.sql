@@ -37,8 +37,63 @@ CREATE TABLE `data_bin` (
   `value` float default NULL,
   `status` enum('0','1','2','3','4') default NULL,
   PRIMARY KEY  (`id_bin`),
-  KEY `index_metric` (`id_metric`)
+  KEY `index_metric` (`id_metric`),
+  KEY `ctime` (`ctime`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure de la table `data_stats_daily`
+-- 
+
+CREATE TABLE `data_stats_daily` (
+  `data_stats_daily_id` int(11) NOT NULL auto_increment,
+  `metric_id` int(11) default NULL,
+  `min` int(11) default NULL,
+  `max` int(11) default NULL,
+  `average` int(11) default NULL,
+  `count` int(11) default NULL,
+  `day_time` int(11) default NULL,
+  PRIMARY KEY  (`data_stats_daily_id`),
+  KEY `metric_id` (`metric_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure de la table `data_stats_monthly`
+-- 
+
+CREATE TABLE `data_stats_monthly` (
+  `data_stats_monthly_id` int(11) NOT NULL auto_increment,
+  `metric_id` int(11) default NULL,
+  `min` int(11) default NULL,
+  `max` int(11) default NULL,
+  `average` int(11) default NULL,
+  `count` int(11) default NULL,
+  `month_time` int(11) default NULL,
+  PRIMARY KEY  (`data_stats_monthly_id`),
+  KEY `metric_id` (`metric_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure de la table `data_stats_yearly`
+-- 
+
+CREATE TABLE `data_stats_yearly` (
+  `data_stats_yearly_id` int(11) NOT NULL auto_increment,
+  `metric_id` int(11) default NULL,
+  `min` int(11) default NULL,
+  `max` int(11) default NULL,
+  `average` int(11) default NULL,
+  `count` int(11) default NULL,
+  `year_time` int(11) default NULL,
+  PRIMARY KEY  (`data_stats_yearly_id`),
+  KEY `metric_id` (`metric_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -55,7 +110,25 @@ CREATE TABLE `index_data` (
   `special` enum('0','1') default '0',
   `storage_type` enum('0','1','2') default '2',
   PRIMARY KEY  (`id`)
+  KEY `host_name` (`host_name`),
+  KEY `service_description` (`service_description`)
+  KEY `host_name` (`host_id`),
+  KEY `service_description` (`service_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure de la table `instance`
+-- 
+
+CREATE TABLE `instance` (
+  `instance_id` int(11) NOT NULL auto_increment,
+  `instance_name` varchar(254) default NULL,
+  `instance_alias` varchar(254) default NULL,
+  PRIMARY KEY  (`instance_id`),
+  UNIQUE KEY `instance_name` (`instance_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
 
@@ -78,7 +151,8 @@ CREATE TABLE `log` (
   PRIMARY KEY  (`log_id`),
   KEY `host_name` (`host_name`(64)),
   KEY `service_description` (`service_description`(64)),
-  KEY `status` (`status`)
+  KEY `status` (`status`),
+  KEY `output` (`output`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
@@ -118,4 +192,6 @@ CREATE TABLE `statistics` (
   `average` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `statistics` VALUES (1, '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
