@@ -61,3 +61,6 @@ ALTER TABLE `cfg_nagios` ADD `event_broker_options` VARCHAR( 255 ) NULL ;
 CREATE TABLE `traps_vendor` (`id` int(11) NOT NULL auto_increment, `name` varchar(254) default NULL, `alias` varchar(254) default NULL, `description` text, PRIMARY KEY  (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES (1, 'cisco', 'Cisco Networks', NULL), (2, 'hp', 'HP Networks', NULL), (3, '3com', '3Com', NULL), (4, 'ciscolinksys', 'Cisco-Linksys', NULL), (6, 'dell', 'Dell', NULL), (7, 'Generic', 'Generic', 'References Generic Traps');
 
+-- 25/06/2007
+
+ALTER TABLE `traps`  ADD CONSTRAINT `traps_ibfk_1` FOREIGN KEY ( `manufacturer_id` ) REFERENCES `traps_vendor` ( `id` ) ON DELETE CASCADE ;

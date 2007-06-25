@@ -783,7 +783,7 @@ $lang['m_traps_handler'] = "Handler";
 $lang['m_traps_args'] = "Arguments";
 $lang['m_traps_status'] = "Status";
 $lang['m_traps_comments'] = "Comments";
-$lang['m_traps_manufacturer'] = "Mibs Vendor";
+$lang['m_traps_manufacturer'] = "Vendor Name";
 $lang['m_traps_desc'] = "Description";
 $lang['m_traps_alias'] = "Alias";
 
@@ -793,17 +793,17 @@ $lang['m_traps_view'] = "View a Trap definition";
 
 /* Manufacturer */
 	
-$lang['m_mnftr_name'] = "Mibs Vendor Name";
+$lang['m_mnftr_name'] = "Vendor Name";
 $lang['m_mnftr_alias'] = "Alias";
 $lang['m_mnftr_desc'] = "Description";
 
-$lang['m_mnftr_add'] = "Add Mibs Vendor";
-$lang['m_mnftr_change'] = "Modify Mibs Vendor";
-$lang['m_mnftr_view'] = "View Mibs Vendor";
+$lang['m_mnftr_add'] = "Add Vendor";
+$lang['m_mnftr_change'] = "Modify Vendor";
+$lang['m_mnftr_view'] = "View Vendor";
 
 /* Mibs */
 	
-$lang['m_mibs_mnftr'] = "Mibs Vendor Name";
+$lang['m_mibs_mnftr'] = "Vendor Name";
 $lang['m_mibs_file'] = "File (.mib)";
 $lang['m_mibs_title'] = "Load a MIB";
 $lang['load'] = "Load";

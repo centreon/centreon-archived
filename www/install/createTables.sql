@@ -2185,3 +2185,10 @@ ALTER TABLE `traps_service_relation`
 --
 ALTER TABLE `view_city`
   ADD CONSTRAINT `view_city_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `view_country` (`country_id`) ON DELETE CASCADE;
+
+  
+  --
+  -- Contraintes pour la table traps
+  --
+  ALTER TABLE `traps`
+  ADD CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE;
