@@ -75,7 +75,7 @@ CREATE TABLE `data_stats_monthly` (
   `month_time` int(11) default NULL,
   PRIMARY KEY  (`data_stats_monthly_id`),
   KEY `metric_id` (`metric_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE `data_stats_yearly` (
   `year_time` int(11) default NULL,
   PRIMARY KEY  (`data_stats_yearly_id`),
   KEY `metric_id` (`metric_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -107,7 +107,10 @@ CREATE TABLE `index_data` (
   `host_id` int(11) default NULL,
   `service_description` varchar(75) default NULL,
   `service_id` int(11) default NULL,
+  `check_interval` int(11) default NULL,
   `special` enum('0','1') default '0',
+  `trashed` enum('0','1') default '0',
+  `must_be_rebuild` enum('0','1') default '0',
   `storage_type` enum('0','1','2') default '2',
   PRIMARY KEY  (`id`)
   KEY `host_name` (`host_name`),
@@ -168,7 +171,6 @@ CREATE TABLE `metrics` (
   `unit_name` varchar(32) default NULL,
   `warn` float default NULL,
   `crit` float default NULL,
-  `rrdDataBase_Path` varchar(255) default NULL,
   PRIMARY KEY  (`metric_id`),
   KEY `index` (`index_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
