@@ -169,7 +169,7 @@ For information : contact@oreon-project.org
 			$oreon->historySearch[$url] = $_POST["search"];
 		if (isset($_GET["limit"]))
 			$oreon->historyLimit[$url] = $_GET["limit"];
-		if (isset($_POST["search"]))
+		if (isset($_POST["limit"]))
 			$oreon->historyLimit[$url] = $_POST["limit"];
 	}
 
