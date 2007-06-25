@@ -1768,7 +1768,15 @@ CREATE TABLE `modules_informations` (
 
 -- --------------------------------------------------------
 
-
+--
+-- Structure de la table traps_vendor
+--
+CREATE TABLE `traps_vendor` (
+	`id` int(11) NOT NULL auto_increment,
+	`name` varchar(254) default NULL,
+	`alias` varchar(254) default NULL,
+	`description` text, PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
 -- Contraintes pour la table `topology_JS`
