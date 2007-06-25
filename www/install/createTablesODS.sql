@@ -6,6 +6,7 @@ CREATE TABLE `config` (
   `id` int(11) NOT NULL auto_increment,
   `RRDdatabase_path` varchar(255) default NULL,
   `len_storage_rrd` int(11) default NULL,
+  `len_storage_mysql` int(11) default NULL,
   `autodelete_rrd_db` enum('0','1') default NULL,
   `sleep_time` int(11) default '10',
   `purge_interval` int(11) default '2',
