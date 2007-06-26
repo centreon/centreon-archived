@@ -158,8 +158,6 @@ For information : contact@oreon-project.org
 				$undeterminatetime = 0 + $tt - ($uptime + $downtime + $unreachalbetime);
 			else
 			$undeterminatetime = 0;
-
-
 			if($unreachalbetime > 0)
 			$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
 			else
@@ -194,8 +192,7 @@ For information : contact@oreon-project.org
 			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString($unreachalbetime).'{/td}{td class=bubul}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bubul}'.$h["UNREACHABLEnbEvent"].'{/td}{/tr}';
 			$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($undeterminatetime).'{/td}{td class=bubul}'.(($pundet > 0) ? $pundet : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
 			$bubultab .= '{/table}';
-
-
+			
 			$tp = round(($pundet * $t / 100 ),2);
 			if($pundet > 0){
 				$end = $h["date_start"] + $tp + 5000;
@@ -205,7 +202,6 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#cccccc"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
-	//			$buffer .= '~br~ UndeterminateTime: ' . Duration::toString($undeterminatetime);
 				$buffer .= $bubultab;
 				$buffer .= '</event>';
 			}
@@ -219,7 +215,6 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($punreach > 0) ? $punreach : "0") . '%" >' ;
-//				$buffer .= '~br~ UnReachableTime: ' . Duration::toString($unreachalbetime) ;
 				$buffer .= $bubultab;
 				$buffer .= '</event>';
 			}
@@ -234,7 +229,6 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorDOWN . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pdown > 0) ? $pdown : "0") . '%" >' ;
-//				$buffer .= '~br~ Downtime: ' . Duration::toString($downtime) ;
 				$buffer .= $bubultab;
 				$buffer .= '</event>';
 			}
@@ -285,8 +279,6 @@ For information : contact@oreon-project.org
 	$t = round(($t - ($t * 0.11574074074)),2);
 	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
 
-
-
 	if($_GET["today_pending"] > 0){
 		$end = $today_start + $tp + 5000;
 		$buffer .= '<event ';
@@ -295,7 +287,6 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#cccccc"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-//		$buffer .= '~br~ UndeterminateTime: ' . Duration::toString($_GET["today_pending"] * $t / 100);		
 		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
@@ -308,7 +299,6 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
-//		$buffer .= '~br~ UnReachableTime: ' . Duration::toString(0+$_GET["today_unreachable"] * $t / 100);		
 		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
@@ -321,7 +311,6 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorDOWN . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
-//		$buffer .= '~br~ Downtime: ' . Duration::toString($_GET["today_down"] * $t / 100);
 		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
@@ -335,7 +324,6 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUP . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
-//		$buffer .= '~br~ Uptime: ' . Duration::toString($_GET["today_up"] * $t / 100);	
 		$buffer .= $bubultab;
 		$buffer .= '</event>';
 	}
@@ -346,15 +334,6 @@ For information : contact@oreon-project.org
 	}
 
 	$buffer .= '</data>';
-
-/*
-$buffer =
-'
-<data>
-<event start="Jan 28 2007 1:23:19 GMT" end="Jan 28 2007 22:19:19 GMT" color="#19EE11" isDuration="true" title="98.64%">
- Duration: 1d ~br~ Uptime: 23h 40m 25s</event>
-</data>';
-*/
 
 	header('Content-Type: text/xml');
 	echo $buffer;

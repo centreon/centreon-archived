@@ -577,7 +577,7 @@ if($mhost)	{
 	 		 substr($oreon->optGen["color_unknown"],1);
 
 	$today_var = '&today_up='.$today_up . '&today_down='.$today_down.'&today_unreachable='.$today_unreachable. '&today_pending=' . $today_pending;
-	$today_var .= '&today_UNREACHABLEnbEvent=&today_DOWNnbEvent=';
+	$today_var .= '&today_UNREACHABLEnbEvent=*&today_DOWNnbEvent=*';
 
 	$type = 'Host';	
 	include('ajaxReporting_js.php');
