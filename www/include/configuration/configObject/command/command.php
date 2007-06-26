@@ -33,6 +33,14 @@ For information : contact@oreon-project.org
 	else if ($type == "N")
 		$type = 1;
 
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -54,8 +62,8 @@ For information : contact@oreon-project.org
 			case "a" : require_once($path."formCommand.php"); break; #Add a Command
 			case "w" : require_once($path."formCommand.php"); break; #Watch a Command
 			case "c" : require_once($path."formCommand.php"); break; #Modify a Command
-			case "m" : multipleCommandInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listCommand.php"); break; #Duplicate n Commands
-			case "d" : deleteCommandInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listCommand.php"); break; #Delete n Commands
+			case "m" : multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listCommand.php"); break; #Duplicate n Commands
+			case "d" : deleteCommandInDB(isset($select) ? $select : array()); require_once($path."listCommand.php"); break; #Delete n Commands
 			default : require_once($path."listCommand.php"); break;
 		}
 ?>

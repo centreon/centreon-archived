@@ -23,6 +23,15 @@ For information : contact@oreon-project.org
 	isset($_GET["cg_id"]) ? $cG = $_GET["cg_id"] : $cG = NULL;
 	isset($_POST["cg_id"]) ? $cP = $_POST["cg_id"] : $cP = NULL;
 	$cG ? $cg_id = $cG : $cg_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -42,8 +51,8 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formContactGroup.php"); break; #Modify a contactgroup
 		case "s" : enableContactGroupInDB($cg_id); require_once($path."listContactGroup.php"); break; #Activate a contactgroup
 		case "u" : disableContactGroupInDB($cg_id); require_once($path."listContactGroup.php"); break; #Desactivate a contactgroup
-		case "m" : multipleContactGroupInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listContactGroup.php"); break; #Duplicate n contact grou
-		case "d" : deleteContactGroupInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listContactGroup.php"); break; #Delete n contact group
+		case "m" : multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listContactGroup.php"); break; #Duplicate n contact grou
+		case "d" : deleteContactGroupInDB(isset($select) ? $select : array()); require_once($path."listContactGroup.php"); break; #Delete n contact group
 		default : require_once($path."listContactGroup.php"); break;
 	}
 ?>

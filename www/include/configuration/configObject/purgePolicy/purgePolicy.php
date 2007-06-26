@@ -21,6 +21,14 @@ For information : contact@oreon-project.org
 	isset($_GET["purge_policy_id"]) ? $cG = $_GET["purge_policy_id"] : $cG = NULL;
 	isset($_POST["purge_policy_id"]) ? $cP = $_POST["purge_policy_id"] : $cP = NULL;
 	$cG ? $purge_policy_id = $cG : $purge_policy_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -38,8 +46,8 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formPurgePolicy.php"); break; #Add a purge_policy
 		case "w" : require_once($path."formPurgePolicy.php"); break; #Watch a purge_policy
 		case "c" : require_once($path."formPurgePolicy.php"); break; #Modify a purge_policy
-		case "m" : multiplePurgePolicyInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listPurgePolicy.php"); break; #Duplicate n purge_policys
-		case "d" : deletePurgePolicyInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listPurgePolicy.php"); break; #Delete n purge_policys
+		case "m" : multiplePurgePolicyInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listPurgePolicy.php"); break; #Duplicate n purge_policys
+		case "d" : deletePurgePolicyInDB(isset($select) ? $select : array()); require_once($path."listPurgePolicy.php"); break; #Delete n purge_policys
 		default : require_once($path."listPurgePolicy.php"); break;
 	}
 ?>

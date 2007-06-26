@@ -26,6 +26,10 @@ For information : contact@oreon-project.org
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
 
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	$lcaHost = getLCAHostByID($pearDB);
 	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
 	$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
@@ -50,11 +54,11 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formService.php"); break; #Modify a service
 		case "mc" : require_once($path."formService.php"); break; #Massive change
 		case "s" : enableServiceInDB($service_id); require_once($path."listServiceByHostGroup.php"); break; #Activate a service
-		case "ms" : enableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceByHostGroup.php"); break;
+		case "ms" : enableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHostGroup.php"); break;
 		case "u" : disableServiceInDB($service_id); require_once($path."listServiceByHostGroup.php"); break; #Desactivate a service
-		case "mu" : disableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceByHostGroup.php"); break;
-		case "m" : multipleServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listServiceByHostGroup.php"); break; #Duplicate n services
-		case "d" : deleteServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceByHostGroup.php"); break; #Delete n services
+		case "mu" : disableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHostGroup.php"); break;
+		case "m" : multipleServiceInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServiceByHostGroup.php"); break; #Duplicate n services
+		case "d" : deleteServiceInDB(isset($select) ? $select : array()); require_once($path."listServiceByHostGroup.php"); break; #Delete n services
 		default : require_once($path."listServiceByHostGroup.php"); break;
 	}
 ?>

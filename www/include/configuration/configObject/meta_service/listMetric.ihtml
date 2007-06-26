@@ -7,7 +7,7 @@
 </table>
 <br>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-<form name='form'>
+<form name='form'  method='POST'>
 <input type='hidden' name='o' id='o' value='42'>
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">

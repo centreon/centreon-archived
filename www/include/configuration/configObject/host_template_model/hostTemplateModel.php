@@ -26,6 +26,10 @@ For information : contact@oreon-project.org
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
 
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -45,11 +49,11 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formHostTemplateModel.php"); break; #Modify a host template model
 		case "mc" : require_once($path."formHostTemplateModel.php"); break; #Massive change
 		case "s" : enableHostInDB($host_id); require_once($path."listHostTemplateModel.php"); break; #Activate a host template model
-		case "ms" : enableHostInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHostTemplateModel.php"); break;
+		case "ms" : enableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostTemplateModel.php"); break;
 		case "u" : disableHostInDB($host_id); require_once($path."listHostTemplateModel.php"); break; #Desactivate a host template model
-		case "mu" : disableHostInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHostTemplateModel.php"); break;
-		case "m" : multipleHostInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listHostTemplateModel.php"); break; #Duplicate n host template model
-		case "d" : deleteHostInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHostTemplateModel.php"); break; #Delete n host template models
+		case "mu" : disableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostTemplateModel.php"); break;
+		case "m" : multipleHostInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHostTemplateModel.php"); break; #Duplicate n host template model
+		case "d" : deleteHostInDB(isset($select) ? $select : array()); require_once($path."listHostTemplateModel.php"); break; #Delete n host template models
 		default : require_once($path."listHostTemplateModel.php"); break;
 	}
 ?>

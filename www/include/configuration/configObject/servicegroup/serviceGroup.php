@@ -22,6 +22,14 @@ For information : contact@oreon-project.org
 	isset($_POST["sg_id"]) ? $sP = $_POST["sg_id"] : $sP = NULL;
 	$sG ? $sg_id = $sG : $sg_id = $sP;
 
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -40,8 +48,8 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formServiceGroup.php"); break; #Modify a Servicegroup
 		case "s" : enableServiceGroupInDB($sg_id); require_once($path."listServiceGroup.php"); break; #Activate a Servicegroup
 		case "u" : disableServiceGroupInDB($sg_id); require_once($path."listServiceGroup.php"); break; #Desactivate a Servicegroup
-		case "m" : multipleServiceGroupInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listServiceGroup.php"); break; #Duplicate n Service grou
-		case "d" : deleteServiceGroupInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceGroup.php"); break; #Delete n Service group
+		case "m" : multipleServiceGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServiceGroup.php"); break; #Duplicate n Service grou
+		case "d" : deleteServiceGroupInDB(isset($select) ? $select : array()); require_once($path."listServiceGroup.php"); break; #Delete n Service group
 		default : require_once($path."listServiceGroup.php"); break;
 	}
 ?>

@@ -25,6 +25,15 @@ For information : contact@oreon-project.org
 	isset($_GET["esc_id"]) ? $cG = $_GET["esc_id"] : $cG = NULL;
 	isset($_POST["esc_id"]) ? $cP = $_POST["esc_id"] : $cP = NULL;
 	$cG ? $esc_id = $cG : $esc_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -42,8 +51,8 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formEscalation.php"); break; #Add a Escalation
 		case "w" : require_once($path."formEscalation.php"); break; #Watch a Escalation
 		case "c" : require_once($path."formEscalation.php"); break; #Modify a Escalation
-		case "m" : multipleEscalationInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listEscalation.php"); break; #Duplicate n Escalations
-		case "d" : deleteEscalationInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listEscalation.php"); break; #Delete n Escalation
+		case "m" : multipleEscalationInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listEscalation.php"); break; #Duplicate n Escalations
+		case "d" : deleteEscalationInDB(isset($select) ? $select : array()); require_once($path."listEscalation.php"); break; #Delete n Escalation
 		default : require_once($path."listEscalation.php"); break;
 	}
 ?>

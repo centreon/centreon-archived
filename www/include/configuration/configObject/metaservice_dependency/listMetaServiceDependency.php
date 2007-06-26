@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
@@ -83,6 +83,10 @@ For information : contact@oreon-project.org
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
+
+	include("./include/common/checkPagination.php");
+
+/*
 	#Fill a tab with different page numbers and link
 	$pageArr = array();
 	for ($i = 0; $i < ($rows / $limit); $i++)
@@ -117,7 +121,7 @@ For information : contact@oreon-project.org
 	$form->addElement('hidden', 'list');
 	$tab = array ("p" => $p, "search" => $search, "num"=>$num, "list"=>$list);
 	$form->setDefaults($tab);	
-
+*/
 	#
 	##Toolbar select $lang["lgd_more_actions"]
 	#

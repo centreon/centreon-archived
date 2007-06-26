@@ -25,6 +25,14 @@ For information : contact@oreon-project.org
 	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -45,11 +53,11 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formServiceTemplateModel.php"); break; #Modify a Service Template Model
 		case "mc" : require_once($path."formServiceTemplateModel.php"); break; #Massive change
 		case "s" : enableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Activate a Service Template Model
-		case "ms" : enableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceTemplateModel.php"); break;
+		case "ms" : enableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceTemplateModel.php"); break;
 		case "u" : disableServiceInDB($service_id); require_once($path."listServiceTemplateModel.php"); break; #Desactivate a Service Template Model
-		case "mu" : disableServiceInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceTemplateModel.php"); break;
-		case "m" : multipleServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listServiceTemplateModel.php"); break; #Duplicate n Service Template Models
-		case "d" : deleteServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listServiceTemplateModel.php"); break; #Delete n Service Template Models
+		case "mu" : disableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceTemplateModel.php"); break;
+		case "m" : multipleServiceInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServiceTemplateModel.php"); break; #Duplicate n Service Template Models
+		case "d" : deleteServiceInDB(isset($select) ? $select : array()); require_once($path."listServiceTemplateModel.php"); break; #Delete n Service Template Models
 		default : require_once($path."listServiceTemplateModel.php"); break;
 	}
 ?>

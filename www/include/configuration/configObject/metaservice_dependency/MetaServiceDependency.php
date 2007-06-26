@@ -21,6 +21,14 @@ For information : contact@oreon-project.org
 	isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = NULL;
 	isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = NULL;
 	$cG ? $dep_id = $cG : $dep_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -38,8 +46,8 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formMetaServiceDependency.php"); break; #Add a Meta Service
 		case "w" : require_once($path."formMetaServiceDependency.php"); break; #Watch a Meta Service
 		case "c" : require_once($path."formMetaServiceDependency.php"); break; #Modify a Meta Service
-		case "m" : multipleMetaServiceDependencyInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listMetaServiceDependency.php"); break; #Duplicate n Meta Services
-		case "d" : deleteMetaServiceDependencyInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listMetaServiceDependency.php"); break; #Delete n Meta Service
+		case "m" : multipleMetaServiceDependencyInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMetaServiceDependency.php"); break; #Duplicate n Meta Services
+		case "d" : deleteMetaServiceDependencyInDB(isset($select) ? $select : array()); require_once($path."listMetaServiceDependency.php"); break; #Delete n Meta Service
 		default : require_once($path."listMetaServiceDependency.php"); break;
 	}
 ?>

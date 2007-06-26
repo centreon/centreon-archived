@@ -26,6 +26,10 @@ For information : contact@oreon-project.org
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
 
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -48,7 +52,7 @@ For information : contact@oreon-project.org
 		case "ms" : enableContactInDB(NULL, isset($select) ? $select : array()); require_once($path."listContact.php"); break;
 		case "u" : disableContactInDB($contact_id); require_once($path."listContact.php"); break; #Desactivate a contact
 		case "mu" : disableContactInDB(NULL, isset($select) ? $select : array()); require_once($path."listContact.php"); break;
-		case "m" : multipleContactInDB(isset($select) ? $select : array(), $_GET["dupNbr"]); require_once($path."listContact.php"); break; #Duplicate n contacts
+		case "m" : multipleContactInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listContact.php"); break; #Duplicate n contacts
 		case "d" : deleteContactInDB(isset($select) ? $select : array()); require_once($path."listContact.php"); break; #Delete n contacts
 		default : require_once($path."listContact.php"); break;
 	}

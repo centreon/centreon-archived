@@ -29,6 +29,11 @@ For information : contact@oreon-project.org
 	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -50,7 +55,7 @@ For information : contact@oreon-project.org
 		case "ms" : enableHostGroupInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostGroup.php"); break;
 		case "u" : disableHostGroupInDB($hg_id); require_once($path."listHostGroup.php"); break; #Desactivate a Hostgroup
 		case "mu" : disableHostGroupInDB(NULL, isset($select) ? $select : array()); require_once($path."listHostGroup.php"); break;
-		case "m" : multipleHostGroupInDB(isset($select) ? $select : array(), $_GET["dupNbr"]); require_once($path."listHostGroup.php"); break; #Duplicate n Host grou
+		case "m" : multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHostGroup.php"); break; #Duplicate n Host grou
 		case "d" : deleteHostGroupInDB(isset($select) ? $select : array()); require_once($path."listHostGroup.php"); break; #Delete n Host group
 		default : require_once($path."listHostGroup.php"); break;
 	}

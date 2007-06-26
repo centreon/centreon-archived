@@ -43,6 +43,14 @@ For information : contact@oreon-project.org
 	isset($_GET["msr_id"]) ? $cG = $_GET["msr_id"] : $cG = NULL;
 	isset($_POST["msr_id"]) ? $cP = $_POST["msr_id"] : $cP = NULL;
 	$cG ? $msr_id = $cG : $msr_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 			
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -62,15 +70,15 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formMetaService.php"); break; #Modify an Meta Service		
 		case "s" : enableMetaServiceInDB($meta_id); require_once($path."listMetaService.php"); break; #Activate a Meta Service
 		case "u" : disableMetaServiceInDB($meta_id); require_once($path."listMetaService.php"); break; #Desactivate a Meta Service
-		case "d" : deleteMetaServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listMetaService.php"); break; #Delete n Meta Servive		
-		case "m" : multipleMetaServiceInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listMetaService.php"); break; #Duplicate n Meta Service
+		case "d" : deleteMetaServiceInDB(isset($select) ? $select : array()); require_once($path."listMetaService.php"); break; #Delete n Meta Servive		
+		case "m" : multipleMetaServiceInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMetaService.php"); break; #Duplicate n Meta Service
 		case "ci" : require_once($path."listMetric.php"); break; #Manage Service of the MS
 		case "as" : require_once($path."metric.php"); break; # Add Service to a MS
 		case "cs" : require_once($path."metric.php"); break; # Change Service to a MS
 		case "ss" : enableMetricInDB($msr_id); require_once($path."listMetric.php"); break; #Activate a Metric
 		case "us" : disableMetricInDB($msr_id); require_once($path."listMetric.php"); break; #Desactivate a Metric
 		case "ws" : require_once($path."metric.php"); break; # View Service to a MS
-		case "ds" : deleteMetricInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listMetric.php"); break; #Delete n Metric		
+		case "ds" : deleteMetricInDB(isset($select) ? $select : array()); require_once($path."listMetric.php"); break; #Delete n Metric		
 		default : require_once($path."listMetaService.php"); break;
 	}
 ?>

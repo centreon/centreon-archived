@@ -21,6 +21,14 @@ For information : contact@oreon-project.org
 	isset($_GET["tp_id"]) ? $tpG = $_GET["tp_id"] : $tpG = NULL;
 	isset($_POST["tp_id"]) ? $tpP = $_POST["tp_id"] : $tpP = NULL;
 	$tpG ? $tp_id = $tpG : $tp_id = $tpP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -37,8 +45,8 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formTimeperiod.php"); break; #Add a Timeperiod
 		case "w" : require_once($path."formTimeperiod.php"); break; #Watch a Timeperiod
 		case "c" : require_once($path."formTimeperiod.php"); break; #Modify a Timeperiod
-		case "m" : multipleTimeperiodInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listTimeperiod.php"); break; #Duplicate n Timeperiods
-		case "d" : deleteTimeperiodInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listTimeperiod.php"); break; #Delete n Timeperiods
+		case "m" : multipleTimeperiodInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listTimeperiod.php"); break; #Duplicate n Timeperiods
+		case "d" : deleteTimeperiodInDB(isset($select) ? $select : array()); require_once($path."listTimeperiod.php"); break; #Delete n Timeperiods
 		default : require_once($path."listTimeperiod.php"); break;
 	}
 ?>

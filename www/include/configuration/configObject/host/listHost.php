@@ -73,7 +73,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
 
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl

@@ -1,7 +1,7 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 
 
-<form name='form'>
+<form name='form' method='POST'>
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">
 			<td class="Toolbar_TDSelectAction_Top">

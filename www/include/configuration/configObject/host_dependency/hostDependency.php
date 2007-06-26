@@ -26,6 +26,14 @@ For information : contact@oreon-project.org
 	isset($_GET["dep_id"]) ? $cG = $_GET["dep_id"] : $cG = NULL;
 	isset($_POST["dep_id"]) ? $cP = $_POST["dep_id"] : $cP = NULL;
 	$cG ? $dep_id = $cG : $dep_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -43,8 +51,8 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formHostDependency.php"); break; #Add a Dependency
 		case "w" : require_once($path."formHostDependency.php"); break; #Watch a Dependency
 		case "c" : require_once($path."formHostDependency.php"); break; #Modify a Dependency
-		case "m" : multipleHostDependencyInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listHostDependency.php"); break; #Duplicate n Dependencys
-		case "d" : deleteHostDependencyInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHostDependency.php"); break; #Delete n Dependency
+		case "m" : multipleHostDependencyInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHostDependency.php"); break; #Duplicate n Dependencys
+		case "d" : deleteHostDependencyInDB(isset($select) ? $select : array()); require_once($path."listHostDependency.php"); break; #Delete n Dependency
 		default : require_once($path."listHostDependency.php"); break;
 	}
 ?>

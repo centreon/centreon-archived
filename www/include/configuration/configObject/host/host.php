@@ -33,6 +33,10 @@ For information : contact@oreon-project.org
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
 
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -52,11 +56,11 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formHost.php"); break; #Modify a host
 		case "mc" : require_once($path."formHost.php"); break; # Massive Change
 		case "s" : enableHostInDB($host_id); require_once($path."listHost.php"); break; #Activate a host
-		case "ms" : enableHostInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHost.php"); break;
+		case "ms" : enableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
 		case "u" : disableHostInDB($host_id); require_once($path."listHost.php"); break; #Desactivate a host
-		case "mu" : disableHostInDB(NULL, isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHost.php"); break;
-		case "m" : multipleHostInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listHost.php"); break; #Duplicate n hosts
-		case "d" : deleteHostInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listHost.php"); break; #Delete n hosts
+		case "mu" : disableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
+		case "m" : multipleHostInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHost.php"); break; #Duplicate n hosts
+		case "d" : deleteHostInDB(isset($select) ? $select : array()); require_once($path."listHost.php"); break; #Delete n hosts
 		default : require_once($path."listHost.php"); break;
 	}
 ?>
