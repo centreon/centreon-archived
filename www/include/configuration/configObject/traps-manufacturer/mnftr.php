@@ -22,6 +22,14 @@ For information : contact@oreon-project.org
 	isset($_POST["id"]) ? $mnftrP = $_POST["id"] : $mnftrP = NULL;
 	$mnftrG ? $id = $mnftrG : $id = $mnftrP;
 
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -37,8 +45,8 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formMnftr.php"); break; #Add a Trap
 		case "w" : require_once($path."formMnftr.php"); break; #Watch a Trap
 		case "c" : require_once($path."formMnftr.php"); break; #Modify a Trap
-		case "m" : multipleMnftrInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listMnftr.php"); break; #Duplicate n Traps
-		case "d" : deleteMnftrInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listMnftr.php"); break; #Delete n Traps
+		case "m" : multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMnftr.php"); break; #Duplicate n Traps
+		case "d" : deleteMnftrInDB(isset($select) ? $select : array()); require_once($path."listMnftr.php"); break; #Delete n Traps
 		default : require_once($path."listMnftr.php"); break;
 	}
 ?>

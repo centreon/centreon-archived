@@ -22,6 +22,14 @@ For information : contact@oreon-project.org
 	isset($_POST["traps_id"]) ? $trapP = $_POST["traps_id"] : $trapP = NULL;
 	$trapG ? $traps_id = $trapG : $traps_id = $trapP;
 
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
@@ -37,8 +45,8 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formTraps.php"); break; #Add a Trap
 		case "w" : require_once($path."formTraps.php"); break; #Watch a Trap
 		case "c" : require_once($path."formTraps.php"); break; #Modify a Trap
-		case "m" : multipleTrapInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listTraps.php"); break; #Duplicate n Traps
-		case "d" : deleteTrapInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listTraps.php"); break; #Delete n Traps
+		case "m" : multipleTrapInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listTraps.php"); break; #Duplicate n Traps
+		case "d" : deleteTrapInDB(isset($select) ? $select : array()); require_once($path."listTraps.php"); break; #Delete n Traps
 		default : require_once($path."listTraps.php"); break;
 	}
 ?>
