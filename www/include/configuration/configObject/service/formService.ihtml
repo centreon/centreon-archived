@@ -130,7 +130,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.service_parallelize_check.label}</td><td class="FormRowValue">{$form.service_parallelize_check.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_obsess_over_service.label}</td><td class="FormRowValue">{$form.service_obsess_over_service.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_check_freshness.label}</td><td class="FormRowValue">{$form.service_check_freshness.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}(s)</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.service_flap_detection_enabled.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}</td></tr>

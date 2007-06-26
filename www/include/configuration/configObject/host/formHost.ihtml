@@ -137,7 +137,7 @@
 		{/if}
 	 	{if $msg.nagios == 2}
 		<tr class="list_two"><td class="FormRowField">{$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}(s)</td></tr>
 		{/if}		
 		<tr class="list_two"><td class="FormRowField">{$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}</td></tr>
