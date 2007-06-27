@@ -53,6 +53,7 @@ For information : contact@oreon-project.org
 		case "w" : require_once($path."formService.php"); break; #Watch a service
 		case "c" : require_once($path."formService.php"); break; #Modify a service
 		case "mc" : require_once($path."formService.php"); break; #Massive change
+		case "mcv" : require_once($path."formService.php"); break; #Massive change Validation
 		case "s" : enableServiceInDB($service_id); require_once($path."listServiceByHost.php"); break; #Activate a service
 		case "ms" : enableServiceInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceByHost.php"); break;
 		case "u" : disableServiceInDB($service_id); require_once($path."listServiceByHost.php"); break; #Desactivate a service

@@ -575,6 +575,8 @@ For information : contact@oreon-project.org
 	else if ($o == "mc")	{
 		$subMC =& $form->addElement('submit', 'submitMC', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$redirect =& $form->addElement('hidden', 'o');
+		$redirect->setValue("mcv");
 	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));

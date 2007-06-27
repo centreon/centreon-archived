@@ -332,6 +332,21 @@ For information : contact@oreon-project.org
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 	
+	# trap vendor
+	$mnftr = array(NULL=>NULL);	
+	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($rmnftr))
+		$mnftr[$rmnftr["id"]] = html_entity_decode($rmnftr["alias"], ENT_QUOTES);
+	$mnftr[""] = "_".$lang["sv_all"]."_";
+	$DBRESULT->free();
+	$attrs2 = array(
+		'onchange'=>"javascript: " .
+				" 	getTrap(this.form.elements['mnftr'].value); return false; ");
+	$form->addElement('select', 'mnftr', $lang["m_mibs_mnftr"], $mnftr, $attrs2);
+	include("./include/configuration/configObject/traps/ajaxTrap_js.php");
+	
 	##
 	## Sort 3 - Data treatment
 	##
