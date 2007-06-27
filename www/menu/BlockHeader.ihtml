@@ -1,5 +1,5 @@
 <div id="header">
-	<div id="logo"><img src={$urlLogo} alt='Centreon logo' title='Centreon Logo'></div>
+	<img src={$urlLogo} alt='Centreon logo' title='Centreon Logo' id="logo">
 	<!-- informations bank for ajax -->
 	<FORM id="AjaxBankBasic">
 			<INPUT type="hidden" name="color_OK" value="{$color.OK}">

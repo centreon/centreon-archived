@@ -52,12 +52,13 @@ body{
 	background: url("Images/bg_banner.gif") top repeat-x;}
 
 #logo{
-	padding-top:20px;}
+	padding-top:20px;
+	}
 
-#logInfos{		
+#logInfos{
 	float:right;}
 
-#logInfos div{		
+#logInfos div{
 	padding:2px;
 	padding-right:10px;	
 	color: #525252;
