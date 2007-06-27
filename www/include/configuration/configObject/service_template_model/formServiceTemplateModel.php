@@ -473,11 +473,18 @@ For information : contact@oreon-project.org
 	$form->applyFilter('_ALL_', 'trim');
 	$form->applyFilter('service_description', 'myReplace');
 	$form->applyFilter('service_alias', 'myReplaceAlias');
+	$from_list_menu = false;
 	if ($o != "mc")	{
 		$form->addRule('service_description', $lang['ErrName'], 'required');
 		$form->addRule('service_alias', $lang['ErrName'], 'required');
 		$form->registerRule('exist', 'callback', 'testServiceTemplateExistence');
 		$form->addRule('service_description', $lang['ErrAlreadyExist'], 'exist');
+	}
+	else if ($o == "mc")	{
+		if ($form->getSubmitValue("submitMC"))
+			$from_list_menu = false;
+		else
+			$from_list_menu = true;
 	}
 	$form->setRequiredNote($lang['requiredFields']);
 
@@ -524,7 +531,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
 	$valid = false;
-	if ($form->validate())	{
+	if ($form->validate() && $from_list_menu == false)	{
 		$serviceObj =& $form->getElement('service_id');
 		if ($form->getSubmitValue("submitA"))
 			$serviceObj->setValue(insertServiceInDB());

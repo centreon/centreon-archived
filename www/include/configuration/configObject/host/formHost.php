@@ -468,6 +468,7 @@ For information : contact@oreon-project.org
 		return (str_replace(" ", "_", $form->getSubmitValue("host_name")));
 	}
 	$form->applyFilter('_ALL_', 'trim');
+	$from_list_menu = false;
 	if ($o != "mc")	{
 		$form->applyFilter('host_name', 'myReplace');
 		$form->addRule('host_name', $lang['ErrName'], 'required');
@@ -487,6 +488,12 @@ For information : contact@oreon-project.org
 			$form->addRule('host_notifOpts', $lang['ErrOpt'], 'required');
 	
 		}
+	}
+	else if ($o == "mc")	{
+		if ($form->getSubmitValue("submitMC"))
+			$from_list_menu = false;
+		else
+			$from_list_menu = true;
 	}
 	
 	$form->setRequiredNote($lang['requiredFields']);
@@ -536,7 +543,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
 	$valid = false;
-	if ($form->validate())	{
+	if ($form->validate() && $from_list_menu == false)	{
 		$hostObj =& $form->getElement('host_id');
 		if ($form->getSubmitValue("submitA"))
 			$hostObj->setValue(insertHostInDB());

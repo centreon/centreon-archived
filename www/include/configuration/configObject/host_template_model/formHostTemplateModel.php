@@ -435,7 +435,14 @@ For information : contact@oreon-project.org
 	$form->addRule('host_name', $lang['ErrAlreadyExist'], 'exist');
 	$form->addRule('host_name', $lang['ErrName'], 'required');
 	$form->addRule('host_alias', $lang['ErrAlias'], 'required');
-
+	$from_list_menu = false;
+	if ($o == "mc")	{
+		if ($form->getSubmitValue("submitMC"))
+			$from_list_menu = false;
+		else
+			$from_list_menu = true;
+	}
+	
 	#
 	##End of form definition
 	#
@@ -486,7 +493,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
 	$valid = false;
-	if ($form->validate())	{
+	if ($form->validate() && $from_list_menu == false)	{
 		$hostObj =& $form->getElement('host_id');
 		if ($form->getSubmitValue("submitA"))
 			$hostObj->setValue(insertHostInDB());

@@ -271,6 +271,7 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('_ALL_', 'trim');
 	$form->applyFilter('contact_name', 'myReplace');
+	$from_list_menu = false;
 	if ($o != "mc")	{
 		$form->addRule('contact_name', $lang['ErrName'], 'required');
 		$form->addRule('contact_alias', $lang['ErrAlias'], 'required');
@@ -293,6 +294,12 @@ For information : contact@oreon-project.org
 		$form->addRule('contact_alias', $lang['ErrAlreadyExist'], 'existAlias');
 		$form->registerRule('keepOneContactAtLeast', 'callback', 'keepOneContactAtLeast');
 		$form->addRule('contact_alias', $lang['ErrNotEnoughtContact'], 'keepOneContactAtLeast');
+	}
+	else if ($o == "mc")	{
+		if ($form->getSubmitValue("submitMC"))
+			$from_list_menu = false;
+		else
+			$from_list_menu = true;
 	}
 	$form->setRequiredNote($lang['requiredFields']);
 
@@ -328,7 +335,7 @@ For information : contact@oreon-project.org
 	}
 
 	$valid = false;
-	if ($form->validate())	{
+	if ($form->validate() && $from_list_menu == false)	{
 		$cctObj =& $form->getElement('contact_id');
 		if ($form->getSubmitValue("submitA"))
 			$cctObj->setValue(insertContactInDB());

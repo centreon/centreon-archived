@@ -517,6 +517,7 @@ For information : contact@oreon-project.org
 		return (str_replace(" ", "_", $form->getSubmitValue("service_description")));
 	}
 	$form->applyFilter('_ALL_', 'trim');
+	$from_list_menu = false;
 	if ($o != "mc")	{
 		//$form->applyFilter('service_description', 'myReplace');
 		$form->addRule('service_description', $lang['ErrName'], 'required');
@@ -544,7 +545,13 @@ For information : contact@oreon-project.org
 		$form->addRule('service_description', $lang['ErrSvConflict'], 'exist');
 		$form->setRequiredNote($lang['requiredFields']);
 	}
-
+	else if ($o == "mc")	{
+		if ($form->getSubmitValue("submitMC"))
+			$from_list_menu = false;
+		else
+			$from_list_menu = true;
+	}
+	
 	#
 	##End of form definition
 	#
@@ -592,7 +599,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
 	$valid = false;
-	if ($form->validate())	{
+	if ($form->validate() && $from_list_menu == false)	{
 		$serviceObj =& $form->getElement('service_id');
 		if ($form->getSubmitValue("submitA"))
 			$serviceObj->setValue(insertServiceInDB());
