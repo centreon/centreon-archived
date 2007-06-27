@@ -113,11 +113,11 @@ CREATE TABLE `index_data` (
   `trashed` enum('0','1') default '0',
   `must_be_rebuild` enum('0','1') default '0',
   `storage_type` enum('0','1','2') default '2',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`),
   KEY `host_name` (`host_name`),
-  KEY `service_description` (`service_description`)
-  KEY `host_name` (`host_id`),
-  KEY `service_description` (`service_id`)
+  KEY `service_description` (`service_description`),
+  KEY `host_id` (`host_id`),
+  KEY `service_id` (`service_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -155,8 +155,7 @@ CREATE TABLE `log` (
   PRIMARY KEY  (`log_id`),
   KEY `host_name` (`host_name`(64)),
   KEY `service_description` (`service_description`(64)),
-  KEY `status` (`status`),
-  KEY `output` (`output`)
+  KEY `status` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ;
 
 -- --------------------------------------------------------
