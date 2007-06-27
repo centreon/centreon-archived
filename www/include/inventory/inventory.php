@@ -22,6 +22,18 @@ For information : contact@oreon-project.org
 	isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = NULL;
 	$hG ? $host_id = $hG : $host_id = $hP;
 
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
+	isset($_GET["select_manufacturer"]) ? $cG = $_GET["select_manufacturer"] : $cG = NULL;
+	isset($_POST["select_manufacturer"]) ? $cP = $_POST["select_manufacturer"] : $cP = NULL;
+	$cG ? $select_manufacturer = $cG : $dupNbr = $cP;
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -57,8 +69,8 @@ For information : contact@oreon-project.org
 		case "s" : require_once($path."IDCard_server/listServer.php"); break; #list of server
 		case "n" : require_once($path."IDCard_network/listNetwork.php"); break; #list of network
 
-		case "c" : change_manufacturer(isset($_GET["select"]) ? $_GET["select"]: array() , $_GET["select_manufacturer"]); require_once($path."IDCard_server/listServer.php"); break; #change manufacturer
-		case "d" : change_manufacturer(isset($_GET["select"]) ? $_GET["select"]: array(), $_GET["select_manufacturer"]); require_once($path."IDCard_network/listNetwork.php"); break; #change manufacturer
+		case "c" : change_manufacturer(isset($select) ? $select: array() , $select_manufacturer); require_once($path."IDCard_server/listServer.php"); break; #change manufacturer
+		case "d" : change_manufacturer(isset($select) ? $select: array(), $select_manufacturer); require_once($path."IDCard_network/listNetwork.php"); break; #change manufacturer
 		default : require_once($path."IDCard_server/listServer.php"); break;
 	}
 ?>

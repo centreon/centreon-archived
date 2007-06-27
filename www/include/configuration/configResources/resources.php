@@ -21,6 +21,14 @@ For information : contact@oreon-project.org
 	isset($_GET["resource_id"]) ? $resourceG = $_GET["resource_id"] : $resourceG = NULL;
 	isset($_POST["resource_id"]) ? $resourceP = $_POST["resource_id"] : $resourceP = NULL;
 	$resourceG ? $resource_id = $resourceG : $resource_id = $resourceP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -39,8 +47,8 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formResources.php"); break; #Modify a Resource
 		case "s" : enableResourceInDB($resource_id); require_once($path."listResources.php"); break; #Activate a Resource
 		case "u" : disableResourceInDB($resource_id); require_once($path."listResources.php"); break; #Desactivate a Resource
-		case "m" : multipleResourceInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listResources.php"); break; #Duplicate n Resources
-		case "d" : deleteResourceInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listResources.php"); break; #Delete n Resources
+		case "m" : multipleResourceInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listResources.php"); break; #Duplicate n Resources
+		case "d" : deleteResourceInDB(isset($select) ? $select : array()); require_once($path."listResources.php"); break; #Delete n Resources
 		default : require_once($path."listResources.php"); break;
 	}
 ?>

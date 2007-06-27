@@ -63,7 +63,7 @@ For information : contact@oreon-project.org
 
 	#List of elements - Depends on different criteria
 	
-	$form = new HTML_QuickForm('form', 'GET', "?p=".$p);
+	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl

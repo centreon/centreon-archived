@@ -23,6 +23,15 @@ For information : contact@oreon-project.org
 	isset($_GET["compo_id"]) ? $cG = $_GET["compo_id"] : $cG = NULL;
 	isset($_POST["compo_id"]) ? $cP = $_POST["compo_id"] : $cP = NULL;
 	$cG ? $compo_id = $cG : $compo_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -42,8 +51,8 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formComponentTemplate.php"); break; #Modify a Component Template
 		case "s" : enableComponentTemplateInDB($lca_id); require_once($path."listComponentTemplates.php"); break; #Activate a Component Template
 		case "u" : disableComponentTemplateInDB($lca_id); require_once($path."listComponentTemplates.php"); break; #Desactivate a Component Template
-		case "m" : multipleComponentTemplateInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listComponentTemplates.php"); break; #Duplicate n Component Templates
-		case "d" : deleteComponentTemplateInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listComponentTemplates.php"); break; #Delete n Component Templates
+		case "m" : multipleComponentTemplateInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listComponentTemplates.php"); break; #Duplicate n Component Templates
+		case "d" : deleteComponentTemplateInDB(isset($select) ? $select : array()); require_once($path."listComponentTemplates.php"); break; #Delete n Component Templates
 		default : require_once($path."listComponentTemplates.php"); break;
 	}
 ?>

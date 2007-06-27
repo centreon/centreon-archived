@@ -22,6 +22,12 @@ For information : contact@oreon-project.org
 	isset($_POST["command_id"]) ? $cmdP = $_POST["command_id"] : $cmdP = NULL;
 	$cmdG ? $command_id = $cmdG : $command_id = $cmdP;
 
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';

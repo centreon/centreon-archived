@@ -57,7 +57,7 @@ $pagination = "maxViewConfiguration";
 		$rq = "SELECT @nbr:=(SELECT COUNT(gc_compo_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = gg.graph_id) AS nbr, graph_id, name, title, default_tpl1, default_tpl2 FROM giv_graphs_template gg ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
 	
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl

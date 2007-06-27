@@ -1,6 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 
-<form name='form'>
+<form name='form' method='POST'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="n" type="hidden">
 	<table class="Toolbar_TableTop">

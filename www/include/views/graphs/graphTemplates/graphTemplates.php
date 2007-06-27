@@ -23,6 +23,15 @@ For information : contact@oreon-project.org
 	isset($_GET["graph_id"]) ? $cG = $_GET["graph_id"] : $cG = NULL;
 	isset($_POST["graph_id"]) ? $cP = $_POST["graph_id"] : $cP = NULL;
 	$cG ? $graph_id = $cG : $graph_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -42,8 +51,8 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formGraphTemplate.php"); break; #Modify a Graph Template
 		case "s" : enableGraphTemplateInDB($lca_id); require_once($path."listGraphTemplates.php"); break; #Activate a Graph Template
 		case "u" : disableGraphTemplateInDB($lca_id); require_once($path."listGraphTemplates.php"); break; #Desactivate a Graph Template
-		case "m" : multipleGraphTemplateInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listGraphTemplates.php"); break; #Duplicate n Graph Templates
-		case "d" : deleteGraphTemplateInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listGraphTemplates.php"); break; #Delete n Graph Templates
+		case "m" : multipleGraphTemplateInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listGraphTemplates.php"); break; #Duplicate n Graph Templates
+		case "d" : deleteGraphTemplateInDB(isset($select) ? $select : array()); require_once($path."listGraphTemplates.php"); break; #Delete n Graph Templates
 		default : require_once($path."listGraphTemplates.php"); break;
 	}
 ?>

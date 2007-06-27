@@ -92,7 +92,7 @@ For information : contact@oreon-project.org
 	
 	$res = & $pearDB->query($rq);
 	
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
+	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl

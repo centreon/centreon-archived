@@ -21,6 +21,15 @@ For information : contact@oreon-project.org
 	isset($_GET["perfparse_id"]) ? $cG = $_GET["perfparse_id"] : $cG = NULL;
 	isset($_POST["perfparse_id"]) ? $cP = $_POST["perfparse_id"] : $cP = NULL;
 	$cG ? $perfparse_id = $cG : $perfparse_id = $cP;
+
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+
 		
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -40,8 +49,8 @@ For information : contact@oreon-project.org
 		case "c" : require_once($path."formPerfparse.php"); break; #Modify Perfparse.cfg
 		case "s" : enablePerfparseInDB($perfparse_id); require_once($path."listPerfparse.php"); break; #Activate a perfparse CFG
 		case "u" : disablePerfparseInDB($perfparse_id); require_once($path."listPerfparse.php"); break; #Desactivate a perfparse CFG
-		case "m" : multiplePerfparseInDB(isset($_GET["select"]) ? $_GET["select"] : array(), $_GET["dupNbr"]); require_once($path."listPerfparse.php"); break; #Duplicate n perfparse CFGs
-		case "d" : deletePerfparseInDB(isset($_GET["select"]) ? $_GET["select"] : array()); require_once($path."listPerfparse.php"); break; #Delete n perfparse CFG
+		case "m" : multiplePerfparseInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listPerfparse.php"); break; #Duplicate n perfparse CFGs
+		case "d" : deletePerfparseInDB(isset($select) ? $select : array()); require_once($path."listPerfparse.php"); break; #Delete n perfparse CFG
 		default : require_once($path."listPerfparse.php"); break;
 	}
 ?>
