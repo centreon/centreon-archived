@@ -120,7 +120,7 @@
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_traps.label}</td><td class="FormRowValue">{$form.mc_mod_traps.html}</td></tr>
 		{/if}
-		<tr class="list_one"><td class="FormRowField">{$form.service_traps.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_traps.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_traps.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.mnftr.html}{$form.service_traps.html}</p></td></tr>
 	 </table>
 </div>
 <div id="tab3" class="tab">

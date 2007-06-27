@@ -188,6 +188,7 @@ For information : contact@oreon-project.org
 	$attrsText 		= array("size"=>"30");
 	$attrsText2		= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
+	$attrsAdvSelect2 = array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
@@ -367,11 +368,27 @@ For information : contact@oreon-project.org
 		$form->addGroup($mc_mod_traps, 'mc_mod_traps', $lang["mc_mod"], '&nbsp;');
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'service_traps', $lang['sv_traps'], $traps, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'service_traps', $lang['sv_traps'], $traps, $attrsAdvSelect2);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
+
+
+	# trap vendor
+	$mnftr = array(NULL=>NULL);	
+	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($rmnftr))
+		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES);
+	$mnftr[""] = "_".$lang["sv_all"]."_";
+	$DBRESULT->free();
+	$attrs2 = array(
+		'onchange'=>"javascript: " .
+				" 	getTrap(this.form.elements['mnftr'].value); return false; ");
+	$form->addElement('select', 'mnftr', $lang["m_mibs_mnftr"], $mnftr, $attrs2);
+	include("./include/configuration/configObject/traps/ajaxTrap_js.php");
 	
 	#
 	## Sort 3 - Data treatment
