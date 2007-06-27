@@ -771,6 +771,8 @@ CREATE TABLE `general_opt` (
   `nagios_version` enum('1','2','3') default NULL,
   `snmp_community` varchar(255) default NULL,
   `snmp_version` varchar(255) default NULL,
+  `snmpttconvertmib_path_bin` varchar(255) default NOT NULL,
+  `perl_library_path` varchar(255) default NOT NULL,
   `snmp_trapd_path_conf` varchar(255) default NULL,
   `mailer_path_bin` varchar(255) default NULL,
   `rrdtool_path_bin` varchar(255) default NULL,
@@ -1662,7 +1664,7 @@ CREATE TABLE `traps` (
   `traps_handler` varchar(255) default NULL,
   `traps_args` varchar(255) default NULL,
   `traps_status` ENUM( '-1', '0', '1', '2', '3' ) default NULL,
-  `manufacturer_id` INT( 11 ) NOT NULL,
+  `manufacturer_id` INT( 11 ) default NULL,
   `traps_comments` TEXT default NULL,
   UNIQUE KEY `traps_name` (`traps_name`),
   KEY `traps_id` (`traps_id`)

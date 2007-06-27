@@ -63,4 +63,10 @@ INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES (1, 'ci
 
 -- 25/06/2007
 
+ALTER TABLE `traps` CHANGE `manufacturer_id` `manufacturer_id` INT( 11 ) NULL ;
+UPDATE `traps` SET manufacturer_id = NULL WHERE manufacturer_id = '0';
 ALTER TABLE `traps`  ADD CONSTRAINT `traps_ibfk_1` FOREIGN KEY ( `manufacturer_id` ) REFERENCES `traps_vendor` ( `id` ) ON DELETE CASCADE ;
+
+-- 27/06/2007
+
+ALTER TABLE `general_opt` ADD `perl_library_path` VARCHAR( 255 ) NOT NULL , ADD `snmpttconvertmib_path_bin` VARCHAR( 255 ) NOT NULL ;
