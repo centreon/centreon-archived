@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
@@ -134,7 +134,7 @@ $lang['h_nagStatImg'] = "Nagios Statuts Map Image";
 $lang['h_nag2dCoords'] = "Nagios 2d Coords";
 $lang['h_nag3dCoords'] = "Nagios 3d Coords";
 
-$lang['h_oreon'] = "Oreon";
+$lang['h_oreon'] = "Centreon";
 $lang['h_country'] = "Pays";
 $lang['h_city'] = "Ville";
 $lang['h_popCityTitle'] = "Choisir une Ville";
@@ -281,7 +281,7 @@ $lang['sv_notifOpts'] = "Type de notification";
 $lang['sv_notifEnabled'] = "Activer la notification";
 $lang['sv_stalOpts'] = "Etats de suivi pr&eacute;cis";
 
-$lang['sv_oreon'] = "Oreon";
+$lang['sv_oreon'] = "Centreon";
 $lang['sv_graphTpl'] = "Graph Mod&egrave;le";
 $lang['sv_all'] = "TOUT";
 
@@ -382,7 +382,7 @@ $lang['cct_cgNotif'] = "Contact Groups parent(s)";
 $lang['cct_passwd'] = "Mot de passe";
 $lang['cct_passwd2'] = "Confirmation";
 $lang['cct_lang'] = "Langue principale";
-$lang['cct_oreon'] = "Oreon";
+$lang['cct_oreon'] = "Centreon";
 $lang['cct_oreon_text'] = "Acc&egrave;de &agrave; l'interface";
 $lang['cct_admin'] = "Administrateur";
 $lang['cct_contact_auth_type'] = "Type d'authentification";
@@ -681,7 +681,7 @@ $lang['cgi_pingSyntax'] = "Ping Syntax";
 
 $lang['gen_name'] = "G&eacute;n&eacute;ration des fichiers de configuration de Nagios";
 $lang['gen_infos'] = "Serveur concern&eacute;";
-$lang['gen_host'] = "Serveur Nagios / Oreon";
+$lang['gen_host'] = "Serveur Nagios / Centreon";
 $lang['gen_opt'] = "Options de g&eacute;n&eacute;ration";
 $lang['gen_ok'] = "G&eacute;n&eacute;rer les fichiers";
 $lang['gen_level'] = "Int&eacute;raction des &eacute;l&eacute;ments";
@@ -709,7 +709,7 @@ $lang['gen_genTrap'] = "G&eacute;n&eacute;rer les fichiers de configuration";
 
 $lang['upl_name'] = "Upload de configuration Nagios";
 $lang['upl_infos'] = "Serveur concern&eacute;";
-$lang['upl_host'] = "Serveur Nagios / Oreon";
+$lang['upl_host'] = "Serveur Nagios / Centreon";
 $lang['upl_opt'] = "Options d'upload";
 $lang['upl_del'] = "Supprimer toute la configuration existante pour le type de fichier choisi";
 $lang['upl_over'] = "Mettre &agrave; jour une d&eacute;finition en cas de doublons";

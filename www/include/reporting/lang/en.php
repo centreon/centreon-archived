@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
@@ -42,7 +42,7 @@ $lang["list_name"] = "List Name";
 $lang["list_description"] = "List Description";
 $lang["list_period"] = "Sending Period";
 $lang["list_mails"] = "Contacts linked";
-$lang["list_oreonMails"] = "Oreon Contacts linked";
+$lang["list_oreonMails"] = "Centreon Contacts linked";
 
 # Message
 

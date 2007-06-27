@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
@@ -53,7 +53,7 @@ $lang['lca_topo'] = "Pages visibles";
 
 $lang["genOpt_change"] = "Modifier les Options G&eacute;n&eacute;rales";
 $lang["genOpt_nagios"] = "Informations sur Nagios";
-$lang["genOpt_oreon"] = "Informations sur Oreon";
+$lang["genOpt_oreon"] = "Informations sur Centreon";
 $lang["genOpt_snmp"] = "Informations sur SNMP";
 $lang["genOpt_various"] = "Informations diverses";
 $lang["genOpt_nagPath"] = "R&eacute;pertoire";
@@ -182,7 +182,7 @@ $lang["mod_menu_output2"] = "Fichier SQL inclus";
 $lang["mod_menu_output3"] = "Fichier PHP inclus";
 $lang["mod_menu_output4"] = "Installation du module impossible";
 
-$lang["menu_ODS"] = "OreonDataStorage";
+$lang["menu_ODS"] = "CentreonDataStorage";
 $lang["menu_nagios"] = "Nagios";
 
 # Session

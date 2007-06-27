@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
@@ -46,12 +46,12 @@ $lang['views_map_comment'] = "Commentaire";
 
 # Graphs
 $lang["views_title1"] = "Perfparse Graphs";
-$lang["views_title2"] = "Oreon Graphs";
+$lang["views_title2"] = "Centreon Graphs";
 $lang["views_title3"] = "Graph par Plugins";
 $lang["views_title4"] = "Templates";
 $lang["views_perfparse"] = "Perfparse";
 
-# Oreon Graph Plugins
+# Centreon Graph Plugins
 
 $lang["giv_gp_size"] = "Taille";
 
@@ -59,7 +59,7 @@ $lang["giv_gp_size"] = "Taille";
 
 $lang["view_redirect_graph"] = "Redirection Graph (cach&eacute;)";
 
-# Oreon Graph Customs
+# Centreon Graph Customs
 
 $lang["giv_gg_infos"] = "Informations G&eacute;n&eacute;rales";
 $lang['giv_gg_add'] = "Ajouter un Graph Personnalis&eacute;";
@@ -71,7 +71,7 @@ $lang['giv_gg_comment'] = "Commentaire";
 $lang["giv_gg_osl"] = "OSL";
 $lang["giv_gg_ms"] = "Meta Service";
 
-# Oreon Simple Renderer
+# Centreon Simple Renderer
 
 $lang["giv_sr_infos"] = "Choisir la Ressource &agrave; grapher";
 $lang["giv_sr_period"] = "P&eacute;riode &agrave; grapher";
@@ -94,7 +94,7 @@ $lang["giv_sr_p1y"] = "Derni&egrave;re Ann&eacute;e";
 $lang["giv_sr_step"] = "Pas de r&eacute;cup&eacute;ration";
 $lang["giv_sr_noStep"] = "Pas de pas";
 $lang["giv_sr_button"] = "Grapher";
-$lang["giv_sr_osl"] = "Qualit&eacute; de Service Oreon (OSL)";
+$lang["giv_sr_osl"] = "Qualit&eacute; de Service Centreon (OSL)";
 $lang["giv_sr_rendTitle"] = "Rendu Graphique";
 $lang["giv_sr_gValues"] = "Valeurs Graph&eacute;es";
 
@@ -104,7 +104,7 @@ $lang["giv_compoNbr"] = "Nombre de Composantes";
 $lang["giv_compoChoice"] = "Choix des Composantes";
 $lang["giv_compoList"] = "Liste des Composantes";
 $lang["giv_compo"] = "Composantes";
-$lang['giv_tpl1'] = "Template des graphs Oreon";
+$lang['giv_tpl1'] = "Template des graphs Centreon";
 $lang['giv_tpl2'] = "Template des sondes Graphiques";
 $lang['giv_gt_infos'] = "Informations G&eacute;n&eacute;rales";
 $lang['giv_gt_properties'] = "Propri&eacute;t&eacute;s";
@@ -130,7 +130,7 @@ $lang['giv_gt_comment'] = "Commentaire";
 $lang['giv_gt_start'] = "Date de d&eacute;but";
 $lang['giv_gt_end'] = "Date de fin";
 $lang['giv_gt_stacked'] = "Empilage";
-$lang['giv_gt_defaultTpl1'] = "Template par d&eacute;faut des graphs Oreon";
+$lang['giv_gt_defaultTpl1'] = "Template par d&eacute;faut des graphs Centreon";
 $lang['giv_gt_defaultTpl2'] = "Template par d&eacute;faut des sondes Graphiques";
 $lang['giv_gt_lower_limit'] = "Limite Basse";
 $lang['giv_gt_upper_limit'] = "Limite Haute";
@@ -182,8 +182,8 @@ $lang["no_graph_found"] = "Ce service n'a pas de graph associ&eacute;.";
 $lang["ods_storProper"] = "Propi&eacute;t&eacute;s de stockage pour ";
 $lang["ods_on"] = "sur ";
 $lang["ods_explain"] = "Aide :";
-$lang["ods_choose_storage_type"] = "Vous pouvez ici choisir le type de stockage des données remontées par votre plugin pour ce service. Il y a différents types de stockage possibles :";
-$lang["ods_rrdtool_choose"] = "Les metrics seront stockées uniquement dans des bases <a href=\"http://oss.oetiker.ch/rrdtool/\">RRDTool</a>. Ce type de bases de données a pour but de prendre assez peu de place par rapport aux base de données classiques. C'est une base de données circulaire. Au fur et à mesure, les anciennes données sont moyennées";
-$lang["ods_mysql_choose"] = "Ceci vous permettra de cumuler les possibilités des deux types de remontés : d'une part des bases légères pour une visualisation performantes et rapide, et d'autre part un stockage complet des données. Les metrics sont stockées également dans une base <a href=\"http://www.mysql.com\">MySQL</a>. L'intégrité des données est conservée dans la base ce qui vous permettra en fin d'année de pouvoir faire un reporting complet sur les valeurs remontées";
+$lang["ods_choose_storage_type"] = "Vous pouvez ici choisir le type de stockage des donnes remontes par votre plugin pour ce service. Il y a diffrents types de stockage possibles :";
+$lang["ods_rrdtool_choose"] = "Les metrics seront stockes uniquement dans des bases <a href=\"http://oss.oetiker.ch/rrdtool/\">RRDTool</a>. Ce type de bases de donnes a pour but de prendre assez peu de place par rapport aux base de donnes classiques. C'est une base de donnes circulaire. Au fur et  mesure, les anciennes donnes sont moyennes";
+$lang["ods_mysql_choose"] = "Ceci vous permettra de cumuler les possibilits des deux types de remonts : d'une part des bases lgres pour une visualisation performantes et rapide, et d'autre part un stockage complet des donnes. Les metrics sont stockes galement dans une base <a href=\"http://www.mysql.com\">MySQL</a>. L'intgrit des donnes est conserve dans la base ce qui vous permettra en fin d'anne de pouvoir faire un reporting complet sur les valeurs remontes";
 
 ?>

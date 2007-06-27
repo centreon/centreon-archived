@@ -51,6 +51,9 @@ body{
 	padding-left:20px;	
 	background: url("Images/bg_banner.gif") top repeat-x;}
 
+#logo{
+	padding-top:20px;}
+
 #logInfos{		
 	float:right;}
 

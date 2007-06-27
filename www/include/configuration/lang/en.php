@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
@@ -37,7 +37,7 @@ $lang['ErrCctPasswd'] = "Passwords are not the same";
 $lang['ErrGenFileProb'] = "Can't access to file needed";
 $lang['ErrCycleDef'] = "Circular Definition";
 $lang['ErrSvConflict'] = "This description is in conflicts with another one already define in the relation(s) selected";
-$lang['ErrNotEnoughtContact'] = "You have to keep at least one contact to access to Oreon";
+$lang['ErrNotEnoughtContact'] = "You have to keep at least one contact to access to Centreon";
 
 /* Configuration Menu */
 
@@ -135,7 +135,7 @@ $lang['h_nagStatImg'] = "Nagios Statuts Map Image";
 $lang['h_nag2dCoords'] = "Nagios 2d Coords";
 $lang['h_nag3dCoords'] = "Nagios 3d Coords";
 
-$lang['h_oreon'] = "Oreon";
+$lang['h_oreon'] = "Centreon";
 $lang['h_country'] = "Country";
 $lang['h_city'] = "City";
 $lang['h_popCityTitle'] = "Choose a country";
@@ -282,7 +282,7 @@ $lang['sv_notifOpts'] = "Notification Type";
 $lang['sv_notifEnabled'] = "Notification Enabled";
 $lang['sv_stalOpts'] = "Stalking Options";
 
-$lang['sv_oreon'] = "Oreon";
+$lang['sv_oreon'] = "Centreon";
 $lang['sv_graphTpl'] = "Graph Template";
 $lang['sv_all'] = "ALL";
 
@@ -383,8 +383,8 @@ $lang['cct_cgNotif'] = "Contact Groups parents";
 $lang['cct_passwd'] = "Password";
 $lang['cct_passwd2'] = "Confirmation";
 $lang['cct_lang'] = "Default Lang";
-$lang['cct_oreon'] = "Oreon";
-$lang['cct_oreon_text'] = "Reach Oreon Frontend";
+$lang['cct_oreon'] = "Centreon";
+$lang['cct_oreon_text'] = "Reach Centreon Frontend";
 $lang['cct_admin'] = "Admin";
 $lang['cct_contact_auth_type'] = "Authentification Type";
 $lang['cct_ldap_dn'] = "Ldap DN (Distinguished Name)";
@@ -683,7 +683,7 @@ $lang['cgi_pingSyntax'] = "Ping Syntax";
 
 $lang['gen_name'] = "Nagios Configuration Files Export";
 $lang['gen_infos'] = "Serveur implied";
-$lang['gen_host'] = "Nagios/Oreon Server";
+$lang['gen_host'] = "Nagios/Centreon Server";
 $lang['gen_opt'] = "Export Options";
 $lang['gen_ok'] = "Generate Files";
 $lang['gen_level'] = "Relations between Elements";
@@ -712,7 +712,7 @@ $lang['gen_genTrap'] = "Export configuration files";
 
 $lang['upl_name'] = "Nagios Configuration Upload";
 $lang['upl_infos'] = "Serveur implied";
-$lang['upl_host'] = "Nagios/Oreon Server";
+$lang['upl_host'] = "Nagios/Centreon Server";
 $lang['upl_opt'] = "Upload Options";
 $lang['upl_del'] = "Delete all configuration for kind of files choose";
 $lang['upl_over'] = "Update definition in same dual definition";

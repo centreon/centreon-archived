@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
@@ -53,7 +53,7 @@ $lang['lca_topo'] = "Visible Page";
 
 $lang['genOpt_change'] = "Modify General Options";
 $lang['genOpt_nagios'] = "Nagios informations";
-$lang['genOpt_oreon'] = "Oreon informations";
+$lang['genOpt_oreon'] = "Centreon informations";
 $lang['genOpt_snmp'] = "SNMP informations";
 $lang['genOpt_various'] = "Various Informations";
 $lang['genOpt_nagPath'] = "Directory";
@@ -63,7 +63,7 @@ $lang['genOpt_nagImg'] = "Images Directory";
 $lang['genOpt_nagPlug'] = "Plugins Directory";
 $lang['genOpt_nagVersion'] = "Nagios Release";
 $lang['genOpt_oPath'] = "Directory";
-$lang['genOpt_webPath'] = "Oreon Web Directory";
+$lang['genOpt_webPath'] = "Centreon Web Directory";
 $lang['genOpt_oRrdbPath'] = "rrd Directory";
 $lang['genOpt_oRefresh'] = "Refresh Interval";
 $lang['genOpt_oExpire'] = "Sessions Expiration Time";
@@ -182,7 +182,7 @@ $lang["mod_menu_output2"] = "SQL file included";
 $lang["mod_menu_output3"] = "PHP file included";
 $lang["mod_menu_output4"] = "Unable to install module";
 
-$lang['menu_ODS'] = "OreonDataStorage";
+$lang['menu_ODS'] = "CentreonDataStorage";
 $lang['menu_nagios'] = "Nagios";
 $lang['menu_ldap'] = "LDAP";
 $lang['menu_snmp'] = "SNMP";
@@ -255,7 +255,7 @@ $lang['patchOption_path_download'] = "Patchs Download path";
 $lang['checkVersion_msgErr01'] = "Can't get last version.";
 $lang['updateSecu'] = "Security patch available";
 $lang['update'] = "Update patch available";
-$lang['uptodate'] = "Oreon is updated.";
+$lang['uptodate'] = "Centreon is updated.";
 $lang['preUpdate_msgErr01'] = "Can't get list files.";
 $lang['preUpdate_msgErr02'] = "Can't get file.";
 $lang['preUpdate_msgErr03'] = "No version defined.";

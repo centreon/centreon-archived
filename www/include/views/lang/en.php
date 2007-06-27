@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
@@ -46,13 +46,13 @@ $lang['views_map_comment'] = "Comment";
 
 # Graphs
 $lang["views_title1"] = "Perfparse Graphs";
-$lang["views_title2"] = "Oreon Graphs";
+$lang["views_title2"] = "Centreon Graphs";
 $lang["views_title3"] = "Graph By Plugins";
 $lang["views_title4"] = "Templates";
 $lang["views_perfparse"] = "Perfparse";
 
 
-# Oreon Graph Plugins
+# Centreon Graph Plugins
 
 $lang["giv_gp_size"] = "Size";
 
@@ -60,7 +60,7 @@ $lang["giv_gp_size"] = "Size";
 
 $lang["view_redirect_graph"] = "Graph Redirection (hidden)";
 
-# Oreon Graph Customs
+# Centreon Graph Customs
 
 $lang["giv_gg_infos"] = "General Informations";
 $lang['giv_gg_add'] = "Add a Custom Graph";
@@ -72,7 +72,7 @@ $lang["giv_gg_osl"] = "OSL";
 $lang["giv_gg_ms"] = "Meta Service";
 $lang["giv_gg_tpl"] = "Template";
 
-# Oreon Simple Renderer
+# Centreon Simple Renderer
 
 $lang["giv_sr_infos"] = "Choose the source to graph";
 $lang["giv_sr_period"] = "Graph Period";
@@ -95,7 +95,7 @@ $lang["giv_sr_p1y"] = "Last Year";
 $lang["giv_sr_step"] = "Recovery Step";
 $lang["giv_sr_noStep"] = "No Step";
 $lang["giv_sr_button"] = "Graph";
-$lang["giv_sr_osl"] = "Oreon Service Level (OSL)";
+$lang["giv_sr_osl"] = "Centreon Service Level (OSL)";
 $lang["giv_sr_rendTitle"] = "Graph Renderer";
 $lang["giv_sr_gValues"] = "Graphed Values";
 
@@ -105,8 +105,8 @@ $lang["giv_compoNbr"] = "Number of Data Source";
 $lang["giv_compoChoice"] = "Data Source Choice";
 $lang["giv_compoList"] = "Data Source List";
 $lang["giv_compo"] = "Data Sources";
-$lang['giv_tpl1'] = "Oreon Graph Template";
-$lang['giv_tpl2'] = "Oreon Graph Plugin Template";
+$lang['giv_tpl1'] = "Centreon Graph Template";
+$lang['giv_tpl2'] = "Centreon Graph Plugin Template";
 $lang['giv_gt_infos'] = "General Informations";
 $lang['giv_gt_properties'] = "Properties";
 $lang['giv_gt_add'] = "Add a Graph Template";
@@ -131,8 +131,8 @@ $lang['giv_gt_comment'] = "Comment";
 $lang['giv_gt_start'] = "Begin Date";
 $lang['giv_gt_end'] = "End Date";
 $lang['giv_gt_stacked'] = "Stacking";
-$lang['giv_gt_defaultTpl1'] = "Default Oreon Graph Template";
-$lang['giv_gt_defaultTpl2'] = "Default Oreon Graph Plugin Template";
+$lang['giv_gt_defaultTpl1'] = "Default Centreon Graph Template";
+$lang['giv_gt_defaultTpl2'] = "Default Centreon Graph Plugin Template";
 $lang['giv_gt_lower_limit'] = "Lower Limit";
 $lang['giv_gt_upper_limit'] = "Upper Limit";
 

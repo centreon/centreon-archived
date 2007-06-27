@@ -1,6 +1,6 @@
 <?
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
@@ -17,7 +17,7 @@ For information : contact@oreon-project.org
 */
 
 /*
-This file contains all Oreon's text. This method facilitate us to do a multi-language tool.
+This file contains all Centreon's text. This method facilitate us to do a multi-language tool.
 It will be easy to guess what variables are corresponding to.
 */
 
@@ -48,7 +48,7 @@ $lang['m_home'] = "Home";
 $lang['m_configuration'] = "Configuration";
 $lang['m_monitoring'] = "Monitoring";
 $lang['m_reporting'] = "Reporting";
-$lang['m_views'] = "Oreon' views";
+$lang['m_views'] = "Centreon' views";
 $lang['m_options'] = "Options";
 $lang['m_logout'] = "Logout";
 $lang['m_help'] = "Help";
@@ -124,7 +124,7 @@ $lang['m_views_compoTmp'] = "Components Templates";
 
 # Options menu
 
-$lang['m_opt_conf'] = "Oreon";
+$lang['m_opt_conf'] = "Centreon";
 $lang['m_general'] = "General Options";
 $lang['m_lang'] = "Language";
 $lang['m_modules'] = "Modules";
@@ -359,7 +359,7 @@ $lang['dtm_host_delete'] = "Delete host downtime";
 /* actions & recurrent text */
 
 $lang['home'] = "Home";
-$lang['oreon'] = "Oreon";
+$lang['oreon'] = "Centreon";
 $lang['add'] = "Add";
 $lang['dup'] = "Duplicate";
 $lang['save'] = "Save";
@@ -380,7 +380,7 @@ $lang['confirm_update'] = "Are you sure you want to update the traffic map ?";
 $lang['file_exist'] = "Sorry the file already exist.";
 $lang['uncomplete_form'] = "Uncomplete form or invalid";
 $lang['none'] = "none";
-$lang['already_logged'] = "You are already connected to OREON, close firstly the other session. <br> If this window is the only Oreon window, click <br><a href='?disconnect=1' class='text11b'>here</a>";
+$lang['already_logged'] = "You are already connected to OREON, close firstly the other session. <br> If this window is the only Centreon window, click <br><a href='?disconnect=1' class='text11b'>here</a>";
 $lang['usage_stats'] = "Statistics usage";
 $lang['check'] = "Check";
 $lang['uncheck'] = "Uncheck";
