@@ -51,6 +51,8 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'snmp_community', $lang["genOpt_snmpCom"], $attrsText);
 	$form->addElement('select', 'snmp_version', $lang["genOpt_snmpVer"], array("0"=>"1", "1"=>"2", "2"=>"2c", "3"=>"3"), $attrsAdvSelect);
 	$form->addElement('text', 'snmp_trapd_path_conf', $lang["genOpt_snmp_trapd_pathConf"], $attrsText);
+	$form->addElement('text', 'snmpttconvertmib_path_bin', $lang["genOpt_snmpttconvertmib_path_bin"], $attrsText);
+	$form->addElement('text', 'perl_library_path', $lang["genOpt_perl_library_path"], $attrsText);
 	#
 	## Form Rules
 	#
@@ -60,9 +62,12 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
+	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
+	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
 	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrPath'], 'is_writable_path');
 	$form->addRule('snmp_trapd_path_conf', $lang['ErrRequired'], 'required');
-
+	$form->addRule('snmpttconvertmib_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
+	$form->addRule('perl_library_path', $lang['ErrReadPath'], 'is_readable_path');
 	#
 	##End of form definition
 	#

@@ -106,6 +106,10 @@ For information : contact@oreon-project.org
 		isset($ret["snmp_version"]) && $ret["snmp_version"] != NULL ? $rq .= "'".$ret["snmp_version"]."', ": $rq .= "NULL, ";
 		$rq .= "snmp_trapd_path_conf = ";
 		isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != NULL ? $rq .= "'".$ret["snmp_trapd_path_conf"]."' ": $rq .= "NULL ";
+		$rq .= ", snmpttconvertmib_path_bin = ";
+		isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $rq .= "'".$ret["snmpttconvertmib_path_bin"]."' ": $rq .= "NULL ";
+		$rq .= ", perl_library_path = ";
+		isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $rq .= "'".$ret["perl_library_path"]."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))

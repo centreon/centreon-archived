@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 		if ($fileObj->isUploadedFile()) {
 			$fileObj->moveUploadedFile("/tmp/");
 			$values = $fileObj->getValue();
-			$stdout = shell_exec("export LD_LIBRARY_PATH=/usr/local/lib && export MIBS=ALL && /usr/sbin/snmpttconvertmib --in=/tmp/".$values["name"]." --out=/tmp/".
+			$stdout = shell_exec("export LD_LIBRARY_PATH=".$oreon->optGen["perl_library_path"]." && export MIBS=ALL && ".$oreon->optGen["snmpttconvertmib_path_bin"]." --in=/tmp/".$values["name"]." --out=/tmp/".
 								$values["name"].".conf 2>&1");
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 			$msg .= "<br>Moving traps in DataBase...";	
