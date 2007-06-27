@@ -99,6 +99,6 @@ $lang["thismonth"] = "Ce mois";
 $lang["last30days"] = "30 derniers jours";
 $lang["lastmonth"] = "Le mois dernier";
 $lang["thisyear"] = "Cette ann&eacute;e";
-$lang["lastyear"] = "L&acute;ann&eacute;e derni&eagrave;re";
+$lang["lastyear"] = "L&acute;ann&eacute;e derni&egrave;re";
 
 ?>
