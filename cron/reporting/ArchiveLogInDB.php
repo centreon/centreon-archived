@@ -62,6 +62,8 @@
 	$res = $pearDB->query("SELECT log_archive_path FROM cfg_nagios WHERE nagios_activate = '1'");
 	$res->fetchInto($nagios_cfg);
 	$NagiosPathArchive = $nagios_cfg["log_archive_path"];
+
+	set_time_limit(150000);
 	
 	#################################
 	######## clean up table  ########
