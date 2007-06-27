@@ -58,10 +58,10 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 }
 
 #logintab1 {
-	width:200px;
+	width:253px;
 }
 #logintab2 {
-	width:200px;
+	width:100%;
 	border:1px solid gray;
     border-top: 2px solid gray;
     border-bottom: 2px solid gray;
