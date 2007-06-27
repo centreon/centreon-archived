@@ -122,7 +122,7 @@
 					</tr>
 					{/if}
 				</table>
-				{if $lcaTopo.6 || $lcaTopo.7 || $lcaTopo.20201 || $lcaTopo.40210}
+				{if $lcaTopo.6 || $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
 				<br>
 				<table id="ListTable">
 					<tr class='ListHeader'>
@@ -135,7 +135,7 @@
 					{/if}
 					{if $url_id && $lcaTopo.7}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./oreon.php?p=7&o=q&host_id={$h.host_id}'>{$lang.m_mon_view_identity_file} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./oreon.php?p=70101&o=t&host_id={$h.host_id}'>{$lang.m_mon_view_identity_file} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.20201}
