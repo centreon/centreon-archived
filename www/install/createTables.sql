@@ -160,6 +160,7 @@ CREATE TABLE `cfg_nagios` (
   `nagios_comment` text,
   `nagios_activate` enum('0','1') default NULL,
   `broker_module` varchar(255) default NULL,
+  `event_broker_options` varchar(255) default NULL,
   PRIMARY KEY  (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
   KEY `cmd2_index` (`global_service_event_handler`),

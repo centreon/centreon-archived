@@ -70,3 +70,4 @@ ALTER TABLE `traps`  ADD CONSTRAINT `traps_ibfk_1` FOREIGN KEY ( `manufacturer_i
 -- 27/06/2007
 
 ALTER TABLE `general_opt` ADD `perl_library_path` VARCHAR( 255 ) NOT NULL , ADD `snmpttconvertmib_path_bin` VARCHAR( 255 ) NOT NULL ;
+ALTER TABLE `cfg_nagios` ADD `event_broker_options` VARCHAR( 255 ) NULL ;
