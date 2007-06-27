@@ -93,7 +93,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["country_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('country_name', 'myReplace');
 	$form->addRule('country_name', $lang['ErrName'], 'required');
 	$form->addRule('country_alias', $lang['ErrAlias'], 'required');

@@ -152,7 +152,7 @@ For information : contact@oreon-project.org
 	#
 	## Form Rules
 	#
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('dep_name', $lang['ErrName'], 'required');
 	$form->addRule('dep_description', $lang['ErrRequired'], 'required');
 	$form->registerRule('cycleH', 'callback', 'testCycleH');

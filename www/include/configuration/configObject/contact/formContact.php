@@ -269,7 +269,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["contact_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('contact_name', 'myReplace');
 	$from_list_menu = false;
 	if ($o != "mc")	{

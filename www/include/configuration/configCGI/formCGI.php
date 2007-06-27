@@ -147,7 +147,7 @@ For information : contact@oreon-project.org
 			return rtrim($elem, "/");
 	}
 	$form->applyFilter('physical_html_path', 'slash');
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('cgi_name', $lang['ErrName'], 'required');
 	$form->addRule('cgi_comment', $lang['ErrRequired'], 'required');
 	$form->registerRule('exist', 'callback', 'testCgiExistence');

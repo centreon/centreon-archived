@@ -231,7 +231,7 @@ For information : contact@oreon-project.org
 	#
 	## Form Rules
 	#
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('lca_name', $lang['ErrName'], 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('lca_name', $lang['ErrAlreadyExist'], 'exist');

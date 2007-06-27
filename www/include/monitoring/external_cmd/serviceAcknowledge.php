@@ -63,7 +63,7 @@ For information : contact@oreon-project.org
 		$form->addElement('hidden', 'en', $en);
 		//$form->addElement('hidden', 'o', "svcd");
 		
-		$form->applyFilter('_ALL_', 'trim');
+		$form->applyFilter('__ALL__', 'myTrim');
 		$attr = array("rows"=>"5", "cols"=>"40");
 		$form->addElement('textarea', 'comment', 'comment', $attr);
 		

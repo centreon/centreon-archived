@@ -188,7 +188,7 @@ For information : contact@oreon-project.org
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('perfparse_name', $lang['ErrName'], 'required');
 	$form->addRule('perfparse_comment', $lang['ErrRequired'], 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');

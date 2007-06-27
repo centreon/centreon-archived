@@ -128,9 +128,9 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["command_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('command_name', 'myReplace');
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('command_name', $lang['ErrName'], 'required');
 	$form->addRule('command_line', $lang['ErrCmdLine'], 'required');
 	$form->registerRule('exist', 'callback', 'testCmdExistence');

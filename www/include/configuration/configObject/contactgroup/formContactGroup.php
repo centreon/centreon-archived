@@ -112,7 +112,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["cg_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('cg_name', 'myReplace');
 	$form->addRule('cg_name', $lang['ErrName'], 'required');
 	$form->addRule('cg_alias', $lang['ErrAlias'], 'required');

@@ -467,7 +467,7 @@ For information : contact@oreon-project.org
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("host_name")));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$from_list_menu = false;
 	if ($o != "mc")	{
 		$form->applyFilter('host_name', 'myReplace');

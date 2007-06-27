@@ -465,7 +465,7 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('cfg_dir', 'slash');
 	$form->applyFilter('log_archive_path', 'slash');
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('nagios_name', $lang['ErrName'], 'required');
 	$form->addRule('nagios_comment', $lang['ErrRequired'], 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');

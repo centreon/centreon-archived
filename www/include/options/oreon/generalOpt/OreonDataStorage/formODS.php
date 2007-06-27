@@ -73,7 +73,7 @@ For information : contact@oreon-project.org
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('RRDdatabase_path', 'slash');
 	
 	##End of form definition

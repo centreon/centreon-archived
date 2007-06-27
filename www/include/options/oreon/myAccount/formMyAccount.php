@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["contact_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('contact_name', 'myReplace');
 	$form->addRule('contact_name', $lang['ErrName'], 'required');
 	$form->addRule('contact_alias', $lang['ErrAlias'], 'required');

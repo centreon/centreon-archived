@@ -110,7 +110,7 @@ For information : contact@oreon-project.org
 	#
 	## Form Rules
 	#
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('purge_policy_name', $lang['ErrName'], 'required');
 	$form->addRule('purge_policy_alias', $lang['ErrAlias'], 'required');
 	$form->addRule('purge_policy_host', $lang['ErrRequired'], 'required');

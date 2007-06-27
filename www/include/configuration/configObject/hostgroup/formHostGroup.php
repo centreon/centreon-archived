@@ -165,7 +165,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["hg_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('hg_name', 'myReplace');
 	$form->addRule('hg_name', $lang['ErrName'], 'required');
 	$form->addRule('hg_alias', $lang['ErrAlias'], 'required');

@@ -85,7 +85,7 @@ For information : contact@oreon-project.org
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('nagios_path', 'slash');
 	$form->applyFilter('nagios_path_img', 'slash');
 	$form->applyFilter('nagios_path_plugins', 'slash');

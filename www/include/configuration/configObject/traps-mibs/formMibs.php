@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 	## Form Rules
 	#
 	
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('mnftr', $lang['ErrName'], 'required');
 	$form->addRule('filename', $lang['ErrName'], 'required');
 	$form->setRequiredNote($lang['requiredFields']);

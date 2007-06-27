@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrPath'], 'is_writable_path');
 	$form->addRule('snmp_trapd_path_conf', $lang['ErrRequired'], 'required');

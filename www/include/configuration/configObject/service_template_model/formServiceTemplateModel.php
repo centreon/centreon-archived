@@ -470,7 +470,7 @@ For information : contact@oreon-project.org
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("service_alias")));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('service_description', 'myReplace');
 	$form->applyFilter('service_alias', 'myReplaceAlias');
 	$from_list_menu = false;

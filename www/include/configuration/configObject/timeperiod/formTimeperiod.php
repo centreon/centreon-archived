@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["tp_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('tp_name', 'myReplace');
 	$form->addRule('tp_name', $lang['ErrName'], 'required');
 	$form->addRule('tp_alias', $lang['ErrAlias'], 'required');

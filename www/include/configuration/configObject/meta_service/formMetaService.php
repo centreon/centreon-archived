@@ -211,7 +211,7 @@ For information : contact@oreon-project.org
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("meta_name")));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('meta_name', 'myReplace');
 	$form->addRule('meta_name', $lang['ErrName'], 'required');
 	$form->addRule('max_check_attempts', $lang['ErrRequired'], 'required');

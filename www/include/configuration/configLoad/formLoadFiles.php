@@ -92,7 +92,7 @@ For information : contact@oreon-project.org
 	#
 	##End of form definition
 	#
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 
 	# Smarty template Init
 	$tpl = new Smarty();

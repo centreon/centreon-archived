@@ -55,6 +55,16 @@ For information : contact@oreon-project.org
 		return $tpl;
 	}
 
+
+	#
+	## FORM VALIDATION
+	#
+	function myTrim($str)	{
+		global $form;
+		$str = rtrim($str,'\\');
+		return (trim($str));
+	}
+
 	#
 	## HOST
 	#

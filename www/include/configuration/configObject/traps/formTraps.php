@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 		global $form;
 		return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('traps_name', 'myReplace');
 	$form->addRule('traps_name', $lang['ErrName'], 'required');
 	$form->addRule('traps_oid', $lang['ErrName'], 'required');

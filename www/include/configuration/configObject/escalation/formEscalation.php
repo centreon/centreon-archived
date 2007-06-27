@@ -251,7 +251,7 @@ For information : contact@oreon-project.org
 	#
 	## Form Rules
 	#
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('esc_name', $lang['ErrName'], 'required');
 	$form->addRule('first_notification', $lang['ErrRequired'], 'required');
 	$form->addRule('last_notification', $lang['ErrRequired'], 'required');

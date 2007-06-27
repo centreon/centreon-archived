@@ -190,7 +190,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["sg_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('sg_name', 'myReplace');
 	$form->addRule('sg_name', $lang['ErrName'], 'required');
 	$form->addRule('sg_alias', $lang['ErrAlias'], 'required');

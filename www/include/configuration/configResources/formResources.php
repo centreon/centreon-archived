@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["resource_name"]));
 	}
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('resource_name', 'myReplace');
 	$form->addRule('resource_name', $lang['ErrName'], 'required');
 	$form->addRule('resource_line', $lang['ErrAlias'], 'required');

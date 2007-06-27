@@ -170,7 +170,7 @@ For information : contact@oreon-project.org
 	#
 	## Form Rules
 	#
-	$form->applyFilter('_ALL_', 'trim');
+	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('name', $lang['ErrName'], 'required');
 	$form->addRule('vertical_label', $lang['ErrRequired'], 'required');
 	$form->addRule('width', $lang['ErrRequired'], 'required');
