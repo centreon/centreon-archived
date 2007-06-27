@@ -283,6 +283,7 @@ $lang['sv_stalOpts'] = "Etats de suivi pr&eacute;cis";
 
 $lang['sv_oreon'] = "Oreon";
 $lang['sv_graphTpl'] = "Graph Mod&egrave;le";
+$lang['sv_all'] = "TOUT";
 
 /* Meta Service */
 

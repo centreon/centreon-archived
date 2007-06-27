@@ -284,6 +284,7 @@ $lang['sv_stalOpts'] = "Stalking Options";
 
 $lang['sv_oreon'] = "Oreon";
 $lang['sv_graphTpl'] = "Graph Template";
+$lang['sv_all'] = "ALL";
 
 /* Meta Service */
 

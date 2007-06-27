@@ -127,11 +127,11 @@ $lang["genOpt_problem_order_desc"] = "Descendant";
 $lang["genOpt_gmt"] = "GMT";
 
 $lang["genOpt_max_page_size"] = "Taille des pages maximum";
-$lang["genOpt_refresh_properties"] = "Propri&ecute;t&ecute; de rafra&icirc;chissement";
-$lang["genOpt_template"] = "Mod&egrave;le d'affichage'";
-$lang["genOpt_display_options"] = "Options d'affichage'";
+$lang["genOpt_refresh_properties"] = "Propri&eacute;t&eacute; de rafra&icirc;chissement";
+$lang["genOpt_template"] = "Mod&egrave;le d'affichage";
+$lang["genOpt_display_options"] = "Options d'affichage";
 $lang["genOpt_time_zone"] = "Zone Horraire";
-$lang["genOpt_expiration_properties"] = "Propri&ecute;t&ecute; des Sessions ";
+$lang["genOpt_expiration_properties"] = "Propri&eacute;t&eacute; des Sessions ";
 
 $lang["genOpt_nagios_properties"] = "Propi&eacute;t&eacute de Nagios";
 $lang["genOpt_nagios_version"] = "Version de Nagios";
@@ -236,7 +236,7 @@ $lang['ods_rrd_path'] = "Chemin d'acc&egrave;s aux bases RRD de stockage";
 $lang['ods_len_storage_rrd'] = "Taille des Bases RRDTool";
 $lang['ods_autodelete_rrd_db'] = "Auto-Suppression des bases RRD";
 $lang['ods_sleep_time'] = "Sleep Time";
-$lang['ods_purge_interval'] = "Intervalle de v&eacute;rification de purges";
+$lang['ods_purge_interval'] = "Interval de v&eacute;rification des purges";
 $lang['ods_storage_type'] = "Type de Stockage";
 $lang['ods_sleep_time_expl'] = "en secondes  - Doit &ecirc;tre sup&eacute;rieur &agrave; 10";
 $lang['ods_purge_interval_expl'] = "en secondes  -  Doit &ecirc;tre sup&eacute;rieur &agrave; 2";
