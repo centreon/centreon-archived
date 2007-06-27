@@ -110,6 +110,9 @@ For information : contact@oreon-project.org
 		$order = $_GET["cpt"] - 1; 
 		$metrics = array();		
 		while ($DBRESULT->fetchInto($metric)){
+			$metric["metric_name"] = str_replace("#S#", "\/", $metric["metric_name"]);
+			$metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
+			
 			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
 			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
