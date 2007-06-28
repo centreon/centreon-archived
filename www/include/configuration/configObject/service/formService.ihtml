@@ -157,7 +157,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.esi_notes.label}</td><td class="FormRowValue">{$form.esi_notes.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.esi_action_url.label}</td><td class="FormRowValue">{$form.esi_action_url.html}</td></tr>
 	 	{/if}
-		<tr class="list_two"><td class="FormRowField">{$form.esi_icon_image.label}</td><td class="FormRowValue">{$form.esi_icon_image.html}&nbsp;&nbsp;<img id='esi_icon_image_img' src=''></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.esi_icon_image.label}</td><td class="FormRowValue">{$form.esi_icon_image.html}&nbsp;&nbsp;<img id='esi_icon_image_img' src='./img/blank.gif'></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.esi_icon_image_alt.label}</td><td class="FormRowValue">{$form.esi_icon_image_alt.html}</td></tr>
 	
 	 </table>
