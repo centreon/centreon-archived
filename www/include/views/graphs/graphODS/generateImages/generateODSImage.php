@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 		$index_data_ODS["service_description"] = str_replace("#S#", "/", $index_data_ODS["service_description"]);
 		$index_data_ODS["service_description"] = str_replace("#BS#", "\\", $index_data_ODS["service_description"]);
 		
-		$command_line .= " --interlaced --imgformat PNG --width=500"/*.$GraphTemplate["width"]*/." --height=120"/*.$GraphTemplate["height"].*/." --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		$command_line .= " --interlaced --imgformat PNG --width=500 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($oreon->optGen["rrdtool_version"] == "1.2")
 			$command_line .= " --slope-mode ";
 		
@@ -103,11 +103,9 @@ For information : contact@oreon-project.org
 		$cpt = 0;
 		$metrics = array();		
 		while ($DBRESULT->fetchInto($metric)){
-			$metric["metric_name"] = str_replace("#S#", "\/", $metric["metric_name"]);
-			$metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
 			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]]))){	
 				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-				$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
+				$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
 				$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 				$ds = getDefaultDS($template_id, $cpt, 1);						
 				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
@@ -120,10 +118,11 @@ For information : contact@oreon-project.org
 						$metrics[$metric["metric_id"]][$key] = $ds_d;
 				}
 				$res_ds->free();
-				if (preg_match('/DS/', $ds_data["ds_name"], $matches))
-					$metrics[$metric["metric_id"]]["legend"] = $metric["metric_name"];
-                else
+				if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
+					$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
+				} else {
                 	$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+				}
 				if (strcmp($metric["unit_name"], ""))
 					$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
 				$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);

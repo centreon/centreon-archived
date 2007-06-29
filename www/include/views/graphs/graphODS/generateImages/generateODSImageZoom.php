@@ -114,11 +114,9 @@ For information : contact@oreon-project.org
 		$cpt = 0;
 		$metrics = array();		
 		while ($DBRESULT->fetchInto($metric)){
-			$metric["metric_name"] = str_replace("#S#", "\/", $metric["metric_name"]);
-			$metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
 			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]])) || isset($_GET["index_id"]) || $pass){
 				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-				$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
+				$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
 				$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 				$ds = getDefaultDS($template_id, $cpt, 1);						
 				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
@@ -131,7 +129,7 @@ For information : contact@oreon-project.org
 						$metrics[$metric["metric_id"]][$key] = $ds_d;
 				}
 				if (preg_match('/DS/', $ds_data["ds_name"], $matches))
-					$metrics[$metric["metric_id"]]["legend"] = $metric["metric_name"];
+					$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
                 else
                 	$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
 				if (strcmp($metric["unit_name"], ""))
