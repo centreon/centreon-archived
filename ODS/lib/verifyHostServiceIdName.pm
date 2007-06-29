@@ -23,7 +23,7 @@
 
 sub getLastRestart(){
 	my $sth1_oreon = $con_oreon->prepare("SELECT last_restart FROM nagios_server");
-    if (!$sth1_oreon->execute) {writeLogFile("Error:" . $sth1_oreon->errstr . "\n");}
+    if (!$sth1_oreon->execute) {writeLogFile("Error - getLastRestart : " . $sth1_oreon->errstr . "\n");}
     my $data_oreon = $sth1_oreon->fetchrow_hashref();
     undef($sth1_oreon);
     return $data_oreon->{'last_restart'};
@@ -33,7 +33,7 @@ sub getLastRestart(){
 
 sub getLastRestartInMemory(){
 	my $sth = $con_ods->prepare("SELECT last_restart FROM statistics");
-    if (!$sth->execute) {writeLogFile("Error:" . $sth->errstr . "\n");}
+    if (!$sth->execute) {writeLogFile("Error - getLastRestartInMemory :" . $sth->errstr . "\n");}
     my $data = $sth->fetchrow_hashref();
     undef($sth);
     return $data->{'last_restart'};
@@ -41,7 +41,7 @@ sub getLastRestartInMemory(){
 
 sub saveLastRestartInMemory($){
 	my $sth = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$_[0]."'");
-    if (!$sth->execute) {writeLogFile("Error:" . $sth->errstr . "\n");}
+    if (!$sth->execute) {writeLogFile("Error - saveLastRestartInMemory : " . $sth->errstr . "\n");}
     undef($sth);
 }
 
@@ -49,7 +49,7 @@ sub saveLastRestartInMemory($){
 
 sub getPurgeConfig(){
 	my $sth = $con_ods->prepare("SELECT autodelete_rrd_db FROM config");
-    if (!$sth->execute) {writeLogFile("Error:" . $sth->errstr . "\n");}
+    if (!$sth->execute) {writeLogFile("Error - getPurgeConfig :" . $sth->errstr . "\n");}
     my $data = $sth->fetchrow_hashref();
     undef($sth);
     return $data->{'autodelete_rrd_db'};
@@ -59,7 +59,7 @@ sub getPurgeConfig(){
 
 sub getStorageDir(){
 	my $sth = $con_ods->prepare("SELECT RRDdatabase_path FROM config");
-    if (!$sth->execute) {writeLogFile("Error:" . $sth->errstr . "\n");}
+    if (!$sth->execute) {writeLogFile("Error - getStorageDir : " . $sth->errstr . "\n");}
     my $data = $sth->fetchrow_hashref();
     undef($sth);
     return $data->{'RRDdatabase_path'};
@@ -67,7 +67,7 @@ sub getStorageDir(){
 
 # Delete RRDTool Database if thy were not link with data in ODS DB.
 
-sub purgeRrdDB(){
+sub DeleteOldRrdDB(){
 	my ($data, %base);
 	my $sth = $con_ods->prepare("SELECT metric_id FROM metrics");
     if (!$sth->execute) {writeLogFile("Error:" . $sth->errstr . "\n");}
@@ -126,4 +126,5 @@ sub check_HostServiceID(){
 		undef($sth1);
 	}
 }
+
 1;

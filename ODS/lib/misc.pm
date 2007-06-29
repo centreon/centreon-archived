@@ -19,15 +19,13 @@
 #    For information : contact@merethis.com
 ####################################################################
 
-# Check if MySQL connexion (ODS and oreon) are OK
-
 sub getPurgeInterval(){
 	my $data;
 	my $purge_interval;
 
 	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	my $sth2 = $con_ods->prepare("SELECT purge_interval FROM config");
-	if (!$sth2->execute) {writeLogFile("Error : " . $sth2->errstr . "\n");}
+	if (!$sth2->execute) {writeLogFile("Error - getPurgeInterval : " . $sth2->errstr . "\n");}
 	$data = $sth2->fetchrow_hashref();
 	if (!defined($data->{'purge_interval'}) || !$data->{'purge_interval'}){
 		$purge_interval = 10;
@@ -45,7 +43,7 @@ sub getSleepTime(){
 
 	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	my $sth2 = $con_ods->prepare("SELECT sleep_time FROM config");
-	if (!$sth2->execute) {writeLogFile("Error : " . $sth2->errstr . "\n");}
+	if (!$sth2->execute) {writeLogFile("Error - getSleepTime : " . $sth2->errstr . "\n");}
 	$data = $sth2->fetchrow_hashref();
 	if (!defined($data->{'sleep_time'}) || !$data->{'sleep_time'}){
 		$sleep_time = 10;

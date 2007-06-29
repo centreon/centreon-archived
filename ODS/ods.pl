@@ -4,7 +4,7 @@
 #
 # GPL License: http://www.gnu.org/licenses/gpl.txt
 #
-# Developped by : Julien Mathis - jmathis@merethis.com
+# Developped by : Julien Mathis - Romain Le Merlus
 #
 ###################################################################
 # This program is free software; you can redistribute it and/or
@@ -37,7 +37,8 @@ my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
 
 # Init Globals
-use vars qw($debug $mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $LOG %status $generalcounter);
+use vars qw($debug $LOG %status $generalcounter);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
 use vars qw($con_oreon $con_ods);
 
 $debug = 0;
@@ -192,8 +193,11 @@ sub GetPerfData(){
 	CheckMySQLConnexion();				
 	my $PFDT = getPerfDataFile();
 	while ($stop) {
-		if (-r $PFDT){
+		if (-r $PFDT || -r $PFDT.".bckp"){
 			# Move perfdata File befor reading		
+
+			# Penser a mire le fichier de backup !
+
 			if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
 				$data = getConfig();
 				$PFDT = $data->{'perfdata_file'};
@@ -210,7 +214,7 @@ sub GetPerfData(){
 				while (<PFDT>){
 					$lineRead++;
 					if (!$stop){
-						writeLogFile("can't write in ".$installedPath."var/perfdata.bckp : $!") if (!open(BCKP, ">> ".$installedPath."/var/perfdata.bckp"));
+						writeLogFile("can't write in ".$installedPath."var/service-perfdata.bckp : $!") if (!open(BCKP, ">> ".$installedPath."/var/service-perfdata.bckp"));
 						while (<PFDT>){
 							print BCKP $_;
 						}
@@ -267,13 +271,17 @@ sub CheckRestart(){
 			check_HostServiceID();
 			if (getPurgeConfig()){
 				CheckMySQLDrain();
-				purgeRrdDB();	
+				DeleteOldRrdDB();
 			}
 			saveLastRestartInMemory($last_restart);
 		}
 		$y++;
 		sleep(5);
 	}
+}
+
+sub purgeMysqlData(){
+	;
 }
 
 sub checkAndUpdate($){
@@ -307,6 +315,7 @@ my $y = 0;
 my ($lineReadpermin, $valueRecordedpermin, $lastlineRead, $lastvalueRecorded);
 $lastlineRead = 0;
 $lastvalueRecorded = 0;
+
 my $sth2;
 while ($stop){
 	if ($y % 60 eq 0){
@@ -325,6 +334,11 @@ while ($stop){
 		$lastvalueRecorded = $valueRecorded;
 		$sth2 = $con_ods->prepare("UPDATE statistics SET `lineRead` = '$lineReadpermin', `valueReccorded` = '$valueRecordedpermin' LIMIT 1");
 		writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
+		
+		# Purge MySQL data for not having a too big database.
+		
+		purgeMysqlData()
+		
 	}
 	$y++;
 	sleep(1);

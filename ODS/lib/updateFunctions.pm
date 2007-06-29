@@ -29,9 +29,13 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 	if (-e $_[0]."/".$_[1].".rrd"){
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
+		$_[6] =~ s/#S#/slash\_/g;
 		RRDs::update ($_[0].$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
-		if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}
+		if ($ERR){
+			writeLogFile("Updating : $_[0]$_[1].rrd : ".$_[6].", ".$_[2].":".sprintf("%e", $_[3])."\n");
+			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");	
+		}
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
@@ -46,9 +50,13 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
+			$_[6] =~ s/#S#/slash\_/g;
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".$_[6].":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
-			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
+			writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:$_[6]:GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
+			if ($ERR){
+				writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");
+			}	
 			$_[3] =~ s/\,/\./g;
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
@@ -68,7 +76,6 @@ sub updateMysqlDB($$$$){ # connexion value timestamp
 	undef($sth1);
 }
 
-
 sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
@@ -77,9 +84,10 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 	if (-e $_[0]."/".$_[1].".rrd"){
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
+		$_[6] =~ s/#S#/slash\_/g;
 		RRDs::update ($_[0]."/".$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
-		if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}
+		if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
@@ -93,14 +101,15 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
-			writeLogFile("Creation of $_[0]/$_[1].rrd\n");
+			writeLogFile("Creation of $_[0]$_[1].rrd\n");
+			$_[6] =~ s/#S#/slash\_/g;
 			RRDs::create ($_[0]."/".$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".$_[6].":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
-			if ($ERR){writeLogFile("ERROR while creating $_[0]/$_[1].rrd : $ERR\n");}	
+			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
 			$_[3] =~ s/\,/\./g;
 			RRDs::update ($_[0]."/".$_[1].".rrd" , "--template", $_[6], $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
-			if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}	
+			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}	
 			undef($begin);
 		}
 	}
