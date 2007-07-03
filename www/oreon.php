@@ -22,11 +22,12 @@ For information : contact@oreon-project.org
 		$p = $_POST["p"];
 	else
 		$p = NULL;
-	
-	if (isset($_GET["o"]))
-		$o = $_GET["o"];
-	else if (isset($_POST["o"]))
+
+/* POST have priority on GET due to option in listing configuration form */
+	if (isset($_POST["o"]))
 		$o = $_POST["o"];
+	else if (isset($_GET["o"]))
+		$o = $_GET["o"];
 	else
 		$o = NULL;
 		
