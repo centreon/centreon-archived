@@ -42,6 +42,25 @@ sub writeLogFile($){
 	print  time()." - ".$_[0];
 }
 
+sub CheckMySQLConnexion(){
+	while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
+		if (!defined($con_oreon)) {
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_oreon);
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
+		}
+		if (!defined($con_ods)) {
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_ods);
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		}
+	}
+}
+
 CheckMySQLConnexion();
 
 my ($sth2, $data, $ERR);
@@ -57,7 +76,7 @@ $sth2 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics ORDER BY m
 if (!$sth2->execute) {writeLogFile("Error when getting metrics list : " . $sth2->errstr . "\n");}
 my $t;
 for ($t = 0;$data = $sth2->fetchrow_hashref();$t++){
-	system("rrdtool tune ".$RRDdatabase_path.$data->{'metric_id'}.".rrd --data-source-rename metric:".$data->{'metric_name'});
+	system("/usr/bin/rrdtool tune ".$RRDdatabase_path.$data->{'metric_id'}.".rrd --data-source-rename metric:".$data->{'metric_name'});
 }
 undef($sth2);
 undef($t);
