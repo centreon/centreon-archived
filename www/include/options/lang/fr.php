@@ -279,4 +279,11 @@ $lang['batchPatch_end'] = "Fin de l'éxecution des patchs";
 $lang['batchPatch_ok01'] = "Le patch %s est appliqué.";
 $lang['batchPatch_err01'] = "Erreur dans l'application du patch %s.";
 
+# ODS 
+
+$lang["menu_ODS_config"] = "Config";
+$lang["menu_ODS_data"] = "Data";
+$lang["menu_ODS_manage"] = "Manager";
+
+
 ?>
