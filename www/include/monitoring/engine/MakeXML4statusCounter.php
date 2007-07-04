@@ -107,14 +107,11 @@ For information : contact@oreon-project.org
 		$debug_session = $sid;
 		$time = time();
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-	
 		if(($res->fetchInto($session) && (($time - $session["last_reload"]) > $session_expire))  || isset($session["s_nbServicesOk"]) ){
 			$flag_reset = 1;
-		}
-		else if($res->fetchInto($session) && isset($session["s_nbServicesOk"]) && $session["s_nbServicesOk"] && (($time - $session["last_reload"]) <= $session_expire)){
+		} else if($res->fetchInto($session) && isset($session["s_nbServicesOk"]) && $session["s_nbServicesOk"] && (($time - $session["last_reload"]) <= $session_expire)){
 			$flag_reset = 0;
-		}
-		else {
+		} else {
 			$flag_reset = 0;
 			$session["s_nbServicesOk"]= 0;
 			$session["s_nbServicesWarning"]= 0;
@@ -128,7 +125,6 @@ For information : contact@oreon-project.org
 		}
 	}
 
-
 	function read($version,$sid,$file){
 		global $pearDB, $flag;
 		$_POST["sid"] = $sid;
@@ -141,7 +137,6 @@ For information : contact@oreon-project.org
 	
 		include("../load_status_log.php");
 
-	
 		## calcul stat for resume		
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
@@ -161,9 +156,6 @@ For information : contact@oreon-project.org
 		$buffer .= '<infos>';
 		$buffer .= '<filetime>'.filectime($file).'</filetime>';
 		$buffer .= '</infos>';
-
-
-	
 		$buffer .= '<stats>';
 		$buffer .= '<statistic_service_ok>'.$statistic_service["OK"].'</statistic_service_ok>';
 		$buffer .= '<statistic_service_warning>'.$statistic_service["WARNING"].'</statistic_service_warning>';
@@ -181,13 +173,16 @@ For information : contact@oreon-project.org
 	}
 	
 
+	if (!isset($session["last_reload"]) || !$session["last_reload"])
+		$session["last_reload"] = time();
+
 	if(!$flag_reset){
 		$buffer = null;
 		$buffer  = '<?xml version="1.0"?>';
 		$buffer .= '<reponse>';
 		$buffer .= '<infos>';
 		$buffer .= '<expire>'.$session_expire.'</expire>';
-		$buffer .= '<filetime>'.$session["last_reload"].'</filetime>';
+		$buffer .= '<filetime>'.time().'</filetime>';
 		$buffer .= '</infos>';
 		$buffer .= '<stats>';
 		$buffer .= '<statistic_service_ok>'.$session["s_nbServicesOk"].'</statistic_service_ok>';
