@@ -21,13 +21,13 @@ For information : contact@oreon-project.org
 
 	# LCA 
 	if ($isRestreint){
-		$lcaHostByID = getLcaHostByID($pearDB);
-		$lcaHostByName = getLcaHostByName($pearDB);
-		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostByID 	= getLcaHostByID($pearDB);
+		$lcaHostByName 	= getLcaHostByName($pearDB);
+		$LcaHostStr 	= getLcaHostStr($lcaHostByID["LcaHost"]);
 	}
 	
-	$debug = 0;
-	$msg_error = 0;
+	$debug 			= 0;
+	$msg_error 		= 0;
 	$attrsTextI		= array("size"=>"3");
 	$attrsText 		= array("size"=>"30");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"50");
@@ -85,18 +85,28 @@ For information : contact@oreon-project.org
 	
 	$elem = array();
 	if (preg_match("/([0-9]*)\_([0-9]*)/", $_GET["index"], $matches)){
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$matches[1]."' AND service_id = '".$matches[2]."'");
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE host_id = '".$matches[1]."' AND service_id = '".$matches[2]."'");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
-	} else {
+	} else if (isset($_GET["index"])){
 		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE id = '".$_GET["index"]."'");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		$DBRESULT2->fetchInto($svc_id);
+	} else if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
+		$svc_desc = str_replace("/", "#S#", $_GET["service_description"]);
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE host_name = '".$_GET["host_name"]."' && service_description = '".$svc_desc."'");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
 	}
 	
-	$svc_id["service_description"] = str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"]));
+	if (isset($_GET["index"]))
+		$index = $_GET["index"];
+	else if (isset($svc_id["id"]))
+		$index = $svc_id["id"];
+	
 	
 	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
@@ -136,7 +146,7 @@ For information : contact@oreon-project.org
 		if (isset($_GET["template_id"]))
 			$tpl->assign('template_id', $_GET["template_id"]);				
 				
-		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY `metric_name`");
+		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' ORDER BY `metric_name`");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		for ($counter = 0;$DBRESULT2->fetchInto($metrics_ret); $counter++){
@@ -157,18 +167,18 @@ For information : contact@oreon-project.org
 		if ($msg_error == 0){
 			if (isset($_GET["metric"]) && $pass){
 				$tpl->assign('metric_active', $metrics_active);	
-				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."'");
+				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
 				if (PEAR::isError($DBRESULT))
 					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 				foreach ($metrics_active as $key => $metric){
 					if (isset($metrics_active[$key])){
-						$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$_GET["index"]."');");
+						$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$oreon->user->user_id."', '0', '".$index."');");
 						if (PEAR::isError($DBRESULT))
 							print "Mysql Error : ".$DBRESULT->getDebugInfo();
 					}
 				}
 			} else {
-				$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$_GET["index"]."' AND `contact_id` = '".$oreon->user->user_id."'");
+				$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index."' AND `contact_id` = '".$oreon->user->user_id."'");
 				if (PEAR::isError($DBRESULT))
 					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 				$metrics_active = array();
