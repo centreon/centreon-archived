@@ -65,6 +65,9 @@ For information : contact@oreon-project.org
 						$service_status[$name]["last_state_change"] = "";
 					}
 					$service_status[$name]["class"] = $tab_class[$rows % 2];
+					$service_status[$name]["class"] = $tab_class[$rows % 2];
+					$service_status[$name]["service_description-link"] = str_replace("/", "#S#", $service_status[$name]["service_description"]);
+					$service_status[$name]["service_description-link"] = str_replace("\\", "#BS#", $service_status[$name]["service_description-link"]);
 					$tmp[1] = $service_status[$name];
 					$service_status_num[$rows++] = $tmp;
 				}
