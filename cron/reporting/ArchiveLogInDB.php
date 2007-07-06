@@ -18,7 +18,7 @@
  * 
  */
 
-	$option = false;	
+	$option = false;
 
 	if ($argc == 2 && in_array($argv[1], array('-h', '--help')) ) {
 	?>
@@ -162,10 +162,10 @@
 	$day_current_end = 0;
 
 	foreach($tableFile2 as $key => $time){
+		if ($option)
+			echo $key . "\n";	
 		parseFile($key, $time, $tab_hosts, $tab_services, $day_current_start, $day_current_end, false);
-//		insert_in_db($key, $tab_hosts, $tab_services, $day_current_start, $day_current_end);
-		insert_file_name_in_db($key);
-	
+		insert_file_name_in_db($key);	
 	}
 
 	if($day_current_start > 0){
