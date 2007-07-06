@@ -276,14 +276,17 @@ For information : contact@oreon-project.org
 					{
 						if(isset($tab_hosts[$res1[0]])){
 							if(!strncmp($tab_hosts[$res1[0]]["current_state"], "UP", 2)){
-								$tab_hosts[$res1[0]]["UPnbEvent"] += 1;
+								if(strncmp($type, "CURRENT HOST STATE", 18) && strncmp($type, "INITIAL HOST STATE", 18))
+									$tab_hosts[$res1[0]]["UPnbEvent"] += 1;
 								$tab_hosts[$res1[0]]["timeUP"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
 							}
 							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "DOWN", 4)){
+								if(strncmp($type, "CURRENT HOST STATE", 18) && strncmp($type, "INITIAL HOST STATE", 18))
 								$tab_hosts[$res1[0]]["DOWNnbEvent"] += 1;
 								$tab_hosts[$res1[0]]["timeDOWN"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
 							}
 							elseif(!strncmp($tab_hosts[$res1[0]]["current_state"], "UNREACHABLE", 11)){
+								if(strncmp($type, "CURRENT HOST STATE", 18) && strncmp($type, "INITIAL HOST STATE", 18))
 								$tab_hosts[$res1[0]]["UNREACHABLEnbEvent"] += 1;
 								$tab_hosts[$res1[0]]["timeUNREACHABLE"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
 							}
@@ -329,7 +332,7 @@ For information : contact@oreon-project.org
 					}
 					
 					#
-					## Services					
+					## Services
 					#
 					else if ( (!strncmp($type, "CURRENT SERVICE STATE", 21) || !strncmp($type, "INITIAL SERVICE STATE", 21) || !strncmp($type, "SERVICE ALERT", 13))
 							&& !strncmp($res1[3], "HARD", 4)
@@ -340,19 +343,23 @@ For information : contact@oreon-project.org
 							$tab_tmp = array();
 							$tab_tmp = $tab_services[$res1[1]][$res1[0]];
 							if(!strncmp($tab_tmp["current_state"], "OK", 2)){
-								$tab_tmp["OKnbEvent"] += 1;
+								if(strncmp($type, "CURRENT SERVICE STATE", 21) && strncmp($type, "INITIAL SERVICE STATE", 21))
+									$tab_tmp["OKnbEvent"] += 1;
 								$tab_tmp["timeOK"] += ($time_event-$tab_tmp["current_time"]);
 							}
 							elseif(!strncmp($tab_tmp["current_state"], "WARNING", 7)){
-								$tab_tmp["WARNINGnbEvent"] += 1;
+								if(strncmp($type, "CURRENT SERVICE STATE", 21) && strncmp($type, "INITIAL SERVICE STATE", 21))
+									$tab_tmp["WARNINGnbEvent"] += 1;
 								$tab_tmp["timeWARNING"] += ($time_event-$tab_tmp["current_time"]);
 							}
 							elseif(!strncmp($tab_tmp["current_state"], "UNKNOWN", 7)){
-								$tab_tmp["UNKNOWNnbEvent"] += 1;
+								if(strncmp($type, "CURRENT SERVICE STATE", 21) && strncmp($type, "INITIAL SERVICE STATE", 21))
+									$tab_tmp["UNKNOWNnbEvent"] += 1;
 								$tab_tmp["timeUNKNOWN"] += ($time_event-$tab_tmp["current_time"]);
 							}
 							elseif(!strncmp($tab_tmp["current_state"], "CRITICAL", 8)){
-								$tab_tmp["CRITICALnbEvent"] += 1;
+								if(strncmp($type, "CURRENT SERVICE STATE", 21) && strncmp($type, "INITIAL SERVICE STATE", 21))
+									$tab_tmp["CRITICALnbEvent"] += 1;
 								$tab_tmp["timeCRITICAL"] += ($time_event-$tab_tmp["current_time"]);
 							}
 							else
