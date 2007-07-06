@@ -81,10 +81,9 @@ INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_c
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '1', '3');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '1', '4');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '2', '5');
-INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '3', '6');
+INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '2', '6');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '3', '7');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '3', '8');
-INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '4', '6');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '4', '7');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '4', '8');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '5', '9');
