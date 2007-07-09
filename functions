@@ -340,15 +340,6 @@ function install_oreon_plugins()
 		    temp=y
 		fi
 		if [ $temp = "y" ];then
-			for fichier in ${PLUGINS_DIR}src/*
-			  do
-			  if [ -d "$fichier" ]; then
-			      echo ""
-			  else
-			      filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-			      echo_success "  -> $filename" "OK"
-			  fi
-			done
 			cp $PLUGINS_DIR/* $NAGIOS_PLUGIN
 			echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		fi
@@ -412,12 +403,11 @@ function install_oreon_plugins()
 			if [ -e "$NAGIOS_PLUGIN/traps" ]; then
 			    echo_passed "$NAGIOS_PLUGIN/traps already exists" "PASSED"
 			else
-				echo_passed "$NAGIOS_PLUGIN/traps created" "OK"
+				echo_success "$NAGIOS_PLUGIN/traps created" "OK"
 			    mkdir $NAGIOS_PLUGIN/traps
 			fi
 			echo "";
 			echo "Where is your SNMP configuration file?";
-			echo "";
 			echo -n "default to [/etc/snmp/]:";
 			read tmp
 			if [ ! -z "$tmp" ] ;then
@@ -426,6 +416,7 @@ function install_oreon_plugins()
 			if [ ! -d "$SNMP_DIR" ] ;then
 		        while [ ! -d "$SNMP_DIR" ]
 		          do
+		          echo ""
 		          echo "Given SNMP configuration directory does not exists, correct your answer ? "
 		          SNMP_DIR="/etc/snmp/";
 		          echo -n "default to [/etc/snmp/]:"
@@ -435,14 +426,14 @@ function install_oreon_plugins()
 				  fi
 		        done
 			fi
+			echo ""
 			if [ -d "$SNMP_DIR" ] ;then
 				if [ -e "${TEMP_DIR}traps/conf/snmptrapd.conf" ]; then
 					if [ -e "$SNMP_DIR/snmptrapd.conf" ]; then
 						mv $SNMP_DIR/snmptrapd.conf $SNMP_DIR/snmptrapd.conf.old
 					fi
-					#mv ${TEMP_DIR}traps/conf/snmptrapd.conf $SNMP_DIR/
 					`sed -e 's|@SNMPTT_INI_FILE@|'"${SNMP_DIR}centreon_traps/snmptt.ini"'|g'  "${TEMP_DIR}traps/conf/snmptrapd.conf" > "$SNMP_DIR/snmptrapd.conf"`
-					echo_passed "Moving snmptrapd.conf to $SNMP_DIR" "OK"
+					echo_success "Moving snmptrapd.conf to $SNMP_DIR" "OK"
 				else
 					echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmptrapd.conf" "CRITICAL"
 				fi
@@ -451,18 +442,18 @@ function install_oreon_plugins()
 			    echo_passed "${SNMP_DIR}centreon_traps already exists" "PASSED"
 			else
 				 mkdir ${SNMP_DIR}centreon_traps
-				echo_passed "${SNMP_DIR}centreon_traps created" "OK"
-			    #chown 
+				echo_success "${SNMP_DIR}centreon_traps created" "OK" 
 			fi
 			if [ -e "${TEMP_DIR}traps/conf/snmptt.ini" ]; then	
 				if [ -e "${SNMP_DIR}centreon_traps/snmptt.ini" ]; then
 					mv ${SNMP_DIR}centreon_traps/snmptt.ini ${SNMP_DIR}centreon_traps/snmptt.ini.old
 				fi
 				cp ${TEMP_DIR}traps/conf/snmptt.ini ${SNMP_DIR}centreon_traps/
-				echo_passed "Moving snmptt.ini to ${SNMP_DIR}centreon_traps/" "OK"
+				echo_success "Moving snmptt.ini to ${SNMP_DIR}centreon_traps/" "OK"
 			else
 				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmptt.ini" "CRITICAL"
 			fi
+			chown -R ${WEB_USER}.${NAGIOS_GROUP} ${SNMP_DIR}centreon_traps/
 			if [ -e "/etc/init.d/snmptrapd" ] ;then
 				/etc/init.d/snmptrapd restart
 			else
@@ -471,14 +462,14 @@ function install_oreon_plugins()
 			if [ -e "${TEMP_DIR}traps/conf/snmptt" ]; then	
 				cp ${TEMP_DIR}traps/conf/snmptt /usr/sbin/
 				chmod +x /usr/sbin/snmptt
-				echo_passed "Moving snmptt to /usr/sbin/" "OK"
+				echo_success "Moving snmptt to /usr/sbin/" "OK"
 			else
 				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmptt" "CRITICAL"
 			fi
 			if [ -e "${TEMP_DIR}traps/conf/snmpttconvertmib" ]; then	
 				cp ${TEMP_DIR}traps/conf/snmpttconvertmib /usr/sbin/
 				chmod +x /usr/sbin/snmpttconvertmib
-				echo_passed "Moving snmpttconvertmib to /usr/sbin/" "OK"
+				echo_success "Moving snmpttconvertmib to /usr/sbin/" "OK"
 			else
 				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmpttconvertmib" "CRITICAL"
 			fi
@@ -487,7 +478,7 @@ function install_oreon_plugins()
 			echo_success "$NAGIOS_PLUGIN/traps/'" "OK"
 		fi
     fi
-
+	echo ""
     if test -a $NAGIOS_PLUGIN/oreon.conf ; then
 		echo ""
 		echo_success "Finding Oreon Plugins configuration file 'oreon.conf' :" "OK"
