@@ -16,7 +16,7 @@ DELETE FROM `topology` WHERE `topology`.`topology_page` IS NULL AND `topology`.`
 DELETE FROM `topology` WHERE `topology`.`topology_page` IS NULL AND `topology`.`topology_parent` = 402 AND `topology`.`topology_group` = 42 LIMIT 1;
 DELETE FROM `topology` WHERE `topology`.`topology_page` = 60708 LIMIT 1;
 
-UPDATE `oreon_informations` SET `value` = '1.4.1' WHERE CONVERT( `key` USING utf8 ) = 'version' LIMIT 1 ;
+UPDATE `oreon_informations` SET `value` = '1.4.1-RC1' WHERE CONVERT( `key` USING utf8 ) = 'version' LIMIT 1 ;
 
 -- 10/05/2007
 
