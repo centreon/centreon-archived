@@ -7,7 +7,6 @@ INSERT INTO `command` VALUES ('', 'check_host_alive', '$USER1$#S#check_ping -H $
 INSERT INTO `command` VALUES ('', 'check_local_cpu_load', '$USER1$#S#check_nt -H $HOSTADDRESS$ -v CPULOAD -l $ARG1$ -s &quot;public&quot;', '', 2);
 INSERT INTO `command` VALUES ('', 'check_local_swap', '$USER1$#S#check_swap -w $ARG1$ -c $ARG2$ -v', '!80!90', 2);
 INSERT INTO `command` VALUES ('', 'check_local_disk_space', '$USER1$#S#check_nt -H $HOSTADDRESS$ -v USEDDISKSPACE -l $ARG1$ -w $ARG2$ -c $ARG3$ -s &quot;public&quot;', '', 2);
-INSERT INTO `command` VALUES ('', 'check_local_users', '$USER1$#S#check_users -H $HOSTADDRESS$ -w 3 -c 5', '', 2);
 
 INSERT INTO `command` VALUES ('', 'check_disk_smb', '$USER1$#S#check_disk_smb -H $ARG1$ -s $ARG2$ -u $ARG3$ -p $ARG4$ -w $ARG5$', '', 2);
 INSERT INTO `command` VALUES ('', 'check_distant_disk_space', '$USER1$#S#check_distant_disk_space -H $HOSTADDRESS$ -C $ARG1$ -p $ARG2$ -w $ARG3$ -c $ARG4$', '', 2);
