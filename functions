@@ -351,7 +351,7 @@ function install_oreon_plugins()
 		  else
 		      filename=`echo $fichier | sed -e 's|.*\/\(.*\)|\1|'`
 		      echo_success "  -> $filename" "OK"
-		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
+		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
 		  fi
 		done
 		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
@@ -375,7 +375,7 @@ function install_oreon_plugins()
 		do
 		  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
 		  echo "-> $filename"
-		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
+		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_OREON"'|g' "$fichier" > "$PLUGINS_DIR/$filename"`
 		done
 		echo ""
 		echo "Do you want to install Oreon Traps Plugins ? "
