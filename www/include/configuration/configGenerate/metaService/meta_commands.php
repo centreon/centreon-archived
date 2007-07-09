@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 	
 	$str = "define command{\n";
 	$str .= print_line("command_name", "check_meta");
-	$str .= print_line("command_line", $oreon->optGen["nagios_path_plugins"]."check_meta_service.pl -i \$ARG1\$");
+	$str .= print_line("command_line", $oreon->optGen["nagios_path_plugins"]."check_meta_service -i \$ARG1\$");
 	$str .= "}\n\n";
 	
 	$str .= "define command{\n";
