@@ -1662,7 +1662,6 @@ CREATE TABLE `traps` (
   `traps_id` int(11) NOT NULL auto_increment,
   `traps_name` varchar(255) default NULL,
   `traps_oid` varchar(255) default NULL,
-  `traps_handler` varchar(255) default NULL,
   `traps_args` varchar(255) default NULL,
   `traps_status` ENUM( '-1', '0', '1', '2', '3' ) default NULL,
   `manufacturer_id` INT( 11 ) default NULL,
