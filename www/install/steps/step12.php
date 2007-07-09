@@ -38,9 +38,9 @@ aff_header("Oreon Setup Wizard", "Post-Installation", 12);	?>
 	<b>Self service and commercial Support.</b><br><br>
 	There are various way to get informations about Oreon ; the documentation, the wiki, forum and other stuffs.
 	<ul>
-		<li> Oreon WebSite : <a href="http://www.oreon-project.org">www.oreon-project.org</a></li>
-		<li> Oreon Forum : <a href="http://forum.oreon-project.org">forum.oreon-project.org</a></li></li>
-		<li> Oreon Wiki : <a href="http://wiki.oreon-project.org">wiki.oreon-project.org</a></li>
+		<li> Oreon WebSite : <a target="_blank" href="http://www.oreon-project.org">www.oreon-project.org</a></li>
+		<li> Oreon Forum : <a target="_blank" href="http://forum.oreon-project.org">forum.oreon-project.org</a></li></li>
+		<li> Oreon Wiki : <a target="_blank" href="http://wiki.oreon-project.org">wiki.oreon-project.org</a></li>
 	</ul>
 	<br><p align="justify">
 	If your company needs professional consulting and services for Oreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a href="http://www.oreon-services.com">Oreon support center</a></b>.
@@ -53,7 +53,7 @@ aff_header("Oreon Setup Wizard", "Post-Installation", 12);	?>
 <?
 // end last code
 aff_middle();
-$str = "<input class='button' type='submit' name='goto' value='Finish' id='button_next' ";
+$str = "<input class='button' type='submit' name='goto' value='Click here to complete your install' id='button_next' ";
 $str .= " />";
 print $str;
 aff_footer();
