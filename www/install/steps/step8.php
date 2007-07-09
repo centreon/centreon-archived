@@ -56,7 +56,7 @@ if (isset($passwd_error) && $passwd_error)
 			$chemintotal = "../lang/";
 			if ($handle  = opendir($chemintotal))	{
 				while ($file = readdir($handle))
-					if	(!is_dir("$chemintotal/$file") && strcmp($file, "index.php")) {
+					if	(!is_dir("$chemintotal/$file") && strcmp($file, "index.php") && strcmp($file, "index.html") && strcmp($file, "index.ihtml") ) {
 						$tab = split('\.', $file);
 						print "<option ";
 						if (isset($_SESSION["oreonlang"]) && !strcmp($_SESSION["oreonlang"], $tab[0]))

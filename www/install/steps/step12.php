@@ -43,7 +43,7 @@ aff_header("Oreon Setup Wizard", "Post-Installation", 12);	?>
 		<li> Oreon Wiki : <a target="_blank" href="http://wiki.oreon-project.org">wiki.oreon-project.org</a></li>
 	</ul>
 	<br><p align="justify">
-	If your company needs professional consulting and services for Oreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a href="http://www.oreon-services.com">Oreon support center</a></b>.
+	If your company needs professional consulting and services for Oreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://www.oreon-services.com">Oreon support center</a></b>.
 	</p>
 	</td>
   </tr>
