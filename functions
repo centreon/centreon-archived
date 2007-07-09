@@ -715,10 +715,10 @@ function install_oreon(){
       fi
     done
 
-	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql" > "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql2"`
+	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql" > "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql2"`
 	mv $INSTALL_DIR_OREON/www/install/insertBaseConf.sql2 $INSTALL_DIR_OREON/www/install/insertBaseConf.sql
     
-    `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$INSTALL_DIR_OREON/www/install/createTablesODS.sql" > "$INSTALL_DIR_OREON/www/install/createTablesODS.sql2"`
+    `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$INSTALL_DIR_OREON/www/install/createTablesODS.sql" > "$INSTALL_DIR_OREON/www/install/createTablesODS.sql2"`
 	mv $INSTALL_DIR_OREON/www/install/createTablesODS.sql2 $INSTALL_DIR_OREON/www/install/createTablesODS.sql
     
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/ >> $LOG_FILE 2>> $LOG_FILE
