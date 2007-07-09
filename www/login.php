@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 <div id="LoginInvit">
 	<table id="logintab1">
 		<tr>
-			<td class="LoginInvitLogo" colspan="2"><img src="img/logo_centreon_wt.gif" alt="Oreon logo" title="Oreon Logo"></td>
+			<td class="LoginInvitLogo" colspan="2"><img src="img/logo_centreon_wt.gif" alt="Centreon logo" title="Centreon Logo"></td>
 		</tr>
 		<tr>
 			<td class="LoginInvitVersion"><br>
@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 		<tr>
 			<td id="LoginInvitcpy" colspan="2">
 				<br>
-				&copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Oreon</a>
+				&copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Centreon</a>
 			</td>
 		</tr>
 	</table>
