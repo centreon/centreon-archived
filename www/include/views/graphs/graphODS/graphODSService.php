@@ -101,12 +101,13 @@ For information : contact@oreon-project.org
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
 	}
-	
+
+	$index = null;	
 	if (isset($_GET["index"]))
 		$index = $_GET["index"];
 	else if (isset($svc_id["id"]))
 		$index = $svc_id["id"];
-	
+
 	
 	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
