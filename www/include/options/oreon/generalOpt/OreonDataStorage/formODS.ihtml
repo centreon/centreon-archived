@@ -21,5 +21,11 @@
 	<tr class="list_two"><td class="FormRowField">{$form.fast_parsing.label}</td><td class="FormRowValue">{$form.fast_parsing.html}</td></tr>
 </table>	
 {$form.hidden}
+{if !$valid}
 	<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
+{else}
+	<div id="validForm">
+		<p>{$form.change.html}</p>
+	</div>
+{/if}
 </form>

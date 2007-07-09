@@ -98,8 +98,10 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT2))
 			print ("DB error : ".$DBRESULT2->getDebugInfo());
 		$DBRESULT2->fetchInto($oreon->optGen);
-		
-		$o = "ods";
+
+		$o = NULL;
+   		$valid = true;
+		$form->freeze();
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
@@ -113,6 +115,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('form', $renderer->toArray());
+	$tpl->assign('valid', $valid);
 	$tpl->assign('o', $o);
 	$tpl->display("formODS.ihtml");
 ?>
