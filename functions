@@ -453,9 +453,19 @@ function install_oreon_plugins()
 			else
 				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmptt.ini" "CRITICAL"
 			fi
+			if [ -e "${TEMP_DIR}traps/conf/snmp.conf" ]; then	
+				if [ -e "${SNMP_DIR}snmp.conf" ]; then
+					mv ${SNMP_DIR}snmp.conf ${SNMP_DIR}snmp.conf.old
+				fi
+				cp ${TEMP_DIR}traps/conf/snmp.conf ${SNMP_DIR}
+				echo_success "Moving snmp.conf to ${SNMP_DIR}" "OK"
+			else
+				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmp.conf" "CRITICAL"
+			fi
 			chown -R ${WEB_USER}.${NAGIOS_GROUP} ${SNMP_DIR}centreon_traps/
 			if [ -e "/etc/init.d/snmptrapd" ] ;then
 				/etc/init.d/snmptrapd restart
+				/etc/init.d/snmpd restart
 			else
 				/etc/init.d/snmpd restart
 			fi
