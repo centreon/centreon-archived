@@ -7,9 +7,9 @@
 
 /etc/init.d/ods stop
 
-2. make Oreon 1.4.1 upgrade
+2. make Oreon 1.4.1-RC1 upgrade
 
-3. make ods database upgrade with howToUpgradeODS-1.4To1.4.1.sql
+3. make ods database upgrade with howToUpgradeODS-1.4To1.4.1-RC1.sql
 
 It may take a long time if your database is big. be patient !!
 
