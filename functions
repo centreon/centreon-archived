@@ -544,14 +544,14 @@ function install_ods(){
 		echo_success "Creating Oreon Directory '/var/log/ods/'" "OK"
     fi
 	
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods.pl > $INSTALL_DIR_OREON/ODS/ods_new.pl
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods > $INSTALL_DIR_OREON/ODS/ods_new
 	echo_success "Replace ODS Macro " "OK"
 
-	mv $INSTALL_DIR_OREON/ODS/ods_new.pl $INSTALL_DIR_OREON/ODS/ods.pl
+	mv $INSTALL_DIR_OREON/ODS/ods_new $INSTALL_DIR_OREON/ODS/ods
 	echo_success "Install ODS Binary  " "OK"
 
- 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods.pl
-	chmod 7755 $INSTALL_DIR_OREON/ODS/ods.pl
+ 	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods
+	chmod 7755 $INSTALL_DIR_OREON/ODS/ods
     echo_success "Set ODS properties " "OK"
     
 	chown $NAGIOS_USER:$NAGIOS_GROUP /var/lib/ods/database/
