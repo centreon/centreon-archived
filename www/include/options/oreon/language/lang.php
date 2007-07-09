@@ -36,15 +36,11 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	$i = 0;
 	# Information
-    $langdispo="";
-	$handle = opendir("./lang/");
-	while (false !== ($filename = readdir($handle)))	{
-		if ($filename != "." && $filename != "..")	{
-			$filename = explode(".", $filename);
-			$langdispo .= "-".$filename[0]." ";
-		}
-	}
-	closedir($handle);
+
+
+
+    $langdispo = getLangsByDir("./lang/");	
+
     $elemArr[$i] = array("ModuleTitle"=>$lang['lang_gen'],
 						"LangDispo"=>$langdispo,
 						"LangDispoName"=>$lang['lang_av'],
@@ -54,17 +50,9 @@ For information : contact@oreon-project.org
 	echo "<div>";
 	# Configuration Module
     $langdispo="";
-    $filename="";
-	$handle = opendir("./include/configuration/lang/");
-	$stock = array();
-	while (false !== ($filename = readdir($handle)))	{
-		if ($filename != "." && $filename != "..")	{
-			$filename = explode(".", $filename);
-			$stock[$filename[0]] = $filename[0];
-			$langdispo .= "-".$filename[0]." ";
-		}
-	}
-	closedir($handle);
+    $langdispo = getLangsByDir("./include/configuration/lang/");	
+    $stock = getLangs("./include/configuration/lang/");	
+    
 	$elemArr[$i] = array("ModuleTitle"=>$lang['lang_mod']." ".$lang['m_configuration'],
 					"LangDispo"=>$langdispo,
 					"LangDispoName"=>$lang['lang_av'],
@@ -73,17 +61,10 @@ For information : contact@oreon-project.org
 	$i++;
 	# Options Module
     $langdispo="";
-    $filename="";
-	$handle = opendir("./include/options/lang/");
-	$stock = array();
-	while (false !== ($filename = readdir($handle)))	{
-		if ($filename != "." && $filename != "..")	{
-			$filename = explode(".", $filename);
-			$stock[$filename[0]] = $filename[0];
-			$langdispo .= "-".$filename[0]." ";
-		}
-	}
-	closedir($handle);
+    $langdispo = getLangsByDir("./include/options/lang/");	
+
+
+
 	$elemArr[$i] = array("ModuleTitle"=>$lang['lang_mod']." ".$lang['m_options'],
 					"LangDispo"=>$langdispo,
 					"LangDispoName"=>$lang['lang_av'],
@@ -97,15 +78,9 @@ For information : contact@oreon-project.org
         $filename="";
 		$stock = array();
 		if ($mod["lang"])	{
-			$handle = opendir("./modules/".$mod["name"]."/lang/");
-			while (false !== ($filename = readdir($handle)))	{
-				if ($filename != "." && $filename != "..")	{
-					$filename = explode(".", $filename);
-					$stock[$filename[0]] = $filename[0];
-					$langdispo .= "-".$filename[0]." ";
-				}
-			}
-			closedir($handle);
+		    $langdispo="";
+		    $langdispo = getLangsByDir("./modules/".$mod["name"]."/lang/");	
+		    $stock = getLangs("./modules/".$mod["name"]."/lang/");	
 		}
 		else
 			$langdispo = $lang['lang_none'];

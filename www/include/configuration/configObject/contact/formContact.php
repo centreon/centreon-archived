@@ -71,16 +71,9 @@ For information : contact@oreon-project.org
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Langs -> $langs Array
-	$langs = array(NULL=>NULL);
-	 $chemintotal = "./lang/";
-	if ($handle  = opendir($chemintotal))   {
-	    while ($file = readdir($handle))
-	    	if (!is_dir("$chemintotal/$file") && strcmp($file, "index.php")) {
-				$tab = split('\.', $file);
-	      		$langs[$tab[0]] = $tab[0];
-	      	}
-		closedir($handle);
-	}
+	$langs = array();
+	$langs = getLangs();
+	
 	# Timeperiods comes from DB -> Store in $notifsTps Array
 	# When we make a massive change, give the possibility to not crush value
 	$notifTps = array(NULL=>NULL);

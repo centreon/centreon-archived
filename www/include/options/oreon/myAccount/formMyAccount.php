@@ -51,15 +51,7 @@ For information : contact@oreon-project.org
 	#
 	# Langs -> $langs Array
 	$langs = array();
-	 $chemintotal = "./lang/";
-	if ($handle  = opendir($chemintotal))   {
-	    while ($file = readdir($handle))
-	    	if (!is_dir("$chemintotal/$file") && strcmp($file, "index.php")) {
-				$tab = split('\.', $file);
-	      		$langs[$tab[0]] = $tab[0];
-	      	}
-		closedir($handle);
-	}
+	$langs = getLangs();	
 	#
 	# End of "database-retrieved" information
 	##########################################################
