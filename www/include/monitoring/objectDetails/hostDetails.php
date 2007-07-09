@@ -77,7 +77,7 @@ For information : contact@oreon-project.org
 			}
 		}
 		
-		$en = array("0" => "No", "1" => "Yes");
+		$en = array("0" => $lang["no"], "1" => $lang["yes"]);
 		
 		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
 		$en_acknowledge = array("1" => "0", "0" => "1");
@@ -134,7 +134,16 @@ For information : contact@oreon-project.org
 		$tpl->assign("url_id", $url_id);
 		$tpl->assign("tab_comments_host", $tab_comments_host);
 		$tpl->assign("host_data", $host_status[$host_name]);
-		$tpl->assign("tools", "Tools");
+		
+		# Ext informations
+		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
+		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
+		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));		
+		$tpl->assign("h_ext_action_url_lang", $lang['h_actionUrl']);
+		$tpl->assign("h_ext_action_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url"));
+		//$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
+		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
+		
 		$tpl->display("hostDetails.ihtml");
 	}
 ?>

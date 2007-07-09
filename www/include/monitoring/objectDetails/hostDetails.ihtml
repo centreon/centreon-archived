@@ -1,7 +1,24 @@
 <div>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$lang.m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address} </td>
+			<td class="ListColHeaderLeft" colspan="3">
+				<img src='./img/icones/16x16/server_network.gif' 
+				{if $h_ext_icon_image_alt}
+					alt='{$h_ext_icon_image_alt}'
+				{/if}
+				>
+				&nbsp;&nbsp;{$lang.m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address}
+				{if $h_ext_notes}
+					&nbsp;&nbsp;
+					{if $h_ext_notes_url}
+						<a href="{$h_ext_notes_url}" target="_blank">
+					{/if}
+					({$h_ext_notes})
+					{if $h_ext_notes_url}
+						</a>
+					{/if}
+				{/if}
+			</td>
 		</tr>
 	</table>
 	<br>
@@ -158,9 +175,14 @@
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href='' onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_ping} {$h.host_name}</a></td>
 					</tr>
-					<tr class='list_one'>
+					<tr class='list_two'>
 						<td class="ListColLeft"><a href='' onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_tracert} {$h.host_name}</a></td>
 					</tr>
+					{if $h_ext_action_url}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href="{$h_ext_action_url}" target="_blank">{$h_ext_action_url_lang}</a></td>
+					</tr>
+					{/if}
 				</table>
 			</td>
 			<td style='width:20px;'>&nbsp;</td>

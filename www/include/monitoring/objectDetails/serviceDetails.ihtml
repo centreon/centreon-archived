@@ -1,7 +1,24 @@
 <div>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]</td>
+			<td class="ListColHeaderLeft" colspan="3">
+				<img src='./img/icones/16x16/element_new_after.gif'
+				{if $sv_ext_icon_image_alt}
+					alt='{$sv_ext_icon_image_alt}'
+				{/if}
+				>
+				&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]
+				{if $sv_ext_notes}
+					&nbsp;&nbsp;
+					{if $sv_ext_notes_url}
+						<a href="{$sv_ext_notes_url}" target="_blank">
+					{/if}
+					({$sv_ext_notes})
+					{if $sv_ext_notes_url}
+						</a>
+					{/if}
+				{/if}
+			</td>
 		</tr>
 	</table><br>
 	<table width='100%'>
@@ -128,6 +145,17 @@
 					</tr>
 					<tr>
 						<td class="ListColLeft"><a href='./oreon.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
+					</tr>
+				</table>
+				{/if}
+				{if $sv_ext_action_url}		
+				<br>
+				<table id="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href="{$sv_ext_action_url}" target="_blank">{$sv_ext_action_url_lang}</a></td>
 					</tr>
 				</table>
 				{/if}

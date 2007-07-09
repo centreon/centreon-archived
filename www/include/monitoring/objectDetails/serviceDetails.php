@@ -124,7 +124,7 @@ For information : contact@oreon-project.org
 				unset($tab_comments_svc[$key]);
 		}
 		
-		$en = array("0" => "No", "1" => "Yes");
+		$en = array("0" => $lang["no"], "1" => $lang["yes"]);
 		
 		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
 		$en_acknowledge = array("1" => "0", "0" => "1");
@@ -184,7 +184,17 @@ For information : contact@oreon-project.org
 		$tpl->assign("service_id", getMyServiceID($svc_description, $host["host_id"]));
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
-		$tpl->assign("svc_description", $svc_description);
+		$tpl->assign("svc_description", $svc_description);		
+		
+		# Ext informations
+		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
+		$tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
+		$tpl->assign("sv_ext_notes_url", getMyServiceExtendedInfoField($service_id, "esi_notes_url"));		
+		$tpl->assign("sv_ext_action_url_lang", $lang['h_actionUrl']);
+		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
+		//$tpl->assign("sv_ext_icon_image", getMyServiceExtendedInfoField($service_id, "esi_icon_image"));
+		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
+		
 		$tpl->display("serviceDetails.ihtml");
 	}
 ?>
