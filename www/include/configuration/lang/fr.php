@@ -584,6 +584,7 @@ $lang['nag_adminEmail'] = "Administrator Email Address";
 $lang['nag_adminPager'] = "Administrator Pager";
 
 $lang['nag_broker_module'] = "Broker Module";
+$lang['nag_broker_module_options'] = "Broker Module Options";
 
 /* Resource CFG */
 

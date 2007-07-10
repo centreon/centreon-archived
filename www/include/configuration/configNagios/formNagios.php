@@ -399,6 +399,7 @@ For information : contact@oreon-project.org
 		
 	## Part 22
 	$form->addElement('text', 'broker_module', $lang["nag_broker_module"], $attrsText2);
+	$form->addElement('text', 'event_broker_options', $lang["nag_broker_module_options"], $attrsText2);
 	
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
