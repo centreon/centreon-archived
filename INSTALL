@@ -4,14 +4,15 @@ To use graphic plugins, you need to have on your server :
 - perl/RRDTOOL (RRDs.pm)
 - Net::SNMP
 
-To use Oreon, you need to have on your server :
+To use Centreon, you need to have on your server :
 
 - php4 or php5 (php5 recommended)
 - php-mysql
 - php-pear
 - php-snmp
+- php-posix
 - php-gd
-- libgd2
+- php-ldap (if you would like to use LDAP authentification)
 - gd-devel
 - libpng
 - libpng-devel
@@ -24,8 +25,6 @@ To use Oreon, you need to have on your server :
 - perl-Net-SNMP
 - perl-rrdtool
 - perl-Socket6
-
-http://www.oreon-project.org/pre-requis---oreon-1.3.x.html
 
 FRANCAIS :
 ----------
@@ -41,6 +40,9 @@ For install only :
 
 	Launch "./install.sh"
 
-For more informations, mail infos@oreon-project.org or visit Oreon's forum http://forum.oreon-project.org
+For more informations :
+- mail infos@oreon-project.org
+- visit Centreon's forum http://forum.oreon-project.org
+- visit Centreon's Wiki http://wiki.oreon-project.org
 
-Thanks for using oreon.
+Thanks for using Centreon.

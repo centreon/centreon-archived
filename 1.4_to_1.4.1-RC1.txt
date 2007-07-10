@@ -1,0 +1,41 @@
+######################################################
+# How to upgrade your 1.4 in 1.4.1-RC1 ?
+######################################################
+
+
+- Download centreon-1.4.1-RC1.tar.gz
+
+- unzip centreon-1.4.1.-RC1.tar.gz :
+
+$> tar -xzf centreon-1.4.1.-RC1.tar.gz
+
+- launch upgrade script after stopping ods :
+
+$> /etc/init.d/ods stop
+$> cd /root/centreon-1.4.1.-RC1
+$>./install.sh
+
+- Answer to all questions to upgrade your release.
+
+Now you can go on oreon interface to finish update by web browser (SQL update).
+
+http://youroreonip/oreon/
+
+Apply patch 'UpdateDB-1.4.1-RC1.sql'
+
+Then you have to patch ods database, this step can not be made through web frontend, so launch in command line the sql commands :
+
+$> cat /root/centreon-1.4.1.-RC1/ODS_SQL_UPGRADE_1.4.1-RC1.sql | mysql -u root -p ods
+
+It may take a long time if your database is big. be patient !!
+
+!!CAUTION!!
+In this new release, we don't manage anymore graphs plugins storage, so your check_graph_* plugins will not work anymore (Problem with -S arg will occur)
+Please modify the commands using this plugins by using now check_centreon_* plugins.
+For example : 
+command "check_graph_ping" => "$USER1$/check_graph_ping.pl ... -g -S $ARGn$ " 
+can became "check_graph_ping" => "$USER1$/check_centreon_ping ..." 
+or "check_centreon_ping" => "$USER1$/check_centreon_ping ..."
+
+Then generate/restart Nagios and start ods
+$> /etc/init.d/ods start

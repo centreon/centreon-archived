@@ -1,3 +1,26 @@
+## Centreon 1.4.1
+=> Bugfix : Better trap management, with MIB loading in web frontend
+=> Bugfix : URL size limite in listing form (GET to POST)
+=> Feature : Not use anymore perfparse and graph plugins
+=> Feature : Graph plugin became Centreon plugins
+=> Bugfix : Graphs management around ODS
+=> Bugfix : ODS segfault and global functions
+=> Feature : Store rrd db in /var/lib/ods (POSIX..)
+=> Bugfix : Validation not working when submitting a deletion
+=> Feature : View "advanced log" when this option is selected in general options
+=> Feature : Add broker module options in Nagios CFG
+=> Feature : New logo and new name
+=> Bugfix : General options form not reload correctly when submiting values
+=> Bugfix : Meta Service working correctly with ODS
+=> Feature  : SNMP V3 on check_centreon plugins (not working from web frontend but in command line)
+=> Feature : Add host/service ext infos in monitoring details (no img yet)
+=> Bugfix : ODS metric can have '/'
+=> Bugfix  : Javascript 'show images' in service and host form not working with IE
+=> Bugfix : Catch insertion with space in beginning/end of a form field.
+=> Bugfix : Catch insertion with '\' at the end of a form field.
+=> Feature : Trap sorting by vendor in form
+=> Bugfix : LCA definition can not include basic index page
+
 ## Oreon 1.4
 
 => Bugfix  : remove bug when we do a passive check Submission 
