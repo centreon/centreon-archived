@@ -45,6 +45,12 @@ For information : contact@oreon-project.org
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["genOpt_change"]);
+
+	$form->addElement('hidden', 'gopt_id');
+	$redirect =& $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
+
+	$form->setDefaults($gopt);
 	
 	## Oreon information
 	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
@@ -106,7 +112,7 @@ For information : contact@oreon-project.org
 	if (!$form->validate() && isset($_POST["gopt_id"]))
 	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
+	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'"));
 
 	## Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

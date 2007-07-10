@@ -20,7 +20,6 @@
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;Monitoring</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.fast_parsing.label}</td><td class="FormRowValue">{$form.fast_parsing.html}</td></tr>
 </table>	
-{$form.hidden}
 {if !$valid}
 	<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
 {else}
@@ -28,4 +27,5 @@
 		<p>{$form.change.html}</p>
 	</div>
 {/if}
+{$form.hidden}
 </form>
