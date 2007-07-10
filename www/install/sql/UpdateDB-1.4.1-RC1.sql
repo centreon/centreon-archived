@@ -74,3 +74,7 @@ ALTER TABLE `general_opt` ADD `perl_library_path` VARCHAR( 255 ) NOT NULL , ADD 
 -- 9/07/2007
 
 ALTER TABLE `traps` DROP `traps_handler` ;
+
+-- 10/07/2007
+INSERT INTO `command` VALUES ('', 'process-service-perfdata-ods', '$USER1$#S#process-service-perfdata  &quot;$LASTSERVICECHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$SERVICEOUTPUT$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEPERFDATA$&quot;', '', 3);
+
