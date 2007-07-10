@@ -377,7 +377,8 @@ function install_oreon_plugins()
 		do
 		  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
 		  echo "-> $filename"
-		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_OREON"'|g' "$fichier" > "$filename"`
+		  echo $fichier
+		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/src/traps/$filename"`
 		done
 		echo ""
 		echo "Do you want to install Oreon Traps Plugins ? "
@@ -466,10 +467,10 @@ function install_oreon_plugins()
 			fi
 			chown -R ${WEB_USER}.${NAGIOS_GROUP} ${SNMP_DIR}centreon_traps/
 			if [ -e "/etc/init.d/snmptrapd" ] ;then
-				/etc/init.d/snmptrapd restart
-				/etc/init.d/snmpd restart
+				/etc/init.d/snmptrapd restart 2>/dev/null 1>/dev/null
+				/etc/init.d/snmpd restart  2>/dev/null 1>/dev/null
 			else
-				/etc/init.d/snmpd restart
+				/etc/init.d/snmpd restart 2>/dev/null 1>/dev/null
 			fi
 			if [ -e "${TEMP_DIR}traps/conf/snmptt" ]; then	
 				cp ${TEMP_DIR}traps/conf/snmptt /usr/sbin/
@@ -485,7 +486,7 @@ function install_oreon_plugins()
 			else
 				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmpttconvertmib" "CRITICAL"
 			fi
-			cp $PLUGINS_DIR/src/traps/plugins/* $NAGIOS_PLUGIN/traps/
+			mv $PLUGINS_DIR/src/traps/genSnmpttConfFile $PLUGINS_DIR/src/traps/fill_trapDB $PLUGINS_DIR/src/traps/trapHandler $NAGIOS_PLUGIN/traps/
 			chmod 775 $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
 			echo_success "$NAGIOS_PLUGIN/traps/'" "OK"
 		fi
