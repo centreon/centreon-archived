@@ -21,6 +21,19 @@ For information : contact@oreon-project.org
 	# Path to the configuration dir
 	$path = "./menu/";
 
+
+	#
+	## ODS Database retrieve information
+	#
+	require_once("./DBOdsConnect.php");	
+	$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";			
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+
+
+
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -38,7 +51,6 @@ For information : contact@oreon-project.org
 
 	$fileStatus = $oreon->Nagioscfg["status_file"];
 	$fileOreonConf = $oreon->optGen["oreon_path"];
-
 
 	$color = array();
 
@@ -96,35 +108,44 @@ For information : contact@oreon-project.org
 		$sep = "|";
 	}
 
+
 	# Grab elements for level 3
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	for($i = 0; $DBRESULT->fetchInto($elem);$i++)	{
-		# grab menu title for each group
-		$rq_title = "SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1";
-		$DBRESULT_title =& $pearDB->query($rq_title);
-		if (PEAR::isError($DBRESULT_title))
-			print ($DBRESULT_title->getMessage());
-		$title = "";
-		if ($title = $DBRESULT_title->fetchRow())
-			$title = $lang[$title["topology_name"]];
-		else
-			$title = $lang["m_main_menu"];
 
-		$Menu3Url = "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
-		$elemArr[3][$elem["topology_group"]]["title"] = $title;
-	    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
-								"Menu3Url" => $Menu3Url,
-								"Menu3ID" => $elem["topology_page"],
-								"MenuStyleClass" => $elem["topology_style_class"],
-								"MenuStyleID" => $elem["topology_style_id"],
-								"MenuOnClick" => $elem["topology_OnClick"],
-								"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
-								"Menu3UrlPopup" => $elem["topology_url"],
-								"Menu3Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
-								"Menu3Popup" => $elem["topology_popup"] ? true : false);
+		if(!$gopt["archive_log"] && ( $elem["topology_page"] == 20311 || $elem["topology_page"] == 20312 || $elem["topology_page"] == 20313 || $elem["topology_page"] == 20314))
+		{
+			;
+		}
+		else
+		{
+			# grab menu title for each group
+			$rq_title = "SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1";
+			$DBRESULT_title =& $pearDB->query($rq_title);
+			if (PEAR::isError($DBRESULT_title))
+				print ($DBRESULT_title->getMessage());
+			$title = "";
+			if ($title = $DBRESULT_title->fetchRow())
+				$title = $lang[$title["topology_name"]];
+			else
+				$title = $lang["m_main_menu"];
+	
+			$Menu3Url = "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
+			$elemArr[3][$elem["topology_group"]]["title"] = $title;
+		    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
+									"Menu3Url" => $Menu3Url,
+									"Menu3ID" => $elem["topology_page"],
+									"MenuStyleClass" => $elem["topology_style_class"],
+									"MenuStyleID" => $elem["topology_style_id"],
+									"MenuOnClick" => $elem["topology_OnClick"],
+									"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
+									"Menu3UrlPopup" => $elem["topology_url"],
+									"Menu3Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
+									"Menu3Popup" => $elem["topology_popup"] ? true : false);
+		}
 	}
 	unset($elem);
 	# Grab elements for level 4
