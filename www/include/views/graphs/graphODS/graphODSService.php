@@ -151,7 +151,8 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		for ($counter = 0;$DBRESULT2->fetchInto($metrics_ret); $counter++){
-			$metrics[$metrics_ret["metric_id"]]["metric_name"] = $metrics_ret["metric_name"];
+			$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#S#', "/", $metrics_ret["metric_name"]);
+			$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#BS#', "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
 			$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
 			$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
 		}
