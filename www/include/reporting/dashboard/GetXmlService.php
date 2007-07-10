@@ -298,7 +298,7 @@ For information : contact@oreon-project.org
 	## make bubul
 	#
 	$bubultab = '{table class=bubultab}';
-	$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
+	$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
 	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorOK.';"  }OK:{/td}{td class=bubul}'.Duration::toString($_GET["today_ok"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_ok"] > 0) ? $_GET["today_ok"] : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
 	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorCRITICAL.';"  }Critical:{/td}{td class=bubul}'.Duration::toString($_GET["today_critical"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_critical"] > 0) ? $_GET["today_critical"] : "0").'%{/td}{td class=bubul}'.$_GET["today_CRITICALnbEvent"].'{/td}{/tr}';
 	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorWARNING.';"  }Warning:{/td}{td class=bubul}'. Duration::toString($_GET["today_warning"] * $t / 100) .'{/td}{td class=bubul}'.(($_GET["today_warning"] > 0) ? $_GET["today_warning"] : "0").'%{/td}{td class=bubul}'.$_GET["today_WARNINGnbEvent"].'{/td}{/tr}';
