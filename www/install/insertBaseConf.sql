@@ -58,9 +58,8 @@ INSERT INTO `giv_components_template` VALUES (3, 'Default_DS3', 3, 'DS3', 'DS3',
 INSERT INTO `giv_components_template` VALUES (4, 'Default_DS4', 4, 'DS4', 'DS4', '#C438C7', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (5, 'Ok', 1, 'Ok', 'Ok', '#1EE045', '#1EE045', '0', '0', '0', '1', '0', 1, '75', '0', '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (6, 'Ping', 1, 'Ping', 'Ping', '#1EE045', '#1EE045', '0', '1', '0', '1', '0', 1, '75', '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (7, 'Mem_Total', 1, 'Mem_Total', 'Mem_Total', '#F33E0B', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (8, 'Mem_Used', 2, 'Mem_Used', 'Mem_Used', '#2B28D7', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (9, 'Mem_Free', 3, 'Mem_Free', 'Mem_Free', '#30D22D', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (7, 'Total', 1, 'Total', 'Total', '#F33E0B', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (8, 'Used', 2, 'Used', 'Used', '#2B28D7', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (10, 'CPU', 1, 'CPU', 'CPU', '#FF0000', '#FFFFFF', '0', '0', '0', '0', '0', 1, NULL, '0', '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (11, 'UPTIME', 1, 'UPTIME', 'UPTIME', '#FF0000', '#FF0000', '1', '1', '1', '1', '0', 1, NULL, '0', '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (12, 'Traffic_In', 1, 'Traffic_In', 'Traffic_In', '#FF0000', '#FF0000', '0', '1', '0', '1', '0', 1, '75', NULL, '0', '0', NULL);
@@ -86,15 +85,15 @@ INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_c
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '3', '8');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '4', '7');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '4', '8');
-INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '5', '9');
-INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '6', '10');
-INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '7', '11');
+INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '5', '10');
+INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '6', '11');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '7', '12');
-INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '8', '13');
+INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '7', '13');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '8', '14');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '8', '15');
-INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '9', '16');
+INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '8', '16');
 INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '9', '17');
+INSERT INTO `giv_graphT_componentT_relation` ( `ggcr_id` , `gg_graph_id` , `gc_compo_id` ) VALUES (NULL , '9', '18');
 
 --
 -- Contenu de la table `inventory_manufacturer`
