@@ -63,20 +63,22 @@ sub CheckMySQLConnexion(){
 
 CheckMySQLConnexion();
 
-my ($sth2, $data, $ERR);
+my ($sth2, $data, $ERR, $sth_rrd, $data_rrd);
 
 $sth2 = $con_ods->prepare("SELECT * FROM config");
 if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
 $data = $sth2->fetchrow_hashref();
 $RRDdatabase_path = $data->{'RRDdatabase_path'};
 $len_storage_rrd = $data->{'len_storage_rrd'};
-
+$sth_rrd = $con_oreon->prepare("SELECT rrdtool_path_bin FROM general_opt");
+if (!$sth_rrd->execute) {writeLogFile("Error when getting rrdtool_path_bin : " . $sth_rrd->errstr . "\n");}
+$data_rrd = $sth_rrd->fetchrow_hashref();
 
 $sth2 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics ORDER BY metric_id");
 if (!$sth2->execute) {writeLogFile("Error when getting metrics list : " . $sth2->errstr . "\n");}
 my $t;
 for ($t = 0;$data = $sth2->fetchrow_hashref();$t++){
-	system("/usr/bin/rrdtool tune ".$RRDdatabase_path.$data->{'metric_id'}.".rrd --data-source-rename metric:".$data->{'metric_name'});
+	system($data_rrd->{rrdtool_path_bin}." tune ".$RRDdatabase_path.$data->{'metric_id'}.".rrd --data-source-rename metric:".$data->{'metric_name'});
 }
 undef($sth2);
 undef($t);
