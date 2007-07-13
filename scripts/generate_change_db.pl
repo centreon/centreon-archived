@@ -43,6 +43,25 @@ sub writeLogFile($){
 	print  time()." - ".$_[0];
 }
 
+sub CheckMySQLConnexion(){
+	while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
+		if (!defined($con_oreon)) {
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_oreon);
+			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
+		}
+		if (!defined($con_ods)) {
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		} else {
+			sleep(2);
+			undef($con_ods);
+			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+		}
+	}
+}
+
 sub getMyServiceField($$)	{
 	my $service_id = $_[0];
 	my $field = $_[1];
