@@ -21,8 +21,8 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
 	if (isset($search)) {
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ".
-									"OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps WHERE traps_name LIKE '".htmlentities($search, ENT_QUOTES)."' ".
+									"OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '".htmlentities($search, ENT_QUOTES)."')");
 	}
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps");
@@ -52,8 +52,8 @@ For information : contact@oreon-project.org
 
 	#List of elements - Depends on different criteria
 	if ($search)
-		$rq = "SELECT * FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ".
-									"OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ".
+		$rq = "SELECT * FROM traps WHERE traps_name LIKE '".htmlentities($search, ENT_QUOTES)."' ".
+									"OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '".htmlentities($search, ENT_QUOTES)."') ".
 									"ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM traps ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;

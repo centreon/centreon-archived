@@ -42,9 +42,9 @@ For information : contact@oreon-project.org
 	}
 	
 	if (isset($search) && $list)
-		$rq .= " AND (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
+		$rq .= " AND (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '".$search."')";
 	else if (isset($search))
-		$rq .= " WHERE (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
+		$rq .= " WHERE (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '".$search."')";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -78,9 +78,9 @@ For information : contact@oreon-project.org
 	else if ($list && $list == "ms")
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
 	if ($search && $list)
-		$rq .= " AND (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
+		$rq .= " AND (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '".$search."')";
 	else if ($search)
-		$rq .= " WHERE (esc.esc_name LIKE '%".$search."%' OR esc.esc_alias LIKE '%".$search."%')";
+		$rq .= " WHERE (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '".$search."')";
 	$rq .= " ORDER BY esc_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))

@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	
 	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod WHERE tp_name LIKE '".htmlentities($search, ENT_QUOTES)."'");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod");
 	if (PEAR::isError($DBRESULT))
@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 	# end header menu
 	# Timeperiod list
 	if ($search)
-		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod WHERE tp_name LIKE '".htmlentities($search, ENT_QUOTES)."' ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = &$pearDB->query($rq);

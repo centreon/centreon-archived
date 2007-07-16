@@ -24,13 +24,12 @@ For information : contact@oreon-project.org
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
-
 	
 	if (isset($search)) {
 		if ($oreon->user->admin || !$isRestreint)
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND  host_register = '1'");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR host_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND  host_register = '1'");
 		else
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR host_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND host_id IN (".$lcaHoststr.") AND host_register = '1'");
 	} else {
 		if ($oreon->user->admin || !$isRestreint)
 			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE  host_register = '1'");
@@ -60,9 +59,9 @@ For information : contact@oreon-project.org
 	#Host list
 	if ($search){
 		if ($oreon->user->admin || !HadUserLca($pearDB))				
-		$rq = "SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE (host_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR host_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 		else
-		$rq = "SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE (host_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR host_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		if ($oreon->user->admin || !HadUserLca($pearDB))				
 		$rq = "SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit;

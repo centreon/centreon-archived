@@ -22,9 +22,9 @@ For information : contact@oreon-project.org
 	
 	if (isset($search))	{
 		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR hg_alias LIKE '".htmlentities($search, ENT_QUOTES)."')");
 		else
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND hg_id IN (".$lcaHostGroupstr.")");
+			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR hg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND hg_id IN (".$lcaHostGroupstr.")");
 	}
 	else	{
 		if ($oreon->user->admin || !HadUserLca($pearDB))
@@ -58,9 +58,9 @@ For information : contact@oreon-project.org
 	#Hostgroup list
 	if ($search){
 		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
+			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR hg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 		else
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
+			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR hg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		if ($oreon->user->admin || !HadUserLca($pearDB))
 			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;

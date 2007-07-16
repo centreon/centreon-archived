@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	
 	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM contactgroup WHERE (cg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR cg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM contactgroup WHERE (cg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR cg_alias LIKE '".htmlentities($search, ENT_QUOTES)."')");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM contactgroup");
 	if (PEAR::isError($DBRESULT))
@@ -49,7 +49,7 @@ For information : contact@oreon-project.org
 	# end header menu
 	#Contactgroup list
 	if ($search)
-		$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate  FROM contactgroup WHERE (cg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR cg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate  FROM contactgroup WHERE (cg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR cg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate FROM contactgroup ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
