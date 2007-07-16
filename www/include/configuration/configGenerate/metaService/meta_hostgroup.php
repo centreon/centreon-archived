@@ -17,16 +17,20 @@ For information : contact@oreon-project.org
 */
 	$handle = create_file($nagiosCFGPath."meta_hostgroup.cfg", $oreon->user->get_name());
 	$str = NULL;
+	# Host Creation
+	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	$nb = $DBRESULT->numRows();
 	
-	$str .= "define hostgroup{\n";
-	$str .= print_line("hostgroup_name", "meta_hostgroup");
-	$str .= print_line("alias", "meta_hostgroup");
-	// Nagios V1 : Contactgroups
-	if ($oreon->user->get_version() == 1)
-		$str .= print_line("contact_groups", "meta_contactgroup");	
-	$str .= print_line("members", "Meta_Module");
-	$str .= "\t}\n\n";
-	
+	if ($nb){
+		$str .= "define hostgroup{\n";
+		$str .= print_line("hostgroup_name", "meta_hostgroup");
+		$str .= print_line("alias", "meta_hostgroup");
+		// Nagios V1 : Contactgroups
+		if ($oreon->user->get_version() == 1)
+			$str .= print_line("contact_groups", "meta_contactgroup");	
+		$str .= print_line("members", "Meta_Module");
+		$str .= "\t}\n\n";
+	}
 	write_in_file($handle, $str, $nagiosCFGPath."meta_hostgroup.cfg");
 	fclose($handle);
 	unset($str);

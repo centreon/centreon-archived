@@ -17,11 +17,18 @@ For information : contact@oreon-project.org
 */
 	$handle = create_file($nagiosCFGPath."meta_contactgroup.cfg", $oreon->user->get_name());
 	$str = NULL;
-	$str .= "define contactgroup{\n";
-	$str .= print_line("contactgroup_name", "meta_contactgroup");
-	$str .= print_line("alias", "meta_contactgroup");
-	$str .= print_line("members", "meta_contact");
-	$str .= "}\n\n";
+	
+	# Host Creation
+	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	$nb = $DBRESULT->numRows();
+	
+	if ($nb){
+		$str .= "define contactgroup{\n";
+		$str .= print_line("contactgroup_name", "meta_contactgroup");
+		$str .= print_line("alias", "meta_contactgroup");
+		$str .= print_line("members", "meta_contact");
+		$str .= "}\n\n";
+	}
 	write_in_file($handle, $str, $nagiosCFGPath."meta_contactgroup.cfg");
 	fclose($handle);
 	unset($str);
