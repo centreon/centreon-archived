@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
             	<?
             		chdir('sql');
             		foreach (glob("*.sql") as $filename) {
-   					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
+   						echo '<option value="'.$filename.'">'.$filename.'</option>'; }
             	?>
             	</select>
            	</td>
@@ -36,7 +36,6 @@ For information : contact@oreon-project.org
 		</table>
 		<?
 		aff_middle();
-		$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-		print $str;
+		print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
 		aff_footer();
 ?>

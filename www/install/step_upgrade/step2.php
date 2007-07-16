@@ -34,8 +34,7 @@ For information : contact@oreon-project.org
 	</tr>";
 	print $str;
 	aff_middle();
-	$str = "<input class='button' type='submit' name='goto' value='Next' id='button_next' disabled='disabled' />";
-	print $str;
+	print "<input class='button' type='submit' name='goto' value='Next' id='button_next' disabled='disabled' />";
 	aff_footer();
 
 ?>
