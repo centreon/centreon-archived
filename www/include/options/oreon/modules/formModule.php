@@ -72,8 +72,8 @@ For information : contact@oreon-project.org
 				
 			# Load module lang file without re-login
 		    $lang_file_path = "./modules/".$name."/lang/". $oreon->user->get_lang().".php";
-				if ($module_conf[$name]["php_files"] && file_exists($lang_file_path))	{
-					include_once ($lang_file_path);
+				if ($module_conf[$name]["lang_files"] && file_exists($lang_file_path))	{
+					include_once($lang_file_path);
 				}
 				
 			}
