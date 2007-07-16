@@ -154,33 +154,33 @@ For information : contact@oreon-project.org
 			if(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
 				$pendingtime = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime);
 			else
-			$pendingtime = 0;
+				$pendingtime = 0;
 
 
 			if($oktime > 0)
-			$pok = 0 +round(($oktime / $tt * 100),2);
+				$pok = 0 +round(($oktime / $tt * 100),2);
 			else
-			$pok = "0.00";
+				$pok = "0.00";
 						
 			if($criticaltime > 0)
-			$pcritical = 0 +round(($criticaltime / $tt * 100),2);
+				$pcritical = 0 +round(($criticaltime / $tt * 100),2);
 			else
-			$pcritical = "0.00";
+				$pcritical = "0.00";
 
 			if($warningtime > 0)
-			$pwarning = 0 +round(($warningtime / $tt * 100),2);
+				$pwarning = 0 +round(($warningtime / $tt * 100),2);
 			else
-			$pwarning = "0.00";
+				$pwarning = "0.00";
 
 			if($unknowntime > 0)
-			$punknown = 0 +round(($unknowntime / $tt * 100),2);
+				$punknown = 0 +round(($unknowntime / $tt * 100),2);
 			else
-			$punknown = "0.00";
+				$punknown = "0.00";
 
 			if($pendingtime > 0)
-			$ppending = 0 +round(($pendingtime / $tt * 100),2);
+				$ppending = 0 +round(($pendingtime / $tt * 100),2);
 			else
-			$ppending = "0.00";
+				$ppending = "0.00";
 
 			$sortTab = array();
 			$ntab = array();
