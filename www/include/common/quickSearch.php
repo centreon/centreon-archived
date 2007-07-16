@@ -71,4 +71,12 @@ For information : contact@oreon-project.org
 	$tpl->assign("num", 1);	
 	$tpl->display("quickSearch.ihtml");
 	
+	if (strpos($search, "*")){
+		$search = str_replace("*", "%", $search);
+	} else if ($search[0] == "'" && $search[strlen($search) - 1] == "'"){ 
+		$search = str_replace("'", "", $search);
+	} else {
+		$search = "%".$search."%";
+	}
+	
 ?>
