@@ -196,7 +196,7 @@ sub GetPerfData(){
 		if (-r $PFDT || -r $PFDT.".bckp"){
 			# Move perfdata File befor reading		
 
-			# Penser a mire le fichier de backup !
+			# Penser a lire le fichier de backup !
 
 			if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
 				$data = getConfig();
