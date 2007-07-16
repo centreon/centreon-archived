@@ -264,7 +264,7 @@ For information : contact@oreon-project.org
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "'".htmlentities($ret["admin_pager"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."'," : $rq .= "'0',";
-		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "'".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "NULL) ";
+		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "'".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES)."') " : $rq .= "NULL) ";
  
         $DBRESULT =& $pearDB->query($rq);
