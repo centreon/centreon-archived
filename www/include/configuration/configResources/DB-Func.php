@@ -16,6 +16,9 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	if (!isset($oreon))
+		exit();
+
 	function testExistence ($name = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;
@@ -90,8 +93,7 @@ For information : contact@oreon-project.org
 	
 	function updateResource($resource_id)	{
 		if (!$resource_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE cfg_resource ";
