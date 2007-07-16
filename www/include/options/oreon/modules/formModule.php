@@ -69,6 +69,13 @@ For information : contact@oreon-project.org
 					$tpl->assign("output3", $lang["mod_menu_output3"]);
 					include_once($php_file_path);
 				}
+				
+			# Load module lang file without re-login
+		    $lang_file_path = "./modules/".$name."/lang/". $oreon->user->get_lang().".php";
+				if ($module_conf[$name]["php_files"] && file_exists($lang_file_path))	{
+					include_once ($lang_file_path);
+				}
+				
 			}
 			else
 				$tpl->assign("output4", $lang["mod_menu_output4"]);
