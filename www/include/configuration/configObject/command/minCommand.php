@@ -113,5 +113,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('command_id', $command_id);
+	$tpl->assign('command_name', $cmd["command_name"]);
 	$tpl->display("minCommand.ihtml");
 ?>
