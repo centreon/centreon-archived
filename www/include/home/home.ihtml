@@ -4,7 +4,7 @@
 			<td>
 				<table id="ListTable">
 					<tr class='ListHeader'>
-						<td>Host Stats</td>
+						<td>&nbsp;&nbsp;Host Stats</td>
 					</tr>
 					<tr>
 						<td>
