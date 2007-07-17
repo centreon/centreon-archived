@@ -55,6 +55,8 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
+	$search = tidySearchKey($search, $advanced_search);
+	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";

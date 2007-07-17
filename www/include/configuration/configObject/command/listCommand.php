@@ -68,6 +68,8 @@ For information : contact@oreon-project.org
 	else
 		$rq = "SELECT command_id, command_name, command_line, command_type FROM command ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
 
+	$search = tidySearchKey($search, $advanced_search);
+
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";

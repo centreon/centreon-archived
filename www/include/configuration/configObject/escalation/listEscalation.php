@@ -24,6 +24,10 @@ For information : contact@oreon-project.org
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+	
 	$rq = "SELECT COUNT(*) FROM escalation esc";	
 	if ($list && $list == "h"){
 		$oreon->user->admin || !HadUserLca($pearDB) ? $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0" : $rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id AND ehr.host_host_id IN (".$lcaHoststr.")) > 0";
@@ -50,10 +54,6 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 
@@ -85,6 +85,9 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	
+	$search = tidySearchKey($search, $advanced_search);
+	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";

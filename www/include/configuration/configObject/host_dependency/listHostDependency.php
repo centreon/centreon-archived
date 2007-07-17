@@ -30,6 +30,10 @@ For information : contact@oreon-project.org
 		$rq = "SELECT COUNT(*) FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
 	}
+	
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 	 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '".htmlentities($search, ENT_QUOTES)."')";
@@ -39,10 +43,6 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-	
 	include("./include/common/checkPagination.php");
 	
 	# Smarty template Init
@@ -71,6 +71,8 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query($rq);	
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	
+	$search = tidySearchKey($search, $advanced_search);	
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines

@@ -36,6 +36,12 @@ For information : contact@oreon-project.org
 	else 
 		$search_type_host = NULL;
 
+	$advanced_search = 0;
+	
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+
 	$rows = 0;
 	$tmp = NULL;
 	# Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
@@ -43,22 +49,15 @@ For information : contact@oreon-project.org
 		$search = str_replace('/', "#S#", $search);
 		$search = str_replace('\\', "#BS#", $search);
 		if ($oreon->user->admin || !$isRestreint)
-			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND sv.service_description LIKE '$search'");
 		else
-			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.")");
+			$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") AND sv.service_description LIKE '$search'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		while ($DBRESULT->fetchInto($service))
-			if (!$service["service_description"])	{
-				$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
-				if (stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
-					$rows++;
-					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
-				}
-			} else if (isset($search) && $search && stristr($service["service_description"], htmlentities($search, ENT_QUOTES)))	{
-				$rows++;
-				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
-			}
+		while ($DBRESULT->fetchInto($service)){
+			$rows++;
+			$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+		}
 	} else	{
 		if ($oreon->user->admin || !$isRestreint)
 			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
@@ -69,10 +68,6 @@ For information : contact@oreon-project.org
 		$rows = $DBRESULT->numRows();
 	}
 	
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
 	include("./include/common/checkPagination.php");
 
 	# Smarty template Init
@@ -96,6 +91,9 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	
+	$search = tidySearchKey($search, $advanced_search);
+	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
