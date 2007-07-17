@@ -88,7 +88,7 @@ For information : contact@oreon-project.org
 	$start = $num * $limit;
 	for($i=$start ; $i < ($limit+$start) && isset($service_status_num[$i]) ;$i++)
 		$displayTab[$service_status_num[$i][0]] = $service_status_num[$i][1];
-		$service_status = $displayTab;
+	$service_status = $displayTab;
 
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);	
@@ -132,6 +132,7 @@ For information : contact@oreon-project.org
     if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
     $session =& $DBRESULT->fetchRow();
+
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
     $tpl->assign('limit', $limit);
