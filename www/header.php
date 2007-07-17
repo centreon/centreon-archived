@@ -24,6 +24,8 @@ For information : contact@oreon-project.org
 	set_time_limit(60);
 	$time_start = microtime_float();
 
+	$advanced_search = 0;
+
 	# Define
 	define('SMARTY_DIR', '../GPL_LIB/Smarty/libs/');
 
