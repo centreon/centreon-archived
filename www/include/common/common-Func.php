@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	}
 
 	function tidySearchKey($search, $advanced_search){
-		if (!isset($advanced_search) || $advanced_search == 1){
+		if ($advanced_search == 1){
 			if (isset($search) && !strstr($search, "*") && !strstr($search, "%"))
 				$search = "'".$search."'";
 			else if (isset($search) && isset($search[0]) && isset($search[strlen($search) - 1]) && $search[0] == "%" && $search[strlen($search) - 1] == "%")
