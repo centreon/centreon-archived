@@ -22,6 +22,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 
 	# start quickSearch form
+	$advanced_search = 1;
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 	

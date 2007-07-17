@@ -36,6 +36,7 @@ For information : contact@oreon-project.org
 	$rows = $tmp["COUNT(*)"];
 	
 	# start quickSearch form
+	$advanced_search = 1;
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 	
