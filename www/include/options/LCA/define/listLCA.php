@@ -21,6 +21,10 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+	
 	$lca_reg = NULL;
 	# Not list the LCA the user is registered by || is admin
 	if (!$oreon->user->get_admin())	{
@@ -33,15 +37,11 @@ For information : contact@oreon-project.org
 	}
 	$lca_reg ? $lca_reg = $lca_reg : $lca_reg =  '\'\'';
 	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") AND (lca_name LIKE '%".$search."%' OR lca_alias LIKE '%".$search."%')");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") AND (lca_name LIKE '".$search."' OR lca_alias LIKE '".$search."')");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.")");
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -57,11 +57,13 @@ For information : contact@oreon-project.org
 
 	#List
 	if ($search)
-		$rq = "SELECT lca_id, lca_name, lca_alias, lca_activate  FROM lca_define WHERE (lca_name LIKE '%".$search."%' OR lca_alias LIKE '%".$search."%') AND lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT lca_id, lca_name, lca_alias, lca_activate  FROM lca_define WHERE (lca_name LIKE '".$search."' OR lca_alias LIKE '".$search."') AND lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT lca_id, lca_name, lca_alias, lca_activate FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
-	
+
+	$search = tidySearchKey($search, $advanced_search);
+		
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
