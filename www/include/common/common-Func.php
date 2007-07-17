@@ -23,6 +23,18 @@ For information : contact@oreon-project.org
 		return html_entity_decode($arg, ENT_QUOTES);
 	}
 
+	function tidySearchKey($search, $advanced_search){
+		if (!isset($advanced_search) || $advanced_search == 1){
+			if (isset($search) && !strstr($search, "*") && !strstr($search, "%"))
+				$search = "'".$search."'";
+			else if (isset($search) && isset($search[0]) && isset($search[strlen($search) - 1]) && $search[0] == "%" && $search[strlen($search) - 1] == "%")
+				$search = str_replace("%", "", $search);
+			else if (strpos($search, "%"))
+				$search = str_replace("%", "*", $search);
+		}
+		return $search;
+	}
+
 	#
 	## SMARTY
 	#
