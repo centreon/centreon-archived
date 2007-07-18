@@ -236,6 +236,7 @@ $lang['m_log_advanced'] = "Logs Avanc&eacute;s";
 $lang['m_log_lite'] = "Event Logs";
 $lang['ods_rrd_path'] = "Chemin d'acc&egrave;s aux bases RRD de stockage";
 $lang['ods_len_storage_rrd'] = "Taille des Bases RRDTool";
+$lang['ods_len_storage_mysql'] = "Dur&eacute;e de R&eacute;tention des donn&eacute;es de MySQL";
 $lang['ods_autodelete_rrd_db'] = "Auto-Suppression des bases RRD";
 $lang['ods_sleep_time'] = "Sleep Time";
 $lang['ods_purge_interval'] = "Interval de v&eacute;rification des purges";

@@ -229,6 +229,7 @@ $lang['m_log_advanced'] = "Avanced Logs";
 $lang['m_log_lite'] = "Event Logs";
 $lang['ods_rrd_path'] = "Path to RRDTool Database";
 $lang['ods_len_storage_rrd'] = "RRDTool database size";
+$lang['ods_len_storage_mysql'] = "Retention Duration for Data in MySQL";
 $lang['ods_autodelete_rrd_db'] = "RRDTool auto delete";
 $lang['ods_sleep_time'] = "Sleep Time";
 $lang['ods_purge_interval'] = "Purge check interval";
