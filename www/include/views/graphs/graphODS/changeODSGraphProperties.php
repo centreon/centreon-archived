@@ -67,6 +67,8 @@ For information : contact@oreon-project.org
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	$DBRESULT->fetchInto($index);
 	
+	if ($index["host_name"] == "Meta_Module")
+		$index["host_name"] = "Meta Services";
 	# Init variable in the page
 	$label = NULL;
 	$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
@@ -107,7 +109,16 @@ For information : contact@oreon-project.org
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
 	
+	if ($index["host_name"] == "Meta_Module")
+		$index["host_name"] = "Meta Services";
 	$tpl->assign('host_name', $index["host_name"]);
+	if (preg_match("/meta_([0-9]*)/", $index["service_description"], $matches)){
+		$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+		if (PEAR::isError($DBRESULT_meta))
+			print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+		$DBRESULT_meta->fetchInto($meta);
+		$index["service_description"] = $meta["meta_name"];
+	}
 	$tpl->assign('service_description', str_replace("#S#", "/", str_replace("#BS#", "\\", $index["service_description"])));
 	
 	

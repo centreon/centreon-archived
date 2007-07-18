@@ -48,32 +48,37 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDBO->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while ($DBRESULT->fetchInto($hostInOreon))
-		if ($hostInOreon["host_name"] != "OSL_Module")
+	while ($DBRESULT->fetchInto($hostInOreon)){
+		if ($hostInOreon["host_name"] == "Meta_Module")
+			$ppHosts[$hostInOreon["host_name"]] = "Meta Services";
+		else if ($hostInOreon["host_name"] != "OSL_Module")
 			$ppHosts[$hostInOreon["host_name"]] = $hostInOreon["host_name"];
+	}
 	$DBRESULT->free();
 
 	if (isset($_GET["host_name"])){
 		$ppServices = array( NULL => NULL );
-		$rq = "SELECT service_description FROM index_data WHERE host_name = '".$_GET["host_name"]."' ORDER BY `service_description`";
+		$rq = "SELECT service_description,host_name FROM index_data WHERE host_name = '".$_GET["host_name"]."' ORDER BY `service_description`";
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		while ($DBRESULT->fetchInto($svc))
+		while ($DBRESULT->fetchInto($svc)){
 			$ppServices[$svc["service_description"]] = $svc["service_description"];
+		}
 		$DBRESULT->free();
 	} else if (isset($_GET["host_id"])) {
 		$ppServices = array( NULL => NULL );
-		$rq = "SELECT service_description FROM index_data WHERE host_id = '".$_GET["host_id"]."' ORDER BY `service_description`";
+		$rq = "SELECT service_description,host_name FROM index_data WHERE host_id = '".$_GET["host_id"]."' ORDER BY `service_description`";
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		while ($DBRESULT->fetchInto($svc))
+		while ($DBRESULT->fetchInto($svc)){
 			$ppServices[$svc["service_description"]] = $svc["service_description"];
+		}
 		$DBRESULT->free();
 	}
 
-	$graphTs = array(NULL=>NULL);
+	$graphTs = array(NULL => NULL);
 	$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -176,6 +181,14 @@ For information : contact@oreon-project.org
 				else
 					$host_name = $svc_id["host_name"];
 				
+				if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
+					$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+					if (PEAR::isError($DBRESULT_meta))
+						print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+					$DBRESULT_meta->fetchInto($meta);
+					$svc_id["service_description"] = $meta["meta_name"];
+				}
+				
 				$elem[$index_id] = array("index_id" => $index_id, "service_description" => str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"])));
 				
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
@@ -232,8 +245,11 @@ For information : contact@oreon-project.org
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
 	
-	if (isset($host_name))
+	if (isset($host_name)){
+		if ($host_name = "Meta_Module")
+			$host_name = "Meta Services";
 		$tpl->assign('host_name', $host_name);
+	}
 	if (isset($elem))
 		$tpl->assign('elemArr', $elem);
 	

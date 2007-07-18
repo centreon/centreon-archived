@@ -115,6 +115,13 @@ For information : contact@oreon-project.org
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$other_services = array();
 		while ($DBRESULT2->fetchInto($selected_service)){
+			if (preg_match("/meta_([0-9]*)/", $selected_service["service_description"], $matches)){
+				$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+				if (PEAR::isError($DBRESULT_meta))
+					print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+				$DBRESULT_meta->fetchInto($meta);
+				$selected_service["service_description"] = $meta["meta_name"];
+			}	
 			$selected_service["service_description"] = str_replace("#S#", "/", $selected_service["service_description"]);
 			$selected_service["service_description"] = str_replace("#BS#", "\\", $selected_service["service_description"]);
 			$other_services[$selected_service["id"]] = $selected_service["service_description"];
@@ -205,6 +212,16 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('p', $p);
+		if ($svc_id["host_name"] = "Meta_Module")
+			$svc_id["host_name"] = "Meta Services";
+			
+		if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
+			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+			if (PEAR::isError($DBRESULT_meta))
+				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+			$DBRESULT_meta->fetchInto($meta);
+			$svc_id["service_description"] = $meta["meta_name"];
+		}	
 		$tpl->assign('host_name', $svc_id);
 		$tpl->assign('isAvl', 1);
 		$tpl->assign('lang', $lang);

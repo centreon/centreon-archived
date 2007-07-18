@@ -70,8 +70,12 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDBO->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	while ($DBRESULT->fetchInto($hostInOreon))
-		$ppHosts[$hostInOreon["host_name"]] = $hostInOreon["host_name"];
+	while ($DBRESULT->fetchInto($hostInOreon)){
+		if ($hostInOreon["host_name"] == "Meta_Module")
+			$ppHosts[$hostInOreon["host_name"]] = "Meta Services";
+		else
+			$ppHosts[$hostInOreon["host_name"]] = $hostInOreon["host_name"];
+	}
 	$DBRESULT->free();
 
 	if (isset($_GET["host_name"])){
@@ -80,8 +84,16 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		while ($DBRESULT->fetchInto($svc))
-			$ppServices[$svc["service_description"]] = $svc["service_description"];
+		while ($DBRESULT->fetchInto($svc)){
+			if (preg_match("/meta_([0-9]*)/", $svc["service_description"], $matches)){
+				$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+				if (PEAR::isError($DBRESULT_meta))
+					print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+				$DBRESULT_meta->fetchInto($meta);
+				$ppServices[$svc["service_description"]] = $meta["meta_name"];
+			} else 
+				$ppServices[$svc["service_description"]] = $svc["service_description"];
+		}
 		$DBRESULT->free();
 	}
 
@@ -158,7 +170,16 @@ For information : contact@oreon-project.org
 		$ret =& $form->getsubmitValues();
 		$case = NULL;
 		if (isset($ret["host_name"]) && $ret["host_name"] && isset($ret["service_description"])){
-			$case = str_replace(" ", "\ ",$ret["host_name"])." / ".str_replace(" ", "\ ",$ret["service_description"]);
+			if ($ret["host_name"] == "Meta_Module")
+				$ret["host_name"] = "Meta Services";
+			if (preg_match("/meta_([0-9]*)/", $ret["service_description"], $matches)){
+				$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+				if (PEAR::isError($DBRESULT_meta))
+					print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+				$DBRESULT_meta->fetchInto($meta);
+				$ret["service_description"] = $meta["meta_name"];
+			}
+			$case = $ret["host_name"]." / ".$ret["service_description"];
 			isset($_GET["template_id"]) && $_GET["template_id"] ? $graph = array("graph_id" => $_GET["template_id"], "name" => "") : $graph = array("graph_id" => getDefaultGraph($service_id, 2), "name" => "");
 		} 
 		

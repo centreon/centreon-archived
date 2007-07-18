@@ -81,6 +81,14 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$DBRESULT->fetchInto($GraphTemplate);
 		
+		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
+			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+			if (PEAR::isError($DBRESULT_meta))
+				print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
+			$DBRESULT_meta->fetchInto($meta);
+			$index_data_ODS["service_description"] = $meta["meta_name"];
+		}
+		
 		$index_data_ODS["service_description"] = str_replace("#S#", "/", $index_data_ODS["service_description"]);
 		$index_data_ODS["service_description"] = str_replace("#BS#", "\\", $index_data_ODS["service_description"]);
 		
