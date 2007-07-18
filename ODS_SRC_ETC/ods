@@ -1,10 +1,28 @@
 #!/bin/sh
-# Copyright (c) 2007, Merethis at Paris, France.
+###################################################################
+# Oreon is developped with GPL Licence 2.0 
 #
-# Author: Julien Mathis <jmathis@merethis.com>
+# GPL License: http://www.gnu.org/licenses/gpl.txt
 #
-# /etc/init.d/ods
+# Developped by : Julien Mathis - Romain Le Merlus
 #
+#                 jmathis@merethis.com
+#
+###################################################################
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+#    For information : contact@merethis.com
+####################################################################
+#
+# Script init
 #
 ### BEGIN INIT INFO
 # Provides:       ods
@@ -61,8 +79,6 @@ ODSRunFile=${prefix}/var/ods.pid
 ODSDemLog=${prefix}/var/ods_demon.log
 ODSLockDir=/var/lock/subsys
 ODSLockFile=ods
-NagiosUser=@NAGIOS_USER@
-NagiosGroup=@NAGIOS_GROUP@
           
 
 # Check that ods exists.
@@ -81,12 +97,20 @@ fi
 case "$1" in
 
     start)
-	echo "Starting ODS Collector : ods_daemon"
 	# Check lock file
 	if test -f $ODSRunFile; then
 		echo "Error : $ODSRunFile already Exists."
-		exit 1
+		NDODSRUNNING=`ps -edf | grep $ODSBin | grep -v grep | wc -l `
+		if [ $NDODSRUNNING = 0 ]
+		then
+			echo "But no ods process runnig"
+			rm -f $ODSRunFile
+			echo "Removing ods pid file"
+		else 
+			exit 1
+		fi
 	fi
+	echo "Starting ODS Collector : ods"
 	$ODSBin 2>> $ODSDemLog &
 	if [ -d $ODSLockDir ]; then touch $ODSLockDir/$ODSLockFile; fi
 			#sleep 1
