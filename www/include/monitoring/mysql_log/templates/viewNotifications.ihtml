@@ -15,10 +15,6 @@
 	<tr class='list_two'>
 		<td class="ListColLeft">{$form.sort_type2.label}{$form.sort_type2.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search2.html} </td>
 	</tr>
-	<!--
-	<tr class='list_one'>
-		<td class="ListColLeft">{$form.sort_type3.label}{$form.sort_type3.html}&nbsp;->&nbsp;{$form.search1.label}&nbsp;{$form.search3.html} </td>
-	</tr>-->
 	<tr class='list_two'>
 		<td class="ListColCenter" colspan="2">{$form.ssubmit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
 	</tr>

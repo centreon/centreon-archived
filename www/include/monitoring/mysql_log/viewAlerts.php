@@ -54,7 +54,7 @@
 	$tab = array ("contact_email" => "oreon");
 
 	$sort_type = array(	""=>NULL,"host_name" => $lang['m_log_Host_name']);
-	if (isset($_GET["o"]) && $_GET["o"] == "notif_svc") 
+	if (!isset($_GET["o"]) || (isset($_GET["o"]) && ($_GET["o"] == "alerts_svc" || $_GET["o"] == ""))) 
 		$sort_type["service_description"] = $lang['m_log_Service_desc'];
 	$sort_type["status"] = $lang['m_log_status'];
 	$sort_type["output"] = $lang['m_log_informations'];
