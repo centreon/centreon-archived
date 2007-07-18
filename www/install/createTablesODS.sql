@@ -25,7 +25,7 @@ CREATE TABLE `config` (
 
 -- --------------------------------------------------------
 
-INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`, `nagios_log_file`) VALUES (1, '/var/lib/ods/database/', 365, '0', 10, 60, 2, '1', '@INSTALL_DIR_NAGIOS@/var/service-perfdata.tmp', '@INSTALL_DIR_NAGIOS@/var/service-perfdata', '@INSTALL_DIR_NAGIOS@/var/nagios.log');
+INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `len_storage_mysql`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`, `nagios_log_file`) VALUES (1, '/var/lib/ods/database/', 365, '260', '0', 10, 60, '2', '1', '@INSTALL_DIR_NAGIOS@/var/service-perfdata.tmp', '@INSTALL_DIR_NAGIOS@/var/service-perfdata', '@INSTALL_DIR_NAGIOS@/var/nagios.log');
 
 -- 
 -- Structure de la table `data_bin`
