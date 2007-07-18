@@ -6,6 +6,7 @@
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.RRDdatabase_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_path.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.len_storage_rrd.label}</td><td class="FormRowValue">{$form.len_storage_rrd.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.len_storage_mysql.label}</td><td class="FormRowValue">{$form.len_storage_mysql.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.autodelete_rrd_db.label}</td><td class="FormRowValue">{$form.autodelete_rrd_db.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.sleep_time.label}</td><td class="FormRowValue">{$form.sleep_time.html}({$lang.ods_sleep_time_expl})</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.purge_interval.label}</td><td class="FormRowValue">{$form.purge_interval.html}({$lang.ods_purge_interval_expl})</td></tr>

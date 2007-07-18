@@ -56,6 +56,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
 	$form->addElement('text', 'RRDdatabase_path', $lang["ods_rrd_path"], $attrsText);
 	$form->addElement('text', 'len_storage_rrd', $lang["ods_len_storage_rrd"], $attrsText);
+	$form->addElement('text', 'len_storage_mysql', $lang["ods_len_storage_mysql"], $attrsText);
 	$form->addElement('checkbox', 'autodelete_rrd_db', $lang['ods_autodelete_rrd_db']);
 	$form->addElement('text', 'sleep_time', $lang["ods_sleep_time"], $attrsText2);
 	$form->addElement('text', 'purge_interval', $lang["ods_purge_interval"], $attrsText2);
