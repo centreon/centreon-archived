@@ -97,18 +97,12 @@ For information : contact@oreon-project.org
 	function getMyHostName($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$row =& $DBRESULT->fetchRow();
-			if ($row["host_name"])
-				return html_entity_decode($row["host_name"], ENT_QUOTES);
-			else if ($row["host_template_model_htm_id"])
-				$host_id = $row["host_template_model_htm_id"];
-			else
-				break;
-		}
+		$DBRESULT =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
+		if ($row["host_name"])
+			return $row["host_name"];
 	}
 	
 	function isAHostTpl($host_id = NULL)	{
