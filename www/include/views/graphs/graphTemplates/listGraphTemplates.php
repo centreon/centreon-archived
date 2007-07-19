@@ -45,16 +45,15 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
 	$tpl->assign("headerMenu_compo", $lang['giv_compo']);
-	$tpl->assign("headerMenu_tpl1", $lang['giv_tpl1']);
-	$tpl->assign("headerMenu_tpl2", $lang['giv_tpl2']);
+	$tpl->assign("headerMenu_split_component", $lang['giv_split_component']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 
 	#List
 	if ($search)
-		$rq = "SELECT @nbr:=(SELECT COUNT(gc_compo_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = gg.graph_id) AS nbr, graph_id, name, title, default_tpl1, default_tpl2 FROM giv_graphs_template gg WHERE name LIKE '%".$search."%' ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(gc_compo_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = gg.graph_id) AS nbr, graph_id, name, default_tpl1, vertical_label, split_component FROM giv_graphs_template gg WHERE name LIKE '%".$search."%' ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT @nbr:=(SELECT COUNT(gc_compo_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = gg.graph_id) AS nbr, graph_id, name, title, default_tpl1, default_tpl2 FROM giv_graphs_template gg ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(gc_compo_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = gg.graph_id) AS nbr, graph_id, name, default_tpl1, vertical_label, split_component FROM giv_graphs_template gg ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$res = & $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -73,10 +72,9 @@ $pagination = "maxViewConfiguration";
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$graph["name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&graph_id=".$graph['graph_id'],
-						"RowMenu_desc"=>$graph["title"],
+						"RowMenu_desc"=>$graph["vertical_label"],
 						"RowMenu_compo"=>$graph["nbr"],
-						"RowMenu_tpl1"=>$graph["default_tpl1"] ? $lang["yes"] : $lang["no"],
-						"RowMenu_tpl2"=>$graph["default_tpl2"] ? $lang["yes"] : $lang["no"],
+						"RowMenu_split_component"=>$graph["split_component"] ? $lang["yes"] : $lang["no"],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}

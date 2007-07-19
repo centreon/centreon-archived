@@ -69,7 +69,6 @@ For information : contact@oreon-project.org
 	#
 	$form->addElement('header', 'information', $lang['giv_gt_infos']);
 	$form->addElement('text', 'name', $lang["giv_gt_name"], $attrsText);
-	$form->addElement('text', 'title', $lang["giv_gt_title"], $attrsText);
 
 	$form->addElement('select', 'img_format', $lang["giv_gt_imgFormat"], array("PNG"=>"PNG", "GIF"=>"GIF"));
 	$form->addElement('text', 'vertical_label', $lang["giv_gt_vLabel"], $attrsText);
@@ -140,11 +139,13 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl1', null, $lang["no"], '0');
 	$form->addGroup($tab, 'default_tpl1', $lang["giv_gt_defaultTpl1"], '&nbsp;');
 	$form->setDefaults(array('default_tpl1' => '0'));
+	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl2', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl2', null, $lang["no"], '0');
-	$form->addGroup($tab, 'default_tpl2', $lang["giv_gt_defaultTpl2"], '&nbsp;');
-	$form->setDefaults(array('default_tpl2' => '0'));
+	$tab[] = &HTML_QuickForm::createElement('radio', 'split_component', null, $lang["yes"], '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'split_component', null, $lang["no"], '0');
+	$form->addGroup($tab, 'split_component', $lang["giv_split_component"], '&nbsp;');
+	$form->setDefaults(array('split_component' => '0'));
+	
 	$form->addElement('textarea', 'comment', $lang["giv_gt_comment"], $attrsTextarea);
 
 	#

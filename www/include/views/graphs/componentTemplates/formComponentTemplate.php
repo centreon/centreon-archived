@@ -50,10 +50,11 @@ For information : contact@oreon-project.org
 	##########################################################
 	# Var information to format the element
 	#
+	
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
+	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
 	#
@@ -67,20 +68,19 @@ For information : contact@oreon-project.org
 	else if ($o == "w")
 		$form->addElement('header', 'ftitle', $lang["giv_ct_view"]);
 
-	#
-	## Basic information
-	#
+	# Basic information
+	
 	$form->addElement('header', 'information', $lang['giv_ct_infos']);
 	$form->addElement('text', 'name', $lang["giv_ct_name"], $attrsText);
+	
 	for ($cpt = 1; $cpt <= 100; $cpt++)
 		$orders[$cpt] = $cpt;
+	
 	$form->addElement('select', 'ds_order', $lang['giv_ct_order'], $orders);
 	$form->addElement('text', 'ds_name', $lang["giv_ct_dsName"], $attrsText);
-	$form->addElement('text', 'ds_legend', $lang["giv_ct_legend"], $attrsText);
-
-	$TabColorNameAndLang 	= array("ds_color_line"=>"giv_ct_lineClr",
-                                    	"ds_color_area"=>"giv_ct_areaClr",
-					);
+	$form->addElement('text', 'base', $lang["giv_ct_dsBase"], $attrsText);
+	
+	$TabColorNameAndLang = array("ds_color_line"=>"giv_ct_lineClr","ds_color_area"=>"giv_ct_areaClr",);
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $lang[$val];
@@ -88,13 +88,11 @@ For information : contact@oreon-project.org
 		$title = $lang["genOpt_colorPicker"];
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"9","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
-		//if ($form->validate())	{
-		//	$colorColor = $form->exportValue($nameColor);
-		//}
+		
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
-		//if (!$form->validate())	{
+		
 		if ($o == "c" || $o == "a")	{
 			$form->addElement('button', $nameColor.'_modify', $lang['modify'], $attrsText5);
 		}
@@ -140,11 +138,6 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl1', null, $lang["no"], '0');
 	$form->addGroup($tab, 'default_tpl1', $lang["giv_gt_defaultTpl1"], '&nbsp;');
 	$form->setDefaults(array('default_tpl1' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl2', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl2', null, $lang["no"], '0');
-	$form->addGroup($tab, 'default_tpl2', $lang["giv_gt_defaultTpl2"], '&nbsp;');
-	$form->setDefaults(array('default_tpl2' => '0'));
 
 	$form->addElement('textarea', 'comment', $lang["giv_gt_comment"], $attrsTextarea);
 

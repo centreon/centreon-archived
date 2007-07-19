@@ -142,7 +142,7 @@ For information : contact@oreon-project.org
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
-		isset($ret["ds_legend"]) && $ret["ds_legend"] != NULL ? $rq .= "'".htmlentities($ret["ds_legend"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".htmlentities($ret["base"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_filled"]["ds_filled"]) && $ret["ds_filled"]["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"]["ds_filled"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -154,7 +154,6 @@ For information : contact@oreon-project.org
 		isset($ret["ds_transparency"]) && $ret["ds_transparency"] != NULL ? $rq .= "'".htmlentities($ret["ds_transparency"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]["ds_invert"]."', ": $rq .= "NULL, ";
 		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
-		isset($ret["default_tpl2"]["default_tpl2"]) && $ret["default_tpl2"]["default_tpl2"] != NULL ? $rq .= "'".$ret["default_tpl2"]["default_tpl2"]."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
@@ -176,8 +175,6 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		if ($ret["default_tpl1"]["default_tpl1"])
 			noDefaultOreonGraph();
-		if ($ret["default_tpl2"]["default_tpl2"])
-			noDefaultPluginsGraph();
 		$rq = "UPDATE giv_components_template ";
 		$rq .= "SET name = ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -185,8 +182,8 @@ For information : contact@oreon-project.org
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .=	"ds_name = ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".htmlentities($ret["ds_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= 	"ds_legend = ";
-		isset($ret["ds_legend"]) && $ret["ds_legend"] != NULL ? $rq .= "'".$ret["ds_legend"]."', ": $rq .= "NULL, ";
+		$rq .= 	"base = ";
+		isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".$ret["base"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_line = ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".$ret["ds_color_line"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_area = ";

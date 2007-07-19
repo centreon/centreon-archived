@@ -81,27 +81,12 @@ For information : contact@oreon-project.org
 		}
 	}
 	
-	function defaultPluginsGraph ()	{
-		global $pearDB;
-		$rq = "SELECT DISTINCT graph_id FROM giv_graphs_template WHERE default_tpl2 = '1'";
-		$res =& $pearDB->query($rq);
-		if (!$res->numRows())	{
-			$rq = "UPDATE giv_graphs_template SET default_tpl2 = '1' LIMIT 1";
-			$pearDB->query($rq);
-		}
-	}
-	
 	function noDefaultOreonGraph ()	{
 		global $pearDB;
 		$rq = "UPDATE giv_graphs_template SET default_tpl1 = '0'";
 		$pearDB->query($rq);
 	}
 	
-	function noDefaultPluginsGraph ()	{
-		global $pearDB;
-		$rq = "UPDATE giv_graphs_template SET default_tpl2 = '0'";
-		$pearDB->query($rq);
-	}
 	
 	function updateGraphTemplateInDB ($graph_id = NULL)	{
 		if (!$graph_id) return;
@@ -122,20 +107,14 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		if ($ret["default_tpl1"]["default_tpl1"])
 			noDefaultOreonGraph();
-		if ($ret["default_tpl2"]["default_tpl2"])
-			noDefaultPluginsGraph();
-		$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , `title` , `img_format` , " .
-				"`vertical_label` ,`period` ,`step` , `width` , `height` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
-				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `default_tpl2` , " .
+		$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
+				"`vertical_label` , `width` , `height` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
+				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `split_component` , " .
 				"`stacked` , `comment` ) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["title"]) && $ret["title"] != NULL ? $rq .= "'".htmlentities($ret["title"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["img_format"]) && $ret["img_format"] != NULL ? $rq .= "'".$ret["img_format"]."', ": $rq .= "NULL, ";
 		isset($ret["vertical_label"]) && $ret["vertical_label"] != NULL ? $rq .= "'".htmlentities($ret["vertical_label"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["period"]) && $ret["period"] != NULL ? $rq .= "'".htmlentities($ret["period"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["step"]) && $ret["step"] != NULL ? $rq .= "'".htmlentities($ret["step"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["width"]) && $ret["width"] != NULL ? $rq .= "'".htmlentities($ret["width"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["height"]) && $ret["height"] != NULL ? $rq .= "'".htmlentities($ret["height"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["lower_limit"]) && $ret["lower_limit"] != NULL ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
@@ -150,13 +129,12 @@ For information : contact@oreon-project.org
 		isset($ret["col_top"]) && $ret["col_top"] != NULL ? $rq .= "'".htmlentities($ret["col_top"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
-		isset($ret["default_tpl2"]["default_tpl2"]) && $ret["default_tpl2"]["default_tpl2"] != NULL ? $rq .= "'".$ret["default_tpl2"]["default_tpl2"]."', ": $rq .= "NULL, ";
+		isset($ret["split_component"]["split_component"]) && $ret["split_component"]["split_component"] != NULL ? $rq .= "'".$ret["split_component"]["split_component"]."', ": $rq .= "NULL, ";
 		isset($ret["stacked"]["stacked"]) && $ret["stacked"]["stacked"] != NULL ? $rq .= "'".htmlentities($ret["stacked"]["stacked"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$pearDB->query($rq);
 		defaultOreonGraph();
-		defaultPluginsGraph();
 		$res =& $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
 		$graph_id = $res->fetchRow();
 		return ($graph_id["MAX(graph_id)"]);
@@ -164,27 +142,16 @@ For information : contact@oreon-project.org
 	
 	function updateGraphTemplate($graph_id = null)	{
 		if (!$graph_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if ($ret["default_tpl1"]["default_tpl1"])
 			noDefaultOreonGraph();
-		if ($ret["default_tpl2"]["default_tpl2"])
-			noDefaultPluginsGraph();
 		$rq = "UPDATE giv_graphs_template ";
 		$rq .= "SET name = ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "title = ";
-		isset($ret["title"]) && $ret["title"] != NULL ? $rq .= "'".htmlentities($ret["title"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .=	"img_format = ";
-		isset($ret["img_format"]) && $ret["img_format"] != NULL ? $rq .= "'".$ret["img_format"]."', ": $rq .= "NULL, ";
 		$rq .= 	"vertical_label = ";
 		isset($ret["vertical_label"]) && $ret["vertical_label"] != NULL ? $rq .= "'".htmlentities($ret["vertical_label"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= 	"period = ";
-		isset($ret["period"]) && $ret["period"] != NULL ? $rq .= "'".$ret["period"]."', ": $rq .= "NULL, ";
-		$rq .= 	"step = ";
-		isset($ret["step"]) && $ret["step"] != NULL ? $rq .= "'".$ret["step"]."', ": $rq .= "NULL, ";
 		$rq .= "width = ";
 		isset($ret["width"]) && $ret["width"] != NULL ? $rq .= "'".$ret["width"]."', ": $rq .= "NULL, ";
 		$rq .= "height = ";
@@ -213,8 +180,8 @@ For information : contact@oreon-project.org
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "default_tpl1 = ";
 		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
-		$rq .= "default_tpl2 = ";
-		isset($ret["default_tpl2"]["default_tpl2"]) && $ret["default_tpl2"]["default_tpl2"] != NULL ? $rq .= "'".$ret["default_tpl2"]["default_tpl2"]."', ": $rq .= "NULL, ";
+		$rq .= "split_component = ";
+		isset($ret["split_component"]["split_component"]) && $ret["split_component"]["split_component"] != NULL ? $rq .= "'".$ret["split_component"]["split_component"]."', ": $rq .= "NULL, ";
 		$rq .= "stacked = ";
 		isset($ret["stacked"]["stacked"]) && $ret["stacked"]["stacked"] != NULL ? $rq .= "'".$ret["stacked"]["stacked"]."', ": $rq .= "NULL, ";
 		$rq .= "comment = ";
@@ -222,16 +189,12 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE graph_id = '".$graph_id."'";
 		$pearDB->query($rq);
 		defaultOreonGraph();
-		defaultPluginsGraph();
 	}			
 	
 	function updateComponentChilds($graph_id = null)	{
 		if (!$graph_id) return;
-		global $form;
-		global $pearDB;
-		$rq = "DELETE FROM giv_graphT_componentT_relation ";
-		$rq .= "WHERE gg_graph_id = '".$graph_id."'";
-		$pearDB->query($rq);
+		global $form, $pearDB;
+		$pearDB->query("DELETE FROM giv_graphT_componentT_relation WHERE gg_graph_id = '".$graph_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("graph_compos");
 		for($i = 0; $i < count($ret); $i++)	{

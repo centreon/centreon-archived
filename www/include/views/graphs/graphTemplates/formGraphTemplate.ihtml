@@ -15,16 +15,16 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 	 	
 		<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.title.label}</td><td class="FormRowValue">{$form.title.html}</td></tr>
+		<!--<tr class="list_two"><td class="FormRowField">{$form.title.label}</td><td class="FormRowValue">{$form.title.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.img_format.label}</td><td class="FormRowValue">{$form.img_format.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.vertical_label.label}</td><td class="FormRowValue">{$form.vertical_label.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.width.label}</td><td class="FormRowValue">{$form.width.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.height.label}</td><td class="FormRowValue">{$form.height.html}</td></tr>
+		--><tr class="list_two"><td class="FormRowField">{$form.vertical_label.label}</td><td class="FormRowValue">{$form.vertical_label.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.width.label}</td><td class="FormRowValue">{$form.width.html}&nbsp;px</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.height.label}</td><td class="FormRowValue">{$form.height.html}&nbsp;px</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lower_limit.label}</td><td class="FormRowValue">{$form.lower_limit.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.upper_limit.label}</td><td class="FormRowValue">{$form.upper_limit.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.period.label}</td><td class="FormRowValue">{$form.period.html}</td></tr>
+		<!--<tr class="list_one"><td class="FormRowField">{$form.period.label}</td><td class="FormRowValue">{$form.period.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.step.label}</td><td class="FormRowValue">{$form.step.html}</td></tr>
-		<tr class="list_one">
+		--><tr class="list_one">
 			<td class="FormRowField">{$form.bg_grid_color.label}</td>
 			<td class="FormRowValue">{$form.bg_grid_color.html}&nbsp;&nbsp;{$form.bg_grid_color_color.html}&nbsp;&nbsp;{$form.bg_grid_color_modify.html}</td>
 		</tr>
@@ -60,11 +60,10 @@
 			<td class="FormRowField">{$form.col_bot.label}</td>
 			<td class="FormRowValue">{$form.col_bot.html}&nbsp;&nbsp;{$form.col_bot_color.html}&nbsp;&nbsp;{$form.col_bot_modify.html}</td>
 		</tr>
-		<tr class="list_two"><td class="FormRowField">{$form.stacked.label}</td><td class="FormRowValue">{$form.stacked.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.default_tpl2.label}</td><td class="FormRowValue">{$form.default_tpl2.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.split_component.label}</td><td class="FormRowValue">{$form.split_component.html}</td></tr>
+		<!--<tr class="list_two"><td class="FormRowField">{$form.stacked.label}</td><td class="FormRowValue">{$form.stacked.html}</td></tr>
+		--><tr class="list_one"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
-
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
