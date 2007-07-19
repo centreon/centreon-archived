@@ -111,9 +111,6 @@ $lang['m_dashboardService'] = "Service";
 
 # Graph menu
 
-$lang['m_views_loc'] = "Localisation";
-$lang['m_views_cty'] = "Countries & Cities";
-$lang['m_views_map'] = "Maps";
 $lang['m_views_graphs'] = "Graphs";
 $lang['m_views_graphCustom'] = "Custom Graphs";
 $lang['m_views_graphShow'] = "Simple Graphs Renderer";

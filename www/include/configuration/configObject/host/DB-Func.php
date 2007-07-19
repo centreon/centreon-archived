@@ -702,19 +702,7 @@ For information : contact@oreon-project.org
 		$rq .= "ehi_2d_coords = ";
 		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "ehi_3d_coords = ";
-		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "country_id = ";
-		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
-		$rq .= "city_id = ";
-		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$city = $DBRESULT->fetchRow();
-			$city["city_id"] ? $rq .= "'".$city["city_id"]."' ": $rq .= "NULL ";
-		}	
-		else
-			$rq .= "NULL ";
+		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -735,14 +723,6 @@ For information : contact@oreon-project.org
 		if (isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL) $rq .= "ehi_statusmap_image = '".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES)."', ";
 		if (isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL) $rq .= "ehi_2d_coords = '".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES)."', ";
 		if (isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL) $rq .= "ehi_3d_coords = '".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."', ";
-		if (isset($ret["country_id"]) && $ret["country_id"] != NULL) $rq .= "country_id = '".$ret["country_id"]."', ";
-		if (isset($ret["city_name"]) && isset($ret["country_id"]) && $ret["city_name"] && $ret["country_id"])	{
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$city = $DBRESULT->fetchRow();
-			$rq .= "city_id = '".$city["city_id"]."', ";
-		}
 		if (strcmp("UPDATE extended_host_information SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";

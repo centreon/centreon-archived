@@ -135,12 +135,6 @@ $lang['h_nagStatImg'] = "Nagios Statuts Map Image";
 $lang['h_nag2dCoords'] = "Nagios 2d Coords";
 $lang['h_nag3dCoords'] = "Nagios 3d Coords";
 
-$lang['h_oreon'] = "Centreon";
-$lang['h_country'] = "Country";
-$lang['h_city'] = "City";
-$lang['h_popCityTitle'] = "Choose a country";
-$lang['h_popCityAlpha'] = "Alphabetic Sort";
-
 /* host group */
 
 $lang['hg'] = "HostGroup";

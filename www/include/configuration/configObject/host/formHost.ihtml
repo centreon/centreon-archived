@@ -174,21 +174,6 @@
 <div id='tab4' class='tab'>
 	 <table id="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title4}</td></tr>
-
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.country_id.label}</td><td class="FormRowValue">
-		{$form.country_id.html}</td></tr>
-		<tr class="list_two">
-			<td class="FormRowField">
-				{$form.city_name.label}
-			</td>
-			<td class="FormRowValue">
-				{$form.city_name.html}
-				<!--	{if $o == "a" || $o == "c"}
-				&nbsp;<img src='./img/icones/16x16/flower_yellow.gif' onClick="window.open('oreon.php?p=60101&country_id='+ document.Form.elements['country_id'].options[document.Form.elements['country_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=no,resizable=yes,copyhistory=no, width=350, height=230');">
-				{/if} -->
-			</td>
-		</tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ehi_notes_url.label}</td><td class="FormRowValue">{$form.ehi_notes_url.html}</td></tr>
 	 	{if $msg.nagios == 2}

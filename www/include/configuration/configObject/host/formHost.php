@@ -60,11 +60,6 @@ For information : contact@oreon-project.org
 		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
-		# Set City name
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$host["city_id"]."' AND cny.country_id = '".$host["country_id"]."'");
-		$city = $DBRESULT->fetchRow();
-		$host["city_name"] = $city["city_name"];
-		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -117,12 +112,6 @@ For information : contact@oreon-project.org
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
 	}
-	$DBRESULT->free();
-	# Countries comes from DB -> Store in $countries Array
-	$countries = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
-	while($DBRESULT->fetchInto($country))
-		$countries[$country["country_id"]] = $country["country_name"];
 	$DBRESULT->free();
 	# Deletion Policy definition comes from DB -> Store in $ppols Array
 	$ppols = array(NULL=>NULL);
@@ -435,10 +424,6 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'ehi_statusmap_image', $lang['h_nagStatImg'], $extImgStatusmap, array("onChange"=>"showLogo('ehi_statusmap_image',this.form.elements['ehi_statusmap_image'].value)"));	
 	$form->addElement('text', 'ehi_2d_coords', $lang['h_nag2dCoords'], $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', $lang['h_nag3dCoords'], $attrsText2);
-
-	$form->addElement('header', 'oreon', $lang['h_oreon']);
-	$form->addElement('select', 'country_id', $lang['h_country'], $countries);
-	$form->addElement('text', 'city_name', $lang['h_city'], array("id"=>"city_name", "size"=>"35", "autocomplete"=>"off"));
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');

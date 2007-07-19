@@ -728,12 +728,8 @@ CREATE TABLE `extended_host_information` (
   `ehi_statusmap_image` varchar(200) default NULL,
   `ehi_2d_coords` varchar(200) default NULL,
   `ehi_3d_coords` varchar(200) default NULL,
-  `country_id` int(11) unsigned default NULL,
-  `city_id` int(11) unsigned default NULL,
   PRIMARY KEY  (`ehi_id`),
-  KEY `host_index` (`host_host_id`),
-  KEY `country_index` (`country_id`),
-  KEY `city_index` (`city_id`)
+  KEY `host_index` (`host_host_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1039,15 +1035,11 @@ CREATE TABLE `hostgroup` (
   `hg_alias` varchar(200) default NULL,
   `hg_snmp_community` varchar(255) default NULL,
   `hg_snmp_version` varchar(255) default NULL,
-  `country_id` int(10) unsigned default NULL,
-  `city_id` int(10) unsigned default NULL,
   `hg_comment` text,
   `hg_activate` enum('0','1') NOT NULL default '1',
   PRIMARY KEY  (`hg_id`),
   KEY `name_index` (`hg_name`),
-  KEY `alias_index` (`hg_alias`),
-  KEY `country_index` (`country_id`),
-  KEY `city_index` (`city_id`)
+  KEY `alias_index` (`hg_alias`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1551,15 +1543,11 @@ CREATE TABLE `servicegroup` (
   `sg_id` int(11) NOT NULL auto_increment,
   `sg_name` varchar(200) default NULL,
   `sg_alias` varchar(200) default NULL,
-  `country_id` int(10) unsigned default NULL,
-  `city_id` int(10) unsigned default NULL,
   `sg_comment` text,
   `sg_activate` enum('0','1') NOT NULL default '1',
   PRIMARY KEY  (`sg_id`),
   KEY `name_index` (`sg_name`),
-  KEY `alias_index` (`sg_alias`),
-  KEY `country_index` (`country_id`),
-  KEY `city_index` (`city_id`)
+  KEY `alias_index` (`sg_alias`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1928,9 +1916,7 @@ ALTER TABLE `escalation_service_relation`
 -- Contraintes pour la table `extended_host_information`
 --
 ALTER TABLE `extended_host_information`
-  ADD CONSTRAINT `extended_host_information_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `extended_host_information_ibfk_2` FOREIGN KEY (`country_id`) REFERENCES `view_country` (`country_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `extended_host_information_ibfk_3` FOREIGN KEY (`city_id`) REFERENCES `view_city` (`city_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `extended_host_information_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `extended_service_information`
@@ -1996,13 +1982,6 @@ ALTER TABLE `host_service_relation`
   ADD CONSTRAINT `host_service_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `host_service_relation_ibfk_3` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `host_service_relation_ibfk_4` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `hostgroup`
---
-ALTER TABLE `hostgroup`
-  ADD CONSTRAINT `hostgroup_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `view_country` (`country_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `hostgroup_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `view_city` (`city_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `hostgroup_relation`
@@ -2110,13 +2089,6 @@ ALTER TABLE `service`
   ADD CONSTRAINT `service_ibfk_4` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL;
 
 --
--- Contraintes pour la table `servicegroup`
---
-ALTER TABLE `servicegroup`
-  ADD CONSTRAINT `servicegroup_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `view_country` (`country_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `servicegroup_ibfk_2` FOREIGN KEY (`city_id`) REFERENCES `view_city` (`city_id`) ON DELETE SET NULL;
-
---
 -- Contraintes pour la table `servicegroup_relation`
 --
 ALTER TABLE `servicegroup_relation`
@@ -2132,13 +2104,6 @@ ALTER TABLE `traps_service_relation`
   ADD CONSTRAINT `traps_service_relation_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `traps_service_relation_ibfk_3` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE;
 
---
--- Contraintes pour la table `view_city`
---
-ALTER TABLE `view_city`
-  ADD CONSTRAINT `view_city_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `view_country` (`country_id`) ON DELETE CASCADE;
-
-  
   --
   -- Contraintes pour la table traps
   --

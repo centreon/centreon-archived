@@ -149,16 +149,6 @@ For information : contact@oreon-project.org
 		$rq .= "VALUES (";
 		isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "'".htmlentities($ret["sg_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
-		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
-			$city = $DBRESULT->fetchRow();
-			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
-		}	
-		else
-			$rq .= "NULL, ";
 		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
@@ -203,17 +193,6 @@ For information : contact@oreon-project.org
 		$rq = "UPDATE servicegroup SET ";
 		isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "sg_name = '".htmlentities($ret["sg_name"], ENT_QUOTES)."', " : $rq .= "sg_name = NULL,";
 		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq.=	"sg_alias = '".htmlentities($ret["sg_alias"], ENT_QUOTES)."', " : $rq .= "sg_alias = NULL";
-		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "country_id = '".$ret["country_id"]."', ": $rq .= "country_id = NULL, ";
-		$rq .= "city_id = ";
-		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
-			$city = $DBRESULT->fetchRow();
-			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
-		}	
-		else
-			$rq .= "NULL, ";
 		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES)."', " : $rq .= "sg_comment = NULL,";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
 		$rq .= "WHERE sg_id = '".$sg_id."'";

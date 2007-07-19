@@ -170,16 +170,6 @@ For information : contact@oreon-project.org
 		isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".htmlentities($ret["hg_alias"], ENT_QUOTES)."', " : $rq .= "NULL,";
 		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] ? $rq .= "'".htmlentities($ret["hg_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL,";
 		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] ? $rq .= "'".htmlentities($ret["hg_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL,";
-		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
-		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$city = $DBRESULT->fetchRow();
-			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
-		}	
-		else
-			$rq .= "NULL, ";
 		isset($ret["hg_comment"]) && $ret["hg_comment"] ? $rq .= "'".htmlentities($ret["hg_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
@@ -224,17 +214,6 @@ For information : contact@oreon-project.org
 		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] != NULL ? $rq .= "'".htmlentities($ret["hg_snmp_community"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "hg_snmp_version = ";
 		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] != NULL ? $rq .= "'".htmlentities($ret["hg_snmp_version"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "country_id = '".$ret["country_id"]."', ": $rq .= "country_id = NULL, ";
-		$rq .= "city_id = ";
-		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$city = $DBRESULT->fetchRow();
-			isset($city["city_id"]) ? $rq .= "'".$city["city_id"]."', ": $rq .= "NULL, ";
-		}	
-		else
-			$rq .= "NULL, ";
 		$rq .= "hg_comment = ";
 		isset($ret["hg_comment"]) && $ret["hg_comment"] != NULL ? $rq .= "'".htmlentities($ret["hg_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		$rq .= "hg_activate = ";

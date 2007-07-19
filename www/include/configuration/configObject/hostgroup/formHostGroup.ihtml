@@ -18,8 +18,6 @@
 		<tr class="list_one"><td class="FormRowField">{$form.hg_name.label}</td><td class="FormRowValue">{$form.hg_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.hg_alias.label}</td><td class="FormRowValue">{$form.hg_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hg_snmp_community.label} && {$form.hg_snmp_version.label}</td><td class="FormRowValue">{$form.hg_snmp_community.html}&nbsp;&nbsp;{$form.hg_snmp_version.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.country_id.label}</td><td class="FormRowValue">{$form.country_id.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.city_name.label}</td><td class="FormRowValue">{$form.city_name.html}</td></tr>
 			 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_client.gif'>&nbsp;&nbsp;{$form.header.relation}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hg_hosts.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_hosts.html}</p></td></tr>
