@@ -18,7 +18,6 @@
 		<tr class="list_two"><td class="FormRowField">{$form.ds_name.label}</td><td class="FormRowValue">{$form.ds_name.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ds_order.label}</td><td class="FormRowValue">{$form.ds_order.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ds_tickness.label}</td><td class="FormRowValue">{$form.ds_tickness.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.base.label}</td><td class="FormRowValue">{$form.base.html}</td></tr>
 		<tr class="list_two">
 			<td class="FormRowField">{$form.ds_color_line.label}</td>
 			<td class="FormRowValue">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}&nbsp;&nbsp;{$form.ds_color_line_modify.html}</td>

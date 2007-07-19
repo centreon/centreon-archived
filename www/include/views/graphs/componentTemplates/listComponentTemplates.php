@@ -49,16 +49,15 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['giv_ct_dsName']);
 	$tpl->assign("headerMenu_graph", $lang["giv_graphNbr"]);
-	$tpl->assign("headerMenu_base", $lang['giv_ct_dsBase']);
 	$tpl->assign("headerMenu_tickness", $lang["giv_ct_tickness"]);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 
 	#List
 	if ($search)
-		$rq = "SELECT @nbr:=(SELECT COUNT(gg_graph_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gc_compo_id = gc.compo_id) AS nbr, compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, base, ds_tickness FROM giv_components_template gc WHERE name LIKE '%".$search."%' ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(gg_graph_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gc_compo_id = gc.compo_id) AS nbr, compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, ds_tickness FROM giv_components_template gc WHERE name LIKE '%".$search."%' ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT @nbr:=(SELECT COUNT(gg_graph_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gc_compo_id = gc.compo_id) AS nbr, compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, base, ds_tickness FROM giv_components_template gc ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(gg_graph_id) FROM giv_graphT_componentT_relation ggcr WHERE ggcr.gc_compo_id = gc.compo_id) AS nbr, compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, ds_tickness FROM giv_components_template gc ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -83,7 +82,6 @@ For information : contact@oreon-project.org
 						"RowMenu_graph"=>$compo["nbr"],
 						"RowMenu_clrLine"=>$compo["ds_color_line"],
 						"RowMenu_clrArea"=>$compo["ds_color_area"],
-						"RowMenu_base"=>$compo["base"],
 						"RowMenu_tickness"=>$compo["ds_tickness"],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";

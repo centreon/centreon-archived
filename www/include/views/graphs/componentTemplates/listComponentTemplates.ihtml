@@ -21,7 +21,6 @@
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_graph}</td>
-			<td class="ListColHeaderCenter">{$headerMenu_base}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_tickness}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
@@ -40,7 +39,6 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColLeft">{$elemArr[elem].RowMenu_desc}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_graph}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_base}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_tickness}</td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>

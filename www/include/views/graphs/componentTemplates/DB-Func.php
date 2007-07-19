@@ -46,7 +46,6 @@ For information : contact@oreon-project.org
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		}
 		defaultOreonGraph();
-		defaultPluginsGraph();
 	}	
 	
 	function defaultOreonGraph ()	{
@@ -60,18 +59,7 @@ For information : contact@oreon-project.org
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		}
 	}
-	
-	function defaultPluginsGraph ()	{
-		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl2 = '1'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		if (!$DBRESULT->numRows())	{
-			$DBRESULT2 =& $pearDB->query("UPDATE giv_components_template SET default_tpl2 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-		}
-	}
+
 	
 	function noDefaultOreonGraph ()	{
 		global $pearDB;
@@ -136,13 +124,12 @@ For information : contact@oreon-project.org
 		if ($ret["default_tpl2"]["default_tpl2"])
 			noDefaultPluginsGraph();
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `name` , `ds_order` , `ds_name` , " .
-				"`ds_legend` , `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
-				"`default_tpl1`, `default_tpl2`, `comment` ) ";
+				" `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
+				"`default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
-		isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".htmlentities($ret["base"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_filled"]["ds_filled"]) && $ret["ds_filled"]["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"]["ds_filled"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -160,7 +147,6 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		defaultOreonGraph();
-		defaultPluginsGraph();
 		$DBRESULT =& $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -182,8 +168,6 @@ For information : contact@oreon-project.org
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .=	"ds_name = ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".htmlentities($ret["ds_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= 	"base = ";
-		isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".$ret["base"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_line = ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".$ret["ds_color_line"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_area = ";
@@ -215,7 +199,6 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		defaultOreonGraph();
-		defaultPluginsGraph();
 	}		
 	
 	function updateGraphParents($compo_id = null)	{

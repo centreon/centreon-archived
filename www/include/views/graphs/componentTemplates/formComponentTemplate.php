@@ -78,7 +78,6 @@ For information : contact@oreon-project.org
 	
 	$form->addElement('select', 'ds_order', $lang['giv_ct_order'], $orders);
 	$form->addElement('text', 'ds_name', $lang["giv_ct_dsName"], $attrsText);
-	$form->addElement('text', 'base', $lang["giv_ct_dsBase"], $attrsText);
 	
 	$TabColorNameAndLang = array("ds_color_line"=>"giv_ct_lineClr","ds_color_area"=>"giv_ct_areaClr",);
 
