@@ -280,10 +280,6 @@ INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `to
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_views_compoTmp', './img/icones/16x16/layout_horizontal.gif', 402, 40205, 50, 43, './include/views/graphs/componentTemplates/componentTemplates.php', NULL, '0', '0', '1');
 -- Redirect
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'view_redirect_graph', NULL , '402', '40207', '70', 1, './include/views/graphs/graphSummary/graphSummary.php', NULL , '0', '0', '0');
--- Localisation
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_loc', NULL, 4, 401, 30, 1, NULL, NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_cty', './img/icones/16x16/earth_location.gif', 401, 40101, 10, 1, './include/views/localisation/countries/country.php', NULL, '0', '0', '1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views_map', './img/icones/16x16/download.gif', 401, 40102, 20, 1, './include/views/localisation/maps/map.php', NULL, '0', '0', '1');
 
 --
 -- Id Cards

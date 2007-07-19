@@ -16,34 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-# Country
-
-$lang['views_ct_infos'] = "General Informations";
-$lang['views_ct_add'] = "Add a Country";
-$lang['views_ct_change'] = "Modify a Country";
-$lang['views_ct_view'] = "View a Country";
-$lang['views_ct_name'] = "Country";
-$lang['views_ct_alias'] = "Alias";
-$lang['views_ct_cities'] = "Cities File";
-$lang['views_ct_citiesCmt1'] = "GEOnet Names Server (GNS)";
-$lang['views_ct_citiesCmt2'] = "http://earth-info.nga.mil/gns/html/cntry_files.html";
-$lang['views_ct_comment'] = "Comment";
-$lang['views_ct_cty'] = "City number for this Country";
-$lang['views_ct_init'] = "Reset Cities for this Country";
-
-# Map
-
-$lang['views_map_infos'] = "General Informations";
-$lang['views_map_add'] = "Add a Map";
-$lang['views_map_change'] = "Modify  a Map";
-$lang['views_map_view'] = "View a Map";
-$lang['views_map_img'] = "Image";
-$lang['views_map_imgName'] = "File Name";
-$lang['views_map_imgPath'] = "File Path";
-$lang['views_map_name'] = "Name";
-$lang['views_map_desc'] = "Description";
-$lang['views_map_comment'] = "Comment";
-
 # Graphs
 $lang["views_title1"] = "Perfparse Graphs";
 $lang["views_title2"] = "Centreon Graphs";

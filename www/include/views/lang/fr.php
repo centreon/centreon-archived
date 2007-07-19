@@ -16,34 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-# Country
-
-$lang['views_ct_infos'] = "Informations g&eacute;n&eacute;rales";
-$lang['views_ct_add'] = "Ajouter un Pays";
-$lang['views_ct_change'] = "Modifier un Pays";
-$lang['views_ct_view'] = "Afficher un Pays";
-$lang['views_ct_name'] = "Pays";
-$lang['views_ct_alias'] = "Alias";
-$lang['views_ct_cities'] = "Fichier de villes";
-$lang['views_ct_citiesCmt1'] = "GEOnet Names Server (GNS)";
-$lang['views_ct_citiesCmt2'] = "http://earth-info.nga.mil/gns/html/cntry_files.html";
-$lang['views_ct_comment'] = "Commentaire";
-$lang['views_ct_cty'] = "Nombre de villes pour ce pays";
-$lang['views_ct_init'] = "R&eacute;initialiser les villes pour ce pays";
-
-# Map
-
-$lang['views_map_infos'] = "Informations g&eacute;n&eacute;rales";
-$lang['views_map_add'] = "Ajouter une Carte";
-$lang['views_map_change'] = "Modifier une Carte";
-$lang['views_map_view'] = "Afficher une Carte";
-$lang['views_map_img'] = "Image";
-$lang['views_map_imgName'] = "Nom du Fichier";
-$lang['views_map_imgPath'] = "Chemin du Fichier";
-$lang['views_map_name'] = "Nom";
-$lang['views_map_desc'] = "Description";
-$lang['views_map_comment'] = "Commentaire";
-
 # Graphs
 $lang["views_title1"] = "Perfparse Graphs";
 $lang["views_title2"] = "Centreon Graphs";
