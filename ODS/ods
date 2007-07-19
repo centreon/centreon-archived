@@ -280,8 +280,16 @@ sub CheckRestart(){
 	}
 }
 
-sub purgeMysqlData(){
-	;
+sub purgeMysqlData($){
+	my $sth2 = $_[0]->prepare("SELECT * FROM config");	
+	writeLogFile("Error when getting len_storage_mysql properties : ".$sth2->errstr."\n")if (!$sth2->execute);
+	my $data = $sth2->fetchrow_hashref();
+	if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0){
+		my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
+		$sth2 = $_[0]->prepare("DELETE FROM index_data WHERE ctime < '".$delete_limit."'");
+		writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute);
+	}
+	undef($sth2);
 }
 
 sub checkAndUpdate($){
@@ -336,8 +344,7 @@ while ($stop){
 		writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
 		
 		# Purge MySQL data for not having a too big database.
-		
-		purgeMysqlData()
+		purgeMysqlData($con_ods);
 		
 	}
 	$y++;
