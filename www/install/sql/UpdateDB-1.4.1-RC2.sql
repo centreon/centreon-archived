@@ -16,5 +16,6 @@ ALTER TABLE `giv_graphs_template`
   DROP `default_tpl2`;
   
 ALTER TABLE `giv_graphs_template` ADD `split_component` ENUM("0", "1") NOT NULL DEFAULT '0' AFTER `stacked` ;
+ALTER TABLE `giv_components_template` ADD `base` INT NULL DEFAULT '1000' AFTER `ds_invert` ;
 
   
