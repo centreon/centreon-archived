@@ -15,4 +15,6 @@ ALTER TABLE `giv_graphs_template`
   DROP `step`,
   DROP `default_tpl2`;
   
+ALTER TABLE `giv_graphs_template` ADD `split_component` ENUM("0", "1") NOT NULL DEFAULT '0' AFTER `stacked` ;
+
   
