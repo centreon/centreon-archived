@@ -118,7 +118,7 @@ case "$1" in
 	;;
     
     stop)
-	echo "Stopping ODS Collector : ods_daemon"
+	echo "Stopping ODS Collector : ods"
 	killproc_ods ods
 	
  		# now we have to wait for nagios to exit and remove its
