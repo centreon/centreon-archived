@@ -108,7 +108,7 @@ For information : contact@oreon-project.org
 		if ($ret["default_tpl1"]["default_tpl1"])
 			noDefaultOreonGraph();
 		$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
-				"`vertical_label` , `width` , `height` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
+				"`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
 				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `split_component` , " .
 				"`stacked` , `comment` ) ";
 		$rq .= "VALUES (";
@@ -117,6 +117,7 @@ For information : contact@oreon-project.org
 		isset($ret["vertical_label"]) && $ret["vertical_label"] != NULL ? $rq .= "'".htmlentities($ret["vertical_label"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["width"]) && $ret["width"] != NULL ? $rq .= "'".htmlentities($ret["width"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["height"]) && $ret["height"] != NULL ? $rq .= "'".htmlentities($ret["height"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".htmlentities($ret["base"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["lower_limit"]) && $ret["lower_limit"] != NULL ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
 		isset($ret["upper_limit"]) && $ret["upper_limit"] != NULL ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
 		isset($ret["bg_grid_color"]) && $ret["bg_grid_color"] != NULL ? $rq .= "'".htmlentities($ret["bg_grid_color"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -156,6 +157,8 @@ For information : contact@oreon-project.org
 		isset($ret["width"]) && $ret["width"] != NULL ? $rq .= "'".$ret["width"]."', ": $rq .= "NULL, ";
 		$rq .= "height = ";
 		isset($ret["height"]) && $ret["height"] != NULL ? $rq .= "'".$ret["height"]."', ": $rq .= "NULL, ";
+		$rq .= "base = ";
+		isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".$ret["base"]."', ": $rq .= "NULL, ";
 		$rq .= "lower_limit = ";
 		isset($ret["lower_limit"]) && $ret["lower_limit"] != NULL ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
 		$rq .= "upper_limit = ";

@@ -76,6 +76,9 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'height', $lang["giv_gt_height"], $attrsText2);
 	$form->addElement('text', 'lower_limit', $lang["giv_gt_lower_limit"], $attrsText2);
 	$form->addElement('text', 'upper_limit', $lang["giv_gt_upper_limit"], $attrsText2);
+	$form->addElement('text', 'ds_name', $lang["giv_ct_dsName"], $attrsText);
+	$form->addElement('text', 'base', $lang["giv_ct_dsBase"], $attrsText2);
+	
 	$periods = array(	"10800"=>$lang["giv_sr_p3h"],
 						"21600"=>$lang["giv_sr_p6h"],
 						"43200"=>$lang["giv_sr_p12h"],
