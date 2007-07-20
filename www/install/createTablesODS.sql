@@ -111,7 +111,7 @@ CREATE TABLE `index_data` (
   `check_interval` int(11) default NULL,
   `special` enum('0','1') default '0',
   `trashed` enum('0','1') default '0',
-  `must_be_rebuild` enum('0','1') default '0',
+  `must_be_rebuild` enum('0','1','2') default '0',
   `storage_type` enum('0','1','2') default '2',
   PRIMARY KEY  (`id`),
   KEY `host_name` (`host_name`),
