@@ -92,7 +92,7 @@ For information : contact@oreon-project.org
 		$index_data_ODS["service_description"] = str_replace("#S#", "/", $index_data_ODS["service_description"]);
 		$index_data_ODS["service_description"] = str_replace("#BS#", "\\", $index_data_ODS["service_description"]);
 		
-		$command_line .= " --interlaced --imgformat PNG --width=500 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		$command_line .= " --interlaced -b ".$GraphTemplate["base"]." --imgformat PNG --width=500 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($oreon->optGen["rrdtool_version"] == "1.2")
 			$command_line .= " --slope-mode ";
 		

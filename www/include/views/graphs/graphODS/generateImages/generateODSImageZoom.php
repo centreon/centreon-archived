@@ -76,7 +76,7 @@ For information : contact@oreon-project.org
 		} else
 			$template_id = $_GET["template_id"];
 		$DBRESULT->free();	
-		$command_line = " graph - --start=".$_GET["start"]. " --end=".$_GET["end"];
+		$command_line = " graph - -b ".$GraphTemplate["base"]." --start=".$_GET["start"]. " --end=".$_GET["end"];
 		
 		# get all template infos
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
