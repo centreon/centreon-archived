@@ -13,7 +13,7 @@ ALTER TABLE `hostgroup`  DROP FOREIGN KEY `hostgroup_ibfk_2`;
 ALTER TABLE `servicegroup`  DROP FOREIGN KEY `servicegroup_ibfk_1`;
 ALTER TABLE `servicegroup`  DROP FOREIGN KEY `servicegroup_ibfk_2`;
 
-ALTER TABLE `extended_host_information` DROP `country_id` ,DROP `city_id` ;
+ALTER TABLE `extended_host_information` DROP `country_id` , DROP `city_id` ;
 ALTER TABLE `hostgroup` DROP `country_id` ,DROP `city_id` ;
 ALTER TABLE `servicegroup` DROP `country_id` ,DROP `city_id` ;
 
@@ -38,5 +38,9 @@ ALTER TABLE `giv_graphs_template`
   DROP `step`,
   DROP `default_tpl2`;
   
+ALTER TABLE `giv_components_template`
+  DROP `ds_legend`,
+  DROP `default_tpl2`;
+  
 ALTER TABLE `giv_graphs_template` ADD `split_component` ENUM("0", "1") NOT NULL DEFAULT '0' AFTER `stacked` ;
-ALTER TABLE `giv_components_template` ADD `base` INT NULL DEFAULT '1000' AFTER `ds_invert` ;
+ALTER TABLE `giv_graphs_template` ADD `base` INT NULL DEFAULT '1000' AFTER `height` ;
