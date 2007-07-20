@@ -31,7 +31,7 @@ use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "@OREON_PATH@/ODS/";
+my $installedPath = "/srv/oreon/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -286,7 +286,7 @@ sub purgeMysqlData($){
 	my $data = $sth2->fetchrow_hashref();
 	if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0){
 		my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
-		$sth2 = $_[0]->prepare("DELETE FROM index_data WHERE ctime < '".$delete_limit."'");
+		$sth2 = $_[0]->prepare("DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
 		writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute);
 	}
 	undef($sth2);
@@ -313,21 +313,103 @@ sub CheckNagiosStats(){
 	}
 }
 
+sub CheckRebuild(){
+	use vars qw($con_oreon $con_ods);
+	my ($RRDdatabase_path, $len_storage_rrd, $y, $svc_mst_be_rbld);
+	$y = 0;
+	while ($stop){
+		CheckMySQLConnexion();
+		if ($y % 60 eq 0){
+			my ($sth2, $svc_mst_be_rbld, $data, $ERR, $flag, $metric, $cpt);
+			# ---------------------------------------------
+			# Rebuild database
+			$RRDdatabase_path = getRRDdatabase_path();
+			$len_storage_rrd = getLenStorageDB();
+			$len_storage_rrd = $len_storage_rrd * 60 * 60 * 24;
+			# Check if backup directory is created
+			system("mkdir $RRDdatabase_path/backup/") if (! -d "$RRDdatabase_path/backup/");
+			$sth2 = $con_ods->prepare("SELECT id, service_id FROM index_data WHERE `must_be_rebuild` = '1'");
+			writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
+			while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
+				my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+				writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
+				undef($sth);
+				
+				writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."\n");
+				
+				my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
+				if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
+				while ($metric = $sth3->fetchrow_hashref()){
+					writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}."\n");
+					# -----------------------------------------------------
+					# Get check interval for this service
+					my $interval = getServiceCheckInterval($svc_mst_be_rbld->{'id'}) * 60 + 30;
+					my $sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
+					writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
+					for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
+						if (!$flag){
+							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd\n");				
+							# backup old database
+							system("mv ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd $RRDdatabase_path/backup/".$metric->{'metric_id'}.".rrd");
+							# Calculate first entry in database					
+							my $begin = $data->{'ctime'} - 200;
+							# Create RRD database
+							RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".$metric->{'metric_name'}.":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$len_storage_rrd, "RRA:MIN:0.5:12:".$len_storage_rrd, "RRA:MAX:0.5:12:".$len_storage_rrd);
+							$ERR = RRDs::error;
+							if ($ERR){writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
+							undef($ERR);
+							undef($begin);
+							undef($interval);
+							$flag++;
+						}
+						# Update Database 
+						RRDs::update ($RRDdatabase_path.$metric->{'metric_id'}.".rrd" , "--template", $metric->{'metric_name'}, $data->{'ctime'}.":".$data->{'value'});
+						$ERR = RRDs::error;
+						if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
+						undef($ERR);
+					}
+					writeLogFile("$cpt value insert\n");
+					undef($sth4);				
+					# -----------------------------------------------------
+				}
+				undef($sth3);
+				my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+				writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
+				undef($sth);
+				undef($cpt);
+				undef($ERR);
+				undef($metric);
+			}
+			undef($flag);
+			undef($svc_mst_be_rbld);
+			undef($sth2);
+			undef($data);
+		}
+		$y++;
+		sleep(1);
+	}
+}
+
 # launch all threads
 my $threadPerfdata 			= 	threads->new("GetPerfData");
 my $threadCheckRestart		= 	threads->new("CheckRestart");
+my $threadCheckRebuild		= 	threads->new("CheckRebuild");
+
 #my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
 # here make statistics
 my $y = 0;
+
 my ($lineReadpermin, $valueRecordedpermin, $lastlineRead, $lastvalueRecorded);
+
 $lastlineRead = 0;
 $lastvalueRecorded = 0;
 
-my $sth2;
 while ($stop){
 	if ($y % 60 eq 0){
 		CheckMySQLConnexion();
+		# ---------------------------------------------
+		# Statistics
 		if ($lastlineRead){
 			$lineReadpermin = $lineRead - $lastlineRead;
 		} else {
@@ -340,18 +422,22 @@ while ($stop){
 			$valueRecordedpermin = $valueRecorded;
 		}
 		$lastvalueRecorded = $valueRecorded;
-		$sth2 = $con_ods->prepare("UPDATE statistics SET `lineRead` = '$lineReadpermin', `valueReccorded` = '$valueRecordedpermin' LIMIT 1");
+		# ---------------------------------------------
+		
+		# ---------------------------------------------
+		# Update statistics for ODS
+		my $sth2 = $con_ods->prepare("UPDATE statistics SET `lineRead` = '$lineReadpermin', `valueReccorded` = '$valueRecordedpermin' LIMIT 1");
 		writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
-		
+		undef($sth2);
 		# Purge MySQL data for not having a too big database.
-		purgeMysqlData($con_ods);
-		
+		purgeMysqlData($con_ods);	
 	}
 	$y++;
 	sleep(1);
 }
 
 # Waiting All threads
+
 $threadPerfdata->join;
 $threadCheckRestart->join;
 #$threadCheckNagiosStats->join;

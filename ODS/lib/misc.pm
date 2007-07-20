@@ -37,6 +37,39 @@ sub getPurgeInterval(){
 	return $purge_interval;
 }
 
+sub getRRDdatabase_path(){
+	my $data;
+	my $RRDdatabase_path;
+
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	my $sth2 = $con_ods->prepare("SELECT RRDdatabase_path FROM config");
+	if (!$sth2->execute) {writeLogFile("Error - RRDdatabase_path : " . $sth2->errstr . "\n");}
+	$data = $sth2->fetchrow_hashref();
+	$RRDdatabase_path = $data->{'RRDdatabase_path'};
+	undef($sth2);	
+	undef($data);
+	return $RRDdatabase_path;
+}
+
+sub getLenStorageDB(){
+	my $data;
+	my $len_storage_rrd;
+
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	my $sth2 = $con_ods->prepare("SELECT len_storage_rrd FROM config");
+	if (!$sth2->execute) {writeLogFile("Error - len_storage_rrd : " . $sth2->errstr . "\n");}
+	$data = $sth2->fetchrow_hashref();
+	if (!defined($data->{'len_storage_rrd'}) || !$data->{'len_storage_rrd'}){
+		$len_storage_rrd = 10;
+	} else {
+		$len_storage_rrd = $data->{'len_storage_rrd'};
+	} 
+	undef($sth2);	
+	undef($data);
+	return $len_storage_rrd;
+}
+
+
 sub getSleepTime(){
 	my $data;
 	my $sleep_time;
