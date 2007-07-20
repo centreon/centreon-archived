@@ -422,7 +422,7 @@ function install_oreon_plugins()
 		          echo "Given SNMP configuration directory does not exists, correct your answer ? "
 		          SNMP_DIR="/etc/snmp/";
 		          echo -n "default to [/etc/snmp/]:"
-		          read temp
+		          read tmp
 		          if [ ! -z "$tmp" ] ;then
 					SNMP_DIR=$tmp;
 				  fi
