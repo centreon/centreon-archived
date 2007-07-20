@@ -1,0 +1,443 @@
+# -*-Shell-script-*-
+#
+# functions_dialog     This file contains dialog's functions to be used by Oreon install scripts
+#
+
+##
+## Debug
+##
+
+function debug() {
+	clear
+	echo "$1"
+	sleep $2
+}
+
+function debug_all() {
+	clear
+	echo "OREON_CONF = $OREON_CONF"
+	echo "NAGIOS_ETC = $NAGIOS_ETC"
+	echo "NAGIOS_PLUGIN = $NAGIOS_PLUGIN"
+	echo "NAGIOS_BIN = $NAGIOS_BIN"
+	echo "NAGIOS_CGI = $NAGIOS_CGI"
+	echo "NAGIOS_HTML = $NAGIOS_HTML"
+	echo "NAGIOS_LOG = $NAGIOS_LOG"
+	echo "INSTALL_DIR_CENTREON = $INSTALL_DIR_CENTREON"
+	echo "SUDO_FILE = $SUDO_FILE"
+	echo "RRD_PERL = $RRD_PERL"
+	echo "BIN_RRDTOOL = $BIN_RRDTOOL"
+	echo "BIN_MAIL = $BIN_MAIL"
+	echo "PEAR_PATH = $PEAR_PATH"
+	echo "DIR_APACHE = $DIR_APACHE"
+	echo "DIR_APACHE_CONF = $DIR_APACHE_CONF"
+	echo "HTPASSWD = $HTPASSWD"
+	echo "APACHE_CONF = $APACHE_CONF"
+	echo "WEB_GROUP = $WEB_GROUP"
+	echo "WEB_USER = $WEB_USER"
+	echo "NAGIOS_GROUP = $NAGIOS_GROUP"
+	echo "NAGIOS_USER = $NAGIOS_USER"
+	echo "SNMP_DIR = $SNMP_DIR"
+	echo "PLUGINS_DIR = $PLUGINS_DIR"
+	
+	#sleep 10
+}
+
+
+##
+## Clear
+##
+
+function clear_all() {
+	rm $TEMP2 2> /dev/null
+	rm $TEMP_PATH 2> /dev/null
+	rm $TEMP 2> /dev/null
+}
+
+##
+## Functions
+##
+
+# previous
+function prev_funct() {
+	clear
+	clear_all
+	exit
+}
+
+# quit 
+function quit() {
+
+	log_set_err "The script was aborted, Installation failed."
+
+    clear
+    echo ""
+    echo "The script was aborted, Installation failed."
+    echo ""
+    clear_all
+    exit 1
+}
+
+# test before quit
+function test_quit() {
+    $DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+	--no-label "Yes" --yes-label "No"\
+	--yesno "$1\n" 10 62
+    resp=$?
+    if [ $resp != 0 ]; then
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+	    --msgbox "\nCentreon Installatin was aborted." 7 50
+	log_set_err "Centreon Installatin was aborted."
+	clear
+	clear_all
+	exit 1
+    fi
+}
+
+# test existence of Nagios path
+function test_install_nagios() {
+	while [ ! -d $TEMP_NAGIOS_ETC ]
+	do
+		ask_input "Nagios etc" "$TEMP_NAGIOS_ETC"
+		TEMP_NAGIOS_ETC=$RESP
+		if [ ! -d $TEMP_NAGIOS_ETC ] ; then
+			nagios_install
+		fi
+	done
+		NAGIOS_PLUGIN=$TEMP_NAGIOS_PLUGIN
+	while [ ! -d $TEMP_NAGIOS_PLUGIN ]
+	do
+		ask_input "Nagios plugin" "$TEMP_NAGIOS_PLUGIN"
+		TEMP_NAGIOS_PLUGIN=$RESP
+		if [ ! -d $TEMP_NAGIOS_PLUGIN ] ; then
+			dialog_yesno_d "\nWould you want to create ${TEMP_NAGIOS_PLUGIN}?" 7 62
+			if [ $temp = 0 ] ; then
+				err=`mkdir "$TEMP_NAGIOS_PLUGIN" 2> /dev/null; echo $?`
+				if [ $err = 0 ] ; then
+					log_set_line "#create Nagios directory plugin"
+					log_set_line "Create dir	: OK -> $TEMP_NAGIOS_PLUGIN"
+					log_set_line ""
+				fi
+			fi
+		fi
+	done
+		NAGIOS_PLUGIN=$TEMP_NAGIOS_PLUGIN
+	while [ ! -d $TEMP_NAGIOS_BIN ]
+	do
+		ask_input "Nagios bin" "$TEMP_NAGIOS_BIN"
+		TEMP_NAGIOS_BIN=$RESP
+		if [ ! -d $TEMP_NAGIOS_BIN ] ; then
+			nagios_install
+		fi
+	done
+		NAGIOS_BIN=$TEMP_NAGIOS_BIN
+	while [ ! -d $TEMP_NAGIOS_CGI ]
+	do
+		ask_input "Nagios cgi" "$TEMP_NAGIOS_CGI"
+		TEMP_NAGIOS_CGI=$RESP
+		if [ ! -d $TEMP_NAGIOS_CGI ] ; then
+			nagios_install
+		fi
+	done
+		NAGIOS_CGI=$TEMP_NAGIOS_CGI
+	while [ ! -d $TEMP_NAGIOS_HTML ]
+	do
+		ask_input "Nagios html" "$TEMP_NAGIOS_HTML"
+		TEMP_NAGIOS_HTML=$RESP
+		if [ ! -d $TEMP_NAGIOS_HTML ] ; then
+			nagios_install
+		fi
+	done
+		NAGIOS_HTML=${TEMP_NAGIOS_HTML%/}
+	while [ ! -d $TEMP_NAGIOS_LOG ]
+	do
+		ask_input "Nagios log" "$TEMP_NAGIOS_LOG"
+		TEMP_NAGIOS_LOG=$RESP
+		if [ ! -d $TEMP_NAGIOS_LOG ] ; then
+			nagios_install
+		fi
+	done
+		NAGIOS_LOG=$TEMP_NAGIOS_LOG
+	ERROR=0
+}
+
+# ask if nagios is really install
+function nagios_install() {
+	temp=0
+	while [ $temp != 1 ]
+	do
+		$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+			--defaultno --no-label "Yes" --yes-label "No"\
+			--yesno "\nNagios is really installed ?" 7 50
+		temp=$?
+		if [ $temp = 0 ] ; then
+			$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+	    	--msgbox "\nPlease install Nagios before installing Centreon" \
+	    	7 60
+	    	clear
+	    	exit 1
+		else if [ $temp != 1 ] ; then
+			test_quit "$QUITMSG"
+		fi
+		fi
+	done
+}
+
+# set default nagios rpm path
+function set_rpm_dir() {
+	if [ -d "/etc/nagios" ] ; then
+   		NAGIOS_ETC="/etc/nagios"
+   	else
+   		NAGIOS_ETC=""
+   	fi
+   	if [ -d "/usr/lib/nagios/plugins" ] ; then
+   		NAGIOS_PLUGIN="/usr/lib/nagios/plugins"
+   	else
+   		NAGIOS_PLUGIN=""
+   	fi
+   	if [ -d "/usr/bin" ] ; then
+   		NAGIOS_BIN="/usr/bin"
+   	else
+   		NAGIOS_BIN=""
+   	fi
+   	if [ -d "/usr/lib/nagios/cgi" ] ; then
+   		NAGIOS_CGI="/usr/lib/nagios/cgi"
+   	else
+	   	NAGIOS_CGI=""
+   	fi
+   	if [ -d "/usr/share/nagios" ] ; then
+  		NAGIOS_HTML="/usr/share/nagios"
+   	else
+   		NAGIOS_HTML=""
+   	fi
+  	if [ -d "/var/log/nagios" ] ; then
+   		NAGIOS_LOG="/var/log/nagios"
+   	else
+   		NAGIOS_LOG=""
+	fi
+	err=0
+}
+
+# set standard Nagios path
+function set_standard_dir() {
+	if [ -d "/usr/local/nagios/etc" ] ; then
+   		NAGIOS_ETC="/usr/local/nagios/etc"
+   	else
+   		NAGIOS_ETC=""
+   	fi
+   	if [ -d "/usr/local/nagios/libexec" ] ; then
+   		NAGIOS_PLUGIN="/usr/local/nagios/libexec"
+   	else
+   		NAGIOS_PLUGIN=""
+   	fi
+   	if [ -d "/usr/local/nagios/bin" ] ; then
+   		NAGIOS_BIN="/usr/local/nagios/bin"
+   	else
+   		NAGIOS_BIN=""
+   	fi
+   	if [ -d "/usr/local/nagios/sbin" ] ; then
+   		NAGIOS_CGI="/usr/local/nagios/sbin"
+   	else
+   		NAGIOS_CGI=""
+   	fi
+   	if [ -d "/usr/local/nagios/share" ] ; then
+   		NAGIOS_HTML="/usr/local/nagios/share"
+   	else
+	   	NAGIOS_HTML=""
+   	fi
+  	if [ -d "/usr/local/nagios/var" ] ; then
+   		NAGIOS_LOG="/usr/local/nagios/var"
+   	else
+		NAGIOS_LOG=""
+   	fi
+   	err=0
+}
+
+# set custom Nagios path
+function set_custom_dir() {
+	NAGIOS_ETC="/usr/local/nagios/etc"
+	NAGIOS_PLUGIN="/usr/local/nagios/libexec"
+	NAGIOS_BIN="/usr/local/nagios/bin"
+	NAGIOS_CGI="/usr/local/nagios/sbin"
+	NAGIOS_HTML="/usr/local/nagios/share"
+	NAGIOS_LOG="/usr/local/nagios/var"
+   	err=0
+}
+
+# ask for a nagios path
+function ask_input_nagios() {
+	temp=1
+	while [ $temp != 0 ]
+	do
+		$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+	    	--inputbox "\nPlease specify the $1 path :" 10 50 "$2" 2> $TEMP
+		temp=$?
+		if [ $temp != 0 ]; then
+			nagios_install
+			temp=1
+		fi
+	done
+	RESP=`cat $TEMP`
+}
+
+# ask for a path
+function ask_input() {
+	temp=1
+	while [ $temp != 0 ]
+	do
+		dialog_input "\nPlease specify the $1 path :" "$2"
+		if [ $temp != 0 ]; then
+			test_quit "$QUITMSG"
+			temp=1
+		fi
+	done
+	RESP=`cat $TEMP`
+}
+
+##
+## Dialog function
+##
+
+function dialog_input() {
+	rm $TEMP 2> /dev/null
+	temp=0
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+		--extra-button --extra-label " Cancel "\
+    	--cancel-label " Previous " \
+    	--inputbox "$1" 10 50 "$2" 2> $TEMP
+    temp=$?
+}
+
+function dialog_prevnext() {
+	temp=0
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+    	--ok-label "Cancel" --extra-button --extra-label " Previous "\
+    	--defaultno --cancel-label "Next" \
+    	--yesno "$1" $2 $3
+    temp=$?
+}
+
+function dialog_yesno() {
+	temp=0
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+		--ok-label "Cancel" --extra-button --extra-label "No"\
+    	--defaultno --cancel-label "Yes" --help-button\
+    	--help-label "Previous" --yesno "$1" $2 $3
+    temp=$?
+}
+
+function dialog_yesno_d() {
+	temp=0
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+    	--yesno "$1" $2 $3
+    temp=$?
+}
+
+function dialog_infobox() {
+	temp=0
+	dialog --backtitle "$BACKTITLE" --title "$TITLE" \
+    	--infobox "$1" 10 62
+   temp=$?
+}
+
+function dialog_msgbox() {
+	temp=0
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+    	--msgbox "$1" 10 62
+   temp=$?
+}
+
+function dialog_textbox() {
+	temp=0
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+      --textbox "$1" 18 70
+    temp=$?
+}
+
+
+##
+## Log function
+##
+
+function Log_cpyfile() {
+	j=`grep -n "$1" install.log | cut -d ':' -f1`
+	if [ -n "$j" ] ; then
+		j=$(($j - 3))
+		i=0
+		cat $LOG_INSTALL | while read val
+		do
+			if [ "$i" = "0" ] ; then
+				`echo "$val" > $LOG_INSTALL`
+			else if [ "$i" -lt "$j" ] ; then
+				`echo "$val" >> $LOG_INSTALL`
+			fi
+			fi
+			i=$(($i + 1))
+		done
+	fi
+}
+
+function log_begin() {
+	`echo "--------------------------------" > $LOG_INSTALL`
+	`echo "  Log of $BACKTITLE" >> $LOG_INSTALL`
+	`echo "    Version $LOG_VERSION" >> $LOG_INSTALL` 
+	`echo "--------------------------------" >> $LOG_INSTALL`
+	`echo "" >>$LOG_INSTALL`
+}
+
+function log_set_title() {
+	Log_cpyfile "$1"
+	`echo "" >>$LOG_INSTALL`
+	`echo "--------------------------------" >>$LOG_INSTALL`
+	`echo "   $1" >> $LOG_INSTALL`
+	`echo "--------------------------------" >>$LOG_INSTALL`
+	`echo "" >>$LOG_INSTALL`
+}
+
+function log_set_line() {
+	`echo "$1" >> $LOG_INSTALL`
+}
+
+function log_set_err() {
+	`echo "$1" >> $LOG_INSTALL`
+	`echo "" >> $LOG_INSTALL`
+}
+
+##
+## Search function
+##
+
+function set_err() {
+	`echo "$1" > ${TEMP}.err`
+}
+
+function get_err() {
+	ERR=`cat ${TEMP}.err`
+}
+
+function rm_err() {
+	`rm ${TEMP}.err 2>/dev/null`
+}
+
+function search_ask() {
+	dial=""
+	i=0
+	for val in $2
+	do
+		dial="${dial}$i $val "
+		i=$(($i + 1))
+	done
+	
+	$DIALOG --backtitle "$BACKTITLE" --title "$TITLE" \
+		--menu "\nSelect the ${1}:\n"  13 60 6 $dial 2> $TEMP
+		
+	j=`cat "$TEMP" 2>/dev/null`
+	i=0
+	for val in $2
+	do
+		if [ $i = $j ] ; then
+			RESP=$val
+		fi
+		i=$(($i + 1))
+	done
+}
+

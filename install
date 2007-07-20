@@ -1,0 +1,93 @@
+#!/bin/sh
+#
+# Oreon is developped with Apache Licence 2.0 :
+# http://www.apache.org/licenses/LICENSE-2.0.txt
+# Developped by : Julien Mathis - Romain Le Merlus
+#                 Christophe Coraboeuf - Mathieu Chateau
+#
+# The Software is provided to you AS IS and WITH ALL FAULTS.
+# OREON makes no representation and gives no warranty whatsoever,
+# whether express or implied, and without limitation, with regard to the quality,
+# safety, contents, performance, merchantability, non-infringement or suitability for
+# any particular or intended purpose of the Software found on the OREON web site.
+# In no event will OREON be liable for any direct, indirect, punitive, special,
+# incidental or consequential damages however they may arise and even if OREON has
+# been previously advised of the possibility of such damages.
+
+#Load install script functions
+if [ -z "$BASH" ]; then # Test if BASH is in path
+    if ! which bash > /dev/null 2>&1; then
+	echo "Install bash and try `bash install.sh`."
+    fi # Exit if we are not in BASH
+    echo "Error: The script must be run with BASH shell. Try:"
+    echo "# bash install.sh"
+    exit 1
+fi
+clear
+
+cat <<EOF
+###############################################################################
+#                    OREON Project (www.oreon-project.org)                    #
+#                            Thanks for using OREON                           #
+#                                                                             #
+#                                    v 1.4                                    #
+#                                                                             #
+#                             infos@oreon-project.org                         #
+#                                                                             #
+#                     Make sure you have installed and configured             #
+#                            dialog v 1.0 - sudo - sed                        #
+#                          php - apache - rrdtool - mysql                     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+#                                 The Team OREON                              #
+###############################################################################
+EOF
+sleep 1
+
+#Check_dialog_version
+dial_vers=`whereis dialog | cut -d ':' -f2`
+if [ -z "$dial_vers" ] ; then
+	echo "Dialog not found install dialog version 1.0 or latest before Centreon installation"
+	exit 1
+else
+	dial_vers=`dialog --version 2>&1 | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '.' -f1`
+	if [ $dial_vers -lt 1 ] ; then
+		echo "Dialog less than 1.0, please install the latest version of Dialog before Centreon installation"
+		exit 1
+	fi
+fi
+
+
+#Check_root_permissions
+ID="id -u"
+MYUID=`$ID 2> /dev/null`
+
+if [ -z "$MYUID" ]; then
+    MYUID=`/usr/xpg4/bin/$ID 2> /dev/null`;
+fi
+
+if [ ! -z "$MYUID" ]; then
+    if [ $MYUID != 0 ]; then
+	echo "You need root privileges to run this script!";
+	exit 1;
+    fi
+fi
+
+##
+## Functions
+##
+
+#. functions
+. functions_dialog
+. functions_install
+
+
+# catch "SIGINT" signal (ctrl-c) and execut function "quit"
+trap "quit" 2
+
+Welcome
+#Install_trap_centreon
+
+#clear
+clear_all
