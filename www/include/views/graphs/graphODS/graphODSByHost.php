@@ -163,9 +163,13 @@ For information : contact@oreon-project.org
 				if (PEAR::isError($DBRESULT))
 					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			}
-		
+			
 			while ($DBRESULT->fetchInto($index_data)){
 				
+				$template_id = getDefaultGraph($index_data["service_id"], 1);
+				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+				$DBRESULT2->fetchInto($GraphTemplate);
+						
 				if (isset($_GET["host_name"])){
 					$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
 				} else if (isset($_GET["host_id"])){
@@ -191,12 +195,18 @@ For information : contact@oreon-project.org
 				
 				$elem[$index_id] = array("index_id" => $index_id, "service_description" => str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"])));
 				
-				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$service_id."' ORDER BY `metric_name`");
+				if ($GraphTemplate["split_component"]){
+					$elem[$index_id]["split"] = 1;
+					$elem[$index_id]["metrics"] = array();
+				}
+				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_id."' ORDER BY `metric_name`");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-				while ($DBRESULT2->fetchInto($metrics_ret)){
+				while ($DBRESULT2->fetchInto($metrics_ret)){	
 					$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 					$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
+					if (isset($elem[$index_id]["split"]))
+						$elem[$index_id]["metrics"][$metrics_ret["metric_id"]] = $metrics_ret["metric_id"];
 				}
 				
 				# Create period
@@ -225,7 +235,7 @@ For information : contact@oreon-project.org
 				$tpl->assign('end', $end);
 				$tpl->assign('start', $start);
 				if (isset($_GET["template_id"]))
-					$elem[$index_id]['template_id'] = $_GET["template_id"];				
+					$elem[$index_id]['template_id'] = $_GET["template_id"];	
 			}
 		}
 	}
@@ -246,7 +256,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('lang', $lang);
 	
 	if (isset($host_name)){
-		if ($host_name = "Meta_Module")
+		if ($host_name == "Meta_Module")
 			$host_name = "Meta Services";
 		$tpl->assign('host_name', $host_name);
 	}
