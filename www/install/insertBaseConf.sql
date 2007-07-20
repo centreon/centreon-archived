@@ -39,36 +39,37 @@ INSERT INTO `nagios_server` VALUES (1, 'Oreon Nagios', NULL);
 -- Contenu de la table `giv_graphs_template`
 --
 
-INSERT INTO `giv_graphs_template` VALUES (1, 'Default_Graph', 'Default_Graph', 'PNG', 'Value', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#FEFEFE', '#000000', '#800000', '#808080', '#000000', '#FFFFFF', '#C0C0C0', '#909090', '1', '1', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (2, 'Latency', 'Latency', 'PNG', 'Latency', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (3, 'Storage', 'Storage', 'PNG', 'Storage', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (4, 'Memory', 'Memory', 'PNG', 'Memory', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (5, 'CPU', 'CPU', 'PNG', 'CPU (%)', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (6, 'Uptime', 'Uptime', 'PNG', 'Uptime', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (7, 'Traffic', 'Traffic', 'PNG', 'Traffic', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (8, 'Load_Average', 'Load_Average', 'PNG', 'Load_Average', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
-INSERT INTO `giv_graphs_template` VALUES (9, 'OSL', 'OSL', 'PNG', 'OSL', 86400, 0, 600, 200, 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (1, 'Default_Graph',  'Value',600, 200, '1000', 0, NULL, '#FFFFFF', '#FEFEFE', '#000000', '#800000', '#808080', '#000000', '#FFFFFF', '#C0C0C0', '#909090', '1', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (2, 'Latency', 'Latency', 600, 200, '1000', 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (3, 'Storage', 'Storage', 600, 200, '1024', 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (4, 'Memory', 'Memory', 600, 200, '1024', 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (5, 'CPU', 'CPU (%)', 600, 200, '1000', 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (6, 'Uptime', 'Uptime', 600, 200, '1000', 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (7, 'Traffic', 'Traffic', 600, 200, '1000', NULL, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (8, 'Load_Average', 'Load_Average',600, 200, '1000', 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
+INSERT INTO `giv_graphs_template` VALUES (9, 'OSL', 'OSL', 600, 200, '1000', 0, NULL, '#FFFFFF', '#F3F6F6', '#3C3334', '#800000', '#808080', '#000000', '#FFFFFF', '#6E917F', '#4B75B3', '0', '0', '0', NULL);
 
 --
 -- Contenu de la table `giv_components_template`
 --
-INSERT INTO `giv_components_template` VALUES (1, 'Default_DS1', 1, 'DS1', 'DS1', '#1183EE', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '1', '1', NULL);
-INSERT INTO `giv_components_template` VALUES (2, 'Default_DS2', 2, 'DS2', 'DS2', '#18E631', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (3, 'Default_DS3', 3, 'DS3', 'DS3', '#E84D17', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (4, 'Default_DS4', 4, 'DS4', 'DS4', '#C438C7', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (5, 'Ok', 1, 'Ok', 'Ok', '#1EE045', '#1EE045', '0', '0', '0', '1', '0', 1, '75', '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (6, 'Ping', 1, 'Ping', 'Ping', '#1EE045', '#1EE045', '0', '1', '0', '1', '0', 1, '75', '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (7, 'Total', 1, 'Total', 'Total', '#F33E0B', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (8, 'Used', 2, 'Used', 'Used', '#2B28D7', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (10, 'CPU', 1, 'CPU', 'CPU', '#FF0000', '#FFFFFF', '0', '0', '0', '0', '0', 1, NULL, '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (11, 'UPTIME', 1, 'UPTIME', 'UPTIME', '#FF0000', '#FF0000', '1', '1', '1', '1', '0', 1, NULL, '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (12, 'Traffic_In', 1, 'Traffic_In', 'Traffic_In', '#FF0000', '#FF0000', '0', '1', '0', '1', '0', 1, '75', NULL, '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (13, 'Traffic_Out', 2, 'Traffic_Out', 'Traffic_Out', '#1EE045', '#1EE045', '0', '1', '0', '1', '1', 1, '75', '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (14, 'Load_1', 1, 'Load_1', 'Load_1', '#F3D30B', '#F3D30B', '0', '0', '0', '1', '0', 1, '75', '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (15, 'Load_5', 2, 'Load_5', 'Load_5', '#E97B15', '#E97B15', '0', '0', '0', '1', '0', 1, '75', '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (16, 'Load_15', 3, 'Load_15', 'Load_15', '#F11F0D', '#F11F0D', '0', '0', '0', '1', '0', 1, '75', '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (17, 'OSL_DOWNTIME', 1, 'OSL_DOWNTIME', 'DOWNTIME', '#E64A18', '#E64A18', '1', '1', '1', '1', '0', 1, NULL, '0', '0', '0', NULL);
-INSERT INTO `giv_components_template` VALUES (18, 'OSL_VALUE', 2, 'OSL_VALUE', 'VALUE', '#61D22D', '#61D22D', '1', '1', '1', '1', '0', 1, NULL, '0', '0', '0', NULL);
+
+INSERT INTO `giv_components_template` VALUES (1, 'Default_DS1', 1, 'DS1', '#1183EE', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '1', NULL);
+INSERT INTO `giv_components_template` VALUES (2, 'Default_DS2', 2, 'DS2', '#18E631', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', NULL);
+INSERT INTO `giv_components_template` VALUES (3, 'Default_DS3', 3, 'DS3', '#E84D17', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', NULL);
+INSERT INTO `giv_components_template` VALUES (4, 'Default_DS4', 4, 'DS4', '#C438C7', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', NULL);
+INSERT INTO `giv_components_template` VALUES (5, 'Ok', 1, 'Ok', '#1EE045', '#1EE045', '0', '0', '0', '1', '0', 1, '75', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (6, 'Ping', 1, 'Ping',  '#1EE045', '#1EE045', '0', '1', '0', '1', '0', 1, '75', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (7, 'Total', 1, 'Total',  '#F33E0B', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (8, 'Used', 2, 'Used',  '#2B28D7', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (10, 'CPU', 1, 'CPU',  '#FF0000', '#FFFFFF', '0', '0', '0', '0', '0', 1, NULL, '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (11, 'UPTIME', 1, 'UPTIME',  '#FF0000', '#FF0000', '1', '1', '1', '1', '0', 1, NULL, '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (12, 'Traffic_In', 1, 'Traffic_In', '#FF0000', '#FF0000', '0', '1', '0', '1', '0', 1, '75', NULL, '0', NULL);
+INSERT INTO `giv_components_template` VALUES (13, 'Traffic_Out', 2, 'Traffic_Out',  '#1EE045', '#1EE045', '0', '1', '0', '1', '1', 1, '75', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (14, 'Load_1', 1, 'Load_1','#F3D30B', '#F3D30B', '0', '0', '0', '1', '0', 1, '75', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (15, 'Load_5', 2, 'Load_5','#E97B15', '#E97B15', '0', '0', '0', '1', '0', 1, '75', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (16, 'Load_15', 3, 'Load_15',  '#F11F0D', '#F11F0D', '0', '0', '0', '1', '0', 1, '75', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (17, 'OSL_DOWNTIME', 1, 'OSL_DOWNTIME', '#E64A18', '#E64A18', '1', '1', '1', '1', '0', 1, NULL, '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (18, 'OSL_VALUE', 2, 'OSL_VALUE' , '#61D22D', '#61D22D', '1', '1', '1', '1', '0', 1, NULL, '0', '0', NULL);
 
 
 --
