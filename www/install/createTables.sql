@@ -854,7 +854,6 @@ CREATE TABLE `giv_components_template` (
   `name` varchar(255) default NULL,
   `ds_order` int(11) default NULL,
   `ds_name` varchar(200) default NULL,
-  `ds_legend` varchar(200) default NULL,
   `ds_color_line` varchar(255) default NULL,
   `ds_color_area` varchar(255) default NULL,
   `ds_filled` enum('0','1') default NULL,
@@ -866,7 +865,6 @@ CREATE TABLE `giv_components_template` (
   `ds_transparency` varchar(254) default NULL,
   `ds_invert` enum('0','1') default NULL,
   `default_tpl1` enum('0','1') default NULL,
-  `default_tpl2` enum('0','1') default NULL,
   `comment` text,
   PRIMARY KEY  (`compo_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -910,13 +908,10 @@ CREATE TABLE `giv_graphs` (
 CREATE TABLE `giv_graphs_template` (
   `graph_id` int(11) NOT NULL auto_increment,
   `name` varchar(200) default NULL,
-  `title` varchar(50) default NULL,
-  `img_format` varchar(4) default NULL,
   `vertical_label` varchar(200) default NULL,
-  `period` int(11) default NULL,
-  `step` int(11) default NULL,
   `width` int(11) default NULL,
   `height` int(11) default NULL,
+  `base` int(11) default '1000',
   `lower_limit` FLOAT default NULL,
   `upper_limit` FLOAT default NULL,
   `bg_grid_color` varchar(200) default NULL,
@@ -929,8 +924,8 @@ CREATE TABLE `giv_graphs_template` (
   `col_top` varchar(200) default NULL,
   `col_bot` varchar(200) default NULL,
   `default_tpl1` enum('0','1') default NULL,
-  `default_tpl2` enum('0','1') default NULL,
   `stacked` enum('0','1') default NULL,
+  `split_component` enum('0','1') default 0,
   `comment` text,
   PRIMARY KEY  (`graph_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
