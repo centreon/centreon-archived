@@ -197,3 +197,10 @@ CREATE TABLE `statistics` (
 
 INSERT INTO `statistics` VALUES (1, '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
+
+ALTER TABLE `index_data` ADD INDEX ( `must_be_rebuild` );
+ALTER TABLE `index_data` ADD INDEX ( `trashed` );
+ALTER TABLE `index_data` ADD INDEX ( `host_name` );
+ALTER TABLE `index_data` ADD INDEX ( `service_description` );
+
+
