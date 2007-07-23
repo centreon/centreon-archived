@@ -328,6 +328,7 @@ sub CheckRebuild(){
 			$len_storage_rrd = $len_storage_rrd * 60 * 60 * 24;
 			# Check if backup directory is created
 			system("mkdir $RRDdatabase_path/backup/") if (! -d "$RRDdatabase_path/backup/");
+			
 			$sth2 = $con_ods->prepare("SELECT id, service_id FROM index_data WHERE `must_be_rebuild` = '1'");
 			writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
 			while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
@@ -342,13 +343,20 @@ sub CheckRebuild(){
 				if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
 				while ($metric = $sth3->fetchrow_hashref()){
 					writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}."\n");
+					
 					# -----------------------------------------------------
 					# Get check interval for this service
-					my $interval = getServiceCheckInterval($svc_mst_be_rbld->{'id'}) * 60 + 30;
+					
+					my $interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'});
+					$interval = $interval * 60 + 30;
+					
+					writeLogFile("Interval : -> $interval\n");
+					
 					my $sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
 					writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
+					
 					for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
-						sleep(5) if ($cpt % 1000);
+						
 						if (!$flag){
 							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd\n");				
 							# backup old database
@@ -364,9 +372,11 @@ sub CheckRebuild(){
 							undef($interval);
 							$flag++;
 						}
+					
 						# Update Database 
 						RRDs::update ($RRDdatabase_path.$metric->{'metric_id'}.".rrd" , "--template", $metric->{'metric_name'}, $data->{'ctime'}.":".$data->{'value'});
 						$ERR = RRDs::error;
+					
 						if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
 						undef($ERR);
 					}

@@ -79,8 +79,10 @@ sub getServiceName($){
 sub getMyServiceField($$)	{
 	my $service_id = $_[0];
 	my $field = $_[1];
+	
 	while(1){
 		my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+    	writeLogFile("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1\n");
     	if (!$sth1->execute) {writeLogFile("Error When ods get service field : " . $sth1->errstr . "\n");}
    		my $data = $sth1->fetchrow_hashref();
     	if (defined($data->{$field}) && $data->{$field}){
@@ -110,6 +112,20 @@ sub getServiceCheckInterval($){ # metric_id
     
     my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
     undef($data_hst_svc);
+    print "\n$return\n";
+    return $return;
+}
+
+sub getServiceCheckIntervalFromService($){ # service_id
+	
+    $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
+    if (!$sth1->execute) {writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");}
+    my $data_hst_svc = $sth1->fetchrow_hashref(); 	
+ 	undef($sth1);
+    undef($data_metric);
+    my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
+    undef($data_hst_svc);
+    print "\n$return\n";
     return $return;
 }
 
