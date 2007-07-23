@@ -286,5 +286,7 @@ $lang["menu_ODS_config"] = "Config";
 $lang["menu_ODS_data"] = "Data";
 $lang["menu_ODS_manage"] = "Manager";
 
-
+# About
+$lang["about_project_leaders"] = "Project Leaders";
+$lang["about_project_contributors"] = "Contributeurs";
 ?>
