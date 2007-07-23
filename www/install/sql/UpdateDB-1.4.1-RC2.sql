@@ -40,7 +40,6 @@ ALTER TABLE `giv_components_template`
   
 ALTER TABLE `giv_graphs_template` ADD `split_component` ENUM("0", "1") NOT NULL DEFAULT '0' AFTER `stacked` ;
 ALTER TABLE `giv_graphs_template` ADD `base` INT NULL DEFAULT '1000' AFTER `height` ;
-ALTER TABLE `index_data` CHANGE `must_be_rebuild` `must_be_rebuild` ENUM( '0', '1', '2' ) NULL DEFAULT '0';
 
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_ODS', './img/icones/16x16/chart.gif', 501, 50106, 60, 1, './include/options/ods/manageData.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_ODS_manage', './img/icones/16x16/data_down.gif', 50106, 5010602, 20, 1, './include/options/ods/manageData.php', NULL, '0', '0', '1');
