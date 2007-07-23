@@ -31,7 +31,7 @@ use threads::shared;
 use RRDs;
 use File::Copy;
 
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "@OREON_PATH@/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -297,10 +297,10 @@ sub checkAndUpdate($){
 	if ($_[5]){
 		if ($_[1] =~ /[a-zA-Z]*_Module/){
 			@data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
-			$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded); # perfdata index status time type
+			$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
 		} else {
 			@data_service = identify_service($_[1], $_[2]); # return index_id and storage
-			$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded); # perfdata index status time type
+			$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
 		}
 	}
 	undef(@data_service);
@@ -331,6 +331,7 @@ sub CheckRebuild(){
 			$sth2 = $con_ods->prepare("SELECT id, service_id FROM index_data WHERE `must_be_rebuild` = '1'");
 			writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
 			while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
+			
 				my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
 				writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
 				undef($sth);
@@ -347,6 +348,7 @@ sub CheckRebuild(){
 					my $sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
 					writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
 					for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
+						sleep(5) if ($cpt % 1000);
 						if (!$flag){
 							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd\n");				
 							# backup old database
@@ -369,11 +371,11 @@ sub CheckRebuild(){
 						undef($ERR);
 					}
 					writeLogFile("$cpt value insert\n");
-					undef($sth4);				
+					undef($sth4);
 					# -----------------------------------------------------
 				}
 				undef($sth3);
-				my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+				$sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
 				writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
 				undef($sth);
 				undef($cpt);
@@ -409,7 +411,7 @@ while ($stop){
 	if ($y % 60 eq 0){
 		CheckMySQLConnexion();
 		# ---------------------------------------------
-		# Statistics
+		# Statistics For ODS
 		if ($lastlineRead){
 			$lineReadpermin = $lineRead - $lastlineRead;
 		} else {
@@ -423,14 +425,14 @@ while ($stop){
 		}
 		$lastvalueRecorded = $valueRecorded;
 		# ---------------------------------------------
-		
-		# ---------------------------------------------
 		# Update statistics for ODS
 		my $sth2 = $con_ods->prepare("UPDATE statistics SET `lineRead` = '$lineReadpermin', `valueReccorded` = '$valueRecordedpermin' LIMIT 1");
 		writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
 		undef($sth2);
+		# ---------------------------------------------
 		# Purge MySQL data for not having a too big database.
 		purgeMysqlData($con_ods);	
+		# ---------------------------------------------
 	}
 	$y++;
 	sleep(1);
@@ -440,6 +442,7 @@ while ($stop){
 
 $threadPerfdata->join;
 $threadCheckRestart->join;
+$threadCheckRebuild->join;
 #$threadCheckNagiosStats->join;
 
 # Write in log file 
