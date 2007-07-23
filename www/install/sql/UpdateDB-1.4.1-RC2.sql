@@ -57,7 +57,8 @@ DROP TABLE `giv_components`;
 
 UPDATE `topology` SET `topology_icone` = './img/icones/16x16/about.gif' WHERE `topology_page` =50601 LIMIT 1
 
-
+UPDATE `oreon_informations` SET `value` = '1.4.1-RC1' WHERE CONVERT( `oreon_informations`.`key` USING utf8 ) = 'version' AND CONVERT( `oreon_informations`.`value` USING utf8 ) = '1.4' LIMIT 1 ;
+UPDATE `oreon_informations` SET `value` = '1.4.1-RC2' WHERE CONVERT( `oreon_informations`.`key` USING utf8 ) = 'version' AND CONVERT( `oreon_informations`.`value` USING utf8 ) = '1.4.1-RC1' LIMIT 1 ;
 
 
 

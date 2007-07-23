@@ -489,7 +489,7 @@ INSERT INTO `inventory_mac_address` (`mac_address_begin`, `manufacturer`) VALUES
 
 -- insert version
 
-INSERT INTO `oreon_informations` ( `key` , `value` ) VALUES ('version', '1.4.1-RC1');
+INSERT INTO `oreon_informations` ( `key` , `value` ) VALUES ('version', '1.4.1-RC2');
 
 -- insert in traps_vendor table
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES (1, 'cisco', 'Cisco Networks', NULL), (2, 'hp', 'HP Networks', NULL), (3, '3com', '3Com', NULL), (4, 'ciscolinksys', 'Cisco-Linksys', NULL), (6, 'dell', 'Dell', NULL), (7, 'Generic', 'Generic', 'References Generic Traps');
