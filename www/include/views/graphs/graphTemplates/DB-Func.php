@@ -39,7 +39,6 @@ For information : contact@oreon-project.org
 		foreach($graphs as $key=>$value)
 			$pearDB->query("DELETE FROM giv_graphs_template WHERE graph_id = '".$key."'");
 		defaultOreonGraph();
-		defaultPluginsGraph();
 	}
 	
 	function multipleGraphTemplateInDB ($graphs = array(), $nbrDup = array())	{

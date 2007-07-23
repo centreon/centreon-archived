@@ -4,8 +4,6 @@ Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/gpl.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
-Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
-
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
 whether express or implied, and without limitation, with regard to the quality,
@@ -17,14 +15,12 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-$pagination = "maxViewConfiguration";
-	# set limit
-	$res =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	$gopt = array_map("myDecode", $res->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
+	if (!isset($oreon))
+		exit;
+		
+	include("./include/common/autoNumLimit.php");
+
 	if ($search)
 		$res = & $pearDB->query("SELECT COUNT(*) FROM giv_graphs_template WHERE name LIKE '%".$search."%'");
 	else
@@ -35,6 +31,8 @@ $pagination = "maxViewConfiguration";
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
+
+	include("./include/common/checkPagination.php");
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -83,7 +81,6 @@ $pagination = "maxViewConfiguration";
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-	
 
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -126,13 +123,9 @@ $pagination = "maxViewConfiguration";
 	
 	$tpl->assign('limit', $limit);
 
-
-
-
 	#
 	##Apply a template definition
-	#
-	
+	#	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
@@ -142,5 +135,4 @@ $pagination = "maxViewConfiguration";
 	$tpl = initSmartyTpl("./", $tpl);
 	$tpl->assign('lang', $lang);
 	$tpl->display("include/common/legend.ihtml");
-	
 ?>
