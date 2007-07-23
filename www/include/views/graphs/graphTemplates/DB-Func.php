@@ -49,7 +49,6 @@ For information : contact@oreon-project.org
 			$row = $res->fetchRow();
 			$row["graph_id"] = '';
 			$row["default_tpl1"] = '0';
-			$row["default_tpl2"] = '0';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
