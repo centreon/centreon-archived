@@ -19,7 +19,7 @@ cat <<EOF
 #                    OREON Project (www.oreon-project.org)                    #
 #                            Thanks for using OREON                           #
 #                                                                             #
-#                                    v 1.4                                    #
+#                                    v 1.4.1-RC2                              #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
