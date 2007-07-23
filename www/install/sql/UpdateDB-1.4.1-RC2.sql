@@ -27,10 +27,6 @@ DELETE FROM `topology_JS` WHERE `id_page` =  60101;
 DELETE FROM `topology_JS` WHERE `id_page` =  60102;
 DELETE FROM `topology_JS` WHERE `id_page` =  60103;
 
-DROP TABLE 'view_city';
-DROP TABLE 'view_country';
-DROP TABLE 'view_map';
-
 ALTER TABLE `giv_graphs_template`
   DROP `title`,
   DROP `img_format`,
@@ -55,7 +51,7 @@ ALTER TABLE `giv_components`  DROP FOREIGN KEY `giv_components_ibfk_1`;
 DROP TABLE `giv_graphs`;
 DROP TABLE `giv_components`;
 
-UPDATE `topology` SET `topology_icone` = './img/icones/16x16/about.gif' WHERE `topology_page` =50601 LIMIT 1
+UPDATE `topology` SET `topology_icone` = './img/icones/16x16/about.gif' WHERE `topology_page` =50601 LIMIT 1;
 
 UPDATE `oreon_informations` SET `value` = '1.4.1-RC1' WHERE CONVERT( `oreon_informations`.`key` USING utf8 ) = 'version' AND CONVERT( `oreon_informations`.`value` USING utf8 ) = '1.4' LIMIT 1 ;
 UPDATE `oreon_informations` SET `value` = '1.4.1-RC2' WHERE CONVERT( `oreon_informations`.`key` USING utf8 ) = 'version' AND CONVERT( `oreon_informations`.`value` USING utf8 ) = '1.4.1-RC1' LIMIT 1 ;
