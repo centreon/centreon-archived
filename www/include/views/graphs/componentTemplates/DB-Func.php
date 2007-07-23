@@ -69,14 +69,6 @@ For information : contact@oreon-project.org
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	}
 	
-	function noDefaultPluginsGraph ()	{
-		global $pearDB;
-		$rq = "UPDATE giv_components_template SET default_tpl2 = '0'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	}
-	
 	function multipleComponentTemplateInDB ($compos = array(), $nbrDup = array())	{
 		global $pearDB;
 		foreach($compos as $key=>$value) {
@@ -121,8 +113,6 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		if ($ret["default_tpl1"]["default_tpl1"])
 			noDefaultOreonGraph();
-		if ($ret["default_tpl2"]["default_tpl2"])
-			noDefaultPluginsGraph();
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `name` , `ds_order` , `ds_name` , " .
 				" `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				"`default_tpl1`, `comment` ) ";
@@ -190,8 +180,6 @@ For information : contact@oreon-project.org
 		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]["ds_invert"]."', ": $rq .= "NULL, ";
 		$rq .= "default_tpl1 = ";
 		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
-		$rq .= "default_tpl2 = ";
-		isset($ret["default_tpl2"]["default_tpl2"]) && $ret["default_tpl2"]["default_tpl2"] != NULL ? $rq .= "'".$ret["default_tpl2"]["default_tpl2"]."', ": $rq .= "NULL, ";
 		$rq .= "comment = ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE compo_id = '".$compo_id."'";
