@@ -56,6 +56,8 @@ For information : contact@oreon-project.org
 	$rows = $tmp["COUNT(*)"];
 			
 	$tab_class = array("0" => "list_one", "1" => "list_two");
+	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
+	$yesOrNo = array(0 => "No", 1 => "Yes");	
 	
 	$DBRESULT =& $pearDBO->query("SELECT * FROM index_data ORDER BY host_name, service_description LIMIT ".$num * $limit.", $limit");
 	if (PEAR::isError($DBRESULT))
@@ -80,6 +82,10 @@ For information : contact@oreon-project.org
 
 		$index_data["metrics_name"] = str_replace("#S#", "/", $index_data["metrics_name"]);
 		$index_data["metrics_name"] = str_replace("#BS#", "\\", $index_data["metrics_name"]);
+		
+		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
+		$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
+		
 		$index_data["class"] = $tab_class[$i % 2];
 		$data[$i] = $index_data;
 	}

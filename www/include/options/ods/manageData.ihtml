@@ -17,11 +17,12 @@
 	<table id="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-	 		<td class="FormHeader">Host</td>
-	 		<td class="FormHeader">Service</td>
-	 		<td class="FormHeader">Metrics</td>
-	 		<td class="FormHeader">Storage Type</td>
-	 		<td class="FormHeader">Actions</td>
+	 		<td class="ListColLeft">Host</td>
+	 		<td class="ListColCenter">Service</td>
+	 		<td class="ListColCenter">Metrics</td>
+	 		<td class="ListColCenter">Rebuild Waiting</td>
+	 		<td class="ListColCenter">Storage Type</td>
+	 		<td class="ListColRight">Actions</td>
 	 	</tr>
 		{foreach item=d from=$data} 	
 		<tr class="{$d.class}">
@@ -29,6 +30,7 @@
 			<td class="ListColLeft">{$d.host_name}</td>
 	 		<td class="ListColLeft">{$d.service_description}</td>
 	 		<td class="ListColCenter">{$d.metrics_name}</td>
+	 		<td class="ListColCenter">{$d.must_be_rebuild}</td>
 	 		<td class="ListColCenter">{$d.storage_type}</td>
 	 		<td class="ListColRight"><a href='./oreon.php?p={$p}&o=d&id={$d.id}'><img src='./img/icones/16x16/delete.gif' alt='{$d.delete}'></a> &nbsp;&nbsp;<a href='./oreon.php?p={$p}&o=rb&id={$d.id}'><img src='./img/icones/16x16/gear.gif' alt='{$d.rebuild}'></a></td>
 		</tr> 	
