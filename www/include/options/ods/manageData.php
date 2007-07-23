@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 			
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
-	$yesOrNo = array(0 => "No", 1 => "Yes");	
+	$yesOrNo = array(0 => "No", 1 => "Yes", 2 => "Rebuilding");	
 	
 	$DBRESULT =& $pearDBO->query("SELECT * FROM index_data ORDER BY host_name, service_description LIMIT ".$num * $limit.", $limit");
 	if (PEAR::isError($DBRESULT))
