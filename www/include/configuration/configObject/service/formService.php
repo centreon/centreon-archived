@@ -135,6 +135,14 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
+	# Check commands comes from DB -> Store in $checkCmdEvent Array
+	$checkCmdEvent = array(NULL=>NULL);
+	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($checkCmd))
+		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
+	$DBRESULT->free();
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
@@ -243,7 +251,7 @@ For information : contact@oreon-project.org
 	$form->addGroup($serviceEHE, 'service_event_handler_enabled', $lang['sv_eventHandlerE'], '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_event_handler_enabled' => '2'));
-	$form->addElement('select', 'command_command_id2', $lang['sv_eventHandler'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
+	$form->addElement('select', 'command_command_id2', $lang['sv_eventHandler'], $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', $lang['sv_args'], $attrsText);
 
 	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, $lang["yes"], '1');
