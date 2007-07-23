@@ -57,7 +57,7 @@ INSERT INTO `giv_components_template` VALUES (1, 'Default_DS1', 1, 'DS1', '#1183
 INSERT INTO `giv_components_template` VALUES (2, 'Default_DS2', 2, 'DS2', '#18E631', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', NULL);
 INSERT INTO `giv_components_template` VALUES (3, 'Default_DS3', 3, 'DS3', '#E84D17', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', NULL);
 INSERT INTO `giv_components_template` VALUES (4, 'Default_DS4', 4, 'DS4', '#C438C7', '#FFFFFF', '0', '1', '1', '1', '1', 2, NULL, NULL, '0', NULL);
-INSERT INTO `giv_components_template` VALUES (5, 'Ok', 1, 'Ok', '#1EE045', '#1EE045', '0', '0', '0', '1', '0', 1, '75', '0', '0', NULL);
+INSERT INTO `giv_components_template` VALUES (5, 'Ok', 2, 'Ok', '#1EE045', '#1EE045', '0', '0', '0', '1', '0', 1, '75', '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (6, 'Ping', 1, 'Ping',  '#1EE045', '#1EE045', '0', '1', '0', '1', '0', 1, '75', '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (7, 'Total', 1, 'Total',  '#F33E0B', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', NULL);
 INSERT INTO `giv_components_template` VALUES (8, 'Used', 2, 'Used',  '#2B28D7', '#FFFFFF', '0', '0', '0', '1', '1', 1, NULL, '0', '0', NULL);

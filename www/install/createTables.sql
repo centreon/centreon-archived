@@ -830,22 +830,6 @@ CREATE TABLE `general_opt` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `giv_components`
---
-
-CREATE TABLE `giv_components` (
-  `compo_id` int(11) NOT NULL auto_increment,
-  `ds_order` int(11) default NULL,
-  `graph_id` int(11) default NULL,
-  `compot_compo_id` int(11) default NULL,
-  `pp_metric_id` int(11) default NULL,
-  PRIMARY KEY  (`compo_id`),
-  KEY `graph_index` (`graph_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `giv_components_template`
 --
 
@@ -882,21 +866,6 @@ CREATE TABLE `giv_graphT_componentT_relation` (
   PRIMARY KEY  (`ggcr_id`),
   KEY `graph_index` (`gg_graph_id`),
   KEY `compo_index` (`gc_compo_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `giv_graphs`
---
-
-CREATE TABLE `giv_graphs` (
-  `graph_id` int(11) NOT NULL auto_increment,
-  `name` varchar(200) default NULL,
-  `grapht_graph_id` int(11) default NULL,
-  `comment` text,
-  PRIMARY KEY  (`graph_id`),
-  KEY `graph_template_index` (`grapht_graph_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1921,23 +1890,11 @@ ALTER TABLE `extended_service_information`
   ADD CONSTRAINT `extended_service_information_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
 
 --
--- Contraintes pour la table `giv_components`
---
-ALTER TABLE `giv_components`
-  ADD CONSTRAINT `giv_components_ibfk_1` FOREIGN KEY (`graph_id`) REFERENCES `giv_graphs` (`graph_id`) ON DELETE CASCADE;
-
---
 -- Contraintes pour la table `giv_graphT_componentT_relation`
 --
 ALTER TABLE `giv_graphT_componentT_relation`
   ADD CONSTRAINT `giv_graphT_componentT_relation_ibfk_1` FOREIGN KEY (`gg_graph_id`) REFERENCES `giv_graphs_template` (`graph_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `giv_graphT_componentT_relation_ibfk_2` FOREIGN KEY (`gc_compo_id`) REFERENCES `giv_components_template` (`compo_id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `giv_graphs`
---
-ALTER TABLE `giv_graphs`
-  ADD CONSTRAINT `giv_graphs_ibfk_1` FOREIGN KEY (`grapht_graph_id`) REFERENCES `giv_graphs_template` (`graph_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `host`

@@ -49,9 +49,13 @@ ALTER TABLE `index_data` CHANGE `must_be_rebuild` `must_be_rebuild` ENUM( '0', '
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_ODS', './img/icones/16x16/chart.gif', 501, 50106, 60, 1, './include/options/ods/manageData.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_ODS_manage', './img/icones/16x16/data_down.gif', 50106, 5010602, 20, 1, './include/options/ods/manageData.php', NULL, '0', '0', '1');
 
+-- 23/07/2007
+ALTER TABLE `giv_graphs`  DROP FOREIGN KEY `giv_graphs_ibfk_1`;
+ALTER TABLE `giv_components`  DROP FOREIGN KEY `giv_components_ibfk_1`;
+DROP TABLE `giv_graphs`;
+DROP TABLE `giv_components`;
 
-
-
+UPDATE `topology` SET `topology_icone` = './img/icones/16x16/about.gif' WHERE `topology_page` =50601 LIMIT 1
 
 
 
