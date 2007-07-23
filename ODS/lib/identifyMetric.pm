@@ -27,7 +27,7 @@
 # - timestamp
 # - storage_type
 
-sub identify_metric($$$$$$){ # perfdata index status time type
+sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
     my (@data, $begin, $just_insert, $generalcounter);
 	$generalcounter = $_[5];
 	$just_insert = 0;   				
@@ -77,14 +77,14 @@ sub identify_metric($$$$$$){ # perfdata index status time type
 			# O -> BD Mysql & 1 -> RRDTool
 			$begin = $_[3] - 200;
 			if (defined($data[1])){
-				if (defined($_[4]) && $_[4] eq 1){
+				if (defined($_[4]) && $_[4] eq 1 && $_[6] ne 2){
 					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
 					$generalcounter++;
 				} elsif (defined($_[4]) && $_[4] eq 0) {   # Insert Data In Mysql 
 					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				} else {
-					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
+					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}) if ($_[6] ne 2);
 					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				}
@@ -106,7 +106,7 @@ sub identify_metric($$$$$$){ # perfdata index status time type
 # - timestamp
 # - storage_type
 
-sub identify_hidden_metric($$$$$$){ # perfdata index status time type
+sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter rebuild
 	my (@data, $begin, $just_insert, $generalcounter);
 	$generalcounter = $_[5];
 	$just_insert = 0;   				
