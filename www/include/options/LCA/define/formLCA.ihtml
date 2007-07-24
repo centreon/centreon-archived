@@ -70,7 +70,7 @@
 
 				{foreach key=key item=c from=$b.childs}
 				<li>
-				<img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.png"  onclick="toggleDisplay('{$c.c_id}');">
+				<img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.gif"  onclick="toggleDisplay('{$c.c_id}');">
 					<input id="i{$c.c_id}" name="lca_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" /><label for="{$c.id}">{$c.name}</label>
 
 					<ul class="arbo_d" id="{$c.c_id}">
