@@ -56,21 +56,21 @@
 
 		<ul class="arbo_a">
 		{foreach key=key item=a from=$lca_topos2}
-		<li >
-		<img src="img/icones/16x16/arrow_right_blue.gif" onclick="toggleDisplay('{$a.c_id}');">
+		<li>
+		<img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');">
 		
 			<input id="i{$a.c_id}" name="lca_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" /><label for="{$a.id}">{$a.name}</label>
 			<ul class="arbo_b" id="{$a.c_id}">
 
 			{foreach key=key item=b from=$a.childs}
 			<li>
-			<img src="img/icones/16x16/arrow_right_blue.gif" onclick="toggleDisplay('{$b.c_id}');">
+			<img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');">
 				<input id="i{$b.c_id}" name="lca_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" /><label for="{$b.id}">{$b.name}</label>
 				<ul class="arbo_c" id="{$b.c_id}">
 
 				{foreach key=key item=c from=$b.childs}
 				<li>
-				<img src="img/icones/16x16/arrow_right_blue.gif"  onclick="toggleDisplay('{$c.c_id}');">
+				<img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.png"  onclick="toggleDisplay('{$c.c_id}');">
 					<input id="i{$c.c_id}" name="lca_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" /><label for="{$c.id}">{$c.name}</label>
 
 					<ul class="arbo_d" id="{$c.c_id}">
