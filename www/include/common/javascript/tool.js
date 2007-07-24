@@ -18,6 +18,55 @@ For information : contact@oreon-project.org
 
 <!-- Begin
 
+	function toggleCheckAll(theElement, id){	
+		var a = document.getElementById(id);
+
+		for(var i = 0; document.getElementById(id+'_'+i) ;i++){
+			var b = document.getElementById(id+'_'+i);
+			if(a.checked)
+				b.checked = true;
+			else
+				b.checked = false;
+
+			for(var j = 0; document.getElementById(id+'_'+i+'_'+j) ;j++){
+				var c = document.getElementById(id+'_'+i+'_'+j);
+				if(b.checked)
+					c.checked = true;
+				else
+					c.checked = false;
+				for(var k = 0; document.getElementById(id+'_'+i+'_'+j+'_'+k) ;k++){
+					var d = document.getElementById(id+'_'+i+'_'+j+'_'+k);
+					if(c.checked)
+						d.checked = true;
+					else
+						d.checked = false;
+	
+				}
+
+			}
+		}
+					
+
+	}					
+	
+	
+		
+	function toggleDisplay(id)
+		{
+			var d = document.getElementById(id);
+			if(d)
+			{
+				if (d.style.display == 'block') {
+				d.style.display='none';
+				}
+				else
+				{
+				d.style.display='block';
+				}
+			}	
+	}
+
+
 	function checkUncheckAll(theElement) {
 
      var theForm = theElement.form, z = 0;
