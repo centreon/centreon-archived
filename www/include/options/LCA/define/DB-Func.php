@@ -278,6 +278,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$ret = array();
 		$ret = $form->getSubmitValue("lca_topos");
+
 		if (is_array($ret))
 			$ret = array_keys($ret);		
 		for($i = 0; $i < count($ret); $i++)	{

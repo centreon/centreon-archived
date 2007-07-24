@@ -15,7 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
+	
 	if (!isset($oreon))
 		exit();
 
@@ -52,6 +52,10 @@ For information : contact@oreon-project.org
 			$lca["lca_topos"][$topo["topology_topology_id"]] = 1;
 		$DBRESULT->free();
 	}
+
+if(!isset($lca["lca_topos"]))
+$lca["lca_topos"] = array();
+
 	# Init LCA 
 	
 	$lca_data = getLCAHostByID($pearDB);
@@ -191,24 +195,79 @@ For information : contact@oreon-project.org
 	$DBRESULT1 =& $pearDB->query($rq);
 	#
 	$lca_topos = array();
+
+	$lca_topos2 = array();
+	$a = 0;
 	while ($DBRESULT1->fetchInto($topo1))	{
+
+		$lca_topos2[$a] = array();
+		$lca_topos2[$a]["name"] = array_key_exists($topo1["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo1["topology_name"]] : "&nbsp;&nbsp;#UNDEF#";
+		$lca_topos2[$a]["id"] = $topo1["topology_id"];
+		$lca_topos2[$a]["checked"] = array_key_exists($topo1["topology_id"],$lca["lca_topos"]) ? "true" : "false";
+		$lca_topos2[$a]["c_id"] = $a;
+		$lca_topos2[$a]["childs"] = array();
+
+		/*old*/
 	 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo1["topology_id"], null, array_key_exists($topo1["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo1["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px;", "id"=>$topo1["topology_id"]));
 	 	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 	 	$DBRESULT2 =& $pearDB->query($rq);
+		/*old*/
+		$b = 0;
 		while ($DBRESULT2->fetchInto($topo2))	{
+			$lca_topos2[$a]["childs"][$b] = array();
+			$lca_topos2[$a]["childs"][$b]["name"] = array_key_exists($topo2["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo2["topology_name"]] : "&nbsp;&nbsp;#UNDEF#";
+			$lca_topos2[$a]["childs"][$b]["id"] = $topo2["topology_id"];
+			$lca_topos2[$a]["childs"][$b]["checked"] = array_key_exists($topo2["topology_id"],$lca["lca_topos"]) ? "true" : "false";
+			$lca_topos2[$a]["childs"][$b]["c_id"] = $a."_".$b;
+			$lca_topos2[$a]["childs"][$b]["childs"] = array();
+
+
+
+			/*old*/
 		 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, array_key_exists($topo2["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo2["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 20px;"));
 		 	$rq = "SELECT topology_id, topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 		 	$DBRESULT3 =& $pearDB->query($rq);
+			/*old*/
+			$c = 0;
 			while ($DBRESULT3->fetchInto($topo3)){
+				$lca_topos2[$a]["childs"][$b]["childs"][$c] = array();
+				$lca_topos2[$a]["childs"][$b]["childs"][$c]["name"] = array_key_exists($topo3["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo3["topology_name"]] : "&nbsp;&nbsp;#UNDEF#";
+				$lca_topos2[$a]["childs"][$b]["childs"][$c]["id"] = $topo3["topology_id"];
+				$lca_topos2[$a]["childs"][$b]["childs"][$c]["checked"] = array_key_exists($topo3["topology_id"],$lca["lca_topos"]) ? "true" : "false";
+				$lca_topos2[$a]["childs"][$b]["childs"][$c]["c_id"] = $a."_".$b."_".$c;
+				$lca_topos2[$a]["childs"][$b]["childs"][$c]["childs"] = array();
+
+
+
+				/*old*/
 			 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, array_key_exists($topo3["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo3["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 40px;"));
 				$rq = "SELECT topology_id, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 			 	$DBRESULT4 =& $pearDB->query($rq);
-				while ($DBRESULT4->fetchInto($topo4))
+				/*old*/
+				$d = 0;
+				while ($DBRESULT4->fetchInto($topo4)){
+					$lca_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d] = array();
+					$lca_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["name"] = array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo4["topology_name"]] : "&nbsp;&nbsp;#UNDEF#";
+					$lca_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["id"] = $topo4["topology_id"];
+					$lca_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["checked"] = array_key_exists( $topo4["topology_id"],$lca["lca_topos"]) ? "true" : "false";
+					$lca_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["c_id"] = $a."_".$b."_".$c."_".$d;
+					$lca_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["childs"] = array();
+
+
+
+					/*old*/
 				 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo4["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 55px;"));
-		
+					/*old*/					
+					$d++;
+				}
+				$c++;		
 			}
+			$b++;
 		}
+		$a++;
 	}
+	
+
 	if ($o == "a")	{
 		function one($v)	{
 			$v->setValue(1);
@@ -223,6 +282,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
 	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
+
 
 	$form->addElement('hidden', 'lca_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -264,6 +324,9 @@ For information : contact@oreon-project.org
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&lca_id=".$lca_id, "changeT"=>$lang['modify']));
 
+
+	$tpl->assign("lca_topos2", $lca_topos2);
+
 	$tpl->assign("sort1", $lang['lca_infos']);
 	$tpl->assign("sort2", $lang['lca_sortRes']);
 	$tpl->assign("sort3", $lang['lca_sortTopo']);
@@ -293,4 +356,10 @@ For information : contact@oreon-project.org
 		$tpl->assign('o', $o);
 		$tpl->display("formLCA.ihtml");
 	}
+/*
+	echo "<pre>";
+	print_r($lca_topos2);	
+	echo "</pre>";
+*/
+
 ?>

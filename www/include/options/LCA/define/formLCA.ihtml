@@ -1,3 +1,4 @@
+<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 {$form.javascript}
 <form {$form.attributes}>
 <div>
@@ -47,10 +48,57 @@
 </div>
 <div id='tab3' class="tab">
 	 <table id="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.pages}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.lca_topos.label}</td><td class="FormRowValue">&nbsp;&nbsp;{$form.lca_topos.html}</td></tr>
+	 	<tr class="ListHeader"><td class="FormHeader" ><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" ><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.pages}</td></tr>
+
+		<tr >
+		<td>
+
+		<ul class="arbo_a">
+		{foreach key=key item=a from=$lca_topos2}
+		<li >
+		<img src="img/icones/16x16/arrow_right_blue.gif" onclick="toggleDisplay('{$a.c_id}');">
+		
+			<input id="i{$a.c_id}" name="lca_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" /><label for="{$a.id}">{$a.name}</label>
+			<ul class="arbo_b" id="{$a.c_id}">
+
+			{foreach key=key item=b from=$a.childs}
+			<li>
+			<img src="img/icones/16x16/arrow_right_blue.gif" onclick="toggleDisplay('{$b.c_id}');">
+				<input id="i{$b.c_id}" name="lca_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" /><label for="{$b.id}">{$b.name}</label>
+				<ul class="arbo_c" id="{$b.c_id}">
+
+				{foreach key=key item=c from=$b.childs}
+				<li>
+				<img src="img/icones/16x16/arrow_right_blue.gif"  onclick="toggleDisplay('{$c.c_id}');">
+					<input id="i{$c.c_id}" name="lca_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" /><label for="{$c.id}">{$c.name}</label>
+
+					<ul class="arbo_d" id="{$c.c_id}">
+					{foreach key=key item=d from=$c.childs}
+					<li>
+					<input id="i{$d.c_id}" name="lca_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" /><label for="{$d.id}">{$d.name}</label>
+					</li>
+					{/foreach}
+					</ul>
+
+				</li>
+				{/foreach}
+				</ul>
+
+
+			</li>
+			{/foreach}
+			</ul>
+
+
+
+		</li>
+		{/foreach}
+		</ul>
+		
+		</td></tr>
 	</table>
+
 </div>
 <div id="validForm">
 {if $o == "a" || $o == "c"}
