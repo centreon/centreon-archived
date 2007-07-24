@@ -305,3 +305,24 @@ div.update_output {
 	top:2px;
 	left:200px;
 }
+
+.arbo_d{
+	list-style:none;
+	padding-top:5px;
+	margin-left:16px;
+}
+
+.arbo_a li{
+	list-style:none;
+	padding-top:5px;
+	margin-left:15px;
+}
+.arbo_b {
+display:none;
+}
+.arbo_c {
+display:none;
+}
+.arbo_d {
+display:none;
+}
