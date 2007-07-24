@@ -53,9 +53,21 @@ For information : contact@oreon-project.org
 		
 	function toggleDisplay(id)
 		{
+
+
 			var d = document.getElementById(id);
 			if(d)
 			{
+				var img = document.getElementById('img_'+id);
+
+				if(img){
+					if(d.style.display == 'block')
+						img.src = 'img/icones/16x16/navigate_plus.gif';
+					else
+						img.src = 'img/icones/16x16/navigate_minus.gif';
+				}
+
+
 				if (d.style.display == 'block') {
 				d.style.display='none';
 				}
