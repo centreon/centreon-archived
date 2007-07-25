@@ -16,15 +16,41 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	if (isset($_GET["command_name"]))
-		$command_name = $_GET["command_name"];
-	else if (isset($_POST["command_name"]))
-		$command_name = $_POST["command_name"];
+	if (isset($_GET["command_id"]))
+		$command_id = $_GET["command_id"];
+	else if (isset($_POST["command_id"]))
+		$command_id = $_POST["command_id"];
 	else
-		$command_name = NULL;
+		$command_id = NULL;
 
-	$command_name = ltrim($command_name,"/");
-	$stdout = shell_exec($oreon->optGen["nagios_path_plugins"]. $command_name . " --help");
+	//$command_name = ltrim($command_name,"/");
+	$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	$cmd = $DBRESULT->fetchRow();
+	
+	$cmd_array = explode(" ", $cmd["command_line"]);
+	$full_line = $cmd_array[0];
+	$cmd_array = explode("#S#", $full_line);
+	$resource_info = $cmd_array[0];
+	$resource_def = str_replace('$', '@DOLLAR@', $resource_info);
+	
+	# Match if the first part of the path is a MACRO
+	if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches))	{
+		$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$resource = $DBRESULT->fetchRow();
+		$resource_path = explode("=", $resource["resource_line"]);
+		$resource_path = $resource_path[1];
+		unset($cmd_array[0]);
+		$command = rtrim($resource_path, "/")."#S#".implode("#S#", $cmd_array);
+	}
+	else
+		$command = $full_line;
+		
+	$command = str_replace("#S#", "/", $command);
+	$stdout = shell_exec($command." --help");
 	$msg = str_replace ("\n", "<br>", $stdout);
 	
 	$attrsText 	= array("size"=>"25");
@@ -40,7 +66,7 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	$tpl->assign('command_line', $oreon->optGen["nagios_path_plugins"]. $command_name . " --help");
+	$tpl->assign('command_line', $command." --help");
 	if (isset($msg) && $msg)
 		$tpl->assign('msg', $msg);
 
