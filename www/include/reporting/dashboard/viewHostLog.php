@@ -379,11 +379,17 @@ For information : contact@oreon-project.org
 												 )  / $tt *100,2);
 			$tmp_none = $tt - ($tab["Tok"] + $tab["Twarn"] + $tab["Tunknown"] + $tab["Tcri"]);
 
+
+			$tab_tmp["OKnbEvent"] = isset($tab_svc_bdd[$svc_id]["OKnbEvent"]) ? $tab_svc_bdd[$svc_id]["OKnbEvent"] : 0;
+			$tab_tmp["WARNINGnbEvent"] = isset($tab_svc_bdd[$svc_id]["WARNINGnbEvent"]) ? $tab_svc_bdd[$svc_id]["WARNINGnbEvent"] : 0;
+			$tab_tmp["UNKNOWNnbEvent"] = isset($tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"]) ? $tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] : 0;
+			$tab_tmp["CRITICALnbEvent"] = isset($tab_svc_bdd[$svc_id]["CRITICALnbEvent"]) ? $tab_svc_bdd[$svc_id]["CRITICALnbEvent"] : 0;
+/*
 			$tab_tmp["OKnbEvent"] = isset($tab[$svc_id]["OKnbEvent"]) ? $tab[$svc_id]["OKnbEvent"] : 0;
 			$tab_tmp["WARNINGnbEvent"] = isset($tab[$svc_id]["WARNINGnbEvent"]) ? $tab[$svc_id]["WARNINGnbEvent"] : 0;
 			$tab_tmp["UNKNOWNnbEvent"] = isset($tab[$svc_id]["UNKNOWNnbEvent"]) ? $tab[$svc_id]["UNKNOWNnbEvent"] : 0;
 			$tab_tmp["CRITICALnbEvent"] = isset($tab[$svc_id]["CRITICALnbEvent"]) ? $tab[$svc_id]["CRITICALnbEvent"] : 0;
-
+*/
 
 			$tab_tmp["PktimeOK"] = round($tab["Tok"] / ($tt - $tmp_none) *100,2);
 			$tab_tmp["PktimeWARNING"] = round( $tab["Twarn"]/ ($tt - $tmp_none) *100,2);
