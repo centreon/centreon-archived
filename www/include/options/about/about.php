@@ -48,6 +48,7 @@ For information : contact@oreon-project.org
 	Florian Foiry (Inconnuflo)<br>
 	Guillaume Watteux (Watt)<br>
 	Maximilien Bersoult (leoncx)<br>
+	Gaetan Lucas de Couville (gae)<br>
 	(Tor)<br>
 	Jean Marie Grisard (Jmou)<br>
 	</ul>
