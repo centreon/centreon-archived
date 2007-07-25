@@ -215,6 +215,8 @@ For information : contact@oreon-project.org
 		if ($svc_id["host_name"] == "Meta_Module")
 			$svc_id["host_name"] = "Meta Services";
 			
+		$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);	
+			
 		if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 			if (PEAR::isError($DBRESULT_meta))
