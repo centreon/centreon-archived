@@ -148,8 +148,11 @@ For information : contact@oreon-project.org
 						$service_description = NULL;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				$h = array('0' => $key);
-				if (($row["service_register"] && testServiceExistence($service_description, $h)) || (!$row["service_register"] && testServiceTemplateExistence($service_description)))	{
+				$hPars = array();
+				$hgPars = array();
+				$hPars = getMyServiceHosts($key);
+				$hgPars = getMyServiceHostGroups($key);
+				if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars)) || (!$row["service_register"] && testServiceTemplateExistence($service_description)))	{
 					$val ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
