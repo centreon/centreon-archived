@@ -55,7 +55,7 @@
 						<tr class="list_one">
 							<td class="ListColHeaderCenter">{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}{$formPeriod2.hidden}</form></td>
 						</tr>
-					</table>			
+					</table>
 				</td>
 			</tr>
 
@@ -95,33 +95,53 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td class="FormHeader" colspan=6>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+							<td class="FormHeader" colspan=10>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$serviceTilte}</td>
-							<td class="ListColHeaderCenter">{$OKTitle}</td>
-							<td class="ListColHeaderCenter">{$WarningTitle}</td>
-							<td class="ListColHeaderCenter">{$CriticalTitle}</td>
-							<td class="ListColHeaderCenter">{$UnknownTitle}</td>
+							<td colspan=2 class="ListColHeaderCenter">{$OKTitle}</td>
+							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
+							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
+							<td colspan=2 class="ListColHeaderCenter">{$UnknownTitle}</td>
 							<td class="ListColHeaderCenter">{$PendingTitle}</td>
+						</tr>
+						<tr class='list_lvl_1'>
+							<td class="ListColHeaderCenter"></td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
 						</tr>
 						{foreach item=tb from=$tab_svc}
 						<tr class={cycle values="list_two, list_one"}>
 							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
-							<td class='ListColRight'{$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
-							<td class='ListColRight'{$style_warning}>{$tb.PtimeWARNING}% ({$tb.PktimeWARNING}%)</td>
-							<td class='ListColRight'{$style_critical}>{$tb.PtimeCRITICAL}% ({$tb.PktimeCRITICAL}%)</td>
-							<td class='ListColRight'{$style_unknown}>{$tb.PtimeUNKNOWN}% ({$tb.PktimeUNKNOWN}%)</td>
-							<td class='ListColRight'{$style_pending}>{$tb.PtimeNONE}%</td>
+							<td {$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
+							<td {$style_ok_alert} >{$tb.OKnbEvent}</td>
+							<td {$style_warning}>{$tb.PtimeWARNING}% ({$tb.PktimeWARNING}%)</td>
+							<td {$style_warning_alert} style="width:30px;">{$tb.WARNINGnbEvent}</td>
+							<td {$style_critical}>{$tb.PtimeCRITICAL}% ({$tb.PktimeCRITICAL}%)</td>
+							<td {$style_critical_alert style="width:30px;"}>{$tb.CRITICALnbEvent}</td>
+							<td {$style_unknown}>{$tb.PtimeUNKNOWN}% ({$tb.PktimeUNKNOWN}%)</td>
+							<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWNnbEvent}</td>
+							<td {$style_pending}>{$tb.PtimeNONE}%</td>
 						</tr>
 						{/foreach}
 						<tr class="list_lvl_2">
-							<td class="ListColHeaderCenter">{$allTilte}</td>
-							<td class='ListColRight'{$style_ok}>{$tab_svc_average.PTOK}% ({$tab_svc_average.PKTOK}%)</td>
-							<td class='ListColRight'{$style_warning}>{$tab_svc_average.PTW}% ({$tab_svc_average.PKTW}%)</td>
-							<td class='ListColRight'{$style_critical}>{$tab_svc_average.PTC}% ({$tab_svc_average.PKTC}%)</td>
-							<td class='ListColRight'{$style_unknown}>{$tab_svc_average.PTU}% ({$tab_svc_average.PKTU}%)</td>
-							<td class='ListColRight'{$style_pending}>{$tab_svc_average.PTN}%</td>
+							<td class="ListColHeaderCenter">{$averageTilte}</td>
+							<td class='ListColHeaderCenter'{$style_ok}>{$tab_svc_average.PTOK}% ({$tab_svc_average.PKTOK}%)</td>
+							<td class='ListColHeaderCenter'{$style_ok_alert}>{$tab_svc_average.PAOK}</td>
+							<td class='ListColHeaderCenter'{$style_warning}>{$tab_svc_average.PTW}% ({$tab_svc_average.PKTW}%)</td>
+							<td class='ListColHeaderCenter'{$style_warning_alert}>{$tab_svc_average.PAW}</td>
+							<td class='ListColHeaderCenter'{$style_critical}>{$tab_svc_average.PTC}% ({$tab_svc_average.PKTC}%)</td>
+							<td class='ListColHeaderCenter'{$style_critical_alert}>{$tab_svc_average.PAC}</td>
+							<td class='ListColHeaderCenter'{$style_unknown}>{$tab_svc_average.PTU}% ({$tab_svc_average.PKTU}%)</td>
+							<td class='ListColHeaderCenter'{$style_unknown_alert}>{$tab_svc_average.PAU}</td>
+							<td class='ListColHeaderCenter'{$style_pending}>{$tab_svc_average.PTN}%</td>
 						</tr>
 					</table>
 				</td>

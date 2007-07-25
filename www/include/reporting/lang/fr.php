@@ -64,6 +64,7 @@ $lang["m_hostSvcAssocied"] = "Etat des services associ&eacute;s";
 
 $lang["m_serviceTilte"] = "Service";
 $lang["m_allTilte"] = "Tout";
+$lang["m_averageTilte"] = "Moyenne";
 $lang["m_OKTitle"] = "OK";
 $lang["m_WarningTitle"] = "Warning";
 $lang["m_UnknownTitle"] = "Unknown";
