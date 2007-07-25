@@ -90,15 +90,20 @@ For information : contact@oreon-project.org
 			if ($sv["service_register"])	{
 				if (!$sv["service_description"])
 					$sv["service_description"] = getMyServiceName($sv['service_template_model_stm_id']);
-				if ($sv["host_host_id"])
+				if ($sv["host_host_id"]){
+					$sv["service_description"] = str_replace("#S#", "/", $sv["service_description"]);
+					$sv["service_description"] = str_replace("#BS#", "\\", $sv["service_description"]);
 					$str .= "<sv id='".$sv["host_host_id"]."_".$key."' name='".$sv["service_description"]."'/>\n";
-				else if ($sv["hostgroup_hg_id"])	{
+				} else if ($sv["hostgroup_hg_id"])	{
 					$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$sv["hostgroup_hg_id"]."'");
 					if (PEAR::isError($DBRESULT2))
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while ($DBRESULT2->fetchInto($host))
-						if (array_key_exists($host["host_host_id"], $gbArr[2]))
+						if (array_key_exists($host["host_host_id"], $gbArr[2])){
+							$sv["service_description"] = str_replace("#S#", "/", $sv["service_description"]);
+							$sv["service_description"] = str_replace("#BS#", "\\", $sv["service_description"]);
 							$str .= "<sv id='".$host["host_host_id"]."_".$key."' name='".$sv["service_description"]."'/>\n";
+						}
 					$DBRESULT2->free();
 				}
 			}
