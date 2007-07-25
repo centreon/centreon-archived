@@ -97,12 +97,15 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	function getLogInDbForHost(&$Tup, &$Tdown, &$Tunreach, &$Tnone, $pearDB, $host_id, $start_date_select, $end_date_select){
+	function getLogInDbForHost(&$hbase, &$Tup, &$Tdown, &$Tunreach, &$Tnone, $pearDB, $host_id, $start_date_select, $end_date_select){
 		$rq = 'SELECT ' .
+			'sum(UPnbEvent) as TupNBAlert, ' .
 			'sum(UPTimeScheduled)' .
 			' as Tup,' .				
+			'sum(DOWNnbEvent) as TdownNBAlert, ' .
 			'sum(DOWNTimeScheduled)' .
 			' as Tdown,' .
+			'sum(UNREACHABLEnbEvent) as TunreachableNBAlert, ' .
 			'sum(UNREACHABLETimeScheduled)' .
 			' as Tunreach, ' .				
 			'min(date_start) as log_date_start,' .
@@ -119,10 +122,15 @@ For information : contact@oreon-project.org
 		  die($res->getMessage());
 		} else {
 		  while ($h =& $res->fetchRow()){
+
+			$hbase = $h;
+
 			$Tup = 0 + $h["Tup"];
 			$Tdown = 0 + $h["Tdown"];
 			$Tunreach = 0 + $h["Tunreach"];
 			$Tnone = 0 + ($end_date_select - $start_date_select) - ($h["Tup"]+$h["Tdown"]+ $h["Tunreach"]);
+
+
 		  }
 		}
 	}
@@ -133,46 +141,58 @@ For information : contact@oreon-project.org
 		$rq = 'SELECT ' .
 			'service_id, ' .
 			'sum(OKTimeScheduled)' .
-			' as Tok,' .				
+			' as Tok,' .
+			'sum(OKnbEvent) as OKnbEvent,' .
 			'sum(WARNINGTimeScheduled)' .
 			' as Twarn,' .
+			'sum(WARNINGnbEvent) as WARNINGnbEvent,' .
 			'sum(UNKNOWNTimeScheduled)' .
-			' as Tunknown, ' .				
+			' as Tunknown, ' .
+			'sum(UNKNOWNnbEvent) as UNKNOWNnbEvent,' .				
 			'sum(CRITICALTimeScheduled)' .
 			' as Tcri, ' .
+			'sum(CRITICALnbEvent) as CRITICALnbEvent, ' .
 			'min(date_start) as log_date_start,' .
 			'max(date_end) as log_date_end' .
 			' FROM `log_archive_service` WHERE host_id = ' . $host_id  .
 			' AND date_start >=  ' . ($start_date_select-1) .
 			' AND date_end <= ' . ($end_date_select + 1) .
 			' GROUP BY service_id';
+
 			$res = & $pearDB->query($rq);
 			$tab_svc_bdd = array();
 			if (PEAR::isError($res)){
 			  die($res->getMessage());
 			} else {
 			  while ($s =& $res->fetchRow()){
-
+				$tab_svc_bdd[$s["service_id"]]["OKnbEvent"] = 0 + $s["OKnbEvent"];
+				$tab_svc_bdd[$s["service_id"]]["WARNINGnbEvent"] = 0 + $s["WARNINGnbEvent"];
+				$tab_svc_bdd[$s["service_id"]]["UNKNOWNnbEvent"] = 0 + $s["UNKNOWNnbEvent"];
+				$tab_svc_bdd[$s["service_id"]]["CRITICALnbEvent"] = 0 + $s["CRITICALnbEvent"];
 			  	
 				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
 				$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];
 				$tab_svc_bdd[$s["service_id"]]["Tnone"] = 0 + ($end_date_select - $start_date_select) - ($s["Tok"]+$s["Twarn"]+$s["Tunknown"]);
-				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];
+				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];				
 			  }
-			}
+			}			
 	}
 	function getLogInDbForOneSVC(&$tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select){	
 		$rq = 'SELECT ' .
 			'service_id, ' .
 			'sum(OKTimeScheduled)' .
-			' as Tok,' .				
+			' as Tok,' .
+			'sum(OKnbEvent) as OKnbEvent,' .
 			'sum(WARNINGTimeScheduled)' .
 			' as Twarn,' .
+			'sum(WARNINGnbEvent) as WARNINGnbEvent,' .
 			'sum(UNKNOWNTimeScheduled)' .
 			' as Tunknown, ' .
+			'sum(UNKNOWNnbEvent) as UNKNOWNnbEvent,' .				
 			'sum(CRITICALTimeScheduled)' .
 			' as Tcri, ' .
+			'sum(CRITICALnbEvent) as CRITICALnbEvent, ' .
 			'min(date_start) as log_date_start,' .
 			'max(date_end) as log_date_end' .
 			' FROM `log_archive_service` WHERE host_id = ' . $host_id  .			
@@ -186,6 +206,10 @@ For information : contact@oreon-project.org
 			  die($res->getMessage());
 			} else { 
 			  while ($s =& $res->fetchRow()){
+				$tab_svc_bdd[$s["service_id"]]["OKnbEvent"] = 0 + $s["OKnbEvent"];
+				$tab_svc_bdd[$s["service_id"]]["WARNINGnbEvent"] = 0 + $s["WARNINGnbEvent"];
+				$tab_svc_bdd[$s["service_id"]]["UNKNOWNnbEvent"] = 0 + $s["UNKNOWNnbEvent"];
+				$tab_svc_bdd[$s["service_id"]]["CRITICALnbEvent"] = 0 + $s["CRITICALnbEvent"];
 			  	
 				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];

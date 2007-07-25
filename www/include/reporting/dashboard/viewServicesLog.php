@@ -107,9 +107,9 @@ For information : contact@oreon-project.org
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForHost($Tup, $Tdown, $Tunreach, $Tnone, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForHost($hbase, $Tup, $Tdown, $Tunreach, $Tnone, $pearDB, $host_id, $start_date_select, $end_date_select);
 		$tab_svc_bdd = array();
-		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForSVC( $tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
 	}
 
 	#
@@ -191,6 +191,11 @@ For information : contact@oreon-project.org
 			else
 				$tab_svc["timeNONE"] += (time()-$tab_svc["current_time"]);
 
+			$tab_svc["OKnbEvent"] = 0 + $tab_svc["OKnbEvent"];
+			$tab_svc["WARNINGnbEvent"] = 0 + $tab_svc["WARNINGnbEvent"];
+			$tab_svc["UNKNOWNnbEvent"] = 0 + $tab_svc["UNKNOWNnbEvent"];
+			$tab_svc["CRITICALnbEvent"] = 0 + $tab_svc["CRITICALnbEvent"];
+
 
 			$today_ok = $tab_svc["timeOK"];
 			$today_warning = $tab_svc["timeWARNING"];
@@ -204,6 +209,12 @@ For information : contact@oreon-project.org
 			$archive_svc_warn = isset($tab_svc_bdd[$svc_id]["Twarn"]) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
 			$archive_svc_unknown = isset($tab_svc_bdd[$svc_id]["Tunknown"]) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
 			$archive_svc_cri = isset($tab_svc_bdd[$svc_id]["Tcri"]) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
+
+			$tab_svc["OKnbEvent"] += isset($tab_svc_bdd[$svc_id]["OKnbEvent"]) ? $tab_svc_bdd[$svc_id]["OKnbEvent"] : 0;
+			$tab_svc["WARNINGnbEvent"] += isset($tab_svc_bdd[$svc_id]["WARNINGnbEvent"]) ? $tab_svc_bdd[$svc_id]["WARNINGnbEvent"] : 0;
+			$tab_svc["UNKNOWNnbEvent"] += isset($tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"]) ? $tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] : 0;
+			$tab_svc["CRITICALnbEvent"] += isset($tab_svc_bdd[$svc_id]["CRITICALnbEvent"]) ? $tab_svc_bdd[$svc_id]["CRITICALnbEvent"] : 0;
+
 
 			$tab_svc["timeOK"] += $archive_svc_ok;
 			$tab_svc["timeWARNING"] += $archive_svc_warn;
@@ -280,7 +291,10 @@ For information : contact@oreon-project.org
 		$tab_svc["timeCRITICAL"] = (isset($tab_svc_bdd[$svc_id]["Tcri"])) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
 		$tab_svc["timeNONE"] = $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
 
-
+		$tab_svc["OKnbEvent"] = isset($tab_svc_bdd[$svc_id]["OKnbEvent"]) ? $tab_svc_bdd[$svc_id]["OKnbEvent"] : 0;
+		$tab_svc["WARNINGnbEvent"] = isset($tab_svc_bdd[$svc_id]["WARNINGnbEvent"]) ? $tab_svc_bdd[$svc_id]["WARNINGnbEvent"] : 0;
+		$tab_svc["UNKNOWNnbEvent"] = isset($tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"]) ? $tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] : 0;
+		$tab_svc["CRITICALnbEvent"] = isset($tab_svc_bdd[$svc_id]["CRITICALnbEvent"]) ? $tab_svc_bdd[$svc_id]["CRITICALnbEvent"] : 0;
 
 		$tab_svc["PtimeOK"] = round($tab_svc["timeOK"] / $tt *100,3);
 		$tab_svc["PtimeWARNING"] = round( $tab_svc["timeWARNING"]/ $tt *100,3);
@@ -315,44 +329,59 @@ For information : contact@oreon-project.org
 	}
 }	
 
+
+
 	## calculate service  resume
 	$tab_resume = array();
 	$tab = array();	
 	if($mservice && $mhost){
 		$tab["state"] = $lang["m_OKTitle"];
+		$tab["timestamp"] = $tab_svc["timeOK"];
 		$tab["time"] = Duration::toString($tab_svc["timeOK"]);
 		$tab["pourcentTime"] = $tab_svc["PtimeOK"];
 		$tab["pourcentkTime"] = $tab_svc["PktimeOK"]." %";
+		$tab["nbAlert"] = $tab_svc["OKnbEvent"];
+		$today_OKnbEvent = $tab_svc["OKnbEvent"];
 		$tab["style"] = " style='background:" . $oreon->optGen["color_ok"]."'";
 		$tab_resume[0] = $tab;
 
 		$tab["state"] = $lang["m_CriticalTitle"];
 		$tab["time"] = Duration::toString($tab_svc["timeCRITICAL"]);
+		$tab["timestamp"] = $tab_svc["timeCRITICAL"];
 		$tab["pourcentTime"] = $tab_svc["PtimeCRITICAL"];
 		$tab["pourcentkTime"] = $tab_svc["PktimeCRITICAL"]." %";
+		$tab["nbAlert"] = $tab_svc["CRITICALnbEvent"];
+		$today_CRITICALnbEvent = $tab_svc["CRITICALnbEvent"];
 		$tab["style"] = " style='background:" . $oreon->optGen["color_critical"]."'";
 		$tab_resume[1] = $tab;
 		
 		$tab["state"] = $lang["m_WarningTitle"];
 		$tab["time"] = Duration::toString($tab_svc["timeWARNING"]);
+		$tab["timestamp"] = $tab_svc["timeWARNING"];
 		$tab["pourcentTime"] = $tab_svc["PtimeWARNING"];
 		$tab["pourcentkTime"] = $tab_svc["PktimeWARNING"]." %";
+		$tab["nbAlert"] = $tab_svc["WARNINGnbEvent"];
+		$today_WARNINGnbEvent = $tab_svc["WARNINGnbEvent"];
 		$tab["style"] = " style='background:" . $oreon->optGen["color_warning"]."'";
 		$tab_resume[2] = $tab;
 		
 		$tab["state"] = $lang["m_UnknownTitle"];
 		$tab["time"] = Duration::toString($tab_svc["timeUNKNOWN"]);
+		$tab["timestamp"] = $tab_svc["timeUNKNOWN"];
 		$tab["pourcentTime"] = $tab_svc["PtimeUNKNOWN"];
 		$tab["pourcentkTime"] = $tab_svc["PktimeUNKNOWN"]." %";
+		$tab["nbAlert"] = $tab_svc["UNKNOWNnbEvent"];
+		$today_UNKNOWNnbEvent = $tab_svc["UNKNOWNnbEvent"];
 		$tab["style"] = " style='background:" . $oreon->optGen["color_unknown"]."'";
 		$tab_resume[3] = $tab;
 		
 		$tab["state"] = $lang["m_PendingTitle"];
 		$tab_svc["timeNONE"] = $tab_svc["timeNONE"] < 0 ? 0 : $tab_svc["timeNONE"];
 		$tab["time"] = Duration::toString($tab_svc["timeNONE"]);
-
+		$tab["timestamp"] = $tab_svc["timeNONE"];
 		$tab["pourcentTime"] = $tab_svc["PtimeNONE"];
 		$tab["pourcentkTime"] = null;
+		$tab["nbAlert"] = "";
 		$tab["style"] = " style='background:#cccccc'";
 		$tab_resume[4] = $tab;
 	}
@@ -364,6 +393,29 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
+
+
+	$status = "";
+	$totalTime = 0;
+	$totalpTime = 0;
+	$totalpkTime = 0;
+	foreach ($tab_resume  as $tb){
+		if($tb["pourcentTime"] >= 0)
+			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
+		$totalTime += $tb["timestamp"];
+		$totalpTime += $tb["pourcentTime"];
+		$totalpkTime += $tb["pourcentkTime"];
+	}
+
+	$totalAlert = $tab_svc["OKnbEvent"] + $tab_svc["CRITICALnbEvent"] + $tab_svc["WARNINGnbEvent"] + $tab_svc["UNKNOWNnbEvent"]  ;
+
+	$tpl->assign('totalAlert', $totalAlert);
+
+	$tpl->assign('totalTime', Duration::toString($totalTime));
+	$tpl->assign('totalpTime', $totalpTime);
+	$tpl->assign('totalpkTime', $totalpkTime);
+	$tpl->assign("allTilte",  $lang["m_allTilte"]);
+
 
 	$tpl->assign('o', $o);
 	$tpl->assign('mhost', $mhost);
@@ -402,6 +454,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('EventTitle', $lang["m_EventTitle"]);
 	$tpl->assign('HostTitle', $lang["m_HostTitle"]);
 	$tpl->assign('InformationsTitle', $lang["m_InformationsTitle"]);
+	$tpl->assign('AlertTitle', $lang["m_AlertTitle"]);
 
 	$tpl->assign('infosTitle1', $mhost);
 	$tpl->assign('infosTitle2', $start_date_select." => ".$end_date_select);		
@@ -461,7 +514,7 @@ if($mhost)	{
 	 		 substr($oreon->optGen["color_unknown"],1);
 
 	$today_var = '&serviceID='.$mservice.'&today_ok='.$today_ok . '&today_critical='.$today_critical.'&today_unknown='.$today_unknown. '&today_pending=' . $today_none. '&today_warning=' . $today_warning;
-	$today_var .= '&today_WARNINGnbEvent=&today_CRITICALnbEvent=&today_OKnbEvent=';
+	$today_var .= '&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent.'&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent;
 	$type = 'Service';
 	include('ajaxReporting_js.php');
 }

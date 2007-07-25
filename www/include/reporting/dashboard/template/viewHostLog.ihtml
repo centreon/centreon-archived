@@ -63,13 +63,14 @@
 				<td style='vertical-align:top;padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td colspan=4>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
+							<td colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$StateTitle}</td>
 							<td class="ListColHeaderCenter">{$TimeTitle}</td>
 							<td class="ListColHeaderCenter">{$TimeTotalTitle}</td>
 							<td class="ListColHeaderCenter">{$KnownTimeTitle}</td>
+							<td class="ListColHeaderCenter">{$AlertTitle}</td>
 						</tr>
 						{foreach item=tb from=$tab_resume}
 						<tr class={cycle values="list_two, list_one"}>
@@ -77,6 +78,7 @@
 							<td class='ListColCenter'>{$tb.time}</td>
 							<td class='ListColRight'>{$tb.pourcentTime}%</td>
 							<td class='ListColRight'>{$tb.pourcentkTime}</td>
+							<td class='ListColRight'>{$tb.nbAlert}</td>
 						</tr>
 						{/foreach}
 						<tr class='list_lvl_2'>
@@ -84,6 +86,7 @@
 							<td class='ListColCenter'>{$totalTime}</td>
 							<td class='ListColRight'>{$totalpTime}%</td>
 							<td class='ListColRight'>{$totalpkTime}%</td>
+							<td class='ListColRight'>{$totalAlert}</td>
 						</tr>
 					</table>
 				</td>

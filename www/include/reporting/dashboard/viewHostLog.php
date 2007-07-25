@@ -19,7 +19,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit;
 
-
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
@@ -42,8 +41,7 @@ For information : contact@oreon-project.org
 	require_once('reporting-func.php');
 	include("./include/monitoring/log/choose_log_file.php");
 
-	# LCA 
-	
+	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
 	$lcaHostByID = getLcaHostByID($pearDB);
 	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
@@ -61,8 +59,6 @@ For information : contact@oreon-project.org
 	#
 	## period selection
 	#
-	
-	
 	$type_period = (isset($_GET["type_period"])) ? $_GET["type_period"] : "predefined";
 	$type_period = (isset($_POST["type_period"])) ? $_POST["type_period"] : $type_period;
 	
@@ -99,11 +95,12 @@ For information : contact@oreon-project.org
 		#
 		## recupere les log host en base
 		#
+		$hbase = array();
 		$Tup = NULL;
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForHost($Tup, $Tdown, $Tunreach, $Tnone, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForHost($hbase, $Tup, $Tdown, $Tunreach, $Tnone, $pearDB, $host_id, $start_date_select, $end_date_select);
 		$tab_svc_bdd = array();
 		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
 	}
@@ -125,7 +122,7 @@ For information : contact@oreon-project.org
 		$formHost->setDefaults(array('host' => $_GET["host"]));
 	}
 
-$formHost->addElement('hidden', 'type_period', $type_period);
+	$formHost->addElement('hidden', 'type_period', $type_period);
 
 	#
 	## fourchette de temps
@@ -210,6 +207,9 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			else
 				$tab_hosts[$mhost]["timeNONE"] += ($today_end-$tab_hosts[$mhost]["current_time"]);
 
+			$hbase["TupNBAlert"] += $tab_hosts[$mhost]["UPnbEvent"];
+			$hbase["TdownNBAlert"] += $tab_hosts[$mhost]["DOWNnbEvent"];
+			$hbase["TunreachableNBAlert"] += $tab_hosts[$mhost]["UNREACHABLEnbEvent"];
 			#
 			## add log day
 			#
@@ -330,7 +330,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 			$today_down = $tab_hosts[$mhost]["timeDOWN"];
 			$today_unreachable = $tab_hosts[$mhost]["timeUNREACHABLE"];
 		
-		}		
+		}
 		$i=0;
 		foreach($tab_svc_bdd as $svc_id => $tab)
 		{
@@ -425,6 +425,8 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tab["timestamp"] = $Tup;
 	$tab["pourcentTime"] = round($Tup/($timeTOTAL+1)*100,2) ;
 	$tab["pourcentkTime"] = round($Tup/($timeTOTAL-$Tnone+1)*100,2). "%";
+	$tab["nbAlert"] = $hbase["TupNBAlert"];
+	$today_UPnbEvent = $hbase["TupNBAlert"];
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 	$tab_resume[0] = $tab;
 
@@ -433,6 +435,9 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tab["timestamp"] = $Tdown;
 	$tab["pourcentTime"] = round($Tdown/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = round($Tdown/($timeTOTAL-$Tnone+1)*100,2)."%";
+	$tab["nbAlert"] = $hbase["TdownNBAlert"];
+	$today_DOWNnbEvent = $hbase["TdownNBAlert"];
+	
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
 	$tab_resume[1] = $tab;
 
@@ -441,6 +446,8 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tab["timestamp"] = $Tunreach;
 	$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone+1)*100,2)."%";
+	$tab["nbAlert"] = $hbase["TunreachableNBAlert"];
+	$today_UNREACHABLEnbEvent = $hbase["TunreachableNBAlert"];
 	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
 	$tab_resume[2] = $tab;
 
@@ -450,6 +457,7 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tab["timestamp"] = $Tnone;
 	$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
 	$tab["pourcentkTime"] = null;
+	$tab["nbAlert"] = "";	
 	$tab["style"] = "class='ListColCenter' style='background:#cccccc'";
 	$tab_resume[3] = $tab;
 
@@ -472,6 +480,11 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 		$totalpTime += $tb["pourcentTime"];
 		$totalpkTime += $tb["pourcentkTime"];
 	}
+
+$totalAlert = $hbase["TunreachableNBAlert"] + $hbase["TdownNBAlert"] + $hbase["TupNBAlert"];
+
+	$tpl->assign('totalAlert', $totalAlert);
+
 	$tpl->assign('totalTime', Duration::toString($totalTime));
 	$tpl->assign('totalpTime', $totalpTime);
 	$tpl->assign('totalpkTime', $totalpkTime);
@@ -513,6 +526,8 @@ $formHost->addElement('hidden', 'type_period', $type_period);
 	$tpl->assign('TimeTitle', $lang["m_TimeTitle"]);
 	$tpl->assign('TimeTotalTitle', $lang["m_TimeTotalTitle"]);
 	$tpl->assign('KnownTimeTitle', $lang["m_KnownTimeTitle"]);
+	$tpl->assign('AlertTitle', $lang["m_AlertTitle"]);
+
 
 	$tpl->assign('DateTitle', $lang["m_DateTitle"]);
 	$tpl->assign('EventTitle', $lang["m_EventTitle"]);
@@ -577,7 +592,7 @@ if($mhost)	{
 	 		 substr($oreon->optGen["color_unknown"],1);
 
 	$today_var = '&today_up='.$today_up . '&today_down='.$today_down.'&today_unreachable='.$today_unreachable. '&today_pending=' . $today_pending;
-	$today_var .= '&today_UNREACHABLEnbEvent=*&today_DOWNnbEvent=*';
+	$today_var .= '&today_UPnbEvent='.$today_UPnbEvent.'&today_UNREACHABLEnbEvent='.$today_UNREACHABLEnbEvent.'&today_DOWNnbEvent='.$today_DOWNnbEvent;
 
 	$type = 'Host';	
 	include('ajaxReporting_js.php');

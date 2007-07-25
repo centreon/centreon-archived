@@ -77,6 +77,7 @@ $lang["m_StateTitle"] = "Etat";
 $lang["m_TimeTitle"] = "Temps";
 $lang["m_TimeTotalTitle"] = "Temps Total";
 $lang["m_KnownTimeTitle"] = "Temps connus";
+$lang["m_AlertTitle"] = "Alertes";
 
 $lang["m_DateTitle"] = "Date";
 $lang["m_EventTitle"] = "Ev&egrave;nement";
