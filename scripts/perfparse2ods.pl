@@ -47,6 +47,12 @@ my $mysql_database = "perfparse";
 
 require $installedPath."etc/conf.pm";
 
+sub writeLogFile($){
+	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+	print LOG time()." - ".$_[0];
+	close LOG or warn $!;
+}
+
 my $connexion = DBI->connect("DBI:mysql:database=".$mysql_database.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});		
 
 print "- Open Connexion : ok\n";
