@@ -37,13 +37,13 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir_www"]));
 		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir_www"]));
        	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir_www"])), -3) ;
-		if((strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
+		if((strcmp($perms,'755') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
           	echo '<b><span class="go">OK</font></b>';
         	 $msg =  '';
 		} else {
           	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
           	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-          	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (775)';
+          	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (755)';
 		    $return_false = 1;
        	}?>
        	</td>
@@ -58,13 +58,13 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir"]."ODS/etc/"));
 		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir"]."ODS/etc/"));
        	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir"]."ODS/etc/")), -3) ;
-		if((strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
+		if((strcmp($perms,'755') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
           	echo '<b><span class="go">OK</font></b>';
         	$msg =  '';
 		} else {
           	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
           	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-          	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (775)';
+          	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (755)';
 		    $return_false = 1;
        	}	?>
        	</td>
