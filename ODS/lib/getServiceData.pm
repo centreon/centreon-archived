@@ -82,7 +82,6 @@ sub getMyServiceField($$)	{
 	
 	while(1){
 		my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-    	writeLogFile("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1\n");
     	if (!$sth1->execute) {writeLogFile("Error When ods get service field : " . $sth1->errstr . "\n");}
    		my $data = $sth1->fetchrow_hashref();
     	if (defined($data->{$field}) && $data->{$field}){
