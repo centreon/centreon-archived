@@ -27,7 +27,9 @@ use strict;
 use DBI;
 use POSIX;
 
-my $installedPath = "@OREON_PATH@/ODS/";
+my $installedPath = "/srv/oreon/ODS/";
+my $LOG ="/var/log/ods.log";
+my $PFDT = $installedPath."/var/new-service-perfdata";
 
 # Init Globals
 use vars qw($len_storage_rrd $RRDdatabase_path $LOG %stat $con_ods $con_oreon $generalcounter);
