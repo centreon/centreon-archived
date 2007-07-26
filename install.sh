@@ -518,7 +518,7 @@ function oreon_post_install()
       echo "<?" > $INSTALL_DIR_OREON_CONF
       echo "/**" >> $INSTALL_DIR_OREON_CONF
       echo "Oreon is developped with GPL Licence 2.0 :" >> $INSTALL_DIR_OREON_CONF
-      echo "http://www.gnu.org/licenses/gpl.txt" >> $INSTALL_DIR_OREON_CONF
+      echo "http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt" >> $INSTALL_DIR_OREON_CONF
       echo "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf" >> $INSTALL_DIR_OREON_CONF
       echo "" >> $INSTALL_DIR_OREON_CONF
       echo "The Software is provided to you AS IS and WITH ALL FAULTS." >> $INSTALL_DIR_OREON_CONF
