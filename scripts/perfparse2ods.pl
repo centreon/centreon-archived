@@ -25,7 +25,6 @@
 
 use strict;
 use DBI;
-use RRDs;
 use POSIX;
 
 my $installedPath = "@OREON_PATH@/ODS/";
@@ -45,7 +44,6 @@ my $mysql_passwd = "oreon-pwd";
 my $mysql_host = "localhost";
 my $mysql_database = "perfparse";
 
-require $installedPath."etc/conf.pm";
 
 sub writeLogFile($){
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
