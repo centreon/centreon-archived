@@ -1,8 +1,8 @@
 <?
 /**
-Oreon is developped with Apache Licence 2.0 :
-http://www.apache.org/licenses/LICENSE-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
+Oreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/gpl.txt
+Developped by : Julien Mathis - Romain Le Merlus
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
