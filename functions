@@ -361,8 +361,9 @@ function install_oreon_plugins()
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_PLUGIN/* >> $LOG_FILE 2>> $LOG_FILE
-    find $NAGIOS_PLUGIN -name "check_dhcp" -exec chown root.$NAGIOS_GROUP -d {}; \
-    find $NAGIOS_PLUGIN -name "check_dhcp" -exec chmod "+s" -d {}; \
+    find $NAGIOS_PLUGIN -name "check_dhcp" -exec chown root.$NAGIOS_GROUP -d {} \;
+    find $NAGIOS_PLUGIN -name "check_dhcp" -exec chmod "+s" -d {} \;
+    chown -R $NAGIOS_USER.$NAGIOS_GROUPE $INSTALL_DIR_OREON/OreonDataStorage 2> /dev/null
 
     echo ""
 	echo "------------------------------------------------------------------------"
