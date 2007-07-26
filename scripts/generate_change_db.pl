@@ -65,11 +65,6 @@ sub CheckMySQLConnexion(){
 sub getMyServiceField($$)	{
 	my $service_id = $_[0];
 	my $field = $_[1];
-	
-	if (!defined($service_id) || !$service_id){
-		return 1;
-	}
-		
 	while(1){
 		my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
     	if (!$sth1->execute) {writeLogFile("Error When ods get service field : " . $sth1->errstr . "\n");}
@@ -91,24 +86,23 @@ sub getServiceCheckInterval($){ # metric_id
 	my $sth1 = $con_ods->prepare("SELECT index_id FROM metrics WHERE metric_id = '".$_[0]."'");
     if (!$sth1->execute){writeLogFile("Error where getting service interval : ".$sth1->errstr."\n");}
     my $data_metric = $sth1->fetchrow_hashref();
-    
+        
     $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$data_metric->{'index_id'}."'");
     if (!$sth1->execute) {writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");}
     my $data_hst_svc = $sth1->fetchrow_hashref();
- 	
+ 	print $data_hst_svc->{'service_id'} . "-";
  	undef($sth1);
     undef($data_metric);
     
     my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
     undef($data_hst_svc);
+    print $return;
     return $return;
 }
 
 CheckMySQLConnexion();
 
 my ($sth2, $data, $ERR);
-
-print $ARGV[0] . "\n";
 
 if ($ARGV[0] eq "-a"){
     undef($ARGV);
@@ -137,8 +131,9 @@ for (my $i = 0; defined($ARGV[$i]) ; $i++ ){
 	my $metric_name = $data->{'metric_name'};
 	undef($sth2);
 	undef($data);
-	my $interval = getServiceCheckInterval($ARGV[$i]) * 60 + 30;
-	print 'interval : $interval \n';
+	my $interval = getServiceCheckInterval($ARGV[$i]);
+	$interval = $interval * 60 + 30;
+	print "interval : $interval \n";
 	$sth2 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$ARGV[$i]."'");
 	if (!$sth2->execute) {writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");}
 	my $flag = 0;
