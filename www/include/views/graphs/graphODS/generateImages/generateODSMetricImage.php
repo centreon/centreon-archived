@@ -155,9 +155,9 @@ For information : contact@oreon-project.org
 		$longer = 0;
 		foreach ($metrics as $key => $tm){
 			if (isset($tm["ds_invert"]) && $tm["ds_invert"])
-				$command_line .= " DEF:va".$cpt."=".$RRDdatabase_path.$key.".rrd:".substr($metrics[$key]["metric"], 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*";
+				$command_line .= " DEF:va".$cpt."=".$RRDdatabase_path.$key.".rrd:".substr($metrics[$key]["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*";
 			else
-				$command_line .= " DEF:v".$cpt."=".$RRDdatabase_path.$key.".rrd:".substr($metrics[$key]["metric"], 19).":AVERAGE ";
+				$command_line .= " DEF:v".$cpt."=".$RRDdatabase_path.$key.".rrd:".substr($metrics[$key]["metric"],0 , 19).":AVERAGE ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
 			$cpt++;
