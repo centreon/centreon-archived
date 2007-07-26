@@ -366,7 +366,7 @@ sub CheckRebuild(){
 							# Calculate first entry in database					
 							my $begin = $data->{'ctime'} - 200;
 							# Create RRD database
-							RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".$metric->{'metric_name'}.":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$len_storage_rrd, "RRA:MIN:0.5:12:".$len_storage_rrd, "RRA:MAX:0.5:12:".$len_storage_rrd);
+							RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$len_storage_rrd, "RRA:MIN:0.5:12:".$len_storage_rrd, "RRA:MAX:0.5:12:".$len_storage_rrd);
 							$ERR = RRDs::error;
 							if ($ERR){writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
 							undef($ERR);
@@ -376,7 +376,7 @@ sub CheckRebuild(){
 						}
 					
 						# Update Database 
-						RRDs::update ($RRDdatabase_path.$metric->{'metric_id'}.".rrd" , "--template", $metric->{'metric_name'}, $data->{'ctime'}.":".$data->{'value'});
+						RRDs::update ($RRDdatabase_path.$metric->{'metric_id'}.".rrd" , "--template", substr($metric->{'metric_name'}, 0, 19), $data->{'ctime'}.":".$data->{'value'});
 						$ERR = RRDs::error;
 					
 						if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
