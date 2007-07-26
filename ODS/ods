@@ -255,6 +255,7 @@ sub GetPerfData(){
 # Check if nagios restart and if we 
 # must to check configuration and 
 # launch purge process  
+# -> Thread
 ########################################
 
 sub CheckRestart(){
@@ -279,6 +280,10 @@ sub CheckRestart(){
 		sleep(5);
 	}
 }
+
+########################################
+# Purge MySQL data
+########################################
 
 sub purgeMysqlData($){
 	my $sth2 = $_[0]->prepare("SELECT * FROM config");	
@@ -342,15 +347,12 @@ sub CheckRebuild(){
 				my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 				if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
 				while ($metric = $sth3->fetchrow_hashref()){
-					writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}."\n");
+					writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd\n");
 					
 					# -----------------------------------------------------
 					# Get check interval for this service
 					
-					my $interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'});
-					$interval = $interval * 60 + 30;
-					
-					writeLogFile("Interval : -> $interval\n");
+					my $interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * 60 + 30;
 					
 					my $sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
 					writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
@@ -358,7 +360,7 @@ sub CheckRebuild(){
 					for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
 						
 						if (!$flag){
-							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd\n");				
+							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd (interval : $interval)\n");				
 							# backup old database
 							system("mv ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd $RRDdatabase_path/backup/".$metric->{'metric_id'}.".rrd");
 							# Calculate first entry in database					
@@ -410,13 +412,11 @@ my $threadCheckRebuild		= 	threads->new("CheckRebuild");
 #my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
 # here make statistics
-my $y = 0;
-
 my ($lineReadpermin, $valueRecordedpermin, $lastlineRead, $lastvalueRecorded);
-
 $lastlineRead = 0;
 $lastvalueRecorded = 0;
 
+my $y = 0;
 while ($stop){
 	if ($y % 60 eq 0){
 		CheckMySQLConnexion();
