@@ -235,7 +235,7 @@ $lang["m_modules"] = "Modules";
 $lang['m_log_advanced'] = "Logs Avanc&eacute;s";
 $lang['m_log_lite'] = "Event Logs";
 $lang['ods_rrd_path'] = "Chemin d'acc&egrave;s aux bases RRD de stockage";
-$lang['ods_len_storage_rrd'] = "Taille des Bases RRDTool";
+$lang['ods_len_storage_rrd'] = "Dur&eacute;e de R&eacute;tention des donn&eacute;es de RRDTool";
 $lang['ods_len_storage_mysql'] = "Dur&eacute;e de R&eacute;tention des donn&eacute;es de MySQL";
 $lang['ods_autodelete_rrd_db'] = "Auto-Suppression des bases RRD";
 $lang['ods_sleep_time'] = "Sleep Time";
@@ -248,7 +248,7 @@ $lang['ods_drop_file'] = "Fichier de drop des donn&eacute;es";
 $lang['ods_perfdata_file'] = "Fichier des donn&eacute;es de performances";
 $lang['ods_archive_log'] = "Archiver les logs de Nagios";
 $lang['ods_log_retention'] = "Dur&eacute;e de r&eacute;tention des logs";
-$lang['ods_log_retention_unit'] = "days";
+$lang['ods_log_retention_unit'] = "jours";
 $lang['ods_fast_parsing'] = "Lecture rapide des Status";
 $lang['ods_nagios_log_file'] = "Fichier de log de Nagios &agrave; parser";
 
