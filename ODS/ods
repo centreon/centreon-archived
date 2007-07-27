@@ -28,7 +28,10 @@ use warnings;
 use DBI;
 use threads;
 use threads::shared;
+
+use lib "@RRD_PERL@"
 use RRDs;
+
 use File::Copy;
 
 my $installedPath = "@OREON_PATH@/ODS/";
