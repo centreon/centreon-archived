@@ -1,7 +1,7 @@
 <?
 /** 
 Oreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/gpl.txt
+http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 				<a href='http://sourceforge.net/donate/index.php?group_id=140316'><img src="<? echo $skin; ?>Images/footer/button-donate.gif"
 				          height="15" width="80" alt="Donate"
 				          title="Donate" /></a>
-				<a href='http://www.gnu.org/licenses/gpl.txt'><img src="<? echo $skin; ?>Images/footer/button-gpl.gif"
+				<a href='http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt'><img src="<? echo $skin; ?>Images/footer/button-gpl.gif"
 				          height="15" width="80" alt="GPL Licenced"
 				          title="GPL Licenced" /></a>
 				</div>

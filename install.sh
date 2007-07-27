@@ -1,18 +1,25 @@
 #!/bin/sh
+###################################################################
+# Oreon is developped with GPL Licence 2.0 
 #
-# Oreon is developped with Apache Licence 2.0 :
-# http://www.apache.org/licenses/LICENSE-2.0.txt
-# Developped by : Julien Mathis - Romain Le Merlus
+# GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#
+# Developped by : Julien Mathis - Romain Le Merlus 
 #                 Christophe Coraboeuf - Mathieu Chateau
 #
-# The Software is provided to you AS IS and WITH ALL FAULTS.
-# OREON makes no representation and gives no warranty whatsoever,
-# whether express or implied, and without limitation, with regard to the quality,
-# safety, contents, performance, merchantability, non-infringement or suitability for
-# any particular or intended purpose of the Software found on the OREON web site.
-# In no event will OREON be liable for any direct, indirect, punitive, special,
-# incidental or consequential damages however they may arise and even if OREON has
-# been previously advised of the possibility of such damages.
+###################################################################
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+#    For information : infos@oreon-project.org
+####################################################################
 
 cat <<EOF
 ###############################################################################

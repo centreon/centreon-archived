@@ -2,7 +2,7 @@
 /*
  * Created on 20 mars 07 by Cedrick Facon
  * Oreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/gpl.txt
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
  * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
  * 
  * The Software is provided to you AS IS and WITH ALL FAULTS.

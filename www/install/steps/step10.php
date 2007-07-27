@@ -1,7 +1,7 @@
 <?
 /**
 Oreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/gpl.txt
+http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
@@ -79,7 +79,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$file[0] = "<?\n";
 			$file[1] = "/**\n";
 			$file[2] = "Oreon is developped with GPL Licence 2.0 :\n";
-			$file[3] = "http://www.gnu.org/licenses/gpl.txt\n";
+			$file[3] = "http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt\n";
 			$file[4] = "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf\n";
 			$file[5] = "\n";
 			$file[6] = "The Software is provided to you AS IS and WITH ALL FAULTS.\n";

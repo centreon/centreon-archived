@@ -1,7 +1,7 @@
 <?
 /**
 Oreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/gpl.txt
+http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
 Adapted to Pear library by Merethis company, under direction of Cedrick Facon, Romain Le Merlus, Julien Mathis
