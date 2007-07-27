@@ -7,7 +7,7 @@
 # Developped by : Julien Mathis - Romain Le Merlus
 #
 ###################################################################
-# This program is free software; you can redistribute it and/or
+# This program is free software; you can redistfribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
@@ -29,7 +29,7 @@ use DBI;
 use threads;
 use threads::shared;
 
-use lib "@RRD_PERL@"
+use lib "@RRD_PERL@";
 use RRDs;
 
 use File::Copy;
