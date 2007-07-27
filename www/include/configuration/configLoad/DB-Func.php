@@ -1086,7 +1086,7 @@ For information : contact@oreon-project.org
 					case "members" :
 						$sg_servicesTMP = explode(",", $tmpConf[$key]);
 						for ($i = 0, $j = 0; $i < count($sg_servicesTMP); $i += 2)	{
-							$tmpConf["sg_hServices"][$j] = getMyServiceID(trim($sg_servicesTMP[$i+1]), getMyHostID(trim($sg_servicesTMP[$i])));
+							$tmpConf["sg_hServices"][$j] = getMyHostID(trim($sg_servicesTMP[$i]))."-".getMyServiceID(trim($sg_servicesTMP[$i+1]), getMyHostID(trim($sg_servicesTMP[$i])));
 							$j++;
 						}
 						unset ($tmpConf[$key]);
