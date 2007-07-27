@@ -164,7 +164,7 @@ For information : contact@oreon-project.org
 		if (!count($ret))
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO hostgroup ";
-		$rq .= "(hg_name, hg_alias, hg_snmp_community, hg_snmp_version, `country_id`, `city_id`, hg_comment, hg_activate) ";
+		$rq .= "(hg_name, hg_alias, hg_snmp_community, hg_snmp_version, hg_comment, hg_activate) ";
 		$rq .= "VALUES (";
 		isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "'".htmlentities($ret["hg_name"], ENT_QUOTES)."', " : $rq .= "NULL,";
 		isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".htmlentities($ret["hg_alias"], ENT_QUOTES)."', " : $rq .= "NULL,";
