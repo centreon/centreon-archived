@@ -393,7 +393,7 @@ For information : contact@oreon-project.org
 				"( `ehi_id` , `host_host_id` , `ehi_notes` , `ehi_notes_url` , " .
 				"`ehi_action_url` , `ehi_icon_image` , `ehi_icon_image_alt` , " .
 				"`ehi_vrml_image` , `ehi_statusmap_image` , `ehi_2d_coords` , " .
-				"`ehi_3d_coords`, `country_id`, `city_id` )" .
+				"`ehi_3d_coords` )" .
 				"VALUES ( ";
 		$rq .= "NULL, ".$host_id.", ";
 		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES)."', ": $rq .= "NULL, ";
@@ -404,14 +404,7 @@ For information : contact@oreon-project.org
 		isset($ret["ehi_vrml_image"]) && $ret["ehi_vrml_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_vrml_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ehi_statusmap_image"]) && $ret["ehi_statusmap_image"] != NULL ? $rq .= "'".htmlentities($ret["ehi_statusmap_image"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ehi_2d_coords"]) && $ret["ehi_2d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_2d_coords"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["country_id"]) && $ret["country_id"] != NULL ? $rq .= "'".$ret["country_id"]."', ": $rq .= "NULL, ";
-		if (isset($ret["city_name"]) && $ret["city_name"])	{
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT city_id FROM view_city WHERE city_name = '".$ret["city_name"]."' AND country_id = '".$ret["country_id"]."'");
-			$city = $DBRESULT->fetchRow();
-			$city["city_id"] ? $rq .= "'".$city["city_id"]."' ": $rq .= "NULL ";
-		} else
-			$rq .= "NULL ";
+		isset($ret["ehi_3d_coords"]) && $ret["ehi_3d_coords"] != NULL ? $rq .= "'".htmlentities($ret["ehi_3d_coords"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
