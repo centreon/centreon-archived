@@ -641,8 +641,6 @@ For information : contact@oreon-project.org
 			$tmpConf["ehi_statusmap_image"] = NULL;
 			$tmpConf["ehi_2d_coords"] = NULL;
 			$tmpConf["ehi_3d_coords"] = NULL;
-			$tmpConf["country_id"] = NULL;
-			$tmpConf["city_name"] = NULL;
 			$useTpl[0] = insertHostInDB($tmpConf);
 			$useTpl[1] = $use;
 			isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
