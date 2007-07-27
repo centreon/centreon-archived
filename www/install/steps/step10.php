@@ -37,7 +37,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir_www"]));
 		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir_www"]));
        	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir_www"])), -3) ;
-		if((strcmp($perms,'755') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
+		if((strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
           	echo '<b><span class="go">OK</font></b>';
         	 $msg =  '';
 		} else {
@@ -58,7 +58,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir"]."ODS/etc/"));
 		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir"]."ODS/etc/"));
        	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir"]."ODS/etc/")), -3) ;
-		if((strcmp($perms,'755') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
+		if((strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
           	echo '<b><span class="go">OK</font></b>';
         	$msg =  '';
 		} else {
