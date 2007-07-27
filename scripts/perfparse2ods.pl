@@ -40,8 +40,8 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 # Init var
 
 my $PFDT = "/root/service-perfdata";
-my $mysql_user = "oreon";
-my $mysql_passwd = "oreon-pwd";
+my $mysql_user = "root";
+my $mysql_passwd = "";
 my $mysql_host = "localhost";
 my $mysql_database = "perfparse";
 
@@ -66,39 +66,52 @@ if (open (FILE, ">> ".$PFDT) || print "can't write $PFDT: $!"){
 	print "- service-perfdata file is creating.... \n";
 	while ($data = $sth2->fetchrow_hashref()){
 		if ($host_name && $service_description && $host_name eq $data->{'host_name'} && $service_description eq $data->{'service_description'}) {
-			$metric =  $data->{'metric'};
 			
-			my $sth3 = $connexion->prepare("SELECT unit FROM `perfdata_service_metric` WHERE `host_name` = '".$host_name."' AND `service_description` = '".$service_description."' AND `metric` = '".$metric."' LIMIT 1");
+			my $sth3 = $connexion->prepare("SELECT unit FROM `perfdata_service_metric` WHERE `host_name` = '".$host_name."' AND `service_description` = '".$service_description."' AND `metric` = '".$data->{'metric'}."' LIMIT 1");
 			if (!$sth3->execute) {writeLogFile("Error when getting data : " . $sth3->errstr . "\n");}
-			
 			my $metric_data = $sth3->fetchrow_hashref();
+			undef($sth3);
+			
 			my $unit;
 			if (!defined($metric_data->{'unit'})){
 				$unit = "";
 			} else { 
 				$unit = $metric_data->{'unit'};	
 			}
-			$perfdata .= " ".$data->{'metric'}."=".$data->{'value'}.$metric;
+			$perfdata .= " ".$data->{'metric'}."=".$data->{'value'}.$unit;
+			undef($unit);
+			undef($metric_data);
 		} else {
 			if ($time){
 				print FILE $time."\t".$host_name."\t".$service_description."\tauto insert\t".$stat{$status}."\t".$perfdata."\n";
-			}
+				undef($host_name);
+				undef($service_description);
+				undef($status);
+				undef($perfdata);
+				undef($time);
+				undef($metric);
+			}			
 			$data->{'ctime'} =~ /([0-9]*)\-([0-9]*)\-([0-9]*)\ ([0-9]*)\:([0-9]*)\:([0-9]*)/;
 			$time = mktime($6, $5, $4, $3, $2, $1 - 1900);
 			$host_name = $data->{'host_name'};
 			$service_description = $data->{'service_description'};
 			$status = $data->{'state'};
 			$metric =  $data->{'metric'};
+			
 			my $sth3 = $connexion->prepare("SELECT unit FROM `perfdata_service_metric` WHERE `host_name` = '".$host_name."' AND `service_description` = '".$service_description."' AND `metric` = '".$metric."' LIMIT 1");
 			if (!$sth3->execute) {writeLogFile("Error when getting data : " . $sth3->errstr . "\n");}
 			my $metric_data = $sth3->fetchrow_hashref();
+			undef($sth3);
+			
 			my $unit;
 			if (!defined($metric_data->{'unit'})){
 				$unit = "";
 			} else { 
 				$unit = $metric_data->{'unit'};	
-			}			
-			$perfdata = $data->{'metric'}."=".$data->{'value'}.$metric;
+			}
+			$perfdata = $data->{'metric'}."=".$data->{'value'}.$unit;
+			undef($unit);
+			undef($metric_data);
 		}
 	}
 }
