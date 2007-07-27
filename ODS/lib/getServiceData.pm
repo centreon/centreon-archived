@@ -111,7 +111,6 @@ sub getServiceCheckInterval($){ # metric_id
     
     my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
     undef($data_hst_svc);
-    print "\n$return\n";
     return $return;
 }
 
