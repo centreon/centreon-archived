@@ -63,12 +63,11 @@ For information : contact@oreon-project.org
 
 	#List of elements - Depends on different criteria
 	if ($search)
-		$rq = "SELECT command_id, command_name, command_line, command_type FROM command WHERE command_name LIKE '".htmlentities($search, ENT_QUOTES)."' ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT command_id, command_name, command_line, command_type FROM command WHERE command_name LIKE '".htmlentities($search, ENT_QUOTES)."' $type_str ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
 	else if ($type)
 		$rq = "SELECT command_id, command_name, command_line, command_type FROM command WHERE command_type = '".$type."' ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT command_id, command_name, command_line, command_type FROM command ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
-
 	$search = tidySearchKey($search, $advanced_search);
 
 	$DBRESULT =& $pearDB->query($rq);
