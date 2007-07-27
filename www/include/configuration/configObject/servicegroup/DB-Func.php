@@ -144,8 +144,7 @@ For information : contact@oreon-project.org
 		global $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO servicegroup ";
-		$rq .= "(sg_name, sg_alias, country_id, city_id, sg_comment, sg_activate) ";
+		$rq = "INSERT INTO servicegroup (sg_name, sg_alias, sg_comment, sg_activate) ";
 		$rq .= "VALUES (";
 		isset($ret["sg_name"]) && $ret["sg_name"] != NULL ? $rq .= "'".htmlentities($ret["sg_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["sg_alias"]) && $ret["sg_alias"] != NULL ? $rq .= "'".htmlentities($ret["sg_alias"], ENT_QUOTES)."', " : $rq .= "NULL, ";
