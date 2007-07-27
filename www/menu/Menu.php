@@ -21,18 +21,13 @@ For information : contact@oreon-project.org
 	# Path to the configuration dir
 	$path = "./menu/";
 
-
-	#
-	## ODS Database retrieve information
-	#
-	require_once("./DBOdsConnect.php");	
+	# ODS Database retrieve information
 	$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";			
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-
-
-
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+	$result_config = $DBRESULT->fetchRow();		
+	if (isset($result_config) && $result_config)	
+		$gopt = array_map("myDecode", $result_config);
 
 	# Smarty template Init
 	$tpl = new Smarty();
