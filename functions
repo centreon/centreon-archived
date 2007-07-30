@@ -557,7 +557,7 @@ function install_ods(){
 		echo_success "Creating Oreon Directory '/var/log/ods/'" "OK"
     fi
 	
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/ODS/ods > $INSTALL_DIR_OREON/ODS/ods_new
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  $INSTALL_DIR_OREON/ODS/ods > $INSTALL_DIR_OREON/ODS/ods_new
 	echo_success "Replace ODS Macro " "OK"
 
 	mv $INSTALL_DIR_OREON/ODS/ods_new $INSTALL_DIR_OREON/ODS/ods
