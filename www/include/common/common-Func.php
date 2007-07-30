@@ -889,15 +889,7 @@ For information : contact@oreon-project.org
 				$gt =& $DBRESULT->fetchRow();
 				return $gt["graph_id"];
 			}
-		} else {
-			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl2 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT))  
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			if ($DBRESULT->numRows())	{
-				$gt =& $DBRESULT->fetchRow();
-				return $gt["graph_id"];
-			}
-		}
+		} 
 		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
 		if (PEAR::isError($DBRESULT)) 
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -935,15 +927,7 @@ For information : contact@oreon-project.org
 				return $ds["compo_id"];
 			}
 		}
-		else	{
-			$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl2 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT)) 
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			if ($DBRESULT->numRows())	{
-				$ds =& $DBRESULT->fetchRow();
-				return $ds["compo_id"];
-			}
-		}
+		
 		$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template LIMIT 1");
 		if (PEAR::isError($DBRESULT)) 
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -979,10 +963,7 @@ For information : contact@oreon-project.org
 				$is_a_valid_image = array("png"=>"png");
 		}
 	
-//		if (substr($oreon->optGen["nagios_path_img"], -1) == "/" && isset($rep[0]) && $rep[0] == "/")
-//			$rep = substr($rep, 1);
 		if ($oreon->optGen["nagios_path_img"] && is_dir($oreon->optGen["nagios_path_img"]))	{
-			//$elems = @scandir($oreon->optGen["nagios_path_img"]);
 			$dh  = opendir($oreon->optGen["nagios_path_img"]);
 			while (false !== ($filename = readdir($dh)))
 			    $elems[] = $filename;
