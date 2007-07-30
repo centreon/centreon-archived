@@ -16,7 +16,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.cg_alias.label}</td><td class="FormRowValue">{$form.cg_alias.html}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.cg_contacts.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.cg_contacts.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.cg_contacts.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.cg_contacts.html}</p></td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cg_activate.label}</td><td class="FormRowValue">{$form.cg_activate.html}</td></tr>
