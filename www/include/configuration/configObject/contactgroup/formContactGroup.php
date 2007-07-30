@@ -51,9 +51,9 @@ For information : contact@oreon-project.org
 	# Var information to format the element
 	#
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$attrsAdvSelect = array("style" => "width: 250px; height: 100px;");
+	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
+	$template 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin
@@ -66,17 +66,13 @@ For information : contact@oreon-project.org
 	else if ($o == "w")
 		$form->addElement('header', 'title', $lang["cg_view"]);
 
-	#
-	## Contact basic information
-	#
+	# Contact basic information
 	$form->addElement('header', 'information', $lang['cg_infos']);
 	$form->addElement('text', 'cg_name', $lang["cg_name"], $attrsText);
 	$form->addElement('text', 'cg_alias', $lang["cg_alias"], $attrsText);
 	
-	##
-	## Contacts Selection
-	##
-	$form->addElement('header', 'notification', $lang['cg_notif']);
+	# Contacts Selection
+	$form->addElement('header', 'notification', $lang['hg_links']);
 	
     $ams1 =& $form->addElement('advmultiselect', 'cg_contacts', $lang["cg_members"], $contacts, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
@@ -84,9 +80,7 @@ For information : contact@oreon-project.org
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
-	#
-	## Further informations
-	#
+	# Further informations
 	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
 	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, $lang["enable"], '1');
 	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, $lang["disable"], '0');
@@ -104,14 +98,13 @@ For information : contact@oreon-project.org
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	#
-	## Form Rules
-	#
+	# Form Rules
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["cg_name"]));
 	}
+
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('cg_name', 'myReplace');
 	$form->addRule('cg_name', $lang['ErrName'], 'required');
@@ -120,10 +113,8 @@ For information : contact@oreon-project.org
 	$form->addRule('cg_name', $lang['ErrAlreadyExist'], 'exist');
 	$form->setRequiredNote($lang['requiredFields']);
 
-	# 
-	##End of form definition
-	#
-	
+	# End of form definition
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);

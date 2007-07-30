@@ -9,7 +9,7 @@
 	</div>
 	<div id='tab1' class='tab'>
 	 <table id="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cg_name.label}</td><td class="FormRowValue">{$form.cg_name.html}</td></tr>
@@ -18,7 +18,7 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cg_contacts.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.cg_contacts.html}</p></td></tr>
 	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cg_activate.label}</td><td class="FormRowValue">{$form.cg_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.cg_comment.label}</td><td class="FormRowValue">{$form.cg_comment.html}</td></tr>
 		
