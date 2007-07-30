@@ -440,7 +440,7 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'esi_icon_image', $lang['h_iconImg'], $extImg, array("onChange"=>"showLogo('esi_icon_image',this.form.elements['esi_icon_image'].value)"));
 	$form->addElement('text', 'esi_icon_image_alt', $lang['h_iconImgAlt'], $attrsText);
 
-	$form->addElement('header', 'oreon', $lang['h_oreon']);
+	$form->addElement('header', 'oreon', $lang['sv_oreon']);
 	$form->addElement('select', 'graph_id', $lang['sv_graphTpl'], $graphTpls);
 
 	$tab = array();
