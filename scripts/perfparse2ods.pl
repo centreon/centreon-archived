@@ -41,7 +41,7 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 
 my $PFDT = "/root/service-perfdata";
 my $mysql_user = "root";
-my $mysql_passwd = "";
+my $mysql_passwd = "mysql-password";
 my $mysql_host = "localhost";
 my $mysql_database = "perfparse";
 
@@ -78,9 +78,9 @@ if (open (FILE, ">> ".$PFDT) || print "can't write $PFDT: $!"){
 			} else { 
 				$unit = $metric_data->{'unit'};	
 			}
+			undef($metric_data);
 			$perfdata .= " ".$data->{'metric'}."=".$data->{'value'}.$unit;
 			undef($unit);
-			undef($metric_data);
 		} else {
 			if ($time){
 				print FILE $time."\t".$host_name."\t".$service_description."\tauto insert\t".$stat{$status}."\t".$perfdata."\n";
@@ -88,7 +88,6 @@ if (open (FILE, ">> ".$PFDT) || print "can't write $PFDT: $!"){
 				undef($service_description);
 				undef($status);
 				undef($perfdata);
-				undef($time);
 				undef($metric);
 			}			
 			$data->{'ctime'} =~ /([0-9]*)\-([0-9]*)\-([0-9]*)\ ([0-9]*)\:([0-9]*)\:([0-9]*)/;
@@ -109,9 +108,9 @@ if (open (FILE, ">> ".$PFDT) || print "can't write $PFDT: $!"){
 			} else { 
 				$unit = $metric_data->{'unit'};	
 			}
+			undef($metric_data);
 			$perfdata = $data->{'metric'}."=".$data->{'value'}.$unit;
 			undef($unit);
-			undef($metric_data);
 		}
 	}
 }
