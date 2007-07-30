@@ -230,17 +230,7 @@ For information : contact@oreon-project.org
 				$start = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3], 1) ;
 				preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
 				$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
-			} else if (!isset($_GET["period"]) || (isset($_GET["period"]) && !$_GET["period"])){
-				if (!isset($graph["graph_id"]))
-					$period = 86400;
-				else {
-					$DBRESULT2 =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
-					if (PEAR::isError($DBRESULT2))
-						print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-					$DBRESULT2->fetchInto($graph);
-					$period = $graph["period"];
-				}
-			} else if ($_GET["period"])
+			} else if (isset($_GET["period"]) && $_GET["period"])
 				$period = $_GET["period"];
 			
 			if (!isset($start) && !isset($end)){
