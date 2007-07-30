@@ -20,13 +20,12 @@ CREATE TABLE `config` (
   `nagios_log_file` varchar(255) default NULL,
   `last_line_read` int(11) default '31',
   `fast_parsing` enum('0','1') default '0',
-  `rrdtool_perl_library_path` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
-INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `len_storage_mysql`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`, `nagios_log_file`, `rrdtool_perl_library_path`) VALUES (1, '/var/lib/ods/database/', 365, '260', '0', 10, 60, '2', '1', '@INSTALL_DIR_NAGIOS@/var/service-perfdata.tmp', '@INSTALL_DIR_NAGIOS@/var/service-perfdata', '@INSTALL_DIR_NAGIOS@/var/nagios.log', '@RRD_PERL@');
+INSERT INTO `config` (`id`, `RRDdatabase_path`, `len_storage_rrd`, `len_storage_mysql`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `auto_drop`, `drop_file`, `perfdata_file`, `nagios_log_file`) VALUES (1, '/var/lib/ods/database/', 365, '260', '0', 10, 60, '2', '1', '@INSTALL_DIR_NAGIOS@/var/service-perfdata.tmp', '@INSTALL_DIR_NAGIOS@/var/service-perfdata', '@INSTALL_DIR_NAGIOS@/var/nagios.log');
 
 -- 
 -- Structure de la table `data_bin`
