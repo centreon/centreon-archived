@@ -85,18 +85,18 @@ For information : contact@oreon-project.org
 	
 	$elem = array();
 	if (preg_match("/([0-9]*)\_([0-9]*)/", $_GET["index"], $matches)){
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE host_id = '".$matches[1]."' AND service_id = '".$matches[2]."'");
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND host_id = '".$matches[1]."' AND service_id = '".$matches[2]."'");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
 	} else if (isset($_GET["index"])){
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE id = '".$_GET["index"]."'");
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND id = '".$_GET["index"]."'");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
 	} else if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 		$svc_desc = str_replace("/", "#S#", $_GET["service_description"]);
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE host_name = '".$_GET["host_name"]."' && service_description = '".$svc_desc."'");
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND host_name = '".$_GET["host_name"]."' && service_description = '".$svc_desc."'");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
@@ -108,9 +108,8 @@ For information : contact@oreon-project.org
 	else if (isset($svc_id["id"]))
 		$index = $svc_id["id"];
 
-	
 	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE `trashed` = '0' AND host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$other_services = array();

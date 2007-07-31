@@ -121,14 +121,14 @@ For information : contact@oreon-project.org
 		
 	$elem = array();
 	
-	$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
+	$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE `trashed` = '0' AND id = '".$_GET["index"]."'");
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 	$DBRESULT2->fetchInto($svc_id);
 	$DBRESULT2->free();
 	
 	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
+		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE `trashed` = '0' AND host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$other_services = array();
@@ -146,7 +146,6 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();
 		$form->addElement('select', 'index', 'Others Services', $other_services);
-		//$form->setDefaults($index);
 		
 		$service_id = $svc_id["service_id"];
 		$index_id = $svc_id["id"];
@@ -188,7 +187,6 @@ For information : contact@oreon-project.org
 			$tpl->assign('template_id', $_GET["template_id"]);				
 		
 		# verify if metrics in parameter is for this index
-		
 		$metrics_active =& $_GET["metric"];
 		$pass = 0;
 		if (isset($metrics_active))
@@ -196,7 +194,6 @@ For information : contact@oreon-project.org
 				if (isset($metrics[$key]))
 					$pass = 1;
 		# 
-		
 		
 		if (isset($_GET["metric"]) && $pass){
 			$tpl->assign('metric_active', $metrics_active);	

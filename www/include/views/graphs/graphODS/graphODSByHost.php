@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 	# Get all host_list
 	
 	$ppHosts = array( NULL => NULL );
-	$rq = "SELECT DISTINCT host_name FROM index_data ".($isRestreint && !$oreon->user->admin ? "WHERE host_id IN ($LcaHostStr) " : "")." ORDER BY `host_name`";
+	$rq = "SELECT DISTINCT host_name FROM index_data ".($isRestreint && !$oreon->user->admin ? "WHERE host_id IN ($LcaHostStr) AND " : "WHERE ")."  `trashed` = '0' ORDER BY `host_name`";
 	$DBRESULT =& $pearDBO->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 
 	if (isset($_GET["host_name"])){
 		$ppServices = array( NULL => NULL );
-		$rq = "SELECT service_description,host_name FROM index_data WHERE host_name = '".$_GET["host_name"]."' ORDER BY `service_description`";
+		$rq = "SELECT service_description,host_name FROM index_data WHERE `trashed` = '0' AND host_name = '".$_GET["host_name"]."' ORDER BY `service_description`";
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -68,7 +68,7 @@ For information : contact@oreon-project.org
 		$DBRESULT->free();
 	} else if (isset($_GET["host_id"])) {
 		$ppServices = array( NULL => NULL );
-		$rq = "SELECT service_description,host_name FROM index_data WHERE host_id = '".$_GET["host_id"]."' ORDER BY `service_description`";
+		$rq = "SELECT service_description,host_name FROM index_data WHERE `trashed` = '0' AND host_id = '".$_GET["host_id"]."' ORDER BY `service_description`";
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -155,11 +155,11 @@ For information : contact@oreon-project.org
 			
 			$elem = array();
 			if (isset($_GET["host_name"])){
-				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' ORDER BY service_description");
+				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".str_replace(" ", "\ ", $_GET["host_name"])."' AND `trashed` = '0' ORDER BY service_description");
 				if (PEAR::isError($DBRESULT))
 					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			} else if (isset($_GET["host_id"])){
-				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$_GET["host_id"]."' ORDER BY service_description");
+				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$_GET["host_id"]."' AND `trashed` = '0' ORDER BY service_description");
 				if (PEAR::isError($DBRESULT))
 					print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			}
