@@ -245,6 +245,12 @@ $lang['ods_log_retention_unit'] = "days";
 $lang['ods_fast_parsing'] = "Fast status log parsing";
 $lang['ods_nagios_log_file'] = "Nagios current log file to parse.";
 
+$lang['ods_generate_DB'] = "Rebuild RRD Database";
+$lang['ods_no_generate_DB'] = "Stop Rebuilding RRD Databases";
+$lang['ods_purge_service_data'] = "Empty all service Data";
+$lang['ods_hidde_graph'] = "Hidde graph of selected services";
+$lang['ods_no_hidde_graph'] = "Hidde anymore graph of selected services";
+
 $lang['m_patch'] = "Update";
 $lang['m_checkVersion'] = "Check";
 $lang['m_patchOptions'] = "Options";

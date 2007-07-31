@@ -26,7 +26,6 @@ For information : contact@oreon-project.org
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 	#Path to the option dir
@@ -37,21 +36,71 @@ For information : contact@oreon-project.org
 	require_once("./include/common/common-Func.php");
 	require_once("./DBOdsConnect.php");
 	
-	if (isset($_GET["o"]) && $_GET["o"] == "d" && isset($_GET["id"])){
-		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$_GET["id"]."'");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])){
+		if ($_POST["o"] == "rg"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";		
+			}	
+		} else if ($_POST["o"] == "nrg"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";		
+			}
+		} else if ($_POST["o"] == "ed"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE  `index_id` = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";
+				while($DBRESULT->fetchInto($metrics)){
+					$DBRESULT2 =& $pearDBO->query("DELETE FROM data_bin WHERE `id_metric` = '".$metrics['metric_id']."'");
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br>";
+					$DBRESULT2 =& $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
+					if (PEAR::isError($DBRESULT2))
+						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br>";
+				}
+				$DBRESULT =& $pearDBO->query("DELETE FROM index_data WHERE `id` = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";
+			}
+		} else if ($_POST["o"] == "hg"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+			}
+		} else if ($_POST["o"] == "nhg"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '0' WHERE id = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+			}
+		}
 	}
 	
-	if (isset($_GET["o"]) && $_GET["o"] == "rb" && isset($_GET["id"])){
-		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$_GET["id"]."'");
+	if (isset($_POST["o"]) && $_POST["o"] == "d" && isset($_POST["id"])){
+		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$_POST["id"]."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
+	}
+	
+	if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])){
+		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$_POST["id"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
 	}
 	
 	$DBRESULT =& $pearDBO->query("SELECT COUNT(*) FROM index_data ORDER BY host_name, service_description");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 			
@@ -85,6 +134,7 @@ For information : contact@oreon-project.org
 		
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
 		$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
+		$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
 		
 		$index_data["class"] = $tab_class[$i % 2];
 		$data[$i] = $index_data;
@@ -92,8 +142,12 @@ For information : contact@oreon-project.org
 
 	include("./include/common/checkPagination.php");
 
-	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);	
+	# Smarty template Init
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl);
 
+	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
+	
 	#
 	##Toolbar select $lang["lgd_more_actions"]
 	#
@@ -106,44 +160,56 @@ For information : contact@oreon-project.org
 	<?
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 1) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 2) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
+				"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('".$lang['confirm_removing']."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable']), $attrs1);
-	
+				"else if (this.form.elements['o1'].selectedIndex == 4) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 5) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"");
+	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph']), $attrs1);
+	$form->setDefaults(array('o1' => NULL));
+		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 1) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 2) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
+				"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('".$lang['confirm_removing']."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"this.form.elements['o2'].selectedIndex = 0");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable']), $attrs2);
+				"else if (this.form.elements['o2'].selectedIndex == 4) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 5) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"");
+	$form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph']), $attrs2);
+	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
+	$o1->setSelected(NULL);
 
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);
+	$o2->setSelected(NULL);
 	
 	$tpl->assign('limit', $limit);
-
-	# Smarty template Init
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
 
 	$tpl->assign("p", $p);
 	$tpl->assign('o', $o);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	
-
-    $tpl->assign("data", $data);
-	$tpl->display("manageData.ihtml");
+	$tpl->assign("data", $data);
+	
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$form->accept($renderer);	
+	$tpl->assign('form', $renderer->toArray());
+		
+    $tpl->display("manageData.ihtml");
 ?>

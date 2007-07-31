@@ -252,6 +252,12 @@ $lang['ods_log_retention_unit'] = "jours";
 $lang['ods_fast_parsing'] = "Lecture rapide des Status";
 $lang['ods_nagios_log_file'] = "Fichier de log de Nagios &agrave; parser";
 
+$lang['ods_generate_DB'] = "R&eacute;g&eacute;n&eacute;rer la base RRD";
+$lang['ods_no_generate_DB'] = "Arreter la r&eacute;g&eacute;n&eacute;rer des bases RRD";
+$lang['ods_purge_service_data'] = "Vider les donn&eacute;es du service";
+$lang['ods_hidde_graph'] = "Cacher le graphique de services selectionn&eacute;s";
+$lang['ods_no_hidde_graph'] = "Ne plus cacher le graphique de services selectionn&eacute;s";
+
 $lang['m_patch'] = "Mise &agrave; jour";
 $lang['m_checkVersion'] = "V&eacute;rification";
 $lang['m_patchOptions'] = "Options";
