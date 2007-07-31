@@ -76,11 +76,15 @@ For information : contact@oreon-project.org
 		} else
 			$template_id = $_GET["template_id"];
 		$DBRESULT->free();	
-		$command_line = " graph - -b ".$GraphTemplate["base"]." --start=".$_GET["start"]. " --end=".$_GET["end"];
-		
+
 		# get all template infos
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$DBRESULT->fetchInto($GraphTemplate);
+
+		$command_line = " graph - ";
+		if ($GraphTemplate["base"])
+			$command_line .= "-b ".$GraphTemplate["base"];
+		$command_line .= " --start=".$_GET["start"]. " --end=".$_GET["end"];		
 		
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)){
 			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
