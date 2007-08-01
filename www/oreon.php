@@ -1,4 +1,4 @@
-<?
+	<?
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	else
 		$p = NULL;
 
-/* POST have priority on GET due to option in listing configuration form */
+	/* POST have priority on GET due to option in listing configuration form */
 	if (isset($_POST["o"]))
 		$o = $_POST["o"];
 	else if (isset($_GET["o"]))
