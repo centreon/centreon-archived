@@ -20,6 +20,18 @@
 #    For information : contact@oreon-project.org
 ####################################################################
 
+# Message type 
+# 0 -> Service Alerts
+# 1 -> Host Alerts
+# 2 -> Service notification
+# 3 -> Host Notification
+# 4 -> All nagios Warning
+# 5 -> All logs
+# 6 -> Service Current State  
+# 7 -> Host Current State
+# 8 -> Service Initial State  
+# 9 -> Host Initial State
+
 use strict;
 use warnings;
 use DBI;
@@ -77,7 +89,8 @@ sub parseFile ($) {
 		    $tab[5] =~ s/\\/\\\\/g; 
 			$tab[5] =~ s/\'/\\\'/g;
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."')");
-		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    
+		    	
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -85,6 +98,7 @@ sub parseFile ($) {
 			$tab[4] =~ s/\'/\\\'/g;
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`) VALUES ('1', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -92,6 +106,7 @@ sub parseFile ($) {
 			$tab[5] =~ s/\'/\\\'/g;
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/){
 		    my @tab = split(/;/, $2);
 		    $ctime = $1;
@@ -99,6 +114,31 @@ sub parseFile ($) {
 			$tab[4] =~ s/\'/\\\'/g;
 		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."')");
 		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/){
+		    my @tab = split(/;/, $2);
+		    $ctime = $1;
+		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`) VALUES ('7', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."')");
+		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/){
+		    my @tab = split(/;/, $2);
+		    $ctime = $1;
+		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`) VALUES ('6', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."')");
+		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/){
+		    my @tab = split(/;/, $2);
+		    $ctime = $1;
+		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`) VALUES ('9', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."')");
+		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		
+		} elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/){
+		    my @tab = split(/;/, $2);
+		    $ctime = $1;
+		    $sth = $dbh->prepare("INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`) VALUES ('8', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."')");
+		    if (!$sth->execute) {print "Error:" . $sth->errstr . "\n";}	    	
+		
 		} elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/){
 		    my $tab = $2;
 		    $ctime = $1;
@@ -145,9 +185,9 @@ sub parseArchive() {
 		if ($temp > $last_log) {
 		    if(!(-r $archives.$_)) {
 				print "Error : cannot read file $archives$_\n";
-		    }else {
-				print $archives.$_."\n";
-				parseFile($archives.$_);
+		    } else {
+					print $archives.$_."\n";
+					parseFile($archives.$_);
 		    }
 		}
     }
@@ -185,9 +225,9 @@ if ($opt_a) {
 	parseLogFile();
 }
 
-# if ($retention ne 0){
-#     my $last_log = time() - ($retention * 24 * 60 * 60);
-#     my $sth1 = $dbh->prepare("DELETE FROM log WHERE ctime < '$last_log'");
-#     if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
-# }
+if ($retention ne 0){
+	my $last_log = time() - ($retention * 24 * 60 * 60);
+	my $sth1 = $dbh->prepare("DELETE FROM log WHERE ctime < '$last_log'");
+	if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
+}
 exit;
