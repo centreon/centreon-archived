@@ -279,6 +279,12 @@ $lang['batchPatch_end'] = "Execution end";
 $lang['batchPatch_ok01'] = "%s patch is installed.";
 $lang['batchPatch_err01'] = "Error when installing patch : %s.";
 
+# ODS 
+
+$lang["menu_ODS_config"] = "Config";
+$lang["menu_ODS_data"] = "Data";
+$lang["menu_ODS_manage"] = "Manage";
+
 # About
 $lang["about_project_leaders"] = "Project Leaders";
 $lang["about_project_contributors"] = "Contributors";

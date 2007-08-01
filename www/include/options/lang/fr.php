@@ -290,7 +290,7 @@ $lang['batchPatch_err01'] = "Erreur dans l'application du patch %s.";
 
 $lang["menu_ODS_config"] = "Config";
 $lang["menu_ODS_data"] = "Data";
-$lang["menu_ODS_manage"] = "Manager";
+$lang["menu_ODS_manage"] = "G&eacute;rer";
 
 # About
 $lang["about_project_leaders"] = "Project Leaders";
