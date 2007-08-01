@@ -298,16 +298,17 @@ fi
 		read temp
 		test_answer PEAR_PATH $temp
 		PEAR_PATH=${PEAR_PATH%/}
-		if [ -a "${PEAR_PATH}/PEAR.php" ]; then
-		     echo_success "PEAR Path $PEAR_PATH/PEAR.php" "OK"
-		else
-			echo_passed "${PEAR_PATH}/PEAR.php not found" "CRITICAL"
-			echo "Where is PEAR Path ?"
-			echo -n "default to [$PEAR_PATH]:"
-			read temp
-			test_answer PEAR_PATH $temp
-			PEAR_PATH=${PEAR_PATH%/}
-		fi
+		while [ ! -f "${PEAR_PATH}/PEAR.php" ]
+		do 
+		  echo_passed "${PEAR_PATH}/PEAR.php not found" "CRITICAL"
+		  echo "Where is PEAR Path ?"
+		  PEAR_PATH="/usr/share/pear"
+		  echo -n "default to [$PEAR_PATH]:"
+		  read temp
+		  test_answer PEAR_PATH $temp
+		  PEAR_PATH=${PEAR_PATH%/}
+		done
+	        echo_success "PEAR Path $PEAR_PATH/PEAR.php" "OK"
 		echo ""
 	fi
 
