@@ -263,9 +263,16 @@ INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `to
 --
 
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick`) VALUES ('', 'm_dashboard', NULL , '307', NULL , NULL , '50', NULL , NULL , NULL , NULL , '1', NULL , NULL , NULL);
+
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick`) VALUES ('', 'm_dashboard', NULL, 3, 307, 3, 1, NULL, NULL, '0', '0', '1', NULL , NULL , NULL);
+
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick`) VALUES ('', 'm_dashboardHost', './img/icones/16x16/text_rich_marked.gif', 307, 30701, 10, 50, './include/reporting/dashboard/viewHostLog.php', NULL, '0', '0', '1', NULL , NULL , NULL);
+
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick`) VALUES ('', 'm_dashboardService', NULL, 307, 30702, 20, 50, './include/reporting/dashboard/viewServicesLog.php', NULL, '0', '0', '0', NULL , NULL , NULL);
+
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick`) VALUES ('', 'm_dashboardHostGroup', NULL, 307, 30703, 20, 50, './include/reporting/dashboard/viewHostGroupLog.php', NULL, '0', '0', '1', NULL , NULL , NULL);
+
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show` , `topology_style_class` , `topology_style_id` , `topology_OnClick`) VALUES ('', 'm_dashboardServiceGroup', NULL, 307, 30704, 20, 50, './include/reporting/dashboard/viewServicesGroupLog.php', NULL, '0', '0', '1', NULL , NULL , NULL);
 
 --
 -- Oreon Views

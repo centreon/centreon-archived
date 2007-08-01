@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	function getLogInDbForHost(&$hbase, &$Tup, &$Tdown, &$Tunreach, &$Tnone, $pearDB, $host_id, $start_date_select, $end_date_select){
+	function getLogInDbForHost(&$hbase, $pearDB, $host_id, $start_date_select, $end_date_select){
 		$rq = 'SELECT ' .
 			'sum(UPnbEvent) as TupNBAlert, ' .
 			'sum(UPTimeScheduled)' .
@@ -124,15 +124,144 @@ For information : contact@oreon-project.org
 		  while ($h =& $res->fetchRow()){
 
 			$hbase = $h;
+			$hbase["Tnone"] = 0 + ($end_date_select - $start_date_select) - ($h["Tup"]+$h["Tdown"]+ $h["Tunreach"]);
 
+/*			
 			$Tup = 0 + $h["Tup"];
 			$Tdown = 0 + $h["Tdown"];
 			$Tunreach = 0 + $h["Tunreach"];
 			$Tnone = 0 + ($end_date_select - $start_date_select) - ($h["Tup"]+$h["Tdown"]+ $h["Tunreach"]);
-
-
+*/
 		  }
 		}
+	}
+
+	function getLogInDbForHostGroup(&$hbase, $pearDB, $pearDBO, $hostgroup_id, $start_date_select, $end_date_select, $gopt, $today_start, $today_end){
+
+		# ODS Database retrieve information
+		$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$result_config = $DBRESULT->fetchRow();
+		if (isset($result_config) && $result_config)
+			$gopt = array_map("myDecode", $result_config);
+
+		$hbase["average"]["Tup"] = 0;
+		$hbase["average"]["TupNBAlert"] = 0;
+		$hbase["average"]["Tdown"] = 0;
+		$hbase["average"]["TdownNBAlert"] = 0;
+		$hbase["average"]["Tunreachable"] = 0;
+		$hbase["average"]["TunreachableNBAlert"] = 0;
+		$hbase["average"]["Tnone"] = 0;
+		$hosts_id = getMyHostGroupHosts($hostgroup_id);
+		$hbase["average"]["today"]["Tup"] = 0;
+		$hbase["average"]["today"]["TupNBAlert"] = 0;
+		$hbase["average"]["today"]["Tdown"] = 0;
+		$hbase["average"]["today"]["TdownNBAlert"] = 0;
+		$hbase["average"]["today"]["Tunreachable"] = 0;
+		$hbase["average"]["today"]["TunreachableNBAlert"] = 0 ;
+		$hbase["average"]["today"]["Tnone"] = 0 ;
+
+
+		$i = 0;
+		foreach($hosts_id as $h) {
+			$htmp = array();
+			getLogInDbForHost(&$htmp, $pearDB, $h, $start_date_select, $end_date_select);
+
+			$hbase[$h]["Tup"] = $htmp["Tup"];
+			$hbase[$h]["TupNBAlert"] = $htmp["TupNBAlert"];
+			$hbase[$h]["Tdown"] = $htmp["Tdown"];
+			$hbase[$h]["TdownNBAlert"] = $htmp["TdownNBAlert"];
+			$hbase[$h]["Tunreachable"] = $htmp["Tunreach"];
+			$hbase[$h]["TunreachableNBAlert"] = $htmp["TunreachableNBAlert"];
+			$hbase[$h]["Tnone"] = $htmp["Tnone"];
+
+			$hbase["average"]["Tup"] += $htmp["Tup"];
+			$hbase["average"]["TupNBAlert"] += $htmp["TupNBAlert"];
+			$hbase["average"]["Tdown"] += $htmp["Tdown"];
+			$hbase["average"]["TdownNBAlert"] += $htmp["TdownNBAlert"];
+			$hbase["average"]["Tunreachable"] += $htmp["Tunreach"];
+			$hbase["average"]["TunreachableNBAlert"] += $htmp["TunreachableNBAlert"];
+			$hbase["average"]["Tnone"] += $htmp["Tnone"];
+
+
+			#
+			## ods data or manual paring log for TODAY log
+			#
+			if(!$gopt["archive_log"])
+				echo "manual parsing";
+			else
+			{
+				$tab_tmp = array();
+				$tab_tmp["state"] = "UP";
+				$tab_tmp["time"] = $today_start;
+				$tab_tmp["Tup"] = 0;
+				$tab_tmp["TupNBAlert"] = 0;
+				$tab_tmp["Tdown"] = 0;
+				$tab_tmp["TdownNBAlert"] = 0;
+				$tab_tmp["Tunreachable"] = 0;
+				$tab_tmp["TunreachableNBAlert"] = 0;
+				$tab_tmp["Tnone"] = 0;
+
+				$rq = "select * from log where host_name like '%".getMyHostName($h)."%' and ctime <= ". 
+					$today_end . " AND ctime >= " . $today_start . " AND ( msg_type = 7 OR msg_type = 9 OR msg_type = 1)";
+				$DBres =& $pearDBO->query($rq);
+				if (PEAR::isError($DBres))
+					print "DB Error : ".$DBres->getDebugInfo()."<br>";
+				$log = array();
+				while ($DBres->fetchInto($log)){
+					if($log["status"] == "UP"){
+						$tab_tmp["Tup"] = $log["ctime"] - $tab_tmp["time"];
+						$tab_tmp["TupNBAlert"] += 1;
+					}
+					if($log["status"] == "UP"){
+						$tab_tmp["Tdown"] = $log["ctime"] - $tab_tmp["time"];
+						$tab_tmp["TdownNBAlert"] += 1;
+					}
+					if($log["status"] == "UP"){
+						$tab_tmp["Tunreachable"] = $log["ctime"] - $tab_tmp["time"];
+						$tab_tmp["TunreachableNBAlert"] += 1;
+					}
+					else
+						$tab_tmp["Tnone"] = $log["ctime"] - $tab_tmp["time"];
+					$tab_tmp["state"] = $log["status"];
+					$tab_tmp["time"] = $log["ctime"];
+				}
+			}
+			$i++;
+			$hbase["average"]["today"]["Tup"] +=  $tab_tmp["Tup"];
+			$hbase["average"]["today"]["TupNBAlert"] += $htmp["TupNBAlert"];
+			$hbase["average"]["today"]["Tdown"] +=   $tab_tmp["Tdown"];
+			$hbase["average"]["today"]["TdownNBAlert"] +=  $tab_tmp["TdownNBAlert"];
+			$hbase["average"]["today"]["Tunreachable"] += $tab_tmp["Tunreachable"];
+			$hbase["average"]["today"]["TunreachableNBAlert"] +=  $tab_tmp["TunreachableNBAlert"];
+			$hbase["average"]["today"]["Tnone"] +=  $tab_tmp["Tnone"];
+			if($today_start < $start_date_select){
+				$hbase["average"]["Tup"] +=  $tab_tmp["Tup"];
+				$hbase["average"]["TupNBAlert"] += $htmp["TupNBAlert"];
+				$hbase["average"]["Tdown"] +=   $tab_tmp["Tdown"];
+				$hbase["average"]["TdownNBAlert"] +=  $tab_tmp["TdownNBAlert"];
+				$hbase["average"]["Tunreachable"] += $tab_tmp["Tunreachable"];
+				$hbase["average"]["TunreachableNBAlert"] +=  $tab_tmp["TunreachableNBAlert"];
+				$hbase["average"]["Tnone"] +=  $tab_tmp["Tnone"];
+
+				$hbase[$h]["Tup"] += $tab_tmp["Tup"];
+				$hbase[$h]["TupNBAlert"] += $tab_tmp["TupNBAlert"];
+				$hbase[$h]["Tdown"] += $tab_tmp["Tdown"];
+				$hbase[$h]["TdownNBAlert"] += $tab_tmp["TdownNBAlert"];
+				$hbase[$h]["Tunreachable"] += $tab_tmp["Tunreachable"];
+				$hbase[$h]["TunreachableNBAlert"] += $tab_tmp["TunreachableNBAlert"];
+				$hbase[$h]["Tnone"] += $tab_tmp["Tnone"];
+			}
+			$hbase[$h]["today"] = $tab_tmp;
+		}
+		$hbase["average"]["Tup"] /= $i;
+		$hbase["average"]["TupNBAlert"] /= $i;
+		$hbase["average"]["Tdown"] /= $i;
+		$hbase["average"]["TdownNBAlert"] /= $i;
+		$hbase["average"]["Tunreachable"] /= $i;
+		$hbase["average"]["TunreachableNBAlert"] /= $i;
+		$hbase["average"]["Tnone"] /= $i;
 	}
 
 	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select){	

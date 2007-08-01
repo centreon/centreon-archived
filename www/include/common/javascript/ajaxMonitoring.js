@@ -597,7 +597,7 @@ function goM(_time_reload,_sid,_o){
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 		if(xhrM && xhrM.readyState && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
 		{
-			reponse = xhrM.responseXML.documentElement;			
+			reponse = xhrM.responseXML.documentElement;
 			var infos = reponse.getElementsByTagName("infos");
 			for (var i = 0 ; i < infos.length ; i++) {
 				var info = infos[i];
@@ -622,7 +622,7 @@ function goM(_time_reload,_sid,_o){
 					addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 				}
-			}//fin du for pour les infos principale
+			}//fin du for pour les infos principales
 		}
 			viewDebugInfo('readyState=' + xhrM.readyState + ' -- status=' + xhrM.status);
 	}

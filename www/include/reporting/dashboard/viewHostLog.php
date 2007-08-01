@@ -61,8 +61,7 @@ For information : contact@oreon-project.org
 	#
 	$type_period = (isset($_GET["type_period"])) ? $_GET["type_period"] : "predefined";
 	$type_period = (isset($_POST["type_period"])) ? $_POST["type_period"] : $type_period;
-	
-	
+		
 	$period1 = "today";
 	if($mhost)	{
 		$end_date_select = 0;
@@ -73,8 +72,7 @@ For information : contact@oreon-project.org
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
 			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-			
-						
+									
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 
 			$formHost->addElement('hidden', 'end', $end);
@@ -100,7 +98,12 @@ For information : contact@oreon-project.org
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForHost($hbase, $Tup, $Tdown, $Tunreach, $Tnone, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForHost($hbase, $pearDB, $host_id, $start_date_select, $end_date_select);
+		$Tup = $hbase["Tup"];
+		$Tdown = $hbase["Tnone"];
+		$Tunreach = $hbase["Tunreach"];
+		$Tnone = $hbase["Tnone"];
+		
 		$tab_svc_bdd = array();
 		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
 	}

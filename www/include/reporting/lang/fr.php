@@ -50,11 +50,13 @@ $lang["m_send"] = "Envoyer";
 
 # Dashboard
 
+$lang["m_period_select"] = "Periode";
+$lang["m_if_custom"] = "Si periode personalisée choisie...";
 $lang["m_view"] = "Voir";
 $lang["m_start"] = "Date de d&eacute;but";
 $lang["m_end"] = "Date de fin";
 $lang["m_predefinedPeriod"] = "Pr&eacute;d&eacute;finie:";
-$lang["m_customizedPeriod"] = "Personalis&eacute;e:";
+$lang["m_customizedPeriod"] = "Personalis&eacute;e";
 $lang["m_selectPeriodTitle"] = "S&eacute;lection de la p&eacute;riode";
 $lang["m_hostResumeTitle"] = "Etat de l&acute;host";
 $lang["m_serviceResumeTitle"] = "Etat du service";

@@ -108,6 +108,8 @@ $lang['m_cartography'] = "Cartography";
 $lang['m_dashboard'] = "Dashboard";
 $lang['m_dashboardHost'] = "Host";
 $lang['m_dashboardService'] = "Service";
+$lang['m_dashboardHostGroup'] = "Host Group";
+$lang['m_dashboardServiceGroup'] = "Service Group";
 
 # Graph menu
 
