@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR contact_alias LIKE '".htmlentities($search, ENT_QUOTES)."')");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact");
 	if (PEAR::isError($DBRESULT))

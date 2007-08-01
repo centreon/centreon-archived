@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 	else
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id AND dsgpr.servicegroup_sg_id IN (".$lcaServiceGroupStr.")) > 0";
 	if ($search)
-		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '".htmlentities($search, ENT_QUOTES)."')";
+		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$rq .= " ORDER BY dep_name, dep_description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))

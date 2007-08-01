@@ -28,9 +28,9 @@ For information : contact@oreon-project.org
 
 	if (isset($search)){
 		if ($oreon->user->admin || !$isRestreint)		
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."')");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 		else
-			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND sg_id IN (".$lcaServiceGroupStr.")");
+			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sg_id IN (".$lcaServiceGroupStr.")");
 	} else {
 		if ($oreon->user->admin || !$isRestreint)		
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");

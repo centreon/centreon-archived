@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
 	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps_vendor WHERE (alias LIKE '".htmlentities($search, ENT_QUOTES)."') OR (name LIKE '".htmlentities($search, ENT_QUOTES)."')");
+		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps_vendor WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') OR (name LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps_vendor");
 	if (PEAR::isError($DBRESULT))
@@ -48,8 +48,8 @@ For information : contact@oreon-project.org
 
 	#List of elements - Depends on different criteria
 	if ($search)
-		$rq = "SELECT * FROM traps_vendor WHERE (alias LIKE '".htmlentities($search, ENT_QUOTES)."') ".
-				" OR (name LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY name, alias LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT * FROM traps_vendor WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ".
+				" OR (name LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY name, alias LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM traps_vendor ORDER BY name, alias LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
