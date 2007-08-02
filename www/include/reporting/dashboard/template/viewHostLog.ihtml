@@ -36,26 +36,27 @@
 				</td>
 			</tr>
 			<tr>
-			<td style='padding:5px;vertical-align:top;'>
+			<td style='padding:5px;vertical-align:top;'><form {$formPeriod.attributes}>
 					<table class="ListTable">
 						<tr class='ListHeader'>
 							<td colspan=2>&nbsp;<img src='./img/icones/16x16/calendar.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$periodTitle}</td>
 						</tr>
 						<tr class="list_two">
-					        <td class="ListColHeaderLeft"><b>{$formPeriod1.header.title}</b></td>
-				        	<td class="ListColHeaderCenter"><form {$formPeriod1.attributes}>{$formPeriod1.period.html}{$formPeriod1.hidden}</form></td>
+					        <td class="ListColHeaderLeft"></td>
+				        	<td class="ListColHeaderCenter">{$formPeriod.period.html}{$formPeriod.hidden}</td>
 				        </tr>
 						<tr class='list_one'>
-							<td rowspan="3" class="ListColHeaderLeft"><b>{$formPeriod2.header.title}</b></td>
-							<td class="ListColHeaderRight"><form {$formPeriod2.attributes}><span style='padding-right:150px;'><b>{$formPeriod2.start.label} : </b>{$formPeriod2.start.html}&nbsp;&nbsp;{$formPeriod2.startD.html}</span></td>
+							<td rowspan="3" class="ListColHeaderLeft"><b>{$formPeriod.header.title}</b></td>
+							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod.start.label} : </b>{$formPeriod.start.html}&nbsp;&nbsp;{$formPeriod.startD.html}</span></td>
 						</tr>
 						<tr class="list_one">
-							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod2.end.label} : </b>{$formPeriod2.end.html}&nbsp;&nbsp;{$formPeriod2.endD.html}</span></td>
+							<td class="ListColHeaderRight"><span style='padding-right:150px;'><b>{$formPeriod.end.label} : </b>{$formPeriod.end.html}&nbsp;&nbsp;{$formPeriod.endD.html}</span></td>
 						</tr>
 						<tr class="list_one">
-							<td class="ListColHeaderCenter">{$formPeriod2.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod2.reset.html}{$formPeriod2.hidden}</form></td>
+							<td class="ListColHeaderCenter">{$formPeriod.submit.html}&nbsp;&nbsp;&nbsp;&nbsp;{$formPeriod.reset.html}{$formPeriod.hidden}</td>
 						</tr>
 					</table>
+					</form>
 				</td>
 			</tr>
 
