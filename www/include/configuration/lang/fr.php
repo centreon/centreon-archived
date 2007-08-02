@@ -284,6 +284,13 @@ $lang['sv_oreon'] = "Centreon";
 $lang['sv_graphTpl'] = "Graph Mod&egrave;le";
 $lang['sv_all'] = "TOUT";
 
+$lang['sv_eventHandler'] = "Commande associ&eacute;e";
+$lang['sv_loggingOptions'] = "Options de d'historisation";
+$lang['sv_perfdataOptions'] = "Donn&eacute;es de performances";
+$lang['sv_freshnessOptions'] = "Options de contr&ocirc;le de fraicheur du r&eacute;sultat";
+$lang['sv_flappingOptions'] = "Options de contr&ocirc;le des Oscilations";
+
+
 /* Meta Service */
 
 $lang['ms'] = "Meta Service";

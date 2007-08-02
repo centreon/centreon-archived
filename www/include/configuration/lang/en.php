@@ -285,6 +285,12 @@ $lang['sv_oreon'] = "Centreon";
 $lang['sv_graphTpl'] = "Graph Template";
 $lang['sv_all'] = "ALL";
 
+$lang['sv_eventHandler'] = "Event Handler";
+$lang['sv_loggingOptions'] = "History Options";
+$lang['sv_perfdataOptions'] = "Perfdata Options";
+$lang['sv_freshnessOptions'] = "Freshness Control options";
+$lang['sv_flappingOptions'] = "Flapping options";
+
 /* Meta Service */
 
 $lang['ms'] = "Meta Service";
