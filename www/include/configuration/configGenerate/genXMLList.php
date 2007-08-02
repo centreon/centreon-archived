@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	
 	# Host List
 	foreach($gbArr[2] as $key => $value)	{
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id, host_address, host_register, ehi.city_id FROM host, extended_host_information ehi WHERE host_id = '".$key."' AND ehi.host_host_id = host_id LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id, host_address, host_register FROM host, extended_host_information ehi WHERE host_id = '".$key."' AND ehi.host_host_id = host_id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$host = $DBRESULT->fetchRow();
@@ -41,19 +41,7 @@ For information : contact@oreon-project.org
 			if (!$host["host_address"])
 				$host["host_address"] = getMyHostAddress($host['host_template_model_htm_id']);
 			$str .= "<h id='".$key."' name='".html_entity_decode($host["host_name"], ENT_QUOTES)."' address='".$host["host_address"]."'";
-			if ($host["city_id"])	{
-				$DBRESULT2 =& $pearDB->query("SELECT city_lat, city_long FROM view_city WHERE city_id = '".$host["city_id"]."' LIMIT 1");
-				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-				$gps =& $DBRESULT2->fetchRow();
-				if ($gps["city_lat"] && $gps["city_long"])
-					$str .= " gps='true' lat='".$gps["city_lat"]."' long='".$gps["city_long"]."'";
-				else
-					$str .= " gps='false'";
-				$DBRESULT2->free();
-			}
-			else
-				$str .= " gps='false'";
+			$str .= " gps='false'";
 			$str .= "/>\n";
 		}
 		else
@@ -66,19 +54,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$hostGroup = $DBRESULT->fetchRow();
 		$str .= "<hg id='".$key."' name='".html_entity_decode($hostGroup["hg_name"], ENT_QUOTES)."'";
-		if ($hostGroup["city_id"])	{
-			$DBRESULT2 =& $pearDB->query("SELECT city_lat, city_long FROM view_city WHERE city_id = '".$hostGroup["city_id"]."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-			$gps =& $DBRESULT2->fetchRow();
-			if ($gps["city_lat"] && $gps["city_long"])
-				$str .= " gps='true' lat='".$gps["city_lat"]."' long='".$gps["city_long"]."'";
-			else
-				$str .= " gps='false'";
-			$DBRESULT2->free();
-		}
-		else
-			$str .= " gps='false'";		
+		$str .= " gps='false'";	
 		$str .= "/>\n";
 	}
 	# Services List
@@ -118,19 +94,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$serviceGroup = $DBRESULT->fetchRow();
 		$str .= "<sg id='".$key."' name='".html_entity_decode($serviceGroup["sg_name"], ENT_QUOTES)."'";
-		if ($serviceGroup["city_id"])	{
-			$DBRESULT2 =& $pearDB->query("SELECT city_lat, city_long FROM view_city WHERE city_id = '".$serviceGroup["city_id"]."' LIMIT 1");
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-			$gps =& $DBRESULT2->fetchRow();
-			if ($gps["city_lat"] && $gps["city_long"])
-				$str .= " gps='true' lat='".$gps["city_lat"]."' long='".$gps["city_long"]."'";
-			else
-				$str .= " gps='false'";
-			$DBRESULT2->free();
-		}
-		else
-			$str .= " gps='false'";	
+		$str .= " gps='false'";
 		$str .= "/>\n";
 	}
 	# OSL
