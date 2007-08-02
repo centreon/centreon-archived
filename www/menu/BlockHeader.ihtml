@@ -72,7 +72,7 @@
 
 	</div>
 	<span id="logli">
-		<img src='./img/icones/16x16/text_code.gif'>&nbsp;<a href='./oreon.php?p={$p}&doc=1&page=toc.html'>Documentation</a>&nbsp;&nbsp;
+		<img src='./img/icones/16x16/text_code.gif'>&nbsp;<a href='./oreon.php?p={$p}&doc=1&page=toc.html'>{$lang.top_doc}</a>&nbsp;&nbsp;
 		<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/text_view.gif" alt='{$legend1}' title='{$legend2}'>&nbsp;<a onclick="DisplayHidden('legend');">{$legend1}</a>&nbsp;&nbsp;
 		<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif"></a>&nbsp;<a href="{$LogOutUrl}">{$LogOut}</a>&nbsp;
 	</span>

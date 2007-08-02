@@ -204,7 +204,8 @@ For information : contact@oreon-project.org
 	}
 		
 	$tpl->assign("tab_user", $tab_user);
-
+	$tpl->assign('lang', $lang);
+	
 	# Display
 	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("BlockMenuType1.ihtml");
