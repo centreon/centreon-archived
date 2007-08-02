@@ -74,8 +74,8 @@ For information : contact@oreon-project.org
 	# Var information to format the element
 	#
 	$attrsText 		= array("size"=>"30");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+	$attrsAdvSelect = array("style" => "width: 220px; height: 170px;");
+	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
 	#
@@ -185,6 +185,8 @@ For information : contact@oreon-project.org
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
 	
+	$tpl->assign('p', $p);
+	$tpl->assign('lang', $lang);
 	$tpl->assign('nagios', $oreon->user->get_version());
 	$tpl->assign("initJS", "<script type='text/javascript'>
 							window.onload = function () {
