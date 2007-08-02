@@ -284,7 +284,7 @@ $lang['sv_oreon'] = "Centreon";
 $lang['sv_graphTpl'] = "Graph Mod&egrave;le";
 $lang['sv_all'] = "TOUT";
 
-$lang['sv_eventHandler'] = "Commande associ&eacute;e";
+$lang['sv_eventHandlerST'] = "Gestionnaire d'&eacute;v&egrave;nements";
 $lang['sv_loggingOptions'] = "Options de d'historisation";
 $lang['sv_perfdataOptions'] = "Donn&eacute;es de performances";
 $lang['sv_freshnessOptions'] = "Options de contr&ocirc;le de fraicheur du r&eacute;sultat";
@@ -316,7 +316,7 @@ $lang['ms_exp'] = "Expression";
 $lang['ms_sqlMatch'] = "SQL matching";
 $lang['ms_metric'] = "Metric";
 
-$lang['ms_head_state'] = "Status du Meta Service";
+$lang['ms_head_state'] = "Statut du Meta Service";
 $lang['ms_checkMca'] = "Nombre maximum d'essais";
 $lang['ms_normalCheckInterval'] = "Ordonnancement r&eacute;gulier";
 $lang['ms_retryCheckInterval'] = "Ordonnancement non r&eacute;gulier";
@@ -791,7 +791,7 @@ $lang['m_traps_name'] = "Nom de la Trap";
 $lang['m_traps_oid'] = "OID";
 $lang['m_traps_handler'] = "Handler";
 $lang['m_traps_args'] = "Message à afficher";
-$lang['m_traps_status'] = "Status";
+$lang['m_traps_status'] = "Statut";
 $lang['m_traps_comments'] = "Commentaires";
 $lang['m_traps_manufacturer'] = "Constructeur";
 $lang['m_traps_desc'] = "Description";
