@@ -49,7 +49,7 @@ For information : contact@oreon-project.org
 	Guillaume Watteux (Watt)<br>
 	Maximilien Bersoult (leoncx)<br>
 	Gaetan Lucas de Couville (gae)<br>
-	(Tor)<br>
+	Nathanael Guyot (Tor)<br>
 	Jean Marie Grisard (Jmou)<br>
 	</ul>
 </div>
