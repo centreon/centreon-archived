@@ -824,4 +824,10 @@ $lang['mibs_status'] = "Statut";
 $lang['m_gantt'] = "Voir Escalades";
 $lang['m_header_gantt'] = "Vue des Escalades";
 
+$lang['sc_add'] = "Ajout d'une cat&eacute;gorie de service";
+$lang['sc_change'] = "Modification d'une cat&eacute;gorie de service";
+$lang['sc_infos'] = "Informations de la cat&eacute;gorie";
+$lang[''] = "";
+$lang[''] = "";
+
 ?>
