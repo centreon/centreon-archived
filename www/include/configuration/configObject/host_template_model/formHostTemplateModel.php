@@ -56,14 +56,6 @@ For information : contact@oreon-project.org
 			for($i = 0; $DBRESULT->fetchInto($svTpl); $i++)
 				$host["host_svTpls"][$i] = $svTpl["service_service_id"];
 			$DBRESULT->free();
-			# Set City name
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT cny.country_id, cty.city_name FROM view_city cty, view_country cny WHERE cty.city_id = '".$host["city_id"]."' AND cny.country_id = '".$host["country_id"]."'");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$city = $DBRESULT->fetchRow();
-			$host["city_name"] = $city["city_name"];
-			$host["country_id"] = $city["country_id"];
-			$DBRESULT->free();
 		}
 	}
 	#
@@ -118,14 +110,6 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-	$DBRESULT->free();
-	# Countries comes from DB -> Store in $countries Array
-	$countries = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT country_id, country_name FROM view_country ORDER BY country_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	while($DBRESULT->fetchInto($country))
-		$countries[$country["country_id"]] = $country["country_name"];
 	$DBRESULT->free();
 	# Deletion Policy definition comes from DB -> Store in $ppols Array
 	$ppols = array(NULL=>NULL);
@@ -396,9 +380,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'ehi_2d_coords', $lang['h_nag2dCoords'], $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', $lang['h_nag3dCoords'], $attrsText2);
 
-	$form->addElement('header', 'oreon', $lang['h_oreon']);
-	$form->addElement('select', 'country_id', $lang['h_country'], $countries);
-	$form->addElement('text', 'city_name', $lang['h_city'], array("id"=>"city_name", "size"=>"35", "autocomplete"=>"off"));
+	$form->addElement('header', 'oreon', $lang['sv_oreon']);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
@@ -477,6 +459,8 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min"=>$min));
 	$tpl->assign('min', $min);
+	$tpl->assign('lang', $lang);
+	$tpl->assign('p', $p);
 	$tpl->assign("sort1", $lang['h_conf']);
 	$tpl->assign("sort2", $lang['h_head_links']);
 	$tpl->assign("sort3", $lang['h_head_treat']);
