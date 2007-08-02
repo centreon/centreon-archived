@@ -563,6 +563,8 @@ For information : contact@oreon-project.org
 		$tpl->assign('is_not_template', $host_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		$tpl->assign('p', $p);
+		$tpl->assign('lang', $lang);
 		$tpl->display("formHost.ihtml");
 	}
 ?>
