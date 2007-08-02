@@ -17,13 +17,13 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-#lang a:link{	color:#666666;}
-#lang a:visited{color:#666666;}
-#lang a:hover{	color:#E3A385;}
-#lang {			color:#666666;}
-#lang h1 {		font-family:Arial, Helvetica, Sans-Serif;font-size:14px; color:#666666; padding-bottom:15px}
-#lang dt {		font-family:Arial, Helvetica, Sans-Serif;font-size:12px; color:#666666; text-decoration: underline}
-#lang dd {		font-family:Arial, Helvetica, Sans-Serif;font-size:10px; color:#666666;}
+#lang a:link		{color:#666666;}
+#lang a:visited		{color:#666666;}
+#lang a:hover		{color:#E3A385;}
+#lang 				{color:#666666;}
+#lang h1 			{font-family:Arial, Helvetica, Sans-Serif;font-size:14px; color:#666666; padding-bottom:15px}
+#lang dt 			{font-family:Arial, Helvetica, Sans-Serif;font-size:12px; color:#666666; text-decoration: underline}
+#lang dd 			{font-family:Arial, Helvetica, Sans-Serif;font-size:10px; color:#666666;}
 
 .FormHeader		{    font-size:12px;}
 .FormHeader .td	{    padding-left:2px;}
@@ -31,16 +31,36 @@ For information : contact@oreon-project.org
 
 
 /* IE BUG ONLY */
- * html #ListTable td, #ListTableMedium td, #ListTableSmall td,.ListTable td, .ListTableMedium td, .ListTableSmall td{padding:0px;margin:0px;	padding-left:3px; padding-right:3px;}
+ * html #ListTable td, #ListTableMedium td, #ListTableSmall td,.ListTable td, .ListTableMedium td, .ListTableSmall td {
+ 	padding:0px;
+ 	margin:0px;	
+ 	padding-left:3px; 
+ 	padding-right:3px;
+}
 
 	
-#ListTable a, #ListTableMedium a, .ListTableSmall a,.ListTable a, .ListTableMedium a, .ListTableSmall a{color:#666666;}
+#ListTable a, #ListTableMedium a, .ListTableSmall a,.ListTable a, .ListTableMedium a, .ListTableSmall a{
+	color:#666666;
+}
 
-#ListTable, .ListTable    {    width:100%;z-index: 1;}
-#ListTableMedium, .ListTableMedium    {    width:60%;z-index: 1;}
-#ListTableSmall, .ListTableSmall    {    width:40%;z-index: 1;}
-
-.TableFooter {width:100%; z-index: 1; margin-top:8px;margin-bottom:4px}
+#ListTable, .ListTable {    
+	width:100%;
+	z-index: 1;
+}
+#ListTableMedium, .ListTableMedium    {    
+	width:60%;
+	z-index: 1;
+}
+#ListTableSmall, .ListTableSmall    {    
+	width:40%;
+	z-index: 1;
+}
+.TableFooter {
+	width:100%;
+	z-index: 1;
+	margin-top:8px;
+	margin-bottom:4px;
+}
 
 .tab .ListTable, 
 .tab .ListTableMedium,  
@@ -70,6 +90,7 @@ For information : contact@oreon-project.org
 	border-top-style:solid;
 	border-left-width: 0.5px;
 	border-left-style:solid;
+	
 }
 
 .tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td, .tab .list_down td{
@@ -84,7 +105,7 @@ For information : contact@oreon-project.org
 .tab .list_lvl_2 td, .tab .list_lvl_1 td{
 	border-bottom-width: 0.5px;
 	border-bottom-style:solid;
-	border-right-width: 0.5px;
+	border-right-width: 0px;
 	border-right-style:solid;
 	border-left-width: 0px;
 	border-top-width: 0px;
@@ -96,9 +117,9 @@ For information : contact@oreon-project.org
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 11px;
 	font-weight: bold;
-	border-top-width: 0.1px;
+	border-top-width: 0.2px;
 	border-top-style:solid;
-	border-left-width: 0.1px;
+	border-left-width: 0px;
 	border-left-style:solid;
 }
 
