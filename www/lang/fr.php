@@ -179,8 +179,8 @@ $lang['m_service_dependencies'] = "D&eacute;pendances de Service";
 $lang['m_host_dependencies'] = "D&eacute;pendances d'Host";
 
 $lang['m_template'] = "Mod&egrave;les";
-$lang['m_host_template_model'] = "Mod&egrave;les d'Host";
-$lang['m_service_template_model'] = "Mod&egrave;les de Service";
+$lang['m_host_template_model'] = "Mod&egrave;les";
+$lang['m_service_template_model'] = "Mod&egrave;les";
 
 $lang['m_nagios'] = "Nagios";
 $lang['m_nagiosCFG'] = "Nagios CFG";
