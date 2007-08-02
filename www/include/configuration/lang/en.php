@@ -98,8 +98,13 @@ $lang['h_checksEnabled'] = "Checks Enabled";
 $lang['h_checkPeriod'] = "Check Period";
 $lang['h_activeCE'] = "Active Checks Enabled";
 $lang['h_passiveCE'] = "Passive Checks Enabled";
+$lang['h_eventHandlerST'] = "Event Handler";
 $lang['h_eventHandlerE'] = "Event Handler Enabled";
 $lang['h_eventHandler'] = "Event Handler";
+$lang['h_loggingOptions'] = "History Options";
+$lang['h_perfdataOptions'] = "Perfdata Options";
+$lang['h_freshnessOptions'] = "Freshness Control options";
+$lang['h_flappingOptions'] = "Flapping options";
 
 $lang['h_head_treat'] = "Data Treatment";
 $lang['h_add_treat'] = "Add Data Treatment";

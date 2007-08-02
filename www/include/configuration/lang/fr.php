@@ -97,8 +97,13 @@ $lang['h_checksEnabled'] = "Activation des controles de l'Host";
 $lang['h_checkPeriod'] = "P&eacute;riode de controle";
 $lang['h_activeCE'] = "Controles actifs";
 $lang['h_passiveCE'] = "Controles passifs";
+$lang['h_eventHandlerST'] = "Gestionnaire d'&eacute;v&egrave;nements";
 $lang['h_eventHandlerE'] = "Activation du gestionnaire d'&eacute;v&egrave;nements";
 $lang['h_eventHandler'] = "Commande associ&eacute;e";
+$lang['h_loggingOptions'] = "Options de d'historisation";
+$lang['h_perfdataOptions'] = "Donn&eacute;es de performances";
+$lang['h_freshnessOptions'] = "Options de contr&ocirc;le de fraicheur du r&eacute;sultat";
+$lang['h_flappingOptions'] = "Options de contr&ocirc;le des Oscilations";
 
 $lang['h_head_treat'] = "Traitement des donn&eacute;es";
 $lang['h_add_treat'] = "Ajouter le Traitement des donn&eacute;es";
