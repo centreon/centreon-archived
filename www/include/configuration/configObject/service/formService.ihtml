@@ -18,9 +18,9 @@
 </div>
 <div id="tab1" class="tab">
 	<table id="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="ListHeader"><td class="FormHeader">&nbsp;<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./oreon.php?p={$p}&min=1&doc=1&page=xodtemplate.html#service" target="_blank" alt='{$lang.$top_doc}'><img src="./img/icones/16x16/text_code.gif" title="{$lang.$top_doc}"></a>&nbsp;&nbsp;</td></tr>
 	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		{if $msg.tpl}
 			<tr class="list_one"><td class="FormRowField">{$form.service_alias.label}<br>{$form.header.service_alias_interest}</td><td class="FormRowValue">{$form.service_alias.html}</td></tr>
 		{/if}
@@ -39,7 +39,7 @@
 				{/if}
 			</td>
 		</tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_is_volatile.label}</td><td class="FormRowValue">{$form.service_is_volatile.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.timeperiod_tp_id.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id.html}</td></tr>
 		<tr class="list_two">
@@ -72,12 +72,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.service_notification_interval.label}</td><td class="FormRowValue">{$form.service_notification_interval.html}{$time_unit}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_notifOpts.label}</td><td class="FormRowValue">{$form.service_notifOpts.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.service_stalOpts.label}</td><td class="FormRowValue">{$form.service_stalOpts.html}</td></tr>
-		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_activate.label}</td><td class="FormRowValue">{$form.service_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue">{$form.service_comment.html}</td></tr>
-		
+				
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
@@ -85,9 +80,9 @@
 </div>
 
 <div id="tab2" class="tab">
-	<table id="ListTable">	 	
+	<table id="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
 		{/if}
@@ -110,16 +105,28 @@
 	<table id="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;&nbsp;{$form.header.treatment}</td></tr>
+
 		<tr class="list_one"><td class="FormRowField">{$form.service_parallelize_check.label}</td><td class="FormRowValue">{$form.service_parallelize_check.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_obsess_over_service.label}</td><td class="FormRowValue">{$form.service_obsess_over_service.html}</td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$lang.sv_freshnessOptions}</td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.service_check_freshness.label}</td><td class="FormRowValue">{$form.service_check_freshness.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}(s)</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}{$lang.time_sec}</td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$lang.sv_flappingOptions}</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.service_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.service_flap_detection_enabled.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}&nbsp;%</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}&nbsp;%</td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$lang.h_perfdataOptions}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_process_perf_data.label}</td><td class="FormRowValue">{$form.service_process_perf_data.html}</td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.sv_loggingOptions}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_retain_status_information.label}</td><td class="FormRowValue">{$form.service_retain_status_information.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.service_retain_nonstatus_information.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_stalOpts.label}</td><td class="FormRowValue">{$form.service_stalOpts.html}</td></tr>
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$lang.sv_eventHandlerST}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_event_handler_enabled.label}</td><td class="FormRowValue">{$form.service_event_handler_enabled.html}</td></tr>
 		<tr class="list_two">
 			<td class="FormRowField">{$form.command_command_id2.label}</td>
@@ -159,7 +166,10 @@
 	 	{/if}
 		<tr class="list_two"><td class="FormRowField">{$form.esi_icon_image.label}</td><td class="FormRowValue">{$form.esi_icon_image.html}&nbsp;&nbsp;<img id='esi_icon_image_img' src='./img/blank.gif'></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.esi_icon_image_alt.label}</td><td class="FormRowValue">{$form.esi_icon_image_alt.html}</td></tr>
-	
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_activate.label}</td><td class="FormRowValue">{$form.service_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue">{$form.service_comment.html}</td></tr>
 	 </table>
 </div>
 <div id="validForm">

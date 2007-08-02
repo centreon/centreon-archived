@@ -604,6 +604,9 @@ For information : contact@oreon-project.org
 		
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 
+	$tpl->assign("lang", $lang);
+	$tpl->assign("p", $p);
+	
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
 		$serviceObj =& $form->getElement('service_id');
