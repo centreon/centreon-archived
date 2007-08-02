@@ -16,7 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
 	if (!isset($oreon))
 		exit;
 
@@ -103,12 +102,10 @@ For information : contact@oreon-project.org
 	#
 	## Select form part 2
 	#
-	if($oreon->user->admin)
-		$res =& $pearDB->query("SELECT hg_name FROM hostgroup where hg_activate = '1' ORDER BY hg_name");
-	else
-		$res =& $pearDB->query("SELECT hg_name FROM hostgroup where hg_activate = '1' AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
+	$res =& $pearDB->query("SELECT hg_name FROM servicegroup where sg_activate = '1' ORDER BY sg_name");
+
 	$hostgroup = array();
-	$hostgroup[""] = "";	
+	$hostgroup[""] = "";
 	while ($res->fetchInto($hg)){
 			$hostgroup[$hg["hg_name"]] = $hg["hg_name"];
 	}
@@ -439,5 +436,5 @@ For information : contact@oreon-project.org
 			</SCRIPT>
 			<?
 		}
-	$tpl->display("template/viewHostGroupLog.ihtml");
+	$tpl->display("template/viewServicesGroupLog.ihtml");
 ?>

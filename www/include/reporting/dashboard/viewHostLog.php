@@ -59,32 +59,24 @@ For information : contact@oreon-project.org
 	#
 	## period selection
 	#
-	$type_period = (isset($_GET["type_period"])) ? $_GET["type_period"] : "predefined";
-	$type_period = (isset($_POST["type_period"])) ? $_POST["type_period"] : $type_period;
+	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
+	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 		
-	$period1 = "today";
 	if($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		$period1 = "today";
-		if($type_period == "customized") {
+		if($period == "customized") {
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
 			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-									
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
-
 			$formHost->addElement('hidden', 'end', $end);
 			$formHost->addElement('hidden', 'start', $start);
-			$period1 = "NULL";
 		}
 		else {
-			$period1 = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
-			$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1;
-			getDateSelect_predefined($end_date_select, $start_date_select, $period1);
-			$formHost->addElement('hidden', 'period', $period1);
-			$period1 = is_null($period1) ? "today" : $period1;
+			getDateSelect_predefined($end_date_select, $start_date_select, $period);
+			$formHost->addElement('hidden', 'period', $period);
 		}
 		$host_id = getMyHostID($mhost);
 		$sd = $start_date_select;
@@ -125,37 +117,36 @@ For information : contact@oreon-project.org
 		$formHost->setDefaults(array('host' => $_GET["host"]));
 	}
 
-	$formHost->addElement('hidden', 'type_period', $type_period);
+	#
+	## Time select
+	#
+	$periodList = array();
+	$periodList[""] = "";
+	$periodList["today"] = $lang["today"];
+	$periodList["yesterday"] = $lang["yesterday"];
+	$periodList["thisweek"] = $lang["thisweek"];
+	$periodList["last7days"] = $lang["last7days"];
+	$periodList["thismonth"] = $lang["thismonth"];
+	$periodList["last30days"] = $lang["last30days"];
+	$periodList["lastmonth"] = $lang["lastmonth"];
+	$periodList["thisyear"] = $lang["thisyear"];
+	$periodList["lastyear"] = $lang["lastyear"];
+	$periodList["customized"] = $lang["m_customizedPeriod"];
+	
+	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p."&type_period=predefined");
+	$selHost =& $formPeriod->addElement('select', 'period', $lang["m_predefinedPeriod"], $periodList);
 
-	#
-	## fourchette de temps
-	#
-	$period = array();
-	$period[""] = "";
-	$period["today"] = $lang["today"];
-	$period["yesterday"] = $lang["yesterday"];
-	$period["thisweek"] = $lang["thisweek"];
-	$period["last7days"] = $lang["last7days"];
-	$period["thismonth"] = $lang["thismonth"];
-	$period["last30days"] = $lang["last30days"];
-	$period["lastmonth"] = $lang["lastmonth"];
-	$period["thisyear"] = $lang["thisyear"];
-	$period["lastyear"] = $lang["lastyear"];
-	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
-	isset($mhost) ? $formPeriod1->addElement('hidden', 'host', $mhost) : NULL;
-	$formPeriod1->addElement('hidden', 'timeline', "1");
-	$formPeriod1->addElement('header', 'title', $lang["m_predefinedPeriod"]);
-	$selHost =& $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));
-	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p."&type_period=customized");
-	$formPeriod2->addElement('hidden', 'timeline', "1");
-	isset($mhost) ? $formPeriod2->addElement('hidden', 'host', $mhost) : NULL;
-	$formPeriod2->addElement('header', 'title', $lang["m_customizedPeriod"]);
-	$formPeriod2->addElement('text', 'start', $lang["m_start"]);
-	$formPeriod2->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
-	$formPeriod2->addElement('text', 'end', $lang["m_end"]);
-	$formPeriod2->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
-	$sub =& $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
-	$res =& $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
+	isset($mhost) ? $formPeriod->addElement('hidden', 'host', $mhost) : NULL;
+	$formPeriod->addElement('hidden', 'timeline', "1");
+
+	$formPeriod->addElement('hidden', 'timeline', "1");
+	$formPeriod->addElement('header', 'title', $lang["m_if_custom"]);
+	$formPeriod->addElement('text', 'start', $lang["m_start"]);
+	$formPeriod->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
+	$formPeriod->addElement('text', 'end', $lang["m_end"]);
+	$formPeriod->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
+	$sub =& $formPeriod->addElement('submit', 'submit', $lang["m_view"]);
+	$res =& $formPeriod->addElement('reset', 'reset', $lang["reset"]);
 
 	$today_up = 0;
 	$today_down = 0;
@@ -603,18 +594,8 @@ $totalAlert = $hbase["TunreachableNBAlert"] + $hbase["TdownNBAlert"] + $hbase["T
 	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
 	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
 
-	$period1 = (!$period1) ? "today": $period1;
-	$formPeriod1->setDefaults(array('period' => $period1));
+	$formPeriod->setDefaults(array('period' => $period));
 
-
-	
-	if($type_period == "customized") {
-		$tpl->assign('period', "&start=" . $sd . "&end=".$ed."&type_period=".$type_period);
-	//	$tpl->assign('period', "&start=" . $start . "&end=".$end."&type_period=".$type_period);
-	}
-	else{
-		$tpl->assign('period', "&period=".$period1);
-	}
 
 
 	$tpl->assign('hostID', getMyHostID($mhost));
@@ -625,12 +606,9 @@ $totalAlert = $hbase["TunreachableNBAlert"] + $hbase["TdownNBAlert"] + $hbase["T
 	$color["UNREACHABLE"] =  substr($oreon->optGen["color_unreachable"], 1);
 	$tpl->assign('color', $color);
 
-	$renderer1 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$formPeriod1->accept($renderer1);
-	$tpl->assign('formPeriod1', $renderer1->toArray());
-	$renderer2 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$formPeriod2->accept($renderer2);
-	$tpl->assign('formPeriod2', $renderer2->toArray());
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$formPeriod->accept($renderer);
+	$tpl->assign('formPeriod', $renderer->toArray());
 
 	#Apply a template definition
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -638,7 +616,6 @@ $totalAlert = $hbase["TunreachableNBAlert"] + $hbase["TdownNBAlert"] + $hbase["T
 	$tpl->assign('formHost', $renderer->toArray());
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
-	$tpl->assign("type_period", $type_period);
 
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);

@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 	isset ($_POST["service"]) ? $mservice = $_POST["service"] : $mservice = $mservice;
 
 	#
-	## Selection de l'host/service
+	## Select form part 1
 	#
 	$formService = new HTML_QuickForm('formService', 'post', "?p=".$p);
 
@@ -65,59 +65,51 @@ For information : contact@oreon-project.org
 	#
 	## period selection
 	#
-	$type_period = (isset($_GET["type_period"])) ? $_GET["type_period"] : "predefined";
-	$type_period = (isset($_POST["type_period"])) ? $_POST["type_period"] : $type_period;
-	$period1 = "today";
+	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
+	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
+
 	if($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		$period1 = 0;
-		if($type_period == "customized") {
-
-			if(isset($_POST["start"]) && isset($_POST["end"])){
-				$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-				$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-				getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
-			}
-			else{
-				$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-				$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-				$end_date_select = $end;
-				$start_date_select = $start;
-			}
+		if($period == "customized") {
+			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
+			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
+			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
+			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
+			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 			$formService->addElement('hidden', 'end', $end);
 			$formService->addElement('hidden', 'start', $start);
-			$period1 = "NULL";
 		}
 		else {
-			$period1 = (isset($_POST["period"])) ? $_POST["period"] : NULL; 
-			$period1 = (isset($_GET["period"])) ? $_GET["period"] : $period1;
-			getDateSelect_predefined($end_date_select, $start_date_select, $period1);
-			$formService->addElement('hidden', 'period', $period1);
-			$period1 = is_null($period1) ? "today" : $period1;
+			getDateSelect_predefined($end_date_select, $start_date_select, $period);
+			$formService->addElement('hidden', 'period', $period);
 		}
 		$host_id = getMyHostID($mhost);
 		$sd = $start_date_select;
 		$ed = $end_date_select;
 
 		#
-		## recupere les log host en base
+		## database log
 		#
 		$Tup = NULL;
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForHost($hbase, $Tup, $Tdown, $Tunreach, $Tnone, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForHost($hbase, $pearDB, $host_id, $start_date_select, $end_date_select);
+		$Tup = $hbase["Tup"];
+		$Tdown = $hbase["Tnone"];
+		$Tunreach = $hbase["Tunreach"];
+		$Tnone = $hbase["Tnone"];
+		
 		$tab_svc_bdd = array();
 		getLogInDbForSVC( $tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
 	}
 
 	#
-	## Selection de l'host/service (suite)
+	## Select form part 2
 	#
 	$formService->addElement('hidden', 'timeline', "1");
 	$formService->addElement('hidden', 'host', $mhost);
-	$formService->addElement('hidden', 'type_period', $type_period);
 	$serviceList = array();
 	$serviceList = getMyHostServices(getMyHostID($mhost));
 	$selService =& $formService->addElement('select', 'service', $lang["m_svc"], $serviceList, array("onChange" =>"this.form.submit();"));
@@ -127,37 +119,36 @@ For information : contact@oreon-project.org
 	#
 	## fourchette de temps
 	#
-	$period = array();
-	$period[""] = "";
-	$period["today"] = $lang["today"];
-	$period["yesterday"] = $lang["yesterday"];
-	$period["thisweek"] = $lang["thisweek"];
-	$period["last7days"] = $lang["last7days"];
-	$period["thismonth"] = $lang["thismonth"];
-	$period["last30days"] = $lang["last30days"];
-	$period["lastmonth"] = $lang["lastmonth"];
-	$period["thisyear"] = $lang["thisyear"];
-	$period["lastyear"] = $lang["lastyear"];
-	$formPeriod1 = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
-	isset($mhost) ? $formPeriod1->addElement('hidden', 'host', $mhost) : NULL;
-	isset($mservice) ? $formPeriod1->addElement('hidden', 'service', $mservice) : NULL;
-	$formPeriod1->addElement('header', 'title', $lang["m_predefinedPeriod"]);
-	$selHost = $formPeriod1->addElement('select', 'period', $lang["m_predefinedPeriod"], $period, array("onChange" =>"this.form.submit();"));	
-	$formPeriod1->setDefaults(array('period' => $period1));
-	$formPeriod2 = new HTML_QuickForm('FormPeriod2', 'post', "?p=".$p."&type_period=customized");
-	isset($mhost) ? $formPeriod2->addElement('hidden', 'host', $mhost) : NULL;
-	isset($mservice) ? $formPeriod2->addElement('hidden', 'service', $mservice) : NULL;
-	$formPeriod2->addElement('header', 'title', $lang["m_customizedPeriod"]);
-	$formPeriod2->addElement('text', 'start', $lang["m_start"]);
-	$formPeriod2->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
-	$formPeriod2->addElement('text', 'end', $lang["m_end"]);
-	$formPeriod2->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
-	$sub = $formPeriod2->addElement('submit', 'submit', $lang["m_view"]);
-	$res = $formPeriod2->addElement('reset', 'reset', $lang["reset"]);
+	$periodList = array();
+	$periodList[""] = "";
+	$periodList["today"] = $lang["today"];
+	$periodList["yesterday"] = $lang["yesterday"];
+	$periodList["thisweek"] = $lang["thisweek"];
+	$periodList["last7days"] = $lang["last7days"];
+	$periodList["thismonth"] = $lang["thismonth"];
+	$periodList["last30days"] = $lang["last30days"];
+	$periodList["lastmonth"] = $lang["lastmonth"];
+	$periodList["thisyear"] = $lang["thisyear"];
+	$periodList["lastyear"] = $lang["lastyear"];
 
-	if($type_period == "customized") {
-		$formPeriod2->setDefaults(array('start' => date("m/d/Y", $start_date_select)));
-		$formPeriod2->setDefaults(array('end' => date("m/d/Y", $end_date_select)));
+	$formPeriod = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
+	$selHost = $formPeriod->addElement('select', 'period', $lang["m_predefinedPeriod"], $periodList);
+
+	isset($mhost) ? $formPeriod->addElement('hidden', 'host', $mhost) : NULL;
+	isset($mservice) ? $formPeriod->addElement('hidden', 'service', $mservice) : NULL;
+
+	$formPeriod->addElement('header', 'title', $lang["m_if_custom"]);
+	$formPeriod->setDefaults(array('period' => $period));
+	$formPeriod->addElement('text', 'start', $lang["m_start"]);
+	$formPeriod->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
+	$formPeriod->addElement('text', 'end', $lang["m_end"]);
+	$formPeriod->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
+	$sub = $formPeriod->addElement('submit', 'submit', $lang["m_view"]);
+	$res = $formPeriod->addElement('reset', 'reset', $lang["reset"]);
+
+	if($period == "customized") {
+		$formPeriod->setDefaults(array('start' => date("m/d/Y", $start_date_select)));
+		$formPeriod->setDefaults(array('end' => date("m/d/Y", $end_date_select)));
 	}
 	
 	if($mhost){
@@ -475,13 +466,9 @@ For information : contact@oreon-project.org
 	$color["UNREACHABLE"] =  substr($oreon->optGen["color_unreachable"], 1);
 	$tpl->assign('color', $color);
 
-	$renderer1 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$formPeriod1->accept($renderer1);
-	$tpl->assign('formPeriod1', $renderer1->toArray());	
-
-	$renderer2 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$formPeriod2->accept($renderer2);	
-	$tpl->assign('formPeriod2', $renderer2->toArray());
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$formPeriod->accept($renderer);
+	$tpl->assign('formPeriod', $renderer->toArray());
 
 	#Apply a template definition
 	$renderer3 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -492,7 +479,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
-	
 	
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
