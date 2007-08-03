@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	#
 	$cct = array();
 	if (($o == "c" || $o == "w") && $sc_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM service_categories WHERE sc_id = '".$sc_id."' LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$sc_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
@@ -106,7 +106,9 @@ For information : contact@oreon-project.org
 	$form->addRule('sc_name', $lang['ErrName'], 'required');
 	$form->addRule('sc_description', $lang['ErrAlias'], 'required');
 	
-	$form->addRule('sc_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->registerRule('existName', 'callback', 'testServiceCategorieExistence');
+	$form->addRule('sc_name', $lang['ErrAlreadyExist'], 'existName');
+	
 	
 	$form->setRequiredNote($lang['requiredFields']);
 
@@ -121,15 +123,13 @@ For information : contact@oreon-project.org
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
 	    $form->setDefaults($cct);
 		$form->freeze();
-	}
-	# Modify a service_categories information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		# Modify a service_categories information
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	    $form->setDefaults($sc);
-	}
-	# Add a service_categories information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		# Add a service_categories information
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
 	}
@@ -141,12 +141,12 @@ For information : contact@oreon-project.org
 			$cctObj->setValue(insertServiceCategorieInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateServiceCategorieInDB($cctObj->getValue());
-		
 		$o = NULL;
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$cctObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}
+	
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listServiceCategories.php");
@@ -155,6 +155,7 @@ For information : contact@oreon-project.org
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+	
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);

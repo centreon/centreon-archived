@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 	$rows = $tmp["COUNT(*)"];
 
 	# start quickSearch form
-	$advanced_search = 1;
+	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 	
 	#Contact list
 	if ($search)
-		$rq = "SELECT * FROM service_categories WHERE (sc_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sc_description LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY sc_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT * FROM service_categories WHERE (sc_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sc_description LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY sc_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM service_categories ORDER BY sc_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);

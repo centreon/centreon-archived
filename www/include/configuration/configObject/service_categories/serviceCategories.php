@@ -47,11 +47,13 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formServiceCategories.php"); break; #Add a contact
 		case "w" : require_once($path."formServiceCategories.php"); break; #Watch a contact
 		case "c" : require_once($path."formServiceCategories.php"); break; #Modify a contact
-		case "s" : enableContactInDB($contact_id); require_once($path."listServiceCategories.php"); break; #Activate a ServiceCategories
+		case "s" : enableServiceCategorieInDB($sc_id); require_once($path."listServiceCategories.php"); break; #Activate a ServiceCategories
 		case "ms" : enableServiceCategorieInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceCategories.php"); break;
 		case "u" : disableServiceCategorieInDB($sc_id); require_once($path."listServiceCategories.php"); break; #Desactivate a contact
 		case "mu" : disableServiceCategorieInDB(NULL, isset($select) ? $select : array()); require_once($path."listServiceCategories.php"); break;
+		
 		case "m" : multipleServiceCategorieInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServiceCategories.php"); break; #Duplicate n contacts
+		
 		case "d" : deleteServiceCategorieInDB(isset($select) ? $select : array()); require_once($path."listServiceCategories.php"); break; #Delete n contacts
 		default : require_once($path."listServiceCategories.php"); break;
 	}
