@@ -4,7 +4,7 @@
 <div class="cachediv">
 <FORM id="datareport">
 	<INPUT type="hidden" name="hostID" value="{$hostID}"><br>
-	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	        
+	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >
 	<INPUT type="hidden" name="color_UP" value="{$color.UP}">
 	<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
 	<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
@@ -13,10 +13,10 @@
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
-			<form {$formService.attributes} style="margin:0px;padding:0px;">
-				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$hostTitle}&nbsp;:&nbsp;&nbsp;<input type=text value="{$mhost}" name="hostname" disabled>
-				<b>{$formService.service.label}:</b>&nbsp;&nbsp;{$formService.service.html}
-				{$formService.hidden}
+			<form {$formservicegroup.attributes} style="margin:0px;padding:0px;">
+				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">
+				<b>{$formservicegroup.servicegroup.label}:</b>&nbsp;&nbsp;{$formservicegroup.servicegroup.html}
+				{$formservicegroup.hidden}
 			&nbsp;&nbsp;&nbsp;{$period}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
 			</form>	
 		</td>
@@ -60,34 +60,91 @@
 			</tr>
 			<tr>
 				<td style='vertical-align:top;padding:5px;'>
-				<table class="ListTable">
-					<tr class='ListHeader'>
-						<td colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
-					</tr>
-					<tr class='list_lvl_1'>
-						<td class="ListColHeaderCenter">{$StateTitle}</td>
-						<td class="ListColHeaderCenter">{$TimeTitle}</td>
-						<td class="ListColHeaderCenter">{$TimeTotalTitle}</td>
-						<td class="ListColHeaderCenter">{$KnownTimeTitle}</td>
-						<td class="ListColHeaderCenter">{$AlertTitle}</td>
-					</tr>
-					{foreach item=tb from=$tab_resume}
-					<tr class={cycle values="list_two, list_one"}>
-						<td class='ListColCenter'{$tb.style}>{$tb.state}</td>
-						<td class='ListColCenter' >{$tb.time}</td>
-						<td class='ListColRight'>{$tb.pourcentTime}&nbsp;%</td>
-						<td class='ListColRight'>{$tb.pourcentkTime}</td>
-						<td class='ListColRight'>{$tb.nbAlert}</td>
-					</tr>
-					{/foreach}
-					<tr class='list_lvl_2'>
-						<td class="ListColHeaderCenter">{$allTilte}</td>
-						<td class='ListColCenter'>{$totalTime}</td>
-						<td class='ListColRight'>{$totalpTime}%</td>
-						<td class='ListColRight'>{$totalpkTime}%</td>
-						<td class='ListColRight'>{$totalAlert}</td>
-					</tr>
-				</table>
+					<table class="ListTable">
+						<tr class='ListHeader'>
+							<td colspan=5>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$resumeTitle}</td>
+						</tr>
+						<tr class='list_lvl_1'>
+							<td class="ListColHeaderCenter">{$StateTitle}</td>
+							<td class="ListColHeaderCenter">{$TimeTitle}</td>
+							<td class="ListColHeaderCenter">{$TimeTotalTitle}</td>
+							<td class="ListColHeaderCenter">{$KnownTimeTitle}</td>
+							<td class="ListColHeaderCenter">{$AlertTitle}</td>
+						</tr>
+						{foreach item=tb from=$tab_resume}
+						<tr class={cycle values="list_two, list_one"}>
+							<td {$tb.style}>{$tb.state}</td>
+							<td class='ListColCenter'>{$tb.time}</td>
+							<td class='ListColRight'>{$tb.pourcentTime}%</td>
+							<td class='ListColRight'>{$tb.pourcentkTime}</td>
+							<td class='ListColRight'>{$tb.nbAlert}</td>
+						</tr>
+						{/foreach}
+						<tr class='list_lvl_2'>
+							<td class="ListColHeaderCenter">{$allTilte}</td>
+							<td class='ListColCenter'>{$totalTime}</td>
+							<td class='ListColRight'>{$totalpTime}%</td>
+							<td class='ListColRight'>{$totalpkTime}%</td>
+							<td class='ListColRight'>{$totalAlert}</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 style=' padding:5px;'>
+					<table class="ListTable">
+						<tr class='ListHeader'>
+							<td class="FormHeader" colspan=11>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+						</tr>
+						<tr class='list_lvl_1'>
+							<td class="ListColHeaderCenter" colspan=2></td>
+							<td colspan=2 class="ListColHeaderCenter">{$OKTitle}</td>
+							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
+							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
+							<td colspan=2 class="ListColHeaderCenter">{$UnknownTitle}</td>
+							<td class="ListColHeaderCenter">{$UndeterminatedTitle}</td>
+						</tr>
+						<tr class='list_lvl_1'>
+							<td class="ListColHeaderCenter">{$hostTitle}</td>
+							<td class="ListColHeaderCenter">{$serviceTilte}</td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
+							<td class="ListColHeaderCenter">Alert</td>
+							<td class="ListColHeaderCenter">%</td>
+						</tr>
+						{foreach item=tb from=$tab_svc}
+						<tr class={cycle values="list_two, list_one"}>
+							<td class="ListColHeaderCenter"><a href="oreon.php?p=30701&host={$hostName}{$period}">{$tb.hostName}</a></td>
+							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$hostName}&service={$tb.svc_id}{$period}">{$tb.serviceName}</a></td>
+							<td {$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
+							<td {$style_ok_alert} >{$tb.OKnbEvent}</td>
+							<td {$style_critical}>{$tb.PtimeCRITICAL}% ({$tb.PktimeCRITICAL}%)</td>
+							<td {$style_critical_alert style="width:30px;"}>{$tb.CRITICALnbEvent}</td>
+							<td {$style_warning}>{$tb.PtimeWARNING}% ({$tb.PktimeWARNING}%)</td>
+							<td {$style_warning_alert} style="width:30px;">{$tb.WARNINGnbEvent}</td>
+							<td {$style_unknown}>{$tb.PtimeUNKNOWN}% ({$tb.PktimeUNREACHABLE}%)</td>
+							<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWNnbEvent}</td>
+							<td {$style_undeterminated}>{$tb.PtimeUNDETERMINATED}%</td>
+						</tr>
+						{/foreach}
+						<tr class="list_lvl_2">
+							<td colspan=2 class="ListColHeaderCenter">{$averageTilte}</td>
+							<td class='ListColHeaderCenter'{$style_ok}>{$tab_svc_list_average.PTOK}% ({$tab_svc_average.PKTOK}%)</td>
+							<td class='ListColHeaderCenter'{$style_ok_alert}>{$tab_svc_list_average.PAOK}</td>
+							<td class='ListColHeaderCenter'{$style_critical}>{$tab_svc_list_average.PTC}% ({$tab_svc_average.PKTC}%)</td>
+							<td class='ListColHeaderCenter'{$style_critical_alert}>{$tab_svc_list_average.PAC}</td>
+							<td class='ListColHeaderCenter'{$style_warning}>{$tab_svc_list_average.PTW}% ({$tab_svc_average.PKTW}%)</td>
+							<td class='ListColHeaderCenter'{$style_warning_alert}>{$tab_svc_list_average.PAW}</td>
+							<td class='ListColHeaderCenter'{$style_unknown}>{$tab_svc_list_average.PTU}% ({$tab_svc_average.PKTU}%)</td>
+							<td class='ListColHeaderCenter'{$style_unknown_alert}>{$tab_svc_list_average.PAU}</td>
+							<td class='ListColHeaderCenter'{$style_undeterminated}>{$tab_svc_list_average.PTN}%</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 			<tr>

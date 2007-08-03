@@ -99,6 +99,8 @@ For information : contact@oreon-project.org
 		$tab_svc_bdd = array();
 		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
 	}
+	$serviceList = getMyHostServices($host_id);
+	$serviceList = array_flip($serviceList);
 
 	#
 	## Selection de l'host/service (suite)
@@ -228,9 +230,9 @@ For information : contact@oreon-project.org
 			$today_down = $tab_hosts[$mhost]["timeDOWN"];
 			$today_unreachable = $tab_hosts[$mhost]["timeUNREACHABLE"];
 			$i = 0;
-			
+
 			foreach ($tab_services as $key => $htab_svc) {
-				if(isset($htab_svc[$mhost])){
+				if(isset($htab_svc[$mhost]) && isset($serviceList[$key])){
 									
 					$tab_tmp = $htab_svc[$mhost];
 					$tab_tmp["svcName"] = $key;
@@ -530,7 +532,7 @@ For information : contact@oreon-project.org
 		$totalpkTime += $tb["pourcentkTime"];
 	}
 
-$totalAlert = $hbase["TunreachableNBAlert"] + $hbase["TdownNBAlert"] + $hbase["TupNBAlert"];
+	$totalAlert = $hbase["TunreachableNBAlert"] + $hbase["TdownNBAlert"] + $hbase["TupNBAlert"];
 
 	$tpl->assign('totalAlert', $totalAlert);
 

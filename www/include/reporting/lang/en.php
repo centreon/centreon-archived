@@ -66,6 +66,7 @@ $lang["m_serviceLogTitle"] = "service today log";
 $lang["m_hostSvcAssocied"] = "State Breakdowns For Host Services";
 
 $lang["m_serviceTilte"] = "Service";
+$lang["m_hostTitle"] = "Host";
 $lang["m_allTilte"] = "All";
 $lang["m_averageTilte"] = "Average";
 $lang["m_OKTitle"] = "OK";
