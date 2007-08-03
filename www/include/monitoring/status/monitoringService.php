@@ -42,11 +42,10 @@ For information : contact@oreon-project.org
 	
 	$ndo = 0;
 	
-	if (isset($ndo) && !$ndo)
+	if (isset($ndo) && !$ndo){
 		$path = "./include/monitoring/status/status-log/";
 		include("./include/monitoring/status/resume.php");
-	}
-	else
+	} else
 		$path = "./include/monitoring/status/status-ndo/";
 		
 	$pathRoot = "./include/monitoring/";
