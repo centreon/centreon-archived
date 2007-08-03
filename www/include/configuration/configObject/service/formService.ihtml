@@ -81,7 +81,7 @@
 
 <div id="tab2" class="tab">
 	<table id="ListTable">
-		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
+		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title2}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField">{$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
@@ -103,7 +103,7 @@
 </div>
 <div id="tab3" class="tab">
 	<table id="ListTable">
-		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
+		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title3}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/import2.gif'>&nbsp;&nbsp;{$form.header.treatment}</td></tr>
 
 		<tr class="list_one"><td class="FormRowField">{$form.service_parallelize_check.label}</td><td class="FormRowValue">{$form.service_parallelize_check.html}</td></tr>
@@ -153,7 +153,7 @@
 </div>
 <div id='tab4' class='tab'>
 	 <table id="ListTable">
-		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title4}</td></tr>
+		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;&nbsp;{$form.header.title4}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.graph_id.label}</td><td class="FormRowValue">{$form.graph_id.html}</td></tr>
