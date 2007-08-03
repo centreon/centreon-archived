@@ -40,8 +40,10 @@ For information : contact@oreon-project.org
 	if(isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
 		submitPassiveCheck($lang);
 	
-	if (!$ndo)
+	if (!$ndo){
 		$path = "./include/monitoring/status/status-log/";
+		include("./include/monitoring/status/resume.php");
+	}
 	else
 		$path = "./include/monitoring/status/status-ndo/";
 		
@@ -49,7 +51,6 @@ For information : contact@oreon-project.org
 	$pathExternal = "./include/monitoring/external_cmd/";
 	$pathDetails = "./include/monitoring/objectDetails/";
 
-	include("./include/monitoring/status/resume.php");
 	switch ($o)	{
 		case "svc" 			: require_once($path."service.php"); 					break; 
 		
