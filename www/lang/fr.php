@@ -162,6 +162,7 @@ $lang['m_service_extended_info'] = "Service Informations Etendues";
 $lang['m_meta_service'] = "Meta Services";
 $lang['m_mnftr'] = "Constructeur";
 $lang['m_mibs'] = "Charger MIBs";
+$lang['m_categories'] = "Cat&eacute;gories";
 
 $lang['m_notification'] = "Utilisateurs";
 $lang['m_contact'] = "Utilisateurs";

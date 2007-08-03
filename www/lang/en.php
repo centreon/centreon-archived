@@ -162,6 +162,7 @@ $lang['m_service_extended_info'] = "Service Extended Infos";
 $lang['m_meta_service'] = "Meta Services";
 $lang['m_mnftr'] = "Standards or Vendor";
 $lang['m_mibs'] = "Load MIBs";
+$lang['m_categories'] = "Categories";
 
 $lang['m_notification'] = "Users";
 $lang['m_contact'] = "Contacts";
