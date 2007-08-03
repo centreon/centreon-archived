@@ -19,7 +19,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit(); 
 	
-	$path = "./include/monitoring/status/";
 	$pgr_nagios_stat = array();
 
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
