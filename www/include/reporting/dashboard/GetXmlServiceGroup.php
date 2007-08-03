@@ -25,8 +25,8 @@ For information : contact@oreon-project.org
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<data>';
 
-/*
-	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["serviceID"]) &&
+
+	if(isset($_GET["oreonPath"]) && isset($_GET["svc_group_id"]) &&
 	   isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"])&& 
 	   isset($_GET["today_unknown"])&& isset($_GET["today_pending"]))
 	{
@@ -138,12 +138,22 @@ For information : contact@oreon-project.org
 
 			
 		$rq = 'SELECT ' .
-		' * FROM `log_archive_service` WHERE host_id = ' . $_GET["hostID"] . ' AND service_id = ' . $_GET["serviceID"] .
+		' * FROM `log_archive_service` WHERE host_id = ' . $_GET["hostID"] . ' AND service_id = ' . $_GET["svc_group_id"] .
 		' order by date_start desc';
 			
+		$rq = 'SELECT ' .
+				'date_start, date_end, ' .
+				'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
+				'avg( `OKnbEvent` ) as "OKnbEvent", ' .
+				'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", ' .
+				'avg( `WARNINGnbEvent` ) as "WARNINGnbEvent", ' .
+				'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", ' .
+				'avg( `UNKNOWNnbEvent` ) as "UNKNOWNnbEvent", ' .
+				'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
+				'avg( `CRITICALnbEvent` ) as "CRITICALnbEvent" ' .
+				'FROM `log_archive_service` WHERE `service_id` IN (' .
+				'SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = ' . $_GET["svc_group_id"] .') group by date_end, date_start order by date_start desc';
 		$res = & $pearDB->query($rq);
-	
-
 		  while ($h =& $res->fetchRow()) {
 			$oktime = $h["OKTimeScheduled"];
 			$criticaltime = $h["CRITICALTimeScheduled"];
@@ -377,7 +387,7 @@ For information : contact@oreon-project.org
 	{
 		$buffer .= '<error>error</error>';
 	}
-*/
+
 	$buffer .= '</data>';
 
 	header('Content-Type: text/xml');

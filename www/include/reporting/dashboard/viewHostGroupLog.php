@@ -382,7 +382,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('AlertTitle', $lang["m_AlertTitle"]);
 	$tpl->assign('DateTitle', $lang["m_DateTitle"]);
 	$tpl->assign('EventTitle', $lang["m_EventTitle"]);
-	$tpl->assign('HostTitle', $lang["m_HostTitle"]);
+	$tpl->assign('HostTitle', $lang["m_hostTitle"]);
 	$tpl->assign('InformationsTitle', $lang["m_InformationsTitle"]);
 	$tpl->assign('periodTitle', $lang["m_selectPeriodTitle"]);
 	$tpl->assign('resumeTitle', $lang["m_hostResumeTitle"]);

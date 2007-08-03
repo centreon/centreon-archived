@@ -119,8 +119,8 @@
 						</tr>
 						{foreach item=tb from=$tab_svc}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderCenter"><a href="oreon.php?p=30701&host={$hostName}{$period}">{$tb.hostName}</a></td>
-							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$hostName}&service={$tb.svc_id}{$period}">{$tb.serviceName}</a></td>
+							<td class="ListColHeaderCenter"><a href="oreon.php?p=30701&host={$tb.hostName}{$period}">{$tb.hostName}</a></td>
+							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$tb.hostName}&service={$tb.svc_id}{$period}">{$tb.serviceName}</a></td>
 							<td {$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
 							<td {$style_ok_alert} >{$tb.OKnbEvent}</td>
 							<td {$style_critical}>{$tb.PtimeCRITICAL}% ({$tb.PktimeCRITICAL}%)</td>

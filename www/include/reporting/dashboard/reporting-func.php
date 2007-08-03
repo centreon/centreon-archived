@@ -242,13 +242,13 @@ For information : contact@oreon-project.org
 			}
 			$hbase[$h]["today"] = $tab_tmp;
 		}
-		$hbase["average"]["Tup"] /= $i;
-		$hbase["average"]["TupNBAlert"] /= $i;
-		$hbase["average"]["Tdown"] /= $i;
-		$hbase["average"]["TdownNBAlert"] /= $i;
-		$hbase["average"]["Tunreachable"] /= $i;
-		$hbase["average"]["TunreachableNBAlert"] /= $i;
-		$hbase["average"]["Tnone"] /= $i;
+		$hbase["average"]["Tup"] > 0 ? $hbase["average"]["Tup"] /= $i: 0;
+		$hbase["average"]["TupNBAlert"] > 0 ? $hbase["average"]["TupNBAlert"] /= $i: 0;
+		$hbase["average"]["Tdown"] > 0 ? $hbase["average"]["Tdown"] /= $i: 0;
+		$hbase["average"]["TdownNBAlert"] > 0 ? $hbase["average"]["TdownNBAlert"] /= $i: 0;
+		$hbase["average"]["Tunreachable"] > 0 ? $hbase["average"]["Tunreachable"] /= $i: 0;
+		$hbase["average"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["TunreachableNBAlert"] /= $i: 0;
+		$hbase["average"]["Tnone"] > 0 ? $hbase["average"]["Tnone"] /= $i: 0;
 	}
 
 	function getLogInDbForServicesGroup(&$sbase, $pearDB, $pearDBO, $servicegroup_id, $start_date_select, $end_date_select, $gopt, $today_start, $today_end){
@@ -277,9 +277,21 @@ For information : contact@oreon-project.org
 
 		$i = 0;
 		$svc_tab = getMyServiceGroupServices($servicegroup_id);
+
 		foreach($svc_tab as $key => $s){
 			$stmp = array();
 			$res = preg_split("/_/", $key);
+			$sbase[$s]["Tok"] = 0;
+			$sbase[$s]["Twarning"] = 0;
+			$sbase[$s]["Tunknown"] = 0;
+			$sbase[$s]["Tcritical"] = 0;
+			$sbase[$s]["OKnbEvent"]= 0;
+			$sbase[$s]["WARNINGnbEvent"]= 0;
+			$sbase[$s]["UNKNOWNnbEvent"]= 0;
+			$sbase[$s]["CRITICALnbEvent"]= 0;
+			$sbase[$s]["svc_id"]= $res[1];
+			$sbase[$s]["host_id"]= $res[0];
+
 			getLogInDbForOneSVC(&$stmp, $pearDB, $res[0], $res[1], $start_date_select, $end_date_select);
 			if(isset($stmp[$res[1]])){
 				$sbase[$s]["Tok"] = $stmp[$res[1]]["Tok"];
@@ -290,8 +302,6 @@ For information : contact@oreon-project.org
 				$sbase[$s]["WARNINGnbEvent"]= $stmp[$res[1]]["WARNINGnbEvent"];
 				$sbase[$s]["UNKNOWNnbEvent"]= $stmp[$res[1]]["UNKNOWNnbEvent"];
 				$sbase[$s]["CRITICALnbEvent"]= $stmp[$res[1]]["CRITICALnbEvent"];
-				$sbase[$s]["svc_id"]= $res[1];
-				$sbase[$s]["host_id"]= $res[0];
 	
 				$sbase["average"]["Tok"] += $stmp[$res[1]]["Tok"];
 				$sbase["average"]["Twarning"] += $stmp[$res[1]]["Twarn"];
@@ -301,8 +311,8 @@ For information : contact@oreon-project.org
 				$sbase["average"]["WARNINGnbEvent"] += $stmp[$res[1]]["WARNINGnbEvent"];
 				$sbase["average"]["UNKNOWNnbEvent"] += $stmp[$res[1]]["UNKNOWNnbEvent"];
 				$sbase["average"]["CRITICALnbEvent"] += $stmp[$res[1]]["CRITICALnbEvent"];
-				$i++;
 			}
+			$i++;
 		}
 		$sbase["average"]["Tok"] > 0 ?  $sbase["average"]["Tok"] /= $i : 0;
 		$sbase["average"]["Twarning"] > 0 ? $sbase["average"]["Twarning"] /= $i : 0;
@@ -392,14 +402,10 @@ For information : contact@oreon-project.org
 			  die($res->getMessage());
 			} else { 
 			  while ($s =& $res->fetchRow()){
-
-	echo "plop";
-
 				$tab_svc_bdd[$s["service_id"]]["OKnbEvent"] = 0 + $s["OKnbEvent"];
 				$tab_svc_bdd[$s["service_id"]]["WARNINGnbEvent"] = 0 + $s["WARNINGnbEvent"];
 				$tab_svc_bdd[$s["service_id"]]["UNKNOWNnbEvent"] = 0 + $s["UNKNOWNnbEvent"];
-				$tab_svc_bdd[$s["service_id"]]["CRITICALnbEvent"] = 0 + $s["CRITICALnbEvent"];
-			  	
+				$tab_svc_bdd[$s["service_id"]]["CRITICALnbEvent"] = 0 + $s["CRITICALnbEvent"];			  	
 				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
 				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
 				$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];

@@ -165,7 +165,7 @@
 							<td class="ListColHeaderCenter">&nbsp;</td>
 							<td class="ListColHeaderCenter">{$DateTitle}</td>
 							<td class="ListColHeaderCenter">{$EventTitle}</td>
-							<td class="ListColHeaderCenter">{$HostTitle}</td>
+							<td class="ListColHeaderCenter">{$hostTitle}</td>
 							<td class="ListColHeaderCenter">{$InformationsTitle}</td>
 						</tr>
 						{foreach item=log from=$tab_log}

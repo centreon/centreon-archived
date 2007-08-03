@@ -84,7 +84,7 @@ $lang["m_AlertTitle"] = "Alertes";
 
 $lang["m_DateTitle"] = "Date";
 $lang["m_EventTitle"] = "Ev&egrave;nement";
-$lang["m_HostTitle"] = "Host";
+$lang["m_hostTitle"] = "Host";
 $lang["m_InformationsTitle"] = "Informations";
 
 $lang["m_period"] = " P&eacute;riode du ";

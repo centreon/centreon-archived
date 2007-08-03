@@ -150,8 +150,6 @@ For information : contact@oreon-project.org
 		$formPeriod->setDefaults(array('end' => date("m/d/Y", $end_date_select)));
 	}
 
-	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
-	$tpl->assign('servicegroup_name', $mservicegroup);
 
 	#
 	## ressource selected
@@ -163,8 +161,11 @@ For information : contact@oreon-project.org
 	$today_OKnbEvent = 0;
 	$today_UNKNOWNnbEvent = 0;
 	$today_WARNINGnbEvent = 0;
+	$today_CRITICALnbEvent = 0;
 	
 	if($mservicegroup){
+		$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
+		$tpl->assign('servicegroup_name', $mservicegroup);
 		#
 		## today log for xml timeline
 		#
@@ -175,6 +176,7 @@ For information : contact@oreon-project.org
 		$today_OKnbEvent = 0 + $sbase["average"]["today"]["Tok"];
 		$today_UNKNOWNnbEvent = 0 + $sbase["average"]["today"]["Tunknown"];
 		$today_WARNINGnbEvent = 0 + $sbase["average"]["today"]["Twarning"];
+		$today_CRITICALnbEvent = 0 + $sbase["average"]["today"]["Tcritical"];
 
 		$tab_log = array();
 		$day = date("d",time());
@@ -267,6 +269,7 @@ For information : contact@oreon-project.org
 				$tab_tmp = array();
 				$tab_tmp["hostName"] = getMyHostName($tab["host_id"]);
 				$tab_tmp["serviceName"] = getMyServiceName($tab["svc_id"]);
+				$tab_tmp["svc_id"] = $tab["svc_id"];
 				$tt = $end_date_select - $start_date_select;
 
 				$tab_tmp["PtimeOK"] = round($tab["Tok"] / $tt *100,2);
@@ -343,11 +346,16 @@ For information : contact@oreon-project.org
 		$tab_svc_list_average["PTC"] = number_format($tab_svc_list_average["PTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PTU"] > 0)
 		$tab_svc_list_average["PTU"] = number_format($tab_svc_list_average["PTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if($tab_svc_list_average["PTN"] > 0)
+		$tab_svc_list_average["PTN"] = number_format($tab_svc_list_average["PTN"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+
 		# %
 		if($tab_svc_list_average["PKTOK"] > 0)
 		$tab_svc_list_average["PKTOK"] = number_format($tab_svc_list_average["PKTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PKTW"] > 0)
 		$tab_svc_list_average["PKTW"] = number_format($tab_svc_list_average["PKTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if($tab_svc_list_average["PKTC"] > 0)
+		$tab_svc_list_average["PKTC"] = number_format($tab_svc_list_average["PKTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 		if($tab_svc_list_average["PKTU"] > 0)
 		$tab_svc_list_average["PKTU"] = number_format($tab_svc_list_average["PKTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 
@@ -375,18 +383,17 @@ For information : contact@oreon-project.org
 	$tpl->assign('status', $status);
 	$tpl->assign("tab_resume", $tab_resume);
 	$tpl->assign("tab_svc_list_average", $tab_svc_list_average);
-
+	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));
+	$tpl->assign('date_start_select', $start_date_select);
+	$tpl->assign('date_end_select', $end_date_select);
+	$tpl->assign('to', $lang["m_to"]);
 	}
 
 	if(isset($tab_svc))
 	$tpl->assign("tab_svc", $tab_svc);
 
-	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('actualTitle', $lang["actual"]);
-	$tpl->assign('date_start_select', $start_date_select);
-	$tpl->assign('date_end_select', $end_date_select);
-	$tpl->assign('to', $lang["m_to"]);
 	$tpl->assign('period_name', $lang["m_period"]);
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_ok_alert', "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
@@ -417,7 +424,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('AlertTitle', $lang["m_AlertTitle"]);
 	$tpl->assign('DateTitle', $lang["m_DateTitle"]);
 	$tpl->assign('EventTitle', $lang["m_EventTitle"]);
-	$tpl->assign('HostTitle', $lang["m_HostTitle"]);
 	$tpl->assign('InformationsTitle', $lang["m_InformationsTitle"]);
 	$tpl->assign('periodTitle', $lang["m_selectPeriodTitle"]);
 	$tpl->assign('resumeTitle', $lang["m_hostResumeTitle"]);
@@ -458,9 +464,9 @@ For information : contact@oreon-project.org
 		$color = substr($oreon->optGen["color_ok"],1) .':'.
 		 		 substr($oreon->optGen["color_warning"],1) .':'.
 		 		 substr($oreon->optGen["color_unknown"],1) .':'. 
-		 		 substr($oreon->optGen["color_unknown"],1);
-		$today_var = '&today_ok='.$today_ok . '&today_warning='.$today_warning.'&today_unknown='.$today_unknown. '&today_pending=' . $today_pending;
-		$today_var .= '&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent.'&today_WARNINGnbEvent='.$today_WARNINGnbEvent;
+		 		 substr($oreon->optGen["color_unknown"],1).':CCCCCC';
+		$today_var = '&svc_group_id='.$servicegroup_id.'&today_ok='.$today_ok . '&today_critical='.$today_critical . '&today_warning='.$today_warning.'&today_unknown='.$today_unknown. '&today_pending=' . $today_pending;
+		$today_var .= '&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent.'&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent;
 		$type = 'ServiceGroup';
 		$host_id = $servicegroup_id;
 		include('ajaxReporting_js.php');
