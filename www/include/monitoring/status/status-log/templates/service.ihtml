@@ -61,13 +61,17 @@
 				{/if} id="trStatus{$c}">
 			<td class="ListColPicker"><input name="select[{$s.host_name};{$s.service_description}]" value="1" type="checkbox"></td>
 			{if $host == $s.host_name}
-			<td class="ListColLeft" ><div class="cachediv" id="host{$c}">{$s.host_name}
-			{if $s.host_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}			
-			</div>&nbsp;</td>
+				<td class="ListColLeft" ><div class="cachediv" id="host{$c}">{$s.host_name}
+				{if $s.host_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
+				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
+				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}			
+				</div>&nbsp;</td>
 			{elseif $host != $s.host_name}
-			<td class="ListColLeft" {if $s.host_status ne "UP"} style="background-color:#FD8B46"; color:black;{/if}><div class="cachediv" id="host{$c}">{$s.host_name}</div><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a>
-			{if $s.host_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
-			</td>
+				<td class="ListColLeft" {if $s.host_status ne "UP"} style="background-color:#FD8B46"; color:black;{/if}><div class="cachediv" id="host{$c}">{$s.host_name}</div><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a>
+				{if $s.host_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
+				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
+				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}			
+				</td>
 			{/if}
 			<td class="ListColLeft">
 				<div class="cachediv" id="service{$c}">{$s.service_description}</div>

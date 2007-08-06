@@ -48,6 +48,8 @@ For information : contact@oreon-project.org
 				$tmp[0] = $name;
 				$service_status[$name]["host_status"] = $host_status[$service_status[$name]["host_name"]]["current_state"];
 				$service_status[$name]["host_has_been_acknowledged"] = $host_status[$service_status[$name]["host_name"]]["problem_has_been_acknowledged"];
+				$service_status[$name]["host_active_checks_enabled"] = $host_status[$service_status[$name]["host_name"]]["active_checks_enabled"];
+				$service_status[$name]["host_passive_checks_enabled"] = $host_status[$service_status[$name]["host_name"]]["passive_checks_enabled"];
 				$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 				$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 				if ($svc["last_check"]){
