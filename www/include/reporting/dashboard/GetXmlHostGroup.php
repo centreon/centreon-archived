@@ -58,7 +58,6 @@ For information : contact@oreon-project.org
 
 		function create_date_timeline_format($time_unix)
 		{
-//			date("m d Y G:i:s", $start)
 			$tab_month = array(
 			"01" => "Jan",
 			"02" => "Feb",
@@ -192,9 +191,9 @@ For information : contact@oreon-project.org
 			#
 			$bubultab = '{table class=bubultab}';
 			$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($uptime) .'{/td}{td class=bubul}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bubul}'.$h["UPnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($downtime).'{/td}{td class=bubul}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bubul}'.$h["DOWNnbEvent"].'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString($unreachalbetime).'{/td}{td class=bubul}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bubul}'.$h["UNREACHABLEnbEvent"].'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($uptime) .'{/td}{td class=bubul}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bubul}'.number_format($h["UPnbEvent"], 1,'.','').'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($downtime).'{/td}{td class=bubul}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bubul}'.number_format($h["DOWNnbEvent"], 1,'.','').'{/td}{/tr}';
+			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString($unreachalbetime).'{/td}{td class=bubul}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bubul}'.number_format($h["UNREACHABLEnbEvent"], 1,'.','').'{/td}{/tr}';
 			$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($undeterminatetime).'{/td}{td class=bubul}'.(($pundet > 0) ? $pundet : "0").'%{/td}{/tr}';
 			$bubultab .= '{/table}';
 			

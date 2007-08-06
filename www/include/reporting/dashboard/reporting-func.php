@@ -96,8 +96,104 @@ For information : contact@oreon-project.org
 			$start_date_select = $start;
 		}
 	}
+	function getTodayLogForHost($host_name, &$hbase, $pearDBO, $today_start, $today_end){
+		$tab_tmp = array();
+		$tab_tmp["state"] = "UP";
+		$tab_tmp["time"] = $today_start;
+		$tab_tmp["Tup"] = 0;
+		$tab_tmp["TupNBAlert"] = 0;
+		$tab_tmp["Tdown"] = 0;
+		$tab_tmp["TdownNBAlert"] = 0;
+		$tab_tmp["Tunreachable"] = 0;
+		$tab_tmp["TunreachableNBAlert"] = 0;
+		$tab_tmp["Tnone"] = 0;
 
-	function getLogInDbForHost(&$hbase, $pearDB, $host_id, $start_date_select, $end_date_select){
+		$rq = "select * from log where host_name like '%".$host_name."%' and ctime <= ". 
+			$today_end . " AND service_description is null and ctime >= " . $today_start . " AND ( msg_type = '7' OR msg_type = '9' OR msg_type = '1')";
+
+
+		$DBres =& $pearDBO->query($rq);
+		if (PEAR::isError($DBres))
+			print "DB Error : ".$DBres->getDebugInfo()."<br>";
+		$log = array();
+		while ($DBres->fetchInto($log)){
+			if($log["status"] == "UP"){
+				$tab_tmp["Tup"] += $log["ctime"] - $tab_tmp["time"];
+				$tab_tmp["TupNBAlert"] += 1;
+			}
+			if($log["status"] == "DOWN"){
+				$tab_tmp["Tdown"] += $log["ctime"] - $tab_tmp["time"];
+				$tab_tmp["TdownNBAlert"] += 1;
+			}
+			if($log["status"] == "UNREACHABLE"){
+				$tab_tmp["Tunreachable"] += $log["ctime"] - $tab_tmp["time"];
+				$tab_tmp["TunreachableNBAlert"] += 1;
+			}
+			else
+				$tab_tmp["Tnone"] += $log["ctime"] - $tab_tmp["time"];
+			$tab_tmp["state"] = $log["status"];
+			$tab_tmp["time"] = $log["ctime"];
+		}
+
+		if($tab_tmp["state"] == "UP"){
+			$tab_tmp["Tup"] += $today_end - $tab_tmp["time"];
+		}
+		if($tab_tmp["state"] == "DOWN"){
+			$tab_tmp["Tdown"] += $today_end - $tab_tmp["time"];
+		}
+		if($tab_tmp["state"] == "UNREACHABLE"){
+			$tab_tmp["Tunreachable"] += $today_end - $tab_tmp["time"];
+		}
+		else
+			$tab_tmp["Tnone"] += $today_end - $tab_tmp["time"];
+
+		if(isset($hbase["Tup"]))
+			$hbase["Tup"] += $tab_tmp["Tup"];
+		else
+			$hbase["Tup"] = $tab_tmp["Tup"];
+		if(isset($hbase["TupNBAlert"]))
+			$hbase["TupNBAlert"] += $tab_tmp["TupNBAlert"];
+		else
+			$hbase["TupNBAlert"] = $tab_tmp["TupNBAlert"];
+		if(isset($hbase["Tdown"]))
+			$hbase["Tdown"] += $tab_tmp["Tdown"];
+		else
+			$hbase["Tdown"] = $tab_tmp["Tdown"];
+		if(isset($hbase["TdownNBAlert"]))
+			$hbase["TdownNBAlert"] += $tab_tmp["TdownNBAlert"];
+		else
+			$hbase["TdownNBAlert"] = $tab_tmp["TdownNBAlert"];
+		if(isset($hbase["Tunreachable"]))
+			$hbase["Tunreachable"] += $tab_tmp["Tunreachable"];
+		else
+			$hbase["Tunreachable"] = $tab_tmp["Tunreachable"];
+		if(isset($hbase["TunreachableNBAlert"]))
+			$hbase["TunreachableNBAlert"] += $tab_tmp["TunreachableNBAlert"];
+		else
+			$hbase["TunreachableNBAlert"] = $tab_tmp["TunreachableNBAlert"];
+		if(isset($hbase["Tnone"]))
+			$hbase["Tnone"] += $tab_tmp["Tnone"];
+		else
+			$hbase["Tnone"] = $tab_tmp["Tnone"];
+	}
+
+	function getLogInDbForHost(&$hbase, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end){
+		$hbase["Tup"] = 0;
+		$hbase["TupNBAlert"] = 0;
+		$hbase["Tdown"] = 0;
+		$hbase["TdownNBAlert"] = 0;
+		$hbase["Tunreachable"] = 0;
+		$hbase["TunreachableNBAlert"] = 0;
+		$hbase["Tnone"] = 0;
+
+		# ODS Database retrieve information
+		$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$result_config = $DBRESULT->fetchRow();
+		if (isset($result_config) && $result_config)
+			$gopt = array_map("myDecode", $result_config);
+
 		$rq = 'SELECT ' .
 			'sum(UPnbEvent) as TupNBAlert, ' .
 			'sum(UPTimeScheduled)' .
@@ -114,7 +210,6 @@ For information : contact@oreon-project.org
 			' AND date_start >=  ' . ($start_date_select - 1) .
 			' AND date_end <= ' . ($end_date_select + 1);
 
-
 		$ttmp = $end_date_select - $start_date_select;
 
 		$res = & $pearDB->query($rq);
@@ -126,9 +221,12 @@ For information : contact@oreon-project.org
 			$hbase["Tnone"] = 0 + ($end_date_select - $start_date_select) - ($h["Tup"]+$h["Tdown"]+ $h["Tunreach"]);
 		  }
 		}
+				
+		if($end_date_select > $today_start)
+			getTodayLogForHost(getMyHostName($host_id), $hbase, $pearDBO, $today_start, $today_end);		
 	}
 
-	function getLogInDbForHostGroup(&$hbase, $pearDB, $pearDBO, $hostgroup_id, $start_date_select, $end_date_select, $gopt, $today_start, $today_end){
+	function getLogInDbForHostGroup(&$hbase, $pearDB, $pearDBO, $hostgroup_id, $start_date_select, $end_date_select, $today_start, $today_end){
 		# ODS Database retrieve information
 		$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
 		if (PEAR::isError($DBRESULT))
@@ -154,7 +252,7 @@ For information : contact@oreon-project.org
 		$hosts_id = getMyHostGroupHosts($hostgroup_id);
 		foreach($hosts_id as $h) {
 			$htmp = array();
-			getLogInDbForHost(&$htmp, $pearDB, $h, $start_date_select, $end_date_select);
+			getLogInDbForHost($htmp, $pearDB, $h, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
 			$hbase[$h]["Tup"] = $htmp["Tup"];
 			$hbase[$h]["TupNBAlert"] = $htmp["TupNBAlert"];
 			$hbase[$h]["Tdown"] = $htmp["Tdown"];
@@ -171,76 +269,22 @@ For information : contact@oreon-project.org
 			$hbase["average"]["TunreachableNBAlert"] += $htmp["TunreachableNBAlert"];
 			$hbase["average"]["Tnone"] += $htmp["Tnone"];
 
-
 			#
-			## ods data or manual paring log for TODAY log
+			## ods data for TODAY log
 			#
-			if(!$gopt["archive_log"])
-				echo "manual parsing";
-			else
-			{
-				$tab_tmp = array();
-				$tab_tmp["state"] = "UP";
-				$tab_tmp["time"] = $today_start;
-				$tab_tmp["Tup"] = 0;
-				$tab_tmp["TupNBAlert"] = 0;
-				$tab_tmp["Tdown"] = 0;
-				$tab_tmp["TdownNBAlert"] = 0;
-				$tab_tmp["Tunreachable"] = 0;
-				$tab_tmp["TunreachableNBAlert"] = 0;
-				$tab_tmp["Tnone"] = 0;
-
-				$rq = "select * from log where host_name like '%".getMyHostName($h)."%' and ctime <= ". 
-					$today_end . " AND ctime >= " . $today_start . " AND ( msg_type = 7 OR msg_type = 9 OR msg_type = 1)";
-				$DBres =& $pearDBO->query($rq);
-				if (PEAR::isError($DBres))
-					print "DB Error : ".$DBres->getDebugInfo()."<br>";
-				$log = array();
-				while ($DBres->fetchInto($log)){
-					if($log["status"] == "UP"){
-						$tab_tmp["Tup"] = $log["ctime"] - $tab_tmp["time"];
-						$tab_tmp["TupNBAlert"] += 1;
-					}
-					if($log["status"] == "UP"){
-						$tab_tmp["Tdown"] = $log["ctime"] - $tab_tmp["time"];
-						$tab_tmp["TdownNBAlert"] += 1;
-					}
-					if($log["status"] == "UP"){
-						$tab_tmp["Tunreachable"] = $log["ctime"] - $tab_tmp["time"];
-						$tab_tmp["TunreachableNBAlert"] += 1;
-					}
-					else
-						$tab_tmp["Tnone"] = $log["ctime"] - $tab_tmp["time"];
-					$tab_tmp["state"] = $log["status"];
-					$tab_tmp["time"] = $log["ctime"];
-				}
+			$tab_tmp = array();
+			if($end_date_select > $today_start){
+				getTodayLogForHost(getMyHostName($h), $tab_tmp, $pearDBO, $today_start, $today_end);
+				$hbase["average"]["today"]["Tup"] +=  $tab_tmp["Tup"];
+				$hbase["average"]["today"]["TupNBAlert"] += $htmp["TupNBAlert"];
+				$hbase["average"]["today"]["Tdown"] +=   $tab_tmp["Tdown"];
+				$hbase["average"]["today"]["TdownNBAlert"] +=  $tab_tmp["TdownNBAlert"];
+				$hbase["average"]["today"]["Tunreachable"] += $tab_tmp["Tunreachable"];
+				$hbase["average"]["today"]["TunreachableNBAlert"] +=  $tab_tmp["TunreachableNBAlert"];
+				$hbase["average"]["today"]["Tnone"] +=  $tab_tmp["Tnone"];	
+				$hbase[$h]["today"] = $tab_tmp;
 			}
-			$i++;
-			$hbase["average"]["today"]["Tup"] +=  $tab_tmp["Tup"];
-			$hbase["average"]["today"]["TupNBAlert"] += $htmp["TupNBAlert"];
-			$hbase["average"]["today"]["Tdown"] +=   $tab_tmp["Tdown"];
-			$hbase["average"]["today"]["TdownNBAlert"] +=  $tab_tmp["TdownNBAlert"];
-			$hbase["average"]["today"]["Tunreachable"] += $tab_tmp["Tunreachable"];
-			$hbase["average"]["today"]["TunreachableNBAlert"] +=  $tab_tmp["TunreachableNBAlert"];
-			$hbase["average"]["today"]["Tnone"] +=  $tab_tmp["Tnone"];
-			if($today_start < $start_date_select){
-				$hbase["average"]["Tup"] +=  $tab_tmp["Tup"];
-				$hbase["average"]["TupNBAlert"] += $htmp["TupNBAlert"];
-				$hbase["average"]["Tdown"] +=   $tab_tmp["Tdown"];
-				$hbase["average"]["TdownNBAlert"] +=  $tab_tmp["TdownNBAlert"];
-				$hbase["average"]["Tunreachable"] += $tab_tmp["Tunreachable"];
-				$hbase["average"]["TunreachableNBAlert"] +=  $tab_tmp["TunreachableNBAlert"];
-				$hbase["average"]["Tnone"] +=  $tab_tmp["Tnone"];
-
-				$hbase[$h]["Tup"] += $tab_tmp["Tup"];
-				$hbase[$h]["TupNBAlert"] += $tab_tmp["TupNBAlert"];
-				$hbase[$h]["Tdown"] += $tab_tmp["Tdown"];
-				$hbase[$h]["TdownNBAlert"] += $tab_tmp["TdownNBAlert"];
-				$hbase[$h]["Tunreachable"] += $tab_tmp["Tunreachable"];
-				$hbase[$h]["TunreachableNBAlert"] += $tab_tmp["TunreachableNBAlert"];
-				$hbase[$h]["Tnone"] += $tab_tmp["Tnone"];
-			}
-			$hbase[$h]["today"] = $tab_tmp;
+			$i++;			
 		}
 		$hbase["average"]["Tup"] > 0 ? $hbase["average"]["Tup"] /= $i: 0;
 		$hbase["average"]["TupNBAlert"] > 0 ? $hbase["average"]["TupNBAlert"] /= $i: 0;
@@ -249,6 +293,15 @@ For information : contact@oreon-project.org
 		$hbase["average"]["Tunreachable"] > 0 ? $hbase["average"]["Tunreachable"] /= $i: 0;
 		$hbase["average"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["TunreachableNBAlert"] /= $i: 0;
 		$hbase["average"]["Tnone"] > 0 ? $hbase["average"]["Tnone"] /= $i: 0;
+		if($end_date_select > $today_start){
+			$hbase["average"]["today"]["Tup"] > 0 ? $hbase["average"]["today"]["Tup"] /= $i: 0;
+			$hbase["average"]["today"]["TupNBAlert"] > 0 ? $hbase["average"]["today"]["TupNBAlert"] /= $i: 0;
+			$hbase["average"]["today"]["Tdown"] > 0 ? $hbase["average"]["today"]["Tdown"] /= $i: 0;
+			$hbase["average"]["today"]["TdownNBAlert"] > 0 ? $hbase["average"]["today"]["TdownNBAlert"] /= $i: 0;
+			$hbase["average"]["today"]["Tunreachable"] > 0 ? $hbase["average"]["today"]["Tunreachable"] /= $i: 0;
+			$hbase["average"]["today"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["today"]["TunreachableNBAlert"] /= $i: 0;
+			$hbase["average"]["today"]["Tnone"] > 0 ? $hbase["average"]["today"]["Tnone"] /= $i: 0;
+		}
 	}
 
 	function getLogInDbForServicesGroup(&$sbase, $pearDB, $pearDBO, $servicegroup_id, $start_date_select, $end_date_select, $gopt, $today_start, $today_end){
@@ -274,6 +327,10 @@ For information : contact@oreon-project.org
 		$sbase["average"]["today"]["Twarning"] = 0;
 		$sbase["average"]["today"]["Tunknown"] = 0;
 		$sbase["average"]["today"]["Tcritical"] = 0;
+		$sbase["average"]["today"]["OKnbEvent"] = 0;
+		$sbase["average"]["today"]["WARNINGnbEvent"] = 0;
+		$sbase["average"]["today"]["UNKNOWNnbEvent"] = 0;
+		$sbase["average"]["today"]["CRITICALnbEvent"] = 0;
 
 		$i = 0;
 		$svc_tab = getMyServiceGroupServices($servicegroup_id);
@@ -292,28 +349,47 @@ For information : contact@oreon-project.org
 			$sbase[$s]["svc_id"]= $res[1];
 			$sbase[$s]["host_id"]= $res[0];
 
-			getLogInDbForOneSVC(&$stmp, $pearDB, $res[0], $res[1], $start_date_select, $end_date_select);
-			if(isset($stmp[$res[1]])){
-				$sbase[$s]["Tok"] = $stmp[$res[1]]["Tok"];
-				$sbase[$s]["Twarning"] = $stmp[$res[1]]["Twarn"];
-				$sbase[$s]["Tunknown"] = $stmp[$res[1]]["Tunknown"];
-				$sbase[$s]["Tcritical"] = $stmp[$res[1]]["Tcri"];
-				$sbase[$s]["OKnbEvent"]= $stmp[$res[1]]["OKnbEvent"];
-				$sbase[$s]["WARNINGnbEvent"]= $stmp[$res[1]]["WARNINGnbEvent"];
-				$sbase[$s]["UNKNOWNnbEvent"]= $stmp[$res[1]]["UNKNOWNnbEvent"];
-				$sbase[$s]["CRITICALnbEvent"]= $stmp[$res[1]]["CRITICALnbEvent"];
+			getLogInDbForOneSVC($stmp, $pearDB, $res[0], $res[1], $start_date_select, $end_date_select, $pearDBO, $today_start, $today_end);
+
+			if(isset($stmp)){
+				$sbase[$s]["Tok"] = $stmp["resume"]["Tok"];
+				$sbase[$s]["Twarning"] = $stmp["resume"]["Twarn"];
+				$sbase[$s]["Tunknown"] = $stmp["resume"]["Tunknown"];
+				$sbase[$s]["Tcritical"] = $stmp["resume"]["Tcri"];
+				$sbase[$s]["OKnbEvent"]= $stmp["resume"]["OKnbEvent"];
+				$sbase[$s]["WARNINGnbEvent"]= $stmp["resume"]["WARNINGnbEvent"];
+				$sbase[$s]["UNKNOWNnbEvent"]= $stmp["resume"]["UNKNOWNnbEvent"];
+				$sbase[$s]["CRITICALnbEvent"]= $stmp["resume"]["CRITICALnbEvent"];
 	
-				$sbase["average"]["Tok"] += $stmp[$res[1]]["Tok"];
-				$sbase["average"]["Twarning"] += $stmp[$res[1]]["Twarn"];
-				$sbase["average"]["Tunknown"] += $stmp[$res[1]]["Tunknown"];
-				$sbase["average"]["Tcritical"] += $stmp[$res[1]]["Tcri"];
-				$sbase["average"]["OKnbEvent"] += $stmp[$res[1]]["OKnbEvent"];
-				$sbase["average"]["WARNINGnbEvent"] += $stmp[$res[1]]["WARNINGnbEvent"];
-				$sbase["average"]["UNKNOWNnbEvent"] += $stmp[$res[1]]["UNKNOWNnbEvent"];
-				$sbase["average"]["CRITICALnbEvent"] += $stmp[$res[1]]["CRITICALnbEvent"];
+				$sbase["average"]["Tok"] += $stmp["resume"]["Tok"];
+				$sbase["average"]["Twarning"] += $stmp["resume"]["Twarn"];
+				$sbase["average"]["Tunknown"] += $stmp["resume"]["Tunknown"];
+				$sbase["average"]["Tcritical"] += $stmp["resume"]["Tcri"];
+				$sbase["average"]["OKnbEvent"] += $stmp["resume"]["OKnbEvent"];
+				$sbase["average"]["WARNINGnbEvent"] += $stmp["resume"]["WARNINGnbEvent"];
+				$sbase["average"]["UNKNOWNnbEvent"] += $stmp["resume"]["UNKNOWNnbEvent"];
+				$sbase["average"]["CRITICALnbEvent"] += $stmp["resume"]["CRITICALnbEvent"];
+
+				$sbase["average"]["today"]["Tok"] += $stmp["today"]["Tok"];
+				$sbase["average"]["today"]["Twarning"] += $stmp["today"]["Twarn"];
+				$sbase["average"]["today"]["Tunknown"] += $stmp["today"]["Tunknown"];
+				$sbase["average"]["today"]["Tcritical"] += $stmp["today"]["Tcri"];
+				$sbase["average"]["today"]["OKnbEvent"] += $stmp["today"]["OKnbEvent"];
+				$sbase["average"]["today"]["WARNINGnbEvent"] += $stmp["today"]["WARNINGnbEvent"];
+				$sbase["average"]["today"]["UNKNOWNnbEvent"] += $stmp["today"]["UNKNOWNnbEvent"];
+				$sbase["average"]["today"]["CRITICALnbEvent"] += $stmp["today"]["CRITICALnbEvent"];
 			}
 			$i++;
 		}
+		$sbase["average"]["today"]["Tok"] > 0 ?  $sbase["average"]["today"]["Tok"] /= $i : 0;
+		$sbase["average"]["today"]["Twarning"] > 0 ? $sbase["average"]["today"]["Twarning"] /= $i : 0;
+		$sbase["average"]["today"]["Tunknown"] > 0 ? $sbase["average"]["today"]["Tunknown"] /= $i : 0;
+		$sbase["average"]["today"]["Tcritical"] > 0 ? $sbase["average"]["today"]["Tcritical"] /= $i : 0;
+		$sbase["average"]["today"]["OKnbEvent"] > 0 ? $sbase["average"]["today"]["OKnbEvent"] /= $i : 0;
+		$sbase["average"]["today"]["WARNINGnbEvent"] > 0 ? $sbase["average"]["today"]["WARNINGnbEvent"] /= $i : 0;
+		$sbase["average"]["today"]["UNKNOWNnbEvent"] > 0 ? $sbase["average"]["today"]["UNKNOWNnbEvent"] /= $i : 0;
+		$sbase["average"]["today"]["CRITICALnbEvent"] > 0 ? $sbase["average"]["today"]["CRITICALnbEvent"] /= $i : 0;
+
 		$sbase["average"]["Tok"] > 0 ?  $sbase["average"]["Tok"] /= $i : 0;
 		$sbase["average"]["Twarning"] > 0 ? $sbase["average"]["Twarning"] /= $i : 0;
 		$sbase["average"]["Tunknown"] > 0 ? $sbase["average"]["Tunknown"] /= $i : 0;
@@ -322,17 +398,22 @@ For information : contact@oreon-project.org
 		$sbase["average"]["WARNINGnbEvent"] > 0 ? $sbase["average"]["WARNINGnbEvent"] /= $i : 0;
 		$sbase["average"]["UNKNOWNnbEvent"] > 0 ? $sbase["average"]["UNKNOWNnbEvent"] /= $i : 0;
 		$sbase["average"]["CRITICALnbEvent"] > 0 ? $sbase["average"]["CRITICALnbEvent"] /= $i : 0;
-/*
-			echo "<pre>";
-			print_r($sbase);
-			echo "</pre><hr>";
-*/
-		
+
+		/*
+					echo "<pre>";
+					print_r($sbase);
+					echo "</pre><hr>";
+		*/
 	}
 
 
-	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select){	
-
+	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select, $pearDBO, $today_start, $today_end){
+		$tab_svc_bdd = array();
+		$tab_svc = getMyHostServices($host_id);
+		$tab_log = array();
+		$s = array();
+		$tmp = array();
+		
 		$rq = 'SELECT ' .
 			'service_id, ' .
 			'sum(OKTimeScheduled)' .
@@ -353,27 +434,127 @@ For information : contact@oreon-project.org
 			' AND date_start >=  ' . ($start_date_select-1) .
 			' AND date_end <= ' . ($end_date_select + 1) .
 			' GROUP BY service_id';
+		$DBres =& $pearDB->query($rq);
+		if (PEAR::isError($DBres))
+			print "DB Error : ".$DBres->getDebugInfo()."<br>";
+		while ($DBres->fetchInto($s)){
+			$tab_log[$s["service_id"]] = $s;
+		}
 
-			$res = & $pearDB->query($rq);
-			$tab_svc_bdd = array();
-			if (PEAR::isError($res)){
-			  die($res->getMessage());
-			} else {
-			  while ($s =& $res->fetchRow()){
-				$tab_svc_bdd[$s["service_id"]]["OKnbEvent"] = 0 + $s["OKnbEvent"];
-				$tab_svc_bdd[$s["service_id"]]["WARNINGnbEvent"] = 0 + $s["WARNINGnbEvent"];
-				$tab_svc_bdd[$s["service_id"]]["UNKNOWNnbEvent"] = 0 + $s["UNKNOWNnbEvent"];
-				$tab_svc_bdd[$s["service_id"]]["CRITICALnbEvent"] = 0 + $s["CRITICALnbEvent"];
-			  	
-				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
-				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
-				$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];
-				$tab_svc_bdd[$s["service_id"]]["Tnone"] = 0 + ($end_date_select - $start_date_select) - ($s["Tok"]+$s["Twarn"]+$s["Tunknown"]);
-				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];				
-			  }
-			}			
+		foreach ($tab_svc as $svc_id => $svc) {			
+			$tab_svc_bdd[$svc_id]["OKnbEvent"] = 0;
+			$tab_svc_bdd[$svc_id]["WARNINGnbEvent"] = 0;
+			$tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] = 0;
+			$tab_svc_bdd[$svc_id]["CRITICALnbEvent"] = 0;
+			$tab_svc_bdd[$svc_id]["Tok"] = 0;
+			$tab_svc_bdd[$svc_id]["Twarn"] = 0 ;
+			$tab_svc_bdd[$svc_id]["Tunknown"] = 0;
+			$tab_svc_bdd[$svc_id]["Tcri"] = 0;				
+
+			if(isset($tab_log[$svc_id]))
+			$tab_svc_bdd[$svc_id] = $tab_log[$svc_id];
+
+			if($end_date_select > $today_start){
+				getTodayLogForSVC(getMyHostName($host_id), getMyServiceName($svc_id), &$tmp, $pearDBO, $today_start, $today_end);
+				$tab_svc_bdd[$svc_id]["OKnbEvent"] += $tmp["OKnbEvent"];
+				$tab_svc_bdd[$svc_id]["WARNINGnbEvent"] += $tmp["WARNINGnbEvent"];
+				$tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] += $tmp["UNKNOWNnbEvent"];
+				$tab_svc_bdd[$svc_id]["CRITICALnbEvent"] += $tmp["CRITICALnbEvent"];
+				$tab_svc_bdd[$svc_id]["Tok"] += $tmp["Tok"];
+				$tab_svc_bdd[$svc_id]["Twarn"] += $tmp["Twarn"];
+				$tab_svc_bdd[$svc_id]["Tunknown"] += $tmp["Tunknown"];
+				$tab_svc_bdd[$svc_id]["Tcri"] += $tmp["Tcri"];
+			}
+		}
 	}
-	function getLogInDbForOneSVC(&$tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select){	
+
+	function getTodayLogForSVC($host_name, $service_description, &$hbase, $pearDBO, $today_start, $today_end){
+		$tab_tmp = array();
+		$tab_tmp["state"] = "OK";
+		$tab_tmp["time"] = $today_start;
+		$tab_tmp["Tok"] = 0;
+		$tab_tmp["OKnbEvent"] = 0;
+		$tab_tmp["Twarn"] = 0;
+		$tab_tmp["WARNINGnbEvent"] = 0;
+		$tab_tmp["Tunknown"] = 0;
+		$tab_tmp["UNKNOWNnbEvent"] = 0;
+		$tab_tmp["Tcri"] = 0;
+		$tab_tmp["CRITICALnbEvent"] = 0;
+		$tab_tmp["Tnone"] = 0;
+
+		$rq = "select * from log where host_name like '%".$host_name."%' and ctime <= ". 
+			$today_end . " AND service_description like '%".$service_description."%' and ctime >= " . $today_start . " AND ( msg_type = '6' OR msg_type = '8' OR msg_type = '2')";
+
+		$DBres =& $pearDBO->query($rq);
+		if (PEAR::isError($DBres))
+			print "DB Error : ".$DBres->getDebugInfo()."<br>";
+		$log = array();
+		while ($DBres->fetchInto($log)){
+			if($log["status"] == "OK"){
+				$tab_tmp["Tok"] += $log["ctime"] - $tab_tmp["time"];
+				$tab_tmp["OKnbEvent"] += 1;
+			}
+			if($log["status"] == "CRITICAL"){
+				$tab_tmp["Tcri"] += $log["ctime"] - $tab_tmp["time"];
+				$tab_tmp["CRITICALnbEvent"] += 1;
+			}
+			if($log["status"] == "WARNING"){
+				$tab_tmp["Twarn"] += $log["ctime"] - $tab_tmp["time"];
+				$tab_tmp["WARNINGnbEvent"] += 1;
+			}
+			if($log["status"] == "UNKNOWN"){
+				$tab_tmp["Tunknown"] += $log["ctime"] - $tab_tmp["time"];
+				$tab_tmp["UNKNOWNnbEvent"] += 1;
+			}
+			else
+				$tab_tmp["Tnone"] += $log["ctime"] - $tab_tmp["time"];
+			$tab_tmp["state"] = $log["status"];
+			$tab_tmp["time"] = $log["ctime"];
+		}
+		if($tab_tmp["state"] == "OK"){
+			$tab_tmp["Tok"] += $today_end - $tab_tmp["time"];
+		}
+		if($tab_tmp["state"] == "CRITICAL"){
+			$tab_tmp["Tcri"] += $today_end - $tab_tmp["time"];
+		}
+		if($tab_tmp["state"] == "WARNING"){
+			$tab_tmp["Twarn"] += $today_end - $tab_tmp["time"];
+		}
+		if($tab_tmp["state"] == "UNKNOWN"){
+			$tab_tmp["Tunknown"] += $today_end - $tab_tmp["time"];
+		}
+		else
+			$tab_tmp["Tnone"] += $today_end - $tab_tmp["time"];
+
+		$hbase["Tok"] = $tab_tmp["Tok"];
+		$hbase["OKnbEvent"] = $tab_tmp["OKnbEvent"];
+		$hbase["Twarn"] = $tab_tmp["Twarn"];
+		$hbase["WARNINGnbEvent"] = $tab_tmp["WARNINGnbEvent"];
+		$hbase["Tunknown"] = $tab_tmp["Tunknown"];
+		$hbase["UNKNOWNnbEvent"] = $tab_tmp["UNKNOWNnbEvent"];
+		$hbase["Tcri"] = $tab_tmp["Tcri"];
+		$hbase["CRITICALnbEvent"] = $tab_tmp["CRITICALnbEvent"];
+		$hbase["Tnone"] = $tab_tmp["Tnone"];		
+	}
+
+
+
+	function getLogInDbForOneSVC(&$tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select, $pearDBO, $today_start, $today_end){
+		$tab_svc_bdd = array();
+		$tab_svc_bdd["today"] = array();
+		$tab_svc_bdd["resume"] = array();
+		$tab_svc_bdd["resume"]["OKnbEvent"] = 0;
+		$tab_svc_bdd["resume"]["WARNINGnbEvent"] = 0;
+		$tab_svc_bdd["resume"]["UNKNOWNnbEvent"] = 0;
+		$tab_svc_bdd["resume"]["CRITICALnbEvent"] = 0;			  	
+		$tab_svc_bdd["resume"]["Tok"] = 0;
+		$tab_svc_bdd["resume"]["Twarn"] = 0;
+		$tab_svc_bdd["resume"]["Tunknown"] = 0;
+		$tab_svc_bdd["resume"]["Tcri"] = 0;
+
+		#
+		## get log before today
+		#
 		$rq = 'SELECT ' .
 			'service_id, ' .
 			'sum(OKTimeScheduled)' .
@@ -396,22 +577,50 @@ For information : contact@oreon-project.org
 			' AND date_end <= ' . ($end_date_select + 1) .
 			' GROUP BY service_id';
 
-			$res = & $pearDB->query($rq);
-			$tab_svc_bdd = array();
-			if (PEAR::isError($res)){
-			  die($res->getMessage());
-			} else { 
-			  while ($s =& $res->fetchRow()){
-				$tab_svc_bdd[$s["service_id"]]["OKnbEvent"] = 0 + $s["OKnbEvent"];
-				$tab_svc_bdd[$s["service_id"]]["WARNINGnbEvent"] = 0 + $s["WARNINGnbEvent"];
-				$tab_svc_bdd[$s["service_id"]]["UNKNOWNnbEvent"] = 0 + $s["UNKNOWNnbEvent"];
-				$tab_svc_bdd[$s["service_id"]]["CRITICALnbEvent"] = 0 + $s["CRITICALnbEvent"];			  	
-				$tab_svc_bdd[$s["service_id"]]["Tok"] = 0 + $s["Tok"];
-				$tab_svc_bdd[$s["service_id"]]["Twarn"] = 0 + $s["Twarn"];
-				$tab_svc_bdd[$s["service_id"]]["Tunknown"] = 0 + $s["Tunknown"];
-				$tab_svc_bdd[$s["service_id"]]["Tcri"] = 0 + $s["Tcri"];
-			  }
+		$res = & $pearDB->query($rq);
+		if (PEAR::isError($res)){
+		  die($res->getMessage());
+		} else { 
+		  while ($s =& $res->fetchRow()){
+			$tab_svc_bdd["resume"]["OKnbEvent"] = 0 + $s["OKnbEvent"];
+			$tab_svc_bdd["resume"]["WARNINGnbEvent"] = 0 + $s["WARNINGnbEvent"];
+			$tab_svc_bdd["resume"]["UNKNOWNnbEvent"] = 0 + $s["UNKNOWNnbEvent"];
+			$tab_svc_bdd["resume"]["CRITICALnbEvent"] = 0 + $s["CRITICALnbEvent"];			  	
+			$tab_svc_bdd["resume"]["Tok"] = 0 + $s["Tok"];
+			$tab_svc_bdd["resume"]["Twarn"] = 0 + $s["Twarn"];
+			$tab_svc_bdd["resume"]["Tunknown"] = 0 + $s["Tunknown"];
+			$tab_svc_bdd["resume"]["Tcri"] = 0 + $s["Tcri"];
 			}
+		  }
+
+		#
+		## get log for today (timeline)
+		#
+		$tab_tmp = array();
+		getTodayLogForSVC(getMyHostName($host_id), getMyServiceName($svc_id), &$hbase, $pearDBO, $today_start, $today_end);
+		$tab_svc_bdd["today"]["OKnbEvent"] = $hbase["OKnbEvent"];
+		$tab_svc_bdd["today"]["WARNINGnbEvent"] = $hbase["OKnbEvent"];
+		$tab_svc_bdd["today"]["UNKNOWNnbEvent"] = $hbase["OKnbEvent"];
+		$tab_svc_bdd["today"]["CRITICALnbEvent"] = $hbase["OKnbEvent"];			  	
+		$tab_svc_bdd["today"]["Tok"] = $hbase["Tok"];
+		$tab_svc_bdd["today"]["Twarn"] = $hbase["Twarn"];
+		$tab_svc_bdd["today"]["Tunknown"] = $hbase["Tunknown"];
+		$tab_svc_bdd["today"]["Tcri"] = $hbase["Tcri"];
+
+
+		#
+		## if today in the period
+		#
+		if($end_date_select > $today_start){
+			$tab_svc_bdd["resume"]["OKnbEvent"] += $hbase["OKnbEvent"];
+			$tab_svc_bdd["resume"]["WARNINGnbEvent"] += $hbase["WARNINGnbEvent"];
+			$tab_svc_bdd["resume"]["UNKNOWNnbEvent"] += $hbase["UNKNOWNnbEvent"];
+			$tab_svc_bdd["resume"]["CRITICALnbEvent"] += $hbase["CRITICALnbEvent"];			  	
+			$tab_svc_bdd["resume"]["Tok"] += $hbase["Tok"];
+			$tab_svc_bdd["resume"]["Twarn"] += $hbase["Twarn"];
+			$tab_svc_bdd["resume"]["Tunknown"] += $hbase["Tunknown"];
+			$tab_svc_bdd["resume"]["Tcri"] += $hbase["Tcri"];
+		}		
 	}
 
 	#

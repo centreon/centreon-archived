@@ -90,14 +90,14 @@ For information : contact@oreon-project.org
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForHost($hbase, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForHost($hbase, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
 		$Tup = $hbase["Tup"];
 		$Tdown = $hbase["Tdown"];
 		$Tunreach = $hbase["Tunreach"];
 		$Tnone = $hbase["Tnone"];
 		
 		$tab_svc_bdd = array();
-		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
 		$serviceList = getMyHostServices($host_id);
 	}
 
@@ -149,6 +149,8 @@ For information : contact@oreon-project.org
 	$sub =& $formPeriod->addElement('submit', 'submit', $lang["m_view"]);
 	$res =& $formPeriod->addElement('reset', 'reset', $lang["reset"]);
 
+
+
 	$today_up = 0;
 	$today_down = 0;
 	$today_unreachable = 0;
@@ -156,6 +158,15 @@ For information : contact@oreon-project.org
 	$today_UPnbEvent = 0;
 	$today_UNREACHABLEnbEvent = 0;
 	$today_DOWNnbEvent = 0;
+	$tab_today = array();
+	getTodayLogForHost($mhost, $tab_today, $pearDBO, $today_start, $today_end);
+	$today_up += $tab_today["Tup"];
+	$today_down += $tab_today["Tdown"];
+	$today_unreachable += $tab_today["Tunreachable"];
+	$today_pending += $tab_today["Tnone"];
+	$today_UPnbEvent += $tab_today["TupNBAlert"];
+	$today_UNREACHABLEnbEvent += $tab_today["TunreachableNBAlert"];
+	$today_DOWNnbEvent += $tab_today["TdownNBAlert"];
 
 
 	if($mhost){

@@ -178,6 +178,7 @@ For information : contact@oreon-project.org
 		$today_WARNINGnbEvent = 0 + $sbase["average"]["today"]["Twarning"];
 		$today_CRITICALnbEvent = 0 + $sbase["average"]["today"]["Tcritical"];
 
+
 		$tab_log = array();
 		$day = date("d",time());
 		$year = date("Y",time());
@@ -284,11 +285,20 @@ For information : contact@oreon-project.org
 				$tab_tmp["UNKNOWNnbEvent"] = isset($tab["UNKNOWNnbEvent"]) ? $tab["UNKNOWNnbEvent"] : 0;
 				$tab_tmp["CRITICALnbEvent"] = isset($tab["TcriticalNBAlert"]) ? $tab["TcriticalNBAlert"] : 0;
 
-				$tab_tmp["PktimeOK"] = $tab["Tok"] ? round($tab["Tok"] / ($tt - $tmp_none) *100,2): 0;
-				$tab_tmp["PktimeWARNING"] = $tab["Twarning"] ? round( $tab["Twarning"]/ ($tt - $tmp_none) *100,2):0;
-				$tab_tmp["PktimeUNKNOWN"] =  $tab["Tunknown"] ? round( $tab["Tunknown"]/ ($tt - $tmp_none) *100,2):0;
-				$tab_tmp["PktimeCRITICAL"] =  $tab["Tcritical"] ? round( $tab["Tcritical"]/ ($tt - $tmp_none) *100,2):0;
-
+				$kt = $tt - $tmp_none;
+				if($kt > 0){
+					$tab_tmp["PktimeOK"] = $tab["Tok"] ? round($tab["Tok"] / ($kt) *100,2): 0;
+					$tab_tmp["PktimeWARNING"] = $tab["Twarning"] ? round( $tab["Twarning"]/ ($kt) *100,2):0;
+					$tab_tmp["PktimeUNKNOWN"] =  $tab["Tunknown"] ? round( $tab["Tunknown"]/ ($kt) *100,2):0;
+					$tab_tmp["PktimeCRITICAL"] =  $tab["Tcritical"] ? round( $tab["Tcritical"]/ ($kt) *100,2):0;
+				}
+				else{
+					$tab_tmp["PktimeOK"] = 0;
+					$tab_tmp["PktimeWARNING"] = 0;
+					$tab_tmp["PktimeUNKNOWN"] = 0;
+					$tab_tmp["PktimeCRITICAL"] = 0;					
+				}
+				
 				$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 1, '.', '');
 				$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 1, '.', '');
 				$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
@@ -451,14 +461,17 @@ For information : contact@oreon-project.org
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
+
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
-	$today_pending = $tt - ($today_warning + $today_ok + $today_unknown);
+	$today_pending = $tt - ($today_warning + $today_ok + $today_critical + $today_unknown);
 	$today_pending = round(($today_pending/$tt *100),2);
 	$today_ok = ($today_ok <= 0) ? 0 : round($today_ok / $tt *100,2);
+	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical / $tt *100,2);
 	$today_warning = ($today_warning <= 0) ? 0 : round($today_warning / $tt *100,2);
 	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown / $tt *100,2);
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
+
 
 	if($mservicegroup)	{
 		$color = substr($oreon->optGen["color_ok"],1) .':'.

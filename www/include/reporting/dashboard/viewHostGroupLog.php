@@ -96,7 +96,7 @@ For information : contact@oreon-project.org
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForHostGroup($hbase, $pearDB, $pearDBO, $hostgroup_id, $start_date_select, $end_date_select, $gopt, $today_start, $today_end);
+		getLogInDbForHostGroup($hbase, $pearDB, $pearDBO, $hostgroup_id, $start_date_select, $end_date_select, $today_start, $today_end);
 	}
 
 
@@ -175,9 +175,9 @@ For information : contact@oreon-project.org
 		$today_down = 0 + $hbase["average"]["today"]["Tdown"];
 		$today_unreachable = 0 + $hbase["average"]["today"]["Tunreachable"];
 	
-		$today_UPnbEvent = 0 + $hbase["average"]["today"]["Tup"];
-		$today_UNREACHABLEnbEvent = 0 + $hbase["average"]["today"]["Tunreachable"];
-		$today_DOWNnbEvent = 0 + $hbase["average"]["today"]["Tdown"];
+		$today_UPnbEvent = 0 + $hbase["average"]["today"]["TupNBAlert"];
+		$today_UNREACHABLEnbEvent = 0 + $hbase["average"]["today"]["TunreachableNBAlert"];
+		$today_DOWNnbEvent = 0 + $hbase["average"]["today"]["TdownNBAlert"];
 
 		$tab_log = array();
 		$day = date("d",time());

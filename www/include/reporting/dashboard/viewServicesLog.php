@@ -95,14 +95,17 @@ For information : contact@oreon-project.org
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForHost($hbase, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForHost($hbase, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
+
 		$Tup = $hbase["Tup"];
 		$Tdown = $hbase["Tnone"];
 		$Tunreach = $hbase["Tunreach"];
 		$Tnone = $hbase["Tnone"];
 		
+		$svc_id = $mservice;
 		$tab_svc_bdd = array();
-		getLogInDbForSVC( $tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select);
+		getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select, $pearDBO, $today_start, $today_end);			
+		$tab_svc["svcName"] = getMyServiceName($mservice);
 	}
 
 	#
@@ -114,7 +117,6 @@ For information : contact@oreon-project.org
 	$serviceList = getMyHostServices(getMyHostID($mhost));
 	$selService =& $formService->addElement('select', 'service', $lang["m_svc"], $serviceList, array("onChange" =>"this.form.submit();"));
 	$formService->setDefaults(array('service' => $mservice));
-
 
 	#
 	## fourchette de temps
@@ -131,7 +133,6 @@ For information : contact@oreon-project.org
 	$periodList["thisyear"] = $lang["thisyear"];
 	$periodList["lastyear"] = $lang["lastyear"];
 	$periodList["customized"] = $lang["m_customizedPeriod"];
-
 	$formPeriod = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
 	$selHost = $formPeriod->addElement('select', 'period', $lang["m_predefinedPeriod"], $periodList);
 
@@ -153,7 +154,6 @@ For information : contact@oreon-project.org
 	}
 	
 	if($mhost){
-		## if today is include in the time period
 		$tab_log = array();
 		$tab_svc = array();
 		$day = date("d",time());
@@ -161,54 +161,33 @@ For information : contact@oreon-project.org
 		$month = date("m",time());
 		$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
 
-
 	$tab_hosts = array();	
 	$day_current_start = 0;
 	$day_current_end = time() + 1;
-	
 	$tab_svc = array();
-
-	if (isset($tab_services[getMyServiceName($mservice)][$mhost])){
-		$tab_svc = $tab_services[getMyServiceName($mservice)][$mhost];
-		if(!strncmp($tab_svc["current_state"], "OK", 2))
-			$tab_svc["timeOK"] += (time()-$tab_svc["current_time"]);
-		elseif(!strncmp($tab_svc["current_state"], "WARNING", 7))
-			$tab_svc["timeWARNING"] += (time()-$tab_svc["current_time"]);
-		elseif(!strncmp($tab_svc["current_state"], "UNKNOWN", 7))
-			$tab_svc["timeUNKNOWN"] += (time()-$tab_svc["current_time"]);
-		elseif(!strncmp($tab_svc["current_state"], "CRITICAL", 8))
-			$tab_svc["timeCRITICAL"] += (time()-$tab_svc["current_time"]);
-		else
-			$tab_svc["timeNONE"] += (time()-$tab_svc["current_time"]);
-
-		$today_ok = $tab_svc["timeOK"];
-		$today_warning = $tab_svc["timeWARNING"];
-		$today_unknown = $tab_svc["timeUNKNOWN"];
-		$today_uncritical = $tab_svc["timeCRITICAL"];
-	}
-
-	$svc_id = $mservice;
-	$tab_svc_bdd = array();
-	getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select);			
-	$tab_svc["svcName"] = getMyServiceName($mservice);
+	$today_ok = $tab_svc_bdd["today"]["Tok"];
+	$today_warning = $tab_svc_bdd["today"]["Twarn"];
+	$today_unknown = $tab_svc_bdd["today"]["Tunknown"];
+	$today_uncritical = $tab_svc_bdd["today"]["Tcri"];
+	#
 	$tt = $end_date_select - $start_date_select;
-	$tab_svc["timeOK"] = (isset($tab_svc_bdd[$svc_id]["Tok"])) ? $tab_svc_bdd[$svc_id]["Tok"] : 0;
-	$tab_svc["timeWARNING"] = (isset($tab_svc_bdd[$svc_id]["Twarn"])) ? $tab_svc_bdd[$svc_id]["Twarn"] : 0;
-	$tab_svc["timeUNKNOWN"] = (isset($tab_svc_bdd[$svc_id]["Tunknown"])) ? $tab_svc_bdd[$svc_id]["Tunknown"] : 0;
-	$tab_svc["timeCRITICAL"] = (isset($tab_svc_bdd[$svc_id]["Tcri"])) ? $tab_svc_bdd[$svc_id]["Tcri"] : 0;
+	$tab_svc["timeOK"] = (isset($tab_svc_bdd["resume"]["Tok"])) ? $tab_svc_bdd["resume"]["Tok"] : 0;
+	$tab_svc["timeWARNING"] = (isset($tab_svc_bdd["resume"]["Twarn"])) ? $tab_svc_bdd["resume"]["Twarn"] : 0;
+	$tab_svc["timeUNKNOWN"] = (isset($tab_svc_bdd["resume"]["Tunknown"])) ? $tab_svc_bdd["resume"]["Tunknown"] : 0;
+	$tab_svc["timeCRITICAL"] = (isset($tab_svc_bdd["resume"]["Tcri"])) ? $tab_svc_bdd["resume"]["Tcri"] : 0;
 	$tab_svc["timeNONE"] = $tt - ($tab_svc["timeOK"] + $tab_svc["timeWARNING"] + $tab_svc["timeUNKNOWN"] + $tab_svc["timeCRITICAL"]);
-
-	$tab_svc["OKnbEvent"] = isset($tab_svc_bdd[$svc_id]["OKnbEvent"]) ? $tab_svc_bdd[$svc_id]["OKnbEvent"] : 0;
-	$tab_svc["WARNINGnbEvent"] = isset($tab_svc_bdd[$svc_id]["WARNINGnbEvent"]) ? $tab_svc_bdd[$svc_id]["WARNINGnbEvent"] : 0;
-	$tab_svc["UNKNOWNnbEvent"] = isset($tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"]) ? $tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] : 0;
-	$tab_svc["CRITICALnbEvent"] = isset($tab_svc_bdd[$svc_id]["CRITICALnbEvent"]) ? $tab_svc_bdd[$svc_id]["CRITICALnbEvent"] : 0;
-
+	#
+	$tab_svc["OKnbEvent"] = isset($tab_svc_bdd["resume"]["OKnbEvent"]) ? $tab_svc_bdd["resume"]["OKnbEvent"] : 0;
+	$tab_svc["WARNINGnbEvent"] = isset($tab_svc_bdd["resume"]["WARNINGnbEvent"]) ? $tab_svc_bdd["resume"]["WARNINGnbEvent"] : 0;
+	$tab_svc["UNKNOWNnbEvent"] = isset($tab_svc_bdd["resume"]["UNKNOWNnbEvent"]) ? $tab_svc_bdd["resume"]["UNKNOWNnbEvent"] : 0;
+	$tab_svc["CRITICALnbEvent"] = isset($tab_svc_bdd["resume"]["CRITICALnbEvent"]) ? $tab_svc_bdd["resume"]["CRITICALnbEvent"] : 0;
+	#
 	$tab_svc["PtimeOK"] = round($tab_svc["timeOK"] / $tt *100,3);
 	$tab_svc["PtimeWARNING"] = round( $tab_svc["timeWARNING"]/ $tt *100,3);
 	$tab_svc["PtimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ $tt *100,3);
 	$tab_svc["PtimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ $tt *100,3);
 	$tab_svc["PtimeNONE"] = round(($tab_svc["timeNONE"])  / $tt *100,3);
-
+	#
 	if($tt != $tab_svc["timeNONE"]){
 		$tab_svc["PktimeOK"] = round($tab_svc["timeOK"] / ($tt-$tab_svc["timeNONE"]) *100,3);
 		$tab_svc["PktimeWARNING"] = round( $tab_svc["timeWARNING"]/ ($tt-$tab_svc["timeNONE"]) *100,3);
@@ -227,7 +206,7 @@ For information : contact@oreon-project.org
 	$tab_svc["PtimeCRITICAL"] = number_format($tab_svc["PtimeCRITICAL"], 1, '.', '');
 	$tab_svc["PtimeNONE"] = number_format($tab_svc["PtimeNONE"], 1, '.', '');	
 	$tab_svc["PtimeNONE"] = ($tab_svc["PtimeNONE"] < 0.1) ? "0.0" : $tab_svc["PtimeNONE"];
-
+	#
 	$tab_svc["PktimeOK"] = number_format($tab_svc["PktimeOK"], 1, '.', '');
 	$tab_svc["PktimeWARNING"] = number_format($tab_svc["PktimeWARNING"], 1, '.', '');
 	$tab_svc["PktimeUNKNOWN"] = number_format($tab_svc["PktimeUNKNOWN"], 1, '.', '');
