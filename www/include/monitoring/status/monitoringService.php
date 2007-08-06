@@ -45,9 +45,10 @@ For information : contact@oreon-project.org
 	if (isset($ndo) && !$ndo){
 		$path = "./include/monitoring/status/status-log/";
 		include("./include/monitoring/status/resume.php");
-	} else
+	} else {
 		$path = "./include/monitoring/status/status-ndo/";
-		
+	}
+	
 	$pathRoot = "./include/monitoring/";
 	$pathExternal = "./include/monitoring/external_cmd/";
 	$pathDetails = "./include/monitoring/objectDetails/";
