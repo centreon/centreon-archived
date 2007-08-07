@@ -23,7 +23,12 @@ For information : contact@oreon-project.org
 	include_once("./include/monitoring/common-Func.php");			
 	include_once("./include/monitoring/external_cmd/cmd.php");
 	
-	$path = "./include/monitoring/status/";
+	$ndo = 0;
+	
+	if ($ndo)	
+		$path = "./include/monitoring/status/status-ndo/";
+	else
+		$path = "./include/monitoring/status/status-log/";
 	$pathDetails = "./include/monitoring/objectDetails/";
 	
 	include("./include/monitoring/status/resume.php"); 	
