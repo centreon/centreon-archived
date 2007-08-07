@@ -173,10 +173,10 @@
 						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='' onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_ping} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_ping} {$h.host_name}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='' onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_tracert} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_tracert} {$h.host_name}</a></td>
 					</tr>
 					{if $h_ext_action_url}
 					<tr class='list_one'>
