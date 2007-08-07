@@ -94,30 +94,30 @@ function Decode(tChaine) {
 	 variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length).substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
 	 }
 	 return variable
- } 
+ }
 
 
-//var xhrM = null; 
+//var xhrM = null;
 var _addrSearchM = "./include/monitoring/engine/MakeXML.php" //l'adresse   interroger pour trouver les suggestions
 var _timeoutID =	0;
 var _on = 1;
 
 function getXhrM(){
 	if(window.XMLHttpRequest) // Firefox et autres
-	   var xhrM = new XMLHttpRequest(); 
-	else if(window.ActiveXObject){ // Internet Explorer 
+	   var xhrM = new XMLHttpRequest();
+	else if(window.ActiveXObject){ // Internet Explorer
 	   try {
                 var xhrM = new ActiveXObject("Msxml2.XMLHTTP");
             } catch (e) {
                 var xhrM = new ActiveXObject("Microsoft.XMLHTTP");
             }
 	}
-	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur 
+	else { // XMLHttpRequest non supportÃ¯Â¿Âœ par le navigateur
 	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 	   var xhrM = false;
 	}
 	return xhrM;
-}	 
+}
 
 function take_value(_type)
 {
@@ -190,6 +190,8 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	var _event_handler_enabled = line.getElementsByTagName("event_handler_enabled")[0].firstChild.nodeValue;
 	var _host_status = line.getElementsByTagName("host_status")[0].firstChild.nodeValue;
 	var _host_has_been_acknowledged = line.getElementsByTagName("host_has_been_acknowledged")[0].firstChild.nodeValue;
+    var _host_active_checks_enabled = line.getElementsByTagName("host_active_checks_enabled")[0].firstChild.nodeValue;
+    var _host_passive_checks_enabled = line.getElementsByTagName("host_passive_checks_enabled")[0].firstChild.nodeValue;
 
 	if(_form.search && _form.search.value)
 		_search=_form.search.value;
@@ -210,17 +212,17 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	var _num=_form.num.value;
 	else
 	var _num="";
-	
+
 	if(_form.limit && _form.limit.value)
 	var _limit=_form.limit.value;
 	else
 	var _limit="";
-	
+
 	if(_form.order && _form.order.value)
 	var _order=_form.order.value;
 	else
 	var _order="";
-	
+
 	if(_form.sort_types && _form.sort_types.value)
 	var _sort_types=_form.sort_types.value;
 	else
@@ -228,7 +230,7 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 
 	var _ligne = document.createElement('tr');
 	_ligne.id = 'trStatus'+ i;
-	var ClassName = "list_one";	
+	var ClassName = "list_one";
 	if(i%2)
 	{
 		ClassName = "list_two";
@@ -242,7 +244,7 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
  */
 	var _case_checkbox = document.createElement('td');
 	_case_checkbox.className = 'ListColPicker';
-	var cbx = document.createElement("input"); 
+	var cbx = document.createElement("input");
   	cbx.type = "checkbox";
   	cbx.id = "myCBX";
   	cbx.value = "1";
@@ -345,19 +347,19 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 
 	if(_status == "CRITICAL"){
 		ClassName = "list_down";
-	}	
+	}
 
 	if(_problem_has_been_acknowledged == 1)
 	{
 	ClassName = "list_four";
 	_case_infos.appendChild(_img1);
-	}	
+	}
 	if(_is_flapping == 1)
 	_case_infos.appendChild(_img3);
 
 	if(_accept_passive_check == 1)
 	_case_infos.appendChild(_img5);
-	
+
 	if(_accept_active_check == 1)
 	_case_infos.appendChild(_img4);
 
@@ -375,7 +377,7 @@ var _p = 20201;
  * actions
  */
 
-	var _linkaction_graph = document.createElement("a"); 
+	var _linkaction_graph = document.createElement("a");
   	_linkaction_graph.href = './oreon.php?p=40207&host_name=' + _host_name + '&service_description=' + _service_description + '&submitC=Grapher';
 	_linkaction_graph.appendChild(_img6);
 
@@ -384,7 +386,7 @@ var _p = 20201;
 
 
 /*
- * host name 
+ * host name
  */
 
 	var _text_host_name = document.createTextNode(_host_name);
@@ -400,7 +402,7 @@ var _p = 20201;
 	if(_previous_host_name != _host_name)
 	{
 		var _text_host_name = document.createTextNode(_host_name+' ');
-		var _linkhost_name = document.createElement("a"); 
+		var _linkhost_name = document.createElement("a");
   		_linkhost_name.href = './oreon.php?p=201&o=hd&host_name=' + _host_name;
 		_linkhost_name.appendChild(_text_host_name);
 		_case_host_name.appendChild(_linkhost_name);
@@ -409,6 +411,14 @@ var _p = 20201;
 		{
 			_case_host_name.appendChild(_img8);
 		}
+        if(_host_active_checks_enabled == 0 && _host_passive_checks_enabled == 0)
+        {
+                _case_host_name.appendChild(_img4);
+        }
+        if(_host_active_checks_enabled == 0 && _host_passive_checks_enabled == 1)
+        {
+                _case_host_name.appendChild(_img5);
+        }
 	}
 	else
 	{
@@ -417,11 +427,11 @@ var _p = 20201;
 
 
 /*
- * service description 
+ * service description
  */
 	var _text_service_description = document.createTextNode(_service_description);
 	var _text_service_description2 = document.createTextNode(_service_description);
-	var _linkservice = document.createElement("a"); 
+	var _linkservice = document.createElement("a");
   	_linkservice.href = './oreon.php?p=202&o=svcd&host_name=' + _host_name + '&service_description=' +_service_description;
 	_linkservice.appendChild(_text_service_description);
 
@@ -449,7 +459,7 @@ var _p = 20201;
 	_divstatus.appendChild(_text_status);
 
 	_case_status.appendChild(_divstatus);
-	
+
 	_case_status.id = 'tdStatus' + i;
 	_case_lastcheck.appendChild(_text_last_check);
 	_case_lastcheck.id = 'last_check' + i;
@@ -459,8 +469,8 @@ var _p = 20201;
 	_case_current_attempt.id = '_current_attempt' + i;
 	_case_plugin_output.appendChild(_text_plugin_output);
 	_case_plugin_output.id = 'plugin_output' + i;
-	 
-	_ligne.className = ClassName; 
+
+	_ligne.className = ClassName;
 	_ligne.appendChild(_case_checkbox);
 	_ligne.appendChild(_case_host_name);
 	_ligne.appendChild(_case_service_description);
@@ -471,9 +481,9 @@ var _p = 20201;
 	_ligne.appendChild(_case_time);
 	_ligne.appendChild(_case_current_attempt);
 	_ligne.appendChild(_case_plugin_output);
-	
-	_tableAjax.appendChild(_ligne);		
-	
+
+	_tableAjax.appendChild(_ligne);
+
 }
 
 function viewDebugInfo(_str){
@@ -520,7 +530,7 @@ function goM(_time_reload,_sid,_o){
 	{
 	_host_name = 'none';
 	_host_name = getVar('host_name');
-	_formBasic=document.getElementById('AjaxBankBasic');		       
+	_formBasic=document.getElementById('AjaxBankBasic');
 	_version=_formBasic.version.value;
 	_fileStatus=_formBasic.fileStatus.value;
 	_fileOreonConf=_formBasic.fileOreonConf.value;
@@ -555,14 +565,14 @@ function goM(_time_reload,_sid,_o){
 	var _tableAjax = null;
 
     var childrenNumber = _tableforajax.childNodes.length;
-    for (var i = 0; i < childrenNumber; i++) 
+    for (var i = 0; i < childrenNumber; i++)
     {
 		var element = _tableforajax.childNodes[i];
       	var elementName = element.nodeName.toLowerCase();
 		if (elementName == 'table')
 		{
 		    var childrenNumbertable = element.childNodes.length;
-		    for (var j = 0; j < childrenNumbertable; j++) 
+		    for (var j = 0; j < childrenNumbertable; j++)
 		    {
 				var elementtable = element.childNodes[j];
 		  		var elementNametable = elementtable.nodeName.toLowerCase();
@@ -582,8 +592,8 @@ function goM(_time_reload,_sid,_o){
 			tableCheckbox[table[i].name] = table[i].checked;
 		}
 }
-	
-	
+
+
 
 	var xhrM = getXhrM();
 	xhrM.open("POST",_addrSearchM,true);
@@ -593,7 +603,7 @@ function goM(_time_reload,_sid,_o){
 //	document.getElementById('header').innerHTML = "-->"+_var;
 	// On defini ce qu'on va faire quand on aura la reponse
 	xhrM.onreadystatechange = function()
-	{	
+	{
 		// On ne fait quelque chose que si on a tout recu et que le serveur est ok
 		if(xhrM && xhrM.readyState && xhrM.readyState == 4 && xhrM.status == 200 && xhrM.responseXML)
 		{
@@ -612,7 +622,7 @@ function goM(_time_reload,_sid,_o){
 			if(lines.length > 0){
 				DelAllLine(0);
 			}
-			for (var i = 0 ; i < lines.length ; i++) 
+			for (var i = 0 ; i < lines.length ; i++)
 			{
 				var line = lines[i];
 				order = line.getElementsByTagName("order")[0].firstChild.nodeValue;
@@ -622,7 +632,7 @@ function goM(_time_reload,_sid,_o){
 					addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form,_formBasic, _previous_host_name, _o);
 					_previous_host_name = line.getElementsByTagName("host_name")[0].firstChild.nodeValue;
 				}
-			}//fin du for pour les infos principales
+			}//fin du for pour les infos principale
 		}
 			viewDebugInfo('readyState=' + xhrM.readyState + ' -- status=' + xhrM.status);
 	}
