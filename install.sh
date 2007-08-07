@@ -26,7 +26,7 @@ cat <<EOF
 #                    OREON Project (www.oreon-project.org)                    #
 #                            Thanks for using OREON                           #
 #                                                                             #
-#                                    v 1.4.1-RC2                              #
+#                                    v 1.4.1                                  #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
@@ -212,6 +212,19 @@ fi
 		NAGIOS_BIN=${NAGIOS_BIN%/}
 		echo ""
 	fi
+
+	
+	if [ -z $NAGIOS_IMG ];then
+          #nagios plugins directory for oreon
+	  NAGIOS_IMG="$INSTALL_DIR_NAGIOS/share/image"
+	  echo "Where are your nagios image  directory ?"
+	  echo -n "default to [$NAGIOS_IMG]:"
+	  read temp
+	  test_answer NAGIOS_IMG $temp
+	  NAGIOS_IMG=${NAGIOS_IMG%/}
+	  echo ""
+	fi
+
 
 	if [ -z $INSTALL_DIR_OREON ];then
 		#setup directory for oreon
@@ -596,6 +609,7 @@ function oreon_post_install()
      echo "NAGIOS_ETC=$NAGIOS_ETC" >> $OREON_CONF
      echo "NAGIOS_PLUGIN=$NAGIOS_PLUGIN" >> $OREON_CONF
      echo "NAGIOS_BIN=$NAGIOS_BIN" >> $OREON_CONF
+     echo "NAGIOS_IMG=$NAGIOS_IMG" >> $OREON_CONF
      echo "INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS" >> $OREON_CONF
      echo "RRD_PERL=$RRD_PERL" >> $OREON_CONF
      echo "SUDO_FILE=$SUDO_FILE" >> $OREON_CONF
