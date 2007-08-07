@@ -27,7 +27,13 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$path = "./include/monitoring/status/";
+	$ndo = 0;
+	
+	if ($ndo)
+		$path = "./include/monitoring/status/status-ndo/";
+	else
+		$path = "./include/monitoring/status/status-log/";
+		
 	$pathRoot = "./include/monitoring/";
 	$pathDetails = "./include/monitoring/objectDetails/";
 	$pathTools = "./include/tools/";
