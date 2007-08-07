@@ -13,7 +13,8 @@
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order=sort_asc'>{ $mon_host }</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
-	 	<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=current_state&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "current_state"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=current_state&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
+	 	<td class="ListColHeaderCenter">Infos</td>
+		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=current_state&order=sort_asc'>{$lang.m_mon_status}</a>&nbsp;{if $sort_type == "current_state"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=current_state&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 		<td class="ListColHeaderCenter">{ $lang.m_mon_address_ip }&nbsp;</td>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_check&order=sort_asc'>{ $mon_last_check }</a>&nbsp;{if $sort_type == "last_check"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_check&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order=sort_asc'>{ $mon_duration }</a&nbsp;{if $sort_type == "last_state_change"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=last_state_change&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
@@ -22,8 +23,8 @@
 	{assign var="c" value="0"}
 	{ foreach item=h from=$host_status }
 		<tr class="{$h.class}" id="trStatus{$c}">
-			<td class="ListColLeft">
-				<a href='oreon.php?p=201&o=hd&host_name={$h.name}'>{ $h.name }</a>
+			<td class="ListColLeft"><a href='oreon.php?p=201&o=hd&host_name={$h.name}'>{ $h.name }</a></td>
+			<td class="ListColCenter">
 				{if $h.has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
 				{if $h.active_checks_enabled == 0 && $h.passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
 				{if $h.active_checks_enabled == 0 && $h.passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}			
