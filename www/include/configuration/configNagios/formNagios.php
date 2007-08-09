@@ -523,6 +523,13 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);	
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);		
+		$tpl->assign('sort1', "Files");		
+		$tpl->assign('sort2', "Checks Options");		
+		$tpl->assign('sort3', "Logs Options");
+		$tpl->assign('sort4', "Data");		
+		$tpl->assign('sort5', "Tunning");		
+		$tpl->assign('sort6', "Admin");
+		$tpl->assign('lang', $lang);
 		$tpl->display("formNagios.ihtml");
 	}
 ?>
