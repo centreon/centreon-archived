@@ -19,23 +19,20 @@ For information : contact@oreon-project.org
 	$debug = 0;
 	$flag_reset = 0;
 
-	## pearDB init
-	require_once 'DB.php';	
 
-	$oreonPath = "";
-	if (isset($_GET["fileOreonConf"]))
-		$oreonPath = $_GET["fileOreonConf"];
-	if (isset($_POST["fileOreonConf"]))
-		$oreonPath = $_POST["fileOreonConf"];
-		
-	if($oreonPath == ""){
+	$oreonPath = '@INSTALL_DIR_OREON@';		
+	if($oreonPath == '@INSTALL_DIR_OREON@'){
 		$buffer = null;
 		$buffer .= '<reponse>';	
 		$buffer .= 'none';
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
 		echo $buffer;
+		exit(0);
 	}
+
+	## pearDB init
+	require_once 'DB.php';	
 
 	include_once($oreonPath . "www/oreon.conf.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
@@ -46,43 +43,31 @@ For information : contact@oreon-project.org
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
 			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['db'],);
-	
-	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
-	
+			     'database' => $conf_oreon['db'],);	
+	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 	
 	/* Connect to ods DB */	
-	
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
 			     'hostspec' => $conf_oreon['host'],
 			     'database' => $conf_oreon['ods'],);
-	
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
-	
 	$pearDBO =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDBO)) die("Connecting problems with oreon database : " . $pearDBO->getMessage());
 	$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 
-	# Session...
-	
+	# Session...	
 	$debug_session = 'KO';
 
 	# sessionID check and refresh
-
 	$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
 	$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
-	
-	
 	$session_expire = isset($_POST["session_expire"]) ? $_POST["session_expire"] : 30;
 	$session_expire = isset($_GET["session_expire"]) ? $_GET["session_expire"] : $session_expire;
-
-	//$session_expire = 5;
-
 	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
 		global $pearDB;
 		if(isset($statistic_service) && !is_null($statistic_service)){
@@ -129,25 +114,20 @@ For information : contact@oreon-project.org
 		global $pearDB, $flag;
 		$_POST["sid"] = $sid;
 		$_GET["sid"] = $sid;
-		
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
 		$search_type_host = 0;
-	
 		include("../load_status_log.php");
-
 		## calcul stat for resume		
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
-		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
-		
+		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);		
 		if (isset($host_status))
 			foreach ($host_status as $hs)
 				$statistic_host[$hs["current_state"]]++;
 		if (isset($service_status))
 			foreach ($service_status as $s)
 				$statistic_service[$s["current_state"]]++;
-
 		restore_session($statistic_service, $statistic_host);
 		$MyLog = date('l dS \of F Y h:i:s A'). "\n";
 		$buffer = null;
@@ -172,10 +152,8 @@ For information : contact@oreon-project.org
 		echo $buffer;
 	}
 	
-
 	if (!isset($session["last_reload"]) || !$session["last_reload"])
 		$session["last_reload"] = time();
-
 	if(!$flag_reset){
 		$buffer = null;
 		$buffer  = '<?xml version="1.0"?>';
