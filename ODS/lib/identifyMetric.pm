@@ -84,7 +84,7 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				} else {
-					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}) if ($_[6] ne 2);
+					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}) if (defined($_[6]) && $_[6] ne 2);
 					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 					$generalcounter++;
 				}
