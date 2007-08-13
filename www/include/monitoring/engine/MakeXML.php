@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 
-	$oreonPath = '@$INSTALL_DIR_OREON@';		
+	$oreonPath = '@INSTALL_DIR_OREON@';
 	if($oreonPath == '@INSTALL_DIR_OREON@'){
 		$buffer = null;
 		$buffer .= '<reponse>';	
