@@ -103,6 +103,7 @@ For information : contact@oreon-project.org
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
 	$tpl->assign("lang", $lang);
+	$tpl->assign("o", $o);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host_problem.ihtml");	
 ?>	
