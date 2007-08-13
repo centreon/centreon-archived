@@ -107,7 +107,7 @@ function reloadStatusCounter(_relaod_time,_sid){
 				document.getElementById('service_ok').innerHTML = '';//_statistic_service_ok;
 				var _text_service_ok = document.createTextNode(_statistic_service_ok);
 				var _linkservice_ok = document.createElement("a");
-			  	_linkservice_ok.href = 'oreon.php?p=20201&o=svc';
+			  	_linkservice_ok.href = 'oreon.php?p=20201&o=svc_ok';
 				_linkservice_ok.appendChild(_text_service_ok);
 				document.getElementById('service_ok').appendChild(_linkservice_ok);
 
