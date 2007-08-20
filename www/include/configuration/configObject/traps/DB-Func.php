@@ -16,13 +16,13 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	function testTrapExistence ($name = NULL)	{
+	function testTrapExistence ($oid = NULL)	{
 		global $pearDB;
 		global $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('traps_id');
-		$DBRESULT =& $pearDB->query("SELECT traps_name, traps_id FROM traps WHERE traps_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".htmlentities($oid, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$trap =& $DBRESULT->fetchRow();
@@ -56,10 +56,10 @@ For information : contact@oreon-project.org
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "traps_name" ? ($traps_name = $value2 = $value2."_".$i) : null;
+					$key2 == "traps_oid" ? ($traps_oid = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				if (testTrapExistence($traps_name))	{
+				if (testTrapExistence($traps_oid))	{
 					$val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))

@@ -29,6 +29,7 @@ $lang['ErrCct'] = "Compulsory Contact";
 $lang['ErrCg'] = "Compulsory Contact Group";
 $lang['ErrCmdLine'] = "Compulsory Command Line";
 $lang['ErrCmdType'] = "Compulsory  Command Type";
+$lang['ErrOidAlreadyExist'] = "A same Oid element already exist";
 $lang['ErrAlreadyExist'] = "A same Name element already exist";
 $lang['ErrAddress'] = "Compulsory Adress";
 $lang['ErrRequired'] = "Require Field";

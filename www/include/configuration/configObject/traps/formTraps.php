@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 	$form->addRule('manufacturer_id', $lang['ErrName'], 'required');
 	$form->addRule('traps_args', $lang['ErrName'], 'required');
 	$form->registerRule('exist', 'callback', 'testTrapExistence');
-	$form->addRule('traps_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->addRule('traps_oid', $lang['ErrOidAlreadyExist'], 'exist');
 	$form->setRequiredNote($lang['requiredFields']);
 
 	#

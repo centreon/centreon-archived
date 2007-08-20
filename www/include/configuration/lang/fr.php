@@ -29,6 +29,7 @@ $lang['ErrCct'] = "Contact obligatoire";
 $lang['ErrCg'] = "ContactGroup obligatoire";
 $lang['ErrCmdLine'] = "Ligne de Commande obligatoire";
 $lang['ErrCmdType'] = "Type de Commande obligatoire";
+$lang['ErrOidAlreadyExist'] = "Un &eacute;l&eacute;ment portant le m&ecirc;me Oid existe d&eacute;ja";
 $lang['ErrAlreadyExist'] = "Un &eacute;l&eacute;ment portant le m&ecirc;me nom existe d&eacute;ja";
 $lang['ErrAddress'] = "Adresse obligatoire";
 $lang['ErrRequired'] = "Champ requis";
