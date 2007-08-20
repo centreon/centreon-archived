@@ -16,7 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-		
 	$page_max = ceil($rows / $limit);
 	if ($num >= $page_max && $rows)
 		$num = $page_max - 1;

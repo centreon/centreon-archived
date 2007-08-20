@@ -155,6 +155,4 @@ For information : contact@oreon-project.org
 	$tpl->assign("tab_order", $tab_order);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("pagination.ihtml");
-
-
 ?>
