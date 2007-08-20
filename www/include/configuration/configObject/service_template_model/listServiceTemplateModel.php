@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '".htmlentities($search, ENT_QUOTES)."' OR sv.service_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND sv.service_register = '0'");
+		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sv.service_register = '0'");
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE service_register = '0'");
 	if (PEAR::isError($DBRESULT))
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 	# end header menu
 	#Service Template Model list
 	if ($search)
-		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '".htmlentities($search, ENT_QUOTES)."' OR sv.service_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
