@@ -1631,7 +1631,7 @@ CREATE TABLE `traps` (
   `traps_status` ENUM( '-1', '0', '1', '2', '3' ) default NULL,
   `manufacturer_id` INT( 11 ) default NULL,
   `traps_comments` TEXT default NULL,
-  UNIQUE KEY `traps_name` (`traps_name`),
+  UNIQUE KEY `traps_oid` (`traps_oid`),
   KEY `traps_id` (`traps_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
