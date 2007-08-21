@@ -1,3 +1,6 @@
+## Centreon 1.4.2
+=> Bugfix : ID Card switching server/network doesn't work
+
 ## Centreon 1.4.1
 => Bugfix : Better trap management, with MIB loading in web frontend
 => Bugfix : URL size limite in listing form (GET to POST)

@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 
 	isset($_GET["select_manufacturer"]) ? $cG = $_GET["select_manufacturer"] : $cG = NULL;
 	isset($_POST["select_manufacturer"]) ? $cP = $_POST["select_manufacturer"] : $cP = NULL;
-	$cG ? $select_manufacturer = $cG : $dupNbr = $cP;
+	$cG ? $select_manufacturer = $cG : $select_manufacturer = $cP;
 
 	#Pear library
 	require_once "HTML/QuickForm.php";
