@@ -25,6 +25,7 @@ For information : contact@oreon-project.org
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<? echo $mlang; ?>" lang="<? echo $mlang; ?>">
 <head>
 <title>Supervision Tool - Powered By Oreon</title>
+<HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
@@ -83,5 +84,6 @@ For information : contact@oreon-project.org
 	?>
     	};
     </script>
+    <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
