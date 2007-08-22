@@ -28,21 +28,31 @@ For information : contact@oreon-project.org
 	
 ?>
 <SCRIPT LANGUAGE="JavaScript">
+var _debug = 1;
 
 var _search = '<?=$search?>';
-var _addrXML = "./include/monitoring/engine/MakeXML_Ndo.php?sid=<?=$sid?>&search="+_search+ "&search_type_host=<?=$search_type_host?>&search_type_service=<?=$search_type_service?>&num=<?=$num?>&limit=<?=$limit?>&sort_type=<?=$sort_type?>&order=<?=$order?>&date_time_format_status=<?=$lang["date_time_format_status"]?>";
+var _sid='<?=$sid?>';
+var _search_type_host='<?=$search_type_host?>';
+var _search_type_service='<?=$search_type_service?>';
+var _num='<?=$num?>';
+var _limit='<?=$limit?>';
+var _sort_type='<?=$sort_type?>';
+var _order='<?=$order?>';
+var _date_time_format_status='<?=$lang["date_time_format_status"]?>';
+var _o='<?=$o?>';
+
+var _addrXML = "./include/monitoring/engine/MakeXML_Ndo.php?";
 var _addrXSL = "./include/monitoring/status/status-ndo/templates/service.xsl";
 var _timeoutID = 0;
 var _on = 1;
 var _time_reload = <?=$tM?>;
 var _time_live = <?=$tFM?>;
-var _debug = 0;
 var _nb = 0;
-_oldInputFieldValue = '<?=$search?>';
+var _oldInputFieldValue = '<?=$search?>';
 var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
-_first = 1;
-_lock = 0;
+var _first = 1;
+var _lock = 0;
 
 function viewDebugInfo(_str){
 	if(_debug)
@@ -62,7 +72,7 @@ function monitoring_refresh()	{
 	window.clearTimeout(_timeoutID);
 	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
 	_on = _tmp_on;
-	viewDebugInfo('refresh');
+	//viewDebugInfo('refresh');
 }
 
 function monitoring_play()	{
@@ -98,10 +108,10 @@ function mainLoop(){
   _currentInputFieldValue = document.getElementById('input_search').value;
   if( (_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue!=_currentInputFieldValue){
     var valeur=escapeURI(_currentInputFieldValue);
-	viewDebugInfo(valeur);
-	viewDebugInfo(_lock);
+	//viewDebugInfo(valeur);
+	//viewDebugInfo(_lock);
 	_search = valeur;
-	_addrXML = "./include/monitoring/engine/MakeXML_Ndo.php?sid=<?=$sid?>&search="+_search+ "&search_type_host=<?=$search_type_host?>&search_type_service=<?=$search_type_service?>&num=<?=$num?>&limit=<?=$limit?>&sort_type=<?=$sort_type?>&order=<?=$order?>&date_time_format_status=<?=$lang["date_time_format_status"]?>";
+	 _addrXML = "./include/monitoring/engine/MakeXML_Ndo.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o;
 	if(!_lock)
 		monitoring_refresh();    
   }
@@ -112,10 +122,10 @@ function mainLoop(){
 
 function initM(_time_reload,_sid,_o){
 
-if(_first){
-mainLoop();
-_first = 0;	
-}
+	if(_first){
+	mainLoop();
+	_first = 0;	
+	}
 
 //document.getElementById('input_search').addEventListener("blur" , Isearch , false);
 
@@ -123,8 +133,8 @@ _first = 0;
 	_time=<?=$time?>;
 	if(document.getElementById('debug'))
 	{
-		viewDebugInfo('--RESTART--');
-		viewDebugInfo('');
+		//viewDebugInfo('--RESTART--');
+		//viewDebugInfo('');
 	}
 	else{
 		var _divdebug = document.createElement("div");
@@ -136,7 +146,7 @@ _first = 0;
 		_divdebug.appendChild(_debugtable);
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
-		viewDebugInfo('--INIT--');
+		//viewDebugInfo('--INIT--');
 	}
 	
 	if(_on)
@@ -146,8 +156,11 @@ _first = 0;
 
 function goM(_time_reload,_sid,_o){
 	_lock = 1;
-	viewDebugInfo('goM start');
+	//viewDebugInfo('goM start');
 	var proc = new Transformation();
+
+	 _addrXML = "./include/monitoring/engine/MakeXML_Ndo.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o;
+
 	proc.setXml(_addrXML)
 	proc.setXslt(_addrXSL)
 	proc.transform("forAjax");

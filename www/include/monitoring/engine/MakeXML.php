@@ -209,14 +209,28 @@ For information : contact@oreon-project.org
 					}
 					else
 						$color_host = '#FD8B46';
+
+					$color_service = 'green';
+					switch ($svc["current_state"]) {
+						case 'OK' : $color_service = $general_opt["color_ok"];
+						break;
+						case 'CRITICAL' : $color_service = $general_opt["color_critical"];
+						break;
+						case 'WARNING' : $color_service = $general_opt["color_warning"];
+						break;
+						case 'UNKNOWN' : $color_service = $general_opt["color_unknown"];
+						break;
+						default :  $color_service = $general_opt["color_pending"];
+					}
+
 					$buffer .= '<line>';
 					$buffer .= '<order>'. $ct++ . '</order>';
 					$buffer .= '<flag>'. $flag . '</flag>';
 					$buffer .= '<host_color>'.$color_host.'</host_color>';
 					$buffer .= '<host_name>'. $svc["host_name"] . '</host_name>';
 					$buffer .= '<host_status>'. $host_status[$svc["host_name"]]["current_state"]  . '</host_status>';///
-					$buffer .= '<host_has_been_acknowledged>'. $host_status[$svc["host_name"]]["problem_has_been_acknowledged"]  . '</host_has_been_acknowledged>';///
 					$buffer .= '<service_description>'. $svc["service_description"] . '</service_description>';
+					$buffer .= '<service_color>'.$color_service.'</service_color>';
 					$buffer .= '<current_state>'. $svc["current_state"] . '</current_state>';
 					$buffer .= '<plugin_output>' . $plugin_output . '</plugin_output>';
 					$buffer .= '<current_attempt>'. $svc["current_attempt"] . '</current_attempt>';

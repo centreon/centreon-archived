@@ -16,9 +16,7 @@
 			{/if}
 		</td>
 		<input name="p" value="{$p}" type="hidden">
-		{php}
-		   include('./include/common/pagination.php');
-		{/php}
+		<td id="pagination1" class="Toolbar_pagination"></td>
 	</tr>
 </table>
 <div id="forAjax">...</div>
@@ -29,9 +27,7 @@
 			{if $pgr_nagios_stat.created != 0}<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>{/if}
 		</td>
 		<input name="p" value="{$p}" type="hidden">
-		{php}
-		   include('./include/common/pagination.php');
-		{/php}
+		<td id="pagination2" class="Toolbar_pagination"></td>
 	</tr>
 </table>
 {if $host_name}
