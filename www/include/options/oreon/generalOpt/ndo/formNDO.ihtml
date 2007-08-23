@@ -1,0 +1,20 @@
+{$form.javascript}
+{$colorJS}
+<form {$form.attributes}>
+<table id="ListTable">
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/column-chart.gif'>&nbsp;&nbsp;{$lang.genOpt_ndo_properties}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$lang.genOpt_ndo_configuration}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ndo_activate.label}</td><td class="FormRowValue">{$form.ndo_activate.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ndo_base_name.label}</td><td class="FormRowValue">{$form.ndo_base_name.html}</td></tr>
+</table>
+{if !$valid}
+	<div id="validForm">
+		<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	</div>
+{else}
+	<div id="validForm">
+		<p>{$form.change.html}</p>
+	</div>
+{/if}
+{$form.hidden}
+</form>

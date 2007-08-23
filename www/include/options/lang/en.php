@@ -158,6 +158,13 @@ $lang['genOpt_css'] = "CSS";
 $lang['genOpt_menu_name'] = "Menu";
 $lang['genOpt_file_name'] = "CSS file";
 
+$lang['genOpt_ndo'] = "NDO";
+$lang['genOpt_ndo_properties'] = "NDO Properties";
+$lang['genOpt_ndo_configuration'] = "NDO Configuration";
+$lang['ndo_base_name'] = "NDO Base name";
+$lang['ndo_activate'] = "NDO activate";
+
+
 # Menu
 
 $lang['mod_menu'] = "Modules Availables";
