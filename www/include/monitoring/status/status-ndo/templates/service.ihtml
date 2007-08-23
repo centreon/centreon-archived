@@ -17,6 +17,7 @@
 		</td>
 		<input name="p" value="{$p}" type="hidden">
 		<td id="pagination1" class="Toolbar_pagination"></td>
+		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
 <div id="forAjax">...</div>
@@ -28,6 +29,7 @@
 		</td>
 		<input name="p" value="{$p}" type="hidden">
 		<td id="pagination2" class="Toolbar_pagination"></td>
+		<td id="sel2" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
 {if $host_name}

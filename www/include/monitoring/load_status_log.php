@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 	$user_admin = $user["contact_admin"];
 	
 	// Read 
-	$DBRESULT1 =& $pearDB->query("SELECT session_expire, nagios_version, problem_sort_order, problem_sort_type FROM general_opt");
+	$DBRESULT1 =& $pearDB->query("SELECT * FROM general_opt");
 	if (PEAR::isError($DBRESULT1))
 		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";	
 	$DBRESULT1->fetchInto($general_opt);
@@ -334,8 +334,10 @@ For information : contact@oreon-project.org
 		if (!isset($_GET["order"]))
 			$_GET["order"] = "SORT_".$general_opt["problem_sort_order"];
 	} else {
-		$_GET["sort_types"] = "host_name";
-		$_GET["order"] = "SORT_ASC";
+		 $_GET["sort_types"] = (isset($_GET["sort_types"])) ? $_GET["sort_types"] :"host_name"; 
+		 $_GET["order"] = (isset($_GET["order"])) ? $_GET["order"] :"SORT_ASC"; 
+		//$_GET["sort_types"] = "host_name";
+		//$_GET["order"] = "SORT_ASC";
 	}
 	
 	if (isset($_GET["sort_types"]) && $_GET["sort_types"]){
