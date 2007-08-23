@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 
 	#create javascript for refresh ajax
-	include('./include/monitoring/status/makeJS.php');
+	//include('./include/monitoring/status/makeJS.php');
 	
 	# set limit & num
 	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
