@@ -40,8 +40,11 @@ For information : contact@oreon-project.org
 	if(isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
 		submitPassiveCheck($lang);
 	
-	$ndo = 1;
-
+	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
+	# Set base value
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	
+	$ndo = $gopt["ndo_activate"];
 
 	if($o == "svcSch")
 		{
@@ -52,7 +55,9 @@ For information : contact@oreon-project.org
 	if (isset($ndo) && !$ndo){
 		$path = "./include/monitoring/status/status-log/";
 		include("./include/monitoring/status/resume.php");
+		$problem = "_problem";
 	} else {
+		$problem = "";
 		$path = "./include/monitoring/status/status-ndo/";
 	}
 	
@@ -63,11 +68,11 @@ For information : contact@oreon-project.org
 	switch ($o)	{
 		case "svc" 			: require_once($path."service.php"); 					break; 
 		
-		case "svcpb" 		: require_once($path."service.php");			break;
-		case "svc_warning" 	: require_once($path."service.php");			break;
-		case "svc_critical" : require_once($path."service.php");			break;
-		case "svc_unknown" 	: require_once($path."service.php");			break;
-		case "svc_ok" 		: require_once($path."service.php");			break;
+		case "svcpb" 		: require_once($path."service".$problem.".php");		break;
+		case "svc_warning" 	: require_once($path."service".$problem.".php");		break;
+		case "svc_critical" : require_once($path."service".$problem.".php");		break;
+		case "svc_unknown" 	: require_once($path."service".$problem.".php");		break;
+		case "svc_ok" 		: require_once($path."service".$problem.".php");		break;
 		
 		case "svcd" 		: require_once($pathDetails."serviceDetails.php"); 		break; 
 		case "svcak" 		: require_once($pathExternal."serviceAcknowledge.php"); break; 

@@ -171,11 +171,11 @@ For information : contact@oreon-project.org
 	$tpl->assign("lang", $lang);
 	$tpl->assign("order", strtolower($_GET["order"]));
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);
-		
-	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
-	$tpl->assign("tab_order", $tab_order);	
-    $tpl->assign('time', time());
-    $tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
+
+	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
+	$tpl->assign("tab_order", $tab_order);
+	$tpl->assign('time', time());
+	$tpl->assign('fileStatus',  $oreon->Nagioscfg["status_file"]);
 	$tpl->assign('fileOreonConf', $oreon->optGen["oreon_path"]);
     $tpl->assign('color_OK', $oreon->optGen["color_ok"]);
     $tpl->assign('color_CRITICAL', $oreon->optGen["color_critical"]);

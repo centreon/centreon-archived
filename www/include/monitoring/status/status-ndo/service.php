@@ -49,7 +49,7 @@ For information : contact@oreon-project.org
 	$rows = 10;
 
 		
-	include("./include/common/checkPagination.php");
+	//include("./include/common/checkPagination.php");
 
 	include_once("makeJS.php");
 

@@ -65,6 +65,160 @@ function viewDebugInfo(_str){
 	}
 }
 
+function change_page(page_number){
+	_num = page_number;
+	monitoring_refresh();
+	pagination_changed();
+}
+function change_limit(l){
+	_limit= l;
+	monitoring_refresh();
+	pagination_changed();
+	var _sel1 = document.getElementById('sel1');
+
+for(i=0;_sel1[i] && _sel1[i].value != l;i++)
+;
+
+	_sel1.selectedIndex = i;
+
+
+	viewDebugInfo('index=>'+i)
+}
+
+var _numRows = 0;
+var _limit = 10;
+var _num = 0;
+
+function removeAllLine(table)
+{
+	rows = table.getElementsByTagName("tr");
+	while(rows && rows.length > 1)
+		table.deleteRow(-1);
+}
+
+ function getVar (nomVariable)
+ {
+	 var infos = location.href.substring(location.href.indexOf("?")+1, location.href.length)+"&"
+	 if (infos.indexOf("#")!=-1)
+	 infos = infos.substring(0,infos.indexOf("#"))+"&"
+	 var variable=''
+	 {
+	 nomVariable = nomVariable + "="
+	 var taille = nomVariable.length
+	 if (infos.indexOf(nomVariable)!=-1)
+	 variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length).substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
+	 }
+	 return variable
+ }
+ 
+function mk_img(_src, _alt)
+{
+	var _img = document.createElement("img");
+  	_img.src = _src;
+  	_img.alt = _alt;
+  	_img.title = _alt;
+	return _img;
+}
+
+function mk_pagination(resXML){
+	var flag = 0;
+	var infos = resXML.getElementsByTagName("i");
+	var _nr = infos[0].getElementsByTagName("numrows")[0].firstChild.nodeValue;
+	var _nl = infos[0].getElementsByTagName("limit")[0].firstChild.nodeValue;
+	var _nn = infos[0].getElementsByTagName("num")[0].firstChild.nodeValue;
+
+	if(_numRows != _nr){
+		_numRows = _nr;
+		flag = 1;
+	}
+	if(_num != _nn){
+		_num = _nn;
+		flag = 1;
+	}
+	if(_limit != _nl){
+		_limit = _nl;
+		flag = 1;
+	}
+
+	if(flag == 1){
+	pagination_changed();	
+	}
+}
+
+function pagination_changed(){
+
+	var p = getVar('p');
+	var o = getVar('o');
+	var search = '' + getVar('search');
+	var _numnext = _num + 1;
+	var _numprev = _num - 1;
+	var _img_previous = mk_img("./img/icones/16x16/arrow_left_blue.gif", "previous");
+	var _img_next = mk_img("./img/icones/16x16/arrow_right_blue.gif", "next");
+
+	var _linkaction_right = document.createElement("a");
+	_linkaction_right.href = '#' ;
+	_linkaction_right.indice = _numnext;
+	_linkaction_right.onclick=function(){change_page(this.indice)}
+	_linkaction_right.appendChild(_img_next);
+
+	var _linkaction_left = document.createElement("a");
+	_linkaction_left.href = '#' ;
+	_linkaction_left.indice = _numprev;
+	_linkaction_left.onclick=function(){change_page(this.indice)}
+	_linkaction_left.appendChild(_img_previous);
+
+	var _pagination1 = document.getElementById('pagination1');
+	var _pagination2 = document.getElementById('pagination2');
+
+
+	_pagination1.innerHTML ='';
+	_pagination1.appendChild(_linkaction_left);
+
+	var page_max =  Math.round( (_numRows / _limit) + 0.5);
+	if (_num > page_max && _numRows)
+		_num = page_max;
+	var istart = 0;
+	for(i = 5, istart = _num; istart && i > 0 && istart > 0; i--)
+	istart--;
+	for(i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++)
+		iend++;
+	for (i = istart; i <= iend; i++){
+		var _linkaction_num = document.createElement("a");
+//	  		_linkaction_num.href = './oreon.php?p='+p+'&o='+o+'&search='+search+'&num='+i+'&limit=' + _limit ;
+  		_linkaction_num.href = '#' ;
+  		_linkaction_num.indice = i;
+  		_linkaction_num.onclick=function(){change_page(this.indice)}
+		_linkaction_num.innerHTML = parseInt(i + 1);
+		_linkaction_num.className = "otherPageNumber";
+		if(i == _num)
+		_linkaction_num.className = "currentPageNumber";
+		_pagination1.appendChild(_linkaction_num);
+		_pagination1.appendChild(_linkaction_right);
+	}
+	
+	
+
+	var _sel1 = document.getElementById('sel1');
+	_sel1.innerHTML ='';
+	
+	var sel = document.createElement('select');
+	sel.name = 'l';
+	sel.onchange = function() { change_limit(this.value) };
+	_sel1.appendChild(sel);
+
+	for(i = 10; i <= 100 ;i += 10){
+		var k = document.createElement('option');
+		k.value= i;
+		sel.appendChild(k);
+		var l = document.createTextNode(i);
+		k.appendChild(l);
+	}
+
+
+	
+}
+
+
 function monitoring_refresh()	{
 	_tmp_on = _on;
 	_time_live = _time_reload;
@@ -171,4 +325,4 @@ function goM(_time_reload,_sid,_o){
 	_on = 1;	
 //	viewDebugInfo('goM stop');
 }
-</SCRIPT>	
+</SCRIPT>
