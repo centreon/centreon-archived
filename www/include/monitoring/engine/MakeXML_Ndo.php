@@ -109,6 +109,10 @@ For information : contact@oreon-project.org
 		$o = htmlentities($_GET["o"]);
 	}else
 		$o = "svc";
+	if(isset($_GET["p"]) && !check_injection($_GET["p"])){
+		$p = htmlentities($_GET["p"]);
+	}else
+		$p = "2";
 
 
 
@@ -259,9 +263,20 @@ For information : contact@oreon-project.org
 		$rq .= " AND nss.current_state = 3 ";
 	$rq_pagination = $rq;
 
-	$rq .= " order by no.name1 ASC";
+	switch($sort_type){
+			case 'host_name' : $rq .= " order by no.name1 ". $order; break;
+			case 'service_description' : $rq .= " order by no.name2 ". $order; break;
+			case 'current_state' : $rq .= " order by nss.current_state ". $order; break;
+			case 'last_state_change' : $rq .= " order by nss.last_state_change ". $order; break;
+			case 'last_check' : $rq .= " order by nss.last_check ". $order; break;
+			case 'current_attempt' : $rq .= " order by nss.current_check_attempt ". $order; break;
+			default : $rq .= " order by no.name1 ". $order; break;
+	}
+	
 
-	$rq .= " LIMIT ".$num.",".$limit;
+
+
+	$rq .= " LIMIT ".($num * $limit).",".$limit;
 	$DBRESULT_NDO =& $pearDBndo->query($rq);
 	if (PEAR::isError($DBRESULT_NDO))
 		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";	
@@ -278,12 +293,15 @@ For information : contact@oreon-project.org
 	$buffer .= '<numrows>'.$numRows.'</numrows>';
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
+	$buffer .= '<p>'.$p.'</p>';
+	$buffer .= '<o>'.$o.'</o>';
 	$buffer .= '</i>';
 	/* End Pagination Rows */
 
+	$host_prev = "";
 	while($DBRESULT_NDO->fetchInto($ndo))
 	{
-		$color_host = $tab_color_service[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
+		$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
 		$color_service = $tab_color_service[$ndo["current_state"]];
 		$passive = 0;
 		$active = 1;
@@ -295,8 +313,16 @@ For information : contact@oreon-project.org
 		$buffer .= '<l>';
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<f>'. $flag . '</f>';
-		$buffer .= '<hc>'.$color_host.'</hc>';
-		$buffer .= '<hn>'. $ndo["host_name"] . '</hn>';
+
+		if($host_prev == $ndo["host_name"]){
+			$buffer .= '<hc>transparent</hc>';
+			$buffer .= '<hn> </hn>';
+		}else{			
+			$host_prev = $ndo["host_name"];
+			$buffer .= '<hc>'.$color_host.'</hc>';
+			$buffer .= '<hn>'. $ndo["host_name"] . '</hn>';			
+		}
+
 		$buffer .= '<hs>'. $host_status[$ndo["host_name"]]["current_state"]  . '</hs>';///
 		$buffer .= '<sd>'. $ndo["service_description"] . '</sd>';
 		$buffer .= '<sc>'.$color_service.'</sc>';

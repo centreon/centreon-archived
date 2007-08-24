@@ -1,17 +1,18 @@
 <xsl:stylesheet version = '1.0'
 xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
+<xsl:variable name="i" select="//i"/>
 <xsl:template match="/">
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>
-		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>	
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
+		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="infos"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>	
 	</tr>
 	<xsl:for-each select="//l">
 	<tr>
@@ -31,13 +32,26 @@ xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
 							background-color:<xsl:value-of select="hc"/>;
     					</xsl:attribute>
 					</xsl:if>
-					<xsl:value-of select="hn"/>
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+						<xsl:attribute name="class">pop</xsl:attribute>
+  						<xsl:value-of select="hn"/>
+					</xsl:element>
 				</td>
 				<td class="ListColLeft">
-					<xsl:value-of select="sd"/>
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
+  						<xsl:value-of select="sd"/>
+					</xsl:element>
 				</td>
 				<td class="ListColRight">
-				infos..
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?p=40207&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/>&amp;submitC=Grapher</xsl:attribute>
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+							</xsl:element>
+					</xsl:element>
+
 				</td>
 				<td class="ListColRight">
 				
