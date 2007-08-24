@@ -256,6 +256,8 @@ $lang['ods_no_generate_DB'] = "Stop Rebuilding RRD Databases";
 $lang['ods_purge_service_data'] = "Empty all service Data";
 $lang['ods_hidde_graph'] = "Hidde graph of selected services";
 $lang['ods_no_hidde_graph'] = "Hidde anymore graph of selected services";
+$lang['ods_lock_graph'] = "Lock services";
+$lang['ods_no_lock_graph'] = "Unlock services";
 
 $lang['m_patch'] = "Update";
 $lang['m_checkVersion'] = "Check";

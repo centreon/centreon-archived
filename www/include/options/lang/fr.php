@@ -265,6 +265,8 @@ $lang['ods_no_generate_DB'] = "Arreter la r&eacute;g&eacute;n&eacute;rer des bas
 $lang['ods_purge_service_data'] = "Vider les donn&eacute;es du service";
 $lang['ods_hidde_graph'] = "Cacher le graphique de services selectionn&eacute;s";
 $lang['ods_no_hidde_graph'] = "Ne plus cacher le graphique de services selectionn&eacute;s";
+$lang['ods_lock_graph'] = "Bloquer les services";
+$lang['ods_no_lock_graph'] = "D&eacute;bloquer les services";
 
 $lang['m_patch'] = "Mise &agrave; jour";
 $lang['m_checkVersion'] = "V&eacute;rification";

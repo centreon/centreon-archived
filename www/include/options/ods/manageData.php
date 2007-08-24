@@ -28,6 +28,13 @@ For information : contact@oreon-project.org
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
+
+	# start quickSearch form
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+	
+
 	#Path to the option dir
 	$path = "./include/options/ods/";
 	
@@ -83,6 +90,20 @@ For information : contact@oreon-project.org
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
 			}
+		} else if ($_POST["o"] == "lk"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+			}
+		} else if ($_POST["o"] == "nlk"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+			}
 		}
 	}
 	
@@ -107,8 +128,13 @@ For information : contact@oreon-project.org
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$yesOrNo = array(0 => "No", 1 => "Yes", 2 => "Rebuilding");	
+	//$yesOrNo = array(0 => "<input type='checkbox' hidden='1' disabled>", 1 => "<input type='checkbox' checked disabled>", 2 => "Rebuilding");	
 	
-	$DBRESULT =& $pearDBO->query("SELECT * FROM index_data ORDER BY host_name, service_description LIMIT ".$num * $limit.", $limit");
+	$search_string = "";
+	if (isset($search) && $search)
+		$search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
+	
+	$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data`$search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$data = array();
@@ -125,17 +151,18 @@ For information : contact@oreon-project.org
 				$metric .= " (".$metrics["unit_name"].") ";
 		}
 		$index_data["metrics_name"] = $metric;
-
 		$index_data["service_description"] = str_replace("#S#", "/", $index_data["service_description"]);
 		$index_data["service_description"] = str_replace("#BS#", "\\", $index_data["service_description"]);
-
 		$index_data["metrics_name"] = str_replace("#S#", "/", $index_data["metrics_name"]);
 		$index_data["metrics_name"] = str_replace("#BS#", "\\", $index_data["metrics_name"]);
 		
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
 		$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
 		$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
-		
+		if (isset($index_data["locked"]))
+			$index_data["locked"] = $yesOrNo[$index_data["locked"]];	
+		else
+			$index_data["locked"] = $yesOrNo[0];
 		$index_data["class"] = $tab_class[$i % 2];
 		$data[$i] = $index_data;
 	}
@@ -170,8 +197,12 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 5) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 6) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 7) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph']), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph'], "lk"=>$lang['ods_lock_graph'], "nlk"=>$lang['ods_no_lock_graph']), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(
@@ -186,8 +217,12 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 5) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 6) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 7) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph']), $attrs2);
+	$form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph'], "lk"=>$lang['ods_lock_graph'], "nlk"=>$lang['ods_no_lock_graph']), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');
