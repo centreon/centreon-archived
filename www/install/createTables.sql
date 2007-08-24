@@ -769,6 +769,7 @@ CREATE TABLE `general_opt` (
   `snmp_community` varchar(255) default NULL,
   `snmp_version` varchar(255) default NULL,
   `snmpttconvertmib_path_bin` varchar(255) default NULL,
+  `snmptt_unknowntrap_log_file` varchar(255) default NULL,
   `perl_library_path` varchar(255) default NULL,
   `snmp_trapd_path_conf` varchar(255) default NULL,
   `mailer_path_bin` varchar(255) default NULL,
