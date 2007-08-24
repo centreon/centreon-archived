@@ -34,7 +34,7 @@ For information : contact@oreon-project.org
 		$limit = 20;
 	
 	$tab = array ("search" => $search, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
-	$form_search->addElement('text', 'search', $lang["quicksearch"]);
+	$form_search->addElement('text', 'search', $lang["quicksearch"], 'id=input_search');
 	$form_search->addElement('hidden', 'p');
 	$form_search->addElement('hidden', 'limit');
 	$form_search->addElement('hidden', 'list');

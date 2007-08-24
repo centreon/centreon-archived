@@ -195,9 +195,9 @@ For information : contact@oreon-project.org
 	$tab_color_service[4] = $general_opt["color_pending"];
 
 	$tab_color_host = array();
-	$tab_color_host[0] = $general_opt["color_up"];
-	$tab_color_host[1] = $general_opt["color_down"];
-	$tab_color_host[2] = $general_opt["color_unreachable"];
+	$tab_color_host[0] = "normal";
+	$tab_color_host[1] = "#FD8B46";//$general_opt["color_down"];
+	$tab_color_host[2] = "normal";
 	
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -264,12 +264,12 @@ For information : contact@oreon-project.org
 	$rq_pagination = $rq;
 
 	switch($sort_type){
-			case 'host_name' : $rq .= " order by no.name1 ". $order; break;
-			case 'service_description' : $rq .= " order by no.name2 ". $order; break;
-			case 'current_state' : $rq .= " order by nss.current_state ". $order; break;
-			case 'last_state_change' : $rq .= " order by nss.last_state_change ". $order; break;
-			case 'last_check' : $rq .= " order by nss.last_check ". $order; break;
-			case 'current_attempt' : $rq .= " order by nss.current_check_attempt ". $order; break;
+			case 'host_name' : $rq .= " order by no.name1,no.name2 ". $order; break;
+			case 'service_description' : $rq .= " order by no.name2,no.name1 ". $order; break;
+			case 'current_state' : $rq .= " order by nss.current_state,no.name1,no.name2 ". $order; break;
+			case 'last_state_change' : $rq .= " order by nss.last_state_change,no.name1,no.name2 ". $order; break;
+			case 'last_check' : $rq .= " order by nss.last_check,no.name1,no.name2 ". $order; break;
+			case 'current_attempt' : $rq .= " order by nss.current_check_attempt,no.name1,no.name2 ". $order; break;
 			default : $rq .= " order by no.name1 ". $order; break;
 	}
 	
@@ -299,6 +299,7 @@ For information : contact@oreon-project.org
 	/* End Pagination Rows */
 
 	$host_prev = "";
+	$class = "list_one";
 	while($DBRESULT_NDO->fetchInto($ndo))
 	{
 		$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
@@ -310,17 +311,33 @@ For information : contact@oreon-project.org
 		if($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
 
-		$buffer .= '<l>';
+		if($class == "list_one")
+			$class = "list_two";
+		else
+			$class = "list_one";
+
+		if($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
+			if($ndo["problem_has_been_acknowledged"] == 1)
+				$class = "list_four";
+			else
+				$class = "list_down";
+		}else{
+			if( $ndo["problem_has_been_acknowledged"] == 1)
+				$class = "list_four";
+		}
+
+
+		$buffer .= '<l class="'.$class.'">';
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<f>'. $flag . '</f>';
 
 		if($host_prev == $ndo["host_name"]){
 			$buffer .= '<hc>transparent</hc>';
-			$buffer .= '<hn> </hn>';
+			$buffer .= '<hn none="1">'. $ndo["host_name"] . '</hn>';			
 		}else{			
 			$host_prev = $ndo["host_name"];
 			$buffer .= '<hc>'.$color_host.'</hc>';
-			$buffer .= '<hn>'. $ndo["host_name"] . '</hn>';			
+			$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';			
 		}
 
 		$buffer .= '<hs>'. $host_status[$ndo["host_name"]]["current_state"]  . '</hs>';///

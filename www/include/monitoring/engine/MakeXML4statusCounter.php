@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 	$flag_reset = 0;
 
 
-	$oreonPath = '@INSTALL_DIR_OREON@';
+	$oreonPath = '/srv/oreon/';
 	if($oreonPath == '@INSTALL_DIR_OREON@'){
 		$buffer = null;
 		$buffer .= '<reponse>';	

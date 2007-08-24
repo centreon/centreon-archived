@@ -228,7 +228,7 @@ function pagination_changed(){
 	istart--;
 	for(i2 = 0, iend = _num; ( iend <  (_numRows / _limit -1)) && ( i2 < (5 + i)); i2++)
 		iend++;
-	for (i = istart; i <= iend; i++){
+	for (i = istart; i <= iend && page_max > 1; i++){
 		var span_space = document.createElement("span");
 		span_space.innerHTML = '&nbsp;';
 		_pagination1.appendChild(span_space);

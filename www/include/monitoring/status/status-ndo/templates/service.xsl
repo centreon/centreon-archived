@@ -17,32 +17,69 @@ xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
 	<xsl:for-each select="//l">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
-
-  			<xsl:attribute name="class">
-      		<xsl:choose>
-      			<xsl:when test="position() mod 2=0">list_one</xsl:when>
-      			<xsl:otherwise>list_two</xsl:otherwise>
-	  		</xsl:choose>
-    	</xsl:attribute>
+  		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 				<td class="ListColPicker">
-				<input name="" value="1" type="checkbox"></input></td>
+				<xsl:element name="input">
+						<xsl:attribute name="type">checkbox</xsl:attribute>
+						<xsl:attribute name="value">1</xsl:attribute>
+						<xsl:attribute name="name">
+							select[<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>]
+    					</xsl:attribute>
+				</xsl:element>
+				</td>
 				<td class="ListColLeft">
-					<xsl:if test="host_color != normal">
 						<xsl:attribute name="style">
 							background-color:<xsl:value-of select="hc"/>;
     					</xsl:attribute>
+
+					<xsl:if test="hn/@none = 0">
+						<xsl:element name="a">
+						  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+							<xsl:attribute name="class">pop</xsl:attribute>
+  							<xsl:value-of select="hn"/>
+						</xsl:element>
+						<xsl:if test="ha = 1">
+								<xsl:element name="img">
+								  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+								</xsl:element>
+						</xsl:if>
+						<xsl:if test="hae = 0 and hpe = 1">
+								<xsl:element name="img">
+								  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+								</xsl:element>
+						</xsl:if>
+						<xsl:if test="hae = 0 and hpe = 0">
+								<xsl:element name="img">
+								  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+								</xsl:element>
+						</xsl:if>
 					</xsl:if>
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-						<xsl:attribute name="class">pop</xsl:attribute>
-  						<xsl:value-of select="hn"/>
-					</xsl:element>
+
+
+
 				</td>
 				<td class="ListColLeft">
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">oreon.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
   						<xsl:value-of select="sd"/>
 					</xsl:element>
+					<xsl:if test="pa = 1">
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+							</xsl:element>
+					</xsl:if>
+					<xsl:if test="ac = 0 and pc = 1">
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+							</xsl:element>
+					</xsl:if>
+					<xsl:if test="ac = 0 and pc = 0">
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+							</xsl:element>
+					</xsl:if>
+
+					
 				</td>
 				<td class="ListColRight">
 					<xsl:element name="a">
@@ -54,7 +91,17 @@ xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
 
 				</td>
 				<td class="ListColRight">
-				
+					<xsl:if test="is = 1">
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>
+							</xsl:element>
+					</xsl:if>
+					<xsl:if test="ne = 0">
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+							</xsl:element>
+					</xsl:if>
+									
 				</td>
 				<td class="ListColCenter">
 					<xsl:attribute name="style">
