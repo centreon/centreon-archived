@@ -64,7 +64,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		} else {
           	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
           	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-          	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (755)';
+          	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (775)';
 		    $return_false = 1;
        	}	?>
        	</td>
