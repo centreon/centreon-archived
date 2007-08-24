@@ -191,7 +191,6 @@ $lang["mod_menu_output2"] = "SQL file included";
 $lang["mod_menu_output3"] = "PHP file included";
 $lang["mod_menu_output4"] = "Unable to install module";
 
-$lang['menu_ODS'] = "CentreonDataStorage";
 $lang['menu_nagios'] = "Nagios";
 $lang['menu_ldap'] = "LDAP";
 $lang['menu_snmp'] = "SNMP";
@@ -288,7 +287,8 @@ $lang['batchPatch_err01'] = "Error when installing patch : %s.";
 
 # ODS 
 
-$lang["menu_ODS_config"] = "Config";
+$lang['menu_ODS'] = "Data Storage";
+$lang["menu_ODS_config"] = "Configuration";
 $lang["menu_ODS_data"] = "Data";
 $lang["menu_ODS_manage"] = "Manage";
 
