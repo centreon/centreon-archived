@@ -48,13 +48,19 @@ For information : contact@oreon-project.org
 	 * include javascript
 	 */
 
+	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
+	# Set base value
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	$ndo = $gopt["ndo_activate"];
+
 	$res = null;
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT))
 		print $DBRESULT->getDebugInfo()."<br>";
-	while ($DBRESULT->fetchInto($topology_js))
+	while ($DBRESULT->fetchInto($topology_js)){
+		if(!$ndo || ($ndo && $topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js"))
 		echo "<script language='javascript' src='".$topology_js['PathName_js']."'></script> ";
-
+	}
 	/*
 	 * init javascript
 	 */
@@ -84,6 +90,9 @@ For information : contact@oreon-project.org
 	?>
     	};
     </script>
-    <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
+<?
+if($ndo)
+    print '<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>';
+?>
 </head>
 <body>
