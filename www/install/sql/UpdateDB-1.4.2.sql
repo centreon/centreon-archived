@@ -22,3 +22,6 @@ INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`)
 -- 20/08/2007
 ALTER TABLE `traps` DROP INDEX `traps_name`;
 ALTER TABLE `traps` ADD UNIQUE (`traps_oid`);
+
+-- 24/08/2007
+ALTER TABLE `general_opt` ADD `snmptt_unknowntrap_log_file` VARCHAR( 255 ) NULL AFTER `snmpttconvertmib_path_bin` ;
