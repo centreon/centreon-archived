@@ -25,6 +25,15 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $nb_value;
 	my $interval_length;
 	
+	if (!-d $_[0]){
+		writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
+		if (!mkdir($_[0], "775")) {
+			writeLogFile("Can't create ".$_[0]." : permission denied\n");	
+		} else {
+			writeLogFile($_[0]." Created\n");
+		}
+	}
+	
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
 		$valueRecorded++;
@@ -77,6 +86,15 @@ sub updateMysqlDB($$$$){ # connexion value timestamp
 sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
+
+	if (!-d $_[0]){
+		writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
+		if (!mkdir($_[0], "775")) {
+			writeLogFile("Can't create ".$_[0]." : permission denied\n");	
+		} else {
+			writeLogFile($_[0]." Created\n");
+		}
+	}
 
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
