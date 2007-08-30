@@ -110,7 +110,7 @@ For information : contact@oreon-project.org
 						if ($BP){
 							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
 							if (PEAR::isError($DBRESULT3)) 
-								print "DB Error : SELECT host_host_id FROM hostgroup_relation... : ".$DBRESULT3->getMessage()."<br>";
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 							while($DBRESULT3->fetchInto($host))	{
 								$BP = false;
 								if ($ret["level"]["level"] == 1)
@@ -122,8 +122,8 @@ For information : contact@oreon-project.org
 								if ($BP)
 									$strTemp != NULL ? $strTemp .= ", ".getMyHostName($host["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($host["host_host_id"]).", ".$service["service_description"];
 							}
+							$DBRESULT3->free();
 						}
-						$DBRESULT3->free();
 					}
 				}
 			}
