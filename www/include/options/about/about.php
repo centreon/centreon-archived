@@ -50,6 +50,6 @@ For information : contact@oreon-project.org
 	Maximilien Bersoult (leoncx)<br>
 	Gaetan Lucas de Couville (gae)<br>
 	Nathanael Guyot (Tor)<br>
-	Jean Marie Grisard (Jmou)<br>
+	Jean Marc Grisard (Jmou)<br>
 	</ul>
 </div>
