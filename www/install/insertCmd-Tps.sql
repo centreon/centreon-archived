@@ -57,8 +57,8 @@ INSERT INTO `command` VALUES ('', 'notify-by-email-ng2', '#S#usr#S#bin#S#printf 
 INSERT INTO `command` VALUES ('', 'host-notify-by-epager', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$#BS#&quot; | @MAILER@ -s #BS#&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$#BS#&quot; $CONTACTPAGER$', '', 1);
 INSERT INTO `command` VALUES ('', 'notify-by-epager', '#S#usr#S#bin#S#printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$#S#$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$', '', 1);
 
-INSERT INTO `command` VALUES ('', 'submit-host-check-result', '$USER1$#S#submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039;$HOSTOUTPUT$&#039;', '', 3);
-INSERT INTO `command` VALUES ('', 'submit-service-check-result', '$USER1$#S#submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039;$SERVICEOUTPUT$&#039;', '', 3);
+INSERT INTO `command` VALUES ('', 'submit-host-check-result', '$USER1$#S#submit_host_check_result &quot;$HOSTNAME$&quot; &quot;$HOSTSTATE$&quot; &quot;$HOSTOUTPUT$&quot;', '', 3);
+INSERT INTO `command` VALUES ('', 'submit-service-check-result', '$USER1$#S#submit_service_check_result &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEOUTPUT$&quot; &quot;$SERVICEPERFDATA$&quot;', '', 3);
 INSERT INTO `command` VALUES ('', 'process-service-perfdata', '$USER1$#S#process-service-perfdata  &quot;$LASTSERVICECHECK$&quot; &quot;$HOSTNAME$&quot; &quot;$SERVICEDESC$&quot; &quot;$SERVICEOUTPUT$&quot; &quot;$SERVICESTATE$&quot; &quot;$SERVICEPERFDATA$&quot;', '', 3);
 
 --
