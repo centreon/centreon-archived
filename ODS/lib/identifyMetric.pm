@@ -43,7 +43,9 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 		    if (!defined($3)){$3 = "";}
 		    if (!defined($4)){$4 = "";}
 		    if (!defined($5)){$5 = "";}
-		    @data = ($1, $2, $3, $4, $5); # metric, value, unit, warn, critical
+		    if (!defined($6)){$6 = "";}
+		    if (!defined($7)){$7 = "";}
+		    @data = ($1, $2, $3, $4, $5, $6, $7); # metric, value, unit, warn, critical, min, max
 		}
 		if ($1 && defined($2)){			
 			# Check if metric is known...
