@@ -18,7 +18,10 @@
 				<b>{$formService.service.label}:</b>&nbsp;&nbsp;{$formService.service.html}
 				{$formService.hidden}
 			&nbsp;&nbsp;&nbsp;{$period}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
-			</form>	
+			</form>
+		</td>
+		<td>
+			<a href="{$link_csv_url}"><img src="./img/icones/16x16/opencalc.gif" alt={$link_csv_name}/></a>
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>

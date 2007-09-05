@@ -19,36 +19,20 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit;
 
-	$day = date("d",time());
-	$year = date("Y",time());
-	$month = date("m",time());
-	$today_start = mktime(0, 0, 0, $month, $day, $year);
-	$today_end = time();
-
-	$tt = 0;
-	$start_date_select = 0;
-	$end_date_select = 0;
-
-	$path = "./include/reporting/dashboard";
-
 	# Smarty template Init
+	$path = "./include/reporting/dashboard";
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
 	$tpl->assign('o', $o);
-	require_once './class/other.class.php';
-	require_once './include/common/common-Func.php';
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
-	include("./include/monitoring/log/choose_log_file.php");
 
-	# LCA
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
-	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+
+	require_once './class/other.class.php';
+	require_once './include/common/common-Func.php';
+	require_once './include/common/common-Func-ACL.php';
+	require_once 'HostLog.php';
+	include("./include/monitoring/log/choose_log_file.php");
 
 
 	#
@@ -56,49 +40,17 @@ For information : contact@oreon-project.org
 	#
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
 
-	#
-	## period selection
-	#
-	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
-	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 		
 	if($mhost)	{
-		$end_date_select = 0;
-		$start_date_select= 0;
 		if($period == "customized") {
-			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
-			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
-			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
-			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 			$formHost->addElement('hidden', 'end', $end);
 			$formHost->addElement('hidden', 'start', $start);
+			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end";
 		}
 		else {
-			getDateSelect_predefined($end_date_select, $start_date_select, $period);
+			$var_url_export_csv = "&period=".$period;
 			$formHost->addElement('hidden', 'period', $period);
 		}
-		$host_id = getMyHostID($mhost);
-		$sd = $start_date_select;
-		$ed = $end_date_select;
-
-		#
-		## recupere les log host en base
-		#
-		$hbase = array();
-		$Tup = NULL;
-		$Tdown = NULL;
-		$Tunreach = NULL;
-		$Tnone = NULL;
-		getLogInDbForHost($hbase, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
-		$Tup = $hbase["Tup"];
-		$Tdown = $hbase["Tdown"];
-		$Tunreach = $hbase["Tunreach"];
-		$Tnone = $hbase["Tnone"];
-		
-		$tab_svc_bdd = array();
-		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
-		$serviceList = getMyHostServices($host_id);
 	}
 
 	#
@@ -151,226 +103,18 @@ For information : contact@oreon-project.org
 
 
 
-	$today_up = 0;
-	$today_down = 0;
-	$today_unreachable = 0;
-	$today_pending = 0;
-	$today_UPnbEvent = 0;
-	$today_UNREACHABLEnbEvent = 0;
-	$today_DOWNnbEvent = 0;
-	$tab_today = array();
-	getTodayLogForHost($mhost, $tab_today, $pearDBO, $today_start, $today_end);
-	$today_up += $tab_today["Tup"];
-	$today_down += $tab_today["Tdown"];
-	$today_unreachable += $tab_today["Tunreachable"];
-	$today_pending += $tab_today["Tnone"];
-	$today_UPnbEvent += $tab_today["TupNBAlert"];
-	$today_UNREACHABLEnbEvent += $tab_today["TunreachableNBAlert"];
-	$today_DOWNnbEvent += $tab_today["TdownNBAlert"];
 
 
 	if($mhost){
+		$i=0;
 
-	$day = date("d",time());
-	$year = date("Y",time());
-	$month = date("m",time());
-	$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
-
-	$tab_svc_average = array();
-	$tab_svc_average["PTOK"] = 0;
-	$tab_svc_average["PAOK"] = 0;
-	$tab_svc_average["PTW"] = 0;
-	$tab_svc_average["PAW"] = 0;
-	$tab_svc_average["PTU"] = 0;
-	$tab_svc_average["PAU"] = 0;
-	$tab_svc_average["PTC"] = 0;
-	$tab_svc_average["PAC"] = 0;
-	$tab_svc_average["PTN"] = 0;
-	$tab_svc_average["PKTOK"] = 0;
-	$tab_svc_average["PKTW"] = 0;
-	$tab_svc_average["PKTU"] = 0;
-	$tab_svc_average["PKTC"] = 0;
-	$tab_svc_average["nb_svc"] = 0;
-
-	$tab_hosts = array();
-	$day_current_start = 0;
-	$day_current_end = time() + 1;
-	$time = time();
-	
-	$i=0;
-	foreach($serviceList as $svc_id => $svc_name)
-	{
-		$tab_tmp = array();
-		$tab_tmp["svcName"] = $svc_name;
-		$tab_tmp["service_id"] = $svc_id;
-		$tt = $end_date_select - $start_date_select;
-
-		$tab_tmp["PtimeOK"] = 0;
-		$tab_tmp["PtimeWARNING"] =  0;
-		$tab_tmp["PtimeUNKNOWN"] = 0;
-		$tab_tmp["PtimeCRITICAL"] = 0;
-		$tab_tmp["PtimeNONE"] = $tt;
-
-		if(isset($tab_svc_bdd[$svc_id]) && $tab_svc_bdd[$svc_id]){
-			$tab_tmp["PtimeOK"] = round($tab_svc_bdd[$svc_id]["Tok"] / $tt *100,2);
-			$tab_tmp["PtimeWARNING"] = round( $tab_svc_bdd[$svc_id]["Twarn"]/ $tt *100,2);
-			$tab_tmp["PtimeUNKNOWN"] = round( $tab_svc_bdd[$svc_id]["Tunknown"]/ $tt *100,2);
-			$tab_tmp["PtimeCRITICAL"] = round( $tab_svc_bdd[$svc_id]["Tcri"]/ $tt *100,2);
-			$tab_tmp["PtimeNONE"] = round( ( $tt - ($tab_svc_bdd[$svc_id]["Tok"] + $tab_svc_bdd[$svc_id]["Twarn"] + $tab_svc_bdd[$svc_id]["Tunknown"] + $tab_svc_bdd[$svc_id]["Tcri"])
-												 )  / $tt *100,2);
-			$tmp_none = $tt - ($tab_svc_bdd[$svc_id]["Tok"] + $tab_svc_bdd[$svc_id]["Twarn"] + $tab_svc_bdd[$svc_id]["Tunknown"] + $tab_svc_bdd[$svc_id]["Tcri"]);
-	
-			$tab_tmp["OKnbEvent"] = isset($tab_svc_bdd[$svc_id]["OKnbEvent"]) ? $tab_svc_bdd[$svc_id]["OKnbEvent"] : 0;
-			$tab_tmp["WARNINGnbEvent"] = isset($tab_svc_bdd[$svc_id]["WARNINGnbEvent"]) ? $tab_svc_bdd[$svc_id]["WARNINGnbEvent"] : 0;
-			$tab_tmp["UNKNOWNnbEvent"] = isset($tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"]) ? $tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] : 0;
-			$tab_tmp["CRITICALnbEvent"] = isset($tab_svc_bdd[$svc_id]["CRITICALnbEvent"]) ? $tab_svc_bdd[$svc_id]["CRITICALnbEvent"] : 0;
-	
-			$tab_tmp["PktimeOK"] = round($tab_svc_bdd[$svc_id]["Tok"] / ($tt - $tmp_none) *100,2);
-			$tab_tmp["PktimeWARNING"] = round( $tab_svc_bdd[$svc_id]["Twarn"]/ ($tt - $tmp_none) *100,2);
-			$tab_tmp["PktimeUNKNOWN"] = round( $tab_svc_bdd[$svc_id]["Tunknown"]/ ($tt - $tmp_none) *100,2);
-			$tab_tmp["PktimeCRITICAL"] = round( $tab_svc_bdd[$svc_id]["Tcri"]/ ($tt - $tmp_none) *100,2);
-	
-	
-			// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
-			$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 1, '.', '');
-			$tab_tmp["PtimeWARNING"] = number_format($tab_tmp["PtimeWARNING"], 1, '.', '');
-			$tab_tmp["PtimeUNKNOWN"] = number_format($tab_tmp["PtimeUNKNOWN"], 1, '.', '');
-			$tab_tmp["PtimeCRITICAL"] = number_format($tab_tmp["PtimeCRITICAL"], 1, '.', '');
-			$tab_tmp["PtimeNONE"] = number_format($tab_tmp["PtimeNONE"], 1, '.', '');
-			$tab_tmp["PtimeNONE"] = ($tab_tmp["PtimeNONE"] < 0.1) ? 0.0 : $tab_tmp["PtimeNONE"];
-	
-			$tab_tmp["PktimeOK"] = number_format($tab_tmp["PktimeOK"], 1, '.', '');
-			$tab_tmp["PktimeWARNING"] = number_format($tab_tmp["PktimeWARNING"], 1, '.', '');
-			$tab_tmp["PktimeUNKNOWN"] = number_format($tab_tmp["PktimeUNKNOWN"], 1, '.', '');
-			$tab_tmp["PktimeCRITICAL"] = number_format($tab_tmp["PktimeCRITICAL"], 1, '.', '');
-	
-			//end
-	
-			#
-			## fill average svc table
-			#
-			$tab_svc_average["PTOK"] += $tab_tmp["PtimeOK"];
-			$tab_svc_average["PAOK"] += $tab_tmp["OKnbEvent"];
-			$tab_svc_average["PTW"] += $tab_tmp["PtimeWARNING"];
-			$tab_svc_average["PAW"] += $tab_tmp["WARNINGnbEvent"];
-			$tab_svc_average["PTU"] += $tab_tmp["PtimeUNKNOWN"];
-			$tab_svc_average["PAU"] += $tab_tmp["UNKNOWNnbEvent"];
-			$tab_svc_average["PTC"] += $tab_tmp["PtimeCRITICAL"];
-			$tab_svc_average["PAC"] += $tab_tmp["CRITICALnbEvent"];			
-			$tab_svc_average["PTN"] += $tab_tmp["PtimeNONE"];
-			$tab_svc_average["PKTOK"] += $tab_tmp["PktimeOK"];
-			$tab_svc_average["PKTW"] += $tab_tmp["PktimeWARNING"];
-			$tab_svc_average["PKTU"] += $tab_tmp["PktimeUNKNOWN"];
-			$tab_svc_average["PKTC"] += $tab_tmp["PktimeCRITICAL"];
-			$tab_svc_average["nb_svc"] += 1;
-	
-		}
-		$tab_svc[$i++] = $tab_tmp;
-	}
-
-	#
-	## calculate svc average
-	#
-	if($tab_svc_average["PAOK"] > 0)
-	$tab_svc_average["PAOK"] = number_format($tab_svc_average["PAOK"] / $tab_svc_average["nb_svc"], 1, '.', '');
-	if($tab_svc_average["PAW"] > 0)
-	$tab_svc_average["PAW"] = number_format($tab_svc_average["PAW"] / $tab_svc_average["nb_svc"], 1, '.', '');
-	if($tab_svc_average["PAU"] > 0)
-	$tab_svc_average["PAU"] = number_format($tab_svc_average["PAU"] / $tab_svc_average["nb_svc"], 1, '.', '');
-	if($tab_svc_average["PAC"] > 0)
-	$tab_svc_average["PAC"] = number_format($tab_svc_average["PAC"] / $tab_svc_average["nb_svc"], 1, '.', '');
-
-
-	if($tab_svc_average["PTOK"] > 0)
-	$tab_svc_average["PTOK"] = number_format($tab_svc_average["PTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PTW"] > 0)
-	$tab_svc_average["PTW"] = number_format($tab_svc_average["PTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PTU"] > 0)
-	$tab_svc_average["PTU"] = number_format($tab_svc_average["PTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PTC"] > 0)
-	$tab_svc_average["PTC"] = number_format($tab_svc_average["PTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PTN"] > 0)
-	$tab_svc_average["PTN"] = number_format($tab_svc_average["PTN"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PKTOK"] > 0)
-	$tab_svc_average["PKTOK"] = number_format($tab_svc_average["PKTOK"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PKTW"] > 0)
-	$tab_svc_average["PKTW"] = number_format($tab_svc_average["PKTW"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PKTU"] > 0)
-	$tab_svc_average["PKTU"] = number_format($tab_svc_average["PKTU"] / $tab_svc_average["nb_svc"], 3, '.', '');
-	if($tab_svc_average["PKTC"] > 0)
-	$tab_svc_average["PKTC"] = number_format($tab_svc_average["PKTC"] / $tab_svc_average["nb_svc"], 3, '.', '');
-
-
-	#
-	## calculate host %
-	#
-	$tab_resume = array();
-	$tab = array();
-	$timeTOTAL = $end_date_select - $start_date_select;
-
-	$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
-	if($Tnone <= 1)
-	$Tnone = 0;
-
-	$tab["state"] = $lang["m_UpTitle"];
-	$tab["time"] = Duration::toString($Tup);
-	$tab["timestamp"] = $Tup;
-	$tab["pourcentTime"] = round($Tup/($timeTOTAL+1)*100,2) ;
-	$tab["pourcentkTime"] = round($Tup/($timeTOTAL-$Tnone+1)*100,2). "%";
-	$tab["nbAlert"] = $hbase["TupNBAlert"];
-	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
-	$tab_resume[0] = $tab;
-
-	$tab["state"] = $lang["m_DownTitle"];
-	$tab["time"] = Duration::toString($Tdown);
-	$tab["timestamp"] = $Tdown;
-	$tab["pourcentTime"] = round($Tdown/$timeTOTAL*100,2);
-	$tab["pourcentkTime"] = round($Tdown/($timeTOTAL-$Tnone+1)*100,2)."%";
-	$tab["nbAlert"] = $hbase["TdownNBAlert"];
-	
-	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
-	$tab_resume[1] = $tab;
-
-	$tab["state"] = $lang["m_UnreachableTitle"];
-	$tab["time"] = Duration::toString($Tunreach);
-	$tab["timestamp"] = $Tunreach;
-	$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
-	$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone+1)*100,2)."%";
-	$tab["nbAlert"] = $hbase["TunreachableNBAlert"];
-	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
-	$tab_resume[2] = $tab;
-
-
-	$tab["state"] = $lang["m_PendingTitle"];
-	$tab["time"] = Duration::toString($Tnone);
-	$tab["timestamp"] = $Tnone;
-	$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
-	$tab["pourcentkTime"] = null;
-	$tab["nbAlert"] = "";	
-	$tab["style"] = "class='ListColCenter' style='background:#cccccc'";
-	$tab_resume[3] = $tab;
 
 
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
 
-	$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
-	$end_date_select_save_timestamp =  $end_date_select;
-	$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
 
 	$tpl->assign('host_name', $mhost);
-	$status = "";
-	$totalTime = 0;
-	$totalpTime = 0;
-	$totalpkTime = 0;
-	foreach ($tab_resume  as $tb){
-		if($tb["pourcentTime"] >= 0)
-			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
-		$totalTime += $tb["timestamp"];
-		$totalpTime += $tb["pourcentTime"];
-		$totalpkTime += $tb["pourcentkTime"];
-	}
 
-	$totalAlert = $hbase["TunreachableNBAlert"] + $hbase["TdownNBAlert"] + $hbase["TupNBAlert"];
 
 	$tpl->assign('totalAlert', $totalAlert);
 
@@ -383,6 +127,9 @@ For information : contact@oreon-project.org
 	if(isset($tab_svc))
 	$tpl->assign("tab_svc", $tab_svc);
 	$tpl->assign("tab_svc_average", $tab_svc_average);
+
+	$tt = 0 + ($ed - $sd);
+
 	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));
 	}## end of period requirement
 
@@ -457,6 +204,11 @@ For information : contact@oreon-project.org
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
+	if($mhost){
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_HostLog.php?sid=".$sid."&host=".$mhost.$var_url_export_csv);
+		$tpl->assign("link_csv_name", "Export CSV");
+	}
+
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
 	$today_pending = $tt - ($today_down + $today_up + $today_unreachable);
@@ -474,8 +226,8 @@ For information : contact@oreon-project.org
 	
 		$today_var = '&today_up='.$today_up . '&today_down='.$today_down.'&today_unreachable='.$today_unreachable. '&today_pending=' . $today_pending;
 		$today_var .= '&today_UPnbEvent='.$today_UPnbEvent.'&today_UNREACHABLEnbEvent='.$today_UNREACHABLEnbEvent.'&today_DOWNnbEvent='.$today_DOWNnbEvent;
-	
-		$type = 'Host';	
+
+		$type = 'Host';
 		include('ajaxReporting_js.php');
 	}
 	else {

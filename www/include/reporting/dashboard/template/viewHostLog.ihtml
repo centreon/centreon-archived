@@ -12,13 +12,16 @@
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
-		<td class="ListColHeaderLeft" style='white-space: nowrap;'>
+		<td class="ListColHeaderLeft" style='white-space: nowrap; border-left-width:0.0px;border-left-style:none;'>
 			<form {$formHost.attributes} style="margin:0px;padding:0px;">
 				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">&nbsp;{$formHost.host.label}&nbsp;&nbsp;{$formHost.host.html}{$formHost.hidden}
 				{if $date_start_select != 0}
 				&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
 				{/if}
-			</form>	
+			</form>
+		</td>
+		<td>
+			<a href="{$link_csv_url}"><img src="./img/icones/16x16/opencalc.gif" alt={$link_csv_name}/></a>
 		</td>
 	</tr>
 	<tr class='list_lvl_3'>
