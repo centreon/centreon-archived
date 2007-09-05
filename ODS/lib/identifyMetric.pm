@@ -30,36 +30,44 @@
 sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
     my (@data, $begin, $just_insert, $generalcounter);
 	$generalcounter = $_[5];
-	$just_insert = 0;   				
+	$just_insert = 0;
+	   				
 	# Get conf Data
 	my $sth1 = $con_ods->prepare("SELECT * FROM config");
-	if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+	writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
 	my $configuration = $sth1->fetchrow_hashref();
 	undef($sth1);
 	
-    foreach my $tab (split(' ', $_[0])){	
-    	# Cut perfdata    	
-    	if ($tab =~ /([a-zA-Z0-9\_\-\/\.\:]+)\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)/){
-		    if (!defined($3)){$3 = "";}
-		    if (!defined($4)){$4 = "";}
-		    if (!defined($5)){$5 = "";}
-		    if (!defined($6)){$6 = "";}
-		    if (!defined($7)){$7 = "";}
-		    @data = ($1, $2, $3, $4, $5, $6, $7); # metric, value, unit, warn, critical, min, max
-		}
+	# Cut perfdata    	
+	$_[0] =~ s/\n//g;
+	my $metric = $_[0];
+	while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ ]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g){
+	    if (!defined($3)){$3 = "";}
+	    if (!defined($4)){$4 = "";}
+	    if (!defined($5)){$5 = "";}
+	    if (!defined($6)){$6 = "";}
+	    if (!defined($7)){$7 = "";}
+	    my $cpt = 1;
+	    my $x = 0;
+	    while (defined($$cpt)){
+	    	$data[$x] = $$cpt;
+	    	$cpt++;
+	    }
+	    @data = ($1, $2, $3, $4, $5, $6, $7); # metric, value, unit, warn, critical, min, max
 		if ($1 && defined($2)){			
 			# Check if metric is known...
 			$data[0] =~ s/\//#S#/g;
+			$data[0] =~ s/\\/#BS#/g;
 			$data[0] =~ s/\./\-/g;
 			$data[0] =~ s/\,/\-/g;
 			$data[0] =~ s/\:/\-/g;
-			print "$1 - $2 - $3 - $4 - $5 - $6 - $7\n";
+			$data[0] =~ s/\ /\-/g;
+			
 			my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
 			writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
 			if ($sth1->rows() eq 0){
 				$just_insert = 1;   				
 				undef($sth1);
-				print "INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."', '".$data[3]."', '".$data[4]."', '".$data[5]."', '".$data[6]."')\n";
 				# Si pas connue -> insert
 			   	my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."', '".$data[3]."', '".$data[4]."', '".$data[5]."', '".$data[6]."')");
 			    writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
@@ -77,9 +85,7 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 		   	}
 			if ($data[3] != "" || $data[4] != "" || $data[5] != "" || $data[6] != ""){
 				my $str = "";
-				if ($data[3]){
-					$str .= "`warn` = '".$data[3]."',  ";
-			   	}
+				$str .= "`warn` = '".$data[3]."', " if ($data[3]);
 			   	if ($data[4]){
 			   		$str .= ", " if ($str != "");
 				   	$str .= "`crit` = '".$data[4]."' ";
@@ -95,6 +101,7 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 			   	$sth1 = $con_ods->prepare("UPDATE metrics SET $str WHERE `metric_id` = '".$metric->{'metric_id'}."'");
 				writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
 			    undef($sth1);
+				undef($str);
 			}		   	
 			# Check Storage Type
 			# O -> BD Mysql & 1 -> RRDTool
@@ -105,10 +112,9 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 				$generalcounter++;
 			}
 			$just_insert = 0;
-		}
-    }
-    undef($tab);
-    undef(@data);
+	    }
+	    undef(@data);
+	}
     undef($begin);
     return $generalcounter;
 }

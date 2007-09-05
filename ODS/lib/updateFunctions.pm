@@ -67,7 +67,7 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			$_[3] =~ s/\,/\./g;
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
-			if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}	
+			writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n") if ($ERR);	
 			undef($begin);
 		}
 	}
