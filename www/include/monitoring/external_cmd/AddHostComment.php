@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	
 	if (isset($_GET["host_name"])){
 		$host_id = getMyHostID($_GET["host_name"]);
-		if (!isset($lcaHostByName[$_GET["host_name"]]) && $isRestreint)
+		if (!isset($lcaHostByName[LcaHost] [$_GET["host_name"]]) && $isRestreint)
 			$LCA_error = 1;
 		$host_name = $_GET["host_name"];
 	} else

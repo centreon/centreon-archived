@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 	
 	if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
 		$host_id = getMyHostID($_GET["host_name"]);
-		if (!isset($lcaHostByName[$_GET["host_name"]]) && $isRestreint)
+		if ($isRestreint && !isset($lcaHostByName[LcaHost] [$_GET["host_name"]]))
 			$LCA_error = 1;
 		$service_id = getMyServiceID($_GET["service_description"], $host_id);
 		$host_name = $_GET["host_name"];
