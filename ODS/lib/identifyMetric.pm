@@ -53,14 +53,16 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 			$data[0] =~ s/\./\-/g;
 			$data[0] =~ s/\,/\-/g;
 			$data[0] =~ s/\:/\-/g;
+			print "$1 - $2 - $3 - $4 - $5 - $6 - $7\n";
 			my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-			if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+			writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
 			if ($sth1->rows() eq 0){
 				$just_insert = 1;   				
 				undef($sth1);
+				print "INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."', '".$data[3]."', '".$data[4]."', '".$data[5]."', '".$data[6]."')\n";
 				# Si pas connue -> insert
-			   	my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."')");
-			    if (!$sth2->execute){writeLogFile("Error:" . $sth2->errstr . "\n");}
+			   	my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."', '".$data[3]."', '".$data[4]."', '".$data[5]."', '".$data[6]."')");
+			    writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
 			    undef($sth2);
 			    # Get ID
 			   	$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
@@ -68,28 +70,39 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 			}
 			my $metric = $sth1->fetchrow_hashref();
 			undef($sth1);
-			
 		   	if ($just_insert || ($metric->{'unit_name'} ne $data[2])){
-		   		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
-		    	if (!$sth1->execute){writeLogFile("Error:" . $sth1->errstr . "\n");}
+		   		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."', `warn` = '".$data[3]."', `crit` = '".$data[4]."', `min` = '".$data[5]."', `max` = '".$data[6]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
+		    	writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
 		    	undef($sth1);
 		   	}
-			
+			if ($data[3] != "" || $data[4] != "" || $data[5] != "" || $data[6] != ""){
+				my $str = "";
+				if ($data[3]){
+					$str .= "`warn` = '".$data[3]."',  ";
+			   	}
+			   	if ($data[4]){
+			   		$str .= ", " if ($str != "");
+				   	$str .= "`crit` = '".$data[4]."' ";
+			   	}
+			   	if ($data[5]){
+			   		$str .= ", " if ($str != "");
+					$str .= "`min` = '".$data[5]."' ";
+			   	}
+			   	if ($data[6]){
+			   		$str .= ", " if ($str != "");
+					$str .= "`max` = '".$data[6]."' ";
+			   	}
+			   	$sth1 = $con_ods->prepare("UPDATE metrics SET $str WHERE `metric_id` = '".$metric->{'metric_id'}."'");
+				writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
+			    undef($sth1);
+			}		   	
 			# Check Storage Type
 			# O -> BD Mysql & 1 -> RRDTool
 			$begin = $_[3] - 200;
 			if (defined($data[1])){
-				if (defined($_[4]) && $_[4] eq 1 && $_[6] ne 2){
-					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
-					$generalcounter++;
-				} elsif (defined($_[4]) && $_[4] eq 0) {   # Insert Data In Mysql 
-					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
-					$generalcounter++;
-				} else {
-					updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}) if (defined($_[6]) && $_[6] ne 2);
-					updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
-					$generalcounter++;
-				}
+				updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
+				updateRrdDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}) if (defined($_[6]) && $_[6] ne 2);
+				$generalcounter++;
 			}
 			$just_insert = 0;
 		}
