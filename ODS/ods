@@ -101,22 +101,39 @@ require $installedPath."lib/identifyMetric.pm";
 require $installedPath."lib/updateFunctions.pm";
 
 sub CheckMySQLConnexion(){
+	my $flag = 0;
 	while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
 		if (!defined($con_oreon)) {
 			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($con_oreon)) {
+				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+				sleep(2);
+			}
 		} else {
 			sleep(2);
 			undef($con_oreon);
 			$con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
+			if (defined($con_oreon)) {
+				$flag = 1;
+				writeLogFile("DataBase became UP !\n");
+			}	
 		}
 		if (!defined($con_ods)) {
 			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($con_ods)) {
+				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+				sleep(2);
+			}
 		} else {
 			sleep(2);
 			undef($con_ods);
 			$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (defined($con_ods) && !$flag) {
+				writeLogFile("DataBase became UP !\n");
+			}	
 		}
 	}
+	undef($flag);
 }
 
 sub CheckMySQLConnexionForODS(){
@@ -182,7 +199,7 @@ sub getConfig(){
 	my ($sth2, $data, $con_ods);
 	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	$sth2 = $con_ods->prepare("SELECT auto_drop,drop_file,perfdata_file FROM config");
-	writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n")if (!$sth2->execute);
+	writeLogFile("Error when getting drop and perfdata properties : ".$sth2->errstr."\n") if (!$sth2->execute);
 	$data = $sth2->fetchrow_hashref();	
 	undef($sth2);
 	undef($con_ods);
