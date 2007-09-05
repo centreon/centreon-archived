@@ -264,7 +264,9 @@ For information : contact@oreon-project.org
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (!isset($ret["len_storage_rrd"]))
-			$ret["len_storage_rrd"] = 0;
+			$ret["len_storage_rrd"] = 1;
+		if (!isset($ret["len_storage_mysql"]))
+			$ret["len_storage_mysql"] = 1;
 		if (!isset($ret["autodelete_rrd_db"]))
 			$ret["autodelete_rrd_db"] = 0;
 		if ($ret["sleep_time"] <= 10)
@@ -283,6 +285,7 @@ For information : contact@oreon-project.org
 			$ret["RRDdatabase_path"] .= "/";
 		$rq = "UPDATE `config` SET `RRDdatabase_path` = '".$ret["RRDdatabase_path"]."',
 				`len_storage_rrd` = '".$ret["len_storage_rrd"]."',
+				`len_storage_mysql` = '".$ret["len_storage_mysql"]."',
 				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',
 				`sleep_time` = '".$ret["sleep_time"]."',
 				`purge_interval` = '".$ret["purge_interval"]."',

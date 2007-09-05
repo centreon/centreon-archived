@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 	<a href="mailto:cfacon@oreon-project.org" class="list_two">Cedrick Facon (Apo)</a><br>
 	Mathavarajan Sugumaran (MrBrown)<br>
 	Florian Foiry (Inconnuflo)<br>
-	Guillaume Watteux (Watt)<br>
+	Guillaume Watteeux (Watt)<br>
 	Maximilien Bersoult (leoncx)<br>
 	Gaetan Lucas de Couville (gae)<br>
 	Nathanael Guyot (Tor)<br>

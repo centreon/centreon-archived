@@ -119,7 +119,12 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
 	}
 	
-	$DBRESULT =& $pearDBO->query("SELECT COUNT(*) FROM index_data ORDER BY host_name, service_description");
+	$search_string = "";
+	if (isset($search) && $search)
+		$search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
+	
+	
+	$DBRESULT =& $pearDBO->query("SELECT COUNT(*) FROM `index_data`$search_string");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
 	$tmp =& $DBRESULT->fetchRow();
@@ -129,11 +134,7 @@ For information : contact@oreon-project.org
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$yesOrNo = array(0 => "No", 1 => "Yes", 2 => "Rebuilding");	
 	//$yesOrNo = array(0 => "<input type='checkbox' hidden='1' disabled>", 1 => "<input type='checkbox' checked disabled>", 2 => "Rebuilding");	
-	
-	$search_string = "";
-	if (isset($search) && $search)
-		$search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
-	
+		
 	$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data`$search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
