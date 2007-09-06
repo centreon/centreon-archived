@@ -322,10 +322,10 @@ sub checkAndUpdate($){
 	if ($_[5]){
 		if ($_[1] =~ /[a-zA-Z]*_Module/){
 			@data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
-			$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
+			$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]) if (!$data_service[3]); # perfdata index status time type counter rebuild
 		} else {
 			@data_service = identify_service($_[1], $_[2]); # return index_id and storage
-			$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
+			$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]) if (!$data_service[3]); # perfdata index status time type counter rebuild
 		}
 	}
 	undef(@data_service);
@@ -397,9 +397,13 @@ sub CheckRebuild(){
 						$interval = 90;
 					}
 				} else {
-					$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * 60 + 30;
-				}
-				
+					my $best_mode = 0;
+					if ($best_mode == 1){
+						$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * 60 + 30;
+					} else {
+						$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * 60 * 2;
+					}
+				}		
 				my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 				if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
 				while ($metric = $sth3->fetchrow_hashref()){
@@ -458,10 +462,26 @@ sub CheckRebuild(){
 	}
 }
 
+sub BuildReport(){
+	while (1){
+		;
+	}
+}
+
+sub ParseLogSNMPTT(){
+	while (1){
+		sleep(10);
+	}
+}
+
 # launch all threads
+
 my $threadPerfdata 			= 	threads->new("GetPerfData");
 my $threadCheckRestart		= 	threads->new("CheckRestart");
 my $threadCheckRebuild		= 	threads->new("CheckRebuild");
+my $threadBuildReport		= 	threads->new("BuildReports");
+my $ParseLogSNMPTT			= 	threads->new("ParseLogSNMPTT");
+
 
 #my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
 
