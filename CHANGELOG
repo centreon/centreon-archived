@@ -1,5 +1,7 @@
 ## Centreon 1.4.2
 => Bugfix : ID Card switching server/network doesn't work
+=> Bugfix : Host massive change doesn't need to select the host template model to create the service linked (n levels)
+=> Bugfix : Remember limit per page in configuration =>perfparse, ressource..
 
 ## Centreon 1.4.1
 => Bugfix : Better trap management, with MIB loading in web frontend
