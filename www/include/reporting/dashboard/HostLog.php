@@ -310,4 +310,66 @@ For information : contact@oreon-project.org
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
 
+
+	/* historical daily report*/
+	$tab_report = array();
+	$rq = 'SELECT ' .
+	' * FROM `log_archive_host` WHERE host_id = ' . $host_id .
+	' order by date_start desc';
+		
+	$res = & $pearDB->query($rq);
+
+	  while ($h =& $res->fetchRow()) {
+		$uptime = $h["UPTimeScheduled"];
+		$downtime = $h["DOWNTimeScheduled"];
+		$unreachalbetime = $h["UNREACHABLETimeScheduled"];
+
+		$tt = 0 + ($h["date_end"] - $h["date_start"]);
+		if(($uptime + $downtime + $unreachalbetime) < $tt)
+			$undeterminatetime = 0 + $tt - ($uptime + $downtime + $unreachalbetime);
+		else
+		$undeterminatetime = 0;
+		if($unreachalbetime > 0)
+		$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
+		else
+		$punreach = "0.00";
+
+		if($uptime > 0)
+		$pup = 0 +round(($uptime / $tt * 100),2);
+		else
+		$pup = "0.00";
+		
+		if($downtime > 0)
+		$pdown = 0 +round(($downtime / $tt * 100),2);
+		else
+		$pdown = "0.00";
+		
+		if($undeterminatetime > 0)
+		$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
+		else
+		$pundet = "0.00";
+
+		$t = 0 + ($h["date_end"] - $h["date_start"]);
+		$t = round(($t - ($t * 0.11574074074)),2);
+		$start = $h["date_start"] + 5000;
+
+		$tab_tmp = array();
+		$tab_tmp ["duration"] = Duration::toString($tt) ? Duration::toString($tt) : 0;
+		$tab_tmp ["uptime"] = Duration::toString($uptime) ? Duration::toString($uptime) : 0;
+		$tab_tmp ["downtime"] = Duration::toString($downtime) ? Duration::toString($downtime) : 0;
+		$tab_tmp ["unreachalbetime"] = Duration::toString($unreachalbetime) ? Duration::toString($unreachalbetime) : 0;
+		$tab_tmp ["undeterminatetime"] = Duration::toString($undeterminatetime) ? Duration::toString($undeterminatetime) : 0 ;
+		$tab_tmp ["pup"] = 0+$pup;
+		$tab_tmp ["pdown"] = 0+$pdown;
+		$tab_tmp ["punreach"] = 0+$punreach;
+		$tab_tmp ["pundet"] = 0+$pundet;
+
+		$tab_tmp ["UPnbEvent"] = $h["UPnbEvent"];
+		$tab_tmp ["DOWNnbEvent"] = $h["DOWNnbEvent"];
+		$tab_tmp ["UNREACHABLEnbEvent"] = $h["UNREACHABLEnbEvent"];
+
+
+		$tab_report[date("d/m/Y", $start)] = $tab_tmp;
+	  }
+
 ?>

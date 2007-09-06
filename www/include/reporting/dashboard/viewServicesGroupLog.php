@@ -78,8 +78,10 @@ For information : contact@oreon-project.org
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 			$formservicegroup->addElement('hidden', 'end', $end);
 			$formservicegroup->addElement('hidden', 'start', $start);
+			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end";
 		}
 		else {
+			$var_url_export_csv = "&period=".$period;
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formservicegroup->addElement('hidden', 'period', $period);
 		}
@@ -95,7 +97,7 @@ For information : contact@oreon-project.org
 		$Tdown = NULL;
 		$Tunreach = NULL;
 		$Tnone = NULL;
-		getLogInDbForServicesGroup($sbase, $pearDB, $pearDBO, $servicegroup_id, $start_date_select, $end_date_select, $gopt, $today_start, $today_end);
+		getLogInDbForServicesGroup($sbase, $pearDB, $pearDBO, $servicegroup_id, $start_date_select, $end_date_select, $today_start, $today_end);
 	}
 
 	#
@@ -461,6 +463,10 @@ For information : contact@oreon-project.org
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
+	if($mservicegroup){
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_ServiceGroupLog.php?sid=".$sid."&servicegroup=".$mservicegroup.$var_url_export_csv);
+		$tpl->assign("link_csv_name", "Export CSV");
+	}
 
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);

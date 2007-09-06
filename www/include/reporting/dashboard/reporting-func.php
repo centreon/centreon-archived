@@ -304,15 +304,7 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	function getLogInDbForServicesGroup(&$sbase, $pearDB, $pearDBO, $servicegroup_id, $start_date_select, $end_date_select, $gopt, $today_start, $today_end){
-
-		# ODS Database retrieve information
-		$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$result_config = $DBRESULT->fetchRow();
-		if (isset($result_config) && $result_config)
-			$gopt = array_map("myDecode", $result_config);
+	function getLogInDbForServicesGroup(&$sbase, $pearDB, $pearDBO, $servicegroup_id, $start_date_select, $end_date_select, $today_start, $today_end){
 
 		$sbase["average"]["Tok"] = 0;
 		$sbase["average"]["Twarning"] = 0;

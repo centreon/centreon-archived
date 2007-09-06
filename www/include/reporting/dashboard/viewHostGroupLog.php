@@ -79,8 +79,10 @@ For information : contact@oreon-project.org
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 			$formHostGroup->addElement('hidden', 'end', $end);
 			$formHostGroup->addElement('hidden', 'start', $start);
+			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end";
 		}
 		else {
+			$var_url_export_csv = "&period=".$period;
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formHostGroup->addElement('hidden', 'period', $period);
 		}
@@ -390,6 +392,13 @@ For information : contact@oreon-project.org
 	$tpl->assign('resumeTitle', $lang["m_hostResumeTitle"]);
 	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
 	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
+
+
+	if($mhostgroup){
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_HostGroupLog.php?sid=".$sid."&hostgroup=".$mhostgroup.$var_url_export_csv);
+		$tpl->assign("link_csv_name", "Export CSV");
+	}
+
 
 	$formPeriod->setDefaults(array('period' => $period));
 
