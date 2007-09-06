@@ -90,13 +90,14 @@ header("Content-disposition: filename=table.csv");
 	echo "\n";
 	echo "\n";
 
-/*
+
 	echo "Day;Duration;".
-		 "uptime;up%;upAlert;".
-		 "downtime;down%;downAlert;".
-		 "unreachalbetime;unreachalbe%;unreachalbeAlert;".
-		 "undeterminatetime;undeterminate%\n";
-*/
+		 "oktime;ok%;okAlert;".
+		 "criticaltime;critical%;criticalAlert;".
+		 "warningtime;warning%;warningAlert;".
+		 "pendingtime;pending%;".
+		 "unknowntime;unknown%;\n";
+
 	foreach ($tab_report as $day => $report) {
 			echo $day.";".$report["duration"].";".
 		 	$report["oktime"].";".$report["pok"].";".$report["OKnbEvent"].";".

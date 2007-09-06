@@ -255,14 +255,14 @@ For information : contact@oreon-project.org
 	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown / $tt *100,2);
 	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical / $tt *100,2);
 	$today_none = ($today_none < 0.1) ? "0" : $today_none;
-	$tab_report[date("d/m/Y", $today_start)]["pok"] = Duration::toString($today_ok);
-	$tab_report[date("d/m/Y", $today_start)]["pwarning"] = Duration::toString($today_warning);
-	$tab_report[date("d/m/Y", $today_start)]["punknown"] = Duration::toString($today_unknown);
-	$tab_report[date("d/m/Y", $today_start)]["pcritical"] = Duration::toString($today_critical);
-	$tab_report[date("d/m/Y", $today_start)]["ppending"] = Duration::toString($today_none);
-	$tab_report[date("d/m/Y", $today_start)]["OKnbEvent"] = Duration::toString($today_OKnbEvent);
-	$tab_report[date("d/m/Y", $today_start)]["WARNINGnbEvent"] = Duration::toString($today_WARNINGnbEvent);
-	$tab_report[date("d/m/Y", $today_start)]["CRITICALnbEvent"] = Duration::toString($today_CRITICALnbEvent);
+	$tab_report[date("d/m/Y", $today_start)]["pok"] = $today_ok;
+	$tab_report[date("d/m/Y", $today_start)]["pwarning"] = $today_warning;
+	$tab_report[date("d/m/Y", $today_start)]["punknown"] = $today_unknown;
+	$tab_report[date("d/m/Y", $today_start)]["pcritical"] = $today_critical;
+	$tab_report[date("d/m/Y", $today_start)]["ppending"] = $today_none;
+	$tab_report[date("d/m/Y", $today_start)]["OKnbEvent"] = $today_OKnbEvent;
+	$tab_report[date("d/m/Y", $today_start)]["WARNINGnbEvent"] = $today_WARNINGnbEvent;
+	$tab_report[date("d/m/Y", $today_start)]["CRITICALnbEvent"] = $today_CRITICALnbEvent;
 
 
 	$rq = 'SELECT ' .

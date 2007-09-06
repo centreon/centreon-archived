@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 
 
 	
-	echo "Service;".$lang["m_OKTitle"]."%; ".$lang["m_OKTitle"]." Alert;"
+	echo "Hostname;Servicename;".$lang["m_OKTitle"]."%; ".$lang["m_OKTitle"]." Alert;"
 				   .$lang["m_WarningTitle"]."%; ".$lang["m_WarningTitle"]." Alert;"
 				   .$lang["m_UnknownTitle"]."%; ".$lang["m_UnknownTitle"]." Alert;"
 				   .$lang["m_CriticalTitle"]."%; ".$lang["m_CriticalTitle"]." Alert;"
@@ -106,13 +106,13 @@ For information : contact@oreon-project.org
 	echo "\n";
 	echo "\n";
 
-/*
 	echo "Day;Duration;".
-		 "uptime;up%;upAlert;".
-		 "downtime;down%;downAlert;".
-		 "unreachalbetime;unreachalbe%;unreachalbeAlert;".
-		 "undeterminatetime;undeterminate%\n";
-*/
+		 "oktime;ok%;okAlert;".
+		 "criticaltime;critical%;criticalAlert;".
+		 "warningtime;warning%;warningAlert;".
+		 "pendingtime;pending%;".
+		 "unknowntime;unknown%;\n";
+
 	foreach ($tab_report as $day => $report) {
 		echo $day.";".$report["duration"].";".
 		 	$report["oktime"].";".$report["pok"].";".$report["OKnbEvent"].";".

@@ -207,6 +207,13 @@ For information : contact@oreon-project.org
 	$formService->accept($renderer3);
 	
 	$tpl->assign('formService', $renderer3->toArray());
+
+	$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'";
+	$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'";
+	$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'";		
+	$tab_resume[3]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";		
+	$tab_resume[4]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+
 	$tpl->assign("tab_resume", $tab_resume);
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('lang', $lang);

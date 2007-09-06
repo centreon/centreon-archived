@@ -123,6 +123,13 @@ For information : contact@oreon-project.org
 	$tpl->assign('totalpkTime', $totalpkTime);
 
 	$tpl->assign('status', $status);
+	
+	
+	$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
+	$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
+	$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
+	$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+	
 	$tpl->assign("tab_resume", $tab_resume);
 	if(isset($tab_svc))
 	$tpl->assign("tab_svc", $tab_svc);
