@@ -18,17 +18,8 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-
-	$pagination = "maxViewConfiguration";
-	# set limit
-	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
-	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
-
-	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
-	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
+		
+	include("./include/common/autoNumLimit.php");
 	
 	if (isset($_GET["plugin_dir"]) && $_GET["plugin_dir"])
 		$dir = $_GET["plugin_dir"];
