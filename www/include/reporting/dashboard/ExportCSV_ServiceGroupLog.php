@@ -16,9 +16,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
-header("Content-Type: application/csv-tab-delimited-table");
-header("Content-disposition: filename=table.csv");
+	header("Content-Type: application/csv-tab-delimited-table");
+	header("Content-disposition: filename=table.csv");
 
 	$oreonPath = '/srv/oreon/';
 
@@ -103,6 +102,24 @@ header("Content-disposition: filename=table.csv");
 							  ";".$tab["PtimeCRITICAL"]. ";".$tab["CRITICALnbEvent"]. 
 							  ";".$tab["PtimeUNKNOWN"]. ";".$tab["UNKNOWNnbEvent"].
 							  ";".$tab["PtimeUNDETERMINATED"]. ";;\n";
+	}
+	echo "\n";
+	echo "\n";
+
+/*
+	echo "Day;Duration;".
+		 "uptime;up%;upAlert;".
+		 "downtime;down%;downAlert;".
+		 "unreachalbetime;unreachalbe%;unreachalbeAlert;".
+		 "undeterminatetime;undeterminate%\n";
+*/
+	foreach ($tab_report as $day => $report) {
+		echo $day.";".$report["duration"].";".
+		 	$report["oktime"].";".$report["pok"].";".$report["OKnbEvent"].";".
+		 	$report["criticaltime"].";".$report["pcritical"].";".$report["CRITICALnbEvent"].";".
+		 	$report["warningtime"].";".$report["pwarning"].";".$report["WARNINGnbEvent"].";".
+		 	$report["pendingtime"].";".$report["ppending"].";".
+		 	$report["unknowntime"].";".$report["punknown"].";\n";
 	}
 
 /*

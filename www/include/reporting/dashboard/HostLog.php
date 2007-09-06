@@ -35,11 +35,6 @@ For information : contact@oreon-project.org
 	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
 	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
 	
-//	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
-//	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
-
-
-
 	#
 	## period selection
 	#
@@ -300,8 +295,22 @@ For information : contact@oreon-project.org
 
 		}## end of period requirement
 
+
+
+	if(isset($host_id)) {
+	/* historical daily report*/
+	$tab_report = array();
+
+	$tab_report[date("d/m/Y", $today_start)]["duration"] = $tt;
+
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
+	$tab_report[date("d/m/Y", $today_start)]["duration"] = Duration::toString($tt);
+	$tab_report[date("d/m/Y", $today_start)]["uptime"] = Duration::toString($today_up);
+	$tab_report[date("d/m/Y", $today_start)]["downtime"] = Duration::toString($today_down);
+	$tab_report[date("d/m/Y", $today_start)]["unreachalbetime"] = Duration::toString($today_unreachable);
+	$tab_report[date("d/m/Y", $today_start)]["undeterminatetime"] = Duration::toString($today_pending);
+
 	$today_pending = $tt - ($today_down + $today_up + $today_unreachable);
 	$today_pending = round(($today_pending/$tt *100),2);
 	$today_up = ($today_up <= 0) ? 0 : round($today_up / $tt *100,2);
@@ -309,17 +318,21 @@ For information : contact@oreon-project.org
 	$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable / $tt *100,2);
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
+	$tab_report[date("d/m/Y", $today_start)]["pup"] = $today_up;
+	$tab_report[date("d/m/Y", $today_start)]["pdown"] = $today_down;
+	$tab_report[date("d/m/Y", $today_start)]["punreach"] = $today_unreachable;
+	$tab_report[date("d/m/Y", $today_start)]["pundet"] = $today_pending;
+	$tab_report[date("d/m/Y", $today_start)]["UPnbEvent"] = $today_UPnbEvent;
+	$tab_report[date("d/m/Y", $today_start)]["DOWNnbEvent"] = $today_DOWNnbEvent;
+	$tab_report[date("d/m/Y", $today_start)]["UNREACHABLEnbEvent"] = $today_UNREACHABLEnbEvent;
 
-
-	/* historical daily report*/
-	$tab_report = array();
 	$rq = 'SELECT ' .
 	' * FROM `log_archive_host` WHERE host_id = ' . $host_id .
+	' AND date_start >= ' . $sd . ' AND date_end <= ' . $ed .
 	' order by date_start desc';
 		
 	$res = & $pearDB->query($rq);
-
-	  while ($h =& $res->fetchRow()) {
+	while ($h =& $res->fetchRow()) {
 		$uptime = $h["UPTimeScheduled"];
 		$downtime = $h["DOWNTimeScheduled"];
 		$unreachalbetime = $h["UNREACHABLETimeScheduled"];
@@ -371,5 +384,5 @@ For information : contact@oreon-project.org
 
 		$tab_report[date("d/m/Y", $start)] = $tab_tmp;
 	  }
-
+}
 ?>

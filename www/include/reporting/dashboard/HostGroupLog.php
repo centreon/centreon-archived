@@ -265,9 +265,100 @@ For information : contact@oreon-project.org
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
 	$today_pending = $tt - ($today_down + $today_up + $today_unreachable);
+
+	$tab_report[date("d/m/Y", $today_start)]["duration"] = Duration::toString($tt);
+	$tab_report[date("d/m/Y", $today_start)]["uptime"] = Duration::toString($today_up);
+	$tab_report[date("d/m/Y", $today_start)]["downtime"] = Duration::toString($today_down);
+	$tab_report[date("d/m/Y", $today_start)]["unreachalbetime"] = Duration::toString($today_unreachable);
+	$tab_report[date("d/m/Y", $today_start)]["undeterminatetime"] = Duration::toString($today_pending);
+
 	$today_pending = round(($today_pending/$tt *100),2);
 	$today_up = ($today_up <= 0) ? 0 : round($today_up / $tt *100,2);
 	$today_down = ($today_down <= 0) ? 0 : round($today_down / $tt *100,2);
 	$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable / $tt *100,2);
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
+
+	$tab_report[date("d/m/Y", $today_start)]["pup"] = $today_up;
+	$tab_report[date("d/m/Y", $today_start)]["pdown"] = $today_down;
+	$tab_report[date("d/m/Y", $today_start)]["punreach"] = $today_unreachable;
+	$tab_report[date("d/m/Y", $today_start)]["pundet"] = $today_pending;
+	$tab_report[date("d/m/Y", $today_start)]["UPnbEvent"] = $today_UPnbEvent;
+	$tab_report[date("d/m/Y", $today_start)]["DOWNnbEvent"] = $today_DOWNnbEvent;
+	$tab_report[date("d/m/Y", $today_start)]["UNREACHABLEnbEvent"] = $today_UNREACHABLEnbEvent;
+
+
+	$today_pending = $tt - ($today_down + $today_up + $today_unreachable);
+	$today_pending = round(($today_pending/$tt *100),2);
+	$today_up = ($today_up <= 0) ? 0 : round($today_up / $tt *100,2);
+	$today_down = ($today_down <= 0) ? 0 : round($today_down / $tt *100,2);
+	$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable / $tt *100,2);
+	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
+
+
+if($mhostgroup){
+		$rq = "SELECT " .
+				"date_start, date_end, " .
+				"avg( `UPTimeScheduled` ) as 'UPTimeScheduled', " .
+				"avg( `UPnbEvent` ) as 'UPnbEvent', " .
+				"avg( `DOWNTimeScheduled` ) as 'DOWNTimeScheduled', " .
+				"avg( `DOWNnbEvent` ) as 'DOWNnbEvent', " .
+				"avg( `UNREACHABLETimeScheduled` ) as 'UNREACHABLETimeScheduled', " .
+				"avg( `UNREACHABLEnbEvent` ) as 'UNREACHABLEnbEvent' " .
+				"FROM `log_archive_host` WHERE `date_start` >= " . $sd . " AND `date_end` <= " . $ed .
+				" AND `host_id` IN (" .
+				"SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $hostgroup_id ."') group by date_end, date_start order by date_start desc";
+
+		$res = & $pearDB->query($rq);
+		//$tab_report = array();
+		  while ($h =& $res->fetchRow()) {
+
+			$uptime = $h["UPTimeScheduled"];
+			$downtime = $h["DOWNTimeScheduled"];
+			$unreachalbetime = $h["UNREACHABLETimeScheduled"];
+			$tt = 0 + ($h["date_end"] - $h["date_start"]);
+			if(($uptime + $downtime + $unreachalbetime) < $tt)
+				$undeterminatetime = 0 + $tt - ($uptime + $downtime + $unreachalbetime);
+			else
+			$undeterminatetime = 0;
+			if($unreachalbetime > 0)
+			$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
+			else
+			$punreach = "0.00";
+			if($uptime > 0)
+			$pup = 0 +round(($uptime / $tt * 100),2);
+			else
+			$pup = "0.00";
+			if($downtime > 0)
+			$pdown = 0 +round(($downtime / $tt * 100),2);
+			else
+			$pdown = "0.00";
+			if($undeterminatetime > 0)
+			$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
+			else
+			$pundet = "0.00";
+			$t = 0 + ($h["date_end"] - $h["date_start"]);
+			$t = round(($t - ($t * 0.11574074074)),2);
+			$start = $h["date_start"] + 5000;
+
+
+			$tab_tmp = array();
+			$tab_tmp ["duration"] = Duration::toString($tt) ? Duration::toString($tt) : 0;
+			$tab_tmp ["uptime"] = Duration::toString($uptime) ? Duration::toString($uptime) : 0;
+			$tab_tmp ["downtime"] = Duration::toString($downtime) ? Duration::toString($downtime) : 0;
+			$tab_tmp ["unreachalbetime"] = Duration::toString($unreachalbetime) ? Duration::toString($unreachalbetime) : 0;
+			$tab_tmp ["undeterminatetime"] = Duration::toString($undeterminatetime) ? Duration::toString($undeterminatetime) : 0 ;
+			$tab_tmp ["pup"] = 0 + $pup;
+			$tab_tmp ["pdown"] = 0 + $pdown;
+			$tab_tmp ["punreach"] = 0 + $punreach;
+			$tab_tmp ["pundet"] = 0 + $pundet;
+	
+			$tab_tmp ["UPnbEvent"] = $h["UPnbEvent"];
+			$tab_tmp ["DOWNnbEvent"] = $h["DOWNnbEvent"];
+			$tab_tmp ["UNREACHABLEnbEvent"] = $h["UNREACHABLEnbEvent"];
+	
+			$tab_report[date("d/m/Y", $start)] = $tab_tmp;
+
+	  }
+}
+
 ?>

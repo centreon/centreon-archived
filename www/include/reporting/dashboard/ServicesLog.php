@@ -236,62 +236,98 @@ For information : contact@oreon-project.org
 	foreach ($tab_resume  as $tb)
 		if($tb["pourcentTime"] >= 0)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];  
-        
-/*
-	$color = array();
-	$color["UNKNOWN"] =  substr($oreon->optGen["color_unknown"], 1);
-	$color["UP"] =  substr($oreon->optGen["color_up"], 1);
-	$color["DOWN"] =  substr($oreon->optGen["color_down"], 1);
-	$color["UNREACHABLE"] =  substr($oreon->optGen["color_unreachable"], 1);
-	$tpl->assign('color', $color);
-
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$formPeriod->accept($renderer);
-	$tpl->assign('formPeriod', $renderer->toArray());
-
-	#Apply a template definition
-	$renderer3 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$formService->accept($renderer3);
-	
-	$tpl->assign('formService', $renderer3->toArray());
-	$tpl->assign("tab_resume", $tab_resume);
-	$tpl->assign("tab_log", $tab_log);
-	$tpl->assign('lang', $lang);
-	$tpl->assign("p", $p);
-	*/
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);
 
+	$tab_report = array();
 	$today_none = $tt - ($today_warning + $today_ok + $today_unknown + $today_critical);
+
+	$tab_report[date("d/m/Y", $today_start)]["duration"] = Duration::toString($tt);
+	$tab_report[date("d/m/Y", $today_start)]["oktime"] = Duration::toString($today_ok);
+	$tab_report[date("d/m/Y", $today_start)]["warningtime"] = Duration::toString($today_warning);
+	$tab_report[date("d/m/Y", $today_start)]["unknowntime"] = Duration::toString($today_unknown);
+	$tab_report[date("d/m/Y", $today_start)]["criticaltime"] = Duration::toString($today_critical);
+	$tab_report[date("d/m/Y", $today_start)]["pendingtime"] = Duration::toString($today_none);
+
 	$today_none = round(($today_none/$tt *100),2);
 	$today_ok = ($today_ok <= 0) ? 0 : round($today_ok / $tt *100,2);
 	$today_warning = ($today_warning <= 0) ? 0 : round($today_warning / $tt *100,2);
 	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown / $tt *100,2);
 	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical / $tt *100,2);
-
 	$today_none = ($today_none < 0.1) ? "0" : $today_none;
-/*
-if($mhost)	{
-	$color = substr($oreon->optGen["color_ok"],1) .':'.
-	 		 substr($oreon->optGen["color_warning"],1) .':'.
-	 		 substr($oreon->optGen["color_critical"],1) .':'. 
-	 		 substr($oreon->optGen["color_pending"],1) .':'. 
+	$tab_report[date("d/m/Y", $today_start)]["pok"] = Duration::toString($today_ok);
+	$tab_report[date("d/m/Y", $today_start)]["pwarning"] = Duration::toString($today_warning);
+	$tab_report[date("d/m/Y", $today_start)]["punknown"] = Duration::toString($today_unknown);
+	$tab_report[date("d/m/Y", $today_start)]["pcritical"] = Duration::toString($today_critical);
+	$tab_report[date("d/m/Y", $today_start)]["ppending"] = Duration::toString($today_none);
+	$tab_report[date("d/m/Y", $today_start)]["OKnbEvent"] = Duration::toString($today_OKnbEvent);
+	$tab_report[date("d/m/Y", $today_start)]["WARNINGnbEvent"] = Duration::toString($today_WARNINGnbEvent);
+	$tab_report[date("d/m/Y", $today_start)]["CRITICALnbEvent"] = Duration::toString($today_CRITICALnbEvent);
 
-	$today_var = '&serviceID='.$mservice.'&today_ok='.$today_ok . '&today_critical='.$today_critical.'&today_unknown='.$today_unknown. '&today_pending=' . $today_none. '&today_warning=' . $today_warning;
-	$today_var .= '&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent.'&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent;
-	$type = 'Service';
-	include('ajaxReporting_js.php');
-}
-else {
-?>
-<SCRIPT LANGUAGE="JavaScript">
-function initTimeline() {
-	;
-}
-</SCRIPT>
-<?
-}	
-	
-	$tpl->display("template/viewServicesLog.ihtml");
-	*/
+
+	$rq = 'SELECT ' .
+	' * FROM `log_archive_service` WHERE host_id = ' . $host_id . ' AND service_id = ' . $svc_id .
+	' AND date_start >= ' . $sd . ' AND date_end <= ' . $ed .
+	' order by date_start desc';
+	$res = & $pearDB->query($rq);
+	while ($h =& $res->fetchRow()) {
+		$oktime = $h["OKTimeScheduled"];
+		$criticaltime = $h["CRITICALTimeScheduled"];
+		$warningtime = $h["WARNINGTimeScheduled"];
+		$unknowntime = $h["UNKNOWNTimeScheduled"];
+		$tt = 0 + ($h["date_end"] - $h["date_start"]);
+		if(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
+			$pendingtime = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime);
+		else
+			$pendingtime = 0;
+		if($oktime > 0)
+			$pok = 0 +round(($oktime / $tt * 100),2);
+		else
+			$pok = "0.00";					
+		if($criticaltime > 0)
+			$pcritical = 0 +round(($criticaltime / $tt * 100),2);
+		else
+			$pcritical = "0.00";
+		if($warningtime > 0)
+			$pwarning = 0 +round(($warningtime / $tt * 100),2);
+		else
+			$pwarning = "0.00";
+		if($unknowntime > 0)
+			$punknown = 0 +round(($unknowntime / $tt * 100),2);
+		else
+			$punknown = "0.00";
+		if($pendingtime > 0)
+			$ppending = 0 +round(($pendingtime / $tt * 100),2);
+		else
+			$ppending = "0.00";
+
+
+		$t = 0 + ($h["date_end"] - $h["date_start"]);
+		
+		$t = round(($t - ($t * 0.11574074074)),2);
+		$start = $h["date_start"] + 5000;			
+		$tab_tmp = array();
+		$tab_tmp ["duration"] = Duration::toString($tt) ? Duration::toString($tt) : 0;
+		$tab_tmp ["oktime"] = Duration::toString($oktime) ? Duration::toString($oktime) : 0;
+		$tab_tmp ["pok"] = Duration::toString($pok) ? Duration::toString($pok) : 0;
+		$tab_tmp ["OKnbEvent"] = Duration::toString($h["OKnbEvent"]) ? Duration::toString($h["OKnbEvent"]) : 0;
+		$tab_tmp ["criticaltime"] = Duration::toString($criticaltime) ? Duration::toString($criticaltime) : 0;
+		$tab_tmp ["pcritical"] = Duration::toString($pcritical) ? Duration::toString($pcritical) : 0;
+		$tab_tmp ["CRITICALnbEvent"] = Duration::toString($h["CRITICALnbEvent"]) ? Duration::toString($h["CRITICALnbEvent"]) : 0;
+		$tab_tmp ["warningtime"] = Duration::toString($warningtime) ? Duration::toString($warningtime) : 0;
+		$tab_tmp ["pwarning"] = Duration::toString($pwarning) ? Duration::toString($pwarning) : 0;
+		$tab_tmp ["WARNINGnbEvent"] = Duration::toString($h["WARNINGnbEvent"]) ? Duration::toString($h["WARNINGnbEvent"]) : 0;
+		$tab_tmp ["pendingtime"] = Duration::toString($pendingtime) ? Duration::toString($pendingtime) : 0;
+		$tab_tmp ["ppending"] = Duration::toString($ppending) ? Duration::toString($ppending) : 0;
+		$tab_tmp ["unknowntime"] = Duration::toString($unknowntime) ? Duration::toString($unknowntime) : 0;
+		$tab_tmp ["punknown"] = Duration::toString($punknown) ? Duration::toString($punknown) : 0;
+
+		$tab_report[date("d/m/Y", $start)] = $tab_tmp;
+	  }
+/*
+			Duration::toString($pendingtime) .'{/td}{td class=bubul}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
+			Duration::toString($unknowntime) .'{/td}{td class=bubul}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
+			
+*/
+
 ?>

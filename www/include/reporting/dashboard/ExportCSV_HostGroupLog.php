@@ -87,11 +87,20 @@ header("Content-disposition: filename=table.csv");
 		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. ";".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
 	echo "\n";
-	
+	echo "\n";
 
-/*
-	echo "<pre>";
-	print_r($tab_svc);
-	echo "</pre>";
-*/	
+	echo "Day;Duration;".
+		 "uptime;up%;upAlert;".
+		 "downtime;down%;downAlert;".
+		 "unreachalbetime;unreachalbe%;unreachalbeAlert;".
+		 "undeterminatetime;undeterminate%\n";
+
+	foreach ($tab_report as $day => $report) {
+		echo $day.";".$report["duration"].";".
+		 	$report["uptime"].";".$report["pup"].";".$report["UPnbEvent"].";".
+		 	$report["downtime"].";".$report["pdown"].";".$report["DOWNnbEvent"].";".
+		 	$report["unreachalbetime"].";".$report["punreach"].";".$report["UNREACHABLEnbEvent"].";".
+		 	$report["undeterminatetime"].";".$report["pundet"].";\n";
+	}
+
 ?>

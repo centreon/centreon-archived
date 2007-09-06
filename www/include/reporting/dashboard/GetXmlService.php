@@ -190,7 +190,6 @@ For information : contact@oreon-project.org
 			$sortTab["#" . $colorUNKNOWN] = $punknown;
 			$sortTab["#" . $colorPENDING] = $ppending;
 
-
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
 			
 			$t = round(($t - ($t * 0.11574074074)),2);
