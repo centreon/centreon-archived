@@ -62,7 +62,7 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 			$data[0] =~ s/\,/\-/g;
 			$data[0] =~ s/\:/\-/g;
 			$data[0] =~ s/\ /\-/g;
-			
+
 			my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
 			writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
 			if ($sth1->rows() eq 0){
@@ -83,20 +83,20 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 		    	writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
 		    	undef($sth1);
 		   	}
-			if ($data[3] != "" || $data[4] != "" || $data[5] != "" || $data[6] != ""){
+			if ($data[3] ne "" || $data[4] ne "" || $data[5] ne "" || $data[6] ne ""){
 				my $str = "";
-				$str .= "`warn` = '".$data[3]."', " if ($data[3]);
+				$str .= "`warn` = ".$data[3]." " if ($data[3]);
 			   	if ($data[4]){
-			   		$str .= ", " if ($str != "");
-				   	$str .= "`crit` = '".$data[4]."' ";
+			   		$str .= ", " if ($str ne "");
+				   	$str .= "`crit` = ".$data[4]." ";
 			   	}
 			   	if ($data[5]){
-			   		$str .= ", " if ($str != "");
-					$str .= "`min` = '".$data[5]."' ";
+			   		$str .= ", " if ($str ne "");
+					$str .= "`min` = ".$data[5]." ";
 			   	}
 			   	if ($data[6]){
-			   		$str .= ", " if ($str != "");
-					$str .= "`max` = '".$data[6]."' ";
+			   		$str .= ", " if ($str ne "");
+					$str .= "`max` = ".$data[6]." ";
 			   	}
 			   	$sth1 = $con_ods->prepare("UPDATE metrics SET $str WHERE `metric_id` = '".$metric->{'metric_id'}."'");
 				writeLogFile("Error:" . $sth1->errstr . "\n") if (!$sth1->execute);
