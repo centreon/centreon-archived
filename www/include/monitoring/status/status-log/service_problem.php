@@ -59,6 +59,8 @@ For information : contact@oreon-project.org
 					$service_status[$name]["host_has_been_acknowledged"] = $host_status[$service_status[$name]["host_name"]]["problem_has_been_acknowledged"];
 					$service_status[$name]["host_active_checks_enabled"] = $host_status[$service_status[$name]["host_name"]]["active_checks_enabled"];
 					$service_status[$name]["host_passive_checks_enabled"] = $host_status[$service_status[$name]["host_name"]]["passive_checks_enabled"];
+					$service_status[$name]["host_scheduled_downtime_depth"] = $host_status[$service_status[$name]["host_name"]]["scheduled_downtime_depth"];
+					$service_status[$name]["service_scheduled_downtime_depth"] = $svc["scheduled_downtime_depth"];
 					if ($svc["last_check"]){
 						$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
 						$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
@@ -96,6 +98,9 @@ For information : contact@oreon-project.org
 					$service_status[$name]["host_color"] = $oreon->optGen["color_".strtolower($service_status[$name]["host_status"])];
 					$service_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
 					$service_status[$name]["host_has_been_acknowledged"] = $host_status[$service_status[$name]["host_name"]]["problem_has_been_acknowledged"];
+					$service_status[$name]["host_notifications_enabled"] = $host_status[$service_status[$name]["host_name"]]["notifications_enabled"];
+					$service_status[$name]["host_scheduled_downtime_depth"] = $host_status[$service_status[$name]["host_name"]]["scheduled_downtime_depth"];
+					$service_status[$name]["service_scheduled_downtime_depth"] = $svc["scheduled_downtime_depth"];
 					if ($svc["last_check"]){
 						$service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
 						$service_status[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);

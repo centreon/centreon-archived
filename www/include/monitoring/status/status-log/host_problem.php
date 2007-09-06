@@ -49,6 +49,8 @@ For information : contact@oreon-project.org
 			$host_status[$name]["active_checks_enabled"] = $host_status[$name]["active_checks_enabled"];
 			$host_status[$name]["passive_checks_enabled"] = $host_status[$name]["passive_checks_enabled"];
 			$host_status[$name]["has_been_acknowledged"] = $host_status[$name]["problem_has_been_acknowledged"];
+			$host_status[$name]["scheduled_downtime_depth"] = $host_status[$name]["scheduled_downtime_depth"];
+			$host_status[$name]["notifications_enabled"] = $host_status[$name]["notifications_enabled"];
 			$tmp[1] = $host_status[$name];
 			$host_status_num[$rows++] = $tmp;
 		}

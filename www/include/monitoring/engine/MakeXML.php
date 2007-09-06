@@ -244,6 +244,9 @@ For information : contact@oreon-project.org
                     $buffer .= '<host_has_been_acknowledged>'.$host_status[$svc["host_name"]]["problem_has_been_acknowledged"]  .'</host_has_been_acknowledged>';///
                     $buffer .= '<host_active_checks_enabled>'.$host_status[$svc["host_name"]]["active_checks_enabled"] .'</host_active_checks_enabled>';///
                     $buffer .= '<host_passive_checks_enabled>'.$host_status[$svc["host_name"]]["passive_checks_enabled"]  .'</host_passive_checks_enabled>';///
+                    $buffer .= '<host_downtime_depth>'.$host_status[$svc["host_name"]]["scheduled_downtime_depth"]  .'</host_downtime_depth>';///
+                    $buffer .= '<service_downtime_depth>'.$svc["scheduled_downtime_depth"]  .'</service_downtime_depth>';///
+                    $buffer .= '<host_notifications_enabled>'.$host_status[$svc["host_name"]]["notifications_enabled"] .'</host_notifications_enabled>';///
 					$last_check = " ";
 					if($svc["last_check"] > 0)
 					$last_check = date($date_time_format_status, $svc["last_check"]);

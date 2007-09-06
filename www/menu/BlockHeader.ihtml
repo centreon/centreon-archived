@@ -14,10 +14,13 @@
 			<INPUT type="hidden" name="icone_problem_has_been_acknowledged" value="./img/icones/16x16/worker.gif" >
 			<INPUT type="hidden" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" >
 			<INPUT type="hidden" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" >
-			<INPUT type="hidden" name="icone_notifications_enabled" value="./img/icones//14x14/noloudspeaker.gif" >
+			<INPUT type="hidden" name="icone_notifications_enabled" value="./img/icones/14x14/noloudspeaker.gif" >
 			<INPUT type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" >
 			<INPUT type="hidden" name="icone_graph" value="./img/icones/16x16/column-chart.gif">
 			<INPUT type="hidden" name="icone_host_has_been_acknowledged" value="./img/icones/16x16/worker.gif">
+			<INPUT type="hidden" name="icone_notifications_disabled" value="./img/icones/14x14/noloudspeaker.gif" >
+			<INPUT type="hidden" name="icon_downtime" value="./img/icones/14x14/breakpoint.gif" >
+			<INPUT type="hidden" name="icon_comment" value="./img/icones/14x14/about.gif" >
 			<INPUT type="hidden" name="version" value="{$version}">
 			<INPUT type="hidden" name="fileStatus" value="{$fileStatus}">
 			<INPUT type="hidden" name="fileOreonConf" value="{$fileOreonConf}">

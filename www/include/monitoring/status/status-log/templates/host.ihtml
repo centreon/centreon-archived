@@ -31,7 +31,9 @@
 			<td class="ListColCenter">
 				{if $h.has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
 				{if $h.active_checks_enabled == 0 && $h.passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
-				{if $h.active_checks_enabled == 0 && $h.passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}			
+				{if $h.active_checks_enabled == 0 && $h.passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
+				{if $h.scheduled_downtime_depth != 0}<img src='./img/icones/14x14/breakpoint.gif'>{/if}
+				{if $h.notifications_enabled == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
 			</td>
 			<td class="ListColCenter" style="background-color:{ $h.status_color }" id="tdStatus{$c}"><div id="current_state{$c}">{ $h.current_state }</div></td>
 			<td class="ListColCenter">{ $h.address }</td>

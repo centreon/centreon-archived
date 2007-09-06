@@ -64,13 +64,19 @@
 				<td class="ListColLeft" ><div class="cachediv" id="host{$c}">{$s.host_name}
 				{if $s.host_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
 				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
-				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}			
+				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
+				{if $s.host_scheduled_downtime_depth != 0}<img src='./img/icones/14x14/breakpoint.gif'>{/if}
+				{if $s.host_notifications_enabled == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}			
 				</div>&nbsp;</td>
 			{elseif $host != $s.host_name}
-				<td class="ListColLeft" {if $s.host_status ne "UP"} style="background-color:#FD8B46"; color:black;{/if}><div class="cachediv" id="host{$c}">{$s.host_name}</div><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a>
-				{if $s.host_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
-				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
-				{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}			
+				<td class="ListColLeft" {if $s.host_status ne "UP"} style="background-color:#FD8B46"; color:black;{/if}>
+					<div class="cachediv" id="host{$c}">{$s.host_name}</div>
+					<a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a>
+					{if $s.host_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
+					{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
+					{if $s.host_active_checks_enabled == 0 && $s.host_passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
+					{if $s.host_scheduled_downtime_depth != 0}<img src='./img/icones/14x14/breakpoint.gif'>{/if}
+					{if $s.host_notifications_enabled == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
 				</td>
 			{/if}
 			<td class="ListColLeft">
@@ -78,7 +84,16 @@
 				<a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.service_description}'>{ $s.service_description }</a>
 			</td>			
 			<td class="ListColCenter"><a href='./oreon.php?p=40207&host_name={ $s.host_name }&service_description={$s.service_description}&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a></td>
-			<td class="ListColRight" style="white-space:nowrap;"><div id="infos{$c}">{if $s.problem_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}{if $s.is_flapping == 1}<img src='./img/icones/16x16/flapping.gif'>{/if}{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}{if $s.notifications_enabled == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}</div></td>
+			<td class="ListColRight" style="white-space:nowrap;">
+				<div id="infos{$c}">
+					{if $s.problem_has_been_acknowledged == 1}<img src='./img/icones/16x16/worker.gif'>{/if}
+					{if $s.is_flapping == 1}<img src='./img/icones/16x16/flapping.gif'>{/if}
+					{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
+					{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
+					{if $s.notifications_enabled == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
+					{if $s.service_scheduled_downtime_depth != 0}<img src='./img/icones/14x14/breakpoint.gif'>{/if}
+				</div>
+			</td>
 			<td class="ListColCenter" style="background-color:{ $s.status_color }" id="tdStatus{$c}"><div id="current_state{$c}">{ $s.current_state }</div></td>
 			<td class="ListColRight"><div id="last_check{$c}" style="white-space:nowrap;">{ $s.last_check }</div></td>
             <td class="ListColRight"><div id="last_state_change{$c}" style="white-space:nowrap;">{ $s.last_state_change }</div></td>
