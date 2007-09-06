@@ -192,6 +192,9 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	var _host_has_been_acknowledged = line.getElementsByTagName("host_has_been_acknowledged")[0].firstChild.nodeValue;
     var _host_active_checks_enabled = line.getElementsByTagName("host_active_checks_enabled")[0].firstChild.nodeValue;
     var _host_passive_checks_enabled = line.getElementsByTagName("host_passive_checks_enabled")[0].firstChild.nodeValue;
+    var _host_notifications_enabled = line.getElementsByTagName("host_notifications_enabled")[0].firstChild.nodeValue;
+    var _host_downtime_depth = line.getElementsByTagName("host_downtime_depth")[0].firstChild.nodeValue;
+    var _service_downtime_depth = line.getElementsByTagName("service_downtime_depth")[0].firstChild.nodeValue;
 
 	if(_form.search && _form.search.value)
 		_search=_form.search.value;
@@ -343,6 +346,7 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	var _img6 = mk_img(_formBasic.icone_graph.value, "graph");
 	var _img7 = mk_img(_formBasic.icone_undo.value, "re-check");
 	var _img8 = mk_img(_formBasic.icone_host_has_been_acknowledged.value, "host_has_been_acknowledged");
+	var _img9 = mk_img(_formBasic.icon_downtime.value, "downtime_depth");
 
 
 	if(_status == "CRITICAL"){
@@ -366,6 +370,8 @@ function addLineToTab_Service(tableCheckbox, _tableAjax, line, i, _form, _formBa
 	if(_notifications_enabled == 0)
 	_case_infos.appendChild(mk_img(_formBasic.icone_notifications_enabled.value, "notification_enable"));
 
+	if(_service_downtime_depth != 0)
+	_case_infos.appendChild(_img9);
 
 
 _case_infos.id = 'infos' + i;
@@ -418,6 +424,10 @@ var _p = 20201;
         if(_host_active_checks_enabled == 0 && _host_passive_checks_enabled == 1)
         {
                 _case_host_name.appendChild(_img5);
+        }
+        if(_host_downtime_depth != 0)
+        {
+                _case_host_name.appendChild(_img9);
         }
 	}
 	else
