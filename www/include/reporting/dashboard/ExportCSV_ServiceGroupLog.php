@@ -20,7 +20,6 @@ For information : contact@oreon-project.org
 header("Content-Type: application/csv-tab-delimited-table");
 header("Content-disposition: filename=table.csv");
 
-
 	$oreonPath = '/srv/oreon/';
 
 	function check_injection(){
@@ -54,8 +53,8 @@ header("Content-disposition: filename=table.csv");
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
-	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
-	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+	isset ($_GET["servicegroup"]) ? $mservicegroup = $_GET["servicegroup"] : $mservicegroup = NULL;
+	isset ($_POST["servicegroup"]) ? $mservicegroup = $_POST["servicegroup"] : $mservicegroup = $mservicegroup;
 
 	$path = "./include/reporting/dashboard";
 	require_once '../../../class/other.class.php';
@@ -72,56 +71,43 @@ header("Content-disposition: filename=table.csv");
 	is_file ("../../reporting/lang/".$user_lang.".php") ? include_once ("../../reporting/lang/".$user_lang.".php") : include_once ("./include/reporting/lang/en.php");
 
 
-	require_once 'HostLog.php';
+	require_once 'ServicesGroupLog.php';
 
 
 	echo "Rapport de suppervision \n";
+
+
 	echo "\n";
-	echo "Host; debut de la periode; fin de la periode; durée\n";
-	echo $mhost."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
+	echo "ServiceGroup; Debut de la periode; Fin de la periode; Durée\n";
+	echo $mservicegroup.";".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
 	echo "\n";
 
 
 	echo "Etats;Temps;Temps total;Temps connu; Alert\n";
 	foreach ($tab_resume as $tab) {
-		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. ";".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
+		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. " %;".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
 	echo "\n";
+
+
 	
 	echo "Service;".$lang["m_OKTitle"]."%; ".$lang["m_OKTitle"]." Alert;"
 				   .$lang["m_WarningTitle"]."%; ".$lang["m_WarningTitle"]." Alert;"
 				   .$lang["m_UnknownTitle"]."%; ".$lang["m_UnknownTitle"]." Alert;"
 				   .$lang["m_CriticalTitle"]."%; ".$lang["m_CriticalTitle"]." Alert;"
 				   .$lang["m_PendingTitle"]."%;\n";
-					
+
 	foreach ($tab_svc as $tab) {
-		echo $tab["svcName"]. ";".$tab["PtimeOK"]. ";".$tab["OKnbEvent"]. 
+		echo $tab["hostName"]. ";".$tab["serviceName"]. ";".$tab["PtimeOK"]. ";".$tab["OKnbEvent"]. 
 							  ";".$tab["PtimeWARNING"]. ";".$tab["WARNINGnbEvent"].
 							  ";".$tab["PtimeCRITICAL"]. ";".$tab["CRITICALnbEvent"]. 
 							  ";".$tab["PtimeUNKNOWN"]. ";".$tab["UNKNOWNnbEvent"].
-							  ";".$tab["PtimeNONE"]. ";;\n";
+							  ";".$tab["PtimeUNDETERMINATED"]. ";;\n";
 	}
 
-	echo "\n";
-	echo "\n";
-
-	echo "Day;Duration;".
-		 "uptime;up%;upAlert;".
-		 "downtime;down%;downAlert;".
-		 "unreachalbetime;unreachalbe%;unreachalbeAlert;".
-		 "undeterminatetime;undeterminate%\n";
-
-	foreach ($tab_report as $day => $report) {
-		echo $day.";".$report["duration"].";".
-		 	$report["uptime"].";".$report["pup"].";".$report["UPnbEvent"].";".
-		 	$report["downtime"].";".$report["pdown"].";".$report["DOWNnbEvent"].";".
-		 	$report["unreachalbetime"].";".$report["punreach"].";".$report["UNREACHABLEnbEvent"].";".
-		 	$report["undeterminatetime"].";".$report["pundet"].";\n";
-	}
-	
-	/*
+/*
 	echo "<pre>";
-	print_r($tab_report);
+	print_r($tab_svc);
 	echo "</pre>";
-	*/
+*/
 ?>
