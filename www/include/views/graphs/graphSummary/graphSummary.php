@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-		
+				
 	include_once("./include/common/common-Func.php");	
 	include_once("./DBOdsConnect.php");
 	
@@ -39,7 +39,14 @@ For information : contact@oreon-project.org
 		return $graph["period"];
 	}
 
+
 	if (is_file("./DBOdsConnect.php")){
+		if (isset($_GET["service_osm_id"])){
+			$tab_host_svc = split('_', $_GET["service_osm_id"]);			
+			$_GET["host_name"] = getMyHostName($tab_host_svc[0]);
+			$_GET["service_description"] = getMyServiceName($tab_host_svc[1], $tab_host_svc[0]);
+		}
+		
 		if (isset($_GET["host_name"]))
 			$host_id = getMyHostID($_GET["host_name"]);
 		else if (isset($_GET["database"]) && !isset($_GET["host_name"])){
