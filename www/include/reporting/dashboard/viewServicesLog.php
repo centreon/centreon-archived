@@ -28,10 +28,10 @@ For information : contact@oreon-project.org
 	$today_warning = 0;
 	$today_unknown = 0;
 	$today_critical = 0;
-
+/*
 	$start_date_select = 0;
 	$end_date_select = 0;
-
+*/
 	$tab_svc = array();
 
 	$path = "./include/reporting/dashboard";
@@ -72,11 +72,11 @@ For information : contact@oreon-project.org
 		if($period == "customized") {
 			$formService->addElement('hidden', 'end', $end);
 			$formService->addElement('hidden', 'start', $start);
-			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end";
+			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end"."&lang=" .$oreon->user->get_lang();
 		}
 		else {
 			$formService->addElement('hidden', 'period', $period);
-			$var_url_export_csv = "&period=".$period;
+			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
 		}
 	}
 
@@ -121,8 +121,9 @@ For information : contact@oreon-project.org
 	$res = $formPeriod->addElement('reset', 'reset', $lang["reset"]);
 
 	if($period == "customized") {
-		$formPeriod->setDefaults(array('start' => date("m/d/Y", $start_date_select)));
-		$formPeriod->setDefaults(array('end' => date("m/d/Y", $end_date_select)));
+
+		$formPeriod->setDefaults(array('start' => date("m/d/Y", $sd)));
+		$formPeriod->setDefaults(array('end' => date("m/d/Y", $ed)));
 	}
 
 	$path = "./include/reporting/dashboard/";
@@ -181,8 +182,8 @@ For information : contact@oreon-project.org
 
 	$tpl->assign('infosTitle1', $mhost);
 	$tpl->assign('infosTitle2', $start_date_select." => ".$end_date_select);		
-	$tpl->assign('host_name', $mhost);		
-	$tpl->assign('service_name', getMyServiceName($mservice));		
+	$tpl->assign('host_name', $mhost);
+	$tpl->assign('service_name', $service_name);		
 
 	$status = "";
 	foreach ($tab_resume  as $tb)
@@ -231,6 +232,7 @@ For information : contact@oreon-project.org
 	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical / $tt *100,2);
 
 	$today_none = ($today_none < 0.1) ? "0" : $today_none;
+
 
 	if($mhost){
 		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_ServiceLog.php?sid=".$sid."&host=".$mhost."&service=".$mservice.$var_url_export_csv);

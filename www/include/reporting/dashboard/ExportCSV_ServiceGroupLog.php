@@ -16,9 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	header("Content-Type: application/csv-tab-delimited-table");
-	header("Content-disposition: filename=table.csv");
-
 	$oreonPath = '/srv/oreon/';
 
 	function check_injection(){
@@ -72,17 +69,15 @@ For information : contact@oreon-project.org
 
 	require_once 'ServicesGroupLog.php';
 
+	header("Content-Type: application/csv-tab-delimited-table");
+	header("Content-disposition: filename=".$mservicegroup.".csv");
 
-	echo "Rapport de suppervision \n";
 
-
-	echo "\n";
-	echo "ServiceGroup; Debut de la periode; Fin de la periode; Durée\n";
+	echo $lang["ServiceGroupTitle"].";".$lang["start"]."; ".$lang["m_end"]."; ".$lang["duration"]."\n";
 	echo $mservicegroup.";".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
 	echo "\n";
 
-
-	echo "Etats;Temps;Temps total;Temps connu; Alert\n";
+	echo $lang["m_StateTitle"].";".$lang["m_TimeTitle"].";".$lang["m_TimeTotalTitle"].";".$lang["m_KnownTimeTitle"]."; ".$lang["m_AlertTitle"]."\n";
 	foreach ($tab_resume as $tab) {
 		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. " %;".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
@@ -90,36 +85,36 @@ For information : contact@oreon-project.org
 
 
 	
-	echo "Hostname;Servicename;".$lang["m_OKTitle"]."%; ".$lang["m_OKTitle"]." Alert;"
-				   .$lang["m_WarningTitle"]."%; ".$lang["m_WarningTitle"]." Alert;"
-				   .$lang["m_UnknownTitle"]."%; ".$lang["m_UnknownTitle"]." Alert;"
-				   .$lang["m_CriticalTitle"]."%; ".$lang["m_CriticalTitle"]." Alert;"
+	echo "Hostname;Servicename;".$lang["m_OKTitle"]."; ".$lang["m_OKTitle"]." Alert;"
+				   .$lang["m_WarningTitle"]."; ".$lang["m_WarningTitle"]." Alert;"
+				   .$lang["m_UnknownTitle"]."; ".$lang["m_UnknownTitle"]." Alert;"
+				   .$lang["m_CriticalTitle"]."; ".$lang["m_CriticalTitle"]." Alert;"
 				   .$lang["m_PendingTitle"]."%;\n";
 
 	foreach ($tab_svc as $tab) {
-		echo $tab["hostName"]. ";".$tab["serviceName"]. ";".$tab["PtimeOK"]. ";".$tab["OKnbEvent"]. 
-							  ";".$tab["PtimeWARNING"]. ";".$tab["WARNINGnbEvent"].
-							  ";".$tab["PtimeCRITICAL"]. ";".$tab["CRITICALnbEvent"]. 
-							  ";".$tab["PtimeUNKNOWN"]. ";".$tab["UNKNOWNnbEvent"].
-							  ";".$tab["PtimeUNDETERMINATED"]. ";;\n";
+		echo $tab["hostName"]. ";".$tab["serviceName"]. ";".$tab["PtimeOK"]. ";%".$tab["OKnbEvent"]. 
+							  ";".$tab["PtimeWARNING"]. "%;".$tab["WARNINGnbEvent"].
+							  ";".$tab["PtimeCRITICAL"]. "%;".$tab["CRITICALnbEvent"]. 
+							  ";".$tab["PtimeUNKNOWN"]. "%;".$tab["UNKNOWNnbEvent"].
+							  ";".$tab["PtimeUNDETERMINATED"]. "%;;\n";
 	}
 	echo "\n";
 	echo "\n";
 
-	echo "Day;Duration;".
-		 "oktime;ok%;okAlert;".
-		 "criticaltime;critical%;criticalAlert;".
-		 "warningtime;warning%;warningAlert;".
-		 "pendingtime;pending%;".
-		 "unknowntime;unknown%;\n";
+	echo $lang["day"].";".$lang["duration"].";" 
+				   .$lang["m_OKTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_OKTitle"]."; ".$lang["m_OKTitle"]." Alert;"
+				   .$lang["m_WarningTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_WarningTitle"].";".$lang["m_WarningTitle"]." Alert;"
+				   .$lang["m_UnknownTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_UnknownTitle"].";".$lang["m_UnknownTitle"]." Alert;"
+				   .$lang["m_CriticalTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_CriticalTitle"].";".$lang["m_CriticalTitle"]." Alert;"
+				   .$lang["m_PendingTitle"]." ".$lang["m_TimeTitle"].";\n";
 
 	foreach ($tab_report as $day => $report) {
 		echo $day.";".$report["duration"].";".
-		 	$report["oktime"].";".$report["pok"].";".$report["OKnbEvent"].";".
-		 	$report["criticaltime"].";".$report["pcritical"].";".$report["CRITICALnbEvent"].";".
-		 	$report["warningtime"].";".$report["pwarning"].";".$report["WARNINGnbEvent"].";".
-		 	$report["pendingtime"].";".$report["ppending"].";".
-		 	$report["unknowntime"].";".$report["punknown"].";\n";
+		 	$report["oktime"].";".$report["pok"]."%;".$report["OKnbEvent"].";".
+		 	$report["criticaltime"].";".$report["pcritical"]."%;".$report["CRITICALnbEvent"].";".
+		 	$report["warningtime"].";".$report["pwarning"]."%;".$report["WARNINGnbEvent"].";".
+		 	$report["pendingtime"].";".$report["ppending"]."%;".
+		 	$report["unknowntime"].";".$report["punknown"]."%;\n";
 	}
 
 /*

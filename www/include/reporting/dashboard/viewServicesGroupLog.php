@@ -32,6 +32,7 @@ For information : contact@oreon-project.org
 	$start_date_select = 0;
 	$end_date_select = 0;
 	$path = "./include/reporting/dashboard";
+	$var_url_export_csv = "";
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -78,10 +79,10 @@ For information : contact@oreon-project.org
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 			$formservicegroup->addElement('hidden', 'end', $end);
 			$formservicegroup->addElement('hidden', 'start', $start);
-			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end";
+			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end"."&lang=" .$oreon->user->get_lang();
 		}
 		else {
-			$var_url_export_csv = "&period=".$period;
+			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formservicegroup->addElement('hidden', 'period', $period);
 		}
@@ -455,6 +456,7 @@ For information : contact@oreon-project.org
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod->accept($renderer);
 	$tpl->assign('formPeriod', $renderer->toArray());
+	$tpl->assign('period', $var_url_export_csv);
 
 	#Apply a template definition
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

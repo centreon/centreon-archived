@@ -67,6 +67,8 @@ For information : contact@oreon-project.org
 	#
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
+	$var_url_export_csv =  "";
+	$var_url = "";
 
 	if($mhostgroup)	{
 		$end_date_select = 0;
@@ -79,10 +81,12 @@ For information : contact@oreon-project.org
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 			$formHostGroup->addElement('hidden', 'end', $end);
 			$formHostGroup->addElement('hidden', 'start', $start);
-			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end";
+			//$var_url_export_csv = "&period=customized&start=".$start_date_select."&end="."$end_date_select";
+			$var_url_export_csv = "&period=customized&start=".$start."&end=".$end."&lang=" .$oreon->user->get_lang();
 		}
 		else {
-			$var_url_export_csv = "&period=".$period;
+			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
+//			$var_url = "&period=".$period;
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formHostGroup->addElement('hidden', 'period', $period);
 		}
@@ -398,17 +402,13 @@ For information : contact@oreon-project.org
 	$tpl->assign('periodTitle', $lang["m_selectPeriodTitle"]);
 	$tpl->assign('resumeTitle', $lang["m_hostResumeTitle"]);
 	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
-	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
-
 
 	if($mhostgroup){
 		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_HostGroupLog.php?sid=".$sid."&hostgroup=".$mhostgroup.$var_url_export_csv);
 		$tpl->assign("link_csv_name", "Export CSV");
 	}
 
-
 	$formPeriod->setDefaults(array('period' => $period));
-
 
 	$tpl->assign('hostID', getMyHostID($mhostgroup));
 	$color = array();
@@ -420,6 +420,7 @@ For information : contact@oreon-project.org
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod->accept($renderer);
 	$tpl->assign('formPeriod', $renderer->toArray());
+	$tpl->assign('period', $var_url_export_csv);
 
 	#Apply a template definition
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

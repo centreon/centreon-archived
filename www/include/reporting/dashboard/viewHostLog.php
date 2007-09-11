@@ -39,16 +39,16 @@ For information : contact@oreon-project.org
 	## Selection de l'host
 	#
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
-
+$var_url_export_csv = "";
 		
 	if($mhost)	{
 		if($period == "customized") {
 			$formHost->addElement('hidden', 'end', $end);
 			$formHost->addElement('hidden', 'start', $start);
-			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end";
+			$var_url_export_csv = "&period=customized&start=".$start_var."&end="."$end_var"."&lang=" .$oreon->user->get_lang();
 		}
 		else {
-			$var_url_export_csv = "&period=".$period;
+			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
 			$formHost->addElement('hidden', 'period', $period);
 		}
 	}
@@ -148,6 +148,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('date_end_select', $end_date_select);
 	$tpl->assign('to', $lang["m_to"]);
 	$tpl->assign('period_name', $lang["m_period"]);
+	$tpl->assign('period', $var_url_export_csv);
 
 
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");

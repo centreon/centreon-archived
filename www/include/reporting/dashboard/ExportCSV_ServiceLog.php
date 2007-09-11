@@ -17,9 +17,6 @@ For information : contact@oreon-project.org
 */
 
 
-header("Content-Type: application/csv-tab-delimited-table");
-header("Content-disposition: filename=table.csv");
-
 	$oreonPath = '/srv/oreon/';
 
 	function check_injection(){
@@ -61,10 +58,12 @@ header("Content-disposition: filename=table.csv");
 	require_once '../../common/common-Func.php';
 	require_once '../../common/common-Func-ACL.php';
 
+
+	$user_lang = (isset($_POST["lang"])) ? $_POST["lang"] : "fr"; 
+	$user_lang = (isset($_GET["lang"])) ? $_GET["lang"] : $user_lang;
+
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
-
-	$user_lang = "fr";
 
 	# Load traduction in the selected language.
 	is_file ("../../../lang/".$user_lang.".php") ? include_once ("../../../lang/".$user_lang.".php") : include_once ("./lang/en.php");
@@ -73,17 +72,15 @@ header("Content-disposition: filename=table.csv");
 
 	require_once 'ServicesLog.php';
 
+	header("Content-Type: application/csv-tab-delimited-table");
+	header("Content-disposition: filename=".$mhost. "_" .$service_name.".csv");
 
-	echo "Rapport de suppervision \n";
 
-
+	echo $lang["m_hostTitle"].";".$lang["m_serviceTilte"].";".$lang["start"]."; ".$lang["m_end"]."; ".$lang["duration"]."\n";
+	echo $mhost."; ".$service_name."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
 	echo "\n";
-	echo "Host;Service; Debut de la periode; Fin de la periode; Durée\n";
-	echo $mhost."; ".$mservice."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
-	echo "\n";
 
-
-	echo "Etats;Temps;Temps total;Temps connu; Alert\n";
+	echo $lang["m_StateTitle"].";".$lang["m_TimeTitle"].";".$lang["m_TimeTotalTitle"].";".$lang["m_KnownTimeTitle"]."; ".$lang["m_AlertTitle"]."\n";
 	foreach ($tab_resume as $tab) {
 		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. " %;".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
@@ -91,12 +88,12 @@ header("Content-disposition: filename=table.csv");
 	echo "\n";
 
 
-	echo "Day;Duration;".
-		 "oktime;ok%;okAlert;".
-		 "criticaltime;critical%;criticalAlert;".
-		 "warningtime;warning%;warningAlert;".
-		 "pendingtime;pending%;".
-		 "unknowntime;unknown%;\n";
+	echo $lang["day"].";".$lang["duration"].";" 
+				   .$lang["m_OKTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_OKTitle"]."; ".$lang["m_OKTitle"]." Alert;"
+				   .$lang["m_WarningTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_WarningTitle"].";".$lang["m_WarningTitle"]." Alert;"
+				   .$lang["m_UnknownTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_UnknownTitle"].";".$lang["m_UnknownTitle"]." Alert;"
+				   .$lang["m_CriticalTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_CriticalTitle"].";".$lang["m_CriticalTitle"]." Alert;"
+				   .$lang["m_PendingTitle"]." ".$lang["m_TimeTitle"].";\n";
 
 	foreach ($tab_report as $day => $report) {
 			echo $day.";".$report["duration"].";".

@@ -107,4 +107,10 @@ $lang["lastmonth"] = "Last Month";
 $lang["thisyear"] = "This Year";
 $lang["lastyear"] = "Last Year";
 
+$lang["duration"] = "Duration";
+$lang["HostgroupTitle"] = "Hostgroup";
+$lang["day"] = "Day";
+$lang["start"] = "Begin date";
+$lang["ServiceGroupTitle"] = "ServiceGroup";
+
 ?>

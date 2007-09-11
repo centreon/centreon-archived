@@ -101,7 +101,7 @@
 							<td class="FormHeader" colspan=10>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter">{$serviceTilte}</td>
+							<td class="ListColHeaderCenter">{$HostTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$UpTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$DownTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$UnreachableTitle}</td>

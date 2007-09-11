@@ -17,10 +17,6 @@ For information : contact@oreon-project.org
 */
 
 
-header("Content-Type: application/csv-tab-delimited-table");
-header("Content-disposition: filename=table.csv");
-
-
 	$oreonPath = '/srv/oreon/';
 
 	function check_injection(){
@@ -54,8 +50,8 @@ header("Content-disposition: filename=table.csv");
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
-	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
-	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+	isset ($_GET["hostgroup"]) ? $mhostgroup = $_GET["hostgroup"] : $mhostgroup = NULL;
+	isset ($_POST["hostgroup"]) ? $mhostgroup = $_POST["hostgroup"] : $mhostgroup = $mhostgroup;
 
 	$path = "./include/reporting/dashboard";
 	require_once '../../../class/other.class.php';
@@ -71,29 +67,29 @@ header("Content-disposition: filename=table.csv");
 	is_file ("../../../lang/".$user_lang.".php") ? include_once ("../../../lang/".$user_lang.".php") : include_once ("./lang/en.php");
 	is_file ("../../reporting/lang/".$user_lang.".php") ? include_once ("../../reporting/lang/".$user_lang.".php") : include_once ("./include/reporting/lang/en.php");
 
+	require_once('HostGroupLog.php');
+	
+	header("Content-Type: application/csv-tab-delimited-table");
+	header("Content-disposition: filename=".$mhostgroup.".csv");
 
-	require_once 'HostGroupLog.php';
 
-
-	echo "Rapport de suppervision \n";
+	echo $lang["HostgroupTitle"].";".$lang["start"]."; ".$lang["m_end"]."; ".$lang["duration"]."\n";
+	echo $mhostgroup."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
 	echo "\n";
-	echo "Host; debut de la periode; fin de la periode; durée\n";
-	echo $mhost."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
-	echo "\n";
 
-
-	echo "Etats;Temps;Temps total;Temps connu; Alert\n";
+	echo $lang["m_StateTitle"].";".$lang["m_TimeTitle"].";".$lang["m_TimeTotalTitle"].";".$lang["m_KnownTimeTitle"]."; ".$lang["m_AlertTitle"]."\n";
 	foreach ($tab_resume as $tab) {
 		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. ";".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
 	echo "\n";
 	echo "\n";
 
-	echo "Day;Duration;".
-		 "uptime;up%;upAlert;".
-		 "downtime;down%;downAlert;".
-		 "unreachalbetime;unreachalbe%;unreachalbeAlert;".
-		 "undeterminatetime;undeterminate%\n";
+
+	echo $lang["day"].";".$lang["duration"].";".
+		 $lang["m_UpTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_UpTitle"].";".$lang["m_UpTitle"]." ".$lang["m_AlertTitle"].";".
+		 $lang["m_DownTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_DownTitle"].";".$lang["m_DownTitle"]." ".$lang["m_AlertTitle"].";".
+		 $lang["m_UnreachableTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_UnreachableTitle"].";".$lang["m_UnreachableTitle"]." ".$lang["m_AlertTitle"].";".
+		 $lang["m_PendingTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_PendingTitle"].";\n";
 
 	foreach ($tab_report as $day => $report) {
 		echo $day.";".$report["duration"].";".

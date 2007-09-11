@@ -65,6 +65,7 @@ $lang["m_serviceLogTitle"] = "Log du jours";
 $lang["m_hostSvcAssocied"] = "Etat des services associ&eacute;s";
 
 $lang["m_serviceTilte"] = "Service";
+$lang["m_hostTitle"] = "Host";
 $lang["m_allTilte"] = "Tout";
 $lang["m_averageTilte"] = "Moyenne";
 $lang["m_OKTitle"] = "OK";
@@ -104,5 +105,11 @@ $lang["last30days"] = "30 derniers jours";
 $lang["lastmonth"] = "Le mois dernier";
 $lang["thisyear"] = "Cette ann&eacute;e";
 $lang["lastyear"] = "L&acute;ann&eacute;e derni&egrave;re";
+
+$lang["duration"] = "Durée";
+$lang["HostgroupTitle"] = "HostGroup";
+$lang["day"] = "Jours";
+$lang["start"] = "Date de début";
+$lang["ServiceGroupTitle"] = "ServiceGroup";
 
 ?>

@@ -49,6 +49,8 @@ For information : contact@oreon-project.org
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
 			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
+			$start_var = $start;
+			$end_var = $end;
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 		}
 		else {
@@ -150,12 +152,20 @@ For information : contact@oreon-project.org
 			$tab_tmp["WARNINGnbEvent"] = isset($tab_svc_bdd[$svc_id]["WARNINGnbEvent"]) ? $tab_svc_bdd[$svc_id]["WARNINGnbEvent"] : 0;
 			$tab_tmp["UNKNOWNnbEvent"] = isset($tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"]) ? $tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] : 0;
 			$tab_tmp["CRITICALnbEvent"] = isset($tab_svc_bdd[$svc_id]["CRITICALnbEvent"]) ? $tab_svc_bdd[$svc_id]["CRITICALnbEvent"] : 0;
-	
-			$tab_tmp["PktimeOK"] = round($tab_svc_bdd[$svc_id]["Tok"] / ($tt - $tmp_none) *100,2);
-			$tab_tmp["PktimeWARNING"] = round( $tab_svc_bdd[$svc_id]["Twarn"]/ ($tt - $tmp_none) *100,2);
-			$tab_tmp["PktimeUNKNOWN"] = round( $tab_svc_bdd[$svc_id]["Tunknown"]/ ($tt - $tmp_none) *100,2);
-			$tab_tmp["PktimeCRITICAL"] = round( $tab_svc_bdd[$svc_id]["Tcri"]/ ($tt - $tmp_none) *100,2);
-	
+
+
+			if( ($tt - $tmp_none) > 0){
+				$tab_tmp["PktimeOK"] = round($tab_svc_bdd[$svc_id]["Tok"] / ($tt - $tmp_none) *100,2);
+				$tab_tmp["PktimeWARNING"] = round( $tab_svc_bdd[$svc_id]["Twarn"]/ ($tt - $tmp_none) *100,2);
+				$tab_tmp["PktimeUNKNOWN"] = round( $tab_svc_bdd[$svc_id]["Tunknown"]/ ($tt - $tmp_none) *100,2);
+				$tab_tmp["PktimeCRITICAL"] = round( $tab_svc_bdd[$svc_id]["Tcri"]/ ($tt - $tmp_none) *100,2);
+			}else{
+				$tab_tmp["PktimeOK"] = 0;
+				$tab_tmp["PktimeWARNING"] = 0;
+				$tab_tmp["PktimeUNKNOWN"] = 0;
+				$tab_tmp["PktimeCRITICAL"] = 0;
+				
+			}
 	
 			// les lignes suivante ne servent qu'a corriger un bug mineur correspondant a un decalage d'une seconde... 
 			$tab_tmp["PtimeOK"] = number_format($tab_tmp["PtimeOK"], 1, '.', '');

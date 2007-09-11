@@ -148,7 +148,6 @@ For information : contact@oreon-project.org
 		$tab["pourcentTime"] = round($Tok/($timeTOTAL+1)*100,2) ;
 		$tab["pourcentkTime"] = round($Tok/($timeTOTAL-$Tnone+1)*100,2). "%";
 		$tab["nbAlert"] = $sbase["average"]["OKnbEvent"];
-//		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'";
 		$tab_resume[0] = $tab;
 		$tab["state"] = $lang["m_CriticalTitle"];
 		$tab["time"] = Duration::toString($Tcritical);
@@ -156,7 +155,6 @@ For information : contact@oreon-project.org
 		$tab["pourcentTime"] = round($Tcritical/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = null;
 		$tab["nbAlert"] = $sbase["average"]["CRITICALnbEvent"];
-//		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'";
 		$tab_resume[1] = $tab;
 		$tab["state"] = $lang["m_DownTitle"];
 		$tab["time"] = Duration::toString($Twarning);
@@ -164,7 +162,6 @@ For information : contact@oreon-project.org
 		$tab["pourcentTime"] = round($Twarning/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = round($Twarning/($timeTOTAL-$Tnone+1)*100,2)."%";
 		$tab["nbAlert"] = $sbase["average"]["WARNINGnbEvent"];
-//		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'";
 		$tab_resume[2] = $tab;
 		$tab["state"] = $lang["m_UnreachableTitle"];
 		$tab["time"] = Duration::toString($Tunreach);
@@ -172,7 +169,6 @@ For information : contact@oreon-project.org
 		$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone+1)*100,2)."%";
 		$tab["nbAlert"] = $sbase["average"]["UNKNOWNnbEvent"];
-//		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";
 		$tab_resume[3] = $tab;
 		$tab["state"] = $lang["m_PendingTitle"];
 		$tab["time"] = Duration::toString($Tnone);
@@ -180,7 +176,6 @@ For information : contact@oreon-project.org
 		$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = null;
 		$tab["nbAlert"] = "";
-//		$tab["style"] = "class='ListColCenter' style='background:#cccccc'";
 		$tab_resume[4] = $tab;
 
 		#

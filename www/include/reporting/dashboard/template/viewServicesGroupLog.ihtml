@@ -17,7 +17,7 @@
 				&nbsp;<img src="./img/icones/16x16/text_rich_marked.gif">
 				<b>{$formservicegroup.servicegroup.label}:</b>&nbsp;&nbsp;{$formservicegroup.servicegroup.html}
 				{$formservicegroup.hidden}
-			&nbsp;&nbsp;&nbsp;{$period}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
+			&nbsp;&nbsp;&nbsp;{$period_name}{$date_start_select} {$to} {$date_end_select} - {$infosTitle}
 			</form>	
 		</td>
 		<td>

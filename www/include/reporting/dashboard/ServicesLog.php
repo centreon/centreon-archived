@@ -44,6 +44,8 @@ For information : contact@oreon-project.org
 	isset ($_GET["service"]) ? $mservice = $_GET["service"] : $mservice = NULL;
 	isset ($_POST["service"]) ? $mservice = $_POST["service"] : $mservice = $mservice;
 
+	$service_name = getMyServiceName($mservice);
+
 	#
 	## period selection
 	#
@@ -57,7 +59,7 @@ For information : contact@oreon-project.org
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
-			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;
+			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;			
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
 		}
 		else {
@@ -86,6 +88,8 @@ For information : contact@oreon-project.org
 		getLogInDbForOneSVC($tab_svc_bdd, $pearDB, $host_id, $svc_id, $start_date_select, $end_date_select, $pearDBO, $today_start, $today_end);			
 		$tab_svc["svcName"] = getMyServiceName($mservice);
 	}
+
+
 
 	#
 	## fourchette de temps
@@ -305,7 +309,7 @@ For information : contact@oreon-project.org
 		$t = 0 + ($h["date_end"] - $h["date_start"]);
 		
 		$t = round(($t - ($t * 0.11574074074)),2);
-		$start = $h["date_start"] + 5000;			
+		$startd = $h["date_start"] + 5000;
 		$tab_tmp = array();
 		$tab_tmp ["duration"] = Duration::toString($tt) ? Duration::toString($tt) : 0;
 		$tab_tmp ["oktime"] = Duration::toString($oktime) ? Duration::toString($oktime) : 0;
@@ -322,8 +326,10 @@ For information : contact@oreon-project.org
 		$tab_tmp ["unknowntime"] = Duration::toString($unknowntime) ? Duration::toString($unknowntime) : 0;
 		$tab_tmp ["punknown"] = Duration::toString($punknown) ? Duration::toString($punknown) : 0;
 
-		$tab_report[date("d/m/Y", $start)] = $tab_tmp;
+		$tab_report[date("d/m/Y", $startd)] = $tab_tmp;
 	  }
+
+
 /*
 			Duration::toString($pendingtime) .'{/td}{td class=bubul}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
 			Duration::toString($unknowntime) .'{/td}{td class=bubul}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
