@@ -247,12 +247,15 @@ For information : contact@oreon-project.org
 	    if ($ifTab){
 		    foreach ($ifTab as $key => $it){
 			   	$ifTab[$key]["ifIndex"] = $it;
-			   	$interfaceName = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ");
+			   	$desc = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ");
+			   	if ($desc){
+			   		$interfaceName = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ") . " (".$desc.") ";
+			   	} else {
+			   		$interfaceName = get_snmp_value("1.3.6.1.2.1.2.2.1.2.".$it, "STRING: ");		
+			   	}
 			   	$iftype = get_snmp_value("1.3.6.1.2.1.2.2.1.3.".$it, "INTEGER: ");
 			   	(strstr(strtolower($interfaceName), "vlan") || strstr(strtolower($iftype), 'virtual')) ? $Datatype = 2 : $Datatype = 1;
-			    //$type == 1 ? $buffer .= '<network>': $buffer .= '<vlan>';
-				// $buffer .= '<interfaceName>'. htmlentities($description, ENT_QUOTES) .'</interfaceName>';
-				
+			    
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
 				preg_match("/[A-Za-z\-]*\(?([0-9]+)\)?/", $operstatus, $matches);
 				$operstatus = $matches[1];
