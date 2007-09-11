@@ -51,7 +51,7 @@ $lang["m_send"] = "Envoyer";
 # Dashboard
 
 $lang["m_period_select"] = "Periode";
-$lang["m_if_custom"] = "Si periode personalisÃ©e choisie...";
+$lang["m_if_custom"] = "Si periode personalis&eacute;e choisie...";
 $lang["m_view"] = "Voir";
 $lang["m_start"] = "Date de d&eacute;but";
 $lang["m_end"] = "Date de fin";
@@ -106,10 +106,10 @@ $lang["lastmonth"] = "Le mois dernier";
 $lang["thisyear"] = "Cette ann&eacute;e";
 $lang["lastyear"] = "L&acute;ann&eacute;e derni&egrave;re";
 
-$lang["duration"] = "DurÃ©e";
+$lang["duration"] = "Durée";
 $lang["HostgroupTitle"] = "HostGroup";
 $lang["day"] = "Jours";
-$lang["start"] = "Date de dÃ©but";
+$lang["start"] = "Date de début";
 $lang["ServiceGroupTitle"] = "ServiceGroup";
 
 ?>
