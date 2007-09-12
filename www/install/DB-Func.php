@@ -32,18 +32,27 @@ function aff_header($str, $str2, $nb){
    <link rel="shortcut icon" href="../img/favicon.ico">
    <link rel="stylesheet" href="./install.css" type="text/css">
    <SCRIPT language='javascript'>
-	function LicenceAccepted(){
-		var theForm     = document.forms[0];
-		var nextButton  = document.getElementById("button_next");
-
-		if( theForm.setup_license_accept.checked ){
+		function LicenceAccepted(){
+			var theForm     = document.forms[0];
+			var nextButton  = document.getElementById("button_next");
+	
+			if( theForm.setup_license_accept.checked ){
+				nextButton.disabled = '';
+				nextButton.focus();
+			}
+			else {
+				nextButton.disabled = "disabled";
+			}
+		}
+		
+		function LicenceAcceptedByLink(){
+			var theForm     = document.forms[0];
+			var nextButton  = document.getElementById("button_next");
+	
+			theForm.setup_license_accept.checked = true;			
 			nextButton.disabled = '';
 			nextButton.focus();
 		}
-		else {
-			nextButton.disabled = "disabled";
-		}
-	}
 	</SCRIPT>
 </head>
 <body rightmargin="0" topmargin="0" leftmargin="0">
