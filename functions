@@ -693,7 +693,7 @@ function config_cron(){
 	echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl 2>&1 >> $INSTALL_DIR_OREON/log/odsParsing.log" >> $CRONTMP
 	# on soumet la nouvelle version du cron
 	crontab -u $NAGIOS_USER $CRONTMP
-	rm -f $CRONSAV $CRONTMP
+	rm -f $CRONTMP
 }
 
 
