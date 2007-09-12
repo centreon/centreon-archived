@@ -27,3 +27,10 @@ INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `to
 
 INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 30703, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', 'initTimeline');
 INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 30704, NULL, './include/common/javascript/Timeline/src/main/webapp/api/timeline-api.js', 'initTimeline');
+
+--
+-- NDO
+--
+
+ALTER TABLE `general_opt` ADD `ndo_base_name` VARCHAR( 255 ) NOT NULL DEFAULT 'nagios',ADD `ndo_base_prefixe` VARCHAR( 255 ) NOT NULL DEFAULT 'ndo',
+ADD `ndo_activate` BINARY NOT NULL DEFAULT '0';
