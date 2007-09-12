@@ -34,7 +34,7 @@ For information : contact@oreon-project.org
         	<select name="mysqlscript">
         	<?        		
         		chdir('sql');
-        		foreach (glob("UpdateDB-".$version["value"]."_to_*.sql") as $filename) {
+        		foreach (glob("Update-ODS-".$version["value"]."_to_*.sql") as $filename) {
 					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
         	?>
         	</select>
