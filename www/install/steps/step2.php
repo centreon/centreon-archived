@@ -29,11 +29,9 @@ For information : contact@oreon-project.org
 				</tr>
 				<tr>
 					<td align=left>
-								<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href=\"javascript:void(0)\" onClick=\"LicenceAcceptedByLink();\">I Accept</a>
+						<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href=\"javascript:void(0)\" onClick=\"LicenceAcceptedByLink();\">I Accept</a>
 					</td>
-					<td align=right>
-						&nbsp;
-					</td>
+					<td align=right>&nbsp;</td>
 				</tr>";
 	aff_middle();
 	print "<input class='button' type='submit' name='goto' value='Next' id='button_next' disabled='disabled' />";
