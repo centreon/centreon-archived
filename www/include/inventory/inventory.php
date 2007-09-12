@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 	isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = NULL;
 	$hG ? $host_id = $hG : $host_id = $hP;
 
-	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	#isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
 	$cG ? $select = $cG : $select = $cP;
 
@@ -49,28 +49,28 @@ For information : contact@oreon-project.org
 
 	if ($o == "q")	{
 		$res =& $pearDB->query("SELECT type_ressources FROM inventory_index WHERE host_id = '".$host_id."'");
-		if ($res->numRows())	{
+		if ($res->numRows()) {
 			$host =& $res->fetchRow();
 			$host["type_ressources"] ? $o = "o" : $o = "t";
-		}
-		else
+		} else
 			$o = "b";
 		$res->free();
 	}
 
 	switch ($o)	{
 		case "u" : require_once($path."inventoryUpdate.php"); break; #Update Inventory
-
+		//--------------------------------------
 		case "t" : require_once($path."IDCard_server/infosServer.php"); break; #Watch  server
 		case "o" : require_once($path."IDCard_network/infosNetwork.php"); break; #Watch  network
-
+		//--------------------------------------
 		case "b" : require_once($path."inventoryBlanck.php"); break; #No ID Card
-
+		//--------------------------------------
 		case "s" : require_once($path."IDCard_server/listServer.php"); break; #list of server
 		case "n" : require_once($path."IDCard_network/listNetwork.php"); break; #list of network
-
+		//--------------------------------------
 		case "c" : change_manufacturer(isset($select) ? $select: array() , $select_manufacturer); require_once($path."IDCard_server/listServer.php"); break; #change manufacturer
 		case "d" : change_manufacturer(isset($select) ? $select: array(), $select_manufacturer); require_once($path."IDCard_network/listNetwork.php"); break; #change manufacturer
+		//--------------------------------------
 		default : require_once($path."IDCard_server/listServer.php"); break;
 	}
 ?>

@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 
 	$res =& $pearDB->query("SELECT * FROM inventory_manufacturer");
 	if (PEAR::isError($res))
-			print $res->getDebugInfo()."<br>";	
+		print $res->getDebugInfo()."<br>";	
 	$manu_array = array();
 	$manu_array[0] = "Server";
 	while ($r =& $res->fetchRow())
