@@ -29,8 +29,7 @@ For information : contact@oreon-project.org
 				</tr>
 				<tr>
 					<td align=left>
-						<input type=\"checkbox\" class=\"checkbox\" id=\"setup_license_accept\" name=\"setup_license_accept\" onClick=\"LicenceAccepted();\" value=\"0\" />
-						<a onClick=\"document.getElementById(\'setup_license_accept\').checked = true; document.getElementById(\'button_next\').disabled = false;\">I Accept</a>
+								<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href=\"javascript:void(0)\" onClick=\"LicenceAcceptedByLink();\">I Accept</a>
 					</td>
 					<td align=right>
 						&nbsp;
