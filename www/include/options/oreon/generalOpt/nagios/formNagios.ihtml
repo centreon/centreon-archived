@@ -20,7 +20,7 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$lang.genOpt_ndo_configuration}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ndo_activate.label}</td><td class="FormRowValue">{$form.ndo_activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ndo_base_name.label}</td><td class="FormRowValue">{$form.ndo_base_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.ndo_base_prefixe.label}</td><td class="FormRowValue">{$form.ndo_base_prefixe.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ndo_base_prefix.label}</td><td class="FormRowValue">{$form.ndo_base_prefix.html}</td></tr>
 	</table>
 	{if !$valid}
 		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>
