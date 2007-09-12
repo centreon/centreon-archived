@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 	$form->addGroup($ndo_activate, 'ndo_activate', $lang["ndo_activate"], '&nbsp;');
 
 	$form->addElement('text', 'ndo_base_name', $lang["ndo_base_name"], $attrsText2);
-
+	$form->addElement('text', 'ndo_base_prefixe', $lang["ndo_base_prefixe"], $attrsText2);
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');

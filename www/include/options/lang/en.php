@@ -162,6 +162,7 @@ $lang['genOpt_ndo'] = "NDO";
 $lang['genOpt_ndo_properties'] = "NDO Properties";
 $lang['genOpt_ndo_configuration'] = "NDO Configuration";
 $lang['ndo_base_name'] = "NDO Base name";
+$lang['ndo_base_prefixe'] = "NDO Base Prefixe";
 $lang['ndo_activate'] = "NDO activate";
 
 
