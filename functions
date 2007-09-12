@@ -661,8 +661,8 @@ function config_cron(){
  	fi
     	
 	# Create temporary file for save old crontab
-	CRONSAV=$(mktemp /tmp/crontab_nagios.XXXX)
-	CRONTMP=$(mktemp /tmp/crontab_nagios.XXXX)
+	CRONSAV=$(mktemp /tmp/crontab_nagios.XXXXXX)
+	CRONTMP=$(mktemp /tmp/crontab_nagios.XXXXXX)
     	
 	echo "Please specify user do you use for oreon cron"
 	echo "By default, oreon use nagios user, it's correct ?"
