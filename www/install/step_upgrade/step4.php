@@ -16,13 +16,18 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	include_once("../../oreon.conf.php");
+	include_once("DB.php");
+	include_once("../../DBOdsConnect.php");
+
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
 		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; }
+
 	aff_header("Oreon Setup Wizard", "Updating Database", 4);	?>
-	
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
 	print "<tr><td><b>Database &#146;".$conf_oreon['db']."&#146; : Upgrade</b></td>";
+
 	$res = connexion($conf_oreon['user'], $conf_oreon['password']  , $conf_oreon['host']) ;
 	$mysql_msg = $res['1'];
 	$usedb = mysql_select_db($conf_oreon['db'] , $res['0']) or ( $mysql_msg= mysql_error());
@@ -53,7 +58,7 @@ For information : contact@oreon-project.org
  			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
 			echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
-		    $return_false = 1;
+			$return_false = 1;
 			print "<tr><td colspan='2' align='left'><span class='small'>$mysql_msg</span></td></tr>";
 		}
 		
@@ -62,14 +67,13 @@ For information : contact@oreon-project.org
 		@mysql_close($res['0']);
 	} else {
 		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
-	    $return_false = 1;
-	?>
+	    $return_false = 1;	?>
 		<tr>
 			<td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
 		</tr><?	
 	}
 	@mysql_close($res['0']);
-	// end last code
+
 	aff_middle();
 	$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' ";
 	if (isset($return_false) && $return_false)

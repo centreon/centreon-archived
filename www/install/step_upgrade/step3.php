@@ -15,27 +15,34 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-		aff_header("Oreon Upgrade Wizard", "Select Version", 3); ?>
-					In order for your Oreon upgrade to function properly, please select the mysql script file.<br><br>
-		<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-          <tr>
-            <th style="padding-left:20px " colspan="2">Upgrade SQL Scripts</th>
-          </tr>
-		  <tr>
-            <td><b>MySQL Scripts</b></td>
-            <td align="right">
-            	<select name="mysqlscript">
-            	<?
-            		chdir('sql');
-            		foreach (glob("*.sql") as $filename) {
-   						echo '<option value="'.$filename.'">'.$filename.'</option>'; }
-            	?>
-            	</select>
-           	</td>
-          </tr>
-		</table>
-		<?
-		aff_middle();
-		print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-		aff_footer();
+	include_once("../oreon.conf.php");
+	include_once("DB.php");
+	include_once("../DBconnect.php");
+	
+	$DBRESULT =& $pearDB->query("SELECT `value` FROM `oreon_informations` WHERE `key` = 'version'");
+	$DBRESULT->fetchInto($version);
+	
+	aff_header("Oreon Upgrade Wizard", "Select Version", 3); ?>
+	In order for your Oreon upgrade to function properly, please select the mysql script file.<br><br>
+	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
+      <tr>
+        <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
+      </tr>
+	  <tr>
+        <td><b>MySQL Scripts</b></td>
+        <td align="right">
+        	<select name="mysqlscript">
+        	<?        		
+        		chdir('sql');
+        		foreach (glob("UpdateDB-".$version["value"]."_to_*.sql") as $filename) {
+					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
+        	?>
+        	</select>
+       	</td>
+      </tr>
+	</table>
+	<?
+	aff_middle();
+	print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
+	aff_footer();
 ?>

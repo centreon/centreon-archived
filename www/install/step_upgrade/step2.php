@@ -20,13 +20,13 @@ For information : contact@oreon-project.org
 	$license_file_name = "./LICENSE.txt";
 	$fh = fopen( $license_file_name, 'r' ) or die( "License file not found!" );
 	$license_file = fread( $fh, filesize( $license_file_name ) );
-	fclose( $fh );
+	fclose($fh);
 	$str = "<textarea cols='80' rows='20' readonly>".$license_file."</textarea>";
 	$str .= "</td>
 	</tr>
 	<tr>
-	  <td align=left>
-		<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href='javascript:void(0)' onClick='document.getElementById('button_next').disabled = false;'>I Accept</a>
+	  <td align=\"left\">
+		<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href=\"javascript:void(0)\" onClick=\"LicenceAcceptedByLink();\">I Accept</a>
 	  </td>
 	  <td align=right>
 		&nbsp;

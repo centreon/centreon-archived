@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 	<tr height="83" style=" background-image: url('../img/bg_banner.gif');">
 	  <th width="400" height="83"><? print $nb . ". " . $str2; ?></th>
 	  <th width="200" height="83" style="text-align: right; padding: 0px;">
-			<a href="http://www.oreon-project.org" target="_blank"><IMG src="../img/logo_centreon_wt.gif" alt="Oreon" border="0"></a>
+			<a href="http://www.oreon-project.org" target="_blank"><img src="../img/logo_centreon_wt.gif" alt="Oreon" border="0" style="padding-top:10px;padding-right:10px;"></a>
 	  </th>
 	</tr>
 	<tr>
