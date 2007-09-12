@@ -16,78 +16,84 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
-function Connexion ($pNom, $pMotPasse, $pServeur)	{
-	$connexion = @mysql_pconnect($pServeur, $pNom, $pMotPasse) or ($msg = mysql_error());
-	if (!isset($msg))
-		$msg = "" ;
-	return array ($connexion, $msg);
-}
-
-function aff_header($str, $str2, $nb){
-?>
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-   <meta http-equiv="Content-Style-Type" content="text/css">
-   <title><? print $str; ?></title>
-   <link rel="shortcut icon" href="../img/favicon.ico">
-   <link rel="stylesheet" href="./install.css" type="text/css">
-   <SCRIPT language='javascript' src='../include/javascript/functions.js'></SCRIPT>
-   <SCRIPT language='javascript'>
-	function LicenceAccepted(){
-		var theForm     = document.forms[0];
-		var nextButton  = document.getElementById("button_next");
-
-		if( theForm.setup_license_accept.checked ){
+	function Connexion ($pNom, $pMotPasse, $pServeur)	{
+		$connexion = @mysql_pconnect($pServeur, $pNom, $pMotPasse) or ($msg = mysql_error());
+		if (!isset($msg))
+			$msg = "" ;
+		return array ($connexion, $msg);
+	}
+	
+	function aff_header($str, $str2, $nb){
+	?>
+	<html>
+	<head>
+	   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	   <meta http-equiv="Content-Style-Type" content="text/css">
+	   <title><? print $str; ?></title>
+	   <link rel="shortcut icon" href="../img/favicon.ico">
+	   <link rel="stylesheet" href="./install.css" type="text/css">
+	   <SCRIPT language='javascript' src='../include/javascript/functions.js'></SCRIPT>
+	   <SCRIPT language='javascript'>
+		function LicenceAccepted(){
+			var theForm     = document.forms[0];
+			var nextButton  = document.getElementById("button_next");
+	
+			if( theForm.setup_license_accept.checked ){
+				nextButton.disabled = '';
+				nextButton.focus();
+			}
+			else {
+				nextButton.disabled = "disabled";
+			}
+		}
+		
+		function LicenceAcceptedByLink(){
+			var theForm     = document.forms[0];
+			var nextButton  = document.getElementById("button_next");
+	
+			theForm.setup_license_accept.checked = true;			
 			nextButton.disabled = '';
 			nextButton.focus();
 		}
-		else {
-			nextButton.disabled = "disabled";
-		}
+		</SCRIPT>
+	</head>
+	<body rightmargin="0" topmargin="0" leftmargin="0">
+	<table cellspacing="0" cellpadding="0" border="0" align="center" class="shell">
+	<tr height="83" style=" background-image: url('../img/bg_banner.gif');">
+	  <th width="400" height="83"><? print $nb . ". " . $str2; ?></th>
+	  <th width="200" height="83" style="text-align: right; padding: 0px;">
+			<a href="http://www.oreon-project.org" target="_blank"><IMG src="../img/logo_centreon_wt.gif" alt="Oreon" border="0"></a>
+	  </th>
+	</tr>
+	<tr>
+	  <td colspan="2" width="600" style="background-position : right; background-color: #DDDDDD; background-repeat : no-repeat;">
+		<form action="upgrade.php" method="post" name="theForm" id="theForm">
+		<input type="hidden" name="step" value="<? print $nb; ?>">
+	<?
 	}
-	</SCRIPT>
-</head>
-<body rightmargin="0" topmargin="0" leftmargin="0">
-<table cellspacing="0" cellpadding="0" border="0" align="center" class="shell">
-<tr height="83" style=" background-image: url('../img/bg_banner.gif');">
-  <th width="400" height="83"><? print $nb . ". " . $str2; ?></th>
-  <th width="200" height="83" style="text-align: right; padding: 0px;">
-		<a href="http://www.oreon-project.org" target="_blank"><IMG src="../img/logo_centreon_wt.gif" alt="Oreon" border="0"></a>
-  </th>
-</tr>
-<tr>
-  <td colspan="2" width="600" style="background-position : right; background-color: #DDDDDD; background-repeat : no-repeat;">
-	<form action="upgrade.php" method="post" name="theForm" id="theForm">
-	<input type="hidden" name="step" value="<? print $nb; ?>">
-<?
-}
-
-function aff_middle(){
-?>
-  </td>
-</tr>
-<tr>
-  <td align="right" colspan="2" height="20">
-	<hr>
-	<table cellspacing="0" cellpadding="0" border="0" class="stdTable">
-	  <tr>
-		<td>
-<?
-}
-
-function aff_footer(){
-?>				</td>
-			  </tr>
-		</table>
-		</form>
+	
+	function aff_middle(){	?>
 	  </td>
 	</tr>
-  </table>
-</body>
-</html>
-<?
-}
+	<tr>
+	  <td align="right" colspan="2" height="20">
+		<hr>
+		<table cellspacing="0" cellpadding="0" border="0" class="stdTable">
+		  <tr>
+			<td>	<?
+	}
+	
+	function aff_footer(){
+	?>				</td>
+				  </tr>
+			</table>
+			</form>
+		  </td>
+		</tr>
+	  </table>
+	</body>
+	</html>
+	<?
+	}
 
 ?>
