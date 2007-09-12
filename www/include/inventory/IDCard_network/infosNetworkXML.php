@@ -32,9 +32,8 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$hgs = array();
 		$res =& $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '".$host_id."' AND hgr.hostgroup_hg_id = hg.hg_id");
-		if (PEAR::isError($pearDB)) {
+		if (PEAR::isError($pearDB))
 			print "Mysql Error : ".$pearDB->getMessage();
-		}
 		while ($res->fetchInto($hg))
 			$hgs[$hg["hostgroup_hg_id"]] = $hg["hg_name"];
 		return $hgs;
@@ -44,9 +43,8 @@ For information : contact@oreon-project.org
 		if (!$hg_id) return;
 		global $pearDB;
 		$res =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		if (PEAR::isError($pearDB))
+			print "Mysql Error : ".$pearDB->getMessage();
 		$row =& $res->fetchRow();
 		if ($row["hg_snmp_community"])
 			return $row["hg_snmp_community"];
@@ -57,9 +55,8 @@ For information : contact@oreon-project.org
 		if (!$hg_id) return;
 		global $pearDB;
 		$res =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		if (PEAR::isError($pearDB)) {
-				print "Mysql Error : ".$pearDB->getMessage();
-			}
+		if (PEAR::isError($pearDB))
+			print "Mysql Error : ".$pearDB->getMessage();
 		$row =& $res->fetchRow();
 		if ($row["hg_snmp_version"])
 			return $row["hg_snmp_version"];
@@ -69,11 +66,8 @@ For information : contact@oreon-project.org
 	function get_snmp_value($oid, $replace_string){
 		global $address, $community, $timeout, $retries, $debug_inventory, $debug_path ;
 		$str = @snmpget($address, $community, $oid, $timeout , $retries);
-
 		if ($debug_inventory == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Inventory : OID => " . $oid . ", Value => " . $str ."\n", 3, $debug_path."inventory.log");
-
-		//print "[".$str."]";
 		if ($str == FALSE)
 			return FALSE;
 		else
@@ -100,9 +94,8 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		while(1)	{
 			$res =& $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
+			if (PEAR::isError($pearDB))
 				print "Mysql Error : ".$pearDB->getMessage();
-			}
 			$row =& $res->fetchRow();
 			if ($row["host_name"])
 				return $row["host_name"];
@@ -118,9 +111,8 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		while(1)	{
 			$res =& $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
+			if (PEAR::isError($pearDB))
 				print "Mysql Error : ".$pearDB->getMessage();
-			}
 			$row =& $res->fetchRow();
 			if ($row["host_address"])
 				return $row["host_address"];
@@ -137,9 +129,8 @@ For information : contact@oreon-project.org
 		$host_id_bkp = $host_id;
 		while(1)	{
 			$res =& $pearDB->query("SELECT host_snmp_version, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
+			if (PEAR::isError($pearDB))
 				print "Mysql Error : ".$pearDB->getMessage();
-			}
 			$row =& $res->fetchRow();
 			if ($row["host_snmp_version"])
 				return $row["host_snmp_version"];
@@ -149,17 +140,15 @@ For information : contact@oreon-project.org
 				$hgs = getMyHostGroups($host_id_bkp);
 				foreach ($hgs as $key=>$value)	{
 					$res =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					if (PEAR::isError($pearDB)) {
+					if (PEAR::isError($pearDB))
 						print "Mysql Error : ".$pearDB->getMessage();
-					}
 					$row =& $res->fetchRow();
 					if ($row["hg_snmp_version"])
 						return $row["hg_snmp_version"];
 				}
 				$res =& $pearDB->query("SELECT snmp_version FROM general_opt LIMIT 1");
-				if (PEAR::isError($pearDB)) {
+				if (PEAR::isError($pearDB))
 					print "Mysql Error : ".$pearDB->getMessage();
-				}
 				$row =& $res->fetchRow();
 				if (isset($row["snmp_version"]))
 					return $row["snmp_version"];
@@ -177,9 +166,8 @@ For information : contact@oreon-project.org
 		$host_id_bkp = $host_id;
 		while(1)	{
 			$res =& $pearDB->query("SELECT host_snmp_community, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			if (PEAR::isError($pearDB)) {
+			if (PEAR::isError($pearDB))
 				print "Mysql Error : ".$pearDB->getMessage();
-			}
 			$row =& $res->fetchRow();
 			if ($row["host_snmp_community"])
 				return $row["host_snmp_community"];
@@ -189,17 +177,15 @@ For information : contact@oreon-project.org
 				$hgs = getMyHostGroups($host_id_bkp);
 				foreach ($hgs as $key=>$value)	{
 					$res =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					if (PEAR::isError($pearDB)) {
+					if (PEAR::isError($pearDB))
 						print "Mysql Error : ".$pearDB->getMessage();
-					}
 					$row =& $res->fetchRow();
 					if ($row["hg_snmp_community"])
 						return $row["hg_snmp_community"];
 				}
 				$res =& $pearDB->query("SELECT snmp_community FROM general_opt LIMIT 1");
-				if (PEAR::isError($pearDB)) {
+				if (PEAR::isError($pearDB))
 					print "Mysql Error : ".$pearDB->getMessage();
-				}
 				$row =& $res->fetchRow();
 				if (isset($row["snmp_community"]))
 					return $row["snmp_community"];
@@ -209,19 +195,17 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 
-	//$_POST["host_id"] = 53;
-	//$_POST["type"] = 2;
-	 global $pearDB;
-     $res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
-	 if (PEAR::isError($res))
+	global $pearDB;
+    $res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
+	if (PEAR::isError($res))
 		die($res->getMessage());
 
-	  $debug = $res->fetchRow();
+	$debug = $res->fetchRow();
 
-	  $debug_inventory = $debug['debug_inventory'];
-	  $debug_path = $debug['debug_path'];
-	  if (!isset($debug_inventory))
-	  	$debug_inventory = 0;
+	$debug_inventory = $debug['debug_inventory'];
+	$debug_path = $debug['debug_path'];
+	if (!isset($debug_inventory))
+		$debug_inventory = 0;
 
 	$type = isset($_GET["type"]) ? $_GET["type"] : 0;
 	$type = isset($_POST["type"]) ? $_POST["type"] : $type;
@@ -259,7 +243,7 @@ For information : contact@oreon-project.org
 				$operstatus = get_snmp_value("1.3.6.1.2.1.2.2.1.8.".$it, "INTEGER: ");
 				preg_match("/[A-Za-z\-]*\(?([0-9]+)\)?/", $operstatus, $matches);
 				$operstatus = $matches[1];
-				if(isset($operstatus) && $operstatus)
+				if (isset($operstatus) && $operstatus)
 					$status = $ifOperStatus[$operstatus];
 				else
 					$status = 'none';

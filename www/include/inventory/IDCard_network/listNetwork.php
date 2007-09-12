@@ -48,6 +48,7 @@ For information : contact@oreon-project.org
 	$res =& $pearDB->query($rq);
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
+
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
@@ -100,7 +101,6 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $res->fetchInto($host); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
-
 		if (!$host["host_name"])
 			$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
@@ -125,11 +125,6 @@ For information : contact@oreon-project.org
     	$option[$host['id']] = $host['alias'];
 
 	$form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
-
-
-	#
-	##Apply a template definition
-	#
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
