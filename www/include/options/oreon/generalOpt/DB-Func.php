@@ -81,7 +81,11 @@ For information : contact@oreon-project.org
 		$rq .= "nagios_version = ";
 		isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $rq .= "'".$ret["nagios_version"]."', ": $rq .= "NULL, ";
 		$rq .= "mailer_path_bin = ";
-		isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["mailer_path_bin"], ENT_QUOTES)."' ": $rq .= "NULL ";
+		isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["mailer_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL ";
+		$rq .= "ndo_base_name = ";
+		isset($ret["ndo_base_name"]) && $ret["ndo_base_name"] != NULL ? $rq .= "'".htmlentities($ret["ndo_base_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		$rq .= "ndo_activate = ";
+		isset($ret["ndo_activate"]["ndo_activate"]) && $ret["ndo_activate"]["ndo_activate"] != NULL ? $rq .= "'".htmlentities($ret["ndo_activate"]["ndo_activate"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -300,24 +304,6 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	}
-	
-	function updateNDOConfigData($gopt_id = null)	{
-		if (!$gopt_id) return;
-		global $form, $pearDB, $oreon;
-		$ret = array();
-		$ret = $form->getSubmitValues();
-
-		$rq = "UPDATE `general_opt` SET ";
-		$rq .= "ndo_base_name = ";
-		isset($ret["ndo_base_name"]) && $ret["ndo_base_name"] != NULL ? $rq .= "'".htmlentities($ret["ndo_base_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ndo_activate = ";
-		isset($ret["ndo_activate"]["ndo_activate"]) && $ret["ndo_activate"]["ndo_activate"] != NULL ? $rq .= "'".htmlentities($ret["ndo_activate"]["ndo_activate"], ENT_QUOTES)."' ": $rq .= "NULL ";
-		$rq .= "WHERE gopt_id = '".$gopt_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	}
-	
+	}	
 	
 ?>

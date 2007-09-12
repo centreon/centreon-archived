@@ -60,6 +60,16 @@ For information : contact@oreon-project.org
 	
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["yes"], '1');
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["no"], '0');
+
+	#
+	## ndo
+	#
+	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, $lang["yes"], '1');
+	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, $lang["no"], '0');
+	$form->addGroup($ndo_activate, 'ndo_activate', $lang["ndo_activate"], '&nbsp;');
+
+	$form->addElement('text', 'ndo_base_name', $lang["ndo_base_name"], $attrsText2);
+
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
