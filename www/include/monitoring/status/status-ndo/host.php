@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 		
 	//include("./include/common/checkPagination.php");
 
-	include_once("makeJS_service.php");
+	include_once("makeJS_host.php");
 
 	
 	# Smarty template Init
@@ -139,7 +139,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 
 	$tpl->assign('form', $renderer->toArray());	
-	$tpl->display("service.ihtml");
+	$tpl->display("host.ihtml");
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);

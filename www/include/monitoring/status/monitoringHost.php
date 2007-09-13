@@ -27,8 +27,12 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$ndo = 0;
+	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
+	# Set base value
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	
+	$ndo = $gopt["ndo_activate"];
+		
 	if ($ndo)
 		$path = "./include/monitoring/status/status-ndo/";
 	else
@@ -52,14 +56,25 @@ For information : contact@oreon-project.org
 		switch ($o)	{
 			default : require_once($pathTools."tools.php"); break;
 		}
-	} else {		
-		include("./include/monitoring/status/resume.php"); 
-		switch ($o)	{
-			case "h" 	: require_once($path."host.php"); 					break;
-			case "hpb" 	: require_once($path."host_problem.php"); 			break;
-			case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
-			case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
-			default 	: require_once($path."host.php"); 					break;
-		}
+	} else {
+
+		if (!$ndo){
+			include("./include/monitoring/status/resume.php"); 
+			switch ($o)	{
+				case "h" 	: require_once($path."host.php"); 					break;
+				case "hpb" 	: require_once($path."host_problem.php"); 			break;
+				case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
+				case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
+				default 	: require_once($path."host.php"); 					break;		
+			}
+		}else{
+			switch ($o)	{
+				case "h" 	: require_once($path."host.php"); 					break;
+				case "hpb" 	: require_once($path."host.php"); 					break;
+				case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
+				case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
+				default 	: require_once($path."host.php"); 					break;
+			}
+		}	
 	}
 ?>
