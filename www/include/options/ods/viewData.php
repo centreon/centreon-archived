@@ -147,14 +147,14 @@ For information : contact@oreon-project.org
 		for ($im = 0;$DBRESULT2->fetchInto($metrics);$im++){
 			if ($im)
 				$metric .= " - ";
-			$metric .= "<a href='./oreon.php?p=5010602&o=mmtrc&service_id=".$metrics["metric_id"]."'>".$metrics["metric_name"]."</a>";
+			$metric .= "<a href='./oreon.php?p=5010602&o=mmtrc&index_id=".$index_data["id"]."'>".$metrics["metric_name"]."</a>";
 			if (isset($metrics["unit_name"]) && $metrics["unit_name"])
 				$metric .= " (".$metrics["unit_name"].") ";
 		}
 		$index_data["metrics_name"] = $metric;
 		$index_data["service_description"] = str_replace("#S#", "/", $index_data["service_description"]);
 		$index_data["service_description"] = str_replace("#BS#", "\\", $index_data["service_description"]);
-		$index_data["service_description"] = "<a href='./oreon.php?p=5010602&o=msvc&service_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
+		$index_data["service_description"] = "<a href='./oreon.php?p=5010602&o=msvc&index_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
 		$index_data["metrics_name"] = str_replace("#S#", "/", $index_data["metrics_name"]);
 		$index_data["metrics_name"] = str_replace("#BS#", "\\", $index_data["metrics_name"]);
 		
@@ -248,5 +248,5 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 		
-    $tpl->display("manageData.ihtml");
+    $tpl->display("viewData.ihtml");
 ?>
