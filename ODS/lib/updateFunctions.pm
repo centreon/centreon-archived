@@ -22,10 +22,10 @@
 sub getIntervalLenght(){
 	my $sth = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate = '1'");
 	if (!$sth->execute) {writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");}
-	my $interval = $sth->fetchrow_hashref();
+	my @data = $sth->fetchrow_hashref();
 	undef($sth);
 	if (defined($interval)) {
-		return $interval;
+		return $data->{'interval_length'};
 	} else {
 		return 60;
 	}
@@ -50,7 +50,9 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
 		if (-w $_[0].$_[1].".rrd"){
+			$metric_used_by_perfdata_parsor = $_[1];
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+			$metric_used_by_perfdata_parsor = 0;
 			$ERR = RRDs::error;
 			#writeLogFile("Updating : $_[0]$_[1].rrd : ".substr($_[6], 0, 19).", ".$_[2].":".sprintf("%e", $_[3])."\n");
 			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
@@ -76,7 +78,9 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
 			$_[3] =~ s/\,/\./g;
 			if (-w $_[0].$_[1].".rrd"){
+				$metric_used_by_perfdata_parsor = $_[1];
 				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+				$metric_used_by_perfdata_parsor = 0;
 				$ERR = RRDs::error;
 				writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n") if ($ERR);
 			} else {
@@ -116,7 +120,9 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
 		if (-w $_[0].$_[1].".rrd"){
+			$metric_used_by_perfdata_parsor = $_[1];
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+			$metric_used_by_perfdata_parsor = 0;
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
 		} else {
