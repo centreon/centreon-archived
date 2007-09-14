@@ -30,11 +30,12 @@ use threads;
 use threads::shared;
 
 use RRDs;
-
+use lib "@PERL_RRD_LIB@";
+#use lib "/usr/lib/perl5/vendor_perl/5.8.8/i586-linux-thread-multi/";
 use File::Copy;
 
-#my $installedPath = "@OREON_PATH@/ODS/";
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "@OREON_PATH@";
+#my $installedPath = "/srv/oreon/ODS/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -52,6 +53,7 @@ my $stop : shared = 1;
 # Ods Stats
 my $lineRead : shared = 0;
 my $valueRecorded : shared = 0;
+my $metric_used_by_perfdata_parsor : shared = 0;
 
 # Init value
 my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
@@ -338,6 +340,22 @@ sub CheckNagiosStats(){
 	}
 }
 
+# ---------------------------------------------
+# Rebuild database
+
+sub checkStorageDirectory($){
+	my $RRDdatabase_path = $_[0];
+	if (!-d $RRDdatabase_path){
+		writeLogFile("Directory ".$RRDdatabase_path." does not exists. Trying to create it....\n");
+		if (!mkdir($RRDdatabase_path, "775")) {
+			writeLogFile("Can't create ".$RRDdatabase_path." : permission denied\n");	
+		} else {
+			writeLogFile($RRDdatabase_path." Created\n");
+		}
+	}
+
+}
+
 sub CheckRebuild(){
 	use vars qw($con_oreon $con_ods);
 	my ($RRDdatabase_path, $len_storage_rrd, $y, $svc_mst_be_rbld);
@@ -346,22 +364,16 @@ sub CheckRebuild(){
 		CheckMySQLConnexion();
 		if ($y % 60 eq 0){
 			my ($sth2, $svc_mst_be_rbld, $data, $ERR, $flag, $metric, $cpt);
-			# ---------------------------------------------
-			# Rebuild database
 			$RRDdatabase_path = getRRDdatabase_path();
-			$len_storage_rrd = getLenStorageDB();
-			$len_storage_rrd = $len_storage_rrd * 60 * 60 * 24;
+			$len_storage_rrd = getLenStorageDB() * 60 * 60 * 24;
 			# Check if backup directory is created
-			system("mkdir $RRDdatabase_path/backup/") if (! -d "$RRDdatabase_path/backup/");
-			
+			checkStorageDirectory($RRDdatabase_path);
 			$sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
 			writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
 			while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
-			
 				my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
 				writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
-				undef($sth);
-				
+				undef($sth);				
 				writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."\n");
 				
 				# -----------------------------------------------------
@@ -375,9 +387,9 @@ sub CheckRebuild(){
 						if (!$sth_interval->execute) {writeLogFile("Error when getting metrics interval for Meta : " . $sth_interval->errstr . "\n");}
 						my $meta_conf = $sth_interval->fetchrow_hashref();
 						if (defined($meta_conf->{'normal_check_interval'}) && $meta_conf->{'normal_check_interval'}){
-							$interval = $meta_conf->{'normal_check_interval'};
+							$interval = $meta_conf->{'normal_check_interval'} * getIntervalLenght() * 2;
 						} else {
-							$interval = 2 * 60 + 30;
+							$interval = 2 * getIntervalLenght() * 2 ;
 						}
 						undef($meta_conf);
 						undef($sth_interval);
@@ -387,22 +399,18 @@ sub CheckRebuild(){
 						if (!$sth_interval->execute) {writeLogFile("Error when getting metrics interval for osl : " . $sth_interval->errstr . "\n");}
 						my $osl_conf = $sth_interval->fetchrow_hashref();
 						if (defined($osl_conf->{'normal_check_interval'}) && $osl_conf->{'normal_check_interval'}){
-							$interval = $osl_conf->{'normal_check_interval'};
+							$interval = $osl_conf->{'normal_check_interval'} * getIntervalLenght() * 2;
 						} else {
-							$interval = 1 * 60 + 30;
+							$interval = 1 * getIntervalLenght() * 2;
 						}
 						undef($osl_conf);
 						undef($sth_interval);
 					} else {
-						$interval = 90;
+						$interval = 2 * getIntervalLenght() * 2;
 					}
 				} else {
-					my $best_mode = 0;
-					if ($best_mode == 1){
-						$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * 60 + 30;
-					} else {
-						$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * 60 * 2;
-					}
+					writeLogFile(getIntervalLenght()." secondes \n");
+					$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght() * 2;
 				}		
 				my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 				if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
@@ -410,22 +418,26 @@ sub CheckRebuild(){
 					writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd\n");					
 					my $sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
 					writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
-					
 					for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
 						if (!$flag){
-							$interval = 330 if (!defined($interval));
+							$interval = 600 if (!defined($interval));
 							my $my_len_storage_rrd = $len_storage_rrd / $interval;
-							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");				
-							# backup old database
-							system("mv ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd $RRDdatabase_path/backup/".$metric->{'metric_id'}.".rrd");
+							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");
 							# Calculate first entry in database					
 							my $begin = $data->{'ctime'} - 200;
 							# Create RRD database
-							RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
-							writeLogFile(substr($metric->{'metric_name'}, 0, 19)."\n");
-							undef($my_len_storage_rrd);
-							$ERR = RRDs::error;
-							if ($ERR){writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
+							if (-w $RRDdatabase_path.$metric->{'metric_id'}.".rrd"){
+								while ($metric_used_by_perfdata_parsor eq $metric->{'metric_id'}){
+									sleep(2);
+								}
+								RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
+								writeLogFile(substr($metric->{'metric_name'}, 0, 19)."\n");
+								undef($my_len_storage_rrd);
+								$ERR = RRDs::error;
+								if ($ERR){writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
+							} else {
+								writeLogFile("ERROR when updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : permission denied or file not found\n");
+							}
 							undef($ERR);
 							undef($begin);
 							undef($my_len_storage_rrd);
@@ -479,8 +491,8 @@ sub ParseLogSNMPTT(){
 my $threadPerfdata 			= 	threads->new("GetPerfData");
 my $threadCheckRestart		= 	threads->new("CheckRestart");
 my $threadCheckRebuild		= 	threads->new("CheckRebuild");
-my $threadBuildReport		= 	threads->new("BuildReports");
-my $ParseLogSNMPTT			= 	threads->new("ParseLogSNMPTT");
+#my $threadBuildReport		= 	threads->new("BuildReports");
+#my $ParseLogSNMPTT			= 	threads->new("ParseLogSNMPTT");
 
 
 #my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
