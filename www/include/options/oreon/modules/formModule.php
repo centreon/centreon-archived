@@ -45,8 +45,7 @@ For information : contact@oreon-project.org
 			$infos_streams = file("./modules/".$name."/infos/infos.txt");
 			$infos_streams = implode("<br>", $infos_streams);
 			$tpl->assign("module_infosTxt", $infos_streams);
-		}
-		else
+		} else
 			$tpl->assign("module_infosTxt", false);		
 
 		$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
@@ -76,11 +75,9 @@ For information : contact@oreon-project.org
 					include_once($lang_file_path);
 				}
 				
-			}
-			else
+			} else
 				$tpl->assign("output4", $lang["mod_menu_output4"]);
-		}
-		else	{
+		} else {
 			$form1->addElement('submit', 'install', $lang["mod_menu_listAction_install"]);
 			$redirect =& $form1->addElement('hidden', 'o');
 			$redirect->setValue("i");
