@@ -49,11 +49,12 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		if (!-w $_[0].$_[1].".rrd"){
+		if (-w $_[0].$_[1].".rrd"){
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
 			#writeLogFile("Updating : $_[0]$_[1].rrd : ".substr($_[6], 0, 19).", ".$_[2].":".sprintf("%e", $_[3])."\n");
 			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
+			writeLogFile("Updating $_[0]$_[1].rrd\n");
 		} else {
 			writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
 		}
@@ -74,7 +75,7 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
 			writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
 			$_[3] =~ s/\,/\./g;
-			if (!-w $_[0].$_[1].".rrd"){
+			if (-w $_[0].$_[1].".rrd"){
 				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 				$ERR = RRDs::error;
 				writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n") if ($ERR);
@@ -114,7 +115,7 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		if (!-w $_[0].$_[1].".rrd"){
+		if (-w $_[0].$_[1].".rrd"){
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
@@ -137,7 +138,7 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
 			$_[3] =~ s/\,/\./g;
-			if (!-w $_[0].$_[1].".rrd"){
+			if (-w $_[0].$_[1].".rrd"){
 				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 				$ERR = RRDs::error;
 				if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}	
