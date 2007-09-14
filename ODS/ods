@@ -30,7 +30,7 @@ use threads;
 use threads::shared;
 
 use RRDs;
-use lib "@PERL_RRD_LIB@";
+use lib "@RRD_PERL@";
 #use lib "/usr/lib/perl5/vendor_perl/5.8.8/i586-linux-thread-multi/";
 use File::Copy;
 
