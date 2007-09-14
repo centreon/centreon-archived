@@ -19,11 +19,21 @@
 #    For information : contact@merethis.com
 ####################################################################
 
+sub getIntervalLenght(){
+	my $sth = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate = '1'");
+	if (!$sth->execute) {writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");}
+	my $interval = $sth->fetchrow_hashref();
+	undef($sth);
+	if (defined($interval)) {
+		return $interval;
+	} else {
+		return 60;
+	}
+}
+
 sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
-	my $ERR;
 	my $interval = 4000;
-	my $nb_value;
-	my $interval_length;
+	my ($nb_value, $interval_length, $ERR);
 	
 	if (!-d $_[0]){
 		writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
@@ -39,28 +49,22 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-		$ERR = RRDs::error;
-		if ($ERR){
-			writeLogFile("Updating : $_[0]$_[1].rrd : ".substr($_[6], 0, 19).", ".$_[2].":".sprintf("%e", $_[3])."\n");
-			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");	
+		if (!-w $_[0].$_[1].".rrd"){
+			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+			$ERR = RRDs::error;
+			#writeLogFile("Updating : $_[0]$_[1].rrd : ".substr($_[6], 0, 19).", ".$_[2].":".sprintf("%e", $_[3])."\n");
+			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
+		} else {
+			writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
 		}
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
 			my $begin = $_[4] - 200000;
 			$interval = getServiceCheckInterval($_[1]);
-			if (!defined($interval)){$interval = 3};
+			$interval = 3 if (!defined($interval));
 			CheckMySQLConnexion();
-			my $sth2 = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate");
-			if (!$sth2->execute) {writeLogFile("Error when getting interval_length : " . $sth2->errstr . "\n");}
-			$data = $sth2->fetchrow_hashref();
-			my $best_mode = 0;
-			if ($best_mode == 1){
-				$interval = $interval * $data->{'interval_length'} + 30;
-			} else {
-				$interval = $interval * $data->{'interval_length'} * 2;
-			}
+			$interval = getIntervalLenght() * $interval * 2;
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
@@ -70,9 +74,13 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
 			writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
 			$_[3] =~ s/\,/\./g;
-			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-			$ERR = RRDs::error;
-			writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n") if ($ERR);	
+			if (!-w $_[0].$_[1].".rrd"){
+				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+				$ERR = RRDs::error;
+				writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n") if ($ERR);
+			} else {
+				writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
+			}
 			undef($begin);
 		}
 	}
@@ -106,19 +114,20 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-		$ERR = RRDs::error;
-		if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
+		if (!-w $_[0].$_[1].".rrd"){
+			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+			$ERR = RRDs::error;
+			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
+		} else {
+			writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
+		}
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
 			my $begin = $_[4] - 200000;
 			$interval = 1;
 			CheckMySQLConnexion();
-			my $sth2 = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate");
-			if (!$sth2->execute) {writeLogFile("Error when getting interval_length : " . $sth2->errstr . "\n");}
-			$data = $sth2->fetchrow_hashref();
-			$interval = $interval * $data->{'interval_length'} + 10;
+			$interval = getIntervalLenght() * $interval * 2;
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
@@ -128,9 +137,13 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
 			$_[3] =~ s/\,/\./g;
-			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-			$ERR = RRDs::error;
-			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}	
+			if (!-w $_[0].$_[1].".rrd"){
+				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+				$ERR = RRDs::error;
+				if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}	
+			} else {
+				writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
+			}
 			undef($begin);
 		}
 	}
