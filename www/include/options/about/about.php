@@ -45,11 +45,11 @@ For information : contact@oreon-project.org
 	<a href="mailto:ccoraboeuf@oreon-project.org" class="list_two">Christophe Coraboeuf (Wistof)</a><br>
 	<a href="mailto:cfacon@oreon-project.org" class="list_two">Cedrick Facon (Apo)</a><br>
 	Mathavarajan Sugumaran (MrBrown)<br>
-	Florian Foiry (Inconnuflo)<br>
 	Guillaume Watteeux (Watt)<br>
 	Maximilien Bersoult (leoncx)<br>
 	Gaetan Lucas de Couville (gae)<br>
 	Nathanael Guyot (Tor)<br>
 	Jean Marc Grisard (Jmou)<br>
+	Ira Janssen (Iralein)<br>
 	</ul>
 </div>
