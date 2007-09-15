@@ -153,7 +153,7 @@ For information : contact@oreon-project.org
 	if (isset($url) && $url)
     	require_once($url);
     else
-        echo "Problem with url generated";
+        ;//echo "Problem with url generated";
 
 
 	if (!isset($oreon->historyPage))
