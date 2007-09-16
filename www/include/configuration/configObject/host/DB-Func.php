@@ -880,7 +880,7 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $pearDB, $path, $oreon;
 		require_once($path."../service/DB-Func.php");
-		# If we select a host template model, we only create the services linked to this host template model
+		# If we select a host template model, we create the services linked to this host template model
 		if ($htm_id)	{
 			$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
 			while ($DBRESULT->fetchInto($row))	{
@@ -898,34 +898,32 @@ For information : contact@oreon-project.org
 				}
 			}
 		}
-		# If there's no host template model selected, we create all the services linked to the host template model record in DB for host definition. (n levels services creation)
-		else	{
-			while (1)	{
-				if (!$htm_id)
-					$htm_id = getMyHostTemplateModel($host_id);
-				else if ($htm_id)
-					$htm_id = getMyHostTemplateModel($htm_id);
-				if ($htm_id)	{
-					$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
-					while ($DBRESULT->fetchInto($row))	{
-						//$desc =& getMyServiceName($row["service_service_id"]);
-						$alias =& getMyServiceAlias($row["service_service_id"]);
-						if (testServiceExistence ($alias, array(0=>$host_id)))	{
-							$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
-							$service_id = insertServiceInDB($service);		
-							$rq = "INSERT INTO host_service_relation ";
-							$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-							$rq .= "VALUES ";
-							$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
-							$DBRESULT2 =& $pearDB->query($rq);
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-						}
+		# Then we create all the services linked to the host template model tree. (n levels services creation)
+		while (1)	{
+			if (!$htm_id)
+				$htm_id = getMyHostTemplateModel($host_id);
+			else if ($htm_id)
+				$htm_id = getMyHostTemplateModel($htm_id);
+			if ($htm_id)	{
+				$DBRESULT =& $pearDB->query("SELECT service_service_id FROM host_service_relation WHERE host_host_id = '".$htm_id."'");
+				while ($DBRESULT->fetchInto($row))	{
+					//$desc =& getMyServiceName($row["service_service_id"]);
+					$alias =& getMyServiceAlias($row["service_service_id"]);
+					if (testServiceExistence ($alias, array(0=>$host_id)))	{
+						$service = array("service_template_model_stm_id" => $row["service_service_id"], "service_description"=> $alias, "service_register"=>array("service_register"=> 1), "service_activate"=>array("service_activate" => 1));
+						$service_id = insertServiceInDB($service);		
+						$rq = "INSERT INTO host_service_relation ";
+						$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+						$rq .= "VALUES ";
+						$rq .= "(NULL, '".$host_id."', NULL, '".$service_id."')";
+						$DBRESULT2 =& $pearDB->query($rq);
+						if (PEAR::isError($DBRESULT2))
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					}
 				}
-				else if (!$htm_id)
-					break;
 			}
+			else if (!$htm_id)
+				break;
 		}
 	}
 	
