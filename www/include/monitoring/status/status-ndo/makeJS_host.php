@@ -32,8 +32,6 @@ var _debug = 1;
 
 var _search = '<?=$search?>';
 var _sid='<?=$sid?>';
-var _search_type_host='<?=$search_type_host?>';
-var _search_type_service='<?=$search_type_service?>';
 var _num='<?=$num?>';
 var _limit='<?=$limit?>';
 var _sort_type='<?=$sort_type?>';
@@ -63,13 +61,12 @@ function set_header_title(){
 	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
 
+
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
-		
 	
 		var h = document.getElementById('current_state');
 		h.innerHTML = '<?=$lang['mon_status']?>';
@@ -106,6 +103,36 @@ function set_header_title(){
 	}
 }
 
+function monitoring_refresh()	{
+	_tmp_on = _on;
+	_time_live = _time_reload;
+	_on = 1;
+	window.clearTimeout(_timeoutID);
+
+	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	_on = _tmp_on;
+
+	viewDebugInfo('refresh');
+}
+
+function monitoring_play()	{
+	document.getElementById('JS_monitoring_play').style.display = 'none';
+	document.getElementById('JS_monitoring_pause').style.display = 'block';	
+	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
+	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
+	_on = 1;
+	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+}
+
+function monitoring_pause()	{
+	document.getElementById('JS_monitoring_play').style.display = 'block';
+	document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
+	document.getElementById('JS_monitoring_play_gray').style.display = 'none';
+	document.getElementById('JS_monitoring_pause').style.display='none';
+	_on = 0;
+	window.clearTimeout(_timeoutID);
+}
+
 
 function initM(_time_reload,_sid,_o){
 
@@ -137,14 +164,14 @@ function goM(_time_reload,_sid,_o){
 	_lock = 1;
 	var proc = new Transformation();
 
-	 _addrXML = "./include/monitoring/engine/MakeXML_Ndo_host.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p;
+	 _addrXML = "./include/monitoring/engine/MakeXML_Ndo_host.php?"+'&sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p;
 	proc.setXml(_addrXML)
 	proc.setXslt(_addrXSL)
 	proc.transform("forAjax");
 	_lock = 0;	
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
-	_on = 1;	
+	_on = 1;
 	set_header_title();
 }
 

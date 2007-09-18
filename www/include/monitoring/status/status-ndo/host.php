@@ -33,8 +33,6 @@ For information : contact@oreon-project.org
 
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 //	!isset($_GET["limit"]) ? $limit = 0 : $limit = $_GET["limit"];
-	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
-	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 
 	# start quickSearch form
@@ -45,7 +43,6 @@ For information : contact@oreon-project.org
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	
-	/* row ? */
 	$rows = 10;
 
 		
@@ -124,7 +121,7 @@ For information : contact@oreon-project.org
 													"90" 	=> 	$lang['m_mon_check_svc_en'], 
 													"91" 	=> 	$lang['m_mon_check_svc_dis'],
 													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
-													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'], 
+													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'],
 													"82" 	=> 	$lang['m_mon_notification_host_en'],
 													"83" 	=> 	$lang['m_mon_notification_host_dis'],
 													"92" 	=> 	$lang['m_mon_check_host_en'],
@@ -149,4 +146,6 @@ For information : contact@oreon-project.org
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);
 	else
 		$pgr_nagios_stat["created"] = 0;
+
+
 ?>	

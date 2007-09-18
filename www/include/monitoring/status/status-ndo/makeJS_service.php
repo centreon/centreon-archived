@@ -173,10 +173,6 @@ function initM(_time_reload,_sid,_o){
 
 
 function goM(_time_reload,_sid,_o){
-
-//viewDebugInfo('-goM-' + _time_reload + ' = ' + _sid + ' = ' + _o);
-
-
 	_lock = 1;
 	var proc = new Transformation();
 
@@ -184,14 +180,7 @@ function goM(_time_reload,_sid,_o){
 
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
-
-//	viewDebugInfo(_addrXSL);
-
-
 	proc.transform("forAjax");
-
-
-//	viewDebugInfo('transform...');
 
 	_lock = 0;
 	

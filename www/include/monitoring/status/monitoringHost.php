@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 			include("./include/monitoring/status/resume.php"); 
 			switch ($o)	{
 				case "h" 	: require_once($path."host.php"); 					break;
-				case "hpb" 	: require_once($path."host_problem.php"); 			break;
+				case "hpb" 	: require_once($path."host.php");		 			break;
 				case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
 				case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
 				default 	: require_once($path."host.php"); 					break;		

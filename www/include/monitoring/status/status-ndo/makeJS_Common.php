@@ -69,27 +69,19 @@ var _numRows = 0;
 var _limit = 10;
 var _num = 0;
 
-/*
-function removeAllLine(table)
-{
-	rows = table.getElementsByTagName("tr");
-	while(rows && rows.length > 1)
-		table.deleteRow(-1);
-}
-*/
  function getVar (nomVariable)
  {
-	 var infos = location.href.substring(location.href.indexOf("?")+1, location.href.length)+"&"
+	 var infos = location.href.substring(location.href.indexOf("?")+1, location.href.length)+"&";
 	 if (infos.indexOf("#")!=-1)
-	 infos = infos.substring(0,infos.indexOf("#"))+"&"
+	 infos = infos.substring(0,infos.indexOf("#"))+"&";
 	 var variable=''
 	 {
-		 nomVariable = nomVariable + "="
-		 var taille = nomVariable.length
+		 nomVariable = nomVariable + "=";
+		 var taille = nomVariable.length;
 		 if (infos.indexOf(nomVariable)!=-1)
 		 variable = infos.substring(infos.indexOf(nomVariable)+taille,infos.length).substring(0,infos.substring(infos.indexOf(nomVariable)+taille,infos.length).indexOf("&"))
 	 }
-	 return variable
+	 return variable;
  }
  
 function mk_img(_src, _alt)
@@ -252,6 +244,7 @@ function mainLoop(){
   if( (_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue!=_currentInputFieldValue){
     var valeur=escapeURI(_currentInputFieldValue);
 	_search = valeur;
+
 	if(!_lock)
 		monitoring_refresh();
   }
