@@ -432,6 +432,8 @@ sub CheckRebuild(){
 								}
 								RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
 								writeLogFile(substr($metric->{'metric_name'}, 0, 19)."\n");
+								$interval *= 2;
+								RRDs::tune($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-h ".substr($metric->{'metric_name'}, 0, 19).":".$interval);
 								undef($my_len_storage_rrd);
 								$ERR = RRDs::error;
 								if ($ERR){writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}

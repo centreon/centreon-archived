@@ -148,6 +148,7 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 				$ERR = RRDs::error;
 				if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}	
+				RRDs::tune($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-h ".substr($_[6], 0, 19).":$interval");
 			} else {
 				writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
 			}
