@@ -206,23 +206,13 @@ For information : contact@oreon-project.org
 			" WHERE no.object_id = nhs.host_object_id";
 
 
-	if($search){
-		$rq .= " AND no.name1 like '%" . $search . "%' ";
+	if($search != ""){
+		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	$rq_pagination = $rq1;
-
-
-	/* Get Pagination Rows */
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
-	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";	
-	$numRows = $DBRESULT_PAGINATION->numRows();
-	/* End Pagination Rows */
-
-
-
-
-
+	
+	if($o == "hpb")
+		$rq1 .= " AND nhs.current_state != 0 ";
+	
 	switch($sort_type){
 			case 'host_name' : $rq .= " order by no.name1 ". $order; break;
 			case 'current_state' : $rq .= " order by nss.current_state,no.name1 ". $order; break;
@@ -233,9 +223,18 @@ For information : contact@oreon-project.org
 	}
 
 
+	
+	$rq_pagination = $rq1;
+
+	/* Get Pagination Rows */
+	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
+	if (PEAR::isError($DBRESULT_PAGINATION))
+		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";	
+	$numRows = $DBRESULT_PAGINATION->numRows();
+	/* End Pagination Rows */
+
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-
 
 	$buffer .= '<reponse>';
 	$buffer .= '<i>';
