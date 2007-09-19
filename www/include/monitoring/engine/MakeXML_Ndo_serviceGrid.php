@@ -164,6 +164,53 @@ For information : contact@oreon-project.org
 
 
 	include_once($oreonPath . "www/DBndoConnect.php");
+	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	if (PEAR::isError($DBRESULT_OPT))
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
+	$DBRESULT_OPT->fetchInto($general_opt);
+
+
+
+	function get_services($host_name){
+		global $pearDBndo;
+		global $general_opt;
+		global $o;
+
+		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
+				" FROM `ndo_servicestatus` nss, `ndo_objects` no" .
+				" WHERE no.object_id = nss.service_object_id" ;
+
+		if($o == "svcgrid_pb")
+			$rq .= " AND nss.current_state != 0" ;
+
+		if($o == "svcgrid_ack_0")
+			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
+
+		if($o == "svcgrid_ack_1")
+			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
+
+
+		$rq .= " AND no.object_id" .
+				" IN (" .
+				
+				" SELECT nno.object_id" .
+				" FROM ndo_objects nno" .
+				" WHERE nno.objecttype_id =2" .
+				" AND nno.name1 = '".$host_name."'" .
+				" )";
+					
+		$DBRESULT =& $pearDBndo->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+		$tab = array();
+		while($DBRESULT->fetchInto($svc)){
+
+			$tab[$svc["service_name"]] = $svc["current_state"];
+		}
+		return($tab);
+	}
+
+
 	$service = array();
 	$host_status = array();
 	$service_status = array();
@@ -171,11 +218,6 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-//	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
-	$DBRESULT_OPT->fetchInto($general_opt);
 	
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -194,37 +236,36 @@ For information : contact@oreon-project.org
 
 
 	/* Get Host status */
-	$rq1 = "SELECT nhs.current_state," .
-			" nhs.problem_has_been_acknowledged, " .
-			" nhs.passive_checks_enabled," .
-			" nhs.active_checks_enabled," .
-			" nhs.notifications_enabled," .
-			" unix_timestamp(nhs.last_state_change) as last_state_change," .
-			" nhs.output," .
-			" unix_timestamp(nhs.last_check) as last_check," .
-			" nh.address," .
+	$rq1 = "SELECT " .
 			" no.name1 as host_name" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh " .
-			" WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id";
+			" FROM " .$general_opt["ndo_base_prefix"]."_objects no" .
+			" WHERE no.objecttype_id = 1";
+
+	if($o == "svcgrid_pb")
+		$rq1 .= " AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
+				")";
+
+	if($o == "svcgrid_ack_0")
+		$rq1 .= " AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
+				")";
+
+	if($o == "svcgrid_ack_1")
+		$rq1 .= " AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
+				")";
+
+
+
 
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	
-	if($o == "hpb")
-		$rq1 .= " AND nhs.current_state != 0 ";
-	
-	switch($sort_type){
-			case 'host_name' : $rq1 .= " order by no.name1 ". $order; break;
-			case 'current_state' : $rq1 .= " order by nss.current_state,no.name1 ". $order; break;
-			case 'last_state_change' : $rq1 .= " order by nss.last_state_change,no.name1 ". $order; break;
-			case 'last_check' : $rq1 .= " order by nss.last_check,no.name1 ". $order; break;
-			case 'current_attempt' : $rq .= " order by nss.current_check_attempt,no.name1 ". $order; break;
-			default : $rq1 .= " order by no.name1 ". $order; break;
-	}
 
-
-	
 	$rq_pagination = $rq1;
 
 	/* Get Pagination Rows */
@@ -250,37 +291,35 @@ For information : contact@oreon-project.org
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
+
+
+	$tab_final = array();
 	while($DBRESULT_NDO1->fetchInto($ndo))
 	{
-		$color_host = $tab_color_host[$ndo["current_state"]]; //"#FF0000";
-		$passive = 0;
-		$active = 1;
-		$last_check = " ";
-		$duration = " ";
-		if($ndo["last_state_change"] > 0)
-			$duration = Duration::toString(time() - $ndo["last_state_change"]);
-		if($class == "list_one")
-			$class = "list_two";
-		else
-			$class = "list_one";
-		$host_status[$ndo["host_name"]] = $ndo;
+		$tab_svc = get_services($ndo["host_name"]);
+
+		if(count($tab_svc) > 0)	
+		$tab_final[$ndo["host_name"]] = $tab_svc;
+	}
+
+
+//	while($DBRESULT_NDO1->fetchInto($ndo))
+	foreach($tab_final as $host_name => $tab_svc)
+	{
 		$buffer .= '<l class="'.$class.'">';
+
+//		$tab_svc = get_services($ndo["host_name"]);
+		
+		foreach ($tab_svc as $svc => $state) {
+			$buffer .= '<svc>';
+			$buffer .= '<sn>'. $svc . '</sn>';
+			$buffer .= '<sc>'. $tab_color_service[$state] . '</sc>';
+			$buffer .= '</svc>';
+		}
+		
+	
 		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hc>'. $color_host . '</hc>';
-		$buffer .= '<f>'. $flag . '</f>';
-		$buffer .= '<hn>'. $ndo["host_name"]  . '</hn>';
-		$buffer .= '<a>'. $ndo["address"]  . '</a>';
-		$buffer .= '<ou>'. $ndo["output"]  . '</ou>';
-		$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"])  . '</lc>';
-		$buffer .= '<cs>'. $tab_status_host[$ndo["current_state"]] . '</cs>';
-        $buffer .= '<pha>'. $ndo["problem_has_been_acknowledged"] .'</pha>';
-        $buffer .= '<pce>'.$ndo["passive_checks_enabled"] .'</pce>';
-        $buffer .= '<ace>'.$ndo["active_checks_enabled"] .'</ace>';
-        $buffer .= '<lsc>'.$duration.'</lsc>';
-        $buffer .= '<ha>'.$ndo["problem_has_been_acknowledged"]  .'</ha>';///
-        $buffer .= '<hae>'.$ndo["active_checks_enabled"] .'</hae>';///
-        $buffer .= '<hpe>'.$ndo["passive_checks_enabled"]  .'</hpe>';///
-		$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
+		$buffer .= '<hn>'. $host_name  . '</hn>';
 		$buffer .= '</l>';
 	}
 	/* end */
