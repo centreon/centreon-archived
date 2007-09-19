@@ -198,10 +198,12 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 6 && confirm('".$lang['confirm_detach']."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable']), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable'], "dv"=>$lang['sv_detach']), $attrs1);
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
@@ -209,10 +211,12 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 6 && confirm('".$lang['confirm_detach']."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable']), $attrs2);
+    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable'], "dv"=>$lang['sv_detach']), $attrs2);
 
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);

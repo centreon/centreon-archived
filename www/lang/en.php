@@ -377,6 +377,7 @@ $lang['confirm_removing'] = "Do you validate the deletion ?";
 $lang['confirm_duplication'] = "Do you validate the duplication ?";
 $lang['confirm_mchange'] = "Do you validate the massive change ?";
 $lang['confirm_update'] = "Are you sure you want to update the traffic map ?";
+$lang['confirm_detach'] = "Are you sure you want to detach the service ?";
 $lang['file_exist'] = "Sorry the file already exist.";
 $lang['uncomplete_form'] = "Uncomplete form or invalid";
 $lang['none'] = "none";

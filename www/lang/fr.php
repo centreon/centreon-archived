@@ -378,6 +378,7 @@ $lang['confirm_removing'] = "Validez vous cette suppression ?";
 $lang['confirm_duplication'] = "Validez vous cette duplication ?";
 $lang['confirm_mchange'] = "Validez vous ce changement massif ?";
 $lang['confirm_update'] = "Etes vous s&ucirc;r de vouloir mettre &agrave; jour la traffic map ?";
+$lang['confirm_detach'] = "Etes vous s&ucirc;r de vouloir d&eacute;tacher le service ?";
 $lang['file_exist'] = "D&eacute;sol&eacute; le fichier existe d&eacute;j&agrave;.";
 $lang['uncomplete_form'] = "Formulaire incomplet ou erron&eacute;";
 $lang['none'] = "Aucun";

@@ -126,7 +126,40 @@ For information : contact@oreon-project.org
 		}
 	}
 	
-	function multipleServiceInDB ($services = array(), $nbrDup = array(), $host = NULL, $descKey = 1)	{
+	function divideGroupedServiceInDB ($service_id = null, $service_arr = array())	{
+		if (!$service_id && !count($service_arr)) return;
+		global $pearDB;
+		if ($service_id)
+			$service_arr = array($service_id=>"1");
+		foreach($service_arr as $key=>$value)	{
+			$lap= 0;
+			$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			while ($DBRESULT->fetchInto($relation))	{
+				if ($relation["hostgroup_hg_id"])	{
+					if ($lap)	{
+						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND hostgroup_hg_id = '".$relation["hostgroup_hg_id"]."'");
+						if (PEAR::isError($DBRESULT2))
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+						multipleServiceInDB(array($key=>"1"), array($key=>"1"), NULL, 0, $relation["hostgroup_hg_id"], array(), array($relation["hostgroup_hg_id"]=>NULL));
+					}
+					$lap++;
+				}
+				else if ($relation["host_host_id"])	{
+					if ($lap)	{
+						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND host_host_id = '".$relation["host_host_id"]."'");
+						if (PEAR::isError($DBRESULT2))
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+						multipleServiceInDB(array($key=>"1"), array($key=>"1"), $relation["host_host_id"], 0, NULL, array($relation["host_host_id"]=>NULL), array());
+					}
+					$lap++;
+				}	
+			}
+		}
+	}
+		
+	function multipleServiceInDB ($services = array(), $nbrDup = array(), $host = NULL, $descKey = 1, $hostgroup = NULL, $hPars = array(), $hgPars = array())	{
 		# $descKey param is a flag. If 1, we know we have to rename description because it's a traditionnal duplication. If 0, we don't have to, beacause we duplicate services for an Host duplication
 		# Foreach Service
 		foreach($services as $key=>$value)	{
@@ -148,10 +181,10 @@ For information : contact@oreon-project.org
 						$service_description = NULL;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				$hPars = array();
-				$hgPars = array();
-				$hPars = getMyServiceHosts($key);
-				$hgPars = getMyServiceHostGroups($key);
+				if (!count($hPars))
+					$hPars = getMyServiceHosts($key);
+				if (!count($hgPars))
+					$hgPars = getMyServiceHostGroups($key);
 				if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars)) || (!$row["service_register"] && testServiceTemplateExistence($service_description)))	{
 					$val ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
@@ -165,6 +198,8 @@ For information : contact@oreon-project.org
 						# Host duplication case -> Duplicate the Service for the Host we create
 						if ($host)
 							$pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$host."', NULL, '".$maxId["MAX(service_id)"]."')");
+						else if ($hostgroup)
+							$pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$hostgroup."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
 						else	{
 						# Service duplication case -> Duplicate the Service for each relation the base Service have
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
@@ -357,8 +392,10 @@ For information : contact@oreon-project.org
 				isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
 				isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
 				
-				$ret["service_comment"] = str_replace('/', "#S#", $ret["service_comment"]);
-				$ret["service_comment"] = str_replace('\\', "#BS#", $ret["service_comment"]);
+				if (isset($ret["service_comment"]) && $ret["service_comment"])	{
+					$ret["service_comment"] = str_replace('/', "#S#", $ret["service_comment"]);
+					$ret["service_comment"] = str_replace('\\', "#BS#", $ret["service_comment"]);
+				}
 				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".htmlentities($ret["service_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 				
 				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".htmlentities($ret["command_command_id_arg"], ENT_QUOTES)."', " : $rq .= "NULL, ";

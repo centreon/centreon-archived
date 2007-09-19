@@ -292,6 +292,8 @@ $lang['sv_perfdataOptions'] = "Perfdata Options";
 $lang['sv_freshnessOptions'] = "Freshness Control options";
 $lang['sv_flappingOptions'] = "Flapping options";
 
+$lang["sv_detach"] = "Detach";
+
 /* Meta Service */
 
 $lang['ms'] = "Meta Service";
