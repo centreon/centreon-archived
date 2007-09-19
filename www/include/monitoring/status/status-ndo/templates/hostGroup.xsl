@@ -20,11 +20,78 @@
   							<xsl:value-of select="hn"/>
 						</xsl:element>
 				</td>
-				<td class="ListColCenter">
-					<xsl:value-of select="hu"/>
+				<td class="ListColLeft">
+					<xsl:if test="hu >= 1">				
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="huc"/>;
+    						</xsl:attribute>
+						<xsl:value-of select="hu"/>UP
+						</span>
+					</xsl:if>
+
+					<xsl:if test="hd >= 1">				
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="hdc"/>;
+    						</xsl:attribute>
+						<xsl:value-of select="hd"/>DOWN
+						</span>
+					</xsl:if>
+					<xsl:if test="hur >= 1">					
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="hurc"/>;
+    						</xsl:attribute>
+						<xsl:value-of select="hur"/>UNREACHABLE
+						</span>
+					</xsl:if>
 				</td>
-				<td class="ListColRight">
-					<xsl:value-of select="sok"/>
+				<td class="ListColLeft">
+
+					<xsl:if test="sk >= 1">
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="skc"/>;
+    						</xsl:attribute>
+							<xsl:value-of select="sk"/>OK
+						</span>
+					</xsl:if>
+
+
+					<xsl:if test="sw >= 1">
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="swc"/>;
+    						</xsl:attribute>
+						<xsl:value-of select="sw"/>WARNING
+						</span>
+					</xsl:if>
+					<xsl:if test="sc >= 1">
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="scc"/>;
+    						</xsl:attribute>
+						<xsl:value-of select="sc"/>CRITICAL
+						</span>
+					</xsl:if>
+					<xsl:if test="su >= 1">
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="suc"/>;
+    						</xsl:attribute>
+						<xsl:value-of select="su"/>CRITICAL
+						</span>
+					</xsl:if>
+					<xsl:if test="sp >= 1">
+						<span>
+							<xsl:attribute name="style">
+								background-color:<xsl:value-of select="spc"/>;
+    						</xsl:attribute>
+						<xsl:value-of select="sp"/>PENDING
+						</span>
+					</xsl:if>
+
 				</td>
 	</tr>
 </xsl:for-each>

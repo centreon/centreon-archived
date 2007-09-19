@@ -23,16 +23,23 @@ For information : contact@oreon-project.org
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-
 	$sid = session_id();
 	$time = time();
-	
+
+	$obis = $o;
+	if(isset($_GET["problem"]))
+	$obis .= '_pb';
+	if(isset($_GET["acknowledge"]))
+	$obis .= '_ack_' . $_GET["acknowledge"];
+		
 ?>
 <SCRIPT LANGUAGE="JavaScript">
-var _debug = 1;
+var _debug = 0;
 
 var _search = '<?=$search?>';
 var _sid='<?=$sid?>';
+var _search_type_host='<?=$search_type_host?>';
+var _search_type_service='<?=$search_type_service?>';
 var _num='<?=$num?>';
 var _limit='<?=$limit?>';
 var _sort_type='<?=$sort_type?>';
@@ -41,8 +48,7 @@ var _date_time_format_status='<?=$lang["date_time_format_status"]?>';
 var _o='<?=$o?>';
 var _p='<?=$p?>';
 
-var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_hostGroup.php?";
-var _addrXSL = "./include/monitoring/status/status-ndo/templates/hostGroup.xsl";
+var _addrXSL = "./include/monitoring/status/status-ndo/templates/serviceGrid.xsl";
 var _timeoutID = 0;
 var _on = 1;
 var _time_reload = <?=$tM?>;
@@ -59,28 +65,22 @@ include_once("makeJS_Common.php");
 ?>
 
 function set_header_title(){
-
 	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
 	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
 
-
-	if(document.getElementById('hostGroup_name')){
-		var h = document.getElementById('hostGroup_name');
-		h.innerHTML = "<?=$lang['m_mon_hostgroup']?>";
-	  	h.indice = 'hostGroup_name';
-	  	h.onclick=function(){change_type_order(this.indice)};
-	
-		var h = document.getElementById('host_status');
-		h.innerHTML = '<?=$lang['m_mon_host_stt_ttl']?>';
-	  	h.indice = 'host_status';
-	  	h.onclick=function(){change_type_order(this.indice)};
-
-		var h = document.getElementById('service_status');
-		h.innerHTML = '<?=$lang['m_mon_svc_stt_ttl']?>';
-	  	h.indice = 'service_status';
+	if(document.getElementById('host_name')){
+		var h = document.getElementById('host_name');
+		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
+	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 	
 		
+		var h = document.getElementById('services');
+		h.innerHTML = '<?=$lang['m_mon_services']?>';
+	  	h.indice = 'services';
+	  	h.onclick=function(){change_type_order(this.indice)};
+	
+	
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
 		if(_order == 'ASC')
@@ -90,10 +90,10 @@ function set_header_title(){
 		_linkaction_asc.href = '#' ;
 		_linkaction_asc.onclick=function(){change_order()};
 		h.appendChild(_linkaction_asc);
-
-
 	}
 }
+
+
 
 function monitoring_refresh()	{
 	_tmp_on = _on;
@@ -136,16 +136,16 @@ function initM(_time_reload,_sid,_o){
 		_divdebug.appendChild(_debugtable);
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
-		viewDebugInfo('--INIT--');
+//		viewDebugInfo('--INIT Debug--');
 	}
-	
+
 	if(_first){
 		mainLoop();
 		_first = 0;
 	}
 
 	_time=<?=$time?>;
-
+	
 	if(_on)
 	goM(_time_reload,_sid,_o);
 }
@@ -153,14 +153,14 @@ function initM(_time_reload,_sid,_o){
 function goM(_time_reload,_sid,_o){
 	_lock = 1;
 	var proc = new Transformation();
-	 _addrXML = "./include/monitoring/engine/MakeXML_Ndo_hostGroup.php?"+'&sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p;
-	proc.setXml(_addrXML)
-	proc.setXslt(_addrXSL)
+	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceGrid.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?=$obis?>&p='+_p;
+	proc.setXml(_addrXML);
+	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 	_lock = 0;	
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
-	_on = 1;
+	_on = 1;	
 	set_header_title();
 }
 </SCRIPT>

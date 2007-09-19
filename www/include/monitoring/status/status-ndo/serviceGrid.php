@@ -16,8 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-echo "HG";
-
 	if (!isset($oreon))
 		exit();
 		
@@ -35,7 +33,9 @@ echo "HG";
 
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 //	!isset($_GET["limit"]) ? $limit = 0 : $limit = $_GET["limit"];
-	!isset($_GET["sort_type"]) ? $sort_type = "hostGroup_name" : $sort_type = $_GET["sort_type"];
+	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
+	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
+	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
@@ -45,12 +45,13 @@ echo "HG";
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
 	
+	/* row ? */
 	$rows = 10;
 
 		
 	//include("./include/common/checkPagination.php");
 
-	include_once("makeJS_hostGroup.php");
+	include_once("makeJS_serviceGrid.php");
 
 	
 	# Smarty template Init
@@ -123,7 +124,7 @@ echo "HG";
 													"90" 	=> 	$lang['m_mon_check_svc_en'], 
 													"91" 	=> 	$lang['m_mon_check_svc_dis'],
 													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
-													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'],
+													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'], 
 													"82" 	=> 	$lang['m_mon_notification_host_en'],
 													"83" 	=> 	$lang['m_mon_notification_host_dis'],
 													"92" 	=> 	$lang['m_mon_check_host_en'],
@@ -138,7 +139,7 @@ echo "HG";
 	$form->accept($renderer);
 
 	$tpl->assign('form', $renderer->toArray());	
-	$tpl->display("hostGroup.ihtml");
+	$tpl->display("serviceGrid.ihtml");
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
@@ -148,6 +149,4 @@ echo "HG";
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);
 	else
 		$pgr_nagios_stat["created"] = 0;
-
-
 ?>	

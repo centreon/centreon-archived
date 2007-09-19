@@ -76,7 +76,7 @@ function set_header_title(){
 
 		var h = document.getElementById('ip');
 		h.innerHTML = '<?=$lang['m_mon_address_ip']?>';
-	  	h.indice = 'current_state';
+	  	h.indice = 'ip';
 	  	h.onclick=function(){change_type_order(this.indice)};
 	
 	
