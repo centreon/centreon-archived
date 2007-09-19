@@ -57,7 +57,7 @@ killproc_ods ()
 		return 1
     fi    
     ODSPID=`head -n 1 $ODSRunFile`
-    kill -H -s INT $ODSPID
+    kill -s INT $ODSPID
 }
 
 
