@@ -447,7 +447,7 @@ For information : contact@oreon-project.org
 			$tab_svc_bdd[$svc_id] = $tab_log[$svc_id];
 
 			if($end_date_select > $today_start){
-				getTodayLogForSVC(getMyHostName($host_id), getMyServiceName($svc_id), &$tmp, $pearDBO, $today_start, $today_end);
+				getTodayLogForSVC(getMyHostName($host_id), getMyServiceName($svc_id), $tmp, $pearDBO, $today_start, $today_end);
 				$tab_svc_bdd[$svc_id]["OKnbEvent"] += $tmp["OKnbEvent"];
 				$tab_svc_bdd[$svc_id]["WARNINGnbEvent"] += $tmp["WARNINGnbEvent"];
 				$tab_svc_bdd[$svc_id]["UNKNOWNnbEvent"] += $tmp["UNKNOWNnbEvent"];
@@ -589,7 +589,7 @@ For information : contact@oreon-project.org
 		## get log for today (timeline)
 		#
 		$tab_tmp = array();
-		getTodayLogForSVC(getMyHostName($host_id), getMyServiceName($svc_id), &$hbase, $pearDBO, $today_start, $today_end);
+		getTodayLogForSVC(getMyHostName($host_id), getMyServiceName($svc_id), $hbase, $pearDBO, $today_start, $today_end);
 		$tab_svc_bdd["today"]["OKnbEvent"] = $hbase["OKnbEvent"];
 		$tab_svc_bdd["today"]["WARNINGnbEvent"] = $hbase["OKnbEvent"];
 		$tab_svc_bdd["today"]["UNKNOWNnbEvent"] = $hbase["OKnbEvent"];
