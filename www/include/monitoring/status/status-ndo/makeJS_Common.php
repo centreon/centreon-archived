@@ -240,6 +240,8 @@ function escapeURI(La){
 }
 
 function mainLoop(){
+	set_header_title();
+
   _currentInputFieldValue = document.getElementById('input_search').value;
   if( (_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue!=_currentInputFieldValue){
     var valeur=escapeURI(_currentInputFieldValue);

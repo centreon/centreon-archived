@@ -1,5 +1,5 @@
-<xsl:stylesheet version = '1.0'
-xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:variable name="i" select="//i"/>
 <xsl:template match="/">
 <table id="ListTable">
@@ -26,10 +26,6 @@ xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
 				</xsl:element>
 				</td>
 				<td class="ListColLeft">
-						<xsl:attribute name="style">
-							background-color:<xsl:value-of select="hc"/>;
-    					</xsl:attribute>
-
 						<xsl:element name="a">
 						  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 							<xsl:attribute name="class">pop</xsl:attribute>
@@ -53,13 +49,22 @@ xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
 								  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
 								</xsl:element>
 						</xsl:if>
+					<xsl:if test="ne = 0">
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+							</xsl:element>
+					</xsl:if>
 				</td>
 
 				<td class="ListColCenter">
+					<xsl:attribute name="style">
+						background-color:<xsl:value-of select="hc"/>;
+    				</xsl:attribute>
+
 					<xsl:value-of select="cs"/>
 				</td>
 				<td class="ListColRight">
-					<xsl:value-of select="lc"/>
+					<xsl:value-of select="a"/>
 				</td>
 	            <td class="ListColRight">
 					<xsl:value-of select="lc"/>
