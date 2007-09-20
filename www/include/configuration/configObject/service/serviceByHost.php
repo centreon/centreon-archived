@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
 	$path = "./include/configuration/configObject/service/";
 	
 	#PHP functions
-	include_once("./DBOdsConnect.php");
+	require_once("./DBOdsConnect.php");
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
