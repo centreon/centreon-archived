@@ -78,17 +78,15 @@ sub DeleteOldRrdDB(){
     }
     undef($sth);
     undef($data);
-    $some_dir = getStorageDir();
+    my $some_dir = getStorageDir();
     opendir(DIR, $some_dir) || die "can't opendir $some_dir: $!";
     my @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
     closedir DIR;
     for (@files) {
 		if (!defined($base{$_})){
-			if (-d $some_dir."/".$_){
-				;
-			} else { 
+			if (!-d $some_dir."/".$_){
 				if (unlink($some_dir."/".$_)){
-					writeLogFile("Warning : ".$some_dir."/".$_." removed \n");
+					writeLogFile("Warning : ".$some_dir.$_." removed \n");
 				} else {
 					writeLogFile("Error : Unable to remove ".$some_dir.$_ ."\n");
 				}
@@ -101,7 +99,6 @@ sub DeleteOldRrdDB(){
 	undef(%base);
 }
 
-
 # Check if host or service have change their name and description. 
 # If hosts or services have change, it update their id.
    
@@ -110,35 +107,22 @@ sub check_HostServiceID(){
 	my $sth1 = $con_ods->prepare("SELECT * FROM index_data ORDER BY host_name");
     if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
     while ($data = $sth1->fetchrow_hashref()){
-    	# detect if host_name and svc_name are ok but id # 
-    	my $host_id = getHostID($data->{'host_name'});
-    	my $service_id = getServiceID($host_id, $data->{'service_description'});
-    	if (defined($host_id) && defined($service_id) && ($data->{'host_id'} ne $host_id || $data->{'service_id'} ne $service_id)){
-	    	my $str = 	"UPDATE index_data SET `host_id` = '".$host_id."', ".
-  						"`service_id` = '".$service_id."' ". 
-  						"WHERE `host_name` = '".$data->{'host_name'}."' AND `service_description` = '".$data->{'service_description'}."'";
-    		$sth1 = $con_ods->prepare($str);
-    		if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-    		undef($sth1);
-    	}
-    	#
     	$host_name = getHostName($data->{'host_id'});
     	$service_description = getServiceName($data->{'service_id'});
-    	if (defined($host_name) && defined($service_description) && defined($data->{'host_name'}) && defined($data->{'service_description'}) && ($host_name eq $data->{'host_name'}) && ($service_description eq $data->{'service_description'})){
-    		;#print "$host_name -> ".$data->{'host_name'}." && $service_description -> ".$data->{'service_description'}."\n";
-    	} elsif (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && ($host_name ne $data->{'host_name'}) && ($service_description ne $data->{'service_description'})){
-    		$str = 	"UPDATE index_data SET `host_name` = '".$host_name."', ".
-  						"`service_description` = '".$service_description."' ". 
-  						"WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
-    		$sth1 = $con_ods->prepare($str);
-    		if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-    	}
+    	if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
+    		$str = 	"UPDATE index_data SET `host_name` = '".$host_name."', `service_description` = '".$service_description."' WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
+    		writeLogFile($str . "\n");
+    		$sth2 = $con_ods->prepare($str);
+    		writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
+    		undef($sth2);
+    	}  
     }
 	if (defined($last_restart) && $last_restart){
-		$sth1 = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
-		if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-		undef($sth1);
+		$sth2 = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
+		if (!$sth2->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+		undef($sth2);
 	}
+	undef($sth1);
 }
 
 1;
