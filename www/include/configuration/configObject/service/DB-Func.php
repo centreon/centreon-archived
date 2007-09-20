@@ -129,6 +129,7 @@ For information : contact@oreon-project.org
 	function divideGroupedServiceInDB ($service_id = null, $service_arr = array())	{
 		if (!$service_id && !count($service_arr)) return;
 		global $pearDB;
+		
 		if ($service_id)
 			$service_arr = array($service_id=>"1");
 		foreach($service_arr as $key=>$value)	{
@@ -139,19 +140,34 @@ For information : contact@oreon-project.org
 			while ($DBRESULT->fetchInto($relation))	{
 				if ($relation["hostgroup_hg_id"])	{
 					if ($lap)	{
+						$sv_id = NULL;
 						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND hostgroup_hg_id = '".$relation["hostgroup_hg_id"]."'");
 						if (PEAR::isError($DBRESULT2))
 							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-						multipleServiceInDB(array($key=>"1"), array($key=>"1"), NULL, 0, $relation["hostgroup_hg_id"], array(), array($relation["hostgroup_hg_id"]=>NULL));
+						$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), NULL, 0, $relation["hostgroup_hg_id"], array(), array($relation["hostgroup_hg_id"]=>NULL));
+						if ($sv_id)	{
+							$hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
+							foreach($hosts as $host)	{
+								$DBRESULT3 = $pearDB0->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host."' AND service_id = '".$key."'");
+								if (PEAR::isError($DBRESULT3))
+									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
+							}
+						}
 					}
 					$lap++;
 				}
 				else if ($relation["host_host_id"])	{
 					if ($lap)	{
+						$sv_id = NULL;
 						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND host_host_id = '".$relation["host_host_id"]."'");
 						if (PEAR::isError($DBRESULT2))
 							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
-						multipleServiceInDB(array($key=>"1"), array($key=>"1"), $relation["host_host_id"], 0, NULL, array($relation["host_host_id"]=>NULL), array());
+						$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), $relation["host_host_id"], 0, NULL, array($relation["host_host_id"]=>NULL), array());
+						if ($sv_id)	{
+							$DBRESULT3 = $pearDB0->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$relation["host_host_id"]."' AND service_id = '".$key."'");
+							if (PEAR::isError($DBRESULT3))
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
+						}
 					}
 					$lap++;
 				}	
@@ -162,6 +178,7 @@ For information : contact@oreon-project.org
 	function multipleServiceInDB ($services = array(), $nbrDup = array(), $host = NULL, $descKey = 1, $hostgroup = NULL, $hPars = array(), $hgPars = array())	{
 		# $descKey param is a flag. If 1, we know we have to rename description because it's a traditionnal duplication. If 0, we don't have to, beacause we duplicate services for an Host duplication
 		# Foreach Service
+		$maxId["MAX(service_id)"] = NULL;
 		foreach($services as $key=>$value)	{
 			global $pearDB;
 			# Get all information about it
@@ -254,10 +271,11 @@ For information : contact@oreon-project.org
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						}
-				}
+					}
 				}
 			}
 		}
+		return ($maxId["MAX(service_id)"]);
 	}
 	
 	function updateServiceInDB ($service_id = NULL, $from_MC = false)	{
