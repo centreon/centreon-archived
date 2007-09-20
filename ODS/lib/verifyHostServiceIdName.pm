@@ -110,12 +110,24 @@ sub check_HostServiceID(){
 	my $sth1 = $con_ods->prepare("SELECT * FROM index_data ORDER BY host_name");
     if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
     while ($data = $sth1->fetchrow_hashref()){
+    	# detect if host_name and svc_name are ok but id # 
+    	my $host_id = getHostID($data->{'host_name'});
+    	my $service_id = getServiceID($host_id, $data->{'service_description'});
+    	if (defined($host_id) && defined($service_id) && ($data->{'host_id'} ne $host_id || $data->{'service_id'} ne $service_id)){
+	    	my $str = 	"UPDATE index_data SET `host_id` = '".$host_id."', ".
+  						"`service_id` = '".$service_id."' ". 
+  						"WHERE `host_name` = '".$data->{'host_name'}."' AND `service_description` = '".$data->{'service_description'}."'";
+    		$sth1 = $con_ods->prepare($str);
+    		if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+    		undef($sth1);
+    	}
+    	#
     	$host_name = getHostName($data->{'host_id'});
     	$service_description = getServiceName($data->{'service_id'});
     	if (defined($host_name) && defined($service_description) && defined($data->{'host_name'}) && defined($data->{'service_description'}) && ($host_name eq $data->{'host_name'}) && ($service_description eq $data->{'service_description'})){
     		;#print "$host_name -> ".$data->{'host_name'}." && $service_description -> ".$data->{'service_description'}."\n";
     	} elsif (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && ($host_name ne $data->{'host_name'}) && ($service_description ne $data->{'service_description'})){
-    		my $str = 	"UPDATE index_data SET `host_name` = '".$host_name."', ".
+    		$str = 	"UPDATE index_data SET `host_name` = '".$host_name."', ".
   						"`service_description` = '".$service_description."' ". 
   						"WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
     		$sth1 = $con_ods->prepare($str);

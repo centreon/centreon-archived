@@ -25,8 +25,7 @@
 sub getServiceID($$){
 	my $sth2 = $con_oreon->prepare(	"SELECT service_id FROM service, host_service_relation hsr ".
 									"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
-									"AND service_description = '".$_[1]."' LIMIT 1");
-	
+									"AND service.service_description = '".$_[1]."' LIMIT 1");
 	if (!$sth2->execute) {writeLogFile("Error when getting service id : " . $sth2->errstr . "\n");}
 	my $data = $sth2->fetchrow_hashref();
 	undef($sth2);
