@@ -31,7 +31,7 @@ sub getIntervalLenght(){
 	}
 }
 
-sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
+sub updateRrdDB($$$$$$$$){ 
 	my $interval = 4000;
 	my ($nb_value, $interval_length, $ERR);
 	
@@ -54,9 +54,7 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$metric_used_by_perfdata_parsor = 0;
 			$ERR = RRDs::error;
-			#writeLogFile("Updating : $_[0]$_[1].rrd : ".substr($_[6], 0, 19).", ".$_[2].":".sprintf("%e", $_[3])."\n");
 			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
-			writeLogFile("Updating $_[0]$_[1].rrd\n");
 		} else {
 			writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
 		}
@@ -64,27 +62,34 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
 			my $begin = $_[4] - 200000;
+			CheckMySQLConnexion();
 			$interval = getServiceCheckInterval($_[1]);
 			$interval = 3 if (!defined($interval));
-			CheckMySQLConnexion();
-			$interval = getIntervalLenght() * $interval * 2;
+			$interval = getIntervalLenght() * $interval;
+			$interval_hb = $interval * 2;
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 			$_[6] =~ s/#S#/slash\_/g;
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
-			writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
-			writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
+			if ($ERR) {
+				writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
+			} else {
+				writeLogFile("ERROR while creating ".$_[0].$_[1]."rrd : $ERR\n") ;
+			}
+			RRDs::tune($_[0].$_[1].".rrd", "-h", substr($_[6], 0, 19).":".$interval_hb);
+			$ERR = RRDs::error;
+			if ($ERR){writeLogFile("ERROR while tunning operation on ".$_[0].$_[1].".rrd : $ERR\n");}
 			$_[3] =~ s/\,/\./g;
 			if (-w $_[0].$_[1].".rrd"){
 				$metric_used_by_perfdata_parsor = $_[1];
 				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 				$metric_used_by_perfdata_parsor = 0;
 				$ERR = RRDs::error;
-				writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n") if ($ERR);
+				writeLogFile("ERROR while updating ".$_[0]."/".$_[1].".rrd : $ERR\n") if ($ERR);
 			} else {
-				writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
+				writeLogFile("ERROR when updating ".$_[0]."/".$_[1].".rrd : permission denied or file not found\n");
 			}
 			undef($begin);
 		}
@@ -101,7 +106,7 @@ sub updateMysqlDB($$$$){ # connexion value timestamp
 	undef($sth1);
 }
 
-sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval type
+sub updateRrdDBforHiddenSVC($$$$$$$$){
 	my $ERR;
 	my $interval = 4000;
 
@@ -132,9 +137,10 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
 			my $begin = $_[4] - 200000;
-			$interval = 1;
+			$interval = 3;
 			CheckMySQLConnexion();
-			$interval = getIntervalLenght() * $interval * 2;
+			$interval = getIntervalLenght() * $interval;
+			$interval_hb = $interval * 2;
 			undef($data);
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
@@ -143,6 +149,9 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
+			RRDs::tune($_[0].$_[1].".rrd", "-h", substr($_[6], 0, 19).":".$interval_hb);
+			$ERR = RRDs::error;
+			if ($ERR){writeLogFile("ERROR while tunning operation on ".$_[0].$_[1].".rrd : $ERR\n");}
 			$_[3] =~ s/\,/\./g;
 			if (-w $_[0].$_[1].".rrd"){
 				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
