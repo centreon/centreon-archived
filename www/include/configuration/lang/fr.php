@@ -291,7 +291,7 @@ $lang['sv_perfdataOptions'] = "Donn&eacute;es de performances";
 $lang['sv_freshnessOptions'] = "Options de contr&ocirc;le de fraicheur du r&eacute;sultat";
 $lang['sv_flappingOptions'] = "Options de contr&ocirc;le des Oscilations";
 
-$lang["detach"] = "D&eacute;tacher";
+$lang["sv_detach"] = "D&eacute;tacher";
 
 /* Meta Service */
 
