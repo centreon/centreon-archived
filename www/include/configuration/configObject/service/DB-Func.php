@@ -128,7 +128,7 @@ For information : contact@oreon-project.org
 	
 	function divideGroupedServiceInDB ($service_id = null, $service_arr = array())	{
 		if (!$service_id && !count($service_arr)) return;
-		global $pearDB;
+		global $pearDB, $pearDBO;
 		
 		if ($service_id)
 			$service_arr = array($service_id=>"1");
@@ -148,7 +148,7 @@ For information : contact@oreon-project.org
 						if ($sv_id)	{
 							$hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
 							foreach($hosts as $host)	{
-								$DBRESULT3 = $pearDB0->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host."' AND service_id = '".$key."'");
+								$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host."' AND service_id = '".$key."'");
 								if (PEAR::isError($DBRESULT3))
 									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 							}
@@ -164,7 +164,7 @@ For information : contact@oreon-project.org
 							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), $relation["host_host_id"], 0, NULL, array($relation["host_host_id"]=>NULL), array());
 						if ($sv_id)	{
-							$DBRESULT3 = $pearDB0->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$relation["host_host_id"]."' AND service_id = '".$key."'");
+							$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$relation["host_host_id"]."' AND service_id = '".$key."'");
 							if (PEAR::isError($DBRESULT3))
 								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 						}
