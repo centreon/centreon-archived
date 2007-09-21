@@ -45,4 +45,4 @@ UPDATE `centreon`.`topology` SET `topology_name` = 'menu_ODS_config',`topology_p
 
 -- Delete DB extract
 
-DELETE FROM `topology` WHERE `topology_page` = '50103';
+DELETE FROM `topology` WHERE `topology_page` = '50301';
