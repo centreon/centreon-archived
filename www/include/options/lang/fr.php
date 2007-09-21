@@ -78,6 +78,7 @@ $lang["genOpt_oSUK"] = "Couleur Service UNKNOWN";
 $lang["genOpt_snmpCom"] = "Communaut&eacute; Globale";
 $lang["genOpt_snmpVer"] = "Version";
 $lang["genOpt_snmpttconvertmib_path_bin"] = "snmpttconvertmib R&eacute;pertoire + Binaire";
+$lang["genOpt_snmptt_unknowntrap_log_file"] = "Fichier de log de SNMPTT";
 $lang["genOpt_perl_library_path"] = "R&eacute;pertoire des librairies Perl";
 $lang["genOpt_mailer"] = "R&eacute;pertoire + Binaire du Mailer";
 $lang["genOpt_rrdtool"] = "R&eacute;pertoire + Binaire de RRDTOOL";
