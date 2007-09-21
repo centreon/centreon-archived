@@ -52,7 +52,9 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'snmp_version', $lang["genOpt_snmpVer"], array("0"=>"1", "1"=>"2", "2"=>"2c", "3"=>"3"), $attrsAdvSelect);
 	$form->addElement('text', 'snmp_trapd_path_conf', $lang["genOpt_snmp_trapd_pathConf"], $attrsText);
 	$form->addElement('text', 'snmpttconvertmib_path_bin', $lang["genOpt_snmpttconvertmib_path_bin"], $attrsText);
+	$form->addElement('text', 'snmptt_unknowntrap_log_file', $lang["genOpt_snmptt_unknowntrap_log_file"], $attrsText);
 	$form->addElement('text', 'perl_library_path', $lang["genOpt_perl_library_path"], $attrsText);
+	
 	#
 	## Form Rules
 	#
