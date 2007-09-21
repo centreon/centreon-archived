@@ -197,6 +197,13 @@ CREATE TABLE `statistics` (
 
 INSERT INTO `statistics` VALUES (1, '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
+CREATE TABLE `traps` (
+`traps_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`traps_oid` VARCHAR( 255 ) NULL ,
+`traps_ip` VARCHAR( 255 ) NULL ,
+`traps_community` VARCHAR( 255 ) NULL ,
+`traps_infos` VARCHAR( 255 ) NULL
+) ENGINE = MYISAM ;
 
 ALTER TABLE `index_data` ADD INDEX ( `must_be_rebuild` );
 ALTER TABLE `index_data` ADD INDEX ( `trashed` );
