@@ -32,8 +32,10 @@ INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`)
 -- NDO
 --
 
-ALTER TABLE `general_opt` ADD `ndo_base_name` VARCHAR( 255 ) NOT NULL DEFAULT 'nagios',ADD `ndo_base_prefixe` VARCHAR( 255 ) NOT NULL DEFAULT 'ndo',
-ADD `ndo_activate` BINARY NOT NULL DEFAULT '0';
+ALTER TABLE `general_opt` ADD `ndo_base_name` VARCHAR( 255 ) NOT NULL DEFAULT 'nagios',ADD `ndo_base_prefixe` VARCHAR( 255 ) NOT NULL DEFAULT 'ndo', ADD `ndo_activate` BINARY NOT NULL DEFAULT '0';
 
+--
+-- ODS and Traps
+--
 
 ALTER TABLE `general_opt` ADD `snmptt_unknowntrap_log_file` VARCHAR( 255 ) NULL AFTER `snmpttconvertmib_path_bin` ;
