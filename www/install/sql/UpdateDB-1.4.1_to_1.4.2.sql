@@ -39,3 +39,6 @@ ALTER TABLE `general_opt` ADD `ndo_base_name` VARCHAR( 255 ) NOT NULL DEFAULT 'n
 --
 
 ALTER TABLE `general_opt` ADD `snmptt_unknowntrap_log_file` VARCHAR( 255 ) NULL AFTER `snmpttconvertmib_path_bin` ;
+
+
+UPDATE `centreon`.`topology` SET `topology_name` = 'menu_ODS_config',`topology_parent` = '506', `topology_page` = '50601', `topology_order` = '5' WHERE `topology`.`topology_page` = 5010110;
