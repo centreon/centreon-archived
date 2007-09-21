@@ -42,3 +42,7 @@ ALTER TABLE `general_opt` ADD `snmptt_unknowntrap_log_file` VARCHAR( 255 ) NULL 
 
 
 UPDATE `centreon`.`topology` SET `topology_name` = 'menu_ODS_config',`topology_parent` = '501', `topology_page` = '5010601', `topology_order` = '5' WHERE `topology`.`topology_page` = 5010110;
+
+-- Delete DB extract
+
+DELETE FROM `topology` WHERE `topology_page` = '50103';
