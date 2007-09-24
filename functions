@@ -492,9 +492,9 @@ function install_oreon_plugins()
 		fi
     fi
 	echo ""
-    if test -a $NAGIOS_PLUGIN/oreon.conf ; then
+    if test -a $NAGIOS_PLUGIN/centreon.conf ; then
 		echo ""
-		echo_success "Finding Oreon Plugins configuration file 'oreon.conf' :" "OK"
+		echo_success "Finding Oreon Plugins configuration file 'centreon.conf' :" "OK"
 		echo "You already seem to have installed the plugins Oreon."
 		echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
 		echo -n "[y/n], default to [n]:"
@@ -515,13 +515,13 @@ function install_oreon_plugins()
     fi
 
     if [ $temp = "y" ];then
-		cp ${PLUGINS_DIR}oreon.conf $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-		chmod 775 $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
-		chown $WEB_USER:$WEB_GROUP $NAGIOS_PLUGIN/oreon.conf >> $LOG_FILE 2>> $LOG_FILE
+		cp ${PLUGINS_DIR}centreon.conf $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
+		chmod 775 $NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>> $LOG_FILE
+		chown $WEB_USER:$WEB_GROUP $NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>> $LOG_FILE
 	fi
 
-    cp ${PLUGINS_DIR}oreon.pm $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $NAGIOS_PLUGIN/oreon.pm >> $LOG_FILE 2>> $LOG_FILE
+    cp ${PLUGINS_DIR}centreon.pm $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
+    chmod 775 $NAGIOS_PLUGIN/centreon.pm >> $LOG_FILE 2>> $LOG_FILE
 }
 
 function install_ods(){
