@@ -103,7 +103,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$file[24] = "\n\n";
 			$file[25] = "// path to classes\n";
 			$file[26] = "\$classdir='./class';\n";
-			if ($fd = fopen($_SESSION["oreon_dir_www"]."oreon.conf.php", "w"))	{
+			if ($fd = fopen($_SESSION["oreon_dir_www"]."centreon.conf.php", "w"))	{
 				for ($i = 0; $i <= 26; $i++)
 					fwrite ($fd, $file[$i]);
 				fclose ($fd);
