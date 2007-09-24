@@ -46,3 +46,12 @@ UPDATE `centreon`.`topology` SET `topology_name` = 'menu_ODS_config',`topology_p
 -- Delete DB extract
 
 DELETE FROM `topology` WHERE `topology_page` = '50301';
+
+
+-- traps
+
+ALTER TABLE `traps` ADD `traps_submit_result_enable` ENUM( '0', '1' ) NULL DEFAULT '0' AFTER `traps_status` ;
+ALTER TABLE `traps` ADD `traps_execution_command` TEXT NULL AFTER `traps_submit_result_enable`, ADD `traps_execution_command_enable` ENUM( '0', '1' ) NULL DEFAULT '0' AFTER `traps_execution_command` ;
+ALTER TABLE `traps` ADD `traps_reschedule_svc_enable` ENUM( '0', '1' ) NULL DEFAULT '1' AFTER `traps_execution_command_enable` ;
+
+
