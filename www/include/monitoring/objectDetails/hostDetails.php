@@ -134,15 +134,17 @@ For information : contact@oreon-project.org
 		$tpl->assign("url_id", $url_id);
 		$tpl->assign("tab_comments_host", $tab_comments_host);
 		$tpl->assign("host_data", $host_status[$host_name]);
+		$tpl->assign("host_url", $host_status[$host_name]);
 		
 		# Ext informations
 		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
 		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
 		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));		
-		$tpl->assign("h_ext_action_url_lang", $lang['h_actionUrl']);
 		$tpl->assign("h_ext_action_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url"));
-		//$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
+		$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
+		
+		$tpl->assign("h_ext_action_url_lang", $lang['h_actionUrl']);
 		
 		$tpl->display("hostDetails.ihtml");
 	}
