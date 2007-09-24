@@ -194,7 +194,7 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'service_template_model_stm_id', $lang['stm_template'], $svTpls);
 	$form->addElement('static', 'tplText', $lang['stm_templateText']);
 
-    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_hPars'], $hosts, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_tplt_hPars'], $hosts, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
@@ -330,7 +330,7 @@ For information : contact@oreon-project.org
 		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', $lang["mc_mod"], '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	} 
-	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_hPars'], $hosts, $attrsAdvSelect);
+	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_tplt_hPars'], $hosts, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);

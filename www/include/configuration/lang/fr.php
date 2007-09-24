@@ -293,6 +293,9 @@ $lang['sv_flappingOptions'] = "Options de contr&ocirc;le des Oscilations";
 
 $lang["sv_detach"] = "D&eacute;tacher";
 
+$lang['sv_tplt_hPars'] = "Li&eacute; aux Mod&egrave;les d'hosts ";
+
+
 /* Meta Service */
 
 $lang['ms'] = "Meta Service";

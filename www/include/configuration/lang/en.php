@@ -294,6 +294,8 @@ $lang['sv_flappingOptions'] = "Flapping options";
 
 $lang["sv_detach"] = "Detach";
 
+$lang['sv_tplt_hPars'] = "Linked to host templates ";
+
 /* Meta Service */
 
 $lang['ms'] = "Meta Service";
