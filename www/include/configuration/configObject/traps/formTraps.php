@@ -16,6 +16,9 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	if (!isset($oreon))
+		exit();
+
 	#
 	## Database retrieve information for Trap
 	#
@@ -25,6 +28,11 @@ For information : contact@oreon-project.org
 		return($arg);
 	}
 
+	function myReplace()	{
+		global $form;
+		return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
+	}
+	
 	$trap = array();
 	$mnftr = array(NULL=>NULL);
 	$mnftr_id = -1;
@@ -64,17 +72,38 @@ For information : contact@oreon-project.org
 	## Command information
 	#
 	$form->addElement('text', 'traps_name', $lang["m_traps_name"], $attrsText);
-	$form->addElement('text', 'traps_oid', $lang["m_traps_oid"], $attrsText);
-	$form->addElement('text', 'traps_args', $lang["m_traps_args"], $attrsText);
 	$form->addElement('select', 'traps_status', $lang["m_traps_status"], array(0=>$lang['m_mon_ok'], 1=>$lang['m_mon_warning'], 2=>$lang['m_mon_critical'], 3=>$lang['m_mon_unknown']));
 	$form->addElement('select', 'manufacturer_id', $lang["m_traps_manufacturer"], $mnftr);
 	$form->addElement('textarea', 'traps_comments', $lang["m_traps_comments"], $attrsTextarea);
 
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
-	$form->setDefaults(array('action'=>'1'));
+	/*
+	 * Three possibilities : 	- submit result
+	 * 							- execute a special command
+	 * 							- resubmit a scheduling force 
+	 */
+
+	/*
+	 * submit result 
+	 */
+	$form->addElement('text', 'traps_oid', $lang["m_traps_oid"], $attrsText);
+	$form->addElement('text', 'traps_args', $lang["m_traps_args"], $attrsText);
+
+	$form->addElement('checkbox', 'traps_submit_result_enable', $lang["m_trap_submit_result_enable"]);
+	$form->setDefaults(1);
+	
+	/*
+	 * Schedule svc check forced
+	 */
+	$form->addElement('checkbox', 'traps_reschedule_svc_enable', $lang["m_traps_reschedule_svc"]);
+	$form->setDefaults(0);
+	
+	
+	/*
+	 * execute commande
+	 */
+	$form->addElement('text', 'traps_execution_command', $lang["m_traps_execution_command"], $attrsText);
+	$form->addElement('checkbox', 'traps_execution_command_enable', $lang["m_traps_execution_command_enable"]);
+	$form->setDefaults(0);
 
 	#
 	## Further informations
@@ -83,13 +112,16 @@ For information : contact@oreon-project.org
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
+	$tab = array();
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
+	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$form->setDefaults(array('action'=>'1'));
+	
 	#
 	## Form Rules
 	#
-	function myReplace()	{
-		global $form;
-		return (str_replace(" ", "_", $form->getSubmitValue("traps_name")));
-	}
+
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('traps_name', 'myReplace');
 	$form->addRule('traps_name', $lang['ErrName'], 'required');
@@ -149,6 +181,11 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		
+		$tpl->assign('subtitle1', $lang["m_traps_subtitle1"]);
+		$tpl->assign('subtitle2', $lang["m_traps_subtitle2"]);
+		$tpl->assign('subtitle3', $lang["m_traps_subtitle3"]);
+		
 		$tpl->display("formTraps.ihtml");
 	}
 ?>
