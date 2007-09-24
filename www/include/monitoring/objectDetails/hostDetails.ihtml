@@ -1,8 +1,9 @@
 <div>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3">{if $h_ext_icon_image}<img src='./include/common/getHiddenImage.php?path={$h_ext_icon_image}&logo=1' alt='{$h_ext_icon_image_alt}'>{else}<img src='./img/icones/16x16/server_network.gif'>&nbsp;{/if}&nbsp;{$lang.m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address}{if $h_ext_action_url}&nbsp;&nbsp;<a href="{$h_ext_action_url}" target="_blank"><img src='./img/icones/16x16/document_refresh.gif'></a>{/if}
-					 <a href="{$h_ext_notes_url}" title="{$h_ext_notes_url_lang}"><img src='./img/icones/16x16/document_text.gif'></a>
+			<td class="ListColHeaderLeft" colspan="3">{if $h_ext_icon_image}<img src='./include/common/getHiddenImage.php?path={$h_ext_icon_image}&logo=1' alt='{$h_ext_icon_image_alt}'>{else}<img src='./img/icones/16x16/server_network.gif'>&nbsp;{/if}&nbsp;{$lang.m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address}
+					 {if $h_ext_action_url}&nbsp;<a href="{$h_ext_action_url}"><img src='./img/icones/16x16/document_gear.gif'></a>&nbsp;{/if}
+					 {if $h_ext_notes_url}<a href="{$h_ext_notes_url}"><img src='./img/icones/16x16/document_into.gif'></a>{/if}
 				{if $h_ext_notes}
 					&nbsp;&nbsp;
 					{if $h_ext_notes_url}
