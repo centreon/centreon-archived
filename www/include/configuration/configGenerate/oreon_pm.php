@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$file = $oreon->optGen["nagios_path_plugins"]."oreon.conf" ;
+	$file = $oreon->optGen["nagios_path_plugins"]."centreon.conf" ;
 	$handle = fopen($file, 'rw');
 	$ini = readINIfile ($file, ";");
 	// We modify [GLOBAL] section
