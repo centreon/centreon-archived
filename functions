@@ -16,7 +16,7 @@ SETCOLOR_FAILURE="echo -en \\033[1;31m"
 SETCOLOR_WARNING="echo -en \\033[1;33m"
 SETCOLOR_NORMAL="echo -en \\033[0;39m"
 SNMP_DIR="/etc/snmp/";
-OREON_CONF="/etc/oreon.conf"
+OREON_CONF="/etc/centreon.conf"
 
 function  echo_info() {
     echo -n "$1"
