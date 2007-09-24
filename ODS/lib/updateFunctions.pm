@@ -73,10 +73,10 @@ sub updateRrdDB($$$$$$$$){
 			$_[6] =~ s/#S#/slash\_/g;
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
-			if ($ERR) {
+			if (!$ERR) {
 				writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
 			} else {
-				writeLogFile("ERROR while creating ".$_[0].$_[1]."rrd : $ERR\n") ;
+				writeLogFile("ERROR while creating ".$_[0].$_[1].".rrd : $ERR\n") ;
 			}
 			RRDs::tune($_[0].$_[1].".rrd", "-h", substr($_[6], 0, 19).":".$interval_hb);
 			$ERR = RRDs::error;
