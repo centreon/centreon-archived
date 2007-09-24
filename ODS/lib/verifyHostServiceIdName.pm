@@ -99,9 +99,11 @@ sub DeleteOldRrdDB(){
 	undef(%base);
 }
 
+#
 # Check if host or service have change their name and description. 
 # If hosts or services have change, it update their id.
-   
+#
+  
 sub check_HostServiceID(){
  	my ($data, $host_name, $service_description, $purge_mod);
 	my $sth1 = $con_ods->prepare("SELECT * FROM index_data ORDER BY host_name");
@@ -112,7 +114,7 @@ sub check_HostServiceID(){
     	if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
     		$str = 	"UPDATE index_data SET `host_name` = '".$host_name."', `service_description` = '".$service_description."' WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
     		writeLogFile($str . "\n");
-    		$sth2 = $con_ods->prepare($str);
+    		my $sth2 = $con_ods->prepare($str);
     		writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
     		undef($sth2);
     	}  
