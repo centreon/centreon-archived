@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 	define('SMARTY_DIR', '../GPL_LIB/Smarty/libs/');
 
 	# Include
-	require_once ("./oreon.conf.php");
+	require_once ("./centreon.conf.php");
 	require_once ("./DBconnect.php");
 	require_once ("./DBOdsConnect.php");
 	require_once ("$classdir/Session.class.php");
