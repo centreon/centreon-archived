@@ -161,6 +161,19 @@ CREATE TABLE `log` (
 -- --------------------------------------------------------
 
 -- 
+-- Structure de la table `log_snmptt`
+-- 
+
+CREATE TABLE `log_snmptt` (
+  `host_address` varchar(255) default NULL,
+  `trap_oid` varchar(255) default NULL,
+  `community` varchar(255) default NULL,
+  `other_info` varchar(255) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+-- 
 -- Structure de la table `metrics`
 -- 
 
