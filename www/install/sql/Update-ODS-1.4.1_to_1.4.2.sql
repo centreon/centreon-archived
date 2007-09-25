@@ -12,3 +12,12 @@ ADD `Force_Reporting_Rebuild` ENUM( '0', '1' ) NULL DEFAULT '0';
 ALTER TABLE `metrics` ADD `hidden` ENUM( '0', '1' ) NULL DEFAULT '0';
 ALTER TABLE `metrics` ADD `min` INT(11) NULL DEFAULT '0' AFTER `crit`;
 ALTER TABLE `metrics` ADD `max` INT(11) NULL DEFAULT '0' AFTER `min`;
+
+
+CREATE TABLE `log_snmptt` (
+  `host_address` varchar(255) default NULL,
+  `trap_oid` varchar(255) default NULL,
+  `community` varchar(255) default NULL,
+  `other_info` varchar(255) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
