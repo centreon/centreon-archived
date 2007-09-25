@@ -186,6 +186,10 @@ CREATE TABLE `metrics` (
   `unit_name` varchar(32) default NULL,
   `warn` float default NULL,
   `crit` float default NULL,
+  `min` float default NULL,
+  `max` float default NULL,
+  `hidden` ENUM( '0', '1' ) NULL DEFAULT '0',
+  `locked` ENUM( '0', '1' ) NULL DEFAULT '0',
   PRIMARY KEY  (`metric_id`),
   KEY `index` (`index_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
