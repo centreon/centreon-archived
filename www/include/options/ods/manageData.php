@@ -43,8 +43,7 @@ For information : contact@oreon-project.org
 	require_once("./DBOdsConnect.php");
 	
 	switch ($o)	{
-		case "mmtrc" : require_once($path."viewMetrics.php"); break;
-		case "msvc" : require_once($path."viewServices.php"); break;
+		case "msvc" : require_once($path."viewMetrics.php"); break;
 		default : require_once($path."viewData.php"); break;
 	}
 ?>
