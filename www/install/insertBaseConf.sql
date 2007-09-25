@@ -33,7 +33,7 @@ INSERT INTO `general_opt` (`gopt_id`, `nagios_path`, `nagios_path_bin`, `nagios_
 -- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `nagios_server` VALUES (1, 'Oreon Nagios', NULL);
+INSERT INTO `nagios_server` VALUES (1, 'Centreon - Master', NULL);
 
 --
 -- Contenu de la table `giv_graphs_template`
