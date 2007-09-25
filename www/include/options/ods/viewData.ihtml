@@ -58,4 +58,3 @@
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
-
