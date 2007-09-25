@@ -40,7 +40,7 @@
 	$path_oreon = '@OREON_PATH@';
 	require_once 'DB.php';	
 
-	include_once($path_oreon . "/www/oreon.conf.php");
+	include_once($path_oreon . "/www/centreon.conf.php");
 	require_once($path_oreon ."/www/include/reporting/dashboard/reporting-func.php");
 	require_once($path_oreon ."/www/include/reporting/dashboard/simple-func.php");
 

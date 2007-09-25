@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 
 	/* Connect to Oreon DB */
 
-	include("../../../../../oreon.conf.php");
+	include("../../../../../centreon.conf.php");
 	is_file ("../../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../../lang/en.php");
 	require_once "../../../../common/common-Func.php";
 
@@ -212,6 +212,10 @@ For information : contact@oreon-project.org
 			if ($tm["ds_last"])
 				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%8.2lf%s\\l\"";
 			$cpt++;
+			$tm["warn"] = 10;
+			$tm["crit"] = 22;
+			$command_line .= " HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "; 
+			$command_line .= " HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\""; 
 		}
 
 		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";

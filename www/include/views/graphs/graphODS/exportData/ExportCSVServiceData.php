@@ -73,9 +73,9 @@ For information : contact@oreon-project.org
 		}
 	}
 	foreach ($datas as $key => $tab){
-		print $key.";";
+		print $key;
 		foreach($tab as $value)
-			print $value.";";
+			print ";".$value;
 		print "\n";
 	}
 	exit();

@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	$path = '@OREON_PATH@';
 
- 	include($path."/www/oreon.conf.php");
+ 	include($path."/www/centreon.conf.php");
  	require_once ($path."/www/class/Session.class.php");
  	require_once ($path."/www/class/Oreon.class.php");
 

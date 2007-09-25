@@ -2,7 +2,7 @@
 
 $local_file = "br.txt";
 $country_id = "13";
-$absPath_to_OreonOconf = "../../../oreon.conf.php";
+$absPath_to_OreonOconf = "../../../centreon.conf.php";
 
 function microtime_float() {
   list($usec, $sec) = explode(" ", microtime());

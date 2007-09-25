@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 
 		/* start init db*/
 		$oreonPath = $_POST["oreonPath"];
-		include_once($oreonPath . "/www/oreon.conf.php");
+		include_once($oreonPath . "/www/centreon.conf.php");
 		$dsn = array(
 			     'phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],

@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	include("../../../../../oreon.conf.php");
+	include("../../../../../centreon.conf.php");
 	is_file ("../../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../../lang/en.php");
 	require_once "../../../../common/common-Func.php";
 
@@ -57,7 +57,6 @@ For information : contact@oreon-project.org
 	} else {
 		$session->free();
 		include_once("../../../../../DBOdsConnect.php");
-
 		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -129,7 +128,7 @@ For information : contact@oreon-project.org
 
 		# Init DS template For each curv
 		$metrics = array();
-		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_name");
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_name");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
@@ -139,16 +138,14 @@ For information : contact@oreon-project.org
 				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 				$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
 				$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
+				$metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
+				$metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
 				$ds = getDefaultDS($template_id, $cpt, 1);						
 				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
 				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
 				$res_ds->fetchInto($ds_data);
-				foreach ($ds_data as $key => $ds_d){
-					if ($key == "ds_transparency")
-						$metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100);
-					else
-						$metrics[$metric["metric_id"]][$key] = $ds_d;
-				}
+				foreach ($ds_data as $key => $ds_d)
+					$key == "ds_transparency" ? $metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100) : $metrics[$metric["metric_id"]][$key] = $ds_d ;
 				$res_ds->free();
 				if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
 					$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
@@ -162,6 +159,7 @@ For information : contact@oreon-project.org
 			$cpt++;
 		}
 		$DBRESULT->free();
+		
 		$cpt = 0;
 		$longer = 0;
 		foreach ($metrics as $key => $tm){
@@ -171,20 +169,27 @@ For information : contact@oreon-project.org
 				$command_line .= " DEF:v".$cpt."=".$RRDdatabase_path.$key.".rrd:".substr($metrics[$key]["metric"],0 , 19).":AVERAGE ";
 			if ($tm["legend_len"] > $longer)
 				$longer = $tm["legend_len"];
+			//$command_line .= " CDEF:v".$cpt."W=v".$cpt.",".$tm["warn"].",GT,v".$cpt.",0,IF ";
+			//$command_line .= " CDEF:v".$cpt."C=v".$cpt.",".$tm["crit"].",GT,v".$cpt.",0,IF ";
+			//$command_line .= " CDEF:v".$cpt."N=v".$cpt.",".$tm["warn"].",GT,0,v".$cpt.",IF ";
 			$cpt++;
 		}
 
 		# Create Legende
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
+			
 			if ($metrics[$key]["ds_filled"])
-				$command_line .= " AREA:v".($cpt-1)."".$tm["ds_color_area"].$tm["ds_transparency"]." ";
+				$command_line .= " AREA:v".($cpt-1).$tm["ds_color_area"].$tm["ds_transparency"]." ";
+			//	$command_line .= " AREA:v".($cpt-1)."W#434343".$tm["ds_transparency"]." ";
+			//	$command_line .= " AREA:v".($cpt-1)."C#3918E6".$tm["ds_transparency"]." ";
+			//	$command_line .= " AREA:v".($cpt-1)."N".$tm["ds_color_area"].$tm["ds_transparency"]." ";
 			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $metrics[$key]["legend"];
 			for ($i = $metrics[$key]["legend_len"]; $i != $longer + 1; $i++)
 				$command_line .= " ";
-			$command_line .= "\"";
+				$command_line .= "\"";
 			if ($tm["ds_average"]){
 				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%8.2lf%s";
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
@@ -199,6 +204,7 @@ For information : contact@oreon-project.org
 			}
 			if ($tm["ds_last"])
 				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%8.2lf%s\\l\"";
+			
 			$cpt++;
 		}
 

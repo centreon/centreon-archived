@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	 include("../../oreon.conf.php");
+	 include("../../centreon.conf.php");
 	 require_once ("../../$classdir/Session.class.php");
 	 require_once ("../../$classdir/Oreon.class.php");
 	 Session::start();

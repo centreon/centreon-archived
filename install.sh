@@ -426,7 +426,7 @@ EOF
 
 function confirm_oreon()
 {
-    if test -f $INSTALL_DIR_OREON/www/oreon.conf.php ; then
+    if test -f $INSTALL_DIR_OREON/www/centreon.conf.php ; then
 	  echo ""
 	  echo "Oreon is already install on your server !"
 

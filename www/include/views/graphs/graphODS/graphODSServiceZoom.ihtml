@@ -15,8 +15,8 @@
     				<div>
 		    			<span><img id='zoomGraphImage' src='./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id={$session_id}&index={$index}{if $template_id}&template_id={$template_id}{/if}&end={$end}&start={$start}{foreach item=m_a from=$metrics_active key=k}&metric[{$k}]=1{/foreach}'></span>
 		    			<span style="vertical-align:top;">
-		    				<span><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end}&start={$start}"><img src="./img/icones/16x16/view.gif"></a></span>
-		    				{if $admin}<span><a href="./oreon.php?p={$p}&o=cp&index={$index}&end={$end}&start={$start}&min={$min}"><img src="./img/icones/16x16/tool.gif"></a></span>{/if}
+		    				<span><a href="./oreon.php?p={$p}&o=gp&index={$index}&end={$end}&start={$start}&min={$min}"><img src="./img/icones/16x16/view.gif"></a></span>
+		    				{if $admin}<span><a href="./oreon.php?p={$p}&o=cp&index={$index}&end={$end}&start={$start}&min={$min}&min={$min}"><img src="./img/icones/16x16/tool.gif"></a></span>{/if}
 		    			</span>
 		    		</div>
     			</div>

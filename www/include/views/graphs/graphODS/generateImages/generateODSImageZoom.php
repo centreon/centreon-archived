@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 
 	/* Connect to Oreon DB */
 
-	include("../../../../../oreon.conf.php");
+	include("../../../../../centreon.conf.php");
 	is_file ("../../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../../lang/en.php");
 	require_once "../../../../common/common-Func.php";
 

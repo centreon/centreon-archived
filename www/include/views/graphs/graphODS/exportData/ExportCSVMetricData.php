@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 
 	$oreon = 1;
 	
-	include_once($oreonPath . "www/oreon.conf.php");
+	include_once($oreonPath . "www/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBOdsConnect.php");
 

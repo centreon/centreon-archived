@@ -18,7 +18,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 
 **/
-	require ("../../oreon.conf.php");
+	require ("../../centreon.conf.php");
 	require ("../../DBconnect.php");
 	
 	function get_status_data($status_file = NULL){

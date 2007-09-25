@@ -1,5 +1,5 @@
 <?
-	require_once("../../../oreon.conf.php");
+	require_once("../../../centreon.conf.php");
 	require_once("../../../DBconnect.php");
 	
 	if (isset($_GET['debut']))

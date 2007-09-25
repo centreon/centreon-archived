@@ -228,6 +228,7 @@ For information : contact@oreon-project.org
 		$tpl->assign('lang', $lang);
 		$tpl->assign('index', $index_id);
 		$tpl->assign('min', $min);	
+		$tpl->assign('sid', session_id());	
 		$tpl->assign('session_id', session_id());
 		$tpl->display("graphODSService.ihtml");
 	}

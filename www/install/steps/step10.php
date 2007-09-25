@@ -32,7 +32,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
     	<th style="text-align: right;">Status</th>
   	</tr>
   	<tr>
-		<td><b>Writable Oreon Configuration File (oreon.conf.php)</b></td>
+		<td><b>Writable Oreon Configuration File (centreon.conf.php)</b></td>
 		<td align="right"><?
        	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir_www"]));
 		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir_www"]));
@@ -116,7 +116,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir_www"].'oreon.conf.php'; ?></td>
+	    <td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir_www"].'centreon.conf.php'; ?></td>
 	    <td align="right"><b><? echo $msg ;	?></b></td>
  	</tr>
  	<tr>

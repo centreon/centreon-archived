@@ -4,7 +4,7 @@
 	include("DB.php");
 	
 	
-	include_once("./oreon.conf.php");
+	include_once("./centreon.conf.php");
 	$dsn = array(
 	    'phptype'  => 'mysql',
 	    'username' => $conf_oreon["user"],
