@@ -15,9 +15,10 @@ ALTER TABLE `metrics` ADD `max` INT(11) NULL DEFAULT '0' AFTER `min`;
 
 
 CREATE TABLE `log_snmptt` (
-  `host_address` varchar(255) default NULL,
-  `trap_oid` varchar(255) default NULL,
-  `community` varchar(255) default NULL,
-  `other_info` varchar(255) default NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
+  `traps_id` int(11) NOT NULL auto_increment,
+  `traps_oid` varchar(255) default NULL,
+  `traps_ip` varchar(255) default NULL,
+  `traps_community` varchar(255) default NULL,
+  `traps_infos` varchar(255) default NULL,
+  PRIMARY KEY  (`traps_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
