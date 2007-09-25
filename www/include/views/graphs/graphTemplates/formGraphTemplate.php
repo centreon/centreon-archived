@@ -177,6 +177,7 @@ For information : contact@oreon-project.org
 	$form->addRule('vertical_label', $lang['ErrRequired'], 'required');
 	$form->addRule('width', $lang['ErrRequired'], 'required');
 	$form->addRule('height', $lang['ErrRequired'], 'required');
+	/* 
 	$form->addRule('bg_grid_color', $lang['ErrRequired'], 'required');
     $form->addRule('grid_main_color', $lang['ErrRequired'], 'required');
 	$form->addRule('grid_sec_color', $lang['ErrRequired'], 'required');
@@ -186,7 +187,7 @@ For information : contact@oreon-project.org
     $form->addRule('col_arrow', $lang['ErrRequired'], 'required');
     $form->addRule('col_top', $lang['ErrRequired'], 'required');
     $form->addRule('col_bot', $lang['ErrRequired'], 'required');
-
+	*/
 	$form->addRule('title', $lang['ErrRequired'], 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('name', $lang['ErrAlreadyExist'], 'exist');
