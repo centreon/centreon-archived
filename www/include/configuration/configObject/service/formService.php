@@ -33,11 +33,13 @@ For information : contact@oreon-project.org
 
 	$service = array();
 	if (($o == "c" || $o == "w") && $service_id)	{
+		
 		$DBRESULT =& $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		# Set base value
 		$service = array_map("myDecodeService", $DBRESULT->fetchRow());
+		
 		# Grab hostgroup || host
 		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -48,15 +50,18 @@ For information : contact@oreon-project.org
 			else if ($parent["hostgroup_hg_id"])
 				$service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
 		}
+		
 		# Set Service Notification Options
 		$tmp = explode(',', $service["service_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_notifOpts"][trim($value)] = 1;
+		
 		# Set Stalking Options
 		$tmp = explode(',', $service["service_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$service["service_stalOpts"][trim($value)] = 1;
 		$DBRESULT->free();
+		
 		# Set Contact Group
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -64,6 +69,7 @@ For information : contact@oreon-project.org
 		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
+		
 		# Set Service Group Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -71,12 +77,21 @@ For information : contact@oreon-project.org
 		for($i = 0; $DBRESULT->fetchInto($sg); $i++)
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
+		
 		# Set Traps
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		for($i = 0; $DBRESULT->fetchInto($trap); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
+		$DBRESULT->free();
+		
+		# Set Traps
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($service_category); $i++)
+			$service["service_categories"][$i] = $service_category["sc_id"];
 		$DBRESULT->free();
 	}
 	#
@@ -160,6 +175,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($sg))
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
+
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
@@ -168,6 +184,16 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($graphTpl))
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
+
+	# service categories comes from DB -> Store in $service_categories Array
+	$service_categories = array();
+	$DBRESULT =& $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($service_categorie))
+		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
+	$DBRESULT->free();
+
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
 	$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
@@ -176,6 +202,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($trap))
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	$DBRESULT->free();
+	
 	# Deletion Policy definition comes from DB -> Store in $ppols Array
 	$ppols = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
@@ -184,6 +211,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
+
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);
@@ -195,6 +223,7 @@ For information : contact@oreon-project.org
 	#
 	$attrsText 		= array("size"=>"30");
 	$attrsText2		= array("size"=>"6");
+	$attrsAdvSelect_small = array("style" => "width: 200px; height: 70px;");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsAdvSelect2 = array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
@@ -494,6 +523,11 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'oreon', $lang['sv_oreon']);
 	$form->addElement('select', 'graph_id', $lang['sv_graphTpl'], $graphTpls);
 
+	$ams3 =& $form->addElement('advmultiselect', 'service_categories', $lang['m_categories'], $service_categories, $attrsAdvSelect_small);
+	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
+	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');

@@ -46,7 +46,9 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
 	$tpl->assign("headerMenu_status", $lang['status']);
+	$tpl->assign("headerMenu_linked_svc", $lang['sv_nb_linked']);
 	$tpl->assign("headerMenu_options", $lang['options']);
+	
 	# end header menu
 	
 	#Contact list
@@ -68,6 +70,10 @@ For information : contact@oreon-project.org
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($sc); $i++) {
+
+		$DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$sc['sc_id']."'");
+		$DBRESULT2->fetchInto($nb_svc);
+		
 		$selectedElements =& $form->addElement('checkbox', "select[".$sc['sc_id']."]");
 		$moptions = "<a href='oreon.php?p=".$p."&sc_id=".$sc['sc_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&sc_id=".$sc['sc_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
@@ -84,6 +90,7 @@ For information : contact@oreon-project.org
 							"sc_name"=>$sc["sc_name"],
 							"sc_link"=>"?p=".$p."&o=c&sc_id=".$sc['sc_id'],
 							"sc_description"=>$sc["sc_description"],
+							"svc_linked"=>$nb_svc["COUNT(*)"],
 							"sc_activated"=>$sc["sc_activate"] ? $lang['enable'] : $lang['disable'],
 							"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	

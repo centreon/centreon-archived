@@ -333,6 +333,16 @@ For information : contact@oreon-project.org
 			updateServiceTrap_MC($service_id);
 		else
 			updateServiceTrap($service_id);
+		# Function for updating categories
+		# 1 - MC with deletion of existing categories
+		# 2 - MC with addition of new categories
+		# 3 - Normal update
+		if (isset($ret["mc_mod_catgeories"]["mc_mod_catgeories"]) && $ret["mc_mod_catgeories"]["mc_mod_catgeories"])
+			updateServiceCategories($service_id);
+		else if (isset($ret["mc_mod_catgeories"]["mc_mod_catgeories"]) && $ret["mc_mod_catgeories"]["mc_mod_catgeories"])
+			updateServiceCategories_MC($service_id);
+		else
+			updateServiceCategories($service_id);
 	}	
 	
 	function insertServiceInDB ($ret = array())	{
@@ -342,6 +352,7 @@ For information : contact@oreon-project.org
 		updateServiceServiceGroup($service_id, $ret);
 		insertServiceExtInfos($service_id, $ret);
 		updateServiceTrap($service_id, $ret);
+		updateServiceCategories($service_id, $ret);
 		return ($service_id);
 	}
 	
@@ -878,8 +889,7 @@ For information : contact@oreon-project.org
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateServiceHost_MC($service_id = null)	{
 		if (!$service_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "SELECT * FROM host_service_relation ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
@@ -935,8 +945,7 @@ For information : contact@oreon-project.org
 	
 	function updateServiceExtInfos($service_id = null, $ret = array())	{
 		if (!$service_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "UPDATE extended_service_information ";		
@@ -960,8 +969,7 @@ For information : contact@oreon-project.org
 	
 	function updateServiceExtInfos_MC($service_id = null)	{
 		if (!$service_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE extended_service_information SET ";
 		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL) $rq .= "esi_notes = '".htmlentities($ret["esi_notes"], ENT_QUOTES)."', ";
@@ -986,6 +994,31 @@ For information : contact@oreon-project.org
 		require_once "./include/common/common-Func.php";
 		foreach ($useTpls as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE service SET service_template_model_stm_id = '".getMyServiceTPLID($value)."' WHERE service_id = '".$key."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
+	
+	function updateServiceCategories_MC($service_id = null, $ret = array())	{
+		if (!$service_id) return;
+	}
+	function updateServiceCategories($service_id = null, $ret = array())	{
+		if (!$service_id) return;
+		global $form, $pearDB;
+		$rq = "DELETE FROM service_categories_relation WHERE service_service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if (isset($ret["service_categories"]))
+			$ret = $ret["service_categories"];
+		else
+			$ret = $form->getSubmitValue("service_categories");
+		for($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO service_categories_relation ";
+			$rq .= "(sc_id, service_service_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$ret[$i]."', '".$service_id."')";
+			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}
