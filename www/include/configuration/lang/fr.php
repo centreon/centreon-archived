@@ -292,9 +292,11 @@ $lang['sv_freshnessOptions'] = "Options de contr&ocirc;le de fraicheur du r&eacu
 $lang['sv_flappingOptions'] = "Options de contr&ocirc;le des Oscilations";
 
 $lang["sv_detach"] = "D&eacute;tacher";
-
 $lang['sv_tplt_hPars'] = "Li&eacute; aux Mod&egrave;les d'hosts ";
 
+/* Service categories */
+
+$lang['sv_nb_linked'] = "Nombre de services attach&eacute;s";
 
 /* Meta Service */
 

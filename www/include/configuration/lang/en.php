@@ -293,8 +293,11 @@ $lang['sv_freshnessOptions'] = "Freshness Control options";
 $lang['sv_flappingOptions'] = "Flapping options";
 
 $lang["sv_detach"] = "Detach";
-
 $lang['sv_tplt_hPars'] = "Linked to host templates ";
+
+/* Service categories */
+
+$lang['sv_nb_linked'] = "Number of service linked";
 
 /* Meta Service */
 
