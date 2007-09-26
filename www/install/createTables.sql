@@ -1514,6 +1514,18 @@ CREATE TABLE `service_categories` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `service_categories_relation`
+--
+
+ CREATE TABLE `service_categories_relation` (
+`scr_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`service_service_id` INT NULL ,
+`sc_id` INT NULL
+) ENGINE = innodb;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `servicegroup`
 --
 
@@ -2075,3 +2087,14 @@ ALTER TABLE `traps_service_relation`
   --
   ALTER TABLE `traps`
   ADD CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE;
+  
+  
+ ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `service_service_id` ) REFERENCES `centreon`.`service` (
+`service_id`
+) ON DELETE CASCADE ;
+
+ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `sc_id` ) REFERENCES `centreon`.`service_categories` (
+`sc_id`
+) ON DELETE CASCADE ;
+
+  
