@@ -49,6 +49,7 @@
 						<td class="right"></td>
 					</tr>
 				</table><br>
+		{if $amIadmin}
 		<table class="Tmenu3" width="100%">
 		<tr class="top">
 			<td class="left"></td>
@@ -83,7 +84,8 @@
 			<td class="center"></td>
 			<td class="right"></td>
 		</tr>
-		</table>	
+		</table>
+		{/if}
    </div>
 </div>
 </td>
