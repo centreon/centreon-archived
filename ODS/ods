@@ -461,7 +461,6 @@ sub CheckRebuild(){
 						#if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
 						undef($ERR);
 					}
-					writeLogFile("$cpt value insert\n");
 					undef($sth4);
 					# -----------------------------------------------------
 				}
