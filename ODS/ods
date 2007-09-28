@@ -442,9 +442,7 @@ sub CheckRebuild(){
 							if ($ERR){
 								writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");
 							} else {
-								writeLogFile($RRDdatabase_path.$metric->{'metric_id'}.".rrd --heartbeat ".substr($metric->{'metric_name'}, 0, 19).":".$interval_hb."\n");
-								undef($my_len_storage_rrd);
-								
+								undef($my_len_storage_rrd);								
 								RRDs::tune($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-h", substr($metric->{'metric_name'}, 0, 19).":".$interval_hb);
 								$ERR = RRDs::error;
 								if ($ERR){writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
