@@ -32,6 +32,7 @@ For information : contact@oreon-project.org
 	$attrsText 		= array("size"=>"30");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"50");
 	$tab_class 		= array("1" => "list_one", "0" => "list_two");
+	$split 			= 0;
 	
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -42,7 +43,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
 		
 	$graphTs = array( NULL => NULL );
-	$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
+	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while($DBRESULT->fetchInto($graphT))
@@ -102,6 +103,20 @@ For information : contact@oreon-project.org
 		$DBRESULT2->fetchInto($svc_id);
 	}
 
+	$template_id = getDefaultGraph($svc_id["service_id"], 1);
+	$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+	$DBRESULT2->fetchInto($GraphTemplate);
+	
+	$splitTab[] = &HTML_QuickForm::createElement('radio', 'split', null, $lang["yes"], '1');
+	$splitTab[] = &HTML_QuickForm::createElement('radio', 'split', null, $lang["no"], '0');
+	$form->addGroup($splitTab, 'split', $lang['giv_split_component'], '&nbsp;');
+
+	if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1)){
+		$split = 1;
+		$form->setDefaults(array('split' => '1'));
+	} else {
+		$form->setDefaults(array('split' => '0'));
+	}
 	$index = null;	
 	if (isset($_GET["index"]))
 		$index = $_GET["index"];
@@ -153,7 +168,7 @@ For information : contact@oreon-project.org
 		if (isset($_GET["template_id"]))
 			$tpl->assign('template_id', $_GET["template_id"]);				
 				
-		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' ORDER BY `metric_name`");
+		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		for ($counter = 0;$DBRESULT2->fetchInto($metrics_ret); $counter++){
@@ -223,12 +238,24 @@ For information : contact@oreon-project.org
 			$DBRESULT_meta->fetchInto($meta);
 			$svc_id["service_description"] = $meta["meta_name"];
 		}	
+		
+		if ($split){
+			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
+			if (PEAR::isError($DBRESULT2))
+				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+			for ($counter = 1;$DBRESULT2->fetchInto($metrics_ret); $counter++){
+				if (isset($metrics_active[$metrics_ret["metric_id"]]) && $metrics_active[$metrics_ret["metric_id"]])
+					$metrics_list[$metrics_ret["metric_id"]] = $counter;
+			}
+			$tpl->assign('metrics_list', $metrics_list);
+		}
 		$tpl->assign('host_name', $svc_id);
 		$tpl->assign('isAvl', 1);
 		$tpl->assign('lang', $lang);
 		$tpl->assign('index', $index_id);
 		$tpl->assign('min', $min);	
 		$tpl->assign('sid', session_id());	
+		$tpl->assign('split', $split);	
 		$tpl->assign('session_id', session_id());
 		$tpl->display("graphODSService.ihtml");
 	}

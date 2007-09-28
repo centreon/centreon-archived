@@ -195,6 +195,12 @@ For information : contact@oreon-project.org
 				
 				$elem[$index_id] = array("index_id" => $index_id, "service_description" => str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"])));
 				
+				$DBRESULT_view =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$index_id."' AND `contact_id` = '".$oreon->user->user_id."'");
+				if (PEAR::isError($DBRESULT_view))
+					print "Mysql Error : ".$DBRESULT_view->getDebugInfo();
+				while ($metric_activate = $DBRESULT_view->fetchRow())
+					$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
+				
 				if ($GraphTemplate["split_component"]){
 					$elem[$index_id]["split"] = 1;
 					$elem[$index_id]["metrics"] = array();
@@ -206,7 +212,9 @@ For information : contact@oreon-project.org
 					$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 					$form->addElement('checkbox', $metrics_ret["metric_name"], $metrics_ret["metric_name"]);
 					if (isset($elem[$index_id]["split"]))
-						$elem[$index_id]["metrics"][$metrics_ret["metric_id"]] = $metrics_ret["metric_id"];
+						#if (!isset($metrics_activate) || (isset($metrics_activate) && isset($metrics_activate[$metrics_ret["metric_id"]]) && $metrics_activate[$metrics_ret["metric_id"]])){
+							$elem[$index_id]["metrics"][$metrics_ret["metric_id"]] = $metrics_ret["metric_id"];	
+						#}
 				}
 				
 				# Create period
@@ -236,6 +244,7 @@ For information : contact@oreon-project.org
 				$tpl->assign('start', $start);
 				if (isset($_GET["template_id"]))
 					$elem[$index_id]['template_id'] = $_GET["template_id"];	
+				unset($metrics_activate);
 			}
 		}
 	}
@@ -254,6 +263,9 @@ For information : contact@oreon-project.org
 	$tpl->assign('min', $min);
 	$tpl->assign('isAvl', 1);
 	$tpl->assign('lang', $lang);
+	
+	$tpl->assign('sid', session_id());	
+	$tpl->assign('session_id', session_id());
 	
 	if (isset($host_name)){
 		if ($host_name == "Meta_Module")

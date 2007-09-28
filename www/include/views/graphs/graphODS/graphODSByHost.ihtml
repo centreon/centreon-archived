@@ -43,12 +43,12 @@
         </tr>
         {foreach from=$elemArr item=curr_id key=key}
         <tr class="list_one">
-			<td colspan="2" class='ListColLeft' valign="top" align='center'> <b>Service : {$elemArr[$key].service_description}</b></td>
+			<td class='ListColLeft' valign="top" align='center'> <b>Service : {$elemArr[$key].service_description}</b></td>
+			<td style="text-align:right;width:42px;">&nbsp;<a href="./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?p={$p}&o=gp&index={$key}&end={$end}&start={$start}&sid={$session_id}&min={$min}"><img src="./img/icones/16x16/text_binary_csv.gif"></a>&nbsp;<a href=''><img src="./img/icones/16x16/text_binary_xml.gif"></a>&nbsp;</td>
 		</tr>
 		<tr>
-    		<td colspan="2" class='ListColCenter' valign="top" align='center'>
+    		<td class='ListColCenter' valign="top" align='center'>
     			{if $curr_id.split}
-    			
     			{foreach from=$curr_id.metrics item=curr_id_metric key=key_metric}
        			<div><a href='./oreon.php?p={$p}&o=vs&index={$key}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={counter}&metric={$key_metric}{if $curr_id[template_id].template_id}&template_id={$curr_id[template_id].template_id}{/if}&end={$end}&start={$start}' align="center"><a><br></div>
     			{/foreach}

@@ -20,7 +20,8 @@ For information : contact@oreon-project.org
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 
-	require_once 'DB.php';
+	require_once ('DB.php');
+	require_once ('./DB-Func.php');
 	require_once ("../../../../../class/Session.class.php");
 	require_once ("../../../../../class/Oreon.class.php");
 
@@ -31,7 +32,9 @@ For information : contact@oreon-project.org
 	is_file ("../../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../../lang/en.php");
 	require_once "../../../../common/common-Func.php";
 
-	# Connect to Oreon DB 
+	/*
+	 *  Connect to Oreon DB
+	 */ 
 	$dsn = array(
 	    'phptype'  => 'mysql',
 	    'username' => $conf_oreon['user'],
@@ -48,25 +51,33 @@ For information : contact@oreon-project.org
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB))
 	    die("Unable to connect : " . $pearDB->getMessage());
-
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-	
+
+	/*
+	 * Verify if session is active
+	 */	
+
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
 		exit;
 	} else {
+		$session_value = $session->fetchRow();
 		$session->free();
+
+		/*
+		 * Connect to ods
+		 */
+		 
 		include_once("../../../../../DBOdsConnect.php");
-		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		$DBRESULT->fetchInto($config);
-		$RRDdatabase_path = $config["RRDdatabase_path"];
-		$DBRESULT->free();
-		unset($config);
+
+		$RRDdatabase_path = getRRDToolPath($pearDBO);
+	
+		/*
+		 * Get index information to have acces to graph
+		 */
 		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
-		$DBRESULT->fetchInto($index_data_ODS);
+		$index_data_ODS = $DBRESULT->fetchRow();
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
 			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
@@ -74,9 +85,17 @@ For information : contact@oreon-project.org
 		} else
 			$template_id = $_GET["template_id"];
 		$DBRESULT->free();	
-		$command_line = " graph - --start=".$_GET["start"]. " --end=".$_GET["end"];
 
-		# get all template infos
+		/*
+		 * Create command line
+		 */
+		 
+		$command_line = " graph - --start=".$_GET["start"]." --end=".$_GET["end"];
+
+		/*
+		 * get all template infos
+		 */
+		 
 		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$DBRESULT->fetchInto($GraphTemplate);
 		
@@ -96,14 +115,19 @@ For information : contact@oreon-project.org
 			$base = "-b ".$GraphTemplate["base"];
 		
 		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+
 		if ($oreon->optGen["rrdtool_version"] == "1.2")
 			$command_line .= " --slope-mode ";
-		
+				
 		# Init Graph Template Value
 		if (isset($GraphTemplate["bg_grid_color"]) && $GraphTemplate["bg_grid_color"])
 			$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
+
 		if (isset($GraphTemplate["bg_color"]) && $GraphTemplate["bg_color"])
 			$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
+		else
+			$command_line .= "--color BACK#F0F0F0 ";
+
 		if (isset($GraphTemplate["police_color"]) && $GraphTemplate["police_color"])
 			$command_line .= "--color FONT".$GraphTemplate["police_color"]." ";
 		if (isset($GraphTemplate["grid_main_color"]) && $GraphTemplate["grid_main_color"])
@@ -124,37 +148,47 @@ For information : contact@oreon-project.org
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
 		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
-			$command_line .= "--rigid ";
+			$command_line .= "--rigid --alt-autoscale-max ";
 
+		$DBRESULT =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$_GET["index"]."' AND `contact_id` = '".$session_value["user_id"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		while ($metric_activate = $DBRESULT->fetchRow()){
+			$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
+		}
+				
 		# Init DS template For each curv
 		$metrics = array();
-		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_name");
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit FROM metrics WHERE index_id = '".$_GET["index"]."' AND `hidden` = '0' ORDER BY metric_name");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
+		
 		$metrics = array();		
-		while ($DBRESULT->fetchInto($metric)){
+		while ($metric = $DBRESULT->fetchRow()){
 			if (!isset($_GET["metric"]) || (isset($_GET["metric"]) && isset($_GET["metric"][$metric["metric_id"]]))){	
-				$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-				$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
-				$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
-				$metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
-				$metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
-				$ds = getDefaultDS($template_id, $cpt, 1);						
-				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
-				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
-				$res_ds->fetchInto($ds_data);
-				foreach ($ds_data as $key => $ds_d)
-					$key == "ds_transparency" ? $metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100) : $metrics[$metric["metric_id"]][$key] = $ds_d ;
-				$res_ds->free();
-				if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
-					$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
-				} else {
-                	$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+				if (!isset($metrics_activate) || (isset($metrics_activate) && isset($metrics_activate[$metric["metric_id"]]) && $metrics_activate[$metric["metric_id"]])){
+					$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
+					$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
+					$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
+					$metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
+					$metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
+					$ds = getDefaultDS($template_id, $cpt, 1);						
+					$metrics[$metric["metric_id"]]["ds_id"] = $ds;
+					$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
+					$res_ds->fetchInto($ds_data);
+					foreach ($ds_data as $key => $ds_d)
+						$key == "ds_transparency" ? $metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100) : $metrics[$metric["metric_id"]][$key] = $ds_d ;
+					$res_ds->free();
+					if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
+						$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
+					} else {
+	                	$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+					}
+					if (strcmp($metric["unit_name"], ""))
+						$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
+					$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
 				}
-				if (strcmp($metric["unit_name"], ""))
-					$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-				$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
 			}
 			$cpt++;
 		}
@@ -174,11 +208,10 @@ For information : contact@oreon-project.org
 			//$command_line .= " CDEF:v".$cpt."N=v".$cpt.",".$tm["warn"].",GT,0,v".$cpt.",IF ";
 			$cpt++;
 		}
-
+		$command_line .= " COMMENT:\" \\l\" ";
 		# Create Legende
 		$cpt = 1;
 		foreach ($metrics as $key => $tm){
-			
 			if ($metrics[$key]["ds_filled"])
 				$command_line .= " AREA:v".($cpt-1).$tm["ds_color_area"].$tm["ds_transparency"]." ";
 			//	$command_line .= " AREA:v".($cpt-1)."W#434343".$tm["ds_transparency"]." ";
@@ -191,19 +224,19 @@ For information : contact@oreon-project.org
 				$command_line .= " ";
 				$command_line .= "\"";
 			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf%s";
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf%s";
 				$tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf%s";
 				$tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_last"])
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%8.2lf%s\\l\"";
+				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf%s\\l\"";
 			
 			$cpt++;
 		}

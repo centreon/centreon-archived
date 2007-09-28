@@ -21,6 +21,7 @@ For information : contact@oreon-project.org
 	}
 
 	require_once 'DB.php';
+	require_once ('./DB-Func.php');
 	require_once ("../../../../../class/Session.class.php");
 	require_once ("../../../../../class/Oreon.class.php");
 
@@ -57,15 +58,17 @@ For information : contact@oreon-project.org
 		exit;
 	} else {
 		$session->free();
+		/*
+		 * Connect to ods
+		 */
+		 
 		include_once("../../../../../DBOdsConnect.php");
-		
-		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		$DBRESULT->fetchInto($config);
-		$RRDdatabase_path = $config["RRDdatabase_path"];
-		$DBRESULT->free();
-		unset($config);
+
+		$RRDdatabase_path = getRRDToolPath($pearDBO);
+	
+		/*
+		 * Get index information to have acces to graph
+		 */
 		
 		$DBRESULT =& $pearDBO->query("SELECT index_id, metric_name FROM metrics WHERE metric_id = '".$_GET["metric"]."' LIMIT 1");
 		$DBRESULT->fetchInto($metric_ODS);
@@ -134,11 +137,11 @@ For information : contact@oreon-project.org
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
 		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
-			$command_line .= "--rigid ";
+			$command_line .= "--rigid --alt-autoscale-max ";
 
 		# Init DS template For each curv
 		$metrics = array();
-		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE metric_id = '".$_GET["metric"]."' ORDER BY metric_id");
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE metric_id = '".$_GET["metric"]."' ORDER BY metric_id");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 1;
@@ -198,24 +201,24 @@ For information : contact@oreon-project.org
 				$command_line .= " ";
 			$command_line .= "\"";
 			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf%s";
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf%s";
 				$tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf%s";
 				$tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_last"])
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%8.2lf%s\\l\"";
+				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf%s\\l\"";
 			$cpt++;
-			$tm["warn"] = 10;
-			$tm["crit"] = 22;
-			$command_line .= " HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "; 
-			$command_line .= " HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\""; 
+			if (isset($tm["warn"]) && $tm["warn"] != 0)
+				$command_line .= " HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "; 
+			if (isset($tm["crit"]) && $tm["crit"] != 0)	
+				$command_line .= " HRULE:".$tm["crit"]."#FF0000:\"Critical \: ".$tm["crit"]."\""; 
 		}
 
 		$command_line = $oreon->optGen["rrdtool_path_bin"].$command_line." 2>&1";

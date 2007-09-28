@@ -20,7 +20,8 @@ For information : contact@oreon-project.org
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 
-	require_once 'DB.php';
+	require_once ('DB.php');
+	require_once ('./DB-Func.php');
 	require_once ("../../../../../class/Session.class.php");
 	require_once ("../../../../../class/Oreon.class.php");
 
@@ -29,9 +30,9 @@ For information : contact@oreon-project.org
 
 	/* Connect to Oreon DB */
 
-	include("../../../../../centreon.conf.php");
+	require_once("../../../../../centreon.conf.php");
+	require_once("../../../../common/common-Func.php");
 	is_file ("../../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../../lang/en.php");
-	require_once "../../../../common/common-Func.php";
 
 	$dsn = array(
 	    'phptype'  => 'mysql',
@@ -49,7 +50,6 @@ For information : contact@oreon-project.org
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB))
 	    die("Unable to connect : " . $pearDB->getMessage());
-
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
@@ -57,16 +57,19 @@ For information : contact@oreon-project.org
 		exit;
 	} else {
 		$session->free();
+
+		/*
+		 * Connect to ods
+		 */
+		 
 		include_once("../../../../../DBOdsConnect.php");
-		
-		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		$DBRESULT->fetchInto($config);
-		$RRDdatabase_path = $config["RRDdatabase_path"];
-		$DBRESULT->free();
-		unset($config);
-		
+
+		$RRDdatabase_path = getRRDToolPath($pearDBO);
+	
+		/*
+		 * Get index information to have acces to graph
+		 */
+		 
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$_GET["index"]."' LIMIT 1");
 		$DBRESULT->fetchInto($index_data_ODS);
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
@@ -110,6 +113,9 @@ For information : contact@oreon-project.org
 			$command_line .= "--color CANVAS".$GraphTemplate["bg_grid_color"]." ";
 		if (isset($GraphTemplate["bg_color"]) && $GraphTemplate["bg_color"])
 			$command_line .= "--color BACK".$GraphTemplate["bg_color"]." ";
+		else
+			$command_line .= "--color BACK#F0F0F0 ";
+			
 		if (isset($GraphTemplate["police_color"]) && $GraphTemplate["police_color"])
 			$command_line .= "--color FONT".$GraphTemplate["police_color"]." ";
 		if (isset($GraphTemplate["grid_main_color"]) && $GraphTemplate["grid_main_color"])
@@ -130,10 +136,10 @@ For information : contact@oreon-project.org
 		if (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL)
 			$command_line .= "--upper-limit ".$GraphTemplate["upper_limit"]." ";
 		if ((isset($GraphTemplate["lower_limit"]) && $GraphTemplate["lower_limit"] != NULL) || (isset($GraphTemplate["upper_limit"]) && $GraphTemplate["upper_limit"] != NULL))
-			$command_line .= "--rigid ";
+			$command_line .= "--rigid --alt-autoscale-max ";
 		
 		$metrics = array();
-		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_name");
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' AND `hidden` = '0' ORDER BY metric_name");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$pass = 1;
@@ -144,7 +150,7 @@ For information : contact@oreon-project.org
 		$DBRESULT->free();
 				
 		$metrics = array();
-		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."' ORDER BY metric_id");
+		$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name, unit_name FROM metrics WHERE index_id = '".$_GET["index"]."'  AND `hidden` = '0'ORDER BY metric_id");
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 0;
@@ -157,7 +163,7 @@ For information : contact@oreon-project.org
 				$ds = getDefaultDS($template_id, $cpt, 1);						
 				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
 				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
-				$res_ds->fetchInto($ds_data);
+				$ds_data = $res_ds->fetchRow();
 				foreach ($ds_data as $key => $ds_d){
 					if ($key == "ds_transparency")
 						$metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100);
@@ -168,6 +174,7 @@ For information : contact@oreon-project.org
 					$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metric["metric_name"]);
                 else
                 	$metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+
 				if (strcmp($metric["unit_name"], ""))
 					$metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
 				$metrics[$metric["metric_id"]]["legend_len"] = strlen($metrics[$metric["metric_id"]]["legend"]);
@@ -201,19 +208,19 @@ For information : contact@oreon-project.org
 				$command_line .= " ";
 			$command_line .= "\"";
 			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf%s";
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf%s";
 				$tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%8.2lf%s";
+				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf%s";
 				$tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_last"])
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%8.2lf%s\\l\"";
+				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf%s\\l\"";
 			$cpt++;
 		}
 
