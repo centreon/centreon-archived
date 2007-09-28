@@ -31,7 +31,6 @@ use threads::shared;
 
 use RRDs;
 #use lib "@RRD_PERL@";
-use lib "/usr/lib/perl5/vendor_perl/5.8.8/i586-linux-thread-multi/";
 use File::Copy;
 
 #my $installedPath = "@OREON_PATH@";
@@ -406,11 +405,9 @@ sub CheckRebuild(){
 						$interval = 2 * getIntervalLenght();
 					}
 				} else {
-					writeLogFile(getIntervalLenght()." secondes \n");
 					$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght();
 				}
 				my $interval_hb = $interval * 2;
-				$metric->{'metric_name'} =~ /\//slash\_/g;
 				my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 				if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
 				while ($metric = $sth3->fetchrow_hashref()){
@@ -423,29 +420,34 @@ sub CheckRebuild(){
 					writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
 					for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
 						if (!$flag){
+
 							$interval = 600 if (!defined($interval));
 							my $my_len_storage_rrd = $len_storage_rrd / $interval;
 							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");
+
 							system("rm -f ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd");
+
 							# Calculate first entry in database					
 							my $begin = $data->{'ctime'} - 200;
+	
+							# Waiting if metric is in use
+							while ($metric_used_by_perfdata_parsor eq $metric->{'metric_id'}){
+								sleep(2);
+							}
+
 							# Create RRD database
-							if (-w $RRDdatabase_path.$metric->{'metric_id'}.".rrd"){
-								while ($metric_used_by_perfdata_parsor eq $metric->{'metric_id'}){
-									sleep(2);
-								}
-								
-								RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
-								$ERR = RRDs::error;
-								if ($ERR){writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
+
+							RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
+							$ERR = RRDs::error;
+							if ($ERR){
+								writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");
+							} else {
 								writeLogFile($RRDdatabase_path.$metric->{'metric_id'}.".rrd --heartbeat ".substr($metric->{'metric_name'}, 0, 19).":".$interval_hb."\n");
 								undef($my_len_storage_rrd);
 								
 								RRDs::tune($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-h", substr($metric->{'metric_name'}, 0, 19).":".$interval_hb);
 								$ERR = RRDs::error;
 								if ($ERR){writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
-							} else {
-								writeLogFile("ERROR when updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : permission denied or file not found\n");
 							}
 							undef($ERR);
 							undef($begin);
@@ -456,7 +458,7 @@ sub CheckRebuild(){
 						RRDs::update ($RRDdatabase_path.$metric->{'metric_id'}.".rrd" , "--template", substr($metric->{'metric_name'}, 0, 19), $data->{'ctime'}.":".$data->{'value'});
 						$ERR = RRDs::error;
 					
-						if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
+						#if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
 						undef($ERR);
 					}
 					writeLogFile("$cpt value insert\n");
@@ -490,46 +492,63 @@ sub BuildReport(){
 
 sub ParseLogSNMPTT(){
 	while (1){
-	 	my $dbh = shift;
-    	my $query = "select snmptt_unknowntrap_log_file from general_opt";
-    	my $sth = $dbh->prepare($query);
-    	my $file = $st->execute;
-    	exit if (!defined($file) || !$file);
-       	exit if (!open (FILE, "< $file"));
-	    while (<FILE>) {
-        	my @tab;
-        	if ($_ =~ /Unknown trap.*received from.*at\:/) {
-           		my $stop = 0;
-            	my $more_infos = "";
-            	while (!$stop) {
-                	my $getline = <FILE>;
-                	chomp($getline);
-                	if (substr ($getline, 0,8) =~ /Value ([0-9]):/) {
-                    	if ($1 == 0) {
-                        	$tab[0] = substr($getline, 9);
-                    	} elsif ($1 == 3) {
-                        	$tab[1] = substr($getline, 9);
-                    	} elsif ($1 == 5) {
-                        	$tab[2] = substr($getline, 9);
-                    	}
-                	} elsif (substr ($getline, 0,12) =~ /Ent Value ([0-9]):/) {
-                    	$more_infos .= substr($getline, 13)."<br>";
-                	} elsif ($getline eq "") {
-                    	$stop = 1;
-                	}
-            	}
-            	if ($more_infos ne "") {
-            	    $tab[3] = $more_infos;
-            	}
-	            ##insertion en base
-	            ## tab[0] = IP
-	            ## tab[1] = oid
-	            ## tab[2] = communaute
-	            ## tab[3] = informations complementaires
-        	}
-    	}
-    	return @lines;
-	
+		CheckMySQLConnexion();
+		my $sth = $con_oreon->prepare("select `snmptt_unknowntrap_log_file` from `general_opt`");
+		if (!$sth->execute) {
+		    print "ERROR when performing sql query : ".$sth->errstr."\n";
+		} else {
+		    my $file =  $sth->fetchrow_array();
+		    $sth->finish;
+		    if (!defined($file) || !$file) {
+		        print "ERROR : Snmptt log file is not defined\n";
+		    } else {
+		        if (open (FILE, "< $file")) {
+		            while (<FILE>) {
+		                my @tab;
+		                if ($_ =~ /Unknown trap.*received from.*at\:/) {
+		                    my $stop = 0;
+		                    my $more_infos = "";
+		                    while (!$stop) {
+		                        my $getline = <FILE>;
+		                        chomp($getline);
+		                        if (substr ($getline, 0,8) =~ /Value ([0-9]):/) {
+		                            if ($1 == 0) {
+		                                $tab[0] = substr($getline, 9);
+		                            } elsif ($1 == 3) {
+		                                $tab[1] = substr($getline, 9);
+		                            } elsif ($1 == 5) {
+		                                $tab[2] = substr($getline, 9);
+		                            }
+		                        } elsif (substr ($getline, 0,12) =~ /Ent Value ([0-9]):/) {
+		                            $more_infos .= substr($getline, 13)."<br>";
+		                        } elsif ($getline eq "") {
+		                            $stop = 1;
+		                        }
+		                    }
+		                    $tab[3] = $more_infos if ($more_infos ne "");
+		                    if ($tab[0] !~ /^[0-9\.]+$/) {
+		                        my ($host, $aliases, $addrtype, $length, @addrs) = gethostbyname($tab[0]);
+		                        my ($a, $b, $c, $d) = unpack('C4', $addrs[0]);
+		                        $tab[0] = "$a.$b.$c.$d";
+		                    }
+		                    $sth = $con_ods->prepare("select `traps_id` from `log_snmptt` where `traps_oid`='".$tab[1]."' and `traps_ip` = '".$tab[0]."'");
+		                    print "ERROR when getting performing sql query : ".$sth->errstr."\n" if (!$sth->execute);
+		                    if (!($sth->rows)) {
+		                        my $sth_insert = $con_ods->prepare("insert into `log_snmptt` (`traps_ip`, `traps_oid`, `traps_community`, `traps_infos`) values ('".$tab[0]."','".$tab[1]."','".$tab[2]."','".$tab[3]."')");
+		                        print "ERROR when getting performing sql query : ".$sth->errstr."\n" if (!$sth_insert->execute);
+		                        $sth_insert->finish;
+		                    }
+		                    $sth->finish;
+		                    undef($stop);
+		                    undef($more_infos);
+		                }
+		            }
+		            print "Error When removing $file : $!" if (!unlink($file));
+		        } else {
+		            print "ERROR : Cannot open $file\n";
+		        }
+		    }
+		}
 	}
 }
 
