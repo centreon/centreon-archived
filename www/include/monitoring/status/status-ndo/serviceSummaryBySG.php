@@ -49,7 +49,9 @@ For information : contact@oreon-project.org
 	$rows = 10;
 
 		
-	include_once("makeJS_serviceGrid.php");
+	//include("./include/common/checkPagination.php");
+
+	include_once("makeJS_serviceSummaryByHG.php");
 
 	
 	# Smarty template Init

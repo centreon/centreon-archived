@@ -149,6 +149,9 @@ function loadXML(url)
 
       } 
  
+var xsltRequest = GetXmlHttpRequest();
+ 
+ 
 function Transformation() {
 
     var xml;
@@ -324,8 +327,9 @@ viewDebugInfo('---->' + document.all[xsltID].readyState);
 			*/
 
 			/* legerement plus rapide avec FF*/
-            var xsltRequest = GetXmlHttpRequest();
             var xmlRequest = GetXmlHttpRequest();
+
+//console.log(xsltRequest);
 
             var change = function() {
 
@@ -334,12 +338,14 @@ viewDebugInfo('---->' + document.all[xsltID].readyState);
                     if (transformed) {
                         return;
                     }
-                    //xsltDoc = xsltRequest.responseText;//responseXML;
+                    xsltDoc = xsltRequest.responseXML;
                     xmlDoc = xmlRequest.responseXML;
 
+// responseText
+/*
 					var xmlstring = xsltRequest.responseText;
                     xsltDoc = ( new DOMParser() ).parseFromString( xmlstring , "text/xml" );
-                    
+*/
                     var resultDoc;
                     var processor = new XSLTProcessor();
 
@@ -370,10 +376,12 @@ viewDebugInfo('---->' + document.all[xsltID].readyState);
             xmlRequest.onreadystatechange = change;
             xmlRequest.send(null);
 
-            xsltRequest.open("GET", xslt);
-            xsltRequest.onreadystatechange = change;
-            xsltRequest.send(null);
-
+			if(xsltRequest.readyState != 4){
+	            xsltRequest.open("GET", xslt);
+	            xsltRequest.overrideMimeType("text/xml");
+	            xsltRequest.onreadystatechange = change;
+	            xsltRequest.send(null);
+			}
         }
     }
     

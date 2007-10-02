@@ -166,53 +166,32 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBndoConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
-
-	function get_hosts_status($host_group_id, $status){
+	function get_services_status($host_name, $status){
 		global $pearDBndo;
 		global $general_opt;
-	
-		$rq = "SELECT count( nhs.host_object_id ) AS nb".
-			" FROM " .$general_opt["ndo_base_prefix"]."_hoststatus nhs".
-			" WHERE nhs.current_state = '".$status."'".
-			" AND nhs.host_object_id".
-			" IN (".
-			" SELECT nhgm.host_object_id".
-			" FROM " .$general_opt["ndo_base_prefix"]."_hostgroup_members nhgm".
-			" WHERE nhgm.hostgroup_id =".$host_group_id.
-			")";
-					
-		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
-		$DBRESULT->fetchInto($tab);
-
-		return($tab["nb"]);
-	}
-
-	function get_services_status($host_group_id, $status){
-		global $pearDBndo;
-		global $general_opt;
-	
+		global $o;
 	
 		$rq = "SELECT count( nss.service_object_id ) AS nb".
 		" FROM " .$general_opt["ndo_base_prefix"]."_servicestatus nss".
-		" WHERE nss.current_state = '".$status."'".
-		" AND nss.service_object_id".
+		" WHERE nss.current_state = '".$status."'";
+		
+		if($o == "svcSumHG_pb")
+			$rq .= " AND nss.current_state != 0";
+		if($o == "svcSumHG_ack_0")
+			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0";
+	
+		if($o == "svcSumHG_ack_1")
+			$rq .= " AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0";
+	
+		$rq .= " AND nss.service_object_id".
 		" IN (".		
 		" SELECT nno.object_id".
 		" FROM " .$general_opt["ndo_base_prefix"]."_objects nno".
 		" WHERE nno.objecttype_id =2".
-		" AND nno.name1".
-		" IN (".
-		
-		" SELECT no.name1".
-		" FROM ndo_objects no, ndo_hostgroup_members nhgm".
-		" WHERE nhgm.hostgroup_id =".$host_group_id.
-		" AND no.object_id = nhgm.host_object_id".
-		" )".
+		" AND nno.name1 = '".$host_name."'".
 		" )";
 					
 		$DBRESULT =& $pearDBndo->query($rq);
@@ -248,34 +227,42 @@ For information : contact@oreon-project.org
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 
-	/* Get Host status */
-	$rq1 = "SELECT " .
-			" no.name1 as hostgroup_name," .
-			" hg.hostgroup_id" .
-			" FROM " .$general_opt["ndo_base_prefix"]."_hostgroups hg, ". //$general_opt["ndo_base_prefix"]."_hostgroup_members hgm, ".
-			$general_opt["ndo_base_prefix"]."_objects no ".
-			" WHERE no.object_id = hg.hostgroup_object_id";
 
+
+
+	/* Get Host status */
+
+
+	$rq1 = "SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
+			" FROM " .$general_opt["ndo_base_prefix"]."_hostgroups hg," .$general_opt["ndo_base_prefix"]."_hostgroup_members hgm, " .$general_opt["ndo_base_prefix"]."_hoststatus hs, " .$general_opt["ndo_base_prefix"]."_objects no".
+			" WHERE hs.host_object_id = hgm.host_object_id".
+			" AND no.object_id = hgm.host_object_id" .
+			" AND hgm.hostgroup_id = hg.hostgroup_id";
+
+	if($o == "svcSumHG_pb")
+		$rq1 .= " AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
+				")";
+
+	if($o == "svcSumHG_ack_0")
+		$rq1 .= " AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
+				")";
+
+	if($o == "svcSumHG_ack_1")
+		$rq1 .= " AND no.name1 IN (" .
+					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0" .
+				")";
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-/*	
-	if($o == "hpb")
-		$rq1 .= " AND nhs.current_state != 0 ";
-	
-	switch($sort_type){
-			case 'host_name' : $rq .= " order by no.name1 ". $order; break;
-			case 'current_state' : $rq .= " order by nss.current_state,no.name1 ". $order; break;
-			case 'last_state_change' : $rq .= " order by nss.last_state_change,no.name1 ". $order; break;
-			case 'last_check' : $rq .= " order by nss.last_check,no.name1 ". $order; break;
-			case 'current_attempt' : $rq .= " order by nss.current_check_attempt,no.name1 ". $order; break;
-			default : $rq .= " order by no.name1 ". $order; break;
-	}
-*/
 
-	
+
+
 	$rq_pagination = $rq1;
-
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
@@ -284,6 +271,7 @@ For information : contact@oreon-project.org
 	/* End Pagination Rows */
 
 
+	$rq1 .= " ORDER BY hg.alias";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$buffer .= '<reponse>';
@@ -292,6 +280,12 @@ For information : contact@oreon-project.org
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
+
+	if($o == "svcOVHG")
+		$buffer .= '<s>1</s>';
+	else
+		$buffer .= '<s>0</s>';
+	
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -299,54 +293,56 @@ For information : contact@oreon-project.org
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
+
+
+	$tab_final = array();
 	while($DBRESULT_NDO1->fetchInto($ndo))
 	{
-		$nb_host_up = 0 + get_hosts_status($ndo["hostgroup_id"], 0);
-		$nb_host_down = 0 + get_hosts_status($ndo["hostgroup_id"], 1);
-		$nb_host_unreachable = 0 + get_hosts_status($ndo["hostgroup_id"], 2);
-
-		$nb_service_k = 0 + get_services_status($ndo["hostgroup_id"], 0);
-		$nb_service_w = 0 + get_services_status($ndo["hostgroup_id"], 1);
-		$nb_service_c = 0 + get_services_status($ndo["hostgroup_id"], 2);
-		$nb_service_u = 0 + get_services_status($ndo["hostgroup_id"], 3);
-		$nb_service_p = 0 + get_services_status($ndo["hostgroup_id"], 4);
-	
-//		$color_host = $tab_color_host[$ndo["current_state"]]; //"#FF0000";
-		$passive = 0;
-		$active = 1;
-		$last_check = " ";
-		$duration = " ";
-		/*
-		if($ndo["last_state_change"] > 0)
-			$duration = Duration::toString(time() - $ndo["last_state_change"]);
-		if($class == "list_one")
-			$class = "list_two";
+		if($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
+			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
 		else
-			$class = "list_one";
-		$host_status[$ndo["host_name"]] = $ndo;
-*/
-				$buffer .= '<l class="'.$class.'">';
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn>'. $ndo["hostgroup_name"]  . '</hn>';
-		$buffer .= '<hu>'. $nb_host_up  . '</hu>';
-		$buffer .= '<huc>'. $tab_color_host[0]  . '</huc>';
-		$buffer .= '<hd>'. $nb_host_down  . '</hd>';
-		$buffer .= '<hdc>'. $tab_color_host[1]  . '</hdc>';
-		$buffer .= '<hur>'. $nb_host_unreachable  . '</hur>';
-		$buffer .= '<hurc>'. $tab_color_host[2]  . '</hurc>';
+			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
+		$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + get_services_status($ndo["host_name"], 1);
+		$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + get_services_status($ndo["host_name"], 2);
+		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
+		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + get_services_status($ndo["host_name"], 4);
+		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+	}
 
-		$buffer .= '<sk>'. $nb_service_k  . '</sk>';
+	$hg = "";
+	foreach($tab_final as $host_name => $tab)
+	{
+		if($hg != $tab["hg_name"]){
+
+			if($hg != "")
+				$buffer .= '</hg>';
+
+			$hg = $tab["hg_name"];
+			$buffer .= '<hg>';
+			$buffer .= '<hgn>'. $tab["hg_name"]  .'</hgn>';
+		}
+		$buffer .= '<l class="'.$class.'">';
+
+		$buffer .= '<sk>'. $tab["nb_service_k"]  . '</sk>';
 		$buffer .= '<skc>'. $tab_color_service[0]  . '</skc>';
-		$buffer .= '<sw>'. $nb_service_w  . '</sw>';
+		$buffer .= '<sw>'. $tab["nb_service_w"]  . '</sw>';
 		$buffer .= '<swc>'. $tab_color_service[1]  . '</swc>';
-		$buffer .= '<sc>'. $nb_service_c  . '</sc>';
+		$buffer .= '<sc>'. $tab["nb_service_c"]  . '</sc>';
 		$buffer .= '<scc>'. $tab_color_service[2]  . '</scc>';
-		$buffer .= '<su>'. $nb_service_u  . '</su>';
+		$buffer .= '<su>'. $tab["nb_service_u"]  . '</su>';
 		$buffer .= '<suc>'. $tab_color_service[3]  . '</suc>';
-		$buffer .= '<sp>'. $nb_service_p  . '</sp>';
+		$buffer .= '<sp>'. $tab["nb_service_p"]  . '</sp>';
 		$buffer .= '<spc>'. $tab_color_service[4]  . '</spc>';
+
+
+		$buffer .= '<o>'. $ct++ . '</o>';
+		$buffer .= '<hn>'. $host_name  . '</hn>';
+		$buffer .= '<hs>'. $tab_status_host[$tab["cs"]]  . '</hs>';
+		$buffer .= '<hc>'. $tab_color_host[$tab["cs"]]  . '</hc>';
 		$buffer .= '</l>';
 	}
+	$buffer .= '</hg>';
 	/* end */
 		
 	if(!$ct){

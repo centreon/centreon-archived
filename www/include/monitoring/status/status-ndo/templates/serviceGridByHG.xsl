@@ -5,24 +5,45 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:template match="/">
-<table id="ListTable">
-	<tr class='ListHeader'>
-		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 
-	<xsl:for-each select="//i">
-			<xsl:if test="s = 1">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state">Status</td>
+
+
+
+
+
+	<xsl:for-each select="//hg">
+
+<table id="ListTable">
+	<tr class='list_lvl_1'>
+
+			<xsl:if test="//i/s = 1">
+	<td colspan="4">
+		<xsl:value-of select="hgn"/>
+	</td>
 			</xsl:if>
-	</xsl:for-each>
+			<xsl:if test="//i/s = 0">
+	<td colspan="3">
+		<xsl:value-of select="hgn"/>
+	</td>
+			</xsl:if>
+
+	</tr>
+	<tr class='ListHeader'>
+		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"  width="200"></td>
+
+			<xsl:if test="//i/s = 1">
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
+			</xsl:if>
 
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
 	</tr>
-	<xsl:for-each select="//l">
+
+	<xsl:for-each select="l">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 
-				<td class="ListColLeft">
+				<td class="ListColLeft"  width="160">
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:attribute name="class">pop</xsl:attribute>
@@ -68,5 +89,8 @@
 	</tr>
 </xsl:for-each>
 </table>
+<br/>
+</xsl:for-each>
+
 </xsl:template>
 </xsl:stylesheet>

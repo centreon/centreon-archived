@@ -180,13 +180,13 @@ For information : contact@oreon-project.org
 				" FROM `ndo_servicestatus` nss, `ndo_objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
 
-		if($o == "svcgrid_pb")
+		if($o == "svcgrid_pb" || $o == "svcOV_pb")
 			$rq .= " AND nss.current_state != 0" ;
 
-		if($o == "svcgrid_ack_0")
+		if($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
-		if($o == "svcgrid_ack_1")
+		if($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
 			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
 
 
@@ -237,23 +237,25 @@ For information : contact@oreon-project.org
 
 	/* Get Host status */
 	$rq1 = "SELECT " .
-			" no.name1 as host_name" .
-			" FROM " .$general_opt["ndo_base_prefix"]."_objects no" .
-			" WHERE no.objecttype_id = 1";
+			" no.name1 as host_name," .
+			" nhs.current_state" .
+			" FROM " .$general_opt["ndo_base_prefix"]."_objects no, " .$general_opt["ndo_base_prefix"]."_hoststatus nhs " .
+			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ";
 
-	if($o == "svcgrid_pb")
+
+	if($o == "svcgrid_pb" || $o == "svcOV_pb")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 
-	if($o == "svcgrid_ack_0")
+	if($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
-	if($o == "svcgrid_ack_1")
+	if($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
@@ -284,6 +286,12 @@ For information : contact@oreon-project.org
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
+
+	if($o == "svcOV")
+		$buffer .= '<s>1</s>';
+	else
+		$buffer .= '<s>0</s>';
+	
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -298,19 +306,21 @@ For information : contact@oreon-project.org
 	{
 		$tab_svc = get_services($ndo["host_name"]);
 
-		if(count($tab_svc) > 0)	
-		$tab_final[$ndo["host_name"]] = $tab_svc;
+//		if(count($tab_svc) > 0)	{
+			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
+			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+//		}
 	}
 
 
 //	while($DBRESULT_NDO1->fetchInto($ndo))
-	foreach($tab_final as $host_name => $tab_svc)
+	foreach($tab_final as $host_name => $tab)
 	{
 		$buffer .= '<l class="'.$class.'">';
 
 //		$tab_svc = get_services($ndo["host_name"]);
 		
-		foreach ($tab_svc as $svc => $state) {
+		foreach ($tab["tab_svc"] as $svc => $state) {
 			$buffer .= '<svc>';
 			$buffer .= '<sn>'. $svc . '</sn>';
 			$buffer .= '<sc>'. $tab_color_service[$state] . '</sc>';
@@ -320,6 +330,8 @@ For information : contact@oreon-project.org
 	
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<hn>'. $host_name  . '</hn>';
+		$buffer .= '<hs>'. $tab_status_host[$tab["cs"]]  . '</hs>';
+		$buffer .= '<hc>'. $tab_color_host[$tab["cs"]]  . '</hc>';
 		$buffer .= '</l>';
 	}
 	/* end */

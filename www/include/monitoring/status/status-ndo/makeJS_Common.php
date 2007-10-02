@@ -96,6 +96,8 @@ function mk_img(_src, _alt)
 function mk_pagination(resXML){
 	var flag = 0;
 	var infos = resXML.getElementsByTagName("i");
+
+if(infos[0]){
 	var _nr = infos[0].getElementsByTagName("numrows")[0].firstChild.nodeValue;
 	var _nl = infos[0].getElementsByTagName("limit")[0].firstChild.nodeValue;
 	var _nn = infos[0].getElementsByTagName("num")[0].firstChild.nodeValue;
@@ -116,6 +118,8 @@ function mk_pagination(resXML){
 	if(flag == 1){
 	pagination_changed();	
 	}
+	
+}
 }
 
 function pagination_changed(){

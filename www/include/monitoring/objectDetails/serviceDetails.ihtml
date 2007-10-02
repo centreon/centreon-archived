@@ -1,10 +1,13 @@
 <div>
 	<table id="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3">{if $sv_ext_icon_image}<img src='./include/common/getHiddenImage.php?path={$sv_ext_icon_image}&logo=1' alt='{$sv_ext_icon_image_alt}'>{else}<img src='./img/icones/16x16/element_new_after.gif'>&nbsp;{/if}
-				&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]&nbsp;
-				{if $sv_ext_action_url != ""}<a href="{$sv_ext_action_url}"><img src='./img/icones/16x16/document_gear.gif'></a>&nbsp;{/if}
-				{if $sv_ext_notes_url != ""}<a href="{$sv_ext_notes_url}"><img src='./img/icones/16x16/document_into.gif'></a>&nbsp;{/if}
+			<td class="ListColHeaderLeft" colspan="3">
+				<img src='./img/icones/16x16/element_new_after.gif'
+				{if $sv_ext_icon_image_alt}
+					alt='{$sv_ext_icon_image_alt}'
+				{/if}
+				>
+				&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]
 				{if $sv_ext_notes}
 					&nbsp;&nbsp;
 					{if $sv_ext_notes_url}

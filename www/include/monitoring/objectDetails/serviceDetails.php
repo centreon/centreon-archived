@@ -187,11 +187,12 @@ For information : contact@oreon-project.org
 		$tpl->assign("svc_description", $svc_description);		
 		
 		# Ext informations
+		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
 		$tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
 		$tpl->assign("sv_ext_notes_url", getMyServiceExtendedInfoField($service_id, "esi_notes_url"));		
 		$tpl->assign("sv_ext_action_url_lang", $lang['h_actionUrl']);
 		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
-		$tpl->assign("sv_ext_icon_image", getMyServiceExtendedInfoField($service_id, "esi_icon_image"));
+		//$tpl->assign("sv_ext_icon_image", getMyServiceExtendedInfoField($service_id, "esi_icon_image"));
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
 		
 		$tpl->display("serviceDetails.ihtml");
