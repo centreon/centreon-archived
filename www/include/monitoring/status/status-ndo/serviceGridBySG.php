@@ -49,7 +49,7 @@ For information : contact@oreon-project.org
 	$rows = 10;
 
 		
-	include_once("makeJS_serviceGridByHG.php");
+	include_once("makeJS_serviceGridBySG.php");
 
 	
 	# Smarty template Init

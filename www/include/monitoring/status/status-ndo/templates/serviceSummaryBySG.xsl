@@ -7,23 +7,19 @@
 <xsl:template match="/">
 
 
-
-
-
-
-	<xsl:for-each select="//hg">
+	<xsl:for-each select="//sg">
 
 <table id="ListTable">
 	<tr class='list_lvl_1'>
 
 			<xsl:if test="//i/s = 1">
 	<td colspan="4">
-		<xsl:value-of select="hgn"/>
+		<xsl:value-of select="sgn"/>
 	</td>
 			</xsl:if>
 			<xsl:if test="//i/s = 0">
 	<td colspan="3">
-		<xsl:value-of select="hgn"/>
+		<xsl:value-of select="sgn"/>
 	</td>
 			</xsl:if>
 
@@ -38,7 +34,7 @@
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
 	</tr>
 
-	<xsl:for-each select="l">
+	<xsl:for-each select="h">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
@@ -80,7 +76,7 @@
 					<xsl:if test="sk >= 1">
 						<span>
 							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="skc"/>;
+								background-color:<xsl:value-of select="sk/@color" />
     						</xsl:attribute>
 							<xsl:value-of select="sk"/>OK
 						</span>&nbsp;
@@ -90,7 +86,7 @@
 					<xsl:if test="sw >= 1">
 						<span>
 							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="swc"/>;
+								background-color:<xsl:value-of select="sw/@color" />
     						</xsl:attribute>
 						<xsl:value-of select="sw"/>WARNING
 						</span>&nbsp;
@@ -98,7 +94,7 @@
 					<xsl:if test="sc >= 1">
 						<span>
 							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="scc"/>;
+								background-color:<xsl:value-of select="sc/@color" />
     						</xsl:attribute>
 						<xsl:value-of select="sc"/>CRITICAL
 						</span>&nbsp;
@@ -106,7 +102,7 @@
 					<xsl:if test="su >= 1">
 						<span>
 							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="suc"/>;
+								background-color:<xsl:value-of select="su/@color" />
     						</xsl:attribute>
 						<xsl:value-of select="su"/>CRITICAL
 						</span>&nbsp;
@@ -114,12 +110,11 @@
 					<xsl:if test="sp >= 1">
 						<span>
 							<xsl:attribute name="style">
-								background-color:<xsl:value-of select="spc"/>;
+								background-color:<xsl:value-of select="sp/@color" />
     						</xsl:attribute>
 						<xsl:value-of select="sp"/>PENDING
 						</span>
 					</xsl:if>
-
 
 				</td>
 	</tr>

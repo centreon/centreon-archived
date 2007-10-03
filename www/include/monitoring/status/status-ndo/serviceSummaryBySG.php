@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 		
 	//include("./include/common/checkPagination.php");
 
-	include_once("makeJS_serviceSummaryByHG.php");
+	include_once("makeJS_serviceSummaryBySG.php");
 
 	
 	# Smarty template Init
