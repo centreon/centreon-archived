@@ -35,7 +35,7 @@
 	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 
 	$attrsTextDate 	= array("size"=>"11", "style"=>"font-family:Verdana, Tahoma;font-size:9px;height:13px;border: 0.5px solid gray;");
 	$attrsTextHour 	= array("size"=>"5", "style"=>"font-family:Verdana, Tahoma;font-size:9px;height:13px;border: 0.5px solid gray;");
@@ -87,14 +87,15 @@
 	
 	isset($_GET["end"]) && $_GET["end"] ? $end = $_GET["end"] : $end = time();
 	isset($_GET["start"]) && $_GET["start"] ? $start = $_GET["start"] : $start = time() - (60*60*24);
-	
+		
 	$logs = array();	
 	if (isset($_GET["search1"]) && $_GET["search1"])
-		$sort_str1 = " AND `host_name` LIKE '%".$_GET["search1"]."%' OR `service_description` LIKE '%".$_GET["search1"]."%' OR `output` LIKE '%".$_GET["search1"]."%' OR `notification_cmd` LIKE '%".$_GET["search1"]."%' OR `notification_contact` LIKE '%".$_GET["search1"]."%'";
+		$sort_str1 = " AND (`host_name` LIKE '%".$_GET["search1"]."%' OR `service_description` LIKE '%".$_GET["search1"]."%' OR `output` LIKE '%".$_GET["search1"]."%' OR `notification_cmd` LIKE '%".$_GET["search1"]."%' OR `notification_contact` LIKE '%".$_GET["search1"]."%')";
 	else 
 		$sort_str1 = "";
 
 	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1";
+
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
@@ -110,6 +111,7 @@
 		$lstart = 0;
 
 	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1 ORDER BY log_id DESC , ctime DESC LIMIT $lstart,$limit";
+
 	$DBRESULT =& $pearDBO->query($req);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
