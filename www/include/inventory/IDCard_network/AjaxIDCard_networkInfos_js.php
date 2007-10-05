@@ -75,35 +75,35 @@ function montre(id) {
 	_current_id = id;
 	_host_id=<?=$host_id?>;
 
-		for (var i = 1; document.getElementById('c'+i); i++) {
-				document.getElementById('c'+i).className='b';
-		}
-		document.getElementById('c'+id).className='a';
-		if(id == 2 || id == 3 )
-			document.getElementById('mreload'+id).className='c';
-			
-		var d = document.getElementById('tab'+id);
+	for (var i = 1; document.getElementById('c'+i); i++) {
+			document.getElementById('c'+i).className='b';
+	}
+	document.getElementById('c'+id).className='a';
+	if(id == 2 || id == 3 )
+		document.getElementById('mreload'+id).className='c';
+		
+	var d = document.getElementById('tab'+id);
 
-		if(id == 2 || id == 3)
-			var dreload = document.getElementById('mreload'+id);
+	if(id == 2 || id == 3)
+		var dreload = document.getElementById('mreload'+id);
 
-		for (var i = 1; document.getElementById('tab'+i); i++) {
-			document.getElementById('tab'+i).style.display='none';
-			if(i == 2 || i == 3)
-				document.getElementById('mreload'+i).style.display='none';
-		}
+	for (var i = 1; document.getElementById('tab'+i); i++) {
+		document.getElementById('tab'+i).style.display='none';
+		if(i == 2 || i == 3)
+			document.getElementById('mreload'+i).style.display='none';
+	}
 	if (d) {
-	d.style.display='block';
+		d.style.display='block';
 	}
 	if (dreload && (id == 2 || id == 3)) {
-	dreload.style.display='block';
+		dreload.style.display='block';
 	}
 	_f3=document.getElementById('f3');
 	_f2=document.getElementById('f2');
 
 	if (id == 1){
-	}
-	else if (id == 2){
+	
+	} else if (id == 2){
 		if(_f2.status.value == '0')
 		{
 			MyLoading('Loading...');
@@ -130,6 +130,7 @@ function montre(id) {
 function MyHiddenDiv() {
 	_divmsg = document.getElementById('msg');
 	_divmsg.className = "cachediv";
+//	_divmsg.className = "displayAjaxResult";
 
 }
 
@@ -141,7 +142,7 @@ function MyIsLoading(_txt) {
 
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
-	_divmsg.className = "msg_isloading";
+	_divmsg.className = "displayAjaxResult";
 	var _text = document.createTextNode(_txt);
 	_divmsg.appendChild(_text);
 	setTimeout('MyHiddenDiv()', '2000');
@@ -152,12 +153,14 @@ function MyLoading(_txt) {
 	_img.className = "cachediv";
 
 	_img = document.getElementById('isrefresh' + _current_id);
-	_img.className = "ok";
+	_img.className = "displayAjaxResult";
+	
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
 	
 	var _text = document.createTextNode(_txt);
-	_divmsg.className = "msg_loading";
+//	_divmsg.className = "msg_loading";
+	_divmsg.className = "displayAjaxResult";
 	_divmsg.appendChild(_text);
 }
 
