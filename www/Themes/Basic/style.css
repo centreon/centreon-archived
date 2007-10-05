@@ -31,7 +31,7 @@ body{
 	border: 4px solid white; 
 	padding:3px; 
 	text-align: center;	
-	background-color:red; 
+	background-color:red;
 	color:white; 
 	margin:5px;}
 	
@@ -49,11 +49,10 @@ body{
 #header{
 	height:83px;
 	padding-left:20px;	
-	background: url("Images/bg_banner.gif") top repeat-x;}
+	background: url("Images/bg_banner.gif") top repeat-x;
+}
 
-#logo{
-	padding-top:20px;
-	}
+#logo	{padding-top:20px;}
 
 #logInfos{
 	float:right;}
@@ -160,11 +159,8 @@ hr{
 	padding:0px;
 	margin-bottom:-2px;}
 
-#legend{
-	display:none;
-	text-align:left;}
-#tabLegend{	
-	width:100%;}
+#legend			{display:none;text-align:left;}
+#tabLegend		{width:100%;}
 #tabLegend td{
 	background-color:#F7FAFF;
 	padding:2px;
@@ -327,4 +323,34 @@ display:none;
 }
 .arbo_d {
 display:none;
+}
+
+div.left_menu {
+	margin: 3px;
+	padding: 3px;
+	padding-bottom: 10px;
+	float: center;
+	background-color: #FFFFFF;
+	border: 1px #cccccc solid;
+	-moz-border-radius: 8px;
+}
+
+div.graph_footer {
+	margin: 3px;
+	padding: 3px;
+	width: 450px;
+	float: center;
+	background-color: #EEEEEE;
+	border: 1px #424242 solid;
+	-moz-border-radius: 4px;
+}
+
+div.displayAjaxResult {
+	width: 300px;
+	background-color: #FEF7DB;
+	border: 1px #FDC11E solid;
+	-moz-border-radius: 4px;
+	top:50px;
+	overflow: auto;
+	position: absolute;
 }

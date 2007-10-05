@@ -352,9 +352,15 @@ form{  padding-bottom:10px;}
 	border-style:solid;
 	border-bottom:none;
 }
+
 /*end tab*/
 
-#validForm input	{  font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    font-weight:normal;    text-align:left;}
+#validForm input	{  
+	font-family:Arial, Helvetica, Sans-Serif;
+	font-size:11px;
+	font-weight:normal;
+	text-align:left;
+}
 #validForm{
 	width:98%;
 	float:right;
@@ -379,18 +385,16 @@ form{  padding-bottom:10px;}
 }
 
 input[type="submit"],input[type="button"],input[type="reset"]{
-border-width : 1px;
-border-style: solid;
+	border-width : 1px;
+	border-style: solid;
 }
 
 input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
-border-width : 1px;	
-border-style: solid;
+	border-width : 1px;	
+	border-style: solid;
 }
 
-.cachediv {
-	display: none;
-}
+.cachediv {	display: none;}
 
 .consol_button{
 	float:left;
@@ -401,33 +405,10 @@ border-style: solid;
 	width:100%;
 }
 
-.Toolbar_TableTop{
-	width:100%;
-	margin-bottom:5px;
-}
-
-.Toolbar_TR_Top{
-	padding-left:10px;
-	margin-left:10px;
-}
-
-.Toolbar_TDSelectAction_Top{
-}
-
-
-.Toolbar_TableBottom{
-	margin-top:5px;
-	width:100%;
-
-}
-.Toolbar_TDSelectAction_Bottom{
-
-}
-
-
-.Toolbar_pagelimit{
-	text-align:right;
-}
-
-.Toolbar_pagination{
-}
+.Toolbar_TableTop{		width:100%;margin-bottom:5px;}
+.Toolbar_TR_Top{		padding-left:10px;margin-left:10px;}
+.Toolbar_TDSelectAction_Top{}
+.Toolbar_TableBottom{	margin-top:5px;width:100%;}
+.Toolbar_TDSelectAction_Bottom{}
+.Toolbar_pagelimit	{	text-align:right;}
+.Toolbar_pagination {}
