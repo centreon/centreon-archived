@@ -69,4 +69,8 @@ ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `service_service_id`
 ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `sc_id` ) REFERENCES `centreon`.`service_categories` (`sc_id`) ON DELETE CASCADE ;
 
 
+UPDATE `giv_graphs_template` SET `col_top` = NULL , `col_bot` = NULL;
+
+
+
 
