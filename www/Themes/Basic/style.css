@@ -316,13 +316,13 @@ div.update_output {
 	margin-left:20px;
 }
 .arbo_b {
-display:none;
+	display:none;
 }
 .arbo_c {
-display:none;
+	display:none;
 }
 .arbo_d {
-display:none;
+	display:none;
 }
 
 div.left_menu {
@@ -346,11 +346,13 @@ div.graph_footer {
 }
 
 div.displayAjaxResult {
-	width: 300px;
+	width: 200px;
 	background-color: #FEF7DB;
 	border: 1px #FDC11E solid;
 	-moz-border-radius: 4px;
 	top:50px;
+	text-align:center;
 	overflow: auto;
 	position: absolute;
+	marging-left: 550px;
 }
