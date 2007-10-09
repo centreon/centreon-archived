@@ -40,7 +40,7 @@ For information : contact@oreon-project.org
 	if(isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
 		submitPassiveCheck($lang);
 	
-	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT ndo_base_prefix,ndo_activate FROM general_opt LIMIT 1");
 	# Set base value
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	

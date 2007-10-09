@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-			
+
 	if (isset($_GET["host_name"]) && $_GET["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"]){
 		$host_name = $_GET["host_name"];
 		$svc_description = $_GET["service_description"];
@@ -29,6 +29,78 @@ For information : contact@oreon-project.org
 		$host_name = $tab_data[0];
 		$svc_description = $tab_data[1];
 	}
+
+	$tab_status = array();
+
+	if (isset($ndo) && $ndo){	
+		include_once("./DBndoConnect.php");
+
+		/* start ndo service info */
+		$rq ="SELECT " .
+				"nss.current_state," .
+				" nss.output as plugin_output," .
+				" nss.current_check_attempt as current_attempt," .
+				" nss.status_update_time as status_update_time," .
+				" unix_timestamp(nss.last_state_change) as last_state_change," .
+				" unix_timestamp(nss.last_check) as last_check," .
+				" nss.notifications_enabled," .
+				" unix_timestamp(nss.next_check) as next_check," .
+				" nss.problem_has_been_acknowledged," .
+				" nss.passive_checks_enabled," .
+				" nss.active_checks_enabled," .
+				" nss.event_handler_enabled," .
+				" nss.is_flapping," .
+				" nss.latency as check_latency," .
+				" nss.execution_time as check_execution_time," .
+				" nss.flap_detection_enabled," .
+				" unix_timestamp(nss.last_notification) as last_notification," .
+				" no.name1 as host_name," .
+				" no.name2 as service_description" .
+				" FROM ".$gopt["ndo_base_prefix"]."_servicestatus nss, ".$gopt["ndo_base_prefix"]."_objects no" .
+				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
+				
+		$DBRESULT_NDO =& $pearDBndo->query($rq);
+		if (PEAR::isError($DBRESULT_NDO))
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";	
+	
+		$tab_status_service = array();
+		$tab_status_service[0] = "OK";
+		$tab_status_service[1] = "WARNING";
+		$tab_status_service[2] = "CRITICAL";
+		$tab_status_service[3] = "UNKNOWN";
+		$tab_status_service[4] = "PENDING";
+	
+		while($DBRESULT_NDO->fetchInto($ndo))
+		{
+			if($ndo["service_description"] == $svc_description)
+				$service_status[$host_name."_".$svc_description]= $ndo;
+	
+			if (!isset($tab_status[$ndo["current_state"]]))
+				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
+			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
+		}
+	
+		$service_status[$host_name."_".$svc_description]["current_state"] = $tab_status_service[$service_status[$host_name."_".$svc_description]["current_state"]];
+		/* end ndo service info */
+	
+		/* start ndo host detail */
+		$tab_host_status[0] = "UP";
+		$tab_host_status[1] = "DOWN";
+		$tab_host_status[2] = "UNREACHABLE";
+		
+		$rq2 ="SELECT nhs.current_state" .
+				" FROM ".$gopt["ndo_base_prefix"]."_hoststatus nhs, ".$gopt["ndo_base_prefix"]."_objects no" .
+				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
+		$DBRESULT_NDO =& $pearDBndo->query($rq2);
+		if (PEAR::isError($DBRESULT_NDO))
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+		$DBRESULT_NDO->fetchInto($ndo2);
+		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
+		/* end ndo host detail */
+	}
+			
+			
+			
 	
 	if (!isset($_GET["service_description"]))
 		$_GET["service_description"] = $svc_description;
@@ -151,12 +223,13 @@ For information : contact@oreon-project.org
 		 $service_status[$host_name."_".$svc_description]["last_update"] = date($lang["date_time_format"], time());
 		!$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["is_flapping"]);
 		
-		$tab_status = array();
-		foreach ($tab_host_service[$host_name] as $key_name => $s){
-			if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
-				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
-			$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
-		}
+//		$tab_status = array();
+		if (isset($ndo) && $ndo)
+			foreach ($tab_host_service[$host_name] as $key_name => $s){
+				if (!isset($tab_status[$service_status[$host_name."_".$key_name]["current_state"]]))
+					$tab_status[$service_status[$host_name."_".$key_name]["current_state"]] = 0;
+				$tab_status[$service_status[$host_name."_".$key_name]["current_state"]]++;
+			}
 		$status = NULL;
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;

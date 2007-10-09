@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT ndo_base_prefix,ndo_activate FROM general_opt LIMIT 1");
 	# Set base value
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	
