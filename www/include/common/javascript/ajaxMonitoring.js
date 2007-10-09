@@ -629,9 +629,9 @@ function goM(_time_reload,_sid,_o){
 			// a partir d'ici je recupere les informations principales
 			var lines = reponse.getElementsByTagName("line");
 			var order =0;
-			if(lines.length > 0){
+//			if(lines.length > 0){
 				DelAllLine(0);
-			}
+//			}
 			for (var i = 0 ; i < lines.length ; i++)
 			{
 				var line = lines[i];
