@@ -846,4 +846,49 @@ $lang['sc_infos'] = "Informations de la cat&eacute;gorie";
 $lang[''] = "";
 $lang[''] = "";
 
+/* Ndo2db config file */
+
+$lang['ndo2db_infos'] = "ndo2db configuration";
+$lang['ndo2db_infos2'] = "ndo2db configuration de la base de donn&eacute;es";
+$lang['ndo2db_infos3'] = "ndo2db configuration de la r&eacute;tention des informations";
+$lang['n2db_decription'] = "Description";
+$lang['n2db_nagios_server'] = "Requ&ecirc;teur";
+$lang['n2db_socket_type'] = "Type de socket";
+$lang['n2db_socket_name'] = "Nom de la socket";
+$lang['n2db_tcp_port'] = "Port TCP";
+$lang['n2db_db_type'] = "Type de base de donn&eacute;es";
+$lang['n2db_db_host'] = "Host h&eacute;bergeant la base";
+$lang['n2db_db_name'] = "Nom de la base de donn&eacute;es";
+$lang['n2db_db_port'] = "Port d'&eacute;coute";
+$lang['n2db_db_prefix'] = "Pr&eacute;fixe";
+$lang['n2db_db_user'] = "Utilisateur";
+$lang['n2db_db_pass'] = "Mot de Passe";
+$lang['n2db_timedevents_age'] = "R&eacute;tention des &eacute;v&egrave;nements";
+$lang['n2db_systemcommands_age'] = "R&eacute;tention de l'historique des Commandes";
+$lang['n2db_servicechecks_age'] = "R&eacute;tention de l'historique des checks de services";
+$lang['n2db_hostchecks_age'] = "R&eacute;tention de l'historique des checks des hosts";
+$lang['n2db_eventhandlers_age'] = "R&eacute;tention de l'historique du gestionnaire d'&eacute;venements";
+$lang['activate'] = "Etat";
+$lang['n2db_general'] = "General";
+$lang['n2db_database'] = "DataBase";
+$lang['n2db_retention'] = "Retention";
+
+/* Ndomod */
+
+$lang['ndomod_infos'] = "";
+$lang["nmod_decription"] = "Description";
+$lang["nmod_nagios_server"] = "Requ&ecirc;teur";
+$lang["nmod_instance_name"] = "Nom de l'instance";
+$lang["nmod_output_type"] = "Type d'interface";
+$lang["nmod_output"] = "Cible";
+$lang["nmod_tcp_port"] = "Port TCP";
+$lang["nmod_output_buffer_items"] = "Taille du tampon de l'interface";
+$lang["nmod_file_rotation_interval"] = "Interval de rotation";
+$lang["nmod_file_rotation_command"] = "Command de rotation";
+$lang["nmod_file_rotation_timeout"] = "Timeout de rotation";
+$lang["nmod_reconnect_interval"] = "Interval de reconnexion";
+$lang["nmod_reconnect_warning_interval"] = "Interval de notification en cas de perte de connexion";
+$lang["nmod_data_processing_options"] = "Options d'execution";
+$lang["nmod_config_output_options"] = "Options de Sortie";
+
 ?>
