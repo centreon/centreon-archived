@@ -336,19 +336,19 @@ For information : contact@oreon-project.org
 
 			$hg = $tab["hg_name"];
 			$buffer .= '<hg>';
-			$buffer .= '<hgn>'. $tab["hg_name"]  .'</hgn>';
+			$buffer .= '<hgn><![CDATA['. $tab["hg_name"]  .']]></hgn>';
 		}
 		$buffer .= '<l class="'.$class.'">';
 		foreach ($tab["tab_svc"] as $svc => $state) {
 			$buffer .= '<svc>';
-			$buffer .= '<sn>'. $svc . '</sn>';
-			$buffer .= '<sc>'. $tab_color_service[$state] . '</sc>';
+			$buffer .= '<sn><![CDATA['. $svc . ']]></sn>';
+			$buffer .= '<sc><![CDATA['. $tab_color_service[$state] . ']]></sc>';
 			$buffer .= '</svc>';
 		}
 		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn>'. $host_name  . '</hn>';
-		$buffer .= '<hs>'. $tab_status_host[$tab["cs"]]  . '</hs>';
-		$buffer .= '<hc>'. $tab_color_host[$tab["cs"]]  . '</hc>';
+		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
+		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
+		$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
 		$buffer .= '</l>';
 	}
 	$buffer .= '</hg>';

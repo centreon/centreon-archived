@@ -32,6 +32,7 @@ function viewDebugInfo(_str){
 }
 
 function change_page(page_number){
+viewDebugInfo('change page');
 	_num = page_number;
 	monitoring_refresh();
 	pagination_changed();
@@ -94,35 +95,40 @@ function mk_img(_src, _alt)
 }
 
 function mk_pagination(resXML){
+viewDebugInfo('mk pagination');
+
 	var flag = 0;
 	var infos = resXML.getElementsByTagName("i");
 
-if(infos[0]){
-	var _nr = infos[0].getElementsByTagName("numrows")[0].firstChild.nodeValue;
-	var _nl = infos[0].getElementsByTagName("limit")[0].firstChild.nodeValue;
-	var _nn = infos[0].getElementsByTagName("num")[0].firstChild.nodeValue;
-
-	if(_numRows != _nr){
-		_numRows = _nr;
-		flag = 1;
-	}
-	if(_num != _nn){
-		_num = _nn;
-		flag = 1;
-	}
-	if(_limit != _nl){
-		_limit = _nl;
-		flag = 1;
-	}
-
-	if(flag == 1){
-	pagination_changed();	
-	}
+	if(infos[0]){
+		var _nr = infos[0].getElementsByTagName("numrows")[0].firstChild.nodeValue;
+		var _nl = infos[0].getElementsByTagName("limit")[0].firstChild.nodeValue;
+		var _nn = infos[0].getElementsByTagName("num")[0].firstChild.nodeValue;
 	
-}
+		if(_numRows != _nr){
+			_numRows = _nr;
+			flag = 1;
+		}
+		if(_num != _nn){
+			_num = _nn;
+			flag = 1;
+		}
+		if(_limit != _nl){
+			_limit = _nl;
+			flag = 1;
+		}
+	
+		if(flag == 1){
+		pagination_changed();	
+		}
+		
+	}
 }
 
 function pagination_changed(){
+viewDebugInfo('pagination_changed');
+
+
 	var page_max =  Math.round( (_numRows / _limit) + 0.5);
 	if (_num >= page_max && _numRows)
 	{
@@ -244,8 +250,6 @@ function escapeURI(La){
 }
 
 function mainLoop(){
-//	set_header_title();
-
   _currentInputFieldValue = document.getElementById('input_search').value;
   if( (_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue!=_currentInputFieldValue){
     var valeur=escapeURI(_currentInputFieldValue);

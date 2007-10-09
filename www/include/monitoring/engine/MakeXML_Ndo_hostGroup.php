@@ -327,24 +327,24 @@ For information : contact@oreon-project.org
 */
 				$buffer .= '<l class="'.$class.'">';
 		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn>'. $ndo["hostgroup_name"]  . '</hn>';
-		$buffer .= '<hu>'. $nb_host_up  . '</hu>';
-		$buffer .= '<huc>'. $tab_color_host[0]  . '</huc>';
-		$buffer .= '<hd>'. $nb_host_down  . '</hd>';
-		$buffer .= '<hdc>'. $tab_color_host[1]  . '</hdc>';
-		$buffer .= '<hur>'. $nb_host_unreachable  . '</hur>';
-		$buffer .= '<hurc>'. $tab_color_host[2]  . '</hurc>';
+		$buffer .= '<hn><![CDATA['. $ndo["hostgroup_name"]  . ']]></hn>';
+		$buffer .= '<hu><![CDATA['. $nb_host_up  . ']]></hu>';
+		$buffer .= '<huc><![CDATA['. $tab_color_host[0]  . ']]></huc>';
+		$buffer .= '<hd><![CDATA['. $nb_host_down  . ']]></hd>';
+		$buffer .= '<hdc><![CDATA['. $tab_color_host[1]  . ']]></hdc>';
+		$buffer .= '<hur><![CDATA['. $nb_host_unreachable  . ']]></hur>';
+		$buffer .= '<hurc><![CDATA['. $tab_color_host[2]  . ']]></hurc>';
 
-		$buffer .= '<sk>'. $nb_service_k  . '</sk>';
-		$buffer .= '<skc>'. $tab_color_service[0]  . '</skc>';
-		$buffer .= '<sw>'. $nb_service_w  . '</sw>';
-		$buffer .= '<swc>'. $tab_color_service[1]  . '</swc>';
-		$buffer .= '<sc>'. $nb_service_c  . '</sc>';
-		$buffer .= '<scc>'. $tab_color_service[2]  . '</scc>';
-		$buffer .= '<su>'. $nb_service_u  . '</su>';
-		$buffer .= '<suc>'. $tab_color_service[3]  . '</suc>';
-		$buffer .= '<sp>'. $nb_service_p  . '</sp>';
-		$buffer .= '<spc>'. $tab_color_service[4]  . '</spc>';
+		$buffer .= '<sk><![CDATA['. $nb_service_k  . ']]></sk>';
+		$buffer .= '<skc><![CDATA['. $tab_color_service[0]  . ']]></skc>';
+		$buffer .= '<sw><![CDATA['. $nb_service_w  . ']]></sw>';
+		$buffer .= '<swc><![CDATA['. $tab_color_service[1]  . ']]></swc>';
+		$buffer .= '<sc><![CDATA['. $nb_service_c  . ']]></sc>';
+		$buffer .= '<scc><![CDATA['. $tab_color_service[2]  . ']]></scc>';
+		$buffer .= '<su><![CDATA['. $nb_service_u  . ']]></su>';
+		$buffer .= '<suc><![CDATA['. $tab_color_service[3]  . ']]></suc>';
+		$buffer .= '<sp><![CDATA['. $nb_service_p  . ']]></sp>';
+		$buffer .= '<spc><![CDATA['. $tab_color_service[4]  . ']]></spc>';
 		$buffer .= '</l>';
 	}
 	/* end */

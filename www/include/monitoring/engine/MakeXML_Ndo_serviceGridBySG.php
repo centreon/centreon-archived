@@ -319,8 +319,8 @@ For information : contact@oreon-project.org
 
 			$sg = $tab["alias"];
 			$buffer .= '<sg class="'.$class.'">';
-			$buffer .= '<sgn>'. $tab["alias"]  .'</sgn>';
-			$buffer .= '<o>'. $ct . '</o>';
+			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
+			$buffer .= '<o><![CDATA['. $ct . ']]></o>';
 		}
 		$ct++;
 
@@ -330,16 +330,16 @@ For information : contact@oreon-project.org
 			$flag = 1;
 			$h = $tab["host_name"];
 			$buffer .= '<h>';
-			$buffer .= '<hn>'. $tab["host_name"]  . '</hn>';
-			$buffer .= '<hs>'. $tab_status_host[$tab["current_state"]]  . '</hs>';
-			$buffer .= '<hc>'. $tab_color_host[$tab["current_state"]]  . '</hc>';
+			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
+			$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["current_state"]]  . ']]></hs>';
+			$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["current_state"]]  . ']]></hc>';
 		}
 
 
 
 		$buffer .= '<svc>';
-		$buffer .= '<sn>'. $tab["service_description"] . '</sn>';
-		$buffer .= '<sc>'. $tab_color_service[$tab["current_state"]] . '</sc>';
+		$buffer .= '<sn><![CDATA['. $tab["service_description"] . ']]></sn>';
+		$buffer .= '<sc><![CDATA['. $tab_color_service[$tab["current_state"]] . ']]></sc>';
 		$buffer .= '</svc>';
 
 

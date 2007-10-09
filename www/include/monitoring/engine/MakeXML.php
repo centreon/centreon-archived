@@ -229,7 +229,7 @@ For information : contact@oreon-project.org
 					$buffer .= '<host_color>'.$color_host.'</host_color>';
 					$buffer .= '<host_name>'. $svc["host_name"] . '</host_name>';
 					$buffer .= '<host_status>'. $host_status[$svc["host_name"]]["current_state"]  . '</host_status>';///
-					$buffer .= '<service_description>'. $svc["service_description"] . '</service_description>';
+					$buffer .= '<service_description><![CDATA['. $svc["service_description"] . ']]></service_description>';
 					$buffer .= '<service_color>'.$color_service.'</service_color>';
 					$buffer .= '<current_state>'. $svc["current_state"] . '</current_state>';
 					$buffer .= '<plugin_output>' . $plugin_output . '</plugin_output>';

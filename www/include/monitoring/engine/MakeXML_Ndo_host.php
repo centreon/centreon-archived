@@ -266,21 +266,21 @@ For information : contact@oreon-project.org
 		$host_status[$ndo["host_name"]] = $ndo;
 		$buffer .= '<l class="'.$class.'">';
 		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hc>'. $color_host . '</hc>';
-		$buffer .= '<f>'. $flag . '</f>';
-		$buffer .= '<hn>'. $ndo["host_name"]  . '</hn>';
-		$buffer .= '<a>'. $ndo["address"]  . '</a>';
-		$buffer .= '<ou>'. $ndo["output"]  . '</ou>';
-		$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"])  . '</lc>';
-		$buffer .= '<cs>'. $tab_status_host[$ndo["current_state"]] . '</cs>';
-        $buffer .= '<pha>'. $ndo["problem_has_been_acknowledged"] .'</pha>';
-        $buffer .= '<pce>'.$ndo["passive_checks_enabled"] .'</pce>';
-        $buffer .= '<ace>'.$ndo["active_checks_enabled"] .'</ace>';
-        $buffer .= '<lsc>'.$duration.'</lsc>';
-        $buffer .= '<ha>'.$ndo["problem_has_been_acknowledged"]  .'</ha>';///
-        $buffer .= '<hae>'.$ndo["active_checks_enabled"] .'</hae>';///
-        $buffer .= '<hpe>'.$ndo["passive_checks_enabled"]  .'</hpe>';///
-		$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
+		$buffer .= '<hc><![CDATA['. $color_host . ']]></hc>';
+		$buffer .= '<f><![CDATA['. $flag . ']]></f>';
+		$buffer .= '<hn><![CDATA['. $ndo["host_name"]  . ']]></hn>';
+		$buffer .= '<a><![CDATA['. $ndo["address"]  . ']]></a>';
+		$buffer .= '<ou><![CDATA['. $ndo["output"]  . ']]></ou>';
+		$buffer .= '<lc><![CDATA['. date($date_time_format_status, $ndo["last_check"])  . ']]></lc>';
+		$buffer .= '<cs><![CDATA['. $tab_status_host[$ndo["current_state"]] . ']]></cs>';
+        $buffer .= '<pha><![CDATA['. $ndo["problem_has_been_acknowledged"] .']]></pha>';
+        $buffer .= '<pce><![CDATA['.$ndo["passive_checks_enabled"] .']]></pce>';
+        $buffer .= '<ace><![CDATA['.$ndo["active_checks_enabled"] .']]></ace>';
+        $buffer .= '<lsc><![CDATA['.$duration.']]></lsc>';
+        $buffer .= '<ha><![CDATA['.$ndo["problem_has_been_acknowledged"]  .']]></ha>';///
+        $buffer .= '<hae><![CDATA['.$ndo["active_checks_enabled"] .']]></hae>';///
+        $buffer .= '<hpe><![CDATA['.$ndo["passive_checks_enabled"]  .']]></hpe>';///
+		$buffer .= '<ne><![CDATA['. $ndo["notifications_enabled"] . ']]></ne>';
 		$buffer .= '</l>';
 	}
 	/* end */

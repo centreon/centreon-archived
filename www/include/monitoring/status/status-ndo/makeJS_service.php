@@ -63,11 +63,13 @@ function set_header_title(){
 	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
 
 	if(document.getElementById('host_name')){
+
+viewDebugInfo('title start ok');
+
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
 		
 		var h = document.getElementById('service_description');
 		h.innerHTML = '<?=$lang['m_mon_services']?>';
@@ -110,7 +112,9 @@ function set_header_title(){
 		_linkaction_asc.href = '#' ;
 		_linkaction_asc.onclick=function(){change_order()};
 		h.appendChild(_linkaction_asc);
+
 	}
+
 }
 
 
@@ -156,31 +160,37 @@ function initM(_time_reload,_sid,_o){
 		_divdebug.appendChild(_debugtable);
 		_header = document.getElementById('header');
 		_header.appendChild(_divdebug);
-//		viewDebugInfo('--INIT Debug--');
 	}
 
 	if(_first){
 		mainLoop();
 		_first = 0;
 	}
-
 	_time=<?=$time?>;
-	
 	if(_on)
 	goM(_time_reload,_sid,_o);
 }
 
 function goM(_time_reload,_sid,_o){
+
 	_lock = 1;
 	var proc = new Transformation();
 	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_service.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p;
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
+
+
 	_lock = 0;	
+
+	viewDebugInfo('--end--');
+
+
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
-	_on = 1;	
+	_on = 1;
+	
+	
 	set_header_title();
 }
 </SCRIPT>

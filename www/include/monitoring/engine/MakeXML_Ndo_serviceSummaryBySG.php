@@ -323,7 +323,7 @@ For information : contact@oreon-project.org
 			}
 			$sg = $tab["alias"];
 			$buffer .= '<sg class="'.$class.'">';
-			$buffer .= '<sgn>'. $tab["alias"]  .'</sgn>';
+			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
 			$buffer .= '<o>'. $ct . '</o>';
 		}
 		$ct++;
@@ -348,9 +348,9 @@ For information : contact@oreon-project.org
 			$nb_service[3] = 0;
 
 			$buffer .= '<h>';
-			$buffer .= '<hn>'. $tab["host_name"]  . '</hn>';
-			$buffer .= '<hs>'. $tab_status_host[$tab["current_state"]]  . '</hs>';
-			$buffer .= '<hc>'. $tab_color_host[$tab["current_state"]]  . '</hc>';
+			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
+			$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["current_state"]]  . ']]></hs>';
+			$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["current_state"]]  . ']]></hc>';
 
 
 		}

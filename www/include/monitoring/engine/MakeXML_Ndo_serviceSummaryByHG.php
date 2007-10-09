@@ -320,26 +320,26 @@ For information : contact@oreon-project.org
 
 			$hg = $tab["hg_name"];
 			$buffer .= '<hg>';
-			$buffer .= '<hgn>'. $tab["hg_name"]  .'</hgn>';
+			$buffer .= '<hgn><![CDATA['. $tab["hg_name"]  .']]></hgn>';
 		}
 		$buffer .= '<l class="'.$class.'">';
 
-		$buffer .= '<sk>'. $tab["nb_service_k"]  . '</sk>';
-		$buffer .= '<skc>'. $tab_color_service[0]  . '</skc>';
-		$buffer .= '<sw>'. $tab["nb_service_w"]  . '</sw>';
-		$buffer .= '<swc>'. $tab_color_service[1]  . '</swc>';
-		$buffer .= '<sc>'. $tab["nb_service_c"]  . '</sc>';
-		$buffer .= '<scc>'. $tab_color_service[2]  . '</scc>';
-		$buffer .= '<su>'. $tab["nb_service_u"]  . '</su>';
-		$buffer .= '<suc>'. $tab_color_service[3]  . '</suc>';
-		$buffer .= '<sp>'. $tab["nb_service_p"]  . '</sp>';
-		$buffer .= '<spc>'. $tab_color_service[4]  . '</spc>';
+		$buffer .= '<sk><![CDATA['. $tab["nb_service_k"]  . ']]></sk>';
+		$buffer .= '<skc><![CDATA['. $tab_color_service[0]  . ']]></skc>';
+		$buffer .= '<sw><![CDATA['. $tab["nb_service_w"]  . ']]></sw>';
+		$buffer .= '<swc><![CDATA['. $tab_color_service[1]  . ']]></swc>';
+		$buffer .= '<sc><![CDATA['. $tab["nb_service_c"]  . ']]></sc>';
+		$buffer .= '<scc><![CDATA['. $tab_color_service[2]  . ']]></scc>';
+		$buffer .= '<su><![CDATA['. $tab["nb_service_u"]  . ']]></su>';
+		$buffer .= '<suc><![CDATA['. $tab_color_service[3]  . ']]></suc>';
+		$buffer .= '<sp><![CDATA['. $tab["nb_service_p"]  . ']]></sp>';
+		$buffer .= '<spc><![CDATA['. $tab_color_service[4]  . ']]></spc>';
 
 
 		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<hn>'. $host_name  . '</hn>';
-		$buffer .= '<hs>'. $tab_status_host[$tab["cs"]]  . '</hs>';
-		$buffer .= '<hc>'. $tab_color_host[$tab["cs"]]  . '</hc>';
+		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
+		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
+		$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["cs"]]  . ']]></hc>';
 		$buffer .= '</l>';
 	}
 	$buffer .= '</hg>';

@@ -356,8 +356,10 @@ viewDebugInfo('---->' + document.all[xsltID].readyState);
                         var out = new XMLSerializer().serializeToString(resultDoc);
                         callback(t);
                         mk_pagination(xmlDoc);
+                        
 						if(out)
 						 document.getElementById(target).innerHTML = out;
+                       	set_header_title();
 
                     }
                     else {
@@ -367,6 +369,7 @@ viewDebugInfo('---->' + document.all[xsltID].readyState);
                        	mk_pagination(xmlDoc);
                         document.getElementById(target).innerHTML = '';
                         document.getElementById(target).appendChild(resultDoc);
+                       	set_header_title();
                     }
                     transformed = true;
                 }
