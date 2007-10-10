@@ -121,12 +121,14 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){
 
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
+		writeLogFile($valueRecorded."\n");
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
 		if (-w $_[0].$_[1].".rrd"){
 			$metric_used_by_perfdata_parsor = $_[1];
-			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+			writeLogFile($_[0].$_[1].".rrd --template ".substr($_[6], 0, 19) ." - ". $_[2].":".sprintf("%e", $_[3])."\n");
+			RRDs::update($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$metric_used_by_perfdata_parsor = 0;
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
