@@ -237,7 +237,8 @@ For information : contact@oreon-project.org
 			" FROM " .$general_opt["ndo_base_prefix"]."_hostgroups hg," .$general_opt["ndo_base_prefix"]."_hostgroup_members hgm, " .$general_opt["ndo_base_prefix"]."_hoststatus hs, " .$general_opt["ndo_base_prefix"]."_objects no".
 			" WHERE hs.host_object_id = hgm.host_object_id".
 			" AND no.object_id = hgm.host_object_id" .
-			" AND hgm.hostgroup_id = hg.hostgroup_id";
+			" AND hgm.hostgroup_id = hg.hostgroup_id".
+			" AND no.name1 not like 'OSL_Module'";
 
 	if($o == "svcSumHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
@@ -313,6 +314,12 @@ For information : contact@oreon-project.org
 	$hg = "";
 	foreach($tab_final as $host_name => $tab)
 	{
+		if($class == "list_one")
+			$class = "list_two";
+		else
+			$class = "list_one";
+
+
 		if($hg != $tab["hg_name"]){
 
 			if($hg != "")

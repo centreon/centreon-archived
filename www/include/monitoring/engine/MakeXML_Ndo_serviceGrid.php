@@ -178,7 +178,8 @@ For information : contact@oreon-project.org
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `ndo_servicestatus` nss, `ndo_objects` no" .
-				" WHERE no.object_id = nss.service_object_id" ;
+				" WHERE no.object_id = nss.service_object_id".
+			" AND no.name1 not like 'OSL_Module'";
 
 		if($o == "svcgrid_pb" || $o == "svcOV_pb")
 			$rq .= " AND nss.current_state != 0" ;
@@ -240,7 +241,8 @@ For information : contact@oreon-project.org
 			" no.name1 as host_name," .
 			" nhs.current_state" .
 			" FROM " .$general_opt["ndo_base_prefix"]."_objects no, " .$general_opt["ndo_base_prefix"]."_hoststatus nhs " .
-			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ";
+			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
+			" AND no.name1 not like 'OSL_Module'";
 
 
 	if($o == "svcgrid_pb" || $o == "svcOV_pb")

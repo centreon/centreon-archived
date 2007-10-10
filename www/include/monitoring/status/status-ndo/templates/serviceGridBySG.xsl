@@ -77,7 +77,12 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="sc"/>;
     						</xsl:attribute>
+
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hn"/>&amp;service_description=<xsl:value-of select="sn"/></xsl:attribute>
 						<xsl:value-of select="sn"/>
+					</xsl:element>
+
 						</span>
 						&nbsp;						
 					</xsl:for-each>

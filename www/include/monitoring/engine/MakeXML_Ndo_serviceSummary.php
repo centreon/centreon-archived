@@ -189,7 +189,8 @@ For information : contact@oreon-project.org
 		" IN (".		
 		" SELECT nno.object_id".
 		" FROM " .$general_opt["ndo_base_prefix"]."_objects nno".
-		" WHERE nno.objecttype_id =2".
+		" WHERE nno.objecttype_id = 2 ".
+			" AND nno.name1 not like 'OSL_Module'".
 		" AND nno.name1 = '".$host_name."'".
 		" )";
 					
@@ -232,7 +233,8 @@ For information : contact@oreon-project.org
 			" no.name1 as host_name," .
 			" nhs.current_state" .
 			" FROM " .$general_opt["ndo_base_prefix"]."_objects no, " .$general_opt["ndo_base_prefix"]."_hoststatus nhs " .
-			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ";
+			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
+			" AND no.name1 not like 'OSL_Module'";
 
 
 	if($o == "svcSum_pb")

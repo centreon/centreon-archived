@@ -128,8 +128,17 @@ viewDebugInfo('mk pagination');
 function pagination_changed(){
 viewDebugInfo('pagination_changed');
 
+	var page_max = 0;// Math.round( (_numRows / _limit) + 0.5);
 
-	var page_max =  Math.round( (_numRows / _limit) + 0.5);
+if((_numRows % _limit) == 0)
+{
+	page_max =  Math.round( (_numRows / _limit));
+	
+}
+else{
+	page_max =  Math.round( (_numRows / _limit) + 0.5);
+}
+
 	if (_num >= page_max && _numRows)
 	{
 		viewDebugInfo(page_max);

@@ -177,6 +177,7 @@ For information : contact@oreon-project.org
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$general_opt["ndo_base_prefix"]."_servicestatus` nss, `" .$general_opt["ndo_base_prefix"]."_objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
+			" AND no.name1 not like 'OSL_Module'";
 
 		if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 			$rq .= " AND nss.current_state != 0" ;
@@ -311,18 +312,23 @@ For information : contact@oreon-project.org
 
 	while($DBRESULT_NDO1->fetchInto($tab))
 	{
+		if($class == "list_one")
+			$class = "list_two";
+		else
+			$class = "list_one";
 
 		if($sg != $tab["alias"]){
 			$flag = 0;
 			if($sg != ""){
-				$buffer .= '<sw color="'.$tab_color_service[0].'">'.$nb_service[0].'</sw>';
-				$buffer .= '<sc color="'.$tab_color_service[1].'">'.$nb_service[1].'</sc>';
-				$buffer .= '<su color="'.$tab_color_service[2].'">'.$nb_service[2].'</su>';
-				$buffer .= '<sp color="'.$tab_color_service[3].'">'.$nb_service[3].'</sp>';
+				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
+				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
+				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
+				$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
+				$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
 				$buffer .= '</h></sg>';
 			}
 			$sg = $tab["alias"];
-			$buffer .= '<sg class="'.$class.'">';
+			$buffer .= '<sg >';
 			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
 			$buffer .= '<o>'. $ct . '</o>';
 		}
@@ -331,10 +337,11 @@ For information : contact@oreon-project.org
 
 		if($h != $tab["host_name"]){
 			if($h != "" && $flag){
-				$buffer .= '<sw color="'.$tab_color_service[0].'">'.$nb_service[0].'</sw>';
-				$buffer .= '<sc color="'.$tab_color_service[1].'">'.$nb_service[1].'</sc>';
-				$buffer .= '<su color="'.$tab_color_service[2].'">'.$nb_service[2].'</su>';
-				$buffer .= '<sp color="'.$tab_color_service[3].'">'.$nb_service[3].'</sp>';
+				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
+				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
+				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
+				$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
+				$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
 
 				$buffer .= '</h>';
 
@@ -346,8 +353,9 @@ For information : contact@oreon-project.org
 			$nb_service[1] = 0;
 			$nb_service[2] = 0;
 			$nb_service[3] = 0;
+			$nb_service[4] = 0;
 
-			$buffer .= '<h>';
+			$buffer .= '<h class="'.$class.'">';
 			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
 			$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["current_state"]]  . ']]></hs>';
 			$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["current_state"]]  . ']]></hc>';
@@ -367,10 +375,11 @@ For information : contact@oreon-project.org
 
 	}
 	if($sg != ""){
-		$buffer .= '<sw color="'.$tab_color_service[0].'">'.$nb_service[0].'</sw>';
-		$buffer .= '<sc color="'.$tab_color_service[1].'">'.$nb_service[1].'</sc>';
-		$buffer .= '<su color="'.$tab_color_service[2].'">'.$nb_service[2].'</su>';
-		$buffer .= '<sp color="'.$tab_color_service[3].'">'.$nb_service[3].'</sp>';
+				$buffer .= '<sk color="'.$tab_color_service[0].'">'.$nb_service[0].'</sk>';
+				$buffer .= '<sw color="'.$tab_color_service[1].'">'.$nb_service[1].'</sw>';
+				$buffer .= '<sc color="'.$tab_color_service[2].'">'.$nb_service[2].'</sc>';
+				$buffer .= '<su color="'.$tab_color_service[3].'">'.$nb_service[3].'</su>';
+				$buffer .= '<sp color="'.$tab_color_service[4].'">'.$nb_service[4].'</sp>';
 		$buffer .= '</h></sg>';
 	}	
 /*

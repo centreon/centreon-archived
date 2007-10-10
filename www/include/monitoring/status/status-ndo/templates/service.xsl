@@ -106,7 +106,7 @@
     				</xsl:attribute>
 					<xsl:value-of select="cs"/>
 				</td>
-				<td class="ListColRight">
+				<td class="ListColRight" style="white-space:nowrap;">
 					<xsl:value-of select="d"/>
 				</td>
 	            <td class="ListColRight">

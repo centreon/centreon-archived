@@ -83,6 +83,10 @@ For information : contact@oreon-project.org
 		$search = htmlentities($_GET["search"]);
 	}else
 		$search = "";
+	if(isset($_GET["host_name"]) && !check_injection($_GET["host_name"])){
+		$host_name = htmlentities($_GET["host_name"]);
+	}else
+		$host_name = "";
 	if(isset($_GET["search_type_host"]) && !check_injection($_GET["search_type_host"])){
 		$search_type_host = htmlentities($_GET["search_type_host"]);
 	}else
@@ -240,7 +244,13 @@ For information : contact@oreon-project.org
 			" no.name1 as host_name," .
 			" no.name2 as service_description" .
 			" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
-			" WHERE no.object_id = nss.service_object_id";
+			" WHERE no.object_id = nss.service_object_id".
+			" AND no.name1 not like 'OSL_Module'";
+
+	if($host_name != ""){
+		$rq .= " AND no.name1 like '%" . $host_name . "%'  ";
+	}
+	
 
 	if($search_type_host && $search_type_service && $search){
 		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
@@ -344,23 +354,23 @@ For information : contact@oreon-project.org
 
 		$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 		$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
-		$buffer .= '<sc><![CDATA['.$color_service.']]></sc>';
-		$buffer .= '<cs><![CDATA['. $tab_status_svc[$ndo["current_state"]].']]></cs>';
+		$buffer .= '<sc>'.$color_service.'</sc>';
+		$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 		$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
-		$buffer .= '<ca><![CDATA['. $ndo["current_attempt"] . ']]></ca>';
-		$buffer .= '<ne><![CDATA['. $ndo["notifications_enabled"] . ']]></ne>';
-		$buffer .= '<pa><![CDATA['. $ndo["problem_has_been_acknowledged"] . ']]></pa>';
-		$buffer .= '<pc><![CDATA['. $passive . ']]></pc>';
-		$buffer .= '<ac><![CDATA['. $active . ']]></ac>';
-		$buffer .= '<eh><![CDATA['. $ndo["event_handler_enabled"] . ']]></eh>';
-		$buffer .= '<is><![CDATA['. $ndo["is_flapping"] . ']]></is>';
-		$buffer .= '<fd><![CDATA['. $ndo["flap_detection_enabled"] . ']]></fd>';
-        $buffer .= '<ha><![CDATA['.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .']]></ha>';///
-        $buffer .= '<hae><![CDATA['.$host_status[$ndo["host_name"]]["active_checks_enabled"] .']]></hae>';///
-        $buffer .= '<hpe><![CDATA['.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .']]></hpe>';///
+		$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
+		$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
+		$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
+		$buffer .= '<pc>'. $passive . '</pc>';
+		$buffer .= '<ac>'. $active . '</ac>';
+		$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
+		$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
+		$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
+        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';///
+        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';///
+        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';///
 //		$buffer .= '<lsc>'. $ndo["last_state_change"] . '</lsc>';
-		$buffer .= '<lc><![CDATA['. date($date_time_format_status, $ndo["last_check"]) . ']]></lc>';
-		$buffer .= '<d><![CDATA['. $duration . ']]></d>';
+		$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
+		$buffer .= '<d>'. $duration . '</d>';
 		$buffer .= '</l>';
 	}
 	/* end */

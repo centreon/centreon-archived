@@ -311,6 +311,10 @@ For information : contact@oreon-project.org
 
 	while($DBRESULT_NDO1->fetchInto($tab))
 	{
+		if($class == "list_one")
+			$class = "list_two";
+		else
+			$class = "list_one";
 
 		if($sg != $tab["alias"]){
 			$flag = 0;
@@ -318,7 +322,7 @@ For information : contact@oreon-project.org
 				$buffer .= '</h></sg>';
 
 			$sg = $tab["alias"];
-			$buffer .= '<sg class="'.$class.'">';
+			$buffer .= '<sg>';
 			$buffer .= '<sgn><![CDATA['. $tab["alias"]  .']]></sgn>';
 			$buffer .= '<o><![CDATA['. $ct . ']]></o>';
 		}
@@ -329,7 +333,7 @@ For information : contact@oreon-project.org
 				$buffer .= '</h>';
 			$flag = 1;
 			$h = $tab["host_name"];
-			$buffer .= '<h>';
+			$buffer .= '<h class="'.$class.'">';
 			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
 			$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["current_state"]]  . ']]></hs>';
 			$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["current_state"]]  . ']]></hc>';
@@ -342,7 +346,7 @@ For information : contact@oreon-project.org
 		$buffer .= '<sc><![CDATA['. $tab_color_service[$tab["current_state"]] . ']]></sc>';
 		$buffer .= '</svc>';
 
-
+	
 	}
 	if($sg != "")
 		$buffer .= '</h></sg>';

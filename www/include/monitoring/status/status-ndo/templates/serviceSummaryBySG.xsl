@@ -78,7 +78,11 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="sk/@color" />
     						</xsl:attribute>
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?o=svc_ok&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 							<xsl:value-of select="sk"/>OK
+					</xsl:element>
+
 						</span>&nbsp;
 					</xsl:if>
 
@@ -88,7 +92,10 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="sw/@color" />
     						</xsl:attribute>
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?o=svc_warning&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:value-of select="sw"/>WARNING
+					</xsl:element>
 						</span>&nbsp;
 					</xsl:if>
 					<xsl:if test="sc >= 1">
@@ -96,7 +103,10 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="sc/@color" />
     						</xsl:attribute>
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?o=svc_critical&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:value-of select="sc"/>CRITICAL
+					</xsl:element>
 						</span>&nbsp;
 					</xsl:if>
 					<xsl:if test="su >= 1">
@@ -104,7 +114,10 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="su/@color" />
     						</xsl:attribute>
-						<xsl:value-of select="su"/>CRITICAL
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?o=svc_unknown&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+						<xsl:value-of select="su"/>UNKNOWN
+					</xsl:element>
 						</span>&nbsp;
 					</xsl:if>
 					<xsl:if test="sp >= 1">
@@ -112,7 +125,10 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="sp/@color" />
     						</xsl:attribute>
+					<xsl:element name="a">
+					  	<xsl:attribute name="href">oreon.php?o=svc_pending&amp;p=2020202&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:value-of select="sp"/>PENDING
+					</xsl:element>
 						</span>
 					</xsl:if>
 
