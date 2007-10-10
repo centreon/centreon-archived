@@ -86,12 +86,26 @@ For information : contact@oreon-project.org
 			" nhs.active_checks_enabled," .
 			" nhs.notifications_enabled," .
 			" nhs.state_type," .
+			" nhs.execution_time as check_execution_time," .
+			" nhs.latency as check_latency," .
+			" nhs.perfdata as performance_data," .
+			" nhs.current_check_attempt as current_attempt," .
+			" nhs.state_type," .
+			" nhs.check_type," .
+			" unix_timestamp(nhs.last_notification) as last_notification," .
+			" unix_timestamp(nhs.next_notification) as next_notification," .
 			" nhs.is_flapping," .
+			" nhs.flap_detection_enabled," .
+			" nhs.event_handler_enabled," .
+			" nhs.obsess_over_host,".
+			" nhs.current_notification_number," .
+			" nhs.percent_state_change," .
+			" nhs.scheduled_downtime_depth," .
 			" unix_timestamp(nhs.last_state_change) as last_state_change," .
-			" nhs.output," .
+			" nhs.output as plugin_output," .
 			" unix_timestamp(nhs.last_check) as last_check," .
-				" unix_timestamp(nhs.last_notification) as last_notification," .
-				" unix_timestamp(nhs.next_check) as next_check," .
+			" unix_timestamp(nhs.last_notification) as last_notification," .
+			" unix_timestamp(nhs.next_check) as next_check," .
 			" nh.address," .
 			" no.name1 as host_name" .
 			" FROM ".$gopt["ndo_base_prefix"]."_hoststatus nhs, ".$gopt["ndo_base_prefix"]."_objects no, ".$gopt["ndo_base_prefix"]."_hosts nh " .
@@ -176,6 +190,7 @@ For information : contact@oreon-project.org
 		$en_disable = array("1" => $lang ["m_mon_enabled"], "0" => $lang ["m_mon_disabled"]);
 
 		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
+
 
 		$host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
 		$host_status[$host_name]["last_check"] = date($lang["date_time_format"], $host_status[$host_name]["last_check"]);

@@ -49,7 +49,14 @@ For information : contact@oreon-project.org
 				" nss.passive_checks_enabled," .
 				" nss.active_checks_enabled," .
 				" nss.event_handler_enabled," .
+				" nss.perfdata as performance_data," .
 				" nss.is_flapping," .
+				" nss.scheduled_downtime_depth," .
+				" nss.percent_state_change," .
+				" nss.current_notification_number," .				
+				" nss.obsess_over_service," .
+				" nss.check_type," .
+				" nss.state_type," .
 				" nss.latency as check_latency," .
 				" nss.execution_time as check_execution_time," .
 				" nss.flap_detection_enabled," .

@@ -79,7 +79,7 @@
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_next_notification}</td>
-						<td class="ListColLeft">{$host_data.next_notification}</td>
+						<td class="ListColLeft">{if ($host_data.next_notification == 0)} N/A {else}{$host_data.next_notification}{/if}</td>
 					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft">{$lang.m_mon_notification_nb}</td>
