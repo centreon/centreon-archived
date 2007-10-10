@@ -245,7 +245,9 @@ For information : contact@oreon-project.org
 			" no.name2 as service_description" .
 			" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
-			" AND no.name1 not like 'OSL_Module'";
+			" AND no.name1 not like 'OSL_Module'".
+			" AND no.is_active = 0";
+//			" AND no.instance_id = 1";
 
 	if($host_name != ""){
 		$rq .= " AND no.name1 like '%" . $host_name . "%'  ";
@@ -314,64 +316,67 @@ For information : contact@oreon-project.org
 	$class = "list_one";
 	while($DBRESULT_NDO->fetchInto($ndo))
 	{
-		$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
-		$color_service = $tab_color_service[$ndo["current_state"]];
-		$passive = 0;
-		$active = 1;
-		$last_check = " ";
-		$duration = " ";
-		if($ndo["last_state_change"] > 0)
-			$duration = Duration::toString(time() - $ndo["last_state_change"]);
-
-		if($class == "list_one")
-			$class = "list_two";
-		else
-			$class = "list_one";
-
-		if($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
-			if($ndo["problem_has_been_acknowledged"] == 1)
-				$class = "list_four";
+		if( isset($host_status[$ndo["host_name"]]) )
+		{	
+			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
+			$color_service = $tab_color_service[$ndo["current_state"]];
+			$passive = 0;
+			$active = 1;
+			$last_check = " ";
+			$duration = " ";
+			if($ndo["last_state_change"] > 0)
+				$duration = Duration::toString(time() - $ndo["last_state_change"]);
+	
+			if($class == "list_one")
+				$class = "list_two";
 			else
-				$class = "list_down";
-		}else{
-			if( $ndo["problem_has_been_acknowledged"] == 1)
-				$class = "list_four";
+				$class = "list_one";
+	
+			if($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
+				if($ndo["problem_has_been_acknowledged"] == 1)
+					$class = "list_four";
+				else
+					$class = "list_down";
+			}else{
+				if( $ndo["problem_has_been_acknowledged"] == 1)
+					$class = "list_four";
+			}
+	
+	
+			$buffer .= '<l class="'.$class.'">';
+			$buffer .= '<o>'. $ct++ . '</o>';
+			$buffer .= '<f>'. $flag . '</f>';
+	
+			if($host_prev == $ndo["host_name"]){
+				$buffer .= '<hc>transparent</hc>';
+				$buffer .= '<hn none="1">'. $ndo["host_name"] . '</hn>';			
+			}else{			
+				$host_prev = $ndo["host_name"];
+				$buffer .= '<hc>'.$color_host.'</hc>';
+				$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';			
+			}
+	
+			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
+			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
+			$buffer .= '<sc>'.$color_service.'</sc>';
+			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
+			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
+			$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
+			$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
+			$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
+			$buffer .= '<pc>'. $passive . '</pc>';
+			$buffer .= '<ac>'. $active . '</ac>';
+			$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
+			$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
+			$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
+	        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';///
+	        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';///
+	        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';///
+	//		$buffer .= '<lsc>'. $ndo["last_state_change"] . '</lsc>';
+			$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
+			$buffer .= '<d>'. $duration . '</d>';
+			$buffer .= '</l>';
 		}
-
-
-		$buffer .= '<l class="'.$class.'">';
-		$buffer .= '<o>'. $ct++ . '</o>';
-		$buffer .= '<f>'. $flag . '</f>';
-
-		if($host_prev == $ndo["host_name"]){
-			$buffer .= '<hc>transparent</hc>';
-			$buffer .= '<hn none="1">'. $ndo["host_name"] . '</hn>';			
-		}else{			
-			$host_prev = $ndo["host_name"];
-			$buffer .= '<hc>'.$color_host.'</hc>';
-			$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';			
-		}
-
-		$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
-		$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
-		$buffer .= '<sc>'.$color_service.'</sc>';
-		$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
-		$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
-		$buffer .= '<ca>'. $ndo["current_attempt"] . '</ca>';
-		$buffer .= '<ne>'. $ndo["notifications_enabled"] . '</ne>';
-		$buffer .= '<pa>'. $ndo["problem_has_been_acknowledged"] . '</pa>';
-		$buffer .= '<pc>'. $passive . '</pc>';
-		$buffer .= '<ac>'. $active . '</ac>';
-		$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
-		$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
-		$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
-        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';///
-        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';///
-        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';///
-//		$buffer .= '<lsc>'. $ndo["last_state_change"] . '</lsc>';
-		$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
-		$buffer .= '<d>'. $duration . '</d>';
-		$buffer .= '</l>';
 	}
 	/* end */
 	
