@@ -216,7 +216,7 @@ For information : contact@oreon-project.org
 			" nhs.active_checks_enabled," .
 			" no.name1 as host_name" .
 			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no" .
-			" WHERE no.object_id = nhs.host_object_id";
+			" WHERE no.object_id = nhs.host_object_id AND objecttype_id = 1";
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";	
@@ -246,7 +246,7 @@ For information : contact@oreon-project.org
 			" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 0";
+			" AND no.is_active = 0 AND objecttype_id = 2";
 //			" AND no.instance_id = 1";
 
 	if($host_name != ""){
@@ -316,8 +316,7 @@ For information : contact@oreon-project.org
 	$class = "list_one";
 	while($DBRESULT_NDO->fetchInto($ndo))
 	{
-		if( isset($host_status[$ndo["host_name"]]) )
-		{	
+		if( isset($host_status[$ndo["host_name"]]) ){
 			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
 			$color_service = $tab_color_service[$ndo["current_state"]];
 			$passive = 0;

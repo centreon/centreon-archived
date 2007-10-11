@@ -21,15 +21,20 @@ For information : contact@oreon-project.org
 
 
 	$oreonPath = '/srv/oreon/';
+
+/*
 	if($oreonPath == '@INSTALL_DIR_OREON@'){
 		$buffer = null;
-		$buffer .= '<reponse>';	
+		$buffer .= '<reponse>';
 		$buffer .= 'none';
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
 		echo $buffer;
 		exit(0);
 	}
+*/
+
+
 
 	## pearDB init
 	require_once 'DB.php';	

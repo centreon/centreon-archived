@@ -18,7 +18,8 @@ For information : contact@oreon-project.org
 // JavaScript Document
 
 //var xhrC = null; 
-var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php" //l'adresse   interroger pour trouver les suggestions
+//var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php" //l'adresse   interroger pour trouver les suggestions
+//var _adrrsearchC = "./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php" //l'adresse   interroger pour trouver les suggestions
 
 function getXhrC(){
 	if(window.XMLHttpRequest) // Firefox et autres

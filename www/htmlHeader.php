@@ -34,8 +34,22 @@ For information : contact@oreon-project.org
 <link href="<? echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
 <link href="<? echo $skin; ?><? echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <?
-	if($min != 1)
+	if($min != 1){
+
+	$DBRESULT =& $pearDB->query("SELECT ndo_base_prefix,ndo_activate FROM general_opt LIMIT 1");
+	# Set base value
+	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	
+	$ndo = $gopt["ndo_activate"];
+
+	if (isset($ndo) && !$ndo)
+		print '<script language="javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php"; </script>';
+	else
+		print '<script language="javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php"; </script>';
+
 		print "<script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>";
+		
+	}
 	
 	# Add Template CSS for sysInfos Pages
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
