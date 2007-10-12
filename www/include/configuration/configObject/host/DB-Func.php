@@ -277,6 +277,17 @@ For information : contact@oreon-project.org
 			updateHostExtInfos_MC($host_id);
 		else
 			updateHostExtInfos($host_id);
+			
+		# Function for updating host hg
+		# 1 - MC with deletion of existing hg
+		# 2 - MC with addition of new hg
+		# 3 - Normal update
+		if (isset($ret["mc_mod_nsid"]["mc_mod_nsid"]) && $ret["mc_mod_nsid"]["mc_mod_nsid"])
+			updateNagiosServerRelation($host_id);
+		else if (isset($ret["mc_mod_nsid"]["mc_mod_nsid"]) && !$ret["mc_mod_nsid"]["mc_mod_nsid"])
+			updateNagiosServerRelation_MC($host_id);
+		else
+			updateNagiosServerRelation($host_id);
 	}	
 	
 	function insertHostInDB ($ret = array())	{
@@ -286,6 +297,7 @@ For information : contact@oreon-project.org
 		updateHostContactGroup($host_id, $ret);
 		updateHostHostGroup($host_id, $ret);
 		updateHostTemplateService($host_id, $ret);
+		updateNagiosServerRelation($host_id, $ret);
 		global $form;
 		$ret = $form->getSubmitValues();
 		if (isset($ret["dupSvTplAssoc"]["dupSvTplAssoc"]) && $ret["dupSvTplAssoc"]["dupSvTplAssoc"] && $ret["host_template_model_htm_id"])
@@ -991,4 +1003,51 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		}			
 	}
+	
+	function updateNagiosServerRelation($host_id, $ret = array())	{
+		if (!$host_id) return;
+		global $form, $pearDB;
+		$rq = "DELETE FROM `ns_host_relation` ";
+		$rq .= "WHERE `host_host_id` = '".$host_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		isset($ret["nagios_server_id"]) ? $ret = $ret["nagios_server_id"] : $ret = $form->getSubmitValue("nagios_server_id");
+		for($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO `ns_host_relation` ";
+			$rq .= "(`host_host_id`, `nagios_server_id`) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$host_id."', '".$ret[$i]."')";
+			$DBRESULT = $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
+	
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateNagiosServerRelation_MC($host_id, $ret = array())	{
+		if (!$host_id) return;
+		global $form, $pearDB;
+		$rq = "SELECT * FROM contactgroup_host_relation ";
+		$rq .= "WHERE host_host_id = '".$host_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$cgs = array();
+		while($DBRESULT->fetchInto($arr))
+			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
+		$ret = $form->getSubmitValue("host_cgs");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($cgs[$ret[$i]]))	{
+				$rq = "INSERT INTO contactgroup_host_relation ";
+				$rq .= "(host_host_id, contactgroup_cg_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$host_id."', '".$ret[$i]."')";
+				$DBRESULT = $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			}
+		}
+	}
+	
 ?>

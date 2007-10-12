@@ -60,6 +60,12 @@ For information : contact@oreon-project.org
 		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
+		# Set Host and Nagios Server Relation
+		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
+		for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++)
+			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
+		$DBRESULT->free();
+		unset($ns);
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -96,6 +102,12 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
+	$DBRESULT->free();
+	# Contact Nagios Server comes from DB -> Store in $nsServer Array
+	$notifCgs = array();
+	$DBRESULT =& $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
+	while ($nsServer = $DBRESULT->fetchRow())
+		$nsServers[$nsServer["id"]] = $nsServer["name"];
 	$DBRESULT->free();
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
@@ -202,7 +214,6 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'command_command_id_arg1', $lang['sv_args'], $attrsText);
 	
 	$form->addElement('text', 'host_max_check_attempts', $lang['h_checkMca'], $attrsText2);
-	$TemplateValues['host_max_check_attempts'] = getMyHostField($host['host_template_model_htm_id'], 'host_max_check_attempts');
 	
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["yes"], '1');
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["no"], '0');
@@ -334,6 +345,19 @@ For information : contact@oreon-project.org
 		$form->setDefaults(array('mc_mod_hhg'=>'0'));
 	}
     $ams3 =& $form->addElement('advmultiselect', 'host_hgs', $lang['h_HostGroupMembers'], $hgs, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
+	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
+	
+	if ($o == "mc")	{
+		$mc_mod_hhg = array();
+		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, $lang['mc_mod_incremental'], '0');
+		$mc_mod_hhg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_nsid', null, $lang['mc_mod_replacement'], '1');
+		$form->addGroup($mc_mod_hhg, 'mc_mod_nsid', $lang["mc_mod"], '&nbsp;');
+		$form->setDefaults(array('mc_mod_nsid'=>'0'));
+	}
+    $ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', $lang['h_NagiosServer'], $nsServers, $attrsAdvSelect);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
