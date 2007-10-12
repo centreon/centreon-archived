@@ -145,6 +145,9 @@ For information : contact@oreon-project.org
 	#
 	## Form begin
 	#
+	
+	$TemplateValues = array();
+	
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', $lang["h_add"]);
@@ -199,7 +202,8 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'command_command_id_arg1', $lang['sv_args'], $attrsText);
 	
 	$form->addElement('text', 'host_max_check_attempts', $lang['h_checkMca'], $attrsText2);
-
+	$TemplateValues['host_max_check_attempts'] = getMyHostField($host['host_template_model_htm_id'], 'host_max_check_attempts');
+	
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["yes"], '1');
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["no"], '0');
 	$hostEHE[] = &HTML_QuickForm::createElement('radio', 'host_event_handler_enabled', null, $lang["nothing"], '2');
