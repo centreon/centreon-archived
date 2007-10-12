@@ -130,9 +130,9 @@ For information : contact@oreon-project.org
 					require($path."genContacts.php");
 					require($path."genContactGroups.php");
 					require($path."genHosts.php");
-					/*require_once($path."genExtendedInfos.php");
-					require_once($path."genHostGroups.php");
-					require_once($path."genServices.php");
+					/*require_once($path."genExtendedInfos.php");*/
+					require($path."genHostGroups.php");
+				/*	require_once($path."genServices.php");
 					if ($oreon->user->get_version() == 2)
 						require_once($path."genServiceGroups.php");
 					require_once($path."genEscalations.php");

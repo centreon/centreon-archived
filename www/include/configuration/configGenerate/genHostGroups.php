@@ -17,8 +17,11 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-
-	$handle = create_file($nagiosCFGPath."hostgroups.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+	
+	$handle = create_file($nagiosCFGPath.$tab['id']."/hostgroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup ORDER BY `hg_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -58,8 +61,9 @@ For information : contact@oreon-project.org
 					array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"] == 3)
 					$BP = true;
-				if ($BP)
+				if ($BP && isHostOnThisInstance($host["host_id"], $tab['id'])){
 					$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
+				}
 			}
 			$DBRESULT2->free();
 			unset($host);
@@ -93,7 +97,7 @@ For information : contact@oreon-project.org
 		}
 		unset($hostGroup);
 	}
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."hostgroups.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/hostgroups.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

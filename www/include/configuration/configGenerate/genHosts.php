@@ -31,10 +31,7 @@ For information : contact@oreon-project.org
 	$i = 1;
 	$str = NULL;
 	while($DBRESULT->fetchInto($host))	{
-		$DBRESULT_relation =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$host["host_id"]."' AND nagios_server_id = '".$tab["id"]."'");
-		if (PEAR::isError($DBRESULT_relation))
-			print "DB Error : ".$DBRESULT_relation->getDebugInfo()."<br>";
-		if ($DBRESULT_relation->numRows() || $host["host_register"] == 1) {
+		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 1) {
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
