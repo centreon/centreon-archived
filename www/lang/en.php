@@ -191,6 +191,10 @@ $lang['m_perfparse'] = "Perfparse CFG";
 $lang['m_load_nagios'] = "Load";
 $lang['m_gen_nagios'] = "Generate";
 
+$lang['m_centreon'] = "Centreon";
+$lang['m_ndo2dbCFG'] = "Ndo2db CFG";
+$lang['m_ndomodCFG'] = "Ndomod CFG";
+
 $lang['m_commandNotif'] = "Notification Commands";
 $lang['m_commandCheck'] = "Check Commands";
 $lang['m_commandMisc'] = "Various Commands";

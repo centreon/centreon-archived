@@ -196,6 +196,9 @@ $lang['m_commandCheck'] = "Commandes de V&eacute;rifications";
 $lang['m_commandMisc'] = "Commandes Diverses";
 $lang['m_commands'] = "Commandes";
 
+$lang['m_centreon'] = "Centreon";
+$lang['m_ndo2dbCFG'] = "Ndo2db CFG";
+$lang['m_ndomodCFG'] = "Ndomod CFG";
 
 /* ID Menu */
 
