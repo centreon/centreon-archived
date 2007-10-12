@@ -19,8 +19,12 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$handle1 = create_file($nagiosCFGPath."misccommands.cfg", $oreon->user->get_name());
-	$handle2 = create_file($nagiosCFGPath."checkcommands.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+
+	$handle1 = create_file($nagiosCFGPath.$tab['id']."/misccommands.cfg", $oreon->user->get_name());
+	$handle2 = create_file($nagiosCFGPath.$tab['id']."/checkcommands.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -54,8 +58,8 @@ For information : contact@oreon-project.org
 			$i2++;
 		}
 	}
-	write_in_file($handle1, html_entity_decode($str1, ENT_QUOTES), $nagiosCFGPath."misccommands.cfg");
-	write_in_file($handle2, html_entity_decode($str2, ENT_QUOTES), $nagiosCFGPath."checkcommands.cfg");
+	write_in_file($handle1, html_entity_decode($str1, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/misccommands.cfg");
+	write_in_file($handle2, html_entity_decode($str2, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/checkcommands.cfg");
 	fclose($handle1);
 	fclose($handle2);
 	$DBRESULT->free();

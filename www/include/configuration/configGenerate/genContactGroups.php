@@ -19,7 +19,11 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$handle = create_file($nagiosCFGPath."contactgroups.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+
+	$handle = create_file($nagiosCFGPath.$tab['id']."/contactgroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM contactgroup ORDER BY `cg_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -70,7 +74,7 @@ For information : contact@oreon-project.org
 		}
 		unset($contactGroup);
 	}
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."contactgroups.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/contactgroups.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

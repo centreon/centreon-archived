@@ -19,7 +19,11 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$handle = create_file($nagiosCFGPath."cgi.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+
+	$handle = create_file($nagiosCFGPath.$tab['id']."/cgi.cfg", $oreon->user->get_name());
 	$res =& $pearDB->query("SELECT cfg_dir FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -48,7 +52,7 @@ For information : contact@oreon-project.org
 		$str .= "xedtemplate_config_file=".$nagios["cfg_dir"]."hostextinfo.cfg\n";
 		$str .= "xedtemplate_config_file=".$nagios["cfg_dir"]."serviceextinfo.cfg\n";
 	}
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."cgi.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/cgi.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

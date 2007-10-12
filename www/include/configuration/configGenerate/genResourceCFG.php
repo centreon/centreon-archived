@@ -19,7 +19,11 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	
-	$handle = create_file($nagiosCFGPath."resource.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+	
+	$handle = create_file($nagiosCFGPath.$tab['id']."/resource.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1'");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -34,7 +38,7 @@ For information : contact@oreon-project.org
 		}
 		$str .= $DBRESULTource["resource_line"]."\n";
 	}
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."resource.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/resource.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

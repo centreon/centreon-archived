@@ -19,16 +19,26 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	# Get Poller List
+	$tab_nagios_server = array("0" => "All Nagios Servers");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while ($nagios =& $DBRESULT->fetchRow())
+		$tab_nagios_server[$nagios['id']] = $nagios['name'];
+	
 	#
 	## Form begin
 	#
-	$attrSelect = array("style" => "width: 100px;");
+	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["gen_name"]);
 
 	$form->addElement('header', 'infos', $lang["gen_infos"]);
-    $form->addElement('select', 'host', $lang["gen_host"], array(0=>"localhost"), $attrSelect);
+	
+    //$form->addElement('select', 'host', $lang["gen_host"], array(0=>"Localhost"), $attrSelect);
+    $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
 
 	$form->addElement('header', 'opt', $lang["gen_opt"]);
 	$tab = array();
@@ -104,23 +114,33 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		if ($ret["generate"]["generate"])	{
 			$gbArr = manageDependencies();
-			require_once($path."genCGICFG.php");
-			require_once($path."genNagiosCFG.php");
-			require_once($path."genResourceCFG.php");
-			require_once($path."genPerfparseCFG.php");
-			require_once($path."genTimeperiods.php");
-			require_once($path."genCommands.php");
-			require_once($path."genContacts.php");
-			require_once($path."genContactGroups.php");
-			require_once($path."genHosts.php");
-			require_once($path."genExtendedInfos.php");
-			require_once($path."genHostGroups.php");
-			require_once($path."genServices.php");
-			if ($oreon->user->get_version() == 2)
-				require_once($path."genServiceGroups.php");
-			require_once($path."genEscalations.php");
-			require_once($path."genDependencies.php");
-			require_once($path."oreon_pm.php");
+			$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
+			if (PEAR::isError($DBRESULT_Servers))
+				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
+			while ($tab =& $DBRESULT_Servers->fetchRow()){
+				print $tab['id'] . "-<br>";
+				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){	
+					unset($DBRESULT2);
+					require($path."genCGICFG.php");
+					require($path."genNagiosCFG.php");
+					require($path."genResourceCFG.php");
+					require($path."genPerfparseCFG.php");
+					require($path."genTimeperiods.php");
+					require($path."genCommands.php");
+					require($path."genContacts.php");
+					require($path."genContactGroups.php");
+					require($path."genHosts.php");
+					/*require_once($path."genExtendedInfos.php");
+					require_once($path."genHostGroups.php");
+					require_once($path."genServices.php");
+					if ($oreon->user->get_version() == 2)
+						require_once($path."genServiceGroups.php");
+					require_once($path."genEscalations.php");
+					require_once($path."genDependencies.php");
+					require_once($path."oreon_pm.php");
+				*/
+				}
+			}
 			# Meta Module
 			if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 				foreach ($files as $filename)

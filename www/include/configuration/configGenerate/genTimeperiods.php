@@ -19,7 +19,11 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$handle = create_file($nagiosCFGPath."timeperiods.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+
+	$handle = create_file($nagiosCFGPath.$tab['id']."/timeperiods.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -42,7 +46,7 @@ For information : contact@oreon-project.org
 		$i++;
 		unset($timePeriod);
 	}
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."timeperiods.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/timeperiods.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

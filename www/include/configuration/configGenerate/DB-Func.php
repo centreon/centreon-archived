@@ -523,6 +523,7 @@ For information : contact@oreon-project.org
 	    	echo $lang['ErrGenFileProb'].$filename;         
 	    	exit;
 		}
+		print $filename . "<br>";
 		$header ? print_header($handle, $name) : NULL;
 	   	return $handle;
 	}
