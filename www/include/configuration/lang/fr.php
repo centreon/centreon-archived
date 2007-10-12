@@ -140,6 +140,8 @@ $lang['h_nagStatImg'] = "Nagios Statuts Map Image";
 $lang['h_nag2dCoords'] = "Nagios 2d Coords";
 $lang['h_nag3dCoords'] = "Nagios 3d Coords";
 
+$lang['h_NagiosServer'] = "Superviser depuis ";
+
 /* host group */
 
 $lang['hg'] = "HostGroup";
@@ -890,5 +892,17 @@ $lang["nmod_reconnect_interval"] = "Interval de reconnexion";
 $lang["nmod_reconnect_warning_interval"] = "Interval de notification en cas de perte de connexion";
 $lang["nmod_data_processing_options"] = "Options d'execution";
 $lang["nmod_config_output_options"] = "Options de Sortie";
+
+/* Nagios Serveurs */
+
+$lang["m_nagiosServers"] = "Satellites";
+$lang['ns_ip_address'] = "Adresse IP";
+$lang['ns_localhost'] = "Localhost ?";
+$lang['ns_http_suffix'] = "Suffixe HTTP";
+$lang['ns_http_port'] = "Port HTTP";
+$lang['ns_key'] = "Cl&eacute; d'authentification";
+$lang['ns_infos'] = "Configuration des Satellites";
+$lang['ns_name'] = "Nom du Satellite";
+
 
 ?>
