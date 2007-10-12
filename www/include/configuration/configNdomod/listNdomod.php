@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 
 	# nagios servers comes from DB 
 	$nagios_servers = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+	$DBRESULT =& $pearDB->query("SELECT * FROM cfg_ndomod ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($nagios_server = $DBRESULT->fetchRow())
@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_instance_name", $lang['nmod_instance_name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
+	$tpl->assign("headerMenu_desc", $lang['n2db_nagios_server']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
