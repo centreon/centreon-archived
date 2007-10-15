@@ -79,6 +79,10 @@ For information : contact@oreon-project.org
 
 
 	/* options */
+	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+		$instance = htmlentities($_GET["instance"]);
+	}else
+		$instance = "ALL";
 	if(isset($_GET["search"]) && !check_injection($_GET["search"])){
 		$search = htmlentities($_GET["search"]);
 	}else
@@ -216,7 +220,12 @@ For information : contact@oreon-project.org
 			" nhs.active_checks_enabled," .
 			" no.name1 as host_name" .
 			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no" .
-			" WHERE no.object_id = nhs.host_object_id AND objecttype_id = 1";
+			" WHERE no.object_id = nhs.host_object_id AND no.objecttype_id = 1";
+
+	if($instance != "ALL")
+		$rq1 .= " AND no.instance_id = ".$instance;
+
+
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";	
@@ -247,7 +256,10 @@ For information : contact@oreon-project.org
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'".
 			" AND no.is_active = 0 AND objecttype_id = 2";
-//			" AND no.instance_id = 1";
+
+	if($instance != "ALL")
+		$rq .= " AND no.instance_id = ".$instance;
+
 
 	if($host_name != ""){
 		$rq .= " AND no.name1 like '%" . $host_name . "%'  ";
@@ -287,9 +299,6 @@ For information : contact@oreon-project.org
 			default : $rq .= " order by no.name1 ". $order; break;
 	}
 	
-
-
-
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
 	$DBRESULT_NDO =& $pearDBndo->query($rq);
 	if (PEAR::isError($DBRESULT_NDO))

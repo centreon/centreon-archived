@@ -63,6 +63,10 @@ For information : contact@oreon-project.org
 	/* security end 2/2 */
 
 	/* requisit */
+	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+		$instance = htmlentities($_GET["instance"]);
+	}else
+		$instance = "ALL";
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
 	}else
@@ -214,6 +218,10 @@ For information : contact@oreon-project.org
 	
 	if($o == "hpb")
 		$rq1 .= " AND nhs.current_state != 0 ";
+	
+	if($instance != "ALL")
+		$rq1 .= " AND no.instance_id = ".$instance;
+	
 	
 	switch($sort_type){
 			case 'host_name' : $rq1 .= " order by no.name1 ". $order; break;

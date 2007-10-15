@@ -63,6 +63,10 @@ For information : contact@oreon-project.org
 	/* security end 2/2 */
 
 	/* requisit */
+	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+		$instance = htmlentities($_GET["instance"]);
+	}else
+		$instance = "ALL";
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
 	}else
@@ -169,26 +173,10 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
 	$DBRESULT_OPT->fetchInto($general_opt);
 
-/*
-	function get_object_name($id){
-		global $pearDBndo;
-		global $general_opt;
-
-		$rq = "select name1 from " .$general_opt["ndo_base_prefix"]."_objects where object_id = " . $id;
-
-		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
-		$tab = array();
-		$name = "";
-		$DBRESULT->fetchInto($name);
-		return $name["name1"];
-	}
-*/
 	function get_services($host_name){
 		global $pearDBndo;
 		global $general_opt;
-		global $o;
+		global $o,$instance;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$general_opt["ndo_base_prefix"]."_servicestatus` nss, `" .$general_opt["ndo_base_prefix"]."_objects` no" .
@@ -214,6 +202,9 @@ For information : contact@oreon-project.org
 				" AND nno.name1 = '".$host_name."'" .
 			" AND nno.name1 not like 'OSL_Module'".
 				" )";
+	if($instance != "ALL")
+		$rq .= " AND no.instance_id = ".$instance;
+					
 					
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -288,6 +279,8 @@ For information : contact@oreon-project.org
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
 
+	if($instance != "ALL")
+		$rq1 .= " AND no.instance_id = ".$instance;
 
 
 	$rq_pagination = $rq1;

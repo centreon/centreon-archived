@@ -3,6 +3,12 @@
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
 <table class="Toolbar_TableTop">
+	<tr><td><a href="#" onclick="advanced_options('advanced_options');" >Advanced Options</a></td></tr>
+	<tr><td>
+		<div id="advanced_options">
+		...
+		</div>
+	</td></tr>
 	<tr class="Toolbar_TR_Top">
 		<td class="Toolbar_TDSelectAction_Top">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>

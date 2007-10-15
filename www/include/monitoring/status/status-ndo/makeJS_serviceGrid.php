@@ -59,6 +59,8 @@ var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
 var _first = 1;
 var _lock = 0;
+var _instance = 'ALL';
+var _default_instance = '0';
 
 <?
 include_once("makeJS_Common.php");
@@ -126,6 +128,7 @@ function monitoring_pause()	{
 }
 
 function initM(_time_reload,_sid,_o){
+	construct_selecteList_ndo_instance('advanced_options');
 	if(!document.getElementById('debug')){
 		var _divdebug = document.createElement("div");
 		_divdebug.id = 'debug';
@@ -153,7 +156,7 @@ function initM(_time_reload,_sid,_o){
 function goM(_time_reload,_sid,_o){
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceGrid.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?=$obis?>&p='+_p;
+	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceGrid.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?=$obis?>&p='+_p+'&instance='+_instance;
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");

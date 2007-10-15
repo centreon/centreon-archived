@@ -20,6 +20,72 @@ For information : contact@oreon-project.org
 		exit();
 ?>
 
+function advanced_options(id){
+
+	/// display hidden
+	var d = document.getElementById(id);
+
+	if(d)
+	{
+		if (d.style.display == 'block') {
+		d.style.display='none';
+		}
+		else
+		{
+		d.style.display='block';
+		}
+	}
+	///
+}
+
+function construct_selecteList_ndo_instance(id){
+	var _advanced_options = document.getElementById(id);
+	_advanced_options.innerHTML = "";
+	
+	var _select = document.createElement("select");
+	_select.name = "select_instance";
+
+
+	_select.onchange = function() { _instance = this.value; _default_instance = this.selectedIndex; monitoring_refresh(); };
+
+
+	var k = document.createElement('option');
+	k.value= "ALL";
+	var l = document.createTextNode("ALL");
+	k.appendChild(l);
+	_select.appendChild(k);
+
+
+<?
+	include_once("./DBndoConnect.php");
+	function get_ndo_instance_id($name_instance)
+	{
+		global $gopt,$pearDBndo;
+		$rq = "SELECT instance_id FROM ".$gopt["ndo_base_prefix"]."_instances WHERE instance_name like '".$name_instance."'";
+		$DBRESULT_NDO =& $pearDBndo->query($rq);
+		$DBRESULT_NDO->fetchInto($ndo);
+		return $ndo["instance_id"];
+	}
+	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM nagios_server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($nagios_server))
+	{
+	 	$isntance_id = get_ndo_instance_id($nagios_server["name"]);
+?>
+	var m = document.createElement('option');
+	m.value= "<?=$isntance_id?>";
+	_select.appendChild(m);
+	var n = document.createTextNode("<?=$nagios_server["name"]?>");
+	m.appendChild(n);
+	_select.appendChild(m);
+<?
+	}
+?>
+	_select.selectedIndex = _default_instance;
+	_advanced_options.appendChild(_select);
+}
+
 function viewDebugInfo(_str){
 	if(_debug)
 	{
@@ -139,12 +205,13 @@ else{
 	page_max =  Math.round( (_numRows / _limit) + 0.5);
 }
 
-	if (_num >= page_max && _numRows)
+	if (_num >= page_max && _numRows && _num > 0)
 	{
-		viewDebugInfo(page_max);
-		viewDebugInfo(_num);
+		viewDebugInfo('!!num!!'+_num);
+		viewDebugInfo('!!max!!'+page_max);
 		_num = page_max - 1;
 		viewDebugInfo('new:'+_num);
+		monitoring_refresh();
 	}
 
 	var p = getVar('p');

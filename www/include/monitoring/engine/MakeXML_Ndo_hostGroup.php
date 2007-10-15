@@ -63,6 +63,10 @@ For information : contact@oreon-project.org
 	/* security end 2/2 */
 
 	/* requisit */
+	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+		$instance = htmlentities($_GET["instance"]);
+	}else
+		$instance = "ALL";
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
 	}else
@@ -194,7 +198,7 @@ For information : contact@oreon-project.org
 
 	function get_services_status($host_group_id, $status){
 		global $pearDBndo;
-		global $general_opt;
+		global $general_opt, $instance;
 	
 	
 		$rq = "SELECT count( nss.service_object_id ) AS nb".
@@ -204,8 +208,12 @@ For information : contact@oreon-project.org
 		" IN (".		
 		" SELECT nno.object_id".
 		" FROM " .$general_opt["ndo_base_prefix"]."_objects nno".
-		" WHERE nno.objecttype_id =2".
-		" AND nno.name1".
+		" WHERE nno.objecttype_id =2";
+
+	if($instance != "ALL")
+		$rq .= " AND nno.instance_id = ".$instance;
+
+		$rq .= " AND nno.name1".
 		" IN (".
 		
 		" SELECT no.name1".
@@ -259,6 +267,11 @@ For information : contact@oreon-project.org
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
+
+	if($instance != "ALL")
+		$rq1 .= " AND no.instance_id = ".$instance;
+
+
 /*	
 	if($o == "hpb")
 		$rq1 .= " AND nhs.current_state != 0 ";

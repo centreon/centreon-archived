@@ -63,6 +63,10 @@ For information : contact@oreon-project.org
 	/* security end 2/2 */
 
 	/* requisit */
+	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+		$instance = htmlentities($_GET["instance"]);
+	}else
+		$instance = "ALL";
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
 	}else
@@ -162,7 +166,7 @@ For information : contact@oreon-project.org
 	    }
 	}
 
-
+	include_once("common_ndo_func.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
@@ -355,11 +359,12 @@ For information : contact@oreon-project.org
 			$nb_service[3] = 0;
 			$nb_service[4] = 0;
 
+			$h = $tab["host_name"];
+			$hs = get_Host_Status($tab["host_name"],$pearDBndo,$general_opt);
 			$buffer .= '<h class="'.$class.'">';
 			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
-			$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["current_state"]]  . ']]></hs>';
-			$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["current_state"]]  . ']]></hc>';
-
+			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
+			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
 
 		}
 

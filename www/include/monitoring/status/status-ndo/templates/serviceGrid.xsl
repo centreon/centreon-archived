@@ -7,11 +7,11 @@
 <xsl:template match="/">
 <table id="ListTable">
 	<tr class='ListHeader'>
-		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
+		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"    width="160"></td>
 
 	<xsl:for-each select="//i">
 			<xsl:if test="s = 1">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state">Status</td>
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state"  width="70">Status</td>
 			</xsl:if>
 	</xsl:for-each>
 

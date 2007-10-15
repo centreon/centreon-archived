@@ -63,6 +63,10 @@ For information : contact@oreon-project.org
 	/* security end 2/2 */
 
 	/* requisit */
+	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+		$instance = htmlentities($_GET["instance"]);
+	}else
+		$instance = "ALL";
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
 	}else
@@ -163,6 +167,7 @@ For information : contact@oreon-project.org
 	}
 
 
+	include_once("common_ndo_func.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
@@ -177,6 +182,8 @@ For information : contact@oreon-project.org
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$general_opt["ndo_base_prefix"]."_servicestatus` nss, `" .$general_opt["ndo_base_prefix"]."_objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
+	if($instance != "ALL")
+		$rq .= " AND no.instance_id = ".$instance;
 
 		if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 			$rq .= " AND nss.current_state != 0" ;
@@ -194,8 +201,13 @@ For information : contact@oreon-project.org
 				" SELECT nno.object_id" .
 				" FROM ndo_objects nno" .
 				" WHERE nno.objecttype_id =2" .
-				" AND nno.name1 = '".$host_name."'" .
-				" )";
+				" AND nno.name1 = '".$host_name."'" ;
+/*
+	if($instance != "ALL")
+		$rq .= " AND nno.instance_id = ".$instance;
+*/
+
+				$rq .= " )";
 					
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -228,6 +240,7 @@ For information : contact@oreon-project.org
 	$tab_color_host[0] = $general_opt["color_up"];
 	$tab_color_host[1] = $general_opt["color_down"];
 	$tab_color_host[2] = $general_opt["color_unreachable"];
+	$tab_color_host[3] = $general_opt["color_unreachable"];
 	
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -241,7 +254,11 @@ For information : contact@oreon-project.org
 			" WHERE sg.config_type = 0 " .
 			" AND ss.service_object_id = sgm.service_object_id".
 			" AND no.object_id = sgm.service_object_id" .
-			" AND sgm.servicegroup_id = sg.servicegroup_id";
+			" AND sgm.servicegroup_id = sg.servicegroup_id" .
+			" AND no.is_active = 0 AND no.objecttype_id = 2";
+
+	if($instance != "ALL")
+		$rq1 .= " AND no.instance_id = ".$instance;
 
 
 	if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
@@ -333,10 +350,11 @@ For information : contact@oreon-project.org
 				$buffer .= '</h>';
 			$flag = 1;
 			$h = $tab["host_name"];
+			$hs = get_Host_Status($tab["host_name"],$pearDBndo,$general_opt);
 			$buffer .= '<h class="'.$class.'">';
 			$buffer .= '<hn><![CDATA['. $tab["host_name"]  . ']]></hn>';
-			$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["current_state"]]  . ']]></hs>';
-			$buffer .= '<hc><![CDATA['. $tab_color_host[$tab["current_state"]]  . ']]></hc>';
+			$buffer .= '<hs><![CDATA['. $tab_status_host[$hs] . ']]></hs>';
+			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
 		}
 
 

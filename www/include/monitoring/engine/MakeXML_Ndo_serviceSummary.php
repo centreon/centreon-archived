@@ -63,6 +63,10 @@ For information : contact@oreon-project.org
 	/* security end 2/2 */
 
 	/* requisit */
+	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+		$instance = htmlentities($_GET["instance"]);
+	}else
+		$instance = "ALL";
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
 	}else
@@ -308,6 +312,11 @@ For information : contact@oreon-project.org
 //	while($DBRESULT_NDO1->fetchInto($ndo))
 	foreach($tab_final as $host_name => $tab)
 	{
+		if($class == "list_one")
+			$class = "list_two";
+		else
+			$class = "list_one";
+
 		$buffer .= '<l class="'.$class.'">';
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';

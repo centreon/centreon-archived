@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	
 	# set limit & num
-	$DBRESULT =& $pearDB->query("SELECT maxViewMonitoring FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT ndo_base_prefix,maxViewMonitoring FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
