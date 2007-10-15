@@ -123,6 +123,7 @@ For information : contact@oreon-project.org
 					unset($DBRESULT2);
 					require($path."genCGICFG.php");
 					require($path."genNagiosCFG.php");
+					require($path."genNagiosCFG-DEBUG.php");
 					require($path."genResourceCFG.php");
 					require($path."genPerfparseCFG.php");
 					require($path."genTimeperiods.php");
@@ -130,16 +131,18 @@ For information : contact@oreon-project.org
 					require($path."genContacts.php");
 					require($path."genContactGroups.php");
 					require($path."genHosts.php");
-					/*require_once($path."genExtendedInfos.php");*/
+					require($path."genExtendedInfos.php");
 					require($path."genHostGroups.php");
-				/*	require_once($path."genServices.php");
+					require($path."genServices.php");
 					if ($oreon->user->get_version() == 2)
-						require_once($path."genServiceGroups.php");
-					require_once($path."genEscalations.php");
-					require_once($path."genDependencies.php");
-					require_once($path."oreon_pm.php");
-				*/
+						require($path."genServiceGroups.php");
+					require($path."genEscalations.php");
+					require($path."genDependencies.php");
+					require($path."centreon_pm.php");
 				}
+				unset($generatedHG);
+				unset($generatedSG);
+				unset($generatedS);
 			}
 			# Meta Module
 			if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
@@ -158,7 +161,6 @@ For information : contact@oreon-project.org
 			}
 		}
 		if ($ret["debug"]["debug"])	{
-			require_once($path."genNagiosCFG-DEBUG.php");
 			$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath."nagiosCFG.DEBUG");
 			$msg .= str_replace ("\n", "<br>", $stdout);
 		}
