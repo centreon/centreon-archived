@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+﻿-- --------------------------------------------------------
 
 --
 -- Structure de la table `service_categories`
@@ -69,8 +69,56 @@ ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `service_service_id`
 ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `sc_id` ) REFERENCES `centreon`.`service_categories` (`sc_id`) ON DELETE CASCADE ;
 
 
+<<<<<<< .mine
+-- Ndo base
+=======
 UPDATE `giv_graphs_template` SET `col_top` = NULL , `col_bot` = NULL;
+>>>>>>> .r3353
+
+<<<<<<< .mine
+CREATE TABLE `cfg_ndo2db` (
+`id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`description` VARCHAR( 255 ) NULL ,
+`ns_nagios_server` INT NULL ,
+`socket_type` VARCHAR( 255 ) NULL ,
+`socket_name` VARCHAR( 255 ) NULL ,
+`tcp_port` INT NULL ,
+`db_type` VARCHAR( 255 ) NULL ,
+`db_host` VARCHAR( 255 ) NULL ,
+`db_port` VARCHAR( 255 ) NULL ,
+`db_prefix` VARCHAR( 255 ) NULL ,
+`db_user` VARCHAR( 255 ) NULL ,
+`db_pass` VARCHAR( 255 ) NULL ,
+`max_timedevents_age` VARCHAR( 255 ) NULL ,
+`max_systemcommands_age` VARCHAR( 255 ) NULL ,
+`max_servicechecks_age` VARCHAR( 255 ) NULL ,
+`max_hostchecks_age` VARCHAR( 255 ) NULL ,
+`max_eventhandlers_age` VARCHAR( 255 ) NULL ,
+`activate` ENUM( '0', '1' ) NULL
+) ENGINE = innodb CHARACTER SET latin1 COLLATE latin1_general_ci COMMENT = 'configuration base for ndo daemon';
+
+CREATE TABLE `cfg_ndomod` (
+`id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`description` VARCHAR( 255 ) NULL ,
+`ns_nagios_server` INT NULL ,
+`instance_name` VARCHAR( 255 ) NULL ,
+`output_type` VARCHAR( 255 ) NULL ,
+`tcp_port` VARCHAR( 255 ) NULL ,
+`output_buffer_items` INT NULL ,
+`file_rotation_interval` INT NULL ,
+`file_rotation_command` INT NULL ,
+`file_rotation_timeout` INT NULL ,
+`reconnect_interval` INT NULL ,
+`reconnect_warning_interval` INT NULL ,
+`data_processing_options` INT NULL ,
+`config_output_options` INT NULL,
+`activate` ENUM( '0', '1' ) NULL
+) ENGINE = innodb CHARACTER SET latin1 COLLATE latin1_general_ci COMMENT = 'ndomog table config';
+
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_centreon', NULL, 6, 608, 80, 1, NULL, NULL, '0', '0', '1');
+
+=======
 
 
 
-
+>>>>>>> .r3353
