@@ -177,9 +177,9 @@ For information : contact@oreon-project.org
 		while ($DBRESULT2->fetchInto($sg))	{
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
-				array_key_exists($sg["sg_id"], $gbArr[3]) ? $BP = true : NULL;
+				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
 			else if ($ret["level"]["level"] == 2)
-				array_key_exists($sg["sg_id"], $gbArr[3]) ? $BP = true : NULL;
+				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
 			else if ($ret["level"]["level"] == 3)
 				$BP = true;
 			if ($BP)	
