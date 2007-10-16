@@ -325,6 +325,10 @@ div.update_output {
 	display:none;
 }
 
+#advanced_options{
+	display:none;
+}
+
 div.left_menu {
 	margin: 3px;
 	padding: 3px;
@@ -356,3 +360,4 @@ div.displayAjaxResult {
 	position: absolute;
 	marging-left: 550px;
 }
+>>>>>>> .r3357
