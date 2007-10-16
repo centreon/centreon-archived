@@ -7,6 +7,7 @@
 	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
 	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
 	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
+	<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
 </ul>
 </div>
 <div id="validFormTop">
@@ -64,6 +65,14 @@
 
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.metas}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.esc_metas.label}</td><td class="FormRowValue">{$form.esc_metas.html}</td></tr>
+	</table>
+</div>
+<div id='tab6' class="tab">
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/bookmarks.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.sgs}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.esc_sgs.label}</td><td class="FormRowValue">{$form.esc_sgs.html}</td></tr>
 	</table>
 </div>
 <div id="validForm">

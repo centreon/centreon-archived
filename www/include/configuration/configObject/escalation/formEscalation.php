@@ -41,6 +41,13 @@ For information : contact@oreon-project.org
 		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
+		# Set Service Groups relations
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($sg); $i++)
+			$esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
+		$DBRESULT->free();
 		# Set Host relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -83,6 +90,18 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
+	$DBRESULT->free();
+	#
+	# Service Groups comes from DB -> Store in $sgs Array
+	$sgs = array();
+	if ($oreon->user->admin || !HadUserLca($pearDB))		
+		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	else
+		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupstr.") ORDER BY sg_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($sg))
+		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
 	#
 	# Host comes from DB -> Store in $hosts Array
@@ -237,6 +256,17 @@ For information : contact@oreon-project.org
 	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
+	
+	#
+	## Sort 6
+	#
+	$form->addElement('header', 'sgs', $lang['esc_sortSg']);
+	
+    $ams1 =& $form->addElement('advmultiselect', 'esc_sgs', $lang['sg'], $sgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
+	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
@@ -294,6 +324,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort3", $lang['esc_sort3']);
 	$tpl->assign("sort4", $lang['esc_sort4']);
 	$tpl->assign("sort5", $lang['esc_sort5']);
+	$tpl->assign("sort6", $lang['esc_sort6']);
 	
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
 	

@@ -174,6 +174,7 @@ $lang['m_hostgroupesc'] = "Host Group Escalations";
 $lang['m_hostesc'] = "Host Escalations";
 $lang['m_serviceesc'] = "Service Escalations";
 $lang['m_metaserviceesc'] = "Meta Service Escalations";
+$lang['m_servicegroupesc'] = "Service Group Escalations";
 
 $lang['m_dependencies'] = "Dependencies";
 $lang['m_service_dependencies'] = "Service Dependencies";

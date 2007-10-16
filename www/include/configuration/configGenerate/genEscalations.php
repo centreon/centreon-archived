@@ -163,6 +163,76 @@ For information : contact@oreon-project.org
 	unset($escalation);
 	$DBRESULT->free();	
 	
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_servicegroup_relation esgr, escalation esc WHERE esgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	$escalation = array();
+	while($DBRESULT->fetchInto($escalation))	{
+		$BP = false;
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
+		if (PEAR::isError($DBRESULT2))
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+		$sg = array();
+		$strTemp = NULL;
+		while ($DBRESULT2->fetchInto($sg))	{
+			$BP = false;
+			if ($ret["level"]["level"] == 1)
+				array_key_exists($sg["sg_id"], $gbArr[3]) ? $BP = true : NULL;
+			else if ($ret["level"]["level"] == 2)
+				array_key_exists($sg["sg_id"], $gbArr[3]) ? $BP = true : NULL;
+			else if ($ret["level"]["level"] == 3)
+				$BP = true;
+			if ($BP)	
+				$strTemp != NULL ? $strTemp .= ", ".$sg["sg_name"] : $strTemp = $sg["sg_name"];
+		}
+		$DBRESULT2->free();			
+		if ($strTemp)	{
+			$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service (group) escalation definition ".$i."\n") : NULL;
+			if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
+				$comment = array();
+				$comment = explode("\n", $escalation["esc_comment"]);
+				foreach ($comment as $cmt)
+					$str .= "# ".$cmt."\n";
+			}
+			$str .= "define serviceescalation{\n";
+			$str .= print_line("servicegroup_name", $strTemp);			
+			$cg = array();
+			$strTemp = NULL;
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			while($DBRESULT2->fetchInto($cg))	{
+				$BP = false;				
+				if ($ret["level"]["level"] == 1)
+					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
+				else if ($ret["level"]["level"] == 2)
+					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
+				else if ($ret["level"]["level"] == 3)
+					$BP = true;
+				if ($BP)
+					$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
+			}
+			$DBRESULT2->free();
+			if ($strTemp) $str .= print_line("contact_groups", $strTemp);			
+			if ($escalation["first_notification"] != NULL) $str .= print_line("first_notification", $escalation["first_notification"]);
+			if ($escalation["last_notification"] != NULL) $str .= print_line("last_notification", $escalation["last_notification"]);
+			if ($escalation["notification_interval"] != NULL) $str .= print_line("notification_interval", $escalation["notification_interval"]);
+			// Nagios 2
+			if ($oreon->user->get_version() == 2)	{
+				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
+				if (PEAR::isError($DBRESULT2))
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				$tp =& $DBRESULT2->fetchRow();				
+				if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
+				if ($escalation["escalation_options2"]) $str .= print_line("escalation_options", $escalation["escalation_options2"]);
+			}
+			$str .= "}\n\n";
+			$i++;
+		}
+	}
+	unset($escalation);
+	$DBRESULT->free();	
+	
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT service.service_activate, service.service_description, esr.service_service_id FROM service, escalation_service_relation esr WHERE esr.service_service_id = service.service_id ORDER BY service.service_description");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";

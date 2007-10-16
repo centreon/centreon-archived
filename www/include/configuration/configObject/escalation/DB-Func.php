@@ -95,6 +95,14 @@ For information : contact@oreon-project.org
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						while($DBRESULT->fetchInto($sg))	{
+							$DBRESULT2 =& $pearDB->query("INSERT INTO escalation_servicegroup_relation VALUES ('', '".$maxId["MAX(esc_id)"]."', '".$sg["servicegroup_sg_id"]."')");
+							if (PEAR::isError($DBRESULT2))
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+						}
 						$DBRESULT =& $pearDB->query("SELECT * FROM escalation_service_relation WHERE escalation_esc_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
 							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -125,6 +133,7 @@ For information : contact@oreon-project.org
 		updateEscalationHostGroups($esc_id);
 		updateEscalationServices($esc_id);
 		updateEscalationMetaServices($esc_id);
+		updateEscalationServiceGroups($esc_id);
 	}	
 	
 	function insertEscalationInDB ()	{
@@ -134,6 +143,7 @@ For information : contact@oreon-project.org
 		updateEscalationHostGroups($esc_id);
 		updateEscalationServices($esc_id);
 		updateEscalationMetaServices($esc_id);
+		updateEscalationServiceGroups($esc_id);
 		return ($esc_id);
 	}
 	
@@ -254,6 +264,28 @@ For information : contact@oreon-project.org
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO escalation_hostgroup_relation ";
 			$rq .= "(escalation_esc_id, hostgroup_hg_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$esc_id."', '".$ret[$i]."')";
+			$DBRESULT =& $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+	}
+	
+	function updateEscalationServiceGroups($esc_id = null)	{
+		if (!$esc_id) exit();
+		global $form;
+		global $pearDB;
+		$rq = "DELETE FROM escalation_servicegroup_relation ";
+		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$ret = array();
+		$ret = $form->getSubmitValue("esc_sgs");
+		for($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO escalation_servicegroup_relation ";
+			$rq .= "(escalation_esc_id, servicegroup_sg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$esc_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);

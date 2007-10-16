@@ -171,6 +171,7 @@ $lang['esc_sort2'] = "Hosts Escalation";
 $lang['esc_sort3'] = "Services Escalation";
 $lang['esc_sort4'] = "Hostgroups Escalation";
 $lang['esc_sort5'] = "Meta Services Escalation";
+$lang['esc_sort6'] = "Servicegroups Escalation";
 $lang['esc_firstNotif'] = "First Notification";
 $lang['esc_lastNotif'] = "Last Notification";
 $lang['esc_notifInt'] = "Notification Interval";
@@ -183,6 +184,7 @@ $lang['esc_sortHosts'] = "Implied Hosts";
 $lang['esc_sortSv'] = "Implied Services";
 $lang['esc_sortHg'] = "Implied HostGroups";
 $lang['esc_sortMs'] = "Implied Meta Services";
+$lang['esc_sortSg'] = "Implied Servicegroups";
 $lang['esc_hostServiceMembers'] = "Services by Hosts";
 
 /* Dependencies */

@@ -170,6 +170,7 @@ $lang['esc_sort2'] = "Escalade d'Hosts";
 $lang['esc_sort3'] = "Escalade de Services";
 $lang['esc_sort4'] = "Escalade de Hostgroups";
 $lang['esc_sort5'] = "Escalade de Meta Services";
+$lang['esc_sort6'] = "Escalade de Servicegroups";
 $lang['esc_firstNotif'] = "Premi&egrave;re notification";
 $lang['esc_lastNotif'] = "Derni&egrave;re notification";
 $lang['esc_notifInt'] = "Interval de notification";
@@ -182,6 +183,7 @@ $lang['esc_sortHosts'] = "Hosts concern&eacute;s";
 $lang['esc_sortSv'] = "Services  concern&eacute;es";
 $lang['esc_sortHg'] = "HostGroups concern&eacute;s";
 $lang['esc_sortMs'] = "Meta Services concern&eacute;s";
+$lang['esc_sortSg'] = "Servicegroups concern&eacute;s";
 $lang['esc_hostServiceMembers'] = "Services par Hosts";
 
 /* Dependencies */

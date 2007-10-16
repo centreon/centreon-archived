@@ -174,6 +174,7 @@ $lang['m_hostgroupesc'] = "Host Group Escalades";
 $lang['m_hostesc'] = "Host Escalades";
 $lang['m_serviceesc'] = "Service Escalades";
 $lang['m_metaserviceesc'] = "Meta Service Escalades";
+$lang['m_servicegroupesc'] = "Service Group Escalades";
 
 $lang['m_dependencies'] = "D&eacute;pendances";
 $lang['m_service_dependencies'] = "D&eacute;pendances de Service";

@@ -678,6 +678,15 @@ CREATE TABLE `escalation_hostgroup_relation` (
   KEY `hg_index` (`hostgroup_hg_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `escalation_servicegroup_relation` (
+  `esgr_id` int(11) NOT NULL auto_increment,
+  `escalation_esc_id` int(11) default NULL,
+  `servicegroup_sg_id` int(11) default NULL,
+  PRIMARY KEY  (`esgr_id`),
+  KEY `escalation_index` (`escalation_esc_id`),
+  KEY `sg_index` (`servicegroup_sg_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- --------------------------------------------------------
 
 --
@@ -1886,6 +1895,10 @@ ALTER TABLE `escalation_host_relation`
 ALTER TABLE `escalation_hostgroup_relation`
   ADD CONSTRAINT `escalation_hostgroup_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `escalation_hostgroup_relation_ibfk_2` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE;
+
+ALTER TABLE `escalation_servicegroup_relation`
+  ADD CONSTRAINT `escalation_servicegroup_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `escalation_servicegroup_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `escalation_meta_service_relation`

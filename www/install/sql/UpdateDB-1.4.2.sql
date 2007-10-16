@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+﻿-- --------------------------------------------------------
 
 --
 -- Structure de la table `service_categories`
@@ -37,3 +37,30 @@ INSERT INTO `centreon`.`topology_JS` (`id_t_js` ,`id_page` ,`o` ,`PathName_js` ,
 INSERT INTO `centreon`.`topology_JS` (`id_t_js` ,`id_page` ,`o` ,`PathName_js` ,`Init`) VALUES (NULL , '2021301', NULL , NULL , 'initM');
 INSERT INTO `centreon`.`topology_JS` (`id_t_js` ,`id_page` ,`o` ,`PathName_js` ,`Init`) VALUES (NULL , '2021302', NULL , NULL , 'initM');
 INSERT INTO `centreon`.`topology_JS` (`id_t_js` ,`id_page` ,`o` ,`PathName_js` ,`Init`) VALUES (NULL , '2021303', NULL , NULL , 'initM');
+
+-- 15/10/2007
+--
+-- Structure de la table `escalation_servicegroup_relation`
+--
+
+CREATE TABLE `escalation_servicegroup_relation` (
+  `esgr_id` int(11) NOT NULL auto_increment,
+  `escalation_esc_id` int(11) default NULL,
+  `servicegroup_sg_id` int(11) default NULL,
+  PRIMARY KEY  (`esgr_id`),
+  KEY `escalation_index` (`escalation_esc_id`),
+  KEY `sg_index` (`servicegroup_sg_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Contraintes pour la table `escalation_servicegroup_relation`
+--
+ALTER TABLE `escalation_servicegroup_relation`
+  ADD CONSTRAINT `escalation_servicegroup_relation_ibfk_1` FOREIGN KEY (`escalation_esc_id`) REFERENCES `escalation` (`esc_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `escalation_servicegroup_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE;
+
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_servicegroupesc', './img/icones/16x16/bookmarks.gif', 604, 60406, 60, 1, './include/configuration/configObject/escalation/escalation.php', '&list=sg', '0', '0', '1');
+
+INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 60406, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 60406, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 60406, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
