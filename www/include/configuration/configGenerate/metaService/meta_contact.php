@@ -17,7 +17,7 @@ For information : contact@oreon-project.org
 */
 
 	$str = NULL;
-	$handle = create_file($nagiosCFGPath."meta_contact.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_contact.cfg", $oreon->user->get_name());
 	
 	# Host Creation
 	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
@@ -41,7 +41,7 @@ For information : contact@oreon-project.org
 		$str .= print_line("email", "meta_contact_email");
 		$str .= "}\n\n";
 	}
-	write_in_file($handle, $str, $nagiosCFGPath."meta_contact.cfg");
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_contact.cfg");
 	fclose($handle);
 	unset($str);
 ?>

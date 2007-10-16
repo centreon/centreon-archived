@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	$str = NULL;
-	$handle = create_file($nagiosCFGPath."meta_commands.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_commands.cfg", $oreon->user->get_name());
 	
 	$str = "define command{\n";
 	$str .= print_line("command_name", "check_meta");
@@ -29,8 +29,7 @@ For information : contact@oreon-project.org
 	$str .= print_line("command_line", $cmd);
 	$str .= "}\n\n";
 	
-	write_in_file($handle, $str, $nagiosCFGPath."meta_commands.cfg");
-	
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_commands.cfg");
 	fclose($handle);	
 	unset($res);
 	unset($str);	

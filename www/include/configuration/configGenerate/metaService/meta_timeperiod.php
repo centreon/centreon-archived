@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	$str = NULL;
-	$handle = create_file($nagiosCFGPath."meta_timeperiod.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_timeperiod.cfg", $oreon->user->get_name());
 	$str .= "define timeperiod{\n";
 	$str .= print_line("timeperiod_name", "meta_timeperiod");
 	$str .= print_line("alias", "meta_timeperiod");
@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 	$str .= print_line("friday", "00:00-24:00");
 	$str .= print_line("saturday", "00:00-24:00");
 	$str .= "}\n\n";
-	write_in_file($handle, $str, $nagiosCFGPath."meta_timeperiod.cfg");
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_timeperiod.cfg");
 	fclose($handle);
 	unset($str);
 ?>

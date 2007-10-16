@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	$str = NULL;
 	$i = 1;
-	$handle = create_file($nagiosCFGPath."meta_escalations.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_escalations.cfg", $oreon->user->get_name());
 
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation");
 	if (PEAR::isError($DBRESULT))
@@ -87,7 +87,7 @@ For information : contact@oreon-project.org
 	}
 	unset($service);
 	$DBRESULT->free();
-	write_in_file($handle, $str, $nagiosCFGPath."meta_escalations.cfg");
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_escalations.cfg");
 	fclose($handle);
 	unset($str);
 ?>

@@ -15,7 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$handle = create_file($nagiosCFGPath."meta_services.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_services.cfg", $oreon->user->get_name());
 	$str = NULL;
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
@@ -80,7 +80,7 @@ For information : contact@oreon-project.org
 			$str .= $strEval;
 	}
 	
-	write_in_file($handle, $str, $nagiosCFGPath."meta_services.cfg");
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_services.cfg");
 	fclose($handle);
 	unset($str);
 	unset($meta);

@@ -15,7 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$handle = create_file($nagiosCFGPath."meta_host.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_host.cfg", $oreon->user->get_name());
 	$str = NULL;
 	
 	# Init 
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 		$str .= print_line("register", "1");
 		$str .= "\t}\n\n";
 	}	
-	write_in_file($handle, $str, $nagiosCFGPath."meta_hosts.cfg");
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_hosts.cfg");
 	fclose($handle);
 	unset($str);
 ?>

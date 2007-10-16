@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	$str = NULL;
 	$i = 1;
-	$handle = create_file($nagiosCFGPath."meta_dependencies.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_dependencies.cfg", $oreon->user->get_name());
 
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmscr WHERE dmscr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
@@ -82,7 +82,7 @@ For information : contact@oreon-project.org
 	}
 	unset($dependency);
 	$DBRESULT->free();
-	write_in_file($handle, $str, $nagiosCFGPath."meta_dependencies.cfg");
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_dependencies.cfg");
 	fclose($handle);
 	unset($str);
 ?>

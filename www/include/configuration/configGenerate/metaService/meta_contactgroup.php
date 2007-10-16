@@ -15,7 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$handle = create_file($nagiosCFGPath."meta_contactgroup.cfg", $oreon->user->get_name());
+	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_contactgroup.cfg", $oreon->user->get_name());
 	$str = NULL;
 	
 	# Host Creation
@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 		$str .= print_line("members", "meta_contact");
 		$str .= "}\n\n";
 	}
-	write_in_file($handle, $str, $nagiosCFGPath."meta_contactgroup.cfg");
+	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_contactgroup.cfg");
 	fclose($handle);
 	unset($str);
 ?>
