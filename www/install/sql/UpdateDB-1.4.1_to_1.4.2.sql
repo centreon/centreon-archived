@@ -165,3 +165,7 @@ INSERT INTO `centreon`.`topology_JS` (`id_t_js` ,`id_page` ,`o` ,`PathName_js` ,
 INSERT INTO `centreon`.`topology_JS` (`id_t_js` ,`id_page` ,`o` ,`PathName_js` ,`Init`) VALUES (NULL , '2021302', NULL , NULL , 'initM');
 INSERT INTO `centreon`.`topology_JS` (`id_t_js` ,`id_page` ,`o` ,`PathName_js` ,`Init`) VALUES (NULL , '2021303', NULL , NULL , 'initM');
 
+
+ALTER TABLE `cfg_nagios` ADD `nagios_server_id` INT NULL AFTER `nagios_name` ;
+
+
