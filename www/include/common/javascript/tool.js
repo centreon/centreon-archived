@@ -99,17 +99,17 @@ For information : contact@oreon-project.org
 	function DisplayHidden(id) {
 		var d = document.getElementById(id);
 
-if(d)
-{
-	if (d.style.display == 'block') {
-	d.style.display='none';
+		if(d)
+		{
+			if (d.style.display == 'block') {
+			d.style.display='none';
+			}
+			else
+			{
+			d.style.display='block';
+			}
+		}
 	}
-	else
-	{
-	d.style.display='block';
-	}
-}
-}
 
 
 //  End -->

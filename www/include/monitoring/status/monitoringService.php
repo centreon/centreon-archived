@@ -51,14 +51,21 @@ For information : contact@oreon-project.org
 			$_GET["sort_types"] = "next_check";
 			$_GET["order"] = "sort_asc";
 		}
-	
+
+	$metaservicepath = "metaService.php";
+
+
 	if (isset($ndo) && !$ndo){
 		$path = "./include/monitoring/status/status-log/";
 		include("./include/monitoring/status/resume.php");
 		$problem = "_problem";
+
+		$metaservicepath = $path."metaService.php";
+
 	} else {
 		$problem = "";
 		$path = "./include/monitoring/status/status-ndo/";
+		$metaservicepath = $path."service.php";
 	}
 	
 	$pathRoot = "./include/monitoring/";
@@ -90,7 +97,7 @@ For information : contact@oreon-project.org
 		case "svcOVHG" 		: require_once($path."serviceGridByHG.php"); 		break; 
 		case "svcSumHG" 	: require_once($path."serviceSummaryByHG.php"); 		break; 
 		
-		case "meta" 		: require_once($path."metaService.php"); 				break;
+		case "meta" 		: require_once($metaservicepath); 				break;
 		case "svcSch" 		: require_once($path."serviceSchedule.php"); 			break; 
 		default 			: require_once($path."service.php"); 					break;
 	}

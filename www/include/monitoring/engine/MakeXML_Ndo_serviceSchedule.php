@@ -48,6 +48,17 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/oreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 
+
+	/* LCA */
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	$lcaHostName =  getLCAHostByName();
+	
+	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+
+
+
+
+
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
@@ -383,6 +394,7 @@ For information : contact@oreon-project.org
 	
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
+			$buffer .= '<ac>??</ac>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';

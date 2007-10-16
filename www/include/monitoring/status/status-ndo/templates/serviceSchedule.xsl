@@ -7,17 +7,10 @@
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>
-
-	<xsl:for-each select="//i">
-			<xsl:if test="nc = 1">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="next_check">next check</td>
-			</xsl:if>
-	</xsl:for-each>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="next_check">next check</td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="active_check">active_check</td>
 
 
 	</tr>
@@ -108,30 +101,22 @@
 							</xsl:element>
 					</xsl:element>
 				</td>
-				<td class="ListColCenter">
-					<xsl:attribute name="style">
-						background-color:<xsl:value-of select="sc"/>;
-    				</xsl:attribute>
-					<xsl:value-of select="cs"/>
-				</td>
+
 				<td class="ListColCenter" style="white-space:nowrap;">
 					<xsl:value-of select="d"/>
 				</td>
+
 	            <td class="ListColCenter">
 	            	<xsl:value-of select="lc"/>
 	            </td>
-	            <td class="ListColCenter">
-	            	<xsl:value-of select="ca"/>
-	            </td>
-	            <td class="ListColRight" >
-	            	<xsl:value-of select="po"/>
-	            </td>
 
-			<xsl:if test="//i/nc = 1">
 				<td class="ListColCenter" style="white-space:nowrap;">
 					<xsl:value-of select="nc"/>
 				</td>
-			</xsl:if>
+
+				<td class="ListColCenter" style="white-space:nowrap;">
+					<xsl:value-of select="ac"/>
+				</td>
 
 
 

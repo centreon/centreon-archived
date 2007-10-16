@@ -44,7 +44,7 @@ var _date_time_format_status='<?=$lang["date_time_format_status"]?>';
 var _o='<?=$o?>';
 var _p='<?=$p?>';
 
-var _addrXSL = "./include/monitoring/status/status-ndo/templates/service.xsl";
+var _addrXSL = "./include/monitoring/status/status-ndo/templates/serviceSchedule.xsl";
 var _timeoutID = 0;
 var _on = 1;
 var _time_reload = <?=$tM?>;
@@ -180,7 +180,7 @@ function goM(_time_reload,_sid,_o){
 
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_service.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?=$host_name?>'+'&instance='+_instance+'&nc='+_nc;
+	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceSchedule.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?=$host_name?>'+'&instance='+_instance+'&nc='+_nc;
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");

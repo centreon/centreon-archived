@@ -20,40 +20,63 @@ For information : contact@oreon-project.org
 		exit();
 ?>
 
+function addORdelTab(_name){
+
+	var d = document.getElementsByName('next_check_case');
+	if(d[0].checked == true)
+	{
+		_nc = 1;
+	}
+	else
+	{
+		_nc = 0;
+	}
+	monitoring_refresh();
+}
+
 function advanced_options(id){
 
 	/// display hidden
 	var d = document.getElementById(id);
+	var d1 = document.getElementById("advanced_1");
+
 
 	if(d)
 	{
 		if (d.style.display == 'block') {
 		d.style.display='none';
+		d1.style.display='block';
 		}
 		else
 		{
 		d.style.display='block';
+		d1.style.display='none';
 		}
 	}
 	///
 }
 
 function construct_selecteList_ndo_instance(id){
-	var _advanced_options = document.getElementById(id);
-	_advanced_options.innerHTML = "";
+
+	if(!document.getElementById("select_instance"))
+	{
+		var _advanced_options = document.getElementById(id);
 	
-	var _select = document.createElement("select");
-	_select.name = "select_instance";
-
-
-	_select.onchange = function() { _instance = this.value; _default_instance = this.selectedIndex; monitoring_refresh(); };
-
-
-	var k = document.createElement('option');
-	k.value= "ALL";
-	var l = document.createTextNode("ALL");
-	k.appendChild(l);
-	_select.appendChild(k);
+	//	_advanced_options.innerHTML = "";
+		
+		var _select = document.createElement("select");
+		_select.name = "select_instance";
+		_select.id = "select_instance";
+	
+	
+		_select.onchange = function() { _instance = this.value; _default_instance = this.selectedIndex; monitoring_refresh(); };
+	
+	
+		var k = document.createElement('option');
+		k.value= "ALL";
+		var l = document.createTextNode("ALL");
+		k.appendChild(l);
+		_select.appendChild(k);
 
 
 <?
@@ -73,17 +96,19 @@ function construct_selecteList_ndo_instance(id){
 	{
 	 	$isntance_id = get_ndo_instance_id($nagios_server["name"]);
 ?>
-	var m = document.createElement('option');
-	m.value= "<?=$isntance_id?>";
-	_select.appendChild(m);
-	var n = document.createTextNode("<?=$nagios_server["name"]?>");
-	m.appendChild(n);
-	_select.appendChild(m);
+		var m = document.createElement('option');
+		m.value= "<?=$isntance_id?>";
+		_select.appendChild(m);
+		var n = document.createTextNode("<?=$nagios_server["name"]?>");
+		m.appendChild(n);
+		_select.appendChild(m);
 <?
 	}
 ?>
-	_select.selectedIndex = _default_instance;
-	_advanced_options.appendChild(_select);
+		_select.selectedIndex = _default_instance;
+		_advanced_options.appendChild(_select);
+
+	}
 }
 
 function viewDebugInfo(_str){

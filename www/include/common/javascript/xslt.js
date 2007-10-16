@@ -292,6 +292,8 @@ function Transformation() {
 viewDebugInfo('---->' + document.all[xmlID].readyState);
 viewDebugInfo('---->' + document.all[xsltID].readyState);
 */
+
+document.all[target].innerHTML = '';
                     window.setTimeout(function() {
                         xmlDoc = document.all[xmlID].XMLDocument;
                         xsltDoc = document.all[xsltID].XMLDocument;
@@ -349,6 +351,8 @@ viewDebugInfo('---->' + document.all[xsltID].readyState);
                     var resultDoc;
                     var processor = new XSLTProcessor();
 
+                        document.getElementById(target).innerHTML = '';
+
                     if (typeof processor.transformToFragment == 'function') {
                         // obsolete Mozilla interface
                         resultDoc = document.implementation.createDocument("", "", null);
@@ -367,7 +371,7 @@ viewDebugInfo('---->' + document.all[xsltID].readyState);
                         resultDoc = processor.transformToFragment(xmlDoc, document);
                         callback(t);
                        	mk_pagination(xmlDoc);
-                        document.getElementById(target).innerHTML = '';
+//                        document.getElementById(target).innerHTML = '';
                         document.getElementById(target).appendChild(resultDoc);
                        	set_header_title();
                     }
