@@ -18,8 +18,14 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
+		
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
 
-	$handle = create_file($nagiosCFGPath."servicegroups.cfg", $oreon->user->get_name());
+	$generatedSG = array();
+
+	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -29,6 +35,8 @@ For information : contact@oreon-project.org
 	$str = NULL;
 	while($DBRESULT->fetchInto($serviceGroup))	{
 		$BP = false;
+		$generated = 0;
+		$strDef = "";
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($serviceGroup["sg_id"], $gbArr[5]) ? $BP = true : NULL;
 		else if ($ret["level"]["level"] == 2)
@@ -36,16 +44,16 @@ For information : contact@oreon-project.org
 		else if ($ret["level"]["level"] == 3)
 			$BP = true;
 		if ($BP)	{
-			$ret["comment"]["comment"] ? ($str .= "# '" . $serviceGroup["sg_name"] . "' servicegroup definition " . $i . "\n") : NULL;
+			$ret["comment"]["comment"] ? ($strDef .= "# '" . $serviceGroup["sg_name"] . "' servicegroup definition " . $i . "\n") : NULL;
 			if ($ret["comment"]["comment"] && $serviceGroup["sg_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $serviceGroup["sg_comment"]);
 				foreach ($comment as $cmt)
-					$str .= "# ".$cmt."\n";
+					$strDef .= "# ".$cmt."\n";
 			}
-			$str .= "define servicegroup{\n";
-			if ($serviceGroup["sg_name"])  $str .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
-			if ($serviceGroup["sg_alias"]) $str .= print_line("alias", $serviceGroup["sg_alias"]);
+			$strDef .= "define servicegroup{\n";
+			if ($serviceGroup["sg_name"])  $strDef .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
+			if ($serviceGroup["sg_alias"]) $strDef .= print_line("alias", $serviceGroup["sg_alias"]);
 			// Service members
 			$service = array();
 			$strTemp = NULL;
@@ -75,8 +83,10 @@ For information : contact@oreon-project.org
 							isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
 						else if ($ret["level"]["level"]	 == 3)
 							$BP = true;
-						if ($BP)
+						if ($BP && isHostOnThisInstance($service["host_id"], $tab['id'])){
 							$strTemp != NULL ? $strTemp .= ", ".$service["host_name"].", ".$service["service_description"] : $strTemp = $service["host_name"].", ".$service["service_description"];
+							$generated++;
+						}
 					}
 				}
 			}
@@ -119,8 +129,10 @@ For information : contact@oreon-project.org
 									isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
 								else if ($ret["level"]["level"]	 == 3)
 									$BP = true;
-								if ($BP)
+								if ($BP && isHostOnThisInstance($host["host_host_id"],$tab['id'])){
 									$strTemp != NULL ? $strTemp .= ", ".getMyHostName($host["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($host["host_host_id"]).", ".$service["service_description"];
+									$generated++;
+								}
 							}
 							$DBRESULT3->free();
 						}
@@ -129,14 +141,18 @@ For information : contact@oreon-project.org
 			}
 			$DBRESULT2->free();
 			unset($service);
-			if ($strTemp) $str .= print_line("members", $strTemp);
+			if ($strTemp) $strDef .= print_line("members", $strTemp);
 			unset($strTemp);
-			$str .= "}\n\n";
+			$strDef .= "}\n\n";
 			$i++;
+		}
+		if ($generated){
+			$str .= $strDef;
+			$generatedSG[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];	
 		}
 		unset($serviceGroup);
 	}
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."servicegroups.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/servicegroups.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

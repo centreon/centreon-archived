@@ -19,7 +19,11 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$handle = create_file($nagiosCFGPath."services.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+
+	$handle = create_file($nagiosCFGPath.$tab['id']."/services.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM service ORDER BY `service_register`, `service_description`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -28,6 +32,8 @@ For information : contact@oreon-project.org
 	$str = NULL;
 	while($DBRESULT->fetchInto($service))	{
 		$BP = false;
+		$LinkedToHost = 0;
+		$strDef = "";
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($service["service_id"], $gbArr[4]) ? $BP = true : NULL;
 		else if ($ret["level"]["level"] == 2)
@@ -68,9 +74,10 @@ For information : contact@oreon-project.org
 						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 					else if ($ret["level"]["level"] == 3)
 						$BP = true;
-					if ($BP)	{
+					if ($BP && $generatedHG[$hostGroup["hg_id"]]){
 						$parent = true;
 						$strTMPTemp != NULL ? $strTMPTemp .= ", ".$hostGroup["hg_name"] : $strTMPTemp = $hostGroup["hg_name"];
+						$LinkedToHost++;
 					}
 				}
 				$DBRESULT2->free();
@@ -94,7 +101,10 @@ For information : contact@oreon-project.org
 							$BP = true;
 						if ($BP)	{
 							$parent = true;
-							$strTMPTemp != NULL ? $strTMPTemp .= ", ".$host["host_name"] : $strTMPTemp = $host["host_name"];
+							if (isHostOnThisInstance($host["host_id"], $tab['id'])){
+								$strTMPTemp != NULL ? $strTMPTemp .= ", ".$host["host_name"] : $strTMPTemp = $host["host_name"];
+								$LinkedToHost++;
+							}
 						}
 					}
 					$DBRESULT2->free();
@@ -153,12 +163,17 @@ For information : contact@oreon-project.org
 			if ($command)
 				$strTMP .= print_line("check_command", $command);
 			#
+			
 			if ($service["service_max_check_attempts"] != NULL) $strTMP .= print_line("max_check_attempts", $service["service_max_check_attempts"]);
 			if ($service["service_normal_check_interval"] != NULL) $strTMP .= print_line("normal_check_interval", $service["service_normal_check_interval"]);
 			if ($service["service_retry_check_interval"] != NULL) $strTMP .= print_line("retry_check_interval", $service["service_retry_check_interval"]);
 			if ($service["service_active_checks_enabled"] != 2) $strTMP .= print_line("active_checks_enabled", $service["service_active_checks_enabled"] == 1 ? "1": "0");
 			if ($service["service_passive_checks_enabled"] != 2) $strTMP .= print_line("passive_checks_enabled", $service["service_passive_checks_enabled"] == 1 ? "1": "0");
-			# Check Period
+			
+			/*
+			 * Check Period
+			 */
+			
 			$timePeriod = array();
 			$DBRESULT2 =& $pearDB->query("SELECT tp.tp_name FROM timeperiod tp WHERE tp.tp_id = '".$service["timeperiod_tp_id"]."' LIMIT 1");
 			if (PEAR::isError($DBRESULT2))
@@ -172,7 +187,11 @@ For information : contact@oreon-project.org
 			if ($service["service_obsess_over_service"] != 2) $strTMP .= print_line("obsess_over_service", $service["service_obsess_over_service"] == 1 ? "1": "0");
 			if ($service["service_check_freshness"] != 2) $strTMP .= print_line("check_freshness", $service["service_check_freshness"] == 1 ? "1": "0");
 			if ($service["service_freshness_threshold"] != NULL) $strTMP .= print_line("freshness_threshold", $service["service_freshness_threshold"]);
-			#Event_handler
+			
+			/*
+			 * Event_handler
+			 */
+			 
 			$command = array();
 			$service["command_command_id_arg2"] = str_replace('#BR#', "\\n", $service["command_command_id_arg2"]);
 			$service["command_command_id_arg2"] = str_replace('#T#', "\\t", $service["command_command_id_arg2"]);
@@ -231,7 +250,7 @@ For information : contact@oreon-project.org
 			if ($service["service_stalking_options"]) $strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
 			if (!$service["service_register"]) $strTMP .= print_line("register", "0");
 			$strTMP .= "}\n\n";
-			if ($parent || !$service["service_register"])	{
+			if (!$service["service_register"] || $LinkedToHost)	{
 				$i++;
 				$str .= $strTMP;
 			}
@@ -240,7 +259,7 @@ For information : contact@oreon-project.org
 		}
 	}
 	unset($service);
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."services.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/services.cfg");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);
