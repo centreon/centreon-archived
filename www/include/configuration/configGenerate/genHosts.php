@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	$i = 1;
 	$str = NULL;
 	while($DBRESULT->fetchInto($host))	{
-		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 1) {
+		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 0) {
 			$BP = false;
 			if ($ret["level"]["level"] == 1)
 				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -54,7 +54,11 @@ For information : contact@oreon-project.org
 					$str .= print_line("name", $host["host_name"]);
 				else
 					if ($host["host_name"]) $str .= print_line("host_name", $host["host_name"]);
-				//Template Model Relation
+				
+				/*
+				 * Get Template Model Relation
+				 */
+				
 				if ($host["host_template_model_htm_id"]) {
 					$hostTemplate = array();
 					$DBRESULT2 =& $pearDB->query("SELECT host.host_name FROM host WHERE host.host_id = '".$host["host_template_model_htm_id"]."'");
@@ -65,30 +69,28 @@ For information : contact@oreon-project.org
 					$DBRESULT2->free();
 					unset($hostTemplate);		
 				}
-				//
+				
 				if ($host["host_alias"]) $str .= print_line("alias", $host["host_alias"]);
 				if ($host["host_address"]) $str .= print_line("address", $host["host_address"]);
-				//Parents relation
+				
+				/* 
+				 * Get Parents List for this host
+				 */
+
 				$hostParent = array();
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($hostParent))	{
-					$BP = false;
-					if ($ret["level"]["level"] == 1)
-						array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 2)
-						array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 3)
-						$BP = true;
-					if ($BP)
+					if (verifyIfMustBeGenerated($host["host_id"], $gbArr[2], $ret))
 						$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
 				}
 				$DBRESULT2->free();
-				unset($hostParent);
 				if ($strTemp) $str .= print_line("parents", $strTemp);
+				unset($hostParent);
 				unset($strTemp);
+
 				// Nagios V2 : Hostgroups relation
 				if ($oreon->user->get_version() == 2)	{
 					$hostGroup = array();
@@ -112,17 +114,17 @@ For information : contact@oreon-project.org
 					if ($strTemp) $str .= print_line("hostgroups", $strTemp);
 					unset($strTemp);
 				}
-				//Check Command
+				
+				/*
+				 * Check Command
+				 */
+				 
 				$command = array();
 				$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM command cmd WHERE cmd.command_id = '".$host["command_command_id"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				
-				$host["command_command_id_arg2"] = str_replace('#BR#', "\\n", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#T#', "\\t", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#R#', "\\r", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#S#', "/", $host["command_command_id_arg2"]);
-				$host["command_command_id_arg2"] = str_replace('#BS#', "\\", $host["command_command_id_arg2"]);
+				$host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
 				
 				while($DBRESULT2->fetchInto($command))
 					$str .= print_line("check_command", $command["command_name"].$host["command_command_id_arg1"]);
