@@ -19,16 +19,22 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$handle = create_file($nagiosCFGPath."escalations.cfg", $oreon->user->get_name());
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
+
+	$handle = create_file($nagiosCFGPath.$tab['id']."/escalations.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.* FROM escalation_host_relation ehr, escalation esc WHERE ehr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$escalation = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($escalation))	{
+	while($DBRESULT->fetchInto($escalation)){
 		$BP = false;
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM escalation_host_relation ehr, host WHERE ehr.escalation_esc_id = '".$escalation["esc_id"]."' AND host.host_id = ehr.host_host_id");
+		$strDef = "";
+		$linkedToHost = 0;
+		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM escalation_host_relation ehr, host , ns_host_relation nhr WHERE ehr.escalation_esc_id = '".$escalation["esc_id"]."' AND host.host_id = ehr.host_host_id AND host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab['id']."' ");
 		if (PEAR::isError($DBRESULT2))
 			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 		$host = array();
@@ -41,20 +47,24 @@ For information : contact@oreon-project.org
 				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
 			else if ($ret["level"]["level"] == 3)
 				$BP = true;
-			if ($BP)	
+			if ($BP && isHostOnThisInstance($host["host_id"], $tab['id'])){
+				$linkedToHost++;	
 				$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
+			}
 		}
 		$DBRESULT2->free();			
 		if ($strTemp)	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' host escalation definition ".$i."\n") : NULL;
+			print "-".$host["host_id"]."<br>";
+			$ret["comment"]["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' host escalation definition ".$i."\n") : NULL;
 			if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $escalation["esc_comment"]);
 				foreach ($comment as $cmt)
-					$str .= "# ".$cmt."\n";
+					$strDef .= "# ".$cmt."\n";
 			}
-			$str .= "define hostescalation{\n";
-			$str .= print_line("host_name", $strTemp);			
+			$strDef .= "define hostescalation{\n";
+			$strDef .= print_line("host_name", $strTemp);
+			
 			$cg = array();
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
@@ -71,24 +81,30 @@ For information : contact@oreon-project.org
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
 			}
+			
 			$DBRESULT2->free();
-			if ($strTemp) $str .= print_line("contact_groups", $strTemp);			
-			if ($escalation["first_notification"] != NULL) $str .= print_line("first_notification", $escalation["first_notification"]);
-			if ($escalation["last_notification"] != NULL) $str .= print_line("last_notification", $escalation["last_notification"]);
-			if ($escalation["notification_interval"]!= NULL) $str .= print_line("notification_interval", $escalation["notification_interval"]);
+			if ($strTemp) $strDef .= print_line("contact_groups", $strTemp);			
+			if ($escalation["first_notification"] != NULL) $strDef .= print_line("first_notification", $escalation["first_notification"]);
+			if ($escalation["last_notification"] != NULL) $strDef .= print_line("last_notification", $escalation["last_notification"]);
+			if ($escalation["notification_interval"]!= NULL) $strDef .= print_line("notification_interval", $escalation["notification_interval"]);
+			
 			// Nagios 2
+			
 			if ($oreon->user->get_version() == 2)	{
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				$tp =& $DBRESULT2->fetchRow();				
-				if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
-				if ($escalation["escalation_options1"]) $str .= print_line("escalation_options", $escalation["escalation_options1"]);
+				if ($tp["tp_name"]) $strDef .= print_line("escalation_period", $tp["tp_name"]);
+				if ($escalation["escalation_options1"]) $strDef .= print_line("escalation_options", $escalation["escalation_options1"]);
 				$DBRESULT2->free();
 			}
-			$str .= "}\n\n";
+			$strDef .= "}\n\n";
 			$i++;
 		}
+		if ($linkedToHost)
+			$str .= $strDef;
+		unset($strDef);
 	}
 	unset($escalation);
 	$DBRESULT->free();
@@ -112,11 +128,12 @@ For information : contact@oreon-project.org
 				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 			else if ($ret["level"]["level"] == 3)
 				$BP = true;
-			if ($BP)	
+			if ($BP && $generatedHG[$hg["hg_name"]])	
 				$strTemp != NULL ? $strTemp .= ", ".$hg["hg_name"] : $strTemp = $hg["hg_name"];
 		}
-		$DBRESULT2->free();			
-		if ($strTemp)	{
+		$DBRESULT2->free();
+			
+		if ($strTemp && $generatedHG[$hg["hg_id"]])	{
 			$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' host (group) escalation definition ".$i."\n") : NULL;
 			if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
 				$comment = array();
@@ -147,7 +164,11 @@ For information : contact@oreon-project.org
 			if ($escalation["first_notification"] != NULL) $str .= print_line("first_notification", $escalation["first_notification"]);
 			if ($escalation["last_notification"] != NULL) $str .= print_line("last_notification", $escalation["last_notification"]);
 			if ($escalation["notification_interval"] != NULL) $str .= print_line("notification_interval", $escalation["notification_interval"]);
-			// Nagios 2
+			
+			/*
+			 *  Nagios 2
+			 */
+			
 			if ($oreon->user->get_version() == 2)	{
 				$DBRESULT2 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 				if (PEAR::isError($DBRESULT2))
@@ -238,6 +259,7 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($service))	{
 		$BP = false;
+		$generated = 0;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($service["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
 		else if ($ret["level"]["level"] == 2)
@@ -252,6 +274,7 @@ For information : contact@oreon-project.org
 			while($DBRESULT2->fetchInto($escalation))	{
 				$host = array();
 				$BP = false;
+				$strDef = "";
 				if ($ret["level"]["level"] == 1)
 					array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
 				else if ($ret["level"]["level"] == 2)
@@ -261,16 +284,19 @@ For information : contact@oreon-project.org
 				$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
 				$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 				if ($BP)	{
-					$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
+					$ret["comment"]["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
 					if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
 						$comment = array();
 						$comment = explode("\n", $escalation["esc_comment"]);
 						foreach ($comment as $cmt)
-							$str .= "# ".$cmt."\n";
+							$strDef .= "# ".$cmt."\n";
 					}
-					$str .= "define serviceescalation{\n";			
-					$str .= print_line("host_name", getMyHostName($escalation["host_host_id"]));
-					$str .= print_line("service_description", $service["service_description"]);
+					$strDef .= "define serviceescalation{\n";			
+					$strDef .= print_line("host_name", getMyHostName($escalation["host_host_id"]));
+					if (isHostOnThisInstance($escalation["host_host_id"], $tab['id'])){
+						$generated++;
+					}
+					$strDef .= print_line("service_description", $service["service_description"]);
 					$cg = array();
 					$strTemp = NULL;
 					$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
@@ -288,10 +314,10 @@ For information : contact@oreon-project.org
 							$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
 					}
 					$DBRESULT3->free();
-					if ($strTemp) $str .= print_line("contact_groups", $strTemp);			
-					if ($escalation["first_notification"] != NULL) $str .= print_line("first_notification", $escalation["first_notification"]);
-					if ($escalation["last_notification"] != NULL) $str .= print_line("last_notification", $escalation["last_notification"]);
-					if ($escalation["notification_interval"] != NULL) $str .= print_line("notification_interval", $escalation["notification_interval"]);
+					if ($strTemp) $strDef .= print_line("contact_groups", $strTemp);			
+					if ($escalation["first_notification"] != NULL) $strDef .= print_line("first_notification", $escalation["first_notification"]);
+					if ($escalation["last_notification"] != NULL) $strDef .= print_line("last_notification", $escalation["last_notification"]);
+					if ($escalation["notification_interval"] != NULL) $strDef .= print_line("notification_interval", $escalation["notification_interval"]);
 					// Nagios 2
 					if ($oreon->user->get_version() == 2)	{
 						$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
@@ -299,12 +325,16 @@ For information : contact@oreon-project.org
 							print "DB Error : ".$DBRESULT4->getDebugInfo()."<br>";
 						$tp =& $DBRESULT4->fetchRow();
 						$DBRESULT4->free();		
-						if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);
-						if ($escalation["escalation_options2"]) $str .= print_line("escalation_options", $escalation["escalation_options2"]);
+						if ($tp["tp_name"]) $strDef .= print_line("escalation_period", $tp["tp_name"]);
+						if ($escalation["escalation_options2"]) $strDef .= print_line("escalation_options", $escalation["escalation_options2"]);
 					}
-					$str .= "}\n\n";
+					$strDef .= "}\n\n";
 					$i++;
 				}
+			}
+			if ($generated){
+				$str .= $strDef;
+				$strDef = "";
 			}
 			unset($escalation);
 			$DBRESULT2->free();
@@ -313,7 +343,7 @@ For information : contact@oreon-project.org
 	unset($service);
 	$DBRESULT->free();
 	
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."escalations.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/escalations.cfg");
 	fclose($handle);
 	unset($str);
 	unset($i);
