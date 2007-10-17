@@ -17,9 +17,16 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
+	
 	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
 		mkdir($nagiosCFGPath.$tab['id']."/");
 	}
+	
+	/*
+	 * Create table to liste generated hostGroups
+	 */
+	 
+	$generatedHG = array();
 	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostgroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup ORDER BY `hg_name`");
@@ -30,6 +37,8 @@ For information : contact@oreon-project.org
 	$str = NULL;
 	while($DBRESULT->fetchInto($hostGroup))	{
 		$BP = false;
+		$strDef = NULL;
+		$HGLinkedToHost = 0;
 		if ($ret["level"]["level"] == 1)
 			array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
 		else if ($ret["level"]["level"] == 2)
@@ -37,17 +46,26 @@ For information : contact@oreon-project.org
 		else if ($ret["level"]["level"] == 3)
 			$BP = true;
 		if ($BP)	{
-			$ret["comment"]["comment"] ? ($str .= "# '" . $hostGroup["hg_name"] . "' hostgroup definition " . $i . "\n") : NULL;
+			
+			/*
+			 * Generate a new Hostgroup
+			 */
+			
+			$ret["comment"]["comment"] ? ($strDef .= "# '" . $hostGroup["hg_name"] . "' hostgroup definition " . $i . "\n") : NULL;
 			if ($ret["comment"]["comment"] && $hostGroup["hg_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $hostGroup["hg_comment"]);
 				foreach ($comment as $cmt)
-					$str .= "# ".$cmt."\n";
+					$strDef .= "# ".$cmt."\n";
 			}
-			$str .= "define hostgroup{\n";
-			if ($hostGroup["hg_name"]) $str .= print_line("hostgroup_name", $hostGroup["hg_name"]);
-			if ($hostGroup["hg_alias"]) $str .= print_line("alias", $hostGroup["hg_alias"]);
-			// Host members
+			$strDef .= "define hostgroup{\n";
+			if ($hostGroup["hg_name"])	$strDef .= print_line("hostgroup_name", $hostGroup["hg_name"]);
+			if ($hostGroup["hg_alias"]) $strDef .= print_line("alias", $hostGroup["hg_alias"]);
+			
+			/*
+			 * Host Members
+			 */
+			
 			$host = array();
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
@@ -62,14 +80,19 @@ For information : contact@oreon-project.org
 				else if ($ret["level"]["level"] == 3)
 					$BP = true;
 				if ($BP && isHostOnThisInstance($host["host_id"], $tab['id'])){
+					$HGLinkedToHost++;
 					$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
 				}
 			}
 			$DBRESULT2->free();
 			unset($host);
-			if ($strTemp) $str .= print_line("members", $strTemp);
+			if ($strTemp) $strDef .= print_line("members", $strTemp);
 			unset($strTemp);
-			// Nagios V1 : Contactgroups
+		
+			/*
+			 * Only for Nagios V1 : Contactgroups
+			 */ 
+		
 			if ($oreon->user->get_version() == 1)	{
 				$contactGroup = array();
 				$strTemp = NULL;
@@ -89,10 +112,25 @@ For information : contact@oreon-project.org
 				}
 				$DBRESULT2->free();
 				unset($contactGroup);
-				if ($strTemp) $str .= print_line("contact_groups", $strTemp);
+				if ($strTemp) {
+					$strDef .= print_line("contact_groups", $strTemp);
+					
+				}
 				unset($strTemp);
 			}
-			$str .= "}\n\n";
+			
+			/*
+			 * Generate only if this hostgroup had a host generate on this nagios instance
+			 */
+			 
+			if ($HGLinkedToHost){
+				$generatedHG[$hostGroup["hg_id"]] = $hostGroup["hg_name"];
+				$str .= $strDef;
+				$str .= "}\n\n";
+			}
+			$strDef = "";
+			$HGLinkedToHost = 0;
+			unset($strDef);
 			$i++;
 		}
 		unset($hostGroup);
