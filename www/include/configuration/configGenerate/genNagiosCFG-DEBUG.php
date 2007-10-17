@@ -18,9 +18,13 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
+	
+	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+		mkdir($nagiosCFGPath.$tab['id']."/");
+	}
 
-	$handle = create_file($nagiosCFGPath."nagiosCFG.DEBUG", $oreon->user->get_name(), false);
-	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+	$handle = create_file($nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG", $oreon->user->get_name(), false);
+	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$nagios = $DBRESULT->fetchRow();
@@ -32,33 +36,34 @@ For information : contact@oreon-project.org
 		foreach ($comment as $cmt)
 			$str .= "# ".$cmt."\n";
 	}
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."hosts.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."services.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."misccommands.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."checkcommands.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."contactgroups.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."contacts.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."hostgroups.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hosts.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/services.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/misccommands.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/checkcommands.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/contactgroups.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/contacts.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hostgroups.cfg\n";
 	if ($oreon->user->get_version() == 2)
-		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."servicegroups.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."timeperiods.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."escalations.cfg\n";
-	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."dependencies.cfg\n";	
+		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/servicegroups.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/timeperiods.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/escalations.cfg\n";
+	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/dependencies.cfg\n";	
 	if ($oreon->user->get_version() == 2)	{
-		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."hostextinfo.cfg\n";
-		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath."serviceextinfo.cfg\n";
+		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hostextinfo.cfg\n";
+		$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/serviceextinfo.cfg\n";
 	}
 	# Include for Meta Service the cfg file
-	if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
-		foreach ($files as $filename)	{
-			$cfg = NULL;
-			$file =& basename($filename);
-			$file = explode(".", $file);
-			$cfg .= $file[0];
-			$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$cfg.".cfg\n";
-		}
+	if (isset($tab['localhost']) && $tab['localhost'])
+		if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
+			foreach ($files as $filename)	{
+				$cfg = NULL;
+				$file =& basename($filename);
+				$file = explode(".", $file);
+				$cfg .= $file[0];
+				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
+			}
 	# Include for Module the cfg file
-	if (isset($oreon->modules["osl"]))
+	if (isset($oreon->modules["osl"]) && isset($tab['localhost']) && $tab['localhost'])
 		if ($oreon->modules["osl"]["gen"] && $files = glob("./modules/osl/generate_files/*.php"))
 			foreach ($files as $filename)	{
 				$cfg = NULL;
@@ -70,7 +75,7 @@ For information : contact@oreon-project.org
 	$str .= "resource_file=".$oreon->optGen["oreon_path"].$DebugPath."resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key=>$value)	{
-		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_comment" && $key != "nagios_activate")	{	
+		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
 			if ($key == "aggregate_status_updates" && $value == 2);
 			else if ($key == "enable_notifications" && $value == 2);	
 			else if ($key == "execute_service_checks" && $value == 2);	
@@ -168,7 +173,7 @@ For information : contact@oreon-project.org
 				$str .= $key."=".$value."\n";
 		}
 	}
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath."nagiosCFG.DEBUG");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
 	fclose($handle);
 	$DBRESULT->free();
 	unset($str);

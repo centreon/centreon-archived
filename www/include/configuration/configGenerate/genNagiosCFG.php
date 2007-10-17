@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	}
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/nagios.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$nagios = $DBRESULT->fetchRow();
@@ -74,7 +74,7 @@ For information : contact@oreon-project.org
 	$str .= "resource_file=".$nagios["cfg_dir"]."resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
-		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_comment" && $key != "nagios_activate")	{	
+		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
 			if ($key == "aggregate_status_updates" && $value == 2);
 			else if ($key == "enable_notifications" && $value == 2);	
 			else if ($key == "execute_service_checks" && $value == 2);	
