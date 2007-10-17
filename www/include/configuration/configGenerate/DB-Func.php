@@ -544,7 +544,6 @@ For information : contact@oreon-project.org
 	    	echo $lang['ErrGenFileProb'].$filename;         
 	    	exit;
 		}
-		print $filename . "<br>";
 		$header ? print_header($handle, $name) : NULL;
 	   	return $handle;
 	}
@@ -568,6 +567,26 @@ For information : contact@oreon-project.org
 	    return "\t" . $data1 . "\t\t" . $data2 . "\n";
 	  else if ($len > 27)
 	    return "\t" . $data1 . "\t" . $data2 . "\n";
+	}
+	
+	function removeSpecialChar($str){
+		$str = str_replace('#BR#', "\\n", $str);
+		$str = str_replace('#T#', "\\t", $str);
+		$str = str_replace('#R#', "\\r", $str);
+		$str = str_replace('#S#', "/", $str);
+		$str = str_replace('#BS#', "\\", $str);
+		return $str;
+	}
+	
+	function verifyIfMustBeGenerated($id, $gbArr, $ret){
+		$BP = false;
+		if ($ret["level"]["level"] == 1)
+			array_key_exists($id, $gbArr) ? $BP = true : NULL;
+		else if ($ret["level"]["level"] == 2)
+			array_key_exists($id, $gbArr) ? $BP = true : NULL;
+		else if ($ret["level"]["level"] == 3)
+			$BP = true;	
+		return $BP;
 	}
 	
 /*
