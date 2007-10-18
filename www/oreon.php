@@ -175,14 +175,16 @@ For information : contact@oreon-project.org
 	}
 
 	# Display Legend
-	$lg_path = get_path($path);
-	if (file_exists($lg_path."legend.ihtml")){
-		$tpl = new Smarty();
-		$tpl = initSmartyTpl("./", $tpl);
-		$tpl->assign('lang', $lang);
-		$tpl->display($lg_path."legend.ihtml");
+	if (isset($path) && $path){
+		$lg_path = get_path($path);
+		if (file_exists($lg_path."legend.ihtml")){
+			$tpl = new Smarty();
+			$tpl = initSmartyTpl("./", $tpl);
+			$tpl->assign('lang', $lang);
+			$tpl->display($lg_path."legend.ihtml");
+		}
 	}
-
+	
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div><!-- end contener -->";
 	
 	# Display Footer
