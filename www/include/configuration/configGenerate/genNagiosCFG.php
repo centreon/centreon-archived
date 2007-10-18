@@ -52,18 +52,9 @@ For information : contact@oreon-project.org
 		$str .= "cfg_file=".$nagios["cfg_dir"]."hostextinfo.cfg\n";
 		$str .= "cfg_file=".$nagios["cfg_dir"]."serviceextinfo.cfg\n";
 	}
-	# Include for Meta Service the cfg file
-	if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
-		foreach ($files as $filename)	{
-			$cfg = NULL;
-			$file =& basename($filename);
-			$file = explode(".", $file);
-			$cfg .= $file[0];
-			$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
-		}
-	# Include for Module the cfg file
-	if (isset($oreon->modules["osl"]))
-		if ($oreon->modules["osl"]["gen"] && $files = glob("./modules/osl/generate_files/*.php"))
+	if (isset($tab['localhost']) && $tab['localhost']){
+		# Include for Meta Service the cfg file
+		if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 			foreach ($files as $filename)	{
 				$cfg = NULL;
 				$file =& basename($filename);
@@ -71,6 +62,17 @@ For information : contact@oreon-project.org
 				$cfg .= $file[0];
 				$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
 			}
+		# Include for Module the cfg file
+		if (isset($oreon->modules["osl"]))
+			if ($oreon->modules["osl"]["gen"] && $files = glob("./modules/osl/generate_files/*.php"))
+				foreach ($files as $filename)	{
+					$cfg = NULL;
+					$file =& basename($filename);
+					$file = explode(".", $file);
+					$cfg .= $file[0];
+					$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
+				}
+	}
 	$str .= "resource_file=".$nagios["cfg_dir"]."resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
