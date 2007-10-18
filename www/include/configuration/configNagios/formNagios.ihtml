@@ -23,6 +23,7 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_name.label}</td><td class="FormRowValue">{$form.nagios_name.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Folders</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>

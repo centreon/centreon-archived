@@ -15,9 +15,11 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	if (!isset($oreon))
+		exit();
+
 	function testExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('nagios_id');
@@ -37,29 +39,32 @@ For information : contact@oreon-project.org
 	
 	function enableNagiosInDB ($nagios_id = null)	{
 		if (!$nagios_id) return;
-		global $pearDB;
-		global $oreon;
-		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0'");
+		global $pearDB, $oreon;
+		
+		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'");
+		$data =& $DBRESULT->fetchRow();
+
+		$DBRESULT =& $pearDB->query("UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		
 		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id."'");		
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$oreon->Nagioscfg = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$oreon->Nagioscfg = $DBRESULT->fetchRow();
-		$DBRESULT->free();
 	}
 	
 	function disableNagiosInDB ($nagios_id = null)	{
 		if (!$nagios_id) return;
-		global $pearDB;
-		global $oreon;
-		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id = '".$nagios_id."'");
+		global $pearDB, $oreon;
+		
+		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'");
+		$data =& $DBRESULT->fetchRow();
+		
+		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		
 		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios WHERE nagios_id != '".$nagios_id."'");
 		$maxId =& $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(nagios_id)"]))	{
@@ -77,7 +82,7 @@ For information : contact@oreon-project.org
 	
 	function deleteNagiosInDB ($nagios = array())	{
 		global $pearDB;
-		foreach($nagios as $key=>$value)	{
+		foreach($nagios as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -134,13 +139,11 @@ For information : contact@oreon-project.org
 	}
 	
 	function insertNagios($ret = array())	{
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO cfg_nagios (" .
-				"`nagios_id` , `nagios_name` , `log_file` , `cfg_dir` , `object_cache_file` , `temp_file` , " .
+				"`nagios_id` , `nagios_name` , `nagios_server_id`, `log_file` , `cfg_dir` , `object_cache_file` , `temp_file` , " .
 				"`status_file` , `p1_file`, `aggregate_status_updates` , `status_update_interval` , `nagios_user` , `nagios_group` , " .
 				"`enable_notifications` , `execute_service_checks` , `accept_passive_service_checks` , `execute_host_checks` , " .
 				"`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , " .
@@ -165,6 +168,7 @@ For information : contact@oreon-project.org
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
+        isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != NULL ? $rq .= "'".htmlentities($ret["nagios_server_id"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["log_file"]) && $ret["log_file"] != NULL ? $rq .= "'".htmlentities($ret["log_file"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "'".htmlentities($ret["cfg_dir"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "'".htmlentities($ret["object_cache_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -291,12 +295,19 @@ For information : contact@oreon-project.org
 	
 	function updateNagios($nagios_id = null)	{
 		if (!$nagios_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
+		
+		if (isset($ret["nagios_server_id"])){
+			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET `nagios_server_id` != '".$ret["nagios_server_id"]."'");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
+		
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE cfg_nagios SET ";
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "nagios_name = '".htmlentities($ret["nagios_name"], ENT_QUOTES)."', " : $rq .= "nagios_name = NULL, ";
+        isset($ret["nagios_server_id"]) && $ret["nagios_server_id"] != NULL ? $rq .= "nagios_server_id = '".htmlentities($ret["nagios_server_id"], ENT_QUOTES)."', " : $rq .= "nagios_server_id = NULL, ";
         isset($ret["log_file"]) && $ret["log_file"] != NULL ? $rq .= "log_file = '".htmlentities($ret["log_file"], ENT_QUOTES)."', " : $rq .= "log_file = NULL, ";
 		isset($ret["cfg_dir"]) && $ret["cfg_dir"] != NULL ? $rq .= "cfg_dir = '".htmlentities($ret["cfg_dir"], ENT_QUOTES)."',  " : $rq .= "cfg_dir = NULL, ";
         isset($ret["object_cache_file"]) && $ret["object_cache_file"] != NULL ? $rq .= "object_cache_file = '".htmlentities($ret["object_cache_file"], ENT_QUOTES)."',  " : $rq .= "object_cache_file = NULL, ";

@@ -40,6 +40,15 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
+	
+	# Get all nagios servers
+	$nagios_server = array(NULL => "");
+	$DBRESULT =& $pearDB->query("SELECT `name`, `id` FROM `nagios_server`");
+	for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++)
+		$nagios_server[$ns["id"]] = $ns["name"];
+	$DBRESULT->free();
+	unset($ns);
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -73,6 +82,8 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'nagios_activate', null, $lang["enable"], '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'nagios_activate', null, $lang["disable"], '0');
 	$form->addGroup($nagTab, 'nagios_activate', $lang["status"], '&nbsp;');	
+	
+	$form->addElement('select', 'nagios_server_id', $lang["nagios_server"], $nagios_server);
 	
 	## Part 1
 	$form->addElement('text', 'log_file', $lang["nag_logFile"], $attrsText2);

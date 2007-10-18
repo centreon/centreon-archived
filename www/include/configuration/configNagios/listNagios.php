@@ -31,6 +31,15 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
+	# nagios servers comes from DB 
+	$nagios_servers = array(NULL => "");
+	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($nagios_server = $DBRESULT->fetchRow())
+		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
+	$DBRESULT->free();
+
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
@@ -44,15 +53,16 @@ For information : contact@oreon-project.org
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
+	$tpl->assign("headerMenu_instance", $lang['m_nagiosServers']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#Nagios list
 	if ($search)
-		$rq = "SELECT nagios_id, nagios_name, nagios_comment, nagios_activate FROM cfg_nagios WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id FROM cfg_nagios WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT nagios_id, nagios_name, nagios_comment, nagios_activate FROM cfg_nagios ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id FROM cfg_nagios ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -76,6 +86,7 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$nagios["nagios_name"],
+						"RowMenu_instance"=>$nagios_servers[$nagios["nagios_server_id"]],
 						"RowMenu_link"=>"?p=".$p."&o=c&nagios_id=".$nagios['nagios_id'],
 						"RowMenu_desc"=>substr($nagios["nagios_comment"], 0, 40),
 						"RowMenu_status"=>$nagios["nagios_activate"] ? $lang['enable'] : $lang['disable'],
