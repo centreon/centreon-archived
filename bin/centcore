@@ -1,0 +1,227 @@
+#! /usr/bin/perl -w
+###################################################################
+# Oreon is developped with GPL Licence 2.0 
+#
+# GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#
+# Developped by : Julien Mathis - Romain Le Merlus
+#
+###################################################################
+# This program is free software; you can redistfribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+#    For information : contact@merethis.com
+####################################################################
+#
+# Script init
+#
+
+use strict;
+use POSIX qw(mkfifo);
+use DBI;
+use Net::SSH::Perl;
+use Net::SCP;
+
+use vars qw($debug $LOG %status $generalcounter $stop);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
+use vars qw($con);
+
+$debug = 0;
+my $installedPath = "/srv/oreon/ODS/";
+$LOG = $installedPath."var/centcore.log";
+my $PID = $installedPath."var/centcore.pid";
+my $FIFO = "/srv/oreon/var/centcore";
+$stop = 1;
+
+# Include Configuration Data
+require $installedPath."etc/conf.pm";
+
+sub catch_zap {
+	$stop = 0;
+	writeLogFile("Receiving order to stop...\n");
+}
+
+sub writeLogFile($){
+	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+	print LOG time()." - ".$_[0];
+	close LOG or warn $!;
+}
+
+# Starting ODS Engine
+writeLogFile("Starting ODS engine...\n");
+writeLogFile("PID : ".$$."\n");
+
+# checking if pid file exists.
+if (-x $PID){
+	writeLogFile("ods already runnig. can't launch again....\n");
+	exit(2);
+}
+
+# Writing PID
+open (PID, ">> ".$PID) || print "can't write PID : $!";
+print PID $$ ;
+close PID or warn $!;
+
+# Set signals
+$SIG{INT}  		= \&catch_zap;
+$SIG{'CHLD'} 	= 'IGNORE' ;
+
+# Functions
+
+sub getServerConfig($){
+	CheckMySQLConnexion();
+	my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."'");
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	return $sth2->fetchrow_hashref();
+}
+
+sub CheckMySQLConnexion(){
+	my $flag = 0;
+	while (!defined($con) || !$con->ping){
+		if (!defined($con)) {
+			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($con)) {
+				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+				sleep(2);
+			}
+		} else {
+			sleep(2);
+			undef($con);
+			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
+			if (defined($con)) {
+				$flag = 1;
+				writeLogFile("DataBase became UP !\n");
+			}	
+		}
+	}
+	undef($flag);
+}
+
+
+sub createSSHConnexion($){
+	if (!defined($_[0]))
+		return(-1);
+	my $data = getServerConfig($_[0]);
+	my $ssh = Net::SSH::Perl->new($data->{'ns_ip_address'});
+	$ssh->login($data->{'user'}, $data->{'password'});
+	undef($data);
+	return($ssh);
+}
+
+
+sub sendExternalCommand($$){
+	my $ssh = createSSHConnexion($_[0]);
+    my($stdout, $stderr, $exit) = $ssh->cmd("echo \"".$_[1]."\" >> /srv/nagios/var/rw/nagios.cmd");
+    print " RESULT : ".$stdout . "\n";
+}
+
+sub sendConfigFile($){
+	my $ssh = createSSHConnexion($_[0]);
+    opendir(DIR, "/srv/oreon/filesGeneration/nagiosCFG/2/");
+	while (my $file = readdir(DIR)){
+		if ($file ne "." || $file ne ".."){
+		    print "---$file---------------------------\n";
+		    my ($stdout, $stderr, $exit) = $ssh->cmd("/usr/bin/rm -f /srv/nagios/etc/$file");
+		    open(FILE, "< /srv/oreon/filesGeneration/nagiosCFG/2/$file");
+		    while (<FILE>){
+				my $str = $_;
+				$str =~ s/\n//g;
+				($stdout, $stderr, $exit) = $ssh->cmd("echo \"".$str."\" >> /srv/nagios/etc/$file");
+				undef($str);
+			}
+		}
+	}
+}
+
+sub restartNagios($){
+	my $ssh = createSSHConnexion($_[0]);
+   	my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios restart");
+    print " RESULT : ".$stdout . "\n";
+}
+
+sub reloadNagios($){
+	my $ssh = createSSHConnexion($_[0]);
+    my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios reload");
+    print " RESULT : ".$stdout . "\n";
+}
+
+sub stopNagios($){
+	my $ssh = createSSHConnexion($_[0]);
+    my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios stop");
+    print " RESULT : ".$stdout . "\n";
+}
+
+sub startNagios($){
+	my $ssh = createSSHConnexion($_[0]);
+    my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios start");
+    print " RESULT : ".$stdout . "\n";
+}
+
+sub NagioStat($){
+	my $ssh = createSSHConnexion($_[0]);
+    my($stdout, $stderr, $exit) = $ssh->cmd("/srv/nagios/bin/nagiostats");
+    print " RESULT : ".$stdout . "\n";
+}
+
+sub CheckPerf($){
+	print "";
+}
+
+sub testConfig($){
+	my $ssh = createSSHConnexion($_[0]);
+    my($stdout, $stderr, $exit) = $ssh->cmd("/srv/nagios/bin/nagios -v /srv/nagios/etc/nagios.cfg");
+    print " RESULT : ".$stdout . "\n";
+}
+
+
+sub parseRequest($){
+	return if (!$_[0]);
+	if ($_[0] =~ /RESTART\:([0-9]*)/){
+		restartNagios($1);
+	} elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
+		reloadNagios($1);
+	} elsif ($_[0] =~ /SENDCFGFILE\:([0-9]*)/){
+		sendConfigFile($1);
+	} elsif ($_[0] =~ /STOP\:([0-9]*)/){
+		stopNagios($1);
+	} elsif ($_[0] =~ /PERF\:([0-9]*)/){
+		CheckPerf($1);
+	} elsif ($_[0] =~ /NAGIOSTAT\:([0-9]*)/){
+		NagioStat($1);
+	} elsif ($_[0] =~ /TEST\:([0-9]*)/){
+		testConfig($1);
+	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:([.]*)/){
+		sendExternalCommand($1, $2);
+	}
+}
+
+unless (-p $FIFO) {
+    unlink $FIFO;
+    POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
+}
+
+if (-p $FIFO){
+    unlink $FIFO;
+}
+
+unless (-p $FIFO) {
+    unlink $FIFO;
+    require POSIX;
+    POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
+}
+
+while (1) {
+    open (FIFO, "< $FIFO") or die("");
+    while (<FIFO>){
+        parseRequest($_);
+    }
+}
+close FIFO;
+exit();
