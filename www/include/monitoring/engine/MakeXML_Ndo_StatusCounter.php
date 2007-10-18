@@ -39,7 +39,7 @@ For information : contact@oreon-project.org
 	## pearDB init
 	require_once 'DB.php';	
 
-	include_once($oreonPath . "www/oreon.conf.php");
+	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 
 	/* Connect to oreon DB */

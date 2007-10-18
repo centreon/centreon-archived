@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
 		get_error('please set your oreonPath');
 	/* security end 1/2 */
 
-	include_once($oreonPath . "www/oreon.conf.php");
+	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 
 	/* security check 2/2*/
