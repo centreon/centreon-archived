@@ -209,13 +209,15 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
-				if ((isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']) && $tab['locahost']){
-					$msg .= "<br>";
-					foreach (glob($nagiosCFGPath ."*.cfg") as $filename) {
-						$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
-						$filename = array_pop(explode("/", $filename));
-						$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
-					}
+				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
+					if (isset($tab['localhost']) && $tab['localhost'] == 1){
+						$msg .= "<br>";
+						foreach (glob($nagiosCFGPath.$tab['id']."/*.cfg") as $filename) {
+							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
+							$filename = array_pop(explode("/", $filename));
+							$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
+						}
+					}	
 				}
 			}
 		}
@@ -250,7 +252,6 @@ For information : contact@oreon-project.org
 		$tpl->assign('msg', $msg);
 
 	# Apply a template definition
-
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
