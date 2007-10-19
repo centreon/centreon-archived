@@ -34,7 +34,7 @@ use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_d
 use vars qw($con);
 
 $debug = 0;
-my $installedPath = "/srv/oreon/ODS/";
+my $installedPath = "/srv/oreon/";
 $LOG = $installedPath."var/centcore.log";
 my $PID = $installedPath."var/centcore.pid";
 my $FIFO = "/srv/oreon/var/centcore";
@@ -104,10 +104,12 @@ sub CheckMySQLConnexion(){
 	undef($flag);
 }
 
+#
+# Function who create a SSH connexion with a remote server : poller
+#
 
 sub createSSHConnexion($){
-	if (!defined($_[0]))
-		return(-1);
+	return(-1) if (!defined($_[0]));
 	my $data = getServerConfig($_[0]);
 	my $ssh = Net::SSH::Perl->new($data->{'ns_ip_address'});
 	$ssh->login($data->{'user'}, $data->{'password'});
@@ -115,6 +117,10 @@ sub createSSHConnexion($){
 	return($ssh);
 }
 
+#
+# Send an external command on a remote server.
+# Param : id_remote_server, external command
+#
 
 sub sendExternalCommand($$){
 	my $ssh = createSSHConnexion($_[0]);
@@ -122,17 +128,26 @@ sub sendExternalCommand($$){
     print " RESULT : ".$stdout . "\n";
 }
 
+#
+# Send config files to a remote server 
+#
+
 sub sendConfigFile($){
 	my $ssh = createSSHConnexion($_[0]);
-    opendir(DIR, "/srv/oreon/filesGeneration/nagiosCFG/2/");
+    opendir(DIR, "/srv/oreon/filesGeneration/nagiosCFG/$_[0]/");
 	while (my $file = readdir(DIR)){
-		if ($file ne "." || $file ne ".."){
+		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
 		    print "---$file---------------------------\n";
-		    my ($stdout, $stderr, $exit) = $ssh->cmd("/usr/bin/rm -f /srv/nagios/etc/$file");
+		    my ($stdout, $stderr, $exit) = $ssh->cmd("rm -f /srv/nagios/etc/$file");
+			print "Can\'t remove file : $file\n" if (!$exit);
 		    open(FILE, "< /srv/oreon/filesGeneration/nagiosCFG/2/$file");
 		    while (<FILE>){
 				my $str = $_;
 				$str =~ s/\n//g;
+				$str =~ s/\"/\\\"/g;
+				$str =~ s/\'/\\\'/g;
+				$str =~ s/\$/\\\$/g;
+				print "echo \"".$str."\" >> /srv/nagios/etc/$file\n";
 				($stdout, $stderr, $exit) = $ssh->cmd("echo \"".$str."\" >> /srv/nagios/etc/$file");
 				undef($str);
 			}
