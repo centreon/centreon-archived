@@ -477,6 +477,7 @@ $lang['nagios_add'] = "Add a Nagios Configuration File";
 $lang['nagios_change'] = "Modify a Nagios Configuration File";
 $lang['nagios_view'] = "View a Nagios Configuration File";
 $lang['nagios_infos'] = "Informations";
+$lang['nagios_server'] = "Server Nagios configured";
 $lang['nagios_name'] = "Configuration Name";
 $lang['nagios_comment'] = "Comments";
 

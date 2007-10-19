@@ -16,12 +16,12 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	if (!file_exists("./centreon.conf.php"))
+	if (!file_exists("/srv/oreon/etc/centreon.conf.php"))
 		header("Location: ./install/setup.php");
-	else if (file_exists("./centreon.conf.php") && is_dir('install'))
+	else if (file_exists("/srv/oreon/etc/centreon.conf.php") && is_dir('install'))
 		header("Location: ./install/upgrade.php");
 	else
-		require_once ("./centreon.conf.php");
+		require_once ("/srv/oreon/etc/centreon.conf.php");
 
 	require_once ("$classdir/Session.class.php");
 	require_once ("$classdir/Oreon.class.php");

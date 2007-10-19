@@ -71,8 +71,8 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'information', $lang['ns_infos']);
 	$form->addElement('text', 'name', $lang["ns_name"], $attrsText);
 	$form->addElement('text', 'ns_ip_address', $lang["ns_ip_address"], $attrsText);
-	$form->addElement('text', 'ns_http_suffix', $lang["ns_http_suffix"], $attrsText);
-	$form->addElement('text', 'ns_http_port', $lang["ns_http_port"], $attrsText);
+	$form->addElement('text', 'user', $lang["user"], $attrsText);
+	$form->addElement('text', 'password', $lang["n2db_db_pass"], $attrsText);
 	$form->addElement('text', 'ns_key', $lang["ns_key"], $attrsText3);
 		
 	$Tab = array();

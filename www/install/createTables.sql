@@ -175,6 +175,59 @@ CREATE TABLE `cfg_nagios` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `cfg_ndo2db`
+--
+
+CREATE TABLE `cfg_ndo2db` (
+`id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`description` VARCHAR( 255 ) NULL ,
+`ns_nagios_server` INT NULL ,
+`socket_type` VARCHAR( 255 ) NULL ,
+`socket_name` VARCHAR( 255 ) NULL ,
+`tcp_port` INT NULL ,
+`db_type` VARCHAR( 255 ) NULL ,
+`db_host` VARCHAR( 255 ) NULL ,
+`db_name` VARCHAR( 255 ) NULL ,
+`db_port` VARCHAR( 255 ) NULL ,
+`db_prefix` VARCHAR( 255 ) NULL ,
+`db_user` VARCHAR( 255 ) NULL ,
+`db_pass` VARCHAR( 255 ) NULL ,
+`max_timedevents_age` VARCHAR( 255 ) NULL ,
+`max_systemcommands_age` VARCHAR( 255 ) NULL ,
+`max_servicechecks_age` VARCHAR( 255 ) NULL ,
+`max_hostchecks_age` VARCHAR( 255 ) NULL ,
+`max_eventhandlers_age` VARCHAR( 255 ) NULL ,
+`activate` ENUM( '0', '1' ) NULL
+) ENGINE = innodb CHARACTER SET latin1 COLLATE latin1_general_ci COMMENT = 'configuration base for ndo daemon';
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cfg_ndomod`
+--
+
+CREATE TABLE `cfg_ndomod` (
+`id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`description` VARCHAR( 255 ) NULL ,
+`ns_nagios_server` INT NULL ,
+`instance_name` VARCHAR( 255 ) NULL ,
+`output_type` VARCHAR( 255 ) NULL ,
+`output` VARCHAR( 255 ) NULL ,
+`tcp_port` VARCHAR( 255 ) NULL ,
+`output_buffer_items` INT NULL ,
+`file_rotation_interval` INT NULL ,
+`file_rotation_command` INT NULL ,
+`file_rotation_timeout` INT NULL ,
+`reconnect_interval` INT NULL ,
+`reconnect_warning_interval` INT NULL ,
+`data_processing_options` INT NULL ,
+`config_output_options` INT NULL,
+`activate` ENUM( '0', '1' ) NULL
+) ENGINE = innodb CHARACTER SET latin1 COLLATE latin1_general_ci COMMENT = 'ndomog table config';
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `cfg_perfparse`
 --
 
@@ -1372,7 +1425,14 @@ CREATE TABLE `nagios_macro` (
 CREATE TABLE `nagios_server` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(40) default NULL,
+  `localhost` enum('0','1') default NULL,
   `last_restart` int(11) default NULL,
+  `ns_ip_address` varchar(255) default NULL,
+  `ns_http_suffix` varchar(255) default NULL,
+  `ns_http_port` varchar(255) NOT NULL,
+  `ns_key` varchar(255) default NULL,
+  `ns_activate` enum('1','0') default '1',
+  `ns_status` enum('0','1','2','3','4') default '0',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

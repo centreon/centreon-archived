@@ -155,6 +155,7 @@ INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `to
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_escalation', NULL, 6, 604, 40, 1, NULL, NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_dependencies', NULL, 6, 605, 50, 1, NULL, NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_nagios', NULL, 6, 607, 70, 1, NULL, NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_centreon', NULL, 6, 609, 90, 1, NULL, NULL, '0', '0', '1');
 
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_host', './img/icones/16x16/server_network.gif', 601, 60101, 10, 1, './include/configuration/configObject/host/host.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_hostgroup', './img/icones/16x16/clients.gif', 601, 60102, 20, 1, './include/configuration/configObject/hostgroup/hostGroup.php', NULL, '0', '0', '1');
@@ -215,6 +216,13 @@ INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `to
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_commandMisc', './img/icones/16x16/gear.gif', '608', '60803', '30', NULL , './include/configuration/configObject/command/command.php', '&type=3', '0', '0', '1');
 
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'm_plugins', './img/icones/16x16/window_gear.gif' , '608', '60804', '40', NULL , './include/configuration/configPlugins/Plugins.php', NULL , '0', '0', '1');
+
+# NDO
+
+INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` ,`topology_show`) VALUES ('', 'm_nagiosServers', './img/icones/16x16/text_code_colored.gif', 609, 60901, 10, 1, './include/configuration/configServers/servers.php', NULL , '0', '0', '1');
+INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` ,`topology_show`) VALUES ('', 'm_ndo2dbCFG', './img/icones/16x16/text_code_colored.gif', 609, 60902, 20, 1, './include/configuration/configNdo2db/ndo2db.php', NULL , '0', '0', '1');
+INSERT INTO `topology` ( `topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` ,`topology_show`) VALUES ('', 'm_ndo2dbCFG', './img/icones/16x16/text_code_colored.gif', 609, 60903, 30, 1, './include/configuration/configNdomod/ndomod.php', NULL , '0', '0', '1');
+
 
 --
 -- Options
@@ -467,3 +475,6 @@ INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`)
 INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', '60703', 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', '60703', 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 
+INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', '60902', 'a', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', '60902', 'w', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', '60902', 'c', './include/common/javascript/changetab.js', 'initChangeTab');
