@@ -69,9 +69,9 @@ elif [ -f /etc/init.d/functions ]; then
 	. /etc/init.d/functions
 fi
 
-prefix=@OREON_PATH@/ODS
+prefix=@OREON_PATH@/
 exec_prefix=${prefix}
-ODSBin=${exec_prefix}/ods
+ODSBin=${exec_prefix}/bin/ods
 ODSCfgFile=${prefix}/etc/conf.pm
 ODSVarDir=${prefix}/var/
 ODSRunFile=${prefix}/var/ods.pid
