@@ -6,23 +6,18 @@
 
 <xsl:template match="/">
 
-
-
-
-
-
 	<xsl:for-each select="//hg">
 
 <table id="ListTable">
 	<tr class='list_lvl_1'>
 
 			<xsl:if test="//i/s = 1">
-	<td colspan="4">
+	<td colspan="4" id="hostGroup_name">
 		<xsl:value-of select="hgn"/>
 	</td>
 			</xsl:if>
 			<xsl:if test="//i/s = 0">
-	<td colspan="3">
+	<td colspan="3" id="hostGroup_name">
 		<xsl:value-of select="hgn"/>
 	</td>
 			</xsl:if>
@@ -32,10 +27,10 @@
 		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"  width="200"></td>
 
 			<xsl:if test="//i/s = 1">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state" width="40">Status</td>
 			</xsl:if>
 
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
 	</tr>
 
 	<xsl:for-each select="l">

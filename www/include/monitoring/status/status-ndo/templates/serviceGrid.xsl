@@ -11,7 +11,7 @@
 
 	<xsl:for-each select="//i">
 			<xsl:if test="s = 1">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state"  width="70">Status</td>
+				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"  width="70">Status</td>
 			</xsl:if>
 	</xsl:for-each>
 

@@ -48,6 +48,13 @@
 					</xsl:if>
 				</td>
 				<td class="ListColLeft">
+
+						<xsl:element name="a">
+						  	<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
+  							web action
+						</xsl:element>
+
+
 					<xsl:if test="hn/@none = 0">
 						<xsl:if test="ha = 1">
 								<xsl:element name="img">
@@ -123,7 +130,7 @@
 	            <td class="ListColCenter">
 	            	<xsl:value-of select="ca"/>
 	            </td>
-	            <td class="ListColRight" >
+	            <td class="ListColLeft" >
 	            	<xsl:value-of select="po"/>
 	            </td>
 

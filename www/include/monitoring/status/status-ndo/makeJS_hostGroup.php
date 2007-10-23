@@ -71,16 +71,15 @@ function set_header_title(){
 		h.innerHTML = "<?=$lang['m_mon_hostgroup']?>";
 	  	h.indice = 'hostGroup_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('host_status');
 		h.innerHTML = '<?=$lang['m_mon_host_stt_ttl']?>';
 	  	h.indice = 'host_status';
-	  	h.onclick=function(){change_type_order(this.indice)};
 
 		var h = document.getElementById('service_status');
 		h.innerHTML = '<?=$lang['m_mon_svc_stt_ttl']?>';
 	  	h.indice = 'service_status';
-	  	h.onclick=function(){change_type_order(this.indice)};
 	
 		
 		var h = document.getElementById(_sort_type);

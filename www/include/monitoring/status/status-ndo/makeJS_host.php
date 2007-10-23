@@ -70,33 +70,39 @@ function set_header_title(){
 		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('current_state');
 		h.innerHTML = '<?=$lang['mon_status']?>';
 	  	h.indice = 'current_state';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 
 		var h = document.getElementById('ip');
 		h.innerHTML = '<?=$lang['m_mon_address_ip']?>';
 	  	h.indice = 'ip';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 	
 	
 		var h = document.getElementById('last_state_change');
 		h.innerHTML = '<?=$lang['mon_duration']?>';
 	  	h.indice = 'last_state_change';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('last_check');
 		h.innerHTML = '<?=$lang['mon_last_check']?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 	
 	
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?=$lang['mon_status_information']?>';
 	  	h.indice = 'plugin_output';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 		
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");

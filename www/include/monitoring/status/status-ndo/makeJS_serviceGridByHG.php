@@ -71,16 +71,32 @@ function set_header_title(){
 	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
 
 	if(document.getElementById('host_name')){
+
+/*
+		if(document.getElementById('hostGroup_name')){
+			var h = document.getElementById('hostGroup_name');
+		  	h.indice = 'hostGroup_name';
+		  	h.onclick=function(){change_type_order(this.indice)};
+			h.style.cursor = "pointer";
+		}
+*/		
 		var h = document.getElementById('host_name');
 		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
+		h.style.cursor = "pointer";
 		
-		var h = document.getElementById('services');
+		if(document.getElementById('current_state')){
+			var h = document.getElementById('current_state');
+			h.innerHTML = '<?=$lang['mon_status']?>';
+		  	h.indice = 'current_state';
+		  	h.onclick=function(){change_type_order(this.indice)};
+			h.style.cursor = "pointer";
+		}	
+	
+		var h = document.getElementById('service_description');
 		h.innerHTML = '<?=$lang['m_mon_services']?>';
-	  	h.indice = 'services';
-	  	h.onclick=function(){change_type_order(this.indice)};
+	  	h.indice = 'service_description';
 	
 	
 		var h = document.getElementById(_sort_type);

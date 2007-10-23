@@ -18,7 +18,11 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
-		
+	
+	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
+	if($order == 'sort_asc') 
+		$order = 'ASC';
+			
 	$pagination = "maxViewMonitoring";
 	include("./include/common/autoNumLimit.php");
 	
@@ -29,7 +33,6 @@ For information : contact@oreon-project.org
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
 
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 //	!isset($_GET["limit"]) ? $limit = 0 : $limit = $_GET["limit"];
@@ -76,10 +79,6 @@ For information : contact@oreon-project.org
 
 
 	$tpl->assign("lang", $lang);
-
-	$tpl->assign("order", strtolower($order));
-	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
-	$tpl->assign("tab_order", $tab_order);
 
 
 	##Toolbar select $lang["lgd_more_actions"]

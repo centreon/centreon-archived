@@ -72,39 +72,37 @@ function set_header_title(){
 		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
+		h.style.cursor = "pointer";
 		
 		var h = document.getElementById('service_description');
 		h.innerHTML = '<?=$lang['m_mon_services']?>';
 	  	h.indice = 'service_description';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
-		var h = document.getElementById('current_state');
-		h.innerHTML = '<?=$lang['mon_status']?>';
-	  	h.indice = 'current_state';
-	  	h.onclick=function(){change_type_order(this.indice)};
-	
-	
-		var h = document.getElementById('last_state_change');
-		h.innerHTML = '<?=$lang['mon_duration']?>';
-	  	h.indice = 'last_state_change';
-	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
+		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('last_check');
 		h.innerHTML = '<?=$lang['mon_last_check']?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
-		var h = document.getElementById('current_attempt');
-		h.innerHTML = '<?=$lang['m_mon_try']?>';
-	  	h.indice = 'current_attempt';
+		h.style.cursor = "pointer";
+		h.style.cursor = "pointer";
+
+		var h = document.getElementById('next_check');
+		h.innerHTML = '<?=$lang['mon_next_check']?>';
+	  	h.indice = 'next_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
+		h.style.cursor = "pointer";
 	
-		var h = document.getElementById('plugin_output');
-		h.innerHTML = '<?=$lang['mon_status_information']?>';
-	  	h.indice = 'plugin_output';
+		var h = document.getElementById('active_check');
+		h.innerHTML = '<?=$lang['mon_active_check']?>';
+	  	h.indice = 'active_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
-	
+		h.style.cursor = "pointer";
+		h.style.cursor = "pointer";
+
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
 		if(_order == 'ASC')
@@ -180,7 +178,7 @@ function goM(_time_reload,_sid,_o){
 
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceSchedule.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?=$host_name?>'+'&instance='+_instance+'&nc='+_nc;
+	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceSchedule.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?=$host_name?>'+'&instance='+_instance+'&nc='+_nc+'&enable=<?=urlencode($lang["enable"])?>'+'&disable=<?=urlencode($lang["disable"])?>';
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");

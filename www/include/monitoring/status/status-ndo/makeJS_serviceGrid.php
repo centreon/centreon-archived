@@ -75,14 +75,16 @@ function set_header_title(){
 		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
+		h.style.cursor = "pointer";
 		
-		var h = document.getElementById('services');
-		h.innerHTML = '<?=$lang['m_mon_services']?>';
-	  	h.indice = 'services';
+
+		if(document.getElementById('current_state')){
+		var h = document.getElementById('current_state');
+		h.innerHTML = '<?=$lang['mon_status']?>';
+	  	h.indice = 'current_state';
 	  	h.onclick=function(){change_type_order(this.indice)};
-	
-	
+		h.style.cursor = "pointer";
+		}	
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
 		if(_order == 'ASC')

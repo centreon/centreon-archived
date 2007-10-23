@@ -76,13 +76,11 @@ function set_header_title(){
 		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
+		h.style.cursor = "pointer";
 	
-		
 		var h = document.getElementById('services');
 		h.innerHTML = '<?=$lang['m_mon_services']?>';
 	  	h.indice = 'services';
-	  	h.onclick=function(){change_type_order(this.indice)};
-	
 	
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");

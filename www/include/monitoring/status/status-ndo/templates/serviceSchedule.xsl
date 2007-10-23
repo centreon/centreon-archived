@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:variable name="i" select="//i"/>
 <xsl:template match="/">
@@ -8,7 +8,6 @@
 		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="next_check">next check</td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="active_check">active_check</td>
 
@@ -100,10 +99,6 @@
 							  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 							</xsl:element>
 					</xsl:element>
-				</td>
-
-				<td class="ListColCenter" style="white-space:nowrap;">
-					<xsl:value-of select="d"/>
 				</td>
 
 	            <td class="ListColCenter">

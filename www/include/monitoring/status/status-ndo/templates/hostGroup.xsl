@@ -29,7 +29,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="huc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="hu"/>UP
+						<xsl:value-of select="hu"/>&nbsp;UP
 						</span>&nbsp;
 					</xsl:if>
 
@@ -38,7 +38,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="hdc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="hd"/>DOWN
+						<xsl:value-of select="hd"/>&nbsp;DOWN
 						</span>&nbsp;
 					</xsl:if>
 					<xsl:if test="hur >= 1">					
@@ -46,7 +46,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="hurc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="hur"/>UNREACHABLE
+						<xsl:value-of select="hur"/>&nbsp;UNREACHABLE
 						</span>&nbsp;
 					</xsl:if>
 				</td>
@@ -57,7 +57,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="skc"/>;
     						</xsl:attribute>
-							<xsl:value-of select="sk"/>OK
+							<xsl:value-of select="sk"/>&nbsp;OK
 						</span>&nbsp;
 					</xsl:if>
 
@@ -67,7 +67,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="swc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="sw"/>WARNING
+						<xsl:value-of select="sw"/>&nbsp;WARNING
 						</span>&nbsp;
 					</xsl:if>
 					<xsl:if test="sc >= 1">
@@ -75,7 +75,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="scc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="sc"/>CRITICAL
+						<xsl:value-of select="sc"/>&nbsp;CRITICAL
 						</span>&nbsp;
 					</xsl:if>
 					<xsl:if test="su >= 1">
@@ -83,7 +83,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="suc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="su"/>CRITICAL
+						<xsl:value-of select="su"/>&nbsp;PENDING
 						</span>&nbsp;
 					</xsl:if>
 					<xsl:if test="sp >= 1">
@@ -91,7 +91,7 @@
 							<xsl:attribute name="style">
 								background-color:<xsl:value-of select="spc"/>;
     						</xsl:attribute>
-						<xsl:value-of select="sp"/>PENDING
+						<xsl:value-of select="sp"/>&nbsp;PENDING
 						</span>
 					</xsl:if>
 
