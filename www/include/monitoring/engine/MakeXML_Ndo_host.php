@@ -46,6 +46,8 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -166,8 +168,24 @@ For information : contact@oreon-project.org
 	    }
 	}
 
+	/* LCA */
+	// check is admin
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$res1->fetchInto($user);
+	$user_id = $user["user_id"];
+	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$res2->fetchInto($admin);
+	$is_admin = 0;
+	$is_admin = $admin["contact_admin"];
 
-	include_once($oreonPath . "www/DBndoConnect.php");
+	// if is admin -> lca
+	if(!$is_admin){
+		$_POST["sid"] = $sid;
+		$lca =  getLCAHostByName($pearDB);
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+	}
+
+
 	$service = array();
 	$host_status = array();
 	$service_status = array();
@@ -207,10 +225,19 @@ For information : contact@oreon-project.org
 			" nhs.output," .
 			" unix_timestamp(nhs.last_check) as last_check," .
 			" nh.address," .
-			" no.name1 as host_name" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh " .
+			" no.name1 as host_name," .
+			" he.action_url," .
+			" he.notes_url," .
+			" he.icon_image," .
+			" he.icon_image_alt" .
+			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh, ".$general_opt["ndo_base_prefix"]."_hostextinfo he" .
 			" WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
-			" AND no.name1 not like 'OSL_Module'";
+			" AND no.name1 not like 'OSL_Module'".
+			" AND no.is_active = 0 AND no.objecttype_id = 1 AND nh.config_type = 1";
+
+		if(!$is_admin)
+			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+
 
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
@@ -224,16 +251,16 @@ For information : contact@oreon-project.org
 	
 	
 	switch($sort_type){
-			case 'host_name' : $rq1 .= " order by no.name1 ". $order; break;
-			case 'current_state' : $rq1 .= " order by nss.current_state,no.name1 ". $order; break;
-			case 'last_state_change' : $rq1 .= " order by nss.last_state_change,no.name1 ". $order; break;
-			case 'last_check' : $rq1 .= " order by nss.last_check,no.name1 ". $order; break;
-			case 'current_attempt' : $rq .= " order by nss.current_check_attempt,no.name1 ". $order; break;
-			default : $rq1 .= " order by no.name1 ". $order; break;
+			case 'host_name' : $rq1 .= " order by no.name1 ". $order;  break;
+			case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 ";  break;
+			case 'last_state_change' : $rq1 .= " order by nhs.last_state_change ". $order.",no.name1 ";  break;
+			case 'last_check' : $rq1 .= " order by nhs.last_check ". $order.",no.name1 ";  break;
+			case 'current_attempt' : $rq1 .= " order by nhs.current_check_attempt ". $order.",no.name1 ";  break;
+			case 'ip' : $rq1 .= " order by nh.address ". $order.",no.name1 ";  break;
+			case 'plugin_output' : $rq1 .= " order by nhs.output ". $order.",no.name1 ";  break;
+			default : $rq1 .= " order by no.name1 ";  break;
 	}
-
-
-	
+		
 	$rq_pagination = $rq1;
 
 	/* Get Pagination Rows */
@@ -245,6 +272,7 @@ For information : contact@oreon-project.org
 
 
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+
 
 	$buffer .= '<reponse>';
 	$buffer .= '<i>';

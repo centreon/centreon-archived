@@ -46,7 +46,10 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
-
+	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	
+	
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
@@ -167,7 +170,6 @@ For information : contact@oreon-project.org
 	}
 
 	include_once("common_ndo_func.php");
-	include_once($oreonPath . "www/DBndoConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
@@ -246,7 +248,8 @@ For information : contact@oreon-project.org
 			" WHERE sg.config_type = 0 " .
 			" AND ss.service_object_id = sgm.service_object_id".
 			" AND no.object_id = sgm.service_object_id" .
-			" AND sgm.servicegroup_id = sg.servicegroup_id";
+			" AND sgm.servicegroup_id = sg.servicegroup_id".
+			" AND no.is_active = 0";
 
 	if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
@@ -268,7 +271,7 @@ For information : contact@oreon-project.org
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-
+//	$rq1 .= " GROUP BY no.name1";
 
 
 	$rq_pagination = $rq1;
@@ -280,9 +283,9 @@ For information : contact@oreon-project.org
 	/* End Pagination Rows */
 	
 
-	$rq1 .= " ORDER BY sg.alias, host_name";
+	$rq1 .= " ORDER BY sg.alias ASC, no.name1 " . $order;
 
-//	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 
 

@@ -46,6 +46,8 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -166,8 +168,24 @@ For information : contact@oreon-project.org
 	    }
 	}
 
+	/* LCA */
+	// check is admin
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$res1->fetchInto($user);
+	$user_id = $user["user_id"];
+	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$res2->fetchInto($admin);
+	$is_admin = 0;
+	$is_admin = $admin["contact_admin"];
 
-	include_once($oreonPath . "www/DBndoConnect.php");
+	// if is admin -> lca
+	if(!$is_admin){
+		$_POST["sid"] = $sid;
+		$lca =  getLCAHostByName($pearDB);
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+	}
+
+
 	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
@@ -264,6 +282,12 @@ For information : contact@oreon-project.org
 
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+	}
+
+
+	switch($sort_type){
+			case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;
+			default : $rq1 .= " order by no.name1 ". $order; break;
 	}
 
 	$rq_pagination = $rq1;

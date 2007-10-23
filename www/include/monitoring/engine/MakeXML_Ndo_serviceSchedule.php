@@ -47,13 +47,14 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBndoConnect.php");
 
 
 	/* LCA */
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	$lcaHostName =  getLCAHostByName();
+//	$lcaHostName =  getLCAHostByName();
 	
-	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+//	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
 
 
 
@@ -90,6 +91,20 @@ For information : contact@oreon-project.org
 
 
 	/* options */
+	if(isset($_GET["enable"]) && !check_injection($_GET["enable"])){
+		$enable = urldecode($_GET["enable"]);
+	}else
+		$enable = "enable";
+	if(isset($_GET["disable"]) && !check_injection($_GET["disable"])){
+		$disable = urldecode($_GET["disable"]);
+	}else
+		$disable = "disable";
+		
+
+	$enable = str_replace('&eacute', '&#233', $enable);
+	$disable = str_replace('&eacute', '&#233', $disable);
+
+
 	if(isset($_GET["nc"]) && !check_injection($_GET["nc"])){
 		$nc = htmlentities($_GET["nc"]);
 	}else
@@ -198,7 +213,6 @@ For information : contact@oreon-project.org
 	}
 
 
-	include_once($oreonPath . "www/DBndoConnect.php");
 	$service = array();
 	$host_status = array();
 	$service_status = array();
@@ -319,10 +333,9 @@ For information : contact@oreon-project.org
 	switch($sort_type){
 			case 'host_name' : $rq .= " order by no.name1,no.name2 ". $order; break;
 			case 'service_description' : $rq .= " order by no.name2,no.name1 ". $order; break;
-			case 'current_state' : $rq .= " order by nss.current_state,no.name1,no.name2 ". $order; break;
-			case 'last_state_change' : $rq .= " order by nss.last_state_change,no.name1,no.name2 ". $order; break;
 			case 'last_check' : $rq .= " order by nss.last_check,no.name1,no.name2 ". $order; break;
-			case 'current_attempt' : $rq .= " order by nss.current_check_attempt,no.name1,no.name2 ". $order; break;
+			case 'next_check' : $rq .= " order by nss.next_check,no.name1,no.name2 ". $order; break;
+			case 'active_check' : $rq .= " order by nss.active_check,no.name1,no.name2 ". $order; break;
 			default : $rq .= " order by no.name1 ". $order; break;
 	}
 	
@@ -351,6 +364,10 @@ For information : contact@oreon-project.org
 
 	$host_prev = "";
 	$class = "list_one";
+
+	$color_en = array("1" => "#00ff00", "0" => "#ff0000");
+	$color_en_label = array("1" => $enable, "0" => $disable);
+	
 	while($DBRESULT_NDO->fetchInto($ndo))
 	{
 		if( isset($host_status[$ndo["host_name"]]) ){
@@ -394,7 +411,7 @@ For information : contact@oreon-project.org
 	
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
-			$buffer .= '<ac>??</ac>';
+			$buffer .= '<ac>'. $color_en_label[$ndo["active_checks_enabled"]] . '</ac>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';

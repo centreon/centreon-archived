@@ -46,7 +46,8 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
-
+	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
@@ -166,9 +167,24 @@ For information : contact@oreon-project.org
 	    }
 	}
 
+	/* LCA */
+	// check is admin
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$res1->fetchInto($user);
+	$user_id = $user["user_id"];
+	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$res2->fetchInto($admin);
+	$is_admin = 0;
+	$is_admin = $admin["contact_admin"];
+
+	// if is admin -> lca
+	if(!$is_admin){
+		$_POST["sid"] = $sid;
+		$lca =  getLCAHostByName($pearDB);
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+	}
 
 	include_once("common_ndo_func.php");
-	include_once($oreonPath . "www/DBndoConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
@@ -221,6 +237,7 @@ For information : contact@oreon-project.org
 	}
 
 
+
 	$service = array();
 	$host_status = array();
 	$service_status = array();
@@ -257,6 +274,11 @@ For information : contact@oreon-project.org
 			" AND sgm.servicegroup_id = sg.servicegroup_id" .
 			" AND no.is_active = 0 AND no.objecttype_id = 2";
 
+/*
+	if(!$is_admin)
+		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+*/
+
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
@@ -288,14 +310,14 @@ For information : contact@oreon-project.org
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	/* End Pagination Rows */
 	
 
-	$rq1 .= " ORDER BY sg.alias, host_name";
+	$rq1 .= " ORDER BY sg.alias, host_name " . $order;
 
-//	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 
 

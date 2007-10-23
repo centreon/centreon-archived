@@ -46,6 +46,9 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+
 
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -217,6 +220,24 @@ For information : contact@oreon-project.org
 		return($tab);
 	}
 
+	/* LCA */
+	// check is admin
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$res1->fetchInto($user);
+	$user_id = $user["user_id"];
+	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$res2->fetchInto($admin);
+	$is_admin = 0;
+	$is_admin = $admin["contact_admin"];
+
+	// if is admin -> lca
+	if(!$is_admin){
+		$_POST["sid"] = $sid;
+		$lca =  getLCAHostByName($pearDB);
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
+	}
+
 
 	$service = array();
 	$host_status = array();
@@ -242,9 +263,6 @@ For information : contact@oreon-project.org
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 
-
-
-
 	/* Get Host status */
 
 
@@ -253,8 +271,13 @@ For information : contact@oreon-project.org
 			" WHERE hs.host_object_id = hgm.host_object_id".
 			" AND no.object_id = hgm.host_object_id" .
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND no.name1 not like 'OSL_Module'";
+			" AND no.name1 not like 'OSL_Module'".
+			" AND no.is_active = 0";
 
+		if(!$is_admin){
+			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+		}
+		
 	if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
@@ -282,8 +305,21 @@ For information : contact@oreon-project.org
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
-
-	$rq_pagination = $rq1;
+$rq_pagination = $rq1;
+/*
+	$rq_pagination = " SELECT hg.alias, count( * ) ".
+					 " FROM ndo_hostgroups hg, ndo_hostgroup_members hgm, ndo_hoststatus hs, ndo_objects no ".
+					 " WHERE hs.host_object_id = hgm.host_object_id ".
+					 " AND no.object_id = hgm.host_object_id ".
+					 " AND hgm.hostgroup_id = hg.hostgroup_id ".
+					 " AND no.name1 NOT LIKE 'OSL_Module' ".
+					 " AND no.is_active =0 ";
+		if(!$is_admin){
+			$rq_pagination .= " AND no.name1 IN (".$lcaSTR." )";
+		}
+	$rq_pagination .= " GROUP BY hg.alias ";
+	*/
+	
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
@@ -292,8 +328,17 @@ For information : contact@oreon-project.org
 	/* End Pagination Rows */
 
 
-	$rq1 .= " ORDER BY hg.alias";
+	switch($sort_type){
+			case 'current_state' : $rq1 .= " order by hg.alias, hs.current_state ". $order.",no.name1 "; break;
+			default : $rq1 .= " order by hg.alias, no.name1 ". $order; break;
+	}
+/*
+echo $rq1;
+exit();
+*/
+
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+
 
 	$buffer .= '<reponse>';
 	$buffer .= '<i>';
