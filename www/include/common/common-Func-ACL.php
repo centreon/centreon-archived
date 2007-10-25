@@ -129,7 +129,7 @@ For information : contact@oreon-project.org
 							}
 						}
 					}
-			}	
+			}
 		}
 		$LcaHHG = array();
 		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();

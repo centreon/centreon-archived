@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 	$time = time();
-	
+
 	if($num < 0)
 		$num =0;
 ?>
@@ -73,45 +73,45 @@ function set_header_title(){
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-		
+
 		var h = document.getElementById('service_description');
 		h.innerHTML = '<?=$lang['m_mon_services']?>';
 	  	h.indice = 'service_description';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-	
+
 		var h = document.getElementById('current_state');
 		h.innerHTML = '<?=$lang['mon_status']?>';
 	  	h.indice = 'current_state';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-	
-	
+
+
 		var h = document.getElementById('last_state_change');
 		h.innerHTML = '<?=$lang['mon_duration']?>';
 	  	h.indice = 'last_state_change';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-	
+
 		var h = document.getElementById('last_check');
 		h.innerHTML = '<?=$lang['mon_last_check']?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-	
+
 		var h = document.getElementById('current_attempt');
 		h.innerHTML = '<?=$lang['m_mon_try']?>';
 	  	h.indice = 'current_attempt';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-	
+
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?=$lang['mon_status_information']?>';
 	  	h.indice = 'plugin_output';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-	
-	
+
+
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
 		if(_order == 'ASC')
@@ -142,7 +142,7 @@ function monitoring_refresh()	{
 
 function monitoring_play()	{
 	document.getElementById('JS_monitoring_play').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display = 'block';	
+	document.getElementById('JS_monitoring_pause').style.display = 'block';
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
 	_on = 1;
@@ -174,7 +174,7 @@ function initM(_time_reload,_sid,_o){
 
 	if(_first){
 		viewDebugInfo('--loop--');
-	
+
 		mainLoop();
 		_first = 0;
 	}
@@ -193,7 +193,7 @@ function goM(_time_reload,_sid,_o){
 	proc.transform("forAjax");
 
 
-	_lock = 0;	
+	_lock = 0;
 
 	viewDebugInfo('--end--');
 
@@ -201,8 +201,30 @@ function goM(_time_reload,_sid,_o){
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
-	
-	
+
+
 	set_header_title();
 }
+
+
+function displayPOPUP(id){
+		var span = document.getElementById('span_'+id);
+//		span.innerHTML = '.. Ajax try to return data ..';
+
+	var proc_popup = new Transformation();
+
+	var _addrXMLSpan = "./include/monitoring/engine/MakeXML_Ndo_for_one_host.php?"+'&sid='+_sid+'&host_id='+id;
+	var _addrXSLSpan = "./include/monitoring/status/status-ndo/templates/host_popup.xsl";
+	proc_popup.setXml(_addrXMLSpan);
+	proc_popup.setXslt(_addrXSLSpan);
+
+	proc_popup.transform('span_'+id);
+}
+function hiddenPOPUP(id){
+
+		var span = document.getElementById('span_'+id);
+		span.innerHTML = '';
+}
+
+
 </SCRIPT>

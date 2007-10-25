@@ -3,17 +3,17 @@
  *
  * Copyright (c) 2005-2007 Johann Burkard (<mailto:jb@eaio.com>)
  * <http://eaio.com>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
@@ -21,7 +21,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  */
 
 
@@ -43,7 +43,7 @@ var pickRecentProgID = function (idList){
     idList = null;
     return o2Store;
 }
- 
+
 // Retourne un nouvel objet XmlHttpRequest
 var GetXmlHttpRequest_AXO=null
 var GetXmlHttpRequest=function () {
@@ -70,7 +70,7 @@ var GetXmlHttpRequest=function () {
 var xslt_js = {
     /**
      * The version of this library
-     * 
+     *
      * @type String
      * @final
      */
@@ -79,12 +79,12 @@ var xslt_js = {
 
 /**
  * Constructor for client-side XSLT transformations.
- * 
+ *
  * @author <a href="mailto:jb@eaio.com">Johann Burkard</a>
  * @version $Id: xslt.js,v 1.5 2007/06/23 19:48:30 jburkard Exp $
  * @constructor
  */
- 
+
 function loadXML(url)
 
       {
@@ -147,51 +147,51 @@ function loadXML(url)
 
         return xmlDoc;
 
-      } 
- 
-var xsltRequest = GetXmlHttpRequest();
- 
- 
+      }
+
+
+
 function Transformation() {
+var xsltRequest = GetXmlHttpRequest();
 
     var xml;
-    
+
     var xmlDoc;
-    
+
     var xslt;
-    
+
     var xsltDoc;
 
 
     var callback = function() {};
-    
+
     /**
      * Sort of like a fix for Opera who doesn't always get readyStates right.
      */
     var transformed = false;
-        
+
     /**
      * Returns the URL of the XML document.
-     * 
+     *
      * @return the URL of the XML document
      * @type String
      */
     this.getXml = function() {
         return xml;
     }
-    
+
     /**
      * Returns the XML document.
-     * 
+     *
      * @return the XML document
      */
     this.getXmlDocument = function() {
         return xmlDoc
     }
-    
+
     /**
      * Sets the URL of the XML document.
-     * 
+     *
      * @param x the URL of the XML document
      * @return this
      * @type Transformation
@@ -200,29 +200,29 @@ function Transformation() {
         xml = x;
         return this;
     }
-    
+
     /**
      * Returns the URL of the XSLT document.
-     * 
+     *
      * @return the URL of the XSLT document
      * @type String
      */
     this.getXslt = function() {
         return xslt;
     }
-    
+
     /**
      * Returns the XSLT document.
-     * 
+     *
      * @return the XSLT document
      */
     this.getXsltDocument = function() {
         return xsltDoc;
     }
-    
+
     /**
      * Sets the URL of the XSLT document.
-     * 
+     *
      * @param x the URL of the XML document
      * @return this
      * @type Transformation
@@ -231,19 +231,19 @@ function Transformation() {
         xslt = x;
         return this;
     }
-    
+
     /**
      * Returns the callback function.
-     * 
+     *
      * @return the callback function
      */
     this.getCallback = function() {
         return callback;
     }
-    
+
     /**
      * Sets the callback function
-     * 
+     *
      * @param c the callback function
      * @return this
      * @type Transformation
@@ -252,7 +252,7 @@ function Transformation() {
         callback = c;
         return this;
     }
-    
+
     /**
      * Sets the target element to write the transformed content to and asynchronously
      * starts the transformation process.
@@ -265,7 +265,7 @@ function Transformation() {
      * Note that the target element must exist once this method is called. Calling
      * this method before <code>onload</code> was fired will most likely
      * not work.
-     * 
+     *
      * @param target the Node or the ID of an element
      */
     this.transform = function(target) {
@@ -277,7 +277,7 @@ function Transformation() {
         if (document.recalc) {
             var xmlID = randomID();
             var xsltID = randomID();
-            
+
             var change = function() {
                 var c = 'complete'; // ?loading ?interactive
                 var u = 'undefined';
@@ -308,17 +308,17 @@ document.all[target].innerHTML = '';
                     }, 50);
                 }
             }
-            
+
             var xm = document.createElement('xml');
             xm.onreadystatechange = change;
             xm.id = xmlID;
             xm.src = xml;
-            
+
             var xs = document.createElement('xml');
             xs.onreadystatechange = change;
             xs.id = xsltID;
             xs.src = xslt;
-            
+
             document.body.insertBefore(xm);
             document.body.insertBefore(xs);
         }
@@ -360,7 +360,7 @@ document.all[target].innerHTML = '';
                         var out = new XMLSerializer().serializeToString(resultDoc);
                         callback(t);
                         mk_pagination(xmlDoc);
-                        
+
 						if(out)
 						 document.getElementById(target).innerHTML = out;
                        	set_header_title();
@@ -391,7 +391,7 @@ document.all[target].innerHTML = '';
 			}
         }
     }
-    
+
     /**
      * Generates a random ID.
      *
@@ -401,12 +401,12 @@ document.all[target].innerHTML = '';
         var out = 'id' + Math.round(Math.random() * 100000);
         return out;
     }
-    
+
 }
 
 /**
  * Returns whether the browser supports XSLT.
- * 
+ *
  * @return the browser supports XSLT
  * @type boolean
  */

@@ -25,30 +25,30 @@ body{
 	font-size: 11px;}
 
 .msg{
-	font-family: Verdana, Arial, sans-serif; 
-	font-size: 12px; 	
-	font-weight: normal; 
-	border: 4px solid white; 
-	padding:3px; 
-	text-align: center;	
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	border: 4px solid white;
+	padding:3px;
+	text-align: center;
 	background-color:red;
-	color:white; 
+	color:white;
 	margin:5px;}
-	
+
 .warn {
-	font-family: Verdana, Arial, sans-serif; 
-	font-size: 12px; 	
-	font-weight: normal; 
-	border: 2px solid white; 
-	padding:3px; 
-	text-align: center;	
-	background-color:orange; 
-	color:white; 
-	margin:5px;}	
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	border: 2px solid white;
+	padding:3px;
+	text-align: center;
+	background-color:orange;
+	color:white;
+	margin:5px;}
 
 #header{
 	height:83px;
-	padding-left:20px;	
+	padding-left:20px;
 	background: url("Images/bg_banner.gif") top repeat-x;
 }
 
@@ -59,7 +59,7 @@ body{
 
 #logInfos div{
 	padding:2px;
-	padding-right:10px;	
+	padding-right:10px;
 	color: #525252;
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 10px;
@@ -73,7 +73,7 @@ body{
 	width:100%;}
 
 #footerline1{
-	height:2px;	
+	height:2px;
 	width:100%;}
 
 #footerline2{
@@ -83,7 +83,7 @@ body{
 .footer a img {
 	opacity: 0.5;}
 
-.footer a:hover img {	
+.footer a:hover img {
 	opacity: 1;}
 
 #Tcontener{
@@ -96,19 +96,19 @@ body{
 	padding:6px;}
 
 img {
-	border:0; 
+	border:0;
 	margin:0px;
 	padding:0px;
 	margin-bottom:-4px;}
 table{
-	empty-cells: show; 
-	border-spacing:0px; 
+	empty-cells: show;
+	border-spacing:0px;
 	border-collapse:collapse;}
 input{
 	font-family: Verdana, Arial, sans-serif;
 	font-size: 10px;
 	font-weight: normal;
-	border-style: none;	
+	border-style: none;
 	padding:1px;}
 textarea{
 	font-family: Verdana, Arial, sans-serif;
@@ -119,9 +119,9 @@ checkbox{
 	font-size: 10px;
 	font-weight: normal;
 	padding: 2px;}
-select{ 
-	font-family: Verdana, Arial, sans-serif; 
-	font-size: 10px; 
+select{
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 10px;
 	font-weight: normal;
 	border-style: none;
 	padding-right:1px;
@@ -147,15 +147,15 @@ a:hover	{
  	text-align: center;}
 .pathWay{
 	color:#5a5a5a;}
-hr{ 
-	border:0; 
-	color: #CCCCCC; 
-	background-color: #CCCCCC; 
-	height: 1px; 
+hr{
+	border:0;
+	color: #CCCCCC;
+	background-color: #CCCCCC;
+	height: 1px;
 	margin-top:3px;}
 .imgPathWay {
 	border:0;
-	margin:0px; 
+	margin:0px;
 	padding:0px;
 	margin-bottom:-2px;}
 
@@ -177,7 +177,7 @@ hr{
 	COLOR: #454545;
 }
 
-#resume_light{	
+#resume_light{
 	position:absolute;
 	top:10px;
 	right:10px;}
@@ -208,23 +208,23 @@ hr{
 	text-align:right;
 	top:50px;
 	right:10px;
-	color: #525252;	
-	font-family: Verdana, Arial, sans-serif; 
+	color: #525252;
+	font-family: Verdana, Arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;}
 
-#logli a,#logOut a {   		
+#logli a,#logOut a {
 	color:#666666;}
 
 #logOut{
 	position:absolute;
 	top:131px;
 	right:10px;
-	color: #525252;	
-	font-family: Verdana, Arial, sans-serif; 
+	color: #525252;
+	font-family: Verdana, Arial, sans-serif;
 	font-size: 10px;
 	font-weight: bold;}
-	
+
 
 .bubultab{
 	width:100%;
@@ -355,9 +355,49 @@ div.displayAjaxResult {
 	border: 1px #FDC11E solid;
 	-moz-border-radius: 4px;
 	top:50px;
+	left:350px;
 	text-align:center;
 	overflow: auto;
 	position: absolute;
 	marging-left: 550px;
 }
->>>>>>> .r3357
+
+a.infobulle{
+    position:relative;
+    z-index:24;
+
+    color:#000;
+    text-decoration:none}
+
+a.infobulle:hover{z-index:25; background-color:#ff0}
+
+a.infobulle span{display: none}
+
+a.infobulle:hover span{
+/*le contenu de la balise span ne
+sera visible que pour l'état a:hover */
+ display:block;
+ position:absolute;
+
+
+    top:2em; left:2em;
+    border:1px solid #6699cc;
+    background-color:#FFFFFF; color:#6699cc;
+    text-align: justify;
+    font-weight:none;
+    padding:1px;
+
+    -moz-opacity:0.85;
+
+opacity: 0.85;
+
+filter:alpha(opacity=85);
+
+
+}
+a.infobulle:hover table{
+//margin:10px;
+}
+a.infobulle:hover td{
+padding:10px;
+}

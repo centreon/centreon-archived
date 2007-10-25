@@ -41,18 +41,33 @@
 
 					<xsl:if test="hn/@none = 0">
 						<xsl:element name="a">
+
 						  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-							<xsl:attribute name="class">pop</xsl:attribute>
+							<xsl:attribute name="class">infobulle</xsl:attribute>
+							<xsl:attribute name="onmouseover">displayPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
+							<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
   							<xsl:value-of select="hn"/>
+						<xsl:element name="span">
+							<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
+						</xsl:element>
+
+
 						</xsl:element>
 					</xsl:if>
+
+
+
+
 				</td>
 				<td class="ListColLeft">
 
+					<xsl:if test="hnn">
 						<xsl:element name="a">
-						  	<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
-  							web action
+						  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+						  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
+								<span><xsl:value-of select="hnn"/></span>
 						</xsl:element>
+					</xsl:if>
 
 
 					<xsl:if test="hn/@none = 0">
