@@ -17,31 +17,25 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-		
+
 	include("./include/common/autoNumLimit.php");
-	
+
 	if (isset($_GET["search_type_service"])){
 		$search_type_service = $_GET["search_type_service"];
 		$oreon->search_type_service = $_GET["search_type_service"];
 	} else if ($oreon->search_type_service)
 		 $search_type_service = $oreon->search_type_service;
-	else 
+	else
 		$search_type_service = NULL;
-		
+
 	if (isset($_GET["search_type_host"])){
 		$search_type_host = $_GET["search_type_host"];
 		$oreon->search_type_host = $_GET["search_type_host"];
 	} else if ($oreon->search_type_host)
 		 $search_type_host = $oreon->search_type_host;
-	else 
+	else
 		$search_type_host = NULL;
 
-	$advanced_search = 0;
-	
-	# start quickSearch form
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	$rows = 0;
 	$tmp = NULL;
@@ -68,12 +62,19 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$rows = $DBRESULT->numRows();
 	}
-	
-	include("./include/common/checkPagination.php");
+
+	$advanced_search = 0;
+
+	# start quickSearch form
+	$advanced_search = 1;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
+
+	include("./include/common/checkPagination.php");
 
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
@@ -84,7 +85,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_options", $lang['options']);
 	# end header menu
 	#HostGroup/service list
-	$oreon->user->admin || !$isRestreint ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") "; 
+	$oreon->user->admin || !$isRestreint ? $strLca = "" : $strLca = " AND hsr.hostgroup_hg_id IN (".$lcaHGStr.") ";
 	if ($search)
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $strLca ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -92,9 +93,9 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	
+
 	$search = tidySearchKey($search, $advanced_search);
-	
+
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
@@ -103,7 +104,7 @@ For information : contact@oreon-project.org
 	$fgHostgroup = array("value"=>NULL, "print"=>NULL);
 	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
 		$fgHostgroup["value"] != $service["hg_name"] ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"]) : $fgHostgroup["print"] = false;
-		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
+		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");
 		$moptions = "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=d&select[".$service['service_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
@@ -118,7 +119,7 @@ For information : contact@oreon-project.org
 			$service["service_description"] = getMyServiceAlias($service['service_template_model_stm_id']);
 		else	{
 			$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
-			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);			
+			$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 		}
 		/* TPL List */
 		$tplArr = array();
@@ -130,7 +131,7 @@ For information : contact@oreon-project.org
 				$value = str_replace('#S#', "/", $value);
 				$value = str_replace('#BS#', "\\", $value);
 			}
-		$elemArr[$i] = array("MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style), 
+		$elemArr[$i] = array("MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style),
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$service["hg_name"],
 						"RowMenu_link"=>"?p=60102&o=c&hg_id=".$service['hg_id'],
@@ -144,7 +145,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-	
+
 	#
 	##Toolbar select $lang["lgd_more_actions"]
 	#
@@ -167,7 +168,7 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
 	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable'], "dv"=>$lang['sv_detach']), $attrs1);
-		
+
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
@@ -186,14 +187,14 @@ For information : contact@oreon-project.org
 
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);
-	
+
 	$tpl->assign('limit', $limit);
-	
+
 	#
 	##Apply a template definition
-	#	
+	#
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);	
+	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listService.ihtml");
 ?>
