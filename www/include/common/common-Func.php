@@ -38,7 +38,7 @@ For information : contact@oreon-project.org
 	#
 	## SMARTY
 	#
-	
+
 	function initSmartyTpl($path = NULL, $tpl = NULL, $subDir = NULL)	{
 		if (!$tpl)
 			return;
@@ -80,7 +80,7 @@ For information : contact@oreon-project.org
 	#
 	## HOST
 	#
-	
+
 	function getMyHostTemplateModel($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -93,7 +93,7 @@ For information : contact@oreon-project.org
 		else
 			NULL;
 	}
-	
+
 	function getMyHostName($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -104,7 +104,7 @@ For information : contact@oreon-project.org
 		if ($row["host_name"])
 			return $row["host_name"];
 	}
-	
+
 	function isAHostTpl($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -170,7 +170,7 @@ For information : contact@oreon-project.org
 			else
 				return $DBRESULT;
 		}
-	}	
+	}
 
 	function getMyHostGroups($host_id = NULL)	{
 		if (!$host_id) return;
@@ -183,7 +183,7 @@ For information : contact@oreon-project.org
 			$hgs[$hg["hostgroup_hg_id"]] = html_entity_decode($hg["hg_name"], ENT_QUOTES);
 		return $hgs;
 	}
-	
+
 	// Search community in Host, Host Tpl, Hostgroup, General Options
 	function getMySnmpCommunity($host_id = NULL)	{
 		if (!$host_id) return;
@@ -257,7 +257,7 @@ For information : contact@oreon-project.org
 		}
 		return NULL;
 	}
-	
+
 	function getMyHostField($host_id = NULL, $field)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -275,7 +275,7 @@ For information : contact@oreon-project.org
 				break;
 		}
 	}
-	
+
 	function getMyHostExtendedInfoField($host_id = NULL, $field)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -293,7 +293,7 @@ For information : contact@oreon-project.org
 				break;
 		}
 	}
-	
+
 	function getMyHostTemplateModels($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
@@ -314,11 +314,11 @@ For information : contact@oreon-project.org
 		}
 		return ($tplArr);
 	}
-	
+
 	#
 	## HOST GROUP
 	#
-	
+
 	function getMyHostGroupName($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
@@ -330,20 +330,20 @@ For information : contact@oreon-project.org
 			return html_entity_decode($row["hg_name"], ENT_QUOTES);
 		return NULL;
 	}
-	
+
 	function getMyHostGroupHosts($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
 		$hosts = array();
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		$DBRESULT->free();
 		return $hosts;
 	}
-	
+
 	function getMyHostGroupCommunity($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
@@ -355,7 +355,7 @@ For information : contact@oreon-project.org
 			return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES);
 		return NULL;
 	}
-	
+
 	function getMyHostGroupVersion($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
@@ -367,11 +367,11 @@ For information : contact@oreon-project.org
 			return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES);
 		return NULL;
 	}
-	
+
 	#
 	## SERVICE GROUP
 	#
-	
+
 	function getMyServiceGroupName($sg_id = NULL)	{
 		if (!$sg_id) return;
 		global $pearDB;
@@ -383,7 +383,7 @@ For information : contact@oreon-project.org
 			return html_entity_decode($row["sg_name"], ENT_QUOTES);
 		return NULL;
 	}
-	
+
 	function getMyServiceGroupServices($sg_id = NULL)	{
 		if (!$sg_id) return;
 		global $pearDB;
@@ -394,7 +394,7 @@ For information : contact@oreon-project.org
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
 									"AND servicegroup_relation.host_host_id IS NOT NULL");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
@@ -407,19 +407,19 @@ For information : contact@oreon-project.org
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
 			foreach ($hosts as $key=>$value)
-				$svs[$key."_".$elem["service_id"]] = $elem["service_description"];			
+				$svs[$key."_".$elem["service_id"]] = $elem["service_description"];
 		}
 		$DBRESULT->free();
 		return $svs;
 	}
-	
+
 	#
 	## SERVICE
 	#
@@ -570,7 +570,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))
 			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
@@ -620,7 +620,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$hgs = array();
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		while ($DBRESULT->fetchInto($elem))
 			if ($elem["hostgroup_hg_id"])
@@ -668,7 +668,7 @@ For information : contact@oreon-project.org
 		}
 		return NULL;
 	}
-	
+
 	function getMyServiceTemplateModels($service_id = NULL)	{
 		if (!$service_id) return;
 		global $pearDB;
@@ -689,11 +689,11 @@ For information : contact@oreon-project.org
 		}
 		return ($tplArr);
 	}
-	
+
 	#
 	## COMMAND
 	#
-		
+
 	function getMyCheckCmdGraph($service_id = NULL, $host_id = NULL)	{
 		if (!$service_id)	return;
 		global $pearDB;
@@ -706,7 +706,7 @@ For information : contact@oreon-project.org
 			$row =& $DBRESULT->fetchRow();
 			if ($row["command_command_id"])	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
-				if (PEAR::isError($DBRESULT2)) 
+				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				$row2 =& $DBRESULT2->fetchRow();
 				$row["command_command_id_arg"] = str_replace('#BR#', "\\n", $row["command_command_id_arg"]);
@@ -764,7 +764,7 @@ For information : contact@oreon-project.org
 		if (!$servicegroup_name) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".htmlentities($servicegroup_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
@@ -777,7 +777,7 @@ For information : contact@oreon-project.org
 		if (!$contact_name) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '".htmlentities($contact_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
@@ -790,7 +790,7 @@ For information : contact@oreon-project.org
 		if (!$cg_name) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '".htmlentities($cg_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
@@ -803,7 +803,7 @@ For information : contact@oreon-project.org
 		if (!$command_name) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT command_id FROM command WHERE command_name = '".htmlentities($command_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
@@ -816,7 +816,7 @@ For information : contact@oreon-project.org
 		if (!$tp_name) return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".htmlentities($tp_name, ENT_QUOTES)."' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
@@ -831,22 +831,22 @@ For information : contact@oreon-project.org
 		if (is_file($oreon->optGen["oreon_path"]."filesUpload/rrd/".$arg.".rrd"))
 			copy($oreon->optGen["oreon_path"]."filesUpload/rrd/".$arg.".rrd", $oreon->optGen["oreon_path"]."rrd/".$host_id."_".$new_id.".rrd");
 	}
-	
+
 	#
-	## GRAPHS	
+	## GRAPHS
 	#
-	
+
 	function getDefaultMetaGraph ($meta_id = NULL)	{
-		global $pearDB;		
+		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$gt =& $DBRESULT->fetchRow();
 		if ($gt["graph_id"])
-			return $gt["graph_id"];	
+			return $gt["graph_id"];
 		else {
 			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT)) 
+			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			if ($DBRESULT->numRows())	{
 				$gt =& $DBRESULT->fetchRow();
@@ -854,7 +854,7 @@ For information : contact@oreon-project.org
 			}
 		}
 		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$gt =& $DBRESULT->fetchRow();
@@ -862,36 +862,36 @@ For information : contact@oreon-project.org
 		}
 		return NULL;
 	}
-	
+
 	function getDefaultGraph ($service_id = NULL, $rrdType = NULL)	{
 		// rrdType = 1 -> Graphs Perfparse
 		// rrdType = 2 -> Graphs Plugins
 		// rrdType = 3 -> Graphs Customs
 		global $pearDB;
 		if (!$rrdType)	$rrdType = 1;
-		if ($rrdType != 3)	{			
+		if ($rrdType != 3)	{
 			$gt["graph_id"] = getMyServiceGraphID($service_id);
 			if ($gt["graph_id"])
 				return $gt["graph_id"];
 		} else {
 			$DBRESULT =& $pearDB->query("SELECT grapht_graph_id FROM giv_graphs WHERE graph_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($DBRESULT)) 
+			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$gt =& $DBRESULT->fetchRow();
 			if ($gt["grapht_graph_id"])
-				return $gt["grapht_graph_id"];	
+				return $gt["grapht_graph_id"];
 		}
 		if ($rrdType != 2)	{
 			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT)) 
+			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			if ($DBRESULT->numRows())	{
 				$gt =& $DBRESULT->fetchRow();
 				return $gt["graph_id"];
 			}
-		} 
+		}
 		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$gt =& $DBRESULT->fetchRow();
@@ -899,7 +899,7 @@ For information : contact@oreon-project.org
 		}
 		return NULL;
 	}
-	
+
 	function getDefaultDS ($graph_id = NULL, $current_ds = NULL, $rrdType = NULL)	{
 		// rrdType = 1 -> Graphs Perfparse
 		// rrdType = 2 -> Graphs Plugins
@@ -909,27 +909,27 @@ For information : contact@oreon-project.org
 		if (!$rrdType)	$rrdType = 1;
 		$ds = array();
 		$DBRESULT =& $pearDB->query("SELECT gct.compo_id FROM giv_components_template gct, giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = '".$graph_id."' AND ggcr.gc_compo_id = gct.compo_id ORDER BY gct.ds_order");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$cpt = 0;
 		$sum = $DBRESULT->numRows();
 		while ($DBRESULT->fetchInto($ds))	{
 			if ($current_ds == $cpt)
 				return $ds["compo_id"];
-			$cpt++;				 
+			$cpt++;
 		}
 		if ($rrdType != 2)	{
 			$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT)) 
+			if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			if ($DBRESULT->numRows())	{
 				$ds =& $DBRESULT->fetchRow();
 				return $ds["compo_id"];
 			}
 		}
-		
+
 		$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template LIMIT 1");
-		if (PEAR::isError($DBRESULT)) 
+		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
 			$ds =& $DBRESULT->fetchRow();
@@ -938,7 +938,25 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 
-	# Nagios Images	
+	# Nagios Images
+	function return_sub_image_list($path, $dir_path, $images, $is_not_an_image, $is_a_valid_image){
+
+		$handle = @opendir($path.$dir_path);
+		while (false !== ($filename = @readdir($handle))){
+			if (!is_dir($path.$dir_path."/".$filename) && !array_key_exists($filename, $is_not_an_image) && in_array(array_pop(explode('.',strtolower($filename))), $is_a_valid_image) && substr($filename, -1)!= "~"){
+				$key = substr($dir_path."/".$filename, strlen($oreon->optGen["nagios_path_img"]));
+				$images[$key] = $key;
+			}
+			else if(!array_key_exists($filename, $is_not_an_image) && substr($filename, -1)!= "~"){
+				$images = return_sub_image_list($path, $dir_path."/".$filename, $images, $is_not_an_image, $is_a_valid_image);
+			}
+		}
+
+
+		return($images);
+	}
+
+	# Nagios Images
 	function return_image_list($mode = 0, $rep = NULL, $full = true){
 		global $oreon;
 		$elems = array();
@@ -946,9 +964,9 @@ For information : contact@oreon-project.org
 			$images = array(NULL=>NULL);
 		else
 			$images = array();
-		
+
 		$is_not_an_image = array("."=>".", ".."=>"..", "README"=>"README", "readme"=>"readme", "LICENSE"=>"LICENSE", "license"=>"license");
-		
+
 		switch($mode) {
 			case 0:
 				$is_a_valid_image = array("png"=>"png");
@@ -958,11 +976,11 @@ For information : contact@oreon-project.org
 				break;
 			case 2:
 				$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg", "gd2"=>"gd2");
-				break;			
+				break;
 			default:
 				$is_a_valid_image = array("png"=>"png");
 		}
-	
+
 		if ($oreon->optGen["nagios_path_img"] && is_dir($oreon->optGen["nagios_path_img"]))	{
 			$dh  = opendir($oreon->optGen["nagios_path_img"]);
 			while (false !== ($filename = readdir($dh)))
@@ -983,23 +1001,18 @@ For information : contact@oreon-project.org
 					if ( $value == "." || $value == "..")
 						$elems[$key] = NULL;
 			closedir($dh);
-			
+
 		}
 		//$elems[count($elems)] = $rep;
+
 		for ($i = 0; $i < count($elems); $i++)	{
 			if ($elems[$i])	{
 				if (!is_dir($oreon->optGen["nagios_path_img"].$elems[$i]) && !array_key_exists($elems[$i], $is_not_an_image) && in_array(array_pop(explode('.',strtolower($elems[$i]))), $is_a_valid_image) && substr($elems[$i], -1)!= "~"){
 					$key = substr($oreon->optGen["nagios_path_img"].$elems[$i], strlen($oreon->optGen["nagios_path_img"]));
 					$images[$key] = $key;
-				} 
-				else {				
-					$handle = @opendir($oreon->optGen["nagios_path_img"].$elems[$i]);					
-					while (false !== ($filename = @readdir($handle))){
-						if (!is_dir($oreon->optGen["nagios_path_img"].$elems[$i]."/".$filename) && !array_key_exists($filename, $is_not_an_image) && in_array(array_pop(explode('.',strtolower($filename))), $is_a_valid_image) && substr($filename, -1)!= "~"){
-							$key = substr($oreon->optGen["nagios_path_img"].$elems[$i]."/".$filename, strlen($oreon->optGen["nagios_path_img"]));
-							$images[$key] = $key;
-						}
-					}
+				}
+				else {
+					$images = return_sub_image_list($oreon->optGen["nagios_path_img"], $elems[$i], $images, $is_not_an_image, $is_a_valid_image);
 				}
 				ksort($images);
 				@closedir($handle);
@@ -1018,7 +1031,7 @@ For information : contact@oreon-project.org
 		      		$langs[$tab[0]] = $tab[0];
 		      	}
 			closedir($handle);
-		}	
+		}
 		return $langs;
 	}
 	function getLangsByDir($chemintotal){
@@ -1030,7 +1043,7 @@ For information : contact@oreon-project.org
 		      		$langs .= "-".$tab[0] . " ";
 		      	}
 			closedir($handle);
-		}	
+		}
 		return $langs;
 	}
 
