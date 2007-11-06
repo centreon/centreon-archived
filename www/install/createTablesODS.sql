@@ -182,7 +182,7 @@ CREATE TABLE `log_snmptt` (
 CREATE TABLE `metrics` (
   `metric_id` int(11) NOT NULL auto_increment,
   `index_id` int(11) default NULL,
-  `metric_name` varchar(32) default NULL,
+  `metric_name` varchar(100) default NULL,
   `unit_name` varchar(32) default NULL,
   `warn` float default NULL,
   `crit` float default NULL,
