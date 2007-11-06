@@ -25,7 +25,18 @@ For information : contact@oreon-project.org
 	
 	// Host Extended Information
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostextinfo.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT host.host_name, ehi.* FROM host, extended_host_information ehi WHERE host.host_id = ehi.host_host_id AND host.host_register = '1' ORDER BY `host_name`");
+	$DBRESULT =& $pearDB->query("SELECT host.host_name, ehi.* FROM host, extended_host_information ehi " .
+								"WHERE ( ehi_notes IS NOT NULL " .
+								"OR ehi_notes_url IS NOT NULL " .
+								"OR ehi_action_url IS NOT NULL " .
+								"OR ehi_icon_image IS NOT NULL " .
+								"OR ehi_icon_image_alt IS NOT NULL " .
+								"OR ehi_vrml_image IS NOT NULL " .
+								"OR ehi_statusmap_image IS NOT NULL " .
+								"OR ehi_2d_coords IS NOT NULL " .
+								"OR ehi_3d_coords IS NOT NULL ) " .
+								"AND host.host_id = ehi.host_host_id " .
+								"AND host.host_register = '1' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$ehi = array();
@@ -73,7 +84,12 @@ For information : contact@oreon-project.org
 	$i = 1;
 	$str = NULL;
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information");
+	$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information " .
+								"WHERE esi_notes IS NOT NULL " .
+								"OR esi_notes_url IS NOT NULL " .
+								"OR esi_action_url IS NOT NULL " .
+								"OR esi_icon_image  IS NOT NULL " .
+								"OR esi_icon_image_alt IS NOT NULL");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($esi))	{
