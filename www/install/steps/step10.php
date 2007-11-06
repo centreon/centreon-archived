@@ -76,6 +76,9 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
   	<tr>
 		<td><b>Generate Oreon configuration file</b></td>
 		<td align="right"><?
+		
+			$_SESSION["pwdOreonDB"] = str_replace("\$", "\\\$", $_SESSION["pwdOreonDB"]);
+		
 			$file[0] = "<?\n";
 			$file[1] = "/**\n";
 			$file[2] = "Oreon is developped with GPL Licence 2.0 :\n";
