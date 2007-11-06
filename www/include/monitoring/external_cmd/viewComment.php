@@ -1,5 +1,5 @@
 <?
-/** 
+/**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
@@ -18,23 +18,27 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	# LCA
+	$lcaHostByName = getLcaHostByName($pearDB);
+	$isRestreint = HadUserLca($pearDB);
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "templates/");
-	
+
 	$tpl->assign("lang", $lang);
 
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';	
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-	
+
 	$tab_comments_host = array();
 	$tab_comments_svc = array();
-	
-	if (file_exists($oreon->Nagioscfg["comment_file"]))	{		
+
+	if (file_exists($oreon->Nagioscfg["comment_file"]))	{
 		$log = fopen($oreon->Nagioscfg["comment_file"], "r");
 		$i = 0;
 		$i2 = 0;
@@ -128,27 +132,43 @@ For information : contact@oreon-project.org
 		}
 	}
 
+	if (!$oreon->user->admin || $isRestreint){
+		$tab_comments_host2 = array();
+		for($n=0,$i=0; $i < count($tab_comments_host); $i++) {
+			if(isset($lcaHostByName["LcaHost"][$tab_comments_host[$i]["host_name"]]))
+				$tab_comments_host2[$n++] = $tab_comments_host[$i];
+		}
+		$tab_comments_svc2 = array();
+		for($n=0,$i=0; $i < count($tab_comments_svc); $i++) {
+			if(isset($lcaHostByName["LcaHost"][$tab_comments_svc[$i]["host_name"]]))
+				$tab_comments_svc2[$n++] = $tab_comments_svc[$i];
+		}
+
+		$tab_comments_host = $tab_comments_host2;
+		$tab_comments_svc = $tab_comments_svc2;
+	}
+
 	#Element we need when we reload the page
 	$form->addElement('hidden', 'p');
 	$tab = array ("p" => $p);
-	$form->setDefaults($tab);	
-	
+	$form->setDefaults($tab);
+
 	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_comments_host", $tab_comments_host);
 	$tpl->assign("tab_comments_svc", $tab_comments_svc);
-	
+
 	$tpl->assign("nb_comments_host", count($tab_comments_host));
 	$tpl->assign("nb_comments_svc", count($tab_comments_svc));
-	
+
 	$tpl->assign("no_host_comments", $lang["no_host_comments"]);
 	$tpl->assign("no_svc_comments", $lang["no_svc_comments"]);
-	
+
 	$tpl->assign("delete", $lang['delete']);
-	
+
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);	
+	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("comments.ihtml");
 ?>

@@ -1,5 +1,5 @@
 <?
-/** 
+/**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
@@ -17,9 +17,11 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-		
+
+	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
-	
+	$isRestreint = HadUserLca($pearDB);
+
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "templates/");
@@ -29,12 +31,12 @@ For information : contact@oreon-project.org
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
+
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-	
+
 	$tab_downtime_host = array();
 	$tab_downtime_svc = array();
-	
+
 	if (file_exists($oreon->Nagioscfg["downtime_file"]))	{
 		$log = fopen($oreon->Nagioscfg["downtime_file"], "r");
 		$i = 0;
@@ -70,7 +72,7 @@ For information : contact@oreon-project.org
 					$tab_downtime_svc[$i]["comment"] = $res[9];
 					$tab_downtime_svc[$i]["persistent"] = $res[6];
 					$i++;
-				}			
+				}
 			}
 		} else {
 			$flag_host = 0;
@@ -136,7 +138,7 @@ For information : contact@oreon-project.org
 							}
                         	$result->fetchInto($id_downtime);
                         	$tab_downtime_svc[$i2]["id_supp"] = $id_downtime["downtime_id"];
-                        	
+
                         }
                         if (preg_match('`start_time$`', $res[0])){$tab_downtime_svc[$i2]["start"] = date("d-m-Y G:i:s", $res[1]);}
                         if (preg_match('`end_time$`', $res[0])){$tab_downtime_svc[$i2]["end"] = date("d-m-Y G:i:s", $res[1]);}
@@ -157,6 +159,23 @@ For information : contact@oreon-project.org
 		}
 	}
 
+
+	if (!$oreon->user->admin || $isRestreint){
+		$tab_downtime_host2 = array();
+		for($n=0,$i=0; $i < count($tab_downtime_host); $i++) {
+			if(isset($lcaHostByName["LcaHost"][$tab_downtime_host[$i]["host_name"]]))
+				$tab_downtime_host2[$n++] = $tab_downtime_host[$i];
+		}
+		$tab_downtime_svc2 = array();
+		for($n=0,$i=0; $i < count($tab_downtime_svc); $i++) {
+			if(isset($lcaHostByName["LcaHost"][$tab_downtime_svc[$i]["host_name"]]))
+				$tab_downtime_svc2[$n++] = $tab_downtime_svc[$i];
+		}
+
+		$tab_downtime_host = $tab_downtime_host2;
+		$tab_downtime_svc = $tab_downtime_svc2;
+	}
+
 	#Element we need when we reload the page
 	$form->addElement('hidden', 'p');
 	$tab = array ("p" => $p);
@@ -170,7 +189,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("nb_downtime_host", count($tab_downtime_host));
 	$tpl->assign("nb_downtime_svc", count($tab_downtime_svc));
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);	
+	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("downtime.ihtml");
 ?>
