@@ -37,7 +37,6 @@ For information : contact@oreon-project.org
 
 	$form->addElement('header', 'infos', $lang["gen_infos"]);
 	
-    //$form->addElement('select', 'host', $lang["gen_host"], array(0=>"Localhost"), $attrSelect);
     $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
 
 	$form->addElement('header', 'opt', $lang["gen_opt"]);
