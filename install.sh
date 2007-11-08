@@ -1,6 +1,6 @@
 #!/bin/sh
 ###################################################################
-# Oreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0 
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -26,7 +26,7 @@ cat <<EOF
 #                    OREON Project (www.oreon-project.org)                    #
 #                            Thanks for using OREON                           #
 #                                                                             #
-#                                    v 1.4.1                                  #
+#                                    v 2.x                                    #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
