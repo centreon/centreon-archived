@@ -72,6 +72,14 @@ For information : contact@oreon-project.org
 		for($i = 0; $DBRESULT->fetchInto($trap); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
 		$DBRESULT->free();
+		
+		# Set Categories
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		for($i = 0; $DBRESULT->fetchInto($service_category); $i++)
+			$service["service_categories"][$i] = $service_category["sc_id"];
+		$DBRESULT->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -153,6 +161,16 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
+	
+	# service categories comes from DB -> Store in $service_categories Array
+	$service_categories = array();
+	$DBRESULT =& $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($service_categorie))
+		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
+	$DBRESULT->free();
+	
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);
@@ -164,6 +182,7 @@ For information : contact@oreon-project.org
 	#
 	$attrsText 		= array("size"=>"30");
 	$attrsText2		= array("size"=>"6");
+	$attrsAdvSelect_small = array("style" => "width: 200px; height: 70px;");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
@@ -442,6 +461,12 @@ For information : contact@oreon-project.org
 
 	$form->addElement('header', 'oreon', $lang['sv_oreon']);
 	$form->addElement('select', 'graph_id', $lang['sv_graphTpl'], $graphTpls);
+
+	$ams3 =& $form->addElement('advmultiselect', 'service_categories', $lang['m_categories'], $service_categories, $attrsAdvSelect_small);
+	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
+	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams3->setElementTemplate($template);
+	echo $ams3->getElementJs(false);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');

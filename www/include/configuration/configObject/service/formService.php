@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 			$service["service_traps"][$i] = $trap["traps_id"];
 		$DBRESULT->free();
 		
-		# Set Traps
+		# Set Categories
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
