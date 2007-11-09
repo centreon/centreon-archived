@@ -137,7 +137,6 @@ sub sendConfigFile($){
     opendir(DIR, "/srv/oreon/filesGeneration/nagiosCFG/$_[0]/");
 	while (my $file = readdir(DIR)){
 		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
-		    print "---$file---------------------------\n";
 		    my ($stdout, $stderr, $exit) = $ssh->cmd("rm -f /srv/nagios/etc/$file");
 			print "Can\'t remove file : $file\n" if (!$exit);
 		    open(FILE, "< /srv/oreon/filesGeneration/nagiosCFG/2/$file");
@@ -222,9 +221,7 @@ unless (-p $FIFO) {
     POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
 }
 
-if (-p $FIFO){
-    unlink $FIFO;
-}
+unlink $FIFO if (-p $FIFO);
 
 unless (-p $FIFO) {
     unlink $FIFO;
