@@ -1,4 +1,4 @@
-<?
+<?php
 # connect DB oreon
 	require_once 'DB.php';
 

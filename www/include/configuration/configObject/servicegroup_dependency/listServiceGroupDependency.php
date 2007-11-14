@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 		document.forms['form'].elements['o'].value = _i;
 	}
 	</SCRIPT>
-	<?
+	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
