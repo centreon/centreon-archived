@@ -254,13 +254,13 @@ For information : contact@oreon-project.org
 			" nhs.active_checks_enabled," .
 			" no.name1 as host_name," .
 			" no.object_id," .
-			" ne.action_url," .
-			" ne.notes_url," .
-			" ne.notes," .
+			" nh.action_url," .
+			" nh.notes_url," .
+			" nh.notes," .
 			" nh.address" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh, ".$general_opt["ndo_base_prefix"]. "_hostextinfo as ne " .
-			" WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id AND no.objecttype_id = 1 AND no.object_id = ne.host_object_id".
-			" AND no.is_active = 0";
+			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh " .
+			" WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id AND no.objecttype_id = 1 AND no.object_id = nh.host_object_id";
+	//$rq1 .=	" AND no.is_active = 1";
 
 	if(!$is_admin)
 		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
@@ -305,8 +305,10 @@ For information : contact@oreon-project.org
 			" no.name2 as service_description" .
 			" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
-			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 0 AND objecttype_id = 2";
+			" AND no.name1 not like 'OSL_Module'";
+//	$rq .= " AND no.is_active = 1";
+	$rq .= " AND objecttype_id = 2";
+
 
 	if(!$is_admin)
 			$rq .= " AND no.name1 IN (".$lcaSTR." )";

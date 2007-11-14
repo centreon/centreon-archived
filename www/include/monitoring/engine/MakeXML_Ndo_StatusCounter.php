@@ -37,25 +37,25 @@ For information : contact@oreon-project.org
 
 
 	## pearDB init
-	require_once 'DB.php';	
+	require_once 'DB.php';
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 
 	/* Connect to oreon DB */
-	
+
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
 			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['db'],);	
-	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
+			     'database' => $conf_oreon['db'],);
+	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-	
 
-	# Session...	
+
+	# Session...
 	$debug_session = 'KO';
 
 	# sessionID check and refresh
@@ -65,7 +65,7 @@ For information : contact@oreon-project.org
 
 	function get_error($motif){
 		$buffer = null;
-		$buffer .= '<reponse>';	
+		$buffer .= '<reponse>';
 		$buffer .= $motif;
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
@@ -101,16 +101,16 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		if(isset($statistic_service) && !is_null($statistic_service)){
 			$sql = "UPDATE session SET " .
-					" s_nbHostsUp = '".$statistic_host["UP"]."'," . 
-					" s_nbHostsDown = '".$statistic_host["DOWN"]."'," . 
-					" s_nbHostsUnreachable = '".$statistic_host["UNREACHABLE"]."'," . 
-					" s_nbHostsPending = '".$statistic_host["PENDING"]."'," . 
-					" s_nbServicesOk = '".$statistic_service["OK"]."'," . 
-					" s_nbServicesWarning = '".$statistic_service["WARNING"]."'," . 
-					" s_nbServicesCritical = '".$statistic_service["CRITICAL"]."'," . 
-					" s_nbServicesUnknown = '".$statistic_service["UNKNOWN"]."'," . 
-					" s_nbServicesPending = '".$statistic_service["PENDING"]."'" . 
-					" WHERE session_id = '".$_POST["sid"]."'";	
+					" s_nbHostsUp = '".$statistic_host["UP"]."'," .
+					" s_nbHostsDown = '".$statistic_host["DOWN"]."'," .
+					" s_nbHostsUnreachable = '".$statistic_host["UNREACHABLE"]."'," .
+					" s_nbHostsPending = '".$statistic_host["PENDING"]."'," .
+					" s_nbServicesOk = '".$statistic_service["OK"]."'," .
+					" s_nbServicesWarning = '".$statistic_service["WARNING"]."'," .
+					" s_nbServicesCritical = '".$statistic_service["CRITICAL"]."'," .
+					" s_nbServicesUnknown = '".$statistic_service["UNKNOWN"]."'," .
+					" s_nbServicesPending = '".$statistic_service["PENDING"]."'" .
+					" WHERE session_id = '".$_POST["sid"]."'";
 			$DBRESULT =& $pearDB->query($sql);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -119,25 +119,21 @@ For information : contact@oreon-project.org
 
 
 	function read($sid){
-		
-		
-		
-		
-	
+
 		global $pearDB, $flag,$oreonPath;
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
 		$search_type_host = 0;
 
-		## calcul stat for resume		
+		## calcul stat for resume
 		$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
-		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);		
+		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 
 
 		$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 		if (PEAR::isError($DBRESULT_OPT))
-			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
+			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 		$DBRESULT_OPT->fetchInto($general_opt);
 
 		include_once($oreonPath . "www/DBndoConnect.php");
@@ -148,7 +144,7 @@ For information : contact@oreon-project.org
 				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 0 GROUP BY nhs.current_state ORDER by nhs.current_state";
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
-			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";	
+			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
 		$host_stat = array();
 		$host_stat[0] = 0;
 		$host_stat[1] = 0;
@@ -157,7 +153,7 @@ For information : contact@oreon-project.org
 		while($DBRESULT_NDO1->fetchInto($ndo))
 			$host_stat[$ndo["current_state"]] = $ndo["cnt"];
 		/* end */
-	
+
 		/* Get ServiceNDO status */
 		$rq2 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
 				" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
@@ -165,11 +161,11 @@ For information : contact@oreon-project.org
 				" AND no.name1 not like 'OSL_Module'".
 				" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";
 	//			" AND no.instance_id = 1";
-	
+
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO2))
-			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br>";	
-	
+			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br>";
+
 		$svc_stat = array();
 		$svc_stat[0] = 0;
 		$svc_stat[1] = 0;
@@ -178,7 +174,7 @@ For information : contact@oreon-project.org
 		$svc_stat[4] = 0;
 		while($DBRESULT_NDO2->fetchInto($ndo))
 			$svc_stat[$ndo["current_state"]] = $ndo["cnt"];
-		/* end */	
+		/* end */
 
 		$statistic_service["OK"] = $svc_stat[0];
 		$statistic_service["WARNING"] = $svc_stat[1];
@@ -217,10 +213,10 @@ For information : contact@oreon-project.org
 		header('Content-Type: text/xml');
 		echo $buffer;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	read($sid);
 ?>
