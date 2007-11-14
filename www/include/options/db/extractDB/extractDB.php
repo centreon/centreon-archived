@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -46,15 +46,15 @@ For information : contact@oreon-project.org
 	}
 ?>
  <table id="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;&nbsp;Oreon&nbsp;<? print $lang["DB_status"]; ?></td></tr>
- 	<tr class="list_one"><td class="FormRowField"><? print $lang["db_lenght"] ; ?></td><td class="FormRowValue"><? $dbsize /= 1024; print round($dbsize, 2); ?>Ko</td></tr>
-	<tr class="list_two"><td class="FormRowField"><? print $lang["db_nb_entry"] ; ?></td><td class="FormRowValue"><? print $rows; ?></td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;&nbsp;Oreon&nbsp;<?phpprint $lang["DB_status"]; ?></td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><?phpprint $lang["db_lenght"] ; ?></td><td class="FormRowValue"><?php$dbsize /= 1024; print round($dbsize, 2); ?>Ko</td></tr>
+	<tr class="list_two"><td class="FormRowField"><?phpprint $lang["db_nb_entry"] ; ?></td><td class="FormRowValue"><?phpprint $rows; ?></td></tr>
 </table>
 <div id="validForm">
 	<p>
 		<form action="" method="post">
 			<input name="s" type="hidden" value="1">
-			<input name="export_sub_list" type="submit" value="<? echo $lang['db_extract']; ?>">
+			<input name="export_sub_list" type="submit" value="<?phpecho $lang['db_extract']; ?>">
 		</form>
 	</p>
 </div>

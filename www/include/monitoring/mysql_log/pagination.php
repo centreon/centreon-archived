@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -123,7 +123,7 @@ For information : contact@oreon-project.org
 		_l[1].value = _this;
 	}
 	</SCRIPT>
-	<?
+	<?php
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -58,7 +58,7 @@ var _lock = 0;
 var _instance = 'ALL';
 var _default_instance = '0';
 var _nc = 0;
-<?
+<?php
 include_once("makeJS_Common.php");
 ?>
 

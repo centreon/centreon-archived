@@ -1,4 +1,4 @@
-<?
+<?php
 /** 
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -17,7 +17,7 @@ For information : contact@oreon-project.org
 */
 ?>
 <td width='85%'>
-<?
+<?php
 	function reschedule_chk_host($oreon, $id)
 	{
 		?>
@@ -25,14 +25,14 @@ For information : contact@oreon-project.org
 		<table border=0 width="35%" height="50%">
 		<tr>
 			<td>
-			<? include("./tab3Top.php"); ?>
+			<?phpinclude("./tab3Top.php"); ?>
 			<form action="" method="get">
 				<table width="100%" height='100%' border=0>
 				<tr>
 					<td class="text10b">Host Name<font color="red">*</font></td>
 					<td><input name="p" type="hidden" value="306"><input name="cmd" type="hidden" value="0">
 						  <select name="cmt[host_name]">
-							<? 
+							<?php
 							if (isset($oreon->hosts))
 								foreach ($oreon->hosts as $h)
 									if ($h->register != 1)
@@ -47,7 +47,7 @@ For information : contact@oreon-project.org
 				</tr>	
 				<tr>
 					<td class="text10b">Auteur<font color="red">*</font> </td>
-					<td><input name="cmt[auther]" type="text" value="<? print $oreon->user->get_alias(); ?>"></td>
+					<td><input name="cmt[auther]" type="text" value="<?phpprint $oreon->user->get_alias(); ?>"></td>
 				</tr>
 				<tr>
 					<td class="text10b" valign="top">Comment<font color="red">*</font></td>
@@ -57,11 +57,11 @@ For information : contact@oreon-project.org
 					<td colspan="2" align="center"><br><bR><br> <input name="envoyer" type="submit"></td>
 				</tr>
 				</table>
-			<? include("./tab3Bot.php"); ?></form>
+			<?phpinclude("./tab3Bot.php"); ?></form>
 			</td>
 		</tr>
 		</table>	
-		<?
+		<?php
 	}
 	
 

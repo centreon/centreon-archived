@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * Created on 7 mars 07 by Cedrick Facon
  * Oreon is developped with GPL Licence 2.0 :

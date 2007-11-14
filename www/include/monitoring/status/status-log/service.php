@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -156,7 +156,7 @@ For information : contact@oreon-project.org
 		document.forms['form'].elements['o2'].selectedIndex = 0;
 	}
 	</SCRIPT>
-	<?
+	<?php
 
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
     $form->addElement('select', 'o1', NULL, array(	NULL	=>	$lang["lgd_more_actions"], 

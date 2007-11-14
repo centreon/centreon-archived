@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 </div>
 <div style="float: left; padding-left: 60px; padding-top: 30px;">
 	<div class="list_one"><h3>Centreon 
-	<?
+	<?php
 	$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";

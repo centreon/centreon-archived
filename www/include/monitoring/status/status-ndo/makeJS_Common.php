@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -79,7 +79,7 @@ function construct_selecteList_ndo_instance(id){
 		_select.appendChild(k);
 
 
-<?
+<?php
 	include_once("./DBndoConnect.php");
 	function get_ndo_instance_id($name_instance)
 	{
@@ -102,7 +102,7 @@ function construct_selecteList_ndo_instance(id){
 		var n = document.createTextNode("<?=$nagios_server["name"]?>");
 		m.appendChild(n);
 		_select.appendChild(m);
-<?
+<?php
 	}
 ?>
 		_select.selectedIndex = _default_instance;

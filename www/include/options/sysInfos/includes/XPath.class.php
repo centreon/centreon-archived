@@ -2009,10 +2009,10 @@ class XPathEngine extends XPathBase {
    * Handles processing instruction (PI)
    *
    * A processing instruction has the following format: 
-   * <?  target data  ? > e.g.  <? dtd version="1.0" ? >
+   * <?php target data  ? > e.g.  <?phpdtd version="1.0" ? >
    *
    * Currently I have no bether idea as to left it 'as is' and treat the PI data as normal 
-   * text (and adding the surrounding PI-tags <? ? >). 
+   * text (and adding the surrounding PI-tags <?php? >). 
    *
    * @param     $parser (int)    Handler for accessing the current XML parser.
    * @param     $target (string) Name of the PI target. E.g. XML, PHP, DTD, ... 
@@ -5165,7 +5165,7 @@ class XPathEngine extends XPathBase {
    * The data we receive now for the tag <AAA> is  " &lt; &nbsp; &gt; ". and that's what we want.
    * 
    * The bad thing is, that a global replace will also replace data in section that are NOT translated by the 
-   * PHP XML-parser. That is comments (<!-- -->), IP-sections (stuff between <? ? >) and CDATA-block too.
+   * PHP XML-parser. That is comments (<!-- -->), IP-sections (stuff between <?php? >) and CDATA-block too.
    * So all data comming from those sections must be reversed. This is done during the XML parse phase.
    * So:
    * a) Replacement of all '&' in the XML-source.

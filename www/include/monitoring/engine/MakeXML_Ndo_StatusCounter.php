@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -191,7 +191,7 @@ For information : contact@oreon-project.org
 		restore_session($statistic_service, $statistic_host);
 
 		$buffer = null;
-		$buffer  = '<?xml version="1.0"?>';
+		$buffer  = '<?phpxml version="1.0"?>';
 		$buffer .= '<reponse>';
 		$buffer .= '<infos>';
 		$buffer .= '<filetime>'.time().'</filetime>';
