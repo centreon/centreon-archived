@@ -1,4 +1,4 @@
-<?
+<?php
 	require_once("../../../centreon.conf.php");
 	require_once("../../../DBconnect.php");
 	

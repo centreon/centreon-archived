@@ -1,4 +1,4 @@
-<?
+<?php
 
 $local_file = "br.txt";
 $country_id = "13";

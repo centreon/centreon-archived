@@ -1,4 +1,4 @@
-<?
+<?php
 $n ="";
 $name ="";
 $title ="";
@@ -126,9 +126,9 @@ $name2 = $n."_color";
 			      new_color = '#'+dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
 			   }
 
-                window.opener.document.forms['Form'].elements['<? echo $name1; ?>'].value = new_color;
-        	     window.opener.document.forms['Form'].elements['<? echo $name2;?>'].style.borderColor = new_color;
-			   window.opener.document.forms['Form'].elements['<? echo $name2; ?>'].style.backgroundColor = new_color;
+                window.opener.document.forms['Form'].elements['<?phpecho $name1; ?>'].value = new_color;
+        	     window.opener.document.forms['Form'].elements['<?phpecho $name2;?>'].style.borderColor = new_color;
+			   window.opener.document.forms['Form'].elements['<?phpecho $name2; ?>'].style.backgroundColor = new_color;
 				window.opener.focus();
 				window.close();
 			}
@@ -140,8 +140,8 @@ $name2 = $n."_color";
 </head>
 <body>
    <form name="colpick_form" action="#" method="post">
-	<h2><? echo $title; ?></h2>
-	<h3><? echo $name; ?></h3>
+	<h2><?phpecho $title; ?></h2>
+	<h3><?phpecho $name; ?></h3>
 	<table border="0" cellspacing="0" cellpadding="0" align="center">
 		<tr>
 			<td>
