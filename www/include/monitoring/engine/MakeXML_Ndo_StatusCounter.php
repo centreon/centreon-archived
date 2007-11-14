@@ -141,7 +141,7 @@ For information : contact@oreon-project.org
 		/* Get HostNDO status */
 		$rq1 = "SELECT count(nhs.current_state) as cnt, nhs.current_state" .
 				" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no" .
-				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 0 GROUP BY nhs.current_state ORDER by nhs.current_state";
+				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 1 GROUP BY nhs.current_state ORDER by nhs.current_state";
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
@@ -159,7 +159,7 @@ For information : contact@oreon-project.org
 				" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like 'OSL_Module'".
-				" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";
+				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 	//			" AND no.instance_id = 1";
 
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
