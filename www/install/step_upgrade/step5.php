@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
         <td><b>MySQL Scripts</b></td>
         <td align="right">
         	<select name="mysqlscript">
-        	<?        		
+        	<?php       		
         		chdir('sql');
         		foreach (glob("UpdateDB-".$version["value"]."_to_*.sql") as $filename) {
 					echo '<option value="'.$filename.'">'.$filename.'</option>'; }
@@ -41,7 +41,7 @@ For information : contact@oreon-project.org
        	</td>
       </tr>
 	</table>
-	<?
+	<?php
 	aff_middle();
 	print "<input class='button' type='submit' name='goto-B' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
 	aff_footer();

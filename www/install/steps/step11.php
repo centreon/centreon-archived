@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -24,7 +24,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
    	 	<th style="text-align: right;">Status</th>
   	</tr>
   	<tr>
-		<td><b>Database : Connection</b></td>	<?
+		<td><b>Database : Connection</b></td>	<?php
 	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
 	$mysql_msg = $res['1'];
 	if ($mysql_msg == '') {

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 	<head>
 	   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	   <meta http-equiv="Content-Style-Type" content="text/css">
-	   <title><? print $str; ?></title>
+	   <title><?phpprint $str; ?></title>
 	   <link rel="shortcut icon" href="../img/favicon.ico">
 	   <link rel="stylesheet" href="./install.css" type="text/css">
 	   <SCRIPT language='javascript' src='../include/javascript/functions.js'></SCRIPT>
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 	<body rightmargin="0" topmargin="0" leftmargin="0">
 	<table cellspacing="0" cellpadding="0" border="0" align="center" class="shell">
 	<tr height="83" style=" background-image: url('../img/bg_banner.gif');">
-	  <th width="400" height="83"><? print $nb . ". " . $str2; ?></th>
+	  <th width="400" height="83"><?phpprint $nb . ". " . $str2; ?></th>
 	  <th width="200" height="83" style="text-align: right; padding: 0px;">
 			<a href="http://www.oreon-project.org" target="_blank"><img src="../img/logo_centreon_wt.gif" alt="Oreon" border="0" style="padding-top:10px;padding-right:10px;"></a>
 	  </th>
@@ -68,8 +68,8 @@ For information : contact@oreon-project.org
 	<tr>
 	  <td colspan="2" width="600" style="background-position : right; background-color: #DDDDDD; background-repeat : no-repeat;">
 		<form action="upgrade.php" method="post" name="theForm" id="theForm">
-		<input type="hidden" name="step" value="<? print $nb; ?>">
-	<?
+		<input type="hidden" name="step" value="<?phpprint $nb; ?>">
+	<?php
 	}
 	
 	function aff_middle(){	?>
@@ -80,7 +80,7 @@ For information : contact@oreon-project.org
 		<hr>
 		<table cellspacing="0" cellpadding="0" border="0" class="stdTable">
 		  <tr>
-			<td>	<?
+			<td>	<?php
 	}
 	
 	function aff_footer(){
@@ -93,7 +93,7 @@ For information : contact@oreon-project.org
 	  </table>
 	</body>
 	</html>
-	<?
+	<?php
 	}
 
 ?>

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -41,7 +41,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   	</tr>
   	<tr>
    		<td><b>PHP Version 4.2.x or 5.x</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			$php_version = phpversion();
 	       	if(str_replace(".", "", $php_version) < "420" ){
 	         	echo "<b><span class=stop>Invalid version ($php_version) Installed</span></b>";
@@ -57,7 +57,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   </tr>
   <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;MySQL</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			if (extension_loaded('mysql')) {
           		echo '<b><span class="go">OK</font></b>';
 			} else {
@@ -68,7 +68,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   </tr>
   <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;GD</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			if (extension_loaded('gd')) {
           		echo '<b><span class="go">OK</font></b>';
 			} else {
@@ -79,7 +79,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   </tr>
   <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;LDAP</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			if (extension_loaded('ldap')) {
           		echo '<b><span class="go">OK</font></b>';
 			} else {
@@ -90,7 +90,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   </tr>
   <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;SNMP</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			if (extension_loaded('snmp'))
           		echo '<b><span class="go">OK</font></b>';
 			else {
@@ -101,7 +101,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   </tr>
   <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;XML</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			if (extension_loaded('xml'))
           		echo '<b><span class="go">OK</font></b>';
 			else
@@ -110,7 +110,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   </tr>
     <tr>
     	<td><b>&nbsp;&nbsp;&nbsp;PHP-POSIX</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			if (function_exists('posix_getpwuid'))
           		echo '<b><span class="go">OK</font></b>';
 			else {
@@ -122,7 +122,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   
   <tr>
 		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 			if (file_exists($pear_path. '/PEAR.php')){
 //				if ( strstr (strtoupper( ini_get('include_path')),"PEAR") || strstr (strtoupper( ini_get('include_path')),"PHP")) {
 				echo '<b><span class="go">OK</font></b>';
@@ -134,7 +134,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   </tr>
   <tr>
     <td><b>Writable Nagios Config Directory</b></td>
-    <td align="right"><?
+    <td align="right"><?php
 
 	    if (is_dir($_SESSION['nagios_conf'])) {
 	       $uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
@@ -157,12 +157,12 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 		</td>
   </tr>
   <tr>
-    	<td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION['nagios_conf']; ?></td>
-    	<td align="right"><b><?  echo  $msg ;  ?></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION['nagios_conf']; ?></td>
+    	<td align="right"><b><?php echo  $msg ;  ?></td>
   </tr>
   <tr>
     	<td><b>Writable Nagios Plugins Directory</b></td>
-    	<td align="right"><?
+    	<td align="right"><?php
 		    if (is_dir($_SESSION['nagios_plugins'])) {
 		       $uid = posix_getpwuid (fileowner($_SESSION['nagios_plugins']));
 		       $gid = posix_getgrgid (filegroup($_SESSION['nagios_plugins']));
@@ -184,11 +184,11 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 		 </td>
   </tr>
   <tr>
-    	<td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION['nagios_plugins']; ?></td>
-    	<td align="right"><b><? echo  $msg ; ?></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION['nagios_plugins']; ?></td>
+    	<td align="right"><b><?phpecho  $msg ; ?></td>
   </tr>
 </table>
-<?
+<?php
 aff_middle();
 $str = '';
 if (isset($return_false))

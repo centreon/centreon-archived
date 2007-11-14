@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -107,7 +107,7 @@ For information : contact@oreon-project.org
 		$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlueStart.gif" alt="" class="imgPathWay">&nbsp;';
 		foreach ($tabPath as $cle => $valeur){
 			echo $flag;
-			?><a href="oreon.php?p=<? echo $cle.$valeur["opt"]; ?>" class="pathWay" ><? echo $valeur["name"]; ?></a><?
+			?><a href="oreon.php?p=<?phpecho $cle.$valeur["opt"]; ?>" class="pathWay" ><?phpecho $valeur["name"]; ?></a><?php
 			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
 		}
 	

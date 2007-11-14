@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -22,18 +22,18 @@ For information : contact@oreon-project.org
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<? echo $mlang; ?>" lang="<? echo $mlang; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?phpecho $mlang; ?>" lang="<?phpecho $mlang; ?>">
 <head>
 <title>Supervision Tool - Powered By Centreon</title>
 <HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-<link href="<? echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
-<link href="<? echo $skin; ?><? echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
-<?
+<link href="<?phpecho $skin; ?>style.css" rel="stylesheet" type="text/css"/>
+<link href="<?phpecho $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
+<link href="<?phpecho $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
+<link href="<?phpecho $skin; ?><?phpecho $colorfile; ?>" rel="stylesheet" type="text/css"/>
+<?php
 	if($min != 1){
 
 	$DBRESULT =& $pearDB->query("SELECT ndo_base_prefix,ndo_activate FROM general_opt LIMIT 1");
@@ -88,7 +88,7 @@ For information : contact@oreon-project.org
 	?>
 	<script type='text/javascript'>
 	    window.onload = function () {
-	<?
+	<?php
 	if($min != 1)
 		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
 
@@ -97,14 +97,14 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT)) print $DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<? echo $tM; ?>,"<? echo $sid; ?>","<? echo $o;?>")', <? echo $tFM; ?>);<?
+			?>setTimeout('initM(<?phpecho $tM; ?>,"<?phpecho $sid; ?>","<?phpecho $o;?>")', <?phpecho $tFM; ?>);<?php
 		} else if ($topology_js['init'])
 			echo $topology_js['init'] ."();";
 	}
 	?>
     	};
     </script>
-<?
+<?php
 if($ndo)
     print '<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>';
 ?>

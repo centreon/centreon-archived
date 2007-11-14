@@ -1,4 +1,4 @@
-<?
+<?php
 /** 
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	?>
 	<table border=0 width="100%" class="tabTableTitleHome">
 		<tr>
-			<td style="text-align:left;font-family:Arial, Helvetica, Sans-Serif;font-size:13px;padding-left:20px;font-weight: bold;"><? echo $lang['network_health']; ?></td>
+			<td style="text-align:left;font-family:Arial, Helvetica, Sans-Serif;font-size:13px;padding-left:20px;font-weight: bold;"><?phpecho $lang['network_health']; ?></td>
 		</tr>
 	</table><!--
 	<table border=0 width="100%" class="tabTableHome" style="padding-top:8px;">
@@ -39,13 +39,13 @@ For information : contact@oreon-project.org
 			<td width="100%" align="center" colspan="2">
 				<table border=0 width="100%" cellpadding="0" cellspacing="0" align="center">
 					<tr>
-						<td width="150" class="text10b" align="center" style="white-space: nowrap; padding-right: 3px;"><? echo $lang['host_health']; ?></td>
-						<td width="<? print $Logs->Host_health * 1.7 ; ?>" bgcolor="<? print return_color_health($Logs->Host_health); ?>" height="15"><? if ($Logs->Host_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
-						<td width="<? print (100 - $Logs->Host_health) * 1.7  ; ?>" bgcolor="#999999"><? if ($Logs->Host_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="150" class="text10b" align="center" style="white-space: nowrap; padding-right: 3px;"><?phpecho $lang['host_health']; ?></td>
+						<td width="<?phpprint $Logs->Host_health * 1.7 ; ?>" bgcolor="<?phpprint return_color_health($Logs->Host_health); ?>" height="15"><?phpif ($Logs->Host_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="<?phpprint (100 - $Logs->Host_health) * 1.7  ; ?>" bgcolor="#999999"><?phpif ($Logs->Host_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
 						<td width="15">&nbsp;</td>
-						<td width="150" class="text10b" align="center" style="white-space:nowrap; padding-right: 3px;"><? echo $lang['service_health']; ?></td>
-						<td width="<? print $Logs->Service_health * 1.7 ; ?>" bgcolor="<? print return_color_health($Logs->Service_health); ?>" height="15"><? if ($Logs->Service_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
-						<td width="<? print (100 - $Logs->Service_health) * 1.7 ; ?>" bgcolor="#999999"><? if ($Logs->Service_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="150" class="text10b" align="center" style="white-space:nowrap; padding-right: 3px;"><?phpecho $lang['service_health']; ?></td>
+						<td width="<?phpprint $Logs->Service_health * 1.7 ; ?>" bgcolor="<?phpprint return_color_health($Logs->Service_health); ?>" height="15"><?phpif ($Logs->Service_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="<?phpprint (100 - $Logs->Service_health) * 1.7 ; ?>" bgcolor="#999999"><?phpif ($Logs->Service_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
 						<td width="15">&nbsp;</td>
 					</tr>
 				</table><br>
@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 		<tr>
 			<td width="100%" align="center" colspan="2">
 			<div style="width:720px;">	
-				<?
+				<?php
 					$total = $Logs->host["UP"] + $Logs->host["DOWN"] + $Logs->host["UNREACHABLE"] + $Logs->host["PENDING"];
 					$total_s = $Logs->sv["OK"] + $Logs->sv["WARNING"] + $Logs->sv["CRITICAL"] + $Logs->sv["PENDING"];
 					if ($total != 0){	
@@ -91,8 +91,8 @@ For information : contact@oreon-project.org
 		</tr> 
 		<tr>
 			<td valign="top" style="padding-bottom: 15px;">
-					<? include ("./include/Stat/alt_main_hg.php"); ?>			
-					<? include ("./include/Stat/alt_main_sg.php"); ?>
+					<?phpinclude ("./include/Stat/alt_main_hg.php"); ?>			
+					<?phpinclude ("./include/Stat/alt_main_sg.php"); ?>
 			</td>
 		</tr>
 	</table>

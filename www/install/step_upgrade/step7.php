@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -27,7 +27,7 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 7);
   <tr>
     <td><b>PHP Pear Extension</b></td>
     <td align="right">&nbsp;</td>
-  </tr><?
+  </tr><?php
   
 	$msg = NULL;  
 	$alldeps = NULL;
@@ -41,8 +41,8 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 7);
 	
 	foreach ($pear_module as $module) {	?>
 	   <tr>
-	    <td><b>&nbsp;&nbsp;&nbsp;<? echo $module["name"] ?></b></td>
-	    <td align="right"><?
+	    <td><b>&nbsp;&nbsp;&nbsp;<?phpecho $module["name"] ?></b></td>
+	    <td align="right"><?php
 	    	$msg = NULL;  
 	    	if (file_exists($pear_path."/".$module["path"])) {
 	          	echo '<b><span class="go">OK</font></b>';
@@ -54,23 +54,23 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 7);
 			}
 			?></td>
 	  </tr>
-	  <? if($msg)  { ?>
+	  <?phpif($msg)  { ?>
 	  <tr>
-	    <td align="right" colspan="2"><? echo $msg ; ?></td>
+	    <td align="right" colspan="2"><?phpecho $msg ; ?></td>
 	  </tr>
-	  <? } ?>
+	  <?php} ?>
 	
-	  <? } ?>
-	  <? if($alldeps)  { ?>
+	  <?php} ?>
+	  <?phpif($alldeps)  { ?>
 	   <tr>
 	    <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
 	  </tr>
 	  <tr>
-	    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <? echo $alldeps; ?> </span></td>
+	    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <?phpecho $alldeps; ?> </span></td>
 	  </tr>
-	   <? } ?>
+	   <?php} ?>
 	</table>
-<?
+<?php
 
 aff_middle();
 $str = '';

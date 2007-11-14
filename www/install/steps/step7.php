@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -43,7 +43,7 @@ aff_header("Oreon Setup Wizard", "DataBase Verification", 7);
   </tr>
    <tr>
     <td><b>MySQL version</b></td>
-  <?
+  <?php
 	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
 	$mysql_msg = $res['1'];
 
@@ -61,15 +61,15 @@ aff_header("Oreon Setup Wizard", "DataBase Verification", 7);
 			$return_false = 1;
 		}
 	?>
-  <? } else {
+  <?php} else {
   		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
 		$return_false = 1;
 	 } ?>
 	<tr>
-    	<td colspan="2" align="right"><? echo $mysql_msg; ?></td>
+    	<td colspan="2" align="right"><?phpecho $mysql_msg; ?></td>
 	</tr>
 </table>
-<?
+<?php
 aff_middle();
 $str ='';
 if ($return_false)

@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -50,7 +50,7 @@ aff_header("Oreon Setup Wizard", "Post-Installation", 12);	?>
    <tr>
 	<td colspan="2">&nbsp;</td>
   </tr>
-<?
+<?php
 // end last code
 aff_middle();
 $str = "<input class='button' type='submit' name='goto' value='Click here to complete your install' id='button_next' ";

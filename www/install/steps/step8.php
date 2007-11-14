@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -27,32 +27,32 @@ if (isset($passwd_error) && $passwd_error)
   </tr>
   <tr>
     <td><b>Administrator login for Oreon</b></td>
-    <td align="right"><input type="text" name="oreonlogin" value="<? if (isset($_SESSION["oreonlogin"])) print $_SESSION["oreonlogin"]; ?>"></td>
+    <td align="right"><input type="text" name="oreonlogin" value="<?phpif (isset($_SESSION["oreonlogin"])) print $_SESSION["oreonlogin"]; ?>"></td>
   </tr>
   <tr>
     <td><b>Administrator password for Oreon</b></td>
-    <td align="right"><input type="password" name="oreonpasswd" value="<? if (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
+    <td align="right"><input type="password" name="oreonpasswd" value="<?phpif (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
   </tr>
   <tr>
     <td><b>Confirm Password</b></td>
-    <td align="right"><input type="password" name="oreonpasswd2" value="<? if (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
+    <td align="right"><input type="password" name="oreonpasswd2" value="<?phpif (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
   </tr>
   <tr>
     <td><b>Administrator firstname for Oreon</b></td>
-    <td align="right"><input type="text" name="oreonfirstname" value="<? if (isset($_SESSION["oreonfirstname"])) print $_SESSION["oreonfirstname"]; ?>"></td>
+    <td align="right"><input type="text" name="oreonfirstname" value="<?phpif (isset($_SESSION["oreonfirstname"])) print $_SESSION["oreonfirstname"]; ?>"></td>
   </tr>
   <tr>
     <td><b>Administrator lastname for Oreon</b></td>
-    <td align="right"><input type="text" name="oreonlastname" value="<? if (isset($_SESSION["oreonlastname"])) print $_SESSION["oreonlastname"]; ?>"></td>
+    <td align="right"><input type="text" name="oreonlastname" value="<?phpif (isset($_SESSION["oreonlastname"])) print $_SESSION["oreonlastname"]; ?>"></td>
   </tr>
   <tr>
     <td><b>Administrator Email for Oreon</b></td>
-    <td align="right"><input type="text" name="oreonemail" value="<? if (isset($_SESSION["oreonemail"])) print $_SESSION["oreonemail"]; ?>"></td>
+    <td align="right"><input type="text" name="oreonemail" value="<?phpif (isset($_SESSION["oreonemail"])) print $_SESSION["oreonemail"]; ?>"></td>
   </tr>
   <tr>
     <td><b>Administrator language for Oreon</b></td>
     <td align="right"><select name="oreonlang">
-			<?
+			<?php
 			$chemintotal = "../lang/";
 			if ($handle  = opendir($chemintotal))	{
 				while ($file = readdir($handle))
@@ -70,7 +70,7 @@ if (isset($passwd_error) && $passwd_error)
 	</td>
   </tr>
 </table>
-<?
+<?php
 aff_middle();
 $str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
 print $str;

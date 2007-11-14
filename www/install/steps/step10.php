@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -33,7 +33,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
   	</tr>
   	<tr>
 		<td><b>Writable Oreon Configuration File (centreon.conf.php)</b></td>
-		<td align="right"><?
+		<td align="right"><?php
        	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir_www"]));
 		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir_www"]));
        	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir_www"])), -3) ;
@@ -49,12 +49,12 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	</td>
 	</tr>
   	<tr>
-    	<td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir_www"]; ?></td>
-    	<td align="right"><b><? echo $msg ;	?></b></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir_www"]; ?></td>
+    	<td align="right"><b><?phpecho $msg ;	?></b></td>
   	</tr>
   	<tr>
 		<td><b>Writable ODS Configuration File (conf.pm)</b></td>
-		<td align="right"><?
+		<td align="right"><?php
        	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir"]."ODS/etc/"));
 		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir"]."ODS/etc/"));
        	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir"]."ODS/etc/")), -3) ;
@@ -70,12 +70,12 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	</td>
 	</tr>
   	<tr>
-    	<td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir_www"]; ?></td>
-    	<td align="right"><b><? echo $msg ;	?></b></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir_www"]; ?></td>
+    	<td align="right"><b><?phpecho $msg ;	?></b></td>
   	</tr>
   	<tr>
 		<td><b>Generate Oreon configuration file</b></td>
-		<td align="right"><?
+		<td align="right"><?php
 		
 			$_SESSION["pwdOreonDB"] = str_replace("\$", "\\\$", $_SESSION["pwdOreonDB"]);
 		
@@ -119,12 +119,12 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir_www"].'centreon.conf.php'; ?></td>
-	    <td align="right"><b><? echo $msg ;	?></b></td>
+	    <td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir_www"].'centreon.conf.php'; ?></td>
+	    <td align="right"><b><?phpecho $msg ;	?></b></td>
  	</tr>
  	<tr>
 		<td><b>Generate ODS configuration file</b></td>
-		<td align="right"><?
+		<td align="right"><?php
 			$file_pm = array();
 			$file_pm[0] = "\$mysql_host = \"". $_SESSION["dbLocation"] ."\";\n";
 			$file_pm[1] = "\$mysql_user = \"". $_SESSION["nameOreonDB"] . "\";\n";
@@ -145,10 +145,10 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<? echo $_SESSION["oreon_dir"].'ODS/etc/oreon.pm'; ?></td>
-	    <td align="right"><b><? echo $msg ;	?></b></td>
+	    <td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir"].'ODS/etc/oreon.pm'; ?></td>
+	    <td align="right"><b><?phpecho $msg ;	?></b></td>
  	</tr>
-<?
+<?php
 	aff_middle();
 	$str = '';
 	if (isset($return_false))

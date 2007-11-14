@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 
 	aff_header("Oreon Setup Wizard", "Updating Centreon Database", 6);	?>
 	<br><br>
-	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?
+	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
 	print "<tr><td><b>Database &#146;".$conf_oreon['db']."&#146; : Upgrade</b></td>";
 
@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
 	    $return_false = 1;	?>
 		<tr>
-			<td colspan="2" align="left"><span class="small"><? echo $mysql_msg; ?></span></td>
+			<td colspan="2" align="left"><span class="small"><?phpecho $mysql_msg; ?></span></td>
 		</tr><?	
 	}
 

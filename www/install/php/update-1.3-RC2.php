@@ -1,4 +1,4 @@
-<?
+<?php
 $oreon = NULL;
 require_once ("../../oreon.conf.php");
 require_once ("../../DBconnect.php");

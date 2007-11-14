@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -210,10 +210,10 @@ For information : contact@oreon-project.org
 <head>
 <title>Centreon, Revisited Experience Of Nagios</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<link href="<? echo $skin; ?>login.css" rel="stylesheet" type="text/css">
+<link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="./img/iconOreon.ico">
 </head>
 <body OnLoad="document.login.useralias.focus();">
-<? include_once("./login.php"); ?>
+<?php include_once("./login.php"); ?>
 </body>
 </html>

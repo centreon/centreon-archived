@@ -1,4 +1,4 @@
-<?
+<?php
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 		echo "<div style='padding-top: 60px;'><span class='msg'>Invalid user</span></div>";
 	?>  
 <form action="./index.php" method="post" name="login">
-<?
+<?php
 	if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2)
 		print "<div style='padding-top: 60px;'><span class='msg'>Session Expired.</span></div>";
 	if ($file_install_acces)
@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 		</tr>
 		<tr>
 			<td class="LoginInvitVersion"><br>
-			<?
+			<?php
 			$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
 			print $release["value"];
 			?>
 			</td>
-			<td class="LoginInvitDate"><br><? echo $date; ?></td>
+			<td class="LoginInvitDate"><br><?phpecho $date; ?></td>
 		</tr>
 		<tr>
 			<td colspan="2">
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 					</tr>
 					<tr>
 						<td  colspan="2" id="sublogin">
-							<input type="Submit" name="submit" value="Login" <? if ($file_install_acces) print "disabled"; ?> >
+							<input type="Submit" name="submit" value="Login" <?phpif ($file_install_acces) print "disabled"; ?> >
 						</td>
 					</tr>
 				</table>

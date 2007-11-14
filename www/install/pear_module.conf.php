@@ -1,4 +1,4 @@
-<?
+<?php
 $pear_module[0]["name"] = "DB";
 $pear_module[0]["version"] = "1.7.6";
 $pear_module[0]["file"] = "DB-1.7.6.tgz";
