@@ -216,12 +216,12 @@ For information : contact@oreon-project.org
 			" nh.obsess_over_host," .
 			" nh.notifications_enabled," .
 			" nh.event_handler_enabled," .
-			" he.icon_image_alt" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh, ".$general_opt["ndo_base_prefix"]."_hostextinfo he" .
+			" nh.icon_image_alt" .
+			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh" .
 			" WHERE no.object_id = " . $host_id .
 			" AND no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 0 AND no.objecttype_id = 1 AND nh.config_type = 1";
+			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
 		if(!$is_admin)
 			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
 	$buffer .= '<reponse>';
