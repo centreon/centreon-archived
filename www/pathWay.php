@@ -73,7 +73,7 @@ For information : contact@oreon-project.org
 	$DBRESULT->fetchInto($current);
 	
 	$page = $p;
-	if (!$tabPath[$p]["url"])
+	if (isset($tabPath[$p]) && !$tabPath[$p]["url"])
 		while (1){
 			$req = "SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC";
 			$DBRESULT =& $pearDB->query($req);
