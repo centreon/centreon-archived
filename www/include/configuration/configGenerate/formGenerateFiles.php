@@ -1,6 +1,6 @@
 <?php
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Developped by : Julien Mathis - Romain Le Merlus
 
@@ -216,7 +216,10 @@ For information : contact@oreon-project.org
 							$filename = array_pop(explode("/", $filename));
 							$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
 						}
-					}	
+					} else {
+						passthru ("echo 'SENDCFGFILE:".$tab['id']."' >> /srv/oreon/var/centcore", $return);	
+						print $return;
+					}
 				}
 			}
 		}
@@ -229,9 +232,15 @@ For information : contact@oreon-project.org
 		if ($ret["restart"]["restart"])	{
 			$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ? $oreon->optGen["nagios_init_script"]   : "/etc/init.d/nagios" );
 			if ($ret["restart_mode"]["restart_mode"] == 1)
-				$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
+				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
+					$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
+				else 
+					system("echo 'RELOAD:".$tab['id']."' >> /srv/oreon/var/centcore");
 			else if ($ret["restart_mode"]["restart_mode"] == 2)
-				$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
+				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
+					$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
+				else
+					system("echo 'RESTART:".$tab['id']."' >> /srv/oreon/var/centcore");
 			else if ($ret["restart_mode"]["restart_mode"] == 3)	{
 				require_once("./include/monitoring/external_cmd/functions.php");
 				$_GET["select"] = array(0 => 1);
@@ -239,7 +248,7 @@ For information : contact@oreon-project.org
 				require_once("./include/monitoring/external_cmd/cmd.php");
 				$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
 			}
-			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` =1 LIMIT 1");
+			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$tab['id']."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
