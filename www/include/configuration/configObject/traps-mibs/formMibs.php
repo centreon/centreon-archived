@@ -1,6 +1,6 @@
 <?php
 /**
-Oreon is developped with GPL Licence 2.0 :
+Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 Developped by : Sugumaran Mathavarajan - Julien Mathis - Romain Le Merlus
 
