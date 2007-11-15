@@ -1,13 +1,13 @@
 #! /usr/bin/perl -w
 ###################################################################
-# Oreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0 
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
 # Developped by : Julien Mathis - Romain Le Merlus
 #
 ###################################################################
-# This program is free software; you can redistfribute it and/or
+# This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
@@ -28,16 +28,20 @@ use POSIX qw(mkfifo);
 use DBI;
 use Net::SSH::Perl;
 use Net::SCP;
+use Net::SCP::Expect;
 
-use vars qw($debug $LOG %status $generalcounter $stop);
+use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
 use vars qw($con);
+
+
+$method = "system";
 
 $debug = 0;
 my $installedPath = "/srv/oreon/";
 $LOG = $installedPath."var/centcore.log";
 my $PID = $installedPath."var/centcore.pid";
-my $FIFO = "/srv/oreon/var/centcore";
+my $FIFO = $installedPath."var/centcore";
 $stop = 1;
 
 # Include Configuration Data
@@ -60,7 +64,7 @@ writeLogFile("PID : ".$$."\n");
 
 # checking if pid file exists.
 if (-x $PID){
-	writeLogFile("ods already runnig. can't launch again....\n");
+	writeLogFile("centcore already running. can't launch again....\n");
 	exit(2);
 }
 
@@ -75,6 +79,22 @@ $SIG{'CHLD'} 	= 'IGNORE' ;
 
 # Functions
 
+sub getNagiosConfigurationField($$){
+	CheckMySQLConnexion();
+	my $sth2 = $con->prepare("SELECT ".$_[1]." FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	my $data = $sth2->fetchrow_hashref();
+	return $data->{$_[1]};
+}
+
+sub getLocalOptionsField($){
+	CheckMySQLConnexion();
+	my $sth2 = $con->prepare("SELECT ".$_[0]." FROM `general_opt` LIMIT 1");
+	writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	my $data = $sth2->fetchrow_hashref();
+	return $data->{$_[0]};
+}
+
 sub getServerConfig($){
 	CheckMySQLConnexion();
 	my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."'");
@@ -88,7 +108,7 @@ sub CheckMySQLConnexion(){
 		if (!defined($con)) {
 			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 			if (!defined($con)) {
-				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
+				writeLogFile("Error when connecting to database : ".$DBI::errstr."\n");
 				sleep(2);
 			}
 		} else {
@@ -105,13 +125,15 @@ sub CheckMySQLConnexion(){
 }
 
 #
-# Function who create a SSH connexion with a remote server : poller
+# Function : create a SSH connexion with a remote server : poller
 #
 
 sub createSSHConnexion($){
 	return(-1) if (!defined($_[0]));
 	my $data = getServerConfig($_[0]);
 	my $ssh = Net::SSH::Perl->new($data->{'ns_ip_address'});
+	print "user : ".$data->{'user'}."\n";
+	print "password : ". $data->{'password'}."\n";
 	$ssh->login($data->{'user'}, $data->{'password'});
 	undef($data);
 	return($ssh);
@@ -123,9 +145,20 @@ sub createSSHConnexion($){
 #
 
 sub sendExternalCommand($$){
-	my $ssh = createSSHConnexion($_[0]);
-    my($stdout, $stderr, $exit) = $ssh->cmd("echo \"".$_[1]."\" >> /srv/nagios/var/rw/nagios.cmd");
+	my $id = $_[0];
+	my $cmd = $_[1];
+	
+	my $command_file = getNagiosConfigurationField($id, "command_file");
+	my($stdout, $stderr, $exit);
+	if ($method =~ /system/){
+		my $str = "echo \"".$cmd."\" >> $command_file"; 
+		$stdout = `sudo $str`;
+	} else {
+		my $ssh = createSSHConnexion($id);
+    	($stdout, $stderr, $exit) = $ssh->cmd("echo \"".$cmd."\" >> $command_file");
+    }
     print " RESULT : ".$stdout . "\n";
+	undef($command_file);
 }
 
 #
@@ -133,54 +166,111 @@ sub sendExternalCommand($$){
 #
 
 sub sendConfigFile($){
-	my $ssh = createSSHConnexion($_[0]);
-    opendir(DIR, "/srv/oreon/filesGeneration/nagiosCFG/$_[0]/");
+	my $id = $_[0];
+	my $cfg_dir = getNagiosConfigurationField($_[0], "cfg_dir");
+	my $server_info = getServerConfig($_[0]);
+	my ($md5local, $md5dist, $scpe);
+	if ($method !~ /system/){
+		my $scpe = Net::SCP::Expect->new("timeout", "20");
+		$scpe->login("root", "catakijy!");
+	}
+    opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
 	while (my $file = readdir(DIR)){
 		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
-		    my ($stdout, $stderr, $exit) = $ssh->cmd("rm -f /srv/nagios/etc/$file");
-			print "Can\'t remove file : $file\n" if (!$exit);
-		    open(FILE, "< /srv/oreon/filesGeneration/nagiosCFG/2/$file");
-		    while (<FILE>){
-				my $str = $_;
-				$str =~ s/\n//g;
-				$str =~ s/\"/\\\"/g;
-				$str =~ s/\'/\\\'/g;
-				$str =~ s/\$/\\\$/g;
-				print "echo \"".$str."\" >> /srv/nagios/etc/$file\n";
-				($stdout, $stderr, $exit) = $ssh->cmd("echo \"".$str."\" >> /srv/nagios/etc/$file");
-				undef($str);
+							
+			my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
+			my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir$file";
+
+			if ($method =~ /system/){
+				my $stdout = `scp $origin $dest`;
+			} else {
+				# Send File With User and Login
+				$scpe->scp($origin, $dest);			
+			}
+			
+			# Check sucessfull copy
+			$md5local = `/usr/bin/md5sum $origin`;
+			$md5dist  = `ssh $server_info->{'ns_ip_address'} /usr/bin/md5sum $cfg_dir$file`;
+			
+			my @tab_local = split(' ', $md5local);		
+			my @tab_dist = split(' ', $md5dist);		
+			if ($tab_local[0] ne $tab_dist[0]){
+				print "Bad Copy !\n";
 			}
 		}
 	}
+	undef($cfg_dir);
 }
 
 sub restartNagios($){
-	my $ssh = createSSHConnexion($_[0]);
-   	my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios restart");
+	my $id = $_[0];
+	my($stdout, $stderr, $exit);
+	if ($method =~ /system/){
+		my $data = getServerConfig($id);
+		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios restart`;
+	} else {
+		my $ssh = createSSHConnexion($_[0]);
+	   	($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios restart");
+	}
     print " RESULT : ".$stdout . "\n";
 }
 
+sub synchronizePlugins($){
+	my $scpe = Net::SCP::Expect->new("timeout", "20");
+	$scpe->login("root", "catakijy!");
+	my $nagios_path_plugins = getLocalOptionsField("nagios_path_plugins");
+	print "SYNCHRO : " .$nagios_path_plugins . "\n";
+}
+
 sub reloadNagios($){
-	my $ssh = createSSHConnexion($_[0]);
-    my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios reload");
+	my $id = $_[0];
+	my($stdout, $stderr, $exit);
+	if ($method =~ /system/){
+		my $data = getServerConfig($id);
+		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios reload`;
+	} else {
+		my $ssh = createSSHConnexion($_[0]);
+	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /etc/init.d/nagios reload");
+	}
     print " RESULT : ".$stdout . "\n";
 }
 
 sub stopNagios($){
-	my $ssh = createSSHConnexion($_[0]);
-    my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios stop");
+	my $id = $_[0];
+	my($stdout, $stderr, $exit);
+	if ($method =~ /system/){
+		my $data = getServerConfig($id);
+		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios stop`;
+	} else {
+		my $ssh = createSSHConnexion($_[0]);
+    	($stdout, $stderr, $exit) = $ssh->cmd("sudo /etc/init.d/nagios stop");
+    }
     print " RESULT : ".$stdout . "\n";
 }
 
 sub startNagios($){
-	my $ssh = createSSHConnexion($_[0]);
-    my($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios start");
+	my $id = $_[0];
+	my($stdout, $stderr, $exit);
+	if ($method =~ /system/){
+		my $data = getServerConfig($id);
+		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios start`;
+	} else {
+		my $ssh = createSSHConnexion($_[0]);
+	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /etc/init.d/nagios start");
+    }
     print " RESULT : ".$stdout . "\n";
 }
 
 sub NagioStat($){
-	my $ssh = createSSHConnexion($_[0]);
-    my($stdout, $stderr, $exit) = $ssh->cmd("/srv/nagios/bin/nagiostats");
+	my $id = $_[0];
+	my($stdout, $stderr, $exit);
+	if ($method =~ /system/){
+		my $data = getServerConfig($id);
+		$stdout = `ssh $data->{'ns_ip_address'} sudo /usr/sbin/nagiostats`;
+	} else {
+		my $ssh = createSSHConnexion($_[0]);
+	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /usr/sbin/nagiostats");
+	}
     print " RESULT : ".$stdout . "\n";
 }
 
@@ -189,9 +279,18 @@ sub CheckPerf($){
 }
 
 sub testConfig($){
-	my $ssh = createSSHConnexion($_[0]);
-    my($stdout, $stderr, $exit) = $ssh->cmd("/srv/nagios/bin/nagios -v /srv/nagios/etc/nagios.cfg");
+	my $id = $_[0];
+	my($stdout, $stderr, $exit);
+	my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
+	if ($method =~ /system/){
+		my $data = getServerConfig($id);
+		$stdout = `ssh $data->{'ns_ip_address'} sudo /usr/sbin/nagios -v $cfg_dir/nagios.cfg`;
+	} else {
+		my $ssh = createSSHConnexion($id);
+	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /usr/sbin/nagios -v $cfg_dir/nagios.cfg");
+    }
     print " RESULT : ".$stdout . "\n";
+    undef($cfg_dir);
 }
 
 
@@ -201,6 +300,8 @@ sub parseRequest($){
 		restartNagios($1);
 	} elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
 		reloadNagios($1);
+	} elsif ($_[0] =~ /START\:([0-9]*)/){
+		startNagios($1);
 	} elsif ($_[0] =~ /SENDCFGFILE\:([0-9]*)/){
 		sendConfigFile($1);
 	} elsif ($_[0] =~ /STOP\:([0-9]*)/){
@@ -213,6 +314,8 @@ sub parseRequest($){
 		testConfig($1);
 	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:([.]*)/){
 		sendExternalCommand($1, $2);
+	} elsif ($_[0] =~ /SYNCHRONIZEPLUGINS\:([0-9]*)\:([.]*)/){
+		synchronizePlugins($1);
 	}
 }
 
@@ -236,4 +339,6 @@ while (1) {
     }
 }
 close FIFO;
+unlink($PID);
+
 exit();
