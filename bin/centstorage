@@ -427,8 +427,8 @@ sub CheckRebuild(){
 							$interval = 600 if (!defined($interval));
 							my $my_len_storage_rrd = $len_storage_rrd / $interval;
 							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");
-
-							system("rm -f ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd");
+							if (-x $RRDdatabase_path.$metric->{'metric_id'}.".rrd")
+								unlink($RRDdatabase_path.$metric->{'metric_id'}.".rrd");
 
 							# Calculate first entry in database					
 							my $begin = $data->{'ctime'} - 200;
