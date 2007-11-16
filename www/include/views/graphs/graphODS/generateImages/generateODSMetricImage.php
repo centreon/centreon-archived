@@ -74,6 +74,9 @@ For information : contact@oreon-project.org
 		$DBRESULT->fetchInto($metric_ODS);
 		$DBRESULT->free();
 		
+		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$metric_ODS["index_id"]."'");
+		$metricnumber = $DBRESULT->numRows();
+		
 		$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE id = '".$metric_ODS["index_id"]."' LIMIT 1");
 		$DBRESULT->fetchInto($index_data_ODS);
 		$DBRESULT->free();
@@ -145,7 +148,8 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		$cpt = 1;
-		$order = $_GET["cpt"] - 1; 
+		$order = ($_GET["cpt"] - 1);
+		$order = $order % $metricnumber;
 		$metrics = array();		
 		while ($DBRESULT->fetchInto($metric)){
 			$metric["metric_name"] = str_replace("#S#", "slash_", $metric["metric_name"]);
