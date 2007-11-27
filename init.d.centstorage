@@ -25,7 +25,7 @@
 # Script init
 #
 ### BEGIN INIT INFO
-# Provides:       ods
+# Provides:       centstorage
 # Required-Start:
 # Required-Stop:
 # Default-Start:  2 3 5
@@ -33,15 +33,15 @@
 # Description:    Start the Oreon Database Storage collector
 ### END INIT INFO
 
-status_ods ()
+status_centstorage ()
 {
-    if test ! -f $ODSRunFile; then
-		echo "No lock file found in $ODSRunFile"
+    if test ! -f $centstorageRunFile; then
+		echo "No lock file found in $centstorageRunFile"
 		return 1
     fi
     
-    ODSPID=`head -n 1 $ODSRunFile`
-    if ps -p $ODSPID; then
+    centstoragePID=`head -n 1 $centstorageRunFile`
+    if ps -p $centstoragePID; then
 		return 0
     else
 		return 1
@@ -50,14 +50,14 @@ status_ods ()
 }
 
 
-killproc_ods ()
+killproc_centstorage ()
 {
-    if test ! -f $ODSRunFile; then
-		echo "No lock file found in $ODSRunFile"
+    if test ! -f $centstorageRunFile; then
+		echo "No lock file found in $centstorageRunFile"
 		return 1
     fi    
-    ODSPID=`head -n 1 $ODSRunFile`
-    kill -s INT $ODSPID
+    centstoragePID=`head -n 1 $centstorageRunFile`
+    kill -s INT $centstoragePID
 }
 
 
@@ -71,24 +71,24 @@ fi
 
 prefix=@OREON_PATH@/
 exec_prefix=${prefix}
-ODSBin=${exec_prefix}/bin/ods
-ODSCfgFile=${prefix}/etc/conf.pm
-ODSVarDir=${prefix}/var/
-ODSRunFile=${prefix}/var/ods.pid
-ODSDemLog=${prefix}/var/ods_demon.log
-ODSLockDir=/var/lock/subsys
-ODSLockFile=ods
+centstorageBin=${exec_prefix}/bin/centstorage
+centstorageCfgFile=${prefix}/etc/conf.pm
+centstorageVarDir=${prefix}/var/
+centstorageRunFile=${prefix}/var/centstorage.pid
+centstorageDemLog=${prefix}/var/centstorage_demon.log
+centstorageLockDir=/var/lock/subsys
+centstorageLockFile=centstorage
           
 
-# Check that ods exists.
-if [ ! -f $ODSBin ]; then
-    echo "Executable file $ODSBin not found.  Exiting."
+# Check that centstorage exists.
+if [ ! -f $centstorageBin ]; then
+    echo "Executable file $centstorageBin not found.  Exiting."
     exit 1
 fi
 
-# Check that ods.cfg exists.
-if [ ! -f $ODSCfgFile ]; then
-    echo "Configuration file $ODSCfgFile not found.  Exiting."
+# Check that centstorage.cfg exists.
+if [ ! -f $centstorageCfgFile ]; then
+    echo "Configuration file $centstorageCfgFile not found.  Exiting."
     exit 1
 fi
           
@@ -97,54 +97,54 @@ case "$1" in
 
     start)
 	# Check lock file
-	if test -f $ODSRunFile; then
-		echo "Error : $ODSRunFile already Exists."
-		NDODSRUNNING=`ps -edf | grep $ODSBin | grep -v grep | wc -l `
-		if [ $NDODSRUNNING = 0 ]
+	if test -f $centstorageRunFile; then
+		echo "Error : $centstorageRunFile already Exists."
+		NDcentstorageRUNNING=`ps -edf | grep $centstorageBin | grep -v grep | wc -l `
+		if [ $NDcentstorageRUNNING = 0 ]
 		then
-			echo "But no ods process runnig"
-			rm -f $ODSRunFile
-			echo "Removing ods pid file"
+			echo "But no centstorage process runnig"
+			rm -f $centstorageRunFile
+			echo "Removing centstorage pid file"
 		else 
 			exit 1
 		fi
 	fi
-	echo "Starting ODS Collector : ods"
-	$ODSBin 2>> $ODSDemLog &
-	if [ -d $ODSLockDir ]; then touch $ODSLockDir/$ODSLockFile; fi
+	echo "Starting centstorage Collector : centstorage"
+	$centstorageBin 2>> $centstorageDemLog &
+	if [ -d $centstorageLockDir ]; then touch $centstorageLockDir/$centstorageLockFile; fi
 			#sleep 1
 			#status_nagios nagios
 	exit 0
 	;;
     
     stop)
-	echo "Stopping ODS Collector : ods"
-	killproc_ods ods
+	echo "Stopping centstorage Collector : centstorage"
+	killproc_centstorage centstorage
 	
  		# now we have to wait for nagios to exit and remove its
  		# own NagiosRunFile, otherwise a following "start" could
  		# happen, and then the exiting nagios will remove the
  		# new NagiosRunFile, allowing multiple nagios daemons
  		# to (sooner or later) run - John Sellens
-	echo -n 'Waiting for ods to exit .'
+	echo -n 'Waiting for centstorage to exit .'
 	for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; do
-	    if status_ods > /dev/null; then
+	    if status_centstorage > /dev/null; then
 		echo -n '.'
 		sleep 1
 	    else
 		break
 	    fi
 	done
-	if status_ods > /dev/null; then
+	if status_centstorage > /dev/null; then
 	    echo ''
-	    echo 'Warning - running ods did not exit in time'
+	    echo 'Warning - running centstorage did not exit in time'
 	else
 	    echo ' done.'
 	fi
 	;;
 
     status)
-	status_ods ods
+	status_centstorage centstorage
 	;;
 
     restart)
@@ -153,12 +153,12 @@ case "$1" in
 	;;
     
     reload|force-reload)
-	if test ! -f $ODSRunFile; then
+	if test ! -f $centstorageRunFile; then
 	    $0 start
 	else
-	    ODSPID=`head -n 1 $ODSRunFile`
-	    if status_ods > /dev/null; then
-		killproc_ods ods -HUP
+	    centstoragePID=`head -n 1 $centstorageRunFile`
+	    if status_centstorage > /dev/null; then
+		killproc_centstorage centstorage -HUP
 		echo "done"
 	    else
 		$0 stop
@@ -168,7 +168,7 @@ case "$1" in
 	;;
     
     *)
-	echo "Usage: ods {start|stop|restart|reload|force-reload|status}"
+	echo "Usage: centstorage {start|stop|restart|reload|force-reload|status}"
 	exit 1
 	;;
     
