@@ -79,7 +79,7 @@ LockDir=/var/lock/subsys
 LockFile=cenctore
           
 
-# Check that ods exists.
+# Check that centcore exists.
 if [ ! -f $Bin ]; then
     echo "Executable file $Bin not found.  Exiting."
     exit 1
