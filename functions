@@ -1,6 +1,6 @@
 # -*-Shell-script-*-
 #
-# functions     This file contains functions to be used by Oreon install scripts
+# functions     This file contains functions to be used by Centreon install scripts
 #
 
 ##
@@ -296,11 +296,11 @@ function check_group_apache()
     echo_info "Finding Apache group :" "$WEB_GROUP"
 }
 
-function install_oreon_plugins()
+function install_Centreon_plugins()
 {
     echo ""
 	echo "------------------------------------------------------------------------"
-	echo "                     Start Plugins Oreon Installation"
+	echo "                     Start Plugins Centreon Installation"
 	echo "------------------------------------------------------------------------"
 	echo ""
 	echo ""
@@ -311,7 +311,7 @@ function install_oreon_plugins()
 		echo_success "Creating Nagios Plugin Directory '$NAGIOS_PLUGIN'" "OK"
     fi
     echo 	""
-    echo "Preparing Oreon Plugins..."
+    echo "Preparing Centreon Plugins..."
 
     if [ -n "$PLUGINS_DIR" ]; then
 		for fichier in ${PLUGINS_DIR}src/*
@@ -324,14 +324,14 @@ function install_oreon_plugins()
 		  		echo_success "  -> $filename" "OK"  
 		  	fi
 		done
-		echo "Do you want to install Oreon Plugins ? "
+		echo "Do you want to install Centreon Plugins ? "
 		echo ""
 		echo -n "[y/n], default to [y]:"
 		read temp
 		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
         	while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
             	do
-                	echo "Do you want to install Oreon Plugins ? "
+                	echo "Do you want to install Centreon Plugins ? "
                     echo -n "[y/n], default to [y]:"
                     read temp
                 done
@@ -341,7 +341,7 @@ function install_oreon_plugins()
 		fi
 		if [ $temp = "y" ];then
 			cp $PLUGINS_DIR/* $NAGIOS_PLUGIN 2> /dev/null
-			echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
+			echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		fi
     else
 		for fichier in src/*
@@ -354,7 +354,7 @@ function install_oreon_plugins()
 		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
 		  fi
 		done
-		echo_success "Installing Oreon Plugins on '$NAGIOS_PLUGIN'" "OK"
+		echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
 		cp * $NAGIOS_PLUGIN
     fi
 
@@ -373,7 +373,7 @@ function install_oreon_plugins()
 	echo ""
 	
 	echo 	""
-    echo "Preparing Oreon Plugins..."
+    echo "Preparing Centreon Plugins..."
 		for fichier in $PLUGINS_DIR/src/traps/plugins/*
 		do
 		  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
@@ -381,14 +381,14 @@ function install_oreon_plugins()
 		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/src/traps/$filename"`
 		done
 		echo ""
-		echo "Do you want to install Oreon Traps Plugins ? "
+		echo "Do you want to install Centreon Traps Plugins ? "
 		echo ""
 		echo -n "[y/n], default to [y]:"
 		read temp
 		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
             while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
               do
-              echo "Do you want to install Oreon Traps Plugins ? "
+              echo "Do you want to install Centreon Traps Plugins ? "
               echo -n "[y/n], default to [y]:"
               read temp
             done
@@ -397,7 +397,7 @@ function install_oreon_plugins()
 		    temp=y
 		fi
 		if [ $temp = "y" ];then
-			echo "Installing Oreon Traps Plugins on "
+			echo "Installing Centreon Traps Plugins on "
 			TEMP_DIR="src/"
 			if [ -n "$PLUGINS_DIR" ] ;then
 				TEMP_DIR="${PLUGINS_DIR}/src/"	
@@ -494,15 +494,15 @@ function install_oreon_plugins()
 	echo ""
     if test -a $NAGIOS_PLUGIN/centreon.conf ; then
 		echo ""
-		echo_success "Finding Oreon Plugins configuration file 'centreon.conf' :" "OK"
-		echo "You already seem to have installed the plugins Oreon."
-		echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
+		echo_success "Finding Centreon Plugins configuration file 'centreon.conf' :" "OK"
+		echo "You already seem to have installed the plugins Centreon."
+		echo "Do you want overwrite this file ? You must regenerate this one from Centreon interface."
 		echo -n "[y/n], default to [n]:"
 		read temp
 		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
             while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
               do
-              echo "Do you want overwrite this file ? You must regenerate this one from Oreon interface."
+              echo "Do you want overwrite this file ? You must regenerate this one from Centreon interface."
               echo -n "[y/n], default to [n]:"
               read temp
             done
@@ -538,7 +538,7 @@ function install_ods(){
 		echo_passed "ODS Directory already exists" "PASSED"
     else
 		mkdir /var/lib/ods/ >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Oreon Directory '/var/lib/ods'" "OK"
+		echo_success "Creating Centreon Directory '/var/lib/ods'" "OK"
     fi
 	
 	echo "Checking ODS database folder : "
@@ -546,7 +546,7 @@ function install_ods(){
 		echo_passed "ODS Directory already exists" "PASSED"
     else
 		mkdir /var/lib/ods/database/ >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Oreon Directory '/var/lib/ods/database/'" "OK"
+		echo_success "Creating Centreon Directory '/var/lib/ods/database/'" "OK"
     fi
     
     echo "Checking ODS log folder : "
@@ -554,7 +554,7 @@ function install_ods(){
 		echo_passed "ODS Directory already exists" "PASSED"
     else
 		mkdir /var/log/ods/ >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Oreon Directory '/var/log/ods/'" "OK"
+		echo_success "Creating Centreon Directory '/var/log/ods/'" "OK"
     fi
 	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  $INSTALL_DIR_OREON/ODS/ods > $INSTALL_DIR_OREON/ODS/ods_new
@@ -620,7 +620,7 @@ function config_cron(){
 
     echo ""
 	echo "------------------------------------------------------------------------"
-	echo "                         Start Oreon Cron Configuration"
+	echo "                         Start Centreon Cron Configuration"
 	echo "------------------------------------------------------------------------"
 	echo ""
 	echo ""
@@ -633,21 +633,21 @@ function config_cron(){
 	    if [ "$PHP_FLG" == '0' ] ; then
 	        PHP_BIN="php5"
 	    else
-	        echo "PHP not found. Oreon take php by default"
+	        echo "PHP not found. Centreon take php by default"
 	        PHP_BIN="php"
 	    fi
 	fi
 	
 	# For migration (1.4 to 1.4.1)
-	if test -f /etc/cron.d/oreon ; then
-  		CRON=`cat /etc/cron.d/oreon | grep inventory_update.php | grep -v \# > /dev/null; echo $?`
-		echo_warning "For upgrade, oreon must be delete /etc/cron.d/oreon file"
+	if test -f /etc/cron.d/centreon ; then
+  		CRON=`cat /etc/cron.d/centreon | grep inventory_update.php | grep -v \# > /dev/null; echo $?`
+		echo_warning "For upgrade, Centreon must be delete /etc/cron.d/centreon file"
 		echo -n "[y/n], default to [y]:"
 		read temp
 		#if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
                 while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
                       do
-                      echo "Do you want to install to delete /etc/cron.d/oreon file ? "
+                      echo "Do you want to install to delete /etc/cron.d/centreon file ? "
                       echo -n "[y/n], default to [y]:"
                       read temp
                 done
@@ -701,16 +701,16 @@ function install_oreon(){
 
     echo ""
 	echo "------------------------------------------------------------------------"
-	echo "                              Start Oreon Installation"
+	echo "                              Start Centreon Installation"
 	echo "------------------------------------------------------------------------"
 	echo ""
 	echo ""
 
     if test -d $INSTALL_DIR_OREON ; then
-		echo_passed "Oreon Directory already exists" "PASSED"
+		echo_passed "Centreon Directory already exists" "PASSED"
     else
 		mkdir $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Oreon Directory '$INSTALL_DIR_OREON'" "OK"
+		echo_success "Creating Centreon Directory '$INSTALL_DIR_OREON'" "OK"
     fi
 
    for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "www" "cron" "ODS" "ODS_SRC_ETC" "doc"
