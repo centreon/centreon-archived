@@ -18,7 +18,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-
 	if (isset($_POST["limit"]) && $_POST["limit"])
 		$limit = $_POST["limit"];
 	else if (isset($_GET["limit"]))
@@ -37,9 +36,9 @@ For information : contact@oreon-project.org
 			$limit = 120;
 	}
 
-	if (isset($_POST["num"]))
+	if (isset($_POST["num"]) && $_POST["num"])
 		$num = $_POST["num"];
-	else if (isset($_GET["num"]))
+	else if (isset($_GET["num"]) && $_GET["num"])
 		$num = $_GET["num"];
 	else if (isset($oreon->historyPage[$url]))
 		$num = $oreon->historyPage[$url];
