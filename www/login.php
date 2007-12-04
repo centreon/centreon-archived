@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
 			print $release["value"];
 			?>
 			</td>
-			<td class="LoginInvitDate"><br><?phpecho $date; ?></td>
+			<td class="LoginInvitDate"><br><?php echo $date; ?></td>
 		</tr>
 		<tr>
 			<td colspan="2">

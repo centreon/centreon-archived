@@ -15,14 +15,16 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	
+
 	// This file have to be included whenever we want to connect to the DB
-		
+
+		echo "ici";
+
 	require_once("DB.php");
-	
-//	if (isset($conf_oreon["ods"])){ 
+
+//	if (isset($conf_oreon["ods"])){
 		// Pear connection
-		
+
 		$debug = 0;
 		$dsn = array(
 		    'phptype'  => 'mysql',
@@ -31,18 +33,18 @@ For information : contact@oreon-project.org
 		    'hostspec' => 'localhost',
 		    'database' => 'ndo',
 		);
-		
+
 		$options = array(
 		    'debug'       => 2,
-		    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE, 
+		    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
 		);
-		
+
 		global $pearDBndo;
-		
+
 		$pearDBndo =& DB::connect($dsn, $options);
 		if (PEAR::isError($pearDBndo))
 		    die($pearDBndo->getMessage());
-		    
+
 		$pearDBndo->setFetchMode(DB_FETCHMODE_ASSOC);
 		// End of Pear connection
 //	}

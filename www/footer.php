@@ -37,16 +37,16 @@ For information : contact@oreon-project.org
 			</tr>
 			<tr>
 				<td align="center" style="padding-top:5px;"><div class='footer'>
-				<a href='http://www.w3c.org'><img src="<?phpecho $skin; ?>Images/footer/colophon_css.png"
+				<a href='http://www.w3c.org'><img src="<?php echo $skin; ?>Images/footer/colophon_css.png"
 				          height="15" width="80" alt="Valid CSS"
 				          title="Oreon was built with valid CSS." />
-				<a href='http://www.php.net'><img src="<?phpecho $skin; ?>Images/footer/button-php.gif"
+				<a href='http://www.php.net'><img src="<?php echo $skin; ?>Images/footer/button-php.gif"
 				          height="15" width="80" alt="Powered By PHP"
 				          title="Powered By PHP." /></a>
-				<a href='http://sourceforge.net/donate/index.php?group_id=140316'><img src="<?phpecho $skin; ?>Images/footer/button-donate.gif"
+				<a href='http://sourceforge.net/donate/index.php?group_id=140316'><img src="<?php echo $skin; ?>Images/footer/button-donate.gif"
 				          height="15" width="80" alt="Donate"
 				          title="Donate" /></a>
-				<a href='http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt'><img src="<?phpecho $skin; ?>Images/footer/button-gpl.gif"
+				<a href='http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt'><img src="<?php echo $skin; ?>Images/footer/button-gpl.gif"
 				          height="15" width="80" alt="GPL Licenced"
 				          title="GPL Licenced" /></a>
 				</div>

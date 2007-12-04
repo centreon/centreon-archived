@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
 	    $return_false = 1;	?>
 		<tr>
-			<td colspan="2" align="left"><span class="small"><?phpecho $mysql_msg; ?></span></td>
+			<td colspan="2" align="left"><span class="small"><?php echo $mysql_msg; ?></span></td>
 		</tr><?	
 	}
 

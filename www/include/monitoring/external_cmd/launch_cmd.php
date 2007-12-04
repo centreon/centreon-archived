@@ -47,7 +47,7 @@ For information : contact@oreon-project.org
 				</tr>	
 				<tr>
 					<td class="text10b">Auteur<font color="red">*</font> </td>
-					<td><input name="cmt[auther]" type="text" value="<?phpprint $oreon->user->get_alias(); ?>"></td>
+					<td><input name="cmt[auther]" type="text" value="<?php print $oreon->user->get_alias(); ?>"></td>
 				</tr>
 				<tr>
 					<td class="text10b" valign="top">Comment<font color="red">*</font></td>

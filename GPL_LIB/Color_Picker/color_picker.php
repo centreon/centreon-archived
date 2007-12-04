@@ -23,15 +23,15 @@ $name2 = $n."_color";
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	<script type="text/javascript">
 	
-		// Déposé par Frosty sur www.toutjavascript.com
-		// 27/5/2003 - Ajout compatibilité IE5 sur MacOS
-		// 5/6/2003  - Ajout compatibilité Mozilla
+		// Dï¿½posï¿½ par Frosty sur www.toutjavascript.com
+		// 27/5/2003 - Ajout compatibilitï¿½ IE5 sur MacOS
+		// 5/6/2003  - Ajout compatibilitï¿½ Mozilla
 		// 5/9/2005  - Correction d'un bug (clic sur la bordure de la palette principale)
-		// 6/9/2005  - Ajout de la possibilité de sélectionner une couleur en déplaçant la souris
-		//             sur les palettes (bouton gauche enfoncé)
+		// 6/9/2005  - Ajout de la possibilitï¿½ de sï¿½lectionner une couleur en dï¿½plaï¿½ant la souris
+		//             sur les palettes (bouton gauche enfoncï¿½)
 
 		/*****************************************************************
-		* Script Color Picker écrit par Frosty (Maxime Pacary) - Mai 2003
+		* Script Color Picker ï¿½crit par Frosty (Maxime Pacary) - Mai 2003
 		******************************************************************/
 	
 		// var. globale
@@ -48,13 +48,13 @@ $name2 = $n."_color";
 			return strhex.charAt(Math.floor(n/16)) + strhex.charAt(n%16);
 		}
 
-		// détection d'un clic/mouvement souris sur la "palette" (à gauche)
+		// dï¿½tection d'un clic/mouvement souris sur la "palette" (ï¿½ gauche)
 		function compute_color(e)
 		{
 			x = e.offsetX ? e.offsetX : (e.target ? e.clientX-e.target.x : 0);
 			y = e.offsetY ? e.offsetY : (e.target ? e.clientY-e.target.y : 0);
 			
-			// calcul de la couleur à partir des coordonnées du clic
+			// calcul de la couleur ï¿½ partir des coordonnï¿½es du clic
 			var part_width = document.all ? document.all.color_picker.width/6 : document.getElementById('color_picker').width/6;
 			var part_detail = detail/2;
 			var im_height = document.all ? document.all.color_picker.height : document.getElementById('color_picker').height;
@@ -78,10 +78,10 @@ $name2 = $n."_color";
 			green = 128+(green-128)*coef;
 			blue = 128+(blue-128)*coef;
 			
-			// mise à jour de la couleur finale
+			// mise ï¿½ jour de la couleur finale
 			changeFinalColor('#' + dechex(red) + dechex(green) + dechex(blue));
 			
-			// mise à jour de la barre de droite en fonction de cette couleur
+			// mise ï¿½ jour de la barre de droite en fonction de cette couleur
 			for(i = 0; i < detail; i++)
 			{
 				if ((i >= 0) && (i < part_detail))
@@ -126,9 +126,9 @@ $name2 = $n."_color";
 			      new_color = '#'+dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
 			   }
 
-                window.opener.document.forms['Form'].elements['<?phpecho $name1; ?>'].value = new_color;
-        	     window.opener.document.forms['Form'].elements['<?phpecho $name2;?>'].style.borderColor = new_color;
-			   window.opener.document.forms['Form'].elements['<?phpecho $name2; ?>'].style.backgroundColor = new_color;
+                window.opener.document.forms['Form'].elements['<?php echo $name1; ?>'].value = new_color;
+        	     window.opener.document.forms['Form'].elements['<?php echo $name2;?>'].style.borderColor = new_color;
+			   window.opener.document.forms['Form'].elements['<?php echo $name2; ?>'].style.backgroundColor = new_color;
 				window.opener.focus();
 				window.close();
 			}
@@ -142,8 +142,8 @@ $name2 = $n."_color";
 <body>
    <form name="colpick_form" action="#" method="post">
 
-	<h2><?phpecho $title; ?></h2>
-	<h3><?phpecho $name; ?></h3>
+	<h2><?php echo $title; ?></h2>
+	<h3><?php echo $name; ?></h3>
 	<table border="0" cellspacing="0" cellpadding="0" align="center">
 		<tr>
 			<td>

@@ -66,7 +66,7 @@ aff_header("Oreon Setup Wizard", "DataBase Verification", 7);
 		$return_false = 1;
 	 } ?>
 	<tr>
-    	<td colspan="2" align="right"><?phpecho $mysql_msg; ?></td>
+    	<td colspan="2" align="right"><?php echo $mysql_msg; ?></td>
 	</tr>
 </table>
 <?php

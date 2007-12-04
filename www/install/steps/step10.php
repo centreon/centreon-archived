@@ -49,8 +49,8 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	</td>
 	</tr>
   	<tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir_www"]; ?></td>
-    	<td align="right"><b><?phpecho $msg ;	?></b></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION["oreon_dir_www"]; ?></td>
+    	<td align="right"><b><?php echo $msg ;	?></b></td>
   	</tr>
   	<tr>
 		<td><b>Writable ODS Configuration File (conf.pm)</b></td>
@@ -70,8 +70,8 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	</td>
 	</tr>
   	<tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir_www"]; ?></td>
-    	<td align="right"><b><?phpecho $msg ;	?></b></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION["oreon_dir_www"]; ?></td>
+    	<td align="right"><b><?php echo $msg ;	?></b></td>
   	</tr>
   	<tr>
 		<td><b>Generate Oreon configuration file</b></td>
@@ -119,8 +119,8 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir_www"].'centreon.conf.php'; ?></td>
-	    <td align="right"><b><?phpecho $msg ;	?></b></td>
+	    <td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION["oreon_dir_www"].'centreon.conf.php'; ?></td>
+	    <td align="right"><b><?php echo $msg ;	?></b></td>
  	</tr>
  	<tr>
 		<td><b>Generate ODS configuration file</b></td>
@@ -145,8 +145,8 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION["oreon_dir"].'ODS/etc/oreon.pm'; ?></td>
-	    <td align="right"><b><?phpecho $msg ;	?></b></td>
+	    <td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION["oreon_dir"].'ODS/etc/oreon.pm'; ?></td>
+	    <td align="right"><b><?php echo $msg ;	?></b></td>
  	</tr>
 <?php
 	aff_middle();

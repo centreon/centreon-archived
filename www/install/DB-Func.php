@@ -28,7 +28,7 @@ function aff_header($str, $str2, $nb){
 <head>
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
    <meta http-equiv="Content-Style-Type" content="text/css">
-   <title><?phpprint $str; ?></title>
+   <title><?php print $str; ?></title>
    <link rel="shortcut icon" href="../img/favicon.ico">
    <link rel="stylesheet" href="./install.css" type="text/css">
    <SCRIPT language='javascript'>
@@ -58,7 +58,7 @@ function aff_header($str, $str2, $nb){
 <body rightmargin="0" topmargin="0" leftmargin="0">
 <table cellspacing="0" cellpadding="0" border="0" align="center" class="shell">
 <tr height="83" style=" background-image: url('../img/bg_banner.gif');">
-  <th width="400" height="83"><?phpprint $nb . ". " . $str2; ?></th>
+  <th width="400" height="83"><?php print $nb . ". " . $str2; ?></th>
   <th width="200" height="83" style="text-align: right; padding: 0px;">
 		<a href="http://www.oreon-project.org" target="_blank"><IMG src="../img/logo_centreon_wt.gif" alt="Oreon" border="0"></a>
   </th>
@@ -66,7 +66,7 @@ function aff_header($str, $str2, $nb){
 <tr>
   <td colspan="2" width="600" style="background-position : right; background-color: #DDDDDD; background-repeat : no-repeat;">
 	<form action="setup.php" method="post" name="theForm" id="theForm">
-	<input type="hidden" name="step" value="<?phpprint $nb; ?>">
+	<input type="hidden" name="step" value="<?php print $nb; ?>">
 <?php
 }
 

@@ -15,6 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	# Bench
 	function microtime_float() 	{
 	   list($usec, $sec) = explode(" ", microtime());
@@ -38,7 +39,7 @@ For information : contact@oreon-project.org
 	require_once (SMARTY_DIR."Smarty.class.php");
 
 	ini_set("session.gc_maxlifetime", "31536000");
-	
+
 	Session::start();
 	if (version_compare(phpversion(), '5.0') < 0) {
 	    eval('
@@ -46,24 +47,24 @@ For information : contact@oreon-project.org
 	      return $object;
 	    }
 	    ');
-	}  
+	}
 
 	# Delete Session Expired
 	$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$DBRESULT->fetchInto($session_expire);
 	$time_limit = time() - ($session_expire["session_expire"] * 60);
-	
+
 	$DBRESULT =& $pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
 	if (PEAR::isError($DBRESULT)) print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br>";
-		
+
 	# Get session and Check if session is not expired
 	$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
 	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	
+
 	if (!$DBRESULT->numRows())
-		header("Location: index.php?disconnect=2");			
-	
+		header("Location: index.php?disconnect=2");
+
 	if (!isset($_SESSION["oreon"]))
 		header("Location: index.php?disconnect=1");
 
@@ -88,7 +89,7 @@ For information : contact@oreon-project.org
 			$tab = split("\=", $root_menu["topology_url_opt"]);
 			if (isset($tab[1]))
 				$o = $tab[1];
-		}	
+		}
 	}
 
     # Cut Page ID
@@ -122,7 +123,7 @@ For information : contact@oreon-project.org
 		}
 		@closedir($handle);
 	}
-	
+
 	$colorfile = "Color/". $tab_file_css[0];
 
 	$DBRESULT =& $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
@@ -130,12 +131,12 @@ For information : contact@oreon-project.org
 		print ($DBRESULT->getMessage());
 	if($DBRESULT->numRows() && $DBRESULT->fetchInto($elem))
 		$colorfile = "Color/".$elem["css_name"];
-	
+
 	# Update Session Table For last_reload and current_page row
 	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error WHERE Updating Session : ".$DBRESULT->getDebugInfo()."<br>";
-		
+
 	# Load traduction in the selected language.
 	is_file ("./lang/".$oreon->user->get_lang().".php") ? include_once ("./lang/".$oreon->user->get_lang().".php") : include_once ("./lang/en.php");
 	is_file ("./include/configuration/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/configuration/lang/".$oreon->user->get_lang().".php") : include_once ("./include/configuration/lang/en.php");
@@ -149,6 +150,6 @@ For information : contact@oreon-project.org
 	# Take this part again and get infos in module table
 	foreach ($oreon->modules as $module)
 		$module["lang"] ? (is_file ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") ? include_once ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") : include_once ("./modules/".$module["name"]."/lang/en.php")) : NULL;
-	
-    $mlang = $oreon->user->get_lang();	
+
+    $mlang = $oreon->user->get_lang();
 ?>

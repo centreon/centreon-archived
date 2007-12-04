@@ -15,6 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	if (!isset($oreon))
 		exit();
 
@@ -24,9 +25,9 @@ For information : contact@oreon-project.org
 	# ODS Database retrieve information
 	$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
-	$result_config = $DBRESULT->fetchRow();		
-	if (isset($result_config) && $result_config)	
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	$result_config = $DBRESULT->fetchRow();
+	if (isset($result_config) && $result_config)
 		$gopt = array_map("myDecode", $result_config);
 
 	# Smarty template Init
@@ -127,7 +128,7 @@ For information : contact@oreon-project.org
 				$title = $lang[$title["topology_name"]];
 			else
 				$title = $lang["m_main_menu"];
-	
+
 			$Menu3Url = "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
 			$elemArr[3][$elem["topology_group"]]["title"] = $title;
 		    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
@@ -158,8 +159,8 @@ For information : contact@oreon-project.org
 										"Menu4Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
 										"Menu4Popup" => $elem["topology_popup"] ? true : false);
 		}
-	}	
-	
+	}
+
 	# Create Menu Level 1-2-3-4
 	$tpl->assign("UserInfoUrl", $userUrl);
 	$tpl->assign("UserName", $oreon->user->get_alias());
@@ -190,7 +191,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("legend1", $lang['m_help']);
 	$tpl->assign("legend2", $lang['lgd_legend']);
 
-	# User Online	
+	# User Online
 	$tab_user = array();
 	$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
 	if (PEAR::isError($DBRESULT))
@@ -202,11 +203,11 @@ For information : contact@oreon-project.org
 		$tab_user[$session["user_id"]]["alias"] = $session["contact_alias"];
 		$tab_user[$session["user_id"]]["admin"] = $session["contact_admin"];
 	}
-		
+
 	$tpl->assign("tab_user", $tab_user);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('amIadmin', $oreon->user->admin);
-	
+
 	# Display
 	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("BlockMenuType1.ihtml");

@@ -42,7 +42,7 @@ foreach ($pear_module as $module) {
   
 ?>
    <tr>
-    <td><b>&nbsp;&nbsp;&nbsp;<?phpecho $module["name"] ?></b></td>
+    <td><b>&nbsp;&nbsp;&nbsp;<?php echo $module["name"] ?></b></td>
     <td align="right"><?php
     	$msg = NULL;  
     	if (file_exists($pear_path. '/'.$module["path"])) {
@@ -57,7 +57,7 @@ foreach ($pear_module as $module) {
   </tr>
   <?phpif($msg)  { ?>
   <tr>
-    <td align="right" colspan="2"><?phpecho $msg ; ?></td>
+    <td align="right" colspan="2"><?php echo $msg ; ?></td>
   </tr>
   <?php} ?>
 
@@ -67,7 +67,7 @@ foreach ($pear_module as $module) {
     <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
   </tr>
   <tr>
-    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <?phpecho $alldeps; ?> </span></td>
+    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <?php echo $alldeps; ?> </span></td>
   </tr>
    <?php} ?>
 

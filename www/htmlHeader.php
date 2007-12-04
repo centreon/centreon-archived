@@ -22,24 +22,24 @@ For information : contact@oreon-project.org
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?phpecho $mlang; ?>" lang="<?phpecho $mlang; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>" lang="<?php echo $mlang; ?>">
 <head>
 <title>Supervision Tool - Powered By Centreon</title>
 <HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-<link href="<?phpecho $skin; ?>style.css" rel="stylesheet" type="text/css"/>
-<link href="<?phpecho $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
-<link href="<?phpecho $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
-<link href="<?phpecho $skin; ?><?phpecho $colorfile; ?>" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
+<link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <?php
 	if($min != 1){
 
-	$DBRESULT =& $pearDB->query("SELECT ndo_base_prefix,ndo_activate FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
 	# Set base value
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-	
+
 	$ndo = $gopt["ndo_activate"];
 
 	if (isset($ndo) && !$ndo)
@@ -48,9 +48,9 @@ For information : contact@oreon-project.org
 		print '<script language="javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php"; </script>';
 
 		print "<script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>";
-		
+
 	}
-	
+
 	# Add Template CSS for sysInfos Pages
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
@@ -78,7 +78,7 @@ For information : contact@oreon-project.org
 	/*
 	 * init javascript
 	 */
-	 
+
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT)) print $DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<?phpecho $tM; ?>,"<?phpecho $sid; ?>","<?phpecho $o;?>")', <?phpecho $tFM; ?>);<?php
+			?>setTimeout('initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o;?>")', <?php echo $tFM; ?>);<?php
 		} else if ($topology_js['init'])
 			echo $topology_js['init'] ."();";
 	}

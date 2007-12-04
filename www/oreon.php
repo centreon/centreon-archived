@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 		$o = $_GET["o"];
 	else
 		$o = NULL;
-		
+
 	if (isset($_GET["min"]))
 		$min = $_GET["min"];
 	else if (isset($_POST["min"]))
@@ -40,13 +40,12 @@ For information : contact@oreon-project.org
 
 	if (isset($_GET["AutoLogin"]) && $_GET["AutoLogin"])
 		print $_GET["AutoLogin"];
-		 
+
 	# Include all func
 	require_once ("./func.php");
 	require_once ("./include/common/common-Func.php");
-	
 	require_once ("./header.php");
-	
+
 	# LCA Init Common Var
 	global $isRestreint;
 	$isRestreint = HadUserLca($pearDB);
@@ -61,24 +60,24 @@ For information : contact@oreon-project.org
 			$nb_page = 0;
 			require_once("./alt_error.php");
 		} else
-			$nb_page = 1;	
+			$nb_page = 1;
 	} else
 		$nb_page = 1;
 
-	# Init URL 
+	# Init URL
 	$url = "";
 	if (!isset($_GET["doc"])){
-		if ((isset($nb_page) && $nb_page) || !$isRestreint){	
+		if ((isset($nb_page) && $nb_page) || !$isRestreint){
 			if ($redirect["topology_page"] < 100){
 				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-					} else 
-						$url = "./alt_error.php";		
+					} else
+						$url = "./alt_error.php";
 				} else {
-					$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);	
+					$ret2 = get_child($ret['topology_page'], $oreon->user->lcaTStr);
 					if ($ret2["topology_url_opt"])	{
 						if (!$o) {
 							$tab = split("\=", $ret2["topology_url_opt"]);
@@ -95,15 +94,15 @@ For information : contact@oreon-project.org
 						}
 					} else
 						$url = "./alt_error.php";
-				} 
+				}
 			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
-				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);	
+				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 				if (!$ret['topology_page']){
 					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-					} else 
-						$url = "./alt_error.php";		
+					} else
+						$url = "./alt_error.php";
 				} else {
 					if ($ret["topology_url_opt"]){
 						if (!$o) {
@@ -111,26 +110,26 @@ For information : contact@oreon-project.org
 							$o = $tab[1];
 						}
 						$p = $ret["topology_page"];
-					} 
+					}
 					if (file_exists($ret["topology_url"])){
 						$url = $ret["topology_url"];
 						reset_search_page($url);
-					} else 
+					} else
 						$url = "./alt_error.php";
 				}
 			} else if ($redirect["topology_page"] >= 1000) {
 				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 				if (!$ret['topology_page']){
-					if (file_exists($redirect["topology_url"])){		
+					if (file_exists($redirect["topology_url"])){
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-					} else 
-						$url = "./alt_error.php";		
-				} else { 
-					if (file_exists($redirect["topology_url"]) && $ret['topology_page']){	
+					} else
+						$url = "./alt_error.php";
+				} else {
+					if (file_exists($redirect["topology_url"]) && $ret['topology_page']){
 						$url = $redirect["topology_url"];
 						reset_search_page($url);
-					} else 
+					} else
 						$url = "./alt_error.php";
 				}
 			}
@@ -140,16 +139,16 @@ For information : contact@oreon-project.org
 
 	# Header HTML
 	require_once ("./htmlHeader.php");
-			
+
 	# Display Menu
 	if (!$min)
 		require_once ("menu/Menu.php");
 
-	# Display PathWay	
+	# Display PathWay
 	if($min != 1)
 		include("pathWay.php");
-	
-	# Go on our page 
+
+	# Go on our page
 	if (isset($url) && $url)
     	require_once($url);
     else
@@ -157,13 +156,13 @@ For information : contact@oreon-project.org
 
 
 	if (!isset($oreon->historyPage))
-		$oreon->createHistory();	 
-	
+		$oreon->createHistory();
+
 	if (isset($url) && $url){
 		if (isset($_GET["num"]))
 			$oreon->historyPage[$url] = $_GET["num"];
 		if (isset($_POST["num"]))
-			$oreon->historyPage[$url] = $_POST["num"];		
+			$oreon->historyPage[$url] = $_POST["num"];
 		if (isset($_GET["search"]))
 			$oreon->historySearch[$url] = $_GET["search"];
 		if (isset($_POST["search"]))
@@ -184,9 +183,9 @@ For information : contact@oreon-project.org
 			$tpl->display($lg_path."legend.ihtml");
 		}
 	}
-	
+
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div><!-- end contener -->";
-	
+
 	# Display Footer
 	if (!$min)
 		require_once("footer.php");

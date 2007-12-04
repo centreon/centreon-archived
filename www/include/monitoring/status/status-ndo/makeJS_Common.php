@@ -19,6 +19,22 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 ?>
+function getXhrC(){
+	if(window.XMLHttpRequest) // Firefox et autres
+	   var xhrC = new XMLHttpRequest();
+	else if(window.ActiveXObject){ // Internet Explorer
+	   try {
+                var xhrC = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                var xhrC = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+	}
+	else { // XMLHttpRequest non support2 par le navigateur
+	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+	   var xhrC = false;
+	}
+	return xhrC;
+}
 
 function addORdelTab(_name){
 
@@ -61,17 +77,17 @@ function construct_selecteList_ndo_instance(id){
 	if(!document.getElementById("select_instance"))
 	{
 		var _advanced_options = document.getElementById(id);
-	
+
 	//	_advanced_options.innerHTML = "";
-		
+
 		var _select = document.createElement("select");
 		_select.name = "select_instance";
 		_select.id = "select_instance";
-	
-	
+
+
 		_select.onchange = function() { _instance = this.value; _default_instance = this.selectedIndex; monitoring_refresh(); };
-	
-	
+
+
 		var k = document.createElement('option');
 		k.value= "ALL";
 		var l = document.createTextNode("ALL");
@@ -84,7 +100,7 @@ function construct_selecteList_ndo_instance(id){
 	function get_ndo_instance_id($name_instance)
 	{
 		global $gopt,$pearDBndo;
-		$rq = "SELECT instance_id FROM ".$gopt["ndo_base_prefix"]."_instances WHERE instance_name like '".$name_instance."'";
+		$rq = "SELECT instance_id FROM ndo_instances WHERE instance_name like '".$name_instance."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		$DBRESULT_NDO->fetchInto($ndo);
 		return $ndo["instance_id"];
@@ -125,8 +141,10 @@ function viewDebugInfo(_str){
 function change_page(page_number){
 viewDebugInfo('change page');
 	_num = page_number;
+
 	monitoring_refresh();
 	pagination_changed();
+	set_page(page_number);
 }
 
 function change_type_order(_type){
@@ -155,11 +173,13 @@ function change_limit(l){
 	for(i=0;_sel1[i] && _sel1[i].value != l;i++)
 		;
 	_sel1.selectedIndex = i;
+	set_limit(l);
 }
 
+
 var _numRows = 0;
-var _limit = 10;
-var _num = 0;
+//var _limit = 10;
+//var _num = 0;
 
  function getVar (nomVariable)
  {
@@ -175,7 +195,7 @@ var _num = 0;
 	 }
 	 return variable;
  }
- 
+
 function mk_img(_src, _alt)
 {
 	var _img = document.createElement("img");
@@ -195,7 +215,7 @@ viewDebugInfo('mk pagination');
 		var _nr = infos[0].getElementsByTagName("numrows")[0].firstChild.nodeValue;
 		var _nl = infos[0].getElementsByTagName("limit")[0].firstChild.nodeValue;
 		var _nn = infos[0].getElementsByTagName("num")[0].firstChild.nodeValue;
-	
+
 		if(_numRows != _nr){
 			_numRows = _nr;
 			flag = 1;
@@ -208,11 +228,11 @@ viewDebugInfo('mk pagination');
 			_limit = _nl;
 			flag = 1;
 		}
-	
+
 		if(flag == 1){
-		pagination_changed();	
+		pagination_changed();
 		}
-		
+
 	}
 }
 
@@ -224,7 +244,7 @@ viewDebugInfo('pagination_changed');
 if((_numRows % _limit) == 0)
 {
 	page_max =  Math.round( (_numRows / _limit));
-	
+
 }
 else{
 	page_max =  Math.round( (_numRows / _limit) + 0.5);
@@ -316,12 +336,12 @@ else{
 	if(_num < page_max - 1){
 		_pagination1.appendChild(_linkaction_right);
 		_pagination1.appendChild(_linkaction_last);
-	}	
-	
+	}
+
 
 	var _sel1 = document.getElementById('sel1');
 	_sel1.innerHTML ='';
-	
+
 	var sel = document.createElement('select');
 	sel.name = 'l';
 	sel.id = 'l1';
@@ -330,7 +350,7 @@ else{
 	var _index = 0;
 	for(i = 10; i <= 100 ;i += 10){
 		if(i < _limit)
-			_index++; 
+			_index++;
 		var k = document.createElement('option');
 		k.value= i;
 		sel.appendChild(k);
@@ -356,9 +376,36 @@ function mainLoop(){
     var valeur=escapeURI(_currentInputFieldValue);
 	_search = valeur;
 
-	if(!_lock)
+	if(!_lock){
 		monitoring_refresh();
+		set_search(_search);
+	}
   }
   _oldInputFieldValue=_currentInputFieldValue;
   setTimeout("mainLoop()",222);
+}
+
+function set_limit(limit)
+{
+	var xhrM = getXhrC();
+	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
+	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	_var = "sid=<?php echo $sid;?>&limit="+limit+"&url=<?php echo $url;?>";
+	xhrM.send(_var);
+}
+function set_search(search)
+{
+	var xhrM = getXhrC();
+	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
+	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	_var = "sid=<?php echo $sid;?>&search="+search+"&url=<?php echo $url;?>";
+	xhrM.send(_var);
+}
+function set_page(page)
+{
+	var xhrM = getXhrC();
+	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
+	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	_var = "sid=<?php echo $sid;?>&page="+page+"&url=<?php echo $url;?>";
+	xhrM.send(_var);
 }

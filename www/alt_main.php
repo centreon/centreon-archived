@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	?>
 	<table border=0 width="100%" class="tabTableTitleHome">
 		<tr>
-			<td style="text-align:left;font-family:Arial, Helvetica, Sans-Serif;font-size:13px;padding-left:20px;font-weight: bold;"><?phpecho $lang['network_health']; ?></td>
+			<td style="text-align:left;font-family:Arial, Helvetica, Sans-Serif;font-size:13px;padding-left:20px;font-weight: bold;"><?php echo $lang['network_health']; ?></td>
 		</tr>
 	</table><!--
 	<table border=0 width="100%" class="tabTableHome" style="padding-top:8px;">
@@ -39,13 +39,13 @@ For information : contact@oreon-project.org
 			<td width="100%" align="center" colspan="2">
 				<table border=0 width="100%" cellpadding="0" cellspacing="0" align="center">
 					<tr>
-						<td width="150" class="text10b" align="center" style="white-space: nowrap; padding-right: 3px;"><?phpecho $lang['host_health']; ?></td>
-						<td width="<?phpprint $Logs->Host_health * 1.7 ; ?>" bgcolor="<?phpprint return_color_health($Logs->Host_health); ?>" height="15"><?phpif ($Logs->Host_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
-						<td width="<?phpprint (100 - $Logs->Host_health) * 1.7  ; ?>" bgcolor="#999999"><?phpif ($Logs->Host_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="150" class="text10b" align="center" style="white-space: nowrap; padding-right: 3px;"><?php echo $lang['host_health']; ?></td>
+						<td width="<?php print $Logs->Host_health * 1.7 ; ?>" bgcolor="<?php print return_color_health($Logs->Host_health); ?>" height="15"><?phpif ($Logs->Host_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="<?php print (100 - $Logs->Host_health) * 1.7  ; ?>" bgcolor="#999999"><?phpif ($Logs->Host_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
 						<td width="15">&nbsp;</td>
-						<td width="150" class="text10b" align="center" style="white-space:nowrap; padding-right: 3px;"><?phpecho $lang['service_health']; ?></td>
-						<td width="<?phpprint $Logs->Service_health * 1.7 ; ?>" bgcolor="<?phpprint return_color_health($Logs->Service_health); ?>" height="15"><?phpif ($Logs->Service_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
-						<td width="<?phpprint (100 - $Logs->Service_health) * 1.7 ; ?>" bgcolor="#999999"><?phpif ($Logs->Service_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="150" class="text10b" align="center" style="white-space:nowrap; padding-right: 3px;"><?php echo $lang['service_health']; ?></td>
+						<td width="<?php print $Logs->Service_health * 1.7 ; ?>" bgcolor="<?php print return_color_health($Logs->Service_health); ?>" height="15"><?phpif ($Logs->Service_health != 0) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
+						<td width="<?php print (100 - $Logs->Service_health) * 1.7 ; ?>" bgcolor="#999999"><?phpif ($Logs->Service_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
 						<td width="15">&nbsp;</td>
 					</tr>
 				</table><br>

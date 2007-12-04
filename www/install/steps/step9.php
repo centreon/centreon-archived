@@ -38,23 +38,23 @@ If you want enable LDAP authentification, please complete the following fields. 
   </tr>
   <tr>
   	<td colspan="2">
-		<div id='ldap_settings' style="display: <?phpecho $display; ?>;">
+		<div id='ldap_settings' style="display: <?php echo $display; ?>;">
 		<table cellpadding="0" cellspacing="0" border="0" width="90%" class="StyleDottedHr" align="center">
 		  <tr>
 		    <td style="padding-left:50px ">LDAP Host</td>
-			<td><input name="ldap_host" type="text" value="<?phpecho (isset($_SESSION["ldap_host"]) ?  $_SESSION["ldap_host"]  : "localhost" );?>"></td>
+			<td><input name="ldap_host" type="text" value="<?php echo (isset($_SESSION["ldap_host"]) ?  $_SESSION["ldap_host"]  : "localhost" );?>"></td>
 		  </tr>
 		  <tr>
 		    <td style="padding-left:50px ">LDAP Port</td>
-			<td><input name="ldap_port" type="text" value="<?phpecho (isset($_SESSION["ldap_port"]) ?  $_SESSION["ldap_port"]  :  "389" );?>"></td>
+			<td><input name="ldap_port" type="text" value="<?php echo (isset($_SESSION["ldap_port"]) ?  $_SESSION["ldap_port"]  :  "389" );?>"></td>
 		  </tr>
 		 <tr>
 		    <td style="padding-left:50px ">LDAP Base DN</td>
-			<td><input name="ldap_base_dn" type="text" value="<?phpecho (isset($_SESSION["ldap_base_dn"]) ?  $_SESSION["ldap_base_dn"]  : "dc=foo,dc=fr" );?>"></td>
+			<td><input name="ldap_base_dn" type="text" value="<?php echo (isset($_SESSION["ldap_base_dn"]) ?  $_SESSION["ldap_base_dn"]  : "dc=foo,dc=fr" );?>"></td>
 		  </tr>
 		  <tr>
 		    <td style="padding-left:50px ">LDAP Login Attribut</td>
-			<td><input name="ldap_login_attrib" type="text" value="<?phpecho (isset($_SESSION["ldap_login_attrib"]) ?  $_SESSION["ldap_login_attrib"]  : "uid" );?>"></td>
+			<td><input name="ldap_login_attrib" type="text" value="<?php echo (isset($_SESSION["ldap_login_attrib"]) ?  $_SESSION["ldap_login_attrib"]  : "uid" );?>"></td>
 		  </tr>
 		  <td style="padding-left:50px ">LDAP use SSL ?</td>
 			<td>

@@ -107,7 +107,7 @@ For information : contact@oreon-project.org
 		$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlueStart.gif" alt="" class="imgPathWay">&nbsp;';
 		foreach ($tabPath as $cle => $valeur){
 			echo $flag;
-			?><a href="oreon.php?p=<?phpecho $cle.$valeur["opt"]; ?>" class="pathWay" ><?phpecho $valeur["name"]; ?></a><?php
+			?><a href="oreon.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" ><?php echo $valeur["name"]; ?></a><?php
 			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
 		}
 	

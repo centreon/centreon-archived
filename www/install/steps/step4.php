@@ -157,7 +157,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 		</td>
   </tr>
   <tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION['nagios_conf']; ?></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION['nagios_conf']; ?></td>
     	<td align="right"><b><?php echo  $msg ;  ?></td>
   </tr>
   <tr>
@@ -184,8 +184,8 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 		 </td>
   </tr>
   <tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?phpecho $_SESSION['nagios_plugins']; ?></td>
-    	<td align="right"><b><?phpecho  $msg ; ?></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION['nagios_plugins']; ?></td>
+    	<td align="right"><b><?php echo  $msg ; ?></td>
   </tr>
 </table>
 <?php
