@@ -20,10 +20,12 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
+	$ndo_base_prefix = "nagios";
+
 
 	function get_error($motif){
 		$buffer = null;
-		$buffer .= '<reponse>';	
+		$buffer .= '<reponse>';
 		$buffer .= $motif;
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
@@ -193,12 +195,12 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 //	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 	$DBRESULT_OPT->fetchInto($general_opt);
-	
+
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
 	$tab_color_service[1] = $general_opt["color_warning"];
@@ -210,7 +212,7 @@ For information : contact@oreon-project.org
 	$tab_color_host[0] = $general_opt["color_up"];
 	$tab_color_host[1] = $general_opt["color_down"];
 	$tab_color_host[2] = $general_opt["color_unreachable"];
-	
+
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
@@ -230,7 +232,7 @@ For information : contact@oreon-project.org
 			" he.notes_url," .
 			" he.icon_image," .
 			" he.icon_image_alt" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh, ".$general_opt["ndo_base_prefix"]."_hostextinfo he" .
+			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh, ".$ndo_base_prefix."_hostextinfo he" .
 			" WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
 			" AND no.is_active = 0 AND no.objecttype_id = 1 AND nh.config_type = 1";
@@ -242,14 +244,14 @@ For information : contact@oreon-project.org
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	
+
 	if($o == "hpb")
 		$rq1 .= " AND nhs.current_state != 0 ";
-	
+
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
-	
-	
+
+
 	switch($sort_type){
 			case 'host_name' : $rq1 .= " order by no.name1 ". $order;  break;
 			case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 ";  break;
@@ -260,13 +262,13 @@ For information : contact@oreon-project.org
 			case 'plugin_output' : $rq1 .= " order by nhs.output ". $order.",no.name1 ";  break;
 			default : $rq1 .= " order by no.name1 ";  break;
 	}
-		
+
 	$rq_pagination = $rq1;
 
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	/* End Pagination Rows */
 
@@ -283,7 +285,7 @@ For information : contact@oreon-project.org
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
@@ -321,13 +323,13 @@ For information : contact@oreon-project.org
 		$buffer .= '</l>';
 	}
 	/* end */
-		
+
 	if(!$ct){
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';
 	}
-	
+
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;

@@ -100,7 +100,7 @@ function construct_selecteList_ndo_instance(id){
 	function get_ndo_instance_id($name_instance)
 	{
 		global $gopt,$pearDBndo;
-		$rq = "SELECT instance_id FROM ndo_instances WHERE instance_name like '".$name_instance."'";
+		$rq = "SELECT instance_id FROM nagios_instances WHERE instance_name like '".$name_instance."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		$DBRESULT_NDO->fetchInto($ndo);
 		return $ndo["instance_id"];

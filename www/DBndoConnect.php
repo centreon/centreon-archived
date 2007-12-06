@@ -18,8 +18,6 @@ For information : contact@oreon-project.org
 
 	// This file have to be included whenever we want to connect to the DB
 
-		echo "ici";
-
 	require_once("DB.php");
 
 //	if (isset($conf_oreon["ods"])){
@@ -46,6 +44,12 @@ For information : contact@oreon-project.org
 		    die($pearDBndo->getMessage());
 
 		$pearDBndo->setFetchMode(DB_FETCHMODE_ASSOC);
+
+
+		$ndo_prefix = "ndo";
+		$ndo_base_name = "ndo";
+
+
 		// End of Pear connection
 //	}
 ?>

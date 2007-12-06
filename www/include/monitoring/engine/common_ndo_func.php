@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 function get_Host_Status($host_name,$pearDBndo,$general_opt){
 
 	$rq = "SELECT nhs.current_state" .
-			" FROM `" .$general_opt["ndo_base_prefix"]."_hoststatus` nhs, `" .$general_opt["ndo_base_prefix"]."_objects` no" .
+			" FROM `" .$ndo_base_prefix."_hoststatus` nhs, `" .$ndo_base_prefix."_objects` no" .
 			" WHERE no.object_id = nhs.host_object_id" ;
 
 	$DBRESULT =& $pearDBndo->query($rq);

@@ -187,7 +187,7 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
 	$DBRESULT_OPT->fetchInto($general_opt);
@@ -211,7 +211,7 @@ For information : contact@oreon-project.org
 
 	/* Get Host status */
 	$rq1 = "SELECT count(nhs.current_state) as cnt, nhs.current_state" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no" .
+			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
 			" WHERE no.object_id = nhs.host_object_id GROUP BY nhs.current_state ORDER by nhs.current_state";
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -227,7 +227,7 @@ For information : contact@oreon-project.org
 
 	/* Get Service status */
 	$rq2 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
+			" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'".
 			" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";

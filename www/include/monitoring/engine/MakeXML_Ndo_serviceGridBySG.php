@@ -20,6 +20,8 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
+	$ndo_base_prefix = "nagios";
+
 
 	function get_error($motif){
 		$buffer = null;
@@ -185,9 +187,9 @@ For information : contact@oreon-project.org
 	}
 
 	include_once("common_ndo_func.php");
-	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services($host_name){
@@ -196,7 +198,7 @@ For information : contact@oreon-project.org
 		global $o;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
-				" FROM `" .$general_opt["ndo_base_prefix"]."_servicestatus` nss, `" .$general_opt["ndo_base_prefix"]."_objects` no" .
+				" FROM `" .$ndo_base_prefix."_servicestatus` nss, `" .$ndo_base_prefix."_objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
 	if($instance != "ALL")
 		$rq .= " AND no.instance_id = ".$instance;
@@ -213,7 +215,7 @@ For information : contact@oreon-project.org
 
 		$rq .= " AND no.object_id" .
 				" IN (" .
-				
+
 				" SELECT nno.object_id" .
 				" FROM ndo_objects nno" .
 				" WHERE nno.objecttype_id =2" .
@@ -224,10 +226,10 @@ For information : contact@oreon-project.org
 */
 
 				$rq .= " )";
-					
+
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$tab = array();
 		while($DBRESULT->fetchInto($svc)){
 
@@ -245,7 +247,7 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	
+
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
 	$tab_color_service[1] = $general_opt["color_warning"];
@@ -258,7 +260,7 @@ For information : contact@oreon-project.org
 	$tab_color_host[1] = $general_opt["color_down"];
 	$tab_color_host[2] = $general_opt["color_unreachable"];
 	$tab_color_host[3] = $general_opt["color_unreachable"];
-	
+
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
@@ -267,7 +269,7 @@ For information : contact@oreon-project.org
 
 
 	$rq1 = "SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
-			" FROM " .$general_opt["ndo_base_prefix"]."_servicegroups sg," .$general_opt["ndo_base_prefix"]."_servicegroup_members sgm, " .$general_opt["ndo_base_prefix"]."_servicestatus ss, " .$general_opt["ndo_base_prefix"]."_objects no".
+			" FROM " .$ndo_base_prefix."_servicegroups sg," .$ndo_base_prefix."_servicegroup_members sgm, " .$ndo_base_prefix."_servicestatus ss, " .$ndo_base_prefix."_objects no".
 			" WHERE sg.config_type = 0 " .
 			" AND ss.service_object_id = sgm.service_object_id".
 			" AND no.object_id = sgm.service_object_id" .
@@ -285,19 +287,19 @@ For information : contact@oreon-project.org
 
 	if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$general_opt["ndo_base_prefix"]."_objects nno," .$general_opt["ndo_base_prefix"]."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 				")";
 	if($search != ""){
@@ -313,7 +315,7 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	/* End Pagination Rows */
-	
+
 
 	$rq1 .= " ORDER BY sg.alias, host_name " . $order;
 
@@ -333,13 +335,13 @@ For information : contact@oreon-project.org
 		$buffer .= '<s>1</s>';
 	else
 		$buffer .= '<s>0</s>';
-	
+
 	$buffer .= '</i>';
 
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
@@ -386,17 +388,17 @@ For information : contact@oreon-project.org
 		$buffer .= '<sc><![CDATA['. $tab_color_service[$tab["current_state"]] . ']]></sc>';
 		$buffer .= '</svc>';
 
-	
+
 	}
 	if($sg != "")
 		$buffer .= '</h></sg>';
-	
+
 /*
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';
 	}
-*/	
+*/
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;

@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 		echo "<div style='padding-top: 60px;'>$msg_error</span></div>";
 	else if (isset($_POST["submit"]))
 		echo "<div style='padding-top: 60px;'><span class='msg'>Invalid user</span></div>";
-	?>  
+	?>
 <form action="./index.php" method="post" name="login">
 <?php
 	if (isset($_GET["disconnect"]) && $_GET["disconnect"] == 2)
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 					</tr>
 					<tr>
 						<td  colspan="2" id="sublogin">
-							<input type="Submit" name="submit" value="Login" <?phpif ($file_install_acces) print "disabled"; ?> >
+							<input type="Submit" name="submit" value="Login" <?php if ($file_install_acces) print "disabled"; ?> >
 						</td>
 					</tr>
 				</table>

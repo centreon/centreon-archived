@@ -20,10 +20,12 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
+	$ndo_base_prefix = "nagios";
+
 
 	function get_error($motif){
 		$buffer = null;
-		$buffer .= '<reponse>';	
+		$buffer .= '<reponse>';
 		$buffer .= $motif;
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
@@ -169,29 +171,29 @@ For information : contact@oreon-project.org
 
 
 	include_once($oreonPath . "www/DBndoConnect.php");
-	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 
 	function get_hosts_status($host_group_id, $status){
 		global $pearDBndo;
 		global $general_opt;
-	
+
 		$rq = "SELECT count( nhs.host_object_id ) AS nb".
-			" FROM " .$general_opt["ndo_base_prefix"]."_hoststatus nhs".
+			" FROM " .$ndo_base_prefix."_hoststatus nhs".
 			" WHERE nhs.current_state = '".$status."'".
 			" AND nhs.host_object_id".
 			" IN (".
 			" SELECT nhgm.host_object_id".
-			" FROM " .$general_opt["ndo_base_prefix"]."_hostgroup_members nhgm".
+			" FROM " .$ndo_base_prefix."_hostgroup_members nhgm".
 			" WHERE nhgm.hostgroup_id =".$host_group_id.
 			")";
-					
+
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT->fetchInto($tab);
 
 		return($tab["nb"]);
@@ -200,38 +202,38 @@ For information : contact@oreon-project.org
 	function get_services_status($host_group_id, $status){
 		global $pearDBndo;
 		global $general_opt, $instance,$lcaSTR, $is_admin;
-	
-	
+
+
 		$rq = "SELECT count( nss.service_object_id ) AS nb".
-		" FROM " .$general_opt["ndo_base_prefix"]."_servicestatus nss".
+		" FROM " .$ndo_base_prefix."_servicestatus nss".
 		" WHERE nss.current_state = '".$status."'".
 		" AND nss.service_object_id".
-		" IN (".		
+		" IN (".
 		" SELECT nno.object_id".
-		" FROM " .$general_opt["ndo_base_prefix"]."_objects nno".
+		" FROM " .$ndo_base_prefix."_objects nno".
 		" WHERE nno.objecttype_id =2";
-		
+
 		if(!$is_admin)
 			$rq .= " AND nno.name1 IN (".$lcaSTR." )";
-		
-		
+
+
 
 	if($instance != "ALL")
 		$rq .= " AND nno.instance_id = ".$instance;
 
 		$rq .= " AND nno.name1".
 		" IN (".
-		
+
 		" SELECT no.name1".
 		" FROM ndo_objects no, ndo_hostgroup_members nhgm".
 		" WHERE nhgm.hostgroup_id =".$host_group_id.
 		" AND no.object_id = nhgm.host_object_id".
 		" )".
 		" )";
-					
+
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT->fetchInto($tab);
 
 		return($tab["nb"]);
@@ -263,7 +265,7 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	
+
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
 	$tab_color_service[1] = $general_opt["color_warning"];
@@ -275,7 +277,7 @@ For information : contact@oreon-project.org
 	$tab_color_host[0] = $general_opt["color_up"];
 	$tab_color_host[1] = $general_opt["color_down"];
 	$tab_color_host[2] = $general_opt["color_unreachable"];
-	
+
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
@@ -284,8 +286,8 @@ For information : contact@oreon-project.org
 	$rq1 = "SELECT " .
 			" no.name1 as hostgroup_name," .
 			" hg.hostgroup_id" .
-			" FROM " .$general_opt["ndo_base_prefix"]."_hostgroups hg, ". //$general_opt["ndo_base_prefix"]."_hostgroup_members hgm, ".
-			$general_opt["ndo_base_prefix"]."_objects no ".
+			" FROM " .$ndo_base_prefix."_hostgroups hg, ". //$ndo_base_prefix."_hostgroup_members hgm, ".
+			$ndo_base_prefix."_objects no ".
 			" WHERE no.object_id = hg.hostgroup_object_id";
 
 
@@ -302,13 +304,13 @@ For information : contact@oreon-project.org
 	$rq1 .= " group by no.name1 ";
 	$rq1 .= " order by no.name1 ". $order;
 
-	
+
 	$rq_pagination = $rq1;
 
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	/* End Pagination Rows */
 
@@ -324,7 +326,7 @@ For information : contact@oreon-project.org
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
@@ -339,7 +341,7 @@ For information : contact@oreon-project.org
 		$nb_service_c = 0 + get_services_status($ndo["hostgroup_id"], 2);
 		$nb_service_u = 0 + get_services_status($ndo["hostgroup_id"], 3);
 		$nb_service_p = 0 + get_services_status($ndo["hostgroup_id"], 4);
-	
+
 //		$color_host = $tab_color_host[$ndo["current_state"]]; //"#FF0000";
 		$passive = 0;
 		$active = 1;
@@ -378,13 +380,13 @@ For information : contact@oreon-project.org
 		$buffer .= '</l>';
 	}
 	/* end */
-		
+
 	if(!$ct){
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';
 	}
-	
+
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;

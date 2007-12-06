@@ -21,6 +21,7 @@ For information : contact@oreon-project.org
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
 
+	$ndo_base_prefixe = "nagios";
 
 	function get_error($motif){
 		$buffer = null;
@@ -216,7 +217,7 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 	$DBRESULT_OPT->fetchInto($general_opt);
@@ -245,7 +246,7 @@ For information : contact@oreon-project.org
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
 			" no.name1 as host_name" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no" .
+			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
 			" WHERE no.object_id = nhs.host_object_id AND no.objecttype_id = 1";
 */
 	$rq1 = "SELECT nhs.current_state," .
@@ -258,7 +259,7 @@ For information : contact@oreon-project.org
 			" nh.notes_url," .
 			" nh.notes," .
 			" nh.address" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh " .
+			" FROM ".$ndo_base_prefixe."_hoststatus nhs, ".$ndo_base_prefixe."_objects no, ".$ndo_base_prefixe."_hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id AND no.objecttype_id = 1 AND no.object_id = nh.host_object_id";
 	//$rq1 .=	" AND no.is_active = 1";
 
@@ -303,7 +304,7 @@ For information : contact@oreon-project.org
 			" nss.flap_detection_enabled," .
 			" no.name1 as host_name," .
 			" no.name2 as service_description" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
+			" FROM ".$ndo_base_prefixe."_servicestatus nss, ".$ndo_base_prefixe."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'";
 //	$rq .= " AND no.is_active = 1";

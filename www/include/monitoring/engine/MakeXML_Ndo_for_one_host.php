@@ -20,6 +20,7 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
+$ndo_base_prefix = "nagios";
 
 	function get_error($motif){
 		$buffer = null;
@@ -169,7 +170,7 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 //	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
@@ -217,7 +218,7 @@ For information : contact@oreon-project.org
 			" nh.notifications_enabled," .
 			" nh.event_handler_enabled," .
 			" nh.icon_image_alt" .
-			" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no, ".$general_opt["ndo_base_prefix"]."_hosts nh" .
+			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh" .
 			" WHERE no.object_id = " . $host_id .
 			" AND no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".

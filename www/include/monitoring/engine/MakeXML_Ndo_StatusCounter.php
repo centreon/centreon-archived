@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	$debug = 0;
 	$flag_reset = 0;
-
+	$ndo_base_prefix = "nagios";
 
 	$oreonPath = '/srv/oreon/';
 
@@ -119,8 +119,7 @@ For information : contact@oreon-project.org
 
 
 	function read($sid){
-
-		global $pearDB, $flag,$oreonPath;
+		global $pearDB, $flag,$oreonPath, $ndo_base_prefix;
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
@@ -131,7 +130,7 @@ For information : contact@oreon-project.org
 		$statistic_service = array("OK" => 0, "WARNING" => 0, "CRITICAL" => 0, "UNKNOWN" => 0, "PENDING" => 0);
 
 
-		$DBRESULT_OPT =& $pearDB->query("SELECT ndo_base_prefix,color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+		$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 		if (PEAR::isError($DBRESULT_OPT))
 			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 		$DBRESULT_OPT->fetchInto($general_opt);
@@ -140,7 +139,7 @@ For information : contact@oreon-project.org
 
 		/* Get HostNDO status */
 		$rq1 = "SELECT count(nhs.current_state) as cnt, nhs.current_state" .
-				" FROM ".$general_opt["ndo_base_prefix"]."_hoststatus nhs, ".$general_opt["ndo_base_prefix"]."_objects no" .
+				" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 1 GROUP BY nhs.current_state ORDER by nhs.current_state";
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
@@ -156,7 +155,7 @@ For information : contact@oreon-project.org
 
 		/* Get ServiceNDO status */
 		$rq2 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
-				" FROM ".$general_opt["ndo_base_prefix"]."_servicestatus nss, ".$general_opt["ndo_base_prefix"]."_objects no" .
+				" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like 'OSL_Module'".
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
