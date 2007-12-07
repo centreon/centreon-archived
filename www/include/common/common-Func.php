@@ -940,7 +940,7 @@ For information : contact@oreon-project.org
 
 	# Nagios Images
 	function return_sub_image_list($path, $dir_path, $images, $is_not_an_image, $is_a_valid_image){
-
+		global $oreon;
 		$handle = @opendir($path.$dir_path);
 		while (false !== ($filename = @readdir($handle))){
 			if (!is_dir($path.$dir_path."/".$filename) && !array_key_exists($filename, $is_not_an_image) && in_array(array_pop(explode('.',strtolower($filename))), $is_a_valid_image) && substr($filename, -1)!= "~"){
