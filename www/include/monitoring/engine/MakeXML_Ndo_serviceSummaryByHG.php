@@ -192,7 +192,7 @@ For information : contact@oreon-project.org
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services_status($host_name, $status){
-		global $pearDBndo;
+		global $pearDBndo, $ndo_base_prefix;
 		global $general_opt;
 		global $o,$instance;
 
@@ -381,6 +381,8 @@ For information : contact@oreon-project.org
 	}
 	$buffer .= '</hg>';
 	/* end */
+
+
 
 	if(!$ct){
 		$buffer .= '<infos>';

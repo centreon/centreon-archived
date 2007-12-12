@@ -293,7 +293,7 @@ For information : contact@oreon-project.org
 			" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 0 AND objecttype_id = 2";
+			" AND no.is_active = 1 AND objecttype_id = 2";
 
 	if($o == "meta")
 		$rq .= " AND no.name1 = 'Meta_Module'";

@@ -228,14 +228,14 @@ For information : contact@oreon-project.org
 			" unix_timestamp(nhs.last_check) as last_check," .
 			" nh.address," .
 			" no.name1 as host_name," .
-			" he.action_url," .
-			" he.notes_url," .
-			" he.icon_image," .
-			" he.icon_image_alt" .
-			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh, ".$ndo_base_prefix."_hostextinfo he" .
+			" nh.action_url," .
+			" nh.notes_url," .
+			" nh.icon_image," .
+			" nh.icon_image_alt" .
+			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh" .
 			" WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 0 AND no.objecttype_id = 1 AND nh.config_type = 1";
+			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
 
 		if(!$is_admin)
 			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";

@@ -193,7 +193,7 @@ For information : contact@oreon-project.org
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services($host_name){
-		global $pearDBndo;
+		global $pearDBndo,$ndo_base_prefix;
 		global $general_opt;
 		global $o;
 
@@ -203,13 +203,13 @@ For information : contact@oreon-project.org
 	if($instance != "ALL")
 		$rq .= " AND no.instance_id = ".$instance;
 
-		if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+		if($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
 			$rq .= " AND nss.current_state != 0" ;
 
-		if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+		if($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
 			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
-		if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+		if($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
 			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
 
 
@@ -217,7 +217,7 @@ For information : contact@oreon-project.org
 				" IN (" .
 
 				" SELECT nno.object_id" .
-				" FROM ndo_objects nno" .
+				" FROM ".$ndo_base_prefix."_objects nno" .
 				" WHERE nno.objecttype_id =2" .
 				" AND nno.name1 = '".$host_name."'" ;
 /*
@@ -265,7 +265,6 @@ For information : contact@oreon-project.org
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 
-	/* Get Host status */
 
 
 	$rq1 = "SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
@@ -274,7 +273,7 @@ For information : contact@oreon-project.org
 			" AND ss.service_object_id = sgm.service_object_id".
 			" AND no.object_id = sgm.service_object_id" .
 			" AND sgm.servicegroup_id = sg.servicegroup_id" .
-			" AND no.is_active = 0 AND no.objecttype_id = 2";
+			" AND no.is_active = 1 AND no.objecttype_id = 2";
 
 /*
 	if(!$is_admin)
@@ -285,19 +284,23 @@ For information : contact@oreon-project.org
 		$rq1 .= " AND no.instance_id = ".$instance;
 
 
-	if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+	if($o == "svcgridSG_pb" || $o == "svcOVSG_pb")
+		$rq1 .= " AND ss.current_state != 0" ;
+/*
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
-
-	if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+*/
+	if($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0")
+		$rq1 .= " AND ss.current_state != 0 AND ss.problem_has_been_acknowledged = 0" ;
+/*
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
-
-	if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+*/
+	if($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
@@ -330,6 +333,11 @@ For information : contact@oreon-project.org
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
+
+		$buffer .= '<rq>';
+		$buffer .= $rq1;
+		$buffer .= '</rq>';
+
 
 	if($o == "svcOVSG")
 		$buffer .= '<s>1</s>';
@@ -389,9 +397,12 @@ For information : contact@oreon-project.org
 		$buffer .= '</svc>';
 
 
+
 	}
 	if($sg != "")
 		$buffer .= '</h></sg>';
+
+
 
 /*
 		$buffer .= '<infos>';

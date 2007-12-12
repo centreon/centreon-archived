@@ -179,7 +179,7 @@ For information : contact@oreon-project.org
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services($host_name){
-		global $pearDBndo;
+		global $pearDBndo,$ndo_base_prefix;
 		global $general_opt;
 		global $o,$instance;
 
@@ -202,7 +202,7 @@ For information : contact@oreon-project.org
 				" IN (" .
 
 				" SELECT nno.object_id" .
-				" FROM ndo_objects nno" .
+				" FROM ".$ndo_base_prefix."_objects nno" .
 				" WHERE nno.objecttype_id =2" .
 				" AND nno.name1 = '".$host_name."'" .
 			" AND nno.name1 not like 'OSL_Module'".
@@ -274,7 +274,7 @@ For information : contact@oreon-project.org
 			" AND no.object_id = hgm.host_object_id" .
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 0";
+			" AND no.is_active = 1";
 
 		if(!$is_admin){
 			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
@@ -284,28 +284,26 @@ For information : contact@oreon-project.org
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
-			" AND nno.name1 not like 'OSL_Module'";
-				")";
+			" AND nno.name1 not like 'OSL_Module')";
 
 	if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
-			" AND nno.name1 not like 'OSL_Module'";
-				")";
+			" AND nno.name1 not like 'OSL_Module')";
 
 	if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
-			" AND nno.name1 not like 'OSL_Module'";
-				")";
+			" AND nno.name1 not like 'OSL_Module')";
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
 
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
+
 
 $rq_pagination = $rq1;
 /*

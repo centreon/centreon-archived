@@ -20,43 +20,43 @@ For information : contact@oreon-project.org
 		exit();
 
 	require_once './class/other.class.php';
-	include_once("./include/monitoring/common-Func.php");			
+	include_once("./include/monitoring/common-Func.php");
 	include_once("./include/monitoring/external_cmd/cmd.php");
-	
+
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
-	$DBRESULT =& $pearDB->query("SELECT ndo_base_prefix,ndo_activate FROM general_opt LIMIT 1");
+
+	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
 	# Set base value
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-	
+
 	$ndo = $gopt["ndo_activate"];
-		
-	
-	if ($ndo)	
+
+
+	if ($ndo)
 		$path = "./include/monitoring/status/status-ndo/";
 	else{
-		$path = "./include/monitoring/status/status-log/";	
+		$path = "./include/monitoring/status/status-log/";
 	}
 
 	$pathDetails = "./include/monitoring/objectDetails/";
-	
+
 	if ($ndo){
 		switch ($o)	{
 			case "hg" 	: require_once($path."hostGroup.php"); break;
 			case "hgpb" : require_once($path."hostGroup.php"); break;
-			case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break; 
+			case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
 			default 	: require_once($path."hostGroup.php"); break;
 		}
 	}else{
-		include("./include/monitoring/status/resume.php"); 	
+		include("./include/monitoring/status/resume.php");
 		switch ($o)	{
 			case "hg" 	: require_once($path."hostgroup.php"); break;
 			case "hgpb" : require_once($path."hostgroup_problem.php"); break;
-			case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break; 
-			default 	: require_once($path."hostgroup.php"); break;		
+			case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
+			default 	: require_once($path."hostgroup.php"); break;
 		}
-	}	
+	}
 ?>

@@ -17,6 +17,7 @@ For information : contact@oreon-project.org
 */
 
 function get_Host_Status($host_name,$pearDBndo,$general_opt){
+	global $ndo_base_prefix;
 
 	$rq = "SELECT nhs.current_state" .
 			" FROM `" .$ndo_base_prefix."_hoststatus` nhs, `" .$ndo_base_prefix."_objects` no" .
@@ -24,10 +25,10 @@ function get_Host_Status($host_name,$pearDBndo,$general_opt){
 
 	$DBRESULT =& $pearDBndo->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$status = array();
 //	$status[0] = array();
-//	$status[0]["current_state"] = "0";	
+//	$status[0]["current_state"] = "0";
 	$DBRESULT->fetchInto($status);
 
 

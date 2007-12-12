@@ -18,6 +18,8 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	$ndo_base_prefix = "nagios";
+
 	if (isset($_GET["host_name"]) && $_GET["host_name"])
 		$host_name = $_GET["host_name"];
 	else
@@ -26,7 +28,7 @@ For information : contact@oreon-project.org
 
 	$tab_status = array();
 
-	if (isset($ndo) && $ndo){	
+	if (isset($ndo) && $ndo){
 		include_once("./DBndoConnect.php");
 
 		/* start ndo svc info */
@@ -50,30 +52,30 @@ For information : contact@oreon-project.org
 				" unix_timestamp(nss.last_notification) as last_notification," .
 				" no.name1 as host_name," .
 				" no.name2 as service_description" .
-				" FROM ".$gopt["ndo_base_prefix"]."_servicestatus nss, ".$gopt["ndo_base_prefix"]."_objects no" .
+				" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
 				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
-				
+
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";	
-	
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+
 		$tab_status_service = array();
 		$tab_status_service[0] = "OK";
 		$tab_status_service[1] = "WARNING";
 		$tab_status_service[2] = "CRITICAL";
 		$tab_status_service[3] = "UNKNOWN";
 		$tab_status_service[4] = "PENDING";
-	
+
 		while($DBRESULT_NDO->fetchInto($ndo))
 		{
-	
+
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
 			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
 		}
-	
+
 		/* end ndo service info */
-	
+
 		/* start ndo host detail */
 		$tab_host_status[0] = "UP";
 		$tab_host_status[1] = "DOWN";
@@ -108,9 +110,9 @@ For information : contact@oreon-project.org
 			" unix_timestamp(nhs.next_check) as next_check," .
 			" nh.address," .
 			" no.name1 as host_name" .
-			" FROM ".$gopt["ndo_base_prefix"]."_hoststatus nhs, ".$gopt["ndo_base_prefix"]."_objects no, ".$gopt["ndo_base_prefix"]."_hosts nh " .
+			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
-		
+
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
 			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
@@ -124,9 +126,9 @@ For information : contact@oreon-project.org
 
 
 
-	
+
 	$lcaHost = getLcaHostByName($pearDB);
-	
+
 	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
@@ -177,12 +179,12 @@ For information : contact@oreon-project.org
 				$i++;
 			}
 		}
-		
+
 		$en = array("0" => $lang["no"], "1" => $lang["yes"]);
-		
+
 		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
 		$en_acknowledge = array("1" => "0", "0" => "1");
-		
+
 		$en_inv = array("1" => "0", "0" => "1");
 		$en_inv_text = array("1" => $lang ["m_mon_disable"], "0" => $lang ["m_mon_enable"]);
 		$color_onoff = array("1" => "#00ff00", "0" => "#ff0000");
@@ -236,16 +238,16 @@ For information : contact@oreon-project.org
 		$tpl->assign("url_id", $url_id);
 		$tpl->assign("tab_comments_host", $tab_comments_host);
 		$tpl->assign("host_data", $host_status[$host_name]);
-		
+
 		# Ext informations
 		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
 		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
-		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));		
+		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));
 		$tpl->assign("h_ext_action_url_lang", $lang['h_actionUrl']);
 		$tpl->assign("h_ext_action_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url"));
 		//$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
-		
+
 		$tpl->display("hostDetails.ihtml");
 	}
 ?>

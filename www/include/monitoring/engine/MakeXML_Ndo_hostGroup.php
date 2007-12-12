@@ -178,7 +178,7 @@ For information : contact@oreon-project.org
 
 
 	function get_hosts_status($host_group_id, $status){
-		global $pearDBndo;
+		global $pearDBndo, $ndo_base_prefix;
 		global $general_opt;
 
 		$rq = "SELECT count( nhs.host_object_id ) AS nb".
@@ -200,7 +200,7 @@ For information : contact@oreon-project.org
 	}
 
 	function get_services_status($host_group_id, $status){
-		global $pearDBndo;
+		global $pearDBndo, $ndo_base_prefix;
 		global $general_opt, $instance,$lcaSTR, $is_admin;
 
 
@@ -225,7 +225,7 @@ For information : contact@oreon-project.org
 		" IN (".
 
 		" SELECT no.name1".
-		" FROM ndo_objects no, ndo_hostgroup_members nhgm".
+		" FROM " .$ndo_base_prefix."_objects no, " .$ndo_base_prefix."_hostgroup_members nhgm".
 		" WHERE nhgm.hostgroup_id =".$host_group_id.
 		" AND no.object_id = nhgm.host_object_id".
 		" )".

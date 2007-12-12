@@ -186,13 +186,13 @@ For information : contact@oreon-project.org
 				" WHERE no.object_id = nss.service_object_id" ;
 			" AND no.name1 not like 'OSL_Module'";
 
-		if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+		if($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")
 			$rq .= " AND nss.current_state != 0" ;
 
-		if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+		if($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0" || $o == "svcSumSG_ack_0")
 			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
-		if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+		if($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1"|| $o == "svcSumSG_ack_1")
 			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
 
 
@@ -250,21 +250,21 @@ For information : contact@oreon-project.org
 			" AND ss.service_object_id = sgm.service_object_id".
 			" AND no.object_id = sgm.service_object_id" .
 			" AND sgm.servicegroup_id = sg.servicegroup_id".
-			" AND no.is_active = 0";
+			" AND no.is_active = 1";
 
-	if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+	if($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 
-	if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+	if($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0"|| $o == "svcSumSG_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
-	if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+	if($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1"|| $o == "svcSumSG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .

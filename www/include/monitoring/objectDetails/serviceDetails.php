@@ -19,6 +19,8 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+$ndo_base_prefix = "nagios";
+
 	if (isset($_GET["host_name"]) && $_GET["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"]){
 		$host_name = $_GET["host_name"];
 		$svc_description = $_GET["service_description"];
@@ -32,7 +34,7 @@ For information : contact@oreon-project.org
 
 	$tab_status = array();
 
-	if (isset($ndo) && $ndo){	
+	if (isset($ndo) && $ndo){
 		include_once("./DBndoConnect.php");
 
 		/* start ndo service info */
@@ -53,7 +55,7 @@ For information : contact@oreon-project.org
 				" nss.is_flapping," .
 				" nss.scheduled_downtime_depth," .
 				" nss.percent_state_change," .
-				" nss.current_notification_number," .				
+				" nss.current_notification_number," .
 				" nss.obsess_over_service," .
 				" nss.check_type," .
 				" nss.state_type," .
@@ -63,40 +65,40 @@ For information : contact@oreon-project.org
 				" unix_timestamp(nss.last_notification) as last_notification," .
 				" no.name1 as host_name," .
 				" no.name2 as service_description" .
-				" FROM ".$gopt["ndo_base_prefix"]."_servicestatus nss, ".$gopt["ndo_base_prefix"]."_objects no" .
+				" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
 				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
-				
+
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";	
-	
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+
 		$tab_status_service = array();
 		$tab_status_service[0] = "OK";
 		$tab_status_service[1] = "WARNING";
 		$tab_status_service[2] = "CRITICAL";
 		$tab_status_service[3] = "UNKNOWN";
 		$tab_status_service[4] = "PENDING";
-	
+
 		while($DBRESULT_NDO->fetchInto($ndo))
 		{
 			if($ndo["service_description"] == $svc_description)
 				$service_status[$host_name."_".$svc_description]= $ndo;
-	
+
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
 			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
 		}
-	
+
 		$service_status[$host_name."_".$svc_description]["current_state"] = $tab_status_service[$service_status[$host_name."_".$svc_description]["current_state"]];
 		/* end ndo service info */
-	
+
 		/* start ndo host detail */
 		$tab_host_status[0] = "UP";
 		$tab_host_status[1] = "DOWN";
 		$tab_host_status[2] = "UNREACHABLE";
-		
+
 		$rq2 ="SELECT nhs.current_state" .
-				" FROM ".$gopt["ndo_base_prefix"]."_hoststatus nhs, ".$gopt["ndo_base_prefix"]."_objects no" .
+				" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
@@ -105,33 +107,33 @@ For information : contact@oreon-project.org
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 		/* end ndo host detail */
 	}
-			
-			
-			
-	
+
+
+
+
 	if (!isset($_GET["service_description"]))
 		$_GET["service_description"] = $svc_description;
-	
+
 	$lcaHost = getLcaHostByName($pearDB);
-	
+
 	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
 		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-		if (PEAR::isError($res)) 
+		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-		$res->fetchInto($host);	
+		$res->fetchInto($host);
 		$host_id = getMyHostID($host["host_name"]);
 		$service_id = getMyServiceID($_GET["service_description"], $host_id);
 		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
-		
+
 		$path = "./include/monitoring/objectDetails/";
-		
+
 		# Smarty template Init
 		$tpl = new Smarty();
 		$tpl = initSmartyTpl($path, $tpl, "./");
-		
+
 		if (!file_exists($oreon->Nagioscfg["comment_file"]))
 			print ("downtime file not found");
 		else	{
@@ -155,7 +157,7 @@ For information : contact@oreon-project.org
 							$tab_comments_svc[$i]["persistent"] = $res[4];
 						}
 					}
-					$i++;	
+					$i++;
 				}
 			} else {
 				while ($str = fgets($log))	{
@@ -192,7 +194,7 @@ For information : contact@oreon-project.org
                     }
                 }
 			}
-			
+
 			}
 		}
 
@@ -202,23 +204,23 @@ For information : contact@oreon-project.org
 			else
 				unset($tab_comments_svc[$key]);
 		}
-		
+
 		$en = array("0" => $lang["no"], "1" => $lang["yes"]);
-		
+
 		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
 		$en_acknowledge = array("1" => "0", "0" => "1");
-		
+
 		$en_disable = array("1" => $lang ["m_mon_enabled"], "0" => $lang ["m_mon_disabled"]);
 		$en_inv = array("1" => "0", "0" => "1");
 		$en_inv_text = array("1" => $lang ["m_mon_disable"], "0" => $lang ["m_mon_enable"]);
-		$color_onoff = array("1" => "#00ff00", "0" => "#ff0000");		
-		$color_onoff_inv = array("0" => "#00ff00", "1" => "#ff0000");		
+		$color_onoff = array("1" => "#00ff00", "0" => "#ff0000");
+		$color_onoff_inv = array("0" => "#00ff00", "1" => "#ff0000");
 		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
-		
+
 		/*
 		 * Ajust data for beeing displayed in template
 		 */
-		
+
 		 $service_status[$host_name."_".$svc_description]["status_color"] = $oreon->optGen["color_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
 		 $service_status[$host_name."_".$svc_description]["last_check"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["last_check"]);
 		 $service_status[$host_name."_".$svc_description]["next_check"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["next_check"]);
@@ -229,7 +231,7 @@ For information : contact@oreon-project.org
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = date($lang["date_time_format"],$service_status[$host_name."_".$svc_description]["last_state_change"]);
 		 $service_status[$host_name."_".$svc_description]["last_update"] = date($lang["date_time_format"], time());
 		!$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["is_flapping"]);
-		
+
 //		$tab_status = array();
 		if (isset($ndo) && $ndo)
 			foreach ($tab_host_service[$host_name] as $key_name => $s){
@@ -240,7 +242,7 @@ For information : contact@oreon-project.org
 		$status = NULL;
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;
-		
+
 		$tpl->assign("lang", $lang);
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);
@@ -264,17 +266,17 @@ For information : contact@oreon-project.org
 		$tpl->assign("service_id", getMyServiceID($svc_description, $host["host_id"]));
 		$tpl->assign("host_data", $host_status[$host_name]);
 		$tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
-		$tpl->assign("svc_description", $svc_description);		
-		
+		$tpl->assign("svc_description", $svc_description);
+
 		# Ext informations
 		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
 		$tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
-		$tpl->assign("sv_ext_notes_url", getMyServiceExtendedInfoField($service_id, "esi_notes_url"));		
+		$tpl->assign("sv_ext_notes_url", getMyServiceExtendedInfoField($service_id, "esi_notes_url"));
 		$tpl->assign("sv_ext_action_url_lang", $lang['h_actionUrl']);
 		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
 		//$tpl->assign("sv_ext_icon_image", getMyServiceExtendedInfoField($service_id, "esi_icon_image"));
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
-		
+
 		$tpl->display("serviceDetails.ihtml");
 	}
 ?>

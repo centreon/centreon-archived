@@ -1,3 +1,4 @@
+
 /**
 Oreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -376,23 +377,24 @@ a.infobulle span{display: none}
 a.infobulle:hover span{
 /*le contenu de la balise span ne
 sera visible que pour l'état a:hover */
- display:block;
- position:absolute;
-
-
+ 	display:block;
+ 	position:absolute;
     top:2em; left:2em;
-    border:1px solid #6699cc;
-    background-color:#FFFFFF; color:#6699cc;
     text-align: justify;
     font-weight:none;
-    padding:1px;
 
-    -moz-opacity:0.85;
+//    border:1px solid #6699cc;
+//    background-color:#FFFFFF; color:#6699cc;
 
-opacity: 0.85;
+//    -moz-opacity:0.85;
+//opacity: 0.85;
+//filter:alpha(opacity=85);
 
-filter:alpha(opacity=85);
+    padding:4px;
+	background-color:#FFFFFF;
 
+	border: 2px #AAAAFF solid;
+	-moz-border-radius: 10px;
 
 }
 a.infobulle:hover table{
@@ -400,4 +402,17 @@ a.infobulle:hover table{
 }
 a.infobulle:hover td{
 padding:10px;
+//border-left:solid 0px red;
+}
+
+.ColPopup{
+white-space:nowrap;
+}
+
+.ListHeaderPopup{
+    background-color:#AAAAFF;
+border-left:none 0px red;
+}
+.ListHeaderPopup td{
+border:solid 0px red;
 }
