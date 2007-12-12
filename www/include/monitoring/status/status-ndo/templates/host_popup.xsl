@@ -14,12 +14,23 @@
 		</td>
 	</tr>
 		<tr class="list_one">
-			<td class="ColPopup"><xsl:value-of select="current_state_name"/></td>
-			<td class="ColPopup"><xsl:value-of select="current_state"/></td>
+			<td class="ColPopup">
+			<xsl:value-of select="current_state_name"/>
+			
+			
+			</td>
+			<td class="ColPopup">
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="current_state/@color"/>;
+    			</xsl:attribute>
+				<xsl:value-of select="current_state"/>
+			</td>
 		</tr>
 		<tr class='list_two'>
+<xsl:comment>
 			<td class="ColPopup"><xsl:value-of select="plugin_output_name"/></td>
-			<td class="ColPopup"><xsl:value-of select="plugin_output"/></td>
+</xsl:comment>
+			<td colspan="2" class="ColPopup"><xsl:value-of select="plugin_output"/></td>
 		</tr>
 
 
@@ -28,7 +39,7 @@
 			<td class="ColPopup"><xsl:value-of select="performance_data"/></td>
 		</tr>
 		<tr class='list_two'>
-			<td class="ColPopup"><xsl:value-of select="current_attempt_name"/></td>
+			<td class="ColPopup"><xsl:value-of select="current_attempt/@name"/></td>
 			<td class="ColPopup"><xsl:value-of select="current_attempt"/></td>
 		</tr>
 		<tr class='list_one'>

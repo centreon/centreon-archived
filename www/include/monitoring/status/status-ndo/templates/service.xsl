@@ -35,25 +35,35 @@
 				</xsl:element>
 				</td>
 				<td class="ListColLeft">
+
+<xsl:comment>
 						<xsl:attribute name="style">
 							background-color:<xsl:value-of select="hc"/>;
     					</xsl:attribute>
+</xsl:comment>
+						<xsl:if test="hn/@none = 0">
 
-					<xsl:if test="hn/@none = 0">
-						<xsl:element name="a">
+							<xsl:element name="span">
 
-						  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-							<xsl:attribute name="class">infobulle</xsl:attribute>
-							<xsl:attribute name="onmouseover">displayPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
-							<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
-  							<xsl:value-of select="hn"/>
-						<xsl:element name="span">
-							<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
-						</xsl:element>
+							<xsl:if test="hs != 0">
+									<xsl:attribute name="class">host_error</xsl:attribute>
+							</xsl:if>
 
 
-						</xsl:element>
-					</xsl:if>
+								<xsl:element name="a">
+								  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+									<xsl:attribute name="class">infobulle</xsl:attribute>
+									<xsl:attribute name="onmouseover">displayPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
+									<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
+		  							<xsl:value-of select="hn"/>
+									<xsl:element name="span">
+										<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
+									</xsl:element>
+								</xsl:element>
+							</xsl:element>
+
+
+						</xsl:if>
 
 
 

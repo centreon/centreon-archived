@@ -16,11 +16,12 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+
 	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-$ndo_base_prefix = "nagios";
+	$ndo_base_prefix = "nagios";
 
 	function get_error($motif){
 		$buffer = null;
@@ -204,8 +205,8 @@ $ndo_base_prefix = "nagios";
 			" nhs.latency," .
 			" nhs.execution_time," .
 			" unix_timestamp(nhs.last_state_change) as last_state_change," .
-			" nhs.last_notification," .
-			" nhs.next_notification," .
+			" unix_timestamp(nhs.last_notification) as last_notification," .
+			" unix_timestamp(nhs.next_notification) as next_notification," .
 			" nhs.current_notification_number," .
 			" nhs.is_flapping," .
 			" nhs.scheduled_downtime_depth," .
@@ -235,31 +236,41 @@ $ndo_base_prefix = "nagios";
 	$flag = 0;
 	$en = array("0" => $disable, "1" => $enable);
 	$c = array("1" => "#00ff00", "0" => "#ff0000");
+
+	
 	if($DBRESULT_NDO1->fetchInto($ndo))
 	{
 		$duration = "";
 		if($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
 
+		$last_notification = "N/A";
+		if($ndo["last_notification"] > 0)
+			$last_notification = $ndo["last_notification"];
+			
+		$next_notification = "N/A";
+		if($ndo["next_notification"] > 0)
+			$next_notification = $ndo["next_notification"];
+			
 		$buffer .= '<hostname><![CDATA['. $ndo["host_name"]  . ']]></hostname>';
 		$buffer .= '<address><![CDATA['. $ndo["address"]  . ']]></address>';
 
-		$buffer .= '<current_state>'. $ndo["current_state"]  . '</current_state>';
-		$buffer .= '<current_state_name><![CDATA['.$lang["m_mon_host_status"].']]> </current_state_name>';
+		$buffer .= '<current_state color="'.$tab_color_host[$ndo["current_state"]].'">'. $tab_status_host[$ndo["current_state"]]  . '</current_state>';
+		$buffer .= '<current_state_name><![CDATA['. html_entity_decode($lang["m_mon_host_status"]).']]> </current_state_name>';
 		$buffer .= '<plugin_output name="'.$lang["m_mon_host_status_info"].'">'. $ndo["output"]  . '</plugin_output>';
 
 		$buffer .= '<performance_data>'. $ndo["perfdata"]  . '</performance_data>';
-		$buffer .= '<performance_data_name><![CDATA['.$lang["m_mon_performance_data"].']]></performance_data_name>';
+		$buffer .= '<performance_data_name><![CDATA['.html_entity_decode($lang["m_mon_performance_data"]).']]></performance_data_name>';
 
 		$buffer .= '<current_attempt name="'.$lang["m_mon_current_attempt"].'">'. $ndo["current_check_attempt"]  . '</current_attempt>';
-
+		
 		$buffer .= '<state_type>'.$ndo["state_type"].'</state_type>';
-		$buffer .= '<state_type_name><![CDATA['.$lang["m_mon_state_type"].']]> </state_type_name>';
+		$buffer .= '<state_type_name><![CDATA['.html_entity_decode($lang["m_mon_state_type"]).']]> </state_type_name>';
 
-		$buffer .= '<last_check >'. $ndo["last_check"]  . '</last_check>';
-		$buffer .= '<last_check_name><![CDATA['.$lang["m_mon_host_last_check"].']]></last_check_name>';
+		$buffer .= '<last_check >'. date($date_time_format_status,$ndo["last_check"])  . '</last_check>';
+		$buffer .= '<last_check_name><![CDATA['.html_entity_decode($lang["m_mon_host_last_check"]).']]></last_check_name>';
 
-		$buffer .= '<next_check >'. $ndo["next_check"]  . '</next_check>';
+		$buffer .= '<next_check >'. date($date_time_format_status,$ndo["next_check"])  . '</next_check>';
 		$buffer .= '<next_check_name><![CDATA['.$lang["m_mon_next_check"].']]></next_check_name>';
 
 		$buffer .= '<check_latency>'. $ndo["latency"]  . '</check_latency>';
@@ -267,20 +278,18 @@ $ndo_base_prefix = "nagios";
 
 		$buffer .= '<check_execution_time>'. $ndo["execution_time"]  . '</check_execution_time>';
 		$buffer .= '<check_execution_time_name><![CDATA['.$lang["m_mon_check_execution_time"].']]></check_execution_time_name>';
-
-		$buffer .= '<last_state_change>'. $ndo["last_state_change"]  . '</last_state_change>';
+		
+		$buffer .= '<last_state_change>'. date($date_time_format_status,$ndo["last_state_change"])  . '</last_state_change>';
 		$buffer .= '<last_state_change_name><![CDATA['.$lang["m_mon_last_change"].']]></last_state_change_name>';
 
 		$buffer .= '<duration>'. $duration  . '</duration>';
 		$buffer .= '<duration_name><![CDATA['.$lang["m_mon_current_state_duration"].']]></duration_name>';
-
-
-
-		$buffer .= '<last_notification>'. $ndo["last_notification"]  . '</last_notification>';
+		
+		$buffer .= '<last_notification>'. $last_notification  . '</last_notification>';
 		$buffer .= '<last_notification_name><![CDATA['.$lang["m_mon_last_notification"].']]></last_notification_name>';
 
 
-		$buffer .= '<next_notification>'. $ndo["next_notification"]  . '</next_notification>';
+		$buffer .= '<next_notification>'. $next_notification  . '</next_notification>';
 		$buffer .= '<next_notification_name><![CDATA['.$lang["m_mon_next_notification"].']]></next_notification_name>';
 
 
