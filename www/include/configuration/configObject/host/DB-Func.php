@@ -19,12 +19,30 @@ For information : contact@oreon-project.org
 		exit ();
 		
 	function testHostExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND register = '1'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$host =& $DBRESULT->fetchRow();
+		#Modif case
+		if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id)	
+			return true;
+		#Duplicate entry
+		else if ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id)
+			return false;
+		else
+			return true;
+	}
+	
+	function testHostTplExistence ($name = NULL)	{
+		global $pearDB, $form;
+		$id = NULL;
+		if (isset($form))
+			$id = $form->getSubmitValue('host_id');
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND register = '0'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$host =& $DBRESULT->fetchRow();

@@ -413,7 +413,7 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('host_name', 'myReplace');
-	$form->registerRule('exist', 'callback', 'testHostExistence');
+	$form->registerRule('exist', 'callback', 'testHostTplExistence');
 	$form->addRule('host_name', $lang['ErrAlreadyExist'], 'exist');
 	$form->addRule('host_name', $lang['ErrName'], 'required');
 	$form->addRule('host_alias', $lang['ErrAlias'], 'required');
