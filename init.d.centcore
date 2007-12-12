@@ -24,7 +24,7 @@
 #
 # Script init
 #
-### BEGIN INIT INFO
+### BEGIN INIT INFO Suse
 # Provides:       centcore
 # Required-Start:
 # Required-Stop:
@@ -32,6 +32,15 @@
 # Default-Stop:
 # Description:    Start the centore high-Availability Engine
 ### END INIT INFO
+
+### BEGIN INIT INFO Redhat
+# chkconfig: - 70 30
+# description: Centreon Data Storage
+# processname: centcore
+# config:
+# pidfile:
+### END INIT INFO
+
 
 status_centcore ()
 {
