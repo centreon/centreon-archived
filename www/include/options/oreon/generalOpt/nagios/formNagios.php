@@ -68,8 +68,6 @@ For information : contact@oreon-project.org
 	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, $lang["no"], '0');
 	$form->addGroup($ndo_activate, 'ndo_activate', $lang["ndo_activate"], '&nbsp;');
 
-	$form->addElement('text', 'ndo_base_name', $lang["ndo_base_name"], $attrsText2);
-	$form->addElement('text', 'ndo_base_prefix', $lang["ndo_base_prefix"], $attrsText2);
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');

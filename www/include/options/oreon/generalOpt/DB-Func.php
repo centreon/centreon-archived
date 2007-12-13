@@ -82,10 +82,6 @@ For information : contact@oreon-project.org
 		isset($ret["nagios_version"]) && $ret["nagios_version"] != NULL ? $rq .= "'".$ret["nagios_version"]."', ": $rq .= "NULL, ";
 		$rq .= "mailer_path_bin = ";
 		isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $rq .= "'".htmlentities($ret["mailer_path_bin"], ENT_QUOTES)."', ": $rq .= "NULL ";
-		$rq .= "ndo_base_name = ";
-		isset($ret["ndo_base_name"]) && $ret["ndo_base_name"] != NULL ? $rq .= "'".htmlentities($ret["ndo_base_name"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		$rq .= "ndo_base_prefix = ";
-		isset($ret["ndo_base_prefix"]) && $ret["ndo_base_prefix"] != NULL ? $rq .= "'".htmlentities($ret["ndo_base_prefix"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "ndo_activate = ";
 		isset($ret["ndo_activate"]["ndo_activate"]) && $ret["ndo_activate"]["ndo_activate"] != NULL ? $rq .= "'".htmlentities($ret["ndo_activate"]["ndo_activate"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE gopt_id = '".$gopt_id."'";
