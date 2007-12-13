@@ -25,7 +25,7 @@
 sub getServiceID($$){
 	my $sth2 = $con_oreon->prepare(	"SELECT service_id FROM service, host_service_relation hsr ".
 									"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
-									"AND service.service_description = '".$_[1]."' LIMIT 1");
+									"AND service.service_description = '".$_[1]."' AND service_register = '1' LIMIT 1");
 	if (!$sth2->execute) {writeLogFile("Error when getting service id : " . $sth2->errstr . "\n");}
 	my $data = $sth2->fetchrow_hashref();
 	undef($sth2);
@@ -33,7 +33,7 @@ sub getServiceID($$){
 	if (!defined($data->{'service_id'}) && !$data->{'service_id'}){
 		$sth2 = $con_oreon->prepare("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 									" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-									" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."'");
+									" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND service_register = '1'");
 		if (!$sth2->execute) {writeLogFile("Error when getting service id 2 : " . $sth2->errstr . "\n");}
 		my $data2 = $sth2->fetchrow_hashref();
 		$service_id = $data2->{'service_id'};
