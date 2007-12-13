@@ -960,6 +960,7 @@ For information : contact@oreon-project.org
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
 				case "name" : $tmpConf["service_description"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "alias" : $tmpConf["service_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "description" : $tmpConf["service_description"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "max_check_attempts" : $tmpConf["service_max_check_attempts"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "normal_check_interval" : $tmpConf["service_normal_check_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
