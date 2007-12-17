@@ -157,7 +157,6 @@ require_once 'DB.php';
 if ($connect ) {
 
 	$attrib = array("givenname", "mail", "uid","cn","sn","samaccountname"); //
-
 	if ($debug_ldap_import == 1) {
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Base DN : ". $ldap_base_dn ."\n", 3, $debug_path."ldapsearch.log");
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Filter : ". $ldap_search_filter . "\n", 3, $debug_path."ldapsearch.log");
@@ -166,20 +165,17 @@ if ($connect ) {
 	}
 	$sr=@ldap_search($ds, $ldap_base_dn, $ldap_search_filter,$attrib,0,$ldap_search_limit,$ldap_search_timeout);
 
-		if ($debug_ldap_import == 1)
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Error : ". ldap_err2str($ds)."\n", 3, $debug_path."ldapsearch.log");
+	if ($debug_ldap_import == 1)
+		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Error : ". ldap_err2str($ds)."\n", 3, $debug_path."ldapsearch.log");
 
 	@ldap_sort($ds, $sr, "dn");
 	$number_returned = @ldap_count_entries($ds,$sr);
-
 	if ($debug_ldap_import == 1)
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : ". (isset($number_returned) ? $number_returned : "0") . " entries found\n", 3, $debug_path."ldapsearch.log");
 
 	$info = @ldap_get_entries($ds, $sr);
-
 	if ($debug_ldap_import == 1)
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : ". $info["count"] . " \n", 3, $debug_path."ldapsearch.log");
-
 	@ldap_free_result($sr);
 
 	if ($number_returned) {
@@ -197,39 +193,45 @@ if ($connect ) {
 				$isvalid = "0";
 				$uid = '';
 			}
-			if ( !isset($info[$i]["mail"][0]) ) {
+			if ( !isset($info[$i]["mail"][0]) )
 				$isvalid = "0";
-			}
-
-			$buffer .= '<user isvalid="'. $isvalid  .'" >';
-			$buffer .= '<dn isvalid="'. (isset($info[$i]["dn"]) ? "1" : "0" ) .'">'. (isset($info[$i]["dn"]) ? $info[$i]["dn"] : "" ) . '</dn>';
-			$buffer .= '<sn isvalid="'. (isset($info[$i]["sn"]) ? "1" : "0" ) .'">'. (isset($info[$i]["sn"][0]) ? $info[$i]["sn"][0] : "" ) . '</sn>';
-			$buffer .= '<givenname isvalid="'. (isset($info[$i]["givenname"]) ? "1" : "0" ) .'">'.(isset($info[$i]["givenname"][0]) ? $info[$i]["givenname"][0] : "" ). '</givenname>';
-			$buffer .= '<mail isvalid="'. (isset($info[$i]["mail"]) ? "1" : "0" ) .'">'.(isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "" ). '</mail>';
-			$buffer .= '<cn isvalid="'. (isset($info[$i]["cn"]) ? "1" : "0" ) .'">'.(isset($info[$i]["cn"][0]) ? $info[$i]["cn"][0] : "" ). '</cn>';
-			$buffer .= '<uid isvalid="'. (empty($uid) ? "0" : "1" ) .'">'.$uid. '</uid>';
-			$buffer .= '</user>';
+	
+			$info[$i]["givenname"][0] = str_replace("'", "", $info[$i]["givenname"][0]);
+			$info[$i]["givenname"][0] = str_replace("\"", "", $info[$i]["givenname"][0]);
+			$info[$i]["givenname"][0] = htmlentities($info[$i]["givenname"][0]);
+			
+			$info[$i]["cn"][0] = str_replace("'", "", $info[$i]["cn"][0]);
+			$info[$i]["cn"][0] = str_replace("\"", "", $info[$i]["cn"][0]);
+			$info[$i]["cn"][0] = htmlentities($info[$i]["cn"][0]);
+			
+			$buffer .= "<user isvalid='".$isvalid."'>";
+			$buffer .= "<dn isvalid='". (isset($info[$i]["dn"]) ? "1" : "0" ) ."'>". (isset($info[$i]["dn"]) ? $info[$i]["dn"] : "" )."</dn>";
+			$buffer .= "<sn isvalid='". (isset($info[$i]["sn"]) ? "1" : "0" ) ."'>". (isset($info[$i]["sn"][0]) ? $info[$i]["sn"][0] : "")."</sn>";
+			$buffer .= "<givenname isvalid='". (isset($info[$i]["givenname"]) ? "1" : "0" ) ."'>".(isset($info[$i]["givenname"][0]) ? str_replace("\'", "\\\'", $info[$i]["givenname"][0]) : "" ). "</givenname>";
+			$buffer .= "<mail isvalid='". (isset($info[$i]["mail"]) ? "1" : "0" ) ."'>".(isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "" )."</mail>";
+			$buffer .= "<cn isvalid='". (isset($info[$i]["cn"]) ? "1" : "0" ) ."'>".(isset($info[$i]["cn"][0]) ? $info[$i]["cn"][0] : "" ). "</cn>";
+			$buffer .= "<uid isvalid='". (empty($uid) ? "0" : "1" ) ."'>".$uid. "</uid>";
+			$buffer .= "</user>";
 	   	}
-	   	$buffer .= '</reponse>';
+	   	$buffer .= "</reponse>";
 	} else {
 		$buffer = '<reponse>';
 		$buffer .= '<entries>0</entries>' ;
 		$buffer .= '<error>'.ldap_err2str($ds).'</error>' ;
 		$buffer .= '</reponse>';
 	}
-	//print $info["count"]." entries returned<br />";
 }
 @ldap_close($ds);
 
-if(isset($error))
-{
+if(isset($error)){
 	$buffer  = '<reponse>';
 	$buffer .= '<error>' . $error . '</error>';
 	$buffer .= '</reponse>';
 }
-	header('Content-Type: text/xml');
-	$buffer =  '<?xml version="1.0"?>' . $buffer ;
-	print $buffer;
-	if ($debug_ldap_import == 1)
-		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : XML Output : $buffer\n", 3, $debug_path."ldapsearch.log");
+
+header('Content-Type: text/xml');
+$buffer =  '<?xml version="1.0"?>' . $buffer ;
+print $buffer;
+if ($debug_ldap_import == 1)
+	error_log("[" . date("d/m/Y H:s") ."] LDAP Search : XML Output : $buffer\n", 3, $debug_path."ldapsearch.log");
 ?>
