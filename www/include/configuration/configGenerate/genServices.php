@@ -249,6 +249,17 @@ For information : contact@oreon-project.org
 			#
 			if ($service["service_stalking_options"]) $strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
 			if (!$service["service_register"]) $strTMP .= print_line("register", "0");
+			
+			if (isset($service["service_register"]) && $service["service_register"] == 0){
+				$DBRESULT_TEMP =& $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
+				if (PEAR::isError($DBRESULT_TEMP))
+					print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br>";
+				while($DBRESULT_TEMP->fetchInto($template_link))
+					$strTMP .= print_line("#TEMPLATE-HOST-LINK", $template_link["host_name"]);
+				unset($template_link);
+				unset($DBRESULT_TEMP);
+			}
+			
 			$strTMP .= "}\n\n";
 			if (!$service["service_register"] || $LinkedToHost)	{
 				$i++;

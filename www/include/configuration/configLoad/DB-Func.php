@@ -952,16 +952,24 @@ For information : contact@oreon-project.org
 		$useTpl = array();
 		$tmpConf["service_hPars"] = array();
 		$tmpConf["service_hgPars"] = array();
-		global $nbr;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;
+		
 		foreach ($tmpConf as $key=>$value)
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
-				case "name" : $tmpConf["service_description"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "alias" : $tmpConf["service_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				case "description" : $tmpConf["service_description"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+				case "name" : 
+					$tmpConf["name"] = $tmpConf[$key];
+					break;
+				case "service_description" : 
+					if (isset($tmpConf["name"]) && $tmpConf["name"] != ""){
+						$tmpConf["service_alias"] = $tmpConf["service_description"]; 
+						$tmpConf["service_description"] = $tmpConf["name"]; 
+					} else
+						$tmpConf["service_description"] = $tmpConf[$key];
+	
+					if (isset($tmpConf["name"]))
+						unset($tmpConf["name"]);			
+					break;
 				case "max_check_attempts" : $tmpConf["service_max_check_attempts"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "normal_check_interval" : $tmpConf["service_normal_check_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 				case "retry_check_interval" : $tmpConf["service_retry_check_interval"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
