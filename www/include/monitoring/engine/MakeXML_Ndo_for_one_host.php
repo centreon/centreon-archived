@@ -145,6 +145,16 @@ For information : contact@oreon-project.org
 	    }
 	}
 
+
+	function get_centreon_date($date){
+		global $date_time_format_status;
+		if ($date > 0)
+			return date($date_time_format_status,$date);
+		else
+			return "N/A";
+	}
+
+
 	/* LCA */
 	// check is admin
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
@@ -272,10 +282,10 @@ For information : contact@oreon-project.org
 		$buffer .= '<state_type>'.$state_type[$ndo["state_type"]].'</state_type>';
 		$buffer .= '<state_type_name><![CDATA['.html_entity_decode($lang["m_mon_state_type"]).']]> </state_type_name>';
 
-		$buffer .= '<last_check >'. date($date_time_format_status,$ndo["last_check"])  . '</last_check>';
+		$buffer .= '<last_check >'. get_centreon_date($ndo["last_check"])  . '</last_check>';
 		$buffer .= '<last_check_name><![CDATA['.html_entity_decode($lang["m_mon_host_last_check"]).']]></last_check_name>';
 
-		$buffer .= '<next_check >'. date($date_time_format_status,$ndo["next_check"])  . '</next_check>';
+		$buffer .= '<next_check >'. get_centreon_date($ndo["next_check"])  . '</next_check>';
 		$buffer .= '<next_check_name><![CDATA['.html_entity_decode($lang["m_mon_next_check"]).']]></next_check_name>';
 
 		$buffer .= '<check_latency>'. $ndo["latency"]  . '</check_latency>';
@@ -284,17 +294,17 @@ For information : contact@oreon-project.org
 		$buffer .= '<check_execution_time>'. $ndo["execution_time"]  . '</check_execution_time>';
 		$buffer .= '<check_execution_time_name><![CDATA['.html_entity_decode($lang["m_mon_check_execution_time"]).']]></check_execution_time_name>';
 		
-		$buffer .= '<last_state_change>'. date($date_time_format_status,$ndo["last_state_change"])  . '</last_state_change>';
+		$buffer .= '<last_state_change>'. get_centreon_date($ndo["last_state_change"])  . '</last_state_change>';
 		$buffer .= '<last_state_change_name><![CDATA['.$lang["m_mon_last_change"].']]></last_state_change_name>';
 
 		$buffer .= '<duration>'. $duration  . '</duration>';
 		$buffer .= '<duration_name><![CDATA['.html_entity_decode($lang["m_mon_current_state_duration"]).']]></duration_name>';
 		
-		$buffer .= '<last_notification>'.  date($date_time_format_status,$last_notification)  . '</last_notification>';
+		$buffer .= '<last_notification>'.  get_centreon_date($last_notification)  . '</last_notification>';
 		$buffer .= '<last_notification_name><![CDATA['.html_entity_decode($lang["m_mon_last_notification"]).']]></last_notification_name>';
 
 
-		$buffer .= '<next_notification>'.  date($date_time_format_status,$next_notification)  . '</next_notification>';
+		$buffer .= '<next_notification>'.  get_centreon_date($next_notification)  . '</next_notification>';
 		$buffer .= '<next_notification_name><![CDATA['.html_entity_decode($lang["m_mon_next_notification"]).']]></next_notification_name>';
 
 
@@ -314,13 +324,13 @@ For information : contact@oreon-project.org
 		$buffer .= '<is_downtime_name><![CDATA['.$lang["m_mon_downtime_sc"].']]></is_downtime_name>';
 
 
-		$buffer .= '<last_update>'. date($date_time_format_status, time())  . '</last_update>';
+		$buffer .= '<last_update>'. get_centreon_date( time())  . '</last_update>';
 		$buffer .= '<last_update_name><![CDATA['.$lang["m_mon_last_update"].']]></last_update_name>';
 
 
-		$buffer .= '<last_time_up name="last_time_up">'. date($date_time_format_status, $ndo["last_time_up"])  . '</last_time_up>';
-		$buffer .= '<last_time_down name="last_time_down">'. date($date_time_format_status, $ndo["last_time_down"])  . '</last_time_down>';
-		$buffer .= '<last_time_unreachable name="last_time_unreachable">'. date($date_time_format_status, $ndo["last_time_unreachable"])  . '</last_time_unreachable>';
+		$buffer .= '<last_time_up name="last_time_up">'. get_centreon_date( $ndo["last_time_up"])  . '</last_time_up>';
+		$buffer .= '<last_time_down name="last_time_down">'. get_centreon_date( $ndo["last_time_down"])  . '</last_time_down>';
+		$buffer .= '<last_time_unreachable name="last_time_unreachable">'. get_centreon_date( $ndo["last_time_unreachable"])  . '</last_time_unreachable>';
 
 		$ct++;
 	}
