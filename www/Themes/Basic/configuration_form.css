@@ -412,3 +412,9 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 .Toolbar_TDSelectAction_Bottom{}
 .Toolbar_pagelimit	{	text-align:right;}
 .Toolbar_pagination {}
+
+#advanced_options{
+    padding:4px;
+	background-color:#ABABFF;
+	-moz-border-radius: 14px;
+}

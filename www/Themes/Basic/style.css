@@ -382,24 +382,22 @@ sera visible que pour l'état a:hover */
     top:2em; left:2em;
     text-align: justify;
     font-weight:none;
-
+/*
     -moz-opacity:0.85;
 	opacity: 0.85;
 	filter:alpha(opacity=85);
-
+*/
     padding:4px;
-	background-color:#AAAAFF;
+	background-color:#E6D793;
 
-	border: 2px #AAAAFF solid;
+	//border: 2px #AAAAFF solid;
+	border: 2px #E6D793 solid;
 	-moz-border-radius: 14px;
 
 }
 a.infobulle:hover table{
-	border: 2px #AAAAFF solid;
+	border: 2px #E6D793 solid;
 
-    -moz-opacity:1;
-	opacity: 1;
-	filter:alpha(opacity=100);
 
 }
 a.infobulle:hover td{
@@ -414,15 +412,28 @@ white-space:nowrap;
 }
 
 .ListHeaderPopup{
-    background-color:#AAAAFF;
+    background-color:#E6D793;
 	border-left:none 0px red;
 }
 .ListHeaderPopup td{
 	border:solid 0px red;
 }
 
+.list_separator{
+//    background-color:#AAFFFF;
+}
+.separator{
+	font-color:black;
+	font-weight: bold;
+	font-style: italic;
+}
+
+
+
+/*monitoring*/
 .host_error{
 	background-color:#FD8B46;
 	border: 2px #FD8B46 solid;
 	-moz-border-radius: 8px;
 }
+
