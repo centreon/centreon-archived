@@ -4,12 +4,11 @@
 <input name="o" value="svc" type="hidden">
 <table class="Toolbar_TableTop">
 	<tr><td>
-		<a href="#" onclick="advanced_options('advanced_options');" id="advanced_1">Advanced Options</a>
-		<fieldset id="advanced_options" STYLE = "padding:3px;-moz-border-radius : 5px 5px;">
-		<legend><a href="#" onclick="advanced_options('advanced_options');" >Advanced Options</a></legend>
-		next check:<input type="checkbox" name="next_check_case" onclick="addORdelTab('next_check_case');">
+		<a href="#" onclick="advanced_options('advanced_options');">Advanced Options</a>
+		<span id="advanced_options">
+			next check:<input type="checkbox" name="next_check_case" onclick="addORdelTab('next_check_case');">
+		</span>
 		<br>
-		</fieldset>
 	</td></tr>
 	<tr class="Toolbar_TR_Top">
 		<td class="Toolbar_TDSelectAction_Top">
@@ -18,17 +17,19 @@
 			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
+			<span class="consol_button" id="instance_selected"></span>
 			<div style="text-align:left;padding-top:5px;">&nbsp;{$form.o1.html}</div>
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
 			{/if}
+
 		</td>
 		<input name="p" value="{$p}" type="hidden">
 		<td id="pagination1" class="Toolbar_pagination"></td>
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
-<div id="forAjax">...</div>
+<div id="forAjax">Waiting XML data</div>
 <table class="Toolbar_TableBottom">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Bottom">

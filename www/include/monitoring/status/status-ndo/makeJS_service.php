@@ -159,7 +159,7 @@ function monitoring_pause()	{
 }
 
 function initM(_time_reload,_sid,_o){
-	construct_selecteList_ndo_instance('advanced_options');
+	construct_selecteList_ndo_instance('instance_selected');
 	if(!document.getElementById('debug')){
 		var _divdebug = document.createElement("div");
 		_divdebug.id = 'debug';
@@ -208,18 +208,25 @@ function goM(_time_reload,_sid,_o){
 
 
 function displayPOPUP(id){
-		var span = document.getElementById('span_'+id);
-//		span.innerHTML = '.. Ajax try to return data ..';
-
+	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
-
 	var _addrXMLSpan = "./include/monitoring/engine/MakeXML_Ndo_for_one_host.php?"+'&sid='+_sid+'&host_id='+id;
 	var _addrXSLSpan = "./include/monitoring/status/status-ndo/templates/host_popup.xsl";
 	proc_popup.setXml(_addrXMLSpan);
 	proc_popup.setXslt(_addrXSLSpan);
-
 	proc_popup.transform('span_'+id);
 }
+function displayPOPUP_svc(id){
+	var span = document.getElementById('span_'+id);
+	var proc_popup = new Transformation();
+	var _addrXMLSpan = "./include/monitoring/engine/MakeXML_Ndo_for_one_svc.php?"+'&sid='+_sid+'&svc_id='+id;
+	var _addrXSLSpan = "./include/monitoring/status/status-ndo/templates/svc_popup.xsl";
+	proc_popup.setXml(_addrXMLSpan);
+	proc_popup.setXslt(_addrXSLSpan);
+	proc_popup.transform('span_'+id);
+
+}
+
 function hiddenPOPUP(id){
 
 		var span = document.getElementById('span_'+id);

@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 	
 ?>
 <SCRIPT LANGUAGE="JavaScript">
-var _debug = 1;
+var _debug = 0;
 
 var _search = '<?=$search?>';
 var _sid='<?=$sid?>';

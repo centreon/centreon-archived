@@ -68,10 +68,10 @@ For information : contact@oreon-project.org
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
-	if(isset($_GET["host_id"]) && !check_injection($_GET["host_id"])){
-		$host_id = htmlentities($_GET["host_id"]);
+	if(isset($_GET["svc_id"]) && !check_injection($_GET["svc_id"])){
+		$svc_id = htmlentities($_GET["svc_id"]);
 	}else
-		$host_id = "0";
+		$svc_id = "0";
 
 	if(isset($_GET["enable"]) && !check_injection($_GET["enable"])){
 		$enable = htmlentities($_GET["enable"]);
@@ -85,8 +85,6 @@ For information : contact@oreon-project.org
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
 	}else
 		$date_time_format_status = "d/m/Y H:i:s";
-
-
 
 	/* security end*/
 
@@ -194,16 +192,36 @@ For information : contact@oreon-project.org
 	$state_type = array("1" => "HARD","0" => "SOFT");
 
 	/* Get Host status */
-	$rq1 = "SELECT nhs.current_state," .
+	$rq1 = "SELECT nss.current_state," .
+			" no.name2 as service_description," .
+			" unix_timestamp(nss.last_check) as last_check," .
+			" unix_timestamp(nss.next_check) as next_check," .
+			" unix_timestamp(nss.last_state_change) as last_state_change," .
+			" unix_timestamp(nss.last_notification) as last_notification," .
+			" unix_timestamp(nss.next_notification) as next_notification," .
+			" unix_timestamp(nss.last_hard_state_change) as last_hard_state_change," .
+			" nss.last_hard_state," .
+			" unix_timestamp(nss.last_time_ok) as last_time_ok," .
+			" unix_timestamp(nss.last_time_critical) as last_time_critical," .
+			" unix_timestamp(nss.last_time_unknown) as last_time_unknown," .
+			" unix_timestamp(nss.last_time_warning) as last_time_warning," .
+			" nss.current_notification_number," .
+			" nss.scheduled_downtime_depth," .
+			" nss.output," .
+			" ROUND(nss.percent_state_change) as percent_state_change," .
+			" nss.notifications_enabled," .
+			" nss.perfdata," .
+			" nss.state_type," .
+			" nss.execution_time," .
+			" nss.event_handler_enabled" .
+
+/*
 			" nh.address," .
-			" no.name1 as host_name," .
 			" nhs.perfdata," .
 			" nhs.current_check_attempt," .
 			" nhs.state_type," .
 			" unix_timestamp(nhs.last_check) as last_check," .
 			" unix_timestamp(nhs.next_check) as next_check," .
-			" nhs.latency," .
-			" nhs.execution_time," .
 			" unix_timestamp(nhs.last_state_change) as last_state_change," .
 			" unix_timestamp(nhs.last_notification) as last_notification," .
 			" unix_timestamp(nhs.next_notification) as next_notification," .
@@ -224,11 +242,12 @@ For information : contact@oreon-project.org
 			" nh.notifications_enabled," .
 			" nh.event_handler_enabled," .
 			" nh.icon_image_alt" .
-			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh" .
-			" WHERE no.object_id = " . $host_id .
-			" AND no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
+*/
+			" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
+			" WHERE no.object_id = " . $svc_id .
+			" AND no.object_id = nss.service_object_id " .
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
+			" AND no.is_active = 1 AND no.objecttype_id = 2";
 		if(!$is_admin)
 			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
 	$buffer .= '<reponse>';
@@ -245,6 +264,9 @@ For information : contact@oreon-project.org
 	
 	if($DBRESULT_NDO1->fetchInto($ndo))
 	{
+		$buffer .= '<svc_name><![CDATA['. $ndo["service_description"]  . ']]></svc_name>';
+
+
 		$duration = "";
 		if($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
@@ -256,18 +278,15 @@ For information : contact@oreon-project.org
 		$next_notification = "N/A";
 		if($ndo["next_notification"] > 0)
 			$next_notification = $ndo["next_notification"];
-			
-		$buffer .= '<hostname><![CDATA['. $ndo["host_name"]  . ']]></hostname>';
-		$buffer .= '<address><![CDATA['. $ndo["address"]  . ']]></address>';
 
-		$buffer .= '<current_state color="'.$tab_color_host[$ndo["current_state"]].'">'. $tab_status_host[$ndo["current_state"]]  . '</current_state>';
+		$buffer .= '<current_state color="'.$tab_color_service[$ndo["current_state"]].'">'. $tab_status_svc[$ndo["current_state"]]  . '</current_state>';
 		$buffer .= '<current_state_name><![CDATA['. html_entity_decode($lang["m_mon_host_status"]).']]> </current_state_name>';
 		$buffer .= '<plugin_output name="'.$lang["m_mon_host_status_info"].'"><![CDATA['. $ndo["output"]  . ']]></plugin_output>';
 
 		$buffer .= '<performance_data>'. $ndo["perfdata"]  . '</performance_data>';
 		$buffer .= '<performance_data_name><![CDATA['.html_entity_decode($lang["m_mon_performance_data"]).']]></performance_data_name>';
 
-		$buffer .= '<current_attempt name="'.$lang["m_mon_current_attempt"].'">'. $ndo["current_check_attempt"]  . '</current_attempt>';
+//		$buffer .= '<current_attempt name="'.$lang["m_mon_current_attempt"].'">'. $ndo["current_check_attempt"]  . '</current_attempt>';
 		
 		$buffer .= '<state_type>'.$state_type[$ndo["state_type"]].'</state_type>';
 		$buffer .= '<state_type_name><![CDATA['.html_entity_decode($lang["m_mon_state_type"]).']]> </state_type_name>';
@@ -278,9 +297,10 @@ For information : contact@oreon-project.org
 		$buffer .= '<next_check >'. date($date_time_format_status,$ndo["next_check"])  . '</next_check>';
 		$buffer .= '<next_check_name><![CDATA['.html_entity_decode($lang["m_mon_next_check"]).']]></next_check_name>';
 
+/*
 		$buffer .= '<check_latency>'. $ndo["latency"]  . '</check_latency>';
 		$buffer .= '<check_latency_name><![CDATA['.html_entity_decode($lang["m_mon_check_latency"]).']]></check_latency_name>';
-
+*/
 		$buffer .= '<check_execution_time>'. $ndo["execution_time"]  . '</check_execution_time>';
 		$buffer .= '<check_execution_time_name><![CDATA['.html_entity_decode($lang["m_mon_check_execution_time"]).']]></check_execution_time_name>';
 		
@@ -301,10 +321,6 @@ For information : contact@oreon-project.org
 		$buffer .= '<current_notification_number>'. $ndo["current_notification_number"]  . '</current_notification_number>';
 		$buffer .= '<current_notification_number_name><![CDATA['.$lang["m_mon_notification_nb"].']]></current_notification_number_name>';
 
-/*
-		$buffer .= '<is_flapping>'. $ndo["is_flapping"]  . '</is_flapping>';
-		$buffer .= '<is_flapping_name><![CDATA['.$lang["m_mon_host_flapping"].']]></is_flapping_name>';
-*/
 
 		$buffer .= '<percent_state_change>'. $ndo["percent_state_change"]  . '</percent_state_change>';
 		$buffer .= '<percent_state_change_name><![CDATA['.$lang["m_mon_percent_state_change"].']]></percent_state_change_name>';
@@ -318,9 +334,10 @@ For information : contact@oreon-project.org
 		$buffer .= '<last_update_name><![CDATA['.$lang["m_mon_last_update"].']]></last_update_name>';
 
 
-		$buffer .= '<last_time_up name="last_time_up">'. date($date_time_format_status, $ndo["last_time_up"])  . '</last_time_up>';
-		$buffer .= '<last_time_down name="last_time_down">'. date($date_time_format_status, $ndo["last_time_down"])  . '</last_time_down>';
-		$buffer .= '<last_time_unreachable name="last_time_unreachable">'. date($date_time_format_status, $ndo["last_time_unreachable"])  . '</last_time_unreachable>';
+		$buffer .= '<last_time_ok name="last_time_ok">'. date($date_time_format_status, $ndo["last_time_ok"])  . '</last_time_ok>';
+		$buffer .= '<last_time_warning name="last_time_warning">'. date($date_time_format_status, $ndo["last_time_warning"])  . '</last_time_warning>';
+		$buffer .= '<last_time_unknown name="last_time_unknown">'. date($date_time_format_status, $ndo["last_time_unknown"])  . '</last_time_unknown>';
+		$buffer .= '<last_time_critical name="last_time_critical">'. date($date_time_format_status, $ndo["last_time_critical"])  . '</last_time_critical>';
 
 		$ct++;
 	}

@@ -303,6 +303,7 @@ For information : contact@oreon-project.org
 			" nss. is_flapping," .
 			" nss.flap_detection_enabled," .
 			" no.name1 as host_name," .
+			" no.object_id," .
 			" no.name2 as service_description" .
 			" FROM ".$ndo_base_prefixe."_servicestatus nss, ".$ndo_base_prefixe."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
@@ -442,6 +443,7 @@ For information : contact@oreon-project.org
 
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
+			$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
