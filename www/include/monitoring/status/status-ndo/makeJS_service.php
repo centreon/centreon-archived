@@ -233,5 +233,68 @@ function hiddenPOPUP(id){
 		span.innerHTML = '';
 }
 
+var wait = 0;
 
+var IE = document.all?true:false;
+if (!IE) document.captureEvents(Event.MOUSEMOVE)
+document.onmousemove = getMouseXY;
+var tempX = 0;
+var tempY = 0;
+function getMouseXY(e) {
+if (IE) { // grab the x-y pos.s if browser is IE
+
+	if(wait == 0){
+		tempX = event.clientX + document.body.scrollLeft;
+		tempY = event.clientY + document.body.scrollTop;
+	}
+}
+else {  // grab the x-y pos.s if browser is NS
+
+	if(wait == 0){
+		tempX = e.pageX;
+		tempY = e.pageY;
+	}
+
+}
+if (tempX < 0){tempX = 0;}
+if (tempY < 0){tempY = 0;}
+//document.Show.MouseX.value = tempX;
+//document.Show.MouseY.value = tempY;
+return true;
+}
+
+
+
+
+function displayIMG(metric, s_id, id)
+{
+	if(wait == 0){
+		
+		wait = 1;
+		var span = document.getElementById('span_img');
+		span.innerHTML = '';
+	
+		_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id='+s_id+'&index='+metric+'&end=1197994683&start=1197908283', 'test');
+		span.appendChild(_img);
+	
+		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
+		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 
+	
+		var posy = tempY + 10;
+		if(h - tempY < 420){
+			posy = tempY-310;	
+		}
+	
+		with(span.style){display="block";left=tempX+'px';top=posy+'px';}
+	}
+}
+
+
+function hiddenIMG(id){
+		wait = 0;
+
+		var span = document.getElementById('span_img');
+		with(span.style){display="none";}
+		span.innerHTML = '';
+}
 </SCRIPT>

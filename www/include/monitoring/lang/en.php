@@ -162,6 +162,8 @@ $lang['m_mon_passive'] = "Passive";
 
 $lang['m_mon_hard'] = "Hard";
 $lang['m_mon_soft'] = "Soft";
+$lang['yes'] = "yes";
+$lang['no'] = "no";
 
 /* command send */
 
@@ -219,5 +221,15 @@ $lang["m_log_notification_cmd"] = "Notification Commands";
 $lang["m_log_notification_contact"] = "Contact";
 $lang['m_mon_all_services'] = "View all services of ";
 $lang['m_mon_all_graphs'] = "View all graphs of ";
+
+/* popup */
+$lang['pop_last_time_up'] = "Last up time";
+$lang['pop_last_time_down'] = "Last down time";
+$lang['pop_last_time_unreachable'] = "Last unreachable time";
+
+$lang['pop_last_time_critical'] = "Last critical time";
+$lang['pop_last_time_ok'] = "Last ok time";
+$lang['pop_last_time_warning'] = "Last warning time";
+$lang['pop_last_time_unknown'] = "Last unknown time";
 
 ?>

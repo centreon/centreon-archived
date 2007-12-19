@@ -50,9 +50,6 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 
-
-	include_once("../lang/fr.php");
-
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
@@ -85,7 +82,6 @@ For information : contact@oreon-project.org
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
 	}else
 		$date_time_format_status = "d/m/Y H:i:s";
-
 
 	/* security end*/
 
@@ -159,10 +155,15 @@ For information : contact@oreon-project.org
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
 	$res1->fetchInto($user);
 	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$res2 =& $pearDB->query("SELECT contact_admin,contact_lang FROM contact WHERE contact_id = '".$user_id."'");
 	$res2->fetchInto($admin);
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
+
+
+	$lang_ext = $admin["contact_lang"];
+	include_once("../lang/$lang_ext.php");
+
 
 	// if is admin -> lca
 	if(!$is_admin){
@@ -204,6 +205,7 @@ For information : contact@oreon-project.org
 
 	/* Get Host status */
 	$rq1 = "SELECT nss.current_state," .
+			" no.name1 as hostname," .
 			" no.name2 as service_description," .
 			" unix_timestamp(nss.last_check) as last_check," .
 			" unix_timestamp(nss.next_check) as next_check," .
@@ -241,8 +243,8 @@ For information : contact@oreon-project.org
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-	$en = array("0" => $disable, "1" => $enable);
 	$c = array("1" => "#00ff00", "0" => "#ff0000");
+	$en = array("0" => $lang["no"], "1" => $lang["yes"]);
 
 	
 	if($DBRESULT_NDO1->fetchInto($ndo))
@@ -262,9 +264,14 @@ For information : contact@oreon-project.org
 		if($ndo["next_notification"] > 0)
 			$next_notification = $ndo["next_notification"];
 
+
+		$buffer .= '<service_description><![CDATA['.$ndo["service_description"].']]></service_description>';
+		$buffer .= '<hostname><![CDATA['.$ndo["hostname"].']]></hostname>';
+
 		$buffer .= '<current_state color="'.$tab_color_service[$ndo["current_state"]].'">'. $tab_status_svc[$ndo["current_state"]]  . '</current_state>';
 		$buffer .= '<current_state_name><![CDATA['. html_entity_decode($lang["m_mon_host_status"]).']]> </current_state_name>';
 		$buffer .= '<plugin_output name="'.$lang["m_mon_host_status_info"].'"><![CDATA['. $ndo["output"]  . ']]></plugin_output>';
+
 
 		$buffer .= '<performance_data>'. $ndo["perfdata"]  . '</performance_data>';
 		$buffer .= '<performance_data_name><![CDATA['.html_entity_decode($lang["m_mon_performance_data"]).']]></performance_data_name>';
@@ -309,18 +316,17 @@ For information : contact@oreon-project.org
 		$buffer .= '<percent_state_change_name><![CDATA['.$lang["m_mon_percent_state_change"].']]></percent_state_change_name>';
 
 
-		$buffer .= '<is_downtime>'. $ndo["scheduled_downtime_depth"]  . '</is_downtime>';
+		$buffer .= '<is_downtime>'. $en[$ndo["scheduled_downtime_depth"]]  . '</is_downtime>';
 		$buffer .= '<is_downtime_name><![CDATA['.$lang["m_mon_downtime_sc"].']]></is_downtime_name>';
 
 
 		$buffer .= '<last_update>'. get_centreon_date( time())  . '</last_update>';
 		$buffer .= '<last_update_name><![CDATA['.$lang["m_mon_last_update"].']]></last_update_name>';
 
-
-		$buffer .= '<last_time_ok name="last_time_ok">'. get_centreon_date( $ndo["last_time_ok"])  . '</last_time_ok>';
-		$buffer .= '<last_time_warning name="last_time_warning">'. get_centreon_date( $ndo["last_time_warning"])  . '</last_time_warning>';
-		$buffer .= '<last_time_unknown name="last_time_unknown">'. get_centreon_date( $ndo["last_time_unknown"])  . '</last_time_unknown>';
-		$buffer .= '<last_time_critical name="last_time_critical">'. get_centreon_date( $ndo["last_time_critical"])  . '</last_time_critical>';
+		$buffer .= '<last_time_ok name="'.html_entity_decode($lang['pop_last_time_ok']).'">'. get_centreon_date( $ndo["last_time_ok"])  . '</last_time_ok>';
+		$buffer .= '<last_time_warning name="'.html_entity_decode($lang['pop_last_time_warning']).'">'. get_centreon_date( $ndo["last_time_warning"])  . '</last_time_warning>';
+		$buffer .= '<last_time_unknown name="'.html_entity_decode($lang['pop_last_time_unknown']).'">'. get_centreon_date( $ndo["last_time_unknown"])  . '</last_time_unknown>';
+		$buffer .= '<last_time_critical name="'.html_entity_decode($lang['pop_last_time_critical']).'">'. get_centreon_date( $ndo["last_time_critical"])  . '</last_time_critical>';
 
 		$ct++;
 	}

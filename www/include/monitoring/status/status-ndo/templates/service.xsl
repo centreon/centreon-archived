@@ -2,6 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:variable name="i" select="//i"/>
 <xsl:template match="/">
+
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -97,18 +98,17 @@
 				<td class="ListColLeft">
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">oreon.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
-
 						<xsl:attribute name="class">infobulle</xsl:attribute>
 						<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 						<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 
   						<xsl:value-of select="sd"/>
+
 						<xsl:element name="span">
 							<xsl:attribute name="id">span_<xsl:value-of select="svc_id"/></xsl:attribute>
 						</xsl:element>
-
-
 					</xsl:element>
+
 					<xsl:if test="pa = 1">
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
@@ -138,12 +138,21 @@
 					</xsl:if>
 				</td>
 				<td class="ListColRight">
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">oreon.php?p=40207&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/>&amp;submitC=Grapher</xsl:attribute>
+
+					<xsl:if test="ppd > 0">
+						<xsl:element name="a">
+
+						  	<xsl:attribute name="href">oreon.php?p=40207&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/>&amp;submitC=Grapher</xsl:attribute>
+
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+								<xsl:attribute name="onmouseover">displayIMG('<xsl:value-of select="svc_metric"/>','<xsl:value-of select="sid"/>','<xsl:value-of select="svc_id"/>');</xsl:attribute>
+								<xsl:attribute name="onmouseout">hiddenIMG('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 							</xsl:element>
-					</xsl:element>
+
+
+						</xsl:element>
+					</xsl:if>
 				</td>
 				<td class="ListColCenter">
 					<xsl:attribute name="style">
@@ -169,12 +178,18 @@
 					<xsl:value-of select="nc"/>
 				</td>
 			</xsl:if>
-
-
-
-
 	</tr>
 </xsl:for-each>
 </table>
+						<xsl:element name="div">
+							<xsl:attribute name="id">
+								span_img
+							</xsl:attribute>
+							<xsl:attribute name="class">
+								img_volante
+							</xsl:attribute>
+						</xsl:element>
+
+
 </xsl:template>
 </xsl:stylesheet>

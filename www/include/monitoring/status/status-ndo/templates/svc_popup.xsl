@@ -5,6 +5,15 @@
 
 
 	<table>
+	<tr class="ListHeaderPopup">
+
+		<td class="ColPopup">
+			<xsl:value-of select="hostname"/>
+		</td>
+		<td class="ColPopup">
+			<xsl:value-of select="service_description"/>
+		</td>
+	</tr>
 	
 		<tr class='list_separator'>
 			<td class="separator" colspan="2">Status</td>

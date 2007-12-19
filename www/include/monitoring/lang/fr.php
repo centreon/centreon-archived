@@ -158,6 +158,8 @@ $lang['m_mon_check_execution_time'] = "Temps d'execution";
 $lang['m_mon_last_check_type'] = "Type de la Derni&eacute;re v&eacute;rification";
 $lang['m_mon_active'] = "Active";
 $lang['m_mon_passive'] = "Passive";
+$lang['yes'] = "oui";
+$lang['no'] = "non";
 
 $lang['m_mon_hard'] = "Hard";
 $lang['m_mon_soft'] = "Soft";
@@ -217,5 +219,15 @@ $lang["m_log_notification_cmd"] = "Commande de notification";
 $lang["m_log_notification_contact"] = "Contact";
 $lang['m_mon_all_services'] = "Voir tous les services de ";
 $lang['m_mon_all_graphs'] = "Voir tous les graphiques de ";
+
+/* popup */
+$lang['pop_last_time_up'] = "Dernier &eacute;tat up";
+$lang['pop_last_time_down'] = "Dernier &eacute;tat down";
+$lang['pop_last_time_unreachable'] = "Dernier &eacute;tat unreachable";
+
+$lang['pop_last_time_critical'] = "Dernier &eacute;tat critical";
+$lang['pop_last_time_ok'] = "Dernier &eacute;tat ok";
+$lang['pop_last_time_warning'] = "Dernier &eacute;tat warning";
+$lang['pop_last_time_unknown'] = "Dernier &eacute;tat unknown";
 
 ?>

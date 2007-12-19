@@ -288,6 +288,7 @@ For information : contact@oreon-project.org
 
 	/* Get Service status */
 	$rq ="SELECT " .
+			" nss.process_performance_data," . 
 			"nss.current_state," .
 			" nss.output as plugin_output," .
 			" nss.current_check_attempt as current_attempt," .
@@ -441,9 +442,12 @@ For information : contact@oreon-project.org
 
 			}
 
+			$buffer .= '<ppd>'. $ndo["process_performance_data"]  . '</ppd>';
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
 			$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
+			$buffer .= '<svc_metric>111</svc_metric>';
+			$buffer .= '<sid>'.$sid.'</sid>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';

@@ -7,13 +7,10 @@
 	<table>
 	<tr class="ListHeaderPopup">
 
-<xsl:comment>
-
 		<td class="ColPopup">
 			<xsl:value-of select="hostname"/>
 		</td>
-</xsl:comment>
-		<td class="ColPopup" colspan="2" style="width:100%;text-aling:right;">
+		<td class="ColPopup" style="width:100%;text-aling:right;">
 			<xsl:value-of select="address"/>
 		</td>
 	</tr>

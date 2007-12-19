@@ -51,7 +51,6 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 
 
-	include_once("../lang/fr.php");
 
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -85,8 +84,6 @@ For information : contact@oreon-project.org
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
 	}else
 		$date_time_format_status = "d/m/Y H:i:s";
-
-
 
 	/* security end*/
 
@@ -160,10 +157,14 @@ For information : contact@oreon-project.org
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
 	$res1->fetchInto($user);
 	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$res2 =& $pearDB->query("SELECT contact_admin,contact_lang FROM contact WHERE contact_id = '".$user_id."'");
 	$res2->fetchInto($admin);
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
+
+	$lang_ext = $admin["contact_lang"];
+	include_once("../lang/$lang_ext.php");
+
 
 	// if is admin -> lca
 	if(!$is_admin){
@@ -181,7 +182,6 @@ For information : contact@oreon-project.org
 	$tab_host_service = array();
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-//	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
 	$DBRESULT_OPT->fetchInto($general_opt);
@@ -249,8 +249,8 @@ For information : contact@oreon-project.org
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-	$en = array("0" => $disable, "1" => $enable);
 	$c = array("1" => "#00ff00", "0" => "#ff0000");
+	$en = array("0" => $lang["no"], "1" => $lang["yes"]);
 
 	
 	if($DBRESULT_NDO1->fetchInto($ndo))
@@ -320,7 +320,7 @@ For information : contact@oreon-project.org
 		$buffer .= '<percent_state_change_name><![CDATA['.$lang["m_mon_percent_state_change"].']]></percent_state_change_name>';
 
 
-		$buffer .= '<is_downtime>'. $ndo["scheduled_downtime_depth"]  . '</is_downtime>';
+		$buffer .= '<is_downtime>'. $en[$ndo["scheduled_downtime_depth"]]  . '</is_downtime>';
 		$buffer .= '<is_downtime_name><![CDATA['.$lang["m_mon_downtime_sc"].']]></is_downtime_name>';
 
 
@@ -328,9 +328,9 @@ For information : contact@oreon-project.org
 		$buffer .= '<last_update_name><![CDATA['.$lang["m_mon_last_update"].']]></last_update_name>';
 
 
-		$buffer .= '<last_time_up name="last_time_up">'. get_centreon_date( $ndo["last_time_up"])  . '</last_time_up>';
-		$buffer .= '<last_time_down name="last_time_down">'. get_centreon_date( $ndo["last_time_down"])  . '</last_time_down>';
-		$buffer .= '<last_time_unreachable name="last_time_unreachable">'. get_centreon_date( $ndo["last_time_unreachable"])  . '</last_time_unreachable>';
+		$buffer .= '<last_time_up name="'.html_entity_decode($lang['pop_last_time_up']).'">'. get_centreon_date( $ndo["last_time_up"])  . '</last_time_up>';
+		$buffer .= '<last_time_down name="'.html_entity_decode($lang['pop_last_time_down']).'">'. get_centreon_date( $ndo["last_time_down"])  . '</last_time_down>';
+		$buffer .= '<last_time_unreachable name="'.html_entity_decode($lang['pop_last_time_unreachable']).'">'. get_centreon_date( $ndo["last_time_unreachable"])  . '</last_time_unreachable>';
 
 		$ct++;
 	}
