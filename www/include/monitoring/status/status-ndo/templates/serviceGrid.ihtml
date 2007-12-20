@@ -3,12 +3,6 @@
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
 <table class="Toolbar_TableTop">
-	<tr><td><a href="#" onclick="advanced_options('advanced_options');" >Advanced Options</a></td></tr>
-	<tr><td>
-		<div id="advanced_options">
-		...
-		</div>
-	</td></tr>
 	<tr class="Toolbar_TR_Top">
 		<td class="Toolbar_TDSelectAction_Top">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
@@ -16,6 +10,7 @@
 			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
+			<span class="consol_button" id="instance_selected"></span>
 			<div style="text-align:left;padding-top:5px;">&nbsp;{$form.o1.html}</div>
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
@@ -26,7 +21,7 @@
 		<td id="sel1" class="Toolbar_pagelimit"></td>
 	</tr>
 </table>
-<div id="forAjax">...</div>
+<div id="forAjax">Waiting XML data</div>
 <table class="Toolbar_TableBottom">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Bottom">

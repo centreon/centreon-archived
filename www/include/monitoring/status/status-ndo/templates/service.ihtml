@@ -3,13 +3,6 @@
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
 <table class="Toolbar_TableTop">
-	<tr><td>
-		<a href="#" onclick="advanced_options('advanced_options');">Advanced Options</a>
-		<span id="advanced_options">
-			next check:<input type="checkbox" name="next_check_case" onclick="addORdelTab('next_check_case');">
-		</span>
-		<br>
-	</td></tr>
 	<tr class="Toolbar_TR_Top">
 		<td class="Toolbar_TDSelectAction_Top">
 			<span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icones/16x16/refresh.gif' alt='Refresh' title='Refresh'></a></span>
@@ -22,7 +15,6 @@
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
 			{/if}
-
 		</td>
 		<input name="p" value="{$p}" type="hidden">
 		<td id="pagination1" class="Toolbar_pagination"></td>

@@ -67,12 +67,14 @@
 				</td>
 				<td class="ListColLeft">
 
-					<xsl:if test="hnn">
+					<xsl:if test="hnu != 'none'">
+
 						<xsl:element name="a">
 						  	<xsl:attribute name="classe">infobulle</xsl:attribute>
 						  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
-								<span><xsl:value-of select="hnn"/></span>
+							www
 						</xsl:element>
+
 					</xsl:if>
 
 
@@ -181,14 +183,8 @@
 	</tr>
 </xsl:for-each>
 </table>
-						<xsl:element name="div">
-							<xsl:attribute name="id">
-								span_img
-							</xsl:attribute>
-							<xsl:attribute name="class">
-								img_volante
-							</xsl:attribute>
-						</xsl:element>
+
+<div id="div_img" class="img_volante"></div>
 
 
 </xsl:template>

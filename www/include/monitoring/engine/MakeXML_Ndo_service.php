@@ -343,7 +343,7 @@ For information : contact@oreon-project.org
 	else
 	;
 	if($o == "svcpb")
-		$rq .= " AND nss.current_state != 0 ";
+		$rq .= " AND nss.current_state != 0  AND nss.current_state != 3 ";
 	if($o == "svc_ok")
 		$rq .= " AND nss.current_state = 0 ";
 	if($o == "svc_warning")
@@ -435,7 +435,13 @@ For information : contact@oreon-project.org
 				$buffer .= '<hc>'.$color_host.'</hc>';
 				$buffer .= '<hn none="0">'. $ndo["host_name"] . '</hn>';
 				$buffer .= '<hau><![CDATA['. $host_status[$ndo["host_name"]]["action_url"] . ']]></hau>';
-				$buffer .= '<hnu><![CDATA['. $host_status[$ndo["host_name"]]["notes_url"] . ']]></hnu>';
+
+
+				if($host_status[$ndo["host_name"]]["notes_url"])
+					$buffer .= '<hnu><![CDATA['. $host_status[$ndo["host_name"]]["notes_url"] . ']]></hnu>';				
+				else
+					$buffer .= '<hnu>none</hnu>';
+
 				$buffer .= '<hnn><![CDATA['. $host_status[$ndo["host_name"]]["notes"] . ']]></hnn>';
 				$buffer .= '<hip><![CDATA['. $host_status[$ndo["host_name"]]["address"] . ']]></hip>';
 				$buffer .= '<hid>'. $host_status[$ndo["host_name"]]["object_id"] . '</hid>';

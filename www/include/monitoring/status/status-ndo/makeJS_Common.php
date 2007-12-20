@@ -51,25 +51,17 @@ function addORdelTab(_name){
 }
 
 function advanced_options(id){
-
-	/// display hidden
 	var d = document.getElementById(id);
-	//var d1 = document.getElementById("advanced_1");
-
-
 	if(d)
 	{
 		if (d.style.display == 'block') {
 		d.style.display='none';
-//		d1.style.display='block';
 		}
 		else
 		{
 		d.style.display='block';
-//		d1.style.display='none';
 		}
 	}
-	///
 }
 
 function construct_selecteList_ndo_instance(id){
@@ -77,8 +69,6 @@ function construct_selecteList_ndo_instance(id){
 	if(!document.getElementById("select_instance"))
 	{
 		var _select_instance = document.getElementById(id);
-
-	//	_select_instance.innerHTML = "";
 
 		var _select = document.createElement("select");
 		_select.name = "select_instance";

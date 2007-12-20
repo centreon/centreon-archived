@@ -139,7 +139,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("serviceSchedule.ihtml");
+	$tpl->display("service.ihtml");
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);

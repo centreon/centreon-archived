@@ -364,15 +364,19 @@ div.displayAjaxResult {
 }
 
 a.infobulle{
-    position:relative;
+	    position:relative;
     z-index:24;
-//    color:#000;
     text-decoration:none
     }
 
 a.infobulle:hover{z-index:25;}
 
-a.infobulle span{display: none}
+a.infobulle span{
+	display: none;
+position: absolute;
+display:none;
+z-index: 500;
+}
 
 a.infobulle:hover span{
 /*le contenu de la balise span ne
@@ -391,6 +395,7 @@ sera visible que pour l'état a:hover */
 	background-color:#E6D793;
 	border: 2px #E6D793 solid;
 	-moz-border-radius: 14px;
+
 }
 a.infobulle:hover table{
 	border: 2px #E6D793 solid;

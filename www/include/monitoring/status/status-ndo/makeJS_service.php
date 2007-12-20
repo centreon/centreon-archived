@@ -61,6 +61,17 @@ var _nc = 0;
 <?php
 include_once("makeJS_Common.php");
 ?>
+var tempX = 0;
+var tempY = 0;
+
+function position(e)
+	{
+	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
+	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
+	}
+if(navigator.appName.substring(0,3) == "Net")
+	document.captureEvents(Event.MOUSEMOVE);
+document.onmousemove = position;
 
 function set_header_title(){
 	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
@@ -206,7 +217,6 @@ function goM(_time_reload,_sid,_o){
 	set_header_title();
 }
 
-
 function displayPOPUP(id){
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
@@ -215,7 +225,14 @@ function displayPOPUP(id){
 	proc_popup.setXml(_addrXMLSpan);
 	proc_popup.setXslt(_addrXSLSpan);
 	proc_popup.transform('span_'+id);
+
+	var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
+	var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
+	if(h - tempY < span.offsetHeight){
+		span.style.top = '-'+ span.offsetHeight +'px';
+	}
 }
+
 function displayPOPUP_svc(id){
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
@@ -225,76 +242,80 @@ function displayPOPUP_svc(id){
 	proc_popup.setXslt(_addrXSLSpan);
 	proc_popup.transform('span_'+id);
 
+	var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
+	var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
+
+	if(h - tempY < span.offsetHeight){
+		span.style.top = '-'+ span.offsetHeight +'px';
+	}
 }
 
 function hiddenPOPUP(id){
-
 		var span = document.getElementById('span_'+id);
 		span.innerHTML = '';
 }
 
-var wait = 0;
-
-var IE = document.all?true:false;
-if (!IE) document.captureEvents(Event.MOUSEMOVE)
-document.onmousemove = getMouseXY;
-var tempX = 0;
-var tempY = 0;
-function getMouseXY(e) {
-if (IE) { // grab the x-y pos.s if browser is IE
-
-	if(wait == 0){
-		tempX = event.clientX + document.body.scrollLeft;
-		tempY = event.clientY + document.body.scrollTop;
-	}
-}
-else {  // grab the x-y pos.s if browser is NS
-
-	if(wait == 0){
-		tempX = e.pageX;
-		tempY = e.pageY;
-	}
-
-}
-if (tempX < 0){tempX = 0;}
-if (tempY < 0){tempY = 0;}
-//document.Show.MouseX.value = tempX;
-//document.Show.MouseY.value = tempY;
-return true;
-}
-
-
-
-
 function displayIMG(metric, s_id, id)
 {
-	if(wait == 0){
-		
-		wait = 1;
-		var span = document.getElementById('span_img');
-		span.innerHTML = '';
 	
-		_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id='+s_id+'&index='+metric+'&end=1197994683&start=1197908283', 'test');
-		span.appendChild(_img);
-	
-		var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
-		var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 
-	
-		var posy = tempY + 10;
-		if(h - tempY < 420){
-			posy = tempY-310;	
-		}
-	
-		with(span.style){display="block";left=tempX+'px';top=posy+'px';}
-	}
+	   // Pour les navigateurs récents
+    if ( document.getElementById && document.getElementById( 'div_img' ) ){
+        Pdiv = document.getElementById( 'div_img' );
+        PcH = true;
+    }
+    // Pour les veilles versions
+    else if ( document.all && document.all[ 'div_img' ] ){
+        Pdiv = document.all[ 'div_img' ];
+        PcH = true;
+    }
+    // Pour les très veilles versions
+    else if ( document.layers && document.layers[ 'div_img' ] ){
+        Pdiv = document.layers[ 'div_img' ];
+        PcH = true;
+    }
+    else{
+        PcH = false;
+    }
+    if ( PcH ){
+			_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id='+s_id+'&index='+metric+'&end=1197994683&start=1197908283', 'test');
+			Pdiv.appendChild(_img);
+			var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
+			var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		
+			var posy = tempY + 10;
+			if(h - tempY < 420){
+				posy = tempY-310;
+			}
+			Pdiv.style.display = "block";
+			Pdiv.style.left = tempX +'px';
+			Pdiv.style.top = posy +'px';
+    }
+    else{
+   // alert('ie ca pux');	
+    }
 }
 
-
 function hiddenIMG(id){
-		wait = 0;
-
-		var span = document.getElementById('span_img');
-		with(span.style){display="none";}
-		span.innerHTML = '';
+	   // Pour les navigateurs récents
+    if ( document.getElementById && document.getElementById( 'div_img' ) ){
+        Pdiv = document.getElementById( 'div_img' );
+        PcH = true;
+    }
+    // Pour les veilles versions
+    else if ( document.all && document.all[ 'div_img' ] ){
+        Pdiv = document.all[ 'div_img' ];
+        PcH = true;
+    }
+    // Pour les très veilles versions
+    else if ( document.layers && document.layers[ 'div_img' ] ){
+        Pdiv = document.layers[ 'div_img' ];
+        PcH = true;
+    }
+    else{
+        PcH = false;
+    }
+    if ( PcH ){
+		Pdiv.style.display = "none";
+		Pdiv.innerHTML = '';
+	}
 }
 </SCRIPT>

@@ -214,6 +214,7 @@ For information : contact@oreon-project.org
 			" unix_timestamp(nss.next_notification) as next_notification," .
 			" unix_timestamp(nss.last_hard_state_change) as last_hard_state_change," .
 			" nss.last_hard_state," .
+			" nss.latency," .
 			" unix_timestamp(nss.last_time_ok) as last_time_ok," .
 			" unix_timestamp(nss.last_time_critical) as last_time_critical," .
 			" unix_timestamp(nss.last_time_unknown) as last_time_unknown," .
@@ -287,10 +288,10 @@ For information : contact@oreon-project.org
 		$buffer .= '<next_check >'. get_centreon_date($ndo["next_check"])  . '</next_check>';
 		$buffer .= '<next_check_name><![CDATA['.html_entity_decode($lang["m_mon_next_check"]).']]></next_check_name>';
 
-/*
+
 		$buffer .= '<check_latency>'. $ndo["latency"]  . '</check_latency>';
 		$buffer .= '<check_latency_name><![CDATA['.html_entity_decode($lang["m_mon_check_latency"]).']]></check_latency_name>';
-*/
+
 		$buffer .= '<check_execution_time>'. $ndo["execution_time"]  . '</check_execution_time>';
 		$buffer .= '<check_execution_time_name><![CDATA['.html_entity_decode($lang["m_mon_check_execution_time"]).']]></check_execution_time_name>';
 		
