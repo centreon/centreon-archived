@@ -88,11 +88,16 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["no"], '0');
 	$form->addGroup($tab, 'restart', $lang["gen_restart"], '&nbsp;');
 	$form->setDefaults(array('restart' => '0'));
-	$tab = array();
+	
+	$tab_restart_mod = array(1 => $lang["gen_restart_load"], 2 => $lang["gen_restart_start"], 3 => $lang["gen_restart_extcmd"]);
+	$form->addElement('select', 'restart_mode', $lang["gen_restart"], $tab_restart_mod, $attrSelect);
+
+	/* $tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_load"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_start"], '2');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_extcmd"], '3');
 	$form->addGroup($tab, 'restart_mode', $lang["gen_restart"], '&nbsp;');
+	*/
 	$form->setDefaults(array('restart_mode' => '1'));
 
 	$redirect =& $form->addElement('hidden', 'o');
@@ -218,7 +223,6 @@ For information : contact@oreon-project.org
 						}
 					} else {
 						passthru ("echo 'SENDCFGFILE:".$tab['id']."' >> /srv/oreon/var/centcore", $return);	
-						print $return;
 					}
 				}
 			}
