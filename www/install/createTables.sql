@@ -1,5 +1,5 @@
 --
--- Base de données: `oreon`
+-- Base de données: `Centreon`
 --
 
 -- --------------------------------------------------------
@@ -1770,12 +1770,30 @@ CREATE TABLE `modules_informations` (
 --
 -- Structure de la table traps_vendor
 --
+
 CREATE TABLE `traps_vendor` (
 	`id` int(11) NOT NULL auto_increment,
 	`name` varchar(254) default NULL,
 	`alias` varchar(254) default NULL,
 	`description` text, PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table user_preferencies
+--
+
+CREATE TABLE `user_preferencies` (
+`id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`user_id` INT NULL ,
+`key` VARCHAR( 255 ) NULL ,
+`value` VARCHAR( 255 ) NULL, 
+KEY `user_id` (`user_id`)
+) ENGINE = innodb CHARACTER SET utf8 COLLATE utf8_general_ci COMMENT = 'User Preferencies';
+
+-- --------------------------------------------------------
+
 
 --
 -- Contraintes pour la table `topology_JS`
@@ -2169,5 +2187,11 @@ ALTER TABLE `traps_service_relation`
 ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `sc_id` ) REFERENCES `centreon`.`service_categories` (
 `sc_id`
 ) ON DELETE CASCADE ;
+
+--
+-- Contraintes pour la table user_preferencies
+--
+  
+ALTER TABLE `user_preferencies` ADD FOREIGN KEY ( `user_id` ) REFERENCES `centreon`.`contact` (`contact_id`) ON DELETE CASCADE ;
 
   
