@@ -16,9 +16,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	function deleteAllConfCFG()	{
-		global $pearDB;
-		global $oreon;
-		//echo "delete all cfg conf<br>";
+		global $pearDB, $oreon;
+
 		$rq = "DELETE FROM command";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -63,9 +62,8 @@ For information : contact@oreon-project.org
 
 	function insertResourceCFG(& $buf)	{
 		$i = 0;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
+		global $oreon, $debug_nagios_import, $debug_path;
+		
 		foreach ($buf as $str)	{
 			$regs = array();
 			$resCFG = array();
@@ -92,8 +90,8 @@ For information : contact@oreon-project.org
 
 	function deleteResourceCFG()	{
 		global $pearDB;
-		$rq = "DELETE * FROM cfg_resource; ";
-		$DBRESULT =& $pearDB->query($rq);
+
+		$DBRESULT =& $pearDB->query("DELETE * FROM cfg_resource;");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : DELETE * FROM cfg_resource; : ".$DBRESULT->getMessage()."<br>";
 	}
@@ -101,7 +99,11 @@ For information : contact@oreon-project.org
 	function insertNagiosCFG(& $buf)	{
 		$nagiosCFG = array();
 		$flag = false;
-		# Fill with buffer value
+		
+		/*
+		 * Fill with buffer value
+		 */
+		
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/^[ \t]*([0-9a-zA-Z\_]+)[ \t]*=[ \t]*(.+)/", $str, $regs))	{
@@ -131,13 +133,20 @@ For information : contact@oreon-project.org
 			}
 			unset($regs);
 		}
-		# Add Oreon comment
+		/*
+		 * Add comment
+		 */
+		 
 		if ($nagiosCFG)	{
 			$nagiosCFG["nagios_activate"]["nagios_activate"] = "0";
 			$nagiosCFG["nagios_name"] = "nagios.cfg ".date("d m Y - H:i:s", time());
 			$nagiosCFG["nagios_comment"] = "nagios.cfg ".date("d/m/Y - H:i:s", time());
 		}
-		# Add in db
+		
+		/*
+		 * Add in db
+		 */
+		 
 		require_once("./include/configuration/configNagios/DB-Func.php");
 		if (insertNagios($nagiosCFG))
 			return true;
@@ -147,8 +156,7 @@ For information : contact@oreon-project.org
 
 	function deleteNagiosCFG()	{
 		global $pearDB;
-		$rq = "DELETE FROM cfg_nagios; ";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios;");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : DELETE FROM cfg_nagios; : ".$DBRESULT->getMessage()."<br>";
 	}
@@ -156,20 +164,30 @@ For information : contact@oreon-project.org
 	function insertCgiCFG(& $buf)	{
 		$cgiCFG = array();
 		$flag = false;
-		# Fill with buffer value
+		
+		/*
+		 * Fill with buffer value
+		 */
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/^[ \t]*([0-9a-zA-Z\_]+)[ \t]*=[ \t]*(.+)/", $str, $regs))
 				$cgiCFG[trim($regs[1])] = trim($regs[2]);
 			unset($regs);
 		}
-		# Add Oreon comment
+		
+		/*
+		 * Add comment
+		 */
 		if ($cgiCFG)	{
 			$cgiCFG["cgi_activate"]["cgi_activate"] = "0";
 			$cgiCFG["cgi_name"] = "cgi.cfg ".date("d m Y - H:i:s", time());
 			$cgiCFG["cgi_comment"] = "cgi.cfg ".date("d/m/Y - H:i:s", time());
 		}
-		# Add in db
+		
+		/*
+		 * Add in db
+		 */
+		
 		require_once("./include/configuration/configCGI/DB-Func.php");
 		if (insertCGIInDB($cgiCFG))
 			return true;
@@ -195,19 +213,22 @@ For information : contact@oreon-project.org
 	}
 
 	function insertCFG(& $buf, & $ret)	{
+		global $nbr, $oreon, $debug_nagios_import, $debug_path;
 		$typeDef = NULL;
-		global $nbr;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
+		
 		$nbr = array("cmd"=>0, "tp"=>0, "cct"=>0, "cg"=>0, "h"=>0, "hg"=>0, "hd"=>0, "sv"=>0, "svd"=>0, "sg"=>0, "sgd"=>0, "hei"=>0);
 		$tmpConf = array();
 		$get = false;
 		$regexp = "/^[ \t]*(.[^ \t#]+)[ \t]+(.[^;]+)/";
-		# Fill with buffer value
-		# Turn 1 -> Time Period, Commands
+		
+		/*
+		 * Fill with buffer value
+		 * Turn 1 -> Time Period, Commands
+		 */
+		
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 1 -> Time Period, Commands\n", 3, $debug_path."cfgimport.log");
+		
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
@@ -220,18 +241,23 @@ For information : contact@oreon-project.org
 				$tmpConf = array();
 				$typeDef = NULL;
 			}
-			# Limit only to cfg conf we need
+			/*
+			 * Limit only to cfg conf we need
+			 */ 
 			if (preg_match("/^[ \t]*define (timeperiod|command)[ \t]*{/", $str, $def))	{
 				$typeDef = $def[1];
 				$get = true;
-			}
-			else if ($get)	{
+			} else if ($get) {
 				if (preg_match($regexp, $str, $regs))
 					$tmpConf[$regs[1]] = trim($regs[2]);
 			}
 			unset($regs);
 		}
-		# Turn 2 -> contacts
+	
+		/*
+		 * Turn 2 -> contacts
+		 */
+		
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 2 -> contacts\n", 3, $debug_path."cfgimport.log");
 
