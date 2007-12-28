@@ -200,7 +200,7 @@ For information : contact@oreon-project.org
 					if (preg_match("/^service/", $str)){
 				  		$log = array();
 				  		while ($str2 = fgets($log_file))
-		          			if (!strpos($str2, "}")){      
+		          			if (!preg_match("/^[\ \t]*\}$/", $str2)){
 			      				if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)/", $str2, $tab))
 									$svc_data[$tab[1]] = $tab[2];	
 			    			} else
@@ -240,7 +240,7 @@ For information : contact@oreon-project.org
 					} else if (preg_match("/^host/", $str)){ // get host stat
 						$host_data = array();
 			  			while ($str2 = fgets($log_file))
-				    		if (!strpos($str2, "}")){
+		          			if (!preg_match("/^[\ \t]*\}$/", $str2)){
 				      			if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)[\ \t]*/", $str2, $tab))
 									$host_data[$tab[1]] = $tab[2];
 				    		} else
@@ -257,7 +257,7 @@ For information : contact@oreon-project.org
 			      	################## PROGRAM ############################
 					} else if (preg_match("/^program/", $str)){
 		          		while ($str2 = fgets($log_file))
-		            		if (!strpos($str2, "}")){
+		          			if (!preg_match("/^[\ \t]*\}$/", $str2)){
 		              			if (preg_match("/([A-Za-z0-9\_\-]*)\=([A-Za-z0-9\_\-\.\,\(\)\[\]\ \=\%\;\:]+)/", $str2, $tab))
 		                			$pgr_nagios_stat[$tab[1]] = $tab[2];
 		            		} else
@@ -265,7 +265,7 @@ For information : contact@oreon-project.org
 		          		unset($log);
 		        	} else if (preg_match("/^info/", $str)){
 		          		while ($str2 = fgets($log_file))
-		            		if (!strpos($str2, "}")){
+		          			if (!preg_match("/^[\ \t]*\}$/", $str2)){
 		            	  		if (preg_match("/([A-Za-z0-9\_\-]*)\=([A-Za-z0-9\_\-\.\,\(\)\[\]\ \=\%\;\:]+)/", $str2, $tab))
 		                			$pgr_nagios_stat[$tab[1]] = $tab[2];
 		            		} else
@@ -315,10 +315,6 @@ For information : contact@oreon-project.org
 	}
 	
 	$row_data = array();
-	if (isset($_GET["o"]) && $_GET["o"] == "svcSch" && !isset($_GET["sort_types"])){
-		$_GET["sort_types"] = "next_check";
-		$_GET["order"] = "SORT_ASC";
-	}
 	
 	if ((!isset($_GET["o"]) || !$_GET["o"]) && isset($o))
 		$_GET["o"] = $o;
@@ -333,11 +329,12 @@ For information : contact@oreon-project.org
 		}
 		if (!isset($_GET["order"]))
 			$_GET["order"] = "SORT_".$general_opt["problem_sort_order"];
+	} else if (isset($_GET["o"]) && $_GET["o"] == "svcSch"){
+		$_GET["sort_types"] = "next_check";
+		$_GET["order"] = "SORT_ASC";		
 	} else {
-		 $_GET["sort_types"] = (isset($_GET["sort_types"])) ? $_GET["sort_types"] :"host_name"; 
-		 $_GET["order"] = (isset($_GET["order"])) ? $_GET["order"] :"SORT_ASC"; 
-		//$_GET["sort_types"] = "host_name";
-		//$_GET["order"] = "SORT_ASC";
+		$_GET["sort_types"] = "host_name";
+		$_GET["order"] = "SORT_ASC";
 	}
 	
 	if (isset($_GET["sort_types"]) && $_GET["sort_types"]){
@@ -351,7 +348,6 @@ For information : contact@oreon-project.org
 		$row_data = array();
 		foreach ($host_status as $key => $row)
 	    	$row_data[$key] = $row[$_GET["sort_typeh"]];
-
 	    !strcmp(strtoupper($_GET["order"]), "SORT_ASC") ? array_multisort($row_data, SORT_ASC, $host_status) : array_multisort($row_data, SORT_DESC, $host_status);
 	}
 ?>

@@ -72,19 +72,19 @@ For information : contact@oreon-project.org
 						if (preg_match("/^service/", $str)){   
 						  	$log = array();
 						 	 while ($str2 = fgets($log_file))
-				          			if (!strpos($str2, "}")){      
-					      				if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)[\ \t]*/", $str2, $tab)){
-											$log[$tab[1]] = $tab[2];
-				          				}
-					    			} else
-					      				break;
-					      			$status_data[$cpt] = array("0"=>$log["host_name"], "1"=>$tab_status_svc[$log['current_state']], "2"=>$log["service_description"]);
-									$cpt++;
-					  				unset($log);
+       		          			if (!preg_match("/^[\ \t]*\}$/", $str2)){
+					   				if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)[\ \t]*/", $str2, $tab)){
+										$log[$tab[1]] = $tab[2];
+				          			}
+					    		} else
+					      			break;
+				      			$status_data[$cpt] = array("0"=>$log["host_name"], "1"=>$tab_status_svc[$log['current_state']], "2"=>$log["service_description"]);
+								$cpt++;
+				  				unset($log);
 					  	} else if (preg_match("/^host/", $str)){ // get host stat
 							$log = array();
 						  	while ($str2 = fgets($log_file))
-						    	if (!strpos($str2, "}")){
+       		          			if (!preg_match("/^[\ \t]*\}$/", $str2)){
 						      		if (preg_match("/([A-Za-z0-9\_\-]*)\=(.*)[\ \t]*/", $str2, $tab)){
 										$log[$tab[1]] = $tab[2];
 						      		} 
