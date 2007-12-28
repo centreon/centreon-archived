@@ -219,8 +219,12 @@ For information : contact@oreon-project.org
 		isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != NULL ? $rq .= "'".htmlentities($ret["oreon_web_path"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "oreon_refresh = ";
 		isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? $rq .= "'".htmlentities($ret["oreon_refresh"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		
+		if (!isset($ret["session_expire"]) || $ret["session_expire"] == 0)
+			$ret["session_expire"] = 2;
 		$rq .= "session_expire = ";
 		isset($ret["session_expire"]) && $ret["session_expire"] != NULL ? $rq .= "'".htmlentities($ret["session_expire"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		
 		$rq .= "maxViewMonitoring = ";
 		isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? $rq .= "'".htmlentities($ret["maxViewMonitoring"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "maxViewConfiguration = ";
