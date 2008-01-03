@@ -25,9 +25,11 @@ For information : contact@oreon-project.org
 	global $search_type_service, $search_type_host, $host_name;
 	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
+	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 
 	global $rows, $p, $lang, $gopt, $pagination;
+	
 	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
@@ -70,7 +72,6 @@ For information : contact@oreon-project.org
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./include/common/");
-
 
 	$page_max = ceil($rows / $limit);
 	if ($num > $page_max && $rows)
