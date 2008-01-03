@@ -361,6 +361,7 @@ function escapeURI(La){
 }
 
 function mainLoop(){
+  _currentInputField = document.getElementById('input_search');
   _currentInputFieldValue = document.getElementById('input_search').value;
   if( (_currentInputFieldValue.length >= 3 || _currentInputFieldValue.length == 0) && _oldInputFieldValue!=_currentInputFieldValue){
     var valeur=escapeURI(_currentInputFieldValue);
@@ -369,6 +370,13 @@ function mainLoop(){
 	if(!_lock){
 		monitoring_refresh();
 		set_search(_search);
+		
+		if( _currentInputFieldValue.length >= 3)
+			_currentInputField.className = "search_input_active";
+		else
+			_currentInputField.className = "search_input";
+			
+		
 	}
   }
   _oldInputFieldValue=_currentInputFieldValue;
