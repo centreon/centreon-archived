@@ -30,11 +30,17 @@ For information : contact@oreon-project.org
 		$search = NULL; 
 	
 	
+	if (isset($search) && $search)
+		$attrsText = array("size"=>"25", "id"=>"input_search", "style"=>"border: 0.5px solid gray;background-color:#FF0044;");
+	else
+		$attrsText = array("size"=>"25", "id"=>"input_search", "style"=>"border: 0.5px solid gray;");
+	
 	if (!isset($limit))
 		$limit = 20;
 	
 	$tab = array ("search" => $search, "p"=>$p, "o"=>$o, "limit"=>$limit, "search_type_host"=>1, "search_type_service"=>1);
-	$form_search->addElement('text', 'search', $lang["quicksearch"], 'id=input_search');
+	
+	$form_search->addElement('text', 'search', $lang["quicksearch"], $attrsText);
 	$form_search->addElement('hidden', 'p');
 	$form_search->addElement('hidden', 'limit');
 	$form_search->addElement('hidden', 'list');
@@ -60,7 +66,9 @@ For information : contact@oreon-project.org
 
 	$form_search->setDefaults($tab);
 	
-	# Render with a smarty template
+	/*
+	 * Render with a smarty template
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./include/common/", $tpl);
 	
