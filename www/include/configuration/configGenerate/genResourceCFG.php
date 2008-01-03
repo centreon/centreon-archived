@@ -36,7 +36,7 @@ For information : contact@oreon-project.org
 			foreach ($comment as $cmt)
 				$str .= "# ".$cmt."\n";
 		}
-		$str .= $DBRESULTource["resource_line"]."\n";
+		$str .= $DBRESULTource["resource_name"]."=".$DBRESULTource["resource_line"]."\n";
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/resource.cfg");
 	fclose($handle);
