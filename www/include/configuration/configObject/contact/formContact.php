@@ -131,7 +131,7 @@ For information : contact@oreon-project.org
 	# No possibility to change name and alias, because there's no interest
 	if ($o != "mc")	{
 		$form->addElement('text', 'contact_name', $lang["cct_name"], $attrsText);
-		$form->addElement('text', 'contact_alias', $lang["alias"], $attrsText);
+		$form->addElement('text', 'contact_alias', $lang["cct_alias"], $attrsText);
 	}
 	$form->addElement('text', 'contact_email', $lang["cct_mail"], $attrsText);
 	$form->addElement('text', 'contact_pager', $lang["cct_pager"], $attrsText);

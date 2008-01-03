@@ -51,7 +51,8 @@ For information : contact@oreon-project.org
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
+	$tpl->assign("headerMenu_desc", $lang['cct_alias']);
+	$tpl->assign("headerMenu_email", $lang['cct_mail']);
 	$tpl->assign("headerMenu_hostNotif", $lang['cct_hostNotifTp']);
 	$tpl->assign("headerMenu_svNotif", $lang['cct_svNotifTp']);
 	$tpl->assign("headerMenu_status", $lang['status']);
@@ -59,9 +60,9 @@ For information : contact@oreon-project.org
 	# end header menu
 	#Contact list
 	if ($search)
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate  FROM contact WHERE (contact_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR contact_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email  FROM contact WHERE (contact_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR contact_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -75,9 +76,9 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($contact); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");
-		$moptions = "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
+		$moptions = "<!--<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=d&select[".$contact['contact_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=d&select[".$contact['contact_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;-->";
 		if ($contact["contact_activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&contact_id=".$contact['contact_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
@@ -101,6 +102,7 @@ For information : contact@oreon-project.org
 						"RowMenu_name"=>$contact["contact_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&contact_id=".$contact['contact_id'],
 						"RowMenu_desc"=>$contact["contact_alias"],
+						"RowMenu_email"=>$contact["contact_email"],
 						"RowMenu_hostNotif"=>html_entity_decode($hostTp["tp_name"], ENT_QUOTES)." (".$contact["contact_host_notification_options"].")",
 						"RowMenu_svNotif"=>html_entity_decode($svTp["tp_name"], ENT_QUOTES)." (".$contact["contact_service_notification_options"].")",
 						"RowMenu_status"=>$contact["contact_activate"] ? $lang['enable'] : $lang['disable'],

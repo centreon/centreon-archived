@@ -205,12 +205,12 @@ if ($connect ) {
 			$info[$i]["cn"][0] = htmlentities($info[$i]["cn"][0]);
 			
 			$buffer .= "<user isvalid='".$isvalid."'>";
-			$buffer .= "<dn isvalid='". (isset($info[$i]["dn"]) ? "1" : "0" ) ."'>". (isset($info[$i]["dn"]) ? $info[$i]["dn"] : "" )."</dn>";
-			$buffer .= "<sn isvalid='". (isset($info[$i]["sn"]) ? "1" : "0" ) ."'>". (isset($info[$i]["sn"][0]) ? $info[$i]["sn"][0] : "")."</sn>";
-			$buffer .= "<givenname isvalid='". (isset($info[$i]["givenname"]) ? "1" : "0" ) ."'>".(isset($info[$i]["givenname"][0]) ? str_replace("\'", "\\\'", $info[$i]["givenname"][0]) : "" ). "</givenname>";
-			$buffer .= "<mail isvalid='". (isset($info[$i]["mail"]) ? "1" : "0" ) ."'>".(isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "" )."</mail>";
-			$buffer .= "<cn isvalid='". (isset($info[$i]["cn"]) ? "1" : "0" ) ."'>".(isset($info[$i]["cn"][0]) ? $info[$i]["cn"][0] : "" ). "</cn>";
-			$buffer .= "<uid isvalid='". (empty($uid) ? "0" : "1" ) ."'>".$uid. "</uid>";
+			$buffer .= "<dn isvalid='". (isset($info[$i]["dn"]) ? "1" : "0" ) ."'><![CDATA[". (isset($info[$i]["dn"]) ? $info[$i]["dn"] : "" )."]]></dn>";
+			$buffer .= "<sn isvalid='". (isset($info[$i]["sn"]) ? "1" : "0" ) ."'><![CDATA[". (isset($info[$i]["sn"][0]) ? $info[$i]["sn"][0] : "")."]]></sn>";
+			$buffer .= "<givenname isvalid='". (isset($info[$i]["givenname"]) ? "1" : "0" ) ."'><![CDATA[".(isset($info[$i]["givenname"][0]) ? str_replace("\'", "\\\'", $info[$i]["givenname"][0]) : "" ). "]]></givenname>";
+			$buffer .= "<mail isvalid='". (isset($info[$i]["mail"]) ? "1" : "0" ) ."'><![CDATA[".(isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "" )."]]></mail>";
+			$buffer .= "<cn isvalid='". (isset($info[$i]["cn"]) ? "1" : "0" ) ."'><![CDATA[".(isset($info[$i]["cn"][0]) ? $info[$i]["cn"][0] : "" ). "]]></cn>";
+			$buffer .= "<uid isvalid='". (empty($uid) ? "0" : "1" ) ."'><![CDATA[".$uid. "]]></uid>";
 			$buffer .= "</user>";
 	   	}
 	   	$buffer .= "</reponse>";
@@ -225,7 +225,7 @@ if ($connect ) {
 
 if(isset($error)){
 	$buffer  = '<reponse>';
-	$buffer .= '<error>' . $error . '</error>';
+	$buffer .= '<error><![CDATA[' . $error . ']]></error>';
 	$buffer .= '</reponse>';
 }
 
