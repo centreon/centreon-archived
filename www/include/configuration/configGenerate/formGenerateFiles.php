@@ -89,16 +89,16 @@ For information : contact@oreon-project.org
 	$form->addGroup($tab, 'restart', $lang["gen_restart"], '&nbsp;');
 	$form->setDefaults(array('restart' => '0'));
 	
-	$tab_restart_mod = array(1 => $lang["gen_restart_load"], 2 => $lang["gen_restart_start"], 3 => $lang["gen_restart_extcmd"]);
+	$tab_restart_mod = array(2 => $lang["gen_restart_start"], 1 => $lang["gen_restart_load"], 3 => $lang["gen_restart_extcmd"]);
 	$form->addElement('select', 'restart_mode', $lang["gen_restart"], $tab_restart_mod, $attrSelect);
-
+	$form->setDefaults(array('restart_mode' => '2'));
 	/* $tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_load"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_start"], '2');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_extcmd"], '3');
 	$form->addGroup($tab, 'restart_mode', $lang["gen_restart"], '&nbsp;');
 	*/
-	$form->setDefaults(array('restart_mode' => '1'));
+	
 
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -115,7 +115,11 @@ For information : contact@oreon-project.org
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate())	{
+		
 		$ret = $form->getSubmitValues();
+		
+		print "HOST : ".$ret["host"]."\n";
+		
 		if ($ret["generate"]["generate"])	{
 			$gbArr = manageDependencies();
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
@@ -190,6 +194,7 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
+					print "OK";
 					$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
 					$msg .= str_replace ("\n", "<br>", $stdout);
 				}
@@ -234,27 +239,40 @@ For information : contact@oreon-project.org
 		}
 		
 		if ($ret["restart"]["restart"])	{
-			$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ? $oreon->optGen["nagios_init_script"]   : "/etc/init.d/nagios" );
-			if ($ret["restart_mode"]["restart_mode"] == 1)
-				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
-					$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
-				else 
-					system("echo 'RELOAD:".$tab['id']."' >> /srv/oreon/var/centcore");
-			else if ($ret["restart_mode"]["restart_mode"] == 2)
-				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
-					$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
-				else
-					system("echo 'RESTART:".$tab['id']."' >> /srv/oreon/var/centcore");
-			else if ($ret["restart_mode"]["restart_mode"] == 3)	{
-				require_once("./include/monitoring/external_cmd/functions.php");
-				$_GET["select"] = array(0 => 1);
-				$_GET["cmd"] = 25;
-				require_once("./include/monitoring/external_cmd/cmd.php");
-				$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
+			/*
+			 * Restart Nagios Poller
+			 */
+			print_r($tab);
+			$stdout = "";
+			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
+			if (PEAR::isError($DBRESULT_Servers))
+				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
+			while ($tab =& $DBRESULT_Servers->fetchRow()){
+				$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ? $oreon->optGen["nagios_init_script"]   : "/etc/init.d/nagios" );
+				if ($ret["restart_mode"] == 1){
+					if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
+						$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
+						print "SUDO";
+					} else { 
+						print "ECHO";
+						system("echo 'RELOAD:".$tab['id']."' >> /srv/oreon/var/centcore");
+					}
+				} else if ($ret["restart_mode"] == 2)
+					if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
+						$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
+					else
+						system("echo 'RESTART:".$tab['id']."' >> /srv/oreon/var/centcore");
+				else if ($ret["restart_mode"] == 3)	{
+					require_once("./include/monitoring/external_cmd/functions.php");
+					$_GET["select"] = array(0 => 1);
+					$_GET["cmd"] = 25;
+					require_once("./include/monitoring/external_cmd/cmd.php");
+					$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
+				}
+				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$tab['id']."' LIMIT 1");
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			}
-			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$tab['id']."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 	}
