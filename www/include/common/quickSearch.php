@@ -31,9 +31,9 @@ For information : contact@oreon-project.org
 	
 	
 	if (isset($search) && $search)
-		$attrsText = array("size"=>"25", "id"=>"input_search", "style"=>"border: 0.5px solid gray;background-color:#FF0044;");
+		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input_active");
 	else
-		$attrsText = array("size"=>"25", "id"=>"input_search", "style"=>"border: 0.5px solid gray;");
+		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input");
 	
 	if (!isset($limit))
 		$limit = 20;
