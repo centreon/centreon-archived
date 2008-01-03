@@ -82,7 +82,7 @@ For information : contact@oreon-project.org
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
 	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
+//	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
 	$sid = session_id();
 
 	?>
@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT)) print $DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($topology_js)){
 		if($topology_js['init'] == "initM")	{
-			?>setTimeout('initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o;?>")', <?php echo $tFM; ?>);<?php
+			?>setTimeout('initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o;?>")', 0);<?php
 		} else if ($topology_js['init'])
 			echo $topology_js['init'] ."();";
 	}
