@@ -509,9 +509,8 @@ For information : contact@oreon-project.org
 		$str .= "#                   - Julien Mathis                               #\n";
 		$str .= "#                   - Romain Le Merlus                            #\n";
 		$str .= "#                                                                 #\n";
-		$str .= "#                          www.oreon-project.org                  #\n";
+		$str .= "#                           www.centreon.com                      #\n";
 		$str .= "#                For information : contact@oreon-project.org      #\n";
-		$str .= "###################################################################\n\n";
 		$str .= "###################################################################\n";
 		$str .= "#                                                                 #\n";
 		$str .= "#         Last modification " . $time;
