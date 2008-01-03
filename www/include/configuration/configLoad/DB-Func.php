@@ -1096,8 +1096,6 @@ For information : contact@oreon-project.org
 
 				$useTpl[0] = insertServiceInDB($tmpConf);
 				$useTpl[1] = $use;
-				if ($rrd_service)
-					copyRrdDB($rrd_service, $useTpl[0], $rrd_host);
 				$nbr["sv"] += 1;
 			}
 		} else {
