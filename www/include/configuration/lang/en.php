@@ -76,7 +76,7 @@ $lang['h_parent'] = "Template parent";
 $lang['h_infos'] = "General Informations";
 $lang['h_name'] = "Host Name";
 $lang['h_alias'] = "Alias";
-$lang['h_address'] = "Address";
+$lang['h_address'] = "IP Address or DNS";
 $lang['h_snmpCom'] = "SNMP Community";
 $lang['h_snmpVer'] = "Version";
 $lang['h_template'] = "Host Template";
@@ -217,11 +217,11 @@ $lang['dep_sort2'] = "Host Service Description";
 $lang['htm'] = "Host Template Model";
 $lang['htm_childs'] = "Services Template linked";
 $lang['htm_parent'] = "Template parent";
-$lang['htm_add'] = "Add a Host Template Model";
-$lang['htm_change'] = "Modify a Host Template Model";
-$lang['htm_view'] = "View a Host Template Model";
-$lang['htm_template'] = "Host Model Template";
-$lang['htm_templateText'] = "Use a Template Model allow you to have multi level Template relationship";
+$lang['htm_add'] = "Add a Host Template";
+$lang['htm_change'] = "Modify a Host Template";
+$lang['htm_view'] = "View a Host Template";
+$lang['htm_template'] = "Host Template";
+$lang['htm_templateText'] = "Use a Template allow you to have multi level Template relationship";
 
 /* service */
 
@@ -387,6 +387,7 @@ $lang['cct_view'] = "View an User";
 $lang['cct_infos'] = "General Informations";
 $lang['cct_notif'] = "Notifications Type";
 $lang['cct_name'] = "Full Name";
+$lang['cct_alias'] = "Alias/Login";
 $lang['cct_mail'] = "Email";
 $lang['cct_mailType'] = "Mail Type";
 $lang['cct_pager'] = "Pager";

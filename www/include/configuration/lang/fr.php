@@ -58,11 +58,11 @@ $lang['next'] = "next";
 
 /* host */
 
-$lang['h'] = "Host";
-$lang['h_conf'] = "Host Configuration";
-$lang['h_add'] = "Ajouter un Host";
-$lang['h_change'] = "Modifier un Host";
-$lang['h_view'] = "Afficher un Host";
+$lang['h'] = "H&ocirc;te";
+$lang['h_conf'] = "H&ocirc;te Configuration";
+$lang['h_add'] = "Ajouter un h&ocirc;te";
+$lang['h_change'] = "Modifier un h&ocirc;te";
+$lang['h_view'] = "Afficher un h&ocirc;te";
 
 $lang['h_extInf'] = "Host Extended Infos";
 $lang['h_ExtInf_add'] = "Ajouter une Information Etendue";
@@ -73,24 +73,24 @@ $lang['h_childs'] = "Services li&eacute;s";
 $lang['h_parent'] = "Template parent";
 
 $lang['h_infos'] = "Informations g&eacute;n&eacute;rales";
-$lang['h_name'] = "Nom de l'Host";
+$lang['h_name'] = "Nom de l'h&ocirc;te";
 $lang['h_alias'] = "Alias";
-$lang['h_address'] = "Adresse";
+$lang['h_address'] = "Adresse IP / DNS";
 $lang['h_snmpCom'] = "Communaut&eacute; SNMP";
 $lang['h_snmpVer'] = "Version";
-$lang['h_template'] = "Template de Host";
-$lang['h_templateText'] = "Utiliser un Template vous dispense des &eacute;l&eacute;ments de configuration obligatoires";
-$lang['h_dupSvTplAssocText'] = "Cr&eacute;er les services li&eacute;s au Template";
+$lang['h_template'] = "Mod&egrave;les d'h&ocirc;te";
+$lang['h_templateText'] = "Utiliser un Mod&egrave;le vous dispense des &eacute;l&eacute;ments de configuration obligatoires";
+$lang['h_dupSvTplAssocText'] = "Cr&eacute;er les services li&eacute;s au Mod&egrave;le";
 
 $lang['h_head_links'] = "Relations";
 $lang['h_Links_add'] = "Ajouter des relations";
 $lang['h_Links_change'] = "Modifier les relations";
 $lang['h_Links_view'] = "Voir les relations";
-$lang['h_HostGroupMembers'] = "HostGroups parents";
-$lang['h_HostParents'] = "Hosts parents";
-$lang['h_HostChilds'] = "Hosts enfants";
+$lang['h_HostGroupMembers'] = "Groupe d'h&ocirc;tes parents";
+$lang['h_HostParents'] = "H&ocirc;tes parents";
+$lang['h_HostChilds'] = "H&ocirc;tes enfants";
 
-$lang['h_head_state'] = "Propi&eacute;t&eacute;s des v&eacute;rifications de l'H&ocirc;te";
+$lang['h_head_state'] = "Propri&eacute;t&eacute;s des v&eacute;rifications de l'H&ocirc;te";
 $lang['h_checkCmd'] = "Commande de check";
 $lang['h_checkMca'] = "Nombre maximum d'essais";
 $lang['h_checkInterval'] = "Ordonnancement r&eacute;gulier";
@@ -122,7 +122,7 @@ $lang['h_retainSI'] = "M&eacute;morisation des informations li&eacute;es &agrave
 $lang['h_retainNI'] = "M&eacute;morisation des informations non li&eacute;es &agrave; l'Host";
 
 $lang['h_head_notif'] = "Notification";
-$lang['h_CgMembers'] = "ContactGroups rattach&eacute;s";
+$lang['h_CgMembers'] = "Groupes de Contacts rattach&eacute;s";
 $lang['h_notifInt'] = "Interval de notification";
 $lang['h_notifTp'] = "P&eacute;riode de notification";
 $lang['h_notifOpts'] = "Type de notification";
@@ -145,7 +145,7 @@ $lang['h_NagiosServer'] = "Superviser depuis ";
 /* host group */
 
 $lang['hg'] = "HostGroup";
-$lang['hg_name'] = "Nom du HostGroup";
+$lang['hg_name'] = "Nom du Groupe d'H&ocirc;tes";
 $lang['hg_alias'] = "Alias";
 $lang['hg_add'] = "Ajouter un HostGroup";
 $lang['hg_change'] = "Modifier un HostGroup";
@@ -166,7 +166,7 @@ $lang['esc_add'] = "Ajouter une Escalade";
 $lang['esc_change'] = "Modifier une Escalade";
 $lang['esc_view'] = "Afficher une Escalade";
 $lang['esc_infos'] = "Informations";
-$lang['esc_sort2'] = "Escalade d'Hosts";
+$lang['esc_sort2'] = "Escalade d'H&ocirc;tes";
 $lang['esc_sort3'] = "Escalade de Services";
 $lang['esc_sort4'] = "Escalade de Hostgroups";
 $lang['esc_sort5'] = "Escalade de Meta Services";
@@ -175,12 +175,12 @@ $lang['esc_firstNotif'] = "Premi&egrave;re notification";
 $lang['esc_lastNotif'] = "Derni&egrave;re notification";
 $lang['esc_notifInt'] = "Interval de notification";
 $lang['esc_escPeriod'] = "P&eacute;riode d'escalade";
-$lang['esc_hOpt'] = "Options d'escalade des Hosts";
+$lang['esc_hOpt'] = "Options d'escalade des H&ocirc;tes";
 $lang['esc_sOpt'] = "Options d'escalade des Services";
 $lang['esc_comment'] = "Commentaire";
-$lang['esc_appCG'] = "Contact Groups concern&eacute;s";
-$lang['esc_sortHosts'] = "Hosts concern&eacute;s";
-$lang['esc_sortSv'] = "Services  concern&eacute;es";
+$lang['esc_appCG'] = "Groupes de Contacts concern&eacute;s";
+$lang['esc_sortHosts'] = "H&ocirc;tes concern&eacute;s";
+$lang['esc_sortSv'] = "Services concern&eacute;es";
 $lang['esc_sortHg'] = "HostGroups concern&eacute;s";
 $lang['esc_sortMs'] = "Meta Services concern&eacute;s";
 $lang['esc_sortSg'] = "Servicegroups concern&eacute;s";
@@ -213,14 +213,14 @@ $lang['dep_sort2'] = "Host Service D&eacute;pendance";
 
 /* host template model */
 
-$lang['htm'] = "Host Template Model";
-$lang['htm_childs'] = "Services Template li&eacute;s";
-$lang['htm_parent'] = "Template parent";
-$lang['htm_add'] = "Ajouter un Host Template Model";
-$lang['htm_change'] = "Modifier un Host Template Model";
-$lang['htm_view'] = "Afficher un Host Template Model";
-$lang['htm_template'] = "Template de Host Model";
-$lang['htm_templateText'] = "Utiliser un Template Model vous permet d'avoir plusieurs niveaux de Template";
+$lang['htm'] = "Mod&egrave;les d'h&ocirc;te";
+$lang['htm_childs'] = "Mod&egrave;les li&eacute;s";
+$lang['htm_parent'] = "Mod&egrave;les parents";
+$lang['htm_add'] = "Ajouter un Mod&egrave;le d'h&ocirc;te";
+$lang['htm_change'] = "Modifier un Mod&egrave;le d'h&ocirc;te";
+$lang['htm_view'] = "Afficher un Mod&egrave;le d'h&ocirc;te";
+$lang['htm_template'] = "Mod&egrave;le d'h&ocirc;te";
+$lang['htm_templateText'] = "Utiliser un Mod&egrave;le vous permet d'avoir plusieurs niveaux de Mod&egrave;le";
 
 /* service */
 
@@ -229,15 +229,16 @@ $lang['sv_conf'] = "Service Configuration";
 $lang['sv_add'] = "Ajouter un Service";
 $lang['sv_change'] = "Modifier un Service";
 $lang['sv_view'] = "Afficher un Service";
-$lang['sv_parent'] = "Template parent";
+$lang['sv_parent'] = "Mod&egrave;les parents";
+$lang['sv_retry'] = "Ordonnancement";
 
-$lang['sv_extInf'] = "Service Extended Infos";
+$lang['sv_extInf'] = "Informations &eacute;tendues";
 $lang['sv_ExtInf_add'] = "Ajouter une Information Etendue";
 $lang['sv_ExtInf_change'] = "Modifier une Information Etendue";
 $lang['sv_ExtInf_view'] = "Voir une Information Etendue";
 
 $lang['sv_infos'] = "Informations g&eacute;n&eacute;rales";
-$lang['sv_hPars'] = "Li&eacute; aux Hosts";
+$lang['sv_hPars'] = "Li&eacute; aux H&ocirc;tes";
 $lang['sv_hgPars'] = "Li&eacute; aux HostGroups";
 $lang['sv_description'] = "Description";
 $lang['sv_alias'] = "Alias";
@@ -250,26 +251,26 @@ $lang['sv_head_links'] = "Relations";
 $lang['sv_Links_add'] = "Ajouter des relations";
 $lang['sv_Links_change'] = "Modifier les relations";
 $lang['sv_Links_view'] = "Voir les relations";
-$lang['sv_ServiceGroupMembers'] = "ServiceGroups parents";
+$lang['sv_ServiceGroupMembers'] = "Groupes de Services parents";
 
-$lang['sv_head_state'] = "Status du Service";
-$lang['sv_isVolatile'] = "Service volatil";
-$lang['sv_checkCmd'] = "Commande de check";
+$lang['sv_head_state'] = "Statut du Service";
+$lang['sv_isVolatile'] = "Service volatile";
+$lang['sv_checkCmd'] = "Commande de v&eacute;rification";
 $lang['sv_checkMca'] = "Nombre maximum d'essais";
 $lang['sv_normalCheckInterval'] = "Ordonnancement r&eacute;gulier";
-$lang['sv_retryCheckInterval'] = "Ordonnancement non r&eacute;gulier";
-$lang['sv_checkPeriod'] = "P&eacute;riode de controle";
-$lang['sv_activeCE'] = "Controles actifs";
-$lang['sv_passiveCE'] = "Controles passifs";
+$lang['sv_retryCheckInterval'] = "Ordonnancement non-r&eacute;gulier";
+$lang['sv_checkPeriod'] = "P&eacute;riode de contr&ocirc;le";
+$lang['sv_activeCE'] = "Contr&ocirc;les actifs";
+$lang['sv_passiveCE'] = "Contr&ocirc;les passifs";
 $lang['sv_eventHandlerE'] = "Activation du gestionnaire d'&eacute;v&egrave;nements";
 $lang['sv_eventHandler'] = "Commande associ&eacute;e";
 $lang['sv_args'] = "Arguments";
 
 $lang['sv_head_treat'] = "Traitement des donn&eacute;es";
-$lang['sv_paraCheck'] = "Controle parall&egrave;le";
+$lang['sv_paraCheck'] = "Contr&ocirc;le parall&egrave;le";
 $lang['sv_ObsessOS'] = "Commande post check";
 $lang['sv_checkFreshness'] = "Controle de validit&eacute; des donn&eacute;es";
-$lang['sv_FreshnessThreshold'] = "Seuil de controle de validit&eacute;";
+$lang['sv_FreshnessThreshold'] = "Seuil de contro&circ;le de validit&eacute;";
 $lang['sv_flapDetect'] = "D&eacute;tection des oscillations";
 $lang['sv_lowFT'] = "Seuil de d&eacute;tection bas";
 $lang['sv_highFT'] = "Seuil de d&eacute;tection haut";
@@ -278,7 +279,7 @@ $lang['sv_retainSI'] = "M&eacute;morisation des informations li&eacute;es au Ser
 $lang['sv_retainNI'] = "M&eacute;morisation des informations non li&eacute;es au Service";
 
 $lang['sv_head_notif'] = "Notification";
-$lang['sv_CgMembers'] = "ContactGroups rattach&eacute;s";
+$lang['sv_CgMembers'] = "Groupes de Contacts rattach&eacute;s";
 $lang['sv_notifInt'] = "Interval de notification";
 $lang['sv_notifTp'] = "P&eacute;riode de notification";
 $lang['sv_notifOpts'] = "Type de notification";
@@ -286,7 +287,7 @@ $lang['sv_notifEnabled'] = "Activer la notification";
 $lang['sv_stalOpts'] = "Etats de suivi pr&eacute;cis";
 
 $lang['sv_oreon'] = "Centreon";
-$lang['sv_graphTpl'] = "Graph Mod&egrave;le";
+$lang['sv_graphTpl'] = "Mod&egrave;le du graphique";
 $lang['sv_all'] = "TOUT";
 
 $lang['sv_eventHandlerST'] = "Gestionnaire d'&eacute;v&egrave;nements";
@@ -356,13 +357,13 @@ $lang['esi_icon_image_alt'] = "Ic&ocirc;ne alt";
 
 /* service template model*/
 
-$lang['stm'] = "Service Template Model";
-$lang['stm_parent'] = "Template parent";
-$lang['stm_add'] = "Ajouter un Service Template Model";
-$lang['stm_change'] = "Modifier un Service Template Model";
-$lang['stm_view'] = "Afficher un Service Template Model";
-$lang['stm_template'] = "Template de Service Model";
-$lang['stm_templateText'] = "Utiliser un Template Model vous permet d'avoir plusieurs niveaux de Template";
+$lang['stm'] = "Service Mod&egrave;le";
+$lang['stm_parent'] = "Mod&egrave;le parent";
+$lang['stm_add'] = "Ajouter un Mod&egrave;le de Service";
+$lang['stm_change'] = "Modifier un Mod&egrave;le de Service";
+$lang['stm_view'] = "Afficher un Mod&egrave;le de Service";
+$lang['stm_template'] = "Mod&egrave;le de Service";
+$lang['stm_templateText'] = "Utiliser un Mod&egrave;le vous permet d'avoir plusieurs niveaux de Mod&egrave;le ";
 
 /* service group*/
 
@@ -387,6 +388,7 @@ $lang['cct_infos'] = "Informations g&eacute;n&eacute;rales";
 $lang['cct_notif'] = "Types de notifications";
 $lang['cct_name'] = "Nom complet";
 $lang['cct_mail'] = "Email";
+$lang['cct_alias'] = "Alias / Login";
 $lang['cct_mailType'] = "Format du Mail";
 $lang['cct_pager'] = "Pager";
 $lang['cct_hostNotifOpt'] = "Choix de notifications pour les Hosts";
