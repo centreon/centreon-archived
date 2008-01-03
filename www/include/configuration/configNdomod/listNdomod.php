@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 
 	# nagios servers comes from DB 
 	$nagios_servers = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM cfg_ndomod ORDER BY name");
+	$DBRESULT =& $pearDB->query("SELECT * FROM cfg_ndomod ORDER BY description");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($nagios_server = $DBRESULT->fetchRow())

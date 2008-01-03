@@ -36,7 +36,7 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 	#Path to the configuration dir
-	$path = "./include/configuration/configNdomod/";
+	$path = "./include/configuration/configNdo2db/";
 	
 	#PHP functions
 	require_once $path."DB-Func.php";
