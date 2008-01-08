@@ -20,70 +20,76 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
-	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
-	else
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod");
+	$SearchTool = "";
+	if (isset($search) && $search)
+		$SearchTool = " WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+	
+	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod $SearchTool");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	$advanced_search = 1;
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
-	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
-	# end header menu
-	# Timeperiod list
-	if ($search)
-		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
-	else
-		$rq = "SELECT tp_id, tp_name, tp_alias FROM timeperiod ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT = &$pearDB->query($rq);
+	
+	/*
+	 * Timeperiod list
+	 */
+	$DBRESULT = &$pearDB->query("SELECT tp_id, tp_name, tp_alias FROM timeperiod $SearchTool ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();	for ($i = 0; $DBRESULT->fetchInto($timeperiod); $i++) {
+		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$timeperiod['tp_id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&tp_id=".$timeperiod['tp_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&tp_id=".$timeperiod['tp_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&tp_id=".$timeperiod['tp_id']."&o=d&select[".$timeperiod['tp_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
-		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$timeperiod['tp_id']."]'></input>";
+		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$timeperiod['tp_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$timeperiod["tp_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&tp_id=".$timeperiod['tp_id'],
 						"RowMenu_desc"=>$timeperiod["tp_alias"],
-						"RowMenu_status"=>$lang['enable'],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
+	/*
+	 * Toolbar select $lang["lgd_more_actions"]
+	 */
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
@@ -125,9 +131,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
