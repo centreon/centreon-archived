@@ -15,9 +15,15 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
+	if (!isset($oreon))
+		exit();
+		
 	$pagination = "maxViewConfiguration";
 	
-	# set limit
+	/*
+	 * set limit
+	 */
 	$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -26,36 +32,45 @@ For information : contact@oreon-project.org
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
-	if ($search)
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM cfg_cgi WHERE cgi_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
-	else
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM cfg_cgi");
+
+	$SearchTool = "";
+	if (isset($search) && $search)
+		$SearchTool = "WHERE cgi_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+	
+	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM cfg_cgi $SearchTool");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
+	
 	include("./include/common/checkPagination.php");
 
-	# Smarty template Init
+	/*
+	 *  Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
-	# end header menu
-	#Nagios list
+	
+	/*
+	 * Nagios list
+	 */
 	if ($search)
-		$rq = "SELECT cgi_id, cgi_name, cgi_comment, cgi_activate FROM cfg_cgi WHERE cgi_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY cgi_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT cgi_id, cgi_name, cgi_comment, cgi_activate FROM cfg_cgi $SearchTool ORDER BY cgi_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT cgi_id, cgi_name, cgi_comment, cgi_activate FROM cfg_cgi ORDER BY cgi_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
@@ -63,21 +78,24 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($cgi); $i++) {		
+		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$cgi['cgi_id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&cgi_id=".$cgi['cgi_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&cgi_id=".$cgi['cgi_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&cgi_id=".$cgi['cgi_id']."&o=d&select[".$cgi['cgi_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		if ($cgi["cgi_activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&cgi_id=".$cgi['cgi_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
 			$moptions .= "<a href='oreon.php?p=".$p."&cgi_id=".$cgi['cgi_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
-		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$cgi['cgi_id']."]'></input>";
+		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$cgi['cgi_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$cgi["cgi_name"],
@@ -87,12 +105,15 @@ For information : contact@oreon-project.org
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
+	/*
+	 * Toolbar select $lang["lgd_more_actions"]
+	 */
 	
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
@@ -135,9 +156,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
