@@ -30,26 +30,33 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	$advanced_search = 1;
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_desc", $lang['stm']);
 	$tpl->assign("headerMenu_alias", $lang['sv_alias']);
 	$tpl->assign("headerMenu_parent", $lang['stm_parent']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
-	# end header menu
-	#Service Template Model list
+	
+	/*
+	 * Service Template Model list
+	 */
 	if ($search)
 		$rq = "SELECT sv.service_id, sv.service_description, sv.service_alias, sv.service_activate, sv.service_template_model_stm_id FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sv.service_register = '0' ORDER BY service_description LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -61,27 +68,36 @@ For information : contact@oreon-project.org
 	$search = tidySearchKey($search, $advanced_search);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
+		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=d&select[".$service['service_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		if ($service["service_activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
 			$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
-		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		$moptions .= "&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
-		# If the description of our Service Model is in the Template definition, we have to catch it, whatever the level of it :-)
+		
+		/*
+		 * If the description of our Service Model is in the Template definition, we have to catch it, whatever the level of it :-)
+		 */
 		if (!$service["service_description"])
 			$service["service_description"] = getMyServiceName($service['service_template_model_stm_id']);
-		/* TPL List */
+		
+		/* 
+		 * TPL List 
+		 */
 		$tplArr = array();
-		$tplStr = NULL;
+		$tplStr = "";
 		$tplArr = getMyServiceTemplateModels($service["service_template_model_stm_id"]);
 		if (count($tplArr))
 			foreach($tplArr as $key =>$value){
@@ -111,10 +127,16 @@ For information : contact@oreon-project.org
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
-	# Header title for same name - Ajust pattern lenght with (0, 4) param
+	
+	/*
+	 * Header title for same name - Ajust pattern lenght with (0, 4) param
+	 */
 	$pattern = NULL;
 	for ($i = 0; $i < count($elemArr); $i++)	{
-		# Searching for a pattern wich n+1 elem
+		
+		/*
+		 * Searching for a pattern wich n+1 elem
+		 */
 		if (isset($elemArr[$i+1]["RowMenu_desc"]) && strstr($elemArr[$i+1]["RowMenu_desc"], substr($elemArr[$i]["RowMenu_desc"], 0, 4)) && !$pattern)	{
 			for ($j = 0; isset($elemArr[$i]["RowMenu_desc"][$j]); $j++)
 				if (isset($elemArr[$i+1]["RowMenu_desc"][$j]) && $elemArr[$i+1]["RowMenu_desc"][$j] == $elemArr[$i]["RowMenu_desc"][$j])
@@ -141,12 +163,15 @@ For information : contact@oreon-project.org
 		}
 	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 	
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
+	/*
+	 * Toolbar select $lang["lgd_more_actions"]
+	 */
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
@@ -188,9 +213,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
