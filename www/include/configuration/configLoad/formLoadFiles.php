@@ -133,6 +133,7 @@ For information : contact@oreon-project.org
 		}
 		# Enum Object Types
 		if ($buf)	{
+			
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : File Type ". $ret["Type"]["Type"] ."\n", 3, $debug_path."cfgimport.log");
 
