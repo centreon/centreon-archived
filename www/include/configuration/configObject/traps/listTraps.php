@@ -31,26 +31,32 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
+	
 	include("./include/common/checkPagination.php");
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['m_traps_oid']);
 	$tpl->assign("headerMenu_manufacturer", $lang['m_traps_manufacturer']);
 	$tpl->assign("headerMenu_args", $lang['m_traps_args']);
 	$tpl->assign("headerMenu_options", $lang['options']);
-	# end header menu
-
-	#List of elements - Depends on different criteria
+	
+	/*
+	 * List of elements - Depends on different criteria
+	 */
 	if ($search)
 		$rq = "SELECT * FROM traps WHERE traps_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ".
 									"OR manufacturer_id IN (SELECT id FROM traps_vendor WHERE alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ".
@@ -61,16 +67,20 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
-	#Different style between each lines
+
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($trap); $i++) {
+		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$trap['traps_id']."]");
-		$moptions = "<a href='oreon.php?p=".$p."&traps_id=".$trap['traps_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&traps_id=".$trap['traps_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&traps_id=".$trap['traps_id']."&o=d&select[".$trap['traps_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
-		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+		$moptions .= "&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$trap['traps_id']."]'></input>";
 		$DBRESULT2 =& $pearDB->query("select alias from traps_vendor where id='".$trap['manufacturer_id']."' LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
