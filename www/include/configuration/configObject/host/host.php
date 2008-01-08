@@ -18,12 +18,15 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 	
-	# LCA 
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
+	/*
+	 * Access List
+	 */
+	 
+	$lcaHostByName 	= getLcaHostByName($pearDB);
+	$lcaHostByID 	= getLcaHostByID($pearDB);
+	$lcaHoststr 	= getLCAHostStr($lcaHostByID["LcaHost"]);
 	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
+	$isRestreint 	= HadUserLca($pearDB);
 	
 	isset($_GET["host_id"]) ? $hG = $_GET["host_id"] : $hG = NULL;
 	isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = NULL;
@@ -37,30 +40,36 @@ For information : contact@oreon-project.org
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	global $path;
 	$path = "./include/configuration/configObject/host/";
 	
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{
-		case "a" : require_once($path."formHost.php"); break; #Add a host
-		case "w" : require_once($path."formHost.php"); break; #Watch a host
-		case "c" : require_once($path."formHost.php"); break; #Modify a host
-		case "mc" : require_once($path."formHost.php"); break; # Massive Change
-		case "s" : enableHostInDB($host_id); require_once($path."listHost.php"); break; #Activate a host
-		case "ms" : enableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
-		case "u" : disableHostInDB($host_id); require_once($path."listHost.php"); break; #Desactivate a host
-		case "mu" : disableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
-		case "m" : multipleHostInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHost.php"); break; #Duplicate n hosts
-		case "d" : deleteHostInDB(isset($select) ? $select : array()); require_once($path."listHost.php"); break; #Delete n hosts
-		default : require_once($path."listHost.php"); break;
+		case "a" 	: require_once($path."formHost.php"); break; #Add a host
+		case "w" 	: require_once($path."formHost.php"); break; #Watch a host
+		case "c" 	: require_once($path."formHost.php"); break; #Modify a host
+		case "mc" 	: require_once($path."formHost.php"); break; # Massive Change
+		case "s" 	: enableHostInDB($host_id); require_once($path."listHost.php"); break; #Activate a host
+		case "ms" 	: enableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
+		case "u" 	: disableHostInDB($host_id); require_once($path."listHost.php"); break; #Desactivate a host
+		case "mu" 	: disableHostInDB(NULL, isset($select) ? $select : array()); require_once($path."listHost.php"); break;
+		case "m" 	: multipleHostInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listHost.php"); break; #Duplicate n hosts
+		case "d" 	: deleteHostInDB(isset($select) ? $select : array()); require_once($path."listHost.php"); break; #Delete n hosts
+		default 	: require_once($path."listHost.php"); break;
 	}
 ?>

@@ -15,9 +15,9 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	#
-	## Database retrieve information for Host
-	#
+	/*
+	 * Database retrieve information for Host
+	 */
 
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
@@ -29,48 +29,73 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
-		# Set base value
+		/*
+		 * Set base value
+		 */
 		$host = array_map("myDecode", $DBRESULT->fetchRow());
-		# Set Host Notification Options
+		
+		/*
+		 * Set Host Notification Options
+		 */
 		$tmp = explode(',', $host["host_notification_options"]);
 		foreach ($tmp as $key => $value)
 			$host["host_notifOpts"][trim($value)] = 1;
-		# Set Stalking Options
+		
+		/*
+		 * Set Stalking Options
+		 */
 		$tmp = explode(',', $host["host_stalking_options"]);
 		foreach ($tmp as $key => $value)
 			$host["host_stalOpts"][trim($value)] = 1;
 		$DBRESULT->free();
-		# Set Contact Group
+		
+		/*
+		 * Set Contact Group
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
 		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
-		# Set Host Parents
+		
+		/*
+		 * Set Host Parents
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
 		for($i = 0; $DBRESULT->fetchInto($parent); $i++)
 			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 		$DBRESULT->free();
-		# Set Host Childs
+		
+		/*
+		 * Set Host Childs
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$host_id."'");
 		for($i = 0; $DBRESULT->fetchInto($child); $i++)
 			$host["host_childs"][$i] = $child["host_host_id"];
 		$DBRESULT->free();
-		# Set Host Group Parents
+		
+		/*
+		 * Set Host Group Parents
+		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
 		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
-		# Set Host and Nagios Server Relation
+		
+		/*
+		 * Set Host and Nagios Server Relation
+		 */
 		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM `ns_host_relation` WHERE `host_host_id` = '".$host_id."'");
 		for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++)
 			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
 		$DBRESULT->free();
 		unset($ns);
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Host Templates comes from DB -> Store in $hTpls Array
+
+	/*
+	 * Database retrieve information for differents elements list we need on the page
+	 * Host Templates comes from DB -> Store in $hTpls Array
+	 */
+
 	$hTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
 	while($DBRESULT->fetchInto($hTpl))	{
@@ -79,37 +104,55 @@ For information : contact@oreon-project.org
 		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
 	}
 	$DBRESULT->free();
-	# Timeperiods comes from DB -> Store in $tps Array
+	
+	/*
+	 * Timeperiods comes from DB -> Store in $tps Array
+	 */
 	$tps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
-	# Check commands comes from DB -> Store in $checkCmds Array
+	
+	/*
+	 * Check commands comes from DB -> Store in $checkCmds Array
+	 */
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
-	# Check commands comes from DB -> Store in $checkCmds Array
+	
+	/*
+	 * Check commands comes from DB -> Store in $checkCmds Array
+	 */
 	$checkCmdEvent = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
-	# Contact Groups comes from DB -> Store in $notifCcts Array
+	
+	/*
+	 * Contact Groups comes from DB -> Store in $notifCcts Array
+	 */
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
-	# Contact Nagios Server comes from DB -> Store in $nsServer Array
-	$notifCgs = array();
+	
+	/*
+	 * Contact Nagios Server comes from DB -> Store in $nsServer Array
+	 */
+	$nsServers = array();
 	$DBRESULT =& $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
 	while ($nsServer = $DBRESULT->fetchRow())
 		$nsServers[$nsServer["id"]] = $nsServer["name"];
 	$DBRESULT->free();
-	# Host Groups comes from DB -> Store in $hgs Array
+	
+	/*
+	 * Host Groups comes from DB -> Store in $hgs Array
+	 */
 	$hgs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))		
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
@@ -119,7 +162,10 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
-	# Host Parents comes from DB -> Store in $hostPs Array
+	
+	/*
+	 * Host Parents comes from DB -> Store in $hostPs Array
+	 */
 	$hostPs = array();
 	if ($oreon->user->admin || !HadUserLca($pearDB))
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
@@ -131,13 +177,19 @@ For information : contact@oreon-project.org
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
 	}
 	$DBRESULT->free();
-	# Deletion Policy definition comes from DB -> Store in $ppols Array
+	
+	/*
+	 * Deletion Policy definition comes from DB -> Store in $ppols Array
+	 */
 	$ppols = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();	
-	# IMG comes from DB -> Store in $extImg Array
+	
+	/*
+	 * IMG comes from DB -> Store in $extImg Array
+	 */
 	$extImg = array();
 	$extImg = return_image_list(1);
 	$extImgStatusmap = array();
@@ -265,6 +317,7 @@ For information : contact@oreon-project.org
 			$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', $lang["mc_mod"], '&nbsp;');
 			$form->setDefaults(array('mc_mod_hcg'=>'0'));
 		}
+		print_r($notifCgs);
 	    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', $lang['h_CgMembers'], $notifCgs, $attrsAdvSelect);
 		$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 		$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));

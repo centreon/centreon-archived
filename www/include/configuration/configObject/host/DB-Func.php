@@ -23,14 +23,21 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND register = '1'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$host =& $DBRESULT->fetchRow();
-		#Modif case
+		
+		/*
+		 * Modif case
+		 */
+		 
 		if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id)	
 			return true;
-		#Duplicate entry
+		/*
+		 * Duplicate entry
+		 */
+		
 		else if ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id)
 			return false;
 		else
@@ -42,14 +49,22 @@ For information : contact@oreon-project.org
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('host_id');
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND register = '0'");
+		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '0'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$host =& $DBRESULT->fetchRow();
-		#Modif case
+		
+		/*
+		 * Modif case
+		 */
+		
 		if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id)	
 			return true;
-		#Duplicate entry
+		
+		/*
+		 * Duplicate entry
+		 */
+		
 		else if ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id)
 			return false;
 		else
@@ -234,15 +249,23 @@ For information : contact@oreon-project.org
 		if (!$host_id) return;
 		global $form;		
 		$ret = $form->getSubmitValues();
-		# Global function to use
+	
+		/*
+		 *  Global function to use
+		 */
+		 
 		if ($from_MC)
 			updateHost_MC($host_id);
 		else
 			updateHost($host_id, $from_MC);
-		# Function for updating host parents
-		# 1 - MC with deletion of existing parents
-		# 2 - MC with addition of new parents
-		# 3 - Normal update
+		
+		/*
+		 *  Function for updating host parents
+		 *  1 - MC with deletion of existing parents
+		 *  2 - MC with addition of new parents
+		 *  3 - Normal update
+		 */
+		 
 		if (isset($ret["mc_mod_hpar"]["mc_mod_hpar"]) && $ret["mc_mod_hpar"]["mc_mod_hpar"])
 			updateHostHostParent($host_id);
 		else if (isset($ret["mc_mod_hpar"]["mc_mod_hpar"]) && !$ret["mc_mod_hpar"]["mc_mod_hpar"])
@@ -392,7 +415,11 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$DBRESULT =& $pearDB->query("SELECT MAX(host_id) FROM host");
 		$host_id = $DBRESULT->fetchRow();		
-		# Update LCA
+		
+		/*
+		 *  Update LCA
+		 */
+		
 		$DBRESULT1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 		if (PEAR::isError($DBRESULT1))
 			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
@@ -443,8 +470,7 @@ For information : contact@oreon-project.org
 	
 	function updateHost($host_id = null, $from_MC = false)	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();		
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
@@ -542,8 +568,7 @@ For information : contact@oreon-project.org
 	
 	function updateHost_MC($host_id = null)	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();		
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
@@ -606,8 +631,7 @@ For information : contact@oreon-project.org
 	
 	function updateHostHostParent($host_id = null, $ret = array())	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "DELETE FROM host_hostparent_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
@@ -631,8 +655,7 @@ For information : contact@oreon-project.org
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateHostHostParent_MC($host_id = null, $ret = array())	{
 		if (!$host_id) return;
-		global $form;
-		global $pearDB;
+		global $form, $pearDB;
 		$rq = "SELECT * FROM host_hostparent_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
