@@ -23,7 +23,9 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
@@ -40,15 +42,16 @@ For information : contact@oreon-project.org
 				"calc_type"=>$calcType[$meta["calcul_type"]]));
 	$DBRESULT->free();
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_host", $lang["h"]);
 	$tpl->assign("headerMenu_service", $lang["sv"]);
 	$tpl->assign("headerMenu_metric", $lang["ms_metric"]);
 	$tpl->assign("headerMenu_status", $lang["status"]);
 	$tpl->assign("headerMenu_options", $lang["options"]);
-	# end header menu
-
+	
 	if ($oreon->user->admin || !HadUserLca($pearDB))
 		$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
 	else
@@ -58,15 +61,18 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 	$form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
-	#Different style between each lines
+	
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr1 = array();
 	for ($i = 0; $DBRESULT->fetchInto($metric); $i++) {
+		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=ws'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=cs'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&metric_id=".$metric['metric_id']."&meta_id=".$meta_id."&o=ds&select[".$metric['msr_id']."]=1' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		if ($metric["activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
@@ -86,18 +92,22 @@ For information : contact@oreon-project.org
 	}
 	$tpl->assign("elemArr1", $elemArr1);	
 
-	#Different messages we put in the template
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL1"=>"?p=".$p."&o=as&meta_id=".$meta_id, "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 		
-	#Element we need when we reload the page
+	/*
+	 * Element we need when we reload the page
+	 */
 	$form->addElement('hidden', 'p');
 	$form->addElement('hidden', 'meta_id');
 	$tab = array ("p" => $p, "meta_id"=>$meta_id);
 	$form->setDefaults($tab);
 
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
+	/*
+	 * Toolbar select $lang["lgd_more_actions"]
+	 */
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
@@ -140,9 +150,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#	
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
