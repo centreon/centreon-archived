@@ -20,51 +20,64 @@ For information : contact@oreon-project.org
 
 	include("./include/common/autoNumLimit.php");
 
-	if ($search)
-		$res = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
-	else
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM cfg_resource");
+	/*
+	 * Search engine
+	 */
+	$SearchTool = "";
+	if (isset($search) && $search)
+		$SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+
+	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource".$SearchTool);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_desc", $lang['description']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
-	# end header menu
-	# Timeperiod list
-	if ($search)
-		$rq = "SELECT resource_id, resource_name, resource_line, resource_activate FROM cfg_resource WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
-	else
-		$rq = "SELECT resource_id, resource_name, resource_line, resource_activate FROM cfg_resource ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
+	
+	/*
+	 * resources list
+	 */
+	$rq = "SELECT resource_id, resource_name, resource_line, resource_activate FROM cfg_resource $SearchTool ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
-	$elemArr = array();	for ($i = 0; $DBRESULT->fetchInto($resource); $i++) {
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
+	$elemArr = array();	
+	for ($i = 0; $DBRESULT->fetchInto($resource); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$resource['resource_id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&resource_id=".$resource['resource_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&resource_id=".$resource['resource_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&resource_id=".$resource['resource_id']."&o=d&select[".$resource['resource_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
+		$moptions = "";
 		if ($resource["resource_activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&resource_id=".$resource['resource_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
@@ -77,14 +90,17 @@ For information : contact@oreon-project.org
 						"RowMenu_desc"=>substr($resource["resource_line"], 0, 40),
 						"RowMenu_status"=>$resource["resource_activate"] ? $lang['enable'] :  $lang['disable'],
 						"RowMenu_options"=>$moptions);
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
+	/*
+	 * Toolbar select $lang["lgd_more_actions"]
+	 */
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
@@ -126,9 +142,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
