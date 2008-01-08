@@ -1,5 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
 <form name='form' method='POST'>
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">
@@ -8,7 +7,6 @@
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
-
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -21,7 +19,6 @@
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_type}</td>
-			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{assign var=pattern_mode value=0}
@@ -46,7 +43,6 @@
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
-				<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 				<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>
 			</tr>
 		{/section}

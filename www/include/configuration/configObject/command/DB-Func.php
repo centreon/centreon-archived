@@ -20,8 +20,7 @@ For information : contact@oreon-project.org
 		exit ();
 
 	function testCmdExistence ($name = NULL)	{
-		global $pearDB;
-		global $form;
+		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('command_id');

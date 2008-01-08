@@ -27,11 +27,11 @@ For information : contact@oreon-project.org
 	isset($_GET["type"]) ? $typeG = $_GET["type"] : $typeG = NULL;
 	isset($_POST["type"]) ? $typeP = $_POST["type"] : $typeP = NULL;
 	$typeG ? $type = $typeG : $type = $typeP;
-	isset($_POST["command_type"]) ? $type = $_POST["command_type"]["command_type"] : null;
-	if ($type == "C")
+	
+	if (!isset($type) || !$type)
 		$type = 2;
-	else if ($type == "N")
-		$type = 1;
+	
+	isset($_POST["command_type"]) ? $type = $_POST["command_type"]["command_type"] : null;
 
 	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
@@ -41,29 +41,35 @@ For information : contact@oreon-project.org
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configObject/command/";
 
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
 	if ($min)
 		switch ($o)	{
-			case "h" : require_once($path."minHelpCommand.php"); break; #Show Help Command	# Wistof
-			default : require_once($path."minCommand.php"); break;
+			case "h" 	: require_once($path."minHelpCommand.php"); break; #Show Help Command	# Wistof
+			default 	: require_once($path."minCommand.php"); break;
 		}
 	else
 		switch ($o)	{
-			case "a" : require_once($path."formCommand.php"); break; #Add a Command
-			case "w" : require_once($path."formCommand.php"); break; #Watch a Command
-			case "c" : require_once($path."formCommand.php"); break; #Modify a Command
-			case "m" : multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listCommand.php"); break; #Duplicate n Commands
-			case "d" : deleteCommandInDB(isset($select) ? $select : array()); require_once($path."listCommand.php"); break; #Delete n Commands
-			default : require_once($path."listCommand.php"); break;
+			case "a" 	: require_once($path."formCommand.php"); break; #Add a Command
+			case "w" 	: require_once($path."formCommand.php"); break; #Watch a Command
+			case "c" 	: require_once($path."formCommand.php"); break; #Modify a Command
+			case "m" 	: multipleCommandInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listCommand.php"); break; #Duplicate n Commands
+			case "d" 	: deleteCommandInDB(isset($select) ? $select : array()); require_once($path."listCommand.php"); break; #Delete n Commands
+			default 	: require_once($path."listCommand.php"); break;
 		}
 ?>
