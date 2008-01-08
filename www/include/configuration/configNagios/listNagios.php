@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 	include("./include/common/autoNumLimit.php");
 	
 	$SearchTool = "";
-	if (isset($search))
+	if (isset($search) && $search)
 		$SearchTool = "WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool");
 	if (PEAR::isError($DBRESULT))
