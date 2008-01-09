@@ -40,6 +40,7 @@ For information : contact@oreon-project.org
     $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
 
 	$form->addElement('header', 'opt', $lang["gen_opt"]);
+	/*
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, $lang["yes"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, $lang["no"], '0');
@@ -51,6 +52,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, $lang["gen_level3"], '3');
 	$form->addGroup($tab, 'level', $lang["gen_level"], '<br>');
 	$form->setDefaults(array('level' => '1'));
+	*/
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["yes"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["no"], '0');
@@ -61,12 +63,14 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, $lang["no"], '0');
 	$form->addGroup($tab, 'xml', $lang["gen_xml"], '&nbsp;');
 	$form->setDefaults(array('xml' => '0'));
+	/*
 	$form->addElement('header', 'traps', $lang['gen_trapd']);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["yes"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["no"], '0');
 	$form->addGroup($tab, 'genTraps', $lang['gen_genTrap'], '&nbsp;');
 	$form->setDefaults(array('genTraps' => '0'));
+	*/
 	$form->addElement('header', 'result', $lang["gen_result"]);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["yes"], '1');
@@ -91,23 +95,14 @@ For information : contact@oreon-project.org
 	
 	$tab_restart_mod = array(2 => $lang["gen_restart_start"], 1 => $lang["gen_restart_load"], 3 => $lang["gen_restart_extcmd"]);
 	$form->addElement('select', 'restart_mode', $lang["gen_restart"], $tab_restart_mod, $attrSelect);
-	$form->setDefaults(array('restart_mode' => '2'));
-	/* $tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_load"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_start"], '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_extcmd"], '3');
-	$form->addGroup($tab, 'restart_mode', $lang["gen_restart"], '&nbsp;');
-	*/
-	
+	$form->setDefaults(array('restart_mode' => '2'));	
 
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	##End of form definition
-	#
-
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
@@ -117,9 +112,6 @@ For information : contact@oreon-project.org
 	if ($form->validate())	{
 		
 		$ret = $form->getSubmitValues();
-		
-		print "HOST : ".$ret["host"]."\n";
-		
 		if ($ret["generate"]["generate"])	{
 			$gbArr = manageDependencies();
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
@@ -281,7 +273,9 @@ For information : contact@oreon-project.org
 	if ($msg)
 		$tpl->assign('msg', $msg);
 
-	# Apply a template definition
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
