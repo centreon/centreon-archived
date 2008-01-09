@@ -37,12 +37,8 @@ For information : contact@oreon-project.org
 		$BP = false;
 		$generated = 0;
 		$strDef = "";
-		if ($ret["level"]["level"] == 1)
-			array_key_exists($serviceGroup["sg_id"], $gbArr[5]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 2)
-			array_key_exists($serviceGroup["sg_id"], $gbArr[5]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 3)
-			$BP = true;
+		array_key_exists($serviceGroup["sg_id"], $gbArr[5]) ? $BP = true : NULL;
+		
 		if ($BP)	{
 			$ret["comment"]["comment"] ? ($strDef .= "# '" . $serviceGroup["sg_name"] . "' servicegroup definition " . $i . "\n") : NULL;
 			if ($ret["comment"]["comment"] && $serviceGroup["sg_comment"])	{
@@ -68,21 +64,13 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($service)){
-				if ($ret["level"]["level"] == 1)
-					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 2)
-					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"]	 == 3)
-					$BP = true;
+				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
+				
 				if ($BP)	{				
 					if ($service["host_id"])	{
 						$BP = false;
-						if ($ret["level"]["level"] == 1)
-							isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"] == 2)
-							isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"]	 == 3)
-							$BP = true;
+						isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
+						
 						if ($BP && isHostOnThisInstance($service["host_id"], $tab['id'])){
 							$strTemp != NULL ? $strTemp .= ", ".$service["host_name"].", ".$service["service_description"] : $strTemp = $service["host_name"].", ".$service["service_description"];
 							$generated++;
@@ -102,33 +90,21 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT2))
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($service)){
-				if ($ret["level"]["level"] == 1)
-					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 2)
-					isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"]	 == 3)
-					$BP = true;
+				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
+				
 				if ($BP)	{				
 					if ($service["hg_id"])	{
 						$BP = false;
-						if ($ret["level"]["level"] == 1)
-							isset($gbArr[3][$service["hg_id"]]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"] == 2)
-							isset($gbArr[3][$service["hg_id"]]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"]	 == 3)
-							$BP = true;
+						isset($gbArr[3][$service["hg_id"]]) ? $BP = true : NULL;
+						
 						if ($BP){
 							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
 							if (PEAR::isError($DBRESULT3)) 
 								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 							while($DBRESULT3->fetchInto($host))	{
 								$BP = false;
-								if ($ret["level"]["level"] == 1)
-									isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
-								else if ($ret["level"]["level"] == 2)
-									isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
-								else if ($ret["level"]["level"]	 == 3)
-									$BP = true;
+								isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;
+								
 								if ($BP && isHostOnThisInstance($host["host_host_id"],$tab['id'])){
 									$strTemp != NULL ? $strTemp .= ", ".getMyHostName($host["host_host_id"]).", ".$service["service_description"] : $strTemp = getMyHostName($host["host_host_id"]).", ".$service["service_description"];
 									$generated++;

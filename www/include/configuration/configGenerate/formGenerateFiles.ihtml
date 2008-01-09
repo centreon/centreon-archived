@@ -1,5 +1,6 @@
 {$form.javascript}
 <form {$form.attributes}>
+	 <input type="hidden" name="level" value="1"> 
 	 <table id="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 

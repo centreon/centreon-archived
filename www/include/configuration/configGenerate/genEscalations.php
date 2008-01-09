@@ -41,12 +41,8 @@ For information : contact@oreon-project.org
 		$strTemp = NULL;
 		while ($DBRESULT2->fetchInto($host))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
+			
 			if ($BP && isHostOnThisInstance($host["host_id"], $tab['id'])){
 				$linkedToHost++;	
 				$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
@@ -72,12 +68,8 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($cg))	{
 				$BP = false;				
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
+				
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
 			}
@@ -122,12 +114,8 @@ For information : contact@oreon-project.org
 		$strTemp = NULL;
 		while ($DBRESULT2->fetchInto($hg))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : NULL;
+			
 			if ($BP && $generatedHG[$hg["hg_name"]])	
 				$strTemp != NULL ? $strTemp .= ", ".$hg["hg_name"] : $strTemp = $hg["hg_name"];
 		}
@@ -150,12 +138,8 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($cg))	{
 				$BP = false;				
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
+				
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
 			}
@@ -197,12 +181,8 @@ For information : contact@oreon-project.org
 		$strTemp = NULL;
 		while ($DBRESULT2->fetchInto($sg))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : NULL;
+			
 			if ($BP)	
 				$strTemp != NULL ? $strTemp .= ", ".$sg["sg_name"] : $strTemp = $sg["sg_name"];
 		}
@@ -224,12 +204,8 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($cg))	{
 				$BP = false;				
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
+				
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
 			}
@@ -260,12 +236,8 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($service))	{
 		$BP = false;
 		$generated = 0;
-		if ($ret["level"]["level"] == 1)
-			array_key_exists($service["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 2)
-			array_key_exists($service["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 3)
-			$BP = true;
+		array_key_exists($service["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
+		
 		if ($BP)	{
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM escalation esc, escalation_service_relation esr WHERE esr.service_service_id = '".$service["service_service_id"]."' AND esc.esc_id = esr.escalation_esc_id ORDER BY esc.esc_name");
 			if (PEAR::isError($DBRESULT2))
@@ -275,12 +247,8 @@ For information : contact@oreon-project.org
 				$host = array();
 				$BP = false;
 				$strDef = "";
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($escalation["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+				
 				$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
 				$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 				if ($BP)	{
@@ -304,12 +272,8 @@ For information : contact@oreon-project.org
 						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 					while($DBRESULT3->fetchInto($cg))	{
 						$BP = false;				
-						if ($ret["level"]["level"] == 1)
-							array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-						else if ($ret["level"]["level"] == 2)
-							array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
-						else if ($ret["level"]["level"] == 3)
-							$BP = true;
+						array_key_exists($cg["cg_id"], $gbArr[1]) ? $BP = true : $BP = false;
+						
 						if ($BP)
 							$strTemp != NULL ? $strTemp .= ", ".$cg["cg_name"] : $strTemp = $cg["cg_name"];
 					}

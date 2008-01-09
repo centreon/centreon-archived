@@ -45,12 +45,7 @@ For information : contact@oreon-project.org
 		$strTemp1 = "";
 		while ($DBRESULT2->fetchInto($host))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
 			if ($BP)	
 				$strTemp1 != "" ? $strTemp1 .= ", ".$host["host_name"] : $strTemp1 = $host["host_name"];
 		}
@@ -61,12 +56,7 @@ For information : contact@oreon-project.org
 		$strTemp2 = "";
 		while ($DBRESULT2->fetchInto($host))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : "";
 			if ($BP)	
 				$strTemp2 != "" ? $strTemp2 .= ", ".$host["host_name"] : $strTemp2 = $host["host_name"];
 		}
@@ -115,12 +105,8 @@ For information : contact@oreon-project.org
 		$strTemp1 = "";
 		while ($DBRESULT2->fetchInto($hg))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
+			
 			if ($BP && $generatedHG[$hg["hg_id"]]){
 				$generated++;
 				$strTemp1 != "" ? $strTemp1 .= ", ".$hg["hg_name"] : $strTemp1 = $hg["hg_name"];
@@ -134,12 +120,8 @@ For information : contact@oreon-project.org
 		$strTemp2 = "";
 		while ($DBRESULT2->fetchInto($hg))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($hg["hg_id"], $gbArr[3]) ? $BP = true : "";
+			
 			if ($BP && $generatedHG[$hg["hg_id"]])	{
 				$strTemp2 != "" ? $strTemp2 .= ", ".$hg["hg_name"] : $strTemp2 = $hg["hg_name"];
 				$generated2++;
@@ -181,20 +163,12 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($svPar))	{
 		$BP = false;
-		if ($ret["level"]["level"] == 1)
-			array_key_exists($svPar["service_service_id"], $gbArr[4]) ? $BP = true : "";
-		else if ($ret["level"]["level"] == 2)
-			array_key_exists($svPar["service_service_id"], $gbArr[4]) ? $BP = true : "";
-		else if ($ret["level"]["level"] == 3)
-			$BP = true;
+		array_key_exists($svPar["service_service_id"], $gbArr[4]) ? $BP = true : "";
+		
 		if ($BP)	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($svPar["host_host_id"], $gbArr[2]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($svPar["host_host_id"], $gbArr[2]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($svPar["host_host_id"], $gbArr[2]) ? $BP = true : "";
+			
 			if ($BP && isHostOnThisInstance($svPar["host_host_id"], $tab['id'])){						
 				$hPar = getMyHostName($svPar["host_host_id"]);
 			}
@@ -204,20 +178,12 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while ($DBRESULT2->fetchInto($svCh))	{
 				$BP = false;
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($svCh["service_service_id"], $gbArr[4]) ? $BP = true : "";
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($svCh["service_service_id"], $gbArr[4]) ? $BP = true : "";
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($svCh["service_service_id"], $gbArr[4]) ? $BP = true : "";
+				
 				if ($BP)	{
 					$BP = false;
-					if ($ret["level"]["level"] == 1)
-						array_key_exists($svCh["host_host_id"], $gbArr[2]) ? $BP = true : "";
-					else if ($ret["level"]["level"] == 2)
-						array_key_exists($svCh["host_host_id"], $gbArr[2]) ? $BP = true : "";
-					else if ($ret["level"]["level"] == 3)
-						$BP = true;
+					array_key_exists($svCh["host_host_id"], $gbArr[2]) ? $BP = true : "";
+					
 					if ($BP && isHostOnThisInstance($svCh["host_host_id"], $tab['id']))	{					
 						$hCh = getMyHostName($svCh["host_host_id"]);
 					}
@@ -268,12 +234,8 @@ For information : contact@oreon-project.org
 		$strTemp1 = "";
 		while ($DBRESULT2->fetchInto($sg))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
+			
 			if ($BP)	
 				$strTemp1 != "" ? $strTemp1 .= ", ".$sg["sg_name"] : $strTemp1 = $sg["sg_name"];
 		}
@@ -285,12 +247,7 @@ For information : contact@oreon-project.org
 		$strTemp2 = "";
 		while ($DBRESULT2->fetchInto($sg))	{
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($sg["sg_id"], $gbArr[5]) ? $BP = true : "";
 			if ($BP)	
 				$strTemp2 != "" ? $strTemp2 .= ", ".$sg["sg_name"] : $strTemp2 = $sg["sg_name"];
 		}

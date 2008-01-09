@@ -32,12 +32,7 @@ For information : contact@oreon-project.org
 	$str = NULL;
 	while($DBRESULT->fetchInto($contactGroup))	{
 		$BP = false;
-		if ($ret["level"]["level"] == 1)
-			array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 2)
-			array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 3)
-			$BP = true;
+		array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
 		if ($BP)	{
 			$ret["comment"]["comment"] ? ($str .= "# '" . $contactGroup["cg_name"] . "' contactgroup definition " . $i . "\n") : NULL ;
 			if ($ret["comment"]["comment"] && $contactGroup["cg_comment"])	{
@@ -56,12 +51,7 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($contact))	{
 				$BP = false;				
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : $BP = false;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : $BP = false;
 				if ($BP)
 					$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
 			}

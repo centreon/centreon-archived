@@ -33,12 +33,8 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($host))	{
 		if (isHostOnThisInstance($host["host_id"], $tab['id']) || $host["host_register"] == 0) {
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
+			
 			if (!$host["host_register"])
 				$BP = true;
 			if ($BP)	{
@@ -100,12 +96,8 @@ For information : contact@oreon-project.org
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($hostGroup))	{
 						$BP = false;
-						if ($ret["level"]["level"] == 1)
-							array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"] == 2)
-							array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"] == 3)
-							$BP = true;
+						array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
+						
 						if ($BP)
 							$strTemp != NULL ? $strTemp .= ", ".$hostGroup["hg_name"] : $strTemp = $hostGroup["hg_name"];
 					}
@@ -184,12 +176,8 @@ For information : contact@oreon-project.org
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 					while($DBRESULT2->fetchInto($contactGroup))	{				
 						$BP = false;
-						if ($ret["level"]["level"] == 1)
-							array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"] == 2)
-							array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-						else if ($ret["level"]["level"] == 3)
-							$BP = true;
+						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
+				
 						if ($BP)
 							$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 					}

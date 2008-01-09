@@ -45,12 +45,8 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($ehi))	{
 		if (isHostOnThisInstance(getMyHostID($ehi["host_name"]), $tab['id'])) {
 			$BP = false;
-			if ($ret["level"]["level"] == 1)
-				array_key_exists($ehi["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 2)
-				array_key_exists($ehi["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
-			else if ($ret["level"]["level"] == 3)
-				$BP = true;
+			array_key_exists($ehi["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+			
 			if ($BP)	{
 				$ret["comment"]["comment"] ? ($str .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
 				$str .= "define hostextinfo{\n";
@@ -94,22 +90,14 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($esi))	{
 		$BP = false;
-		if ($ret["level"]["level"] == 1)
-			array_key_exists($esi["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 2)
-			array_key_exists($esi["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 3)
-			$BP = true;
+		array_key_exists($esi["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
+		
 		if ($BP)	{
 			$hosts = getMyServiceHosts($esi["service_service_id"]);
 			foreach ($hosts as $key=>$value)	{
 				$BP = false;
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;
+				
 				if ($BP && isAHostTpl($value))	{
 					$host_name = getMyHostName($value);
 					if (isHostOnThisInstance(getMyHostID($host_name), $tab['id'])) {
@@ -135,12 +123,8 @@ For information : contact@oreon-project.org
 			$hgs = getMyServiceHostGroups($esi["service_service_id"]);
 			foreach ($hgs as $key=>$value)	{
 				$BP = false;
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($value, $gbArr[3]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($value, $gbArr[3]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($value, $gbArr[3]) ? $BP = true : NULL;
+				
 				if ($BP)	{
 					$hostgroup_name = getMyHostGroupName($value);
 					$service_description = getMyServiceName($esi["service_service_id"]);

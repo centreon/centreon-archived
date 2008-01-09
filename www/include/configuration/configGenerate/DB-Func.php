@@ -41,16 +41,17 @@ For information : contact@oreon-project.org
 	function manageDependencies($ret = array())	{
 		global $pearDB, $form;
 		$gbArr = array();
-		if (!count($ret))
+		/*if (!count($ret))
 			$ret = $form->getSubmitValues();
 		if ($ret["level"]["level"] == 1)
-			$gbArr = checkDependenciesStrong();
-		else if ($ret["level"]["level"] == 2)
+		*/	
+		$gbArr = checkDependenciesStrong();
+		/*else if ($ret["level"]["level"] == 2)
 			$gbArr = checkDependenciesLite();
 		else if (($ret["level"]["level"] == 3) && $ret["xml"]["xml"])
 			$gbArr = checkNoDependencies();
 		else
-			$gbArr = NULL;
+			$gbArr = NULL;*/
 		return ($gbArr);
 	}
 	
@@ -579,12 +580,12 @@ For information : contact@oreon-project.org
 	
 	function verifyIfMustBeGenerated($id, $gbArr, $ret){
 		$BP = false;
-		if ($ret["level"]["level"] == 1)
+		//if ($ret["level"]["level"] == 1)
 			array_key_exists($id, $gbArr) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 2)
+		/*else if ($ret["level"]["level"] == 2)
 			array_key_exists($id, $gbArr) ? $BP = true : NULL;
 		else if ($ret["level"]["level"] == 3)
-			$BP = true;	
+			$BP = true;	*/
 		return $BP;
 	}
 	

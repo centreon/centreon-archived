@@ -39,12 +39,8 @@ For information : contact@oreon-project.org
 		$BP = false;
 		$strDef = NULL;
 		$HGLinkedToHost = 0;
-		if ($ret["level"]["level"] == 1)
-			array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 2)
-			array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
-		else if ($ret["level"]["level"] == 3)
-			$BP = true;
+		array_key_exists($hostGroup["hg_id"], $gbArr[3]) ? $BP = true : NULL;
+		
 		if ($BP)	{
 			
 			/*
@@ -73,12 +69,8 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 			while($DBRESULT2->fetchInto($host))	{
 				$BP = false;
-				if ($ret["level"]["level"] == 1)
-					array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 2)
-					array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
-				else if ($ret["level"]["level"] == 3)
-					$BP = true;
+				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
+				
 				if ($BP && isHostOnThisInstance($host["host_id"], $tab['id'])){
 					$HGLinkedToHost++;
 					$strTemp != NULL ? $strTemp .= ", ".$host["host_name"] : $strTemp = $host["host_name"];
@@ -101,12 +93,8 @@ For information : contact@oreon-project.org
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				while($DBRESULT2->fetchInto($contactGroup))	{
 					$BP = false;
-					if ($ret["level"]["level"] == 1)
-						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 2)
-						array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
-					else if ($ret["level"]["level"] == 3)
-						$BP = true;
+					array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
+					
 					if ($BP)
 						$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 				}
