@@ -152,13 +152,11 @@ $lang['m_sessions'] = "Sessions";
 
 $lang['m_host'] = "Hosts";
 $lang['m_hostgroup'] = "Host Groups";
-$lang['m_host_extended_info'] = "Host Extended Infos";
 
 $lang['m_service'] = "Services";
 $lang['m_serviceByHost'] = "Services By Host";
 $lang['m_serviceByHostGroup'] = "Services By Host Group";
-$lang['m_servicegroup'] = "Service Groups";
-$lang['m_service_extended_info'] = "Service Extended Infos";
+$lang['m_servicegroup'] = "Groups";
 $lang['m_meta_service'] = "Meta Services";
 $lang['m_mnftr'] = "Standards or Vendor";
 $lang['m_mibs'] = "Load MIBs";
@@ -191,14 +189,15 @@ $lang['m_resource'] = "Resource CFG";
 $lang['m_perfparse'] = "Perfparse CFG";
 $lang['m_load_nagios'] = "Load";
 $lang['m_gen_nagios'] = "Generate";
+$lang['m_optimize'] = "Optimize";
 
 $lang['m_centreon'] = "Centreon";
 $lang['m_ndo2dbCFG'] = "Ndo2db CFG";
 $lang['m_ndomodCFG'] = "Ndomod CFG";
 
-$lang['m_commandNotif'] = "Notification Commands";
-$lang['m_commandCheck'] = "Check Commands";
-$lang['m_commandMisc'] = "Various Commands";
+$lang['m_commandNotif'] = "Notification";
+$lang['m_commandCheck'] = "Check";
+$lang['m_commandMisc'] = "Various";
 $lang['m_commands'] = "Commands";
 
 /* ID Menu */

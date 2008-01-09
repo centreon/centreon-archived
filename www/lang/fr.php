@@ -17,9 +17,9 @@ For information : contact@oreon-project.org
 */
 
 /*
-Ce fichier contient le contenu texte utilis&eacute; pour l'outil Oreon. Les tables de hash permettent facilement de cr&eacuteer un programme multi-langage.
-Les variables pr&eacute;sentes sont parlantes. Il ne devrait pas exister de difficult&eacute;s pour savoir &agrave; quoi elles correspondent.
-*/
+ * Ce fichier contient le contenu texte utilis&eacute; pour l'outil Oreon. Les tables de hash permettent facilement de cr&eacuteer un programme multi-langage.
+ * Les variables pr&eacute;sentes sont parlantes. Il ne devrait pas exister de difficult&eacute;s pour savoir &agrave; quoi elles correspondent.
+ */
 
 /* Error Code */
 
@@ -60,8 +60,8 @@ $lang['m_connected_users'] = "Connect&eacute;s";
 
 # Monitoring menu
 
-$lang['m_host_detail'] = "Hosts D&eacute;tails";
-$lang['m_hosts_problems'] = "Hosts Probl&egrave;mes";
+$lang['m_host_detail'] = "H&ocirc;tes D&eacute;tails";
+$lang['m_hosts_problems'] = "H&ocirc;tes Probl&egrave;mes";
 $lang['m_hostgroup_detail'] = "HostGroups D&eacute;tails";
 
 $lang['m_service_detail'] = "Services D&eacute;tails";
@@ -102,7 +102,7 @@ $lang['m_rtMailList'] = "Liste de diffusion";
 $lang['m_rtMail'] = "Base Mail";
 
 $lang['m_message'] = "Message";
-$lang['m_status_map'] = "Carte de Statuts des Hosts";
+$lang['m_status_map'] = "Carte de Statuts des H&ocirc;tes";
 $lang['m_cartography'] = "Cartographie";
 
 $lang['m_dashboard'] = "Dashboard";
@@ -150,15 +150,13 @@ $lang['m_sessions'] = "Sessions";
 
 # Configuration menu
 
-$lang['m_host'] = "Hosts";
-$lang['m_hostgroup'] = "Host Groups";
-$lang['m_host_extended_info'] = "Host Informations Etendues";
+$lang['m_host'] = "H&ocirc;tes";
+$lang['m_hostgroup'] = "Groupes";
 
 $lang['m_service'] = "Services";
 $lang['m_serviceByHost'] = "Services par Host";
 $lang['m_serviceByHostGroup'] = "Services par Host Group";
-$lang['m_servicegroup'] = "Service Groups";
-$lang['m_service_extended_info'] = "Service Informations Etendues";
+$lang['m_servicegroup'] = "Groupes";
 $lang['m_meta_service'] = "Meta Services";
 $lang['m_mnftr'] = "Constructeur";
 $lang['m_mibs'] = "Charger MIBs";
@@ -191,10 +189,11 @@ $lang['m_resource'] = "Resource CFG";
 $lang['m_perfparse'] = "Perfparse CFG";
 $lang['m_load_nagios'] = "Importer";
 $lang['m_gen_nagios'] = "Exporter";
+$lang['m_optimize'] = "Optimiser";
 
-$lang['m_commandNotif'] = "Commandes de Notification";
-$lang['m_commandCheck'] = "Commandes de V&eacute;rifications";
-$lang['m_commandMisc'] = "Commandes Diverses";
+$lang['m_commandNotif'] = "Notification";
+$lang['m_commandCheck'] = "V&eacute;rifications";
+$lang['m_commandMisc'] = "Diverses";
 $lang['m_commands'] = "Commandes";
 
 $lang['m_centreon'] = "Centreon";
@@ -241,7 +240,7 @@ $lang['mon_scheduling'] = "Ordre d'ordonnancement";
 $lang['mon_actions'] = "Actions";
 $lang['mon_active'] = "ACTIF";
 $lang['mon_inactive'] = "INACTIF";
-$lang['mon_request_submit_host'] = "Votre demande a bien &eacute;t&eacute; trait&eacute;e. <br><br>Vous allez &ecirc;tre redirig&eacute; vers la page des Hosts.";
+$lang['mon_request_submit_host'] = "Votre demande a bien &eacute;t&eacute; trait&eacute;e. <br><br>Vous allez &ecirc;tre redirig&eacute; vers la page des H&ocirc;tes.";
 $lang['Details'] = "D&eacute;tails";
 $lang['mon_checkOutput'] = "check output";
 $lang['mon_dataPerform'] = "data perform";
@@ -254,10 +253,10 @@ $lang['mon_sg_commands'] = "Commandes pour le Service Group";
 $lang['mon_s_commands'] = "Commandes pour le Service";
 $lang['mon_no_stat_for_host'] = "Pas de stat pour cet Host.<br><br>Pensez &agrave; g&eacute;n&eacute;rer les fichiers de configuration.";
 $lang['mon_no_stat_for_service'] = "Aucune stat pour ce service.<br><br> Pensez a gnrer les fichiers de configuration.";
-$lang['mon_hg_cmd1'] = "Programmer un arr&ecirc;t pour tous les Hosts de ce Host Group";
+$lang['mon_hg_cmd1'] = "Programmer un arr&ecirc;t pour tous les H&ocirc;tes de ce Host Group";
 $lang['mon_hg_cmd2'] = "Programmer un arr&ecirc;t pour tous les Services de cet Host Group";
-$lang['mon_hg_cmd3'] = "Activer les notifications pour tous les Hosts de cet Host Group";
-$lang['mon_hg_cmd4'] = "D&eacute;sactiver les notifications pour tous les Hosts de cet Host Group";
+$lang['mon_hg_cmd3'] = "Activer les notifications pour tous les H&ocirc;tes de cet Host Group";
+$lang['mon_hg_cmd4'] = "D&eacute;sactiver les notifications pour tous les H&ocirc;tes de cet Host Group";
 $lang['mon_hg_cmd5'] = "Activer les notifications pour tous les Services de cet Host Group";
 $lang['mon_hg_cmd6'] = "D&eacute;sactiver les notifications pour tous les Services de cet Host Group";
 $lang['mon_hg_cmd7'] = "Activer les checks pour tous les Services de cet Host Group";
@@ -323,7 +322,7 @@ $lang['mon_service_sch_check'] = "Programmer un check imm&eacute;diat pour ce se
 /* comments */
 
 $lang['cmt_service_comment'] = "Commentaires de Services";
-$lang['cmt_host_comment'] = "Commentaires d&#146;Hosts";
+$lang['cmt_host_comment'] = "Commentaires d&#146;H&ocirc;tes";
 $lang['cmt_addH'] = "Ajouter une commentaired'Host";
 $lang['cmt_addS'] = "Ajouter un commentaire de Service";
 $lang['cmt_added'] = "Commentaire ajout&eacute; avec succ&egrave;s .<br><br> Cliquez <a href='./oreon.php?p=307' class='text11b'>ici</a> pour retourner a la page des commentaires ";
@@ -348,7 +347,7 @@ $lang['dtm_start_time'] = "Date de d&eacute;but";
 $lang['dtm_end_time'] = "Date de fin";
 $lang['dtm_fixed'] = "Fix&eacute;";
 $lang['dtm_duration'] = "Dur&eacute;e";
-$lang['dtm_sch_dt_fht'] = "Programmer un arr&ecirc;t pour les Hosts &eacute;galement";
+$lang['dtm_sch_dt_fht'] = "Programmer un arr&ecirc;t pour les H&ocirc;tes &eacute;galement";
 $lang['dtm_host_downtimes'] = "Arr&ecirc;ts de l&#146;Host";
 $lang['dtm_service_downtimes'] = "Arr&ecirc;ts du Service";
 $lang['dtm_dt_no_file'] = "Fichier d&#146;arr&ecirc;t introuvable";
