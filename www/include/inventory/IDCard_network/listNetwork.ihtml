@@ -1,12 +1,13 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+
 <form name='form' method='POST'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="n" type="hidden">
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">
 			<td class="Toolbar_TDSelectAction_Bottom">
-			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
-			<input type="image" name="o" value="d" src="./img/icones/16x16/refresh.gif">
+			{$form.select_manufacturer.label}&nbsp;{$form.o1.html}&nbsp;
+			<input type="image" name="ot" value="d" src="./img/icones/16x16/refresh.gif" onclick="document.forms['form'].elements['o'].value = 'd';">
 			</td>
 			{php}
 			   include('./include/common/pagination.php');
@@ -37,8 +38,8 @@
 	<table class="Toolbar_TableBottom">
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
-			{$form.select_manufacturer.label}&nbsp;{$form.select_manufacturer.html}&nbsp;
-			<input type="image" name="o" value="d" src="./img/icones/16x16/refresh.gif">
+			{$form.select_manufacturer.label}&nbsp;{$form.o2.html}&nbsp;
+			<input type="image" name="ot" value="d" src="./img/icones/16x16/refresh.gif" onclick="document.forms['form'].elements['o'].value = 'd';">
 			</td>
 
 			{php}
@@ -46,8 +47,8 @@
 			{/php}
 		</tr>
 	</table>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' name='select_manufacturer' id='select_manufacturer' value='0'>
 {$form.hidden}
 </form>
 

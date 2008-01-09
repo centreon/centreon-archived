@@ -34,7 +34,7 @@ For information : contact@oreon-project.org
 
 	!isset ($_GET["limit"]) ? $limit = $gopt["maxViewConfiguration"] : $limit = $_GET["limit"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-	 isset($type) ? $type = $type : $type = "Server";
+	isset($type) ? $type = $type : $type = "Server";
 
 	$t = microtime();
 

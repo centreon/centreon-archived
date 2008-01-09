@@ -21,11 +21,12 @@ For information : contact@oreon-project.org
 
 	function change_manufacturer($hosts = array(), $manufacturer_id = NULL)		{
 		global $pearDB;
-		if (!$manufacturer_id) $manufacturer_id = "NULL";
-		else $manufacturer_id = "'".$manufacturer_id."'";
+		if (!$manufacturer_id) 
+			$manufacturer_id = "NULL";
+		else 
+			$manufacturer_id = "'".$manufacturer_id."'";
 		foreach($hosts as $key=>$value)	{
-			$str = "UPDATE `inventory_index` SET `type_ressources` = ".$manufacturer_id." WHERE `host_id` = ".$key;
-			$DBRESULT =& $pearDB->query($str);
+			$DBRESULT =& $pearDB->query("UPDATE `inventory_index` SET `type_ressources` = ".$manufacturer_id." WHERE `host_id` = ".$key);
 			if (PEAR::isError($DBRESULT))
 				print $DBRESULT->getDebugInfo()."<br>";
 		}

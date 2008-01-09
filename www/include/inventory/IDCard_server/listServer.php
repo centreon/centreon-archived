@@ -132,7 +132,35 @@ For information : contact@oreon-project.org
 	$option = array();
 	while ($res->fetchInto($const)) 
     	$option[$const['id']] = $const['alias'];
-    $form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
+
+	#
+	##Toolbar select $lang["lgd_more_actions"]
+	#
+	?>
+	<SCRIPT LANGUAGE="JavaScript">
+	function setO(_i) {
+		document.forms['form'].elements['select_manufacturer'].value = _i;
+		document.forms['form'].elements['o'].value = 'c';
+	}
+	</SCRIPT>
+	<?php
+
+	$attrs1 = array(
+		'onchange'=>"javascript: " .
+				"setO(this.form.elements['o1'].value);  "
+				. "this.form.elements['o1'].selectedIndex = 0;submit();");
+    $form->addElement('select', 'o1', NULL, $option, $attrs1);
+
+	$attrs2 = array(
+		'onchange'=>"javascript: " .
+				"setO(this.form.elements['o2'].value);  "
+				. "this.form.elements['o2'].selectedIndex = 0;submit();");
+
+    $form->addElement('select', 'o2', NULL, $option, $attrs2);
+
+//    $form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
+
+
 
 	##Apply a template definition
 

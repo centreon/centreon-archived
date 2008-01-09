@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	$buffer = "<reponse>";
 
-	require_once("../../../centreon.conf.php");
+	require_once("../../../oreon.conf.php");
 	require_once("../../../DBconnect.php");
 	require_once("../inventory_library.php");
 

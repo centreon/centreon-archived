@@ -23,6 +23,7 @@ For information : contact@oreon-project.org
 	function get_snmp_value($oid, $replace_string){
 		global $address, $community, $timeout, $retries;
 		$str = @snmpget($address, $community, $oid, $timeout , $retries);
+		//print "[".$str."]";
 		if ($str == FALSE)
 			return FALSE;
 		else
@@ -34,10 +35,11 @@ For information : contact@oreon-project.org
 		$tab = @snmpwalk($address, $community, $oid, $timeout , $retries);
 		if ($tab){
 			$cpt = 0;
-			foreach ($tab as $t){
-				$tab_ret[$cpt] = str_replace($replace_string, '', $t);
-				$cpt++;
-			}
+			if ($tab)
+				foreach ($tab as $t){
+					$tab_ret[$cpt] = str_replace($replace_string, '', $t);
+					$cpt++;
+				}
 			return $tab_ret;
 		} else
 			return FALSE;
@@ -48,7 +50,8 @@ For information : contact@oreon-project.org
 	 */
 
 	function get_manufacturer(){
-		global $address, $pearDB;
+		global $address;
+		global $pearDB;
 		$str = walk_snmp_value("1.3.6.1.2.1.2.2.1.6", "STRING: ");
 		if (isset($str) && $str)
 			foreach ($str as $ifTab_address){
@@ -69,12 +72,14 @@ For information : contact@oreon-project.org
 	}
 
 	function get_hwaddress(){
-		global $address, $pearDB;
+		global $address;
+		global $pearDB;
 		$str = walk_snmp_value("1.3.6.1.2.1.2.2.1.6", "STRING: ");
 		if (isset($str) && $str)
 			foreach ($str as $ifTab_address){
 				if (isset($ifTab_address) && strcmp("", $ifTab_address)){
 					preg_match("/^([0-9A-Fa-f]*\:[0-9A-Fa-f]*\:[0-9A-Fa-f]*\:[0-9A-Fa-f]*\:[0-9A-Fa-f]*\:[0-9A-Fa-f]*).*/", $ifTab_address, $matches);
+					//print "-" . $address . "->" . substr($matches[1], 0, 8) ."|". $ifTab_address ."\n";
 					$tab = split(":", $matches[1]);
 					foreach ($tab as $key => $t) {
 						if (strlen($t) == 1)
@@ -92,6 +97,7 @@ For information : contact@oreon-project.org
 	function verify_data($host_id){
 		global $pearDB, $debug;
 		global $sysName,$sysContact,$sysDescr,$sysLocation,$Manufacturer,$SerialNumber,$SwitchVersion,$RomVersion;
+
 
 		/*
     	 * Recuprer les donnes pour faire un diff de donnes qui ont change.
@@ -147,4 +153,6 @@ For information : contact@oreon-project.org
     	}
 
     }
+
+
 ?>

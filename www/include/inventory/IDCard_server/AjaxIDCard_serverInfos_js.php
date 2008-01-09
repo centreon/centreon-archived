@@ -179,7 +179,7 @@ function MyIsLoading(_txt) {
 
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
-	_divmsg.className = "displayAjaxResult";
+	_divmsg.className = "msg_isloading";
 	var _text = document.createTextNode(_txt);
 	_divmsg.appendChild(_text);
 	setTimeout('MyHiddenDiv()', '2000');
@@ -189,13 +189,13 @@ function MyLoading(_txt) {
 	_img = document.getElementById('refresh' + _current_id);
 	_img.className = "cachediv";
 	_img = document.getElementById('isrefresh' + _current_id);
-	_img.className = "displayAjaxResult";
+	_img.className = "ok";
 
 	_divmsg = document.getElementById('msg');
 	_divmsg.innerHTML = '';
 
 	var _text = document.createTextNode(_txt);
-	_divmsg.className = "displayAjaxResult";
+	_divmsg.className = "msg_loading";
 	_divmsg.appendChild(_text);
 }
 

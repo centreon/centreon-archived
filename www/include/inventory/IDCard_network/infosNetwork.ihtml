@@ -1,7 +1,10 @@
 {$initJS}
+
 <div id="msg" class="cachediv">
 ...
 </div>
+
+
 <div>
 <ul id="mainnav">
 	<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
