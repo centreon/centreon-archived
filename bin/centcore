@@ -26,9 +26,9 @@
 use strict;
 use POSIX qw(mkfifo);
 use DBI;
-use Net::SSH::Perl;
-use Net::SCP;
-use Net::SCP::Expect;
+#use Net::SSH::Perl;
+#use Net::SCP;
+#use Net::SCP::Expect;
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
@@ -179,7 +179,7 @@ sub sendConfigFile($){
 		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
 							
 			my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
-			my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir$file";
+			my $dest = $server_info->{'user'}."@".$server_info->{'ns_ip_address'}.":$cfg_dir$file";
 
 			if ($method =~ /system/){
 				my $stdout = `scp $origin $dest`;
@@ -207,7 +207,10 @@ sub restartNagios($){
 	my($stdout, $stderr, $exit);
 	if ($method =~ /system/){
 		my $data = getServerConfig($id);
-		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios restart`;
+		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+		print "ssh $distantconnexion sudo /etc/init.d/nagios restart\n";
+		$stdout = `ssh $distantconnexion sudo /etc/init.d/nagios restart`;
+		undef($distantconnexion);
 	} else {
 		my $ssh = createSSHConnexion($_[0]);
 	   	($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios restart");
@@ -227,7 +230,9 @@ sub reloadNagios($){
 	my($stdout, $stderr, $exit);
 	if ($method =~ /system/){
 		my $data = getServerConfig($id);
-		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios reload`;
+		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+		$stdout = `ssh $distantconnexion sudo /etc/init.d/nagios reload`;
+		undef($distantconnexion);
 	} else {
 		my $ssh = createSSHConnexion($_[0]);
 	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /etc/init.d/nagios reload");
@@ -240,7 +245,9 @@ sub stopNagios($){
 	my($stdout, $stderr, $exit);
 	if ($method =~ /system/){
 		my $data = getServerConfig($id);
-		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios stop`;
+		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+		$stdout = `ssh $distantconnexion sudo /etc/init.d/nagios stop`;
+		undef($distantconnexion);
 	} else {
 		my $ssh = createSSHConnexion($_[0]);
     	($stdout, $stderr, $exit) = $ssh->cmd("sudo /etc/init.d/nagios stop");
@@ -253,7 +260,9 @@ sub startNagios($){
 	my($stdout, $stderr, $exit);
 	if ($method =~ /system/){
 		my $data = getServerConfig($id);
-		$stdout = `ssh $data->{'ns_ip_address'} sudo /etc/init.d/nagios start`;
+		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+		$stdout = `ssh $distantconnexion sudo /etc/init.d/nagios start`;
+		undef($distantconnexion);
 	} else {
 		my $ssh = createSSHConnexion($_[0]);
 	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /etc/init.d/nagios start");
@@ -266,7 +275,9 @@ sub NagioStat($){
 	my($stdout, $stderr, $exit);
 	if ($method =~ /system/){
 		my $data = getServerConfig($id);
-		$stdout = `ssh $data->{'ns_ip_address'} sudo /usr/sbin/nagiostats`;
+		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+		$stdout = `ssh $distantconnexion sudo /usr/sbin/nagiostats`;
+		undef($distantconnexion);
 	} else {
 		my $ssh = createSSHConnexion($_[0]);
 	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /usr/sbin/nagiostats");
@@ -284,7 +295,9 @@ sub testConfig($){
 	my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
 	if ($method =~ /system/){
 		my $data = getServerConfig($id);
-		$stdout = `ssh $data->{'ns_ip_address'} sudo /usr/sbin/nagios -v $cfg_dir/nagios.cfg`;
+		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+		$stdout = `ssh $distantconnexion sudo /usr/sbin/nagios -v $cfg_dir/nagios.cfg`;
+		undef($distantconnexion);
 	} else {
 		my $ssh = createSSHConnexion($id);
 	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /usr/sbin/nagios -v $cfg_dir/nagios.cfg");
