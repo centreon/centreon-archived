@@ -31,7 +31,9 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	# nagios servers comes from DB 
+	/*
+	 * nagios servers comes from DB 
+	 */
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
 	if (PEAR::isError($DBRESULT))
@@ -40,24 +42,31 @@ For information : contact@oreon-project.org
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
+	
 	include("./include/common/checkPagination.php");
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# start header menu
+	/*
+	 * start header menu
+	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", $lang['name']);
 	$tpl->assign("headerMenu_ip_address", $lang['ns_ip_address']);
 	$tpl->assign("headerMenu_status", $lang['status']);
 	$tpl->assign("headerMenu_options", $lang['options']);
-	# end header menu
-	#Nagios list
+	
+	/*
+	 * Nagios list
+	 */
 	if ($search)
 		$rq = "SELECT id, name, ns_activate, ns_ip_address FROM `nagios_server` WHERE name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -67,15 +76,19 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {		
+		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$config['id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&server_id=".$config['id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&server_id=".$config['id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&server_id=".$config['id']."&o=d&select[".$config['id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
 		if ($config["ns_activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
@@ -92,12 +105,15 @@ For information : contact@oreon-project.org
 		$style != "two" ? $style = "two" : $style = "one";	
 	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
 
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
+	/*
+	 * Toolbar select $lang["lgd_more_actions"]
+	 */
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
 	function setO(_i) {
@@ -114,10 +130,10 @@ For information : contact@oreon-project.org
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");	  
-        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+    $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
 	$form->setDefaults(array('o1' => NULL));
-			$o1 =& $form->getElement('o1');
-		$o1->setValue(NULL);
+	$o1 =& $form->getElement('o1');
+	$o1->setValue(NULL);
 	
 	$attrs = array(
 		'onchange'=>"javascript: " .
@@ -131,14 +147,14 @@ For information : contact@oreon-project.org
     $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
-		$o2 =& $form->getElement('o2');
-		$o2->setValue(NULL);
+	$o2 =& $form->getElement('o2');
+	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#	
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
