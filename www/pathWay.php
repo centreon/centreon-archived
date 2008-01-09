@@ -49,10 +49,17 @@ For information : contact@oreon-project.org
 		return $redirectPath["topology_parent"];
 	}
 	
+	
 	$tab = getTopologyParent($p);
 	$tabPath = array();
+
+	if (!isset($lang[$tab["topology_name"]]))
+		$NameTopology = "UNDEF";
+	else
+		$NameTopology = $lang[$tab["topology_name"]];
+
 	$tabPath[$tab["topology_page"]] = array();
-	$tabPath[$tab["topology_page"]]["name"] = $lang[$tab["topology_name"]];
+	$tabPath[$tab["topology_page"]]["name"] = $NameTopology;
 	$tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
 	$tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
 	$tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
