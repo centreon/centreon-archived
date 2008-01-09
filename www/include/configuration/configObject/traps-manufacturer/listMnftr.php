@@ -20,7 +20,12 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	$mnftr_id = NULL;
-	
+
+	/*
+	 * start quickSearch form
+	 */
+	include_once("./include/common/quickSearch.php");
+		
 	$SearchTool = "";
 	if (isset($search) && $search)
 		$SearchTool = " WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') OR (name LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
@@ -31,10 +36,6 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 
 	include("./include/common/checkPagination.php");
 
