@@ -1,0 +1,26 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table id="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>	 	
+		<tr class="list_one"><td class="FormRowField">{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.optimize.label}</td><td class="FormRowValue">{$form.optimize.html}</td></tr>
+	</table>
+	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
+	<br><br><br><br>
+	{if $msg}
+	 <table id="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2">
+	 			<img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}
+	 		</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2">
+	 			{$msg}
+	 		</td>
+	 	</tr>	 	
+	 </table>
+	{/if}
+	{$form.hidden}
+</form>
