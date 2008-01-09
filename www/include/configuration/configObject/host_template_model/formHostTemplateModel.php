@@ -61,7 +61,23 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
-	# Host Templates comes from DB -> Store in $hTpls Array
+	
+	/*
+	 * Get all Templates who use himself
+	 */
+	$host_tmplt_who_use_me = array();
+	if (isset($_GET["host_id"]) && $_GET["host_id"]){ 
+		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$_GET["host_id"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while($DBRESULT->fetchInto($host_tmpl_father))
+			$host_tmplt_who_use_me[$host_tmpl_father["host_id"]] = $host_tmpl_father["host_name"];
+		$DBRESULT->free();
+	}	
+	
+	/*
+	 * Host Templates comes from DB -> Store in $hTpls Array
+	 */
 	$hTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
@@ -69,7 +85,8 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($hTpl))	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
-		$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
+		if (!isset($host_tmplt_who_use_me[$hTpl["host_id"]]))
+			$hTpls[$hTpl["host_id"]] = $hTpl["host_name"];
 	}
 	$DBRESULT->free();
 	# Service Templates comes from DB -> Store in $svTpls Array
@@ -119,6 +136,8 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
+	
+		
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);

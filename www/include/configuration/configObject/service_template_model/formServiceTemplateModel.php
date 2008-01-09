@@ -84,15 +84,35 @@ For information : contact@oreon-project.org
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
-	# Host Templates comes from DB -> Store in $hosts Array
+	
+	/*
+	 * Host Templates comes from DB -> Store in $hosts Array
+	 */
 	$hosts = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	while($DBRESULT->fetchInto($host))
+	while($DBRESULT->fetchInto($host)){
 		$hosts[$host["host_id"]] = $host["host_name"];
+	}
 	$DBRESULT->free();
-	# Service Templates comes from DB -> Store in $svTpls Array
+	
+	/*
+	 * Get all Templates who use himself
+	 */
+	$svc_tmplt_who_use_me = array(); 
+	if (isset($_GET["service_id"]) && $_GET["service_id"]){ 
+		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_template_model_stm_id = '".$_GET["service_id"]."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while($DBRESULT->fetchInto($service_tmpl_father))
+			$svc_tmplt_who_use_me[$service_tmpl_father["service_id"]] = $service_tmpl_father["service_description"];
+		$DBRESULT->free();
+	}	
+	
+	/*
+	 * Service Templates comes from DB -> Store in $svTpls Array
+	 */
 	$svTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
 	if (PEAR::isError($DBRESULT))
@@ -104,7 +124,8 @@ For information : contact@oreon-project.org
 			$svTpl["service_description"] = str_replace('#S#', "/", $svTpl["service_description"]);
 			$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
 		}
-		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
+		if (!isset($svc_tmplt_who_use_me[$svTpl["service_id"]]) || !$svc_tmplt_who_use_me[$svTpl["service_id"]])
+			$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
 	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
