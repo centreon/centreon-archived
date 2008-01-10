@@ -67,6 +67,7 @@ For information : contact@oreon-project.org
 	$ini["MIB2"]["IF_OUT_OCTET"] = ".1.3.6.1.2.1.2.2.1.16";
 	$ini["MIB2"]["IF_SPEED"] = ".1.3.6.1.2.1.2.2.1.5";
 	$ini["MIB2"]["IF_DESC"] = ".1.3.6.1.2.1.2.2.1.2";
+	$ini["MIB2"]["IF_OPERSTATUS"] = ".1.3.6.1.2.1.2.2.1.8";
 	
 	// We write conf file
 	writeINIfile($file,$ini, "", "");
