@@ -317,7 +317,6 @@ For information : contact@oreon-project.org
 			$form->addGroup($mc_mod_hcg, 'mc_mod_hcg', $lang["mc_mod"], '&nbsp;');
 			$form->setDefaults(array('mc_mod_hcg'=>'0'));
 		}
-		print_r($notifCgs);
 	    $ams3 =& $form->addElement('advmultiselect', 'host_cgs', $lang['h_CgMembers'], $notifCgs, $attrsAdvSelect);
 		$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 		$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
