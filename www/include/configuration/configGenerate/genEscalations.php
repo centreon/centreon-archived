@@ -50,7 +50,6 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();			
 		if ($strTemp)	{
-			print "-".$host["host_id"]."<br>";
 			$ret["comment"]["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' host escalation definition ".$i."\n") : NULL;
 			if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
 				$comment = array();

@@ -19,6 +19,14 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+	function display_copying_file($filename = NULL, $status){
+		if (!isset($filename))
+			return ;
+		$str = "<tr><td>- ".$filename."</td>";
+		$str .= "<td>".$status."</td></tr>";
+		return $str;
+	}
+
 	# Get Poller List
 	$tab_nagios_server = array("0" => "All Nagios Servers");
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
@@ -177,7 +185,6 @@ For information : contact@oreon-project.org
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
-					print "OK";
 					$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath.$ret["host"]."/nagiosCFG.DEBUG");
 					$msg .= str_replace ("\n", "<br>", $stdout);
 				}
@@ -191,12 +198,16 @@ For information : contact@oreon-project.org
 			while ($tab =& $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
 					if (isset($tab['localhost']) && $tab['localhost'] == 1){
-						$msg .= "<br>";
+						$msg_copy .= "<table border=0 width=300>";
 						foreach (glob($nagiosCFGPath.$ret["host"]."/*.cfg") as $filename) {
 							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
 							$filename = array_pop(explode("/", $filename));
-							$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
+							if ($bool)
+								;//$msg_copy .= display_copying_file($filename, $lang['gen_mvOk']);
+							else
+								$msg_copy .= display_copying_file($filename, $lang['gen_mvKo']);
 						}
+						$msg_copy .= "</table>";
 					} else {
 						passthru ("echo 'SENDCFGFILE:".$tab['id']."' >> /srv/oreon/var/centcore", $return);	
 					}
@@ -240,14 +251,18 @@ For information : contact@oreon-project.org
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			}
-			$msg .= "<br>".str_replace ("\n", "<br>", $stdout);
+			$msg2 = "<br>".str_replace ("\n", "<br>", $stdout);
 		}
 	}
 
 	$form->addElement('header', 'status', $lang["gen_status"]);
 	if ($msg)
 		$tpl->assign('msg', $msg);
-
+	if ($msg2)
+		$tpl->assign('msg2', $msg2);
+	if ($msg_copy)
+		$tpl->assign('msg_copy', $msg_copy);
+		
 	/*
 	 * Apply a template definition
 	 */

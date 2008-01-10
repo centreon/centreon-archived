@@ -29,6 +29,16 @@
 	 		<td class="ListColLvl1_name" colspan="2">
 	 			{$msg}
 	 		</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2">
+	 			{$msg_copy}
+	 		</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2">
+	 			{$msg2}
+	 		</td>
 	 	</tr>	 	
 	 </table>
 	{/if}
