@@ -76,6 +76,7 @@ close PID or warn $!;
 # Set signals
 $SIG{INT}  		= \&catch_zap;
 $SIG{'CHLD'} 	= 'IGNORE' ;
+$SIG{'FIFO'} 	= \&ReadCmd ;
 
 # Functions
 
@@ -177,7 +178,6 @@ sub sendConfigFile($){
     opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
 	while (my $file = readdir(DIR)){
 		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
-							
 			my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
 			my $dest = $server_info->{'user'}."@".$server_info->{'ns_ip_address'}.":$cfg_dir$file";
 
@@ -332,6 +332,10 @@ sub parseRequest($){
 	}
 }
 
+sub ReadCmd(){
+	print "Pouet\n";
+}
+
 unless (-p $FIFO) {
     unlink $FIFO;
     POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
@@ -346,10 +350,20 @@ unless (-p $FIFO) {
 }
 
 while (1) {
+	print "SLEEP : ".sleep(2)."\n";
     open (FIFO, "< $FIFO") or die("");
-    while (<FIFO>){
-        parseRequest($_);
+    #while (<FIFO>){
+	#	if (defined($_)){
+ 	#       parseRequest($_);
+    #	} else {
+    #		print "Timeout\n";
+    #	}
+    #}
+    while (1){
+    	print "----------------\n";
+    	sleep(1);
     }
+    close(FIFO);
 }
 close FIFO;
 unlink($PID);
