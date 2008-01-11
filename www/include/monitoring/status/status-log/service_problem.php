@@ -222,8 +222,8 @@ For information : contact@oreon-project.org
 	<?php
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit(); ");
     $form->addElement('select', 'o1', NULL, array(	NULL	=>	$lang["lgd_more_actions"], 
-													"1"		=>	$lang['m_mon_resubmit_im_checks'], 
-													"2"		=>	$lang['m_mon_resubmit_im_checks_f'], 
+													"3"		=>	$lang['m_mon_resubmit_im_checks'], 
+													"4"		=>	$lang['m_mon_resubmit_im_checks_f'], 
 													"70" 	=> 	$lang['m_mon_acknoledge_thos_svc_pb'], 
 													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
 													"80" 	=> 	$lang['m_mon_notification_svc_en'], 
@@ -243,8 +243,8 @@ For information : contact@oreon-project.org
 
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit(); ");
     $form->addElement('select', 'o2', NULL, array(	NULL	=>	$lang["lgd_more_actions"], 
-													"1"		=>	$lang['m_mon_resubmit_im_checks'], 
-													"2"		=>	$lang['m_mon_resubmit_im_checks_f'], 
+													"3"		=>	$lang['m_mon_resubmit_im_checks'], 
+													"4"		=>	$lang['m_mon_resubmit_im_checks_f'], 
 													"70" 	=> 	$lang['m_mon_acknoledge_thos_svc_pb'], 
 													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
 													"80" 	=> 	$lang['m_mon_notification_svc_en'], 
