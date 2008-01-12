@@ -26,14 +26,13 @@
 use strict;
 use POSIX qw(mkfifo);
 use DBI;
-#use Net::SSH::Perl;
-#use Net::SCP;
-#use Net::SCP::Expect;
+
+use IO::Select;
+use IO::File;
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
 use vars qw($con);
-
 
 $method = "system";
 
@@ -58,6 +57,8 @@ sub writeLogFile($){
 	close LOG or warn $!;
 }
 
+my $timeBetween2SyncPerf = 10;
+
 # Starting ODS Engine
 writeLogFile("Starting ODS engine...\n");
 writeLogFile("PID : ".$$."\n");
@@ -76,7 +77,98 @@ close PID or warn $!;
 # Set signals
 $SIG{INT}  		= \&catch_zap;
 $SIG{'CHLD'} 	= 'IGNORE' ;
-$SIG{'FIFO'} 	= \&ReadCmd ;
+
+sub parseRequest($);
+sub GetAllNagiosServerPerfData();
+
+my $readset   = new IO::Select();
+
+unless (-p $FIFO) {
+    unlink $FIFO;
+    POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
+}
+
+unlink $FIFO if (-p $FIFO);
+
+unless (-p $FIFO) {
+    unlink $FIFO;
+    require POSIX;
+    POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
+}
+
+if (!(-p $FIFO && -w _ && -r _)){
+	print $LOG "FIFO not open ! centcore stopped\n";
+	exit(1);
+}
+
+my $fifoHandle = new IO::File($FIFO, O_RDWR|O_NONBLOCK);
+
+# Add the handles for our programs into the readset.
+# In other words, we're keeping track of these handles.
+
+$readset->add($fifoHandle);
+
+my $timeSyncPerf = 0;
+while ($stop) {
+
+	# Select Wait
+	while(my @ready = $readset->can_read(2)){
+
+		# We have received a commande 
+		foreach my $handle (@ready) {
+    		my $str = Read($handle);
+	    	# Let's go to parse KeyWords
+	    	parseRequest($str);
+	    }
+	
+	}
+	if (!$stop){
+		writeLogFile("Receiving order to stop...\n");
+	}
+	my $difTime = time() - $timeSyncPerf if (defined($timeSyncPerf) && $timeSyncPerf);
+	if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
+		print "$timeBetween2SyncPerf <= $difTime\n" if (defined($timeSyncPerf) && $timeSyncPerf);
+		print "Synchronize Perf \n";
+		# Get PerfData on Nagios Poller
+		GetAllNagiosServerPerfData();
+		$timeSyncPerf = time();
+	}
+	print "############################################\n";
+	print "Timed out.\n";
+}
+$fifoHandle->close();
+
+sub Read {
+    my ($handle, $bytesToRead ) = @_;
+    $bytesToRead = 1 unless $bytesToRead;
+
+    my $message = '';
+    my $readByte;
+
+    while(1) {
+        my $bytesRead = sysread( $handle, $readByte, $bytesToRead ) or last;
+        $message .= $readByte if $bytesRead;
+    }
+    chomp $message if $message;
+    return $message;
+}
+
+sub GetAllNagiosServerPerfData(){
+	CheckMySQLConnexion();
+	my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '0'");
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	while (my $data = $sth2->fetchrow_hashref()){
+		print 'NG : '.$data->{'id'}."\n";
+		GetPerfData($data->{'id'});
+	}
+	$sth2->finish();
+	$con->disconnect();
+	return;
+}
+
+# -------------------
+#      Functions 
+# -------------------
 
 # Functions
 
@@ -160,6 +252,26 @@ sub sendExternalCommand($$){
     }
     print " RESULT : ".$stdout . "\n";
 	undef($command_file);
+}
+
+#
+# Get PerfdataFile
+#
+
+sub GetPerfData($){
+	my $id = $_[0];
+	my $server_info = getServerConfig($id);
+	#my $distantconnexion = $server_info->{'user'}."@".$server_info->{'ns_ip_address'};
+	my $distantconnexion = $server_info->{'ns_ip_address'};
+	
+	my $origin = $distantconnexion.":/var/log/nagios/service-perfdata-old";
+	`ssh -q -i ~/.ssh/id_dsa $distantconnexion mv /var/log/nagios/service-perfdata /var/log/nagios/service-perfdata-old`;
+	
+	print "scp -q -i ~/.ssh/id_dsa $origin /usr/local/nagios/var/service-perfdata.$id-tmp\n";
+	`scp -q -i ~/.ssh/id_dsa $origin /usr/local/nagios/var/service-perfdata.$id`;
+	
+	`cat /usr/local/nagios/var/service-perfdata.$id >> /usr/local/nagios/var/service-perfdata`;
+	`rm -f /usr/local/nagios/var/service-perfdata.$id`;
 }
 
 #
@@ -306,7 +418,6 @@ sub testConfig($){
     undef($cfg_dir);
 }
 
-
 sub parseRequest($){
 	return if (!$_[0]);
 	if ($_[0] =~ /RESTART\:([0-9]*)/){
@@ -329,43 +440,17 @@ sub parseRequest($){
 		sendExternalCommand($1, $2);
 	} elsif ($_[0] =~ /SYNCHRONIZEPLUGINS\:([0-9]*)\:([.]*)/){
 		synchronizePlugins($1);
+	} else {
+		print "$_[0] : UNKNWON KEY \n";
 	}
 }
 
-sub ReadCmd(){
-	print "Pouet\n";
-}
-
-unless (-p $FIFO) {
-    unlink $FIFO;
-    POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
-}
-
-unlink $FIFO if (-p $FIFO);
-
-unless (-p $FIFO) {
-    unlink $FIFO;
-    require POSIX;
-    POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
-}
-
-while (1) {
-	print "SLEEP : ".sleep(2)."\n";
-    open (FIFO, "< $FIFO") or die("");
-    #while (<FIFO>){
-	#	if (defined($_)){
- 	#       parseRequest($_);
-    #	} else {
-    #		print "Timeout\n";
-    #	}
-    #}
-    while (1){
-    	print "----------------\n";
-    	sleep(1);
-    }
-    close(FIFO);
-}
-close FIFO;
 unlink($PID);
-
+writeLogFile("Centcore stop...\n");
 exit();
+
+__END__
+
+
+
+
