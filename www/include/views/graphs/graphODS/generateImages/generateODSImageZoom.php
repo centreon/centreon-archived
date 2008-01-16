@@ -30,7 +30,8 @@ For information : contact@oreon-project.org
 
 	/* Connect to Oreon DB */
 
-	require_once("../../../../../centreon.conf.php");
+
+	require_once("../../../../../../etc/centreon.conf.php");
 	require_once("../../../../common/common-Func.php");
 	is_file ("../../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../../lang/en.php");
 
