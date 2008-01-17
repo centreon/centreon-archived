@@ -36,7 +36,6 @@ For information : contact@oreon-project.org
 		return 0;
 	}
 
-
 if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) 
 { 	
 	header("Content-type: application/xhtml+xml"); }
@@ -46,7 +45,6 @@ else
 } 
 
 echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
-
 
 
 # if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
@@ -67,6 +65,14 @@ include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 include_once($oreonPath . "www/include/common/common-Func.php");
 
 
+
+$lang = array();
+$lang["start"] = "Du ";
+$lang["end"] = "au ";
+$lang["period"] = "Periode ";
+$lang["optionAdvanced"] = "Options";
+
+
 	function getMyHostIDService($svc_id = NULL)	{
 		if (!$svc_id) return;
 		global $pearDB;
@@ -81,23 +87,6 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 	}
 
 
-/* Connect to oreon DB */
-/*
-$dsn = array(
-	     'phptype'  => 'mysql',
-	     'username' => $conf_oreon['user'],
-	     'password' => $conf_oreon['password'],
-	     'hostspec' => $conf_oreon['host'],
-	     'database' => $conf_oreon['db'],
-	     );
-$options = array(
-		 'debug'       => 2,
-		 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-		 );
-$pearDB =& DB::connect($dsn, $options);
-if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
-$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-*/
 /*
 	$lcaHostByID = getLcaHostByID($pearDB);
 	$lcaHostByName = getLcaHostByName($pearDB);
@@ -122,10 +111,42 @@ $pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 		$sid = "-1";
 
 
-//$oreon->user->user_id
-$contact_id = '1';
 
-$period = 86400;
+	if(isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])){
+		$StartDate = htmlentities($_GET["StartDate"]);
+	}else
+		$StartDate = "";
+	if(isset($_GET["EndDate"]) && !check_injection($_GET["EndDate"])){
+		$EndDate = htmlentities($_GET["EndDate"]);
+	}else
+		$EndDate = "";
+
+	if(isset($_GET["StartTime"]) && !check_injection($_GET["StartTime"])){
+		$StartTime = htmlentities($_GET["StartTime"]);
+	}else
+		$StartTime = "";
+	if(isset($_GET["EndTime"]) && !check_injection($_GET["EndTime"])){
+		$EndTime = htmlentities($_GET["EndTime"]);
+	}else
+		$EndTime = "";
+
+
+//$oreon->user->user_id
+$contact_id = '2';
+
+	if ($StartDate !=  "" && $StartTime != ""){
+		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
+		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
+		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
+	}
+	if ($EndDate !=  "" && $EndTime != ""){
+		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
+		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
+		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
+	}
+	
+
+	$period = 86400;
 	if (!isset($start) && !isset($end)){
 		$start = time() - ($period + 30);
 		$end = time() + 10;
@@ -253,7 +274,6 @@ echo "<id>".$id."</id>";
 echo "<opid>".$openid."</opid>";
 
 
-
 foreach($elem as $svc)
 {
 
@@ -266,18 +286,9 @@ foreach($elem as $svc)
 echo "</host>";
 }
 
+
+
 	
-
-/*
-echo "<pre>";
-print_r($elem);
-echo "</pre>";
-*/
-
-
-
-
-
 
 
 if($type == "HS"){
@@ -438,8 +449,6 @@ $metrics = array();
 					$metrics_list[$metrics_ret["metric_id"]] = $counter;
 			}
 		}
-
-
 //	}
 
 	$tab_period['Daily']= (time() - (60 * 60 * 24));
@@ -448,28 +457,23 @@ $metrics = array();
 	$tab_period['Yearly']= (time() - 60 * 60 * 24 * 365);
 
 
-echo "<svc>";
-echo "<sid>".$sid."</sid>";
-echo "<id>".$id."</id>";
-echo "<index>".$index."</index>";
-echo "<opid>".$openid."</opid>";
-echo "<split>".$split."</split>";
-
-
-foreach($tab_period as $name => $start){
-	echo "<period>";
-	echo "<name>".$name."</name>";
-	echo "<start>".$start."</start>";
-	echo "<end>".time()."</end>";
-	echo "</period>";	
-}
-echo "</svc>";
-
-
-
-
-
+	echo "<svc>";
+	echo "<sid>".$sid."</sid>";
+	echo "<id>".$id."</id>";
+	echo "<index>".$index."</index>";
+	echo "<opid>".$openid."</opid>";
+	echo "<split>".$split."</split>";
+	
+	
+	foreach($tab_period as $name => $start){
+		echo "<period>";
+		echo "<name>".$name."</name>";
+		echo "<start>".$start."</start>";
+		echo "<end>".time()."</end>";
+		echo "</period>";	
 	}
+	echo "</svc>";
+}
 
 
 
@@ -510,24 +514,6 @@ if($type == "SS"){
 	if (isset($_POST["period"]))
 		$period =  $_POST["period"];
 	
-/*	
-	$periods = array(	""=>"",
-						"10800"=>$lang["giv_sr_p3h"],
-						"21600"=>$lang["giv_sr_p6h"],
-						"43200"=>$lang["giv_sr_p12h"],
-						"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);
-*/
 	
 
 	# Verify if template exists
@@ -597,13 +583,15 @@ if($type == "SS"){
 		if (isset($period) && $period){
 			$start = time() - ($period + 30);
 			$end = time() + 1;
-		} else if (!isset($_GET["period"])){
+		}
+		/*
+		 else if (!isset($_GET["period"])){
 			$start = $_GET["start"];
 			$end = $_GET["end"];
 		} else {
 			$start = $_GET["start"];
 			$end = $_GET["end"];	
-		}
+		}*/
 		
 		
 		# verify if metrics in parameter is for this index

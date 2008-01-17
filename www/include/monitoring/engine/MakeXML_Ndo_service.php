@@ -343,7 +343,7 @@ For information : contact@oreon-project.org
 	else
 	;
 	if($o == "svcpb")
-		$rq .= " AND nss.current_state != 0  AND nss.current_state != 3 ";
+		$rq .= " AND nss.current_state != 0";//  AND nss.current_state != 3 ";
 	if($o == "svc_ok")
 		$rq .= " AND nss.current_state = 0 ";
 	if($o == "svc_warning")

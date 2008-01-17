@@ -106,6 +106,52 @@ This would display the datepicker beneath the StartDate field (because the
 displayBelowThisObject parameter was false), and update the StartDate field with
 the chosen value of the datepicker using a date format of dd.mm.yyyy
 */
+
+function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
+{
+	if (document.getElementsByName (timeFieldName).item(1))
+	  var targetDateField = document.getElementsByName (timeFieldName).item(1);
+	else
+	  var targetDateField = document.getElementsByName (timeFieldName).item(0);
+
+
+  var x = displayBelowThisObject.offsetLeft;
+  var y = displayBelowThisObject.offsetTop + displayBelowThisObject.offsetHeight ;
+ 
+  // deal with elements inside tables and such
+  var parent = displayBelowThisObject;
+  while (parent.offsetParent) {
+    parent = parent.offsetParent;
+    x += parent.offsetLeft;
+    y += parent.offsetTop ;
+  }
+drawTimePicker(targetDateField, x, y);
+}
+
+function drawTimePicker(targetTimeField, x, y)
+{
+ 
+  if (!document.getElementById(timePickerDivID)) {
+    var newNode = document.createElement("select");
+    newNode.setAttribute("id", timePickerDivID);
+    newNode.setAttribute("class", "tpDiv");
+    newNode.setAttribute("style", "visibility: hidden;");
+	newNode.onchange = function() { try { fn() } catch (e) { } return false };
+    document.body.appendChild(newNode);
+
+	var k = document.createElement('option');
+	k.value= "00:00";
+	newNode.appendChild(k);
+	var k = document.createElement('option');
+	k.value= "00:30";
+	newNode.appendChild(k);
+
+  }
+
+
+}
+
+
 function displayDatePicker(dateFieldName, displayBelowThisObject, dtFormat, dtSep)
 {
 	if (document.getElementsByName (dateFieldName).item(1))

@@ -6,31 +6,60 @@
 
 <xsl:if test="host">
 
-	    <div id="div1" class="cachediv" style="padding-bottom:10px;">
+<!-- 
+<div id="div1" class="cachediv" style="padding-bottom:10px;">  
+-->
+
+<!-- 
+	    <div id="div1" style="padding-bottom:10px;">
+		<form name="formu">
     	    <table id="ListTable">
                 <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2">lang.advanced</td>
+                	<td class="FormHeader" ><xsl:value-of select="//lang/optionAdvanced"/></td>
                 </tr>
                <tr class="list_one">
-               		<td>form.period.label</td><td>form.period.html</td>
+               		<td >
+               		<xsl:value-of select="//lang/period"/>
+						<xsl:text> </xsl:text> 
+               		
+               		</td>
                </tr>
-				<tr class="list_two">
-					<td>form.start.label</td>
-					<td><input name="start" type="text" value="" />  <input onclick="displayDatePicker('start')" name="startD" value="Modifier" type="button" /></td>
-				</tr>
-				<tr class="list_one">
-					<td>form.end.label</td>
-					<td><input name="end" type="text" value="" />  <input onclick="displayDatePicker('end')" name="endD" value="Modifier" type="button" /></td>
+
+				<tr class="list_lvl_1">
+					<td><xsl:value-of select="//lang/start"/>
+						<xsl:text> </xsl:text> 
+						<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
+						<xsl:text> </xsl:text> 
+						<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="4" />  
+						<xsl:text> </xsl:text> 
+						<xsl:value-of select="//lang/end"/>
+						<xsl:text> </xsl:text> 
+						<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
+						<xsl:text> </xsl:text> 
+						<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="4" />  
+					</td>
 				</tr>
         	</table>
+		</form>
     	</div>
 		<div valign="top" align='center'>
 			<input onclick="DisplayHidden('div1');" name="advanced" value="Options" type="button" />
+			<xsl:text> </xsl:text> 
 			<xsl:element name="input">
 				<xsl:attribute name="type">button</xsl:attribute>
 				<xsl:attribute name="name">graph</xsl:attribute>
 				<xsl:attribute name="value">graph</xsl:attribute>
-				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', '', ''); return false;</xsl:attribute>
+				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+			</xsl:element>
+		</div>
+<br/>
+-->
+		<div valign="top" align='center'>
+			<xsl:element name="input">
+				<xsl:attribute name="type">button</xsl:attribute>
+				<xsl:attribute name="name">graph</xsl:attribute>
+				<xsl:attribute name="value">graph</xsl:attribute>
+				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 			</xsl:element>
 		</div>
 <br/>
@@ -60,7 +89,7 @@
 				    	<div id="imggraph">
 
 							<xsl:element name="a">
-							<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>', '', ''); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
 
 									<xsl:element name="img">
@@ -85,6 +114,15 @@
 </xsl:if>
 
 <xsl:if test="svc">
+		<div valign="top" align='center'>
+			<xsl:element name="input">
+				<xsl:attribute name="type">button</xsl:attribute>
+				<xsl:attribute name="name">graph</xsl:attribute>
+				<xsl:attribute name="value">graph</xsl:attribute>
+				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+			</xsl:element>
+		</div>
+<br/>
 	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
@@ -110,7 +148,7 @@
 				    	<div id="imggraph">
 
 							<xsl:element name="a">
-							<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="//id"/>', '', ''); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
 
 
@@ -130,9 +168,19 @@
 			</xsl:for-each>
 	    </table>
 	</div>
+
 </xsl:if>
 
 <xsl:if test="svc_zoom">
+		<div valign="top" align='center'>
+			<xsl:element name="input">
+				<xsl:attribute name="type">button</xsl:attribute>
+				<xsl:attribute name="name">graph</xsl:attribute>
+				<xsl:attribute name="value">graph</xsl:attribute>
+				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+			</xsl:element>
+		</div>
+<br/>
 	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
