@@ -900,35 +900,10 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 
-	function getDefaultDS ($graph_id = NULL, $current_ds = NULL, $rrdType = NULL)	{
-		// rrdType = 1 -> Graphs Perfparse
-		// rrdType = 2 -> Graphs Plugins
-		// rrdType = 3 -> Graphs Customs
-		if (!$graph_id) return NULL;
+	function getDefaultDS()	{
 		global $pearDB;
-		if (!$rrdType)	$rrdType = 1;
 		$ds = array();
-		$DBRESULT =& $pearDB->query("SELECT gct.compo_id FROM giv_components_template gct, giv_graphT_componentT_relation ggcr WHERE ggcr.gg_graph_id = '".$graph_id."' AND ggcr.gc_compo_id = gct.compo_id ORDER BY gct.ds_order");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-		$cpt = 0;
-		$sum = $DBRESULT->numRows();
-		while ($DBRESULT->fetchInto($ds))	{
-			if ($current_ds == $cpt)
-				return $ds["compo_id"];
-			$cpt++;
-		}
-		if ($rrdType != 2)	{
-			$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			if ($DBRESULT->numRows())	{
-				$ds =& $DBRESULT->fetchRow();
-				return $ds["compo_id"];
-			}
-		}
-
-		$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
