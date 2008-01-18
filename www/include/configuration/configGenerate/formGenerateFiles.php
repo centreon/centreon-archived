@@ -47,40 +47,12 @@ For information : contact@oreon-project.org
 	
     $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
 
-	$form->addElement('header', 'opt', $lang["gen_opt"]);
-	/*
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, $lang["no"], '0');
-	$form->addGroup($tab, 'generate', $lang["gen_ok"], '&nbsp;');
-	$form->setDefaults(array('generate' => '1'));
-	*/
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, $lang["gen_level1"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, $lang["gen_level2"], '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, $lang["gen_level3"], '3');
-	$form->addGroup($tab, 'level', $lang["gen_level"], '<br>');
-	$form->setDefaults(array('level' => '1'));
-	
+	$form->addElement('header', 'opt', $lang["gen_opt"]);	
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["yes"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["no"], '0');
 	$form->addGroup($tab, 'comment', $lang["gen_comment"], '&nbsp;');
 	$form->setDefaults(array('comment' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, $lang["no"], '0');
-	$form->addGroup($tab, 'xml', $lang["gen_xml"], '&nbsp;');
-	$form->setDefaults(array('xml' => '0'));
-	/*
-	$form->addElement('header', 'traps', $lang['gen_trapd']);
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["no"], '0');
-	$form->addGroup($tab, 'genTraps', $lang['gen_genTrap'], '&nbsp;');
-	$form->setDefaults(array('genTraps' => '0'));
-	*/
-	$form->addElement('header', 'result', $lang["gen_result"]);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["yes"], '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["no"], '0');
@@ -176,43 +148,46 @@ For information : contact@oreon-project.org
 						require_once($filename);
 		
 		/*
-		 * If debug needed
+		 * Create Server List to restart
 		 */
-		
-		if ($ret["debug"]["debug"])	{
-			$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
-			if (PEAR::isError($DBRESULT_Servers))
-				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
-			while ($tab =& $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
-					$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath.$ret["host"]."/nagiosCFG.DEBUG");
-					$msg .= str_replace ("\n", "<br>", $stdout);
-				}
-			}
+		$tab_server = array();
+		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
+		if (PEAR::isError($DBRESULT_Servers))
+			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
+		while ($tab =& $DBRESULT_Servers->fetchRow()){
+			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
+				$tab_server[$tab["id"]] = array("id" => $tab["id"], "localhost" => $tab["localhost"]);
 		}
 		
-		if ($ret["move"]["move"])	{
-			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
-			if (PEAR::isError($DBRESULT_Servers))
-				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
-			while ($tab =& $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
-					if (isset($tab['localhost']) && $tab['localhost'] == 1){
-						$msg_copy .= "<table border=0 width=300>";
-						foreach (glob($nagiosCFGPath.$ret["host"]."/*.cfg") as $filename) {
-							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
-							$filename = array_pop(explode("/", $filename));
-							if ($bool)
-								;//$msg_copy .= display_copying_file($filename, $lang['gen_mvOk']);
-							else
-								$msg_copy .= display_copying_file($filename, $lang['gen_mvKo']);
-						}
-						$msg_copy .= "</table>";
-					} else {
-						passthru ("echo 'SENDCFGFILE:".$tab['id']."' >> /srv/oreon/var/centcore", $return);	
-					}
-				}
+		/*
+		 * If debug needed
+		 */
+				
+		if ($ret["debug"]["debug"])	{
+			$msg_debug = array();
+			foreach ($tab_server as $host) {
+				$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG");
+				$msg_debug[$host['id']] = str_replace ("\n", "<br>", $stdout);
 			}
+		}
+
+		if ($ret["move"]["move"])	{
+			$msg_copy = array();
+			foreach ($tab_server as $host)
+				if (isset($host['localhost']) && $host['localhost'] == 1){
+					$msg_copy[$host["id"]] = "<table border=0 width=300>";
+					foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
+						$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
+						$filename = array_pop(explode("/", $filename));
+						if ($bool)
+							;//$msg_copy[$host["id"]] .= display_copying_file($filename, $lang['gen_mvOk']);
+						else
+							$msg_copy[$host["id"]] .= display_copying_file($filename, $lang['gen_mvKo']);
+					}
+					$msg_copy[$host["id"]] .= "</table>";
+				} else {
+					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore", $return);	
+				}
 		}
 		
 		if ($ret["restart"]["restart"])	{
@@ -220,52 +195,50 @@ For information : contact@oreon-project.org
 			 * Restart Nagios Poller
 			 */
 			$stdout = "";
-			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
-			if (PEAR::isError($DBRESULT_Servers))
-				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
-			while ($tab =& $DBRESULT_Servers->fetchRow()){
+			$msg_restart = array();
+			foreach ($tab_server as $host)
 				$nagios_init_script = (isset($oreon->optGen["nagios_init_script"]) ? $oreon->optGen["nagios_init_script"]   : "/etc/init.d/nagios" );
 				if ($ret["restart_mode"] == 1){
-					if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
+					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
-						print "SUDO";
 					} else { 
-						print "ECHO";
-						system("echo 'RELOAD:".$ret["host"]."' >> /srv/oreon/var/centcore");
+						system("echo 'RELOAD:".$host["id"]."' >> /srv/oreon/var/centcore");
 					}
-				} else if ($ret["restart_mode"] == 2)
-					if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
+				} else if ($ret["restart_mode"] == 2) {
+					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
-					else {
-						print "|".system("echo 'RESTART:".$ret["host"]."' >> /srv/oreon/var/centcore");
-						print("echo \"RESTART:".$ret["host"]."\" >> /srv/oreon/var/centcore");
+					} else {
+						print("echo \"RESTART:".$host["id"]."\" >> /srv/oreon/var/centcore");
 					}
-				else if ($ret["restart_mode"] == 3)	{
+				} else if ($ret["restart_mode"] == 3)	{
 					require_once("./include/monitoring/external_cmd/functions.php");
 					$_GET["select"] = array(0 => 1);
 					$_GET["cmd"] = 25;
 					require_once("./include/monitoring/external_cmd/cmd.php");
 					$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
+					print("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /srv/oreon/var/centcore");
 				}
-				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$ret["host"]."' LIMIT 1");
+				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			}
-			$msg2 = "<br>".str_replace ("\n", "<br>", $stdout);
+				$msg_restart[$host["id"]] = "<br>".str_replace ("\n", "<br>", $stdout);	
 		}
 	}
 
 	$form->addElement('header', 'status', $lang["gen_status"]);
-	if ($msg)
-		$tpl->assign('msg', $msg);
-	if ($msg2)
-		$tpl->assign('msg2', $msg2);
-	if ($msg_copy)
+	if (isset($msg_restart) && $msg_restart)
+		$tpl->assign('msg_restart', $msg_restart);
+	if (isset($msg_debug) && $msg_debug)
+		$tpl->assign('msg_debug', $msg_debug);
+	if (isset($msg_copy) && $msg_copy)
 		$tpl->assign('msg_copy', $msg_copy);
-		
+	if (isset($tab_server) && $tab_server)
+		$tpl->assign('tab_server', $tab_server);
+	
 	/*
 	 * Apply a template definition
 	 */
+	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

@@ -18,28 +18,22 @@
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
 	<br><br><br><br>
-	{if $msg}
+	{if $msg_debug || $msg_copy || msg_restart }
 	 <table id="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader" colspan="2">
-	 			<img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}
-	 		</td>
+	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
+	 	</tr>
+	 	{foreach from=$tab_server key=key item=item}
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name">{$key}{$msg_debug[$key]}</td>
 	 	</tr>
 	 	<tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name" colspan="2">
-	 			{$msg}
-	 		</td>
+	 		<td class="ListColLvl1_name">{$key}{$msg_copy[$key]}</td>
 	 	</tr>
 	 	<tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name" colspan="2">
-	 			{$msg_copy}
-	 		</td>
-	 	</tr>
-	 	<tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name" colspan="2">
-	 			{$msg2}
-	 		</td>
-	 	</tr>	 	
+	 		<td class="ListColLvl1_name">{$key}{$msg_restart[$key]}</td>
+	 	</tr>	
+	 	{/foreach} 	
 	 </table>
 	{/if}
 	{$form.hidden}
