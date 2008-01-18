@@ -96,12 +96,10 @@ For information : contact@oreon-project.org
 	function updateComponentTemplateInDB ($compo_id = NULL)	{
 		if (!$compo_id) return;
 		updateComponentTemplate($compo_id);
-		updateGraphParents($compo_id);
 	}	
 	
 	function insertComponentTemplateInDB ()	{
 		$compo_id = insertComponentTemplate();
-		updateGraphParents($compo_id);
 		return ($compo_id);
 	}
 	
@@ -109,7 +107,7 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		if ($ret["default_tpl1"]["default_tpl1"])
+		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `name` , `ds_order` , `ds_name` , " .
 				" `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
@@ -120,15 +118,15 @@ For information : contact@oreon-project.org
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_filled"]["ds_filled"]) && $ret["ds_filled"]["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"]["ds_filled"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_max"]["ds_max"]) && $ret["ds_max"]["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"]["ds_max"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_min"]["ds_min"]) && $ret["ds_min"]["ds_min"] != NULL ? $rq .= "'".htmlentities($ret["ds_min"]["ds_min"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_average"]["ds_average"]) && $ret["ds_average"]["ds_average"] != NULL ? $rq .= "'".htmlentities($ret["ds_average"]["ds_average"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_last"]["ds_last"]) && $ret["ds_last"]["ds_last"] != NULL ? $rq .= "'".htmlentities($ret["ds_last"]["ds_last"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".htmlentities($ret["ds_min"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".htmlentities($ret["ds_average"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".htmlentities($ret["ds_last"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_tickness"]) && $ret["ds_tickness"] != NULL ? $rq .= "'".htmlentities($ret["ds_tickness"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["ds_transparency"]) && $ret["ds_transparency"] != NULL ? $rq .= "'".htmlentities($ret["ds_transparency"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]["ds_invert"]."', ": $rq .= "NULL, ";
-		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]."', ": $rq .= "NULL, ";
+		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
@@ -147,7 +145,7 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		if ($ret["default_tpl1"]["default_tpl1"])
+		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
 		$rq = "UPDATE giv_components_template ";
 		$rq .= "SET name = ";
@@ -161,15 +159,15 @@ For information : contact@oreon-project.org
 		$rq .= "ds_color_area = ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".$ret["ds_color_area"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_filled = ";
-		isset($ret["ds_filled"]["ds_filled"]) && $ret["ds_filled"]["ds_filled"] != NULL ? $rq .= "'".$ret["ds_filled"]["ds_filled"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".$ret["ds_filled"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_max = ";
-		isset($ret["ds_max"]["ds_max"]) && $ret["ds_max"]["ds_max"] != NULL ? $rq .= "'".$ret["ds_max"]["ds_max"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".$ret["ds_max"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_min = ";
-		isset($ret["ds_min"]["ds_min"]) && $ret["ds_min"]["ds_min"] != NULL ? $rq .= "'".$ret["ds_min"]["ds_min"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".$ret["ds_min"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_average = ";
-		isset($ret["ds_average"]["ds_average"]) && $ret["ds_average"]["ds_average"] != NULL ? $rq .= "'".$ret["ds_average"]["ds_average"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".$ret["ds_average"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_last = ";
-		isset($ret["ds_last"]["ds_last"]) && $ret["ds_last"]["ds_last"] != NULL ? $rq .= "'".$ret["ds_last"]["ds_last"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_last"]["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".$ret["ds_last"]."', ": $rq .= "NULL, ";
 		$rq .= 	"ds_tickness = ";
 		isset($ret["ds_tickness"]) && $ret["ds_tickness"] != NULL ? $rq .= "'".$ret["ds_tickness"]."', ": $rq .= "NULL, ";
 		$rq .= 	"ds_transparency = ";
@@ -177,7 +175,7 @@ For information : contact@oreon-project.org
 		$rq .= 	"ds_invert = ";
 		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]["ds_invert"]."', ": $rq .= "NULL, ";
 		$rq .= "default_tpl1 = ";
-		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
+		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
 		$rq .= "comment = ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE compo_id = '".$compo_id."'";
@@ -187,20 +185,4 @@ For information : contact@oreon-project.org
 		defaultOreonGraph();
 	}		
 	
-	function updateGraphParents($compo_id = null)	{
-		if (!$compo_id) return;
-		global $form, $pearDB;
-		$rq = "DELETE FROM giv_graphT_componentT_relation WHERE gc_compo_id = '".$compo_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
-		$ret = array();
-		$ret = $form->getSubmitValue("compo_graphs");
-		for($i = 0; $i < count($ret); $i++)	{
-			$rq = "INSERT INTO giv_graphT_componentT_relation (gg_graph_id, gc_compo_id) VALUES ('".$ret[$i]."', '".$compo_id."')";
-			$DBRESULT =& $pearDB->query($rq);
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo();
-		}
-	}
 ?>

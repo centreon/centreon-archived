@@ -27,11 +27,6 @@ For information : contact@oreon-project.org
 		$res =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$compo_id."' LIMIT 1");
 		# Set base value
 		$compo = array_map("myDecode", $res->fetchRow());
-		# Set Components relations
-		$res =& $pearDB->query("SELECT DISTINCT gg_graph_id FROM giv_graphT_componentT_relation WHERE gc_compo_id = '".$compo_id."'");
-		for($i = 0; $res->fetchInto($graph); $i++)
-			$compo["compo_graphs"][$i] = $graph["gg_graph_id"];
-		$res->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
@@ -69,6 +64,8 @@ For information : contact@oreon-project.org
 	# Basic information
 	
 	$form->addElement('header', 'information', $lang['giv_ct_infos']);
+	$form->addElement('header', 'color', $lang['giv_ct_legend']);
+	$form->addElement('header', 'legend', $lang['giv_ct_color']);
 	$form->addElement('text', 'name', $lang["giv_ct_name"], $attrsText);
 	
 	for ($cpt = 1; $cpt <= 100; $cpt++)
@@ -97,44 +94,15 @@ For information : contact@oreon-project.org
 
 	$form->addElement('text', 'ds_transparency', $lang["giv_ct_transparency"], $attrsText3);
 
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_filled', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_filled', null, $lang["no"], '0');
-	$form->addGroup($tab, 'ds_filled', $lang["giv_ct_filled"], '&nbsp;');
-	$form->setDefaults(array('ds_filled' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_max', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_max', null, $lang["no"], '0');
-	$form->addGroup($tab, 'ds_max', $lang["giv_ct_max"], '&nbsp;');
-	$form->setDefaults(array('ds_max' => '1'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_min', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_min', null, $lang["no"], '0');
-	$form->addGroup($tab, 'ds_min', $lang["giv_ct_min"], '&nbsp;');
-	$form->setDefaults(array('ds_min' => '1'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_average', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_average', null, $lang["no"], '0');
-	$form->addGroup($tab, 'ds_average', $lang["giv_ct_avg"], '&nbsp;');
-	$form->setDefaults(array('ds_average' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_last', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_last', null, $lang["no"], '0');
-	$form->addGroup($tab, 'ds_last', $lang["giv_ct_last"], '&nbsp;');
-	$form->setDefaults(array('ds_last' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_invert', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'ds_invert', null, $lang["no"], '0');
-	$form->addGroup($tab, 'ds_invert', $lang["giv_ct_invert"], '&nbsp;');
-	$form->setDefaults(array('ds_invert' => '0'));
+	$form->addElement('checkbox', 'ds_filled', $lang["giv_ct_filled"]);
+	$form->addElement('checkbox', 'ds_max', $lang["giv_ct_max"]);
+	$form->addElement('checkbox', 'ds_min', $lang["giv_ct_min"]);
+	$form->addElement('checkbox', 'ds_average', $lang["giv_ct_avg"]);
+	$form->addElement('checkbox', 'ds_last', $lang["giv_ct_last"]);
+	$form->addElement('checkbox', 'ds_invert', $lang["giv_ct_invert"]);
+	$form->addElement('checkbox', 'default_tpl1', $lang["giv_gt_defaultTpl1"]);
 	
 	$form->addElement('select', 'ds_tickness', $lang["giv_ct_tickness"], array("1"=>"1", "2"=>"2", "3"=>"3"));
-
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl1', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl1', null, $lang["no"], '0');
-	$form->addGroup($tab, 'default_tpl1', $lang["giv_gt_defaultTpl1"], '&nbsp;');
-	$form->setDefaults(array('default_tpl1' => '0'));
 
 	$form->addElement('textarea', 'comment', $lang["giv_gt_comment"], $attrsTextarea);
 

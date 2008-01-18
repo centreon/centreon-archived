@@ -81,6 +81,8 @@ $lang["giv_split_component"] = "Split Components";
 $lang['giv_tpl1'] = "Centreon Graph Template";
 $lang['giv_tpl2'] = "Centreon Graph Plugin Template";
 $lang['giv_gt_infos'] = "General Informations";
+$lang['giv_gt_legend'] = "Couleurs";
+$lang['giv_gt_color'] = "L&eacute;gendes";
 $lang['giv_gt_properties'] = "Properties";
 $lang['giv_gt_add'] = "Add a Graph Template";
 $lang['giv_gt_change'] = "Modify a Graph Template";
@@ -115,7 +117,11 @@ $lang["giv_graphNbr"] = "Use";
 $lang["giv_graphChoice"] = "Graphs Choice";
 $lang["giv_graphList"] = "Graphs List";
 $lang["giv_graphs"] = "Graphs";
+
 $lang['giv_ct_infos'] = "General Informations";
+$lang['giv_ct_legend'] = "Couleurs";
+$lang['giv_ct_color'] = "L&eacute;gendes";
+
 $lang['giv_ct_properties'] = "Properties";
 $lang['giv_ct_add'] = "Add a Data Source Template";
 $lang['giv_ct_change'] = "Modify a Data Source Template";

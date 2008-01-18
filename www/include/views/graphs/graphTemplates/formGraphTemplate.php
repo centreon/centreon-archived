@@ -16,35 +16,35 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	#
-	## Database retrieve information
-	#
+	if (!isset($oreon))
+		exit();
+		
 	$graph = array();
 	if (($o == "c" || $o == "w") && $graph_id)	{
 		$res =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$graph_id."' LIMIT 1");
-		# Set base value
+		/*
+		 * Set base value
+		 */
 		$graph = array_map("myDecode", $res->fetchRow());
-		# Set Components relations
-		$res =& $pearDB->query("SELECT DISTINCT gc_compo_id FROM giv_graphT_componentT_relation WHERE gg_graph_id = '".$graph_id."'");
-		for($i = 0; $res->fetchInto($compo); $i++)
-			$graph["graph_compos"][$i] = $compo["gc_compo_id"];
-		$res->free();
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Components comes from DB -> Store in $compos Array
+	
 	$compos = array();
 	$res =& $pearDB->query("SELECT compo_id, name FROM giv_components_template ORDER BY name");
 	while($res->fetchInto($compo))
 		$compos[$compo["compo_id"]] = $compo["name"];
 	$res->free();
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
 	##########################################################
 	# Var information to format the element
 	#
+	
 	$attrsText 		= array("size"=>"30");
 	$attrsText2 	= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
@@ -66,6 +66,7 @@ For information : contact@oreon-project.org
 	## Basic information
 	#
 	$form->addElement('header', 'information', $lang['giv_gt_infos']);
+	$form->addElement('header', 'color', $lang['giv_gt_color']);
 	$form->addElement('text', 'name', $lang["giv_gt_name"], $attrsText);
 
 	$form->addElement('select', 'img_format', $lang["giv_gt_imgFormat"], array("PNG"=>"PNG", "GIF"=>"GIF"));
@@ -92,16 +93,19 @@ For information : contact@oreon-project.org
 						"10368000"=>$lang["giv_sr_p4m"],
 						"15552000"=>$lang["giv_sr_p6m"],
 						"31104000"=>$lang["giv_sr_p1y"]);	
+	
 	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
 	$steps = array(	"0"=>$lang["giv_sr_noStep"],
-				"2"=>"2",
-				"6"=>"6",
-				"10"=>"10",
-				"20"=>"20",
-				"50"=>"50",
-				"100"=>"100");					
+					"2"=>"2",
+					"6"=>"6",
+					"10"=>"10",
+					"20"=>"20",
+					"50"=>"50",
+					"100"=>"100");					
+	
 	$sel =& $form->addElement('select', 'step', $lang["giv_sr_step"], $steps);
-	$TabColorNameAndLang 	= array("bg_grid_color"=>"giv_gt_bgGridClr",
+
+	$TabColorNameAndLang 	= array(	"bg_grid_color"=>"giv_gt_bgGridClr",
                                     	"grid_main_color"=>"giv_gt_bgGridPClr",
                                     	"grid_sec_color"=>"giv_gt_bgGridSClr",
                                     	"contour_cub_color"=>"giv_gt_bgContClr",
@@ -117,41 +121,25 @@ For information : contact@oreon-project.org
 		isset($graph[$nameColor]) ?	$codeColor = $graph[$nameColor] : $codeColor = NULL;
 		$title = $lang["genOpt_colorPicker"];
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"8","maxlength"=>"7");
-		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
-		//if ($form->validate())	{
-		//	$colorColor = $form->exportValue($nameColor);
-		//}
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
+		
+		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
-		//if (!$form->validate())	{
 		if ($o == "c" || $o == "a")	{
 			$form->addElement('button', $nameColor.'_modify', $lang['modify'], $attrsText5);
 		}
 	}
 
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'stacked', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'stacked', null, $lang["no"], '0');
-	$form->addGroup($tab, 'stacked', $lang["giv_gt_stacked"], '&nbsp;');
-	$form->setDefaults(array('stacked' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl1', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'default_tpl1', null, $lang["no"], '0');
-	$form->addGroup($tab, 'default_tpl1', $lang["giv_gt_defaultTpl1"], '&nbsp;');
-	$form->setDefaults(array('default_tpl1' => '0'));
 	
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'split_component', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'split_component', null, $lang["no"], '0');
-	$form->addGroup($tab, 'split_component', $lang["giv_split_component"], '&nbsp;');
-	$form->setDefaults(array('split_component' => '0'));
-	
+	$form->addElement('checkbox', 'stacked', $lang["giv_gt_stacked"]);
+	$form->addElement('checkbox', 'split_component', $lang["giv_split_component"]);
 	$form->addElement('textarea', 'comment', $lang["giv_gt_comment"], $attrsTextarea);
-
-	#
-	## Components linked with
-	#
+	$form->addElement('checkbox', 'default_tpl1', $lang["giv_gt_defaultTpl1"]);
+	
+	/*
+	 * Components linked with
+	 */
 	$form->addElement('header', 'compos', $lang["giv_compoChoice"]);
     $ams1 =& $form->addElement('advmultiselect', 'graph_compos', $lang["giv_compoList"], $compos, $attrsAdvSelect);
 	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
@@ -169,9 +157,9 @@ For information : contact@oreon-project.org
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	#
-	## Form Rules
-	#
+	/*
+	 * Form Rules
+	 */	
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('name', $lang['ErrName'], 'required');
 	$form->addRule('vertical_label', $lang['ErrRequired'], 'required');
@@ -193,11 +181,11 @@ For information : contact@oreon-project.org
 	$form->addRule('name', $lang['ErrAlreadyExist'], 'exist');
 	$form->setRequiredNote($lang['requiredFields']);
 
-	#
-	##End of form definition
-	#
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
+
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
@@ -206,15 +194,11 @@ For information : contact@oreon-project.org
 		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&graph_id=".$graph_id."'"));
 	    $form->setDefaults($graph);
 		$form->freeze();
-	}
-	# Modify
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
 		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
 	    $form->setDefaults($graph);
-	}
-	# Add
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
 		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
 		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
 	}
@@ -223,9 +207,10 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort1", $lang['giv_gt_properties']);
 	$tpl->assign("sort2", $lang["giv_compo"]);
 
-	#
-	##Picker Color JS
-	#
+	/*
+	 * Picker Color JS
+	 */
+
 	$tpl->assign('colorJS',"
 	<script type='text/javascript'>
 		function popup_color_picker(t,name,title)
@@ -238,9 +223,10 @@ For information : contact@oreon-project.org
 	</script>
     "
     );
-	#
-	##End of Picker Color
-	#
+    
+	/*
+	 * End of Picker Color
+	 */
 
 	$valid = false;
 	if ($form->validate())	{
@@ -254,6 +240,7 @@ For information : contact@oreon-project.org
 		$form->freeze();
 		$valid = true;
 	}
+	
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once("listGraphTemplates.php");

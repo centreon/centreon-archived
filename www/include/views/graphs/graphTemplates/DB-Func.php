@@ -16,6 +16,9 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	if (!isset($oreon))
+		exit();
+
 	function testExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
@@ -89,12 +92,10 @@ For information : contact@oreon-project.org
 	function updateGraphTemplateInDB ($graph_id = NULL)	{
 		if (!$graph_id) return;
 		updateGraphTemplate($graph_id);
-		updateComponentChilds($graph_id);
 	}	
 	
 	function insertGraphTemplateInDB ()	{
 		$graph_id = insertGraphTemplate();
-		updateComponentChilds($graph_id);
 		return ($graph_id);
 	}
 	
@@ -103,7 +104,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		if ($ret["default_tpl1"]["default_tpl1"])
+		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
 		$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
 				"`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
@@ -127,9 +128,9 @@ For information : contact@oreon-project.org
 		isset($ret["col_arrow"]) && $ret["col_arrow"] != NULL ? $rq .= "'".htmlentities($ret["col_arrow"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["col_top"]) && $ret["col_top"] != NULL ? $rq .= "'".htmlentities($ret["col_top"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES)."', ": $rq .= "NULL, ";
-		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
-		isset($ret["split_component"]["split_component"]) && $ret["split_component"]["split_component"] != NULL ? $rq .= "'".$ret["split_component"]["split_component"]."', ": $rq .= "NULL, ";
-		isset($ret["stacked"]["stacked"]) && $ret["stacked"]["stacked"] != NULL ? $rq .= "'".htmlentities($ret["stacked"]["stacked"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
+		isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
+		isset($ret["stacked"]) && $ret["stacked"] != NULL ? $rq .= "'".htmlentities($ret["stacked"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."'": $rq .= "NULL";
 		$rq .= ")";
 		$pearDB->query($rq);
@@ -144,7 +145,7 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		if ($ret["default_tpl1"]["default_tpl1"])
+		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
 		$rq = "UPDATE giv_graphs_template ";
 		$rq .= "SET name = ";
@@ -180,11 +181,11 @@ For information : contact@oreon-project.org
 		$rq .= "col_bot = ";
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		$rq .= "default_tpl1 = ";
-		isset($ret["default_tpl1"]["default_tpl1"]) && $ret["default_tpl1"]["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]["default_tpl1"]."', ": $rq .= "NULL, ";
+		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
 		$rq .= "split_component = ";
-		isset($ret["split_component"]["split_component"]) && $ret["split_component"]["split_component"] != NULL ? $rq .= "'".$ret["split_component"]["split_component"]."', ": $rq .= "NULL, ";
+		isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
 		$rq .= "stacked = ";
-		isset($ret["stacked"]["stacked"]) && $ret["stacked"]["stacked"] != NULL ? $rq .= "'".$ret["stacked"]["stacked"]."', ": $rq .= "NULL, ";
+		isset($ret["stacked"]) && $ret["stacked"] != NULL ? $rq .= "'".$ret["stacked"]."', ": $rq .= "NULL, ";
 		$rq .= "comment = ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES)."' ": $rq .= "NULL ";
 		$rq .= "WHERE graph_id = '".$graph_id."'";
@@ -192,18 +193,5 @@ For information : contact@oreon-project.org
 		defaultOreonGraph();
 	}			
 	
-	function updateComponentChilds($graph_id = null)	{
-		if (!$graph_id) return;
-		global $form, $pearDB;
-		$pearDB->query("DELETE FROM giv_graphT_componentT_relation WHERE gg_graph_id = '".$graph_id."'");
-		$ret = array();
-		$ret = $form->getSubmitValue("graph_compos");
-		for($i = 0; $i < count($ret); $i++)	{
-			$rq = "INSERT INTO giv_graphT_componentT_relation ";
-			$rq .= "(gg_graph_id, gc_compo_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$graph_id."', '".$ret[$i]."')";
-			$pearDB->query($rq);
-		}
-	}
+	
 ?>

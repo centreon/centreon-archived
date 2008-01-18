@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 $lang["views_title1"] = "Perfparse Graphs";
 $lang["views_title2"] = "Centreon Graphs";
 $lang["views_title3"] = "Graph par Plugins";
-$lang["views_title4"] = "Templates";
+$lang["views_title4"] = "Mod&egrave;le";
 $lang["views_perfparse"] = "Perfparse";
 
 # Centreon Graph Plugins
@@ -38,7 +38,7 @@ $lang['giv_gg_add'] = "Ajouter un Graph Personnalis&eacute;";
 $lang['giv_gg_change'] = "Modifier un Graph Personnalis&eacute;";
 $lang['giv_gg_view'] = "Afficher un Graph Personnalis&eacute;";
 $lang['giv_gg_name'] = "Nom du Graph";
-$lang['giv_gg_tpl'] = "Template Associ&eacute;";
+$lang['giv_gg_tpl'] = "mod&eagrave;le Associ&eacute;";
 $lang['giv_gg_comment'] = "Commentaire";
 $lang["giv_gg_osl"] = "OSL";
 $lang["giv_gg_ms"] = "Meta Service";
@@ -70,21 +70,25 @@ $lang["giv_sr_osl"] = "Qualit&eacute; de Service Centreon (OSL)";
 $lang["giv_sr_rendTitle"] = "Rendu Graphique";
 $lang["giv_sr_gValues"] = "Valeurs Graph&eacute;es";
 
-# Graph Templates
+# Graph mod&eagrave;les
 
 $lang["giv_compoNbr"] = "Nombre de Composantes";
 $lang["giv_compoChoice"] = "Choix des Composantes";
 $lang["giv_compoList"] = "Liste des Composantes";
 $lang["giv_compo"] = "Composantes";
 $lang["giv_split_component"] = "S&eacute;parer les composants";
-$lang['giv_tpl1'] = "Template des graphs Centreon";
-$lang['giv_tpl2'] = "Template des sondes Graphiques";
+$lang['giv_tpl1'] = "mod&eagrave;le des graphs Centreon";
+$lang['giv_tpl2'] = "mod&eagrave;le des sondes Graphiques";
+
 $lang['giv_gt_infos'] = "Informations G&eacute;n&eacute;rales";
+$lang['giv_gt_color'] = "Couleurs";
+$lang['giv_gt_legend'] = "L&eacute;gendes";
+
 $lang['giv_gt_properties'] = "Propri&eacute;t&eacute;s";
-$lang['giv_gt_add'] = "Ajouter un Template de Graph";
-$lang['giv_gt_change'] = "Modifier un Template de Graph";
-$lang['giv_gt_view'] = "Afficher un Template de Graph";
-$lang['giv_gt_name'] = "Nom du Template";
+$lang['giv_gt_add'] = "Ajouter un mod&egrave;le de Graph";
+$lang['giv_gt_change'] = "Modifier un mod&egrave;le de Graph";
+$lang['giv_gt_view'] = "Afficher un mod&egrave;le de Graph";
+$lang['giv_gt_name'] = "Nom du mod&egrave;le";
 $lang['giv_gt_title'] = "Titre du Graph";
 $lang["giv_gt_imgFormat"] = "Format de l'image";
 $lang["giv_gt_vLabel"] = "Titre Vertical";
@@ -103,23 +107,25 @@ $lang['giv_gt_comment'] = "Commentaire";
 $lang['giv_gt_start'] = "Date de d&eacute;but";
 $lang['giv_gt_end'] = "Date de fin";
 $lang['giv_gt_stacked'] = "Empilage";
-$lang['giv_gt_defaultTpl1'] = "Template par d&eacute;faut des graphs Centreon";
-$lang['giv_gt_defaultTpl2'] = "Template par d&eacute;faut des sondes Graphiques";
+$lang['giv_gt_defaultTpl1'] = "Mod&egrave;le par d&eacute;faut des graphs Centreon";
+$lang['giv_gt_defaultTpl2'] = "Mod&egrave;le par d&eacute;faut des sondes Graphiques";
 $lang['giv_gt_lower_limit'] = "Limite Basse";
 $lang['giv_gt_upper_limit'] = "Limite Haute";
 
-# Component Templates
+# Component mod&egrave;les
 
 $lang["giv_graphNbr"] = "Utilisation";
 $lang["giv_graphChoice"] = "Choix des Graphs";
 $lang["giv_graphList"] = "Liste des Graphs";
 $lang["giv_graphs"] = "Graphs";
 $lang['giv_ct_infos'] = "Informations G&eacute;n&eacute;rales";
+$lang['giv_ct_legend'] = "Couleurs";
+$lang['giv_ct_color'] = "L&eacute;gendes";
 $lang['giv_ct_properties'] = "Propri&eacute;t&eacute;s";
-$lang['giv_ct_add'] = "Ajouter un Template de Courbe";
-$lang['giv_ct_change'] = "Modifier un Template de Courbe";
-$lang['giv_ct_view'] = "Afficher un Template de Courbe";
-$lang['giv_ct_name'] = "Nom du Template";
+$lang['giv_ct_add'] = "Ajouter un mod&egrave;le de Courbe";
+$lang['giv_ct_change'] = "Modifier un mod&egrave;le de Courbe";
+$lang['giv_ct_view'] = "Afficher un mod&egrave;le de Courbe";
+$lang['giv_ct_name'] = "Nom du mod&egrave;le";
 $lang['giv_ct_dsName'] = "Nom de la Courbe";
 $lang['giv_ct_order'] = "Ordre";
 $lang['giv_ct_dsBase'] = "Base";

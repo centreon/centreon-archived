@@ -31,12 +31,16 @@ For information : contact@oreon-project.org
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 		
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/views/graphs/graphTemplates/";
 	
 	#PHP functions

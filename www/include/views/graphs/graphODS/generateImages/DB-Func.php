@@ -17,15 +17,15 @@ For information : contact@oreon-project.org
 */
 
 
-function getRRDToolPath($pearDBO){
-	$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo();
-	$config =& $DBRESULT->fetchRow();
-	$RRDdatabase_path = $config["RRDdatabase_path"];
-	$DBRESULT->free();
-	unset($config);	
-	return $RRDdatabase_path;
-}
+	function getRRDToolPath($pearDBO){
+		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_path FROM config LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo();
+		$config =& $DBRESULT->fetchRow();
+		$RRDdatabase_path = $config["RRDdatabase_path"];
+		$DBRESULT->free();
+		unset($config);	
+		return $RRDdatabase_path;
+	}
 
 ?>

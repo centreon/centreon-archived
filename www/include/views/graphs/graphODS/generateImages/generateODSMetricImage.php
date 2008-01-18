@@ -19,20 +19,20 @@ For information : contact@oreon-project.org
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-
-	require_once 'DB.php';
+	
+	$path = "/srv/oreon/";
+	
+	require_once ('DB.php');
 	require_once ('./DB-Func.php');
-	require_once ("../../../../../class/Session.class.php");
-	require_once ("../../../../../class/Oreon.class.php");
+	require_once ($path."www/class/Session.class.php");
+	require_once ($path."www/class/Oreon.class.php");
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	/* Connect to Oreon DB */
-
-	include("../../../../../centreon.conf.php");
-	is_file ("../../../../../lang/".$oreon->user->get_lang().".php") ? include_once ("../../../../../lang/".$oreon->user->get_lang().".php") : include_once ("../../../../../lang/en.php");
-	require_once "../../../../common/common-Func.php";
+	include($path."etc/centreon.conf.php");
+	is_file ($path."www/lang/".$oreon->user->get_lang().".php") ? include_once ($path."www/lang/".$oreon->user->get_lang().".php") : include_once ($path."www/lang/en.php");
+	require_once $path."www/include/common/common-Func.php";
 
 	$dsn = array(
 	    'phptype'  => 'mysql',
@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 		 * Connect to ods
 		 */
 		 
-		include_once("../../../../../DBOdsConnect.php");
+		include_once($path."www/DBOdsConnect.php");
 
 		$RRDdatabase_path = getRRDToolPath($pearDBO);
 	
@@ -156,16 +156,34 @@ For information : contact@oreon-project.org
 			$metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 			$metrics[$metric["metric_id"]]["metric"] = str_replace("#S#", "slash_", $metric["metric_name"]);
 			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
-			$ds = getDefaultDS($template_id, $order, 1);	
-			$metrics[$metric["metric_id"]]["ds_id"] = $ds;
-			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
+			
+			$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
 			$res_ds->fetchInto($ds_data);
-			foreach ($ds_data as $key => $ds_d){
-				if ($key == "ds_transparency")
-					$metrics[$metric["metric_id"]][$key] = dechex(255-($ds_d*255)/100);
-				else
-					$metrics[$metric["metric_id"]][$key] = $ds_d;
+			
+			if (!$ds_data){
+				$ds = getDefaultDS();						
+				$res_ds =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$ds."'");
+				$res_ds->fetchInto($ds_data);
+				$metrics[$metric["metric_id"]]["ds_id"] = $ds;
 			}
+			
+			/*
+			 * Fetch Datas
+			 */
+			
+			foreach ($ds_data as $key => $ds_d){
+				if ($key == "ds_transparency"){
+					$transparency = dechex(255-($ds_d*255)/100);
+					if (strlen($transparency) == 1)
+						$transparency = "0" . $transparency;
+					$metrics[$metric["metric_id"]][$key] = $transparency;
+				} else
+					$metrics[$metric["metric_id"]][$key] = $ds_d ;
+				
+			}
+			$res_ds->free();
+			
+			
 			if (preg_match('/DS/', $ds_data["ds_name"], $matches)){
 				$metrics[$metric["metric_id"]]["legend"] = str_replace("slash_", "/", $metric["metric_name"]);
 				$metrics[$metric["metric_id"]]["legend"] = str_replace("#S#", "/", $metrics[$metric["metric_id"]]["legend"]);
@@ -204,20 +222,21 @@ For information : contact@oreon-project.org
 			for ($i = $metrics[$key]["legend_len"]; $i != $longer + 1; $i++)
 				$command_line .= " ";
 			$command_line .= "\"";
-			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf%s";
-				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
+			if ($tm["ds_last"]){
+				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf%s";
+				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
 				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf%s";
-				$tm["ds_max"] || $tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
+				$tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
 				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf%s";
-				$tm["ds_last"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
+				$tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
-			if ($tm["ds_last"])
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf%s\\l\"";
+			if ($tm["ds_average"]){
+				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf%s\\l\"";
+			}
 			$cpt++;
 			if (isset($tm["warn"]) && $tm["warn"] != 0)
 				$command_line .= " HRULE:".$tm["warn"]."#00FF00:\"Warning \: ".$tm["warn"]."\\l\" "; 
