@@ -448,10 +448,11 @@ $lang['tp_view'] = "Afficher une Time Period";
 /* command */
 
 $lang['cmd_type'] = "Type de Commande";
+$lang['cmd_list_type'] = "Type";
 $lang['cmd_infos'] = "Informations";
-$lang['cmd_check'] = "Commande de v&eacute;rification";
-$lang['cmd_notif'] = "Commande de notification";
-$lang['cmd_various'] = "Commande diverse";
+$lang['cmd_check'] = "v&eacute;rification";
+$lang['cmd_notif'] = "notification";
+$lang['cmd_various'] = "diverse";
 $lang['cmd_checkShort'] = "Check";
 $lang['cmd_notifShort'] = "Notification";
 $lang['cmd_add'] = "Ajouter une Commande";
@@ -702,7 +703,7 @@ $lang['cgi_pingSyntax'] = "Ping Syntax";
 
 $lang['gen_name'] = "G&eacute;n&eacute;ration des fichiers de configuration de Nagios";
 $lang['gen_infos'] = "Serveur concern&eacute;";
-$lang['gen_host'] = "Serveur Nagios / Centreon";
+$lang['gen_host'] = "Serveur Nagios";
 $lang['gen_opt'] = "Options de g&eacute;n&eacute;ration";
 $lang['gen_ok'] = "G&eacute;n&eacute;rer les fichiers";
 $lang['gen_level'] = "Int&eacute;raction des &eacute;l&eacute;ments";
@@ -721,8 +722,8 @@ $lang['gen_restart_start'] = "Restart";
 $lang['gen_restart_extcmd'] = "Commande externe";
 $lang['gen_butOK'] = "Generer";
 $lang['gen_status'] = "Statuts";
-$lang['gen_mvOk'] = " - d&eacute;placement OK";
-$lang['gen_mvKo'] = " - d&eacute;placement KO";
+$lang['gen_mvOk'] = " - d&eacute;placement <font color='green'>OK</font>";
+$lang['gen_mvKo'] = " - d&eacute;placement <font color='red'>KO</font>";
 $lang['gen_trapd'] = "Traps SNMP";
 $lang['gen_genTrap'] = "G&eacute;n&eacute;rer les fichiers de configuration";
 

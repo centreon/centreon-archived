@@ -449,10 +449,11 @@ $lang['tp_view'] = "View a Time Period";
 /* command */
 
 $lang['cmd_type'] = "Command Type";
+$lang['cmd_list_type'] = "Type";
 $lang['cmd_infos'] = "Informations";
-$lang['cmd_check'] = "Check Command";
-$lang['cmd_notif'] = "Notification Command";
-$lang['cmd_various'] = "Various Command";
+$lang['cmd_check'] = "Check";
+$lang['cmd_notif'] = "Notification";
+$lang['cmd_various'] = "Various";
 $lang['cmd_checkShort'] = "Check";
 $lang['cmd_notifShort'] = "Notification";
 $lang['cmd_add'] = "Add a Command";
@@ -703,7 +704,7 @@ $lang['cgi_pingSyntax'] = "Ping Syntax";
 
 $lang['gen_name'] = "Nagios Configuration Files Export";
 $lang['gen_infos'] = "Serveur implied";
-$lang['gen_host'] = "Nagios/Centreon Server";
+$lang['gen_host'] = "Nagios Server";
 $lang['gen_opt'] = "Export Options";
 $lang['gen_ok'] = "Generate Files";
 $lang['gen_level'] = "Relations between Elements";
@@ -722,8 +723,8 @@ $lang['gen_restart_start'] = "Restart";
 $lang['gen_restart_extcmd'] = "External Command";
 $lang['gen_butOK'] = "Export";
 $lang['gen_status'] = "State";
-$lang['gen_mvOk'] = " - movement OK";
-$lang['gen_mvKo'] = " - movement KO";
+$lang['gen_mvOk'] = " - movement <font color='green'>OK</font>";
+$lang['gen_mvKo'] = " - movement <font color='res'>KO</font>";
 $lang['gen_trapd'] = "Traps SNMP";
 $lang['gen_genTrap'] = "Export configuration files";
 
