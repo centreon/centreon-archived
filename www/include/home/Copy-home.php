@@ -24,12 +24,6 @@ For information : contact@oreon-project.org
 	unset($tpl);
 	unset($path);
 
-/*
-	include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-	open_flash_chart_object( 300, 300, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-host.php' );
-*/						
-
-	
 	$path = "./include/home/";
 		
 	# Smarty template Init
@@ -38,6 +32,5 @@ For information : contact@oreon-project.org
 		
 	$tpl->assign("session", session_id());
 	$tpl->display("home.ihtml");
-	
 ?>
 
