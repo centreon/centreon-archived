@@ -66,15 +66,13 @@ For information : contact@oreon-project.org
 	$stdout = NULL;
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();		
-		if ($ret["optimize"]["optimize"]){
-			$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
-			if (PEAR::isError($DBRESULT_Servers))
-				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
-			while ($tab =& $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
-					$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
-					$msg .= str_replace ("\n", "<br>", $stdout);
-				}
+		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
+		if (PEAR::isError($DBRESULT_Servers))
+			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
+		while ($tab =& $DBRESULT_Servers->fetchRow()){
+			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
+				$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
+				$msg .= str_replace ("\n", "<br>", $stdout);
 			}
 		}
 	}
