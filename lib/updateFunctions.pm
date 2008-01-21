@@ -1,5 +1,5 @@
 ###################################################################
-# Oreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0 
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -31,9 +31,11 @@ sub getIntervalLenght(){
 	}
 }
 
-sub updateRrdDB($$$$$$$$){ 
+sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
+	my $ERR;
 	my $interval = 4000;
-	my ($nb_value, $interval_length, $ERR);
+	my $nb_value;
+	my $interval_length;
 	
 	if (!-d $_[0]){
 		writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
@@ -49,15 +51,14 @@ sub updateRrdDB($$$$$$$$){
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		if (-w $_[0].$_[1].".rrd"){
-			$metric_used_by_perfdata_parsor = $_[1];
-			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-			$metric_used_by_perfdata_parsor = 0;
-			$ERR = RRDs::error;
-			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n") if ($ERR);
-		} else {
-			writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
+		$metric_used_by_perfdata_parsor = $_[1];
+		RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+		$ERR = RRDs::error;
+		if ($ERR){
+			writeLogFile("Updating : $_[0]$_[1].rrd : ".substr($_[6], 0, 19).", ".$_[2].":".sprintf("%e", $_[3])."\n");
+			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");	
 		}
+		$metric_used_by_perfdata_parsor = 0;
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
@@ -71,26 +72,23 @@ sub updateRrdDB($$$$$$$$){
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 			$_[6] =~ s/#S#/slash\_/g;
+			$metric_used_by_perfdata_parsor = $_[1];
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
-			if (!$ERR) {
-				writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
+			if ($ERR) {
+				writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n") ;
 			} else {
-				writeLogFile("ERROR while creating ".$_[0].$_[1].".rrd : $ERR\n") ;
+				writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
 			}
 			RRDs::tune($_[0].$_[1].".rrd", "-h", substr($_[6], 0, 19).":".$interval_hb);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while tunning operation on ".$_[0].$_[1].".rrd : $ERR\n");}
+
 			$_[3] =~ s/\,/\./g;
-			if (-w $_[0].$_[1].".rrd"){
-				$metric_used_by_perfdata_parsor = $_[1];
-				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-				$metric_used_by_perfdata_parsor = 0;
-				$ERR = RRDs::error;
-				writeLogFile("ERROR while updating ".$_[0]."/".$_[1].".rrd : $ERR\n") if ($ERR);
-			} else {
-				writeLogFile("ERROR when updating ".$_[0]."/".$_[1].".rrd : permission denied or file not found\n");
-			}
+			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+			$ERR = RRDs::error;
+			if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}	
+			$metric_used_by_perfdata_parsor = 0;
 			undef($begin);
 		}
 	}
@@ -106,7 +104,7 @@ sub updateMysqlDB($$$$){ # connexion value timestamp
 	undef($sth1);
 }
 
-sub updateRrdDBforHiddenSVC($$$$$$$$){
+sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
 
@@ -121,26 +119,20 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){
 
 	# call function to check if DB exist and else create it
 	if (-e $_[0]."/".$_[1].".rrd"){
-		writeLogFile($valueRecorded."\n");
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		if (-w $_[0].$_[1].".rrd"){
-			$metric_used_by_perfdata_parsor = $_[1];
-			writeLogFile($_[0].$_[1].".rrd --template ".substr($_[6], 0, 19) ." - ". $_[2].":".sprintf("%e", $_[3])."\n");
-			RRDs::update($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-			$metric_used_by_perfdata_parsor = 0;
-			$ERR = RRDs::error;
-			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
-		} else {
-			writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
-		}
+		$metric_used_by_perfdata_parsor = $_[1];
+		RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+		$ERR = RRDs::error;
+		if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
+		$metric_used_by_perfdata_parsor = 0;
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
 			my $begin = $_[4] - 200000;
-			$interval = 3;
 			CheckMySQLConnexion();
+			$interval = 1;
 			$interval = getIntervalLenght() * $interval;
 			$interval_hb = $interval * 2;
 			undef($data);
@@ -148,6 +140,7 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 			writeLogFile("Creation of $_[0]$_[1].rrd\n");
 			$_[6] =~ s/#S#/slash\_/g;
+			$metric_used_by_perfdata_parsor = $_[1];
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
@@ -155,14 +148,10 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while tunning operation on ".$_[0].$_[1].".rrd : $ERR\n");}
 			$_[3] =~ s/\,/\./g;
-			if (-w $_[0].$_[1].".rrd"){
-				RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
-				$ERR = RRDs::error;
-				if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}	
-				RRDs::tune($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-h ".substr($_[6], 0, 19).":$interval");
-			} else {
-				writeLogFile("ERROR when updating $_[0]$_[1].rrd : permission denied or file not found\n");
-			}
+			RRDs::update($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
+			$ERR = RRDs::error;
+			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
+			$metric_used_by_perfdata_parsor = 0;
 			undef($begin);
 		}
 	}

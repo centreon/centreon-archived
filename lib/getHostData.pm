@@ -1,5 +1,5 @@
 ###################################################################
-# Oreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0 
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -24,10 +24,11 @@
 # need in paramter : host_name
 
 sub getHostID($){
-	my $sth2 = $con_oreon->prepare("SELECT host_id FROM host WHERE host_name = '".$_[0]."' AND host_register = '1'");
+	my $sth2 = $con_oreon->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '".$_[0]."' AND `host_register` = '1'");
     if (!$sth2->execute) {writeLogFile("Error:" . $sth2->errstr . "\n");}
     my $data_host = $sth2->fetchrow_hashref();
     my $host_id = $data_host->{'host_id'};
+    $sth2->finish();
     undef($sth2);
     undef($data_host);
     return $host_id;
@@ -38,7 +39,7 @@ sub getHostID($){
 
 sub getHostName($){
 	if (!$_[0]){return 0;}
-	my $sth2 = $con_oreon->prepare("SELECT host_name FROM host WHERE host_id = '".$_[0]."' AND host_register = '1'");
+	my $sth2 = $con_oreon->prepare("SELECT `host_name` FROM `host` WHERE `host_id` = '".$_[0]."' AND `host_register` = '1'");
     if (!$sth2->execute) {writeLogFile("Error:" . $sth2->errstr . "\n");}
     my $data_host = $sth2->fetchrow_hashref();
     my $host_name = $data_host->{'host_name'};

@@ -1,5 +1,5 @@
 ###################################################################
-# Oreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0 
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -40,11 +40,9 @@ sub getLastRestartInMemory(){
 }
 
 sub saveLastRestartInMemory($){
-	if (defined($_[0]) && $_[0]){
-		my $sth = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$_[0]."'");
-	    if (!$sth->execute) {writeLogFile("Error - saveLastRestartInMemory : " . $sth->errstr . "\n");}
-	    undef($sth);
-	}
+	my $sth = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$_[0]."'");
+    if (!$sth->execute) {writeLogFile("Error - saveLastRestartInMemory : " . $sth->errstr . "\n");}
+    undef($sth);
 }
 
 # Get if purge is activ
@@ -78,15 +76,17 @@ sub DeleteOldRrdDB(){
     }
     undef($sth);
     undef($data);
-    my $some_dir = getStorageDir();
+    $some_dir = getStorageDir();
     opendir(DIR, $some_dir) || die "can't opendir $some_dir: $!";
     my @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
     closedir DIR;
     for (@files) {
 		if (!defined($base{$_})){
-			if (!-d $some_dir."/".$_){
+			if (-d $some_dir."/".$_){
+				;
+			} else { 
 				if (unlink($some_dir."/".$_)){
-					writeLogFile("Warning : ".$some_dir.$_." removed \n");
+					writeLogFile("Warning : ".$some_dir."/".$_." removed \n");
 				} else {
 					writeLogFile("Error : Unable to remove ".$some_dir.$_ ."\n");
 				}
@@ -99,11 +99,10 @@ sub DeleteOldRrdDB(){
 	undef(%base);
 }
 
-#
+
 # Check if host or service have change their name and description. 
 # If hosts or services have change, it update their id.
-#
-  
+   
 sub check_HostServiceID(){
  	my ($data, $host_name, $service_description, $purge_mod);
 	my $sth1 = $con_ods->prepare("SELECT * FROM index_data ORDER BY host_name");
@@ -120,11 +119,10 @@ sub check_HostServiceID(){
     	}  
     }
 	if (defined($last_restart) && $last_restart){
-		$sth2 = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
-		if (!$sth2->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
-		undef($sth2);
+		$sth1 = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
+		if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+		undef($sth1);
 	}
-	undef($sth1);
 }
 
 1;

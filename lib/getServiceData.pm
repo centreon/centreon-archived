@@ -1,5 +1,5 @@
 ###################################################################
-# Oreon is developped with GPL Licence 2.0 
+# Centreon is developped with GPL Licence 2.0 
 #
 # GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 #
@@ -23,17 +23,19 @@
 # need in paramter : host_id, service_description
 
 sub getServiceID($$){
+	$_[1] =~ s/\&/\&amp\;/g;
 	my $sth2 = $con_oreon->prepare(	"SELECT service_id FROM service, host_service_relation hsr ".
 									"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
-									"AND service.service_description = '".$_[1]."' AND service_register = '1' LIMIT 1");
+									"AND service_description = '".$_[1]."' AND `service_register` = '1' LIMIT 1");
 	if (!$sth2->execute) {writeLogFile("Error when getting service id : " . $sth2->errstr . "\n");}
 	my $data = $sth2->fetchrow_hashref();
+	$sth2->finish();
 	undef($sth2);
 	
 	if (!defined($data->{'service_id'}) && !$data->{'service_id'}){
 		$sth2 = $con_oreon->prepare("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 									" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-									" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND service_register = '1'");
+									" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND `service_register` = '1'");
 		if (!$sth2->execute) {writeLogFile("Error when getting service id 2 : " . $sth2->errstr . "\n");}
 		my $data2 = $sth2->fetchrow_hashref();
 		$service_id = $data2->{'service_id'};
@@ -48,6 +50,7 @@ sub getServiceID($$){
 	} else {
 		$service_id = $data->{'service_id'};
 		undef($data);
+		$sth2->finish();
 		undef($sth2);
 		return $service_id;
 	}
@@ -58,7 +61,7 @@ sub getServiceID($$){
 
 sub getServiceName($){	
    	if ($_[0]){
-	   	my $sth2 = $con_oreon->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."'");
+	   	my $sth2 = $con_oreon->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` = '1'");
 		if (!$sth2->execute) {writeLogFile("Error getting service name : " . $sth2->errstr . "\n");}
 		my $data = $sth2->fetchrow_hashref();
 		my $service_description = $data->{'service_description'};
@@ -96,15 +99,16 @@ sub getMyServiceField($$)	{
 }
 
 sub getServiceCheckInterval($){ # metric_id
-	
+
 	my $sth1 = $con_ods->prepare("SELECT index_id FROM metrics WHERE metric_id = '".$_[0]."'");
     if (!$sth1->execute){writeLogFile("Error where getting service interval : ".$sth1->errstr."\n");}
     my $data_metric = $sth1->fetchrow_hashref();
+    $sth1->finish();
     
     $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$data_metric->{'index_id'}."'");
     if (!$sth1->execute) {writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");}
     my $data_hst_svc = $sth1->fetchrow_hashref();
- 	
+    $sth1->finish();
  	undef($sth1);
     undef($data_metric);
     
@@ -114,10 +118,10 @@ sub getServiceCheckInterval($){ # metric_id
 }
 
 sub getServiceCheckIntervalFromService($){ # service_id
-	
     $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
     if (!$sth1->execute) {writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");}
-    my $data_hst_svc = $sth1->fetchrow_hashref(); 	
+    my $data_hst_svc = $sth1->fetchrow_hashref(); 
+	$sth1->finish();
  	undef($sth1);
     undef($data_metric);
     my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
