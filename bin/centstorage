@@ -30,11 +30,10 @@ use threads;
 use threads::shared;
 
 use RRDs;
-#use lib "@RRD_PERL@";
+use lib "@RRD_PERL@";
 use File::Copy;
 
-#my $installedPath = "@OREON_PATH@";
-my $installedPath = "/srv/oreon/";
+my $installedPath = "@OREON_PATH@";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -184,13 +183,10 @@ sub getPerfDataFile(){
 sub movePerfDataFile($){
 	my $PERFDATA = $_[0];
 	if (move($PERFDATA, $PERFDATA."_read")){
-		if (!-f $PERFDATA){
-			writeLogFile("Error When create service-perfdata file empty : $!") if (!open(PERFDATA,'>'.$PERFDATA));
-		}
+		writeLogFile("Error When create service-perfdata file empty : $!") if (open(PERFDATA,'>>'.$PERFDATA));
+		print PERFDATA "# New File #\n";
+		close PERFDATA ;
 		return(1);
-	} else {
-		writeLogFile("Error When moving data in tmp read file : $!");
-		return(0);
 	}
 }
 
@@ -241,15 +237,17 @@ sub GetPerfData(){
 						}
 						return;
 					}
-					print DROP $_  if ($flag_drop == 1);
-			    	@line_tab = split('\t');
-			    	$line_tab[2] =~ s/\\/\#BS\#/g;
-			    	$line_tab[2] =~ s/\//\#S\#/g;
-			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
-						CheckMySQLConnexion();
-						checkAndUpdate(@line_tab);
+					if (defined($line_tab[1]) && $_ != m/\#/){
+						print DROP $_  if ($flag_drop == 1);
+				    	@line_tab = split('\t');
+				    	$line_tab[2] =~ s/\\/\#BS\#/g;
+				    	$line_tab[2] =~ s/\//\#S\#/g;
+				    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
+							CheckMySQLConnexion();
+							checkAndUpdate(@line_tab);
+						}
+						undef($line_tab);
 					}
-					undef($line_tab);
 				}
 				close(PFDT);
 				# Remove Read File
@@ -370,16 +368,22 @@ sub CheckRebuild(){
 		CheckMySQLConnexion();
 		if ($y % 60 eq 0){
 			my ($sth2, $svc_mst_be_rbld, $data, $ERR, $flag, $metric, $cpt);
+			# ---------------------------------------------
+			# Rebuild database
 			$RRDdatabase_path = getRRDdatabase_path();
-			$len_storage_rrd = getLenStorageDB() * 60 * 60 * 24;
+			$len_storage_rrd = getLenStorageDB();
+			$len_storage_rrd = $len_storage_rrd * 60 * 60 * 24;
 			# Check if backup directory is created
-			checkStorageDirectory($RRDdatabase_path);
+			system("mkdir $RRDdatabase_path/backup/") if (! -d "$RRDdatabase_path/backup/");
+			
 			$sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
 			writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
 			while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
+			
 				my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
 				writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
-				undef($sth);				
+				undef($sth);
+				
 				writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."\n");
 				
 				# -----------------------------------------------------
@@ -412,65 +416,69 @@ sub CheckRebuild(){
 						undef($osl_conf);
 						undef($sth_interval);
 					} else {
-						$interval = 2 * getIntervalLenght();
+						$interval = 90;
 					}
 				} else {
-					$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'service_id'}) * getIntervalLenght();
+					$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght();
 				}
 				my $interval_hb = $interval * 2;
+
 				my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 				if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
-				while ($metric = $sth3->fetchrow_hashref()){
-					
-					$metric->{'metric_name'} =~ s/\//slash\_/g;
-					$metric->{'metric_name'} =~ s/\#S\#/slash\_/g;
-					
-					writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd\n");					
-					my $sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
-					writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
-					for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
-						if (!$flag){
-
-							$interval = 600 if (!defined($interval));
-							my $my_len_storage_rrd = $len_storage_rrd / $interval;
-							writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");
-							if (-x $RRDdatabase_path.$metric->{'metric_id'}.".rrd")
-								unlink($RRDdatabase_path.$metric->{'metric_id'}.".rrd");
-
-							# Calculate first entry in database					
-							my $begin = $data->{'ctime'} - 200;
-	
+				
+				writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght().")\n") if ($interval == 0);
+				my $sth4;
+				if ($interval != 0){
+					while ($metric = $sth3->fetchrow_hashref()){
+						$metric->{'metric_name'} =~ s/\//slash\_/g;
+						$metric->{'metric_name'} =~ s/\#S\#/slash\_/g;
+						$metric->{'metric_name'} =~ s/\#BS\#/bslash\_/g;
+						writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd\n");					
+						
+						$sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
+						writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "\n") if (!$sth4->execute);
+						
+						for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
+							if (!$flag){
+								$interval = 330 if (!defined($interval));
+								my $my_len_storage_rrd = $len_storage_rrd / $interval;
+								system("mv ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd $RRDdatabase_path/backup/".$metric->{'metric_id'}.".rrd");
+								writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");				
+								# Calculate first entry in database					
+								my $begin = $data->{'ctime'} - 200;
+								# Create RRD database
+								# Waiting if metric is in use
+								while ($metric_used_by_perfdata_parsor eq $metric->{'metric_id'}){
+									sleep(2);
+								}
+								RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
+								$ERR = RRDs::error;
+								if ($ERR){writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
+									
+								RRDs::tune($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-h", substr($metric->{'metric_name'}, 0, 19).":".$interval_hb);
+								$ERR = RRDs::error;
+								if ($ERR){writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
+								
+								undef($ERR);
+								undef($begin);
+								undef($my_len_storage_rrd);
+								$flag++;
+							}
 							# Waiting if metric is in use
 							while ($metric_used_by_perfdata_parsor eq $metric->{'metric_id'}){
 								sleep(2);
 							}
-
-							# Create RRD database
-
-							RRDs::create($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric->{'metric_name'}, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
+							# Update Database 
+							RRDs::update ($RRDdatabase_path.$metric->{'metric_id'}.".rrd" , "--template", substr($metric->{'metric_name'}, 0, 19), $data->{'ctime'}.":".$data->{'value'});
 							$ERR = RRDs::error;
-							if ($ERR){
-								writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");
-							} else {
-								undef($my_len_storage_rrd);								
-								RRDs::tune($RRDdatabase_path.$metric->{'metric_id'}.".rrd", "-h", substr($metric->{'metric_name'}, 0, 19).":".$interval_hb);
-								$ERR = RRDs::error;
-								if ($ERR){writeLogFile("ERROR while tunning operation on ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd : $ERR\n");}
-							}
+						
+							if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
 							undef($ERR);
-							undef($begin);
-							undef($my_len_storage_rrd);
-							$flag++;
 						}
-						# Update Database 
-						RRDs::update ($RRDdatabase_path.$metric->{'metric_id'}.".rrd" , "--template", substr($metric->{'metric_name'}, 0, 19), $data->{'ctime'}.":".$data->{'value'});
-						$ERR = RRDs::error;
-					
-						#if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric->{'metric_id'}.".rrd at ".$data->{'ctime'}." -> ".$data->{'value'}." : $ERR\n");}
-						undef($ERR);
+						writeLogFile("$cpt value insert\n");
+						undef($sth4);
+						# -----------------------------------------------------
 					}
-					undef($sth4);
-					# -----------------------------------------------------
 				}
 				undef($interval);
 				undef($sth3);
@@ -481,17 +489,19 @@ sub CheckRebuild(){
 				undef($ERR);
 				undef($metric);
 			}
+			$sth2->finish();
 			undef($flag);
 			undef($svc_mst_be_rbld);
 			undef($sth2);
 			undef($data);
 		}
-		$con_ods->disconnect();
 		$con_oreon->disconnect();
+        $con_ods->disconnect();
 		$y++;
 		sleep(1);
 	}
 }
+
 
 sub BuildReport(){
 	while (1){
@@ -500,16 +510,16 @@ sub BuildReport(){
 }
 
 sub ParseLogSNMPTT(){
-	while (1){
+	while ($stop){
 		CheckMySQLConnexion();
 		my $sth = $con_oreon->prepare("select `snmptt_unknowntrap_log_file` from `general_opt`");
 		if (!$sth->execute) {
-		    print "ERROR when performing sql query : ".$sth->errstr."\n";
+		    writeLogFile("ERROR when performing Trap sql query : ".$sth->errstr."\n");
 		} else {
 		    my $file =  $sth->fetchrow_array();
 		    $sth->finish;
 		    if (!defined($file) || !$file) {
-		        print "ERROR : Snmptt log file is not defined\n";
+		        writeLogFile("ERROR : Snmptt log file is not defined\n");
 		    } else {
 		        if (open (FILE, "< $file")) {
 		            while (<FILE>) {
@@ -541,10 +551,10 @@ sub ParseLogSNMPTT(){
 		                        $tab[0] = "$a.$b.$c.$d";
 		                    }
 		                    $sth = $con_ods->prepare("select `traps_id` from `log_snmptt` where `traps_oid`='".$tab[1]."' and `traps_ip` = '".$tab[0]."'");
-		                    print "ERROR when getting performing sql query : ".$sth->errstr."\n" if (!$sth->execute);
+		                    writeLogFile("ERROR when getting performing sql query : ".$sth->errstr."\n") if (!$sth->execute);
 		                    if (!($sth->rows)) {
 		                        my $sth_insert = $con_ods->prepare("insert into `log_snmptt` (`traps_ip`, `traps_oid`, `traps_community`, `traps_infos`) values ('".$tab[0]."','".$tab[1]."','".$tab[2]."','".$tab[3]."')");
-		                        print "ERROR when getting performing sql query : ".$sth->errstr."\n" if (!$sth_insert->execute);
+		                        writeLogFile("ERROR when getting performing sql query : ".$sth->errstr."\n") if (!$sth_insert->execute);
 		                        $sth_insert->finish;
 		                    }
 		                    $sth->finish;
@@ -552,9 +562,7 @@ sub ParseLogSNMPTT(){
 		                    undef($more_infos);
 		                }
 		            }
-		            print "Error When removing $file : $!" if (!unlink($file));
-		        } else {
-		            print "ERROR : Cannot open $file\n";
+		            writeLogFile("Error When removing $file : $!") if (!unlink($file));
 		        }
 		    }
 		}
@@ -570,7 +578,7 @@ my $threadPerfdata 			= 	threads->new("GetPerfData");
 my $threadCheckRestart		= 	threads->new("CheckRestart");
 my $threadCheckRebuild		= 	threads->new("CheckRebuild");
 #my $threadBuildReport		= 	threads->new("BuildReports");
-#my $ParseLogSNMPTT			= 	threads->new("ParseLogSNMPTT");
+my $ParseLogSNMPTT			= 	threads->new("ParseLogSNMPTT");
 
 
 #my $threadCheckNagiosStats	= 	threads->new("CheckNagiosStats");
@@ -617,7 +625,7 @@ while ($stop){
 $threadPerfdata->join;
 $threadCheckRestart->join;
 $threadCheckRebuild->join;
-#$threadBuildReport->join;
+$ParseLogSNMPTT->join;
 #$threadCheckNagiosStats->join;
 
 # Write in log file 
