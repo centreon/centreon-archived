@@ -182,8 +182,11 @@ sub getPerfDataFile(){
 ########################################
 
 sub movePerfDataFile($){
-	if (copy($_[0], $_[0]."_read")){
-		writeLogFile("Error When removing service-perfdata file : $!") if (!unlink($_[0]));
+	my $PERFDATA = $_[0];
+	if (move($PERFDATA, $PERFDATA."_read")){
+		if (!-f $PERFDATA){
+			writeLogFile("Error When create service-perfdata file empty : $!") if (!open(PERFDATA,'>'.$PERFDATA));
+		}
 		return(1);
 	} else {
 		writeLogFile("Error When moving data in tmp read file : $!");
@@ -210,12 +213,12 @@ sub GetPerfData(){
 	# Init Var
 	my ($line_tab, $sth2, $data, $flag_drop, $sleeptime);
 	use vars qw($con_oreon $con_ods);
+	
 	CheckMySQLConnexion();				
 	my $PFDT = getPerfDataFile();
 	while ($stop) {
 		if (-r $PFDT || -r $PFDT.".bckp"){
 			# Move perfdata File befor reading		
-			# Penser a lire le fichier de backup !
 			if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
 				$data = getConfig();
 				$PFDT = $data->{'perfdata_file'};
@@ -259,6 +262,8 @@ sub GetPerfData(){
 				writeLogFile("Error When reading data in tmp read file : $!");
 			}
 		}
+		$con_oreon->disconnect();
+        $con_ods->disconnect();
 		my $i,
 		$sleeptime = getSleepTime();
 		for ($i = 0; $i <= $sleeptime && $stop; $i++){
@@ -279,7 +284,7 @@ sub GetPerfData(){
 sub CheckRestart(){
 	my ($last_restart_stt, $last_restart, $sth2, $data, $y);
 	use vars qw($con_oreon $con_ods);
-	CheckMySQLConnexion();
+	
 	$y = 1;
 	while($stop){
 		CheckMySQLConnexion();
@@ -293,6 +298,8 @@ sub CheckRestart(){
 			}
 			saveLastRestartInMemory($last_restart);
 		}
+		$con_oreon->disconnect();
+        $con_ods->disconnect();
 		$y++;
 		sleep(5);
 	}
@@ -479,6 +486,8 @@ sub CheckRebuild(){
 			undef($sth2);
 			undef($data);
 		}
+		$con_ods->disconnect();
+		$con_oreon->disconnect();
 		$y++;
 		sleep(1);
 	}
@@ -549,6 +558,9 @@ sub ParseLogSNMPTT(){
 		        }
 		    }
 		}
+		$con_ods->disconnect();
+		$con_oreon->disconnect();
+		sleep(60);
 	}
 }
 
@@ -605,6 +617,7 @@ while ($stop){
 $threadPerfdata->join;
 $threadCheckRestart->join;
 $threadCheckRebuild->join;
+#$threadBuildReport->join;
 #$threadCheckNagiosStats->join;
 
 # Write in log file 
