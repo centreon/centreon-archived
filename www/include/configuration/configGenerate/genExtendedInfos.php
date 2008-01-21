@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 			array_key_exists($ehi["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
 			
 			if ($BP)	{
-				$ret["comment"]["comment"] ? ($str .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
+				$ret["comment"] ? ($str .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
 				$str .= "define hostextinfo{\n";
 				if ($ehi["host_name"]) $str .= print_line("host_name", $ehi["host_name"]);
 				if ($oreon->user->get_version() == 2)

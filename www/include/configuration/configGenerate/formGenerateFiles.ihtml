@@ -8,12 +8,12 @@
 		<tr class="list_one"><td class="FormRowField">{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
 
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.opt}</td></tr>	 	
-		<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField" colspan="2">{$form.comment.html}&nbsp;{$form.comment.label}</td></tr>
 
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>	 	
-		<tr class="list_one"><td class="FormRowField">{$form.debug.label}</td><td class="FormRowValue">{$form.debug.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.move.label}</td><td class="FormRowValue">{$form.move.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.restart.label}</td><td class="FormRowValue">{$form.restart.html}<br><br>{$form.restart_mode.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField" colspan="2">{$form.debug.html}&nbsp;{$form.debug.label}</td></tr>
+		<tr class="list_two"><td class="FormRowField" colspan="2">{$form.move.html}&nbsp;{$form.move.label}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.restart.html}&nbsp;{$form.restart.label}</td><td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
 
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>

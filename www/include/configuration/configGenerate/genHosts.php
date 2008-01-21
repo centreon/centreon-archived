@@ -38,8 +38,8 @@ For information : contact@oreon-project.org
 			if (!$host["host_register"])
 				$BP = true;
 			if ($BP)	{
-				$ret["comment"]["comment"] ? ($str .= "# '" . $host["host_name"]."' host definition ".$i."\n") : NULL;
-				if ($ret["comment"]["comment"] && $host["host_comment"])	{
+				$ret["comment"] ? ($str .= "# '" . $host["host_name"]."' host definition ".$i."\n") : NULL;
+				if ($ret["comment"] && $host["host_comment"])	{
 					$comment = array();
 					$comment = explode("\n", $host["host_comment"]);
 					foreach ($comment as $cmt)

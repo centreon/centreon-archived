@@ -35,48 +35,29 @@ For information : contact@oreon-project.org
 	while ($nagios =& $DBRESULT->fetchRow())
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', $lang["gen_name"]);
-
 	$form->addElement('header', 'infos', $lang["gen_infos"]);
-	
-    $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
-
 	$form->addElement('header', 'opt', $lang["gen_opt"]);	
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["no"], '0');
-	$form->addGroup($tab, 'comment', $lang["gen_comment"], '&nbsp;');
-	$form->setDefaults(array('comment' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["no"], '0');
-	$form->addGroup($tab, 'debug', $lang["gen_debug"], '&nbsp;');
-	$form->setDefaults(array('debug' => '1'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["no"], '0');
-	$form->addGroup($tab, 'optimize', $lang["gen_optimize"], '&nbsp;');
-	$form->setDefaults(array('optimize' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, $lang["no"], '0');
-	$form->addGroup($tab, 'move', $lang["gen_move"], '&nbsp;');
-	$form->setDefaults(array('move' => '0'));
-	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["no"], '0');
-	$form->addGroup($tab, 'restart', $lang["gen_restart"], '&nbsp;');
-	$form->setDefaults(array('restart' => '0'));
+    
+    $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
+	
+	$form->addElement('checkbox', 'comment', $lang["gen_comment"]);
+	$form->addElement('checkbox', 'debug', $lang["gen_debug"]);
+	$form->setDefaults(array('debug' => '1'));	
+	
+	$form->addElement('checkbox', 'optimize', $lang["gen_optimize"]);
+	$form->addElement('checkbox', 'move', $lang["gen_move"]);
+	$form->addElement('checkbox', 'restart', $lang["gen_restart"]);
 	
 	$tab_restart_mod = array(2 => $lang["gen_restart_start"], 1 => $lang["gen_restart_load"], 3 => $lang["gen_restart_extcmd"]);
-	$form->addElement('select', 'restart_mode', $lang["gen_restart"], $tab_restart_mod, $attrSelect);
-	$form->setDefaults(array('restart_mode' => '2'));	
+	$form->addElement('select', 'restart_mode', $lang["gen_restart_method"], $tab_restart_mod, $attrSelect);
+	$form->setDefaults(array('restart_mode' => '2'));
 
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -93,6 +74,10 @@ For information : contact@oreon-project.org
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();
 		$gbArr = manageDependencies();
+		
+		if (!isset($ret["comment"]))
+			$ret["comment"] = 0;
+		
 		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
@@ -150,6 +135,7 @@ For information : contact@oreon-project.org
 		/*
 		 * Create Server List to restart
 		 */
+		 
 		$tab_server = array();
 		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
 		if (PEAR::isError($DBRESULT_Servers))
@@ -163,7 +149,7 @@ For information : contact@oreon-project.org
 		 * If debug needed
 		 */
 				
-		if ($ret["debug"]["debug"])	{
+		if (isset($ret["debug"]) && $ret["debug"])	{
 			$msg_debug = array();
 			foreach ($tab_server as $host) {
 				$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG");
@@ -171,7 +157,11 @@ For information : contact@oreon-project.org
 			}
 		}
 
-		if ($ret["move"]["move"])	{
+		/*
+		 * Move File
+		 */
+
+		if (isset($ret["move"]) && $ret["move"])	{
 			$msg_copy = array();
 			foreach ($tab_server as $host)
 				if (isset($host['localhost']) && $host['localhost'] == 1){
@@ -190,10 +180,11 @@ For information : contact@oreon-project.org
 				}
 		}
 		
-		if ($ret["restart"]["restart"])	{
-			/*
-			 * Restart Nagios Poller
-			 */
+		/*
+		 * Restart Nagios Poller
+		 */
+		
+		if (isset($ret["restart"]) && $ret["restart"])	{
 			$stdout = "";
 			$msg_restart = array();
 			foreach ($tab_server as $host)

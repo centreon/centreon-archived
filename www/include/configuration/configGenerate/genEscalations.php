@@ -50,8 +50,8 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();			
 		if ($strTemp)	{
-			$ret["comment"]["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' host escalation definition ".$i."\n") : NULL;
-			if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
+			$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' host escalation definition ".$i."\n") : NULL;
+			if ($ret["comment"] && $escalation["esc_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $escalation["esc_comment"]);
 				foreach ($comment as $cmt)
@@ -121,8 +121,8 @@ For information : contact@oreon-project.org
 		$DBRESULT2->free();
 			
 		if ($strTemp && $generatedHG[$hg["hg_id"]])	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' host (group) escalation definition ".$i."\n") : NULL;
-			if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
+			$ret["comment"] ? ($str .= "# '".$escalation["esc_name"]."' host (group) escalation definition ".$i."\n") : NULL;
+			if ($ret["comment"] && $escalation["esc_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $escalation["esc_comment"]);
 				foreach ($comment as $cmt)
@@ -187,8 +187,8 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();			
 		if ($strTemp)	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service (group) escalation definition ".$i."\n") : NULL;
-			if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
+			$ret["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service (group) escalation definition ".$i."\n") : NULL;
+			if ($ret["comment"] && $escalation["esc_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $escalation["esc_comment"]);
 				foreach ($comment as $cmt)
@@ -251,8 +251,8 @@ For information : contact@oreon-project.org
 				$service["service_description"] = str_replace('#S#', "/", $service["service_description"]);
 				$service["service_description"] = str_replace('#BS#', "\\", $service["service_description"]);
 				if ($BP)	{
-					$ret["comment"]["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
-					if ($ret["comment"]["comment"] && $escalation["esc_comment"])	{
+					$ret["comment"] ? ($strDef .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
+					if ($ret["comment"] && $escalation["esc_comment"])	{
 						$comment = array();
 						$comment = explode("\n", $escalation["esc_comment"]);
 						foreach ($comment as $cmt)

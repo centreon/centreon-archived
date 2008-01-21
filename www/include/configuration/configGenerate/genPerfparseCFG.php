@@ -32,8 +32,8 @@ For information : contact@oreon-project.org
 	else
 		$perfparse = array();
 	$str = NULL;
-	$ret["comment"]["comment"] ? ($str .= "# '".$perfparse["perfparse_name"]."'\n") : NULL;
-	if ($ret["comment"]["comment"] && $perfparse["perfparse_comment"])	{
+	$ret["comment"] ? ($str .= "# '".$perfparse["perfparse_name"]."'\n") : NULL;
+	if ($ret["comment"] && $perfparse["perfparse_comment"])	{
 		$comment = array();
 		$comment = explode("\n", $perfparse["perfparse_comment"]);
 		foreach ($comment as $cmt)

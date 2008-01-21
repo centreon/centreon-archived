@@ -46,8 +46,8 @@ For information : contact@oreon-project.org
 			#
 			$strTMP = NULL;
 			$parent = false;
-			$ret["comment"]["comment"] ? ($strTMP .= "# '" . $service["service_description"] . "' service definition " . $i . "\n") : NULL;
-			if ($ret["comment"]["comment"] && $service["service_comment"])	{
+			$ret["comment"] ? ($strTMP .= "# '" . $service["service_description"] . "' service definition " . $i . "\n") : NULL;
+			if ($ret["comment"] && $service["service_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $service["service_comment"]);
 				foreach ($comment as $cmt)

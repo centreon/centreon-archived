@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	$i = 1;
 	$str = NULL;
 	while($DBRESULT->fetchInto($timePeriod))	{
-		$ret["comment"]["comment"] ? ($str .= "# '" . $timePeriod["tp_name"] . "' timeperiod definition " . $i . "\n") : NULL;
+		$ret["comment"] ? ($str .= "# '" . $timePeriod["tp_name"] . "' timeperiod definition " . $i . "\n") : NULL;
 		$str .= "define timeperiod{\n";
 		if ($timePeriod["tp_name"]) $str .= print_line("timeperiod_name", $timePeriod["tp_name"]);
 		if ($timePeriod["tp_alias"]) $str .= print_line("alias", $timePeriod["tp_alias"]);

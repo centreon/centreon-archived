@@ -62,8 +62,8 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();			
 		if ($strTemp1 && $strTemp2)	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' host dependency definition ".$i."\n") : "";
-			if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{
+			$ret["comment"] ? ($str .= "# '".$dependency["dep_name"]."' host dependency definition ".$i."\n") : "";
+			if ($ret["comment"] && $dependency["dep_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $dependency["dep_comment"]);
 				foreach ($comment as $cmt)
@@ -129,8 +129,8 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();			
 		if ($strTemp1 && $strTemp2)	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' hostgroup dependency definition ".$i."\n") : "";
-			if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{
+			$ret["comment"] ? ($str .= "# '".$dependency["dep_name"]."' hostgroup dependency definition ".$i."\n") : "";
+			if ($ret["comment"] && $dependency["dep_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $dependency["dep_comment"]);
 				foreach ($comment as $cmt)
@@ -189,8 +189,8 @@ For information : contact@oreon-project.org
 					}
 				}
 				if (isset($hPar) && isset($hCh))	{
-					$ret["comment"]["comment"] ? ($str .= "# '".$svPar["dep_name"]."' host dependency definition ".$i."\n") : "";
-					if ($ret["comment"]["comment"] && $svPar["dep_comment"])	{
+					$ret["comment"] ? ($str .= "# '".$svPar["dep_name"]."' host dependency definition ".$i."\n") : "";
+					if ($ret["comment"] && $svPar["dep_comment"])	{
 						$comment = array();
 						$comment = explode("\n", $svPar["dep_comment"]);
 						foreach ($comment as $cmt)
@@ -253,8 +253,8 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2->free();			
 		if ($strTemp1 && $strTemp2)	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' servicegroup dependency definition ".$i."\n") : "";
-			if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{
+			$ret["comment"] ? ($str .= "# '".$dependency["dep_name"]."' servicegroup dependency definition ".$i."\n") : "";
+			if ($ret["comment"] && $dependency["dep_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $dependency["dep_comment"]);
 				foreach ($comment as $cmt)

@@ -28,8 +28,8 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$str = NULL;
 	while ($DBRESULT->fetchInto($DBRESULTource))	{
-		$ret["comment"]["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
-		if ($ret["comment"]["comment"] && $DBRESULTource["resource_comment"])	{
+		$ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
+		if ($ret["comment"] && $DBRESULTource["resource_comment"])	{
 			$comment = array();
 			$comment = explode("\n", $DBRESULTource["resource_comment"]);
 			foreach ($comment as $cmt)

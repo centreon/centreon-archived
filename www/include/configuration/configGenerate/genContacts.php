@@ -34,8 +34,8 @@ For information : contact@oreon-project.org
 		$BP = false;
 		array_key_exists($contact["contact_id"], $gbArr[0]) ? $BP = true : NULL;
 		if ($BP)	{
-			$ret["comment"]["comment"] ? ($str .= "# '".$contact["contact_name"]."' contact definition ".$i."\n") : NULL;
-			if ($ret["comment"]["comment"] && $contact["contact_comment"])	{
+			$ret["comment"] ? ($str .= "# '".$contact["contact_name"]."' contact definition ".$i."\n") : NULL;
+			if ($ret["comment"] && $contact["contact_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $contact["contact_comment"]);
 				foreach ($comment as $cmt)

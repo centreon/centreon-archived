@@ -34,8 +34,8 @@ For information : contact@oreon-project.org
 		$BP = false;
 		array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
 		if ($BP)	{
-			$ret["comment"]["comment"] ? ($str .= "# '" . $contactGroup["cg_name"] . "' contactgroup definition " . $i . "\n") : NULL ;
-			if ($ret["comment"]["comment"] && $contactGroup["cg_comment"])	{
+			$ret["comment"] ? ($str .= "# '" . $contactGroup["cg_name"] . "' contactgroup definition " . $i . "\n") : NULL ;
+			if ($ret["comment"] && $contactGroup["cg_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $contactGroup["cg_comment"]);
 				foreach ($comment as $cmt)

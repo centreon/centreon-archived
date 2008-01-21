@@ -29,8 +29,8 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$nagios = $DBRESULT->fetchRow();
 	$str = NULL;
-	$ret["comment"]["comment"] ? ($str .= "# '".$nagios["nagios_name"]."'\n") : NULL;
-	if ($ret["comment"]["comment"] && $nagios["nagios_comment"])	{
+	$ret["comment"] ? ($str .= "# '".$nagios["nagios_name"]."'\n") : NULL;
+	if ($ret["comment"] && $nagios["nagios_comment"])	{
 		$comment = array();
 		$comment = explode("\n", $nagios["nagios_comment"]);
 		foreach ($comment as $cmt)

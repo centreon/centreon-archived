@@ -47,8 +47,8 @@ For information : contact@oreon-project.org
 			 * Generate a new Hostgroup
 			 */
 			
-			$ret["comment"]["comment"] ? ($strDef .= "# '" . $hostGroup["hg_name"] . "' hostgroup definition " . $i . "\n") : NULL;
-			if ($ret["comment"]["comment"] && $hostGroup["hg_comment"])	{
+			$ret["comment"] ? ($strDef .= "# '" . $hostGroup["hg_name"] . "' hostgroup definition " . $i . "\n") : NULL;
+			if ($ret["comment"] && $hostGroup["hg_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $hostGroup["hg_comment"]);
 				foreach ($comment as $cmt)

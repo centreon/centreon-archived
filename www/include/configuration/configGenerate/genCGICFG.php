@@ -36,8 +36,8 @@ For information : contact@oreon-project.org
 	else
 		$cgi = array();
 	$str = NULL;
-	$ret["comment"]["comment"] ? ($str .= "# '".$cgi["cgi_name"]."'\n") : NULL;
-	if ($ret["comment"]["comment"] && $cgi["cgi_comment"])	{
+	$ret["comment"] ? ($str .= "# '".$cgi["cgi_name"]."'\n") : NULL;
+	if ($ret["comment"] && $cgi["cgi_comment"])	{
 		$comment = array();
 		$comment = explode("\n", $cgi["cgi_comment"]);
 		foreach ($comment as $cmt)

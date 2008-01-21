@@ -40,8 +40,8 @@ For information : contact@oreon-project.org
 		array_key_exists($serviceGroup["sg_id"], $gbArr[5]) ? $BP = true : NULL;
 		
 		if ($BP)	{
-			$ret["comment"]["comment"] ? ($strDef .= "# '" . $serviceGroup["sg_name"] . "' servicegroup definition " . $i . "\n") : NULL;
-			if ($ret["comment"]["comment"] && $serviceGroup["sg_comment"])	{
+			$ret["comment"] ? ($strDef .= "# '" . $serviceGroup["sg_name"] . "' servicegroup definition " . $i . "\n") : NULL;
+			if ($ret["comment"] && $serviceGroup["sg_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $serviceGroup["sg_comment"]);
 				foreach ($comment as $cmt)
