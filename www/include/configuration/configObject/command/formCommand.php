@@ -51,6 +51,18 @@ For information : contact@oreon-project.org
 		$resource[$row["resource_line"][0]] = $row["resource_line"][0];
 	}
 	$DBRESULT->free();
+	
+	/*
+	 * Graphs Template comes from DB -> Store in $graphTpls Array
+	 */
+	$graphTpls = array(NULL=>NULL);
+	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	while($DBRESULT->fetchInto($graphTpl))
+		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
+	$DBRESULT->free();
+	
 	# Nagios Macro
 	$macros = array();
 	$DBRESULT =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
@@ -98,6 +110,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'command_name', $lang["cmd_name"], $attrsText);
 	$form->addElement('text', 'command_example', $lang["cmd_example"], $attrsText);
 	$form->addElement('textarea', 'command_line', $lang["cmd_line"], $attrsTextarea);
+	$form->addElement('select', 'graph_id', $lang["cmd_graph_id"], $graphTpls);
 
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');

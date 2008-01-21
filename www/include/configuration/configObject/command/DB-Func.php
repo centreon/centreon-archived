@@ -97,7 +97,8 @@ For information : contact@oreon-project.org
 		$rq .= "SET command_name = '".htmlentities($ret["command_name"], ENT_QUOTES)."', " .
 				"command_line = '".htmlentities($ret["command_line"], ENT_QUOTES)."', " .
 				"command_example = '".htmlentities($ret["command_example"], ENT_QUOTES)."', " .
-				"command_type = '".htmlentities($ret["command_type"]["command_type"], ENT_QUOTES)."' " .
+				"command_type = '".htmlentities($ret["command_type"]["command_type"], ENT_QUOTES)."', " .
+				"graph_id = '".htmlentities($ret["graph_id"], ENT_QUOTES)."' " .
 				"WHERE command_id = '".$cmd_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -126,9 +127,9 @@ For information : contact@oreon-project.org
 		$ret["command_example"] = str_replace('/', "#S#", $ret["command_example"]);
 		$ret["command_example"] = str_replace('\\', "#BS#", $ret["command_example"]);
 		$rq = "INSERT INTO command ";
-		$rq .= "(command_name, command_line, command_example, command_type) ";
+		$rq .= "(command_name, command_line, command_example, command_type, graph_id) ";
 		$rq .= "VALUES ";
-		$rq .= "('".htmlentities($ret["command_name"], ENT_QUOTES)."', '".htmlentities($ret["command_line"], ENT_QUOTES)."', '".htmlentities($ret["command_example"], ENT_QUOTES)."', '".$ret["command_type"]["command_type"]."')";
+		$rq .= "('".htmlentities($ret["command_name"], ENT_QUOTES)."', '".htmlentities($ret["command_line"], ENT_QUOTES)."', '".htmlentities($ret["command_example"], ENT_QUOTES)."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."')";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
