@@ -468,6 +468,9 @@ $lang['cmd_output'] = "Output";
 $lang['cmd_example'] = "Argument Example";
 $lang['cmd_plugins'] = "Plugins";
 $lang['cmd_graph_id'] = "Graph template";
+$lang['cmd_cat_name'] = "Category Name";
+$lang['cmd_cat_alias'] = "Alias / Description";
+$lang['cmd_cat_order'] = "Order";
 
 /* Plugins */
 

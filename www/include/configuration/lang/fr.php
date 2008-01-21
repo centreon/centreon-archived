@@ -467,6 +467,10 @@ $lang['cmd_output'] = "Sortie";
 $lang['cmd_example'] = "Exemple d'argument";
 $lang['cmd_plugins'] = "Sondes";
 $lang['cmd_graph_id'] = "Mod&egrave;le de graphique";
+$lang['cmd_cat_name'] = "Nom de la cat&eacute;gorie";
+$lang['cmd_cat_alias'] = "alias / Description";
+$lang['cmd_cat_order'] = "Ordre";
+
 
 /* Plugins */
 
