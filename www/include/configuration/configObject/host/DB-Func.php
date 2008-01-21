@@ -239,6 +239,14 @@ For information : contact@oreon-project.org
 							if (PEAR::isError($DBRESULT2))
 								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 						}
+						$DBRESULT =& $pearDB->query("SELECT DISTINCT nagios_server_id FROM ns_host_relation WHERE host_host_id = '".$key."'");
+						if (PEAR::isError($DBRESULT))
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						while($DBRESULT->fetchInto($Hg)){
+							$DBRESULT1 =& $pearDB->query("INSERT INTO ns_host_relation VALUES ('', '".$Hg["nagios_server_id"]."', '".$maxId["MAX(host_id)"]."')");
+							if (PEAR::isError($DBRESULT1))
+								print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
+						}
 					}
 				}
 			}
@@ -1069,19 +1077,19 @@ For information : contact@oreon-project.org
 	function updateNagiosServerRelation_MC($host_id, $ret = array())	{
 		if (!$host_id) return;
 		global $form, $pearDB;
-		$rq = "SELECT * FROM contactgroup_host_relation ";
+		$rq = "SELECT * FROM ns_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$cgs = array();
 		while($DBRESULT->fetchInto($arr))
-			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
-		$ret = $form->getSubmitValue("host_cgs");
+			$cgs[$arr["nagios_server_id"]] = $arr["nagios_server_id"];
+		$ret = $form->getSubmitValue("host_ns");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($cgs[$ret[$i]]))	{
-				$rq = "INSERT INTO contactgroup_host_relation ";
-				$rq .= "(host_host_id, contactgroup_cg_id) ";
+				$rq = "INSERT INTO ns_host_relation ";
+				$rq .= "(host_host_id, nagios_server_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$host_id."', '".$ret[$i]."')";
 				$DBRESULT = $pearDB->query($rq);

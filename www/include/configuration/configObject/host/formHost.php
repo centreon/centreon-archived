@@ -200,10 +200,12 @@ For information : contact@oreon-project.org
 	##########################################################
 	# Var information to format the element
 	#
-	$attrsText 		= array("size"=>"30");
-	$attrsText2		= array("size"=>"6");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"4", "cols"=>"80");
+	$attrsText 			= array("size"=>"30");
+	$attrsText2			= array("size"=>"6");
+	$attrsAdvSelect 	= array("style" => "width: 220px; height: 100px;");
+	$attrsAdvSelectsmall= array("style" => "width: 220px; height: 50px;");
+	$attrsAdvSelectbig 	= array("style" => "width: 220px; height: 130px;");
+	$attrsTextarea 		= array("rows"=>"4", "cols"=>"80");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
 
 	#
@@ -409,7 +411,7 @@ For information : contact@oreon-project.org
 		$form->addGroup($mc_mod_hhg, 'mc_mod_nsid', $lang["mc_mod"], '&nbsp;');
 		$form->setDefaults(array('mc_mod_nsid'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', $lang['h_NagiosServer'], $nsServers, $attrsAdvSelect);
+    $ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', $lang['h_NagiosServer'], $nsServers, $attrsAdvSelectsmall);
 	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
 	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
 	$ams3->setElementTemplate($template);
