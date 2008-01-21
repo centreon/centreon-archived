@@ -162,7 +162,8 @@ $lang['m_mnftr'] = "Standards or Vendor";
 $lang['m_mibs'] = "Load MIBs";
 $lang['m_categories'] = "Categories";
 
-$lang['m_notification'] = "Users";
+$lang['m_users'] = "Users";
+$lang['m_notification'] = "Notifications";
 $lang['m_contact'] = "Contacts";
 $lang['m_contactgroup'] = "Contact Groups";
 $lang['m_timeperiod'] = "Time Periods";

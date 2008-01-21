@@ -162,7 +162,8 @@ $lang['m_mnftr'] = "Constructeur";
 $lang['m_mibs'] = "Charger MIBs";
 $lang['m_categories'] = "Cat&eacute;gories";
 
-$lang['m_notification'] = "Utilisateurs";
+$lang['m_users'] = "Utilisateurs";
+$lang['m_notification'] = "Notifications";
 $lang['m_contact'] = "Utilisateurs";
 $lang['m_contactgroup'] = "Groupes Utilisateurs";
 $lang['m_timeperiod'] = "Plage Horaires";
