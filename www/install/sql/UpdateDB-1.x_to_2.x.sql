@@ -56,3 +56,45 @@ INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`)
 INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 60409, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 60409, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js` , `id_page` , `o` , `PathName_js` , `Init`) VALUES ('', 60409, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+
+-- Nagios 3.X compatibility
+
+ALTER TABLE `cfg_nagios` ADD `precached_object_file` VARCHAR( 255 ) NULL AFTER `object_cache_file` ;
+ALTER TABLE `cfg_nagios` ADD `temp_path` VARCHAR( 255 ) NULL AFTER `temp_file` ;
+ALTER TABLE `cfg_nagios` ADD `check_result_path` VARCHAR( 255 ) NULL AFTER `status_file`, ADD `max_check_result_file_age` VARCHAR( 255 ) NULL AFTER `check_result_path` ;
+ALTER TABLE `cfg_nagios` ADD `translate_passive_host_checks` ENUM( '0', '1' ) NULL AFTER `event_broker_options`, ADD `passive_host_checks_are_soft` VARCHAR( 255 ) ENUM( '0', '1' ) NULL AFTER `translate_passive_host_checks`;
+ALTER TABLE `cfg_nagios` ADD `enable_predictive_host_dependency_checks` ENUM( '0', '1' ) NULL , ADD `enable_predictive_service_dependency_checks` ENUM( '0', '1' ) NULL , ADD `cached_host_check_horizon` INT NULL , ADD `cached_service_check_horizon` INT NULL , ADD `use_large_installation_tweaks` ENUM( '0', '1' ) NULL , ADD `free_child_process_memory` ENUM( '0', '1' ) NULL , ADD `child_processes_fork_twice` ENUM( '0', '1' ) NULL , ADD `enable_environment_macros` ENUM( '0', '1' ) NULL ;
+
+ALTER TABLE `cfg_nagios` ADD `additional_freshness_latency` INT NULL ,
+ADD `enable_embedded_perl` ENUM( '0', '1' ) NULL ,
+ADD `use_embedded_perl_implicitly` ENUM( '0', '1' ) NULL ,
+ADD `debug_file` VARCHAR( 255 ) NULL ,
+ADD `debug_level` INT NULL ,
+ADD `debug_verbosity` INT NULL ,
+ADD `max_debug_file_size` INT NULL ;
+
+-- Template de graphs au niveau des commandes 
+
+CREATE TABLE `command_graphtemplate_relation` (
+`cgtp_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`graph_id` INT NOT NULL ,
+`command_command_id` INT NOT NULL
+) ENGINE = innodb;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
