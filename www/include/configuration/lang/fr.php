@@ -466,6 +466,7 @@ $lang['cmd_help_output'] = "Aide";
 $lang['cmd_output'] = "Sortie";
 $lang['cmd_example'] = "Exemple d'argument";
 $lang['cmd_plugins'] = "Sondes";
+$lang['cmd_graph_id'] = "Mod&egrave;le de graphique";
 
 /* Plugins */
 
@@ -717,9 +718,10 @@ $lang['gen_debug'] = "Lancer le debug de Nagios (-v)";
 $lang['gen_optimize'] = "Lancer le test d'optimisation (-s)";
 $lang['gen_move'] = "D&eacute;placer les fichiers";
 $lang['gen_restart'] = "Recharger Nagios";
-$lang['gen_restart_load'] = "Reload";
-$lang['gen_restart_start'] = "Restart";
-$lang['gen_restart_extcmd'] = "Commande externe";
+$lang['gen_restart_method'] = "M&eacute;thode";
+$lang['gen_restart_load'] = "via shell : reload";
+$lang['gen_restart_start'] = "via shell : restart";
+$lang['gen_restart_extcmd'] = "via commande externe";
 $lang['gen_butOK'] = "Generer";
 $lang['gen_status'] = "Statuts";
 $lang['gen_mvOk'] = " - d&eacute;placement <font color='green'>OK</font>";

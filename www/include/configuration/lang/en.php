@@ -467,6 +467,7 @@ $lang['cmd_help_output'] = "Help";
 $lang['cmd_output'] = "Output";
 $lang['cmd_example'] = "Argument Example";
 $lang['cmd_plugins'] = "Plugins";
+$lang['cmd_graph_id'] = "Graph template";
 
 /* Plugins */
 
@@ -718,6 +719,7 @@ $lang['gen_debug'] = "Run Nagios debug (-v)";
 $lang['gen_optimize'] = "Run Optimisation test (-s)";
 $lang['gen_move'] = "Move Export Files";
 $lang['gen_restart'] = "Restart Nagios";
+$lang['gen_restart_method'] = "Method";
 $lang['gen_restart_load'] = "Reload";
 $lang['gen_restart_start'] = "Restart";
 $lang['gen_restart_extcmd'] = "External Command";
