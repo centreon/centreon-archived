@@ -80,6 +80,8 @@ my $last_line_read;
 sub parseFile ($$) {
 	my $instance = $_[1];
 	print "Cannot open file : $_[0]\n" if (!open (FILE, $_[0]));
+	print $last_line_read . "\n";
+    $cpt = 0;
     if (!$opt_a) {
 		while ($cpt < $last_line_read && <FILE>){
 		    $cpt++;
@@ -160,6 +162,7 @@ sub parseFile ($$) {
 		$cpt++;
     }
     close(FILE);
+    return $cpt;
 }
 
 
