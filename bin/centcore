@@ -421,7 +421,7 @@ sub startNagios($){
 	my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
 
 	# Launch command line
-	$stdout = `ssh $distantconnexion sudo /etc/init.d/nagios start`;
+	my $stdout = `ssh $distantconnexion sudo /etc/init.d/nagios start`;
 	print " RESULT : ".$stdout . "\n";
 	undef($distantconnexion);
     undef($stdout);
