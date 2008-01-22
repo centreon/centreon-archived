@@ -288,4 +288,5 @@ if ($retention ne 0){
 	$sth1->finish();
 }
 $dbh->disconnect();
+$dbhoreon->disconnect();
 exit;
