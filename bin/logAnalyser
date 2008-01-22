@@ -285,5 +285,7 @@ if ($retention ne 0){
 	my $last_log = time() - ($retention * 24 * 60 * 60);
 	my $sth1 = $dbh->prepare("DELETE FROM log WHERE ctime < '$last_log'");
 	if (!$sth1->execute) {die "Error:" . $sth1->errstr . "\n";}
+	$sth1->finish();
 }
+$dbh->disconnect();
 exit;
