@@ -864,33 +864,22 @@ For information : contact@oreon-project.org
 	}
 
 	function getDefaultGraph ($service_id = NULL, $rrdType = NULL)	{
-		// rrdType = 1 -> Graphs Perfparse
-		// rrdType = 2 -> Graphs Plugins
-		// rrdType = 3 -> Graphs Customs
 		global $pearDB;
-		if (!$rrdType)	$rrdType = 1;
-		if ($rrdType != 3)	{
-			$gt["graph_id"] = getMyServiceGraphID($service_id);
-			if ($gt["graph_id"])
-				return $gt["graph_id"];
-		} else {
-			$DBRESULT =& $pearDB->query("SELECT grapht_graph_id FROM giv_graphs WHERE graph_id = '".$service_id."' LIMIT 1");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$gt =& $DBRESULT->fetchRow();
-			if ($gt["grapht_graph_id"])
-				return $gt["grapht_graph_id"];
-		}
-		if ($rrdType != 2)	{
-			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+		
+		$gt["graph_id"] = getMyServiceGraphID($service_id);
+		if ($gt["graph_id"])
+			return $gt["graph_id"];
+		else {
+			$command_id = getMyServiceField($service_id, "command_command_id");
+			$DBRESULT =& $pearDB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			if ($DBRESULT->numRows())	{
 				$gt =& $DBRESULT->fetchRow();
 				return $gt["graph_id"];
-			}
+			}	
 		}
-		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
+		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		if ($DBRESULT->numRows())	{
