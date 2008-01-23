@@ -166,4 +166,10 @@ $lang["ods_choose_storage_type"] = "You can choose here the kind of storage for 
 $lang["ods_rrdtool_choose"] = "The metrics will be stored only in <a href=\"http://oss.oetiker.ch/rrdtool/\">RRDTool</a> database. The goal of this type of database is to take less place compared to the traditional database. It is a circular databases. Progressively, the old data are realised";
 $lang["ods_mysql_choose"] = "This will enable you the possibility to cumulate the two kind of return : on the one hand light bases for a visualization powerful and and light and on the other hand a complete storage of the data. Metrics are stored also in a  <a href=\"http://www.mysql.com\">MySQL</a> database. The integrity of the data is preserved in mysql database what will give you the possibility to make a complete reporting on our data at the end of the year";
 
+# Use by Ajax
+$lang["start"] = "Du ";
+$lang["end"] = "au ";
+$lang["period"] = "Periode ";
+$lang["optionAdvanced"] = "Options";
+
 ?>

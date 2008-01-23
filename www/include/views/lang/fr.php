@@ -165,4 +165,11 @@ $lang["ods_choose_storage_type"] = "Vous pouvez ici choisir le type de stockage 
 $lang["ods_rrdtool_choose"] = "Les metrics seront stockes uniquement dans des bases <a href=\"http://oss.oetiker.ch/rrdtool/\">RRDTool</a>. Ce type de bases de donnes a pour but de prendre assez peu de place par rapport aux base de donnes classiques. C'est une base de donnes circulaire. Au fur et  mesure, les anciennes donnes sont moyennes";
 $lang["ods_mysql_choose"] = "Ceci vous permettra de cumuler les possibilits des deux types de remonts : d'une part des bases lgres pour une visualisation performantes et rapide, et d'autre part un stockage complet des donnes. Les metrics sont stockes galement dans une base <a href=\"http://www.mysql.com\">MySQL</a>. L'intgrit des donnes est conserve dans la base ce qui vous permettra en fin d'anne de pouvoir faire un reporting complet sur les valeurs remontes";
 
+# Use by Ajax
+$lang["start"] = "Du ";
+$lang["end"] = "au ";
+$lang["period"] = "Periode ";
+$lang["optionAdvanced"] = "Options";
+
+
 ?>
