@@ -19,22 +19,44 @@
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
 	<br><br><br><br>
 	{if $msg_debug || $msg_copy || msg_restart }
-	 <table id="ListTable">
-	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
-	 	</tr>
-	 	{foreach from=$tab_server key=key item=item}
-	 	<tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name">{$key}{$msg_debug[$key]}</td>
-	 	</tr>
-	 	<tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name">{$key}{$msg_copy[$key]}</td>
-	 	</tr>
-	 	<tr class="list_lvl_1">
-	 		<td class="ListColLvl1_name">{$key}{$msg_restart[$key]}</td>
-	 	</tr>	
+	<div>
+		<ul id="mainnav">
+		{assign var='cpt' value=0}
+		{foreach from=$host_list key=key item=item}
+			{if $msg_restart[$key] || $msg_copy[$key] || $msg_debug[$key]}
+			{assign var='cpt' value=$cpt+1}
+			<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$host_list[$key]}</a></li>
+			{/if}
+		{/foreach}
+		</ul>
+	</div>
+	<a name="generate">
+	{assign var='cpt' value=0}
+	{foreach from=$tab_server key=key item=item}
+	{assign var='cpt' value=$cpt+1}
+	<div id='tab{$cpt}' class='tab'>
+	 	<table id="ListTable">
+		 	<tr class="ListHeader">
+		 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
+		 	</tr>
+		 	{if $msg_debug[$key]}
+		 	<tr class="list_two_fixe">
+		 		<td class="ListColLvl1_name">{$msg_debug[$key]}</td>
+		 	</tr>
+		 	{/if}
+		 	{if $msg_copy[$key]}
+		 	<tr class="list_one_fixe">
+		 		<td class="ListColLvl1_name">{$msg_copy[$key]}</td>
+		 	</tr>
+			{/if}
+		 	{if $msg_restart[$key]}
+		 	<tr class="list_two_fixe">
+		 		<td class="ListColLvl1_name">{$msg_restart[$key]}</td>
+		 	</tr>
+		 	{/if}	
+		 </table>
+	</div>
 	 	{/foreach} 	
-	 </table>
 	{/if}
 	{$form.hidden}
 </form>

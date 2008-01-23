@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 
 	# Get Poller List
 	$tab_nagios_server = array("0" => "All Nagios Servers");
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while ($nagios =& $DBRESULT->fetchRow())
@@ -78,6 +78,11 @@ For information : contact@oreon-project.org
 		if (!isset($ret["comment"]))
 			$ret["comment"] = 0;
 		
+		$host_list = array();
+		foreach ($tab_nagios_server as $key => $value)
+			if ($key && ($res["host"] == 0 || $res["host"] == $key))
+				$host_list[$key] = $value;
+		
 		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
@@ -112,7 +117,7 @@ For information : contact@oreon-project.org
 		/*
 		 * Meta Module Generator engine
 		 */
-		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
+		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
@@ -137,12 +142,12 @@ For information : contact@oreon-project.org
 		 */
 		 
 		$tab_server = array();
-		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
+		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` ORDER BY `localhost` DESC");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id'])
-				$tab_server[$tab["id"]] = array("id" => $tab["id"], "localhost" => $tab["localhost"]);
+				$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
 		}
 		
 		/*
@@ -154,6 +159,10 @@ For information : contact@oreon-project.org
 			foreach ($tab_server as $host) {
 				$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG");
 				$msg_debug[$host['id']] = str_replace ("\n", "<br>", $stdout);
+				$msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
+				$msg_debug[$host['id']] = str_replace ("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
+				$msg_debug[$host['id']] = str_replace ("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
+				$msg_debug[$host['id']] = str_replace ("Total Errors: 0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);		
 			}
 		}
 
@@ -199,7 +208,7 @@ For information : contact@oreon-project.org
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
-						print("echo \"RESTART:".$host["id"]."\" >> /srv/oreon/var/centcore");
+						system("echo \"RESTART:".$host["id"]."\" >> /srv/oreon/var/centcore", $return);
 					}
 				} else if ($ret["restart_mode"] == 3)	{
 					require_once("./include/monitoring/external_cmd/functions.php");
@@ -207,7 +216,7 @@ For information : contact@oreon-project.org
 					$_GET["cmd"] = 25;
 					require_once("./include/monitoring/external_cmd/cmd.php");
 					$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
-					print("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /srv/oreon/var/centcore");
+					system("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /srv/oreon/var/centcore");
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT))
@@ -225,6 +234,8 @@ For information : contact@oreon-project.org
 		$tpl->assign('msg_copy', $msg_copy);
 	if (isset($tab_server) && $tab_server)
 		$tpl->assign('tab_server', $tab_server);
+	if (isset($host_list) && $host_list)
+		$tpl->assign('host_list', $host_list);
 	
 	/*
 	 * Apply a template definition
