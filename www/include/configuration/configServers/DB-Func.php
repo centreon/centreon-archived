@@ -71,6 +71,7 @@ For information : contact@oreon-project.org
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
+					
 					$key2 == "name" ? ($server_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
@@ -105,8 +106,8 @@ For information : contact@oreon-project.org
         isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "'".htmlentities($ret["ns_ip_address"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
        	isset($ret["user"]) && $ret["user"] != NULL ? $rq .= "'".htmlentities($ret["user"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
        	isset($ret["password"]) && $ret["password"] != NULL ? $rq .= "'".htmlentities($ret["password"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-       	isset($ret["ns_http_suffix"]) && $ret["ns_http_suffix"] != NULL ? $rq .= "'".htmlentities($ret["ns_http_suffix"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["ns_http_port"]) && $ret["ns_http_port"] != NULL ? $rq .= "'".htmlentities($ret["ns_http_port"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+       	//isset($ret["ns_http_suffix"]) && $ret["ns_http_suffix"] != NULL ? $rq .= "'".htmlentities($ret["ns_http_suffix"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        //isset($ret["ns_http_port"]) && $ret["ns_http_port"] != NULL ? $rq .= "'".htmlentities($ret["ns_http_port"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["ns_key"]) && $ret["ns_key"] != NULL ? $rq .= "'".htmlentities($ret["ns_key"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["ns_activate"]) && $ret["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]."',  "  : $rq .= "NULL)";
        	$DBRESULT =& $pearDB->query($rq);
@@ -136,8 +137,8 @@ For information : contact@oreon-project.org
 		isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "ns_ip_address = '".htmlentities($ret["ns_ip_address"], ENT_QUOTES)."',  " : $rq .= "ns_ip_address = NULL, ";
         isset($ret["user"]) && $ret["user"] != NULL ? $rq .= "user = '".htmlentities($ret["user"], ENT_QUOTES)."',  " : $rq .= "user = NULL, ";
         isset($ret["password"]) && $ret["password"] != NULL ? $rq .= "password = '".htmlentities($ret["password"], ENT_QUOTES)."',  " : $rq .= "password = NULL, ";
-        isset($ret["ns_http_suffix"]) && $ret["ns_http_suffix"] != NULL ? $rq .= "ns_http_suffix = '".htmlentities($ret["ns_http_suffix"], ENT_QUOTES)."',  " : $rq .= "ns_http_suffix = NULL, ";
-       	isset($ret["ns_http_port"]) && $ret["ns_http_port"] != NULL ? $rq .= "ns_http_port = '".htmlentities($ret["ns_http_port"], ENT_QUOTES)."',  " : $rq .= "ns_http_port = NULL, ";
+        //isset($ret["ns_http_suffix"]) && $ret["ns_http_suffix"] != NULL ? $rq .= "ns_http_suffix = '".htmlentities($ret["ns_http_suffix"], ENT_QUOTES)."',  " : $rq .= "ns_http_suffix = NULL, ";
+       	//isset($ret["ns_http_port"]) && $ret["ns_http_port"] != NULL ? $rq .= "ns_http_port = '".htmlentities($ret["ns_http_port"], ENT_QUOTES)."',  " : $rq .= "ns_http_port = NULL, ";
         isset($ret["ns_key"]) && $ret["ns_key"] != NULL ? $rq .= "ns_key = '".htmlentities($ret["ns_key"], ENT_QUOTES)."',  " : $rq .= "ns_key = NULL, ";
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
