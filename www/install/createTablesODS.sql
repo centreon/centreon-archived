@@ -151,7 +151,7 @@ CREATE TABLE `log` (
   `notification_contact` varchar(255) default NULL,
   `type` varchar(255) default NULL,
   `retry` int(255) NOT NULL,
-  `msg_type` enum('0','1','2','3','4','5') NOT NULL,
+  `msg_type` enum('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') NOT NULL,
   PRIMARY KEY  (`log_id`),
   KEY `host_name` (`host_name`(64)),
   KEY `service_description` (`service_description`(64)),
@@ -164,14 +164,23 @@ CREATE TABLE `log` (
 -- Structure de la table `log_snmptt`
 -- 
 
+
 CREATE TABLE `log_snmptt` (
-  `traps_id` int(11) NOT NULL auto_increment,
-  `traps_oid` varchar(255) default NULL,
-  `traps_ip` varchar(255) default NULL,
-  `traps_community` varchar(255) default NULL,
-  `traps_infos` varchar(255) default NULL,
-  PRIMARY KEY  (`traps_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+`trap_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`trap_oid` TEXT NULL ,
+`trap_ip` VARCHAR( 50 ) NULL ,
+`trap_community` VARCHAR( 50 ) NULL ,
+`trap_infos` TEXT NULL
+) ENGINE = MYISAM ;
+
+--CREATE TABLE `log_snmptt` (
+--  `traps_id` int(11) NOT NULL auto_increment,
+--  `traps_oid` varchar(255) default NULL,
+--  `traps_ip` varchar(255) default NULL,
+--  `traps_community` varchar(255) default NULL,
+--  `traps_infos` varchar(255) default NULL,
+--  PRIMARY KEY  (`traps_id`)
+--) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 

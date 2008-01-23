@@ -75,11 +75,24 @@ ADD `max_debug_file_size` INT NULL ;
 
 -- Template de graphs au niveau des commandes 
 
-CREATE TABLE `command_graphtemplate_relation` (
-`cgtp_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
-`graph_id` INT NOT NULL ,
-`command_command_id` INT NOT NULL
+ALTER TABLE `command` ADD `graph_id` INT NULL ;
+
+
+-- Command categories
+
+CREATE TABLE `command_categories` (
+`cms_category_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`category_name` VARCHAR( 255 ) NOT NULL ,
+`category_alias` VARCHAR( 255 ) NOT NULL ,
+`category_order` INT NOT NULL
 ) ENGINE = innodb;
+
+CREATE TABLE `command_categories_relation` (
+`cmd_cat_id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`category_id` INT NULL ,
+`command_command_id` INT NULL
+) ENGINE = innodb;
+
 
 
 
