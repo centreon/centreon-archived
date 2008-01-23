@@ -39,6 +39,7 @@ sub getServiceID($$){
 		if (!$sth2->execute) {writeLogFile("Error when getting service id 2 : " . $sth2->errstr . "\n");}
 		my $data2 = $sth2->fetchrow_hashref();
 		$service_id = $data2->{'service_id'};
+		$sth2->finish();
 		undef($data);
 		undef($data2);
 		undef($sth2);
@@ -50,7 +51,6 @@ sub getServiceID($$){
 	} else {
 		$service_id = $data->{'service_id'};
 		undef($data);
-		$sth2->finish();
 		undef($sth2);
 		return $service_id;
 	}
