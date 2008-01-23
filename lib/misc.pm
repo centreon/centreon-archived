@@ -84,7 +84,6 @@ sub CheckMySQLDrain(){
 		}
 	}
 	$sth->finish();
-	$sth2->finish();
 	undef($sth);
 	undef($sth2);
 	undef(%srv_list);
