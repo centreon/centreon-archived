@@ -107,6 +107,7 @@ displayBelowThisObject parameter was false), and update the StartDate field with
 the chosen value of the datepicker using a date format of dd.mm.yyyy
 */
 
+/*
 function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
 {
 	if (document.getElementsByName (timeFieldName).item(1))
@@ -150,7 +151,7 @@ function drawTimePicker(targetTimeField, x, y)
 
 
 }
-
+*/
 
 function displayDatePicker(dateFieldName, displayBelowThisObject, dtFormat, dtSep)
 {
