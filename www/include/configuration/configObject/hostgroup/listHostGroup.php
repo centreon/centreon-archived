@@ -20,30 +20,33 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
-	if (isset($search))	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
-		else
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND hg_id IN (".$lcaHostGroupstr.")");
-	} else {
-		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup");
-		else
-			$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.")");
+	/*
+	 * start quickSearch form
+	 */
+	 
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
+	
+	$SearchTool = "";
+	if (isset($search) && $search)	
+		$SearchTool = " WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
+	
+	$LcaTool = "";
+	if ($isRestreint){
+		if ($SearchTool != "")
+			$LcaTool .= " AND hg_id IN (".$lcaHostGroupstr.")";
+		else 
+			$LcaTool .= " WHERE hg_id IN (".$lcaHostGroupstr.")";
 	}
 	
+	$request = "SELECT COUNT(*) FROM hostgroup $SearchTool $LcaTool";
+	
+	$DBRESULT =& $pearDB->query($request);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
-	/*
-	 * start quickSearch form
-	 */
-	 
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
-	
 	/*
 	 * end quickSearch form
 	 */
@@ -73,17 +76,8 @@ For information : contact@oreon-project.org
 	 * Hostgroup list
 	 */
 	 
-	if ($search){
-		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
-		else
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
-	} else {
-		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
-		else
-			$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name LIMIT ".$num * $limit.", ".$limit;
-	}
+	 
+	$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup $SearchTool $LcaTool ORDER BY hg_name LIMIT ".$num * $limit .", $limit"; 
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
@@ -97,9 +91,7 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($hg); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$hg['hg_id']."]");	
-		$moptions = "<!--<a href='oreon.php?p=".$p."&hg_id=".$hg['hg_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&hg_id=".$hg['hg_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&hg_id=".$hg['hg_id']."&o=d&select[".$hg['hg_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;-->";
+		$moptions = "";
 		if ($hg["hg_activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&hg_id=".$hg['hg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
 		else
