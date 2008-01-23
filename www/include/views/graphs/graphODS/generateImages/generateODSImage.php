@@ -146,7 +146,7 @@ else
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];
 		
-		$command_line .= " --interlaced $base --imgformat PNG --width=550 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
+		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 
 		if ($oreon->optGen["rrdtool_version"] == "1.2")
 			$command_line .= " --slope-mode ";
