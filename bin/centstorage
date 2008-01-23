@@ -30,10 +30,11 @@ use threads;
 use threads::shared;
 
 use RRDs;
-use lib "@RRD_PERL@";
+#use lib "@RRD_PERL@";
 use File::Copy;
 
-my $installedPath = "@OREON_PATH@";
+#my $installedPath = "@OREON_PATH@";
+my $installedPath = "/usr/local/centreon/";
 
 my $LOG = $installedPath."var/ods.log";
 my $PID = $installedPath."var/ods.pid";
@@ -229,6 +230,7 @@ sub GetPerfData(){
 				}
 				undef($data);
 				while (<PFDT>){
+					print $_;
 					$lineRead++;
 					if (!$stop){
 						writeLogFile("can't write in ".$installedPath."var/service-perfdata.bckp : $!") if (!open(BCKP, ">> ".$installedPath."/var/service-perfdata.bckp"));
@@ -237,7 +239,7 @@ sub GetPerfData(){
 						}
 						return;
 					}
-					if (defined($line_tab[1]) && $_ != m/\#/){
+					if (!/^\#.*/){
 						print DROP $_  if ($flag_drop == 1);
 				    	@line_tab = split('\t');
 				    	$line_tab[2] =~ s/\\/\#BS\#/g;
