@@ -40,7 +40,7 @@
 	$strnameY = "";
 	$percentmax = 0;
 	$bar_red = new bar_3d( 75, '#125CEC' );
-	$bar_red->key( 'Availability (%)', 10 );
+	$bar_red->key( 'host UP (%)', 10 );
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup");
 	if (PEAR::isError($DBRESULT))
@@ -103,7 +103,7 @@
 	$g->set_x_labels(array($strnameY));
 	$g->set_y_max( $percentmax );
 	$g->y_label_steps( 5 );
-	$g->set_y_legend( 'Genial', 12, '#736AFF' );
+	$g->set_y_legend( 'Availability', 12, '#736AFF' );
 	echo $g->render();
 
 
