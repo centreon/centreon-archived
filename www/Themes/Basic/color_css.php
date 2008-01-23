@@ -84,6 +84,10 @@ border-color: <?=$color6?>;
 	border-top-color: <?=$color10?>;
 }
 
+.list_one_fixe{		background-color:<?=$color_list_1?>;} 
+.list_two_fixe {		background-color:<?=$color_list_2?>; }
+
+
 .list_one{		background-color:<?=$color_list_1?>;} 
 .list_one:hover {	background-color:<?=$color_list_1_hover?>;}
 .list_two {		background-color:<?=$color_list_2?>; }
