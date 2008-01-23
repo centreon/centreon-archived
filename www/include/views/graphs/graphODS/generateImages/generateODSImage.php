@@ -55,6 +55,25 @@ For information : contact@oreon-project.org
 	    die("Unable to connect : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+
+	/*
+	 * Verify if start and end date
+	 */	
+
+if (!isset($_GET["start"])){
+	$start = time() - (60*60*48);
+}
+else
+	$start = $_GET["start"];
+
+if (!isset($_GET["end"])){
+	$end = time();
+}
+else
+	$end = $_GET["end"];
+
+
+
 	/*
 	 * Verify if session is active
 	 */	
@@ -103,7 +122,7 @@ For information : contact@oreon-project.org
 		 * Create command line
 		 */
 		 
-		$command_line = " graph - --start=".$_GET["start"]." --end=".$_GET["end"];
+		$command_line = " graph - --start=".$start." --end=".$end;
 
 		/*
 		 * get all template infos

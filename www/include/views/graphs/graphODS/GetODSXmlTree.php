@@ -107,6 +107,23 @@ function host_has_one_or_more_GraphService($host_id)
 	return false;	
 }
 
+function HG_has_one_or_more_host($hg_id)
+{
+	global $pearDBO;
+
+	$hosts = getMyHostGroupHosts($hg_id);
+	foreach($hosts as $host_id => $host_name)
+	{
+		$services = getMyHostServices($host_id);
+		foreach($services as $svc_id => $svc_name)
+		{
+			if(service_has_graph($host_id, $svc_id))
+			return true;
+		}
+	}
+	return false;	
+}
+
 
 
 if (isset($_GET["id"]))
@@ -181,10 +198,10 @@ else if($type == "HH") // get services for host
 	$services = getMyHostServices($id);
 	foreach($services as $svc_id => $svc_name)
 	{
-//		if(service_has_graph($id,$svc_id)){
+		if(service_has_graph($id,$svc_id)){
 	        print("<item child='1' id='HS_".$svc_id."' text='".$svc_name."' im0='../16x16/element_new_after.gif' im1='../16x16/element_new_after.gif' im2='../16x16/element_new_after.gif'>");
 			print("</item>");			
-//		}
+		}
 	}
 }
 else if($type == "HS") // get services for host
@@ -213,14 +230,15 @@ else
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	while ($DBRESULT->fetchInto($HG)){
 			$i++;
+
+		if(HG_has_one_or_more_host($HG["hg_id"])){
         	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
-//			print(" <userdata name='ud_block'>ud_data</userdata>");
 			print("</item>");
+		}
 	}
 
-        	print("<item child='1' id='HO_0' text='Others' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
-//			print(" <userdata name='ud_block'>ud_data</userdata>");
-			print("</item>");
+	print("<item child='1' id='HO_0' text='Others' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+	print("</item>");
 
 
 	

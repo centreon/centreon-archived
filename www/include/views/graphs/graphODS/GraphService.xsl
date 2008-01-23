@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-<xsl:variable name="i" select="//i"/>
-<xsl:template match="/">
+<xsl:template match="root">
 
 
 <xsl:if test="host">
@@ -54,7 +53,7 @@
 		</div>
 <br/>
 -->
-		<div valign="top" align='center'>
+		<div style="position:relative; z-index: 10; left:0px; top: -50px"  valign="top" align='center'>
 			<xsl:element name="input">
 				<xsl:attribute name="type">button</xsl:attribute>
 				<xsl:attribute name="name">graph</xsl:attribute>
@@ -88,6 +87,9 @@
 	    			<td class='ListColCenter' valign="top" align='center'>
 				    	<div id="imggraph">
 
+
+			<xsl:if test="split = 0">
+
 							<xsl:element name="a">
 							<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
@@ -97,10 +99,27 @@
 	./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id=<xsl:value-of select="//sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
 									  	</xsl:attribute>
 									</xsl:element>
-
-
-
 							</xsl:element>
+			</xsl:if>
+
+
+			<xsl:if test="split = 1">
+				<xsl:for-each select="//metric">
+								<xsl:element name="a">
+								<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="//service_id"/>', ''); return false;</xsl:attribute>
+								<xsl:attribute name="href">#</xsl:attribute>
+	
+										<xsl:element name="img">
+										  	<xsl:attribute name="src">
+		./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+										  	</xsl:attribute>
+										</xsl:element>
+								</xsl:element>
+								<br/>
+				</xsl:for-each>
+
+
+			</xsl:if>
 
 
 						 <br/>
@@ -114,7 +133,7 @@
 </xsl:if>
 
 <xsl:if test="svc">
-		<div valign="top" align='center'>
+		<div style="position:relative; z-index: 10; left:0px; top: -50px"  valign="top" align='center'>
 			<xsl:element name="input">
 				<xsl:attribute name="type">button</xsl:attribute>
 				<xsl:attribute name="name">graph</xsl:attribute>
@@ -147,11 +166,13 @@
 	    			<td class='ListColCenter' valign="top" align='center'>
 				    	<div id="imggraph">
 
+
+
+
+			<xsl:if test="//split = 0">
 							<xsl:element name="a">
 							<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
-
-
 
 									<xsl:element name="img">
 									  	<xsl:attribute name="src">
@@ -160,6 +181,29 @@
 									</xsl:element>
 
 							</xsl:element>
+			</xsl:if>
+
+
+
+			<xsl:if test="//split = 1">
+				<xsl:for-each select="metric">
+								<xsl:element name="a">
+							<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
+								<xsl:attribute name="href">#</xsl:attribute>
+	
+										<xsl:element name="img">
+										  	<xsl:attribute name="src">
+		./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+										  	</xsl:attribute>
+										</xsl:element>
+								</xsl:element>
+								<br/>
+				</xsl:for-each>
+			</xsl:if>
+
+
+
+
 						 <br/>
 						 </div> 
 					</td>
@@ -172,16 +216,103 @@
 </xsl:if>
 
 <xsl:if test="svc_zoom">
-		<div valign="top" align='center'>
+
+
+			<div style="position:relative; width:150px; left:268px; top: -50px; * html left:300px;"  valign="top" align='left'>
 			<xsl:element name="input">
 				<xsl:attribute name="type">button</xsl:attribute>
 				<xsl:attribute name="name">graph</xsl:attribute>
-				<xsl:attribute name="value">graph</xsl:attribute>
+				<xsl:attribute name="value">grapher</xsl:attribute>
 				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 			</xsl:element>
+			<xsl:text> </xsl:text>
+
 		</div>
-<br/>
-	<div>
+	    <div id="div2" style=" width:400px; position:relative;  left:325px; top: -87px"  valign="top" align='left'>
+
+		<form name="formu2">
+
+    	    <table id="ListTableSmall" >
+                <tr class="ListHeader">
+                	<td class="FormHeader" colspan="2"><xsl:value-of select="//lang/advanced"/></td>
+                </tr>
+				<tr>
+				<td style="width:200px;">
+					<table style="">
+						<tr >
+		               		<td>
+								<xsl:value-of select="//lang/giv_gg_tpl"/>
+		               		</td>
+		               		<td>
+		               			<xsl:element name="select">
+									<xsl:attribute name="name">template_select</xsl:attribute>
+									<xsl:attribute name="onChange">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+		
+									<xsl:for-each select="//tpl">
+										<xsl:element name='option'>
+											<xsl:attribute name="value"><xsl:value-of select="tpl_id"/></xsl:attribute>
+		
+											<xsl:if test="//tpl = tpl_id">
+												<xsl:attribute name="selected">selected</xsl:attribute>
+											</xsl:if>
+		
+											<xsl:value-of select="tpl_name"/>
+										</xsl:element>
+									</xsl:for-each>
+		
+								</xsl:element>
+		               		</td>
+		               	</tr>
+		               	<tr >
+		               		<td>
+							 <xsl:value-of select="//lang/giv_split_component"/>
+		               		</td>
+		               		<td>
+										<xsl:element name='input'>
+											<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+											<xsl:attribute name="name">split</xsl:attribute>
+											<xsl:attribute name="type">checkbox</xsl:attribute>
+		
+											<xsl:if test="//split = 1">
+												<xsl:attribute name="checked">checked</xsl:attribute>
+											</xsl:if>
+										</xsl:element>
+		               		</td>
+		               	</tr>
+					</table>
+
+				</td>
+				<td style="border-left:0.5px solid gray;">
+					<table >
+		               	<tr>
+						<xsl:for-each select="//metrics">
+		               		<td style="padding-left:10px;">
+								<xsl:element name='input'>
+									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+									<xsl:attribute name="type">checkbox</xsl:attribute>
+									<xsl:attribute name="name">metric</xsl:attribute>
+									<xsl:attribute name="value"><xsl:value-of select="metric_id"/></xsl:attribute>
+									<xsl:if test="select = 1">
+										<xsl:attribute name="checked">checked</xsl:attribute>
+									</xsl:if>
+								</xsl:element>
+		               			<xsl:value-of select="metric_name"/>
+		               		</td>
+						</xsl:for-each>					
+		               	</tr>
+					</table>
+				</td>
+				</tr>
+
+
+
+
+
+        	</table>
+		</form>
+    	</div>
+
+	<div style="position:relative; top: -80px;">
 		<table id="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
@@ -205,23 +336,42 @@
 				    	<div id="imggraph">
 
 
+				<xsl:if test="//split = 0">
+
 									<xsl:element name="img">
 									  	<xsl:attribute name="src">
 
-	./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metrics"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+	./include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?template_id=<xsl:value-of select="//tpl"/>&amp;session_id=<xsl:value-of select="//sid"/>&amp;<xsl:value-of select="//metricsTab"/>&amp;index=<xsl:value-of select="//index"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
 
 
 
 									  	</xsl:attribute>
 									</xsl:element>
+				</xsl:if>
+
+
+				<xsl:if test="//split = 1">
+					<xsl:for-each select="//metrics">
+						<xsl:if test="select = 1">
+							<xsl:element name="img">
+							  	<xsl:attribute name="src">
+			./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?template_id=<xsl:value-of select="//tpl"/>&amp;session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+							  	</xsl:attribute>
+							</xsl:element>
+							<br/>
+						</xsl:if>
+					</xsl:for-each>
+				</xsl:if>
 
 						 <br/>
-						 </div> 
+						 </div>
 					</td>
-				</tr>				
+				</tr>
 	    </table>
 	</div>
 </xsl:if>
+
+
 
 
 

@@ -61,12 +61,10 @@ For information : contact@oreon-project.org
  
     		tree=new dhtmlXTreeObject("menu_40211","100%","100%","1");
             tree.setImagePath("./img/icones/csh_vista/");
-//tree.enableThreeStateCheckboxes(true);
-
-//            tree.setImagePath("./include/common/javascript/codebase/imgs/csh_vista/");
+			//tree.setImagePath("./include/common/javascript/codebase/imgs/csh_vista/");
 
 
-            //link tree to asp script
+            //link tree to xml
             tree.setXMLAutoLoading("./include/views/graphs/graphODS/GetODSXmlTree.php"); 
             
             //load first level of tree
@@ -96,22 +94,26 @@ For information : contact@oreon-project.org
 				graph_4_host(nodeId,'');
 			}
 			
+			// it's fake methode for using ajax system by default
 			function mk_pagination(){;}
 			function set_header_title(){;}
 
 			function graph_4_host(id, formu)
 			{
+				
+				
+				// Graph period
 				var currentTime = new Date();
 				var period ='';
 				var StartDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
 				var EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
 				var StartTime= "00:00";
-
 				var _zero = "0";
 				if(currentTime.getHours() > 10)
 				var _zero = "";
 				var EndTime= _zero + currentTime.getHours()+":00";
-				
+
+
 				if(document.formu && document.formu.StartDate.value != "")
 					StartDate = document.formu.StartDate.value;
 				if(document.formu && document.formu.EndDate.value != "")
@@ -121,27 +123,54 @@ For information : contact@oreon-project.org
 					StartTime = document.formu.StartTime.value;
 				if(document.formu && document.formu.EndTime.value != "")
 					EndTime = document.formu.EndTime.value;
-												
+
+
+
+				// Metrics
+				var _metrics ="";
+				var _checked = "0";
+				if(document.formu2){
+					for (i=0; i < document.formu2.elements["metric"].length; i++) {
+							_checked = "0";
+							if(document.formu2.elements["metric"][i].checked)
+							{
+								_checked = "1";
+							}
+							_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
+					   }
+				}
+				//if(document.formu2 && document.formu2.StartDate.value != "")
+
+				// Templates
+				var _tpl_id = 1;
+				if(document.formu2 && document.formu2.template_select.value != "")
+				{
+					_tpl_id = document.formu2.template_select.value;
+				}
+				// Split metric
+				var _split = 0;
+				if(document.formu2 && document.formu2.split.checked)
+				{
+					_split = 1
+				}
+
+				
 				tree.selectItem(id);
 				
 				var proc = new Transformation();
 				var _addrXSL = "./include/views/graphs/graphODS/GraphService.xsl";
-				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?split='+_split+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 				proc.setXml(_addrXML)
 				proc.setXslt(_addrXSL)
 				proc.transform("graphView4xml");
 
-
-//				currentTime.getHours();
 				if(document.formu){
 					document.formu.StartDate.value = StartDate;
 					document.formu.EndDate.value = EndDate;
 					document.formu.StartTime.value = StartTime;
 					document.formu.EndTime.value = EndTime;
 				}
-				
-
-			}
+		}
 
 function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
 {
@@ -218,6 +247,26 @@ function drawTimePicker(timeFieldName, targetTimeField, x, y)
   pickerDiv.style.zIndex = 10000;
     
 }
+
+
+function grise_period(_hid, _show)
+{
+	var _radio = document.forms["formu"].elements["period_choice"]
+	var _flag = 0;
+
+       for (var i=0; i< _radio.length;i++) {
+			if (_radio[i].checked) 
+			{
+				_radio[i].checked = false;
+				//_flag = 1;
+         	}
+         	else
+			{
+				_radio[i].checked = true;
+         	}
+       }
+}
+
 
 </script>
 

@@ -3,32 +3,38 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 
 
-<div id="div1" style="padding-bottom:10px;">
+<div id="div1" style="padding:2px; width:290px;" >
 <form name="formu">
-    <table id="ListTable">
+    <table >
         <tr class="ListHeader">
-        	<td class="FormHeader" >{$lang.option}
+        	<td class="FormHeader" colspan="2">{$lang.period}
 			</td>
         </tr>
-       <tr class="list_one">
-       <td style="padding-left:10px;padding-top:2px;padding-bottom:2px;">{$form.period.label}
-		&nbsp;
-		{$form.period.html}</td></tr>
+       <tr style="padding-bottom:5px;" id="autoPeriod" class="list_one" onclick="grise_period('autoPeriod','customPeriod');">
+			<td><input type="radio" name="period_choice" value="auto"></td>
+	       	<td style="padding-left:10px;padding-top:2px;padding-bottom:2px;" >
+		       {$form.period.label}
+				&nbsp;
+				{$form.period.html}
+			</td>
+		</tr>
 
-		<tr class="list_lvl_1">
+		<tr id="customPeriod" class="list_lvl_1" onclick="grise_period('customPeriod', 'autoPeriod');">
+			<td><input type="radio" name="period_choice" value="custom" CHECKED></td>
 			<td style="padding:2px;padding-left:10px;">
 				{$lang.m_from}
 				&nbsp;
 				<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
 				&nbsp;
-				<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="4" />  
+				<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />  
 				&nbsp;
 				{$lang.m_to}
 				&nbsp;
 				<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
 				&nbsp;
-				<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="4" />  
-			</td>
+				<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />
+				&nbsp;
+			</td>			
 		</tr>
 	</table>
 </form>

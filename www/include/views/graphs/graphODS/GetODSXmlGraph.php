@@ -28,8 +28,8 @@ For information : contact@oreon-project.org
 		exit(0);
 	}
 
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
+	function check_injection($g){
+		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $g)) {
 			get_error('sql injection detected');
 			return 1;
 		}
@@ -47,31 +47,55 @@ else
 echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
 
 
+/*
+ * Start document root
+ */
+ echo "<root>";
+
+
+
 # if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 $debugXML = 0;
 $buffer = '';
 
 $oreonPath = '../../../../../';
 
-# pearDB init
+
+
+/*
+ * pearDB init
+ */ 
 require_once 'DB.php';
 
-#PHP functions
 include_once($oreonPath . "etc/centreon.conf.php");
 include_once($oreonPath . "www/DBconnect.php");
 include_once($oreonPath . "www/DBOdsConnect.php");
 
+
+/*
+ * PHP functions
+ */
 include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 include_once($oreonPath . "www/include/common/common-Func.php");
 
+/*
+ * Lang file
+ */
+	if(isset($_GET["lang"]) && !check_injection($_GET["lang"])){
+		$lang_ = htmlentities($_GET["lang"]);
+	}else
+		$lang_ = "-1";
+
+	is_file ("../lang/".$lang_.".php") ? include_once ("../lang/".$lang_.".php") : include_once ("../../lang/en.php");
 
 
-$lang = array();
+//$lang = array();
+/*
 $lang["start"] = "Du ";
 $lang["end"] = "au ";
 $lang["period"] = "Periode ";
 $lang["optionAdvanced"] = "Options";
-
+*/
 
 	function getMyHostIDService($svc_id = NULL)	{
 		if (!$svc_id) return;
@@ -110,6 +134,15 @@ $lang["optionAdvanced"] = "Options";
 	}else
 		$sid = "-1";
 
+	if(isset($_GET["template_id"]) && !check_injection($_GET["template_id"])){
+		$template_id = htmlentities($_GET["template_id"]);
+	}else
+		$template_id = "1";
+
+	if(isset($_GET["split"]) && !check_injection($_GET["split"])){
+		$split = htmlentities($_GET["split"]);
+	}else
+		$split = "0";
 
 
 	if(isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])){
@@ -154,14 +187,20 @@ $contact_id = '2';
 
 
 
+/*
+ * set graph template list
+ */
+	$graphTs = array( NULL => NULL );
+	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getDebugInfo();
+	while($DBRESULT->fetchInto($graphT))
+		$graphTs[$graphT["graph_id"]] = $graphT["name"];
+	$DBRESULT->free();
 
 
 
 if($type == "HH"){
-
-
-
-
 
 	# Verify if template exists
 	$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
@@ -187,7 +226,8 @@ if($type == "HH"){
 			
 			while ($DBRESULT->fetchInto($index_data)){
 				
-				$template_id = getDefaultGraph($index_data["service_id"], 1);
+//				if($template_id == 1)
+					$template_id = getDefaultGraph($index_data["service_id"], 1);
 				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 				$DBRESULT2->fetchInto($GraphTemplate);
 						
@@ -218,13 +258,15 @@ if($type == "HH"){
 					while ($metric_activate = $DBRESULT_view->fetchRow())
 					$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
 				
-				/*
-//				if ($GraphTemplate["split_component"]){
+				
+				if ($GraphTemplate["split_component"]){
 					$elem[$index_id]["split"] = 1;
 					$elem[$index_id]["metrics"] = array();
-//				}
+				}
+				else
+					$elem[$index_id]["split"] = 0;
 
- */
+ 
 				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_id."' ORDER BY `metric_name`");
 				if (PEAR::isError($DBRESULT2))
 					print "Mysql Error : ".$DBRESULT2->getDebugInfo();
@@ -232,7 +274,7 @@ if($type == "HH"){
 					$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
 					if (isset($elem[$index_id]["split"]))
 						#if (!isset($metrics_activate) || (isset($metrics_activate) && isset($metrics_activate[$metrics_ret["metric_id"]]) && $metrics_activate[$metrics_ret["metric_id"]])){
-							$elem[$index_id]["metrics"][$metrics_ret["metric_id"]] = $metrics_ret["metric_id"];	
+							$elem[$index_id]["metrics"][$metrics_ret["metric_id"]] = $metrics_ret["metric_name"];	
 						#}
 				}
 				
@@ -272,15 +314,27 @@ echo "<start>".$start."</start>";
 echo "<end>".$end."</end>";
 echo "<id>".$id."</id>";
 echo "<opid>".$openid."</opid>";
+echo "<template_id>".$template_id."</template_id>";
 
 
 foreach($elem as $svc)
 {
-
 	echo "<svc>";
 	echo "<name>".$svc["service_description"]."</name>";
 	echo "<index>".$svc["index_id"]."</index>";
 	echo "<service_id>".$svc["service_id"]."</service_id>";
+	echo "<split>".$svc["split"]."</split>";
+
+
+	if($svc["split"])
+	foreach($svc["metrics"] as $metric_id => $metric)
+	{
+		echo "<metric>";
+		echo "<name>".$metric."</name>";
+		echo "<metric_id>".$metric_id."</metric_id>";	
+		echo "</metric>";
+	}
+
 	echo "</svc>";
 }
 echo "</host>";
@@ -294,7 +348,6 @@ echo "</host>";
 if($type == "HS"){
 	$msg_error 		= 0;
 	$tab_class 		= array("1" => "list_one", "0" => "list_two");
-	$split 			= 0;
 	$elem = array();
 
 	$graphTs = array( NULL => NULL );
@@ -340,13 +393,14 @@ if($type == "HS"){
 		$DBRESULT2->fetchInto($svc_id);
 	}
 */
-
-	$template_id = getDefaultGraph($svc_id["service_id"], 1);
+//	if($template_id == 1)
+		$template_id = getDefaultGraph($svc_id["service_id"], 1);
 	$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 	$DBRESULT2->fetchInto($GraphTemplate);
 	
 
-	if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1)){
+//	if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1)){
+	if ($GraphTemplate["split_component"] == 1 ) {
 		$split = 1;
 	}
 	
@@ -464,12 +518,21 @@ $metrics = array();
 	echo "<opid>".$openid."</opid>";
 	echo "<split>".$split."</split>";
 	
-	
 	foreach($tab_period as $name => $start){
 		echo "<period>";
 		echo "<name>".$name."</name>";
 		echo "<start>".$start."</start>";
 		echo "<end>".time()."</end>";
+
+if($split)
+foreach($metrics as $metric_id => $metric)
+{
+	echo "<metric>";
+//	echo "<name>".$metric."</name>";
+	echo "<metric_id>".$metric_id."</metric_id>";	
+	echo "</metric>";
+}
+
 		echo "</period>";	
 	}
 	echo "</svc>";
@@ -567,6 +630,19 @@ if($type == "SS"){
 		}	
 		
 		$svc_id["service_description"] = str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"]));
+
+
+		if($template_id == 1)
+			$template_id = getDefaultGraph($svc_id["service_id"], 1);
+		$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+		$DBRESULT2->fetchInto($GraphTemplate);
+		
+	
+		if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1)){
+			$split = 1;
+		}
+
+
 		
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' ORDER BY `metric_name`");
 		if (PEAR::isError($DBRESULT2))
@@ -642,31 +718,82 @@ echo "<opid>".$openid."</opid>";
 echo "<start>".$start."</start>";
 echo "<end>".$end."</end>";
 echo "<index>".$index_id."</index>";
+echo "<split>".$split."</split>";
+echo "<tpl>".$template_id."</tpl>";
 
-echo "<metrics>";
-$flag = 0;
-foreach($metrics as $id => $metric){
-	if($flag)
-		echo "&amp;";
-	$flag = 1;
-	echo "metric[".$id."]=1";
-}
-echo "</metrics>";
 
-/*
-foreach($metrics as $id => $metric){
-	echo "<metric>";
-		echo "<class>".$metric["class"]."</class>";
-		echo "<metric_name>".$metric["metric_name"]."</metric_name>";
-		echo "<metric_id>".$id."</metric_id>";
-	echo "</metric>";	
+if($split == 0){
+	echo "<metricsTab>";
+	$flag = 0;
+	foreach($metrics as $id => $metric){
+
+		if(isset($_GET["metric"]) && $_GET["metric"][$id] == 1)
+		{
+			if($flag)
+				echo "&amp;";
+			$flag = 1;
+			echo "metric[".$id."]=1";
+		}
+	}
+	echo "</metricsTab>";
 }
-*/
+else
+{
+	echo "<metricsTab></metricsTab>";
+}
+	foreach($metrics as $id => $metric){
+		echo "<metrics>";
+		echo "<metric_id>" . $id ."</metric_id>";
+
+		if(isset($_GET["metric"]) && $_GET["metric"][$id] == 0)
+			echo "<select>0</select>";
+		else
+			echo "<select>1</select>";
+
+		echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
+		echo "</metrics>";
+	
+}
+
+
+foreach($graphTs as $id => $tpl){
+	if($tpl && $id){
+		echo "<tpl>";
+			echo "<tpl_name>".$tpl."</tpl_name>";
+			echo "<tpl_id>".$id."</tpl_id>";
+		echo "</tpl>";	
+	}
+}
 
 
 echo "</svc_zoom>";
 
 
 }
+
+/*
+ * LANG
+ */
+
+echo "<lang>";
+echo "<giv_gg_tpl>".$lang["giv_gg_tpl"]."</giv_gg_tpl>";
+
+echo "<advanced>".$lang["optionAdvanced"]."</advanced>";
+echo "<giv_split_component>".$lang['giv_split_component']."</giv_split_component>";
+
+ 
+ 
+ /*
+echo "<>".."</>";
+	$tpl->assign("lgGraph", $lang['giv_gt_name']);
+	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
+	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
+*/
+echo "</lang>";
+
+/*
+ * end root
+ */
+ echo "</root>";
 
 ?>
