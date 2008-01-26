@@ -53,6 +53,9 @@ $lang['m_options'] = "Options";
 $lang['m_logout'] = "Logout";
 $lang['m_help'] = "Help";
 
+# Menu level 1
+
+$lang['m_nagiosstats'] = "Monitoring Statistics";
 
 # Menu Level 3
 

@@ -53,6 +53,10 @@ $lang['m_options'] = "Options";
 $lang['m_logout'] = "D&eacute;connexion";
 $lang['m_help'] = "Aide";
 
+# Menu Level 1
+
+$lang['m_nagiosstats'] = "Statistique de Supervision";
+
 # Menu Level 3
 
 $lang['m_main_menu'] = "Menu Principal";
