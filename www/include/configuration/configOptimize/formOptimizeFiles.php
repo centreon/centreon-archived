@@ -34,6 +34,7 @@ For information : contact@oreon-project.org
 		if ($key && ($res["host"] == 0 || $res["host"] == $key)){
 			$host_list[$key] = $value;
 			$tab_server[$cpt] = $value;
+			$cpt++;
 		}
 	
 	#
