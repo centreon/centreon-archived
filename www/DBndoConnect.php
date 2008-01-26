@@ -26,10 +26,10 @@ For information : contact@oreon-project.org
 		$debug = 0;
 		$dsn = array(
 		    'phptype'  => 'mysql',
-		    'username' => 'ndo',
-		    'password' => 'ndo',
-		    'hostspec' => 'localhost',
-		    'database' => 'ndo',
+		    'username' => 'centreon',
+		    'password' => 'centreon',
+		    'hostspec' => '192.168.1.204',
+		    'database' => 'centreon2_ndo',
 		);
 
 		$options = array(

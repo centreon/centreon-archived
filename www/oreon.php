@@ -92,8 +92,9 @@ For information : contact@oreon-project.org
 							$tab = split("\=", $ret2["topology_url_opt"]);
 							$o = $tab[1];
 						}
-					} else
+					} else {
 						$url = "./alt_error.php";
+					}
 				}
 			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
 				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
@@ -151,13 +152,10 @@ For information : contact@oreon-project.org
 	# Go on our page
 	if (isset($url) && $url)
     	require_once($url);
-    else
-        ;//echo "Problem with url generated";
-
 
 	if (!isset($oreon->historyPage))
 		$oreon->createHistory();
-
+		
 	if (isset($url) && $url){
 		if (isset($_GET["num"]))
 			$oreon->historyPage[$url] = $_GET["num"];
