@@ -137,7 +137,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("service.ihtml");
+	$tpl->display("serviceGrid.ihtml");
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);

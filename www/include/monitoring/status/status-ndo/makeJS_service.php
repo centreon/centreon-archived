@@ -255,7 +255,7 @@ function hiddenPOPUP(id){
 		span.innerHTML = '';
 }
 
-function displayIMG(metric, s_id, id)
+function displayIMG(index, s_id, id)
 {
 	
 	   // Pour les navigateurs récents
@@ -277,7 +277,7 @@ function displayIMG(metric, s_id, id)
         PcH = false;
     }
     if ( PcH ){
-			_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImageZoom.php?session_id='+s_id+'&index='+metric+'&end=1197994683&start=1197908283', 'test');
+			_img = mk_img('include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id='+s_id+'&index='+index, 'graph popup');
 			Pdiv.appendChild(_img);
 			var l=screen.availWidth; //calcul auto de la largeur de l'ecran client 
 			var h=screen.availHeight; //calcul auto de la hauteur de l'ecran client 		

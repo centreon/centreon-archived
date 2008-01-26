@@ -11,7 +11,6 @@
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
 			<span class="consol_button" id="instance_selected"></span>
-			<div style="text-align:left;padding-top:5px;">&nbsp;{$form.o1.html}</div>
 			{if $pgr_nagios_stat.created != 0}
 				<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>
 			{/if}
@@ -25,7 +24,6 @@
 <table class="Toolbar_TableBottom">
 	<tr>
 		<td class="Toolbar_TDSelectAction_Bottom">
-			<div style="text-align:left;padding-top:5px;">{$form.o2.html}</div>
 			{if $pgr_nagios_stat.created != 0}<font style="text-align:center">&nbsp;&nbsp;&nbsp;Last update : {$pgr_nagios_stat.created}</font>{/if}
 		</td>
 		<input name="p" value="{$p}" type="hidden">
