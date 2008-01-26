@@ -1,0 +1,28 @@
+<div>
+	<ul id="mainnav">
+	{assign var='cpt' value=0}
+	{foreach from=$tab_server key=key item=item}
+		{assign var='cpt' value=$cpt+1}
+		<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$tab_server[$key]}</a></li>
+	{/foreach}
+	</ul>
+</div>
+<a name="generate">
+{assign var='cpt' value=0}
+{foreach from=$host_list key=key item=item}
+{assign var='cpt' value=$cpt+1}
+<div id='tab{$cpt}' class='tab'>
+ 	<table id="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
+	 	</tr>
+	 	<tr>
+	 		<td>
+	 		test
+	 		<img src="http://192.168.1.61/oreon/include/nagiosStats/getStats.php?ns_id={$key}&key=latency"
+	 		
+	 		></td>
+	 	</tr>
+	 </table>
+</div>
+{/foreach} 	
