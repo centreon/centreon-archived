@@ -94,6 +94,9 @@ CREATE TABLE `command_categories_relation` (
 ) ENGINE = innodb;
 
 
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (607, NULL, './include/common/javascript/changetab.js', 'InitChangeTab');
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60701, NULL, './include/common/javascript/changetab.js', 'InitChangeTab');
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60708, NULL, './include/common/javascript/changetab.js', 'InitChangeTab');
 
 
 

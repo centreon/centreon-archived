@@ -6,12 +6,23 @@
 -- Top Level Menu
 --
 
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_home', NULL, NULL, 1, 10, 1, './include/home/home.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_home', NULL, NULL, 1, 10, 1, '', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_monitoring', NULL, NULL, 2, 20, 1, NULL, '', '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_reporting', NULL, NULL, 3, 30, 1, NULL, NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_views', NULL, NULL, 4, 40, 1, NULL, NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_options', NULL, NULL, 5, 50, 1, NULL, '&o=c', '0', '0', '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_configuration', NULL, NULL, 6, 60, 1, NULL, NULL, '0', '0', '1');
+
+
+--
+-- Home
+--
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_home', NULL, 1, 101, 10, 1, './include/home/home.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_home', NULL, 101, 10101, 10, 1, './include/home/home.php', NULL, '0', '0', '1');
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'm_nagiosstats', NULL, 1, 102, 10, 1, './include/nagiosStats/nagiosStats.php', NULL, '0', '0', '1');
+
 
 --
 -- Sous Menus
@@ -548,3 +559,5 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES ('', '20104', NULL, NULL, 'initM');
 
 INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init` ) VALUES ('', 60902, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init` ) VALUES ('', 60708, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` ( `id_t_js` , `id_page` , `o` , `PathName_js` , `Init` ) VALUES ('', 102, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
