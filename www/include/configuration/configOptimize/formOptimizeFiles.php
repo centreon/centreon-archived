@@ -27,6 +27,15 @@ For information : contact@oreon-project.org
 	while ($nagios =& $DBRESULT->fetchRow())
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	
+	$host_list = array();
+	$tab_server = array();
+	$cpt = 0;
+	foreach ($tab_nagios_server as $key => $value)
+		if ($key && ($res["host"] == 0 || $res["host"] == $key)){
+			$host_list[$key] = $value;
+			$tab_server[$cpt] = $value;
+		}
+	
 	#
 	## Form begin
 	#
@@ -69,17 +78,25 @@ For information : contact@oreon-project.org
 		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br>";
+		$msg_optimize = array();
+		$cpt = 1;
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
 				$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
-				$msg .= str_replace ("\n", "<br>", $stdout);
+				$msg_optimize[$cpt] = str_replace ("\n", "<br>", $stdout);
+				$cpt++;
 			}
 		}
 	}
 
 	$form->addElement('header', 'status', $lang["gen_status"]);
-	if ($msg)
-		$tpl->assign('msg', $msg);
+	if (isset($msg_optimize) && $msg_optimize)
+		$tpl->assign('msg_optimize', $msg_optimize);
+	if (isset($host_list) && $host_list)
+		$tpl->assign('host_list', $host_list);
+		
+	if (isset($tab_server) && $tab_server)
+		$tpl->assign('tab_server', $tab_server);
 
 	# Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
