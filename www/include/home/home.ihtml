@@ -3,9 +3,9 @@
 	<tr>
 		<td>
 			<table id="ListTable">
-				<tr class='ListHeader'>
+				<!--<tr class='ListHeader'>
 					<td colspan="2">&nbsp;&nbsp;General statistics</td>
-				</tr>
+				</tr>-->
 				<tr>
 					<td>{php}
 						
@@ -22,9 +22,9 @@
 						{/php}
 					</td>
 				</tr>
-				<tr class='ListHeader'>
+				<!--<tr class='ListHeader'>
 					<td colspan="2">&nbsp;&nbsp;Host Group statistics</td>
-				</tr>
+				</tr>-->
 				<tr>
 					<td colspan="2">
 						{php}

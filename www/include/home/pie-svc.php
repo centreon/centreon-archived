@@ -46,11 +46,18 @@
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
 	$data = array();
 	$color = array();
+	$counter = 0;
 	while($DBRESULT_NDO1->fetchInto($ndo)){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic[$ndo["current_state"]];
 		$color[] = $oreon->optGen["color_".strtolower($statistic[$ndo["current_state"]])];		
+		$counter += $ndo["cnt"];
 	}
+	
+	foreach ($data as $key => $value)
+		$data[$key] = round($value / $counter * 100, 2);
+	
+	
 	/*
 	 *  create the dataset
 	 */
@@ -72,11 +79,12 @@
 	// will be re-used (3 colurs for 5 slices means the last two
 	// slices will have colours colour[0] and colour[1]):
 	//
+	$g->set_tool_tip( '#key# : #val# %' );
 	
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
-	$g->title( 'Services', '{font-size:18px; color: #d01f3c}' );
+	$g->title( 'Services', '{font-size:18px; color: #424242}' );
 	echo $g->render();
 
 ?>

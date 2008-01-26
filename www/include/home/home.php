@@ -22,17 +22,14 @@ For information : contact@oreon-project.org
 	include_once("./include/monitoring/status/resume.php"); 
 
 	unset($tpl);
-	unset($path);
+	unset($path);					
 
-/*
-	include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-	open_flash_chart_object( 300, 300, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-host.php' );
-*/						
-
-	
 	$path = "./include/home/";
 		
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
+	 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "./");	
 		

@@ -46,25 +46,17 @@
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
 	$data = array();
 	$color = array();
+	$counter = 0;
 	while($DBRESULT_NDO1->fetchInto($ndo)){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic_host[$ndo["current_state"]];
-		$color[] = $oreon->optGen["color_".strtolower($statistic_host[$ndo["current_state"]])];		
+		$color[] = $oreon->optGen["color_".strtolower($statistic_host[$ndo["current_state"]])];	
+		$counter += $ndo["cnt"];	
 	}
-
-/*
-	// create the dataset
-	$data = array();
-	$color = array();
 	
-	foreach ($oreon->status_graph_host as $key => $value){
-		if ($value != 0){
-			$data[] = $value;
-			$legend[] = $key;
-			$color[] = $oreon->optGen["color_".strtolower($key)];		
-		}			
-	}
-*/
+	foreach ($data as $key => $value)
+		$data[$key] = round($value / $counter * 100, 2);
+
 	include_once( '/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';
@@ -86,7 +78,7 @@
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
-	$g->title( 'Hosts', '{font-size:18px; color: #d01f3c}' );
+	$g->title( 'Hosts', '{font-size:18px; color: #424242}' );
 	echo $g->render();
 
 ?>
