@@ -39,8 +39,11 @@
 	$hg = array();
 	$strnameY = "";
 	$percentmax = 0;
-	$bar_red = new bar_3d( 75, '#125CEC' );
-	$bar_red->key( 'host UP (%)', 10 );
+	$bar_blue = new bar_3d( 75, '#125CEC' );
+	$bar_blue->key( 'host UP (%)', 10 );
+	
+	$bar_red = new bar_3d( 75, '#EC5C12' );
+	$bar_red->key( 'host Down (%)', 10 );
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup");
 	if (PEAR::isError($DBRESULT))
@@ -49,24 +52,28 @@
 	while($hg = $DBRESULT->fetchRow()){
 		$counterTotal = 0;
 		$counterUP = 0;
-		
+		$counterDown = 0;
 		$DBRESULT2 =& $pearDB->query("SELECT host_name FROM host, hostgroup_relation WHERE  hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND hostgroup_relation.host_host_id = host.host_id");
 		while($h = $DBRESULT2->fetchRow()){
 			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM nagios_hoststatus, nagios_hosts WHERE nagios_hoststatus.host_object_id = nagios_hosts.host_object_id AND nagios_hosts.alias = '".$h["host_name"]."'");
 			if (PEAR::isError($DBRESULT3))
 				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
 			while($stt = $DBRESULT3->fetchRow()){
+				if ($stt["current_state"] == 1)
+					$counterDown++;
 				if ($stt["current_state"] == 0)
 					$counterUP++;
 				$counterTotal++;
 			}
 		}
 		if ($counterTotal){
-			$percent = $counterUP / $counterTotal * 100;
-			$hostgroup[$hg["hg_name"]] = $percent;
-			$bar_red->data[] = $percent;
-			if ($percent > $percentmax)
-				$percentmax = $percent;
+			$percentU = $counterUP / $counterTotal * 100;
+			$percentD = $counterDown / $counterTotal * 100;
+			$hostgroupU[$hg["hg_name"]] = $percentU;
+			$bar_blue->data[] = $percentU;
+			$bar_red->data[] = $percentD;
+			if ($percentU > $percentmax)
+				$percentmax = $percentU;
 			if ($strnameY)
 				$strnameY .= ", ";
 			$strnameY .= $hg["hg_name"];
@@ -94,6 +101,7 @@
 	//$g->set_data( $data_2 );
 	//$g->bar_3D( 75, '#3334AD', '2007', 10 );
 	
+	$g->data_sets[] = $bar_blue;
 	$g->data_sets[] = $bar_red;
 	
 	$g->set_x_axis_3d( 12 );
