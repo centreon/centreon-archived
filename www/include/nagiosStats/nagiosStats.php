@@ -40,7 +40,17 @@ For information : contact@oreon-project.org
 		$tab_server[$cpt] = $value;
 		$cpt++;
 	}
-	
+
+	$options = array(	"active_host_check" => "nagios_active_host_execution.rrd", 
+						"active_host_last" => "nagios_active_host_last.rrd",
+						"host_latency" => "nagios_active_host_latency.rrd",
+						"active_host_check" => "nagios_active_service_execution.rrd", 
+						"active_service_last" => "nagios_active_service_last.rrd", 
+						"service_latency" => "nagios_active_service_latency.rrd", 
+						"cmd_buffer" => "nagios_cmd_buffer.rrd", 
+						"host_states" => "nagios_hosts_states.rrd", 
+						"service_states" => "nagios_services_states.rrd");
+		
 	$path = "./include/nagiosStats/";
 		
 	/*
@@ -55,6 +65,8 @@ For information : contact@oreon-project.org
 		
 	if (isset($tab_server) && $tab_server)
 		$tpl->assign('tab_server', $tab_server);	
+	
+	$tpl->assign("options", $options);
 		
 	$tpl->assign("session", session_id());
 	$tpl->display("nagiosStats.ihtml");

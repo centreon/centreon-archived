@@ -16,13 +16,15 @@
 	 	<tr class="ListHeader">
 	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
 	 	</tr>
+		{assign var='counter' value=0}
+ 		{foreach from=$options key=keyOptions item=itemOptions}
 	 	<tr>
-	 		<td>
-	 		test
-	 		<img src="http://192.168.1.61/oreon/include/nagiosStats/getStats.php?ns_id={$key}&key=latency"
-	 		
-	 		></td>
+	 		<td align='center'>{$counter}
+	 		<img src="http://192.168.1.61/oreon/include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}">
+	 		</td>
 	 	</tr>
+ 		{assign var='counter' value=$counter+1}
+	 	{/foreach}
 	 </table>
 </div>
 {/foreach} 	

@@ -23,54 +23,52 @@ For information : contact@oreon-project.org
 	
 	require_once ('DB.php');
 
-	/*
-	 *  Connect to Oreon DB
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_oreon['user'],
-	    'password' => $conf_oreon['password'],
-	    'hostspec' => $conf_oreon['host'],
-	    'database' => $conf_oreon['db'],
-	);
+	$title	 = array(	"active_host_check" => "Verifications d'hotes", 
+						"active_host_last" => "Hotes Actifs",
+						"host_latency" => "Latence des verifications d'hotes",
+						"active_host_check" => "Verifications des services", 
+						"active_service_last" => "Services Actifs", 
+						"service_latency" => "Latences des verifications des services", 
+						"cmd_buffer" => "Commandes en buffer", 
+						"host_states" => "Etats des hotes", 
+						"service_states" => "Etats des Services");
 
-	$options = array(
-	    'debug'       => 2,
-	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-	);
 
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB))
-	    die("Unable to connect : " . $pearDB->getMessage());
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+	$options = array(	"active_host_check" => "nagios_active_host_execution.rrd", 
+						"active_host_last" => "nagios_active_host_last.rrd",
+						"host_latency" => "nagios_active_host_latency.rrd",
+						"active_host_check" => "nagios_active_service_execution.rrd", 
+						"active_service_last" => "nagios_active_service_last.rrd", 
+						"service_latency" => "nagios_active_service_latency.rrd", 
+						"cmd_buffer" => "nagios_cmd_buffer.rrd", 
+						"host_states" => "nagios_hosts_states.rrd", 
+						"service_states" => "nagios_services_states.rrd");
+	
+	$differentStats = array(	"nagios_active_host_execution.rrd" => array("Used", "High", "Total"), 
+								"nagios_active_host_last.rrd" => array("T1", "T5", "T15", "T60"), 
+								"nagios_active_host_latency.rrd" => array("Used", "High", "Total"), 
+								"nagios_active_service_execution.rrd" => array("Used", "High", "Total"), 
+								"nagios_active_service_last.rrd" => array("T1", "T5", "T15", "T60"), 
+								"nagios_active_service_latency.rrd" => array("Used", "High", "Total"), 
+								"nagios_cmd_buffer.rrd" => array("Used", "High", "Total"), 
+								"nagios_hosts_states.rrd" => array("Up", "Down", "Unreach"), 
+								"nagios_services_states.rrd" => array("Ok", "Warn", "Crit", "Unk"));
 
-	 */ 
 
 	/*
 	 * Verify if start and end date
 	 */	
 
-	if (!isset($_GET["start"])){
+	if (!isset($_GET["start"]))
 		$start = time() - (60*60*48);
-	}
 	else
 		$start = $_GET["start"];
 	
-	if (!isset($_GET["end"])){
+	if (!isset($_GET["end"]))
 		$end = time();
-	}
 	else
 		$end = $_GET["end"];
 
-
-
-	/*
-	 * Verify if session is active
-	 */	
-	
-	
-				/*
-		 * Create command line
-		 */
 		 
 		$command_line = " graph - --start=".$start." --end=".$end;
 
@@ -78,19 +76,20 @@ For information : contact@oreon-project.org
 		 * get all template infos
 		 */
 		 
-		$command_line .= " --interlaced --imgformat PNG --width=500 --height=120 --title='Latency' --vertical-label='Latency' --slope-mode  ";
+		$command_line .= " --interlaced --imgformat PNG --width=500 --height=120 --title='".$title[$_GET["key"]]."' --vertical-label='".$_GET["key"]."' --slope-mode  ";
 		$command_line .= "--rigid --alt-autoscale-max ";
 				
 		/*
 		 * Init DS template For each curv
 		 */
 		
-		$colors = array("1"=>"#19EE11", "2"=>"#82CFD8", "3"=>"#F8C706");
-		$metrics = array("Used" => 1, "High" => 2, "Total" => 3);
+		$colors = array("1"=>"#19EE11", "2"=>"#82CFD8", "3"=>"#F8C706", "4"=>"#F8C706");
+		//$metrics = array("Used" => 1, "High" => 2, "Total" => 3);
 		
+		$metrics = $differentStats[$options[$_GET["key"]]];
 		$cpt = 1;
 		foreach ($metrics as $key => $value){
-			$command_line .= " DEF:v".$cpt."=/var/lib/ods/perfmon-".$_GET["ns_id"]."/nagios_active_service_latency.rrd:".$key.":AVERAGE ";
+			$command_line .= " DEF:v".$cpt."=/var/lib/ods/perfmon-".$_GET["ns_id"]."/".$options[$_GET["key"]].":".$value.":AVERAGE ";
 			$cpt++;
 		}
 		$command_line .= " COMMENT:\" \\l\" ";
@@ -100,11 +99,10 @@ For information : contact@oreon-project.org
 		$cpt = 1;
 
 		foreach ($metrics as $key => $tm){
-			
-			$command_line .= " AREA:v".($cpt).$colors[$cpt]."3c ";
+			//$command_line .= " AREA:v".($cpt).$colors[$cpt]."3c ";
 			$command_line .= " LINE1:v".($cpt);
 			$command_line .= $colors[$cpt].":\"";
-			$command_line .= $key."\"";
+			$command_line .= $tm."\"";
 			$cpt++;
 		}
 
