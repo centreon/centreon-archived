@@ -96,7 +96,7 @@ if (!(-p $FIFO && -w _ && -r _)){
 	exit(1);
 }
 
-my $fifoHandle = new IO::File($FIFO, O_RDWR|O_NONBLOCK, "0775");
+my $fifoHandle = new IO::File($FIFO, O_RDWR|O_NONBLOCK, 0666);
 
 # Add the handles for our programs into the readset.
 # In other words, we're keeping track of these handles.
@@ -271,9 +271,11 @@ sub GetPerfData($){
 		# Move perfdata file in temp dir
 		print "ssh -q -i ~/.ssh/id_dsa $distantconnexion mv $distantperffile $distanttmpperffile\n";
 		`ssh -q -i ~/.ssh/id_dsa $distantconnexion mv $distantperffile $distanttmpperffile`;
+		
 		# Get Perfdata file
 		print "scp -q -i ~/.ssh/id_dsa $origin $localtmpperffile\n";
 		`scp -q -i ~/.ssh/id_dsa $origin $localtmpperffile`;
+		
 		# Remove old perfdata file 
 		print "ssh -q -i ~/.ssh/id_dsa $distantconnexion rm $distanttmpperffile\n";
 		`ssh -q -i ~/.ssh/id_dsa $distantconnexion rm $distanttmpperffile`;
