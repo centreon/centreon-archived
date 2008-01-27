@@ -3,9 +3,6 @@
 	<tr>
 		<td>
 			<table id="ListTable">
-				<!--<tr class='ListHeader'>
-					<td colspan="2">&nbsp;&nbsp;General statistics</td>
-				</tr>-->
 				<tr>
 					<td>{php}
 						
@@ -22,15 +19,22 @@
 						{/php}
 					</td>
 				</tr>
-				<!--<tr class='ListHeader'>
-					<td colspan="2">&nbsp;&nbsp;Host Group statistics</td>
-				</tr>-->
 				<tr>
 					<td colspan="2">
 						{php}
 						
 							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
 							open_flash_chart_object( 700, 220, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-hostgroup.php' );
+						
+						{/php}
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						{php}
+						
+							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
+							open_flash_chart_object( 700, 220, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-svcgroup.php' );
 						
 						{/php}
 					</td>
