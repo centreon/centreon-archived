@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 	 */	
 
 	if (!isset($_GET["start"]))
-		$start = time() - (60*60*48);
+		$start = time() - (60*60*96);
 	else
 		$start = $_GET["start"];
 	
