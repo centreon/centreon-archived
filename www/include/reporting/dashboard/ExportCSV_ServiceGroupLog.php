@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 		exit(0);
 	}
 
-	include_once($oreonPath . "www/centreon.conf.php");
+	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBOdsConnect.php");
 

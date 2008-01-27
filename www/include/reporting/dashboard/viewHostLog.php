@@ -39,7 +39,8 @@ For information : contact@oreon-project.org
 	## Selection de l'host
 	#
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
-$var_url_export_csv = "";
+
+	$var_url_export_csv = "";
 		
 	if($mhost)	{
 		if($period == "customized") {
@@ -66,7 +67,7 @@ $var_url_export_csv = "";
 
 	if (isset($_POST["host"])){
 		$formHost->setDefaults(array('host' => $_POST["host"]));
-	}else if (isset($_GET["host"])){
+	} else if (isset($_GET["host"])){
 		$formHost->setDefaults(array('host' => $_GET["host"]));
 	}
 
@@ -114,7 +115,8 @@ $var_url_export_csv = "";
 
 
 	$tpl->assign('host_name', $mhost);
-
+	global $host_name;
+	$host_name = $mhost;
 
 	$tpl->assign('totalAlert', $totalAlert);
 
@@ -122,8 +124,8 @@ $var_url_export_csv = "";
 	$tpl->assign('totalpTime', $totalpTime);
 	$tpl->assign('totalpkTime', $totalpkTime);
 
+	global $status;
 	$tpl->assign('status', $status);
-	
 	
 	$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 	$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
@@ -131,8 +133,8 @@ $var_url_export_csv = "";
 	$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
 	
 	$tpl->assign("tab_resume", $tab_resume);
-	if(isset($tab_svc))
-	$tpl->assign("tab_svc", $tab_svc);
+	if (isset($tab_svc))
+		$tpl->assign("tab_svc", $tab_svc);
 	$tpl->assign("tab_svc_average", $tab_svc_average);
 
 	$tt = 0 + ($ed - $sd);
@@ -237,16 +239,15 @@ $var_url_export_csv = "";
 
 		$type = 'Host';
 		include('ajaxReporting_js.php');
-	}
-	else {
-			?>
-			<SCRIPT LANGUAGE="JavaScript">
-			function initTimeline() {
-				;
-			}
-			</SCRIPT>
-			<?php
+	} else {
+		?>
+		<SCRIPT LANGUAGE="JavaScript">
+		function initTimeline() {
+			;
 		}
+		</SCRIPT>
+		<?php
+	}
 
 	$tpl->display("template/viewHostLog.ihtml");
 

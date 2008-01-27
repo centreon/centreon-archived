@@ -338,8 +338,9 @@ For information : contact@oreon-project.org
 
 	$rq = 'SELECT ' .
 	' * FROM `log_archive_host` WHERE host_id = ' . $host_id .
-	' AND date_start >= ' . $sd . ' AND date_end <= ' . $ed .
-	' order by date_start desc';
+	' AND date_start >= ' . $sd . ' AND date_end <= ' . $ed;// .
+	//' order by date_start desc';
+		
 		
 	$res = & $pearDB->query($rq);
 	while ($h =& $res->fetchRow()) {

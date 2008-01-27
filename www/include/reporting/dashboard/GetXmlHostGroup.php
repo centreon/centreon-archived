@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 		#$colorUNKNOWN = "red";
 
 		$oreonPath = $_GET["oreonPath"];
-		include_once($oreonPath . "/www/centreon.conf.php");
+		include_once($oreonPath . "/etc/centreon.conf.php");
 		$dsn = array(
 			     'phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],

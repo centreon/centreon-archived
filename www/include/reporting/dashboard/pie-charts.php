@@ -29,7 +29,6 @@ For information : contact@oreon-project.org
 	foreach ($value as $key => $val)	{
 		if ($val)
 			if (!isset($oreon->optGen["color_".strtolower($key)])) {
-				print $val;
 				$color[] = $oreon->optGen["color_unknown"];
 				$data[] = $val;
 				$legend[] = "Undeterminated";
@@ -60,7 +59,10 @@ For information : contact@oreon-project.org
 	$g->pie_slice_colours($color);
 
 	$g->set_tool_tip( '#val#%' );
-	$g->title( $_GET["host_name"], '{font-size:18px; color: #424242}' );
+	if ($_GET["service_name"])
+		$g->title( $_GET["service_name"] . " on " . $_GET["host_name"], '{font-size:15px; color: #424242}' );
+	else
+		$g->title( $_GET["host_name"], '{font-size:18px; color: #424242}' );
 	echo $g->render();
 
 ?>
