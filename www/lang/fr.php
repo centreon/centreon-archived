@@ -90,6 +90,7 @@ $lang['m_alerts'] = "Alertes";
 
 # Log Menu
 
+$lang['m_treeViewLog'] = "Logs";
 $lang['m_all_logs'] = "Tous les Logs";
 $lang['m_notify_logs'] = "Notifications";
 $lang['m_alerts_log'] = "Alertes";

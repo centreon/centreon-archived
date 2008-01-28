@@ -392,13 +392,14 @@ sera visible que pour l'état a:hover */
 	filter:alpha(opacity=85);
 */
     padding:4px;
-	background-color:#E6D793;
-	border: 2px #E6D793 solid;
+//	background-color:#E6D793;
+	background-color:white;
+	border: 1px gray solid;
 	-moz-border-radius: 14px;
 
 }
 a.infobulle:hover table{
-	border: 2px #E6D793 solid;
+	border: 1px #gray solid;
 }
 a.infobulle:hover td{
 	padding:10px;
@@ -409,8 +410,9 @@ white-space:nowrap;
 }
 
 .ListHeaderPopup{
-    background-color:#E6D793;
+    background-color:white;
 	border-left:none 0px red;
+	font-weight: bold;
 }
 .ListHeaderPopup td{
 	border:solid 0px red;

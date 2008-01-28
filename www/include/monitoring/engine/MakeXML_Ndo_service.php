@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	$debugXML = 0;
 	$buffer = '';
-	$oreonPath = '/srv/oreon/';
+	$oreonPath = '/usr/local/centreon/';
 
 	$ndo_base_prefixe = "nagios";
 
@@ -48,6 +48,7 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBOdsConnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 
@@ -188,6 +189,23 @@ For information : contact@oreon-project.org
 	        return $str;
 	    }
 	}
+
+
+
+
+	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL)	{
+		if (!$service_description || !$host_name) return NULL;
+		global $pearDBO;
+		$DBRESULT =& $pearDBO->query("SELECT id FROM index_data WHERE host_name = '".$host_name."' AND service_description = '".$service_description."' ");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
+			return $row["id"];
+		}
+		return NULL;
+	}
+
 
 
 
@@ -424,12 +442,6 @@ For information : contact@oreon-project.org
 			if($host_prev == $ndo["host_name"]){
 				$buffer .= '<hc>transparent</hc>';
 				$buffer .= '<hn none="1">'. $ndo["host_name"] . '</hn>';
-				/*
-				$buffer .= '<hau><![CDATA['. $host_status[$ndo["host_name"]]["action_url"] . ']]></hau>';
-				$buffer .= '<hnu><![CDATA['. $host_status[$ndo["host_name"]]["notes_url"] . ']]></hnu>';
-				$buffer .= '<hnn><![CDATA['. $host_status[$ndo["host_name"]]["notes"] . ']]></hnn>';
-				$buffer .= '<hip><![CDATA['. $host_status[$ndo["host_name"]]["address"] . ']]></hip>';
-*/
 				}else{
 				$host_prev = $ndo["host_name"];
 				$buffer .= '<hc>'.$color_host.'</hc>';
@@ -452,7 +464,7 @@ For information : contact@oreon-project.org
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
 			$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
-			$buffer .= '<svc_metric>111</svc_metric>';
+			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"]).'</svc_index>';
 			$buffer .= '<sid>'.$sid.'</sid>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';

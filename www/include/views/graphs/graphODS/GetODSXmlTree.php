@@ -72,6 +72,7 @@ echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 */
 
 
+
 function service_has_graph($host, $service)
 {
 	global $pearDBO;
@@ -210,7 +211,7 @@ else if($type == "HS") // get services for host
 }
 else if($type == "HO") // get services for host
 {
-	$rq2 = "SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) order by host_name";
+	$rq2 = "SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name";
 	$DBRESULT2 =& $pearDB->query($rq2);
 	if (PEAR::isError($DBRESULT2))
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
