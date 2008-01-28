@@ -19,7 +19,7 @@
 		{assign var='counter' value=0}
  		{foreach from=$options key=keyOptions item=itemOptions}
 	 	<tr>
-	 		<td align='center'>{$counter}
+	 		<td align='center'>
 	 		<img src="http://192.168.1.61/oreon/include/nagiosStats/getStats.php?ns_id={$key}&key={$keyOptions}">
 	 		</td>
 	 	</tr>
