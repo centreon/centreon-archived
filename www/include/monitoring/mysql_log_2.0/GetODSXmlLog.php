@@ -237,9 +237,6 @@ $contact_id = '2';
 		$period = $auto_period;
 
 	if (!isset($start) && !isset($end)){
-/*
-		$start = time() - ($day + 30);
-		$end = time() + 10;*/
 		$start = time() - ($period);
 		$end = time();
 	}			

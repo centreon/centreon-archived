@@ -4,7 +4,7 @@
 
 
 
-<div style="position:relative; width:150px; left:251px; top: -50px; * html left:300px;"  valign="top" align='left'>
+<div style="position:relative; width:150px; left:270px; top: -40px; * html left:340px;"  valign="top" align='left'>
 	<xsl:element name="input">
 		<xsl:attribute name="type">button</xsl:attribute>
 		<xsl:attribute name="name">graph</xsl:attribute>
@@ -14,7 +14,7 @@
 	<xsl:text> </xsl:text>
 </div>
 
-<div id="div2" style=" width:400px; position:relative;  left:325px; top: -99px"  valign="top" align='left'>
+<div id="div2" style=" width:400px; position:relative;  left:340px; top: -87px"  valign="top" align='left'>
 
 	<form name="formu2">
 	    <table id="ListTableSmall" >
@@ -69,7 +69,7 @@
 		</form>
  </div>
 
-<div id="div3" style=" width:400px; position:relative;  left:487px; top:-152px"  valign="top" align='left'>
+<div id="div3" style=" width:400px; position:relative;  left:500px; top:-140px"  valign="top" align='left'>
 
 	<form name="formu3">
 	    <table id="ListTableSmall" >
@@ -137,7 +137,7 @@
 		</form>
  </div>
 
-<div id="div4" style=" width:500px; position:relative;  left:649px; top:-205px"  valign="top" align='left'>
+<div id="div4" style=" width:500px; position:relative;  left:660px; top:-193px"  valign="top" align='left'>
 
 	<form name="formu4">
 	    <table id="ListTableSmall" >
@@ -220,7 +220,7 @@
 
 
 
-<div style="position:relative; top: -180px;">
+<div style="position:relative; top: -168px;">
 	<table>
 		<tr>
 		<xsl:for-each select="//page">
@@ -244,7 +244,7 @@
 	</table>
 </div>
 
-<div style="position:relative; top: -180px;">
+<div style="position:relative; top: -168px;">
 <table id="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter">Day</td>
