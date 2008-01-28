@@ -3,23 +3,24 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 
 
-<div id="div1" style="padding:2px; width:290px;" >
+<div id="div1" style="padding:2px; width:400px;" >
 <form name="formu">
     <table >
         <tr class="ListHeader">
-        	<td class="FormHeader" colspan="2">{$lang.period}
+        	<td class="FormHeader" colspan="3">{$lang.period}
 			</td>
         </tr>
-       <tr style="padding-bottom:5px;" id="autoPeriod" class="list_one" onclick="grise_period('autoPeriod','customPeriod');">
+       <tr style="padding-bottom:5px;" id="autoPeriod" class="list_one">
 			<td><input type="radio" name="period_choice" value="auto"></td>
 	       	<td style="padding-left:10px;padding-top:2px;padding-bottom:2px;" >
 		       {$form.period.label}
 				&nbsp;
 				{$form.period.html}
 			</td>
+			<td rowspan="2" style="width:80px;"></td>
 		</tr>
 
-		<tr id="customPeriod" class="list_lvl_1" onclick="grise_period('customPeriod', 'autoPeriod');">
+		<tr id="customPeriod" class="list_lvl_1" >
 			<td><input type="radio" name="period_choice" value="custom" CHECKED></td>
 			<td style="padding:2px;padding-left:10px;">
 				{$lang.m_from}

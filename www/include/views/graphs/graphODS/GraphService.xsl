@@ -5,55 +5,7 @@
 
 <xsl:if test="host">
 
-<!-- 
-<div id="div1" class="cachediv" style="padding-bottom:10px;">  
--->
-
-<!-- 
-	    <div id="div1" style="padding-bottom:10px;">
-		<form name="formu">
-    	    <table id="ListTable">
-                <tr class="ListHeader">
-                	<td class="FormHeader" ><xsl:value-of select="//lang/optionAdvanced"/></td>
-                </tr>
-               <tr class="list_one">
-               		<td >
-               		<xsl:value-of select="//lang/period"/>
-						<xsl:text> </xsl:text> 
-               		
-               		</td>
-               </tr>
-
-				<tr class="list_lvl_1">
-					<td><xsl:value-of select="//lang/start"/>
-						<xsl:text> </xsl:text> 
-						<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
-						<xsl:text> </xsl:text> 
-						<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="4" />  
-						<xsl:text> </xsl:text> 
-						<xsl:value-of select="//lang/end"/>
-						<xsl:text> </xsl:text> 
-						<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
-						<xsl:text> </xsl:text> 
-						<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="4" />  
-					</td>
-				</tr>
-        	</table>
-		</form>
-    	</div>
-		<div valign="top" align='center'>
-			<input onclick="DisplayHidden('div1');" name="advanced" value="Options" type="button" />
-			<xsl:text> </xsl:text> 
-			<xsl:element name="input">
-				<xsl:attribute name="type">button</xsl:attribute>
-				<xsl:attribute name="name">graph</xsl:attribute>
-				<xsl:attribute name="value">graph</xsl:attribute>
-				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-			</xsl:element>
-		</div>
-<br/>
--->
-		<div style="position:relative; z-index: 10; left:0px; top: -50px"  valign="top" align='center'>
+		<div style="position:relative; z-index: 10; left:-240px; top: -40px"  valign="top" align='center'>
 			<xsl:element name="input">
 				<xsl:attribute name="type">button</xsl:attribute>
 				<xsl:attribute name="name">graph</xsl:attribute>
@@ -74,13 +26,13 @@
 	
 					<td style="text-align:right;width:42px;">
 	
-					<a href="">
-						<img src="./img/icones/16x16/text_binary_csv.gif"/>
-					</a>
-	
-					<a href=''>
-						<img src="./img/icones/16x16/text_binary_xml.gif"/>
-					</a>
+						<xsl:element name="a">
+							<xsl:attribute name="href">
+							./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+							</xsl:attribute>
+							<img src="./img/icones/16x16/text_binary_csv.gif"/>
+						</xsl:element>
+
 					</td>
 				</tr>
 				<tr>
@@ -133,7 +85,7 @@
 </xsl:if>
 
 <xsl:if test="svc">
-		<div style="position:relative; z-index: 10; left:0px; top: -50px"  valign="top" align='center'>
+		<div style="position:relative; z-index: 10; left:-236px; top: -40px"  valign="top" align='center'>
 			<xsl:element name="input">
 				<xsl:attribute name="type">button</xsl:attribute>
 				<xsl:attribute name="name">graph</xsl:attribute>
@@ -153,20 +105,22 @@
 	
 					<td style="text-align:right;width:42px;">
 	
-					<a href="">
-						<img src="./img/icones/16x16/text_binary_csv.gif"/>
-					</a>
-	
-					<a href=''>
-						<img src="./img/icones/16x16/text_binary_xml.gif"/>
-					</a>
+							<xsl:element name="a">
+							<xsl:attribute name="href">
+							./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+							</xsl:attribute>
+							<img src="./img/icones/16x16/text_binary_csv.gif"/>
+						</xsl:element>
+
 					</td>
 				</tr>
 				<tr>
 	    			<td class='ListColCenter' valign="top" align='center'>
 				    	<div id="imggraph">
 
-
+<xsl:variable name= "mstart">
+<xsl:value-of select="start"/>
+</xsl:variable>
 
 
 			<xsl:if test="//split = 0">
@@ -193,7 +147,7 @@
 	
 										<xsl:element name="img">
 										  	<xsl:attribute name="src">
-		./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+		./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="$mstart"/>
 										  	</xsl:attribute>
 										</xsl:element>
 								</xsl:element>
@@ -216,19 +170,17 @@
 </xsl:if>
 
 <xsl:if test="svc_zoom">
-
-
-			<div style="position:relative; width:150px; left:268px; top: -50px; * html left:300px;"  valign="top" align='left'>
-			<xsl:element name="input">
-				<xsl:attribute name="type">button</xsl:attribute>
-				<xsl:attribute name="name">graph</xsl:attribute>
-				<xsl:attribute name="value">grapher</xsl:attribute>
-				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-			</xsl:element>
-			<xsl:text> </xsl:text>
+		<div style="position:relative; width:150px; left:274px; top: -40px; * html left:300px;"  valign="top" align='left'>
+		<xsl:element name="input">
+			<xsl:attribute name="type">button</xsl:attribute>
+			<xsl:attribute name="name">graph</xsl:attribute>
+			<xsl:attribute name="value">grapher</xsl:attribute>
+			<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
+		</xsl:element>
+		<xsl:text> </xsl:text>
 
 		</div>
-	    <div id="div2" style=" width:400px; position:relative;  left:325px; top: -87px"  valign="top" align='left'>
+	    <div id="div2" style=" width:700px; position:relative;  left:355px; top: -87px"  valign="top" align='left'>
 
 		<form name="formu2">
 
@@ -237,7 +189,7 @@
                 	<td class="FormHeader" colspan="2"><xsl:value-of select="//lang/advanced"/></td>
                 </tr>
 				<tr>
-				<td style="width:200px;">
+				<td style="width:500px;">
 					<table style="">
 						<tr >
 		               		<td>
@@ -303,11 +255,6 @@
 					</table>
 				</td>
 				</tr>
-
-
-
-
-
         	</table>
 		</form>
     	</div>
@@ -321,14 +268,12 @@
 					<td class='ListColLeft' valign="top" align='center'> <xsl:value-of select="name"/></td>
 	
 					<td style="text-align:right;width:42px;">
-	
-					<a href="">
-						<img src="./img/icones/16x16/text_binary_csv.gif"/>
-					</a>
-	
-					<a href=''>
-						<img src="./img/icones/16x16/text_binary_xml.gif"/>
-					</a>
+						<xsl:element name="a">
+							<xsl:attribute name="href">
+							./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="//index"/>&amp;sid=<xsl:value-of select="//sid"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
+							</xsl:attribute>
+							<img src="./img/icones/16x16/text_binary_csv.gif"/>
+						</xsl:element>
 					</td>
 				</tr>
 				<tr>

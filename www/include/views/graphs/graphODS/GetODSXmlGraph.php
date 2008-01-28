@@ -163,6 +163,12 @@ $lang["optionAdvanced"] = "Options";
 	}else
 		$EndTime = "";
 
+	if(isset($_GET["period"]) && !check_injection($_GET["period"])){
+		$auto_period = htmlentities($_GET["period"]);
+	}else
+		$auto_period = "-1";
+
+
 
 //$oreon->user->user_id
 $contact_id = '2';
@@ -178,11 +184,13 @@ $contact_id = '2';
 		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
 	}
 	
-
 	$period = 86400;
+	if($auto_period > 0)
+		$period = $auto_period;
+
 	if (!isset($start) && !isset($end)){
-		$start = time() - ($period + 30);
-		$end = time() + 10;
+		$start = time() - ($period);
+		$end = time();
 	}			
 
 
@@ -374,25 +382,6 @@ if($type == "HS"){
 		print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 	$DBRESULT2->fetchInto($svc_id);
 
-/*
-	if (preg_match("/([0-9]*)\_([0-9]*)/", $_GET["index"], $matches)){
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND host_id = '".$matches[1]."' AND service_id = '".$matches[2]."'");
-		if (PEAR::isError($DBRESULT2))
-			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-		$DBRESULT2->fetchInto($svc_id);
-	} else if (isset($_GET["index"])){
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND id = '".$_GET["index"]."'");
-		if (PEAR::isError($DBRESULT2))
-			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-		$DBRESULT2->fetchInto($svc_id);
-	} else if (isset($_GET["host_name"]) && isset($_GET["service_description"])){
-		$svc_desc = str_replace("/", "#S#", $_GET["service_description"]);
-		$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND host_name = '".$_GET["host_name"]."' && service_description = '".$svc_desc."'");
-		if (PEAR::isError($DBRESULT2))
-			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-		$DBRESULT2->fetchInto($svc_id);
-	}
-*/
 //	if($template_id == 1)
 		$template_id = getDefaultGraph($svc_id["service_id"], 1);
 	$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");

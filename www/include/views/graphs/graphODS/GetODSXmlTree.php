@@ -200,7 +200,7 @@ else if($type == "HH") // get services for host
 	foreach($services as $svc_id => $svc_name)
 	{
 		if(service_has_graph($id,$svc_id)){
-	        print("<item child='1' id='HS_".$svc_id."' text='".$svc_name."' im0='../16x16/element_new_after.gif' im1='../16x16/element_new_after.gif' im2='../16x16/element_new_after.gif'>");
+	        print("<item child='1' id='HS_".$svc_id."' text='".$svc_name."' im0='../16x16/gears.gif' im1='../16x16/gears.gif' im2='../16x16/gears.gif'>");
 			print("</item>");			
 		}
 	}
