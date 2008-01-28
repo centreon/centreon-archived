@@ -48,6 +48,9 @@ For information : contact@oreon-project.org
 					$strDef .= "# ".$cmt."\n";
 			}
 			$strDef .= "define servicegroup{\n";
+			$serviceGroup["sg_name"] = str_replace("#S#", "/", $serviceGroup["sg_name"]);
+			$serviceGroup["sg_name"] = str_replace("#BS#", "\\", $serviceGroup["sg_name"]);
+			
 			if ($serviceGroup["sg_name"])  $strDef .= print_line("servicegroup_name", $serviceGroup["sg_name"]);
 			if ($serviceGroup["sg_alias"]) $strDef .= print_line("alias", $serviceGroup["sg_alias"]);
 			// Service members
@@ -72,6 +75,9 @@ For information : contact@oreon-project.org
 						isset($gbArr[2][$service["host_id"]]) ? $BP = true : NULL;
 						
 						if ($BP && isHostOnThisInstance($service["host_id"], $tab['id'])){
+							$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);
+							$service["service_description"] = str_replace("#BS#", "\\", $service["service_description"]);
+			
 							$strTemp != NULL ? $strTemp .= ", ".$service["host_name"].", ".$service["service_description"] : $strTemp = $service["host_name"].", ".$service["service_description"];
 							$generated++;
 						}
