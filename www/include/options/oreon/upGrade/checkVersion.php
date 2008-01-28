@@ -61,7 +61,8 @@ For information : contact@oreon-project.org
 	
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	$tpl->assign('msgErr', $msgErr);
+	if (isset($msgErr))
+		$tpl->assign('msgErr', $msgErr);
 	$tpl->assign('hasUpdate', $hasUpdate);
 	$tpl->assign('security', $secu);
 	$tpl->assign('lastVersion', $newVersionInfo);
