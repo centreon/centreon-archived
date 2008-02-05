@@ -266,8 +266,8 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
-			$field_result = $row[$field];
-			if ($row[$field])
+			//$field_result = $row[$field];
+			if (isset($row[$field]) && $row[$field])
 				return $row[$field];
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
@@ -284,13 +284,13 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
-			$field_result = $row[$field];
-			if ($row[$field])
+			//$field_result = $row[$field];
+			if (isset($row[$field]) && $row[$field])
 				return $row[$field];
 			else if ($row["host_template_model_htm_id"])
 				$host_id = $row["host_template_model_htm_id"];
 			else
-				break;
+				return NULL;
 		}
 	}
 
@@ -904,85 +904,60 @@ For information : contact@oreon-project.org
 	}
 
 	# Nagios Images
-	function return_sub_image_list($path, $dir_path, $images, $is_not_an_image, $is_a_valid_image){
-		global $oreon;
-		$handle = @opendir($path.$dir_path);
-		while (false !== ($filename = @readdir($handle))){
-			if (!is_dir($path.$dir_path."/".$filename) && !array_key_exists($filename, $is_not_an_image) && in_array(array_pop(explode('.',strtolower($filename))), $is_a_valid_image) && substr($filename, -1)!= "~"){
-				$key = substr($dir_path."/".$filename, strlen($oreon->optGen["nagios_path_img"]));
-				$images[$key] = $key;
-			}
-			else if(!array_key_exists($filename, $is_not_an_image) && substr($filename, -1)!= "~"){
-				$images = return_sub_image_list($path, $dir_path."/".$filename, $images, $is_not_an_image, $is_a_valid_image);
-			}
-		}
-
-
-		return($images);
-	}
-
-	# Nagios Images
-	function return_image_list($mode = 0, $rep = NULL, $full = true){
+	function return_image_list($mode = 0, $rep = NULL, $full = true, $origin_path = NULL) {
 		global $oreon;
 		$elems = array();
+		$images = array();
 		if ($full)
 			$images = array(NULL=>NULL);
-		else
-			$images = array();
 
-		$is_not_an_image = array("."=>".", ".."=>"..", "README"=>"README", "readme"=>"readme", "LICENSE"=>"LICENSE", "license"=>"license");
+		$is_not_an_image = array(".","..","README","readme","LICENCE","licence");
+		$is_a_valid_image = array(
+			0 => array('png'),
+			1 => array('gif', 'png', 'jpg'),
+			2 => array('gif', 'png', 'jpg', 'gd2')
+		);
 
-		switch($mode) {
-			case 0:
-				$is_a_valid_image = array("png"=>"png");
-				break;
-			case 1:
-				$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg");
-				break;
-			case 2:
-				$is_a_valid_image = array("gif"=>"gif", "png"=>"png", "jpg"=>"jpg", "gd2"=>"gd2");
-				break;
-			default:
-				$is_a_valid_image = array("png"=>"png");
+		if ( ! $rep )
+			if ($oreon->optGen["nagios_path_img"] && is_dir($oreon->optGen["nagios_path_img"]))
+				$rep=$oreon->optGen["nagios_path_img"];
+			else
+				return ($images);
+		$rep .= "/"; // XXX not clean
+
+		if ( ! $origin_path)
+			$origin_path = $rep;
+		$path_len = strlen($origin_path);
+
+		if (! ($dh = @opendir($rep)) ) {
+			// error_log("WARNING: can't open directory '".$rep."'",0);
+			return ($images);
 		}
 
-		if ($oreon->optGen["nagios_path_img"] && is_dir($oreon->optGen["nagios_path_img"]))	{
-			$dh  = opendir($oreon->optGen["nagios_path_img"]);
-			while (false !== ($filename = readdir($dh)))
-			    $elems[] = $filename;
-			sort($elems);
-			if (is_array($elems))
-				foreach ($elems as $key => $value)
-					if ( $value == "." || $value == "..")
-						$elems[$key] = NULL;
-			closedir($dh);
-		}
-		else if ($rep)	{
-			$dh  = opendir($rep);
-			while (false !== ($filename = readdir($dh)))
-			    $elems[] = $filename;
-			if (is_array($elems))
-				foreach ($elems as $key => $value)
-					if ( $value == "." || $value == "..")
-						$elems[$key] = NULL;
-			closedir($dh);
+		while (false !== ($filename = readdir($dh))) {
+			if ( $filename == "." || $filename == "..")
+				continue;
 
-		}
-		//$elems[count($elems)] = $rep;
-
-		for ($i = 0; $i < count($elems); $i++)	{
-			if ($elems[$i])	{
-				if (!is_dir($oreon->optGen["nagios_path_img"].$elems[$i]) && !array_key_exists($elems[$i], $is_not_an_image) && in_array(array_pop(explode('.',strtolower($elems[$i]))), $is_a_valid_image) && substr($elems[$i], -1)!= "~"){
-					$key = substr($oreon->optGen["nagios_path_img"].$elems[$i], strlen($oreon->optGen["nagios_path_img"]));
-					$images[$key] = $key;
-				}
-				else {
-					$images = return_sub_image_list($oreon->optGen["nagios_path_img"], $elems[$i], $images, $is_not_an_image, $is_a_valid_image);
-				}
-				ksort($images);
-				@closedir($handle);
+			# WARNING: recursive call
+			if (is_dir($rep.$filename)) {
+				$tmp_images = return_image_list($mode, $rep.$filename, $full, $origin_path);
+				$images = array_merge($images,$tmp_images);
+				continue;
 			}
+
+			if (in_array($filename, $is_not_an_image))
+				continue;
+
+			$pinfo = pathinfo($filename);
+			if (!in_array($pinfo["extension"], $is_a_valid_image[$mode]))
+				continue;
+
+			$key = substr($rep.$filename, $path_len);
+			$images[$key] = $key;
 		}
+
+		closedir($dh);
+		ksort($images);
 		return ($images);
 	}
 
