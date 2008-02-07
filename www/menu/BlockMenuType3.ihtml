@@ -90,3 +90,5 @@
 </div>
 </td>
 <td id="Tmainpage" class="TcTD" valign="top">
+<img src="./img/icones/7x7/sort_left.gif" onclick="new Effect.toggle('menu_3')" style="position:relative;top:-10px;left:-15px;">
+<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('menu_2');Effect.toggle('menu1_bgcolor');Effect.toggle('QuickSearch')" style="float:right;position:relative;top:-10px;">

@@ -1,3 +1,4 @@
+<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('header')" style="position:absolute;top:0px;left:15px;">
 <div id="header">
 	<img src={$urlLogo} alt='Centreon logo' title='Centreon Logo' id="logo">
 	<!-- informations bank for ajax -->
