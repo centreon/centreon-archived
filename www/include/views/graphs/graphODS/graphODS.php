@@ -59,6 +59,21 @@ For information : contact@oreon-project.org
 		       cssNode.media = 'screen';headID.appendChild(cssNode);
  
  
+ 		  	var _menu_div = document.getElementById("menu_40211");
+		 
+			var newNode = document.createElement("input");
+		    newNode.setAttribute("type", "checkbox");
+		    newNode.setAttribute("name", "CheckedSelection");
+
+			newNode.onclick = function() { 
+//				alert(tree.getAllChecked());
+
+			graph_4_host(tree.getAllChecked(),'',1);
+
+			}
+	   		_menu_div.appendChild(newNode);
+ 
+ 
     		tree=new dhtmlXTreeObject("menu_40211","100%","100%","1");
             tree.setImagePath("./img/icones/csh_vista/");
 			//tree.setImagePath("./include/common/javascript/codebase/imgs/csh_vista/");
@@ -77,6 +92,7 @@ For information : contact@oreon-project.org
 
 			tree.enableDragAndDrop(0);
 			tree.enableTreeLines(false);	
+			tree.enableCheckBoxes(true);
 
 			function onDblClick(nodeId)
 			{
@@ -98,8 +114,11 @@ For information : contact@oreon-project.org
 			function mk_pagination(){;}
 			function set_header_title(){;}
 
-			function graph_4_host(id, formu)
+			function graph_4_host(id, formu, multi)
 			{
+				if(!multi)
+				multi = 0;
+				
 				// Period
 				var currentTime = new Date();
 				var period ='';
@@ -183,7 +202,7 @@ For information : contact@oreon-project.org
 				
 				var proc = new Transformation();
 				var _addrXSL = "./include/views/graphs/graphODS/GraphService.xsl";
-				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?split='+_split+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?multi='+multi+'&split='+_split+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 				proc.setXml(_addrXML)
 				proc.setXslt(_addrXSL)
 				proc.transform("graphView4xml");

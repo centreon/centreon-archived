@@ -321,5 +321,88 @@
 
 
 
+
+
+
+
+	<div>
+		<table id="ListTable">
+	        <tr class="ListHeader">
+	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Compare</td>
+	        </tr>
+
+
+<xsl:for-each select="//multi_svc">
+
+
+
+		        <tr class="list_one">
+					<td class='ListColLeft' valign="top" align='center'> <b>Service : <xsl:value-of select="name"/></b></td>
+	
+					<td style="text-align:right;width:42px;">
+	
+						<xsl:element name="a">
+							<xsl:attribute name="href">
+							./include/views/graphs/graphODS/exportData/ExportCSVServiceData.php?index=<xsl:value-of select="index"/>&amp;sid=<xsl:value-of select="sid"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/>
+							</xsl:attribute>
+							<img src="./img/icones/16x16/text_binary_csv.gif"/>
+						</xsl:element>
+
+					</td>
+				</tr>
+				<tr>
+	    			<td class='ListColCenter' valign="top" align='center'>
+				    	<div id="imggraph">
+
+
+			<xsl:if test="split = 0">
+
+							<xsl:element name="a">
+							<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>', ''); return false;</xsl:attribute>
+							<xsl:attribute name="href">#</xsl:attribute>
+
+									<xsl:element name="img">
+									  	<xsl:attribute name="src">
+	./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/>
+									  	</xsl:attribute>
+									</xsl:element>
+							</xsl:element>
+			</xsl:if>
+
+
+			<xsl:if test="split = 1">
+				<xsl:for-each select="//metric">
+								<xsl:element name="a">
+								<xsl:attribute name="onClick">graph_4_host('HS_<xsl:value-of select="service_id"/>', ''); return false;</xsl:attribute>
+								<xsl:attribute name="href">#</xsl:attribute>
+	
+										<xsl:element name="img">
+										  	<xsl:attribute name="src">
+		./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id=<xsl:value-of select="sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/>
+										  	</xsl:attribute>
+										</xsl:element>
+								</xsl:element>
+								<br/>
+				</xsl:for-each>
+
+
+			</xsl:if>
+
+
+						 <br/>
+						 </div> 
+					</td>
+				</tr>			
+				
+
+</xsl:for-each>
+
+	    </table>
+	</div>
+
+
+
+
+
 </xsl:template>
 </xsl:stylesheet>

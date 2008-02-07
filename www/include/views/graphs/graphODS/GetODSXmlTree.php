@@ -189,7 +189,7 @@ if($type == "HG") // get hosts
 	foreach($hosts as $host)
 	{
 		if(host_has_one_or_more_GraphService($host)){
-        	print("<item child='1' id='HH_".$host."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
+        	print("<item nocheckbox='0' child='1' id='HH_".$host."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
 			print("</item>");
 		}
 	}
@@ -233,12 +233,12 @@ else
 			$i++;
 
 		if(HG_has_one_or_more_host($HG["hg_id"])){
-        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+        	print("<item  nocheckbox='0' child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 			print("</item>");
 		}
 	}
 
-	print("<item child='1' id='HO_0' text='Others' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+	print("<item  nocheckbox='0' child='1' id='HO_0' text='Others' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 	print("</item>");
 
 
