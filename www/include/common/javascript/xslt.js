@@ -353,6 +353,7 @@ document.all[target].innerHTML = '';
 
                         document.getElementById(target).innerHTML = '';
 
+/*
                     if (typeof processor.transformToFragment == 'function') {
                         // obsolete Mozilla interface
                         resultDoc = document.implementation.createDocument("", "", null);
@@ -366,15 +367,14 @@ document.all[target].innerHTML = '';
                        	set_header_title();
 
                     }
-                    else {
+                    else {*/
                         processor.importStylesheet(xsltDoc);
                         resultDoc = processor.transformToFragment(xmlDoc, document);
                         callback(t);
                        	mk_pagination(xmlDoc);
-//                        document.getElementById(target).innerHTML = '';
                         document.getElementById(target).appendChild(resultDoc);
                        	set_header_title();
-                    }
+//                    }
                     transformed = true;
                 }
             }
