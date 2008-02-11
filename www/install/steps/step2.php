@@ -17,22 +17,23 @@ For information : contact@oreon-project.org
 */
 
 	
-	aff_header("Oreon Setup Wizard", "Licence", 2);
-
+	aff_header("Oreon Upgrade Wizard", "Licence", 2);
 	$license_file_name = "./LICENSE.txt";
 	$fh = fopen( $license_file_name, 'r' ) or die( "License file not found!" );
 	$license_file = fread( $fh, filesize( $license_file_name ) );
-	fclose( $fh );
-
+	fclose($fh);
 	$str = "<textarea cols='80' rows='20' readonly>".$license_file."</textarea>";
-	print $str . "	</td>
-				</tr>
-				<tr>
-					<td align=left>
-						<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href=\"javascript:void(0)\" onClick=\"LicenceAcceptedByLink();\">I Accept</a>
-					</td>
-					<td align=right>&nbsp;</td>
-				</tr>";
+	$str .= "</td>
+	</tr>
+	<tr>
+	  <td align=\"left\">
+		<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href=\"javascript:void(0)\" onClick=\"LicenceAcceptedByLink();\">I Accept</a>
+	  </td>
+	  <td align=right>
+		&nbsp;
+	  </td>
+	</tr>";
+	print $str;
 	aff_middle();
 	print "<input class='button' type='submit' name='goto' value='Next' id='button_next' disabled='disabled' />";
 	aff_footer();
