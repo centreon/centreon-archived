@@ -21,6 +21,12 @@
 #    For information : infos@oreon-project.org
 ####################################################################
 
+USERID=`id -u`
+if [ $USERID != 0 ]; then
+    echo "You must exec with root user"
+    exit 1
+fi
+
 cat <<EOF
 ###############################################################################
 #                    OREON Project (www.oreon-project.org)                    #
