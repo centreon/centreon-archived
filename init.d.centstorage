@@ -26,7 +26,7 @@
 #
 ### BEGIN INIT INFO Suse
 # Provides:       centstorage
-# Required-Start:
+# Required-Start: mysqld nagios
 # Required-Stop:
 # Default-Start:  3 4 5
 # Default-Stop:
