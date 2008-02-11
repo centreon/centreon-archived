@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	// configuration
-	include_once ("../centreon.conf.php");
+	include_once ("../../etc/centreon.conf.php");
 	include_once ("./step_upgrade/functions.php");
 	include_once ("../class/Session.class.php");
 
