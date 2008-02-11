@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 7);
+aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 7);
 
 ?>
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">

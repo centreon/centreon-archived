@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	aff_header("Oreon Upgrade Wizard", "Licence", 2);
+	aff_header("Centreon Upgrade Wizard", "Licence", 2);
 	$license_file_name = "./LICENSE.txt";
 	$fh = fopen( $license_file_name, 'r' ) or die( "License file not found!" );
 	$license_file = fread( $fh, filesize( $license_file_name ) );

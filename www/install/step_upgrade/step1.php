@@ -16,8 +16,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-		aff_header("Oreon Upgrade Wizard", "Welcome to Oreon Upgrade Setup", 1);
-		print "<p>This installer updates the Oreon database tables. The entire process should take about 2 minutes.</p>";
+		aff_header("Centreon Upgrade Wizard", "Welcome to Centreon Upgrade Setup", 1);
+		print "<p>This installer updates the Centreon database tables. The entire process should take about 2 minutes.</p>";
 		aff_middle();
 		print "<input class='button' type='submit' name='goto' value='Start' id='defaultFocus' /></td>";
 		aff_footer();

@@ -15,15 +15,15 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	include_once("../centreon.conf.php");
+	include_once ("../../etc/centreon.conf.php");
 	include_once("DB.php");
 	include_once("../DBconnect.php");
 	
 	$DBRESULT =& $pearDB->query("SELECT `value` FROM `oreon_informations` WHERE `key` = 'version'");
 	$DBRESULT->fetchInto($version);
 	
-	aff_header("Oreon Upgrade Wizard", "Select Version", 3); ?>
-	In order for your Oreon upgrade to function properly, please select the mysql script file.<br><br>
+	aff_header("Centreon Upgrade Wizard", "Select Version", 3); ?>
+	In order for your Centreon upgrade to function properly, please select the mysql script file.<br><br>
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
       <tr>
         <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>

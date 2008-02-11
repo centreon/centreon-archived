@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	include_once("../centreon.conf.php");
+	include_once ("../../etc/centreon.conf.php");
 	include_once("DB.php");
 	include_once("../DBconnect.php");
 
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")) {
 		$_SESSION["mysqlscript"] = $_POST["mysqlscript"]; }
 
-	aff_header("Oreon Setup Wizard", "Updating Centreon Database", 6);	?>
+	aff_header("Centreon Setup Wizard", "Updating Centreon Database", 6);	?>
 	<br><br>
 	<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center"><?php
 	print "<tr><th align='left'>Component</th><th style='text-align: right;'>Status</th></tr>";
