@@ -70,19 +70,19 @@ function echo_warning() {
 function find_user_nagios()
 {
     NAGIOS_USER=`more $NAGIOS_ETC/nagios.cfg | grep ^nagios_user | cut -d = -f 2`
-
+    
     if [ -z "$NAGIOS_USER"  ] ; then
 	for fichier in $NAGIOS_ETC/*.cfg
-    	do
-	  	if [ -f "$fichier" ];	then
-	      	NAGIOS_USER_TEMP=`more $fichier | grep ^nagios_user | cut -d = -f 2`
-	      	if [ -n "$NAGIOS_USER_TEMP" ]; then
-		  		NAGIOS_USER=$NAGIOS_USER_TEMP
-    		fi
-	  	fi
-		done
+	  do
+	  if [ -f "$fichier" ];	then
+	      NAGIOS_USER_TEMP=`more $fichier | grep ^nagios_user | cut -d = -f 2`
+	      if [ -n "$NAGIOS_USER_TEMP" ]; then
+		  NAGIOS_USER=$NAGIOS_USER_TEMP
+	      fi
+	  fi
+	done
     fi
-
+    
     if [ -z "$NAGIOS_USER"  ] ; then
 	# Nagios User
 	NAGIOS_USER="nagios"
@@ -95,30 +95,29 @@ function find_user_nagios()
     else
 	echo_info "Finding Nagios user :" "$NAGIOS_USER"
     fi
-
 }
 
 function find_group_nagios()
 {
     NAGIOS_GROUP=`more $NAGIOS_ETC/nagios.cfg | grep ^nagios_group | cut -d = -f 2`
-
+    
     if [ -z "$NAGIOS_GROUP"  ] ; then
 	for fichier in $NAGIOS_ETC/*.cfg
-      	do
-	  	if [ -f "$fichier" ];	then
-	      	NAGIOS_GROUP_TEMP=`more $fichier | grep ^nagios_group | cut -d = -f 2`
-	      	if [ -n "$NAGIOS_GROUP_TEMP" ]; then
-		  		NAGIOS_GROUP=$NAGIOS_GROUP_TEMP
-	      	fi
-	  	fi
+	  do
+	  if [ -f "$fichier" ];	then
+	      NAGIOS_GROUP_TEMP=`more $fichier | grep ^nagios_group | cut -d = -f 2`
+	      if [ -n "$NAGIOS_GROUP_TEMP" ]; then
+		  NAGIOS_GROUP=$NAGIOS_GROUP_TEMP
+	      fi
+	  fi
     	done
     fi
-
+    
     if [ -z "$NAGIOS_GROUP"  ] ; then
 	# Nagios Group
-	NAGIOS_GROUP="nagiocmd"
+	NAGIOS_GROUP="nagios"
 	echo_passed "Sorry, we don't found nagios group" "PASSED"
-	echo "Which is your nagios group ?"
+	echo "In which group is nagios user ?"
 	echo -n "default to [$NAGIOS_GROUP]:"
 	read temp
 	test_answer NAGIOS_GROUP $temp
@@ -133,85 +132,68 @@ function find_group_nagios()
 
 function check_user_nagios()
 {
-	# Try to find nagios user/group from nagios.cfg file.
+    # Try to find nagios user/group from nagios.cfg file.
     # If not, we ask...
     find_user_nagios
-
 
     nagios_user_grep=`grep $NAGIOS_USER /etc/passwd > /dev/null; echo $?`
     if [ $nagios_user_grep == 0 ]; then
     	echo_success "Finding nagios user '$NAGIOS_USER' in /etc/passwd" "YES"
     else
-    	echo_warning "Finding nagios user '$NAGIOS_USER' in /etc/passwd" "NOT FOUND"
-  		useradd -G $NAGIOS_GROUP $NAGIOS_USER
-  		if [ $? == 0 ]; then
-		    echo_success  "Creating nagios user '$NAGIOS_USER'" "OK"
-		else
-		    echo_failure  "error creating nagios user '$NAGIOS_USER' check you environnement" "ERROR"
-		    exit
-		fi
+	echo "Nagios User $NAGIOS_USER Not found"
+	echo ""
+	echo "You have to create you nagios user"
+	echo "useradd -G $NAGIOS_GROUP $NAGIOS_USER"
+	exit
     fi
 }
 
 function check_group_nagios()
 {
-	# Try to find nagios user/group from nagios.cfg file.
-	# If not, we ask...
+    # Try to find nagios user/group from nagios.cfg file.
+    # If not, we ask...
     find_group_nagios
 
     nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
     if [ $nagios_group_grep == 0 ]; then
     	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "YES"
     else
-    	echo_warning "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "NOT FOUND"
-	groupadd $NAGIOS_GROUP
-	if [ $? == 0 ]; then
-      echo_success  "Creating nagios group '$NAGIOS_GROUP'" "OK"
-	else
-	    echo_failure  "error creating group $NAGIOS_GROUP check you environnement" "ERROR"
-	    exit
-	fi
+	echo "Nagios Group $NAGIOS_GROUP Not found"
+	echo ""
+	echo "You have to create you nagios group"
+	echo "groupadd $NAGIOS_GROUP"
+	exit
     fi
 }
-
-function check_group_nagiocmd()
-{
-    nagios_group=`grep nagiocmd /etc/group > /dev/null; echo $?`
-    if [ $nagios_group == 0 ]; then
-	echo_success "Finding nagios group 'nagiocmd' in /etc/group" "YES"
-    else
-	echo_warning "Finding nagios group 'nagiocmd' in /etc/group" "NO"
-	groupadd nagiocmd
-	if [ $? == 0 ]; then
-	    echo_passed  "Creating nagios group 'nagiocmd'" "OK"
-	else
-	    echo_failure  "error creating nagios group 'nagiocmd' check you environnement" "ERROR"
-	    exit
-	fi
-    fi
-}
-
 
 function check_nagios_init_script()
 {
     if [ -x "/etc/init.d/nagios" ]; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
+	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
     else if [ -x "/etc/init.d/nagios2" ] ; then
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
+	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
+    else if [ -x "/etc/init.d/nagios3" ] ; then
+	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
+    else if [ -x "/usr/local/etc/rc.d/nagios" ] ; then
+	NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
+    else if [ -x $DEFAULT_NAGIOS_INIT_SCRIPT ] ; then
+	NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
     fi
     fi
-
+    fi    
+    fi
+    fi
+    
     if [ -z "$NAGIOS_INIT_SCRIPT" ] ; then
-		#Nagios init script
-		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-		echo_passed "Sorry, we don't found nagios init script" "PASSED"
-		echo "Which is your nagios init script ?"
-		echo -n "default is [$NAGIOS_INIT_SCRIPT]:"
-		read temp
-		test_answer NAGIOS_INIT_SCRIPT $temp
-		echo ""
+	echo_passed "Nagios init script" "NOT FOUND"
+	echo "Which is your nagios init script ?"
+	echo -n "default is [$NAGIOS_INIT_SCRIPT]:"
+	read temp
+	test_answer NAGIOS_INIT_SCRIPT $temp
+	echo ""
     else
-		echo_info "Finding nagios init script :" "$NAGIOS_INIT_SCRIPT"
+	echo "Nagios init script : $NAGIOS_INIT_SCRIPT"
+	echo_success "Nagios init script " "OK"
     fi
 
 }
@@ -219,29 +201,29 @@ function check_nagios_init_script()
 function check_httpd_directory()
 {
     if test -d /etc/apache/conf ; then
-		DIR_APACHE="/etc/apache/conf"
-		DIR_APACHE_CONF="/etc/apache/conf.d"
-		HTPASSWD="htpasswd"
+	DIR_APACHE="/etc/apache/conf"
+	DIR_APACHE_CONF="/etc/apache/conf.d"
+	HTPASSWD="htpasswd"
     else if test -d /usr/local/apache2/conf ; then
-		DIR_APACHE="/usr/local/apache2/conf"
-		DIR_APACHE_CONF="/usr/local/apache2/conf"
-		HTPASSWD="htpasswd2"
+	DIR_APACHE="/usr/local/apache2/conf"
+	DIR_APACHE_CONF="/usr/local/apache2/conf"
+	HTPASSWD="htpasswd2"
     else if test -d /etc/apache2 ; then
-		DIR_APACHE="/etc/apache2"
-		DIR_APACHE_CONF="/etc/apache2/conf.d"
-		HTPASSWD="htpasswd2"
+	DIR_APACHE="/etc/apache2"
+	DIR_APACHE_CONF="/etc/apache2/conf.d"
+	HTPASSWD="htpasswd2"
     else if test -d /etc/httpd/conf ; then
-		DIR_APACHE="/etc/httpd/conf"
-		DIR_APACHE_CONF="/etc/httpd/conf.d"
-		HTPASSWD="htpasswd"
+	DIR_APACHE="/etc/httpd/conf"
+	DIR_APACHE_CONF="/etc/httpd/conf.d"
+	HTPASSWD="htpasswd"
     else if test -d /usr/local/etc/apache ; then
-		DIR_APACHE="/usr/local/etc/apache"
-		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
-		HTPASSWD="htpasswd"
+	DIR_APACHE="/usr/local/etc/apache"
+	DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
+	HTPASSWD="htpasswd"
     else if test -d /usr/local/etc/apache2 ; then
-		DIR_APACHE="/usr/local/etc/apache2"
-		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
-		HTPASSWD="htpasswd"
+	DIR_APACHE="/usr/local/etc/apache2"
+	DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
+	HTPASSWD="htpasswd"
     fi
     fi
     fi
@@ -250,11 +232,11 @@ function check_httpd_directory()
     fi
 
     if test -e $DIR_APACHE/apache2.conf ; then
-		APACHE_CONF="apache2.conf"
+	APACHE_CONF="apache2.conf"
     else if test -e $DIR_APACHE/commondhttpd.conf ; then
-		APACHE_CONF="commondhttpd.conf"
+	APACHE_CONF="commondhttpd.conf"
     else if test -e $DIR_APACHE/httpd.conf ; then
-		APACHE_CONF="httpd.conf"
+	APACHE_CONF="httpd.conf"
     fi
     fi
     fi
@@ -262,7 +244,7 @@ function check_httpd_directory()
 
 function check_user_apache()
 {
-    WEB_USER=`more $DIR_APACHE/$APACHE_CONF | grep -w ^User | cut -d " " -f 2`
+    WEB_USER=`cat $DIR_APACHE/$APACHE_CONF | grep -w ^User | cut -d " " -f 2`
 
     if [ -z "$WEB_USER"  ] ; then
 	for fichier in $DIR_APACHE/*
@@ -280,7 +262,7 @@ function check_user_apache()
 
 function check_group_apache()
 {
-    WEB_GROUP=`more $DIR_APACHE/$APACHE_CONF | grep -w ^Group | cut -d " " -f 2`
+    WEB_GROUP=`cat $DIR_APACHE/$APACHE_CONF | grep -w ^Group | cut -d " " -f 2`
 
     if [ -z "$WEB_GROUP"  ] ; then
 	for fichier in $DIR_APACHE/*
@@ -296,53 +278,105 @@ function check_group_apache()
     echo_info "Finding Apache group :" "$WEB_GROUP"
 }
 
-function install_Centreon_plugins()
+function installOreonPlugins()
 {
     echo ""
-	echo "------------------------------------------------------------------------"
-	echo "                     Start Plugins Centreon Installation"
-	echo "------------------------------------------------------------------------"
-	echo ""
-	echo ""
-    if test -d $NAGIOS_PLUGIN ; then
-		echo_passed "$NAGIOS_PLUGIN already exists" "PASSED"
-    else
-		mkdir $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Nagios Plugin Directory '$NAGIOS_PLUGIN'" "OK"
-    fi
-    echo 	""
+    echo "------------------------------------------------------------------------"
+    echo "                   Start Plugins Centreon Installation"
+    echo "------------------------------------------------------------------------"
+    echo ""
+    
+    # Prepare centreon Plugins
     echo "Preparing Centreon Plugins..."
+    if test -d /tmp/centreon-setup ; then
+	echo "/tmp/centreon-setup exists"
+    else
+	mkdir /tmp/centreon-setup
+    fi
+
+    if test -d /tmp/centreon-setup/plugins ; then
+	echo "/tmp/centreon exists"
+    else
+	mkdir /tmp/centreon-setup/plugins
+    fi
+
+    # Copy plugins in temp dir
+
+    cp -R ./Plugins/* /tmp/centreon-setup/plugins
+
+    # set Plugins in unix mod
+
+    find /tmp/centreon-setup/plugins/ -name "*" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+    
+    # Prepare code
+    mkdir /tmp/centreon-setup/plugins/script/
+
+    for fichier in /tmp/centreon-setup/plugins/src/*
+      do
+      if [ -d "$fichier" ]; then
+	  echo ""
+      else
+	  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+	  `sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "/tmp/centreon-setup/plugins/script/$filename"`
+	  echo_success " - $filename" "OK"  
+      fi
+    done
+
+    # Set restriction 
+
+    chmod 755 /tmp/centreon-setup/plugins/script/*
+    chown $NAGIOS_USER.$NAGIOS_GROUP /tmp/centreon-setup/plugins/script/*
+
+    # Check if plugin dir exists
+
+    if test -d $NAGIOS_PLUGIN ; then
+	echo_passed "Directory $NAGIOS_PLUGIN" "OK"
+    else
+	mkdir_result=`mkdir $NAGIOS_PLUGIN 2>&1 >> $LOG_FILE; echo $?`
+	if [ $mkdir_result = "0" ]; then
+	    echo_success "mkdir '$NAGIOS_PLUGIN'" "OK"
+	else
+	    echo_failure "mkdir '$NAGIOS_PLUGIN'" "FAILED"
+	    return
+	fi
+    fi
+
+    # Copy plugins in nagios plugins dir
+
+    echo "Do you want to install Centreon Plugins ? "
+    echo ""
+    echo -n "[y/n], default to [y]:"
+    read temp
+    if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
+	while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+	  do
+	  echo "Do you want to install Centreon Plugins ? "
+	  echo -n "[y/n], default to [y]:"
+	  read temp
+	done
+    fi
+    if [ -z $temp ];then
+	temp=y
+    fi
+    if [ $temp = "y" ];then
+	cp -p /tmp/centreon-setup/plugins/script/* $NAGIOS_PLUGIN 2>&1 >> $LOG_FILE
+	echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
+    fi
+
+}
+
+
+function install_oreon_plugins()
+{
+
+    
+    
+
+
+	
 
     if [ -n "$PLUGINS_DIR" ]; then
-		for fichier in ${PLUGINS_DIR}src/*
-		  	do
-		  	if [ -d "$fichier" ]; then
-		      	echo ""
-		  	else
-		      	filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-		      	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/$filename"`
-		  		echo_success "  -> $filename" "OK"  
-		  	fi
-		done
-		echo "Do you want to install Centreon Plugins ? "
-		echo ""
-		echo -n "[y/n], default to [y]:"
-		read temp
-		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
-        	while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
-            	do
-                	echo "Do you want to install Centreon Plugins ? "
-                    echo -n "[y/n], default to [y]:"
-                    read temp
-                done
-		fi
-		if [ -z $temp ];then
-		    temp=y
-		fi
-		if [ $temp = "y" ];then
-			cp $PLUGINS_DIR/* $NAGIOS_PLUGIN 2> /dev/null
-			echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
-		fi
+
     else
 		for fichier in src/*
 		  do
@@ -351,7 +385,7 @@ function install_Centreon_plugins()
 		  else
 		      filename=`echo $fichier | sed -e 's|.*\/\(.*\)|\1|'`
 		      echo_success "  -> $filename" "OK"
-		      `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
+		      `sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$filename"`
 		  fi
 		done
 		echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
@@ -359,11 +393,11 @@ function install_Centreon_plugins()
     fi
 
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $NAGIOS_PLUGIN/* >> $LOG_FILE 2>> $LOG_FILE
+    chmod +x $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
+    chmod +x $NAGIOS_PLUGIN/* >> $LOG_FILE 2>> $LOG_FILE
     find $NAGIOS_PLUGIN -name "check_dhcp" -exec chown root.$NAGIOS_GROUP {} \;
     find $NAGIOS_PLUGIN -name "check_dhcp" -exec chmod "+s" {} \;
-    chown -R $NAGIOS_USER.$NAGIOS_GROUPE $INSTALL_DIR_OREON/OreonDataStorage 2> /dev/null
+    chown -R $NAGIOS_USER.$NAGIOS_GROUP $INSTALL_DIR_OREON/OreonDataStorage 2> /dev/null
 
     echo ""
 	echo "------------------------------------------------------------------------"
@@ -373,12 +407,12 @@ function install_Centreon_plugins()
 	echo ""
 	
 	echo 	""
-    echo "Preparing Centreon Plugins..."
+    echo "Preparing Oreon Plugins..."
 		for fichier in $PLUGINS_DIR/src/traps/plugins/*
 		do
 		  filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
 		  echo "-> $filename"
-		  `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/src/traps/$filename"`
+		  `sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$fichier" > "$PLUGINS_DIR/src/traps/$filename"`
 		done
 		echo ""
 		echo "Do you want to install Centreon Traps Plugins ? "
@@ -420,7 +454,8 @@ function install_Centreon_plugins()
 		        while [ ! -d "$SNMP_DIR" ]
 		          do
 		          echo ""
-		          echo "Given SNMP configuration directory does not exists, correct your answer ? "
+			  echo_warning "$SNMP_DIR is not a directory" "WARNING"
+		          echo "Where is your SNMP configuration file ? "
 		          SNMP_DIR="/etc/snmp/";
 		          echo -n "default to [/etc/snmp/]:"
 		          read tmp
@@ -444,7 +479,7 @@ function install_Centreon_plugins()
 			if [ -d "$SNMP_DIR/centreon_traps" ]; then
 			    echo_passed "${SNMP_DIR}centreon_traps already exists" "PASSED"
 			else
-				 mkdir ${SNMP_DIR}centreon_traps
+			    mkdir ${SNMP_DIR}centreon_traps
 				echo_success "${SNMP_DIR}centreon_traps created" "OK" 
 			fi
 			if [ -e "${TEMP_DIR}traps/conf/snmptt.ini" ]; then	
@@ -454,7 +489,7 @@ function install_Centreon_plugins()
 				cp ${TEMP_DIR}traps/conf/snmptt.ini ${SNMP_DIR}centreon_traps/
 				echo_success "Moving snmptt.ini to ${SNMP_DIR}centreon_traps/" "OK"
 			else
-				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmptt.ini" "CRITICAL"
+				echo_passed "Cannot find ${TEMP_DIR}traps/conf/snmptt.ini" "CRITICAL"
 			fi
 			if [ -e "${TEMP_DIR}traps/conf/snmp.conf" ]; then	
 				if [ -e "${SNMP_DIR}snmp.conf" ]; then
@@ -477,23 +512,24 @@ function install_Centreon_plugins()
 				chmod +x /usr/sbin/snmptt
 				echo_success "Moving snmptt to /usr/sbin/" "OK"
 			else
-				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmptt" "CRITICAL"
+				echo_passed "Cannot find ${TEMP_DIR}traps/conf/snmptt" "CRITICAL"
 			fi
 			if [ -e "${TEMP_DIR}traps/conf/snmpttconvertmib" ]; then	
 				cp ${TEMP_DIR}traps/conf/snmpttconvertmib /usr/sbin/
 				chmod +x /usr/sbin/snmpttconvertmib
 				echo_success "Moving snmpttconvertmib to /usr/sbin/" "OK"
 			else
-				echo_passed "Cannot found ${TEMP_DIR}traps/conf/snmpttconvertmib" "CRITICAL"
+				echo_passed "Cannot find ${TEMP_DIR}traps/conf/snmpttconvertmib" "CRITICAL"
 			fi
 			mv $PLUGINS_DIR/src/traps/genSnmpttConfFile $PLUGINS_DIR/src/traps/fill_trapDB $PLUGINS_DIR/src/traps/trapHandler $NAGIOS_PLUGIN/traps/
-			chmod 775 $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
+			chmod +x $NAGIOS_PLUGIN/traps/* >> $LOG_FILE 2>> $LOG_FILE
 			echo_success "$NAGIOS_PLUGIN/traps/'" "OK"
 		fi
     fi
 	echo ""
     if test -a $NAGIOS_PLUGIN/centreon.conf ; then
 		echo ""
+		temp="no_response"
 		echo_success "Finding Centreon Plugins configuration file 'centreon.conf' :" "OK"
 		echo "You already seem to have installed the plugins Centreon."
 		echo "Do you want overwrite this file ? You must regenerate this one from Centreon interface."
@@ -516,66 +552,64 @@ function install_Centreon_plugins()
 
     if [ $temp = "y" ];then
 		cp ${PLUGINS_DIR}centreon.conf $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-		chmod 775 $NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>> $LOG_FILE
+		chmod +r $NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>> $LOG_FILE
 		chown $WEB_USER:$WEB_GROUP $NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>> $LOG_FILE
 	fi
 
     cp ${PLUGINS_DIR}centreon.pm $NAGIOS_PLUGIN >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $NAGIOS_PLUGIN/centreon.pm >> $LOG_FILE 2>> $LOG_FILE
+    chmod +r $NAGIOS_PLUGIN/centreon.pm >> $LOG_FILE 2>> $LOG_FILE
 }
 
 function install_ods(){
 	
-	echo ""
-	echo "------------------------------------------------------------------------"
-	echo "                       Start ODS Installation"
-	echo "------------------------------------------------------------------------"
-	echo ""
-	echo ""
-	
-	echo "Checking ODS data folder : "
-	if test -d /var/lib/ods ; then
-		echo_passed "ODS Directory already exists" "PASSED"
+    echo ""
+    echo "------------------------------------------------------------------------"
+    echo "                       Start ODS Installation"
+    echo "------------------------------------------------------------------------"
+    echo ""
+    echo ""
+    
+    echo "Checking ODS data folder : "
+    if test -d /var/lib/ods ; then
+	echo_passed "ODS Directory already exists" "PASSED"
     else
-		mkdir /var/lib/ods/ >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Centreon Directory '/var/lib/ods'" "OK"
+	mkdir /var/lib/ods/ >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "Creating Centreon Directory '/var/lib/ods'" "OK"
     fi
-	
-	echo "Checking ODS database folder : "
-	if test -d /var/lib/ods/database/ ; then
-		echo_passed "ODS Directory already exists" "PASSED"
+    
+    echo "Checking ODS database folder : "
+    if test -d /var/lib/ods/database/ ; then
+	echo_passed "ODS Directory already exists" "PASSED"
     else
-		mkdir /var/lib/ods/database/ >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Centreon Directory '/var/lib/ods/database/'" "OK"
+	mkdir /var/lib/ods/database/ >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "Creating Centreon Directory '/var/lib/ods/database/'" "OK"
     fi
     
     echo "Checking ODS log folder : "
-	if test -d /var/log/ods/ ; then
-		echo_passed "ODS Directory already exists" "PASSED"
+    if test -d /var/log/ods/ ; then
+	echo_passed "ODS Directory already exists" "PASSED"
     else
-		mkdir /var/log/ods/ >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating Centreon Directory '/var/log/ods/'" "OK"
+	mkdir /var/log/ods/ >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "Creating Centreon Directory '/var/log/ods/'" "OK"
     fi
-	
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  $INSTALL_DIR_OREON/ODS/ods > $INSTALL_DIR_OREON/ODS/ods_new
-	echo_success "Replace ODS Macro " "OK"
-
-	mv $INSTALL_DIR_OREON/ODS/ods_new $INSTALL_DIR_OREON/ODS/ods
-	echo_success "Install ODS Binary  " "OK"
+    
+    sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  $INSTALL_DIR_OREON/ODS/ods > $INSTALL_DIR_OREON/ODS/ods_new
+    echo_success "Replace ODS Macro " "OK"
+    
+    mv $INSTALL_DIR_OREON/ODS/ods_new $INSTALL_DIR_OREON/ODS/ods
+    echo_success "Install ODS Binary  " "OK"
 
  	chown $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/ods
 	chmod 7755 $INSTALL_DIR_OREON/ODS/ods
-    echo_success "Set ODS properties " "OK"
+	echo_success "Set ODS properties " "OK"
     
 	chown $NAGIOS_USER:$NAGIOS_GROUP /var/lib/ods/database/
 	chmod 775 /var/lib/ods/database/
-		
+	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' $INSTALL_DIR_OREON/ODS_SRC_ETC/ods > /etc/init.d/ods
-	chmod 755 /etc/init.d/ods
+	chmod 775 /etc/init.d/ods
 	
 	chmod -R 775 $INSTALL_DIR_OREON/ODS/var/
-	chmod -R 775 $INSTALL_DIR_OREON/ODS/etc/
-	
 	chown -R $NAGIOS_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/ODS/var
 	rm -Rf $INSTALL_DIR_OREON/ODS_SRC_ETC
 	
@@ -589,8 +623,8 @@ function install_ods(){
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/inventory_update.php > $INSTALL_DIR_OREON/cron/inventory_update_new.php	
 	mv $INSTALL_DIR_OREON/cron/inventory_update_new.php $INSTALL_DIR_OREON/cron/inventory_update.php
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/inventory_update.php >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/cron/reporting/inventory_update.php >> $LOG_FILE 2>> $LOG_FILE
-	echo_success "in $INSTALL_DIR_OREON/cron/inventory_update.php" "OK"
+    chmod 775 $INSTALL_DIR_OREON/cron/inventory_update.php >> $LOG_FILE 2>> $LOG_FILE
+    echo_success "in $INSTALL_DIR_OREON/cron/inventory_update.php" "OK"
 	
 	
 	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php > $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB_new.php	
@@ -600,18 +634,18 @@ function install_ods(){
 	echo_success "in $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php" "OK"
 	
 	
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_status > $INSTALL_DIR_OREON/cron/parsing_status_new
-	mv $INSTALL_DIR_OREON/cron/parsing_status_new $INSTALL_DIR_OREON/cron/parsing_status
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_status.pl > $INSTALL_DIR_OREON/cron/parsing_status_new.pl
+	mv $INSTALL_DIR_OREON/cron/parsing_status_new.pl $INSTALL_DIR_OREON/cron/parsing_status.pl
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_status.pl >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/cron/parsing_status >> $LOG_FILE 2>> $LOG_FILE
-	echo_success "in $INSTALL_DIR_OREON/cron/parsing_status" "OK"
+    chmod 775 $INSTALL_DIR_OREON/cron/parsing_status.pl >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $INSTALL_DIR_OREON/cron/parsing_status.pl" "OK"
 	
 
-	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log > $INSTALL_DIR_OREON/cron/parsing_log_new
-	mv $INSTALL_DIR_OREON/cron/parsing_log_new $INSTALL_DIR_OREON/cron/parsing_log
+	sed -e 's|@OREON_PATH@|'"$INSTALL_DIR_OREON"'|g' $INSTALL_DIR_OREON/cron/parsing_log.pl > $INSTALL_DIR_OREON/cron/parsing_log_new.pl
+	mv $INSTALL_DIR_OREON/cron/parsing_log_new.pl $INSTALL_DIR_OREON/cron/parsing_log.pl
 	chown -R $WEB_USER:$NAGIOS_GROUP $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
-    chmod 775 $INSTALL_DIR_OREON/cron/parsing_log >> $LOG_FILE 2>> $LOG_FILE
-	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log" "OK"
+    chmod 775 $INSTALL_DIR_OREON/cron/parsing_log.pl >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $INSTALL_DIR_OREON/cron/parsing_log.pl" "OK"
 	
 
 }
@@ -620,7 +654,7 @@ function config_cron(){
 
     echo ""
 	echo "------------------------------------------------------------------------"
-	echo "                         Start Centreon Cron Configuration"
+	echo "                       Start Centreon Cron Configuration"
 	echo "------------------------------------------------------------------------"
 	echo ""
 	echo ""
@@ -639,15 +673,15 @@ function config_cron(){
 	fi
 	
 	# For migration (1.4 to 1.4.1)
-	if test -f /etc/cron.d/centreon ; then
-  		CRON=`cat /etc/cron.d/centreon | grep inventory_update.php | grep -v \# > /dev/null; echo $?`
-		echo_warning "For upgrade, Centreon must be delete /etc/cron.d/centreon file"
+	if test -f /etc/cron.d/oreon ; then
+  		CRON=`cat /etc/cron.d/oreon | grep inventory_update.php | grep -v \# > /dev/null; echo $?`
+		echo_warning "For upgrade, Centreon must be delete /etc/cron.d/oreon file"
 		echo -n "[y/n], default to [y]:"
 		read temp
 		#if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
                 while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
                       do
-                      echo "Do you want to install to delete /etc/cron.d/centreon file ? "
+                      echo "Do you want to install to delete /etc/cron.d/oreon file ? "
                       echo -n "[y/n], default to [y]:"
                       read temp
                 done
@@ -664,30 +698,24 @@ function config_cron(){
 	CRONSAV=$(mktemp /tmp/crontab_nagios.XXXXXX)
 	CRONTMP=$(mktemp /tmp/crontab_nagios.XXXXXX)
     	
-	echo "Please specify user do you use for oreon cron"
-	echo "By default, oreon use nagios user, it's correct ?"
-	echo -n "[y] or specifie user, default to [$NAGIOS_USER] "
+    temp="no_user"
+	echo "Specify user do you use for Centreon cron"
+	echo -n "Default to [$NAGIOS_USER] "
 	read temp
-    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
-    	do
-        	echo "You must specify cron user : "
-			echo -n "[y] or specifie user, default to [$NAGIOS_USER] "
-        	read temp
-		done
-	if [ "$temp" = "y" ] ; then 
-		CRONTAB_USER="nagios"
+	if [ -z "$temp" ] ; then 
+	    CRONTAB_USER="$NAGIOS_USER"
 	else
-		CRONTAB_USER="$temp"
+	    CRONTAB_USER="$temp"
 	fi
-
-    crontab -u $CRONTAB_USER -l >> $CRONSAV
+	
+	crontab -u $CRONTAB_USER -l >> $CRONSAV
 
 	echo_info "You old crontab is backup on $CRONSAV file"
-   	# delete last cron installation OREON
+   	# delete last cron installation Centreon
    	cat $CRONSAV | grep -v "inventory_cron_update" | grep  -v "inventory_update" | grep -v "ArchiveLogInDB.php" | grep -v "parsing_status.pl" | grep -v "parsing_log.pl" > $CRONTMP
    	# rewrite file with new cron line
 	CRONTAB_EXEC_USER=""
-	echo "0 0 * * * $PHP_BIN -q $INSTALL_DIR_OREON/cron/inventory_update.php 2>&1 >> $INSTALL_DIR_OREON/log/inventory.og" >> $CRONTMP
+	echo "0 0 * * * $PHP_BIN -q $INSTALL_DIR_OREON/cron/inventory_update.php 2>&1 >> $INSTALL_DIR_OREON/log/inventory.log" >> $CRONTMP
 	echo "0 1 1-31 * * $PHP_BIN -q $INSTALL_DIR_OREON/cron/reporting/ArchiveLogInDB.php 2>&1 >> $INSTALL_DIR_OREON/log/archiveLogInDB.log" >> $CRONTMP
 	echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_status.pl 2>&1 >> $INSTALL_DIR_OREON/log/odsParsingStatus.log" >> $CRONTMP
 	echo "* * * * * $INSTALL_DIR_OREON/cron/parsing_log.pl 2>&1 >> $INSTALL_DIR_OREON/log/odsParsing.log" >> $CRONTMP
@@ -706,73 +734,62 @@ function install_oreon(){
 	echo ""
 	echo ""
 
-    if test -d $INSTALL_DIR_OREON ; then
-		echo_passed "Centreon Directory already exists" "PASSED"
-    else
-		mkdir $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
+	if test -d $INSTALL_DIR_OREON ; then
+	    echo_passed "Centreon Directory already exists" "PASSED"
+	else
+		mkdir -p $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
 		echo_success "Creating Centreon Directory '$INSTALL_DIR_OREON'" "OK"
-    fi
-
-   for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "www" "cron" "ODS" "ODS_SRC_ETC" "doc"
-   do
-     if test -d $directory ; then
-		  cp -Rf $directory $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
-		  echo_success "Copy '$directory'" "OK"
-      fi
-    done
-
-	NAGIOS_BINARY="$NAGIOS_BIN/nagios"
-	if [ -x "$NAGIOS_BIN/nagios2" ] ;then
-		NAGIOS_BINARY="$NAGIOS_BIN/nagios2"
 	fi
+	
+	for directory in "filesGeneration" "filesUpload" "GPL_LIB" "log" "www" "cron" "ODS" "ODS_SRC_ETC" "doc"
+	  do
+	  if test -d $directory ; then
+	      cp -Rf $directory $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
+	      echo_success "Copy '$directory'" "OK"
+	  fi
+	done
 
-	`sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' -e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' -e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g' "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql" > "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql2"`
+	`sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' -e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql" > "$INSTALL_DIR_OREON/www/install/insertBaseConf.sql2"`
 	mv $INSTALL_DIR_OREON/www/install/insertBaseConf.sql2 $INSTALL_DIR_OREON/www/install/insertBaseConf.sql
-
-	`sed -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' "$INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML.php" > "$INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML.php2"`
-	mv $INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML.php2 $INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML.php
-
-	`sed -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' "$INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML4statusCounter.php" > "$INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML4statusCounter.php2"`
-	mv $INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML4statusCounter.php2 $INSTALL_DIR_OREON/www/include/monitoring/engine/MakeXML4statusCounter.php
-   
-    `sed -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' -e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' -e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g'  "$INSTALL_DIR_OREON/www/install/createTablesODS.sql" > "$INSTALL_DIR_OREON/www/install/createTablesODS.sql2"`
+    
+    `sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g'  "$INSTALL_DIR_OREON/www/install/createTablesODS.sql" > "$INSTALL_DIR_OREON/www/install/createTablesODS.sql2"`
 	mv $INSTALL_DIR_OREON/www/install/createTablesODS.sql2 $INSTALL_DIR_OREON/www/install/createTablesODS.sql
     
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/ >> $LOG_FILE 2>> $LOG_FILE
     chmod -R 775 $INSTALL_DIR_OREON >> $LOG_FILE 2>> $LOG_FILE
-    chmod -R 775 $INSTALL_DIR_NAGIOS  >> $LOG_FILE 2>> $LOG_FILE
+#     chmod -R 755 $INSTALL_DIR_NAGIOS  >> $LOG_FILE 2>> $LOG_FILE
     
-    if test -d /etc/nagios ; then
-		chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
-    fi
-
+#     if test -d /etc/nagios ; then
+# 		chmod -R 775 /etc/nagios >> $LOG_FILE 2>> $LOG_FILE
+#     fi
+    
     install_oreon_plugins
-
-    if test -d $NAGIOS_ETC ; then
-		echo_passed "$NAGIOS_ETC already exists" "PASSED"
-    else
-		mkdir  $NAGIOS_ETC  >> $LOG_FILE 2>> $LOG_FILE
-		echo_success "Creating '$NAGIOS_ETC'" "OK"
-    fi
+    
+#     if test -d $NAGIOS_ETC ; then
+# 		echo_passed "$NAGIOS_ETC already exists" "PASSED"
+#     else
+# 		mkdir  $NAGIOS_ETC  >> $LOG_FILE 2>> $LOG_FILE
+# 		echo_success "Creating '$NAGIOS_ETC'" "OK"
+#     fi
 
     chown -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_ETC >> $LOG_FILE 2>> $LOG_FILE
     chmod 775 $NAGIOS_ETC >> $LOG_FILE 2>> $LOG_FILE
 
     if test -d $INSTALL_DIR_OREON/filesGeneration/nagiosCFG ; then
-		echo_passed "$INSTALL_DIR_OREON/filesGeneration/nagiosCFG already exists" "PASSED"
+	echo_passed "$INSTALL_DIR_OREON/filesGeneration/nagiosCFG already exists" "PASSED"
     else
-		echo_success "Creating '$INSTALL_DIR_OREON/filesGeneration/nagiosCFG'" "OK"
-		mkdir $INSTALL_DIR_OREON/filesGeneration/nagiosCFG
+	echo_success "Creating '$INSTALL_DIR_OREON/filesGeneration/nagiosCFG'" "OK"
+	mkdir $INSTALL_DIR_OREON/filesGeneration/nagiosCFG
     fi
-
+    
     chmod 775 $INSTALL_DIR_OREON/filesGeneration >> $LOG_FILE 2>> $LOG_FILE
     chown -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_OREON/filesGeneration >> $LOG_FILE 2>> $LOG_FILE
 
     if test -d $INSTALL_DIR_OREON/filesUpload/nagiosCFG ; then
-		echo_passed "$INSTALL_DIR_OREON/filesUpload/nagiosCFG already exists" "PASSED"
+	echo_passed "$INSTALL_DIR_OREON/filesUpload/nagiosCFG already exists" "PASSED"
     else
-		echo_success "Creating '$INSTALL_DIR_OREON/filesUpload/nagiosCFG'" "OK"
-		mkdir $INSTALL_DIR_OREON/filesUpload/nagiosCFG
+	echo_success "Creating '$INSTALL_DIR_OREON/filesUpload/nagiosCFG'" "OK"
+	mkdir $INSTALL_DIR_OREON/filesUpload/nagiosCFG
     fi
 
     chmod 775 $INSTALL_DIR_OREON/filesUpload/nagiosCFG >> $LOG_FILE 2>> $LOG_FILE
