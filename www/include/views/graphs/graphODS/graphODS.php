@@ -61,17 +61,6 @@ For information : contact@oreon-project.org
  
  		  	var _menu_div = document.getElementById("menu_40211");
 		 
-			var newNode = document.createElement("input");
-		    newNode.setAttribute("type", "checkbox");
-		    newNode.setAttribute("name", "CheckedSelection");
-
-			newNode.onclick = function() { 
-//				alert(tree.getAllChecked());
-
-			graph_4_host(tree.getAllChecked(),'',1);
-
-			}
-	   		_menu_div.appendChild(newNode);
  
  
     		tree=new dhtmlXTreeObject("menu_40211","100%","100%","1");
@@ -88,6 +77,7 @@ For information : contact@oreon-project.org
 			// system to reload page after link with new url
 			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
 			tree.attachEvent("onDblClick",onDblClick)//set function object to call on node select 
+			tree.attachEvent("onCheck",onCheck)//set function object to call on node select 
 			//see other available event handlers in API documentation 
 
 			tree.enableDragAndDrop(0);
@@ -98,6 +88,11 @@ For information : contact@oreon-project.org
 			{
 				tree.openAllItems(nodeId);
 				return(false);
+			}
+			
+			function onCheck(nodeId)
+			{
+				graph_4_host(tree.getAllChecked(),'',1);
 			}
 			
 			function onNodeSelect(nodeId)
@@ -214,6 +209,7 @@ For information : contact@oreon-project.org
 					document.formu.EndTime.value = EndTime;
 				}
 		}
+				
 function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
 {
 	if (document.getElementsByName (timeFieldName).item(1))
@@ -377,3 +373,14 @@ function grise_period(_hid, _show)
 	$tpl->assign('lang', $lang);
 	$tpl->display("graphODS.ihtml");
 ?>
+
+<?php
+if(isset($_GET["tree_id"]))
+{
+?>	
+	graph_4_host('<?php echo $_GET["tree_id"] ?>','');
+<?php	
+}
+
+?>		
+

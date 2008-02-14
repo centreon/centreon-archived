@@ -209,24 +209,26 @@ $contact_id = '2';
 
 
 
+$i = 0;
 $tab_id = array();
-if($multi < 0){
-/*
-	$id = substr($openid, 3, strlen($openid));
-	$type = substr($openid, 0, 2);	
+if($multi == 0){
+//		$tab_id[0] = $tab_tmp;
+	$tab_id = split(",",$openid);
 
-	$tab_tmp = array("id" => $id, "type" => $type, "openid" => $openid);
 
-		$tab_id[0] = $tab_tmp;
-*/
-		$tab_id[0] = $tab_tmp;
+if( substr($openid, 0, 2) == "HG")
+	$hosts = getMyHostGroupHosts(substr($openid, 3, strlen($openid)));
+
+
+	foreach($hosts as $host)
+		$tab_id[$i++] = "HH_".$host;
+
 }
 else{
 
 	$tab_id = split(",",$openid);
 
 }
-
 
 foreach($tab_id as $openid)
 {
