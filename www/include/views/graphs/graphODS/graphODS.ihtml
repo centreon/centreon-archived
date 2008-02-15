@@ -17,7 +17,9 @@
 				&nbsp;
 				{$form.period.html}
 			</td>
-			<td rowspan="2" style="width:80px;"></td>
+			<td rowspan="2">
+				<input type="button" name="graph" value="Apply" onClick="apply_period();">			
+			</td>
 		</tr>
 
 		<tr id="customPeriod" class="list_lvl_1" >

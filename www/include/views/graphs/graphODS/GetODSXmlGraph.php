@@ -213,16 +213,17 @@ $i = 0;
 $tab_id = array();
 if($multi == 0){
 //		$tab_id[0] = $tab_tmp;
-	$tab_id = split(",",$openid);
 
 
-if( substr($openid, 0, 2) == "HG")
-	$hosts = getMyHostGroupHosts(substr($openid, 3, strlen($openid)));
-
-
-	foreach($hosts as $host)
-		$tab_id[$i++] = "HH_".$host;
-
+	if( substr($openid, 0, 2) == "HG")
+	{
+		$hosts = getMyHostGroupHosts(substr($openid, 3, strlen($openid)));
+		foreach($hosts as $host)
+			$tab_id[$i++] = "HH_".$host;
+	}
+	else
+		$tab_id = split(",",$openid);
+	
 }
 else{
 

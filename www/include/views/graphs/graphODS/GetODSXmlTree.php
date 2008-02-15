@@ -105,7 +105,7 @@ function host_has_one_or_more_GraphService($host_id)
 		if(service_has_graph($host_id, $svc_id))
 		return true;
 	}
-	return false;	
+	return false;
 }
 
 function HG_has_one_or_more_host($hg_id)
@@ -122,9 +122,8 @@ function HG_has_one_or_more_host($hg_id)
 			return true;
 		}
 	}
-	return false;	
+	return false;
 }
-
 
 
 if (isset($_GET["id"]))

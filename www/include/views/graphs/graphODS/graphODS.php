@@ -109,11 +109,14 @@ For information : contact@oreon-project.org
 			function mk_pagination(){;}
 			function set_header_title(){;}
 
-			function graph_4_host(id, formu, multi)
+
+			function apply_period()
 			{
-				if(!multi)
-				multi = 0;
-				
+				var openid = document.getElementById('openid').innerHTML;
+				graph_4_host(openid,'formu');
+			}
+
+
 				// Period
 				var currentTime = new Date();
 				var period ='';
@@ -125,20 +128,7 @@ For information : contact@oreon-project.org
 				var StartTime='';
 				var EndTime='';
 
-				if(document.formu && !document.formu.period_choice[1].checked)
-				{
-					period = document.formu.period.value;
 
-				_zero_hour = '';
-				_zero_min = '';
-				StartDate='';
-				EndDate='';
-				StartTime='';
-				EndTime='';
-
-				}
-				else
-				{
 					if(currentTime.getMinutes() <= 9){
 						_zero_min = '0';
 					}
@@ -158,9 +148,33 @@ For information : contact@oreon-project.org
 						var EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
 						var StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
 						var EndTime= "0" + currentTime.getHours()+":" + _zero_min + currentTime.getMinutes();
-						var EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-					
+						var EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();		
 					}
+				if(document.formu){
+					document.formu.StartDate.value = StartDate;
+					document.formu.EndDate.value = EndDate;
+					document.formu.StartTime.value = StartTime;
+					document.formu.EndTime.value = EndTime;
+				}
+
+
+
+			function graph_4_host(id, formu2, multi)
+			{
+				if(!multi)
+				multi = 0;
+				
+
+				if(document.formu && !document.formu.period_choice[1].checked)
+				{
+					period = document.formu.period.value;
+				}
+				else
+				{
+					StartDate = document.formu.StartDate.value;
+					EndDate = document.formu.EndDate.value;
+					StartTime = document.formu.StartTime.value;
+					EndTime = document.formu.EndTime.value;
 				}
 
 
@@ -202,12 +216,6 @@ For information : contact@oreon-project.org
 				proc.setXslt(_addrXSL)
 				proc.transform("graphView4xml");
 
-				if(document.formu){
-					document.formu.StartDate.value = StartDate;
-					document.formu.EndDate.value = EndDate;
-					document.formu.StartTime.value = StartTime;
-					document.formu.EndTime.value = EndTime;
-				}
 		}
 				
 function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)

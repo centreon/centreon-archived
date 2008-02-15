@@ -2,19 +2,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="root">
 
+<div id="openid" style="display:none">
+	<xsl:value-of select="//opid"/>
+</div>
 
 <xsl:if test="host">
-
-		<div style="position:relative; z-index: 10; left:-240px; top: -40px"  valign="top" align='center'>
-			<xsl:element name="input">
-				<xsl:attribute name="type">button</xsl:attribute>
-				<xsl:attribute name="name">graph</xsl:attribute>
-				<xsl:attribute name="value">graph</xsl:attribute>
-				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-			</xsl:element>
-		</div>
-<br/>
-
 	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
@@ -85,15 +77,6 @@
 </xsl:if>
 
 <xsl:if test="svc">
-		<div style="position:relative; z-index: 10; left:-236px; top: -40px"  valign="top" align='center'>
-			<xsl:element name="input">
-				<xsl:attribute name="type">button</xsl:attribute>
-				<xsl:attribute name="name">graph</xsl:attribute>
-				<xsl:attribute name="value">graph</xsl:attribute>
-				<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-			</xsl:element>
-		</div>
-<br/>
 	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
@@ -170,26 +153,16 @@
 </xsl:if>
 
 <xsl:if test="svc_zoom">
-		<div style="position:relative; width:150px; left:274px; top: -40px; * html left:300px;"  valign="top" align='left'>
-		<xsl:element name="input">
-			<xsl:attribute name="type">button</xsl:attribute>
-			<xsl:attribute name="name">graph</xsl:attribute>
-			<xsl:attribute name="value">grapher</xsl:attribute>
-			<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-		</xsl:element>
-		<xsl:text> </xsl:text>
-
-		</div>
-	    <div id="div2" style=" width:700px; position:relative;  left:355px; top: -87px"  valign="top" align='left'>
+	    <div id="div2" style=" width:700px; position:relative;  left:355px; top: -67px"  valign="top" align='left'>
 
 		<form name="formu2">
 
-    	    <table id="ListTableSmall" >
+    	    <table >
                 <tr class="ListHeader">
                 	<td class="FormHeader" colspan="2"><xsl:value-of select="//lang/advanced"/></td>
                 </tr>
 				<tr>
-				<td style="width:500px;">
+				<td>
 					<table style="">
 						<tr >
 		               		<td>
@@ -259,7 +232,7 @@
 		</form>
     	</div>
 
-	<div style="position:relative; top: -80px;">
+	<div style="position:relative; top: -70px;">
 		<table id="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
