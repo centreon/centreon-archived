@@ -19,6 +19,27 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
+/*
+echo "<pre>";
+print_r($oreon);
+echo "</pre>";
+*/
+
+
+	function get_user_param($user_id, $pearDB)
+	{
+		$tab_row = array();
+		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
+		if (PEAR::isError($DBRESULT)){
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			return null;		
+		}
+		while( $row = $DBRESULT->fetchRow()){
+			$tab_row[$row["cp_key"]] = $row["cp_value"];
+		}
+		return $tab_row;
+	}
+	$user_params = get_user_param($oreon->user->user_id, $pearDB);
 
 	#Path to the configuration dir
 	$path = "./include/monitoring/mysql_log_2/";
@@ -29,7 +50,6 @@ For information : contact@oreon-project.org
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-
 
 	$openid = '0';
 	$open_id_sub = '0';
@@ -47,8 +67,14 @@ For information : contact@oreon-project.org
 
 ?>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
+
+
+
+
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
+     
+     
 			var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
 		    var headID = document.getElementsByTagName("head")[0];  
 		    var cssNode = document.createElement('link');
@@ -57,11 +83,7 @@ For information : contact@oreon-project.org
 		       cssNode.href = css_file;
 		       cssNode.media = 'screen';headID.appendChild(cssNode);
  
- 
- 
- 
- 
- 
+ 			var multi = 0;
  
     		tree=new dhtmlXTreeObject("menu_20301","100%","100%","1");
             tree.setImagePath("./img/icones/csh_vista/");
@@ -77,11 +99,11 @@ For information : contact@oreon-project.org
 			// system to reload page after link with new url
 			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
 			tree.attachEvent("onDblClick",onDblClick)//set function object to call on node select 
-			//see other available event handlers in API documentation 
+			tree.attachEvent("onCheck",onCheck)//set function object to call on node select 
 
 			tree.enableDragAndDrop(0);
 			tree.enableTreeLines(false);
-			tree.enableCheckBoxes(false);
+			tree.enableCheckBoxes(true);
 
 			function onDblClick(nodeId)
 			{
@@ -95,13 +117,26 @@ For information : contact@oreon-project.org
 				logView4xml.innerHTML="Waiting XML log";
 
 				tree.openItem(nodeId);
-
+				multi = 0;
 				log_4_host(nodeId,'');
 			}
+
+			function onCheck()
+			{
+				multi = 1;
+				log_4_host(tree.getAllChecked(),'');
+			}
+
 			
 			// it's fake methode for using ajax system by default
 			function mk_pagination(){;}
 			function set_header_title(){;}
+
+			function apply_period()
+			{
+				var openid = document.getElementById('openid').innerHTML;
+				log_4_host(openid);
+			}
 
 			var _num = 0;
 			function log_4_host_page(id, formu, num)
@@ -110,8 +145,26 @@ For information : contact@oreon-project.org
 				log_4_host(id, formu);
 			}
 
+			var _host = <? echo $user_params["log_filter_host"]; ?>;
+			var _service = <? echo $user_params["log_filter_svc"]; ?>;
+
+			var _down = <? echo $user_params["log_filter_host_down"]; ?>;
+			var _up = <? echo $user_params["log_filter_host_up"]; ?>;
+			var _unreachable = <? echo $user_params["log_filter_host_unreachable"]; ?>;
+
+			var _ok = <? echo $user_params["log_filter_svc_ok"]; ?>;
+			var _warning = <? echo $user_params["log_filter_svc_warning"]; ?>;
+			var _critical = <? echo $user_params["log_filter_svc_critical"]; ?>;
+			var _unknown = <? echo $user_params["log_filter_svc_unknown"]; ?>;
+
+			var _notification = <? echo $user_params["log_filter_notif"]; ?>;
+			var _error = <? echo $user_params["log_filter_error"]; ?>;
+			var _alert = <? echo $user_params["log_filter_alert"]; ?>;
+			
+
 			function log_4_host(id, formu)
 			{
+				
 				// Period
 				var currentTime = new Date();
 				var period ='';
@@ -162,52 +215,41 @@ For information : contact@oreon-project.org
 				}
 
 
-				var _notification = 0;
-				var _error = 0;
-				var _alert = 1;
 
 				// type
-				if(document.formu2 && document.formu2.notification.checked)
-					_notification = 1;
-				if(document.formu2 && document.formu2.error.checked)
-					_error = 1;
-				if(document.formu2 && !document.formu2.alert.checked)
-					_alert = 0;
-
-				var _host = 1;
-				var _service = 1;
-				if(document.formu3 && !document.formu3.host.checked)
-					_host = 0;
-				if(document.formu4 && !document.formu4.service.checked)
-					_service = 0;
+				if(document.formu2 && document.formu2.notification)
+					_notification = document.formu2.notification.checked;
+				if(document.formu2 && document.formu2.error)
+					_error = document.formu2.error.checked;
+				if(document.formu2 && document.formu2.alert)
+					_alert = document.formu2.alert.checked;
 
 
-				var _up = 1;
-				var _down = 1;
-				var _unreachable = 1;
-				if(document.formu3 && !document.formu3.up.checked)
-					_up = 0;
-				if(document.formu3 && !document.formu3.down.checked)
-					_down = 0;
-				if(document.formu3 && !document.formu3.unreachable.checked)
-					_unreachable = 0;
+				if(document.formu3 && document.formu3.host)
+					_host = document.formu3.host.checked;
+				if(document.formu4 && document.formu4.service)
+					_service = document.formu4.service.checked;
 
 
-				var _ok = 1;		
-				if(document.formu4 && !document.formu4.ok.checked)
-					_ok = 0;
+				if(document.formu3 && document.formu3.up)
+					_up = document.formu3.up.checked;
+				if(document.formu3 && document.formu3.down)
+					_down = document.formu3.down.checked;
+				if(document.formu3 && document.formu3.unreachable)
+					_unreachable = document.formu3.unreachable.checked;
 
-				var _warning = 1;
-				if(document.formu4 && !document.formu4.warning.checked)
-					_warning = 0;
 
-				var _critical = 1;
-				if(document.formu4 && !document.formu4.critical.checked)
-					_critical = 0;
+				if(document.formu4 && document.formu4.ok)
+					_ok = document.formu4.ok.checked;
 
-				var _unknown = 1;
-				if(document.formu4 && !document.formu4.unknown.checked)
-					_unknown = 0;
+				if(document.formu4 && document.formu4.warning)
+					_warning = document.formu4.warning.checked;
+
+				if(document.formu4 && document.formu4.critical)
+					_critical = document.formu4.critical.checked;
+
+				if(document.formu4 && document.formu4.unknown)
+					_unknown = document.formu4.unknown.checked;
 
 				if(document.formu && document.formu.StartDate.value != "")
 					StartDate = document.formu.StartDate.value;
@@ -223,7 +265,7 @@ For information : contact@oreon-project.org
 				
 				var proc = new Transformation();
 				var _addrXSL = "./include/monitoring/mysql_log_2/log.xsl";
-				var _addrXML = './include/monitoring/mysql_log_2/GetODSXmlLog.php?warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&host='+_host+'&service='+_service+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+				var _addrXML = './include/monitoring/mysql_log_2/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&host='+_host+'&service='+_service+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 				proc.setXml(_addrXML)
 				proc.setXslt(_addrXSL)
 				proc.transform("logView4xml");
@@ -234,6 +276,11 @@ For information : contact@oreon-project.org
 					document.formu.StartTime.value = StartTime;
 					document.formu.EndTime.value = EndTime;
 				}
+
+
+
+
+
 		}
 
 function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
@@ -365,6 +412,10 @@ function grise_period(_hid, _show)
 
 log_4_host('RR_0',null);
 
+
+
+
+
 </script>
 
 
@@ -398,4 +449,37 @@ log_4_host('RR_0',null);
 
 	$tpl->assign('lang', $lang);
 	$tpl->display("viewLog.ihtml");
+
+
+/*
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_notif', '0', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_alert', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_error', '0', '6');
+	
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host_up', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host_down', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host_unreachable', '1', '6');
+	
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_ok', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_warning', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_critical', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_unknown', '1', '6');
+*/
+
 ?>
+
+

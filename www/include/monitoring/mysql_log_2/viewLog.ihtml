@@ -1,11 +1,9 @@
 <script language='javascript' src='./include/common/javascript/datePicker.js'></script>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
-
-
-<div id="div1" style="padding:2px; width:390px;" >
+<div id="div1" style="padding:2px; width:340px;" >
 <form name="formu">
-    <table >
+		    <table style="margin:2px;" >
         <tr class="ListHeader">
         	<td class="FormHeader" colspan="3">{$lang.period}
 			</td>
@@ -17,7 +15,9 @@
 				&nbsp;
 				{$form.period.html}
 			</td>
-			<td rowspan="2" style="width:70px;"></td>
+			<td rowspan="2" style="width:35px; padding:3px;">
+				<input type="button" name="graph" value="Apply" onClick="apply_period();">
+			</td>
 		</tr>
 
 		<tr id="customPeriod" class="list_lvl_1">
@@ -40,4 +40,6 @@
 	</table>
 </form>
 </div>
+
+
 <div id="logView4xml">..log..</div>

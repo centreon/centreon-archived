@@ -236,7 +236,7 @@ else if($type == "RR")
 }
 else
 {
-	print("<item open='1' call='1' select='1' child='1' id='RR_0' text='All logs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+	print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='All logs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 	print("<itemtext>label</itemtext>");
 	print("</item>");
 }

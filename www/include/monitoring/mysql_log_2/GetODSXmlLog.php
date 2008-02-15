@@ -36,10 +36,54 @@ function check_injection($g){
 	return 0;
 }
 
+function check_session($sid, $pearDB){
+	if(isset($sid) && !check_injection($sid)){
+		$sid = htmlentities($sid);
+		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if($res->fetchInto($session)){
+			return $session["user_id"];
+		}else
+			get_error('bad session id');		
+	}
+	else
+		get_error('need session identifiant !');
+	return 0;
+}
+
+
+function get_user_param($user_id, $pearDB)
+{
+	$tab_row = array();
+	$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
+	if (PEAR::isError($DBRESULT)){
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		return null;		
+	}
+	while( $row = $DBRESULT->fetchRow()){
+		$tab_row[$row["cp_key"]] = $row["cp_value"];
+	}
+	return $tab_row;
+}
+
+function set_user_param($user_id, $pearDB, $key, $value)
+{
+//	$DBRESULT =& $pearDB->query("INSERT into contact_param (cp_key, cp_value, cp_contact_id) VALUES ('".$key."','".$value."','".$user_id."')");
+	$DBRESULT =& $pearDB->query("UPDATE contact_param set cp_value ='".$value."' where cp_contact_id like '".$user_id."' AND cp_key like '".$key."' ");
+	
+	if (PEAR::isError($DBRESULT)) {
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	}
+}
+
+
+
+
 
 /*
  * XML tag
  */
+
+
 if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") )
 {
 	header("Content-type: application/xhtml+xml"); }
@@ -107,20 +151,26 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 	}
 
 
+
+
 	if(isset($_GET["id"]) && !check_injection($_GET["id"])){
 		$openid = htmlentities($_GET["id"]);
 	}else
 		$openid = "-1";
 
 
-	$id = substr($openid, 3, strlen($openid));
-	$type = substr($openid, 0, 2);
+
+
 
 
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = htmlentities($_GET["sid"]);
 	}else
 		$sid = "-1";
+
+
+	$contact_id = check_session($sid,$pearDB);
+
 
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
@@ -135,64 +185,76 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 
 	if(isset($_GET["host"]) && !check_injection($_GET["host"])){
 		$host = htmlentities($_GET["host"]);
+		set_user_param($contact_id, $pearDB, "log_filter_host", $host);
 	}else
-		$host = "1";
+		$host = "true";
 
 	if(isset($_GET["service"]) && !check_injection($_GET["service"])){
 		$service = htmlentities($_GET["service"]);
+		set_user_param($contact_id, $pearDB, "log_filter_svc", $service);
 	}else
-		$service = "1";
+		$service = "true";
 
 
 
 	if(isset($_GET["up"]) && !check_injection($_GET["up"])){
 		$up = htmlentities($_GET["up"]);
+		set_user_param($contact_id, $pearDB, "log_filter_host_up", $up);
 	}else
-		$up = "1";
+		$up = "true";
 	if(isset($_GET["down"]) && !check_injection($_GET["down"])){
 		$down = htmlentities($_GET["down"]);
+		set_user_param($contact_id, $pearDB, "log_filter_host_down", $down);
 	}else
-		$down = "1";
+		$down = "true";
 
 	if(isset($_GET["unreachable"]) && !check_injection($_GET["unreachable"])){
 		$unreachable = htmlentities($_GET["unreachable"]);
+		set_user_param($contact_id, $pearDB, "log_filter_host_unreachable", $unreachable);
 	}else
-		$unreachable = "1";
+		$unreachable = "true";
 
 	if(isset($_GET["ok"]) && !check_injection($_GET["ok"])){
 		$ok = htmlentities($_GET["ok"]);
+		set_user_param($contact_id, $pearDB, "log_filter_svc_ok", $ok);
 	}else
-		$ok = "1";
+		$ok = "true";
 	if(isset($_GET["warning"]) && !check_injection($_GET["warning"])){
 		$warning = htmlentities($_GET["warning"]);
+		set_user_param($contact_id, $pearDB, "log_filter_svc_warning", $warning);
 	}else
-		$warning = "1";
+		$warning = "true";
 	if(isset($_GET["critical"]) && !check_injection($_GET["critical"])){
 		$critical = htmlentities($_GET["critical"]);
+		set_user_param($contact_id, $pearDB, "log_filter_svc_critical", $critical);
 	}else
-		$critical = "1";
+		$critical = "true";
 	if(isset($_GET["unknown"]) && !check_injection($_GET["unknown"])){
 		$unknown = htmlentities($_GET["unknown"]);
+		set_user_param($contact_id, $pearDB, "log_filter_svc_unknown", $unknown);
 	}else
-		$unknown = "1";
+		$unknown = "true";
 
 
 
 
 	if(isset($_GET["notification"]) && !check_injection($_GET["notification"])){
 		$notification = htmlentities($_GET["notification"]);
+		set_user_param($contact_id, $pearDB, "log_filter_notif", $notification);
 	}else
-		$notification = "0";
+		$notification = "false";
 		
 	if(isset($_GET["alert"]) && !check_injection($_GET["alert"])){
 		$alert = htmlentities($_GET["alert"]);
+		set_user_param($contact_id, $pearDB, "log_filter_alert", $alert);
 	}else
-		$alert = "0";
+		$alert = "true";
 		
 	if(isset($_GET["error"]) && !check_injection($_GET["error"])){
 		$error = htmlentities($_GET["error"]);
+		set_user_param($contact_id, $pearDB, "log_filter_error", $error);
 	}else
-		$error = "0";
+		$error = "false";
 
 
 	if(isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])){
@@ -220,9 +282,33 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 		$auto_period = "-1";
 
 
+	if(isset($_GET["multi"]) && !check_injection($_GET["multi"])){
+		$multi = htmlentities($_GET["multi"]);
+	}else
+		$multi = "-1";
 
-//$oreon->user->user_id
-$contact_id = '2';
+
+
+
+	if($contact_id){
+		$user_params = get_user_param($contact_id, $pearDB);
+		
+		$alert = $user_params["log_filter_alert"];
+		$notification = $user_params["log_filter_notif"];
+		$error = $user_params["log_filter_error"];
+		$unknown = $user_params["log_filter_svc_unknown"];
+		$unreachable = $user_params["log_filter_host_unreachable"];
+		$up = $user_params["log_filter_host_up"];
+		$ok = $user_params["log_filter_svc_ok"];
+		$down = $user_params["log_filter_host_down"];
+		$warning = $user_params["log_filter_svc_warning"];
+		$host = $user_params["log_filter_host"];
+		$service = $user_params["log_filter_svc"];
+		$critical = $user_params["log_filter_svc_critical"];
+	}
+
+
+
 
 	if ($StartDate !=  "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
@@ -272,119 +358,13 @@ $contact_id = '2';
 
 	$logs = array();	
 
-/*
- * Set Get vaiable
- */
-$msg_type_set = array ();
-if($alert && $service){
-	array_push ($msg_type_set, "'0'");
-}
-if($alert && $host){
-	array_push ($msg_type_set, "'1'");
-}
-if($notification && $service){
-	array_push ($msg_type_set, "'2'");
-}
-if($notification && $host){
-	array_push ($msg_type_set, "'3'");
-}
-if($error)
-array_push ($msg_type_set, "'4'");
-
-$msg_req='';
-if( count($msg_type_set) > 0 )
-	$msg_req .= ' AND msg_type IN (' . implode(",",$msg_type_set). ') ';
-
-$msg_status_set = array ();
-
-
-if($error){
-	array_push ($msg_status_set, "'NULL'");
-}
-
-if($up && $host){
-	array_push ($msg_status_set, "'UP'");
-}
-if($down && $host){
-	array_push ($msg_status_set, "'DOWN'");
-}
-if($unreachable && $host){
-	array_push ($msg_status_set, "'UNREACHABLE'");
-}
-
-if($ok && $service){
-	array_push ($msg_status_set, "'ok'");
-}
-if($warning && $service){
-	array_push ($msg_status_set, "'warning'");
-}
-if($critical && $service){
-	array_push ($msg_status_set, "'critical'");
-}
-if($unknown && $service){
-	array_push ($msg_status_set, "'unknown'");
-}
-
-if( count($msg_status_set) > 0 )
-{
-	$msg_req .= ' AND (status IN (' . implode(",",$msg_status_set). ') ';
-
-	if($error || $notification)
-		$msg_req .= 'OR status is null';
-
-	$msg_req .=')';
-}
-
-
-if($type == "HG"){
-	$hosts = getMyHostGroupHosts($id);
-	$tab_host_name= array();
-	foreach($hosts as $h_id)
-	{
-		$host_name = getMyHostName($h_id);
-		array_push ($tab_host_name, "'".$host_name."'");
-	}
-	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1 $msg_req AND (host_name in(".implode(",",$tab_host_name).") ";
-	if($error || $notification)
-		$req .= ' OR host_name is null';
-	$req .= ")";
-}/* end HG */
-else if($type == "HH"){
-	$host_name = getMyHostName($id);
-
-	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1 $msg_req AND (host_name like '".$host_name."' ";
-
-	if($error || $notification)
-		$req .= ' OR host_name is null';
-	$req .= ")";
-}/* end HH */
-else if($type == "HS"){
-	$service_description = getMyServiceName($id);
-	$host_id = getMyHostIDService($id);
-	$host_name = getMyHostName($host_id);
-
-	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1 $msg_req AND (host_name like '".$host_name."'";
-	if($error || $notification)
-		$req .= ' OR host_name is null';
-	$req .= ")";
-
-	$req .= " AND (service_description like '".$service_description."' ";
-	if($error || $notification)
-		$req .= ' OR service_description is null';
-	$req .= ") ";
-
-
-}/* end HH */
-else{
-	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $sort_str1 $msg_req ";
-}
 
 /*
  * Print infos..
  */
 echo "<infos>";
+echo "<multi>".$multi."</multi>";
 echo "<sid>".$sid."</sid>";
-echo "<id>".$id."</id>";
 echo "<opid>".$openid."</opid>";
 echo "<start>".$start."</start>";
 echo "<end>".$end."</end>";
@@ -403,106 +383,331 @@ echo "<unknown>".$unknown."</unknown>";
 echo "</infos>";
 
 
+ 
+
+$msg_type_set = array ();
+if($alert == 'true' && $service == 'true'){
+	array_push ($msg_type_set, "'0'");
+}
+if($alert == 'true' && $host == 'true'){
+	array_push ($msg_type_set, "'1'");
+}
+if($notification == 'true' && $service== 'true'){
+	array_push ($msg_type_set, "'2'");
+}
+if($notification== 'true' && $host== 'true'){
+	array_push ($msg_type_set, "'3'");
+}
+if($error == 'true')
+array_push ($msg_type_set, "'4'");
+
+$msg_req='';
+if( count($msg_type_set) > 0 )
+	$msg_req .= ' AND msg_type IN (' . implode(",",$msg_type_set). ') ';
+
+$msg_status_set = array ();
+
+
+if($error == 'true'){
+	array_push ($msg_status_set, "'NULL'");
+}
+
+if($up == 'true' && $host == 'true'){
+	array_push ($msg_status_set, "'UP'");
+}
+if($down == 'true' && $host == 'true'){
+	array_push ($msg_status_set, "'DOWN'");
+}
+if($unreachable == 'true' && $host == 'true'){
+	array_push ($msg_status_set, "'UNREACHABLE'");
+}
+
+if($ok == 'true' && $service == 'true'){
+	array_push ($msg_status_set, "'ok'");
+}
+if($warning == 'true' && $service == 'true'){
+	array_push ($msg_status_set, "'warning'");
+}
+if($critical == 'true' && $service == 'true'){
+	array_push ($msg_status_set, "'critical'");
+}
+if($unknown == 'true' && $service == 'true'){
+	array_push ($msg_status_set, "'unknown'");
+}
+
+if( count($msg_status_set) > 0 )
+{
+	$msg_req .= ' AND (status IN (' . implode(",",$msg_status_set). ') ';
+
+	if($error || $notification)
+		$msg_req .= 'OR status is null';
+
+	$msg_req .=')';
+}
 
 /*
- * calculate size before limit for pagination 
- */
- $lstart = 0;
-	$DBRESULT =& $pearDBO->query($req);
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
-	$rows = $DBRESULT->numrows();
+** If multi checked 
+*/
+if($multi == 1){
+	$tab_id = split(",",$openid);
+	$tab_host_name= array();
+	$tab_svc = array();
 
-	if(($num * $limit) > $rows)
-		$num = round($rows / $limit) - 1;
-	$lstart = $num * $limit;
-
-	if ($lstart <= 0)
-		$lstart = 0;
-
-/*
- * pagination
- */
-	$page_max = ceil($rows / $limit);
-	if ($num > $page_max && $rows)
-		$num = $page_max - 1;
+	/*
+	 * prepare tab with host and svc
+	 */
+	foreach($tab_id as $openid)
+	{
+		$id = substr($openid, 3, strlen($openid));
+		$type = substr($openid, 0, 2);	
 	
-	if($num < 0)
-	$num = 0;
+	
+		if($type == "HG"){
+			$hosts = getMyHostGroupHosts($id);
+			foreach($hosts as $h_id)
+			{
+				$host_name = getMyHostName($h_id);
+				array_push ($tab_host_name, "'".$host_name."'");
+			}
 
-	$pageArr = array();
-	$istart = 0;
-	for($i = 5, $istart = $num; $istart > 0 && $i > 0; $i--)
-		$istart--;
-	for($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
-		$iend++;
-	for ($i = $istart; $i <= $iend; $i++){
-		$pageArr[$i] = array("url_page"=>"&num=$i&limit=".$limit, "label_page"=>($i +1),"num"=> $i);
+		}/* end HG */
+		else if($type == "HH"){
+			$host_name = getMyHostName($id);
+			array_push ($tab_host_name, "'".$host_name."'");		
+		}/* end HH */
+		else if($type == "HS"){
+			$service_description = getMyServiceName($id);
+			$host_id = getMyHostIDService($id);
+			$host_name = getMyHostName($host_id);
+			$tmp["svc_name"] = $service_description;
+			$tmp["host_name"] = $host_name;
+			array_push($tab_svc, $tmp);
+		}/* end HH */
 	}
-	foreach ($pageArr as $key => $tab) {
-		echo "<page>";
-		if($tab["num"] == $num)
-		echo "<selected>1</selected>";
-		else
-		echo "<selected>0</selected>";
+
+
+	/*
+	 * Making the request
+	 */
+
+
+	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req";
+
+	if(count($tab_host_name) > 0){
+	$req .= " AND (host_name in(".implode(",",$tab_host_name).") ";
+
+	if($error || $notification)
+		$req .= ' OR host_name is null';
+	$req .= ")";
 		
-		echo "<num><![CDATA[".$tab["num"]."]]></num>";
-		echo "<url_page><![CDATA[".$tab["url_page"]."]]></url_page>";
-		echo "<label_page><![CDATA[".$tab["label_page"]."]]></label_page>";
-		echo "</page>";
 	}
-	$num_page = 0;
 
-	if($num > 0 && $num < $rows)
-		$num_page= $num * $limit;
+
+	if(count($tab_svc) > 0){
+		$req .= " AND ( ";
+		$flag = 0;
+		foreach($tab_svc as $svc){
+		
+				if($flag)
+				 $req .= " OR ";
+				$flag = 1;			
+				$req .= " ((host_name like '".$svc["host_name"]."'";
+				if($error || $notification)
+					$req .= ' OR host_name is null';
+				$req .= ")";
+			
+				$req .= " AND (service_description like '".$svc["svc_name"]."' ";
+				$req .= ")) ";
+		}
+		$req .= " )";
+	}	
+	
+}
+else// only click on one element
+{
+	$id = substr($openid, 3, strlen($openid));
+	$type = substr($openid, 0, 2);	
+
+
+	if($type == "HG"){
+		$hosts = getMyHostGroupHosts($id);
+		$tab_host_name= array();
+		foreach($hosts as $h_id)
+		{
+			$host_name = getMyHostName($h_id);
+			array_push ($tab_host_name, "'".$host_name."'");
+		}
+		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name in(".implode(",",$tab_host_name).") ";
+		if($error || $notification)
+			$req .= ' OR host_name is null';
+		$req .= ")";
+	}/* end HG */
+	else if($type == "HH"){
+		$host_name = getMyHostName($id);
+	
+		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name like '".$host_name."' ";
+	
+		if($error || $notification)
+			$req .= ' OR host_name is null';
+		$req .= ")";
+	}/* end HH */
+	else if($type == "HS"){
+		$service_description = getMyServiceName($id);
+		$host_id = getMyHostIDService($id);
+		$host_name = getMyHostName($host_id);
+	
+		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name like '".$host_name."'";
+
+		if($error || $notification)
+			$req .= ' OR host_name is null';
+			
+		$req .= ")";
+	
+		$req .= " AND (service_description like '".$service_description."' ";
 /*
- * End pagination
- */
-
-
-
-/*
- * Full Request
- */
-	$req .= " ORDER BY ctime DESC,log_id DESC";
-	$req .= " LIMIT $lstart,$limit";
-
-	$DBRESULT =& $pearDBO->query($req);
-	if (PEAR::isError($DBRESULT))
-		print "Mysql Error : ".$DBRESULT->getMessage();
-	for ($cpts = 0;$DBRESULT->fetchInto($log);){
-			echo "<line>";
-			echo "<msg_type>".$log["msg_type"]."</msg_type>";
-
-			if($log["msg_type"] > 1)
-			 echo "<retry></retry>";
-			else
-			 echo "<retry>".$log["retry"]."</retry>";
-
-
-			if($log["msg_type"] == 2 || $log["msg_type"] == 3)
-				echo "<type>NOTIF</type>";
-			else
-				echo "<type>".$log["type"]."</type>";
-
-			$color = '';
-			if($log["msg_type"] == 0)
-				$color = $tab_color_service[$log["status"]];
-			if($log["msg_type"] == 1)
-				$color = $tab_color_host[$log["status"]];
-
-			echo '<status color="'.$color.'">'.$log["status"].'</status>';
-			echo "<service_description>".$log["service_description"]."</service_description>";
-			echo "<host_name>".$log["host_name"]."</host_name>";
-			echo "<class>".$tab_class[$cpts % 2]."</class>";
-			echo "<date>".date($lang["date_format"], $log["ctime"])."</date>";
-			echo "<time>".date($lang["time_format"], $log["ctime"])."</time>";
-			echo "<output><![CDATA[".$log["output"]."]]></output>";
-			echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
-			echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
-			echo "</line>";
-		$cpts++;
+		if($error || $notification)
+			$req .= ' OR service_description is null';
+			*/
+		$req .= ") ";
+	
+	
+	}/* end HH */
+	else{
+		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req ";
 	}
+}
+
+
+
+
+
+	/*
+	 * calculate size before limit for pagination 
+	 */
+	 $lstart = 0;
+		$DBRESULT =& $pearDBO->query($req);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		$rows = $DBRESULT->numrows();
+	
+		if(($num * $limit) > $rows)
+			$num = round($rows / $limit) - 1;
+		$lstart = $num * $limit;
+	
+		if ($lstart <= 0)
+			$lstart = 0;
+	
+	/*
+	 * pagination
+	 */
+		$page_max = ceil($rows / $limit);
+		if ($num > $page_max && $rows)
+			$num = $page_max - 1;
+		
+		if($num < 0)
+		$num = 0;
+	
+		$pageArr = array();
+		$istart = 0;
+		for($i = 5, $istart = $num; $istart > 0 && $i > 0; $i--)
+			$istart--;
+		for($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
+			$iend++;
+		for ($i = $istart; $i <= $iend; $i++){
+			$pageArr[$i] = array("url_page"=>"&num=$i&limit=".$limit, "label_page"=>($i +1),"num"=> $i);
+		}
+		foreach ($pageArr as $key => $tab) {
+			echo "<page>";
+			if($tab["num"] == $num)
+			echo "<selected>1</selected>";
+			else
+			echo "<selected>0</selected>";
+			
+			echo "<num><![CDATA[".$tab["num"]."]]></num>";
+			echo "<url_page><![CDATA[".$tab["url_page"]."]]></url_page>";
+			echo "<label_page><![CDATA[".$tab["label_page"]."]]></label_page>";
+			echo "</page>";
+		}
+		$num_page = 0;
+	
+		if($num > 0 && $num < $rows)
+			$num_page= $num * $limit;
+
+		$prev = $num - 1;
+		$next = $num + 1;
+		
+		if($num > 0)
+			echo "<first show='true'>0</first>";
+		else
+			echo "<first show='false'>none</first>";
+
+		if($num > 1)
+			echo "<prev show='true'>$prev</prev>";
+		else
+			echo "<prev show='false'>none</prev>";
+
+		if($num < $page_max-1)
+			echo "<next show='true'>$next</next>";
+		else
+			echo "<next show='false'>none</next>";
+
+		$last = $page_max + 2;
+
+		if($num < $page_max-1)
+			echo "<last show='true'>$last</last>";
+		else
+			echo "<last show='false'>none</last>";
+
+
+
+	/*
+	 * End pagination
+	 */
+	
+	
+	
+	/*
+	 * Full Request
+	 */
+		$req .= " ORDER BY ctime DESC,log_id DESC";
+		$req .= " LIMIT $lstart,$limit";
+	
+		$DBRESULT =& $pearDBO->query($req);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getMessage();
+		for ($cpts = 0;$DBRESULT->fetchInto($log);){
+				echo "<line>";
+				echo "<msg_type>".$log["msg_type"]."</msg_type>";
+	
+				if($log["msg_type"] > 1)
+				 echo "<retry></retry>";
+				else
+				 echo "<retry>".$log["retry"]."</retry>";
+	
+	
+				if($log["msg_type"] == 2 || $log["msg_type"] == 3)
+					echo "<type>NOTIF</type>";
+				else
+					echo "<type>".$log["type"]."</type>";
+	
+				$color = '';
+				if($log["msg_type"] == 0)
+					$color = $tab_color_service[$log["status"]];
+				if($log["msg_type"] == 1)
+					$color = $tab_color_host[$log["status"]];
+	
+				echo '<status color="'.$color.'">'.$log["status"].'</status>';
+				echo "<service_description>".$log["service_description"]."</service_description>";
+				echo "<host_name>".$log["host_name"]."</host_name>";
+				echo "<class>".$tab_class[$cpts % 2]."</class>";
+				echo "<date>".date($lang["date_format"], $log["ctime"])."</date>";
+				echo "<time>".date($lang["time_format"], $log["ctime"])."</time>";
+				echo "<output><![CDATA[".$log["output"]."]]></output>";
+				echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
+				echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
+				echo "</line>";
+			$cpts++;
+		}
 
 
 
@@ -516,8 +721,8 @@ $lang["notification"] = "notification";
 $lang["alert"] = "alert";
 $lang["error"] = "error";
 
-$lang["service"] = "service";
-$lang["host"] = "host";
+$lang["service"] = "Service";
+$lang["host"] = "Host";
 
 $lang["down"] = "down";
 $lang["up"] = "up";
@@ -553,6 +758,7 @@ echo "</lang>";
  */
 
 
+	//		echo "<output><![CDATA[".$req."]]></output>";
 
 
 
