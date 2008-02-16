@@ -695,13 +695,11 @@ For information : contact@oreon-project.org
 	## COMMAND
 	#
 
-	function getMyCheckCmdGraph($service_id = NULL, $host_id = NULL)	{
+	function getMyCheckCmdName($service_id = NULL)	{
 		if (!$service_id)	return;
 		global $pearDB;
-		$i = 0;
-		$host_id ? $host_id = "!".$host_id."_".$service_id : NULL;
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT command_command_id, command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
@@ -710,27 +708,83 @@ For information : contact@oreon-project.org
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
 				$row2 =& $DBRESULT2->fetchRow();
-				$row["command_command_id_arg"] = str_replace('#BR#', "\\n", $row["command_command_id_arg"]);
-				$row["command_command_id_arg"] = str_replace('#T#', "\\t", $row["command_command_id_arg"]);
-				$row["command_command_id_arg"] = str_replace('#R#', "\\r", $row["command_command_id_arg"]);
-				$row["command_command_id_arg"] = str_replace('#S#', "/", $row["command_command_id_arg"]);
-				$row["command_command_id_arg"] = str_replace('#BS#', "\\", $row["command_command_id_arg"]);
-				if (strstr($row2["command_name"], "check_graph_"))
-					return ($row2["command_name"].$row["command_command_id_arg"].$host_id);
-				else if (!$i)
-					return ($row2["command_name"].$row["command_command_id_arg"]);
-				else
-					return NULL;
+				return ($row2["command_name"]);
 			}
 			else if ($row["service_template_model_stm_id"])
 				$service_id = $row["service_template_model_stm_id"];
 			else
 				return NULL;
-			$i++;
 		}
 		return NULL;
 	}
 
+	function getMyCheckCmdArg($service_id = NULL)	{
+		if (!$service_id)	return;
+		global $pearDB;
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			$row =& $DBRESULT->fetchRow();
+			if ($row["command_command_id_arg"])	{
+				$row["command_command_id_arg"] = str_replace('#BR#', "\\n", $row["command_command_id_arg"]);
+				$row["command_command_id_arg"] = str_replace('#T#', "\\t", $row["command_command_id_arg"]);
+				$row["command_command_id_arg"] = str_replace('#R#', "\\r", $row["command_command_id_arg"]);
+				$row["command_command_id_arg"] = str_replace('#S#', "/", $row["command_command_id_arg"]);
+				$row["command_command_id_arg"] = str_replace('#BS#', "\\", $row["command_command_id_arg"]);
+				return ($row["command_command_id_arg"]);
+			}
+			else if ($row["service_template_model_stm_id"])
+				$service_id = $row["service_template_model_stm_id"];
+			else
+				return NULL;
+		}
+		return NULL;
+	}
+
+	function getMyCheckCmdParam($service_id = NULL)	{
+		if (!$service_id)	return;
+		global $pearDB;
+		$cmd = NULL;
+		$arg = NULL;
+		$DBRESULT =& $pearDB->query("SELECT command_command_id, command_command_id_arg FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$row =& $DBRESULT->fetchRow();
+		if ($row["command_command_id_arg"] && !$row["command_command_id"])	{
+			$row["command_command_id_arg"] = str_replace('#BR#', "\\n", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#T#', "\\t", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#R#', "\\r", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#S#', "/", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#BS#', "\\", $row["command_command_id_arg"]);
+			$cmd = getMyCheckCmdName($service_id);
+			return $cmd.$row["command_command_id_arg"];
+		}
+		else if($row["command_command_id"] && !$row["command_command_id_arg"])	{
+			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			$row2 =& $DBRESULT2->fetchRow();
+			// Uncomment if we want to take the template arg by default if it's not define in the current service 
+			//$arg = getMyCheckCmdArg($service_id);
+			return $row2["command_name"].$arg;
+		}
+		else if($row["command_command_id"] && $row["command_command_id_arg"])	{
+			$row["command_command_id_arg"] = str_replace('#BR#', "\\n", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#T#', "\\t", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#R#', "\\r", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#S#', "/", $row["command_command_id_arg"]);
+			$row["command_command_id_arg"] = str_replace('#BS#', "\\", $row["command_command_id_arg"]);
+			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			$row2 =& $DBRESULT2->fetchRow();
+			return $row2["command_name"].$row["command_command_id_arg"];
+		}
+		else
+			return NULL;
+	}
+	
 	#
 	## Upload conf needs
 	#

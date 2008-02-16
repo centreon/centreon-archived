@@ -142,7 +142,7 @@ For information : contact@oreon-project.org
 			if ($service["service_is_volatile"] != 2) $strTMP .= print_line("is_volatile", $service["service_is_volatile"] == 1 ? "1": "0");
 			# Check Command
 			$command = NULL;
-			$command = getMyCheckCmdGraph($service["service_id"]);
+			$command = getMyCheckCmdParam($service["service_id"]);
 			if ($command)
 				$strTMP .= print_line("check_command", $command);
 			#
