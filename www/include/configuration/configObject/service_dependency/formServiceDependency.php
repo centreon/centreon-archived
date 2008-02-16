@@ -155,6 +155,8 @@ For information : contact@oreon-project.org
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('dep_name', $lang['ErrName'], 'required');
 	$form->addRule('dep_description', $lang['ErrRequired'], 'required');
+	$form->addRule('dep_hSvPar', $lang['ErrRequired'], 'required');
+	$form->addRule('dep_hSvChi', $lang['ErrRequired'], 'required');
 	$form->registerRule('cycleH', 'callback', 'testCycleH');
 	$form->addRule('dep_hSvChi', $lang['ErrCycleDef'], 'cycleH');
 	$form->registerRule('exist', 'callback', 'testServiceDependencyExistence');

@@ -148,7 +148,7 @@ For information : contact@oreon-project.org
 	$form->addRule('dep_name', $lang['ErrName'], 'required');
 	$form->addRule('dep_description', $lang['ErrRequired'], 'required');
 	$form->addRule('dep_sgParents', $lang['ErrRequired'], 'required');
-	$form->addRule('dep_shgChilds', $lang['ErrRequired'], 'required');
+	$form->addRule('dep_sgChilds', $lang['ErrRequired'], 'required');
 	if ($oreon->user->get_version() == 1)
 		$form->addRule('notification_failure_criteria', $lang['ErrRequired'], 'required');
 	$form->registerRule('cycle', 'callback', 'testServiceGroupDependencyCycle');
