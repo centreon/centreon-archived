@@ -53,14 +53,13 @@ cat <<EOF
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
-#                     Make sure you have installed and configured             #
-#                                   sudo - sed                                #
-#                          php - apache - rrdtool - mysql                     #
+#                   Make sure you have installed and configured               #
+#                   sudo - sed - php - apache - rrdtool - mysql               #
 #                                                                             #
 ###############################################################################
 EOF
 
-#Load install script functions
+# Load install script functions
 if [ -z "$BASH" ]; then # Test if BASH is in path
     if ! which bash > /dev/null 2>&1; then
 	echo "Install bash and try `bash install.sh`."
@@ -77,16 +76,20 @@ fi
 ## Make sure you know what you do if you modify it !!
 
 SRC_OREON="oreon_src"
-
 PLUGINS_DIR="Plugins/"
 CENTREON_CONF="/etc/centreon-install.conf"
 PWD=`pwd`
-
 LOG_FILE="$PWD/centreon-install.log"
 
-date > $LOG_FILE
+RM=`which rm`
+CP=`which cp`
+MV=`which mv`
+CHMOD=`which chmod`
+CHOWN=`which chown`
+ECHO=`which echo`
+MORE=`which more`
 
-TRUETYPE="/usr/X11R6/lib/X11/fonts/truetype"
+date > $LOG_FILE
 
 test_yes_or_not(){
     if [ $1 != "y" ] && [ $1 != "n" ] && [ ! -z $1 ] ;then
@@ -100,6 +103,8 @@ test_yes_or_not(){
 	eval $1=$res
     fi
 }
+
+tput clear
 
 more ./LICENSE
 
@@ -124,6 +129,8 @@ if [ $temp = "n" ];then
     exit
 fi
 
+# License accepted ! let's go to install centreon
+
 test_answer(){
     #$1 variable to fill
     #$2 text typed by user
@@ -134,9 +141,9 @@ test_answer(){
     fi
 }
 
-##
-## CONFIGURATION
-##
+
+# CONFIGURATION
+
 if test -a $CENTREON_CONF ; then
     echo ""
     echo "------------------------------------------------------------------------"
@@ -291,171 +298,117 @@ fi
 
 if [ -z $NAGIOS_BIN ];then
     #nagios plugins directory for oreon
-        NAGIOS_BIN="$INSTALL_DIR_NAGIOS/bin"
-	    echo "Where is your nagios bin directory?"
-	        echo -n "default to [$NAGIOS_BIN]:"
-		    read temp
-		        if [ -z "$temp" ]; then
-			    temp="$NAGIOS_BIN"
-			        fi
-			    while [ ! -x "${temp}/nagios" ]; do
-				echo_passed "Cannot find ${temp}/nagios" "CRITICAL"
-				echo "Where is your nagios bin directory?"
-				echo -n "default to [$NAGIOS_BIN]:"
-				read temp
-				if [ -z "$temp" ]; then
-				        temp="$NAGIOS_BIN"
-					fi
-				    done
-			        NAGIOS_BIN="$temp"
-				    echo_success "Path $NAGIOS_BIN" "OK"
-				        echo ""
-					fi
-
-if [ -z $NAGIOS_IMG ];then
-          #nagios plugins directory for oreon
-        NAGIOS_IMG="$INSTALL_DIR_NAGIOS/share/images"
-	    echo "Where is your nagios image directory ?"
-	        echo -n "default to [$NAGIOS_IMG]:"
-		    read temp
-		        if [ -z "$temp" ]; then
-			    temp="$NAGIOS_IMG"
-			        fi
-			    while [ ! -d "$temp" ]; do
-				echo_passed "$temp is not a directory." "CRITICAL"
-				echo "Where is your nagios image directory ?"
-				echo -n "default to [$NAGIOS_IMG]:"
-				read temp
-				if [ -z "$temp" ]; then
-				        temp="$NAGIOS_IMG"
-					fi
-				    done
-			        NAGIOS_IMG="$temp"
-				    echo_success "Path $NAGIOS_IMG" "OK"
-				        echo ""
-					fi
-
-if [ -z $INSTALL_DIR_OREON ];then
-    #setup directory for oreon
-    INSTALL_DIR_OREON="/usr/local/centreon"
-    echo "Where do I install centreon ?"
-    echo -n "default to [$INSTALL_DIR_OREON]:"
+    NAGIOS_BIN="$INSTALL_DIR_NAGIOS/bin"
+    echo "Where is your nagios bin directory?"
+    echo -n "default to [$NAGIOS_BIN]:"
     read temp
     if [ -z "$temp" ]; then
-	    temp="$INSTALL_DIR_OREON"
-	    fi
-    while [ ! -d "$temp" ] ; do
-	    create_oreon="null"
-	        valid_directory=`echo $temp | grep "^/"`
-		    if [ "$valid_directory" != "" ]; then
-			echo_passed "Directory $temp does not exits." "CRITICAL"
-			while [ "$create_oreon" != "y" ] && [ "$create_oreon" != "Y" ] && [ "$create_oreon" != "n" ] && [ "$create_oreon" != "N" ]; do
-			        echo ""
-				    echo -n "Do you want me to create this directory [$temp]?[Y/n]"
-				        read create_oreon
-					    if [ -z "$create_oreon" ]; then
-						create_oreon="y"
-						    fi
-					    done
-			    else
-			echo_passed "$temp is not a valid directory." "CRITICAL"
-			    fi
-		        if [ $create_oreon = "y" ] || [ $create_oreon = "Y" ]; then
-			    mkdir -p $temp
-			    if [ $? = 1 ]; then
-				    echo_passed "Could not create directory" "CRITICAL"
-				        echo ""
-					    echo "Where do I install Centreon ?"
-					        echo -n "default to [$INSTALL_OREON_DIR]:"
-						    read temp
-						        if [ -z "$temp" ]; then
-							    temp="$INSTALL_DIR_OREON"
-							        fi
-							    fi
-			        else
-			    echo "Where do I install Centreon ?"
-			    echo -n "default to [$INSTALL_DIR_OREON]:"
-			    read temp
-			    if [ -z "$temp" ]; then
-				    temp="$INSTALL_DIR_OREON"
-				    fi
-			        fi
-			done
-    INSTALL_DIR_OREON="$temp"
-    echo_success "Path $INSTALL_DIR_OREON" "OK"
-    echo ""
+	temp="$NAGIOS_BIN"
     fi
+    while [ ! -x "${temp}/nagios" ]; do
+	echo_passed "Cannot find ${temp}/nagios" "CRITICAL"
+	echo "Where is your nagios bin directory?"
+	echo -n "default to [$NAGIOS_BIN]:"
+	read temp
+	if [ -z "$temp" ]; then
+	    temp="$NAGIOS_BIN"
+	fi
+    done
+    NAGIOS_BIN="$temp"
+    echo_success "Path $NAGIOS_BIN" "OK"
+    echo ""
+fi
+
+if [ -z $NAGIOS_IMG ];then
+    NAGIOS_IMG="$INSTALL_DIR_NAGIOS/share/images"
+    echo "Where is your nagios image directory ?"
+    echo -n "default to [$NAGIOS_IMG]:"
+    read temp
+    if [ -z "$temp" ]; then
+	temp="$NAGIOS_IMG"
+    fi
+    while [ ! -d "$temp" ]; do
+	echo_passed "$temp is not a directory." "CRITICAL"
+	echo "Where is your nagios image directory ?"
+	echo -n "default to [$NAGIOS_IMG]:"
+	read temp
+	if [ -z "$temp" ]; then
+	    temp="$NAGIOS_IMG"
+	fi
+    done
+    NAGIOS_IMG="$temp"
+    echo_success "Path $NAGIOS_IMG" "OK"
+    echo ""
+fi
+
 
 if [ -z $SUDO_FILE ];then
-    #Configuration file for sudo
-        SUDO_FILE="/etc/sudoers"
-	    echo "Where is sudo configuration file?"
-	        echo -n "default to [$SUDO_FILE]:"
-		    read temp
-		        if [ -z "$temp" ]; then
-			    temp="$SUDO_FILE"
-			        fi
-			    while [ ! -f "$temp" ]; do
-				echo_passed "$temp if not a file." "CRITICAL"
-				echo "Where is sudo configuration file?"
-				echo -n "default to [$SUDO_FILE]:"
-				read temp
-				if [ -z "$temp" ]; then
-				        temp="$SUDO_FILE"
-					fi
-				    done
-			        SUDO_FILE="$temp"
-				    echo_success "File $SUDO_FILE" "OK"
-				        echo ""
-					fi
-#"/usr/share/pear"
+    SUDO_FILE="/etc/sudoers"
+    echo "Where is sudo configuration file?"
+    echo -n "default to [$SUDO_FILE]:"
+    read temp
+    if [ -z "$temp" ]; then
+	temp="$SUDO_FILE"
+    fi
+    while [ ! -f "$temp" ]; do
+	echo_passed "$temp if not a file." "CRITICAL"
+	echo "Where is sudo configuration file?"
+	echo -n "default to [$SUDO_FILE]:"
+	read temp
+	if [ -z "$temp" ]; then
+	    temp="$SUDO_FILE"
+	fi
+    done
+    SUDO_FILE="$temp"
+    echo_success "File $SUDO_FILE" "OK"
+    echo ""
+fi
+
 if [ -z $RRD_PERL ];then
-    #RRDTOOL perl module directory
-        RRD_PERL="/usr/local/rrdtool/lib/perl"
-	    echo "Where is installed RRD perl modules [RRDs.pm] ?"
-	        echo "Just put directory, not full path."
-		    echo -n "default to [$RRD_PERL]:"
-		        read temp
-			    if [ -z "$temp" ]; then
-                temp="$RRD_PERL"
-            fi
-			        while [ ! -f "$temp/RRDs.pm" ]; do
-                echo_passed "Cannot find ${temp}/RRDs.pm." "CRITICAL"
-                echo "Where is installed RRD perl modules [RRDs.pm] ?"
-		echo "Just put directory, not full path."
-		echo -n "default to [$RRD_PERL]:"
-		read temp
-                if [ -z "$temp" ]; then
-                    temp="$RRD_PERL"
-                fi
-            done
-				    RRD_PERL="$temp"
-            echo_success "File $RRD_PERL" "OK"
-	        echo ""
-		fi
+    RRD_PERL="/usr/local/rrdtool/lib/perl"
+    echo "Where is installed RRD perl modules [RRDs.pm] ?"
+    echo "Just put directory, not full path."
+    echo -n "default to [$RRD_PERL]:"
+    read temp
+    if [ -z "$temp" ]; then
+	temp="$RRD_PERL"
+    fi
+    while [ ! -f "$temp/RRDs.pm" ]; do
+	echo_passed "Cannot find ${temp}/RRDs.pm." "CRITICAL"
+	echo "Where is installed RRD perl modules [RRDs.pm] ?"
+	echo "Just put directory, not full path."
+	echo -n "default to [$RRD_PERL]:"
+	read temp
+	if [ -z "$temp" ]; then
+	    temp="$RRD_PERL"
+	fi
+    done
+    RRD_PERL="$temp"
+    echo_success "File $RRD_PERL" "OK"
+    echo ""
+fi
 
 if [ -z $BIN_RRDTOOL ];then
-    #RRDTOOL binary path
-        BIN_RRDTOOL="/usr/bin/rrdtool"
-	    echo "Where is rrdtool binary ?"
-	    echo -n "default to [$BIN_RRDTOOL]:"
-	    read temp
-	    if [ -z "$temp" ]; then
-		    temp="$BIN_RRDTOOL"
-		    fi
-	    while [ ! -x "$temp" ]; do
-		    echo_passed "$temp is not found or is not runnable" "CRITICAL"
-		        echo "Where is rrdtool binary ?"
-			    echo -n "default to [$BIN_RRDTOOL]:"
-			        read temp
-				    if [ -z "$temp" ]; then
-					temp="$BIN_RRDTOOL"
-					    fi
-				    done
-	    BIN_RRDTOOL="$temp"
-	    echo_success "$BIN_RRDTOOL" "OK"
-	    echo ""
-	    fi
+    BIN_RRDTOOL="/usr/bin/rrdtool"
+    echo "Where is rrdtool binary ?"
+    echo -n "default to [$BIN_RRDTOOL]:"
+    read temp
+    if [ -z "$temp" ]; then
+	temp="$BIN_RRDTOOL"
+    fi
+    while [ ! -x "$temp" ]; do
+	echo_passed "$temp is not found or is not runnable" "CRITICAL"
+	echo "Where is rrdtool binary ?"
+	echo -n "default to [$BIN_RRDTOOL]:"
+	read temp
+	if [ -z "$temp" ]; then
+	    temp="$BIN_RRDTOOL"
+	fi
+    done
+    BIN_RRDTOOL="$temp"
+    echo_success "$BIN_RRDTOOL" "OK"
+    echo ""
+fi
 
 
 if [ -z $BIN_MAIL ];then
@@ -465,21 +418,72 @@ if [ -z $BIN_MAIL ];then
     echo -n "default to [$BIN_MAIL]:"
     read temp
     if [ -z "$temp" ]; then
-	    temp="$BIN_MAIL"
-	    fi
+	temp="$BIN_MAIL"
+    fi
     while [ ! -x "$temp" ]; do
-                    echo_passed "$temp not found or not runnable" "CRITICAL"
-		        echo "Where is mail binary ?"
-			    echo -n " default to [$BIN_MAIL]:"
-			        read temp
-				    if [ -z "$temp" ]; then
-					temp="$BIN_MAIL"
-					    fi
-				    done
+	echo_passed "$temp not found or not runnable" "CRITICAL"
+	echo "Where is mail binary ?"
+	echo -n " default to [$BIN_MAIL]:"
+	read temp
+	if [ -z "$temp" ]; then
+	    temp="$BIN_MAIL"
+	fi
+    done
     BIN_MAIL="$temp"
     echo_success "$BIN_MAIL" "OK"
     echo ""
+fi
+
+if [ -z $INSTALL_DIR_OREON ];then
+    INSTALL_DIR_OREON="/usr/local/centreon"
+    echo "Where do I install centreon ?"
+    echo -n "default to [$INSTALL_DIR_OREON]:"
+    read temp
+    if [ -z "$temp" ]; then
+	temp="$INSTALL_DIR_OREON"
     fi
+    while [ ! -d "$temp" ] ; do
+	create_oreon="null"
+	valid_directory=`echo $temp | grep "^/"`
+	if [ "$valid_directory" != "" ]; then
+	    echo_passed "Directory $temp does not exits." "CRITICAL"
+	    while [ "$create_oreon" != "y" ] && [ "$create_oreon" != "Y" ] && [ "$create_oreon" != "n" ] && [ "$create_oreon" != "N" ]; do
+		echo ""
+		echo -n "Do you want me to create this directory [$temp]?[Y/n]"
+		read create_oreon
+		if [ -z "$create_oreon" ]; then
+		    create_oreon="y"
+		fi
+	    done
+	else
+	    echo_passed "$temp is not a valid directory." "CRITICAL"
+	fi
+	if [ $create_oreon = "y" ] || [ $create_oreon = "Y" ]; then
+	    mkdir -p $temp
+	    if [ $? = 1 ]; then
+		echo_passed "Could not create directory" "CRITICAL"
+		echo ""
+		echo "Where do I install Centreon ?"
+		echo -n "default to [$INSTALL_OREON_DIR]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$INSTALL_DIR_OREON"
+		fi
+	    fi
+	else
+	    echo "Where do I install Centreon ?"
+	    echo -n "default to [$INSTALL_DIR_OREON]:"
+	    read temp
+	    if [ -z "$temp" ]; then
+		temp="$INSTALL_DIR_OREON"
+	    fi
+	fi
+    done
+    INSTALL_DIR_OREON="$temp"
+    echo_success "Path $INSTALL_DIR_OREON" "OK"
+    echo ""
+fi
+
 
 if [ -z $PEAR_PATH ];then
         PEAR_PATH="/usr/share/pear"
@@ -959,29 +963,29 @@ copyInTempFile
 replaceMacro
 
 # check for httpd directory
-check_httpd_directory
+#check_httpd_directory
 
 ## Config Apache
 
-check_group_apache
-check_user_apache
+#check_group_apache
+#check_user_apache
 
 ## Config Nagios
 
-check_group_nagios
-check_user_nagios
+#check_group_nagios
+#check_user_nagios
 
 # installation script
 
 #check_group_nagiocmd
 
-configure_apache
-confirm_oreon
-oreon_post_install
+#configure_apache
+#confirm_oreon
+#oreon_post_install
 
-configureApache
-configureSUDO
-configureCron
+#configureApache
+#configureSUDO
+#configureCron
 
 
 

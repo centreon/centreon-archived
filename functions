@@ -376,7 +376,7 @@ function install_oreon_plugins()
 	
 
     if [ -n "$PLUGINS_DIR" ]; then
-
+	echo ""
     else
 		for fichier in src/*
 		  do
