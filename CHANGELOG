@@ -1,3 +1,8 @@
+## Centreon 2.0
+=> Bugfix : #bug 461 : Argument defined in template and service
+=> Bugfix : Add tests when submit the form (fields mandatory not testing)
+=> Bugfix : #bug 458 : Function return_image_list doesn't work for sub dirs
+
 ## Centreon 1.4.2
 => Bugfix : ID Card switching server/network doesn't work
 => Bugfix : Host massive change doesn't need to select the host template model to create the service linked (n levels)
