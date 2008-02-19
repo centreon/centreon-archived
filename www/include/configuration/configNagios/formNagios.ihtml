@@ -18,7 +18,7 @@
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_name.label}</td><td class="FormRowValue">{$form.nagios_name.html}</td></tr>
@@ -57,7 +57,7 @@
 	</table>
 	</div>	
 	<div id='tab2' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Host Check Options</td></tr>	
@@ -109,7 +109,7 @@
 	</table>
 	</div>	
 	<div id='tab3' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Logging options</td></tr>	
@@ -153,7 +153,7 @@
 	</table>
 	</div>	
 	<div id='tab4' class='tab'>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;NDO</td></tr>
@@ -179,7 +179,7 @@
 	</table>
 	</div>	
 	<div id='tab5' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;Time Unit</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.interval_length.label}</td><td class="FormRowValue">{$form.interval_length.html}&nbsp;{$lang.time_sec}</td></tr>
@@ -213,7 +213,7 @@
 	</table>
 	</div>	
 	<div id='tab6' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;&nbsp;</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_user.label}</td><td class="FormRowValue">{$form.nagios_user.html}</td></tr>

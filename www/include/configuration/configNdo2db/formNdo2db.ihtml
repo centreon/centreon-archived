@@ -15,7 +15,7 @@
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.ndo2db_infos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.description.label}</td><td class="FormRowValue">{$form.description.html}</td></tr>
@@ -27,7 +27,7 @@
 	</table>
 	</div>	
 	<div id='tab2' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.ndo2db_infos2}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.db_type.label}</td><td class="FormRowValue">{$form.db_type.html}</td></tr>
@@ -40,7 +40,7 @@
 	</table>
 	</div>	
 	<div id='tab3' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.ndo2db_infos3}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.max_timedevents_age.label}</td><td class="FormRowValue">{$form.max_timedevents_age.html}&nbsp;{$lang.time_sec}</td></tr>

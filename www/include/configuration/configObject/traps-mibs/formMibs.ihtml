@@ -9,7 +9,7 @@
 	{/if}
 	</div>
 	<div>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_add.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.mnftr.label}</td><td class="FormRowValue">{$form.mnftr.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
@@ -22,7 +22,7 @@
 	{if $msg}
 		<br><br><br><br>
 		<div>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="FormHeader" colspan="2">
 	 			<img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}

@@ -1,4 +1,4 @@
-<table id="ListTable">
+<table class="ListTable">
 	<tr class="ListHeader">
 	<td class="ListColCenter">
 		<img src='./img/icones/16x16/workstation2.gif'>&nbsp;{$meta.meta} -	{$meta.name}&nbsp;({$meta.calc_type})
@@ -20,7 +20,7 @@
 			<input name="p" value="{$p}" type="hidden">
 		</tr>
 	</table>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker">
 				<input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/>			

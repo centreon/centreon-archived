@@ -9,7 +9,7 @@
 	{/if}
 	</div>
 	<div id='tab1' class='tab'>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/factory.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 		<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>

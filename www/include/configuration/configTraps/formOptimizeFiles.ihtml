@@ -1,6 +1,6 @@
 {$form.javascript}
 <form {$form.attributes}>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>	 	
@@ -22,7 +22,7 @@
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
 	<br><br><br><br>
 	{if $msg}
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="FormHeader" colspan="2">
 	 			<img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}

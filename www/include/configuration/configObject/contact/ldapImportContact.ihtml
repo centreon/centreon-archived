@@ -2,7 +2,7 @@
 {$javascript}
 {$form.javascript}
 <form {$form.attributes}>
- 	<table id="ListTable">
+ 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1_view.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
 		<tr class="list_one"><td class="FormRowField" >{$form.ldap_search_filter.label}</td><td class="FormRowValue">{$form.ldap_search_filter.html}</td></tr>

@@ -1,6 +1,6 @@
 {$form.javascript}
 <form {$form.attributes}>
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>	 	
 		<tr class="list_one"><td class="FormRowField">{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
@@ -24,7 +24,7 @@
 	{foreach from=$host_list key=key item=item}
 	{assign var='cpt' value=$cpt+1}
 	<div id='tab{$cpt}' class='tab'>
-	 	<table id="ListTable">
+	 	<table class="ListTable">
 		 	<tr class="ListHeader">
 		 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
 		 	</tr>

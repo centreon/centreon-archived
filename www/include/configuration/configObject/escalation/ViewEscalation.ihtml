@@ -3,7 +3,7 @@
 <form {$form.attributes}>
 
 <div>
-	 <table id="ListTable">
+	 <table class="ListTable">
 		<tr class="ListHeader">
 			<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title}</td>
 		</tr>
