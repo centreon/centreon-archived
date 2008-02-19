@@ -13,7 +13,7 @@
 			   include('./include/common/pagination.php');
 			{/php}
 		</tr>
-	</table>	<table id="ListTable">
+	</table>	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>

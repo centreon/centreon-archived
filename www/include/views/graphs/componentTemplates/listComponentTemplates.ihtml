@@ -13,7 +13,7 @@
 			{/php}
 		</tr>
 	</table>	
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td></td>

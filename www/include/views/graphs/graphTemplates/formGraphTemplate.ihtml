@@ -3,7 +3,7 @@
 {$form.javascript}
 <form {$form.attributes}>
 
- <table id="ListTable">
+ <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/layout_vertical.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
 
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>

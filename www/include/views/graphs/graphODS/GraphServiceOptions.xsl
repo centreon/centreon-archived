@@ -8,7 +8,7 @@
 
 	    <div id="div1" class="cachediv" style="padding-bottom:10px;">
 		<form name="formu">
-    	    <table id="ListTable">
+    	    <table class="ListTable">
                 <tr class="ListHeader">
                 	<td class="FormHeader" ><xsl:value-of select="//lang/optionAdvanced"/></td>
                 </tr>
@@ -50,7 +50,7 @@
 <br/>
 
 	<div>
-		<table id="ListTable">
+		<table class="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Host : </td>
 	        </tr>
@@ -100,7 +100,7 @@
 
 <xsl:if test="svc">
 	<div>
-		<table id="ListTable">
+		<table class="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
 	        </tr>
@@ -148,7 +148,7 @@
 
 <xsl:if test="svc_zoom">
 	<div>
-		<table id="ListTable">
+		<table class="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
 	        </tr>
