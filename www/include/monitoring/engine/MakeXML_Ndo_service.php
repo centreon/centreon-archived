@@ -416,8 +416,11 @@ For information : contact@oreon-project.org
 			$active = 1;
 			$last_check = " ";
 			$duration = " ";
-			if($ndo["last_state_change"] > 0)
+
+			if($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
 				$duration = Duration::toString(time() - $ndo["last_state_change"]);
+			else if($ndo["last_state_change"] > 0)
+				$duration = "~ check date";
 
 			if($class == "list_one")
 				$class = "list_two";
