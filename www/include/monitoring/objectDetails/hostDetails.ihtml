@@ -1,5 +1,5 @@
 <div>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderLeft" colspan="3">
 				<img src='./img/icones/16x16/server_network.gif' 
@@ -25,7 +25,7 @@
 	<table width='100%'>
 		<tr>
 			<td style='vertical-align:top;'>
-				<table id="ListTable">
+				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter" colspan="2">{$lang.m_mon_host_info}</td>
 					</tr>
@@ -103,7 +103,7 @@
 					</tr>
 				</table>
 				<br>
-				<table id="ListTable">
+				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter" colspan="2">{$lang.options}</td>
 					</tr>
@@ -141,7 +141,7 @@
 				</table>
 				{if $lcaTopo.6 || $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
 				<br>
-				<table id="ListTable">
+				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
 					</tr>
@@ -168,7 +168,7 @@
 				</table>
 				{/if}
 				<br>
-				<table id="ListTable">
+				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
 					</tr>
@@ -187,7 +187,7 @@
 			</td>
 			<td style='width:20px;'>&nbsp;</td>
 			<td style='vertical-align:top;'>
-				<table id="ListTable">
+				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.hosts_command}</td>
 					</tr>
@@ -237,7 +237,7 @@
 					{/if}
 				</table>
 				<br>
-				<table id="ListTable">
+				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_host_statistics}</td>
 					</tr>
@@ -250,13 +250,13 @@
 	</table>
 	<br>
 	{if count($tab_comments_host)}
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter" colspan="3">Comments For this host</td>
 		</tr>
 	</table>
 	<br>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter"><input type="checkbox" disabled checked></td>
 			<td class="ListColHeaderCenter">{$lang.cmt_host_name}</td>

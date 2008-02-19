@@ -2,7 +2,7 @@
 {$colorJS}
 <form {$form.attributes}>
 <div id="tab1" class="tab">
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/download.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.patch_type_stable.label}</td><td class="FormRowValue">{$form.patch_type_stable.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.patch_type_secu.label}</td><td class="FormRowValue">{$form.patch_type_secu.html}</td></tr>

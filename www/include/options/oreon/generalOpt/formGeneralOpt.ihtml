@@ -14,7 +14,7 @@
 	</ul>
 </div>
 <div id="tab1" class="tab">
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
@@ -32,7 +32,7 @@
 	 </table>
 </div>
 <div id="tab2" class="tab">
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.nagios}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_path.label}</td><td class="FormRowValue">{$form.nagios_path.html}</td></tr>
@@ -45,7 +45,7 @@
 	</table>
 </div>
 <div id="tab3" class="tab">
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_two"><td class="FormRowField">{$form.color_up.label}</td><td class="FormRowValue">
         {$form.color_up.html}&nbsp;&nbsp;{$form.color_up_color.html}&nbsp;&nbsp;{$form.color_up_modify.html}
@@ -81,7 +81,7 @@
 	</table>
 </div>
 <div id="tab4" class="tab">
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.snmp}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.snmp_community.label}</td><td class="FormRowValue">{$form.snmp_community.html}</td></tr>
@@ -92,7 +92,7 @@
 	</table>
 </div>
 <div id="tab5" class="tab">
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/layout_vertical.gif'>&nbsp;&nbsp;{$form.header.various}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.rrdtool_path_bin.label}</td><td class="FormRowValue">{$form.rrdtool_path_bin.html}</td></tr>
@@ -101,7 +101,7 @@
 	</table>
 </div>
 <div id="tab6" class="tab">
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.ldap}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ldap_auth_enable.label}</td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
@@ -119,7 +119,7 @@
 	</table>
 </div>
 <div id="tab7" class="tab">
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lifebelt.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.debug}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.debug_path.label}</td><td class="FormRowValue">{$form.debug_path.html}</td></tr>

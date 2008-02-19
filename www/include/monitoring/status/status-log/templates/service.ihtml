@@ -39,7 +39,7 @@
 	</tr>
 </table>
 <div id="forajax">
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=host_name&order=sort_asc&search={$search}&search_type_host={$search_type_host}&search_type_service={$search_type_service}'>{$lang.m_mon_hosts}</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_types=host_name&order={$tab_order.$order}&search={$search}&search_type_host={$search_type_host}&search_type_service={$search_type_service}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>

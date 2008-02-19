@@ -2,7 +2,7 @@
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 <div>
 	{foreach key=hg_name item=hstg from=$hostgroup}
-	<table id="ListTable">	
+	<table class="ListTable">	
 		<tr class='list_lvl_1'>
 			<td class='ListColHeaderLeft' colspan="4">
 				{$lang.m_mon_hostgroup}{$hg_name} ({$hostgroup.$hg_name.alias})

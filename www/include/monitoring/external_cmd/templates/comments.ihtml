@@ -1,10 +1,10 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 	<form action="" method='GET'>
 	<hidden name="p" value='{$p}'>
-	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$lang.cmt_host_comment}</td>{if !$nb_comments_host}<td align='right'><a href="{$msgh.addL}">{$msgh.addT}</a></td>{/if}</tr></table><br>
+	<table class="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$lang.cmt_host_comment}</td>{if !$nb_comments_host}<td align='right'><a href="{$msgh.addL}">{$msgh.addT}</a></td>{/if}</tr></table><br>
 	{if $nb_comments_host}
 	<br>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderCenter">{$lang.m_mon_hosts}</td>
@@ -36,11 +36,11 @@
 	{/if}
 	{$form.hidden}
 	</form>
-	<table id="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$lang.cmt_service_comment}</td>{if !$nb_comments_svc}<td align='right'><a href="{$msgs.addL}">{$msgs.addT}</a></td>{/if}</tr></table><br>
+	<table class="ListTable"><tr class='ListHeader'><td>&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$lang.cmt_service_comment}</td>{if !$nb_comments_svc}<td align='right'><a href="{$msgs.addL}">{$msgs.addT}</a></td>{/if}</tr></table><br>
 	{if $nb_comments_svc} 
 	<br>
 	<form action="" method='GET'>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderCenter">{$lang.m_mon_hosts}</td>

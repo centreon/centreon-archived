@@ -2,7 +2,7 @@
 <table>
 	<tr>
 		<td>
-			<table id="ListTable">
+			<table class="ListTable">
 				<tr>
 					<td>{php}
 						

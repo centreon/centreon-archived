@@ -1,7 +1,7 @@
 {$form.javascript}
 {$colorJS}
 <form {$form.attributes}>
-<table id="ListTable">
+<table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$form.header.snmp}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;snmpd</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.snmp_community.label}</td><td class="FormRowValue">{$form.snmp_community.html}</td></tr>

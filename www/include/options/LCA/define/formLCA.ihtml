@@ -16,7 +16,7 @@
 {/if}
 </div>
 <div id='tab1' class="tab">
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
@@ -36,7 +36,7 @@
 	</table>
 </div>
 <div id='tab2' class="tab">
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.rs}</td></tr>
@@ -47,7 +47,7 @@
 	</table>
 </div>
 <div id='tab3' class="tab">
-	 <table id="ListTable">
+	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" ><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" ><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.pages}</td></tr>
 

@@ -4,7 +4,7 @@
 
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order=sort_asc&o={$o}'>{ $mon_host }</a>&nbsp;{if $sort_type == "host_name"}<a href='./oreon.php?p={$p}&num={$num}&limit={$limit}&sort_typeh=host_name&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>
 	 	<td class="ListColHeaderCenter" colspan="2">Infos</td>

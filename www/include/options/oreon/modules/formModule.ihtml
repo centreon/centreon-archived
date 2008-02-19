@@ -1,4 +1,4 @@
- <table id="ListTable">
+ <table class="ListTable">
 	<tr class="ListHeader">
 		<td class="FormHeader" colspan="2">
 			<img src='./img/icones/16x16/star_blue.gif'>&nbsp;&nbsp;{$headerMenu_title}
@@ -66,7 +66,7 @@
  {section name=elem loop=$elemArr}
  	{$form.javascript}
  	<form {$form.attributes}>
-	  <table id="ListTable">
+	  <table class="ListTable">
 		<tr class="ListHeader">
 			<td class="FormHeader" colspan="2">
 				<img src='./img/icones/16x16/star_green.gif'>&nbsp;&nbsp;{$headerMenu_title2}

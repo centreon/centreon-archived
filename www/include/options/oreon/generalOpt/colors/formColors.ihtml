@@ -2,7 +2,7 @@
 
 {$colorJS}
 <form {$form.attributes}>
-<table id="ListTable">
+<table class="ListTable">
 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/colors.gif'>&nbsp;&nbsp;{$lang.genOpt_colors_properties}</td></tr>
  	<tr class="list_two"><td class="FormRowField">{$form.color_up.label}</td><td class="FormRowValue">
     {$form.color_up.html}&nbsp;&nbsp;{$form.color_up_color.html}&nbsp;&nbsp;{$form.color_up_modify.html}

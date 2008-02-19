@@ -1,7 +1,7 @@
 {$form.javascript}
 {$colorJS}
 <form {$form.attributes}>
-<table id="ListTable">
+<table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/column-chart.gif'>&nbsp;&nbsp;{$lang.genOpt_rrdtool_properties}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$lang.genOpt_rrdtool_configurations}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_path_bin.label}</td><td class="FormRowValue">{$form.rrdtool_path_bin.html}</td></tr>

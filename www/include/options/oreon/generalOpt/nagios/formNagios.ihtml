@@ -1,7 +1,7 @@
 {$form.javascript}
 {$colorJS}
 <form {$form.attributes}>
-	<table id="ListTable">
+	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$lang.genOpt_nagios_properties}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$lang.genOpt_nagios_version}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_version.label}</td><td class="FormRowValue">{$form.nagios_version.html}</td></tr>

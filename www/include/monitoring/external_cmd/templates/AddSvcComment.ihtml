@@ -1,7 +1,7 @@
 {$form.javascript}
 <div>
 	<form {$form.attributes}>
-		<table id="ListTable">
+		<table class="ListTable">
 			<tr class="ListHeader">
 				<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/messages.gif'>&nbsp;{$form.header.title}</td>
 			<tr>

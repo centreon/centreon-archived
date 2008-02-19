@@ -3,7 +3,7 @@
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="meta" type="hidden">
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td class="ListColHeaderCenter"><a href='./oreon.php?p={$p}&o=meta&sort_types=service_description&order=sort_asc'>{$lang.m_mon_services}</a>&nbsp;{if $sort_type == "service_description"}<a href='./oreon.php?p={$p}&o=meta&sort_types=service_description&order={$tab_order.$order}'><img src='./img/icones/7x7/{$order}.gif'></a>{/if}</td>

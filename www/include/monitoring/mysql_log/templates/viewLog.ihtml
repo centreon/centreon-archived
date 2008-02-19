@@ -1,7 +1,7 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderLeft"><img src='./img/icones/16x16/text_view.gif'>&nbsp;{$lang.m_log_select_errors}</td>
 	</tr>
@@ -23,7 +23,7 @@
 		{/php}
 	</tr>
 </table>
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderCenter">{$lang.m_log_day}</td>
 		<td class="ListColHeaderCenter">{$lang.m_log_time}</td>

@@ -2,7 +2,7 @@
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 <div>
 	{foreach item=hg_list from=$h_data key=key_h}
-	<table id="ListTable">	
+	<table class="ListTable">	
 		<tr class='list_lvl_1'>
 			<td class='ListColHeaderLeft' colspan="4">
 				{$lang.m_mon_servicegroup} : {$key_h} ({$servicegroup.$key_h})

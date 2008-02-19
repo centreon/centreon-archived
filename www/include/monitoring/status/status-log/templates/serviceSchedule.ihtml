@@ -3,7 +3,7 @@
 <form method="GET" action="">
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td class="ListColHeaderCenter">{$lang.m_mon_hosts}</td>

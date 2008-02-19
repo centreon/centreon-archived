@@ -1,7 +1,7 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <SCRIPT LANGUAGE='JavaScript'> setTimeout("javascript:history.go(0)","{$refresh}000")</SCRIPT>
 <div>
-	<table id="ListTable">	
+	<table class="ListTable">	
 		<tr class='ListHeader'>
 			<td>{$lang.m_mon_hostgroup}</td>
 			<td>{$lang.m_mon_host_stt_ttl}</td>

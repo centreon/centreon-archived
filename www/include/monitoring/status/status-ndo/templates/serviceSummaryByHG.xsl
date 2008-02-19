@@ -13,7 +13,7 @@
 
 	<xsl:for-each select="//hg">
 
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='list_lvl_1'>
 
 			<xsl:if test="//i/s = 1">

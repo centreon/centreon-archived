@@ -1,4 +1,4 @@
-<table id="ListTable">
+<table class="ListTable">
 	<tr class="ListHeader">
 		<td class="ListColHeaderCenter">{$headerMenu_name}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_rname}</td>

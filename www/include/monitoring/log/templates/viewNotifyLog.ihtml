@@ -17,7 +17,7 @@
 	</ul>
 </div>
 <div id='tab1' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker">&nbsp;</td>
 			<td class="ListColHeaderCenter">Event</td>
@@ -43,7 +43,7 @@
 	</table>
 </div>
 <div id='tab2' class='tab'>
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker">&nbsp;</td>
 			<td class="ListColHeaderCenter">Event</td>

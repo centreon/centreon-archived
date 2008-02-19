@@ -12,7 +12,7 @@
 {foreach from=$host_list key=key item=item}
 {assign var='cpt' value=$cpt+1}
 <div id='tab{$cpt}' class='tab'>
- 	<table id="ListTable">
+ 	<table class="ListTable">
 	 	<tr class="ListHeader">
 	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
 	 	</tr>

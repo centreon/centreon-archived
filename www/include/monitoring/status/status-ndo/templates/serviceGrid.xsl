@@ -5,7 +5,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 <xsl:template match="/">
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"    width="160"></td>
 
