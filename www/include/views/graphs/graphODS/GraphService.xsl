@@ -8,7 +8,7 @@
 
 <xsl:if test="host">
 	<div>
-		<table id="ListTable">
+		<table class="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Host : <xsl:value-of select="//name"/></td>
 	        </tr>
@@ -78,7 +78,7 @@
 
 <xsl:if test="svc">
 	<div>
-		<table id="ListTable">
+		<table class="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : <xsl:value-of select="//name"/></td>
 	        </tr>
