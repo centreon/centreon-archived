@@ -17,11 +17,15 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-body{		background-color:#fff9eb;font-family: Verdana;	font-size: 11px;
-			margin: 0; /* pour viter les marges */
-			text-align: center; /* pour corriger le bug de centrage IE */
+body	{	background-color:#FFFFFF;
+			font-family: Verdana;
+			font-size: 11px;
+			margin: 0; 
+			text-align: center; 
 }
+
 /* General */ 
+
 img 		{border:0;}
 table		{empty-cells: show; border-spacing:0px; border-collapse:collapse;}
 input		{font-family: Verdana, Arial, sans-serif;	font-size: 10px;	font-weight: normal; border-style: none; padding:2px;}
@@ -33,8 +37,6 @@ td			{padding:1px; color: #525252; font-family: Verdana, Arial, sans-serif; font
 tr			{}
 a			{text-decoration: none;}
 a:hover		{text-decoration: underline;}
-
-
  
 input[type="submit"],input[type="button"],input[type="reset"]{
     background-position:0px 0px;
@@ -48,24 +50,23 @@ input[type="submit"],input[type="button"],input[type="reset"]{
     text-align:center;
 }
 
-/*logininvit*/
 #LoginInvit{
 	margin-top: 50px;
 	margin-left: auto;
 	margin-right: auto;
 	width:200px;
-	text-align: center; /* on rtablit l'alignement normal du texte */
+	text-align: center;
 }
 
-#logintab1 {
-	width:253px;
-}
-#logintab2 {
+#logintab1 	{width:253px;}
+
+#logintab2 	{
 	width:100%;
 	border:1px solid gray;
     border-top: 2px solid gray;
     border-bottom: 2px solid gray;
 }
+
 #logintab2 td{
 	border:1px;
 	padding:5px;
@@ -77,17 +78,13 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 	text-align:center;
 }
 
-.LoginInvitVersion{
-	text-align:left;
-}
-.LoginInvitDate{
-	text-align:right;
-}
+.LoginInvitVersion	{text-align:left;}
+.LoginInvitDate		{text-align:right;}
 
-#LoginInvitcpy a,  #LoginInvitcpy{
+#LoginInvitcpy a,  #LoginInvitcpy {
 	 color:gray;
 	 text-align:center;
- }
+}
  
 .inputclassic{
     border: 1px solid gray;
@@ -96,4 +93,15 @@ input[type="submit"],input[type="button"],input[type="reset"]{
 input[type="submit"],input[type="reset"]{
     background: url("./Images/bg_input_orange.gif") ;
 }
-.msg{font-family: Verdana, Arial, sans-serif; font-size: 12px; font-weight: normal; border: 4px solid white; padding:3px; text-align: center; background-color:red; color:white; margin:5px;}
+
+.msg	{
+	font-family: Verdana, Arial, sans-serif; 
+	font-size: 12px; 
+	font-weight: normal; 
+	border: 4px solid white; 
+	padding:3px; 
+	text-align: center; 
+	background-color:red; 
+	color:white; 
+	margin:5px;
+}
