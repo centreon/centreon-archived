@@ -3,30 +3,27 @@
 <xsl:template match="root">
 
 
-<div style="display:none; ">
-	<xsl:element name="div">
-		<xsl:attribute name="id">openid</xsl:attribute>
-		<xsl:value-of select="//opid"/>
-	</xsl:element>
-	<xsl:text> </xsl:text>
-</div>
 
 
-<div style=" background-color:blue; position:relative; left:350px; top: -65px; * html left:340px;">
 
-	<div id="div2" style=" float:left;"  valign="top" align='left' >
+<div>
+
+	<div id="div2"   valign="top" align='left' >
 	
 		<form name="formu2">
-		    <table style="margin:2px;" >
-	            <tr class="ListHeader">
-	            	<td class="FormHeader" colspan="2"><xsl:value-of select="//lang/typeAlert"/></td>
-	            </tr>
-				<tr>
-					<td style="">
-						<table style="">
-			               	<tr >
+		    <table class="log_option" >
+
+	            <tr>
+
+	            	<td>
+	            		<xsl:value-of select="//lang/typeAlert"/>
+	            	</td>
+
+					<td>
+
+						<table>
+			               	<tr>
 			               		<td>
-			               					<xsl:value-of select="//lang/notification"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">notification</xsl:attribute>
@@ -36,9 +33,9 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/notification"/>
 			               		</td>
 			               		<td>
-			               					<xsl:value-of select="//lang/alert"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">alert</xsl:attribute>
@@ -48,9 +45,11 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/alert"/>
 			               		</td>
+			               	</tr>
+			               	<tr>
 			               		<td>
-			               					<xsl:value-of select="//lang/error"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">error</xsl:attribute>
@@ -60,30 +59,22 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/error"/>
 			               		</td>
+								<td></td>
 			               	</tr>
 						</table>
 					</td>
-					</tr>
-	        	</table>
-			</form>
-	 </div>
-	
-	<div id="div3" style="float:left;"  valign="top" align='left'>
-	
-		<form name="formu3">
-		    <table style="margin:2px;" >
-	            <tr class="ListHeader">
-			               		<td class="FormHeader">
+
+
+			         <td>
 			               					<xsl:value-of select="//lang/host"/>
-			               		</td>
-	            </tr>
-				<tr>
-					<td style="">
+			         </td>
+
+					<td>
 						<table style="">
-			               	<tr >
+			               	<tr>
 			               		<td>
-			               					<xsl:value-of select="//lang/up"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">up</xsl:attribute>
@@ -93,9 +84,9 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/up"/>
 			               		</td>
 			               		<td>
-			               					<xsl:value-of select="//lang/down"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">down</xsl:attribute>
@@ -105,9 +96,11 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/down"/>
 			               		</td>
+			               	</tr>
+			               	<tr>
 			               		<td>
-			               					<xsl:value-of select="//lang/unreachable"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">unreachable</xsl:attribute>
@@ -117,34 +110,23 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/unreachable"/>
 			               		</td>
-	
+								<td></td>
 	
 			               	</tr>
 						</table>
 					</td>
-					</tr>
-	        	</table>
-			</form>
-	 </div>
-	
-	<div id="div4" style="float:left; "  valign="top" align='left'>
-	
-		<form name="formu4">
-		    <table style="margin:2px;" >
-	            <tr class="ListHeader">
-	               		<td class="FormHeader">
+
+	               		<td>
 	               					<xsl:value-of select="//lang/service"/>
 	               		</td>
 	
-	            </tr>
-				<tr>
-					<td style="">
+					<td>
 						<table style="">
 			               	<tr >
 			               	
 			               		<td>
-			               					<xsl:value-of select="//lang/ok"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">ok</xsl:attribute>
@@ -154,9 +136,9 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/ok"/>
 			               		</td>
 			               		<td>
-			               					<xsl:value-of select="//lang/warning"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">warning</xsl:attribute>
@@ -166,9 +148,11 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/warning"/>
 			               		</td>
+			               	</tr>
+			               	<tr>
 			               		<td>
-			               					<xsl:value-of select="//lang/critical"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">critical</xsl:attribute>
@@ -178,9 +162,9 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/critical"/>
 			               		</td>
 			               		<td>
-			               					<xsl:value-of select="//lang/unknown"/>
 											<xsl:element name='input'>
 												<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
 												<xsl:attribute name="name">unknown</xsl:attribute>
@@ -190,6 +174,7 @@
 													<xsl:attribute name="checked">checked</xsl:attribute>
 												</xsl:if>
 											</xsl:element>
+			               					<xsl:value-of select="//lang/unknown"/>
 			               		</td>
 			               	</tr>
 						</table>
@@ -200,12 +185,10 @@
 	 </div>
 </div>
 
-<div style="float:left; position:relative;  left:0px; top: -66px; * html left:0px;">
-	<div >
+<div>
+	<div class="pagination">
 		<table>
 			<tr>
-
-
 				<xsl:if test="first/@show = 'true'">
 					<td>
 						<xsl:element name='a'>
@@ -358,5 +341,14 @@
 	</table>
 	</div>
 </div>
+
+<div style="display:none; ">
+	<xsl:element name="div">
+		<xsl:attribute name="id">openid</xsl:attribute>
+		<xsl:value-of select="//opid"/>
+	</xsl:element>
+	<xsl:text> </xsl:text>
+</div>
+
 </xsl:template>
 </xsl:stylesheet>

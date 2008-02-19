@@ -59,11 +59,98 @@ echo "</pre>";
 	$open_id_sub = substr($openid, 3, strlen($openid));
 	}
 
-	if(isset($_GET["host_id"]) && $open_id_type == "HH"){
-		$_GET["host_id"] = $open_id_sub;
+
+	if(isset($_GET["id"])){
+		$id = $_GET["id"];
 	}
 	else
-		$_GET["host_id"] = null;
+		$id = 1;
+
+	if(isset($_GET["id_svc"])){
+		$id = "";
+		$id_svc = $_GET["id_svc"];
+		$tab_svcs = explode(",", $id_svc);
+		foreach($tab_svcs as $svc)
+		{
+			$tmp = explode(";", $svc);
+			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+		}
+	}
+	$id_log = "'RR_0'";
+	$multi =0;
+	if(isset($_GET["mode"]) && $_GET["mode"] == "0"){
+		$mode = 0;
+		$id_log = "'".$id."'";
+		$multi =1;
+	}
+	else{
+		$mode = 1;
+		$id = 1;
+	}
+
+
+
+
+
+	## Form begin
+	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
+	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+
+	$periods = array(	""=>"",
+						"10800"=>$lang["giv_sr_p3h"],
+						"21600"=>$lang["giv_sr_p6h"],
+						"43200"=>$lang["giv_sr_p12h"],
+						"86400"=>$lang["giv_sr_p24h"],
+						"172800"=>$lang["giv_sr_p2d"],
+						"302400"=>$lang["giv_sr_p4d"],
+						"604800"=>$lang["giv_sr_p7d"],
+						"1209600"=>$lang["giv_sr_p14d"],
+						"2419200"=>$lang["giv_sr_p28d"],
+						"2592000"=>$lang["giv_sr_p30d"],
+						"2678400"=>$lang["giv_sr_p31d"],
+						"5184000"=>$lang["giv_sr_p2m"],
+						"10368000"=>$lang["giv_sr_p4m"],
+						"15552000"=>$lang["giv_sr_p6m"],
+						"31104000"=>$lang["giv_sr_p1y"]);
+
+	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
+
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
+
+	$tpl->assign('lang', $lang);
+	$tpl->display("viewLog.ihtml");
+
+
+/*
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_notif', '0', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_alert', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_error', '0', '6');
+	
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host_up', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host_down', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_host_unreachable', '1', '6');
+	
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_ok', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_warning', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_critical', '1', '6');
+	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
+	VALUES ('', 'log_filter_svc_unknown', '1', '6');
+*/
 
 ?>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
@@ -83,7 +170,7 @@ echo "</pre>";
 		       cssNode.href = css_file;
 		       cssNode.media = 'screen';headID.appendChild(cssNode);
  
- 			var multi = 0;
+ 			var multi = <? echo $multi; ?>;
  
     		tree=new dhtmlXTreeObject("menu_20301","100%","100%","1");
             tree.setImagePath("./img/icones/csh_vista/");
@@ -94,7 +181,7 @@ echo "</pre>";
             tree.setXMLAutoLoading("./include/monitoring/mysql_log_2/GetODSXmlTree.php"); 
             
             //load first level of tree
-            tree.loadXML("./include/monitoring/mysql_log_2/GetODSXmlTree.php?id=1&openid=<?php echo $openid; ?>");
+            tree.loadXML("./include/monitoring/mysql_log_2/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 			// system to reload page after link with new url
 			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
@@ -161,60 +248,68 @@ echo "</pre>";
 			var _error = <? echo $user_params["log_filter_error"]; ?>;
 			var _alert = <? echo $user_params["log_filter_alert"]; ?>;
 			
+			// Period
+			var currentTime = new Date();
+			var period ='';
+
+			var _zero_hour = '';
+			var _zero_min = '';
+			var StartDate='';
+			var EndDate='';
+			var StartTime='';
+			var EndTime='';
+
+			if(document.formu && !document.formu.period_choice[1].checked)
+			{
+				period = document.formu.period.value;
+			}
+			else
+			{
+				if(currentTime.getMinutes() <= 9){
+					_zero_min = '0';
+				}
+				if(currentTime.getHours() >= 12){
+					StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
+					EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
+
+					if((currentTime.getHours()- 12) <= 12){
+						_zero_hour = '0';					
+					}
+					StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
+					EndTime   = currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+				}
+				else
+				{
+					StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
+					EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
+					StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
+					EndTime= "0" + currentTime.getHours()+":" + _zero_min + currentTime.getMinutes();
+					EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+				}
+			}
+
+				if(document.formu){
+					document.formu.StartDate.value = StartDate;
+					document.formu.EndDate.value = EndDate;
+					document.formu.StartTime.value = StartTime;
+					document.formu.EndTime.value = EndTime;
+				}
 
 			function log_4_host(id, formu)
 			{
-				
-				// Period
-				var currentTime = new Date();
-				var period ='';
-
-				var _zero_hour = '';
-				var _zero_min = '';
-				var StartDate='';
-				var EndDate='';
-				var StartTime='';
-				var EndTime='';
 
 				if(document.formu && !document.formu.period_choice[1].checked)
 				{
 					period = document.formu.period.value;
-
-				var _zero_hour = '';
-				var _zero_min = '';
-				var StartDate='';
-				var EndDate='';
-				var StartTime='';
-				var EndTime='';
-
 				}
-				else
+				else if(document.formu)
 				{
-					if(currentTime.getMinutes() <= 9){
-						_zero_min = '0';
-					}
-					if(currentTime.getHours() >= 12){
-						StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
-						EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
-	
-						if((currentTime.getHours()- 12) <= 12){
-							_zero_hour = '0';					
-						}
-						StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-						EndTime   = currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-					}
-					else
-					{
-						var StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
-						var EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
-						var StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
-						var EndTime= "0" + currentTime.getHours()+":" + _zero_min + currentTime.getMinutes();
-						var EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-					
-					}
+					period = '';
+					StartDate = document.formu.StartDate.value;
+					EndDate = document.formu.EndDate.value;
+					StartTime = document.formu.StartTime.value;
+					EndTime = document.formu.EndTime.value;
 				}
-
-
 
 				// type
 				if(document.formu2 && document.formu2.notification)
@@ -231,25 +326,25 @@ echo "</pre>";
 					_service = document.formu4.service.checked;
 
 
-				if(document.formu3 && document.formu3.up)
-					_up = document.formu3.up.checked;
-				if(document.formu3 && document.formu3.down)
-					_down = document.formu3.down.checked;
-				if(document.formu3 && document.formu3.unreachable)
-					_unreachable = document.formu3.unreachable.checked;
+				if(document.formu2 && document.formu2.up)
+					_up = document.formu2.up.checked;
+				if(document.formu2 && document.formu2.down)
+					_down = document.formu2.down.checked;
+				if(document.formu2 && document.formu2.unreachable)
+					_unreachable = document.formu2.unreachable.checked;
 
 
-				if(document.formu4 && document.formu4.ok)
-					_ok = document.formu4.ok.checked;
+				if(document.formu2 && document.formu2.ok)
+					_ok = document.formu2.ok.checked;
 
-				if(document.formu4 && document.formu4.warning)
-					_warning = document.formu4.warning.checked;
+				if(document.formu2 && document.formu2.warning)
+					_warning = document.formu2.warning.checked;
 
-				if(document.formu4 && document.formu4.critical)
-					_critical = document.formu4.critical.checked;
+				if(document.formu2 && document.formu2.critical)
+					_critical = document.formu2.critical.checked;
 
-				if(document.formu4 && document.formu4.unknown)
-					_unknown = document.formu4.unknown.checked;
+				if(document.formu2 && document.formu2.unknown)
+					_unknown = document.formu2.unknown.checked;
 
 				if(document.formu && document.formu.StartDate.value != "")
 					StartDate = document.formu.StartDate.value;
@@ -390,27 +485,7 @@ function drawTimePicker(timeFieldName, targetTimeField, x, y)
 
     
 }
-
-
-function grise_period(_hid, _show)
-{
-	var _radio = document.forms["formu"].elements["period_choice"]
-	var _flag = 0;
-
-       for (var i=0; i< _radio.length;i++) {
-			if (_radio[i].checked) 
-			{
-				_radio[i].checked = false;
-				//_flag = 1;
-         	}
-         	else
-			{
-				_radio[i].checked = true;
-         	}
-       }
-}
-
-log_4_host('RR_0',null);
+log_4_host(<?php echo $id_log;?>,null);
 
 
 
@@ -420,65 +495,6 @@ log_4_host('RR_0',null);
 
 
 <?php
-	## Form begin
-	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
-
-	$periods = array(	""=>"",
-						"10800"=>$lang["giv_sr_p3h"],
-						"21600"=>$lang["giv_sr_p6h"],
-						"43200"=>$lang["giv_sr_p12h"],
-						"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);
-
-	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
-
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-
-	$tpl->assign('lang', $lang);
-	$tpl->display("viewLog.ihtml");
-
-
-/*
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_notif', '0', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_alert', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_error', '0', '6');
-	
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host_up', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host_down', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host_unreachable', '1', '6');
-	
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_ok', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_warning', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_critical', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_unknown', '1', '6');
-*/
 
 ?>
 

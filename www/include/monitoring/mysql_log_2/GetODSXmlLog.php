@@ -323,13 +323,12 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 
 
 	$period = 86400;
-	if($auto_period > 0)
+	if($auto_period > 0){
 		$period = $auto_period;
-
-	if (!isset($start) && !isset($end)){
 		$start = time() - ($period);
 		$end = time();
-	}			
+	}
+
 
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
@@ -616,6 +615,7 @@ else// only click on one element
 		for ($i = $istart; $i <= $iend; $i++){
 			$pageArr[$i] = array("url_page"=>"&num=$i&limit=".$limit, "label_page"=>($i +1),"num"=> $i);
 		}
+		if($i > 1)
 		foreach ($pageArr as $key => $tab) {
 			echo "<page>";
 			if($tab["num"] == $num)
@@ -651,7 +651,7 @@ else// only click on one element
 		else
 			echo "<next show='false'>none</next>";
 
-		$last = $page_max + 2;
+		$last = $page_max -1;
 
 		if($num < $page_max-1)
 			echo "<last show='true'>$last</last>";
@@ -691,9 +691,9 @@ else// only click on one element
 					echo "<type>".$log["type"]."</type>";
 	
 				$color = '';
-				if($log["msg_type"] == 0)
+				if($log["msg_type"] == 0 || $log["msg_type"] == 2)
 					$color = $tab_color_service[$log["status"]];
-				if($log["msg_type"] == 1)
+				if($log["msg_type"] == 1 || $log["msg_type"] == 3)
 					$color = $tab_color_host[$log["status"]];
 	
 				echo '<status color="'.$color.'">'.$log["status"].'</status>';
@@ -733,7 +733,7 @@ $lang["critical"] = "critical";
 $lang["warning"] = "warning";
 $lang["unknown"] = "unknown";
 
-$lang["typeAlert"] = "Alert";
+$lang["typeAlert"] = "Type";
 
 echo "<lang>";
 echo "<typeAlert>".$lang["typeAlert"]."</typeAlert>";
