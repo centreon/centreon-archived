@@ -46,6 +46,70 @@ For information : contact@oreon-project.org
 	else
 		$_GET["host_id"] = null;
 
+
+
+	if(isset($_GET["id"])){
+		$id = $_GET["id"];
+	}
+	else
+		$id = 1;
+
+	if(isset($_GET["id_svc"])){
+		$id = "";
+		$id_svc = $_GET["id_svc"];
+		$tab_svcs = explode(",", $id_svc);
+		foreach($tab_svcs as $svc)
+		{
+			$tmp = explode(";", $svc);
+			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+		}
+	}
+	$id_log = "'RR_0'";
+	$multi = 0;
+	if(isset($_GET["mode"]) && $_GET["mode"] == "0"){
+		$mode = 0;
+		$id_log = "'".$id."'";
+		$multi = 1;
+	}
+	else{
+		$mode = 1;
+		$id = 1;
+	}
+
+
+
+//<div id="graphView4xml">..</div>
+	## Form begin
+	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
+	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+
+	$periods = array(	""=>"",
+						"10800"=>$lang["giv_sr_p3h"],
+						"21600"=>$lang["giv_sr_p6h"],
+						"43200"=>$lang["giv_sr_p12h"],
+						"86400"=>$lang["giv_sr_p24h"],
+						"172800"=>$lang["giv_sr_p2d"],
+						"302400"=>$lang["giv_sr_p4d"],
+						"604800"=>$lang["giv_sr_p7d"],
+						"1209600"=>$lang["giv_sr_p14d"],
+						"2419200"=>$lang["giv_sr_p28d"],
+						"2592000"=>$lang["giv_sr_p30d"],
+						"2678400"=>$lang["giv_sr_p31d"],
+						"5184000"=>$lang["giv_sr_p2m"],
+						"10368000"=>$lang["giv_sr_p4m"],
+						"15552000"=>$lang["giv_sr_p6m"],
+						"31104000"=>$lang["giv_sr_p1y"]);
+
+	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
+
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$form->accept($renderer);
+	$tpl->assign('form', $renderer->toArray());
+
+	$tpl->assign('lang', $lang);
+	$tpl->display("graphODS.ihtml");
+
+
 ?>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
@@ -58,6 +122,7 @@ For information : contact@oreon-project.org
 		       cssNode.href = css_file;
 		       cssNode.media = 'screen';headID.appendChild(cssNode);
  
+ 			var multi = <?php echo $multi; ?>;
  
  		  	var _menu_div = document.getElementById("menu_40211");
 		 
@@ -72,7 +137,8 @@ For information : contact@oreon-project.org
             tree.setXMLAutoLoading("./include/views/graphs/graphODS/GetODSXmlTree.php"); 
             
             //load first level of tree
-            tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?id=1&openid=<?php echo $openid; ?>");
+//            tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?id=1&openid=<?php echo $openid; ?>");
+            tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 			// system to reload page after link with new url
 			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
@@ -92,7 +158,9 @@ For information : contact@oreon-project.org
 			
 			function onCheck(nodeId)
 			{
-				graph_4_host(tree.getAllChecked(),'',1);
+				multi = 1;
+				document.getElementById('openid').innerHTML = tree.getAllChecked();
+				graph_4_host(tree.getAllChecked(),1);
 			}
 			
 			function onNodeSelect(nodeId)
@@ -102,7 +170,7 @@ For information : contact@oreon-project.org
 
 				tree.openItem(nodeId);
 
-				graph_4_host(nodeId,'');
+				graph_4_host(nodeId);
 			}
 			
 			// it's fake methode for using ajax system by default
@@ -113,43 +181,50 @@ For information : contact@oreon-project.org
 			function apply_period()
 			{
 				var openid = document.getElementById('openid').innerHTML;
-				graph_4_host(openid,'formu');
+				graph_4_host(openid, multi);
 			}
 
 
-				// Period
-				var currentTime = new Date();
-				var period ='';
+			// Period
+			var currentTime = new Date();
+			var period ='';
 
-				var _zero_hour = '';
-				var _zero_min = '';
-				var StartDate='';
-				var EndDate='';
-				var StartTime='';
-				var EndTime='';
+			var _zero_hour = '';
+			var _zero_min = '';
+			var StartDate='';
+			var EndDate='';
+			var StartTime='';
+			var EndTime='';
 
+			if(document.formu && !document.formu.period_choice[1].checked)
+			{
+				period = document.formu.period.value;
+			}
+			else
+			{
+				if(currentTime.getMinutes() <= 9){
+					_zero_min = '0';
+				}
+				if(currentTime.getHours() >= 12){
+					StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
+					EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
 
-					if(currentTime.getMinutes() <= 9){
-						_zero_min = '0';
+					if((currentTime.getHours()- 12) <= 12){
+						_zero_hour = '0';					
 					}
-					if(currentTime.getHours() >= 12){
-						StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
-						EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
-	
-						if((currentTime.getHours()- 12) <= 12){
-							_zero_hour = '0';					
-						}
-						StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-						EndTime   = currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-					}
-					else
-					{
-						var StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
-						var EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
-						var StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
-						var EndTime= "0" + currentTime.getHours()+":" + _zero_min + currentTime.getMinutes();
-						var EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();		
-					}
+					StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
+					EndTime   = currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+				}
+				else
+				{
+					StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
+					EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
+					StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
+					EndTime= "0" + currentTime.getHours()+":" + _zero_min + currentTime.getMinutes();
+					EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+				}
+			}
+
 				if(document.formu){
 					document.formu.StartDate.value = StartDate;
 					document.formu.EndDate.value = EndDate;
@@ -158,26 +233,28 @@ For information : contact@oreon-project.org
 				}
 
 
-
-			function graph_4_host(id, formu2, multi)
+			function graph_4_host(id, multi)
 			{
 				if(!multi)
 				multi = 0;
 				
 
+
 				if(document.formu && !document.formu.period_choice[1].checked)
 				{
 					period = document.formu.period.value;
+					
 				}
-				else
+				else if(document.formu)
 				{
+					period = '';
 					StartDate = document.formu.StartDate.value;
 					EndDate = document.formu.EndDate.value;
 					StartTime = document.formu.StartTime.value;
 					EndTime = document.formu.EndTime.value;
 				}
 
-
+				
 				// Metrics
 				var _metrics ="";
 				var _checked = "0";
@@ -191,7 +268,6 @@ For information : contact@oreon-project.org
 							_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
 					   }
 				}
-				//if(document.formu2 && document.formu2.StartDate.value != "")
 
 				// Templates
 				var _tpl_id = 1;
@@ -217,6 +293,9 @@ For information : contact@oreon-project.org
 				proc.transform("graphView4xml");
 
 		}
+
+
+
 				
 function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
 {
@@ -326,69 +405,8 @@ function drawTimePicker(timeFieldName, targetTimeField, x, y)
     
 }
 
-
-function grise_period(_hid, _show)
-{
-	var _radio = document.forms["formu"].elements["period_choice"]
-	var _flag = 0;
-
-       for (var i=0; i< _radio.length;i++) {
-			if (_radio[i].checked) 
-			{
-				_radio[i].checked = false;
-				//_flag = 1;
-         	}
-         	else
-			{
-				_radio[i].checked = true;
-         	}
-       }
-}
-
+graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
 
 </script>
 
-
-<?php
-//<div id="graphView4xml">..</div>
-	## Form begin
-	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
-
-	$periods = array(	""=>"",
-						"10800"=>$lang["giv_sr_p3h"],
-						"21600"=>$lang["giv_sr_p6h"],
-						"43200"=>$lang["giv_sr_p12h"],
-						"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);
-
-	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
-
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-
-	$tpl->assign('lang', $lang);
-	$tpl->display("graphODS.ihtml");
-?>
-
-<?php
-if(isset($_GET["tree_id"]))
-{
-?>	
-	graph_4_host('<?php echo $_GET["tree_id"] ?>','');
-<?php	
-}
-
-?>		
 

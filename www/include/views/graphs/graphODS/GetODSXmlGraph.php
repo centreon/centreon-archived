@@ -186,10 +186,9 @@ $contact_id = '2';
 	}
 	
 	$period = 86400;
-	if($auto_period > 0)
+	if($auto_period > 0){
 		$period = $auto_period;
 
-	if (!isset($start) && !isset($end)){
 		$start = time() - ($period);
 		$end = time();
 	}			
@@ -230,6 +229,10 @@ else{
 	$tab_id = split(",",$openid);
 
 }
+
+
+if($multi)
+	echo "<opid>".$openid."</opid>";
 
 foreach($tab_id as $openid)
 {
@@ -350,6 +353,7 @@ if($multi)
 			}
 	
 	echo "<host>";
+	echo "<name>".$host_name."</name>";
 	echo "<sid>".$sid."</sid>";
 	echo "<start>".$start."</start>";
 	echo "<end>".$end."</end>";
@@ -414,6 +418,8 @@ if($multi)
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 		$DBRESULT2->fetchInto($svc_id);
+	
+	$name = $svc_id["service_description"];
 	
 	//	if($template_id == 1)
 			$template_id = getDefaultGraph($svc_id["service_id"], 1);
@@ -534,6 +540,7 @@ if($multi)
 	
 	
 		echo "<svc>";
+		echo "<name>".$name."</name>";
 		echo "<sid>".$sid."</sid>";
 		echo "<id>".$id."</id>";
 		echo "<index>".$index."</index>";
@@ -621,7 +628,6 @@ if($multi)
 	
 		
 		
-	//	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){
 			$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE `trashed` = '0' AND host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
@@ -724,8 +730,7 @@ if($multi)
 					foreach ($metrics as $key => $value)
 						$metrics_active[$key] = 1;	
 			}
-	
-	
+
 	/*
 		$period['Daily']= (time() - 60 * 60 * 24);
 		$period['Weekly']= (time() - 60 * 60 * 24 * 7);
@@ -735,6 +740,7 @@ if($multi)
 	
 	if($multi)
 		echo "<multi_svc>";
+	
 	else
 		echo "<svc_zoom>";
 

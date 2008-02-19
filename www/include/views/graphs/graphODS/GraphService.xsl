@@ -10,7 +10,7 @@
 	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
-	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Host : </td>
+	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Host : <xsl:value-of select="//name"/></td>
 	        </tr>
 			<xsl:for-each select="//svc">
 		        <tr class="list_one">
@@ -80,7 +80,7 @@
 	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
-	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
+	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : <xsl:value-of select="//name"/></td>
 	        </tr>
 			<xsl:for-each select="//period">
 		        <tr class="list_one">
@@ -153,86 +153,66 @@
 </xsl:if>
 
 <xsl:if test="svc_zoom">
-	    <div id="div2" style=" width:700px; position:relative;  left:355px; top: -67px"  valign="top" align='left'>
+	    <div id="div2"   valign="top" align='left'>
 
 		<form name="formu2">
 
-    	    <table >
-                <tr class="ListHeader">
-                	<td class="FormHeader" colspan="2"><xsl:value-of select="//lang/advanced"/></td>
-                </tr>
+    	    <table class="graph_options">
 				<tr>
 				<td>
-					<table style="">
-						<tr >
-		               		<td>
-								<xsl:value-of select="//lang/giv_gg_tpl"/>
-		               		</td>
-		               		<td>
-		               			<xsl:element name="select">
-									<xsl:attribute name="name">template_select</xsl:attribute>
-									<xsl:attribute name="onChange">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-		
-									<xsl:for-each select="//tpl">
-										<xsl:element name='option'>
-											<xsl:attribute name="value"><xsl:value-of select="tpl_id"/></xsl:attribute>
-		
-											<xsl:if test="//tpl = tpl_id">
-												<xsl:attribute name="selected">selected</xsl:attribute>
-											</xsl:if>
-		
-											<xsl:value-of select="tpl_name"/>
-										</xsl:element>
-									</xsl:for-each>
-		
-								</xsl:element>
-		               		</td>
-		               	</tr>
-		               	<tr >
-		               		<td>
-							 <xsl:value-of select="//lang/giv_split_component"/>
-		               		</td>
-		               		<td>
-										<xsl:element name='input'>
-											<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-											<xsl:attribute name="name">split</xsl:attribute>
-											<xsl:attribute name="type">checkbox</xsl:attribute>
-		
-											<xsl:if test="//split = 1">
-												<xsl:attribute name="checked">checked</xsl:attribute>
-											</xsl:if>
-										</xsl:element>
-		               		</td>
-		               	</tr>
-					</table>
+					<xsl:value-of select="//lang/giv_gg_tpl"/>
+           		</td>
+           		<td>
+           			<xsl:element name="select">
+						<xsl:attribute name="name">template_select</xsl:attribute>
+						<xsl:attribute name="onChange">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
 
-				</td>
-				<td style="border-left:0.5px solid gray;">
-					<table >
-		               	<tr>
-						<xsl:for-each select="//metrics">
-		               		<td style="padding-left:10px;">
-								<xsl:element name='input'>
-									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', this.form); return false;</xsl:attribute>
-									<xsl:attribute name="type">checkbox</xsl:attribute>
-									<xsl:attribute name="name">metric</xsl:attribute>
-									<xsl:attribute name="value"><xsl:value-of select="metric_id"/></xsl:attribute>
-									<xsl:if test="select = 1">
-										<xsl:attribute name="checked">checked</xsl:attribute>
-									</xsl:if>
-								</xsl:element>
-		               			<xsl:value-of select="metric_name"/>
-		               		</td>
-						</xsl:for-each>					
-		               	</tr>
-					</table>
-				</td>
+						<xsl:for-each select="//tpl">
+							<xsl:element name='option'>
+								<xsl:attribute name="value"><xsl:value-of select="tpl_id"/></xsl:attribute>
+
+								<xsl:if test="//tpl = tpl_id">
+									<xsl:attribute name="selected">selected</xsl:attribute>
+								</xsl:if>
+
+								<xsl:value-of select="tpl_name"/>
+							</xsl:element>
+						</xsl:for-each>
+
+					</xsl:element>
+           		</td>
+           		<td>
+					<xsl:element name='input'>
+						<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
+						<xsl:attribute name="name">split</xsl:attribute>
+						<xsl:attribute name="type">checkbox</xsl:attribute>
+
+						<xsl:if test="//split = 1">
+							<xsl:attribute name="checked">checked</xsl:attribute>
+						</xsl:if>
+					</xsl:element>
+					<xsl:value-of select="//lang/giv_split_component"/>
+           		</td>
+				<xsl:for-each select="//metrics">
+               		<td style="padding-left:10px;">
+						<xsl:element name='input'>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
+							<xsl:attribute name="type">checkbox</xsl:attribute>
+							<xsl:attribute name="name">metric</xsl:attribute>
+							<xsl:attribute name="value"><xsl:value-of select="metric_id"/></xsl:attribute>
+							<xsl:if test="select = 1">
+								<xsl:attribute name="checked">checked</xsl:attribute>
+							</xsl:if>
+						</xsl:element>
+               			<xsl:value-of select="metric_name"/>
+               		</td>
+				</xsl:for-each>					
 				</tr>
         	</table>
 		</form>
     	</div>
 
-	<div style="position:relative; top: -70px;">
+	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
@@ -290,14 +270,7 @@
 </xsl:if>
 
 
-
-
-
-
-
-
-
-
+<xsl:if test="//multi_svc">
 	<div>
 		<table id="ListTable">
 	        <tr class="ListHeader">
@@ -305,7 +278,7 @@
 	        </tr>
 
 
-<xsl:for-each select="//multi_svc">
+			<xsl:for-each select="//multi_svc">
 
 
 
@@ -342,7 +315,6 @@
 							</xsl:element>
 			</xsl:if>
 
-
 			<xsl:if test="split = 1">
 				<xsl:for-each select="//metric">
 								<xsl:element name="a">
@@ -357,23 +329,16 @@
 								</xsl:element>
 								<br/>
 				</xsl:for-each>
-
-
 			</xsl:if>
-
 
 						 <br/>
 						 </div> 
 					</td>
-				</tr>			
-				
-
+				</tr>
 </xsl:for-each>
-
 	    </table>
 	</div>
-
-
+</xsl:if>
 
 
 
