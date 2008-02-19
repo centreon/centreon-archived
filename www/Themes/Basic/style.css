@@ -440,3 +440,80 @@ position: absolute;
 display:none;
 z-index: 500;
 }
+
+
+.search_input_active{
+	background-color:red;
+}
+
+
+.log_option{
+margin-top:0px;
+margin-bottom:-5px;
+padding-bottom:0px;
+border-collapse:separate;
+empty-cells: show; 
+background-color:#aeaeee;
+border: 2px #aeaeee solid;
+-moz-border-radius: 8px;
+}
+
+.log_option td{
+padding-top:2px;
+padding-bottom:2px;
+padding-left:4px;
+padding-right:4px;
+}
+
+.log_option table td{
+background-color:#ceceee;
+
+}
+
+.log_option input{
+margin-right:5px;
+}
+
+
+.period td{
+padding-top:1px;
+padding-bottom:1px;
+padding-left:8px;
+padding-right:8px;
+}
+
+.period{
+margin-top:0px;
+padding-bottom:0px;
+border-collapse:separate;
+empty-cells: show; 
+background-color:#aeaeee;
+border: 2px #aeaeee solid;
+-moz-border-radius: 8px;
+}
+
+.graph_options td{
+padding-top:1px;
+padding-bottom:1px;
+padding-left:8px;
+padding-right:8px;
+}
+
+.graph_options input{
+margin-right:5px;
+}
+
+.graph_options{
+margin-top:0px;
+padding-bottom:0px;
+border-collapse:separate;
+empty-cells: show; 
+background-color:#aeaeee;
+border: 2px #aeaeee solid;
+-moz-border-radius: 8px;
+	
+}
+
+div.pagination{
+ margin-left: 40%;
+}
