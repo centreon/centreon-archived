@@ -1,7 +1,7 @@
 <xsl:stylesheet version = '1.0'
 xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>
 <xsl:template match="/">
-<table id="ListTable">
+<table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;"></td>
