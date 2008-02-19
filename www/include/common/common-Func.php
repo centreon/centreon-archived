@@ -1003,7 +1003,8 @@ For information : contact@oreon-project.org
 				continue;
 
 			$pinfo = pathinfo($filename);
-			if (!in_array($pinfo["extension"], $is_a_valid_image[$mode]))
+
+			if (isset($pinfo["extension"]) && isset($is_a_valid_image[$mode][$pinfo["extension"]]))
 				continue;
 
 			$key = substr($rep.$filename, $path_len);
