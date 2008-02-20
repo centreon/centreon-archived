@@ -86,7 +86,7 @@ RunFile=${prefix}var/centcore.pid
 DemLog=${prefix}var/debug.log
 LockDir=/var/lock/subsys
 LockFile=cenctore
-          
+NICE=5    
 
 # Check that centcore exists.
 if [ ! -f $Bin ]; then
@@ -118,7 +118,7 @@ case "$1" in
 		fi
 	fi
 	echo "Starting Centcore : centcore"
-	$Bin 2>> $DemLog &
+	nice -n $NICE $Bin 2>> $DemLog &
 	if [ -d $LockDir ]; then touch $LockDir/$LockFile; fi
 	exit 0
 	;;
