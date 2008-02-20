@@ -1,6 +1,6 @@
 <?php
 /**
-Created on 23 janv. 08
+Created on 20 févr. 08
 
 Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -18,7 +18,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-
 if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) 
 { 	
 	header("Content-type: application/xhtml+xml"); }
@@ -34,7 +33,7 @@ echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 	$debugXML = 0;
 	$buffer = '';
 
-	$oreonPath = '../../../../';
+	$oreonPath = '../../../';
 
 	/* pearDB init */
 	require_once 'DB.php';
@@ -183,7 +182,7 @@ if($normal_mode)
 		$hosts = getMyHostGroupHosts($id);
 		foreach($hosts as $host)
 		{
-	        	print("<item child='1' id='HH_".$host."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
+	        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
 				print("</item>");
 		}
 	}
@@ -192,7 +191,7 @@ if($normal_mode)
 		$services = getMyHostServices($id);
 		foreach($services as $svc_id => $svc_name)
 		{
-		        print("<item child='0' id='HS_".$svc_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'>");
+		        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'>");
 				print("</item>");			
 		}
 	}
@@ -255,41 +254,97 @@ else// direct to ressource (ex: pre-selected by GET)
 		$type = substr($openid, 0, 2);
 		$id = substr($openid, 3, strlen($openid));
 
-		if($type == "HH") // host + svcS_child + hg_parent
+		//echo "<id>".$id."</id>";
+
+		$id_full = split('_', $id);
+		$id = $id_full[0];
+/*
+		echo "<idfull>";
+		print_r($id_full);
+		echo "</idfull>";
+*/		
+		
+		if($type == "HH") // host + hg_parent
 		{
 			// host
 			$hosts_selected[$id] = getMyHostName($id);
 			$hosts_open[$id] = getMyHostName($id);
-			
-			// svcS_child
-/*
+
+
+			/* + all svc*/
 			$services = getMyHostServices($id);
 			foreach($services as $svc_id => $svc_name)
-				$svc_selected[$svc_id] = $svc_name;
-*/
+			{
+				$svcs_selected[$svc_id] = $svc_name;
+			}
+
+
+
 			// 	hg_parent
+			if(isset($id_full[2]))
+			{
+				$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
+			}
+			else
+			{
 			$hgs = getMyHostGroups($id);
 			foreach($hgs as $hg_id => $hg_name)
-				$hgs_selected[$hg_id] = $hg_name;
+				$hgs_open[$hg_id] = $hg_name;
+			}			
+
+
 		}
 		else if($type == "HS"){ // svc + host_parent + hg_parent
 			// svc
+			
 			$svcs_selected[$id] = getMyServiceName($id);
 			$svcs_selected[$id] = getMyServiceName($id);
 
 			//host_parent
-			$host_id = getMyHostServiceID($id);
-			$hosts_open[$host_id] = getMyHostName($host_id);
-			
+			if(isset($id_full[1]))
+			{
+				$host_id = $id_full[1];
+				$hosts_open[$host_id] = getMyHostName($host_id);
+			}
+			else
+			{
+				$host_id = getMyHostServiceID($id);
+				$hosts_open[$host_id] = getMyHostName($host_id);				
+			}
+
+
 			// 	hg_parent
+			if(isset($id_full[2]))
+			{
+				$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
+			}
+			else
+			{
 			$hgs = getMyHostGroups($host_id);
 			foreach($hgs as $hg_id => $hg_name)
 				$hgs_open[$hg_id] = $hg_name;
+			}			
 		}
 		else if($type == "HG"){ // HG + hostS_child + svcS_child
-			$host_name = getMyHostName($id);
-			array_push ($hosts_open, "'".$host_name."'");
-			/* + all svc*/
+			
+			$hgs_selected[$id] = getMyHostGroupName($id);
+			$hgs_open[$id] = getMyHostGroupName($id);
+
+			$hosts = getMyHostGroupHosts($id);
+			foreach($hosts as $host_id)
+			{
+				$host_name = getMyHostName($host_id);
+				$hosts_open[$host_id] = $host_name;
+				$hosts_selected[$host_id] = $host_name;
+
+				/* + all svc*/
+				$services = getMyHostServices($host_id);
+				foreach($services as $svc_id => $svc_name)
+				{
+					$svcs_selected[$svc_id] = $svc_name;
+				}
+				
+			}
 		}
 	}
 
@@ -350,7 +405,7 @@ echo "</pre>";
 						if($host_open){
 							$services = getMyHostServices($host_id);
 							foreach($services as $svc_id => $svc_name)
-							{
+							{//$tab_id = split(",",$openid);
 								$svc_checked = "";
 								if(isset($svcs_selected[$svc_id]))
 									$svc_checked = " checked='1' ";
@@ -378,4 +433,3 @@ echo "</pre>";
 print("</tree>");
 
 ?>
-

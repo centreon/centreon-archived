@@ -283,7 +283,7 @@
 	</div>
 	
 	<div style="">
-	<table id="ListTable">
+	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter">Day</td>
 			<td class="ListColHeaderCenter">Time</td>

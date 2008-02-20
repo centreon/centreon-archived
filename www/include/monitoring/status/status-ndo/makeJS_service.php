@@ -29,6 +29,7 @@ For information : contact@oreon-project.org
 	if($num < 0)
 		$num =0;
 ?>
+<script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <SCRIPT LANGUAGE="JavaScript">
 var _debug = 0;
 
@@ -62,17 +63,15 @@ var _nc = 0;
 include_once("makeJS_Common.php");
 ?>
 
-
 // linkBar to log/reporting/graph/ID_card
-
-	function getCheckedList()
+	function getCheckedList(_input_name)
 	{
 		var mesinputs = document.getElementsByTagName("input" );
 		var tab = new Array();
 		var nb = 0;
 	
 		for (var i = 0; i < mesinputs.length; i++) {
-	  		if (mesinputs[i].type.toLowerCase() == 'checkbox' && mesinputs[i].checked && mesinputs[i].name.substr(0,6) == 'select') {
+	  		if (mesinputs[i].type.toLowerCase() == 'checkbox' && mesinputs[i].checked && mesinputs[i].name.substr(0,6) == _input_name) {
 				var name = mesinputs[i].name;
 				var l = name.length;
 				tab[nb] = name.substr(7,l-8);
@@ -81,69 +80,21 @@ include_once("makeJS_Common.php");
 		}
 		return tab;
 	}
-	
-	
-	function goToLog()
-	{
-		var tab = getCheckedList();
-		document.location.href='oreon.php?p=203&mode=0&id_svc=' +tab;  
-	}
-	function goToGraph()
-	{
-		var tab = getCheckedList();
-		document.location.href='oreon.php?p=40211&mode=0&id_svc=' +tab;  	
-	}
-	function goToReport()
-	{
-		var tab = getCheckedList();
-		document.location.href='oreon.php?p=p=30702&period=today&svctab=' +tab;  	
-	}
-	function goToIDCard()
-	{
-		var tab = getCheckedList();
-		document.location.href='oreon.php?p=70102&mode=0&id_svc=' +tab;  	
-	}
-	
+
 	if(document.getElementById('menu_2'))
 	{
 		var _menu_2 = document.getElementById('menu_2')
 		var _divBar = document.createElement("div");
-	
-		var _img_graph = mk_img('./img/icones/24x24/chart.png', "Graph");
-		var _linkaction_graph = document.createElement("a");
-		_linkaction_graph.href = '#';
-		_linkaction_graph.onclick=function(){goToGraph()}
-		_linkaction_graph.appendChild(_img_graph);
-		_divBar.appendChild(_linkaction_graph);
-	
-		var _img_log = mk_img('./img/icones/24x24/text_find.png', "Event Log");
-		var _linkaction_log = document.createElement("a");
-		_linkaction_log.href = '#';
-		_linkaction_log.onclick=function(){goToLog()}
-		_linkaction_log.appendChild(_img_log);
-		_divBar.appendChild(_linkaction_log);
-	
-		var _img_graph = mk_img('./img/icones/24x24/chart.png', "Reporting for the first svc selected");
-		var _linkaction_graph = document.createElement("a");
-		_linkaction_graph.href = '#';
-		_linkaction_graph.onclick=function(){goToGraph()}
-		_linkaction_graph.appendChild(_img_graph);
-		_divBar.appendChild(_linkaction_graph);
-
-		var _img_graph = mk_img('./img/icones/24x24/chart.png', "Reporting for the first host selected");
-		var _linkaction_graph = document.createElement("a");
-		_linkaction_graph.href = '#';
-		_linkaction_graph.onclick=function(){goToGraph()}
-		_linkaction_graph.appendChild(_img_graph);
-		_divBar.appendChild(_linkaction_graph);
+		
+		_divBar.appendChild(create_graph_link('select','id_svc'));
+		_divBar.appendChild(create_log_link('select','id_svc'));
+//		_divBar.appendChild(create_report_link('select','id_svc'));
+//		_divBar.appendChild(create_IDCard_link('select','id_svc'));
 
 		_divBar.setAttribute('style','float:right; margin-right:110px;' );
 		_menu_2.appendChild(_divBar);
 	}
-
 //end for linkBar
-
-
 
 
 
