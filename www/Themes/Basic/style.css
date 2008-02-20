@@ -18,10 +18,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-* 	{
-	margin:0;
-	padding:0
-}
+* {margin:0;padding:0}
 
 body	{
 	background-color:#000000;
@@ -375,13 +372,7 @@ sera visible que pour l'état a:hover */
     top:2em; left:2em;
     text-align: justify;
     font-weight:none;
-/*
-    -moz-opacity:0.85;
-	opacity: 0.85;
-	filter:alpha(opacity=85);
-*/
     padding:4px;
-//	background-color:#E6D793;
 	background-color:white;
 	border: 1px gray solid;
 	-moz-border-radius: 14px;
@@ -391,7 +382,7 @@ a.infobulle:hover table{
 	border: 1px #gray solid;
 }
 a.infobulle:hover td{
-	padding:10px;
+	padding:1px;
 }
 
 .ColPopup{
