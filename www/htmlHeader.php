@@ -35,7 +35,6 @@ For information : contact@oreon-project.org
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <script src="./include/common/javascript/scriptaculous/prototype.js" type="text/javascript"></script>
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
-
 <?php
 	if($min != 1){
 
