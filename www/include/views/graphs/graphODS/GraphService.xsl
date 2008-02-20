@@ -213,7 +213,7 @@
     	</div>
 
 	<div>
-		<table id="ListTable">
+		<table class="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
 	        </tr>
@@ -272,7 +272,7 @@
 
 <xsl:if test="//multi_svc">
 	<div>
-		<table id="ListTable">
+		<table class="ListTable">
 	        <tr class="ListHeader">
 	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Compare</td>
 	        </tr>

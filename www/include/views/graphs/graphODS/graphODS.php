@@ -54,16 +54,10 @@ For information : contact@oreon-project.org
 	else
 		$id = 1;
 
-	if(isset($_GET["id_svc"])){
-		$id = "";
-		$id_svc = $_GET["id_svc"];
-		$tab_svcs = explode(",", $id_svc);
-		foreach($tab_svcs as $svc)
-		{
-			$tmp = explode(";", $svc);
-			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
-		}
+	if(isset($_GET["id_tab"])){
+		$id = $_GET["id_tab"];
 	}
+	
 	$id_log = "'RR_0'";
 	$multi = 0;
 	if(isset($_GET["mode"]) && $_GET["mode"] == "0"){
@@ -111,6 +105,7 @@ For information : contact@oreon-project.org
 
 
 ?>
+<script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
@@ -134,11 +129,10 @@ For information : contact@oreon-project.org
 
 
             //link tree to xml
-            tree.setXMLAutoLoading("./include/views/graphs/graphODS/GetODSXmlTree.php"); 
+            tree.setXMLAutoLoading("./include/common/GetODSXmlTree.php");
             
             //load first level of tree
-//            tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?id=1&openid=<?php echo $openid; ?>");
-            tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+            tree.loadXML("./include/common/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 			// system to reload page after link with new url
 			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
@@ -149,6 +143,31 @@ For information : contact@oreon-project.org
 			tree.enableDragAndDrop(0);
 			tree.enableTreeLines(false);	
 			tree.enableCheckBoxes(true);
+
+
+// linkBar to log/reporting/graph/ID_card
+
+function getCheckedList(tree)
+{
+	return tree.getAllChecked();
+}
+
+
+if(document.getElementById('menu_2'))
+{
+	var _menu_2 = document.getElementById('menu_2')
+	var _divBar = document.createElement("div");
+	
+	_divBar.appendChild(create_log_link(tree,'id'));
+	_divBar.appendChild(create_monitoring_link(tree,'id'));
+//	_divBar.appendChild(create_report_link(tree,'id'));
+//	_divBar.appendChild(create_IDCard_link(tree,'id'));
+
+	_divBar.setAttribute('style','float:right; margin-right:110px;' );
+	_menu_2.appendChild(_divBar);
+}
+//end for linkBar
+
 
 			function onDblClick(nodeId)
 			{
