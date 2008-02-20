@@ -27,10 +27,10 @@ if [ $USERID != 0 ]; then
 fi
 
 DEFAULT_INSTALL_DIR_NAGIOS="/usr/local/nagios"
-DEFAULT_INSTALL_DIR_OREON=/usr/local/oreon
+DEFAULT_INSTALL_DIR_CENTREON="/usr/local/centreon"
 DEFAULT_NAGIOS_ETC=/usr/local/nagios/etc
 DEFAULT_NAGIOS_PLUGIN=/usr/local/nagios/libexec
-DEFAULT_NAGIOS_IMG=/usr/local/nagios/share/images
+DEFAULT_NAGIOS_IMG=/usr/local/nagios/share/images/logos
 DEFAULT_NAGIOS_BIN=/usr/local/nagios/bin
 DEFAULT_NAGIOS_VAR=/usr/local/nagios/var
 DEFAULT_RRD_PERL=/usr/lib/perl5
@@ -42,6 +42,8 @@ DEFAULT_NAGIOS_GROUP=nagios
 DEFAULT_BIN_RRDTOOL=/usr/bin/rrdtool
 DEFAULT_BIN_MAIL=/usr/bin/mail
 DEFAULT_PEAR_PATH=/usr/share/php
+
+TMPDIR=/tmp/centreon-setup
 
 cat <<EOF
 ###############################################################################
@@ -87,7 +89,11 @@ MV=`which mv`
 CHMOD=`which chmod`
 CHOWN=`which chown`
 ECHO=`which echo`
+CAT=`which cat`
 MORE=`which more`
+MKDIR=`which mkdir`
+FIND=`which find`
+SED=`which sed`
 
 date > $LOG_FILE
 
@@ -104,8 +110,10 @@ test_yes_or_not(){
     fi
 }
 
+echo ""
+echo "You Will now read Centreon License. Push enter to continue."
+read temp
 tput clear
-
 more ./LICENSE
 
 $SETCOLOR_NORMAL
@@ -117,7 +125,7 @@ if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ] ;then
     while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ]
       do
       echo "Do you accept GPL License ?"
-      echo -n "[y/n], default to [n]:"
+      echo -n "    [y/n], default to [n]:"
       read temp
     done
 fi
@@ -141,7 +149,6 @@ test_answer(){
     fi
 }
 
-
 # CONFIGURATION
 
 if test -a $CENTREON_CONF ; then
@@ -155,36 +162,34 @@ if test -a $CENTREON_CONF ; then
     echo "You already seem to have to install Centreon."
     echo ""
     echo "Do you want use last Centreon install parameters ?"
-    echo -n "[y/n], default to [y]:"
+    echo -n "     [y/n], default to [y]:"
     read temp
     if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
-	while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
-	  do
-	  echo "Do you want use last Centreon install parameters ?"
-	  echo -n "[y/n], default to [y]:"
-	  read temp
-	done
+		while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+		  do
+		  echo "Do you want use last Centreon install parameters ?"
+		  echo -n "[y/n], default to [y]:"
+		  read temp
+		done
     fi
     if [ -z $temp ];then
-	temp=y
-    fi
-    
+		temp=y
+    fi  
     if [ $temp = "y" ];then
-	echo ""
-	echo_passed "Using '$CENTREON_CONF' :" "PASSED"
-	. $CENTREON_CONF
-	echo ""
+		echo ""
+		echo_passed "Using '$CENTREON_CONF' :" "PASSED"
+		. $CENTREON_CONF
+		echo ""
     fi
 fi
 
-
 if [ -z $INSTALL_DIR_NAGIOS ];then
-    INSTALL_DIR_NAGIOS="/usr/local/nagios"
+    INSTALL_DIR_NAGIOS=$DEFAULT_INSTALL_DIR_NAGIOS
     echo "Where is installed Nagios ?"
     echo -n "default to [$INSTALL_DIR_NAGIOS]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$INSTALL_DIR_NAGIOS"
+		temp="$INSTALL_DIR_NAGIOS"
     fi
     valueok=0
     while [ ! -d "$temp/" ]; do
@@ -207,7 +212,7 @@ if [ -z $NAGIOS_ETC ];then
     echo -n "default to [$NAGIOS_ETC]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$NAGIOS_ETC"
+		temp="$NAGIOS_ETC"
     fi
     while [ ! -f "${temp}/nagios.cfg" ]; do
 	echo_passed "${NAGIOS_ETC}/nagios.cfg not found" "CRITICAL"
@@ -224,7 +229,7 @@ if [ -z $NAGIOS_ETC ];then
 fi
 
 if [ -z $NAGIOS_VAR ];then
-    NAGIOS_VAR="$INSTALL_DIR_NAGIOS/var"
+    NAGIOS_VAR=$DEFAULT_NAGIOS_VAR
     echo "Where is your nagios var directory ?"
     echo -n "default to [$NAGIOS_VAR]:"
     read temp
@@ -246,13 +251,12 @@ if [ -z $NAGIOS_VAR ];then
 fi
 
 if [ -z $NAGIOS_PLUGIN ];then
-    #nagios plugins directory for oreon
-    NAGIOS_PLUGIN="$INSTALL_DIR_NAGIOS/libexec"
+    NAGIOS_PLUGIN="$DEFAULT_NAGIOS_PLUGIN"
     echo "Where is your nagios plugins (libexec) directory ?"
-    echo -n "default to [$NAGIOS_PLUGIN]:"
+    echo -n "    default to [$NAGIOS_PLUGIN]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$NAGIOS_PLUGIN"
+		temp="$NAGIOS_PLUGIN"
     fi
     while [ ! -d "$temp" ] ; do
 	create_libexec="null"
@@ -273,21 +277,21 @@ if [ -z $NAGIOS_PLUGIN ];then
 	if [ $create_libexec = "y" ] || [ $create_libexec = "Y" ]; then
 	    mkdir -p $temp
 	    if [ $? = 1 ]; then
-		echo_passed "Could not create directory" "CRITICAL"
-		echo ""
-		echo "Where is your nagios plugins (libexec) directory ?"
-		echo -n "default to [$NAGIOS_PLUGIN]:"
-		read temp
-		if [ -z "$temp" ]; then
-		    temp="$NAGIOS_PLUGIN"
-		fi
+			echo_passed "Could not create directory" "CRITICAL"
+			echo ""
+			echo "Where is your nagios plugins (libexec) directory ?"
+			echo -n "    default to [$NAGIOS_PLUGIN] : "
+			read temp
+			if [ -z "$temp" ]; then
+			    temp="$NAGIOS_PLUGIN"
+			fi
 	    fi
 	else
 	    echo "Where is your nagios plugins (libexec) directory ?"
-	    echo -n "default to [$NAGIOS_PLUGIN]:"
+	    echo -n "    default to [$NAGIOS_PLUGIN]:"
 	    read temp
 	    if [ -z "$temp" ]; then
-		temp="$NAGIOS_PLUGIN"
+			temp="$NAGIOS_PLUGIN"
 	    fi
 	fi
     done
@@ -297,13 +301,12 @@ if [ -z $NAGIOS_PLUGIN ];then
 fi
 
 if [ -z $NAGIOS_BIN ];then
-    #nagios plugins directory for oreon
     NAGIOS_BIN="$INSTALL_DIR_NAGIOS/bin"
     echo "Where is your nagios bin directory?"
-    echo -n "default to [$NAGIOS_BIN]:"
+    echo -n "    default to [$NAGIOS_BIN] : "
     read temp
     if [ -z "$temp" ]; then
-	temp="$NAGIOS_BIN"
+		temp="$NAGIOS_BIN"
     fi
     while [ ! -x "${temp}/nagios" ]; do
 	echo_passed "Cannot find ${temp}/nagios" "CRITICAL"
@@ -320,17 +323,17 @@ if [ -z $NAGIOS_BIN ];then
 fi
 
 if [ -z $NAGIOS_IMG ];then
-    NAGIOS_IMG="$INSTALL_DIR_NAGIOS/share/images"
+    NAGIOS_IMG=$DEFAULT_NAGIOS_IMG
     echo "Where is your nagios image directory ?"
-    echo -n "default to [$NAGIOS_IMG]:"
+    echo -n "     default to [$NAGIOS_IMG]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$NAGIOS_IMG"
+		temp="$NAGIOS_IMG"
     fi
     while [ ! -d "$temp" ]; do
 	echo_passed "$temp is not a directory." "CRITICAL"
 	echo "Where is your nagios image directory ?"
-	echo -n "default to [$NAGIOS_IMG]:"
+	echo -n "    default to [$NAGIOS_IMG]:"
 	read temp
 	if [ -z "$temp" ]; then
 	    temp="$NAGIOS_IMG"
@@ -341,19 +344,18 @@ if [ -z $NAGIOS_IMG ];then
     echo ""
 fi
 
-
 if [ -z $SUDO_FILE ];then
-    SUDO_FILE="/etc/sudoers"
+    SUDO_FILE="$DEFAULT_SUDO_FILE"
     echo "Where is sudo configuration file?"
-    echo -n "default to [$SUDO_FILE]:"
+    echo -n "    default to [$SUDO_FILE]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$SUDO_FILE"
+		temp="$SUDO_FILE"
     fi
     while [ ! -f "$temp" ]; do
 	echo_passed "$temp if not a file." "CRITICAL"
 	echo "Where is sudo configuration file?"
-	echo -n "default to [$SUDO_FILE]:"
+	echo -n "    default to [$SUDO_FILE]:"
 	read temp
 	if [ -z "$temp" ]; then
 	    temp="$SUDO_FILE"
@@ -365,19 +367,19 @@ if [ -z $SUDO_FILE ];then
 fi
 
 if [ -z $RRD_PERL ];then
-    RRD_PERL="/usr/local/rrdtool/lib/perl"
+    RRD_PERL="$DEFAULT_RRD_PERL"
     echo "Where is installed RRD perl modules [RRDs.pm] ?"
     echo "Just put directory, not full path."
-    echo -n "default to [$RRD_PERL]:"
+    echo -n "   default to [$RRD_PERL]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$RRD_PERL"
+		temp="$RRD_PERL"
     fi
     while [ ! -f "$temp/RRDs.pm" ]; do
 	echo_passed "Cannot find ${temp}/RRDs.pm." "CRITICAL"
 	echo "Where is installed RRD perl modules [RRDs.pm] ?"
 	echo "Just put directory, not full path."
-	echo -n "default to [$RRD_PERL]:"
+	echo -n "    default to [$RRD_PERL]:"
 	read temp
 	if [ -z "$temp" ]; then
 	    temp="$RRD_PERL"
@@ -389,12 +391,12 @@ if [ -z $RRD_PERL ];then
 fi
 
 if [ -z $BIN_RRDTOOL ];then
-    BIN_RRDTOOL="/usr/bin/rrdtool"
+    BIN_RRDTOOL="$DEFAULT_BIN_RRDTOOL"
     echo "Where is rrdtool binary ?"
-    echo -n "default to [$BIN_RRDTOOL]:"
+    echo -n "    default to [$BIN_RRDTOOL]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$BIN_RRDTOOL"
+		temp="$BIN_RRDTOOL"
     fi
     while [ ! -x "$temp" ]; do
 	echo_passed "$temp is not found or is not runnable" "CRITICAL"
@@ -410,15 +412,13 @@ if [ -z $BIN_RRDTOOL ];then
     echo ""
 fi
 
-
 if [ -z $BIN_MAIL ];then
-    #MAIL binary path
-    BIN_MAIL="/usr/bin/mail"
+    BIN_MAIL="$DEFAULT_BIN_MAIL"
     echo "Where is mail binary ?"
-    echo -n "default to [$BIN_MAIL]:"
+    echo -n "   default to [$BIN_MAIL]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$BIN_MAIL"
+    	temp="$BIN_MAIL"
     fi
     while [ ! -x "$temp" ]; do
 	echo_passed "$temp not found or not runnable" "CRITICAL"
@@ -434,13 +434,13 @@ if [ -z $BIN_MAIL ];then
     echo ""
 fi
 
-if [ -z $INSTALL_DIR_OREON ];then
-    INSTALL_DIR_OREON="/usr/local/centreon"
+if [ -z $INSTALL_DIR_CENTREON ];then
+    INSTALL_DIR_CENTREON="$DEFAULT_INSTALL_DIR_CENTREON"
     echo "Where do I install centreon ?"
-    echo -n "default to [$INSTALL_DIR_OREON]:"
+    echo -n "    default to [$INSTALL_DIR_CENTREON]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$INSTALL_DIR_OREON"
+		temp="$INSTALL_DIR_CENTREON"
     fi
     while [ ! -d "$temp" ] ; do
 	create_oreon="null"
@@ -461,21 +461,21 @@ if [ -z $INSTALL_DIR_OREON ];then
 	if [ $create_oreon = "y" ] || [ $create_oreon = "Y" ]; then
 	    mkdir -p $temp
 	    if [ $? = 1 ]; then
-		echo_passed "Could not create directory" "CRITICAL"
-		echo ""
-		echo "Where do I install Centreon ?"
-		echo -n "default to [$INSTALL_OREON_DIR]:"
-		read temp
-		if [ -z "$temp" ]; then
-		    temp="$INSTALL_DIR_OREON"
-		fi
+			echo_passed "Could not create directory" "CRITICAL"
+			echo ""
+			echo "Where do I install Centreon ?"
+			echo -n "    default to [$INSTALL_DIR_CENTREON]:"
+			read temp
+			if [ -z "$temp" ]; then
+			    temp="$INSTALL_DIR_CENTREON"
+			fi
 	    fi
 	else
 	    echo "Where do I install Centreon ?"
-	    echo -n "default to [$INSTALL_DIR_OREON]:"
+	    echo -n "    default to [$INSTALL_DIR_CENTREON]:"
 	    read temp
 	    if [ -z "$temp" ]; then
-		temp="$INSTALL_DIR_OREON"
+			temp="$INSTALL_DIR_CENTREON"
 	    fi
 	fi
     done
@@ -484,522 +484,402 @@ if [ -z $INSTALL_DIR_OREON ];then
     echo ""
 fi
 
-
 if [ -z $PEAR_PATH ];then
-        PEAR_PATH="/usr/share/pear"
-	    echo "Where is PEAR Path ?"
-	        echo -n "default to [$PEAR_PATH]:"
-		    read temp
-		        test_answer PEAR_PATH $temp
-			    PEAR_PATH=${PEAR_PATH%/}
-			        while [ ! -f "${PEAR_PATH}/PEAR.php" ]
-				      do 
-				        echo_passed "${PEAR_PATH}/PEAR.php not found" "CRITICAL"
-					      echo "Where is PEAR Path ?"
-					            PEAR_PATH="/usr/share/pear"
-						          echo -n "default to [$PEAR_PATH]:"
-							        read temp
-								      test_answer PEAR_PATH $temp
-								            PEAR_PATH=${PEAR_PATH%/}
-									        done
-				    echo_success "PEAR Path $PEAR_PATH" "OK" 
-				        echo ""
-					fi
-
-
-
-_______________________________________________________
-
-if [ -z $INSTALL_DIR_NAGIOS ];then
-    INSTALL_DIR_NAGIOS=$DEFAULT_INSTALL_DIR_NAGIOS
-    echo "Where is installed Nagios ?"
-    echo -n "default to [$INSTALL_DIR_NAGIOS]:"
-    read temp
-    test_answer INSTALL_DIR_NAGIOS $temp
-    INSTALL_DIR_NAGIOS=${INSTALL_DIR_NAGIOS%/}
-		echo ""
-	fi
-
-	if [ -z $NAGIOS_ETC ];then
-		#nagios etc directory for oreon
-		NAGIOS_ETC="$INSTALL_DIR_NAGIOS/etc"
-		echo "Where are your nagios etc directory ?"
-		echo -n "default to [$NAGIOS_ETC]:"
-		read temp
-		test_answer NAGIOS_ETC $temp
-		NAGIOS_ETC=${NAGIOS_ETC%/}
-		if [ -a "${NAGIOS_ETC}/nagios.cfg" ]; then
-		     echo_success "Path $NAGIOS_ETC/nagios.cfg" "OK"
-		else
-			echo_passed "${NAGIOS_ETC}/nagios.cfg not found" "CRITICAL"
-			echo "Where are your nagios etc directory ?"
-			echo -n " :"
-			read temp
-			test_answer NAGIOS_ETC $temp
-			NAGIOS_ETC=${NAGIOS_ETC%/}
-		fi
-		echo ""
-	fi
-
-	if [ -z $NAGIOS_PLUGIN ];then
-		#nagios plugins directory for oreon
-		NAGIOS_PLUGIN="$INSTALL_DIR_NAGIOS/libexec"
-		echo "Where are your nagios plugins / libexec  directory ?"
-		echo -n "default to [$NAGIOS_PLUGIN]:"
-		read temp
-		test_answer NAGIOS_PLUGIN $temp
-		NAGIOS_PLUGIN=${NAGIOS_PLUGIN%/}
-		echo ""
-	fi
-
-	if [ -z $NAGIOS_BIN ];then
-		#nagios plugins directory for oreon
-		NAGIOS_BIN="$INSTALL_DIR_NAGIOS/bin"
-		echo "Where are your nagios bin  directory ?"
-		echo -n "default to [$NAGIOS_BIN]:"
-		read temp
-		test_answer NAGIOS_BIN $temp
-		NAGIOS_BIN=${NAGIOS_BIN%/}
-		echo ""
-	fi
-
-	
-	if [ -z $NAGIOS_IMG ];then
-          #nagios plugins directory for oreon
-	  NAGIOS_IMG="$INSTALL_DIR_NAGIOS/share/image"
-	  echo "Where are your nagios image  directory ?"
-	  echo -n "default to [$NAGIOS_IMG]:"
-	  read temp
-	  test_answer NAGIOS_IMG $temp
-	  NAGIOS_IMG=${NAGIOS_IMG%/}
-	  echo ""
-	fi
-
-
-	if [ -z $INSTALL_DIR_OREON ];then
-		#setup directory for oreon
-		INSTALL_DIR_OREON="/usr/local/oreon"
-		echo "Where do I install Oreon ?"
-		echo -n "default to [$INSTALL_DIR_OREON]:"
-		read temp
-		test_answer INSTALL_DIR_OREON $temp
-		INSTALL_DIR_OREON=${INSTALL_DIR_OREON%/}
-		echo ""
-	fi
-
-	if [ -z $SUDO_FILE ];then
-		#Configuration file for sudo
-		SUDO_FILE="/etc/sudoers"
-		echo "Where is sudo ?"
-		echo -n "default to [$SUDO_FILE]:"
-		read temp
-		test_answer SUDO_FILE $temp
-		SUDO_FILE=${SUDO_FILE%/}
-		echo ""
-	fi
-
-	if [ -z $RRD_PERL ];then
-		#RRDTOOL perl module directory
-		RRD_PERL="/usr/local/rrdtool/lib/perl"
-		echo "Where is installed RRD perl modules (RRDs.pm) ?"
-		echo "Just put directory, not full path."
-		echo -n "default to [$RRD_PERL]:"
-		read temp
-		test_answer RRD_PERL $temp
-		RRD_PERL=${RRD_PERL%/}
-		echo ""
-	fi
-
-	if [ -z $BIN_RRDTOOL ];then
-		#RRDTOOL binary path
-		BIN_RRDTOOL="/usr/bin/rrdtool"
-		echo "Where is rrdtool binary ?"
-		echo -n "default to [$BIN_RRDTOOL]:"
-		read temp
-		test_answer BIN_RRDTOOL $temp
-		BIN_RRDTOOL=${BIN_RRDTOOL%/}
-		if [ -x "$BIN_RRDTOOL" ]; then
-		     echo_success "$BIN_RRDTOOL" "OK"
-		else
-			echo_passed "$BIN_RRDTOOL not found" "CRITICAL"
-			echo "Where is rrdtool binary ?"
-			echo -n " :"
-			read temp
-			test_answer BIN_RRDTOOL $temp
-			BIN_RRDTOOL=${BIN_RRDTOOL%/}
-		fi
-		echo ""
-	fi
-
-
-	if [ -z $BIN_MAIL ];then
-		#MAIL binary path
-		BIN_MAIL="/usr/bin/mail"
-		echo "Where is mail binary ?"
-		echo -n "default to [$BIN_MAIL]:"
-		read temp
-		test_answer BIN_MAIL $temp
-		BIN_MAIL=${BIN_MAIL%/}
-		if [ -x "$BIN_MAIL" ]; then
-		     echo_success "$BIN_MAIL" "OK"
-		else
-			echo_passed "$BIN_MAIL not found" "CRITICAL"
-			echo "Where is mail binary ?"
-			echo -n " :"
-			read temp
-			test_answer BIN_MAIL $temp
-			BIN_MAIL=${BIN_MAIL%/}
-		fi
-
-		echo ""
-	fi
-
-	if [ -z $PEAR_PATH ];then
-		PEAR_PATH="/usr/share/pear"
+    PEAR_PATH=$DEFAULT_PEAR_PATH
+	$ECHO "Where is PEAR Path ?"
+	$ECHO -n "default to [$PEAR_PATH]:"
+	read temp
+	test_answer PEAR_PATH $temp
+	PEAR_PATH=${PEAR_PATH%/}
+	while [ ! -f "${PEAR_PATH}/PEAR.php" ]
+	do 
+		echo_passed "${PEAR_PATH}/PEAR.php not found" "CRITICAL"
 		echo "Where is PEAR Path ?"
-		echo -n "default to [$PEAR_PATH]:"
-		read temp
-		test_answer PEAR_PATH $temp
-		PEAR_PATH=${PEAR_PATH%/}
-		while [ ! -f "${PEAR_PATH}/PEAR.php" ]
-		do 
-		  echo_passed "${PEAR_PATH}/PEAR.php not found" "CRITICAL"
-		  echo "Where is PEAR Path ?"
-		  PEAR_PATH="/usr/share/pear"
-		  echo -n "default to [$PEAR_PATH]:"
-		  read temp
-		  test_answer PEAR_PATH $temp
-		  PEAR_PATH=${PEAR_PATH%/}
-		done
-	        echo_success "PEAR Path $PEAR_PATH/PEAR.php" "OK"
-		echo ""
-	fi
+		PEAR_PATH="/usr/share/pear"
+	  	echo -n "default to [$PEAR_PATH]:"
+	    read temp
+	    test_answer PEAR_PATH $temp
+	    PEAR_PATH=${PEAR_PATH%/}
+	done
+	echo_success "PEAR Path $PEAR_PATH" "OK" 
+	$ECHO ""
+fi
 
 
-##
-## Functions
-##
-
-# When exit on error
-
-function error()
-{
-    echo "ERROR"
-    exit 2
-}
-
-# Check apache version, and configure it. Ask to restart apache server
-# Make a copy of the original file as httpd.conf.initial
-
-function configureApache()
-{
-    echo ""
-    echo "------------------------------------------------------------------------"
-    echo "                        Configure Apache server"
-    echo "------------------------------------------------------------------------"
-    echo ""
-    echo ""
-    
-    if test -d $INSTALL_DIR_OREON ; then
-      	echo_passed "$INSTALL_DIR_OREON already exists" "PASSED"
+function installCentreon(){
+    $ECHO ""
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO "                    Start Centreon Installation"
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO ""
+	$ECHO ""
+	
+	if test -d $TMPDIR/filesGeneration/nagiosCFG ; then
+		echo_passed "$TMPDIR/filesGeneration/nagiosCFG already exists" "PASSED"
     else
-      	mkdir $INSTALL_DIR_OREON 2>&1 >> ${LOG_FILE}
-      	echo_success "Creating $INSTALL_DIR_OREON" "OK"
+		echo_success "Creating '$TMPDIR/filesGeneration/nagiosCFG'" "OK"
+		$MKDIR $TMPDIR/filesGeneration/nagiosCFG
     fi
 
-    # configure httpd.conf
-    if test -e $DIR_APACHE_CONF/centreon.conf ; then
-	echo "Finding Apache Centreon configuration file"
-	echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "OK"
-	echo "Do you want rewrite Apache configuration file ?"
-	echo -n "[y/n], default to [y]:"
+	if test -d $TMPDIR/filesUpload/nagiosCFG ; then
+		echo_passed "$TMPDIR/filesUpload/nagiosCFG already exists" "PASSED"
+    else
+		echo_success "Creating '$TMPDIR/filesUpload/nagiosCFG'" "OK"
+		mkdir $TMPDIR/filesUpload/nagiosCFG
+    fi
+
+	`$SED -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' -e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' "$TMPDIR/www/install/insertBaseConf.sql" > "$TMPDIR/www/install/insertBaseConf.sql2"`
+	$MV $TMPDIR/www/install/insertBaseConf.sql2 $TMPDIR/www/install/insertBaseConf.sql 2>&1 >> $LOG_FILE
+    
+    `$SED -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g'  "$TMPDIR/www/install/createTablesODS.sql" > "$TMPDIR/www/install/createTablesODS.sql2"`
+	$MV $TMPDIR/www/install/createTablesODS.sql2 $TMPDIR/www/install/createTablesODS.sql  2>&1 >> $LOG_FILE
+    
+    $CHMOD -R 755 $TMPDIR/www/  2>&1 >> $LOG_FILE
+    $CHOWN -R root:root $TMPDIR/www/  2>&1 >> $LOG_FILE
+    
+    $CHMOD -R 775 $TMPDIR/etc/  2>&1 >> $LOG_FILE
+    $CHOWN -R $WEB_USER:$WEB_GROUP $TMPDIR/etc/  2>&1 >> $LOG_FILE
+        
+    $CHMOD 775 $TMPDIR/filesGeneration 2>&1 >> $LOG_FILE
+    $CHOWN -R $WEB_USER:$WEB_GROUP $TMPDIR/filesGeneration 2>&1 >> $LOG_FILE
+
+    $CHMOD 775 $TMPDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
+    $CHOWN -R $WEB_USER:$WEB_GROUP $TMPDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
+    
+    $CHMOD 775 $TMPDIR/log 2>&1 >> $LOG_FILE
+    $CHOWN $WEB_USER:$NAGIOS_GROUP $TMPDIR/log 2>&1 >> $LOG_FILE
+
+    # A enlever si WaTT fait un truc spécial pour le remplacer...
+    $CHMOD 775 $NAGIOS_ETC 2>&1 >> $LOG_FILE
+    $CHOWN -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_ETC 2>&1 >> $LOG_FILE
+
+	# Set access to var dir
+	$CHMOD 775 $TMPDIR/var
+	$CHOWN -R $WEB_USER:$NAGIOS_GROUP $TMPDIR/var
+	
+	# Prepare con : Macro chmod and chown
+	prepareCron
+	
+	# Prepare Traps
+	prepareTraps
+	
+	# Prepare Centstorage
+	installCentstorage
+	
+	# Prepare Centcore
+	installCentcore
+	
+	for directory in "bin" "cron" "doc" "etc" "filesGeneration" "filesUpload" "GPL_LIB" "lib" "log" "var" "temp" "www" 
+		do
+	  	if test -d $directory ; then
+			$FIND $TMPDIR/$directory/ -name "*.php" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+			$FIND $TMPDIR/$directory/ -name "*.ihtml" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+			$FIND $TMPDIR/$directory/ -name "*.html" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+			$FIND $TMPDIR/$directory/ -name "*.pl" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+			$FIND $TMPDIR/$directory/ -name "*.sh" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+	      	cp -pR $TMPDIR/$directory/ $INSTALL_DIR_CENTREON/ >> $LOG_FILE 2>> $LOG_FILE
+	      	echo_success "Copy '$directory'" "OK"
+	  	fi
+	done
+	
+	# Config Cron
+	configCron
+}
+
+function prepareTraps(){
+	$ECHO ""
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO "                     Start Traps Handler Installation"
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO ""
+	$ECHO ""
+    $ECHO "Preparing traps Module..."
+
+	`$SED -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$TMPDIR/bin/centFillTrapDB" > "$TMPDIR/bin/centFillTrapDB-new"`
+	$MV $TMPDIR/bin/centFillTrapDB-new $TMPDIR/bin/centFillTrapDB 2>&1 >> $LOG_FILE
+	`$SED -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$TMPDIR/bin/centGenSnmpttConfFile" > "$TMPDIR/bin/centGenSnmpttConfFile-new"`
+	$MV $TMPDIR/bin/centGenSnmpttConfFile-new $TMPDIR/bin/centGenSnmpttConfFile 2>&1 >> $LOG_FILE
+	`$SED -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$TMPDIR/bin/centTrapHandler" > "$TMPDIR/bin/centTrapHandler-new"`
+	$MV $TMPDIR/bin/centTrapHandler-new $TMPDIR/bin/centTrapHandler 2>&1 >> $LOG_FILE
+	
+	echo "";
+	echo "Where is your SNMP configuration file ?";
+	echo -n "    default to [/etc/snmp/]:";
+	read tmp
+	if [ ! -z "$tmp" ] ;then
+		SNMP_DIR=$tmp;
+	fi
+	if [ ! -d "$SNMP_DIR" ] ;then
+		while [ ! -d "$SNMP_DIR" ]
+        do
+        	$ECHO ""
+	  		echo_warning "$SNMP_DIR is not a directory" "WARNING"
+          	$ECHO "Where is your SNMP configuration file ? "
+          	SNMP_DIR="/etc/snmp/";
+         	$ECHO -n "    default to [/etc/snmp/]:"
+          	read tmp
+	    	if [ ! -z "$tmp" ] ;then
+				SNMP_DIR=$tmp;
+			fi
+        done
+	fi
+	
+	# Create dir in snmp for adding configuration directory
+	if [ -d "$SNMP_DIR" ] ;then
+		if [ -e "${SNMP_DIR}/centreon_traps" ]; then
+			echo_passed "${SNMP_DIR}/centreon_traps/ exists" "PASSED" 
+		else 
+			$MKDIR ${SNMP_DIR}/centreon_traps/
+			echo_success "${SNMP_DIR}/centreon_traps/ created" "OK" 
+		fi
+		if [ -e "$TMPDIR/snmptrapd/snmptrapd.conf" ]; then
+			if [ -e "$SNMP_DIR/snmptrapd.conf" ]; then
+				$MV $SNMP_DIR/snmptrapd.conf $SNMP_DIR/snmptrapd.conf.old
+			fi
+			`$SED -e 's|@SNMPTT_INI_FILE@|'"${SNMP_DIR}centreon_traps/snmptt.ini"'|g'  "$TMPDIR/snmptrapd/snmptrapd.conf" > "$SNMP_DIR/snmptrapd.conf"`
+			echo_success "Moving snmptrapd.conf to $SNMP_DIR" "OK"
+		else
+			echo_passed "Cannot found $TMPDIR/snmptrapd/snmptrapd.conf" "CRITICAL"
+		fi
+	fi
+	
+	# Backup SNMPTT
+	if [ -e "$TMPDIR/snmptt/snmptt.ini" ]; then	
+		if [ -e "${SNMP_DIR}centreon_traps/snmptt.ini" ]; then
+			$MV ${SNMP_DIR}centreon_traps/snmptt.ini ${SNMP_DIR}centreon_traps/snmptt.ini.old
+		fi
+		$CP -pR $TMPDIR/snmptt/snmptt.ini ${SNMP_DIR}centreon_traps/
+		echo_success "Moving snmptt.ini to ${SNMP_DIR}centreon_traps/" "OK"
+	else
+		echo_passed "Cannot find $TMPDIR/snmptt/snmptt.ini" "CRITICAL"
+	fi
+	
+	# Configure SNMP 
+	if [ -e "$TMPDIR/snmptrapd/snmp.conf" ]; then	
+		if [ -e "${SNMP_DIR}snmp.conf" ]; then
+			$MV ${SNMP_DIR}snmp.conf ${SNMP_DIR}snmp.conf.old
+		fi
+		$CP -pR $TMPDIR/snmptrapd/snmp.conf ${SNMP_DIR}
+		echo_success "Moving snmp.conf to ${SNMP_DIR}" "OK"
+	else
+		echo_passed "Cannot found $TMPDIR/snmptrapd/snmp.conf" "CRITICAL"
+	fi
+		
+	$CHMOD -R 755 ${SNMP_DIR}centreon_traps/
+	$CHOWN -R ${WEB_USER}.${NAGIOS_GROUP} ${SNMP_DIR}centreon_traps/
+	if [ -e "/etc/init.d/snmptrapd" ] ;then
+		/etc/init.d/snmptrapd restart 2>&1 >> /dev/null
+	fi
+
+	# Create conf dir for SNMPTT
+	if [ -e "$TMPDIR/snmptt/snmptt" ]; then	
+		$CHMOD 755 $TMPDIR/snmptt/snmptt 
+		$CP -pR $TMPDIR/snmptt/snmptt /usr/sbin/
+		echo_success "Moving snmptt to /usr/sbin/" "OK"
+	else
+		echo_passed "Cannot find $TMPDIR/snmptt/snmptt" "CRITICAL"
+	fi
+	
+	Install SNMPTTConvertMib
+	if [ -e "$TMPDIR/snmptt/snmpttconvertmib" ]; then	
+		$CP $TMPDIR/snmptt/snmpttconvertmib /usr/sbin/
+		$CHMOD 755 $TMPDIR/snmptt/snmpttconvertmib
+		echo_success "Moving snmpttconvertmib to /usr/sbin/" "OK"
+	else
+		echo_passed "Cannot find $TMPDIR/snmptt/snmpttconvertmib" "CRITICAL"
+	fi
+}
+
+function installCentstorage(){
+	$ECHO ""
+    $ECHO "------------------------------------------------------------------------"
+    $ECHO "                    Start Centstorage Installation"
+    $ECHO "------------------------------------------------------------------------"
+    $ECHO ""
+    $ECHO ""
+    
+    $ECHO "Checking Centstorage data folder : "
+    if test -d /var/lib/centreon ; then
+		echo_passed "Centstorage Directory already exists" "OK"
+    else
+		$MKDIR /var/lib/centreon/ 2>&1 >> $LOG_FILE
+		$MKDIR /var/lib/centreon/database 2>&1 >> $LOG_FILE
+		$CHOWN $NAGIOS_USER:$NAGIOS_GROUP /var/lib/centreon/database/ 2>&1 >> $LOG_FILE
+		$CHMOD 775 /var/lib/centreon/database/ 2>&1 >> $LOG_FILE
+		echo_success "Creating Centreon Directory '/var/lib/centreon/database/'" "OK"
+    fi
+    
+    echo "Checking ODS database folder : "
+    if test -d /var/lib/centreon/database/ ; then
+		echo_passed "Centreon Directory already exists" "PASSED"
+    else
+		$MKDIR /var/lib/centreon/database/ >> $LOG_FILE 2>> $LOG_FILE
+		echo_success "Creating Centreon Directory '/var/lib/centreon/database/'" "OK"
+    fi
+    
+    $SED -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  $TMPDIR/bin/centstorage > $TMPDIR/bin/centstorage-new
+    $MV $TMPDIR/bin/centstorage-new $TMPDIR/bin/centstorage
+    echo_success "Replace Centstorage Macro " "OK"
+    
+ 	$CHOWN $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/bin/centstorage
+	$CHMOD 7755 $TMPDIR/bin/centstorage
+	echo_success "Set centstorage properties " "OK"
+    	
+	$CHMOD 755 $TMPDIR/init.d.centstorage
+	$SED -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' $TMPDIR/init.d.centstorage > /etc/init.d/centstorage
+}
+
+function installCentcore(){
+	$ECHO ""
+    $ECHO "------------------------------------------------------------------------"
+    $ECHO "                      Start Centcore Installation"
+    $ECHO "------------------------------------------------------------------------"
+    $ECHO ""
+    $ECHO ""
+       
+    $SED -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' -e 's|@RRD_PERL@|'"$RRD_PERL"'|g'  $TMPDIR/bin/centcore > $TMPDIR/bin/centcore-new
+    $MV $TMPDIR/bin/centcore-new $TMPDIR/bin/centcore
+    echo_success "Replace centcore Macro " "OK"
+    
+ 	chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/bin/centcore
+	chmod 7755 $TMPDIR/bin/centcore
+	echo_success "Set centcore properties " "OK"
+    	
+	$CHMOD 755 $TMPDIR/init.d.centstorage
+	$SED -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' $TMPDIR/init.d.centcore > /etc/init.d/centcore
+}
+
+function prepareCron(){
+	$ECHO ""
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO "                       Replace Macro In scripts"
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO ""
+	$ECHO ""
+	
+	# Inventory Update Cron
+	$SED -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' $TMPDIR/cron/inventory_update.php > $TMPDIR/cron/inventory_update_new.php	
+	$MV $TMPDIR/cron/inventory_update_new.php $TMPDIR/cron/inventory_update.php 2>&1>> $LOG_FILE
+	$CHOWN -R $WEB_USER:$NAGIOS_GROUP $TMPDIR/cron/inventory_update.php 2>&1>> $LOG_FILE
+    $CHMOD 775 $TMPDIR/cron/inventory_update.php 2>&1>> $LOG_FILE
+    echo_success "in $TMPDIR/cron/inventory_update.php" "OK"
+	
+	# ArchiveLog script
+	$SED -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' $TMPDIR/cron/reporting/ArchiveLogInDB.php > $TMPDIR/cron/reporting/ArchiveLogInDB_new.php	
+	$MV $TMPDIR/cron/reporting/ArchiveLogInDB_new.php $TMPDIR/cron/reporting/ArchiveLogInDB.php
+	$CHOWN -R $WEB_USER:$NAGIOS_GROUP $TMPDIR/cron/reporting/ArchiveLogInDB.php 2>&1>> $LOG_FILE
+    $CHMOD 775 $TMPDIR/cron/reporting/ArchiveLogInDB.php 2>&1>> $LOG_FILE
+	echo_success "in $TMPDIR/cron/reporting/ArchiveLogInDB.php" "OK"
+	
+	# Parsing Log
+	$SED -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' $TMPDIR/bin/logAnalyser > $TMPDIR/bin/logAnalyser-new
+	$MV $TMPDIR/bin/logAnalyser-new $TMPDIR/bin/logAnalyser
+	$CHOWN -R $WEB_USER:$NAGIOS_GROUP $TMPDIR/bin/logAnalyser 2>&1>> $LOG_FILE
+    $CHMOD 775 $TMPDIR/bin/logAnalyser >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $TMPDIR/bin/logAnalyser" "OK"
+	
+	# Parsing Log
+	$SED -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' $TMPDIR/bin/nagiosPerfTrace > $TMPDIR/bin/nagiosPerfTrace-new
+	$MV $TMPDIR/bin/nagiosPerfTrace-new $TMPDIR/bin/nagiosPerfTrace
+	$CHOWN -R $WEB_USER:$NAGIOS_GROUP $TMPDIR/bin/nagiosPerfTrace 2>&1>> $LOG_FILE
+    $CHMOD 775 $TMPDIR/bin/nagiosPerfTrace >> $LOG_FILE 2>> $LOG_FILE
+	echo_success "in $TMPDIR/bin/nagiosPerfTrace" "OK"
+}
+
+function configCron(){
+
+    $ECHO ""
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO "                    Start Centreon Cron Configuration"
+	$ECHO "------------------------------------------------------------------------"
+	$ECHO ""
+	$ECHO ""
+	
+	PHP_FLG=`which php > /dev/null 2> /dev/null; echo $?`
+	if [ "$PHP_FLG" = "0" ] ; then
+	    PHP_BIN="php"
+	else
+	    PHP_FLG=`which php5 > /dev/null 2> /dev/null; echo $?`
+	    if [ "$PHP_FLG" == '0' ] ; then
+	        PHP_BIN="php5"
+	    else
+	        echo "PHP not found. Centreon take php by default"
+	        PHP_BIN="php"
+	    fi
+	fi
+    
+   	$SED -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' -e 's|@PHP_BIN@|'"$PHP"'|g' $TMPDIR/centreon.cron.conf > $TMPDIR/centreon.conf
+    $CHMOD 775 $TMPDIR/centreon.conf 2>&1>> $LOG_FILE
+    $CP -pR $TMPDIR/centreon.conf /etc/cron.d
+}
+
+function removeTmpFiles(){
+	$SETCOLOR_NORMAL
+	$ECHO ""
+	$ECHO "Do you want to remove temporary file ?"
+	$ECHO -n "    [y/n], default to [n] : "
 	read temp
-	if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
-	    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+	if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ] ;then
+	    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ]
 	      do
-	      echo "Do you want rewrite Apache configuration file ?"
-	      echo -n "[y/n], default to [y]:"
+	      echo "Do you want to remove temporary file ?"
+	      echo -n "    [y/n], default to [n] : "
 	      read temp
 	    done
 	fi
 	if [ -z $temp ];then
-	    temp=y
+	    temp="n"
 	fi
-    else
-	temp=y
-    fi
-    
-    if [ $temp = "y" ];then
-	echo "" > $DIR_APACHE_CONF/centreon.conf
-	cat << EOF >> $DIR_APACHE_CONF/centreon.conf
-##
-## Section add by Centreon Install Setup
-##
-	
-AddType application/x-java-jnlp-file .jnlp
-Alias /centreon $INSTALL_DIR_OREON/www/
-<Directory "$INSTALL_DIR_OREON/www">
-    Options None
-    AllowOverride AuthConfig Options
-    Order allow,deny
-    Allow from all
-</Directory>
-
-EOF
-
-        echo_success "Create '$DIR_APACHE_CONF/centreon.conf'" "OK"
-        echo_success "Configuring Apache" "OK"
-    else
-	echo_passed "Apache is already configurated" "PASSED"
-    fi
-
-    # add apache user to nagios group
-    #usermod -G $NAGIOS_GROUP,$WEB_USER $WEB_USER >> $LOG_FILE 2>> $LOG_FILE
-    #echo_success "User $WEB_USER added to nagios group" "OK"
-    #echo ""
-
-    # After finishing the configuration -> 
-    # restart apache !
-    if test -x /etc/init.d/apache ; then
-	/etc/init.d/apache restart >> $LOG_FILE 2>> $LOG_FILE
-    else if test -x /etc/init.d/httpd ; then
-	/etc/init.d/httpd restart
-    else if test -e /etc/init.d/apache2 ; then
-	/etc/init.d/apache2 restart >> $LOG_FILE 2>> $LOG_FILE
-    else
-	echo_warning "Unable to restart apache server" "WARNING"
-    fi
-    fi
-    fi
-    
+	if [ $temp = "y" ];then
+	    $RM -Rf $TMPDIR
+	    exit
+	fi
 }
-
-# install OREON interface
-
-function confirm_oreon()
-{
-    if test -f $INSTALL_DIR_OREON/www/centreon.conf.php ; then
-	  echo ""
-	  echo "Oreon is already install on your server !"
-
-	  echo -n "Are you sure you want to install OREON ?"
-      echo -n "[y/n], default to [n]:"
-	  read answer
-	  if [ "$answer" != "y" ] && [ "$answer" != "n" ] && [ ! -z $answer ] ;then
-	      while [ "$answer" != "y" ] && [ "$answer" != "n" ] && [ ! -z $answer ]
-		do
-		echo "Are you sure you want to install OREON ?"
-		echo -n "[y/n], default to [n]:"
-		read answer
-	      done
-	  fi
-	  if [ -z $answer ];then
-	  	answer=n
-	  fi
-	  if [ $answer == 'n' ]; then
-	      echo "Ok, so bye bye !! "
-	      exit
-	  else if [ $answer == 'y' ]; then
-	      install_oreon
-	      install_ods
-	      config_cron
-	      config_sudo
-	      #restart_mysql
-	  else
-	      echo "Please answer y or n ! "
-	      confirm_oreon
-	  fi
-	  fi
-    else
-	    install_oreon
-	    install_ods
-        config_cron
-	    config_sudo
-	    #restart_mysql
-    fi
-}
-
-function configureSUDO(){
-    echo ""
-    echo "------------------------------------------------------------------------"
-    echo "                            Configure Sudo"
-    echo "------------------------------------------------------------------------"
-    echo ""
-    echo ""
-    
-    # Find Nagios Init Script
-    check_nagios_init_script
-
-    sudo=`cat $SUDO_FILE | grep CENTREON > /dev/null; echo $?`
-    
-    if [ $sudo == '1' ]; then
-	echo "#Add by CENTREON installation script" >> $SUDO_FILE
-	echo "User_Alias      CENTREON= $WEB_USER" >> $SUDO_FILE
-	echo "## Nagios Restart" >> $SUDO_FILE
-	echo "CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
-	echo "## Nagios reload" >> $SUDO_FILE
-	echo "CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
-	echo "## Snmptrapd Restart" >> $SUDO_FILE
-	echo "CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
-	echo "" >> $SUDO_FILE
-	echo_success "Configuring Sudo" "OK"
-    else
-	echo_passed "Sudo is already configurated" "PASSED"
-    fi
-}
-
-function createConfFile()
-{
-	echo ""
-	echo "------------------------------------------------------------------------"
-	echo "                          Oreon Post Install"
-	echo "------------------------------------------------------------------------"
-	echo ""
-	echo ""
-
-	INSTALL_DIR_OREON_CONF="$INSTALL_DIR_OREON/www/install/installoreon.conf.php"
-	echo "<?" > $INSTALL_DIR_OREON_CONF
-	echo "/**" >> $INSTALL_DIR_OREON_CONF
-	echo "Oreon is developped with GPL Licence 2.0 :" >> $INSTALL_DIR_OREON_CONF
-	echo "http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt" >> $INSTALL_DIR_OREON_CONF
-	echo "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf" >> $INSTALL_DIR_OREON_CONF
-	echo "" >> $INSTALL_DIR_OREON_CONF
-	echo "The Software is provided to you AS IS and WITH ALL FAULTS." >> $INSTALL_DIR_OREON_CONF
-	echo "OREON makes no representation and gives no warranty whatsoever," >> $INSTALL_DIR_OREON_CONF
-	echo "whether express or implied, and without limitation, with regard to the quality," >> $INSTALL_DIR_OREON_CONF
-	echo "safety, contents, performance, merchantability, non-infringement or suitability for" >> $INSTALL_DIR_OREON_CONF
-	echo "any particular or intended purpose of the Software found on the OREON web site." >> $INSTALL_DIR_OREON_CONF
-	echo "In no event will OREON be liable for any direct, indirect, punitive, special," >> $INSTALL_DIR_OREON_CONF
-	echo "incidental or consequential damages however they may arise and even if OREON has" >> $INSTALL_DIR_OREON_CONF
-	echo "been previously advised of the possibility of such damages." >> $INSTALL_DIR_OREON_CONF
-	echo "" >> $INSTALL_DIR_OREON_CONF
-	echo "For information : contact@oreon-project.org" >> $INSTALL_DIR_OREON_CONF
-	echo "	*/" >> $INSTALL_DIR_OREON_CONF
-	echo "" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['oreon_dir'] = \"$INSTALL_DIR_OREON/\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['oreon_dir_www'] = \"$INSTALL_DIR_OREON/www/\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['oreon_dir_rrd'] = \"$INSTALL_DIR_OREON/rrd/\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['nagios'] = \"$INSTALL_DIR_NAGIOS/\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['nagios_conf'] = \"$NAGIOS_ETC/\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['nagios_plugins'] = \"$NAGIOS_PLUGIN/\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['nagios_bin'] = \"$NAGIOS_BIN/\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['nagios_init_script'] = \"$NAGIOS_INIT_SCRIPT\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['apache_user'] = \"$WEB_USER\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['apache_group'] = \"$WEB_GROUP\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['nagios_user'] = \"$NAGIOS_USER\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['nagios_group'] = \"$NAGIOS_GROUP\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['mail'] = \"$BIN_MAIL\";" >> $INSTALL_DIR_OREON_CONF
-	echo "\$conf_installoreon['pear_dir'] = \"$PEAR_PATH\";" >> $INSTALL_DIR_OREON_CONF
-	
-	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
-	  do
-	  echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
-	  tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
-	  echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-	  echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
-	  tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
-	  echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-	  echo "\";" >> $INSTALL_DIR_OREON_CONF
-	done
-	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
-	  do
-	  echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
-	  tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
-	  echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-	  echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
-	  tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
-	  echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-	  echo "\";" >> $INSTALL_DIR_OREON_CONF
-	done
-        for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
-	  do
-	  echo -n "\$conf_installoreon['" >> $INSTALL_DIR_OREON_CONF
-	  tmp=`echo  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_OREON_CONF
-	  echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-	  echo -n "'] = \"" >> $INSTALL_DIR_OREON_CONF
-	  tmp=`echo "$fichier" | cut -d = -f2` >> $INSTALL_DIR_OREON_CONF
-	  echo -n $tmp >> $INSTALL_DIR_OREON_CONF
-	  echo "\";" >> $INSTALL_DIR_OREON_CONF
-	done
-	
-	echo "?>" >> $INSTALL_DIR_OREON_CONF
-	echo_success "Create $INSTALL_DIR_OREON_CONF" "OK"
-	
-	echo "INSTALL_DIR_OREON=$INSTALL_DIR_OREON" > $OREON_CONF
-	echo "NAGIOS_ETC=$NAGIOS_ETC" >> $OREON_CONF
-	echo "NAGIOS_PLUGIN=$NAGIOS_PLUGIN" >> $OREON_CONF
-	echo "NAGIOS_BIN=$NAGIOS_BIN" >> $OREON_CONF
-	echo "NAGIOS_IMG=$NAGIOS_IMG" >> $OREON_CONF
-	echo "INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS" >> $OREON_CONF
-	echo "RRD_PERL=$RRD_PERL" >> $OREON_CONF
-	echo "SUDO_FILE=$SUDO_FILE" >> $OREON_CONF
-	echo "WEB_USER=$WEB_USER" >> $OREON_CONF
-	echo "WEB_GROUP=$WEB_GROUP" >> $OREON_CONF
-	echo "NAGIOS_USER=$NAGIOS_USER" >> $OREON_CONF
-	echo "NAGIOS_GROUP=$NAGIOS_GROUP" >> $OREON_CONF
-	echo "BIN_RRDTOOL=$BIN_RRDTOOL" >> $OREON_CONF
-	echo "BIN_MAIL=$BIN_MAIL" >> $OREON_CONF
-	echo "PEAR_PATH=$PEAR_PATH" >> $OREON_CONF
-	
-	echo_success "Create $OREON_CONF " "OK"
-	echo_success "Configuring Oreon post-install" "OK"
-}
-
-
-if test -d $NAGIOS_PLUGIN ; then
-    echo_success "Nagios libexec directory" "OK"
-else
-    mkdir -p $NAGIOS_PLUGIN > /dev/null
-    echo_success "Nagios libexec directory created" "OK"
-fi
-
 
 #########################################
 # Launch install
 #########################################
 
-copyInTempFile
-replaceMacro
-
-# check for httpd directory
-#check_httpd_directory
-
 ## Config Apache
-
-#check_group_apache
-#check_user_apache
+check_httpd_directory
+check_group_apache
+check_user_apache
 
 ## Config Nagios
+check_group_nagios
+check_user_nagios
 
-#check_group_nagios
-#check_user_nagios
+## Config sudo
+configureSUDO
 
-# installation script
+## Config Apache
+configureApache
 
-#check_group_nagiocmd
+## Create temp file copy file Into
+copyInTempFile
 
-#configure_apache
-#confirm_oreon
-#oreon_post_install
+## Replace macro in all files.
+InstallPlugins
 
-#configureApache
-#configureSUDO
-#configureCron
+## Install Web Interface
+installCentreon
 
+## Create ConfigFile
+createConfFile
 
+## Remove Temporary Files 
+removeTmpFiles
 
-
-echo ""
+$ECHO ""
 cat <<EOF
 ###############################################################################
-#      Go to the URL : http://your-server/oreon/  to finish the setup         #
+#      Go to the URL : http://your-server/centreon/  to finish the setup      #
 #                                                                             #
 #                    Report bugs at bugs@oreon-project.org                    #
 #                                                                             #
-#                             Thanks for using OREON.                         #
+#                           Thanks for using Centreon.                        #
 #                             -----------------------                         #
 #                        Contact : infos@oreon-project.org                    #
-#                           http://www.oreon-project.org                      #
+#                             http://www.centreon.com                         #
 ###############################################################################
 EOF
