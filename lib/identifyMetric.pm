@@ -29,12 +29,16 @@
 
 sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 	my (@data, $begin, $just_insert, $generalcounter);
+	
+	CheckMySQLConnexion();
 	$generalcounter = $_[5];
 	return $generalcounter if ($_[1] eq 0);
 	$just_insert = 0;   				
 	# Get conf Data
 	my $sth1 = $con_ods->prepare("SELECT * FROM config");
-	if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+	if (!$sth1->execute) {
+		writeLogFile("Error:" . $sth1->errstr . "\n");
+	}
 	my $configuration = $sth1->fetchrow_hashref();
 	undef($sth1);
 	
@@ -53,25 +57,33 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 			$data[0] =~ s/\,/\-/g;
 			$data[0] =~ s/\:/\-/g;
 			my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-			if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+			if (!$sth1->execute) {
+				writeLogFile("Error:" . $sth1->errstr . "\n");
+			}
 			if ($sth1->rows() eq 0){
 				$just_insert = 1;   				
 				undef($sth1);
 				
 				# Si pas connue -> insert
 			   	my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."')");
-			    if (!$sth2->execute){writeLogFile("Error:" . $sth2->errstr . "\n");}
+			    if (!$sth2->execute){
+			    	writeLogFile("Error:" . $sth2->errstr . "\n");
+			    }
 			    undef($sth2);
 			    # Get ID
 			   	$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-				if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
+				if (!$sth1->execute) {
+					writeLogFile("Error:" . $sth1->errstr . "\n");
+				}
 			}
 			my $metric = $sth1->fetchrow_hashref();
 			undef($sth1);
 			
 		   	if ($just_insert || ($metric->{'unit_name'} ne $data[2])){
 		   		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
-		    	if (!$sth1->execute){writeLogFile("Error:" . $sth1->errstr . "\n");}
+		    	if (!$sth1->execute){
+		    		writeLogFile("Error:" . $sth1->errstr . "\n");
+		    	}
 		    	undef($sth1);
 		   	}
 			
@@ -110,6 +122,9 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 
 sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter rebuild
 	my (@data, $begin, $just_insert, $generalcounter);
+	
+	CheckMySQLConnexion();
+	
 	$generalcounter = $_[5];
 	return $generalcounter if ($_[1] eq 0);
     $just_insert = 0;   				

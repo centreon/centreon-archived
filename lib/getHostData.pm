@@ -24,12 +24,14 @@
 # need in paramter : host_name
 
 sub getHostID($){
-	my $sth2 = $con_oreon->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '".$_[0]."' AND `host_register` = '1'");
-    if (!$sth2->execute) {writeLogFile("Error:" . $sth2->errstr . "\n");}
+	
+	my $con = CreateConnexionForOreon();
+	my $sth2 = $con->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '".$_[0]."' AND `host_register` = '1'");
+    writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
     my $data_host = $sth2->fetchrow_hashref();
     my $host_id = $data_host->{'host_id'};
     $sth2->finish();
-    undef($sth2);
+    $con->disconnect();
     undef($data_host);
     return $host_id;
 }
@@ -38,13 +40,16 @@ sub getHostID($){
 # need in paramter : host_id
 
 sub getHostName($){
-	if (!$_[0]){return 0;}
-	my $sth2 = $con_oreon->prepare("SELECT `host_name` FROM `host` WHERE `host_id` = '".$_[0]."' AND `host_register` = '1'");
-    if (!$sth2->execute) {writeLogFile("Error:" . $sth2->errstr . "\n");}
+	return 0 if (!$_[0]);
+	
+	my $con = CreateConnexionForOreon();
+	my $sth2 = $con->prepare("SELECT `host_name` FROM `host` WHERE `host_id` = '".$_[0]."' AND `host_register` = '1'");
+    writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
     my $data_host = $sth2->fetchrow_hashref();
     my $host_name = $data_host->{'host_name'};
-    undef($sth2);
-    undef($data_host->{'host_name'});
+    undef($data_host);
+    $sth2->finish();
+    $con->disconnect();
     return $host_name;
 }
 
