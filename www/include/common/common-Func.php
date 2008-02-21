@@ -989,7 +989,7 @@ For information : contact@oreon-project.org
 		}
 
 		while (false !== ($filename = readdir($dh))) {
-			if ( $filename == "." || $filename == "..")
+			if ( $filename == "." || $filename == ".." || $filename == ".svn")
 				continue;
 
 			# WARNING: recursive call
