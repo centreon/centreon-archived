@@ -680,7 +680,7 @@ function prepareTraps(){
 		echo_passed "Cannot find $TMPDIR/snmptt/snmptt" "CRITICAL"
 	fi
 	
-	Install SNMPTTConvertMib
+	# Install SNMPTTConvertMib
 	if [ -e "$TMPDIR/snmptt/snmpttconvertmib" ]; then	
 		$CP $TMPDIR/snmptt/snmpttconvertmib /usr/sbin/
 		$CHMOD 755 $TMPDIR/snmptt/snmpttconvertmib
