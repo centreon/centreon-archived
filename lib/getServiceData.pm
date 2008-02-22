@@ -24,11 +24,11 @@
 
 sub getServiceID($$){
 	$_[1] =~ s/\&/\&amp\;/g;
-	$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-									
+	
+	my $con = CreateConnexionForOreon();								
 	my $sth2 = $con->prepare(	"SELECT service_id FROM service, host_service_relation hsr ".
-									"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
-									"AND service_description = '".$_[1]."' AND `service_register` = '1' LIMIT 1");
+								"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
+								"AND service_description = '".$_[1]."' AND `service_register` = '1' LIMIT 1");
 	
 	if (!$sth2->execute) {
 		writeLogFile("Error when getting service id : " . $sth2->errstr . "\n");
@@ -36,9 +36,9 @@ sub getServiceID($$){
 	my $data = $sth2->fetchrow_hashref();
 	$sth2->finish();
 	if (!defined($data->{'service_id'}) && !$data->{'service_id'}){
-		$sth2 = $con->prepare("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
-									" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-									" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND `service_register` = '1'");
+		$sth2 = $con->prepare(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+								" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+								" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND `service_register` = '1'");
 		if (!$sth2->execute) {writeLogFile("Error when getting service id 2 : " . $sth2->errstr . "\n");}
 		my $data2 = $sth2->fetchrow_hashref();
 		$service_id = $data2->{'service_id'};
@@ -65,9 +65,8 @@ sub getServiceID($$){
 
 sub getServiceName($){	
    	if ($_[0]){
-   	
-   		$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	
+   		my $con = CreateConnexionForOreon();
+   		
    		my $sth2 = $con->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` = '1'");
 		if (!$sth2->execute) {
 			writeLogFile("Error getting service name : " . $sth2->errstr . "\n");
@@ -75,9 +74,10 @@ sub getServiceName($){
 		my $data = $sth2->fetchrow_hashref();
 		my $service_description = $data->{'service_description'};
 		undef($data);
-		$sth2->finish();
-		$con->disconnect();
+		
 		if (defined($service_description)){
+			$sth2->finish();
+			$con->disconnect();
 			return $service_description;
 		} else {
 			return 0;
@@ -94,18 +94,17 @@ sub getMyServiceField($$)	{
 	my $service_id = $_[0];
 	my $field = $_[1];
 	
-	$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	
+	my $con = CreateConnexionForOreon();
 	while(1){
 		my $sth1 = $con->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
     	if (!$sth1->execute) {
     		writeLogFile("Error When ods get service field : " . $sth1->errstr . "\n");
     	}
    		my $data = $sth1->fetchrow_hashref();
-    	$sth1->finish();
-		$con->disconnect();
     	if (defined($data->{$field}) && $data->{$field}){
   			undef($service_id);
+			$sth1->finish();
+			$con->disconnect();
   			return $data->{$field};
     	} elsif ($data->{'service_template_model_stm_id'}){
 			$service_id = $data->{'service_template_model_stm_id'};
@@ -116,22 +115,17 @@ sub getMyServiceField($$)	{
 }
 
 sub getServiceCheckInterval($){ # metric_id
-
-	$conO = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	
+	my $conO = CreateConnexionForCentstorage();
 	my $sth1 = $conO->prepare("SELECT index_id FROM metrics WHERE metric_id = '".$_[0]."'");
     if (!$sth1->execute){writeLogFile("Error where getting service interval : ".$sth1->errstr."\n");}
     my $data_metric = $sth1->fetchrow_hashref();
     $sth1->finish();
-    $conO->disconnect();
-    
-    $con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	
-    $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$data_metric->{'index_id'}."'");
+    	
+    $sth1 = $conO->prepare("SELECT service_id FROM index_data WHERE id = '".$data_metric->{'index_id'}."'");
     if (!$sth1->execute) {writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");}
     my $data_hst_svc = $sth1->fetchrow_hashref();
    	$sth1->finish();
- 	$con->disconnect();
+ 	$conO->disconnect();
  	undef($sth1);
     undef($data_metric);
     
@@ -141,19 +135,15 @@ sub getServiceCheckInterval($){ # metric_id
 }
 
 sub getServiceCheckIntervalFromService($){ # service_id
-    
-    $conO = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	
+    my $conO = CreateConnexionForCentstorage();
+
     $sth1 = $conO->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
-    if (!$sth1->execute) {
-    	writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");
-    }
+    writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n") if (!$sth1->execute);
     my $data_hst_svc = $sth1->fetchrow_hashref(); 
 	$sth1->finish();
- 	$conO->disconnect();
-    
-    undef($data_metric);
-    my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
+ 	
+   	my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
+    $conO->disconnect();
     undef($data_hst_svc);
     return $return;
 }

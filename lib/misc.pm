@@ -51,6 +51,20 @@ sub getRRDdatabase_path(){
 	return $RRDdatabase_path;
 }
 
+sub getRRDdatabase_status_path(){
+	my $data;
+	my $RRDdatabase_status_path;
+
+	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	my $sth2 = $con_ods->prepare("SELECT RRDdatabase_status_path FROM config");
+	if (!$sth2->execute) {writeLogFile("Error - RRDdatabase_path : " . $sth2->errstr . "\n");}
+	$data = $sth2->fetchrow_hashref();
+	$RRDdatabase_status_path = $data->{'RRDdatabase_status_path'};
+	undef($sth2);	
+	undef($data);
+	return $RRDdatabase_status_path;
+}
+
 sub getLenStorageDB(){
 	my $data;
 	my $len_storage_rrd;
@@ -66,7 +80,7 @@ sub getLenStorageDB(){
 	} 
 	undef($sth2);	
 	undef($data);
-	return $len_storage_rrd;
+	return $len_storage_rrd * 60 * 60 * 24;
 }
 
 

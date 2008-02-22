@@ -20,6 +20,7 @@
 ####################################################################
 
 sub getIntervalLenght(){
+	my $con_oreon = CreateConnexionForOreon();
 	my $sth = $con_oreon->prepare("SELECT interval_length FROM cfg_nagios WHERE nagios_activate = '1'");
 	if (!$sth->execute) {writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");}
 	my @data = $sth->fetchrow_hashref();
@@ -37,6 +38,9 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $nb_value;
 	my $interval_length;
 	
+	my $con_ods = CreateConnexionForCentstorage();
+	my $con_oreon = CreateConnexionForOreon();
+	
 	if (!-d $_[0]){
 		writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
 		if (!mkdir($_[0], "775")) {
@@ -51,19 +55,16 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		$metric_used_by_perfdata_parsor = $_[1];
 		RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
 		if ($ERR){
 			writeLogFile("Updating : $_[0]$_[1].rrd : ".substr($_[6], 0, 19).", ".$_[2].":".sprintf("%e", $_[3])."\n");
 			writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");	
 		}
-		$metric_used_by_perfdata_parsor = 0;
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
 			my $begin = $_[4] - 200000;
-			CheckMySQLConnexion();
 			$interval = getServiceCheckInterval($_[1]);
 			$interval = 3 if (!defined($interval));
 			$interval = getIntervalLenght() * $interval;
@@ -72,7 +73,6 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 			$_[6] =~ s/#S#/slash\_/g;
-			$metric_used_by_perfdata_parsor = $_[1];
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
 			$ERR = RRDs::error;
 			if ($ERR) {
@@ -88,7 +88,6 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while updating $_[0]/$_[1].rrd : $ERR\n");}	
-			$metric_used_by_perfdata_parsor = 0;
 			undef($begin);
 		}
 	}
@@ -99,15 +98,19 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 # Add new bin data in Mysql DataBase
 
 sub updateMysqlDB($$$$){ # connexion value timestamp
+	my $con_ods = CreateConnexionForCentstorage();
 	my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES ('".$_[0]."', '".$_[1]."', '".$_[2]."', '".$_[3]."')");
 	if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 	undef($sth1);
+	$con_ods->disconnect();
 }
 
 sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval type
 	my $ERR;
 	my $interval = 4000;
 
+	my $con_ods = CreateConnexionForCentstorage();
+	my $con_oreon = CreateConnexionForOreon();
 	if (!-d $_[0]){
 		writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
 		if (!mkdir($_[0], "775")) {
@@ -122,11 +125,9 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 		$valueRecorded++;
 		$_[3] =~ s/\,/\./g;
 		$_[6] =~ s/#S#/slash\_/g;
-		$metric_used_by_perfdata_parsor = $_[1];
 		RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 		$ERR = RRDs::error;
 		if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
-		$metric_used_by_perfdata_parsor = 0;
 	} else {
 		if ($_[0] && $_[1] && $_[5]){
 			$valueRecorded++;
@@ -140,7 +141,6 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 			writeLogFile("Creation of $_[0]$_[1].rrd\n");
 			$_[6] =~ s/#S#/slash\_/g;
-			$metric_used_by_perfdata_parsor = $_[1];
 			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$_[5], "RRA:MIN:0.5:12:".$_[5], "RRA:MAX:0.5:12:".$_[5]);
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n");}	
@@ -151,7 +151,6 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 			RRDs::update($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;
 			if ($ERR){writeLogFile("ERROR while updating $_[0]$_[1].rrd : $ERR\n");}
-			$metric_used_by_perfdata_parsor = 0;
 			undef($begin);
 		}
 	}
@@ -162,6 +161,7 @@ sub updateRrdDBforHiddenSVC($$$$$$$$){ # Path metric_id value timestamp interval
 # Add new bin data in Mysql DataBase
 
 sub updateMysqlDBforHiddenSVC($$$$){ # connexion value timestamp
+	my $con_ods = CreateConnexionForCentstorage();
 	my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES ('".$_[0]."', '".$_[1]."', '".$_[2]."', '".$_[3]."')");
 	if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 	undef($sth1);
