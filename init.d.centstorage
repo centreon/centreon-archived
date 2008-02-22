@@ -41,13 +41,12 @@
 # pidfile:
 ### END INIT INFO
 
-status_centstorage ()
+status_centstorage()
 {
     if test ! -f $centstorageRunFile; then
 		echo "No lock file found in $centstorageRunFile"
 		return 1
     fi
-    
     centstoragePID=`head -n 1 $centstorageRunFile`
     if ps -p $centstoragePID; then
 		return 0
@@ -57,8 +56,7 @@ status_centstorage ()
     return 1
 }
 
-
-killproc_centstorage ()
+killproc_centstorage()
 {
     if test ! -f $centstorageRunFile; then
 		echo "No lock file found in $centstorageRunFile"
@@ -71,22 +69,22 @@ killproc_centstorage ()
 
 # Source function library
 # Solaris doesn't have an rc.d directory, so do a test first
+
 if [ -f /etc/rc.d/init.d/functions ]; then
 	. /etc/rc.d/init.d/functions
 elif [ -f /etc/init.d/functions ]; then
 	. /etc/init.d/functions
 fi
 
-prefix=@OREON_PATH@/
-exec_prefix=${prefix}
-centstorageBin=${exec_prefix}/bin/centstorage
+prefix=@CENTREON_PATH@/
+centstorageBin=${prefix}/bin/centstorage2
 centstorageCfgFile=${prefix}/etc/conf.pm
 centstorageVarDir=${prefix}/var/
 centstorageRunFile=${prefix}/var/centstorage.pid
-centstorageDemLog=${prefix}/var/centstorage_demon.log
+centstorageDemLog=${prefix}/var/centstorage_daemon.log
 centstorageLockDir=/var/lock/subsys
 centstorageLockFile=centstorage
-NICE=5     
+NICE=5
 
 # Check that centstorage exists.
 if [ ! -f $centstorageBin ]; then
@@ -102,7 +100,6 @@ fi
           
 # See how we were called.
 case "$1" in
-
     start)
 	# Check lock file
 	if test -f $centstorageRunFile; then
@@ -120,27 +117,21 @@ case "$1" in
 	echo "Starting centstorage Collector : centstorage"
 	nice -n $NICE $centstorageBin 2>> $centstorageDemLog &
 	if [ -d $centstorageLockDir ]; then touch $centstorageLockDir/$centstorageLockFile; fi
-			#sleep 1
-			#status_nagios nagios
+		#sleep 1
+		#status_nagios nagios
 	exit 0
 	;;
     
     stop)
-	echo "Stopping centstorage Collector : centstorage"
+	echo "Stopping centreon data collector Collector : centstorage"
 	killproc_centstorage centstorage
-	
- 		# now we have to wait for nagios to exit and remove its
- 		# own NagiosRunFile, otherwise a following "start" could
- 		# happen, and then the exiting nagios will remove the
- 		# new NagiosRunFile, allowing multiple nagios daemons
- 		# to (sooner or later) run - John Sellens
 	echo -n 'Waiting for centstorage to exit .'
 	for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 ; do
 	    if status_centstorage > /dev/null; then
-		echo -n '.'
-		sleep 1
+			echo -n '.'
+			sleep 1
 	    else
-		break
+			break
 	    fi
 	done
 	if status_centstorage > /dev/null; then
@@ -176,7 +167,7 @@ case "$1" in
 	;;
     
     *)
-	echo "Usage: centstorage {start|stop|restart|reload|force-reload|status}"
+	echo "Usage: centstorage {start|stop|restart|reload|status}"
 	exit 1
 	;;
     

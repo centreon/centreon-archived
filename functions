@@ -561,5 +561,3 @@ function InstallPlugins()
 		echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
     fi
 }
-
-########## OLD ##################
