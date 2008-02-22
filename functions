@@ -120,22 +120,18 @@ EOF
 
     # After finishing the configuration -> 
     # restart apache !
-    if test -x /etc/init.d/apache ; then
+    if [ -x /etc/init.d/apache ] ; then
 		/etc/init.d/apache restart 2>&1 >> $LOG_FILE
-    else if test -x /etc/init.d/httpd ; then
+    elsif [ -x /etc/init.d/httpd ] ; then
 		/etc/init.d/httpd restart 2>&1 >> $LOG_FILE
-    else if test -e /etc/init.d/apache2 ; then
+    elsif [ -e /etc/init.d/apache2 ] ; then
 		/etc/init.d/apache2 restart 2>&1 >> $LOG_FILE
-	else if test -e /usr/local/etc/rc.d/apache ; then
+	elsif [ -e /usr/local/etc/rc.d/apache ] ; then
 		/usr/local/etc/rc.d/apache restart 2>&1 >> $LOG_FILE
-    else if test -e /usr/local/etc/rc.d/apache2 ; then
+    elsif [ -e /usr/local/etc/rc.d/apache2 ] ; then
 		/etc/init.d/apache2 restart 2>&1 >> $LOG_FILE
     else
 		echo_warning "Unable to restart apache server" "WARNING"
-    fi
-    fi
-    fi
-    fi
     fi
 }
 
@@ -179,98 +175,89 @@ function createConfFile()
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
 	
-	$ECHO "<?" > $INSTALL_DIR_CENTREON_CONF
-	$ECHO "/**" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "Centreon is developped with GPL Licence 2.0 :" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "Developped by : Julien Mathis - Romain Le Merlus" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "The Software is provided to you AS IS and WITH ALL FAULTS." >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "CENTREON makes no representation and gives no warranty whatsoever," >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "whether express or implied, and without limitation, with regard to the quality," >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "safety, contents, performance, merchantability, non-infringement or suitability for" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "any particular or intended purpose of the Software found on the CENTREON web site." >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "In no event will CENTREON be liable for any direct, indirect, punitive, special," >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "incidental or consequential damages however they may arise and even if OREON has" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "been previously advised of the possibility of such damages." >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "For information : contact@oreon-project.org" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "	*/" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['centreon_dir'] = \"$INSTALL_DIR_CENTREON/\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['centreon_dir_www'] = \"$INSTALL_DIR_CENTREON/www/\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['centreon_dir_rrd'] = \"$INSTALL_DIR_CENTREON/rrd/\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['nagios'] = \"$INSTALL_DIR_NAGIOS/\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['nagios_conf'] = \"$NAGIOS_ETC/\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['nagios_plugins'] = \"$NAGIOS_PLUGIN/\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['nagios_bin'] = \"$NAGIOS_BIN/\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['nagios_init_script'] = \"$NAGIOS_INIT_SCRIPT\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['rrdtool_dir'] = \"$BIN_RRDTOOL\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['apache_user'] = \"$WEB_USER\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['apache_group'] = \"$WEB_GROUP\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['nagios_user'] = \"$NAGIOS_USER\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['nagios_group'] = \"$NAGIOS_GROUP\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['mail'] = \"$BIN_MAIL\";" >> $INSTALL_DIR_CENTREON_CONF
-	$ECHO "\$conf_centreon['pear_dir'] = \"$PEAR_PATH\";" >> $INSTALL_DIR_CENTREON_CONF
-	
+	$ECHO "" > $INSTALL_DIR_CENTREON_CONF
+	$CAT << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
+<?
+/**
+Centreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+Developped by : Julien Mathis - Romain Le Merlus
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+CENTREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the CENTREON web site.
+In no event will CENTREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
+$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
+$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
+$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
+$conf_centreon['nagios'] = "$INSTALL_DIR_NAGIOS/";
+$conf_centreon['nagios_conf'] = "$NAGIOS_ETC/";
+$conf_centreon['nagios_plugins'] = "$NAGIOS_PLUGIN/";
+$conf_centreon['nagios_bin'] = "$NAGIOS_BIN/";
+$conf_centreon['nagios_init_script'] = "$NAGIOS_INIT_SCRIPT";
+$conf_centreon['rrdtool_dir'] = "$BIN_RRDTOOL";
+$conf_centreon['apache_user'] = "$WEB_USER";
+$conf_centreon['apache_group'] = "$WEB_GROUP";
+$conf_centreon['nagios_user'] = "$NAGIOS_USER";
+$conf_centreon['nagios_group'] = "$NAGIOS_GROUP";
+$conf_centreon['mail'] = "$BIN_MAIL";
+$conf_centreon['pear_dir'] = "$PEAR_PATH";
+__EOF__	
+
 	# Conf nagios.cfg
 	
 	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
 	do
-		$ECHO -n "\$conf_centreon['" >> $INSTALL_DIR_CENTREON_CONF
-	 	tmp=`$ECHO  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_CENTREON_CONF
-	 	$ECHO -n $tmp >> $INSTALL_DIR_CENTREON_CONF
-	 	$ECHO -n "'] = \"" >> $INSTALL_DIR_CENTREON_CONF
-	  	tmp=`$ECHO "$fichier" | cut -d = -f2` >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO -n $tmp >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO "\";" >> $INSTALL_DIR_CENTREON_CONF
+	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
+$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
+__EOF__
 	done
 	
 	# Conf nagios.cfg
 	
 	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
 	do
-		$ECHO -n "\$conf_centreon['" >> $INSTALL_DIR_CENTREON_CONF
-	  	tmp=`$ECHO  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO -n $tmp >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO -n "'] = \"" >> $INSTALL_DIR_CENTREON_CONF
-	  	tmp=`$ECHO "$fichier" | cut -d = -f2` >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO -n $tmp >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO "\";" >> $INSTALL_DIR_CENTREON_CONF
+	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
+$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
+__EOF__
 	done
 	
 	# Conf GCI.cfg
 	
 	for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
 	do
-	  	$ECHO -n "\$conf_centreon['" >> $INSTALL_DIR_CENTREON_CONF
-	  	tmp=`$ECHO  "$fichier" | cut -d = -f1` >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO -n $tmp >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO -n "'] = \"" >> $INSTALL_DIR_CENTREON_CONF
-	  	tmp=`$ECHO "$fichier" | cut -d = -f2` >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO -n $tmp >> $INSTALL_DIR_CENTREON_CONF
-	  	$ECHO "\";" >> $INSTALL_DIR_CENTREON_CONF
+	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
+$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
+__EOF__
 	done
 	$ECHO "?>" >> $INSTALL_DIR_CENTREON_CONF
 	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
 	
-	
-	$ECHO "INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON" > $CENTREON_CONF
-	$ECHO "NAGIOS_ETC=$NAGIOS_ETC" >> $CENTREON_CONF
-	$ECHO "NAGIOS_PLUGIN=$NAGIOS_PLUGIN" >> $CENTREON_CONF
-	$ECHO "NAGIOS_BIN=$NAGIOS_BIN" >> $CENTREON_CONF
-	$ECHO "NAGIOS_IMG=$NAGIOS_IMG" >> $CENTREON_CONF
-	$ECHO "INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS" >> $CENTREON_CONF
-	$ECHO "RRD_PERL=$RRD_PERL" >> $CENTREON_CONF
-	$ECHO "SUDO_FILE=$SUDO_FILE" >> $CENTREON_CONF
-	$ECHO "WEB_USER=$WEB_USER" >> $CENTREON_CONF
-	$ECHO "WEB_GROUP=$WEB_GROUP" >> $CENTREON_CONF
-	$ECHO "NAGIOS_USER=$NAGIOS_USER" >> $CENTREON_CONF
-	$ECHO "NAGIOS_GROUP=$NAGIOS_GROUP" >> $CENTREON_CONF
-	$ECHO "BIN_RRDTOOL=$BIN_RRDTOOL" >> $CENTREON_CONF
-	$ECHO "BIN_MAIL=$BIN_MAIL" >> $CENTREON_CONF
-	$ECHO "PEAR_PATH=$PEAR_PATH" >> $CENTREON_CONF
-	
+	cat << __EOF__ >> $CENTREON_CONF
+INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
+NAGIOS_ETC=$NAGIOS_ETC
+NAGIOS_PLUGIN=$NAGIOS_PLUGIN
+NAGIOS_BIN=$NAGIOS_BIN
+NAGIOS_IMG=$NAGIOS_IMG
+INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
+RRD_PERL=$RRD_PERL
+SUDO_FILE=$SUDO_FILE
+WEB_USER=$WEB_USER
+WEB_GROUP=$WEB_GROUP
+NAGIOS_USER=$NAGIOS_USER
+NAGIOS_GROUP=$NAGIOS_GROUP
+BIN_RRDTOOL=$BIN_RRDTOOL
+BIN_MAIL=$BIN_MAIL
+PEAR_PATH=$PEAR_PATH
+__EOF__	
 	echo_success "Create $CENTREON_CONF " "OK"
 }
 
@@ -382,76 +369,66 @@ function check_group_nagios()
 function check_nagios_init_script()
 {
     if [ -x "/etc/init.d/nagios" ]; then
-	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
-    else if [ -x "/etc/init.d/nagios2" ] ; then
-	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-    else if [ -x "/etc/init.d/nagios3" ] ; then
-	NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
-    else if [ -x "/usr/local/etc/rc.d/nagios" ] ; then
-	NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
-    else if [ -x $DEFAULT_NAGIOS_INIT_SCRIPT ] ; then
-	NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
-    fi
-    fi
-    fi    
-    fi
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
+    elsif [ -x "/etc/init.d/nagios2" ] ; then
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
+    elsif [ -x "/etc/init.d/nagios3" ] ; then
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
+    elsif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
+		NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
+    elsif [ -x $DEFAULT_NAGIOS_INIT_SCRIPT ] ; then
+		NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
     fi
     
     if [ -z "$NAGIOS_INIT_SCRIPT" ] ; then
-	echo_passed "Nagios init script" "NOT FOUND"
-	echo "Which is your nagios init script ?"
-	echo -n "default is [$NAGIOS_INIT_SCRIPT]:"
-	read temp
-	test_answer NAGIOS_INIT_SCRIPT $temp
-	echo ""
-    else
-	echo "Nagios init script : $NAGIOS_INIT_SCRIPT"
-	echo_success "Nagios init script " "OK"
+		echo_passed "Nagios init script" "NOT FOUND"
+		echo "Which is your nagios init script ?"
+		echo -n "default is [$NAGIOS_INIT_SCRIPT]:"
+		read temp
+		test_answer NAGIOS_INIT_SCRIPT $temp
+		echo ""
+	else
+		echo "Nagios init script : $NAGIOS_INIT_SCRIPT"
+		echo_success "Nagios init script " "OK"
     fi
 
 }
 
 function check_httpd_directory()
 {
-    if test -d /etc/apache/conf ; then
+    if [ -d /etc/apache/conf ]; then
 		DIR_APACHE="/etc/apache/conf"
 		DIR_APACHE_CONF="/etc/apache/conf.d"
 		HTPASSWD="htpasswd"
-    else if test -d /usr/local/apache2/conf ; then
+    elsif [ -d /usr/local/apache2/conf ] ; then
 		DIR_APACHE="/usr/local/apache2/conf"
 		DIR_APACHE_CONF="/usr/local/apache2/conf"
 		HTPASSWD="htpasswd2"
-    else if test -d /etc/apache2 ; then
+    elsif [ -d /etc/apache2 ] ; then
 		DIR_APACHE="/etc/apache2"
 		DIR_APACHE_CONF="/etc/apache2/conf.d"
 		HTPASSWD="htpasswd2"
-    else if test -d /etc/httpd/conf ; then
+    elsif [ -d /etc/httpd/conf ] ; then
 		DIR_APACHE="/etc/httpd/conf"
 		DIR_APACHE_CONF="/etc/httpd/conf.d"
 		HTPASSWD="htpasswd"
-    else if test -d /usr/local/etc/apache ; then
+    elsif [ -d /usr/local/etc/apache ] ; then
 		DIR_APACHE="/usr/local/etc/apache"
 		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
 		HTPASSWD="htpasswd"
-    else if test -d /usr/local/etc/apache2 ; then
+    elsif [ -d /usr/local/etc/apache2 ] ; then
 		DIR_APACHE="/usr/local/etc/apache2"
 		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
 		HTPASSWD="htpasswd"
     fi
-    fi
-    fi
-    fi
-    fi
-    fi
 
-    if test -e $DIR_APACHE/apache2.conf ; then
+
+    if [ -e $DIR_APACHE/apache2.conf ] ; then
 		APACHE_CONF="apache2.conf"
-    else if test -e $DIR_APACHE/commondhttpd.conf ; then
+    elsif [ -e $DIR_APACHE/commondhttpd.conf ] ; then
 		APACHE_CONF="commondhttpd.conf"
-    else if test -e $DIR_APACHE/httpd.conf ; then
+    elsif [ -e $DIR_APACHE/httpd.conf ] ; then
 		APACHE_CONF="httpd.conf"
-    fi
-    fi
     fi
 }
 
