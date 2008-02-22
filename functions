@@ -128,7 +128,7 @@ EOF
 		/etc/init.d/apache2 restart 2>&1 >> $LOG_FILE
 	elsif [ -e /usr/local/etc/rc.d/apache ] ; then
 		/usr/local/etc/rc.d/apache restart 2>&1 >> $LOG_FILE
-    elsif [ -e /usr/local/etc/rc.d/apache2 ]Â ; then
+    elsif [ -e /usr/local/etc/rc.d/apache2 ] ; then
 		/etc/init.d/apache2 restart 2>&1 >> $LOG_FILE
     else
 		echo_warning "Unable to restart apache server" "WARNING"
@@ -217,7 +217,7 @@ __EOF__
 	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
 	do
 	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
-$conf_centreon['$($ECHO "$fichier" |Â cut -d= -f1)'] = "$($ECHO "$fichier" |Â cut -d= -f2)";
+$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
 __EOF__
 	done
 	
@@ -226,7 +226,7 @@ __EOF__
 	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
 	do
 	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
-$conf_centreon['$($ECHO "$fichier" |Â cut -d= -f1)'] = "$($ECHO "$fichier" |Â cut -d= -f2)";
+$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
 __EOF__
 	done
 	
@@ -235,7 +235,7 @@ __EOF__
 	for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
 	do
 	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
-$conf_centreon['$($ECHO "$fichier" |Â cut -d= -f1)'] = "$($ECHO "$fichier" |Â cut -d= -f2)";
+$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
 __EOF__
 	done
 	$ECHO "?>" >> $INSTALL_DIR_CENTREON_CONF
