@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	$path = '@OREON_PATH@';
+	$path = '@INSTALL_DIR_CENTREON@';
 
  	include($path."/www/centreon.conf.php");
  	require_once ($path."/www/class/Session.class.php");
