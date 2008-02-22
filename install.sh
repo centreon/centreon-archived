@@ -79,7 +79,7 @@ EOF
 # Load install script functions
 if [ -z "$BASH" ]; then # Test if BASH is in path
     if ! type -p bash > /dev/null 2>&1; then
-	$ECHO "Install bash and try `bash install.sh`."
+		$ECHO "Install bash and try `bash install.sh`."
     fi # Exit if we are not in BASH
     $ECHO "Error: The script must be run with BASH shell. Try:"
     $ECHO "# bash install.sh"
@@ -132,14 +132,14 @@ fi
 test_answer(){
     if [ ! -z $2 ];then
         if [ $2 != "" ];then
-	    eval $1=$2
+	    	eval $1=$2
         fi
     fi
 }
 
 # CONFIGURATION
 
-if test -a $CENTREON_CONF ; then
+if [ test -a $CENTREON_CONF ] ; then
     $ECHO ""
     $ECHO "------------------------------------------------------------------------"
     $ECHO "                   Detecting old Installation"
@@ -181,14 +181,14 @@ if [ -z $INSTALL_DIR_NAGIOS ];then
     fi
     valueok=0
     while [ ! -d "$temp/" ]; do
-	echo_passed "$temp is not a directory." "CRITICAL"
-	$ECHO "Where is installed Nagios ?"
-	$ECHO -n "default to [$INSTALL_DIR_NAGIOS]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$INSTALL_DIR_NAGIOS"
-	fi
-	$ECHO 
+		echo_passed "$temp is not a directory." "CRITICAL"
+		$ECHO "Where is installed Nagios ?"
+		$ECHO -n "default to [$INSTALL_DIR_NAGIOS]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$INSTALL_DIR_NAGIOS"
+		fi
+		$ECHO 
     done
     INSTALL_DIR_NAGIOS="$temp"
     $ECHO ""
@@ -203,13 +203,13 @@ if [ -z $NAGIOS_ETC ];then
 		temp="$NAGIOS_ETC"
     fi
     while [ ! -f "${temp}/nagios.cfg" ]; do
-	echo_passed "${NAGIOS_ETC}/nagios.cfg not found" "CRITICAL"
-	$ECHO "Where is your nagios etc directory ?"
-	$ECHO -n "default to [$NAGIOS_ETC]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$NAGIOS_ETC"
-	fi
+		echo_passed "${NAGIOS_ETC}/nagios.cfg not found" "CRITICAL"
+		$ECHO "Where is your nagios etc directory ?"
+		$ECHO -n "default to [$NAGIOS_ETC]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$NAGIOS_ETC"
+		fi
     done
     NAGIOS_ETC="$temp"
     echo_success "Path $NAGIOS_ETC" "OK"
@@ -222,16 +222,16 @@ if [ -z $NAGIOS_VAR ];then
     $ECHO -n "default to [$NAGIOS_VAR]:"
     read temp
     if [ -z "$temp" ]; then
-	temp="$NAGIOS_VAR"
+		temp="$NAGIOS_VAR"
     fi
     while [ ! -d "${temp}/" ]; do
-	echo_passed "${temp} is not a directory" "CRITICAL"
-	$ECHO "Where is your nagios var directory ?"
-	$ECHO -n "default to [$NAGIOS_VAR]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$NAGIOS_VAR"
-	fi
+		echo_passed "${temp} is not a directory" "CRITICAL"
+		$ECHO "Where is your nagios var directory ?"
+		$ECHO -n "default to [$NAGIOS_VAR]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$NAGIOS_VAR"
+		fi
     done
     NAGIOS_VAR="$temp"
     echo_success "Path $NAGIOS_VAR" "OK"
@@ -247,41 +247,41 @@ if [ -z $NAGIOS_PLUGIN ];then
 		temp="$NAGIOS_PLUGIN"
     fi
     while [ ! -d "$temp" ] ; do
-	create_libexec="null"
-	valid_directory=`$ECHO $temp | grep "^/"`
-	if [ "$valid_directory" != "" ]; then
-	    echo_passed "Directory $temp does not exits." "CRITICAL"
-	    while [ "$create_libexec" != "y" ] && [ "$create_libexec" != "Y" ] && [ "$create_libexec" != "n" ] && [ "$create_libexec" != "N" ]; do
-		$ECHO ""
-		$ECHO -n "Do you want me to create libexec directory [$temp]?[Y/n]"
-		read create_libexec
-		if [ -z "$create_libexec" ]; then
-		    create_libexec="y"
+		create_libexec="null"
+		valid_directory=`$ECHO $temp | grep "^/"`
+		if [ "$valid_directory" != "" ]; then
+		    echo_passed "Directory $temp does not exits." "CRITICAL"
+		    while [ "$create_libexec" != "y" ] && [ "$create_libexec" != "Y" ] && [ "$create_libexec" != "n" ] && [ "$create_libexec" != "N" ]; do
+				$ECHO ""
+				$ECHO -n "Do you want me to create libexec directory [$temp]?[Y/n]"
+				read create_libexec
+				if [ -z "$create_libexec" ]; then
+				    create_libexec="y"
+				fi
+		    done
+		else
+		    echo_passed "$temp is not a valid directory." "CRITICAL"
 		fi
-	    done
-	else
-	    echo_passed "$temp is not a valid directory." "CRITICAL"
-	fi
-	if [ $create_libexec = "y" ] || [ $create_libexec = "Y" ]; then
-	    mkdir -p $temp
-	    if [ $? = 1 ]; then
-			echo_passed "Could not create directory" "CRITICAL"
-			$ECHO ""
-			$ECHO "Where is your nagios plugins (libexec) directory ?"
-			$ECHO -n "    default to [$NAGIOS_PLUGIN] : "
-			read temp
-			if [ -z "$temp" ]; then
-			    temp="$NAGIOS_PLUGIN"
-			fi
-	    fi
-	else
-	    $ECHO "Where is your nagios plugins (libexec) directory ?"
-	    $ECHO -n "    default to [$NAGIOS_PLUGIN]:"
-	    read temp
-	    if [ -z "$temp" ]; then
-			temp="$NAGIOS_PLUGIN"
-	    fi
-	fi
+		if [ $create_libexec = "y" ] || [ $create_libexec = "Y" ]; then
+		    mkdir -p $temp
+		    if [ $? = 1 ]; then
+				echo_passed "Could not create directory" "CRITICAL"
+				$ECHO ""
+				$ECHO "Where is your nagios plugins (libexec) directory ?"
+				$ECHO -n "    default to [$NAGIOS_PLUGIN] : "
+				read temp
+				if [ -z "$temp" ]; then
+				    temp="$NAGIOS_PLUGIN"
+				fi
+		    fi
+		else
+		    $ECHO "Where is your nagios plugins (libexec) directory ?"
+		    $ECHO -n "    default to [$NAGIOS_PLUGIN]:"
+		    read temp
+		    if [ -z "$temp" ]; then
+				temp="$NAGIOS_PLUGIN"
+		    fi
+		fi
     done
     NAGIOS_PLUGIN="$temp"
     echo_success "Path $NAGIOS_PLUGIN" "OK"
@@ -297,13 +297,13 @@ if [ -z $NAGIOS_BIN ];then
 		temp="$NAGIOS_BIN"
     fi
     while [ ! -x "${temp}/nagios" ]; do
-	echo_passed "Cannot find ${temp}/nagios" "CRITICAL"
-	$ECHO "Where is your nagios bin directory?"
-	$ECHO -n "default to [$NAGIOS_BIN]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$NAGIOS_BIN"
-	fi
+		echo_passed "Cannot find ${temp}/nagios" "CRITICAL"
+		$ECHO "Where is your nagios bin directory?"
+		$ECHO -n "default to [$NAGIOS_BIN]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$NAGIOS_BIN"
+		fi
     done
     NAGIOS_BIN="$temp"
     echo_success "Path $NAGIOS_BIN" "OK"
@@ -319,13 +319,13 @@ if [ -z $NAGIOS_IMG ];then
 		temp="$NAGIOS_IMG"
     fi
     while [ ! -d "$temp" ]; do
-	echo_passed "$temp is not a directory." "CRITICAL"
-	$ECHO "Where is your nagios image directory ?"
-	$ECHO -n "    default to [$NAGIOS_IMG]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$NAGIOS_IMG"
-	fi
+		echo_passed "$temp is not a directory." "CRITICAL"
+		$ECHO "Where is your nagios image directory ?"
+		$ECHO -n "    default to [$NAGIOS_IMG]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$NAGIOS_IMG"
+		fi
     done
     NAGIOS_IMG="$temp"
     echo_success "Path $NAGIOS_IMG" "OK"
@@ -341,13 +341,13 @@ if [ -z $SUDO_FILE ];then
 		temp="$SUDO_FILE"
     fi
     while [ ! -f "$temp" ]; do
-	echo_passed "$temp if not a file." "CRITICAL"
-	$ECHO "Where is sudo configuration file?"
-	$ECHO -n "    default to [$SUDO_FILE]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$SUDO_FILE"
-	fi
+		echo_passed "$temp if not a file." "CRITICAL"
+		$ECHO "Where is sudo configuration file?"
+		$ECHO -n "    default to [$SUDO_FILE]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$SUDO_FILE"
+		fi
     done
     SUDO_FILE="$temp"
     echo_success "File $SUDO_FILE" "OK"
@@ -364,14 +364,14 @@ if [ -z $RRD_PERL ];then
 		temp="$RRD_PERL"
     fi
     while [ ! -f "$temp/RRDs.pm" ]; do
-	echo_passed "Cannot find ${temp}/RRDs.pm." "CRITICAL"
-	$ECHO "Where is installed RRD perl modules [RRDs.pm] ?"
-	$ECHO "Just put directory, not full path."
-	$ECHO -n "    default to [$RRD_PERL]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$RRD_PERL"
-	fi
+		echo_passed "Cannot find ${temp}/RRDs.pm." "CRITICAL"
+		$ECHO "Where is installed RRD perl modules [RRDs.pm] ?"
+		$ECHO "Just put directory, not full path."
+		$ECHO -n "    default to [$RRD_PERL]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$RRD_PERL"
+		fi
     done
     RRD_PERL="$temp"
     echo_success "File $RRD_PERL" "OK"
@@ -387,13 +387,13 @@ if [ -z $BIN_RRDTOOL ];then
 		temp="$BIN_RRDTOOL"
     fi
     while [ ! -x "$temp" ]; do
-	echo_passed "$temp is not found or is not runnable" "CRITICAL"
-	$ECHO "Where is rrdtool binary ?"
-	$ECHO -n "default to [$BIN_RRDTOOL]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$BIN_RRDTOOL"
-	fi
+		echo_passed "$temp is not found or is not runnable" "CRITICAL"
+		$ECHO "Where is rrdtool binary ?"
+		$ECHO -n "default to [$BIN_RRDTOOL]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$BIN_RRDTOOL"
+		fi
     done
     BIN_RRDTOOL="$temp"
     echo_success "$BIN_RRDTOOL" "OK"
@@ -409,13 +409,13 @@ if [ -z $BIN_MAIL ];then
     	temp="$BIN_MAIL"
     fi
     while [ ! -x "$temp" ]; do
-	echo_passed "$temp not found or not runnable" "CRITICAL"
-	$ECHO "Where is mail binary ?"
-	$ECHO -n " default to [$BIN_MAIL]:"
-	read temp
-	if [ -z "$temp" ]; then
-	    temp="$BIN_MAIL"
-	fi
+		echo_passed "$temp not found or not runnable" "CRITICAL"
+		$ECHO "Where is mail binary ?"
+		$ECHO -n " default to [$BIN_MAIL]:"
+		read temp
+		if [ -z "$temp" ]; then
+		    temp="$BIN_MAIL"
+		fi
     done
     BIN_MAIL="$temp"
     echo_success "$BIN_MAIL" "OK"
@@ -431,41 +431,41 @@ if [ -z $INSTALL_DIR_CENTREON ];then
 		temp="$INSTALL_DIR_CENTREON"
     fi
     while [ ! -d "$temp" ] ; do
-	create_oreon="null"
-	valid_directory=`$ECHO $temp | grep "^/"`
-	if [ "$valid_directory" != "" ]; then
-	    echo_passed "Directory $temp does not exits." "CRITICAL"
-	    while [ "$create_oreon" != "y" ] && [ "$create_oreon" != "Y" ] && [ "$create_oreon" != "n" ] && [ "$create_oreon" != "N" ]; do
-		$ECHO ""
-		$ECHO -n "Do you want me to create this directory [$temp]?[Y/n]"
-		read create_oreon
-		if [ -z "$create_oreon" ]; then
-		    create_oreon="y"
-		fi
-	    done
-	else
-	    echo_passed "$temp is not a valid directory." "CRITICAL"
-	fi
-	if [ $create_oreon = "y" ] || [ $create_oreon = "Y" ]; then
-	    mkdir -p $temp
-	    if [ $? = 1 ]; then
-			echo_passed "Could not create directory" "CRITICAL"
+		create_oreon="null"
+		valid_directory=`$ECHO $temp | grep "^/"`
+		if [ "$valid_directory" != "" ]; then
+		    echo_passed "Directory $temp does not exits." "CRITICAL"
+		    while [ "$create_oreon" != "y" ] && [ "$create_oreon" != "Y" ] && [ "$create_oreon" != "n" ] && [ "$create_oreon" != "N" ]; do
 			$ECHO ""
-			$ECHO "Where do I install Centreon ?"
-			$ECHO -n "    default to [$INSTALL_DIR_CENTREON]:"
-			read temp
-			if [ -z "$temp" ]; then
-			    temp="$INSTALL_DIR_CENTREON"
+			$ECHO -n "Do you want me to create this directory [$temp]?[Y/n]"
+			read create_oreon
+			if [ -z "$create_oreon" ]; then
+			    create_oreon="y"
 			fi
-	    fi
-	else
-	    $ECHO "Where do I install Centreon ?"
-	    $ECHO -n "    default to [$INSTALL_DIR_CENTREON]:"
-	    read temp
-	    if [ -z "$temp" ]; then
-			temp="$INSTALL_DIR_CENTREON"
-	    fi
-	fi
+		    done
+		else
+		    echo_passed "$temp is not a valid directory." "CRITICAL"
+		fi
+		if [ $create_oreon = "y" ] || [ $create_oreon = "Y" ]; then
+		    mkdir -p $temp
+		    if [ $? = 1 ]; then
+				echo_passed "Could not create directory" "CRITICAL"
+				$ECHO ""
+				$ECHO "Where do I install Centreon ?"
+				$ECHO -n "    default to [$INSTALL_DIR_CENTREON]:"
+				read temp
+				if [ -z "$temp" ]; then
+				    temp="$INSTALL_DIR_CENTREON"
+				fi
+		    fi
+		else
+		    $ECHO "Where do I install Centreon ?"
+		    $ECHO -n "    default to [$INSTALL_DIR_CENTREON]:"
+		    read temp
+		    if [ -z "$temp" ]; then
+				temp="$INSTALL_DIR_CENTREON"
+		    fi
+		fi
     done
     INSTALL_DIR_OREON="$temp"
     echo_success "Path $INSTALL_DIR_OREON" "OK"
