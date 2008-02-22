@@ -32,38 +32,38 @@ For information : contact@oreon-project.org
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 	
 	$form = new HTML_QuickForm('patchOption', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["patchOption_change"]);
+	$form->addElement('header', 'title', _("Change update options"));
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_stable', null, $lang["yes"], 'Y');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_stable', null, $lang["no"], 'N');
-	$form->addGroup($tab, 'patch_type_stable', $lang["patchOption_check_stable"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_stable', null, _("Yes"), 'Y');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_stable', null, _("No"), 'N');
+	$form->addGroup($tab, 'patch_type_stable', _("Check stable versions"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_patch', null, $lang["yes"], 'Y');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_patch', null, $lang["no"], 'N');
-	$form->addGroup($tab, 'patch_type_patch', $lang["patchOption_check_patch"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_patch', null, _("Yes"), 'Y');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_patch', null, _("No"), 'N');
+	$form->addGroup($tab, 'patch_type_patch', _("Check patches"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_secu', null, $lang["yes"], 'Y');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_secu', null, $lang["no"], 'N');
-	$form->addGroup($tab, 'patch_type_secu', $lang["patchOption_check_security"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_secu', null, _("Yes"), 'Y');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_secu', null, _("No"), 'N');
+	$form->addGroup($tab, 'patch_type_secu', _("Check secu-patches"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_RC', null, $lang["yes"], 'Y');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_RC', null, $lang["no"], 'N');
-	$form->addGroup($tab, 'patch_type_RC', $lang["patchOption_check_rc"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_RC', null, _("Yes"), 'Y');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_RC', null, _("No"), 'N');
+	$form->addGroup($tab, 'patch_type_RC', _("Check Release candidate"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_beta', null, $lang["yes"], 'Y');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_beta', null, $lang["no"], 'N');
-	$form->addGroup($tab, 'patch_type_beta', $lang["patchOption_check_beta"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_beta', null, _("Yes"), 'Y');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'patch_type_beta', null, _("No"), 'N');
+	$form->addGroup($tab, 'patch_type_beta', _("Check Beta"), '&nbsp;');
 	$form->addElement('hidden', 'gopt_id');
-	$form->addElement('text', 'patch_path_download', $lang["patchOption_path_download"], $attrsText);
+	$form->addElement('text', 'patch_path_download', _("Patch Download path"), $attrsText);
 	
 	$form->setDefaults($gopt);
 	
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$res =& $form->addElement('reset', 'reset', _("Reset"));
 	
 	#
 	##Picker Color JS

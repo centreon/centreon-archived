@@ -56,64 +56,64 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["cgi_add"]);
+		$form->addElement('header', 'title', _("Add a CGI Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["cgi_change"]);
+		$form->addElement('header', 'title', _("Modify a CGI Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["cgi_view"]);
+		$form->addElement('header', 'title', _("View a CGI Configuration File"));
 
 	#
 	## CGI Configuration basic information
 	#
-	$form->addElement('header', 'information', $lang['cgi_infos']);
-	$form->addElement('text', 'cgi_name', $lang["cgi_name"], $attrsText);
-	$form->addElement('textarea', 'cgi_comment', $lang["cgi_comment"], $attrsTextarea);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'cgi_name', _("CGI File Name"), $attrsText);
+	$form->addElement('textarea', 'cgi_comment', _("Comments"), $attrsTextarea);
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'cgi_activate', null, $lang["enable"], '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'cgi_activate', null, $lang["disable"], '0');
-	$form->addGroup($nagTab, 'cgi_activate', $lang["status"], '&nbsp;');	
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'cgi_activate', null, _("Enabled"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'cgi_activate', null, _("Disabled"), '0');
+	$form->addGroup($nagTab, 'cgi_activate', _("Status"), '&nbsp;');	
 	
 	## Part 1
-	$form->addElement('text', 'main_config_file', $lang["cgi_mainConfFile"], $attrsText2);
-	$form->addElement('text', 'physical_html_path', $lang["cgi_phyHtmlPath"], $attrsText2);
-	$form->addElement('text', 'url_html_path', $lang["cgi_urlHtmlPath"], $attrsText2);
+	$form->addElement('text', 'main_config_file', _("Main Configuration File Location"), $attrsText2);
+	$form->addElement('text', 'physical_html_path', _("Physical HTML Path"), $attrsText2);
+	$form->addElement('text', 'url_html_path', _("URL HTML Path"), $attrsText2);
 	
 	## Part 2
-	$form->addElement('text', 'nagios_check_command', $lang["cgi_nagCheckCmd"], $attrsText2);
+	$form->addElement('text', 'nagios_check_command', _("Nagios Process Check Command"), $attrsText2);
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, $lang["yes"], '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, $lang["no"], '0');
-	$form->addGroup($nagTab, 'use_authentication', $lang["cgi_authUsage"], '&nbsp;');
-	$form->addElement('text', 'default_user_name', $lang["cgi_defUserName"], $attrsText);
-	$form->addElement('textarea', 'authorized_for_system_information', $lang["cgi_authFSysInfo"], $attrsTextarea);
-	$form->addElement('textarea', 'authorized_for_system_commands', $lang["cgi_authFSysCmd"], $attrsTextarea);
-	$form->addElement('textarea', 'authorized_for_configuration_information', $lang["cgi_authFConfInf"], $attrsTextarea);
-	$form->addElement('textarea', 'authorized_for_all_hosts', $lang["cgi_authFAllHosts"], $attrsTextarea);
-	$form->addElement('textarea', 'authorized_for_all_host_commands', $lang["cgi_authFAllHostCmds"], $attrsTextarea);
-	$form->addElement('textarea', 'authorized_for_all_services', $lang["cgi_authFAllSv"], $attrsTextarea);
-	$form->addElement('textarea', 'authorized_for_all_service_commands', $lang["cgi_authFAllSvCmds"], $attrsTextarea);
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, _("No"), '0');
+	$form->addGroup($nagTab, 'use_authentication', _("Authentication Usage"), '&nbsp;');
+	$form->addElement('text', 'default_user_name', _("Default User Name"), $attrsText);
+	$form->addElement('textarea', 'authorized_for_system_information', _("System/Process Information Access"), $attrsTextarea);
+	$form->addElement('textarea', 'authorized_for_system_commands', _("System/Process Command Access"), $attrsTextarea);
+	$form->addElement('textarea', 'authorized_for_configuration_information', _("Configuration Information Access"), $attrsTextarea);
+	$form->addElement('textarea', 'authorized_for_all_hosts', _("Global Host Information Access"), $attrsTextarea);
+	$form->addElement('textarea', 'authorized_for_all_host_commands', _("Global Host Command Access"), $attrsTextarea);
+	$form->addElement('textarea', 'authorized_for_all_services', _("Global Service Information Access"), $attrsTextarea);
+	$form->addElement('textarea', 'authorized_for_all_service_commands', _("Global Service Command Access"), $attrsTextarea);
 	
 	## Part 3
-	$form->addElement('text', 'statusmap_background_image', $lang["cgi_smBckImg"], $attrsText2);
-	$form->addElement('select', 'default_statusmap_layout', $lang["cgi_defSMLayMet"], array(0=>"User-defined coordinates", 1=>"Depth layers", 2=>"Collapsed tree", 3=>"Balanced tree", 4=>"Circular", 5=>"Circular (Marked Up)", 6=>"Circular (Balloon)"));
-	$form->addElement('text', 'statuswrl_include', $lang["cgi_statCGIIncWld"], $attrsText2);
-	$form->addElement('select', 'default_statuswrl_layout', $lang["cgi_defStatWRLLay"], array(0=>"User-defined coordinates", 1=>"Depth layers", 2=>"Collapsed tree", 3=>"Balanced tree", 4=>"Circular"));
+	$form->addElement('text', 'statusmap_background_image', _("Statusmap CGI Background Image"), $attrsText2);
+	$form->addElement('select', 'default_statusmap_layout', _("Default Statusmap Layout Method"), array(0=>"User-defined coordinates", 1=>"Depth layers", 2=>"Collapsed tree", 3=>"Balanced tree", 4=>"Circular", 5=>"Circular (Marked Up)", 6=>"Circular (Balloon)"));
+	$form->addElement('text', 'statuswrl_include', _("Statuswrl CGI Include World"), $attrsText2);
+	$form->addElement('select', 'default_statuswrl_layout', _("Default Statuswrl Layout Method"), array(0=>"User-defined coordinates", 1=>"Depth layers", 2=>"Collapsed tree", 3=>"Balanced tree", 4=>"Circular"));
 
 	## Part 4
-	$form->addElement('text', 'refresh_rate', $lang["cgi_cgIRefRate"], $attrsText3);
-	$form->addElement('text', 'host_unreachable_sound', $lang["cgi_hus"], $attrsText2);
-	$form->addElement('text', 'host_down_sound', $lang["cgi_hdu"], $attrsText2);
-	$form->addElement('text', 'service_critical_sound', $lang["cgi_scs"], $attrsText2);
-	$form->addElement('text', 'service_warning_sound', $lang["cgi_sws"], $attrsText2);
-	$form->addElement('text', 'service_unknown_sound', $lang["cgi_sus"], $attrsText2);
+	$form->addElement('text', 'refresh_rate', _("CGI Refresh Rate"), $attrsText3);
+	$form->addElement('text', 'host_unreachable_sound', _("Host Unreachable Sound"), $attrsText2);
+	$form->addElement('text', 'host_down_sound', _("Host Down Sound"), $attrsText2);
+	$form->addElement('text', 'service_critical_sound', _("Service Critical Sound"), $attrsText2);
+	$form->addElement('text', 'service_warning_sound', _("Service Warning Sound"), $attrsText2);
+	$form->addElement('text', 'service_unknown_sound', _("Service Unknown Sound"), $attrsText2);
 
 	## Part 5
-	$form->addElement('textarea', 'ping_syntax', $lang["cgi_pingSyntax"], $attrsTextarea);
+	$form->addElement('textarea', 'ping_syntax', _("Ping Syntax"), $attrsTextarea);
 		
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	
 	$form->setDefaults(array(
 	"cgi_activate"=>'0',
@@ -148,11 +148,11 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('physical_html_path', 'slash');
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('cgi_name', $lang['ErrName'], 'required');
-	$form->addRule('cgi_comment', $lang['ErrRequired'], 'required');
+	$form->addRule('cgi_name', _("Compulsory Name"), 'required');
+	$form->addRule('cgi_comment', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testCgiExistence');
-	$form->addRule('cgi_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('cgi_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
 	
 	# 
 	##End of form definition
@@ -164,20 +164,20 @@ For information : contact@oreon-project.org
 	
 	# Just watch a CGI information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cgi_id=".$cgi_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cgi_id=".$cgi_id."'"));
 	    $form->setDefaults($cgi);
 		$form->freeze();
 	}
 	# Modify a CGI information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cgi);
 	}
 	# Add a CGI information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$tpl->assign("nagios", $oreon->user->get_version());
@@ -189,7 +189,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateCGIInDB($cgiObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cgi_id=".$cgiObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cgi_id=".$cgiObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

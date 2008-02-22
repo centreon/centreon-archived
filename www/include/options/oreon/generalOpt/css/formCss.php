@@ -118,9 +118,9 @@ For information : contact@oreon-project.org
 
 	## Apply a template definition
 
-	$tpl->assign('submitTitle', $lang["save"]);
-	$tpl->assign('nameTitle', $lang["genOpt_menu_name"]);
-	$tpl->assign('fileTitle', $lang["genOpt_file_name"]);
+	$tpl->assign('submitTitle', _("Save"));
+	$tpl->assign('nameTitle', _("Menu"));
+	$tpl->assign('fileTitle', _("CSS File"));
 	$tpl->assign('o', $o);
 	$tpl->assign('lang', $lang);
 	$tpl->assign('p', $p);

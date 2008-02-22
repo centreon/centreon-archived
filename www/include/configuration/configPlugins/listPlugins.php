@@ -46,10 +46,10 @@ For information : contact@oreon-project.org
 	
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_path", $lang['plg_path']);
-	$tpl->assign("headerMenu_size", $lang['plg_size']);
-	$tpl->assign("headerMenu_options", $lang['options']);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_path", _("Path"));
+	$tpl->assign("headerMenu_size", _("Size"));
+	$tpl->assign("headerMenu_options", _("Options"));
 	# end header menu
 
 	#List of elements - Depends on different criteria
@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 		if ($i >= $begin && $i < $end){
 			$cmd["command_id"] = 1;
 			$selectedElements =& $form->addElement('checkbox', "select[".$cmd['command_id']."]");	
-			$moptions = "<a href='oreon.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>";
+			$moptions = "<a href='oreon.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>";
 			$path = str_replace('#BR#', "\\n", $path);
 			$path = str_replace('#T#', "\\t", $path);
 			$path = str_replace('#R#', "\\r", $path);
@@ -88,7 +88,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("elemArr", $elemArr);
 	
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	$form->addElement('select', 'plugin_dir', "Directory", $plugin_dir, array("onChange" => "this.form.submit('')"));
 	
 	# Form2
@@ -96,7 +96,7 @@ For information : contact@oreon-project.org
 	$form2 = new HTML_QuickForm('form', 'POST', "?p=".$p);
 	$form2->addElement('submit', 'create', "Create");
 	$form2->addElement('text', 'new_dir', "Create New Directory");
-	$file =& $form2->addElement('file', 'filename', $lang["upl_file"]);
+	$file =& $form2->addElement('file', 'filename', _("File (zip, tar or cfg)"));
 	$form2->addElement('submit', 'load', "Load");
 	
 	if (isset($_GET["filename"]))
@@ -131,22 +131,22 @@ For information : contact@oreon-project.org
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');

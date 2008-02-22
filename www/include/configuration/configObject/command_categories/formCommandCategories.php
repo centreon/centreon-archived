@@ -45,26 +45,26 @@ For information : contact@oreon-project.org
 	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["sc_add"]);
+		$form->addElement('header', 'title', _("Add a Service Category"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["sc_change"]);
+		$form->addElement('header', 'title', _("Modify a Service Category"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["sc_view"]);
+		$form->addElement('header', 'title', _("View a Service Category"));
 	
 	/*
 	 * Category information
 	 */
-	$form->addElement('header', 'information', $lang['sc_infos']);
+	$form->addElement('header', 'information', _("Information"));
 
 	# No possibility to change name and alias, because there's no interest
-	$form->addElement('text', 'category_name', $lang["cmd_cat_name"], $attrsText2);
-	$form->addElement('text', 'category_alias', $lang["cmd_cat_alias"], $attrsText2);
-	$form->addElement('text', 'category_order', $lang["cmd_cat_order"], $attrsText);
+	$form->addElement('text', 'category_name', _("Category Name"), $attrsText2);
+	$form->addElement('text', 'category_alias', _("Alias / Description"), $attrsText2);
+	$form->addElement('text', 'category_order', _("Order"), $attrsText);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'cmd_category_id');
@@ -87,13 +87,13 @@ For information : contact@oreon-project.org
 	$form->applyFilter('contact_name', 'myReplace');
 	$from_list_menu = false;
 	
-	$form->addRule('category_name', $lang['ErrName'], 'required');
-	$form->addRule('category_description', $lang['ErrAlias'], 'required');
+	$form->addRule('category_name', _("Compulsory Name"), 'required');
+	$form->addRule('category_description', _("Compulsory Alias"), 'required');
 	
 	$form->registerRule('existName', 'callback', 'testCommandCategorieExistence');
-	$form->addRule('category_name', $lang['ErrAlreadyExist'], 'existName');
+	$form->addRule('category_name', _("Name is already in use"), 'existName');
 	
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	# End of form definition
 
@@ -103,18 +103,18 @@ For information : contact@oreon-project.org
 
 	# Just watch a service_categories information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
 	    $form->setDefaults($ccdata);
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a service_categories information
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ccdata);
 	} else if ($o == "a")	{
 		# Add a service_categories information
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
@@ -125,7 +125,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateCommandCategorieInDB($cctObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$cctObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$cctObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

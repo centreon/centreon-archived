@@ -43,29 +43,29 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 
 
     #
 	## LDAP information
 	#
-	$form->addElement('header', 'ldap', $lang["genOpt_ldap"]);
-	$form->addElement('text', 'ldap_host', $lang["genOpt_ldap_host"], $attrsText );
-	$form->addElement('text', 'ldap_port', $lang["genOpt_ldap_port"],  $attrsText2);
-	$form->addElement('text', 'ldap_base_dn', $lang["genOpt_ldap_base_dn"], $attrsText);
-	$form->addElement('text', 'ldap_login_attrib', $lang["genOpt_ldap_login_attrib"], $attrsText);
-	$ldapUseSSL[] = &HTML_QuickForm::createElement('radio', 'ldap_ssl', null, $lang["yes"], '1');
-	$ldapUseSSL[] = &HTML_QuickForm::createElement('radio', 'ldap_ssl', null, $lang["no"], '0');
-	$form->addGroup($ldapUseSSL, 'ldap_ssl', $lang["genOpt_ldap_ssl"], '&nbsp;');
-	$ldapEnable[] = &HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, $lang["yes"], '1');
-	$ldapEnable[] = &HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, $lang["no"], '0');
-	$form->addGroup($ldapEnable, 'ldap_auth_enable', $lang["genOpt_ldap_auth_enable"], '&nbsp;');
-	$form->addElement('header', 'searchldap', $lang["genOpt_searchldap"]);
-	$form->addElement('text', 'ldap_search_user', $lang["genOpt_ldap_search_user"], $attrsText );
-	$form->addElement('password', 'ldap_search_user_pwd', $lang["genOpt_ldap_search_user_pwd"],  $attrsText);
-	$form->addElement('text', 'ldap_search_filter', $lang["genOpt_ldap_search_filter"], $attrsText);
-	$form->addElement('text', 'ldap_search_timeout', $lang["genOpt_ldap_search_timeout"], $attrsText2);
-	$form->addElement('text', 'ldap_search_limit', $lang["genOpt_ldap_search_limit"], $attrsText2);
+	$form->addElement('header', 'ldap', _("LDAP information"));
+	$form->addElement('text', 'ldap_host', _("LDAP Server"), $attrsText );
+	$form->addElement('text', 'ldap_port', _("LDAP Port"),  $attrsText2);
+	$form->addElement('text', 'ldap_base_dn', _("LDAP Base DN"), $attrsText);
+	$form->addElement('text', 'ldap_login_attrib', _("LDAP Login Attribute"), $attrsText);
+	$ldapUseSSL[] = &HTML_QuickForm::createElement('radio', 'ldap_ssl', null, _("Yes"), '1');
+	$ldapUseSSL[] = &HTML_QuickForm::createElement('radio', 'ldap_ssl', null, _("No"), '0');
+	$form->addGroup($ldapUseSSL, 'ldap_ssl', _("Enable LDAP over SSL"), '&nbsp;');
+	$ldapEnable[] = &HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("Yes"), '1');
+	$ldapEnable[] = &HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("No"), '0');
+	$form->addGroup($ldapEnable, 'ldap_auth_enable', _("Enable LDAP authentification"), '&nbsp;');
+	$form->addElement('header', 'searchldap', _("LDAP Search Information"));
+	$form->addElement('text', 'ldap_search_user', _("User to search (anonymous if empty)"), $attrsText );
+	$form->addElement('password', 'ldap_search_user_pwd', _("Password"),  $attrsText);
+	$form->addElement('text', 'ldap_search_filter', _("Default LDAP filter"), $attrsText);
+	$form->addElement('text', 'ldap_search_timeout', _("LDAP search timeout"), $attrsText2);
+	$form->addElement('text', 'ldap_search_limit', _("LDAP Search Size Limit"), $attrsText2);
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -89,8 +89,8 @@ For information : contact@oreon-project.org
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
 
     $valid = false;
@@ -108,10 +108,10 @@ For information : contact@oreon-project.org
 
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 	}
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ldap'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ldap'"));
 
 
 	#

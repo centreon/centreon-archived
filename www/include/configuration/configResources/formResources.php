@@ -45,33 +45,33 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["rs_add"]);
+		$form->addElement('header', 'title', _("Add a Resource"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["rs_change"]);
+		$form->addElement('header', 'title', _("Modify a Resource"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["rs_view"]);
+		$form->addElement('header', 'title', _("View Resource"));
 
 	#
 	## Resources CFG basic information
 	#
-	$form->addElement('header', 'information', $lang['rs_infos']);
-	$form->addElement('text', 'resource_name', $lang["rs_name"], $attrsText);
-	$form->addElement('text', 'resource_line', $lang["rs_line"], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'resource_name', _("Resource Name"), $attrsText);
+	$form->addElement('text', 'resource_line', _("MACRO Expression"), $attrsText);
 	
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$rsActivation[] = &HTML_QuickForm::createElement('radio', 'resource_activate', null, $lang["enable"], '1');
-	$rsActivation[] = &HTML_QuickForm::createElement('radio', 'resource_activate', null, $lang["disable"], '0');
-	$form->addGroup($rsActivation, 'resource_activate', $lang["status"], '&nbsp;');
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$rsActivation[] = &HTML_QuickForm::createElement('radio', 'resource_activate', null, _("Enabled"), '1');
+	$rsActivation[] = &HTML_QuickForm::createElement('radio', 'resource_activate', null, _("Disabled"), '0');
+	$form->addGroup($rsActivation, 'resource_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('resource_activate' => '1'));
-	$form->addElement('textarea', 'resource_comment', $lang["cmt_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'resource_comment', _("Comment"), $attrsTextarea);
 		
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 	
 	$form->addElement('hidden', 'resource_id');
@@ -88,11 +88,11 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('resource_name', 'myReplace');
-	$form->addRule('resource_name', $lang['ErrName'], 'required');
-	$form->addRule('resource_line', $lang['ErrAlias'], 'required');
+	$form->addRule('resource_name', _("Compulsory Name"), 'required');
+	$form->addRule('resource_line', _("Compulsory Alias"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('resource_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('resource_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
 
 	# 
 	##End of form definition
@@ -104,20 +104,20 @@ For information : contact@oreon-project.org
 	
 	# Just watch a Resources CFG information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&resource_id=".$resource_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&resource_id=".$resource_id."'"));
 	    $form->setDefaults($rs);
 		$form->freeze();
 	}
 	# Modify a Resources CFG information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($rs);
 	}
 	# Add a Resources CFG information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;
@@ -128,7 +128,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateResourceInDB($rsObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&resource_id=".$rsObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&resource_id=".$rsObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

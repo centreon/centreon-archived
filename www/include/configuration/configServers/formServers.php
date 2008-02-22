@@ -59,31 +59,31 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["nagios_add"]);
+		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["nagios_change"]);
+		$form->addElement('header', 'title', _("Modify a Nagios Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["nagios_view"]);
+		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
 
 	#
 	## Nagios Configuration basic information
 	#
-	$form->addElement('header', 'information', $lang['ns_infos']);
-	$form->addElement('text', 'name', $lang["ns_name"], $attrsText);
-	$form->addElement('text', 'ns_ip_address', $lang["ns_ip_address"], $attrsText);
-	$form->addElement('text', 'user', $lang["user"], $attrsText);
-	$form->addElement('text', 'password', $lang["n2db_db_pass"], $attrsText);
-	$form->addElement('text', 'ns_key', $lang["ns_key"], $attrsText3);
+	$form->addElement('header', 'information', _("Satellite configuration"));
+	$form->addElement('text', 'name', _("Sattelite Name"), $attrsText);
+	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
+	$form->addElement('text', 'user', _("User"), $attrsText);
+	$form->addElement('text', 'password', _("Password"), $attrsText);
+	$form->addElement('text', 'ns_key', _("Authentificatin Key"), $attrsText3);
 		
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, $lang["yes"], '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, $lang["no"], '0');
-	$form->addGroup($Tab, 'localhost', $lang["ns_localhost"], '&nbsp;');	
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("No"), '0');
+	$form->addGroup($Tab, 'localhost', _("Localhost ?"), '&nbsp;');	
 		
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, $lang["enable"], '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, $lang["disable"], '0');
-	$form->addGroup($Tab, 'ns_activate', $lang["status"], '&nbsp;');	
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
+	$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');	
 		
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
 		$form->setDefaults(array(
@@ -103,7 +103,7 @@ For information : contact@oreon-project.org
 	$redirect->setValue($o);
 	
 	# Form Rules
-	$form->addRule('nagios_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
 	
 	#End of form definition
 	
@@ -113,16 +113,16 @@ For information : contact@oreon-project.org
 	
 	# Just watch a nagios information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$server_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$server_id."'"));
 	    $form->setDefaults($nagios);
 		$form->freeze();
 	} else if ($o == "c")	{# Modify a nagios information
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($nagios);
 	} else if ($o == "a")	{# Add a nagios information
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;

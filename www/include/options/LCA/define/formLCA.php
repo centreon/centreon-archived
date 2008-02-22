@@ -119,78 +119,78 @@ $lca["lca_topos"] = array();
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["lca_add"]);
+		$form->addElement('header', 'title', _("Add an ACL"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["lca_change"]);
+		$form->addElement('header', 'title', _("Modify an ACL"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["lca_view"]);
+		$form->addElement('header', 'title', _("View an ACL"));
 
 	#
 	## LCA basic information
 	#
-	$form->addElement('header', 'information', $lang['lca_infos']);
-	$form->addElement('text', 'lca_name', $lang["lca_name"], $attrsText);
-	$form->addElement('text', 'lca_alias', $lang["alias"], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'lca_name', _("ACL Definition"), $attrsText);
+	$form->addElement('text', 'lca_alias', _("Alias"), $attrsText);
 /*	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, $lang['lca_tpMenu'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, $lang['lca_tpRes'], '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, $lang['lca_tpBoth'], '3');
-	$form->addGroup($tab, 'lca_type', $lang["lca_type"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, _("Menu"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, _("Resources"), '2');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, _("Both"), '3');
+	$form->addGroup($tab, 'lca_type', _("Type"), '&nbsp;');
 	$form->setDefaults(array('lca_type' => '3')); */
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, $lang["enable"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, $lang["disable"], '0');
-	$form->addGroup($tab, 'lca_activate', $lang["status"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, _("Enabled"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, _("Disabled"), '0');
+	$form->addGroup($tab, 'lca_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('lca_activate' => '1'));
 
 	#
 	## Contact Group concerned
 	#
-	$form->addElement('header', 'cg', $lang['lca_appCG']);
-    $ams1 =& $form->addElement('advmultiselect', 'lca_cgs', $lang["lca_cg"], $cgs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$form->addElement('header', 'cg', _("Implied Contact Groups"));
+    $ams1 =& $form->addElement('advmultiselect', 'lca_cgs', _("Contact Groups"), $cgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$form->addElement('textarea', 'lca_comment', $lang["lca_comment"], $attrsTextarea);
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$form->addElement('textarea', 'lca_comment', _("Comments"), $attrsTextarea);
 	
 	#
 	## Resources concerned
 	#
-	$form->addElement('header', 'rs', $lang['lca_appRes']);
+	$form->addElement('header', 'rs', _("Implied Resources"));
 
-    $ams1 =& $form->addElement('advmultiselect', 'lca_hgs', $lang["lca_hg"], $hgs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'lca_hgs', _("Host Groups"), $hgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, $lang["no"], '0');
-	$form->addGroup($tab, 'lca_hg_childs', $lang['lca_hgChilds'], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, _("No"), '0');
+	$form->addGroup($tab, 'lca_hg_childs', _("Include Host Groups -> Hosts"), '&nbsp;');
 	$form->setDefaults(array('lca_hg_childs' => '1'));
 
-    $ams1 =& $form->addElement('advmultiselect', 'lca_hosts', $lang["lca_host"], $hosts, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'lca_hosts', _("Hosts"), $hosts, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-    $ams1 =& $form->addElement('advmultiselect', 'lca_sgs', $lang["lca_sg"], $sgs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'lca_sgs', _("Service Groups"), $sgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	#
 	## Topology concerned
 	#
-	$form->addElement('header', 'pages', $lang['lca_appTopo']);
+	$form->addElement('header', 'pages', _("Implied page"));
 	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 	$DBRESULT1 =& $pearDB->query($rq);
 	#
@@ -275,11 +275,11 @@ $lca["lca_topos"] = array();
 		}
 		$lca_topos = array_map("one", $lca_topos);
 	}
-	$form->addGroup($lca_topos, 'lca_topos', $lang['lca_topo'], '&nbsp;&nbsp;');
+	$form->addGroup($lca_topos, 'lca_topos', _("Visible page"), '&nbsp;&nbsp;');
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
@@ -307,29 +307,29 @@ $lca["lca_topos"] = array();
 
 	# Just watch a LCA information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&lca_id=".$lca_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&lca_id=".$lca_id."'"));
 	    $form->setDefaults($lca);
 		$form->freeze();
 	}
 	# Modify a LCA information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	    $form->setDefaults($lca);
 	}
 	# Add a LCA information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	}
-	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&lca_id=".$lca_id, "changeT"=>$lang['modify']));
+	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&lca_id=".$lca_id, "changeT"=>_("Modify")));
 
 
 	$tpl->assign("lca_topos2", $lca_topos2);
 
-	$tpl->assign("sort1", $lang['lca_infos']);
-	$tpl->assign("sort2", $lang['lca_sortRes']);
-	$tpl->assign("sort3", $lang['lca_sortTopo']);
+	$tpl->assign("sort1", _("General Information"));
+	$tpl->assign("sort2", _("Resources"));
+	$tpl->assign("sort3", _("Topology"));
 
 	$valid = false;
 	if ($form->validate())	{
@@ -339,7 +339,7 @@ $lca["lca_topos"] = array();
 		else if ($form->getSubmitValue("submitC"))
 			updateLCAInDB($lcaObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&lca_id=".$lcaObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&lca_id=".$lcaObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

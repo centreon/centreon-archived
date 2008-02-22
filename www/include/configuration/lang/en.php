@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 /* Configuration Error */
 
-$lang['requiredFields'] = "<font style='color: red;'>*</font> Champs requis";
+$lang['requiredFields'] = "<font style='color: red;'>*</font>". _(" Required fields");
 $lang['ErrName'] = "Compulsory Name";
 $lang['ErrAlias'] = "Compulsory Alias";
 $lang['ErrEmail'] = "Valid Email";
@@ -30,11 +30,11 @@ $lang['ErrCg'] = "Compulsory Contact Group";
 $lang['ErrCmdLine'] = "Compulsory Command Line";
 $lang['ErrCmdType'] = "Compulsory  Command Type";
 $lang['ErrOidAlreadyExist'] = "A same Oid element already exist";
-$lang['ErrAlreadyExist'] = "A same Name element already exist";
+$lang['ErrAlreadyExist'] = "Name is already in use";
 $lang['ErrAddress'] = "Compulsory Adress";
-$lang['ErrRequired'] = "Require Field";
+$lang['ErrRequired'] = "Required Field";
 $lang['ErrSvLeast'] = "HostGroup or Host Require";
-$lang['ErrCctPasswd'] = "Passwords are not the same";
+$lang['ErrCctPasswd'] = "Passwords do not match";
 $lang['ErrGenFileProb'] = "Can't access to file needed";
 $lang['ErrCycleDef'] = "Circular Definition";
 $lang['ErrSvConflict'] = "This description is in conflicts with another one already define in the relation(s) selected";
@@ -381,9 +381,9 @@ $lang['sg_notif'] = "Notification";
 
 /* contact */
 
-$lang['cct_add'] = "Add an User";
-$lang['cct_change'] = "Modify an User";
-$lang['cct_view'] = "View an User";
+$lang['cct_add'] = "Add a User";
+$lang['cct_change'] = "Modify a User";
+$lang['cct_view'] = "View a User";
 $lang['cct_infos'] = "General Informations";
 $lang['cct_notif'] = "Notifications Type";
 $lang['cct_name'] = "Full Name";
@@ -399,8 +399,8 @@ $lang['cct_svNotifTp'] = "Services Notification Period";
 $lang['cct_svNotifCmd'] = "Services Notification Commands";
 $lang['cct_cgNotif'] = "Contact Groups parents";
 $lang['cct_passwd'] = "Password";
-$lang['cct_passwd2'] = "Confirmation";
-$lang['cct_lang'] = "Default Lang";
+$lang['cct_passwd2'] = "Confirm Password";
+$lang['cct_lang'] = "Default Language";
 $lang['cct_oreon'] = "Centreon";
 $lang['cct_oreon_text'] = "Reach Centreon Frontend";
 $lang['cct_admin'] = "Admin";
@@ -453,7 +453,7 @@ $lang['cmd_list_type'] = "Type";
 $lang['cmd_infos'] = "Informations";
 $lang['cmd_check'] = "Check";
 $lang['cmd_notif'] = "Notification";
-$lang['cmd_various'] = "Various";
+$lang['cmd_various'] = "Misc";
 $lang['cmd_checkShort'] = "Check";
 $lang['cmd_notifShort'] = "Notification";
 $lang['cmd_add'] = "Add a Command";
@@ -461,7 +461,7 @@ $lang['cmd_change'] = "Modify a Command";
 $lang['cmd_view'] = "View a Command";
 $lang['cmd_name'] = "Command Name";
 $lang['cmd_line'] = "Command Line";
-$lang['cmd_comment'] = "Commands definitions can contain Macros but you have to be sure that they are well validate for the case they'll be used";
+$lang['cmd_comment'] = "Commands definitions can contain Macros but they have to be valid.";
 $lang['cmd_help'] = "Plugin Help";
 $lang['cmd_help_output'] = "Help";
 $lang['cmd_output'] = "Output";
@@ -661,13 +661,13 @@ $lang['pp_useStoSockOut'] = "Use Storage Socket Output";
 $lang['pp_stoSockOutHName'] = "Storage Socket Output Host Name";
 $lang['pp_stoSockOutPort'] = "Storage Socket Output Port";
 $lang['pp_dbMan'] = "Database managment";
-$lang['pp_useStorMySQL'] = "Use Storage Mysql";
+$lang['pp_useStorMySQL'] = "Use Mysql Storage";
 $lang['pp_noRawData'] = "No Raw Data";
 $lang['pp_noBinData'] = "No Bin Data";
 $lang['pp_dbUser'] = "DB User";
 $lang['pp_dbName'] = "DB Name";
 $lang['pp_dbPass'] = "DP Pass";
-$lang['pp_dbHost'] = "DB_Host";
+$lang['pp_dbHost'] = "DB Host";
 $lang['pp_dumHN'] = "Dummy Hostname";
 $lang['pp_stoModLoad'] = "Storage Modules Load";
 
@@ -707,7 +707,7 @@ $lang['cgi_pingSyntax'] = "Ping Syntax";
 /* Generate File */
 
 $lang['gen_name'] = "Nagios Configuration Files Export";
-$lang['gen_infos'] = "Serveur implied";
+$lang['gen_infos'] = "Implied Server";
 $lang['gen_host'] = "Nagios Server";
 $lang['gen_opt'] = "Export Options";
 $lang['gen_ok'] = "Generate Files";
@@ -727,10 +727,10 @@ $lang['gen_restart_load'] = "Reload";
 $lang['gen_restart_start'] = "Restart";
 $lang['gen_restart_extcmd'] = "External Command";
 $lang['gen_butOK'] = "Export";
-$lang['gen_status'] = "State";
+$lang['gen_status'] = "Status";
 $lang['gen_mvOk'] = " - movement <font color='green'>OK</font>";
 $lang['gen_mvKo'] = " - movement <font color='res'>KO</font>";
-$lang['gen_trapd'] = "Traps SNMP";
+$lang['gen_trapd'] = "SNMP Traps";
 $lang['gen_genTrap'] = "Export configuration files";
 
 
@@ -740,11 +740,11 @@ $lang['upl_name'] = "Nagios Configuration Upload";
 $lang['upl_infos'] = "Serveur implied";
 $lang['upl_host'] = "Nagios/Centreon Server";
 $lang['upl_opt'] = "Upload Options";
-$lang['upl_del'] = "Delete all configuration for kind of files choose";
-$lang['upl_over'] = "Update definition in same dual definition";
+$lang['upl_del'] = "Delete all configuration for the chosen type of files";
+$lang['upl_over'] = "Update definition in case of double definition";
 $lang['upl_comment'] = "Include comments";
 $lang['upl_type'] = "File Type";
-$lang['upl_mis1'] = "For archive upload, be sure that the first line of each file have no importance because it's doesn't manage.<br>Avoid to begin with a definition.";
+$lang['upl_mis1'] = "For archive upload, be sure that the first line of each file has no importance because it is not handled.<br>Avoid to begin with a definition.";
 $lang['upl_typeNag'] = "nagios.cfg";
 $lang['upl_typeCgi'] = "cgi.cfg";
 $lang['upl_typePerfparse'] = "perfparse.cfg";
@@ -756,8 +756,8 @@ $lang['upl_typeName'] = "Type";
 $lang['upl_typeCmdType'] = "Command Type";
 $lang['upl_typeCmdCheck'] = "Check Command";
 $lang['upl_typeCmdNotif'] = "Notification Command";
-$lang['upl_typeCmdCmt1'] = "You should upload before all the Commands definitions while specifying their type.";
-$lang['upl_typeCmdCmt2'] = "Indeed, it's the only way to make difference between Check or Notification Commands.";
+$lang['upl_typeCmdCmt1'] = "It is recommanded to upload all the Command definitions first by specifying their types.";
+$lang['upl_typeCmdCmt2'] = "Indeed, it's the only way to make a difference between Check and Notification Commands.";
 $lang['upl_file'] = "File (zip, tar or cfg)";
 $lang['upl_manualDef'] = "Manual Filling";
 $lang['upl_result'] = "Result";
@@ -769,7 +769,7 @@ $lang['upl_carrOk'] = "Data recovery OK";
 $lang['upl_carrKo'] = "Data recovery KO";
 $lang['upl_manualDefOk'] = "Manual filling OK";
 $lang['upl_uplBadType'] = "Not supported extension";
-$lang['upl_newEntries'] = "recorded entrie(s)";
+$lang['upl_newEntries'] = "Entries are registered";
 
 
 /* Purge Policy Template */
@@ -855,7 +855,7 @@ $lang['ndo2db_infos'] = "ndo2db configuration";
 $lang['ndo2db_infos2'] = "ndo2db configuration de la base de donn&eacute;es";
 $lang['ndo2db_infos3'] = "ndo2db configuration de la r&eacute;tention des informations";
 $lang['n2db_decription'] = "Description";
-$lang['n2db_nagios_server'] = "Requ&ecirc;teur";
+$lang['n2db_nagios_server'] = "Requester";
 $lang['n2db_socket_type'] = "Type de socket";
 $lang['n2db_socket_name'] = "Nom de la socket";
 $lang['n2db_tcp_port'] = "Port TCP";
@@ -890,7 +890,7 @@ $lang["nmod_file_rotation_interval"] = "Interval de rotation";
 $lang["nmod_file_rotation_command"] = "Command de rotation";
 $lang["nmod_file_rotation_timeout"] = "Timeout de rotation";
 $lang["nmod_reconnect_interval"] = "Interval de reconnexion";
-$lang["nmod_reconnect_warning_interval"] = "Interval de notification en cas de perte de connexion";
+$lang["nmod_reconnect_warning_interval"] = "Notification interval in case of disconnection";
 $lang["nmod_data_processing_options"] = "Options d'execution";
 $lang["nmod_config_output_options"] = "Options de Sortie";
 

@@ -43,30 +43,30 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 
 	#
 	## Nagios information
 	#
-	$form->addElement('header', 'nagios', $lang['genOpt_nagios']);
-	$form->addElement('text', 'nagios_path', $lang["genOpt_nagPath"], $attrsText);
-	$form->addElement('text', 'nagios_path_bin', $lang["genOpt_nagBin"], $attrsText);
-	$form->addElement('text', 'nagios_init_script', $lang["genOpt_nagScript"], $attrsText);
-	$form->addElement('text', 'nagios_path_img', $lang["genOpt_nagImg"], $attrsText);
-	$form->addElement('text', 'nagios_path_plugins', $lang["genOpt_nagPlug"], $attrsText);
-	$form->addElement('text', 'mailer_path_bin', $lang["genOpt_mailer"], $attrsText);
+	$form->addElement('header', 'nagios', _("Nagios information"));
+	$form->addElement('text', 'nagios_path', _("Directory"), $attrsText);
+	$form->addElement('text', 'nagios_path_bin', _("Directory + Binary"), $attrsText);
+	$form->addElement('text', 'nagios_init_script', _("Init Script"), $attrsText);
+	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
+	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
+	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 	
-	$form->addElement('select', 'nagios_version', $lang["genOpt_nagVersion"], array(1=>"1", 2=>"2"));
+	$form->addElement('select', 'nagios_version', _("Nagios Release"), array(1=>"1", 2=>"2"));
 	
-	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["yes"], '1');
-	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, $lang["no"], '0');
+	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("Yes"), '1');
+	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("No"), '0');
 
 	#
 	## ndo
 	#
-	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, $lang["yes"], '1');
-	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, $lang["no"], '0');
-	$form->addGroup($ndo_activate, 'ndo_activate', $lang["ndo_activate"], '&nbsp;');
+	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, _("Yes"), '1');
+	$ndo_activate[] = &HTML_QuickForm::createElement('radio', 'ndo_activate', null, _("No"), '0');
+	$form->addGroup($ndo_activate, 'ndo_activate', _("NDO activate"), '&nbsp;');
 
 	
 	$form->addElement('hidden', 'gopt_id');
@@ -92,10 +92,10 @@ For information : contact@oreon-project.org
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 	
-	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path_img', $lang['ErrValidPath'], 'is_valid_path');
-	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
-	$form->addRule('nagios_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
+	$form->addRule('nagios_path_plugins', ("Can't write in directory"), 'is_writable_path');
+	$form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path');
+	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
+	$form->addRule('nagios_path_bin', _("Can't execute binary"), 'is_executable_binary');
 
 	#
 	##End of form definition
@@ -107,8 +107,8 @@ For information : contact@oreon-project.org
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
     $valid = false;
 	if ($form->validate())	{
@@ -123,10 +123,10 @@ For information : contact@oreon-project.org
 		$form->freeze();
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("impossible to validate, one or more field is incorrect")."</div>");
 	}
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=nagios'"));
 
 	#
 	##Apply a template definition

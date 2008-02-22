@@ -216,7 +216,7 @@ function writeShellHeaders($fd, $oreonInstallPath, $patchPath) {
 	fwrite($fd, "PATH_PATCH=" . $patchPath . "\n\n");
 	fwrite($fd, "PATH_OLD=`pwd`\n\n");
 	fwrite($fd, 'cd ${PATH_OREON}' . "\n\n");
-	fwrite($fd, 'echo "' . $lang['batchPatch_begin'] . '"' . "\n\n");
+	fwrite($fd, 'echo "' . _("Execution start") . '"' . "\n\n");
 }
 
 /**
@@ -227,7 +227,7 @@ function writeShellHeaders($fd, $oreonInstallPath, $patchPath) {
 function writeShellFooters($fd) {
 	global $lang;
 	fwrite($fd, 'cd ${PATH_OLD}' . "\n\n");
-	fwrite($fd, 'echo "' . $lang['batchPatch_end'] . '"');
+	fwrite($fd, 'echo "' . _("Execution end") . '"');
 }
 
 /**
@@ -244,11 +244,11 @@ function writeShellPatch($fd, $file, $dbuser, $dbpass, $dbname) {
 	$query = 'UPDATE `oreon_informations` SET `value`="' . $file->version . '" WHERE `key`="version"';
 	fwrite($fd, 'patch -p1 --dry-run < ${PATH_PATCH}/' . $file->filename . ' > /dev/null' . "\n");
 	fwrite($fd, 'if [ $? -ne 0 ]; then');
-	fwrite($fd, "\n\t" . 'echo "' . sprintf($lang['batchPatch_err01'], $file->filename) . '"');
+	fwrite($fd, "\n\t" . 'echo "' . sprintf(_("Error when installing patch : %s."), $file->filename) . '"');
 	fwrite($fd, "\n\texit 1\nfi\n\n");
 	fwrite($fd, 'patch -p1 < ${PATH_PATCH}/' . $file->filename . ' > /dev/null' . "\n");
 	fwrite($fd, "mysql -u " . $dbuser . " -p" . $dbpass . " " . $dbname . " -e '". $query . "'\n");
-	fwrite($fd, 'echo "' . sprintf($lang['batchPatch_ok01'], $file->version) . '"' . "\n\n");
+	fwrite($fd, 'echo "' . sprintf(_("%s patch is installed."), $file->version) . '"' . "\n\n");
 }
 
 /**

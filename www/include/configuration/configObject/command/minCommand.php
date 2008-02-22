@@ -63,30 +63,30 @@ For information : contact@oreon-project.org
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"80");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["cmd_view"]);
+	$form->addElement('header', 'title', _("View a Command"));
 
 	#
 	## Command information
 	#
 	if ($cmd["command_type"] == "1")
-		$form->addElement('header', 'information', $lang['cmd_notif']);
+		$form->addElement('header', 'information', _("Notification"));
 	else if ($cmd["command_type"] == "2")
-		$form->addElement('header', 'information', $lang['cmd_check']);
+		$form->addElement('header', 'information', _("Check"));
 	else
-		$form->addElement('header', 'information', $lang['cmd_infos']);
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_notif'], '1');
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_check'], '2');
-	$v1 =& $form->addGroup($cmdType, 'command_type', $lang['cmd_type'], '&nbsp;&nbsp;');
+		$form->addElement('header', 'information', _("Information"));
+	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
+	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+	$v1 =& $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 	$v1->freeze();
-	$v2 =& $form->addElement('text', 'command_name', $lang["cmd_name"], $attrsText);
+	$v2 =& $form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 	$v2->freeze();
-	$v3 =& $form->addElement('textarea', 'command_line', $lang["cmd_line"], $attrsTextarea);
+	$v3 =& $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
 	$v3->freeze();
 	#
 	## Command Select
 	#
-    $form->addElement('select', 'command_id1', $lang['cmd_check'], $checkCmds, array("onChange"=>"this.form.submit()"));
-    $form->addElement('select', 'command_id2', $lang['cmd_notif'], $notifCmds, array("onChange"=>"this.form.submit()"));
+    $form->addElement('select', 'command_id1', _("Check"), $checkCmds, array("onChange"=>"this.form.submit()"));
+    $form->addElement('select', 'command_id2', _("Notif"), $notifCmds, array("onChange"=>"this.form.submit()"));
     
 	$form->setConstants(array("command_name"=>$cmd["command_name"], "command_line"=>$cmd["command_line"], "command_type"=>$cmd["command_type"]["command_type"]));
   // print_r($cmd);

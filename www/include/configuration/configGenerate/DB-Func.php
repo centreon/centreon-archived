@@ -541,7 +541,7 @@ For information : contact@oreon-project.org
 	function create_file($filename, $name, $header = true)	{
 		global $lang;
 		if (!$handle = fopen($filename, 'w')) {         
-	    	echo $lang['ErrGenFileProb'].$filename;         
+	    	echo _("Can't access to needed file").$filename;         
 	    	exit;
 		}
 		$header ? print_header($handle, $name) : NULL;
@@ -551,7 +551,7 @@ For information : contact@oreon-project.org
 	// write data into the file	
 	function write_in_file($handle, $content, $filename)	{
 		if (strcmp($content, "") && !fwrite($handle, $content)) {
-			echo $lang['ErrGenFileProb'].$filename; 
+			echo _("Can't access to needed file").$filename; 
 			exit();
 		}
 	}

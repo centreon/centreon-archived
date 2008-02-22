@@ -71,42 +71,42 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["nagios_add"]);
+		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["nagios_change"]);
+		$form->addElement('header', 'title', _("Modify a Nagios Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["nagios_view"]);
+		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
 
 	#
 	## Nagios Configuration basic information
 	#
-	$form->addElement('header', 'information', $lang['ndo2db_infos']);
-	$form->addElement('text', 'description', $lang["n2db_decription"], $attrsText);
-	$form->addElement('select', 'ns_nagios_server', $lang["n2db_nagios_server"], $nagios_servers);
-	$form->addElement('select', 'socket_type', $lang["n2db_socket_type"], array("unix"=>"unix","tcp"=>"tcp"));
-	$form->addElement('text', 'socket_name', $lang["n2db_socket_name"], $attrsText2);
-	$form->addElement('text', 'tcp_port', $lang["n2db_tcp_port"], $attrsText3);
+	$form->addElement('header', 'information', _("ndo2db configuration"));
+	$form->addElement('text', 'description', _("Description"), $attrsText);
+	$form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
+	$form->addElement('select', 'socket_type', _("Socket Type"), array("unix"=>"unix","tcp"=>"tcp"));
+	$form->addElement('text', 'socket_name', _("Socket Name"), $attrsText2);
+	$form->addElement('text', 'tcp_port', _("TCP Port"), $attrsText3);
 	
 	# DB configuration
-	$form->addElement('select', 'db_type', $lang["n2db_db_type"], array("mysql"=>"MySQL","pgsql"=>"PostgreSQL"));
-	$form->addElement('text', 'db_host', $lang["n2db_db_host"], $attrsText);
-	$form->addElement('text', 'db_name', $lang["n2db_db_name"], $attrsText);
-	$form->addElement('text', 'db_port', $lang["n2db_db_port"], $attrsText);
-	$form->addElement('text', 'db_prefix', $lang["n2db_db_prefix"], $attrsText);
-	$form->addElement('text', 'db_user', $lang["n2db_db_user"], $attrsText);
-	$form->addElement('text', 'db_pass', $lang["n2db_db_pass"], $attrsText);
+	$form->addElement('select', 'db_type', _("Database Type"), array("mysql"=>"MySQL","pgsql"=>"PostgreSQL"));
+	$form->addElement('text', 'db_host', _("Database Hoster"), $attrsText);
+	$form->addElement('text', 'db_name', _("Database Name"), $attrsText);
+	$form->addElement('text', 'db_port', _("Listening Port"), $attrsText);
+	$form->addElement('text', 'db_prefix', _("Prefix"), $attrsText);
+	$form->addElement('text', 'db_user', _("User"), $attrsText);
+	$form->addElement('text', 'db_pass', _("Password"), $attrsText);
 	
 	# DB retention
-	$form->addElement('text', 'max_timedevents_age', $lang["n2db_timedevents_age"], $attrsText3);
-	$form->addElement('text', 'max_systemcommands_age', $lang["n2db_systemcommands_age"], $attrsText3);
-	$form->addElement('text', 'max_servicechecks_age', $lang["n2db_servicechecks_age"], $attrsText3);
-	$form->addElement('text', 'max_hostchecks_age', $lang["n2db_hostchecks_age"], $attrsText3);
-	$form->addElement('text', 'max_eventhandlers_age', $lang["n2db_eventhandlers_age"], $attrsText3);
+	$form->addElement('text', 'max_timedevents_age', _("Event retention"), $attrsText3);
+	$form->addElement('text', 'max_systemcommands_age', _("Command history retention"), $attrsText3);
+	$form->addElement('text', 'max_servicechecks_age', _("Service check retention"), $attrsText3);
+	$form->addElement('text', 'max_hostchecks_age', _("Host check retention"), $attrsText3);
+	$form->addElement('text', 'max_eventhandlers_age', _("Event history retention"), $attrsText3);
 	
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, $lang["enable"], '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, $lang["disable"], '0');
-	$form->addGroup($Tab, 'activate', $lang["status"], '&nbsp;');	
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
+	$form->addGroup($Tab, 'activate', _("Status"), '&nbsp;');	
 		
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
 		$form->setDefaults(array(
@@ -135,7 +135,7 @@ For information : contact@oreon-project.org
 	$redirect->setValue($o);
 	
 	# Form Rules
-	$form->addRule('nagios_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
 	
 	#End of form definition
 	
@@ -145,7 +145,7 @@ For information : contact@oreon-project.org
 	
 	# Just watch a nagios information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
 	    $form->setDefaults($nagios);
 		$form->freeze();
 	} else if ($o == "c")	{# Modify a nagios information
@@ -178,9 +178,9 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);
 		$tpl->assign('lang', $lang);	
-		$tpl->assign('sort1', $lang['n2db_general']);		
-		$tpl->assign('sort2', $lang['n2db_database']);		
-		$tpl->assign('sort3', $lang['n2db_retention']);
+		$tpl->assign('sort1', _("General"));		
+		$tpl->assign('sort2', _("Database"));		
+		$tpl->assign('sort3', _("Retention"));
 		$tpl->display("formNdo2db.ihtml");
 	}
 ?>

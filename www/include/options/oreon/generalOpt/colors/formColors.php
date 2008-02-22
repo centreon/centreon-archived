@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 
 	$TabColorNameAndLang = array("color_up"=>"genOpt_oHCUP",
                                     	"color_down"=>"genOpt_oHCDW",
@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $lang[$val];
 		$codeColor = $gopt[$nameColor];
-		$title = $lang["genOpt_colorPicker"];
+		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		if ($form->validate())	{
@@ -68,7 +68,7 @@ For information : contact@oreon-project.org
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
 		if (!$form->validate())	{
-			$form->addElement('button', $nameColor.'_modify', $lang['modify'], $attrsText5);
+			$form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
 		}
 	}
 
@@ -95,8 +95,8 @@ For information : contact@oreon-project.org
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
 	#
 	##Picker Color JS
@@ -130,9 +130,9 @@ For information : contact@oreon-project.org
 		$form->freeze();
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=colors'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=colors'"));
 
 	#
 	##Apply a template definition

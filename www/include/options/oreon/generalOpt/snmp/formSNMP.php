@@ -42,18 +42,18 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 
 	#
 	## SNMP information
 	#
-	$form->addElement('header', 'snmp', $lang["genOpt_snmp"]);
-	$form->addElement('text', 'snmp_community', $lang["genOpt_snmpCom"], $attrsText);
-	$form->addElement('select', 'snmp_version', $lang["genOpt_snmpVer"], array("0"=>"1", "1"=>"2", "2"=>"2c", "3"=>"3"), $attrsAdvSelect);
-	$form->addElement('text', 'snmp_trapd_path_conf', $lang["genOpt_snmp_trapd_pathConf"], $attrsText);
-	$form->addElement('text', 'snmpttconvertmib_path_bin', $lang["genOpt_snmpttconvertmib_path_bin"], $attrsText);
-	$form->addElement('text', 'snmptt_unknowntrap_log_file', $lang["genOpt_snmptt_unknowntrap_log_file"], $attrsText);
-	$form->addElement('text', 'perl_library_path', $lang["genOpt_perl_library_path"], $attrsText);
+	$form->addElement('header', 'snmp', _("SNMP information"));
+	$form->addElement('text', 'snmp_community', _("Global Community"), $attrsText);
+	$form->addElement('select', 'snmp_version', _("Version"), array("0"=>"1", "1"=>"2", "2"=>"2c", "3"=>"3"), $attrsAdvSelect);
+	$form->addElement('text', 'snmp_trapd_path_conf', _("Directory of traps configuration files"), $attrsText);
+	$form->addElement('text', 'snmpttconvertmib_path_bin', _("snmpttconvertmib Directory + Binary"), $attrsText);
+	$form->addElement('text', 'snmptt_unknowntrap_log_file', _("SNMPTT log file"), $attrsText);
+	$form->addElement('text', 'perl_library_path', _("Perl library directory"), $attrsText);
 	
 	#
 	## Form Rules
@@ -66,10 +66,10 @@ For information : contact@oreon-project.org
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
-	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrPath'], 'is_writable_path');
+	$form->addRule('snmp_trapd_path_conf', _("Can't write in directory"), 'is_writable_path');
 	$form->addRule('snmp_trapd_path_conf', $lang['ErrRequired'], 'required');
-	$form->addRule('snmpttconvertmib_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
-	$form->addRule('perl_library_path', $lang['ErrReadPath'], 'is_readable_path');
+	$form->addRule('snmpttconvertmib_path_bin', _("Can't execute binary"), 'is_executable_binary');
+	$form->addRule('perl_library_path', _("Can't read in directory"), 'is_readable_path');
 	#
 	##End of form definition
 	#
@@ -84,8 +84,8 @@ For information : contact@oreon-project.org
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
     $valid = false;
 	if ($form->validate())	{
@@ -100,9 +100,9 @@ For information : contact@oreon-project.org
 		$form->freeze();
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))	
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=snmp'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=snmp'"));
 
 	#
 	##Apply a template definition

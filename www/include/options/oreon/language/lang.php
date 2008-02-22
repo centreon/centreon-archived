@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$tpl->assign("title", $lang['lang_title']);
+	$tpl->assign("title", _("Lang Files management"));
 
 	$elemArr = array();
 	$i = 0;
@@ -41,11 +41,11 @@ For information : contact@oreon-project.org
 
     $langdispo = getLangsByDir("./lang/");	
 
-    $elemArr[$i] = array("ModuleTitle"=>$lang['lang_gen'],
+    $elemArr[$i] = array("ModuleTitle"=>_("Main Available Lang Files :"),
 						"LangDispo"=>$langdispo,
-						"LangDispoName"=>$lang['lang_av'],
+						"LangDispoName"=>_("Available languages"),
 						"LangUtil"=>$oreon->user->get_lang(),
-                        "LangUtilName"=>$lang['lang_use']);
+                        "LangUtilName"=>_("Used language"));
     $i++;
 	echo "<div>";
 	# Configuration Module
@@ -53,11 +53,11 @@ For information : contact@oreon-project.org
     $langdispo = getLangsByDir("./include/configuration/lang/");	
     $stock = getLangs("./include/configuration/lang/");	
     
-	$elemArr[$i] = array("ModuleTitle"=>$lang['lang_mod']." ".$lang['m_configuration'],
+	$elemArr[$i] = array("ModuleTitle"=>_("Module")." "._("Configuration"),
 					"LangDispo"=>$langdispo,
-					"LangDispoName"=>$lang['lang_av'],
+					"LangDispoName"=>_("Available languages"),
 					"LangUtil"=>(array_key_exists($oreon->user->get_lang(), $stock) ? $oreon->user->get_lang() : "en"),
-                    "LangUtilName"=>$lang['lang_use']);
+                    "LangUtilName"=>_("Used language"));
 	$i++;
 	# Options Module
     $langdispo="";
@@ -65,11 +65,11 @@ For information : contact@oreon-project.org
 
 
 
-	$elemArr[$i] = array("ModuleTitle"=>$lang['lang_mod']." ".$lang['m_options'],
+	$elemArr[$i] = array("ModuleTitle"=>_("Module")." "._("Options"),
 					"LangDispo"=>$langdispo,
-					"LangDispoName"=>$lang['lang_av'],
+					"LangDispoName"=>_("Available languages"),
 					"LangUtil"=>(array_key_exists($oreon->user->get_lang(), $stock) ? $oreon->user->get_lang() : "en"),
-                    "LangUtilName"=>$lang['lang_use']);
+                    "LangUtilName"=>_("Used language"));
 	$i++;		
 	# Other Modules in modules/
 	foreach ($oreon->modules as $mod)	{
@@ -84,11 +84,11 @@ For information : contact@oreon-project.org
 		}
 		else
 			$langdispo = $lang['lang_none'];
-			$elemArr[$i] = array("ModuleTitle"=>$lang['lang_mod']." ".$mod["name"],
+			$elemArr[$i] = array("ModuleTitle"=>_("Module")." ".$mod["name"],
 							"LangDispo"=>$langdispo,
-							"LangDispoName"=>$lang['lang_av'],
-							"LangUtil"=>(array_key_exists($oreon->user->get_lang(), $stock) ? $oreon->user->get_lang() : (!count($stock) ? $lang['lang_none'] : "en")),
-	                        "LangUtilName"=>$lang['lang_use']);
+							"LangDispoName"=>_("Available language"),
+							"LangUtil"=>(array_key_exists($oreon->user->get_lang(), $stock) ? $oreon->user->get_lang() : (!count($stock) ? _("None") : "en")),
+	                        "LangUtilName"=>_("Used language"));
 			$i++;
 	}	
 	#

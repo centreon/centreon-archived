@@ -59,38 +59,38 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["nagios_add"]);
+		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["nagios_change"]);
+		$form->addElement('header', 'title', _("Modify a Nagios Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["nagios_view"]);
+		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
 
 	#
 	## Nagios Configuration basic information
 	#
-	$form->addElement('header', 'information', $lang['ndomod_infos']);
-	$form->addElement('text', 'description', $lang["nmod_decription"], $attrsText);
-	$form->addElement('select', 'ns_nagios_server', $lang["nmod_nagios_server"], $nagios_servers);
-	$form->addElement('text', 'instance_name', $lang["nmod_instance_name"], $attrsText);
-	$form->addElement('select', 'output_type', $lang["nmod_output_type"], array("file"=>"file","tcpsocket"=>"tcpsocket","unixsocket"=>"unixsocket"));
-	$form->addElement('text', 'output', $lang["nmod_output"], $attrsText);
-	$form->addElement('text', 'tcp_port', $lang["nmod_tcp_port"], $attrsText3);
-	$form->addElement('text', 'output_buffer_items', $lang["nmod_output_buffer_items"], $attrsText);
+	$form->addElement('header', 'information', _("ndomod configuration"));
+	$form->addElement('text', 'description', _("Description"), $attrsText);
+	$form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
+	$form->addElement('text', 'instance_name', _("Instance Name"), $attrsText);
+	$form->addElement('select', 'output_type', _("Interface Type"), array("file"=>"file","tcpsocket"=>"tcpsocket","unixsocket"=>"unixsocket"));
+	$form->addElement('text', 'output', _("Target"), $attrsText);
+	$form->addElement('text', 'tcp_port', _("TCP Port"), $attrsText3);
+	$form->addElement('text', 'output_buffer_items', _("Buffer size of the interface"), $attrsText);
 
-	$form->addElement('text', 'file_rotation_interval', $lang["nmod_file_rotation_interval"], $attrsText);
-	$form->addElement('text', 'file_rotation_command', $lang["nmod_file_rotation_command"], $attrsText);
-	$form->addElement('text', 'file_rotation_timeout', $lang["nmod_file_rotation_timeout"], $attrsText);
+	$form->addElement('text', 'file_rotation_interval', _("Rotation interval"), $attrsText);
+	$form->addElement('text', 'file_rotation_command', _("Rotation command"), $attrsText);
+	$form->addElement('text', 'file_rotation_timeout', _("Rotation timeout"), $attrsText);
 
-	$form->addElement('text', 'reconnect_interval', $lang["nmod_reconnect_interval"], $attrsText);
-	$form->addElement('text', 'reconnect_warning_interval', $lang["nmod_reconnect_warning_interval"], $attrsText);
+	$form->addElement('text', 'reconnect_interval', _("Reconnection interval"), $attrsText);
+	$form->addElement('text', 'reconnect_warning_interval', _("Notification interval in case of disconnection"), $attrsText);
 	
-	$form->addElement('text', 'data_processing_options', $lang["nmod_data_processing_options"], $attrsText3);
-	$form->addElement('text', 'config_output_options', $lang["nmod_config_output_options"], $attrsText3);
+	$form->addElement('text', 'data_processing_options', _("Data processing options"), $attrsText3);
+	$form->addElement('text', 'config_output_options', _("Output options"), $attrsText3);
 	
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, $lang["enable"], '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, $lang["disable"], '0');
-	$form->addGroup($Tab, 'activate', $lang["status"], '&nbsp;');	
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
+	$form->addGroup($Tab, 'activate', _("Status"), '&nbsp;');	
 		
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
 		$form->setDefaults(array(
@@ -116,7 +116,7 @@ For information : contact@oreon-project.org
 	$redirect->setValue($o);
 	
 	# Form Rules
-	$form->addRule('nagios_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
 	
 	#End of form definition
 	
@@ -126,16 +126,16 @@ For information : contact@oreon-project.org
 	
 	# Just watch a nagios information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndomod_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndomod_id."'"));
 	    $form->setDefaults($nagios);
 		$form->freeze();
 	} else if ($o == "c")	{# Modify a nagios information
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($nagios);
 	} else if ($o == "a")	{# Add a nagios information
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;

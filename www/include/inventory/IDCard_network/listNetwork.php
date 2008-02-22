@@ -60,11 +60,11 @@ For information : contact@oreon-project.org
 
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
-	$tpl->assign("headerMenu_address", $lang['h_address']);
-	$tpl->assign("headerMenu_status", $lang['status']);
-	$tpl->assign("headerMenu_manu", $lang['s_manufacturer']);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_desc", _("Description"));
+	$tpl->assign("headerMenu_address", _("IP Address / DNS"));
+	$tpl->assign("headerMenu_status", _("Status"));
+	$tpl->assign("headerMenu_manu", _("Manufacturer"));
 	# end header menu
 
 	#Host list
@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 						"RowMenu_link"=>"?p=".$p."&o=o&host_id=".$host['host_id']."&search=".$search,
 						"RowMenu_desc"=>$host["host_alias"],
 						"RowMenu_address"=>$host["host_address"],
-						"RowMenu_status"=>$host["host_activate"] ? $lang["enable"] : $lang["disable"],
+						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_manu"=>$host["manu_alias"]);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
@@ -120,7 +120,7 @@ For information : contact@oreon-project.org
 	$req = "SELECT id, alias FROM inventory_manufacturer ";
 	$res = & $pearDB->query($req);
 
-	$option = array(NULL=>$lang['s_server']);
+	$option = array(NULL=>_("Server"));
 	for ($i=0;$res->fetchInto($host);$i++) 
     	$option[$host['id']] = $host['alias'];
 
@@ -150,7 +150,7 @@ For information : contact@oreon-project.org
 
     $form->addElement('select', 'o2', NULL, $option, $attrs2);
 
-//	$form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
+//	$form->addElement('select', 'select_manufacturer', _("Manufacturer"), $option);
 
 
 	#

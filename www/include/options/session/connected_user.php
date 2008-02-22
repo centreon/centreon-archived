@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 		
 	if (isset($_GET["o"]) && $_GET["o"] == "k"){
 		$pearDB->query("DELETE FROM session WHERE session_id = '".$_GET["session_id"]."'");
-		$msg = $lang['kicked_user'];
+		$msg = _("User kicked");
 	}	
 
 	# Smarty template Init
@@ -54,15 +54,15 @@ For information : contact@oreon-project.org
 		else
 			$session_data[$cpt]["topology_icone"] = "&nbsp;";
 		$session_data[$cpt]["last_reload"] = date("H:i:s", $r["last_reload"]);
-		$session_data[$cpt]["actions"] = "<a href='./oreon.php?p=$p&o=k&session_id=".$r["session_id"]."'><img src='./img/icones/16x16/flash.gif' border='0' alt='".$lang["kick_user"]."' title='".$lang["kick_user"]."'></a>";
+		$session_data[$cpt]["actions"] = "<a href='./oreon.php?p=$p&o=k&session_id=".$r["session_id"]."'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
 		$cpt++;
 	}
 	if (isset($msg))
 		$tpl->assign("msg", $msg);
 	$tpl->assign("session_data", $session_data);
-	$tpl->assign("wi_user", $lang["wi_user"]);
-	$tpl->assign("wi_where", $lang["wi_where"]);
-	$tpl->assign("wi_last_req", $lang["wi_last_req"]);
-	$tpl->assign("distant_location", $lang["distant_location"]);
+	$tpl->assign("wi_user", _("Users"));
+	$tpl->assign("wi_where", _("Position"));
+	$tpl->assign("wi_last_req", _("Last request"));
+	$tpl->assign("distant_location", _("IP Address"));
 	$tpl->display("connected_user.ihtml");
 ?>

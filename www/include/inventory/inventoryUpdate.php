@@ -22,13 +22,13 @@ For information : contact@oreon-project.org
 	$t = microtime();
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title',$lang['s_header_inventory'] );
+	$form->addElement('header', 'title',_("Inventory") );
 
 	#
 	## Inventory information
 	#
 
-	$form->addElement('text', 'inventory', $lang['s_output_inventory'], "");
+	$form->addElement('text', 'inventory', _("Inventory Output"), "");
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 
 
 		$tpl->assign("initJS", "<script type='text/javascript'>
-		display('". $lang['s_waiting'] ."<br><br><img src=\'./img/icones/16x16/spinner_blue.gif\'>','inventory');
+		display('". _("Please wait, inventory is loading...") ."<br><br><img src=\'./img/icones/16x16/spinner_blue.gif\'>','inventory');
 		//display('Please wait during inventory...','inventory');
 		loadXMLDoc('include/inventory/inventory_cron_update.php','inventory');
 		</script>");

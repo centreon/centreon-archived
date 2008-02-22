@@ -116,35 +116,35 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["cct_add"]);
+		$form->addElement('header', 'title', _("Add a User"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["cct_change"]);
+		$form->addElement('header', 'title', _("Modify a User"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["cct_view"]);
+		$form->addElement('header', 'title', _("View a User"));
 	else if ($o == "mc")
-		$form->addElement('header', 'title', $lang["mchange"]);
+		$form->addElement('header', 'title', _("Massive Change"));
 
 	#
 	## Contact basic information
 	#
-	$form->addElement('header', 'information', $lang['cct_infos']);
+	$form->addElement('header', 'information', _("General Information"));
 	# No possibility to change name and alias, because there's no interest
 	if ($o != "mc")	{
-		$form->addElement('text', 'contact_name', $lang["cct_name"], $attrsText);
-		$form->addElement('text', 'contact_alias', $lang["cct_alias"], $attrsText);
+		$form->addElement('text', 'contact_name', _("Full Name"), $attrsText);
+		$form->addElement('text', 'contact_alias', _("Alias/Login"), $attrsText);
 	}
-	$form->addElement('text', 'contact_email', $lang["cct_mail"], $attrsText);
-	$form->addElement('text', 'contact_pager', $lang["cct_pager"], $attrsText);
+	$form->addElement('text', 'contact_email', _("Email"), $attrsText);
+	$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 	if ($o == "mc")	{
 		$mc_mod_cg = array();
-		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, $lang['mc_mod_incremental'], '0');
-		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, $lang['mc_mod_replacement'], '1');
-		$form->addGroup($mc_mod_cg, 'mc_mod_cg', $lang["mc_mod"], '&nbsp;');
+		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
+		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update Options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cg'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', $lang["cct_cgNotif"], $notifCgs, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', _("Contact Groups parents"), $notifCgs, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
@@ -152,59 +152,59 @@ For information : contact@oreon-project.org
 	#
 	## Contact Oreon information
 	#
-	$form->addElement('header', 'oreon', $lang['cct_oreon']);
+	$form->addElement('header', 'oreon', _("Centreon"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, $lang["no"], '0');
-	$form->addGroup($tab, 'contact_oreon', $lang['cct_oreon_text'], '&nbsp;');
-	$form->addElement('password', 'contact_passwd', $lang['cct_passwd'], $attrsText);
-	$form->addElement('password', 'contact_passwd2', $lang['cct_passwd2'], $attrsText);
-    $form->addElement('select', 'contact_lang', $lang["cct_lang"], $langs);
-    $form->addElement('select', 'contact_type_msg', $lang['cct_mailType'], array(NULL=>NULL, "txt"=>"txt", "html"=>"html", "pdf"=>"pdf"));
+	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("No"), '0');
+	$form->addGroup($tab, 'contact_oreon', _("Reach Centreon Frontend"), '&nbsp;');
+	$form->addElement('password', 'contact_passwd', _("Password"), $attrsText);
+	$form->addElement('password', 'contact_passwd2', _("Confirm Password"), $attrsText);
+    $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
+    $form->addElement('select', 'contact_type_msg', _("Mail Type"), array(NULL=>NULL, "txt"=>"txt", "html"=>"html", "pdf"=>"pdf"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, $lang["no"], '0');
-	$form->addGroup($tab, 'contact_admin', $lang['cct_admin'], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
+	$form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
 
    $auth_type = array(NULL=>NULL);
    $auth_type["local"] = "local";
 	if ($oreon->optGen['ldap_auth_enable'] == 1) {
 		$auth_type["ldap"] = "ldap";
-		$form->addElement('text', 'contact_ldap_dn', $lang["cct_ldap_dn"], $attrsText2);
+		$form->addElement('text', 'contact_ldap_dn', _("LDAP DN (Distinguished Name)"), $attrsText2);
 	}
 
-   	$form->addElement('select', 'contact_auth_type', $lang["cct_contact_auth_type"], $auth_type);
+   	$form->addElement('select', 'contact_auth_type', _("Authentification Type"), $auth_type);
 
 	##
 	## Notification informations
 	##
-	$form->addElement('header', 'notification', $lang['cct_notif']);
+	$form->addElement('header', 'notification', _("Notification Type"));
 
 	# Host notif
-	$form->addElement('header', 'hostNotification', $lang['h']);
+	$form->addElement('header', 'hostNotification', _("Host"));
  	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'Down');
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unreachable');
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery');
 	if ($oreon->user->get_version() == 2)
 		$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
-	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', $lang["cct_hostNotifOpt"], '&nbsp;&nbsp;');
-    $form->addElement('select', 'timeperiod_tp_id', $lang["cct_hostNotifTp"], $notifTps);
+	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Hosts Notification Options"), '&nbsp;&nbsp;');
+    $form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
 	if ($o == "mc")	{
 		$mc_mod_hcmds = array();
-		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, $lang['mc_mod_incremental'], '0');
-		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, $lang['mc_mod_replacement'], '1');
-		$form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', $lang["mc_mod"], '&nbsp;');
+		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
+		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcmds'=>'0'));
 	}
-    $ams1 =& $form->addElement('advmultiselect', 'contact_hostNotifCmds', $lang["cct_hostNotifCmd"], $notifCmds, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'contact_hostNotifCmds', _("Host Notification Commands"), $notifCmds, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	# Service notif
-	$form->addElement('header', 'serviceNotification', $lang['sv']);
+	$form->addElement('header', 'serviceNotification', _("Server"));
  	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical');
@@ -212,35 +212,35 @@ For information : contact@oreon-project.org
 	if ($oreon->user->get_version() == 2)
 		$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
-	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', $lang["cct_svNotifOpt"], '&nbsp;&nbsp;');
-    $form->addElement('select', 'timeperiod_tp_id2', $lang["cct_svNotifTp"], $notifTps);
+	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Services Notification Options"), '&nbsp;&nbsp;');
+    $form->addElement('select', 'timeperiod_tp_id2', _("Services Notification Period"), $notifTps);
  	if ($o == "mc")	{
 		$mc_mod_svcmds = array();
-		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, $lang['mc_mod_incremental'], '0');
-		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, $lang['mc_mod_replacement'], '1');
-		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', $lang["mc_mod"], '&nbsp;');
+		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
+		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update Options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_svcmds'=>'0'));
 	}
-    $ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', $lang["cct_svNotifCmd"], $notifCmds, $attrsAdvSelect);
-	$ams2->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams2->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', _("Services Notification Commands"), $notifCmds, $attrsAdvSelect);
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, $lang["enable"], '1');
-	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, $lang["disable"], '0');
-	$form->addGroup($cctActivation, 'contact_activate', $lang["status"], '&nbsp;');
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Enabled"), '1');
+	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Disabled"), '0');
+	$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('contact_activate' => '1'));
-	$form->addElement('textarea', 'contact_comment', $lang["cmt_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'contact_id');
@@ -266,27 +266,27 @@ For information : contact@oreon-project.org
 	$form->applyFilter('contact_name', 'myReplace');
 	$from_list_menu = false;
 	if ($o != "mc")	{
-		$form->addRule('contact_name', $lang['ErrName'], 'required');
-		$form->addRule('contact_alias', $lang['ErrAlias'], 'required');
-		$form->addRule('contact_email', $lang['ErrEmail'], 'required');
-		$form->addRule('contact_hostNotifOpts', $lang['ErrOpt'], 'required');
-		$form->addRule('contact_oreon', $lang['ErrRequired'], 'required');
-		$form->addRule('contact_lang', $lang['ErrRequired'], 'required');
-		$form->addRule('contact_admin', $lang['ErrRequired'], 'required');
-		$form->addRule('contact_type_msg', $lang['ErrRequired'], 'required');
-		$form->addRule('contact_auth_type', $lang['ErrRequired'], 'required');
-		$form->addRule('timeperiod_tp_id', $lang['ErrTp'], 'required');
-		$form->addRule('contact_hostNotifCmds', $lang['ErrCmd'], 'required');
-		$form->addRule('contact_svNotifOpts', $lang['ErrOpt'], 'required');
-		$form->addRule('timeperiod_tp_id2', $lang['ErrTp'], 'required');
-		$form->addRule('contact_svNotifCmds', $lang['ErrCmd'], 'required');
-		$form->addRule(array('contact_passwd', 'contact_passwd2'), $lang['ErrCctPasswd'], 'compare');
+		$form->addRule('contact_name', _("Compulsory Name"), 'required');
+		$form->addRule('contact_alias', _("Compulsory Alias"), 'required');
+		$form->addRule('contact_email', _("Valid Email"), 'required');
+		$form->addRule('contact_hostNotifOpts', _("Compulsory Option"), 'required');
+		$form->addRule('contact_oreon', _("Required Field"), 'required');
+		$form->addRule('contact_lang', _("Required Field"), 'required');
+		$form->addRule('contact_admin', _("Required Field"), 'required');
+		$form->addRule('contact_type_msg', _("Required Field"), 'required');
+		$form->addRule('contact_auth_type', _("Required Field"), 'required');
+		$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
+		$form->addRule('contact_hostNotifCmds', _("Compulsory Command"), 'required');
+		$form->addRule('contact_svNotifOpts', _("Compulsory Option"), 'required');
+		$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
+		$form->addRule('contact_svNotifCmds', _("Compulsory Command"), 'required');
+		$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
 		$form->registerRule('exist', 'callback', 'testContactExistence');
-		$form->addRule('contact_name', $lang['ErrAlreadyExist'], 'exist');
+		$form->addRule('contact_name', "<font style='color: red;'>*</font>" . _(" Required fields"), 'exist');
 		$form->registerRule('existAlias', 'callback', 'testAliasExistence');
-		$form->addRule('contact_alias', $lang['ErrAlreadyExist'], 'existAlias');
+		$form->addRule('contact_alias', "<font style='color: red;'>*</font>" . _(" Required fields"), 'existAlias');
 		$form->registerRule('keepOneContactAtLeast', 'callback', 'keepOneContactAtLeast');
-		$form->addRule('contact_alias', $lang['ErrNotEnoughtContact'], 'keepOneContactAtLeast');
+		$form->addRule('contact_alias', _("You have to keep at least one contact to access to Centreon"), 'keepOneContactAtLeast');
 	}
 	else if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
@@ -294,7 +294,7 @@ For information : contact@oreon-project.org
 		else
 			$from_list_menu = true;
 	}
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
 
 	#
 	##End of form definition
@@ -306,25 +306,25 @@ For information : contact@oreon-project.org
 
 	# Just watch a contact information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$contact_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$contact_id."'"));
 	    $form->setDefaults($cct);
 		$form->freeze();
 	}
 	# Modify a contact information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cct);
 	}
 	# Add a contact information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	# Massive Change
 	else if ($o == "mc")	{
-		$subMC =& $form->addElement('submit', 'submitMC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
@@ -341,7 +341,7 @@ For information : contact@oreon-project.org
 					updateContactInDB($value, true);
 		}
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$cctObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&contact_id=".$cctObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

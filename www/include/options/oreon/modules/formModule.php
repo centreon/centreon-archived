@@ -22,16 +22,16 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$tpl->assign("headerMenu_title", $lang["mod_menu_modInfos"]);
-	$tpl->assign("headerMenu_title2", $lang['mod_menu_upgradeInfos']);
-	$tpl->assign("headerMenu_rname", $lang["mod_menu_module_rname"]);
-	$tpl->assign("headerMenu_release", $lang["mod_menu_module_release"]);
-	$tpl->assign("headerMenu_release_from", $lang["mod_menu_module_release_from"]);
-	$tpl->assign("headerMenu_release_to", $lang["mod_menu_module_release_to"]);
-	$tpl->assign("headerMenu_author", $lang["mod_menu_module_author"]);
-	$tpl->assign("headerMenu_infos", $lang["mod_menu_module_additionnals_infos"]);
-	$tpl->assign("headerMenu_isinstalled", $lang["mod_menu_module_is_installed"]);
-	$tpl->assign("headerMenu_isvalid", $lang["mod_menu_module_is_validUp"]);
+	$tpl->assign("headerMenu_title", _("Module Information"));
+	$tpl->assign("headerMenu_title2", _("Upgrade Information"));
+	$tpl->assign("headerMenu_rname", _("Real name"));
+	$tpl->assign("headerMenu_release", _("Release"));
+	$tpl->assign("headerMenu_release_from", _("Base release"));
+	$tpl->assign("headerMenu_release_to", _("Final release"));
+	$tpl->assign("headerMenu_author", _("Author"));
+	$tpl->assign("headerMenu_infos", _("Additionnal Information"));
+	$tpl->assign("headerMenu_isinstalled", _("Installed"));
+	$tpl->assign("headerMenu_isvalid", _("Valid for an upgrade"));
 
 	# "Name" case, it's not a module which is installed
 	if ($name)	{
@@ -53,19 +53,19 @@ For information : contact@oreon-project.org
 			# Insert Module in DB
 			$insert_ok = insertModuleInDB($name, $module_conf[$name]);
 			if ($insert_ok)	{
-				$tpl->assign("output1", $lang["mod_menu_output1"]);
+				$tpl->assign("output1", _("Module installed and registered"));
 				# SQL insert if need
 				$sql_file = "install.sql";
 				$sql_file_path = "./modules/".$name."/sql/";
 				if ($module_conf[$name]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
-					$tpl->assign("output2", $lang["mod_menu_output2"]);
+					$tpl->assign("output2", _("SQL file included"));
 					execute_sql_file($sql_file, $sql_file_path);	
 				}
 				# PHP execution if need
 				$php_file = "install.php";
 				$php_file_path = "./modules/".$name."/php/".$php_file;
 				if ($module_conf[$name]["php_files"] && file_exists($php_file_path))	{
-					$tpl->assign("output3", $lang["mod_menu_output3"]);
+					$tpl->assign("output3", _("PHP file included"));
 					include_once($php_file_path);
 				}
 				
@@ -76,13 +76,13 @@ For information : contact@oreon-project.org
 				}
 				
 			} else
-				$tpl->assign("output4", $lang["mod_menu_output4"]);
+				$tpl->assign("output4", _("Unable to install module"));
 		} else {
-			$form1->addElement('submit', 'install', $lang["mod_menu_listAction_install"]);
+			$form1->addElement('submit', 'install', _("Install Module"));
 			$redirect =& $form1->addElement('hidden', 'o');
 			$redirect->setValue("i");
 		}
-		$form1->addElement('submit', 'list', $lang["back"]);
+		$form1->addElement('submit', 'list', _("Back"));
 		$hid_name =& $form1->addElement('hidden', 'name');
 		$hid_name->setValue($name);
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -108,27 +108,27 @@ For information : contact@oreon-project.org
 							# DB Upgrade
 							$upgrade_ok = upgradeModuleInDB($id, $upgrade_conf[$moduleinfo["name"]]);
 							if ($upgrade_ok)	{
-								$tpl->assign("output1", $lang["mod_menu_output1"]);
+								$tpl->assign("output1", _("Module installed and registered"));
 								# SQL update if need
 								$sql_file = "upgrade.sql";
 								$sql_file_path = "./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/sql/";
 								if ($upgrade_conf[$moduleinfo["name"]]["sql_files"] && file_exists($sql_file_path.$sql_file))	{
-									$tpl->assign("output2", $lang["mod_menu_output2"]);
+									$tpl->assign("output2", _("SQL file included"));
 									execute_sql_file($sql_file, $sql_file_path);	
 								}
 								# PHP update if need
 								$php_file = "upgrade.php";
 								$php_file_path = "./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/php/".$php_file;
 								if ($upgrade_conf[$moduleinfo["name"]]["php_files"] && file_exists($php_file_path))	{
-									$tpl->assign("output3", $lang["mod_menu_output3"]);
+									$tpl->assign("output3", _("PHP file included"));
 									include_once($php_file_path);
 								}
 							}
 							else
-								$tpl->assign("output4", $lang["mod_menu_output4"]);
+								$tpl->assign("output4", _("Unable to install module"));
 						}
 						if (!$upgrade_ok)	{						
-							$form->addElement('submit', 'upgrade', $lang["mod_menu_listAction_upgrade"]);
+							$form->addElement('submit', 'upgrade', _("Upgrade"));
 							$redirect =& $form->addElement('hidden', 'o');
 							$redirect->setValue("u");							
 						}
@@ -145,14 +145,14 @@ For information : contact@oreon-project.org
 							"upgrade_author" => $upgrade_conf[$moduleinfo["name"]]["author"],
 							"upgrade_infos" => $upgrade_conf[$moduleinfo["name"]]["infos"],
 							"upgrade_infosTxt" => $upgrade_infosTxt,
-							"upgrade_is_validUp" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? $lang["yes"] : $lang["no"],
+							"upgrade_is_validUp" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? _("Yes") : _("No"),
 							"upgrade_choice" => $moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);	
 						$i++;
 						$hid_id =& $form->addElement('hidden', 'id');
 						$hid_id->setValue($id);
 						$up_name =& $form->addElement('hidden', 'filename');
 						$up_name->setValue($filename);
-						$form->addElement('submit', 'list', $lang["back"]);					
+						$form->addElement('submit', 'list', _("Back"));					
 						$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 						$form->accept($renderer);
 						$tpl->assign('form', $renderer->toArray());
@@ -167,10 +167,10 @@ For information : contact@oreon-project.org
 		$tpl->assign("module_release", $moduleinfo["mod_release"]);
 		$tpl->assign("module_author", $moduleinfo["author"]);
 		$tpl->assign("module_infos", $moduleinfo["infos"]);
-		$tpl->assign("module_isinstalled", $lang["yes"]);
+		$tpl->assign("module_isinstalled", _("Yes"));
 		$tpl->assign("elemArr", $elemArr);
 		$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
-		$form2->addElement('submit', 'list', $lang["back"]);					
+		$form2->addElement('submit', 'list', _("Back"));					
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form2->accept($renderer);
 		$tpl->assign('form2', $renderer->toArray());

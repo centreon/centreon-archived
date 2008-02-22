@@ -41,22 +41,22 @@ For information : contact@oreon-project.org
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["gen_name"]);
-	$form->addElement('header', 'infos', $lang["gen_infos"]);
-	$form->addElement('header', 'opt', $lang["gen_opt"]);	
+	$form->addElement('header', 'title', _("Nagios Configuration Files Export"));
+	$form->addElement('header', 'infos', _("Implied Serveur"));
+	$form->addElement('header', 'opt', _("Export Options"));	
     
-    $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
+    $form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
 	
-	$form->addElement('checkbox', 'comment', $lang["gen_comment"]);
-	$form->addElement('checkbox', 'debug', $lang["gen_debug"]);
+	$form->addElement('checkbox', 'comment', _("Include Comments"));
+	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"));
 	$form->setDefaults(array('debug' => '1'));	
 	
-	$form->addElement('checkbox', 'optimize', $lang["gen_optimize"]);
-	$form->addElement('checkbox', 'move', $lang["gen_move"]);
-	$form->addElement('checkbox', 'restart', $lang["gen_restart"]);
+	$form->addElement('checkbox', 'optimize', _("Run Optimization test (-s)"));
+	$form->addElement('checkbox', 'move', _("Move Export Files"));
+	$form->addElement('checkbox', 'restart', _("Restart Nagios"));
 	
-	$tab_restart_mod = array(2 => $lang["gen_restart_start"], 1 => $lang["gen_restart_load"], 3 => $lang["gen_restart_extcmd"]);
-	$form->addElement('select', 'restart_mode', $lang["gen_restart_method"], $tab_restart_mod, $attrSelect);
+	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
+	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, $attrSelect);
 	$form->setDefaults(array('restart_mode' => '2'));
 
 	$redirect =& $form->addElement('hidden', 'o');
@@ -68,7 +68,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', $lang["gen_butOK"]);
+	$sub =& $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate())	{
@@ -181,7 +181,7 @@ For information : contact@oreon-project.org
 						if ($bool)
 							;//$msg_copy[$host["id"]] .= display_copying_file($filename, $lang['gen_mvOk']);
 						else
-							$msg_copy[$host["id"]] .= display_copying_file($filename, $lang['gen_mvKo']);
+							$msg_copy[$host["id"]] .= display_copying_file($filename, _(" - movement <font color='res'>KO</font>"));
 					}
 					$msg_copy[$host["id"]] .= "</table>";
 				} else {
@@ -225,7 +225,7 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	$form->addElement('header', 'status', $lang["gen_status"]);
+	$form->addElement('header', 'status', _("Status"));
 	if (isset($msg_restart) && $msg_restart)
 		$tpl->assign('msg_restart', $msg_restart);
 	if (isset($msg_debug) && $msg_debug)

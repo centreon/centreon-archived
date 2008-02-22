@@ -48,10 +48,10 @@ For information : contact@oreon-project.org
 	/*
 	 * start header menu
 	 */
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
-	$tpl->assign("headerMenu_linked_svc", $lang['sv_nb_linked']);
-	$tpl->assign("headerMenu_options", $lang['options']);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_desc", _("Description"));
+	$tpl->assign("headerMenu_linked_svc", _("Number of linked services"));
+	$tpl->assign("headerMenu_options", _("Options"));
 	
 	/*
 	 * Services Categories Lists
@@ -97,7 +97,7 @@ For information : contact@oreon-project.org
 	/*
 	 * Different messages we put in the template
 	 */
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add']));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add")));
 	
 	?>
 	<SCRIPT LANGUAGE="JavaScript">
@@ -108,26 +108,26 @@ For information : contact@oreon-project.org
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable']), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete'], "mc"=>$lang['mchange'], "ms"=>$lang['m_mon_enable'], "mu"=>$lang['m_mon_disable']), $attrs2);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');

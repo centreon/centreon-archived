@@ -42,40 +42,40 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 
     #
 	## Debug information
 	#
-	$form->addElement('header', 'debug', $lang["genOpt_debug"]);
-	$form->addElement('text', 'debug_path', $lang["genOpt_dPath"], $attrsText);
+	$form->addElement('header', 'debug', _("Debug"));
+	$form->addElement('text', 'debug_path', _("Logs Directory"), $attrsText);
 
 	$Opt = array();
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', _("&nbsp;Clear debug file"));
 	$form->addGroup($Opt, 'debug_auth_clear', '&nbsp;', '&nbsp;&nbsp;');
 
 	$Opt = array();
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', _("&nbsp;Clear debug file"));
 	$form->addGroup($Opt, 'debug_nagios_import_clear', '&nbsp;', '&nbsp;&nbsp;');
 
 	$Opt = array();
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', _("&nbsp;Clear debug file"));
 	$form->addGroup($Opt, 'debug_rrdtool_clear', '&nbsp;', '&nbsp;&nbsp;');
 
 	$Opt = array();
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', _("&nbsp;Clear debug file"));
 	$form->addGroup($Opt, 'debug_ldap_import_clear', '&nbsp;', '&nbsp;&nbsp;');
 
 	$Opt = array();
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', $lang["genOpt_debug_clear"]);
+ 	$Opt[] = &HTML_QuickForm::createElement('checkbox', '1', '&nbsp;', _("&nbsp;Clear debug file"));
 	$form->addGroup($Opt, 'debug_inventory_clear', '&nbsp;', '&nbsp;&nbsp;');
 
 
-	$form->addElement('select', 'debug_auth', $lang["genOpt_debug_auth"], array(0=>$lang['no'], 1=>$lang['yes']));
-	$form->addElement('select', 'debug_nagios_import', $lang["genOpt_debug_nagios_import"], array(0=>$lang['no'], 1=>$lang['yes']));
-	$form->addElement('select', 'debug_rrdtool', $lang["genOpt_debug_rrdtool"], array(0=>$lang['no'], 1=>$lang['yes']));
-	$form->addElement('select', 'debug_ldap_import', $lang["genOpt_debug_ldap_import"], array(0=>$lang['no'], 1=>$lang['yes']));
-	$form->addElement('select', 'debug_inventory', $lang["genOpt_debug_inventory"], array(0=>$lang['no'], 1=>$lang['yes']));
+	$form->addElement('select', 'debug_auth', _("Authentification Debug"), array(0=>_("No"), 1=>_("Yes")));
+	$form->addElement('select', 'debug_nagios_import', _("Nagios Import Debug"), array(0=>_("No"), 1=>_("Yes")));
+	$form->addElement('select', 'debug_rrdtool', _("RRDTool Debug"), array(0=>_("No"), 1=>_("Yes")));
+	$form->addElement('select', 'debug_ldap_import', _("LDAP Import Users Debug"), array(0=>_("No"), 1=>_("Yes")));
+	$form->addElement('select', 'debug_inventory', _("Inventory Debug"), array(0=>_("No"), 1=>_("Yes")));
 
 	#
 	## Form Rules
@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
-	$form->addRule('debug_path', $lang['ErrWrPath'], 'is_writable_path');
+	$form->addRule('debug_path', _("Can't write in directory"), 'is_writable_path');
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -115,8 +115,8 @@ For information : contact@oreon-project.org
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
     $valid = false;
 	if ($form->validate())	{
@@ -147,9 +147,9 @@ For information : contact@oreon-project.org
 			@unlink($oreon->optGen["debug_path"]."inventory.log");
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'"));
 	#
 	##Apply a template definition
 	#

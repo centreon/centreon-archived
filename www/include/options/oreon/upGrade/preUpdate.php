@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	require_once('functions.php');
 	
 	if (!isset($_GET['version'])) {
-		$msgErr = $lang['preUpdate_msgErr03'];
+		$msgErr = _("No version defined.");
 		$tpl->assign('msgErr', $msgErr);
 		$tpl->display('preUpdate.ihtml');
 		exit();
@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 	$params = array('project' => 'oreon', 'version' => $version, 'clientVersion' => $installedVersion);
 	$listFiles = $soapClient->call('getListPatch', $params);
 	if (PEAR::isError($listFiles)) {
-		$msgErr = $lang['preUpdate_msgErr01'];
+		$msgErr = _("Can't get list of files.");
 		$tpl->assign('msgErr', $msgErr);
 		$tpl->display('preUpdate.ihtml');
 		exit();
@@ -75,7 +75,7 @@ For information : contact@oreon-project.org
 	$oreon_etc = "/etc/oreon.conf";
 	$fd = @fopen($oreon_etc, 'r');
 	if (!$fd) {
-		$msgErr = $lang['preUpdate_msgErr04'];
+		$msgErr = _("Can't open configuration file : /etc/oreon.conf");
 		$tpl->assign('msgErr', $msgErr);
 		$tpl->display('preUpdate.ihtml');
 	}
@@ -102,12 +102,12 @@ For information : contact@oreon-project.org
 		$urlPatch = $confPatch['patch_url_download'];
 		$pathPatch = $confPatch['patch_path_download'];
 		if (!getFile($file, $urlPatch, $pathPatch, $method)) {
-			$msgErr = $lang['preUpdate_msgErr02'];
+			$msgErr = _("Can't get file'");
 			break;
 		}
-		$outputString .= sprintf($lang['preUpdate_fileDownloaded'], $file->filename);
+		$outputString .= sprintf(_("%s is downloaded.<br/>"), $file->filename);
 		if ($file->type == 'a') {
-			$readme .= sprintf($lang['preUpdate_installArchive'], $file->filename);
+			$readme .= sprintf(_("In order to complete your upgrade (%s), unzip the downloaded file, and follow the instructions in README\n"), $file->filename);
 			$lastVersion = $file->version;
 		} else {
 			$hasPatch = true;
@@ -121,7 +121,7 @@ For information : contact@oreon-project.org
 	       $tpl->display('preUpdate.ihtml');
 	       exit();
 	} elseif ($lastVersion == '') {
-		$msgErr = $lang['preUpdate_msgErr06'];
+		$msgErr = _("Can't open patch");
 		$tpl->assign('msgErr', $msgErr);
 		$tpl->display('preUpdate.ihtml');
 		exit();
@@ -137,7 +137,7 @@ For information : contact@oreon-project.org
 			$shellName .= $installedVersion;
 		}
 		$shellName .= "-" . $lastVersion . ".sh";
-		$readme .= sprintf($lang['preUpdate_shellPatch'], $shellName);
+		$readme .= sprintf(_("launch %s with root permissions.\n"), $shellName);
 		$fd = fopen($pathPatch . '/' . $shellName, 'w');
 		writeShellHeaders($fd, $oreon->optGen['oreon_path'], $pathPatch);
 		foreach ($batchPatch as $patch) {

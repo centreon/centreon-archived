@@ -85,37 +85,37 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["cmd_add"]);
+		$form->addElement('header', 'title', _("Add a Command"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["cmd_change"]);
+		$form->addElement('header', 'title', _("Modify a Command"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["cmd_view"]);
+		$form->addElement('header', 'title', _("View a Command"));
 
 	#
 	## Command information
 	#
 	if ($type == "1")
-		$form->addElement('header', 'information', $lang['cmd_notif']);
+		$form->addElement('header', 'information', _("Notification"));
 	else if ($type == "2")
-		$form->addElement('header', 'information', $lang['cmd_check']);
+		$form->addElement('header', 'information', _("Check"));
 	else if ($type == "3")
-		$form->addElement('header', 'information', $lang['cmd_check']);
+		$form->addElement('header', 'information', _("Check"));
 	else
-		$form->addElement('header', 'information', $lang['cmd_infos']);
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_notif'], '1');
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_check'], '2');
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $lang['cmd_various'], '3');
-	$form->addGroup($cmdType, 'command_type', $lang['cmd_type'], '&nbsp;&nbsp;');
+		$form->addElement('header', 'information', _("Information"));
+	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
+	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
+	$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 	$form->setDefaults(array('command_type' => '2'));
-	$form->addElement('text', 'command_name', $lang["cmd_name"], $attrsText);
-	$form->addElement('text', 'command_example', $lang["cmd_example"], $attrsText);
-	$form->addElement('textarea', 'command_line', $lang["cmd_line"], $attrsTextarea);
-	$form->addElement('select', 'graph_id', $lang["cmd_graph_id"], $graphTpls);
+	$form->addElement('text', 'command_name', _("Command Name"), $attrsText);
+	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
+	$form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
+	$form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 	
 	$form->addElement('select', 'resource', null, $resource);
@@ -144,11 +144,11 @@ For information : contact@oreon-project.org
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('command_name', 'myReplace');
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('command_name', $lang['ErrName'], 'required');
-	$form->addRule('command_line', $lang['ErrCmdLine'], 'required');
+	$form->addRule('command_name', _("Compulsory Name"), 'required');
+	$form->addRule('command_line', _("Compulsory Command Line"), 'required');
 	$form->registerRule('exist', 'callback', 'testCmdExistence');
-	$form->addRule('command_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('command_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -160,23 +160,23 @@ For information : contact@oreon-project.org
 
 	# Just watch a Command information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
 	    $form->setDefaults($cmd);
 		$form->freeze();
 	}
 	# Modify a Command information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cmd);
 	}
 	# Add a Command information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
-	$tpl->assign('msg', array ("comment"=>$lang['cmd_comment']));
-	$tpl->assign('cmd_help',$lang['cmd_help']);
+	$tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));
+	$tpl->assign('cmd_help',_("Plugin Help"));
 	$tpl->assign("insertValueQuery","
 	<script type='text/javascript'>
 	<!--
@@ -232,7 +232,7 @@ For information : contact@oreon-project.org
 			updateCommandInDB($cmdObj->getValue());
 		$o = NULL;
 		$cmdObj =& $form->getElement('command_id');
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$cmdObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$cmdObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

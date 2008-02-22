@@ -33,64 +33,64 @@ For information : contact@oreon-project.org
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["gen_name"]);
+	$form->addElement('header', 'title', _("Nagios Configuration Files Export"));
 
-	$form->addElement('header', 'infos', $lang["gen_infos"]);
+	$form->addElement('header', 'infos', _("Implied Server"));
 	
-    $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
+    $form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
 
-	$form->addElement('header', 'opt', $lang["gen_opt"]);
+	$form->addElement('header', 'opt', _("Export Options"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, $lang["no"], '0');
-	$form->addGroup($tab, 'generate', $lang["gen_ok"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, _("No"), '0');
+	$form->addGroup($tab, 'generate', _("Generate Files"), '&nbsp;');
 	$form->setDefaults(array('generate' => '1'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, $lang["gen_level1"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, $lang["gen_level2"], '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, $lang["gen_level3"], '3');
-	$form->addGroup($tab, 'level', $lang["gen_level"], '<br>');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, _("Dependencies Management"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, _("Current Activation"), '2');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, _("None"), '3');
+	$form->addGroup($tab, 'level', _("Relations between Elements"), '<br>');
 	$form->setDefaults(array('level' => '1'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["no"], '0');
-	$form->addGroup($tab, 'comment', $lang["gen_comment"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("No"), '0');
+	$form->addGroup($tab, 'comment', _("Include Comments"), '&nbsp;');
 	$form->setDefaults(array('comment' => '0'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, $lang["no"], '0');
-	$form->addGroup($tab, 'xml', $lang["gen_xml"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, _("No"), '0');
+	$form->addGroup($tab, 'xml', _("Export in XML too"), '&nbsp;');
 	$form->setDefaults(array('xml' => '0'));
-	$form->addElement('header', 'traps', $lang['gen_trapd']);
+	$form->addElement('header', 'traps', _("SNMP Traps"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, $lang["no"], '0');
-	$form->addGroup($tab, 'genTraps', $lang['gen_genTrap'], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, _("No"), '0');
+	$form->addGroup($tab, 'genTraps', _("Export configuration files"), '&nbsp;');
 	$form->setDefaults(array('genTraps' => '0'));
-	$form->addElement('header', 'result', $lang["gen_result"]);
+	$form->addElement('header', 'result', _("Result"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["no"], '0');
-	$form->addGroup($tab, 'debug', $lang["gen_debug"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
+	$form->addGroup($tab, 'debug', _("Run Nagios debug (-v)"), '&nbsp;');
 	$form->setDefaults(array('debug' => '1'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["no"], '0');
-	$form->addGroup($tab, 'optimize', $lang["gen_optimize"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("No"), '0');
+	$form->addGroup($tab, 'optimize', _("Run Optimisation test (-s)"), '&nbsp;');
 	$form->setDefaults(array('optimize' => '0'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, $lang["no"], '0');
-	$form->addGroup($tab, 'move', $lang["gen_move"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, _("No"), '0');
+	$form->addGroup($tab, 'move', _("Move Export Files"), '&nbsp;');
 	$form->setDefaults(array('move' => '0'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["no"], '0');
-	$form->addGroup($tab, 'restart', $lang["gen_restart"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("No"), '0');
+	$form->addGroup($tab, 'restart', _("Restart Nagios"), '&nbsp;');
 	$form->setDefaults(array('restart' => '0'));
 	
-	$tab_restart_mod = array(2 => $lang["gen_restart_start"], 1 => $lang["gen_restart_load"], 3 => $lang["gen_restart_extcmd"]);
-	$form->addElement('select', 'restart_mode', $lang["gen_restart"], $tab_restart_mod, $attrSelect);
+	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
+	$form->addElement('select', 'restart_mode', _("Restart Nagios"), $tab_restart_mod, $attrSelect);
 	$form->setDefaults(array('restart_mode' => '2'));
 	/* $tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'restart_mode', null, $lang["gen_restart_load"], '1');
@@ -111,7 +111,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', $lang["gen_butOK"]);
+	$sub =& $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate())	{
@@ -224,7 +224,7 @@ For information : contact@oreon-project.org
 						foreach (glob($nagiosCFGPath.$tab['id']."/*.cfg") as $filename) {
 							$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
 							$filename = array_pop(explode("/", $filename));
-							$bool ? $msg .= $filename.$lang['gen_mvOk']."<br>" :  $msg .= $filename.$lang['gen_mvKo']."<br>";
+							$bool ? $msg .= $filename._(" - movement <font color='green'>OK</font>")."<br>" :  $msg .= $filename._(" - movement <font color='res'>KO</font>")."<br>";
 						}
 					} else {
 						passthru ("echo 'SENDCFGFILE:".$tab['id']."' >> /srv/oreon/var/centcore", $return);	
@@ -277,7 +277,7 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	$form->addElement('header', 'status', $lang["gen_status"]);
+	$form->addElement('header', 'status', _("Status"));
 	if ($msg)
 		$tpl->assign('msg', $msg);
 

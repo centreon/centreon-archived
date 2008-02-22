@@ -50,10 +50,10 @@ For information : contact@oreon-project.org
 
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_alias", $lang['alias']);
-	$tpl->assign("headerMenu_status", $lang['status']);
-	$tpl->assign("headerMenu_options", $lang['options']);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_alias", _("Alias"));
+	$tpl->assign("headerMenu_status", _("Status"));
+	$tpl->assign("headerMenu_options", _("Options"));
 	# end header menu
 
 	#List
@@ -74,9 +74,9 @@ For information : contact@oreon-project.org
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$lca['lca_id']."]");	
 		if ($lca["lca_activate"])
-			$moptions .= "<a href='oreon.php?p=".$p."&lca_id=".$lca['lca_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='oreon.php?p=".$p."&lca_id=".$lca['lca_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
-			$moptions .= "<a href='oreon.php?p=".$p."&lca_id=".$lca['lca_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='oreon.php?p=".$p."&lca_id=".$lca['lca_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$lca['lca_id']."]'></input>";
 
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
@@ -84,13 +84,13 @@ For information : contact@oreon-project.org
 						"RowMenu_name"=>$lca["lca_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&lca_id=".$lca['lca_id'],
 						"RowMenu_alias"=>$lca["lca_alias"],
-						"RowMenu_status"=>$lca["lca_activate"] ? $lang['enable'] : $lang['disable'],
+						"RowMenu_status"=>$lca["lca_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -104,28 +104,28 @@ For information : contact@oreon-project.org
 	<?php
 	$attrs = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm  the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-        $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+        $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs);
 		$form->setDefaults(array('o1' => NULL));
 			$o1 =& $form->getElement('o1');
 			$o1->setValue(NULL);
 
 	$attrs = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o2 =& $form->getElement('o2');

@@ -15,6 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
 	if (!isset($oreon))
 		exit();
 		
@@ -28,6 +29,7 @@ For information : contact@oreon-project.org
 		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
 	}
 	
+
 	if (isset ($_GET["search"]))
 		$search = $_GET["search"];
 	else if (isset($oreon->historySearch[$url]))
@@ -68,11 +70,11 @@ For information : contact@oreon-project.org
 
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
-	$tpl->assign("headerMenu_address", $lang['h_address']);
-	$tpl->assign("headerMenu_status", $lang['status']);
-	$tpl->assign("headerMenu_type", $lang['s_type']);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_desc", _("Description"));
+	$tpl->assign("headerMenu_address", _("IP Address / DNS"));
+	$tpl->assign("headerMenu_status", _("Status"));
+	$tpl->assign("headerMenu_type", _("Type"));
 	# end header menu
 
 	#Host list
@@ -116,14 +118,14 @@ For information : contact@oreon-project.org
 						"RowMenu_link"=>"?p=".$p."&o=t&host_id=".$host['host_id']."&search=".$search,
 						"RowMenu_desc"=>$host["host_alias"],
 						"RowMenu_address"=>$host["host_address"],
-						"RowMenu_status"=>$host["host_activate"] ? $lang["enable"] : $lang["disable"],
-						"RowMenu_type"=>$lang['s_server']);
+						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
+						"RowMenu_type"=>_("Server"));
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
 	$tpl->assign("limit", $limit);
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL" => "?p=".$p."&o=a", "addT" => $lang['add'], "delConfirm" => $lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL" => "?p=".$p."&o=a", "addT" => _("Add"), "delConfirm" => _("Do you confirm the deletion ?")));
 	
 	#form select host
 	$req = "SELECT id, alias FROM inventory_manufacturer ";
@@ -158,7 +160,7 @@ For information : contact@oreon-project.org
 
     $form->addElement('select', 'o2', NULL, $option, $attrs2);
 
-//    $form->addElement('select', 'select_manufacturer', $lang['s_manufacturer'], $option);
+//    $form->addElement('select', 'select_manufacturer', _("Manufacturer"), $option);
 
 
 

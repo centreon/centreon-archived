@@ -40,14 +40,14 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl);
 
 	# start header menu
-	$tpl->assign("headerMenu_name", $lang["mod_menu_module_name"]);
-	$tpl->assign("headerMenu_rname", $lang["mod_menu_module_rname"]);
-	$tpl->assign("headerMenu_release", $lang["mod_menu_module_release"]);
-	$tpl->assign("headerMenu_author", $lang["mod_menu_module_author"]);
-	$tpl->assign("headerMenu_isinstalled", $lang["mod_menu_module_is_installed"]);
-	$tpl->assign("headerMenu_action", $lang["mod_menu_listAction"]);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_rname", _("Real name"));
+	$tpl->assign("headerMenu_release", _("Release"));
+	$tpl->assign("headerMenu_author", _("Author"));
+	$tpl->assign("headerMenu_isinstalled", _("Installed"));
+	$tpl->assign("headerMenu_action", _("Actions"));
 	# end header menu	
-	$tpl->assign("confirm_removing", $lang['confirm_removing']);
+	$tpl->assign("confirm_removing", _("Do you confirm the deletion ?"));
 	
 	#Different style between each lines
 	$style = "one";
@@ -65,7 +65,7 @@ For information : contact@oreon-project.org
 						"RowMenu_rname"=>$moduleinfo["rname"],
 						"RowMenu_release"=>$moduleinfo["mod_release"],
 						"RowMenu_author"=>$moduleinfo["author"],
-						"RowMenu_isinstalled"=>$lang["yes"],
+						"RowMenu_isinstalled"=>_("Yes"),
 						"RowMenu_link"=>"?p=".$p."&o=w&id=".$moduleinfo["id"],
 						"RowMenu_link_install"=>NULL,
 						"RowMenu_link_delete"=>"?p=".$p."&o=w&id=".$moduleinfo["id"]."&o=d",
@@ -83,7 +83,7 @@ For information : contact@oreon-project.org
 								"RowMenu_rname"=>$module_conf[$filename]["rname"],
 								"RowMenu_release"=>$module_conf[$filename]["mod_release"],
 								"RowMenu_author"=>$module_conf[$filename]["author"],
-								"RowMenu_isinstalled"=>$lang["no"],
+								"RowMenu_isinstalled"=>_("No"),
 								"RowMenu_link"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"],
 								"RowMenu_link_install"=>"?p=".$p."&o=w&name=".$module_conf[$filename]["name"]."&o=i",
 								"RowMenu_link_delete"=>NULL,
@@ -96,10 +96,10 @@ For information : contact@oreon-project.org
 				else	{							
 					$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_name"=>$filename,
-							"RowMenu_rname"=>$lang["mod_menu_module_invalid"],
-							"RowMenu_release"=>$lang["mod_menu_module_invalid"],
-							"RowMenu_author"=>$lang["mod_menu_module_invalid"],
-							"RowMenu_isinstalled"=>$lang["mod_menu_module_impossible"],
+							"RowMenu_rname"=>_("NA"),
+							"RowMenu_release"=>_("NA"),
+							"RowMenu_author"=>_("NA"),
+							"RowMenu_isinstalled"=>_("Impossible"),
 							"RowMenu_link"=>NULL);
 					$style != "two" ? $style = "two" : $style = "one";
 					$i++;
@@ -109,9 +109,9 @@ For information : contact@oreon-project.org
 	}
 	closedir($handle);
 	$tpl->assign("elemArr", $elemArr);
-	$tpl->assign("action_install", $lang["mod_menu_listAction_install"]);
-	$tpl->assign("action_delete", $lang["mod_menu_listAction_del"]);
-	$tpl->assign("action_upgrade", $lang["mod_menu_listAction_upgrade"]);
+	$tpl->assign("action_install", _("Install Module"));
+	$tpl->assign("action_delete", _("Uninstall Module"));
+	$tpl->assign("action_upgrade", _("Upgrade"));
 	#
 	##Apply a template definition
 	#

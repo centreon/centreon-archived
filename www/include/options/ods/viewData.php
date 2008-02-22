@@ -193,7 +193,7 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 2) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 4) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
@@ -204,7 +204,7 @@ For information : contact@oreon-project.org
 				"else if (this.form.elements['o1'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph'], "lk"=>$lang['ods_lock_graph'], "nlk"=>$lang['ods_no_lock_graph']), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(
@@ -213,7 +213,7 @@ For information : contact@oreon-project.org
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 4) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
@@ -224,7 +224,7 @@ For information : contact@oreon-project.org
 				"else if (this.form.elements['o2'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "rg"=>$lang['ods_generate_DB'], "nrg"=>$lang['ods_no_generate_DB'], "ed"=>$lang['ods_purge_service_data'], "hg"=>$lang['ods_hidde_graph'], "nhg"=>$lang['ods_no_hidde_graph'], "lk"=>$lang['ods_lock_graph'], "nlk"=>$lang['ods_no_lock_graph']), $attrs2);
+	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');

@@ -36,54 +36,54 @@ For information : contact@oreon-project.org
 	$attrsTextarea 	= array("rows"=>"12", "cols"=>"90");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["upl_name"]);
+	$form->addElement('header', 'title', _("Nagios Configuration Upload"));
 
-	$form->addElement('header', 'infos', $lang["upl_infos"]);
-    $form->addElement('select', 'host', $lang["upl_host"], array(0=>"localhost"), $attrSelect);
+	$form->addElement('header', 'infos', _("Implied Server"));
+    $form->addElement('select', 'host', _("Nagios/Centreon Server"), array(0=>"localhost"), $attrSelect);
 
-	$form->addElement('header', 'opt', $lang["upl_opt"]);
+	$form->addElement('header', 'opt', _("Upload Options"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, $lang["no"], '0');
-	$form->addGroup($tab, 'del', $lang["upl_del"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, _("No"), '0');
+	$form->addGroup($tab, 'del', _("Delete all configuration for the chosen type of files"), '&nbsp;');
 	$form->setDefaults(array('del' => '0'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, $lang["no"], '0');
-	$form->addGroup($tab, 'overwrite', $lang["upl_over"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, _("No"), '0');
+	$form->addGroup($tab, 'overwrite', _("Update definition in case of double definition"), '&nbsp;');
 	$form->setDefaults(array('overwrite' => '1'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, $lang["no"], '0');
-	$form->addGroup($tab, 'comment', $lang["upl_comment"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("No"), '0');
+	$form->addGroup($tab, 'comment', _("Include comments"), '&nbsp;');
 	$form->setDefaults(array('comment' => '0'));
 
-	$form->addElement('header', 'fileType', $lang["upl_type"]);
-	$form->addElement('header', 'fileMis1', $lang["upl_mis1"]);
+	$form->addElement('header', 'fileType', _("File Type"));
+	$form->addElement('header', 'fileMis1', _("For archive upload, be sure that the first line of each file has no importance because it is not handled.<br>Avoid to begin with a definition."));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, $lang["upl_typeNag"], 'nagios');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, $lang["upl_typeCgi"], 'cgi');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, $lang["upl_typeRes"], 'res');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, $lang["upl_typeCfg"], 'cfg');
-	$form->addGroup($tab, 'Type', $lang["upl_typeName"], '<br>');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("nagios.cfg"), 'nagios');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("cgi.cfg"), 'cgi');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("resource.cfg"), 'res');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("Template based method file"), 'cfg');
+	$form->addGroup($tab, 'Type', _("Type"), '<br>');
 	$form->setDefaults(array('Type' => array("Type"=>"cfg")));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, $lang["upl_typeCmdCheck"], '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, $lang["upl_typeCmdNotif"], '1');
-	$form->addGroup($tab, 'cmdType', $lang["upl_typeCmdType"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, _("Check Command"), '2');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, _("Notification Command"), '1');
+	$form->addGroup($tab, 'cmdType', _("Command Type"), '&nbsp;');
 	$form->setDefaults(array('cmdType' => array("cmdType"=>"2")));
-	$form->addElement('header', 'fileCmt1', $lang["upl_typeCmdCmt1"]);
-	$form->addElement('header', 'fileCmt2', $lang["upl_typeCmdCmt2"]);
+	$form->addElement('header', 'fileCmt1', _("It is recommanded to upload all the Command definitions first by specifying their types."));
+	$form->addElement('header', 'fileCmt2', _("Indeed, it's the only way to make a difference between Check and Notification Commands."));
 
-	$file =& $form->addElement('file', 'filename', $lang["upl_file"]);
-	$form->addElement('textarea', 'manualDef', $lang["upl_manualDef"], $attrsTextarea);
+	$file =& $form->addElement('file', 'filename', _("File (zip, tar or cfg)"));
+	$form->addElement('textarea', 'manualDef', _("Manual Filling"), $attrsTextarea);
 
-	$form->addElement('header', 'result', $lang["upl_result"]);
+	$form->addElement('header', 'result', _("Result"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, $lang["no"], '0');
-	$form->addGroup($tab, 'debug', $lang["upl_debug"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
+	$form->addGroup($tab, 'debug', _("Run Nagios debug (-v)"), '&nbsp;');
 	$form->setDefaults(array('debug' => '0'));
 
 	$redirect =& $form->addElement('hidden', 'o');
@@ -98,7 +98,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', $lang["upl_butOK"]);
+	$sub =& $form->addElement('submit', 'submit', _("Load"));
 	$msg = NULL;
 	if ($form->validate()) {
 		$ret = $form->getSubmitValues();
@@ -112,23 +112,23 @@ For information : contact@oreon-project.org
 
 		# File Moving
 		switch ($fDataz["type"])	{
-			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." ".$lang["upl_uplBadType"]."<br>"; break;
-			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." ".$lang["upl_uplOk"]."<br>"; break; // tar.gz
-			case "application/x-tar" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." ".$lang["upl_uplOk"]."<br>"; break; // tar
-			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $lang["upl_manualDef"]." ".$lang["upl_uplOk"]."<br>"; break; // Text
-			default : $msg .= $lang["upl_uplKo"]."<br>";
+			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." "._("Not supported extension")."<br>"; break;
+			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br>"; break; // tar.gz
+			case "application/x-tar" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br>"; break; // tar
+			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= _("Manual filling OK")." "_("File loading OK")"<br>"; break; // Text
+			default : $msg .= _("File loading KO")."<br>";
 		}
 		# Buffering Data
 		if (is_file($nagiosCFGPath.$fDataz["name"]))	{
 			$buf =& gzfile($nagiosCFGPath.$fDataz["name"]);
-			$buf ? $msg .= $lang["upl_carrOk"]."<br>" :	$msg .= $lang["upl_carrKo"]."<br>";
+			$buf ? $msg .= _("Data recovery OK")."<br>" :	$msg .= _("Data recovery KO")."<br>";
 		}
 		else if ($ret["manualDef"])	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Manual Definition\n", 3, $debug_path."cfgimport.log");
 
-			$msg .= $lang["upl_manualDefOk"]."<br>";
-			$msg .= $lang["upl_carrOk"]."<br>";
+			$msg .= _("Manual filling OK")."<br>";
+			$msg .= _("Data recovery OK")."<br>";
 			$buf =& explode("\n", $ret["manualDef"]);
 		}
 		# Enum Object Types
@@ -142,18 +142,18 @@ For information : contact@oreon-project.org
 					if ($ret["del"]["del"])
 						deleteNagiosCFG();
 					if (insertNagiosCFG($buf))
-						$msg .= "1 ".$lang["upl_newEntries"]."<br>";
+						$msg .= "1 "._("Entries are registered")."<br>";
 					break;
 				case "cgi" :
 					if ($ret["del"]["del"])
 						deleteCgiCFG();
 					if (insertCgiCFG($buf))
-						$msg .= "1 ".$lang["upl_newEntries"]."<br>";
+						$msg .= "1 "._("Entries are registered")."<br>";
 					break;
 				case "res" :
 					if ($ret["del"]["del"])
 						deleteResourceCFG();
-					$msg .= insertResourceCFG($buf)." ".$lang["upl_newEntries"]."<br>";
+					$msg .= insertResourceCFG($buf)." "._("Entries are registered")."<br>";
 					break;
 				case "cfg" :
 					if ($ret["del"]["del"]) {
@@ -162,18 +162,18 @@ For information : contact@oreon-project.org
 							error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Delete All Conf\n", 3, $debug_path."cfgimport.log");
 					}
 					$nbr =& insertCFG($buf, $ret);
-					($nbr["cmd"] ? $msg .= "Command : ".$nbr["cmd"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["tp"] ? $msg .= "Time Period : ".$nbr["tp"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["cct"] ? $msg .= "Contact : ".$nbr["cct"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["cg"] ? $msg .= "Contact Group : ".$nbr["cg"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["h"] ? $msg .= "Host : ".$nbr["h"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["hei"] ? $msg .= "Host Extended Infos : ".$nbr["hei"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["hg"] ? $msg .= "Host Group : ".$nbr["hg"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["hd"] ? $msg .= "Host Dependency : ".$nbr["hd"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["sv"] ? $msg .= "Service : ".$nbr["sv"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["svd"] ? $msg .= "Service Dependency : ".$nbr["svd"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["sg"] ? $msg .= "Service Group : ".$nbr["sg"]." ".$lang["upl_newEntries"]."<br>" : 0);
-					($nbr["sgd"] ? $msg .= "Service Group Dependency : ".$nbr["sgd"]." ".$lang["upl_newEntries"]."<br>" : 0);
+					($nbr["cmd"] ? $msg .= "Command : ".$nbr["cmd"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["tp"] ? $msg .= "Time Period : ".$nbr["tp"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["cct"] ? $msg .= "Contact : ".$nbr["cct"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["cg"] ? $msg .= "Contact Group : ".$nbr["cg"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["h"] ? $msg .= "Host : ".$nbr["h"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["hei"] ? $msg .= "Host Extended Infos : ".$nbr["hei"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["hg"] ? $msg .= "Host Group : ".$nbr["hg"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["hd"] ? $msg .= "Host Dependency : ".$nbr["hd"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["sv"] ? $msg .= "Service : ".$nbr["sv"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["svd"] ? $msg .= "Service Dependency : ".$nbr["svd"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["sg"] ? $msg .= "Service Group : ".$nbr["sg"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["sgd"] ? $msg .= "Service Group Dependency : ".$nbr["sgd"]." "._("Entries are registered")."<br>" : 0);
 					break;
 			}
 		}
@@ -185,7 +185,7 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	$form->addElement('header', 'status', $lang["gen_status"]);
+	$form->addElement('header', 'status', _("Status"));
 	if ($msg)
 		$tpl->assign('msg', $msg);
 

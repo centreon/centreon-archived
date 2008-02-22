@@ -66,13 +66,13 @@ For information : contact@oreon-project.org
 
 	$attrsText 	= array("size"=>"25");
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title',$lang['cmd_help']);
+	$form->addElement('header', 'title',_("Plugin Help"));
 	#
 	## Command information
 	#
-	$form->addElement('header', 'information', $lang['cmd_help_output']);
-	$form->addElement('text', 'command_line', $lang['cmd_line'], $attrsText);
-	$form->addElement('text', 'command_help', $lang['cmd_output'], $attrsText);
+	$form->addElement('header', 'information', _("Help"));
+	$form->addElement('text', 'command_line', _("Command Line"), $attrsText);
+	$form->addElement('text', 'command_help', _("Output"), $attrsText);
 
 	# Smarty template Init
 	$tpl = new Smarty();

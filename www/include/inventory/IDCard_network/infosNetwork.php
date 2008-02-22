@@ -38,7 +38,7 @@ For information : contact@oreon-project.org
 
 	$t = microtime();
 
-	$enable = array("1" => $lang["yes"], "2" => $lang["no"]);
+	$enable = array("1" => _("Yes"), "2" => _("No"));
 
 	if (!$min)	{
 		# start quickSearch form
@@ -66,32 +66,32 @@ For information : contact@oreon-project.org
 
 		$tpl->assign("host_id", $host_id);
 
-		$tpl->assign("sort1", $lang["s_description"]);
-		$tpl->assign("sort2", $lang["s_network"]);
-		$tpl->assign("sort3", $lang["s_vlan"]);
-		$tpl->assign("sort4", $lang["s_changeLog"]);
+		$tpl->assign("sort1", _("Description"));
+		$tpl->assign("sort2", _("Network"));
+		$tpl->assign("sort3", _("VLAN"));
+		$tpl->assign("sort4", _("ChangeLog"));
 
 
 		$tpl->assign("sysName", $rD["name"]);
-		$tpl->assign("sysNamelabel", $lang["s_name"]);
+		$tpl->assign("sysNamelabel", _("Name"));
 
 		$tpl->assign("sysDescr", $rD["description"]);
-		$tpl->assign("sysDescrlabel", $lang["s_description"]);
+		$tpl->assign("sysDescrlabel", _("Description"));
 
 		$tpl->assign("sysContact", $rD["contact"]);
-		$tpl->assign("sysContactlabel", $lang["s_contact"]);
+		$tpl->assign("sysContactlabel", _("Contact"));
 
 		$tpl->assign("sysLocation", $rD["location"]);
-		$tpl->assign("sysLocationlabel", $lang["s_location"]);
+		$tpl->assign("sysLocationlabel", _("Location"));
 
 		$sysUpTime =  get_snmp_value(".1.3.6.1.2.1.1.3.0", "STRING: ");
 		$tpl->assign("sysUpTime", $sysUpTime);
-		$tpl->assign("sysUpTimelabel", $lang["s_uptime"]);
+		$tpl->assign("sysUpTimelabel", _("Up Time"));
 
-		$tpl->assign("Datelabel", $lang['s_Date']);
-		$tpl->assign("Objectlabel", $lang['s_Object']);
-		$tpl->assign("Beforelabel", $lang['s_Before']);
-		$tpl->assign("Afterlabel", $lang['s_After']);
+		$tpl->assign("Datelabel", _("Date"));
+		$tpl->assign("Objectlabel", _("Object"));
+		$tpl->assign("Beforelabel", _("Before"));
+		$tpl->assign("Afterlabel", _("After"));
 	}
 
 	if (isset($host_id)){
@@ -127,6 +127,6 @@ For information : contact@oreon-project.org
 	if (isset($tpl) && $host_id && $sysUpTime)
 		$tpl->display('IDCard_network/infosNetwork.ihtml');
 	else
-		print "<div class='msg' align='center'>".$lang["s_notAvl"]."</div>";
+		print "<div class='msg' align='center'>"._("This ID Card is not available")."</div>";
 
 ?>

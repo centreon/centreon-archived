@@ -43,23 +43,23 @@ For information : contact@oreon-project.org
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["gen_name"]);
-	$form->addElement('header', 'infos', $lang["gen_infos"]);
-    $form->addElement('select', 'host', $lang["gen_host"], $tab_nagios_server, $attrSelect);
+	$form->addElement('header', 'title', _("Nagios Configuration Files Export"));
+	$form->addElement('header', 'infos', _("Implied Server"));
+    $form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, $lang["no"], '0');
-	$form->addGroup($tab, 'optimize', $lang["gen_optimize"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("No"), '0');
+	$form->addGroup($tab, 'optimize', _("Run Optimisation test (-s)"), '&nbsp;');
 	$form->setDefaults(array('optimize' => '0'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, $lang["no"], '0');
-	$form->addGroup($tab, 'restart', $lang["gen_restart"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("No"), '0');
+	$form->addGroup($tab, 'restart', _("Restart Nagios"), '&nbsp;');
 	$form->setDefaults(array('restart' => '0'));
 	
-	$tab_restart_mod = array(2 => $lang["gen_restart_start"], 1 => $lang["gen_restart_load"], 3 => $lang["gen_restart_extcmd"]);
-	$form->addElement('select', 'restart_mode', $lang["gen_restart"], $tab_restart_mod, $attrSelect);
+	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
+	$form->addElement('select', 'restart_mode', _("Restart Nagios"), $tab_restart_mod, $attrSelect);
 	$form->setDefaults(array('restart_mode' => '2'));
 	
 	$redirect =& $form->addElement('hidden', 'o');
@@ -71,7 +71,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', $lang["gen_butOK"]);
+	$sub =& $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate())	{
@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	$form->addElement('header', 'status', $lang["gen_status"]);
+	$form->addElement('header', 'status', _("Status"));
 	if (isset($msg_optimize) && $msg_optimize)
 		$tpl->assign('msg_optimize', $msg_optimize);
 	if (isset($host_list) && $host_list)

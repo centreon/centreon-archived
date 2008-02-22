@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 	$params = array('project' => 'oreon', 'branch' => $branch, 'clientVersion' => $installedVersion);
 	$secu = $soapClient->call('getSecurity', $params);
 	if (PEAR::isError($secu)) {
-		$msgErr = $lang['checkVersion_msgErr01'];
+		$msgErr = _("Cannot get last version");
 		$secu = '';
 	}
 	if ($confPatch['patch_type_secu'] == 'N') {
@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 	$params = array('project' => 'oreon', 'clientVersion' => $installedVersion);
 	$listVersion = $soapClient->call('getListVersion', $params);
 	if (PEAR::isError($listVersion)) {
-		$msgErr = $lang['checkVersion_msgErr01'];
+		$msgErr = _("Cannot get last version");
 	} else {
 		$newVersionInfo = checkNewVersion($listVersion, $confPatch);
 	}

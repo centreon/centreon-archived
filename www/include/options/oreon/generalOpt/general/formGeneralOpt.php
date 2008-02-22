@@ -39,25 +39,25 @@ For information : contact@oreon-project.org
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 
 	## Oreon information
-	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
-	$form->addElement('text', 'oreon_path', $lang["genOpt_oPath"], $attrsText);
-	$form->addElement('text', 'oreon_web_path', $lang["genOpt_webPath"], $attrsText);
+	$form->addElement('header', 'oreon', _("Centreon information"));
+	$form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
+	$form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
-	$form->addElement('text', 'oreon_refresh', $lang["genOpt_oRefresh"], $attrsText2);
-	$form->addElement('text', 'session_expire', $lang["genOpt_oExpire"], $attrsText2);
+	$form->addElement('text', 'oreon_refresh', _("Refresh Interval"), $attrsText2);
+	$form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
 
-	$form->addElement('text', 'maxViewMonitoring', $lang["genOpt_maxViewMonitoring"], $attrsText2);
-	$form->addElement('text', 'maxViewConfiguration', $lang["genOpt_maxViewConfiguration"], $attrsText2);
+	$form->addElement('text', 'maxViewMonitoring', _("Limit per page for Monitoring"), $attrsText2);
+	$form->addElement('text', 'maxViewConfiguration', _("Limit per page (default)"), $attrsText2);
 
-	$form->addElement('text', 'AjaxTimeReloadStatistic', $lang["genOpt_AjaxTimeReloadStatistic"], $attrsText2);
-	$form->addElement('text', 'AjaxTimeReloadMonitoring', $lang["genOpt_AjaxTimeReloadMonitoring"], $attrsText2);
-	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', $lang["genOpt_AjaxFirstTimeReloadStatistic"], $attrsText2);
-	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', $lang["genOpt_AjaxFirstTimeReloadMonitoring"], $attrsText2);
+	$form->addElement('text', 'AjaxTimeReloadStatistic', _("Refresh Interval for statistics"), $attrsText2);
+	$form->addElement('text', 'AjaxTimeReloadMonitoring', _("Refresh Interval for monitoring"), $attrsText2);
+	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', _("First Refresh delay for statistics"), $attrsText2);
+	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', _("First Refresh delay for monitoring"), $attrsText2);
 
-	$form->addElement('text', 'gmt', $lang["genOpt_gmt"], $attrsText2);
+	$form->addElement('text', 'gmt', _("GMT"), $attrsText2);
 
 	$templates = array();
 	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
@@ -66,19 +66,19 @@ For information : contact@oreon-project.org
 				$templates[$file] = $file;
 		@closedir($handle);
 	}
-	$form->addElement('select', 'template', $lang["genOpt_template"], $templates);
+	$form->addElement('select', 'template', _("Display Template"), $templates);
 	
-	$sort_type = array(	"last_state_change" => $lang["genOpt_problem_duration"],
-						"host_name" => $lang["genOpt_problem_host"],
-						"service_description" => $lang["genOpt_problem_service"],
-						"current_state" => $lang["genOpt_problem_status"],
-						"last_check" => $lang["genOpt_problem_last_check"],
-						"plugin_output" => $lang["genOpt_problem_output"]);
+	$sort_type = array(	"last_state_change" => _("Duration"),
+						"host_name" => _("Hosts"),
+						"service_description" => _("Services"),
+						"current_state" => _("Status"),
+						"last_check" => _("Last check"),
+						"plugin_output" => _("Output"));
 	
-	$form->addElement('select', 'problem_sort_type', $lang["genOpt_problem_sort_type"], $sort_type);
+	$form->addElement('select', 'problem_sort_type', _("Sort problems by  "), $sort_type);
 	
-	$sort_order = array("ASC" => $lang["genOpt_problem_order_asc"], "DESC" => $lang["genOpt_problem_order_desc"]);
-	$form->addElement('select', 'problem_sort_order', $lang["genOpt_problem_sort_order"], $sort_order);
+	$sort_order = array("ASC" => _("Ascending"), "DESC" => _("Descending"));
+	$form->addElement('select', 'problem_sort_order', _("Order sort problems "), $sort_order);
 	
 	## Form Rules
 	function slash($elem = NULL)	{
@@ -98,10 +98,10 @@ For information : contact@oreon-project.org
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
-	$form->addRule('oreon_path', $lang['ErrWrPath'], 'is_valid_path');
-	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
+	$form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
+	$form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path');
+	$form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path');
+	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
 
 	##End of form definition
 
@@ -111,8 +111,8 @@ For information : contact@oreon-project.org
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$form->addElement('reset', 'reset', _("Reset"));
 
     $valid = false;
 	if ($form->validate())	{
@@ -129,10 +129,10 @@ For information : contact@oreon-project.org
 		$form->freeze();
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 	}
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."'"));
 
 	## Apply a template definition
 

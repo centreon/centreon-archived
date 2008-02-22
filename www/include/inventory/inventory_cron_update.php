@@ -96,9 +96,9 @@ For information : contact@oreon-project.org
 		
  print "<table id='ListTable'>\n";
  print "	<tr class='ListHeader'>\n";
- print "		<td class='ListColHeaderLeft'>".$lang['name']."</td>\n";
- print "		<td class='ListColHeaderLeft'>".$lang['h_address']."</td>\n";
- print "		<td class='ListColHeaderLeft'>".$lang['s_type']." / ".$lang['s_manufacturer']."</td>\n";
+ print "		<td class='ListColHeaderLeft'>"._("Name")."</td>\n";
+ print "		<td class='ListColHeaderLeft'>"._("IP Address / DNS")."</td>\n";
+ print "		<td class='ListColHeaderLeft'>"._("Type")." / "._("Manufacturer")."</td>\n";
  print "	</tr>\n";
 
   while ($r =& $resHost->fetchRow()){

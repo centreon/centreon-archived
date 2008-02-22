@@ -15,7 +15,6 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-
 	if (!$oreon)
 		exit();
 	isset ($_GET["search"]) ? $search = $_GET["search"] : $search = NULL;
@@ -32,7 +31,7 @@ For information : contact@oreon-project.org
 
 	$t = microtime();
 
-	$enable = array("1" => $lang["yes"], "2" => $lang["no"]);
+	$enable = array("1" => _("Yes"), "2" => _("No"));
 
 	if (!$min)	{
 		# start quickSearch form
@@ -61,12 +60,12 @@ For information : contact@oreon-project.org
 	    $resData =& $pearDB->query("SELECT * FROM `inventory_index` WHERE host_id = '".$host_id."'");
 	    $rD =& $resData->fetchRow();
 
-		$tpl->assign("sort1", $lang["s_description"]);
-		$tpl->assign("sort2", $lang["s_network"]);
-		$tpl->assign("sort3", $lang["s_storageDevice"]);
-		$tpl->assign("sort4", $lang["s_softwareInstalled"]);
-		$tpl->assign("sort5", $lang["s_runningProcessus"]);
-		$tpl->assign("sort6", $lang["s_changeLog"]);
+		$tpl->assign("sort1", _("Description"));
+		$tpl->assign("sort2", _("Network"));
+		$tpl->assign("sort3", _("Storage Device"));
+		$tpl->assign("sort4", _("Software Installed"));
+		$tpl->assign("sort5", _("Running Process"));
+		$tpl->assign("sort6", _("ChangeLog"));
 
 		$tpl->assign("host_id", $host_id);
 
@@ -75,46 +74,46 @@ For information : contact@oreon-project.org
  * sort1", $lang["s_description"]);
  */
 		$tpl->assign("sysName", $rD["name"]);
-		$tpl->assign("sysNamelabel", $lang["s_name"]);
+		$tpl->assign("sysNamelabel", _("Name"));
 
 		$tpl->assign("sysDescr", $rD["description"]);
-		$tpl->assign("sysDescrlabel", $lang["s_description"]);
+		$tpl->assign("sysDescrlabel", _("Description"));
 
 		$tpl->assign("sysContact", $rD["contact"]);
-		$tpl->assign("sysContactlabel", $lang["s_contact"]);
+		$tpl->assign("sysContactlabel", _("Contact"));
 
 		$tpl->assign("sysLocation", $rD["location"]);
-		$tpl->assign("sysLocationlabel", $lang["s_location"]);
+		$tpl->assign("sysLocationlabel", _("Location"));
 
 		$sysUpTime =  get_snmp_value(".1.3.6.1.2.1.1.3.0", "STRING: ");
 		$tpl->assign("sysUpTime", $sysUpTime);
-		$tpl->assign("sysUpTimelabel", $lang["s_uptime"]);
+		$tpl->assign("sysUpTimelabel", _("Up Time"));
 
 
-		$tpl->assign("Statuslabel", $lang["s_status"]);
-		$tpl->assign("Outlabel", $lang["s_Out"]);
-		$tpl->assign("Inlabel", $lang["s_In"]);
-		$tpl->assign("errorlabel", $lang["s_Error"]);
-		$tpl->assign("PhysAddresslabel", $lang["s_PhysAddress"]);
-		$tpl->assign("Typelabel", $lang["s_Type"]);
-    	$tpl->assign("Trafficlabel", $lang["s_traffic"]);
-		$tpl->assign("Errorlabel", $lang["s_pkt_error"]);
+		$tpl->assign("Statuslabel", _("Status"));
+		$tpl->assign("Outlabel", _("Out"));
+		$tpl->assign("Inlabel", _("In"));
+		$tpl->assign("errorlabel", _("Error"));
+		$tpl->assign("PhysAddresslabel", _("PhysAddress"));
+		$tpl->assign("Typelabel", _("Type"));
+    	$tpl->assign("Trafficlabel", _("Traffic"));
+		$tpl->assign("Errorlabel", _("Packet Error"));
 
-		$tpl->assign("mntPointlabel",$lang["s_mntPoint"]);
-		$tpl->assign("Typelabel",$lang["s_Type"]);
-		$tpl->assign("Utilisationlabel",$lang["s_Utilisation"]);
-		$tpl->assign("Freelabel",$lang["s_Free"]);
-		$tpl->assign("Usedlabel",$lang["s_Used"]);
-		$tpl->assign("Sizelabel",$lang["s_Size"]);
+		$tpl->assign("mntPointlabel", _("Mount Point"));
+		$tpl->assign("Typelabel", _("Type"));
+		$tpl->assign("Utilisationlabel", _("Utilization"));
+		$tpl->assign("Freelabel", _("Free"));
+		$tpl->assign("Usedlabel", _("Used"));
+		$tpl->assign("Sizelabel", _("Size"));
 
-		$tpl->assign("Softwarelabel",$lang["s_Software"]);
-		$tpl->assign("MermoryUsedlabel",$lang["s_MermoryUsed"]);
-		$tpl->assign("Pathlabel",$lang["s_Path"]);
+		$tpl->assign("Softwarelabel", _("Software"));
+		$tpl->assign("MermoryUsedlabel", _("Memory Used"));
+		$tpl->assign("Pathlabel",_("Path"));
 		
-		$tpl->assign("Datelabel", $lang['s_Date']);
-		$tpl->assign("Objectlabel", $lang['s_Object']);
-		$tpl->assign("Beforelabel", $lang['s_Before']);
-		$tpl->assign("Afterlabel", $lang['s_After']);
+		$tpl->assign("Datelabel", _("Date"));
+		$tpl->assign("Objectlabel", _("Object"));
+		$tpl->assign("Beforelabel", _("Before"));
+		$tpl->assign("Afterlabel", _("After"));
 	}
 	if ($host_id){
 		$res =& $pearDB->query("SELECT ctime,replaced_value,value,type FROM inventory_log WHERE host_id = '".$host_id."' ORDER BY ctime DESC");
@@ -149,5 +148,5 @@ For information : contact@oreon-project.org
 	if (isset($tpl) && $host_id && $sysUpTime)
 		$tpl->display("IDCard_server/infosServer.ihtml");
 	else
-		print "<div class='msg' align='center'>".$lang["s_notAvl"]."</div>";
+		print "<div class='msg' align='center'>"._("This ID Card is not available")."</div>";
 ?>

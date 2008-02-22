@@ -64,19 +64,19 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["myAcc_change"]);
+	$form->addElement('header', 'title', _("Change my settings"));
 
 	#
 	## Basic information
 	#
-	$form->addElement('header', 'information', $lang['cct_infos']);
-	$form->addElement('text', 'contact_name', $lang["cct_name"], $attrsText);
-	$form->addElement('text', 'contact_alias', $lang["alias"], $attrsText);
-	$form->addElement('text', 'contact_email', $lang["cct_mail"], $attrsText);
-	$form->addElement('text', 'contact_pager', $lang["cct_pager"], $attrsText);
-	$form->addElement('password', 'contact_passwd', $lang['cct_passwd'], $attrsText);
-	$form->addElement('password', 'contact_passwd2', $lang['cct_passwd2'], $attrsText);
-    $form->addElement('select', 'contact_lang', $lang["cct_lang"], $langs);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'contact_name', _("Name"), $attrsText);
+	$form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText);
+	$form->addElement('text', 'contact_email', _("Email"), $attrsText);
+	$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
+	$form->addElement('password', 'contact_passwd', _("Password"), $attrsText);
+	$form->addElement('password', 'contact_passwd2', _("Confirm password"), $attrsText);
+    $form->addElement('select', 'contact_lang', _("Language"), $langs);
 
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -91,17 +91,17 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('contact_name', 'myReplace');
-	$form->addRule('contact_name', $lang['ErrName'], 'required');
-	$form->addRule('contact_alias', $lang['ErrAlias'], 'required');
-	$form->addRule('contact_email', $lang['ErrEmail'], 'required');
+	$form->addRule('contact_name', _("Compulsory name"), 'required');
+	$form->addRule('contact_alias', _("Compulsory alias"), 'required');
+	$form->addRule('contact_email', _("Valid Email"), 'required');
 //	$form->addRule('contact_passwd', $lang['ErrRequired'], 'required');
 //	$form->addRule('contact_passwd2', $lang['ErrRequired'], 'required');
-	$form->addRule(array('contact_passwd', 'contact_passwd2'), $lang['ErrCctPasswd'], 'compare');
+	$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('contact_name', $lang['ErrAlreadyExist'], 'exist');
+	$form->addRule('contact_name', _("Name already in use"), 'exist');
 	$form->registerRule('existAlias', 'callback', 'testAliasExistence');
-	$form->addRule('contact_alias', $lang['ErrAlreadyExist'], 'existAlias');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('contact_alias', _("Name already in use"), 'existAlias');
+	$form->setRequiredNote("<font style='color: red;'>*</font>"._("Required fields"));
 
 	# 
 	##End of form definition
@@ -113,8 +113,8 @@ For information : contact@oreon-project.org
 
 	# Modify a contact information
 	if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cct);
 	}
 	
@@ -123,7 +123,7 @@ For information : contact@oreon-project.org
 		if ($form->getSubmitValue("contact_passwd"))
 			$oreon->user->passwd = md5($form->getSubmitValue("contact_passwd"));
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c'"));
 		$form->freeze();
 	}
 	#Apply a template definition	

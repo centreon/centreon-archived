@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -53,24 +53,24 @@ For information : contact@oreon-project.org
 	$form->setDefaults($gopt);
 	
 	## Oreon information
-	$form->addElement('header', 'oreon', $lang['genOpt_oreon']);
-	$form->addElement('text', 'RRDdatabase_path', $lang["ods_rrd_path"], $attrsText);
-	$form->addElement('text', 'len_storage_rrd', $lang["ods_len_storage_rrd"], $attrsText2);
-	$form->addElement('text', 'len_storage_mysql', $lang["ods_len_storage_mysql"], $attrsText2);
-	$form->addElement('checkbox', 'autodelete_rrd_db', $lang['ods_autodelete_rrd_db']);
-	$form->addElement('text', 'sleep_time', $lang["ods_sleep_time"], $attrsText2);
-	$form->addElement('text', 'purge_interval', $lang["ods_purge_interval"], $attrsText2);
-	$form->addElement('checkbox', 'auto_drop', $lang["ods_auto_drop"]);
-	$form->addElement('text', 'drop_file', $lang["ods_drop_file"], $attrsText);
-	$form->addElement('text', 'perfdata_file', $lang["ods_perfdata_file"], $attrsText);
+	$form->addElement('header', 'oreon', _("Centreon information"));
+	$form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database"), $attrsText);
+	$form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsText2);
+	$form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
+	$form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
+	$form->addElement('text', 'sleep_time', _("Sleep Time"), $attrsText2);
+	$form->addElement('text', 'purge_interval', _("Purge check interval"), $attrsText2);
+	$form->addElement('checkbox', 'auto_drop', _("Drop Data in another file"));
+	$form->addElement('text', 'drop_file', _("Drop file"), $attrsText);
+	$form->addElement('text', 'perfdata_file', _("Perfdata"), $attrsText);
 	
-	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
-	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
-	$form->addElement('checkbox', 'archive_log', $lang["ods_archive_log"]);
-	$form->addElement('text', 'archive_retention', $lang["ods_log_retention"], $attrsText2);
-	$form->addElement('text', 'nagios_log_file', $lang["ods_nagios_log_file"], $attrsText);
+	$storage_type = array(0 => "RRDTool", 2 => _("RRDTool & MySQL"));	
+	$form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);
+	$form->addElement('checkbox', 'archive_log', _("Archive Nagios Logs"));
+	$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
+	$form->addElement('text', 'nagios_log_file', _("Nagios current log file to parse"), $attrsText);
 	
-	$form->addElement('checkbox', 'fast_parsing', $lang["ods_fast_parsing"]);
+	$form->addElement('checkbox', 'fast_parsing', _("Fast status log parsing"));
 	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -90,8 +90,8 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path.'OreonDataStorage/', $tpl);
 	$form->setDefaults($gopt);
 	
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$form->addElement('reset', 'reset', _("Reset"));
     $valid = false;
     
 	if ($form->validate())	{
@@ -111,9 +111,9 @@ For information : contact@oreon-project.org
 		$form->freeze();
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'"));
 
 	## Apply a template definition
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

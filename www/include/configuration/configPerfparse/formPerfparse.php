@@ -45,114 +45,114 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["pp_add"]);
+		$form->addElement('header', 'title', _("Add a Perfparse Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["pp_change"]);
+		$form->addElement('header', 'title', _("Modify a Perfparse Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["pp_view"]);
+		$form->addElement('header', 'title', _("View a Perfparse Configuration File"));
 
 	#
 	## Perfparse Configuration basic information
 	#
-	$form->addElement('header', 'information', $lang['pp_infos']);
-	$form->addElement('text', 'perfparse_name', $lang["pp_name"], $attrsText);
-	$form->addElement('textarea', 'perfparse_comment', $lang["pp_comment"], $attrsTextarea);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'perfparse_name',_("Perfparse File Name"), $attrsText);
+	$form->addElement('textarea', 'perfparse_comment', _("Comments"), $attrsTextarea);
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'perfparse_activate', null, $lang["enable"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'perfparse_activate', null, $lang["disable"], '0');
-	$form->addGroup($ppTab, 'perfparse_activate', $lang["status"], '&nbsp;');	
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'perfparse_activate', null, _("Enabled"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'perfparse_activate', null, _("Disabled"), '0');
+	$form->addGroup($ppTab, 'perfparse_activate', _("Status"), '&nbsp;');	
 	
 	## Part 1
-	$form->addElement('header', 'sManagement', $lang['pp_sMan']);
-	$form->addElement('text', 'server_port', $lang['pp_serPort'], $attrsText3);
+	$form->addElement('header', 'sManagement', _("Server Management"));
+	$form->addElement('text', 'server_port', _("Server Port"), $attrsText3);
 
 	## Part 2
-	$form->addElement('header', 'pManagement', $lang['pp_pMan']);
-	$form->addElement('header', 'perfDLF', $lang['pp_perfDLF']);
-	$form->addElement('text', 'service_log', $lang['pp_serLog'], $attrsText2);	
-	$form->addElement('text', 'service_log_position_mark_path', $lang['pp_svLPMP'], $attrsText2);
+	$form->addElement('header', 'pManagement', _("Parser Management"));
+	$form->addElement('header', 'perfDLF', _("Performance Data Log Files ('-' for stdin)"));
+	$form->addElement('text', 'service_log', _("Service Log"), $attrsText2);	
+	$form->addElement('text', 'service_log_position_mark_path', _("Service Log Position Mark Path"), $attrsText2);
 	
-	$form->addElement('header', 'errHandling', $lang['pp_errHandling']);
-	$form->addElement('text', 'error_log', $lang['pp_errLog'], $attrsText2);
+	$form->addElement('header', 'errHandling', _("Error handling"));
+	$form->addElement('text', 'error_log', _("Error Log File"), $attrsText2);
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'error_log_rotate', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'error_log_rotate', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'error_log_rotate', $lang['pp_errLogRot'], '&nbsp;');
-	$form->addElement('text', 'error_log_keep_n_days', $lang['pp_errLKND'], $attrsText3);	
-	$form->addElement('text', 'drop_file', $lang['pp_dropFile'], $attrsText2);
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'error_log_rotate', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'error_log_rotate', null, _("No"), '0');
+	$form->addGroup($ppTab, 'error_log_rotate', _("Error Log Rotate"), '&nbsp;');
+	$form->addElement('text', 'error_log_keep_n_days', _("Error Log Keep N Days"), $attrsText3);	
+	$form->addElement('text', 'drop_file', _("Drop File"), $attrsText2);
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'drop_file_rotate', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'drop_file_rotate', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'drop_file_rotate', $lang['pp_dropFileRot'], '&nbsp;');
-	$form->addElement('text', 'drop_file_keep_n_days', $lang['pp_dropFKND'], $attrsText3);
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'drop_file_rotate', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'drop_file_rotate', null, _("No"), '0');
+	$form->addGroup($ppTab, 'drop_file_rotate', _("Drop File Rotate"), '&nbsp;');
+	$form->addElement('text', 'drop_file_keep_n_days', _("Drop File Keep N Days"), $attrsText3);
 	
-	$form->addElement('header', 'lockFileTxt', $lang['pp_lockFileTxt']);	
-	$form->addElement('text', 'lock_file', $lang['pp_lockFile'], $attrsText2);
+	$form->addElement('header', 'lockFileTxt', _("Lock file for only one perfparse running at the same time"));	
+	$form->addElement('text', 'lock_file', _("Lock File"), $attrsText2);
 	
 	## Part 3
-	$form->addElement('header', 'reportOpt', $lang['pp_reportOpt']);
+	$form->addElement('header', 'reportOpt', _("Reporting Options"));
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'show_status_bar', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'show_status_bar', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'show_status_bar', $lang['pp_showSB'], '&nbsp;');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'show_status_bar', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'show_status_bar', null, _("No"), '0');
+	$form->addGroup($ppTab, 'show_status_bar', _("Show Status Bar"), '&nbsp;');
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'do_report', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'do_report', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'do_report', $lang['pp_doReport'], '&nbsp;');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'do_report', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'do_report', null, _("No"), '0');
+	$form->addGroup($ppTab, 'do_report', _("Do_Report"), '&nbsp;');
 	
 	## Part 4
-	$form->addElement('header', 'cgiMan', $lang['pp_cgiMan']);	
-    $form->addElement('select', 'default_user_permissions_policy', $lang['pp_defUPP'], array(1=>"ro", 2=>"rw", 3=>"hide"));
-    $form->addElement('select', 'default_user_permissions_host_groups', $lang['pp_defUPHG'], array(1=>"ro", 2=>"rw", 3=>"hide"));
-    $form->addElement('select', 'default_user_permissions_summary', $lang['pp_defUPS'], array(1=>"ro", 2=>"rw", 3=>"hide"));
+	$form->addElement('header', 'cgiMan', _("CGI Management"));	
+    $form->addElement('select', 'default_user_permissions_policy', _("Default user permissions Policy"), array(1=>"ro", 2=>"rw", 3=>"hide"));
+    $form->addElement('select', 'default_user_permissions_host_groups', _("Default user permissions Hostgroups"), array(1=>"ro", 2=>"rw", 3=>"hide"));
+    $form->addElement('select', 'default_user_permissions_summary', _("Default user permissions Summary"), array(1=>"ro", 2=>"rw", 3=>"hide"));
 	
 	## Part 5
-	$form->addElement('header', 'outLog', $lang['pp_outLog']);
+	$form->addElement('header', 'outLog', _("Output Logger"));
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_file', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_file', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'output_log_file', $lang['pp_outLogFile'], '&nbsp;');
-	$form->addElement('text', 'output_log_filename', $lang['pp_outLogFileName'], $attrsText2);
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_file', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_file', null, _("No"), '0');
+	$form->addGroup($ppTab, 'output_log_file', _("Output Log File"), '&nbsp;');
+	$form->addElement('text', 'output_log_filename', _("Output Log Filename"), $attrsText2);
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_rotate', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_rotate', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'output_log_rotate', $lang['pp_outLogRot'], '&nbsp;');
-	$form->addElement('text', 'output_log_keep_n_days', $lang['pp_outLKND'], $attrsText3);
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_rotate', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'output_log_rotate', null, _("No"), '0');
+	$form->addGroup($ppTab, 'output_log_rotate', _("Output Log Rotate"), '&nbsp;');
+	$form->addElement('text', 'output_log_keep_n_days', _("Output Log Keep N Days"), $attrsText3);
 	
 	## Part 6
-	$form->addElement('header', 'SockOutMan', $lang['pp_SockOutMan']);
+	$form->addElement('header', 'SockOutMan', _("Socket_output managment"));
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_socket_output', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_socket_output', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'use_storage_socket_output', $lang['pp_useStoSockOut'], '&nbsp;');
-	$form->addElement('text', 'storage_socket_output_host_name', $lang['pp_stoSockOutHName'], $attrsText3);
-	$form->addElement('text', 'storage_socket_output_port', $lang['pp_stoSockOutPort'], $attrsText3);
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_socket_output', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_socket_output', null, _("No"), '0');
+	$form->addGroup($ppTab, 'use_storage_socket_output', _("Use Storage Socket Output"), '&nbsp;');
+	$form->addElement('text', 'storage_socket_output_host_name', _("Storage Socket Output Host Name"), $attrsText3);
+	$form->addElement('text', 'storage_socket_output_port', _("Storage Socket Output Port"), $attrsText3);
 	
 	## Part 7
-	$form->addElement('header', 'dbMan', $lang['pp_dbMan']);
+	$form->addElement('header', 'dbMan', _("Database managment"));
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_mysql', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_mysql', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'use_storage_mysql', $lang['pp_useStorMySQL'], '&nbsp;');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_mysql', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'use_storage_mysql', null, _("No"), '0');
+	$form->addGroup($ppTab, 'use_storage_mysql', _("Use Mysql Storage"), '&nbsp;');
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_raw_data', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_raw_data', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'no_raw_data', $lang['pp_noRawData'], '&nbsp;');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_raw_data', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_raw_data', null, _("No"), '0');
+	$form->addGroup($ppTab, 'no_raw_data', _("No Raw Data"), '&nbsp;');
 	$ppTab = array();
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_bin_data', null, $lang["yes"], '1');
-	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_bin_data', null, $lang["no"], '0');
-	$form->addGroup($ppTab, 'no_bin_data', $lang['pp_noBinData'], '&nbsp;');
-	$form->addElement('text', 'db_user', $lang['pp_dbUser'], $attrsText3);
-	$form->addElement('text', 'db_name', $lang['pp_dbName'], $attrsText3);
-	$form->addElement('password', 'db_pass', $lang['pp_dbPass'], $attrsText3);
-	$form->addElement('text', 'db_host', $lang['pp_dbHost'], $attrsText3);
-	$form->addElement('text', 'dummy_hostname', $lang['pp_dumHN'], $attrsText3);
-	$form->addElement('text', 'storage_modules_load', $lang['pp_stoModLoad'], $attrsText3);
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_bin_data', null, _("Yes"), '1');
+	$ppTab[] = &HTML_QuickForm::createElement('radio', 'no_bin_data', null, _("No"), '0');
+	$form->addGroup($ppTab, 'no_bin_data', _("No Bin Data"), '&nbsp;');
+	$form->addElement('text', 'db_user', _("DB User"), $attrsText3);
+	$form->addElement('text', 'db_name', _("DB Name"), $attrsText3);
+	$form->addElement('password', 'db_pass', _("DB Password"), $attrsText3);
+	$form->addElement('text', 'db_host', _("DB Host"), $attrsText3);
+	$form->addElement('text', 'dummy_hostname', _("Dummy Hostname"), $attrsText3);
+	$form->addElement('text', 'storage_modules_load', _("Storage Modules Load"), $attrsText3);
 		
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	
 	$form->setDefaults(array(
 	"perfparse_activate"=>'1',
@@ -189,11 +189,11 @@ For information : contact@oreon-project.org
 			return rtrim($elem, "/")."/";
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('perfparse_name', $lang['ErrName'], 'required');
-	$form->addRule('perfparse_comment', $lang['ErrRequired'], 'required');
+	$form->addRule('perfparse_name', _("Compulsory Name"), 'required');
+	$form->addRule('perfparse_comment', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('perfparse_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('perfparse_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>" . _(" Required fields"));
 	
 	# 
 	##End of form definition
@@ -205,20 +205,20 @@ For information : contact@oreon-project.org
 	
 	# Just watch a nagios information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&perfparse_id=".$perfparse_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&perfparse_id=".$perfparse_id."'"));
 	    $form->setDefaults($pp);
 		$form->freeze();
 	}
 	# Modify a nagios information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($pp);
 	}
 	# Add a nagios information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
 	
@@ -230,7 +230,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updatePerfparseInDB($ppObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&perfparse_id=".$ppObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&perfparse_id=".$ppObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

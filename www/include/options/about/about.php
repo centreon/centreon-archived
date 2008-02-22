@@ -33,14 +33,14 @@ For information : contact@oreon-project.org
 	
 	<br><br>
 	<div class="list_one"><h3>
-	<b><?php echo $lang["about_project_leaders"]; ?> :</b>
+	<b><?php echo _("Project Leaders"); ?> :</b>
 	</h3></div><br>
 	<a href="mailto:rlemerlus@oreon-project.org" class="list_two">Romain Le Merlus (rom)</a><br>
 	<a href="mailto:jmathis@oreon-project.org" class="list_two">Julien Mathis (Julio)</a><br>
 	
 	<br>
 	<div class="list_one"><h3>
-	<b><?php echo $lang["about_project_contributors"]; ?> :</b>
+	<b><?php echo _("Contributors"); ?> :</b>
 	</h3></div><br>
 	<a href="mailto:ccoraboeuf@oreon-project.org" class="list_two">Christophe Coraboeuf (Wistof)</a><br>
 	<a href="mailto:cfacon@oreon-project.org" class="list_two">Cedrick Facon (Apo)</a><br>

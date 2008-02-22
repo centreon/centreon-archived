@@ -42,16 +42,16 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["genOpt_change"]);
+	$form->addElement('header', 'title', _("Modify General Options"));
 	
 	#
 	## Various information
 	#
-	$form->addElement('text', 'rrdtool_path_bin', $lang["genOpt_rrdtool"], $attrsText);
-	$form->addElement('text', 'rrdtool_version', $lang["genOpt_rrdtoolV"], $attrsText2);
+	$form->addElement('text', 'rrdtool_path_bin', _("Directory + RRDTOOL Binary"), $attrsText);
+	$form->addElement('text', 'rrdtool_version', _("RRDTool Version"), $attrsText2);
 
-	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, $lang["m_views_graphPlu"], '1');
-	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, $lang["m_views_graphShow"], '0');
+	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, _("Graphs Plugins"), '1');
+	$graphPref[] = &HTML_QuickForm::createElement('radio', 'graph_preferencies', null, _("Simple Graphs Renderer"), '0');
 	
 	$form->addElement('hidden', 'gopt_id');
 	$redirect =& $form->addElement('hidden', 'o');
@@ -79,16 +79,16 @@ For information : contact@oreon-project.org
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
-	$form->addRule('oreon_path', $lang['ErrWrPath'], 'is_valid_path');
-	$form->addRule('nagios_path_plugins', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path_img', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('nagios_path', $lang['ErrValidPath'], 'is_valid_path');
-	$form->addRule('nagios_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
-	$form->addRule('mailer_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
-	$form->addRule('rrdtool_path_bin', $lang['ErrExeBin'], 'is_executable_binary');
-	$form->addRule('oreon_rrdbase_path', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('debug_path', $lang['ErrWrPath'], 'is_writable_path');
-	$form->addRule('snmp_trapd_path_conf', $lang['ErrWrFile'], 'is_writable_file_if_exist');
+	$form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
+	$form->addRule('nagios_path_plugins', _("Can't write directory"), 'is_writable_path');
+	$form->addRule('nagios_path_img', _("Can't write directory"), 'is_writable_path');
+	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
+	$form->addRule('nagios_path_bin', _("Can't execute binary"), 'is_executable_binary');
+	$form->addRule('mailer_path_bin', _("Can't execute binary"), 'is_executable_binary');
+	$form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
+	$form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
+	$form->addRule('debug_path', _("Can't write in directory"), 'is_writable_path');
+	$form->addRule('snmp_trapd_path_conf', _("Can't write in file"), 'is_writable_file_if_exist');
 
 	#
 	##End of form definition
@@ -100,8 +100,8 @@ For information : contact@oreon-project.org
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$DBRESULT =& $form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
 
 
     $valid = false;
@@ -117,9 +117,9 @@ For information : contact@oreon-project.org
 		$form->freeze();
 	}
 	if (!$form->validate() && isset($_POST["gopt_id"]))
-	    print("<div class='msg' align='center'>".$lang["quickFormError"]."</div>");
+	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 
-	$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'"));
+	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=rrdtool'"));
 
 	#
 	##Apply a template definition
