@@ -25,18 +25,7 @@ For information : contact@oreon-project.org
 	
 	// Host Extended Information
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostextinfo.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT host.host_name, ehi.* FROM host, extended_host_information ehi " .
-								"WHERE ( ehi_notes IS NOT NULL " .
-								"OR ehi_notes_url IS NOT NULL " .
-								"OR ehi_action_url IS NOT NULL " .
-								"OR ehi_icon_image IS NOT NULL " .
-								"OR ehi_icon_image_alt IS NOT NULL " .
-								"OR ehi_vrml_image IS NOT NULL " .
-								"OR ehi_statusmap_image IS NOT NULL " .
-								"OR ehi_2d_coords IS NOT NULL " .
-								"OR ehi_3d_coords IS NOT NULL ) " .
-								"AND host.host_id = ehi.host_host_id " .
-								"AND host.host_register = '1' ORDER BY `host_name`");
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$ehi = array();
@@ -45,23 +34,31 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($ehi))	{
 		if (isHostOnThisInstance(getMyHostID($ehi["host_name"]), $tab['id'])) {
 			$BP = false;
-			array_key_exists($ehi["host_host_id"], $gbArr[2]) ? $BP = true : NULL;
+			array_key_exists($ehi["host_id"], $gbArr[2]) ? $BP = true : NULL;
 			
 			if ($BP)	{
 				$ret["comment"] ? ($str .= "# '" . $ehi["host_name"] . "' Host Extended Information definition " . $i . "\n") : NULL ;
 				$str .= "define hostextinfo{\n";
-				if ($ehi["host_name"]) $str .= print_line("host_name", $ehi["host_name"]);
-				if ($oreon->user->get_version() == 2)
-					if ($ehi["ehi_notes"]) $str .= print_line("notes", $ehi["ehi_notes"]);
-				if ($ehi["ehi_notes_url"]) $str .= print_line("notes_url", $ehi["ehi_notes_url"]);
-				if ($oreon->user->get_version() == 2)
-					if ($ehi["ehi_action_url"]) $str .= print_line("action_url", $ehi["ehi_action_url"]);
-				if ($ehi["ehi_icon_image"]) $str .= print_line("icon_image", $ehi["ehi_icon_image"]);
-				if ($ehi["ehi_icon_image_alt"]) $str .= print_line("icon_image_alt", $ehi["ehi_icon_image_alt"]);
-				if ($ehi["ehi_vrml_image"]) $str .= print_line("vrml_image", $ehi["ehi_vrml_image"]);
-				if ($ehi["ehi_statusmap_image"]) $str .= print_line("statusmap_image", $ehi["ehi_statusmap_image"]);
-				if ($ehi["ehi_2d_coords"]) $str .= print_line("2d_coords", $ehi["ehi_2d_coords"]);
-				if ($ehi["ehi_3d_coords"]) $str .= print_line("3d_coords", $ehi["ehi_3d_coords"]);
+				if ($ehi["host_name"])
+					$str .= print_line("host_name", $ehi["host_name"]);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes"))
+					$str .= print_line("notes", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_notes_url"))
+					$str .= print_line("notes_url", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_action_url"))
+					$str .= print_line("action_url", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_icon_image"))
+					$str .= print_line("icon_image", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_icon_image_alt"))
+					$str .= print_line("icon_image_alt", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_vrml_image"))
+					$str .= print_line("vrml_image", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_statusmap_image"))
+					$str .= print_line("statusmap_image", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_2d_coords"))
+					$str .= print_line("2d_coords", $field);
+				if ($field = getMyHostExtendedInfoField($ehi["host_id"], "ehi_3d_coords"))
+					$str .= print_line("3d_coords", $field);
 				$str .= "}\n\n";
 				$i++;
 			}
@@ -80,67 +77,69 @@ For information : contact@oreon-project.org
 	$i = 1;
 	$str = NULL;
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information " .
-								"WHERE esi_notes IS NOT NULL " .
-								"OR esi_notes_url IS NOT NULL " .
-								"OR esi_action_url IS NOT NULL " .
-								"OR esi_icon_image  IS NOT NULL " .
-								"OR esi_icon_image_alt IS NOT NULL");
+	$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_register = '1'");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($esi))	{
 		$BP = false;
-		array_key_exists($esi["service_service_id"], $gbArr[4]) ? $BP = true : NULL;
-		
+		array_key_exists($esi["service_id"], $gbArr[4]) ? $BP = true : NULL;		
 		if ($BP)	{
-			$hosts = getMyServiceHosts($esi["service_service_id"]);
+			$hosts = getMyServiceHosts($esi["service_id"]);
 			foreach ($hosts as $key=>$value)	{
 				$BP = false;
-				array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;
-				
+				array_key_exists($value, $gbArr[2]) ? $BP = true : NULL;				
 				if ($BP && isAHostTpl($value))	{
 					$host_name = getMyHostName($value);
 					if (isHostOnThisInstance(getMyHostID($host_name), $tab['id'])) {
-						$service_description = getMyServiceName($esi["service_service_id"]);
+						$service_description = getMyServiceName($esi["service_id"]);
 						$service_description = str_replace('#S#', "/", $service_description);
 						$service_description = str_replace('#BS#', "\\", $service_description);
 						$str .= "# '" . $host_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
 						$str .= "define serviceextinfo{\n";
-						if ($host_name) $str .= print_line("host_name", $host_name);
-						if ($service_description) $str .= print_line("service_description", $service_description);
-						if ($oreon->user->get_version() == 2)
-							if ($esi["esi_notes"]) $str .= print_line("notes", $esi["esi_notes"]);
-						if ($esi["esi_notes_url"]) $str .= print_line("notes_url", $esi["esi_notes_url"]);
-						if ($oreon->user->get_version() == 2)
-							if ($esi["esi_action_url"]) $str .= print_line("action_url", $esi["esi_action_url"]);
-						if ($esi["esi_icon_image"]) $str .= print_line("icon_image", $esi["esi_icon_image"]);
-						if ($esi["esi_icon_image_alt"]) $str .= print_line("icon_image_alt", $esi["esi_icon_image_alt"]);;
+						if ($host_name)
+							$str .= print_line("host_name", $host_name);
+						if ($service_description)
+							$str .= print_line("service_description", $service_description);									
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes"))
+							$str .= print_line("notes", $field);
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes_url"))
+							$str .= print_line("notes_url", $field);
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url"))
+							$str .= print_line("action_url", $field);
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image"))
+							$str .= print_line("icon_image", $field);
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "icon_image_alt"))
+							$str .= print_line("icon_image_alt", $field);
 						$str .= "}\n\n";
 						$i++;
 					}
 				}
 			}
-			$hgs = getMyServiceHostGroups($esi["service_service_id"]);
+			$hgs = getMyServiceHostGroups($esi["service_id"]);
 			foreach ($hgs as $key=>$value)	{
 				$BP = false;
-				array_key_exists($value, $gbArr[3]) ? $BP = true : NULL;
-				
+				array_key_exists($value, $gbArr[3]) ? $BP = true : NULL;				
 				if ($BP)	{
 					$hostgroup_name = getMyHostGroupName($value);
-					$service_description = getMyServiceName($esi["service_service_id"]);
+					$service_description = getMyServiceName($esi["service_id"]);
 					$service_description = str_replace('#S#', "/", $service_description);
 					$service_description = str_replace('#BS#', "\\", $service_description);
 					$str .= "# '" . $hostgroup_name . "'/'" . $service_description . "' Service Extended Information definition " . $i . "\n";
 					$str .= "define serviceextinfo{\n";
-					if ($hostgroup_name) $str .= print_line("hostgroup_name", $hostgroup_name);
-					if ($service_description) $str .= print_line("service_description", $service_description);
-					if ($oreon->user->get_version() == 2)
-						if ($esi["esi_notes"]) $str .= print_line("notes", $esi["esi_notes"]);
-					if ($esi["esi_notes_url"]) $str .= print_line("notes_url", $esi["esi_notes_url"]);
-					if ($oreon->user->get_version() == 2)
-						if ($esi["esi_action_url"]) $str .= print_line("action_url", $esi["esi_action_url"]);
-					if ($esi["esi_icon_image"]) $str .= print_line("icon_image", $esi["esi_icon_image"]);
-					if ($esi["esi_icon_image_alt"]) $str .= print_line("icon_image_alt", $esi["esi_icon_image_alt"]);;
+					if ($hostgroup_name)
+						$str .= print_line("hostgroup_name", $hostgroup_name);
+					if ($service_description)
+						$str .= print_line("service_description", $service_description);									
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes"))
+						$str .= print_line("notes", $field);
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_notes_url"))
+						$str .= print_line("notes_url", $field);
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_action_url"))
+						$str .= print_line("action_url", $field);
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image"))
+						$str .= print_line("icon_image", $field);
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "icon_image_alt"))
+						$str .= print_line("icon_image_alt", $field);
 					$str .= "}\n\n";
 					$i++;
 				}
