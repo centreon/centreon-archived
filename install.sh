@@ -45,17 +45,17 @@ DEFAULT_PEAR_PATH=/usr/share/php
 
 TMPDIR=/tmp/centreon-setup
 
-RM=`which rm`
-CP=`which cp`
-MV=`which mv`
-CHMOD=`which chmod`
-CHOWN=`which chown`
-ECHO=`which echo`
-CAT=`which cat`
-MORE=`which more`
-MKDIR=`which mkdir`
-FIND=`which find`
-SED=`which sed`
+RM=`type -p rm`
+CP=`type -p cp`
+MV=`type -p mv`
+CHMOD=`type -p chmod`
+CHOWN=`type -p chown`
+ECHO=`type -p echo`
+CAT=`type -p cat`
+MORE=`type -p more`
+MKDIR=`type -p mkdir`
+FIND=`type -p find`
+SED=`type -p sed`
 
 
 $CAT <<EOF
@@ -78,7 +78,7 @@ EOF
 
 # Load install script functions
 if [ -z "$BASH" ]; then # Test if BASH is in path
-    if ! which bash > /dev/null 2>&1; then
+    if ! type -p bash > /dev/null 2>&1; then
 	$ECHO "Install bash and try `bash install.sh`."
     fi # Exit if we are not in BASH
     $ECHO "Error: The script must be run with BASH shell. Try:"
@@ -783,11 +783,11 @@ function configCron(){
 	$ECHO ""
 	$ECHO ""
 	
-	PHP_FLG=`which php > /dev/null 2> /dev/null; $ECHO $?`
+	PHP_FLG=`type -p php > /dev/null 2> /dev/null; $ECHO $?`
 	if [ "$PHP_FLG" = "0" ] ; then
 	    PHP_BIN="php"
 	else
-	    PHP_FLG=`which php5 > /dev/null 2> /dev/null; $ECHO $?`
+	    PHP_FLG=`type -p php5 > /dev/null 2> /dev/null; $ECHO $?`
 	    if [ "$PHP_FLG" == '0' ] ; then
 	        PHP_BIN="php5"
 	    else
