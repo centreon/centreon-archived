@@ -149,15 +149,17 @@ function configureSUDO(){
     sudo=`cat $SUDO_FILE | grep CENTREON > /dev/null; echo $?`
     
     if [ $sudo == '1' ]; then
-		$ECHO "#Add by CENTREON installation script" >> $SUDO_FILE
-		$ECHO "User_Alias      CENTREON= $WEB_USER" >> $SUDO_FILE
-		$ECHO "## Nagios Restart" >> $SUDO_FILE
-		$ECHO "CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart" >> $SUDO_FILE
-		$ECHO "## Nagios reload" >> $SUDO_FILE
-		$ECHO "CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload" >> $SUDO_FILE
-		$ECHO "## Snmptrapd Restart" >> $SUDO_FILE
-		$ECHO "CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart" >> $SUDO_FILE
-		$ECHO "" >> $SUDO_FILE
+    	cat << __EOF__ >> $SUDO_FILE
+#Add by CENTREON installation script
+User_Alias      CENTREON= $WEB_USER
+## Nagios Restart
+CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
+## Nagios reload
+CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
+## Snmptrapd Restart
+CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart
+
+__EOF__
 		echo_success "Configuring Sudo" "OK"
     else
 		echo_passed "Sudo is already configurated" "PASSED"

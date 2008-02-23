@@ -56,7 +56,7 @@ MORE=`type -p more`
 MKDIR=`type -p mkdir`
 FIND=`type -p find`
 SED=`type -p sed`
-
+BINARIES="$RM $CP $MV $CHMOD $CHOWN $ECHO $CAT $MORE $MKDIR $FIND $SED"
 
 $CAT <<EOF
 ###############################################################################
@@ -86,6 +86,20 @@ if [ -z "$BASH" ]; then # Test if BASH is in path
     exit 1
 fi
 . functions
+
+## Test all binaries
+for binary in $BINARIES; do
+	if [ -x $binary ] ; then
+		echo_success "check $binary" "OK"
+	else
+		echo_failure "check $binary "FAIL"
+		echo_info "please install $binary and try again"
+		exit 1
+	fi
+done	
+
+
+
 
 ##
 ## VARIABLES
@@ -139,7 +153,8 @@ test_answer(){
 
 # CONFIGURATION
 
-if [ test -a $CENTREON_CONF ] ; then
+if [ -a $CENTREON_CONF ] ; then
+temp=""
     $ECHO ""
     $ECHO "------------------------------------------------------------------------"
     $ECHO "                   Detecting old Installation"
@@ -170,7 +185,7 @@ if [ test -a $CENTREON_CONF ] ; then
 		$ECHO ""
     fi
 fi
-
+temp=""
 if [ -z $INSTALL_DIR_NAGIOS ];then
     INSTALL_DIR_NAGIOS=$DEFAULT_INSTALL_DIR_NAGIOS
     $ECHO "Where is installed Nagios ?"
@@ -194,6 +209,7 @@ if [ -z $INSTALL_DIR_NAGIOS ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $NAGIOS_ETC ];then
     NAGIOS_ETC=$DEFAULT_NAGIOS_ETC
     $ECHO "Where is your nagios etc directory ?"
@@ -216,6 +232,7 @@ if [ -z $NAGIOS_ETC ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $NAGIOS_VAR ];then
     NAGIOS_VAR=$DEFAULT_NAGIOS_VAR
     $ECHO "Where is your nagios var directory ?"
@@ -238,6 +255,7 @@ if [ -z $NAGIOS_VAR ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $NAGIOS_PLUGIN ];then
     NAGIOS_PLUGIN="$DEFAULT_NAGIOS_PLUGIN"
     $ECHO "Where is your nagios plugins (libexec) directory ?"
@@ -265,6 +283,7 @@ if [ -z $NAGIOS_PLUGIN ];then
 		if [ $create_libexec = "y" ] || [ $create_libexec = "Y" ]; then
 		    mkdir -p $temp
 		    if [ $? = 1 ]; then
+			    temp=""
 				echo_passed "Could not create directory" "CRITICAL"
 				$ECHO ""
 				$ECHO "Where is your nagios plugins (libexec) directory ?"
@@ -275,6 +294,7 @@ if [ -z $NAGIOS_PLUGIN ];then
 				fi
 		    fi
 		else
+			temp=""
 		    $ECHO "Where is your nagios plugins (libexec) directory ?"
 		    $ECHO -n "    default to [$NAGIOS_PLUGIN]:"
 		    read temp
@@ -287,7 +307,7 @@ if [ -z $NAGIOS_PLUGIN ];then
     echo_success "Path $NAGIOS_PLUGIN" "OK"
     $ECHO ""
 fi
-
+temp=""
 if [ -z $NAGIOS_BIN ];then
     NAGIOS_BIN="$INSTALL_DIR_NAGIOS/bin"
     $ECHO "Where is your nagios bin directory?"
@@ -297,6 +317,7 @@ if [ -z $NAGIOS_BIN ];then
 		temp="$NAGIOS_BIN"
     fi
     while [ ! -x "${temp}/nagios" ]; do
+	    temp=""
 		echo_passed "Cannot find ${temp}/nagios" "CRITICAL"
 		$ECHO "Where is your nagios bin directory?"
 		$ECHO -n "default to [$NAGIOS_BIN]:"
@@ -310,6 +331,7 @@ if [ -z $NAGIOS_BIN ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $NAGIOS_IMG ];then
     NAGIOS_IMG=$DEFAULT_NAGIOS_IMG
     $ECHO "Where is your nagios image directory ?"
@@ -319,6 +341,7 @@ if [ -z $NAGIOS_IMG ];then
 		temp="$NAGIOS_IMG"
     fi
     while [ ! -d "$temp" ]; do
+	    temp=""
 		echo_passed "$temp is not a directory." "CRITICAL"
 		$ECHO "Where is your nagios image directory ?"
 		$ECHO -n "    default to [$NAGIOS_IMG]:"
@@ -332,6 +355,7 @@ if [ -z $NAGIOS_IMG ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $SUDO_FILE ];then
     SUDO_FILE="$DEFAULT_SUDO_FILE"
     $ECHO "Where is sudo configuration file?"
@@ -341,6 +365,7 @@ if [ -z $SUDO_FILE ];then
 		temp="$SUDO_FILE"
     fi
     while [ ! -f "$temp" ]; do
+	    temp=""
 		echo_passed "$temp if not a file." "CRITICAL"
 		$ECHO "Where is sudo configuration file?"
 		$ECHO -n "    default to [$SUDO_FILE]:"
@@ -354,6 +379,7 @@ if [ -z $SUDO_FILE ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $RRD_PERL ];then
     RRD_PERL="$DEFAULT_RRD_PERL"
     $ECHO "Where is installed RRD perl modules [RRDs.pm] ?"
@@ -364,6 +390,7 @@ if [ -z $RRD_PERL ];then
 		temp="$RRD_PERL"
     fi
     while [ ! -f "$temp/RRDs.pm" ]; do
+	    temp=""
 		echo_passed "Cannot find ${temp}/RRDs.pm." "CRITICAL"
 		$ECHO "Where is installed RRD perl modules [RRDs.pm] ?"
 		$ECHO "Just put directory, not full path."
@@ -378,6 +405,7 @@ if [ -z $RRD_PERL ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $BIN_RRDTOOL ];then
     BIN_RRDTOOL="$DEFAULT_BIN_RRDTOOL"
     $ECHO "Where is rrdtool binary ?"
@@ -387,6 +415,7 @@ if [ -z $BIN_RRDTOOL ];then
 		temp="$BIN_RRDTOOL"
     fi
     while [ ! -x "$temp" ]; do
+	    temp=""
 		echo_passed "$temp is not found or is not runnable" "CRITICAL"
 		$ECHO "Where is rrdtool binary ?"
 		$ECHO -n "default to [$BIN_RRDTOOL]:"
@@ -400,6 +429,7 @@ if [ -z $BIN_RRDTOOL ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $BIN_MAIL ];then
     BIN_MAIL="$DEFAULT_BIN_MAIL"
     $ECHO "Where is mail binary ?"
@@ -409,6 +439,7 @@ if [ -z $BIN_MAIL ];then
     	temp="$BIN_MAIL"
     fi
     while [ ! -x "$temp" ]; do
+	    temp=""
 		echo_passed "$temp not found or not runnable" "CRITICAL"
 		$ECHO "Where is mail binary ?"
 		$ECHO -n " default to [$BIN_MAIL]:"
@@ -422,6 +453,7 @@ if [ -z $BIN_MAIL ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $INSTALL_DIR_CENTREON ];then
     INSTALL_DIR_CENTREON="$DEFAULT_INSTALL_DIR_CENTREON"
     $ECHO "Where do I install centreon ?"
@@ -449,6 +481,7 @@ if [ -z $INSTALL_DIR_CENTREON ];then
 		if [ $create_oreon = "y" ] || [ $create_oreon = "Y" ]; then
 		    mkdir -p $temp
 		    if [ $? = 1 ]; then
+			    temp=""
 				echo_passed "Could not create directory" "CRITICAL"
 				$ECHO ""
 				$ECHO "Where do I install Centreon ?"
@@ -459,6 +492,7 @@ if [ -z $INSTALL_DIR_CENTREON ];then
 				fi
 		    fi
 		else
+			temp=""
 		    $ECHO "Where do I install Centreon ?"
 		    $ECHO -n "    default to [$INSTALL_DIR_CENTREON]:"
 		    read temp
@@ -472,6 +506,7 @@ if [ -z $INSTALL_DIR_CENTREON ];then
     $ECHO ""
 fi
 
+temp=""
 if [ -z $PEAR_PATH ];then
     PEAR_PATH=$DEFAULT_PEAR_PATH
 	$ECHO "Where is PEAR Path ?"
@@ -481,6 +516,7 @@ if [ -z $PEAR_PATH ];then
 	PEAR_PATH=${PEAR_PATH%/}
 	while [ ! -f "${PEAR_PATH}/PEAR.php" ]
 	do 
+		temp=""
 		echo_passed "${PEAR_PATH}/PEAR.php not found" "CRITICAL"
 		$ECHO "Where is PEAR Path ?"
 		PEAR_PATH="/usr/share/pear"
@@ -502,14 +538,14 @@ function installCentreon(){
 	$ECHO ""
 	$ECHO ""
 	
-	if test -d $TMPDIR/filesGeneration/nagiosCFG ; then
+	if [ -d $TMPDIR/filesGeneration/nagiosCFG ] ; then
 		echo_passed "$TMPDIR/filesGeneration/nagiosCFG already exists" "PASSED"
     else
 		echo_success "Creating '$TMPDIR/filesGeneration/nagiosCFG'" "OK"
 		$MKDIR $TMPDIR/filesGeneration/nagiosCFG
     fi
 
-	if test -d $TMPDIR/filesUpload/nagiosCFG ; then
+	if [ -d $TMPDIR/filesUpload/nagiosCFG ] ; then
 		echo_passed "$TMPDIR/filesUpload/nagiosCFG already exists" "PASSED"
     else
 		echo_success "Creating '$TMPDIR/filesUpload/nagiosCFG'" "OK"
@@ -537,7 +573,7 @@ function installCentreon(){
     $CHMOD 775 $TMPDIR/log 2>&1 >> $LOG_FILE
     $CHOWN $WEB_USER:$NAGIOS_GROUP $TMPDIR/log 2>&1 >> $LOG_FILE
 
-    # A enlever si WaTT fait un truc sp�cial pour le remplacer...
+    # A enlever si WaTT fait un truc spcial pour le remplacer...
     $CHMOD 775 $NAGIOS_ETC 2>&1 >> $LOG_FILE
     $CHOWN -R $WEB_USER:$NAGIOS_GROUP $NAGIOS_ETC 2>&1 >> $LOG_FILE
 
@@ -559,7 +595,7 @@ function installCentreon(){
 	
 	for directory in "bin" "cron" "doc" "etc" "filesGeneration" "filesUpload" "GPL_LIB" "lib" "log" "var" "temp" "www" 
 		do
-	  	if test -d $directory ; then
+	  	if [ -d $directory ] ; then
 			$FIND $TMPDIR/$directory/ -name "*.php" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
 			$FIND $TMPDIR/$directory/ -name "*.ihtml" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
 			$FIND $TMPDIR/$directory/ -name "*.html" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
@@ -590,6 +626,7 @@ function prepareTraps(){
 	`$SED -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g'  "$TMPDIR/bin/centTrapHandler" > "$TMPDIR/bin/centTrapHandler-new"`
 	$MV $TMPDIR/bin/centTrapHandler-new $TMPDIR/bin/centTrapHandler 2>&1 >> $LOG_FILE
 	
+	tmp=""
 	$ECHO "";
 	$ECHO "Where is your SNMP configuration file ?";
 	$ECHO -n "    default to [/etc/snmp/]:";
@@ -687,7 +724,7 @@ function installCentstorage(){
     $ECHO ""
     
     $ECHO "Checking Centstorage data folder : "
-    if test -d /var/lib/centreon ; then
+    if [ -d /var/lib/centreon ] ; then
 		echo_passed "Centstorage Directory already exists" "OK"
     else
 		$MKDIR /var/lib/centreon/ 2>&1 >> $LOG_FILE
@@ -698,7 +735,7 @@ function installCentstorage(){
     fi
     
     $ECHO "Checking ODS database folder : "
-    if test -d /var/lib/centreon/database/ ; then
+    if [ -d /var/lib/centreon/database/ ] ; then
 		echo_passed "Centreon Directory already exists" "PASSED"
     else
 		$MKDIR /var/lib/centreon/database/ >> $LOG_FILE 2>> $LOG_FILE
@@ -803,6 +840,7 @@ function configCron(){
 
 function removeTmpFiles(){
 	$SETCOLOR_NORMAL
+	temp=""
 	$ECHO ""
 	$ECHO "Do you want to remove temporary file ?"
 	$ECHO -n "    [y/n], default to [n] : "
@@ -810,6 +848,7 @@ function removeTmpFiles(){
 	if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ] ;then
 	    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z "$temp" ]
 	      do
+	      temp=""
 	      $ECHO "Do you want to remove temporary file ?"
 	      $ECHO -n "    [y/n], default to [n] : "
 	      read temp
