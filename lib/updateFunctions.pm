@@ -73,17 +73,10 @@ sub updateRrdDB($$$$$$$$){ # Path metric_id value timestamp interval type
 			undef($sth2);
 			$nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 			$_[6] =~ s/#S#/slash\_/g;
-			RRDs::create ($_[0].$_[1].".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($_[6], 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$nb_value, "RRA:MIN:0.5:12:".$nb_value, "RRA:MAX:0.5:12:".$nb_value);
-			$ERR = RRDs::error;
-			if ($ERR) {
-				writeLogFile("ERROR while creating $_[0]$_[1].rrd : $ERR\n") ;
-			} else {
-				writeLogFile("Creating $_[0]$_[1].rrd -b $begin, -s $interval, DS:".substr($_[6], 0, 19).":GAUGE:$interval:U:U RRA:AVERAGE:0.5:1:$nb_value RRA:MIN:0.5:12:$nb_value RRA:MAX:0.5:12:$nb_value\n");
-			}
-			RRDs::tune($_[0].$_[1].".rrd", "-h", substr($_[6], 0, 19).":".$interval_hb);
-			$ERR = RRDs::error;
-			if ($ERR){writeLogFile("ERROR while tunning operation on ".$_[0].$_[1].".rrd : $ERR\n");}
 
+			createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value);
+			tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
+						
 			$_[3] =~ s/\,/\./g;
 			RRDs::update ($_[0].$_[1].".rrd" , "--template", substr($_[6], 0, 19), $_[2].":".sprintf("%e", $_[3]));
 			$ERR = RRDs::error;

@@ -35,8 +35,8 @@ use File::Copy;
 #my $installedPath = "@CENTREON_PATH@/ODS/";
 my $installedPath = "/usr/local/centreon/";
 
-my $LOG = $installedPath."var/ods.log";
-my $PID = $installedPath."var/ods.pid";
+my $LOG = $installedPath."var/centstorage.log";
+my $PID = $installedPath."var/centstorage.pid";
 
 # Init Globals
 use vars qw($debug $LOG %status $generalcounter);
@@ -374,9 +374,9 @@ sub replaceMetricSpecialChar($){
 	return $metric_name;
 }
 
-sub createRRDDatabase($$$$$$$){
+sub createRRDDatabase($$$$$$){
 	my ($ERR, $RRDdatabase_path, $metric_id, $begin, $metric_name, $interval, $my_len_storage_rrd);
-	($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $interval, $my_len_storage_rrd) = @_;
+	($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd) = @_;
 	RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric_name, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
 	$ERR = RRDs::error;
 	if ($ERR) {writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");}
@@ -470,7 +470,7 @@ sub CheckRebuild(){
 						removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
 						
 						# Create DB
-						createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $interval, $my_len_storage_rrd);
+						createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd);
 						tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
 						
 						undef($begin);
@@ -517,6 +517,11 @@ my $timeParser = time();
 my $timePurge = time();
 my $timeSynchro = time();
 my $timeRebuild = time();
+
+my $flagParser = 0;
+my $flagPurge = 0;
+my $flagSynchro = 0;
+my $flagRebuild = 0;
 
 $stop = 0;
 
