@@ -446,8 +446,8 @@ For information : contact@oreon-project.org
 	function getMyServiceExtendedInfoField($service_id = NULL, $field)	{
 		if (!$service_id) return;
 		global $pearDB;
-		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT esi.".$field.", sv.service_template_model_stm_id FROM service sv, extended_service_information esi WHERE esi.service_service_id = '".$service_id."' AND sv.service_id = '".$service_id."' LIMIT 1");
+		while(1) {
+			$DBRESULT =& $pearDB->query("SELECT `extended_service_information`.`".$field."`, `service`.`service_template_model_stm_id` FROM `service`, `extended_service_information` WHERE `extended_service_information`.`service_service_id` = '".$service_id."' AND `service`.`service_id` = '".$service_id."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$row =& $DBRESULT->fetchRow();
