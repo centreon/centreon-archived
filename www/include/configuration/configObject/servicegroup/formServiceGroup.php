@@ -114,50 +114,50 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["sg_add"]);
+		$form->addElement('header', 'title', _("Add a ServiceGroup"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["sg_change"]);
+		$form->addElement('header', 'title', _("Modify a ServiceGroup"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["sg_view"]);
+		$form->addElement('header', 'title', _("View a ServiceGroup"));
 
 	#
 	## Contact basic information
 	#
-	$form->addElement('header', 'information', $lang['sg_infos']);
-	$form->addElement('text', 'sg_name', $lang["sg_name"], $attrsText);
-	$form->addElement('text', 'sg_alias', $lang["sg_alias"], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'sg_name', _("ServiceGroup Name"), $attrsText);
+	$form->addElement('text', 'sg_alias', _("Alias"), $attrsText);
 	
 	##
 	## Services Selection
 	##
-	$form->addElement('header', 'relation', $lang['sg_links']);
-    $ams1 =& $form->addElement('advmultiselect', 'sg_hServices', $lang['sg_hostServiceMembers'], $hServices, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$form->addElement('header', 'relation', _("Relations"));
+    $ams1 =& $form->addElement('advmultiselect', 'sg_hServices', _("Host Services linked"), $hServices, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
-	$form->addElement('header', 'relation', $lang['sg_links']);
-    $ams1 =& $form->addElement('advmultiselect', 'sg_hgServices', $lang['sg_hostGroupServiceMembers'], $hgServices, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$form->addElement('header', 'relation', _("Relations"));
+    $ams1 =& $form->addElement('advmultiselect', 'sg_hgServices', _("Linked Host Group Services"), $hgServices, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 		
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$sgActivation[] = &HTML_QuickForm::createElement('radio', 'sg_activate', null, $lang["enable"], '1');
-	$sgActivation[] = &HTML_QuickForm::createElement('radio', 'sg_activate', null, $lang["disable"], '0');
-	$form->addGroup($sgActivation, 'sg_activate', $lang["status"], '&nbsp;');
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$sgActivation[] = &HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Enabled"), '1');
+	$sgActivation[] = &HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Disabled"), '0');
+	$form->addGroup($sgActivation, 'sg_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('sg_activate' => '1'));
-	$form->addElement('textarea', 'sg_comment', $lang["comment"], $attrsTextarea);
+	$form->addElement('textarea', 'sg_comment', _("Comments"), $attrsTextarea);
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');	
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');	
 	$form->setDefaults(array('action' => '1'));
 	
 	$form->addElement('hidden', 'sg_id');
@@ -174,11 +174,11 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('sg_name', 'myReplace');
-	$form->addRule('sg_name', $lang['ErrName'], 'required');
-	$form->addRule('sg_alias', $lang['ErrAlias'], 'required');
+	$form->addRule('sg_name', _("Compulsory Name"), 'required');
+	$form->addRule('sg_alias', _("Compulsory Alias"), 'required');
 	$form->registerRule('exist', 'callback', 'testServiceGroupExistence');
-	$form->addRule('sg_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('sg_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	# 
 	##End of form definition
@@ -190,20 +190,20 @@ For information : contact@oreon-project.org
 	
 	# Just watch a Service Group information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sg_id."'"));
 	    $form->setDefaults($sg);
 		$form->freeze();
 	}
 	# Modify a Service Group information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($sg);
 	}
 	# Add a Service Group information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('nagios', $oreon->user->get_version());
@@ -216,7 +216,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateServiceGroupInDB($sgObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sgObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sg_id=".$sgObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

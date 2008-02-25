@@ -77,23 +77,23 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["dep_add"]);
+		$form->addElement('header', 'title', _("Add a Dependency"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["dep_change"]);
+		$form->addElement('header', 'title', _("Modify a Dependency"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["dep_view"]);
+		$form->addElement('header', 'title', _("View a Dependency"));
 
 	#
 	## Dependency basic information
 	#
-	$form->addElement('header', 'information', $lang['dep_infos']);
-	$form->addElement('text', 'dep_name', $lang["dep_name"], $attrsText);
-	$form->addElement('text', 'dep_description', $lang["dep_description"], $attrsText);
+	$form->addElement('header', 'information', _("Information"));
+	$form->addElement('text', 'dep_name', _("Name"), $attrsText);
+	$form->addElement('text', 'dep_description', _("Description"), $attrsText);
 	if ($oreon->user->get_version() == 2)	{
 		$tab = array();
-		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, $lang['yes'], '1');
-		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, $lang['no'], '0');
-		$form->addGroup($tab, 'inherits_parent', $lang["dep_inheritsP"], '&nbsp;');
+		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
+		$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
+		$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
 	}
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok');
@@ -103,7 +103,7 @@ For information : contact@oreon-project.org
 	if ($oreon->user->get_version() == 2)
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
-	$form->addGroup($tab, 'notification_failure_criteria', $lang["dep_notifFC"], '&nbsp;&nbsp;');
+	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok');
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
@@ -112,26 +112,26 @@ For information : contact@oreon-project.org
 	if ($oreon->user->get_version() == 2)
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', 'Pending');
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', 'None');
-	$form->addGroup($tab, 'execution_failure_criteria', $lang["dep_exeFC"], '&nbsp;&nbsp;');
+	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_msParents', $lang['dep_msPar'], $metas, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams1 =& $form->addElement('advmultiselect', 'dep_msParents', _("Meta Services Name"), $metas, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-    $ams1 =& $form->addElement('advmultiselect', 'dep_msChilds', $lang['dep_msChi'], $metas, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'dep_msChilds', _("Dependent Meta Services Name"), $metas, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$form->addElement('textarea', 'dep_comment', $lang["dep_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'dep_id');
@@ -142,15 +142,15 @@ For information : contact@oreon-project.org
 	## Form Rules
 	#
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('dep_name', $lang['ErrName'], 'required');
-	$form->addRule('dep_description', $lang['ErrRequired'], 'required');
-	$form->addRule('dep_msParents', $lang['ErrRequired'], 'required');
-	$form->addRule('dep_msChilds', $lang['ErrRequired'], 'required');
+	$form->addRule('dep_name', _("Compulsory Name"), 'required');
+	$form->addRule('dep_description', _("Required Field"), 'required');
+	$form->addRule('dep_msParents', _("Required Field"), 'required');
+	$form->addRule('dep_msChilds', _("Required Field"), 'required');
 	$form->registerRule('cycle', 'callback', 'testCycle');
-	$form->addRule('dep_msChilds', $lang['ErrCycleDef'], 'cycle');
+	$form->addRule('dep_msChilds', _("Circular Definition"), 'cycle');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('dep_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('dep_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -162,20 +162,20 @@ For information : contact@oreon-project.org
 
 	# Just watch a Dependency information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$dep_id."'"));
 	    $form->setDefaults($dep);
 		$form->freeze();
 	}
 	# Modify a Dependency information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($dep);
 	}
 	# Add a Dependency information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	$tpl->assign("nagios", $oreon->user->get_version());
 
@@ -187,7 +187,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateMetaServiceDependencyInDB($depObj->getValue("dep_id"));
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$depObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dep_id=".$depObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

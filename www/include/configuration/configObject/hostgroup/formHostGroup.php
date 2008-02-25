@@ -83,57 +83,57 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["hg_add"]);
+		$form->addElement('header', 'title', _("Add a HostGroup"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["hg_change"]);
+		$form->addElement('header', 'title', _("Modify a HostGroup"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["hg_view"]);
+		$form->addElement('header', 'title', _("View a HostGroup"));
 
 	#
 	## Contact basic information
 	#
-	$form->addElement('header', 'information', $lang['hg_infos']);
-	$form->addElement('text', 'hg_name', $lang["hg_name"], $attrsText);
-	$form->addElement('text', 'hg_alias', $lang["hg_alias"], $attrsText);
-	$form->addElement('select', 'hg_snmp_version', $lang['h_snmpVer'], array(0=>null, 1=>"1", 2=>"2c", 3=>"3"));
-	$form->addElement('text', 'hg_snmp_community', $lang['h_snmpCom'], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'hg_name', _("HostGroup Name"), $attrsText);
+	$form->addElement('text', 'hg_alias', _("Alias"), $attrsText);
+	$form->addElement('select', 'hg_snmp_version', _("Version"), array(0=>null, 1=>"1", 2=>"2c", 3=>"3"));
+	$form->addElement('text', 'hg_snmp_community', _("SNMP Community"), $attrsText);
 	
 	##
 	## Hosts Selection
 	##
-	$form->addElement('header', 'relation', $lang['hg_links']);
+	$form->addElement('header', 'relation', _("Relations"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'hg_hosts', $lang['hg_HostMembers'], $hosts, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'hg_hosts', _("Linked Hosts"), $hosts, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	##
 	## Contact Groups Selection
 	##
-	$form->addElement('header', 'notification', $lang['hg_notif']);
+	$form->addElement('header', 'notification', _("Notification"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'hg_cgs', $lang['hg_CgMembers'], $cgs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'hg_cgs', _("Linked ContactGroups"), $cgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$hgActivation[] = &HTML_QuickForm::createElement('radio', 'hg_activate', null, $lang["enable"], '1');
-	$hgActivation[] = &HTML_QuickForm::createElement('radio', 'hg_activate', null, $lang["disable"], '0');
-	$form->addGroup($hgActivation, 'hg_activate', $lang["status"], '&nbsp;');
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$hgActivation[] = &HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Enabled"), '1');
+	$hgActivation[] = &HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Disabled"), '0');
+	$form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('hg_activate' => '1'));
-	$form->addElement('textarea', 'hg_comment', $lang["comment"], $attrsTextarea);
+	$form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 	
 	$form->addElement('hidden', 'hg_id');
@@ -150,14 +150,14 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('hg_name', 'myReplace');
-	$form->addRule('hg_name', $lang['ErrName'], 'required');
-	$form->addRule('hg_alias', $lang['ErrAlias'], 'required');
+	$form->addRule('hg_name', _("Compulsory Name"), 'required');
+	$form->addRule('hg_alias', _("Compulsory Alias"), 'required');
 	//$form->addRule('hg_hosts', $lang['ErrCct'], 'required');
 	if ($oreon->user->get_version() == 1)
-		$form->addRule('hg_cgs', $lang['ErrCg'], 'required');
+		$form->addRule('hg_cgs', _("Compulsory Contact Group"), 'required');
 	$form->registerRule('exist', 'callback', 'testHostGroupExistence');
-	$form->addRule('hg_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('hg_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	# 
 	##End of form definition
@@ -169,20 +169,20 @@ For information : contact@oreon-project.org
 	
 	# Just watch a HostGroup information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hg_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hg_id."'"));
 	    $form->setDefaults($hg);
 		$form->freeze();
 	}
 	# Modify a HostGroup information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($hg);
 	}
 	# Add a HostGroup information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$tpl->assign('p', $p);
@@ -202,7 +202,7 @@ For information : contact@oreon-project.org
 			updateHostGroupInDB($hgObj->getValue());
 		$o = NULL;
 		$hgObj =& $form->getElement('hg_id');
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hgObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hgObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

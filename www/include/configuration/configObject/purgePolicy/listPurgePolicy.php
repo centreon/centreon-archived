@@ -42,14 +42,14 @@ For information : contact@oreon-project.org
 
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['description']);
-	$tpl->assign("headerMenu_raw", $lang["mod_purgePolicy_listRaw"]);
-	$tpl->assign("headerMenu_bin", $lang["mod_purgePolicy_listBin"]);
-	$tpl->assign("headerMenu_metric", $lang["mod_purgePolicy_listMetric"]);
-	$tpl->assign("headerMenu_service", $lang["mod_purgePolicy_listService"]);
-	$tpl->assign("headerMenu_host", $lang["mod_purgePolicy_listHost"]);
-	$tpl->assign("headerMenu_options", $lang['options']);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_desc", _("Description"));
+	$tpl->assign("headerMenu_raw", _("Raw"));
+	$tpl->assign("headerMenu_bin", _("Bin"));
+	$tpl->assign("headerMenu_metric", _("Metric"));
+	$tpl->assign("headerMenu_service", _("Service"));
+	$tpl->assign("headerMenu_host", _("Host"));
+	$tpl->assign("headerMenu_options", _("Options"));
 	# end header menu
 	#Contact list
 	if ($search)
@@ -67,9 +67,9 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($purgePolicy); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$purgePolicy['purge_policy_id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='".$lang['view']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='".$lang['modify']."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=d&select[".$purgePolicy['purge_policy_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('".$lang['confirm_removing']."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='".$lang['delete']."'></a>&nbsp;&nbsp;";
+		$moptions = "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=d&select[".$purgePolicy['purge_policy_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$purgePolicy['purge_policy_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
 	#Different messages we put in the template
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	
 	#
 	##Toolbar select $lang["lgd_more_actions"]
@@ -100,26 +100,26 @@ For information : contact@oreon-project.org
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');

@@ -28,26 +28,26 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p );
-	$form->addElement('header', 'title',$lang['cct_ldap_search']);
+	$form->addElement('header', 'title',_("Search Options"));
 
 	#
 	## Command information
 	#
-	$form->addElement('header', 'options', $lang['cct_ldap_search_options']);
-	$form->addElement('text', 'ldap_search_filter', $lang['cct_ldap_search_filter'], $attrsText );
-	$form->addElement('text', 'ldap_base_dn', $lang["genOpt_ldap_base_dn"], $attrsText);
-	$form->addElement('text', 'ldap_search_timeout', $lang["genOpt_ldap_search_timeout"], $attrsText2);
-	$form->addElement('text', 'ldap_search_limit', $lang["genOpt_ldap_search_limit"], $attrsText2);
-	$form->addElement('header', 'result', $lang['cct_ldap_search_result']);
-	$form->addElement('header', 'ldap_search_result_output', $lang["cct_ldap_search_result_output"]);
+	$form->addElement('header', 'options', _("Search Options"));
+	$form->addElement('text', 'ldap_search_filter', _("Search Filter"), $attrsText );
+	$form->addElement('text', 'ldap_base_dn', _("LDAP Base DN"), $attrsText);
+	$form->addElement('text', 'ldap_search_timeout', _("LDAP search timeout"), $attrsText2);
+	$form->addElement('text', 'ldap_search_limit', _("LDAP Search Size Limit"), $attrsText2);
+	$form->addElement('header', 'result', _("Search Result"));
+	$form->addElement('header', 'ldap_search_result_output', _("Result"));
 
 	$link = "LdapSearch()";
-	$form->addElement("button", "ldap_search_button", $lang['cct_ldap_search'], array("onClick"=>$link));
+	$form->addElement("button", "ldap_search_button", _("Search"), array("onClick"=>$link));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'contact_id');
@@ -58,13 +58,13 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$tpl->assign('ldap_search_filter_help', $lang["cct_ldap_search_filter_help"]);
-	$tpl->assign('ldap_search_filter_help_title', $lang["cct_ldap_search_filter_help_title"]);
+	$tpl->assign('ldap_search_filter_help', _("Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))"));
+	$tpl->assign('ldap_search_filter_help_title', _("Filter Examples"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/ajaxLdapSearch.js"></script>');
 
 	# Just watch a contact information
 	if ($o == "li")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang['cct_ldap_import_users']);
+		$subA =& $form->addElement('submit', 'submitA', _("Import"));
 		$form->setDefaults($ldap_auth);
 	}
 

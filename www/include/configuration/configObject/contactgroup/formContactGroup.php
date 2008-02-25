@@ -60,38 +60,38 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["cg_add"]);
+		$form->addElement('header', 'title', _("Add a Contact Group"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["cg_change"]);
+		$form->addElement('header', 'title', _("Modify a Contact Group"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["cg_view"]);
+		$form->addElement('header', 'title', _("View a Contact Group"));
 
 	# Contact basic information
-	$form->addElement('header', 'information', $lang['cg_infos']);
-	$form->addElement('text', 'cg_name', $lang["cg_name"], $attrsText);
-	$form->addElement('text', 'cg_alias', $lang["cg_alias"], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'cg_name', _("Contact Group Name"), $attrsText);
+	$form->addElement('text', 'cg_alias', _("Alias"), $attrsText);
 	
 	# Contacts Selection
-	$form->addElement('header', 'notification', $lang['hg_links']);
+	$form->addElement('header', 'notification', _("Relations"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'cg_contacts', $lang["cg_members"], $contacts, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'cg_contacts', _("Linked Contacts"), $contacts, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	# Further informations
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, $lang["enable"], '1');
-	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, $lang["disable"], '0');
-	$form->addGroup($cgActivation, 'cg_activate', $lang["status"], '&nbsp;');
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, _("Enabled"), '1');
+	$cgActivation[] = &HTML_QuickForm::createElement('radio', 'cg_activate', null, _("Disabled"), '0');
+	$form->addGroup($cgActivation, 'cg_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('cg_activate' => '1'));
-	$form->addElement('textarea', 'cg_comment', $lang["comment"], $attrsTextarea);
+	$form->addElement('textarea', 'cg_comment', _("Comments"), $attrsTextarea);
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');	
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');	
 	$form->setDefaults(array('action' => '1'));
 	
 	$form->addElement('hidden', 'cg_id');
@@ -107,11 +107,11 @@ For information : contact@oreon-project.org
 
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('cg_name', 'myReplace');
-	$form->addRule('cg_name', $lang['ErrName'], 'required');
-	$form->addRule('cg_alias', $lang['ErrAlias'], 'required');
+	$form->addRule('cg_name', _("Compulsory Name"), 'required');
+	$form->addRule('cg_alias', _("Compulsory Alias"), 'required');
 	$form->registerRule('exist', 'callback', 'testContactGroupExistence');
-	$form->addRule('cg_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('cg_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	# End of form definition
 
@@ -121,20 +121,20 @@ For information : contact@oreon-project.org
 	
 	# Just watch a Contact Group information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cg_id."'"));
 	    $form->setDefaults($cg);
 		$form->freeze();
 	}
 	# Modify a Contact Group information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cg);
 	}
 	# Add a Contact Group information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;
@@ -145,7 +145,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateContactGroupInDB($cgObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cgObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&cg_id=".$cgObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

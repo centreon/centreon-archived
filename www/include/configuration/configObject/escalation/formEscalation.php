@@ -176,102 +176,102 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["esc_add"]);
+		$form->addElement('header', 'title', _("Add an Escalation"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["esc_change"]);
+		$form->addElement('header', 'title', _("Modify an Escalation"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["esc_view"]);
+		$form->addElement('header', 'title', _("View an Escalation"));
 
 	#
 	## Escalation basic information
 	#
-	$form->addElement('header', 'information', $lang['esc_infos']);
-	$form->addElement('text', 'esc_name', $lang["esc_name"], $attrsText);
-	$form->addElement('text', 'esc_alias', $lang["alias"], $attrsText);
-	$form->addElement('text', 'first_notification', $lang["esc_firstNotif"], $attrsText2);
-	$form->addElement('text', 'last_notification', $lang["esc_lastNotif"], $attrsText2);
-	$form->addElement('text', 'notification_interval', $lang["esc_notifInt"], $attrsText2);
+	$form->addElement('header', 'information', _("Information"));
+	$form->addElement('text', 'esc_name', _("Escalation Name"), $attrsText);
+	$form->addElement('text', 'esc_alias', _("Alias"), $attrsText);
+	$form->addElement('text', 'first_notification', _("First Notification"), $attrsText2);
+	$form->addElement('text', 'last_notification', _("Last Notification"), $attrsText2);
+	$form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
 	if ($oreon->user->get_version() == 2)	{
-		$form->addElement('select', 'escalation_period', $lang["esc_escPeriod"], $tps);
+		$form->addElement('select', 'escalation_period', _("Escalation Period"), $tps);
 		$tab = array();
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', 'd');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'u');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'r');
-		$form->addGroup($tab, 'escalation_options1', $lang['esc_hOpt'], '&nbsp;&nbsp;');
+		$form->addGroup($tab, 'escalation_options1', _("Hosts Escalation Options"), '&nbsp;&nbsp;');
 		$tab = array();
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'w');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'u');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'c');
 		$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'r');
-		$form->addGroup($tab, 'escalation_options2', $lang['esc_sOpt'], '&nbsp;&nbsp;');
+		$form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 	}
-	$form->addElement('textarea', 'esc_comment', $lang["esc_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_cgs', $lang['esc_appCG'], $cgs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'esc_cgs', _("Implied Contact Groups"), $cgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	#
 	## Sort 2
 	#
-	$form->addElement('header', 'hosts', $lang['esc_sortHosts']);
+	$form->addElement('header', 'hosts', _("Implied Hosts"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hosts', $lang['h'], $hosts, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'esc_hosts', _("Hosts"), $hosts, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	#
 	## Sort 3
 	#
-	$form->addElement('header', 'services', $lang['esc_sortSv']);
+	$form->addElement('header', 'services', _("Implied Services"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hServices', $lang['esc_hostServiceMembers'], $hServices, $attrsAdvSelect2);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'esc_hServices', _("Services by Hosts"), $hServices, $attrsAdvSelect2);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	#
 	## Sort 4
 	#
-	$form->addElement('header', 'hgs', $lang['esc_sortHg']);
+	$form->addElement('header', 'hgs', _("Implied HostGroups"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_hgs', $lang['hg'], $hgs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'esc_hgs', _("HostGroup"), $hgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	#
 	## Sort 5
 	#
-	$form->addElement('header', 'metas', $lang['esc_sortMs']);
+	$form->addElement('header', 'metas', _("Implied Meta Services"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_metas', $lang['ms'], $metas, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'esc_metas', _("Meta Service"), $metas, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	
 	#
 	## Sort 6
 	#
-	$form->addElement('header', 'sgs', $lang['esc_sortSg']);
+	$form->addElement('header', 'sgs', _("Implied Servicegroups"));
 	
-    $ams1 =& $form->addElement('advmultiselect', 'esc_sgs', $lang['sg'], $sgs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams1 =& $form->addElement('advmultiselect', 'esc_sgs', _("ServiceGroup"), $sgs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 	
 	$form->addElement('hidden', 'esc_id');
@@ -282,15 +282,15 @@ For information : contact@oreon-project.org
 	## Form Rules
 	#
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('esc_name', $lang['ErrName'], 'required');
-	$form->addRule('first_notification', $lang['ErrRequired'], 'required');
-	$form->addRule('last_notification', $lang['ErrRequired'], 'required');
-	$form->addRule('notification_interval', $lang['ErrRequired'], 'required');
-	$form->addRule('esc_cgs', $lang['ErrRequired'], 'required');
-	$form->addRule('dep_hostChilds', $lang['ErrRequired'], 'required');
+	$form->addRule('esc_name', _("Compulsory Name"), 'required');
+	$form->addRule('first_notification', _("Required Field"), 'required');
+	$form->addRule('last_notification', _("Required Field"), 'required');
+	$form->addRule('notification_interval', _("Required Field"), 'required');
+	$form->addRule('esc_cgs', _("Required Field"), 'required');
+	$form->addRule('dep_hostChilds', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('esc_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('esc_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 	
 	# 
 	##End of form definition
@@ -302,31 +302,31 @@ For information : contact@oreon-project.org
 		
 	# Just watch a Escalation information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$esc_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$esc_id."'"));
 	    $form->setDefaults($esc);
 		$form->freeze();
 	}
 	# Modify a Escalation information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($esc);
 	}
 	# Add a Escalation information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	$tpl->assign("nagios", $oreon->user->get_version());
 	
-	$tpl->assign("sort1", $lang['esc_infos']);
-	$tpl->assign("sort2", $lang['esc_sort2']);
-	$tpl->assign("sort3", $lang['esc_sort3']);
-	$tpl->assign("sort4", $lang['esc_sort4']);
-	$tpl->assign("sort5", $lang['esc_sort5']);
-	$tpl->assign("sort6", $lang['esc_sort6']);
+	$tpl->assign("sort1", _("Information"));
+	$tpl->assign("sort2", _("Hosts Escalation"));
+	$tpl->assign("sort3", _("Services Escalation"));
+	$tpl->assign("sort4", _("Hostgroups Escalation"));
+	$tpl->assign("sort5", _("Meta Services Escalation"));
+	$tpl->assign("sort6", _("Servicegroups Escalation"));
 	
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
+	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
 	
 	$valid = false;
 	if ($form->validate())	{
@@ -336,7 +336,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateEscalationInDB($escObj->getValue("esc_id"));
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$escObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&esc_id=".$escObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

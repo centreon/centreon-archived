@@ -213,102 +213,102 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["stm_add"]);
+		$form->addElement('header', 'title', _("Add a Service Template Model"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["stm_change"]);
+		$form->addElement('header', 'title', _("Modify a Service Template Model"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["stm_view"]);
+		$form->addElement('header', 'title', _("View a Service Template Model"));
 	else if ($o == "mc")
-		$form->addElement('header', 'title', $lang["mchange"]);
+		$form->addElement('header', 'title', _("Massive Change"));
 
 	#
 	## Service basic information
 	#
-	$form->addElement('header', 'information', $lang['sv_infos']);
+	$form->addElement('header', 'information', _("General Information"));
 
 	if ($o != "mc")
-		$form->addElement('text', 'service_description', $lang["sv_description"], $attrsText);
-	$form->addElement('text', 'service_alias', $lang["sv_alias"], $attrsText);
-	$form->addElement('header', 'service_alias_interest', $lang["sv_alias_interest"], $attrsText);
+		$form->addElement('text', 'service_description', $_("Description"), $attrsText);
+	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
+	$form->addElement('header', 'service_alias_interest', _("Used for Service duplication"), $attrsText);
 
-	$form->addElement('select', 'service_template_model_stm_id', $lang['stm_template'], $svTpls);
-	$form->addElement('static', 'tplText', $lang['stm_templateText']);
+	$form->addElement('select', 'service_template_model_stm_id', _("Template Service Model"), $svTpls);
+	$form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
 
-    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_tplt_hPars'], $hosts, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked to host templates "), $hosts, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
 	#
 	## Check information
 	#
-	$form->addElement('header', 'check', $lang['sv_head_state']);
+	$form->addElement('header', 'check', _("Service State"));
 
-	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, $lang["yes"], '1');
-	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, $lang["no"], '0');
-	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, $lang["nothing"], '2');
-	$form->addGroup($serviceIV, 'service_is_volatile', $lang['sv_isVolatile'], '&nbsp;');
+	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("Yes"), '1');
+	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("No"), '0');
+	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("Default"), '2');
+	$form->addGroup($serviceIV, 'service_is_volatile', _("Is volatile"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_is_volatile' => '2'));
 
-	$form->addElement('select', 'command_command_id', $lang['sv_checkCmd'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
-	$form->addElement('text', 'command_command_id_arg', $lang['sv_args'], $attrsText);
-	$form->addElement('text', 'service_max_check_attempts', $lang['sv_checkMca'], $attrsText2);
-	$form->addElement('text', 'service_normal_check_interval', $lang['sv_normalCheckInterval'], $attrsText2);
-	$form->addElement('text', 'service_retry_check_interval', $lang['sv_retryCheckInterval'], $attrsText2);
+	$form->addElement('select', 'command_command_id', _("Check Command"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id","example1")');
+	$form->addElement('text', 'command_command_id_arg', _("Args"), $attrsText);
+	$form->addElement('text', 'service_max_check_attempts', _("Max Check Attempts"), $attrsText2);
+	$form->addElement('text', 'service_normal_check_interval', _("Normal Check Interval"), $attrsText2);
+	$form->addElement('text', 'service_retry_check_interval', _("Retry Check Interval"), $attrsText2);
 
-	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, $lang["yes"], '1');
-	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, $lang["no"], '0');
-	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, $lang["nothing"], '2');
-	$form->addGroup($serviceEHE, 'service_event_handler_enabled', $lang['sv_eventHandlerE'], '&nbsp;');
+	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("Yes"), '1');
+	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("No"), '0');
+	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("Default"), '2');
+	$form->addGroup($serviceEHE, 'service_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_event_handler_enabled' => '2'));
-	$form->addElement('select', 'command_command_id2', $lang['sv_eventHandler'], $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
-	$form->addElement('text', 'command_command_id_arg2', $lang['sv_args'], $attrsText);
+	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
+	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
-	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, $lang["yes"], '1');
-	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, $lang["no"], '0');
-	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, $lang["nothing"], '2');
-	$form->addGroup($serviceACE, 'service_active_checks_enabled', $lang['sv_activeCE'], '&nbsp;');
+	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Yes"), '1');
+	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("No"), '0');
+	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Default"), '2');
+	$form->addGroup($serviceACE, 'service_active_checks_enabled', _("Active Checks Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_active_checks_enabled' => '2'));
 
-	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, $lang["yes"], '1');
-	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, $lang["no"], '0');
-	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, $lang["nothing"], '2');
-	$form->addGroup($servicePCE, 'service_passive_checks_enabled', $lang['sv_passiveCE'], '&nbsp;');
+	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("Yes"), '1');
+	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("No"), '0');
+	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("Default"), '2');
+	$form->addGroup($servicePCE, 'service_passive_checks_enabled', _("Passive Checks Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_passive_checks_enabled' => '2'));
 
-	$form->addElement('select', 'timeperiod_tp_id', $lang['sv_checkPeriod'], $tps);
+	$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
 
 	##
 	## Notification informations
 	##
-	$form->addElement('header', 'notification', $lang['sv_head_notif']);
-	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, $lang["yes"], '1');
-	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, $lang["no"], '0');
-	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, $lang["nothing"], '2');
-	$form->addGroup($serviceNE, 'service_notifications_enabled', $lang['sv_notifEnabled'], '&nbsp;');
+	$form->addElement('header', 'notification', _("Notification"));
+	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("Yes"), '1');
+	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("No"), '0');
+	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("Default"), '2');
+	$form->addGroup($serviceNE, 'service_notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_notifications_enabled' => '2'));
 	
 	if ($o == "mc")	{
 		$mc_mod_cgs = array();
-		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, $lang['mc_mod_incremental'], '0');
-		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, $lang['mc_mod_replacement'], '1');
-		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', $lang["mc_mod"], '&nbsp;');
+		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Incremental"), '0');
+		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cgs'=>'0'));
 	}
-    $ams3 =& $form->addElement('advmultiselect', 'service_cgs', $lang['sv_CgMembers'], $notifCgs, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams3 =& $form->addElement('advmultiselect', 'service_cgs', _("Implied ContactGroups"), $notifCgs, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
-	$form->addElement('text', 'service_notification_interval', $lang['sv_notifInt'], $attrsText2);
-	$form->addElement('select', 'timeperiod_tp_id2', $lang['sv_notifTp'], $tps);
+	$form->addElement('text', 'service_notification_interval', _("Notification Interval"), $attrsText2);
+	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
 
  	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
@@ -316,63 +316,63 @@ For information : contact@oreon-project.org
 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery');
 	if ($oreon->user->get_version() == 2)
 		$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
-	$form->addGroup($serviceNotifOpt, 'service_notifOpts', $lang['sv_notifOpts'], '&nbsp;&nbsp;');
+	$form->addGroup($serviceNotifOpt, 'service_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
  	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', 'Ok');
 	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
 	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'unknown');
 	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical');
-	$form->addGroup($serviceStalOpt, 'service_stalOpts', $lang['sv_stalOpts'], '&nbsp;&nbsp;');
+	$form->addGroup($serviceStalOpt, 'service_stalOpts', _("Stalking Options"), '&nbsp;&nbsp;');
 
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, $lang["enable"], '1');
-	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, $lang["disable"], '0');
-	$form->addGroup($serviceActivation, 'service_activate', $lang["status"], '&nbsp;');
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, _("Enabled"), '1');
+	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, _("Disabled"), '0');
+	$form->addGroup($serviceActivation, 'service_activate', _("Status"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_activate' => '1'));
-	$form->addElement('textarea', 'service_comment', $lang["cmt_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'service_comment', _("Comments"), $attrsTextarea);
 
 	#
 	## Sort 2 - Service relations
 	#
 	if ($o == "a")
-		$form->addElement('header', 'title2', $lang["sv_Links_add"]);
+		$form->addElement('header', 'title2', _("Add relations"));
 	else if ($o == "c")
-		$form->addElement('header', 'title2', $lang["sv_Links_change"]);
+		$form->addElement('header', 'title2', _("Modify relations"));
 	else if ($o == "w")
-		$form->addElement('header', 'title2', $lang["sv_Links_view"]);
+		$form->addElement('header', 'title2', _("View relations"));
 	else if ($o == "mc")
-		$form->addElement('header', 'title2', $lang["mchange"]);
+		$form->addElement('header', 'title2', _("Massive Change"));
 		
-	$form->addElement('header', 'links', $lang['sv_head_links']);
+	$form->addElement('header', 'links', _("Relations"));
 
  	if ($o == "mc")	{
 		$mc_mod_traps = array();
-		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, $lang['mc_mod_incremental'], '0');
-		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, $lang['mc_mod_replacement'], '1');
-		$form->addGroup($mc_mod_traps, 'mc_mod_traps', $lang["mc_mod"], '&nbsp;');
+		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Incremental"), '0');
+		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
-	$form->addElement('header', 'traps', $lang['gen_trapd']);
-    $ams3 =& $form->addElement('advmultiselect', 'service_traps', $lang['sv_traps'], $traps, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$form->addElement('header', 'traps', _("SNMP Traps"));
+    $ams3 =& $form->addElement('advmultiselect', 'service_traps', _("Service Trap Relation"), $traps, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
 	if ($o == "mc")	{
 		$mc_mod_Pars = array();
-		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, $lang['mc_mod_incremental'], '0');
-		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, $lang['mc_mod_replacement'], '1');
-		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', $lang["mc_mod"], '&nbsp;');
+		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Incremental"), '0');
+		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	} 
-	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', $lang['sv_tplt_hPars'], $hosts, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', _("Linked to host templates "), $hosts, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 	
@@ -383,12 +383,12 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	while($DBRESULT->fetchInto($rmnftr))
 		$mnftr[$rmnftr["id"]] = html_entity_decode($rmnftr["alias"], ENT_QUOTES);
-	$mnftr[""] = "_".$lang["sv_all"]."_";
+	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
 				" 	getTrap(this.form.elements['mnftr'].value); return false; ");
-	$form->addElement('select', 'mnftr', $lang["m_mibs_mnftr"], $mnftr, $attrs2);
+	$form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr, $attrs2);
 	include("./include/configuration/configObject/traps/ajaxTrap_js.php");
 	
 	##
@@ -396,66 +396,66 @@ For information : contact@oreon-project.org
 	##
 	
 	if ($o == "a")
-		$form->addElement('header', 'title3', $lang["h_add_treat"]);
+		$form->addElement('header', 'title3', _("Add Data Processing"));
 	else if ($o == "c")
-		$form->addElement('header', 'title3', $lang["h_modify_treat"]);
+		$form->addElement('header', 'title3', _("Modify Data Processing"));
 	else if ($o == "w")
-		$form->addElement('header', 'title3', $lang["h_view_treat"]);
+		$form->addElement('header', 'title3', _("View Data Processing"));
 	else if ($o == "mc")
-		$form->addElement('header', 'title2', $lang["mchange"]);
+		$form->addElement('header', 'title2', _("Massive Change"));
 	
-	$form->addElement('header', 'treatment', $lang['sv_head_treat']);
+	$form->addElement('header', 'treatment', _("Data Processing"));
 
-	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, $lang["yes"], '1');
-	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, $lang["no"], '0');
-	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, $lang["nothing"], '2');
-	$form->addGroup($servicePC, 'service_parallelize_check', $lang['sv_paraCheck'], '&nbsp;');
+	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, _("Yes"), '1');
+	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, _("No"), '0');
+	$servicePC[] = &HTML_QuickForm::createElement('radio', 'service_parallelize_check', null, _("Default"), '2');
+	$form->addGroup($servicePC, 'service_parallelize_check', _("Parallel Check"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_parallelize_check' => '2'));
 
-	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, $lang["yes"], '1');
-	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, $lang["no"], '0');
-	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, $lang["nothing"], '2');
-	$form->addGroup($serviceOOS, 'service_obsess_over_service', $lang['sv_ObsessOS'], '&nbsp;');
+	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Yes"), '1');
+	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("No"), '0');
+	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Default"), '2');
+	$form->addGroup($serviceOOS, 'service_obsess_over_service', _("Obsess Over Service"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_obsess_over_service' => '2'));
 
-	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, $lang["yes"], '1');
-	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, $lang["no"], '0');
-	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, $lang["nothing"], '2');
-	$form->addGroup($serviceCF, 'service_check_freshness', $lang['sv_checkFreshness'], '&nbsp;');
+	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("Yes"), '1');
+	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("No"), '0');
+	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("Default"), '2');
+	$form->addGroup($serviceCF, 'service_check_freshness', _("Check Freshness"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_check_freshness' => '2'));
 
-	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, $lang["yes"], '1');
-	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, $lang["no"], '0');
-	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, $lang["nothing"], '2');
-	$form->addGroup($serviceFDE, 'service_flap_detection_enabled', $lang['sv_flapDetect'], '&nbsp;');
+	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("Yes"), '1');
+	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("No"), '0');
+	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("Default"), '2');
+	$form->addGroup($serviceFDE, 'service_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_flap_detection_enabled' => '2'));
 
-	$form->addElement('text', 'service_freshness_threshold', $lang['sv_FreshnessThreshold'], $attrsText2);
-	$form->addElement('text', 'service_low_flap_threshold', $lang['sv_lowFT'], $attrsText2);
-	$form->addElement('text', 'service_high_flap_threshold', $lang['sv_highFT'], $attrsText2);
+	$form->addElement('text', 'service_freshness_threshold', _("Freshness Threshold"), $attrsText2);
+	$form->addElement('text', 'service_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
+	$form->addElement('text', 'service_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
-	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, $lang["yes"], '1');
-	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, $lang["no"], '0');
-	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, $lang["nothing"], '2');
-	$form->addGroup($servicePPD, 'service_process_perf_data', $lang['sv_processPD'], '&nbsp;');
+	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Yes"), '1');
+	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("No"), '0');
+	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Default"), '2');
+	$form->addGroup($servicePPD, 'service_process_perf_data', _("Process Perf Data"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_process_perf_data' => '2'));
 
-	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, $lang["yes"], '1');
-	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, $lang["no"], '0');
-	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, $lang["nothing"], '2');
-	$form->addGroup($serviceRSI, 'service_retain_status_information', $lang['sv_retainSI'], '&nbsp;');
+	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Yes"), '1');
+	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("No"), '0');
+	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Default"), '2');
+	$form->addGroup($serviceRSI, 'service_retain_status_information', _("Retain Status Information"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_retain_status_information' => '2'));
 
-	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, $lang["yes"], '1');
-	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, $lang["no"], '0');
-	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, $lang["nothing"], '2');
-	$form->addGroup($serviceRNI, 'service_retain_nonstatus_information', $lang['sv_retainNI'], '&nbsp;');
+	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("Yes"), '1');
+	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("No"), '0');
+	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("Default"), '2');
+	$form->addGroup($serviceRNI, 'service_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_retain_nonstatus_information' => '2'));
 
@@ -463,36 +463,36 @@ For information : contact@oreon-project.org
 	## Sort 4 - Extended Infos
 	#
 	if ($o == "a")
-		$form->addElement('header', 'title4', $lang["sv_ExtInf_add"]);
+		$form->addElement('header', 'title4', _("Add an Extended Info"));
 	else if ($o == "c")
-		$form->addElement('header', 'title4', $lang["sv_ExtInf_change"]);
+		$form->addElement('header', 'title4', _("Modify an Extended Info"));
 	else if ($o == "w")
-		$form->addElement('header', 'title4', $lang["sv_ExtInf_view"]);
+		$form->addElement('header', 'title4', _("View an Extended Info"));
 	else if ($o == "mc")
-		$form->addElement('header', 'title2', $lang["mchange"]);
+		$form->addElement('header', 'title2', _("Massive Change"));
 
-	$form->addElement('header', 'nagios', $lang['h_nagios']);
+	$form->addElement('header', 'nagios', _("Nagios"));
 	if ($oreon->user->get_version() == 2)
-		$form->addElement('text', 'esi_notes', $lang['h_notes'], $attrsText);
-	$form->addElement('text', 'esi_notes_url', $lang['h_notesUrl'], $attrsText);
+		$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
+	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsText);
 	if ($oreon->user->get_version() == 2)
-		$form->addElement('text', 'esi_action_url', $lang['h_actionUrl'], $attrsText);
-	$form->addElement('select', 'esi_icon_image', $lang['h_iconImg'], $extImg, array("onChange"=>"showLogo('esi_icon_image',this.form.elements['esi_icon_image'].value)"));
-	$form->addElement('text', 'esi_icon_image_alt', $lang['h_iconImgAlt'], $attrsText);
+		$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);
+	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('esi_icon_image',this.form.elements['esi_icon_image'].value)"));
+	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
-	$form->addElement('header', 'oreon', $lang['sv_oreon']);
-	$form->addElement('select', 'graph_id', $lang['sv_graphTpl'], $graphTpls);
+	$form->addElement('header', 'oreon', _("Centreon"));
+	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
 
-	$ams3 =& $form->addElement('advmultiselect', 'service_categories', $lang['m_categories'], $service_categories, $attrsAdvSelect_small);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$ams3 =& $form->addElement('advmultiselect', 'service_categories', _("Categories"), $service_categories, $attrsAdvSelect_small);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'service_id');
@@ -525,10 +525,10 @@ For information : contact@oreon-project.org
 	$form->applyFilter('service_alias', 'myReplaceAlias');
 	$from_list_menu = false;
 	if ($o != "mc")	{
-		$form->addRule('service_description', $lang['ErrName'], 'required');
-		$form->addRule('service_alias', $lang['ErrName'], 'required');
+		$form->addRule('service_description', _("Compulsory Name"), 'required');
+		$form->addRule('service_alias', _("Compulsory Name"), 'required');
 		$form->registerRule('exist', 'callback', 'testServiceTemplateExistence');
-		$form->addRule('service_description', $lang['ErrAlreadyExist'], 'exist');
+		$form->addRule('service_description', _("Name is already in use"), 'exist');
 	}
 	else if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
@@ -536,7 +536,7 @@ For information : contact@oreon-project.org
 		else
 			$from_list_menu = true;
 	}
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -549,36 +549,36 @@ For information : contact@oreon-project.org
 	# Just watch a host information
 	if ($o == "w")	{
 		if (!$min)
-			$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$service_id."'"));
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$service_id."'"));
 	    $form->setDefaults($service);
 		$form->freeze();
 	}
 	# Modify a service information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($service);
 	}
 	# Add a service information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	# Massive Change
 	else if ($o == "mc")	{
-		$subMC =& $form->addElement('submit', 'submitMC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1));
-	$tpl->assign("sort1", $lang['sv_conf']);
-	$tpl->assign("sort2", $lang['sv_head_links']);
-	$tpl->assign("sort3", $lang['sv_head_treat']);
-	$tpl->assign("sort4", $lang['sv_extInf']);
+	$tpl->assign("sort1", _("Service Configuration"));
+	$tpl->assign("sort2", _("Relations"));
+	$tpl->assign("sort3", _("Data Processing"));
+	$tpl->assign("sort4", _("Service Extended Info"));
 	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {".
 	"var _img = document.getElementById(_img_dst + '_img');".
 	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );	
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
+	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
@@ -594,7 +594,7 @@ For information : contact@oreon-project.org
 					updateServiceInDB($value, true);
 		}
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

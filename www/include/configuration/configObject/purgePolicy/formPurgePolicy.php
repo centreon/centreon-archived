@@ -46,61 +46,61 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["mod_purgePolicy_add"]);
+		$form->addElement('header', 'title', _("Add a Template Deletion Policy"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["mod_purgePolicy_change"]);
+		$form->addElement('header', 'title', _("Modify a Template Deletion Policy"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["mod_purgePolicy_view"]);
+		$form->addElement('header', 'title', _("View a Template Deletion Policy"));
 
 	#
 	## Purge Policy basic information
 	#
-	$form->addElement('header', 'information', $lang["mod_purgePolicy_infos"]);
-	$form->addElement('text', 'purge_policy_name', $lang["mod_purgePolicy_name"], $attrsText);
-	$form->addElement('text', 'purge_policy_alias', $lang["mod_purgePolicy_alias"], $attrsText);
-	$form->addElement('text', 'purge_policy_alias', $lang["mod_purgePolicy_alias"], $attrsText);
-	$periods = array(	"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],	
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);	
-	$sel =& $form->addElement('select', 'purge_policy_retention', $lang["mod_purgePolicy_retain"], $periods);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'purge_policy_name', _("Policy Name"), $attrsText);
+	$form->addElement('text', 'purge_policy_alias', _("Alias"), $attrsText);
+	$form->addElement('text', 'purge_policy_alias', _("Alias"), $attrsText);
+	$periods = array(	"86400"=>_("Last 24 Hours"),
+						"172800"=>_("Last 2 Days"),
+						"302400"=>_("Last 4 Days"),	
+						"604800"=>_("Last 7 Days"),
+						"1209600"=>_("Last 14 Days"),
+						"2419200"=>_("Last 28 Days"),
+						"2592000"=>_("Last 30 Days"),
+						"2678400"=>_("Last 31 Days"),
+						"5184000"=>_("Last 2 Months"),
+						"10368000"=>_("Last 4 Months"),
+						"15552000"=>_("Last 6 Months"),
+						"31104000"=>_("Last Year"));	
+	$sel =& $form->addElement('select', 'purge_policy_retention', _("Retention Period"), $periods);
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, $lang["no"], '0');
-	$form->addGroup($tab, 'purge_policy_host', $lang["mod_purgePolicy_host"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("No"), '0');
+	$form->addGroup($tab, 'purge_policy_host', _("Host Definition Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_service', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_service', null, $lang["no"], '0');
-	$form->addGroup($tab, 'purge_policy_service', $lang["mod_purgePolicy_service"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_service', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_service', null, _("No"), '0');
+	$form->addGroup($tab, 'purge_policy_service', _("Service Definition Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, $lang["no"], '0');
-	$form->addGroup($tab, 'purge_policy_metric', $lang["mod_purgePolicy_metric"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, _("No"), '0');
+	$form->addGroup($tab, 'purge_policy_metric', _("Metric Definition Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, $lang["no"], '0');
-	$form->addGroup($tab, 'purge_policy_bin', $lang["mod_purgePolicy_bin"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, _("No"), '0');
+	$form->addGroup($tab, 'purge_policy_bin', _("Bin Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, $lang["no"], '0');
-	$form->addGroup($tab, 'purge_policy_raw', $lang["mod_purgePolicy_raw"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, _("No"), '0');
+	$form->addGroup($tab, 'purge_policy_raw', _("Raw Deletion"), '&nbsp;');
 	
 	$form->setDefaults(array('purge_policy_bin'=>'1', 'purge_policy_raw'=>'1', 'purge_policy_metric'=>'0', 'purge_policy_service'=>'0', 'purge_policy_host'=>'0', ));
 	
-	$form->addElement('textarea', 'purge_policy_comment', $lang["mod_purgePolicy_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'purge_policy_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'purge_policy_id');
@@ -111,16 +111,16 @@ For information : contact@oreon-project.org
 	## Form Rules
 	#
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('purge_policy_name', $lang['ErrName'], 'required');
-	$form->addRule('purge_policy_alias', $lang['ErrAlias'], 'required');
-	$form->addRule('purge_policy_host', $lang['ErrRequired'], 'required');
-	$form->addRule('purge_policy_service', $lang['ErrRequired'], 'required');
-	$form->addRule('purge_policy_metric', $lang['ErrRequired'], 'required');
-	$form->addRule('purge_policy_raw', $lang['ErrRequired'], 'required');
-	$form->addRule('purge_policy_bin', $lang['ErrRequired'], 'required');
+	$form->addRule('purge_policy_name', _("Compulsory Name"), 'required');
+	$form->addRule('purge_policy_alias', _("Compulsory Alias"), 'required');
+	$form->addRule('purge_policy_host', _("Required Field"), 'required');
+	$form->addRule('purge_policy_service', _("Required Field"), 'required');
+	$form->addRule('purge_policy_metric', _("Required Field"), 'required');
+	$form->addRule('purge_policy_raw', _("Required Field"), 'required');
+	$form->addRule('purge_policy_bin', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testPurgePolicyExistence');
-	$form->addRule('purge_policy_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('purge_policy_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -130,24 +130,24 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$tpl->assign("help", array("h1"=>$lang["mod_purgePolicy_raw2"], "h2"=>$lang["mod_purgePolicy_bin2"], "h3"=>$lang["mod_purgePolicy_metric2"], "h4"=>$lang["mod_purgePolicy_service2"], "h5"=>$lang["mod_purgePolicy_host2"]));
+	$tpl->assign("help", array("h1"=>_("Only raw rows according to the retention period"), "h2"=>_("Only bin rows according to the retention period"), "h3"=>_("Not link with period, ALL metric + bin"), "h4"=>_("Not link with period, ALL Service + Metric + bin + raw"), "h5"=>_("Not link with period, ALL Host + Service + Metric + bin + raw")));
 
 	# Just watch a contact information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&purge_policy_id=".$purge_policy_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&purge_policy_id=".$purge_policy_id."'"));
 	    $form->setDefaults($ppol);
 		$form->freeze();
 	}
 	# Modify a contact information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ppol);
 	}
 	# Add a contact information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
@@ -158,7 +158,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updatePurgePolicyInDB($ppolObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&purge_policy_id=".$ppolObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&purge_policy_id=".$ppolObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 		$deps[$dep["meta_id"]] = $dep["meta_name"];
 	$DBRESULT->free();
 	# Calc Type
-	$calType = array("AVE"=>$lang['ms_selAvr'], "SOM"=>$lang['ms_selSum'], "MIN"=>$lang['ms_selMin'], "MAX"=>$lang['ms_selMax']);
+	$calType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
 	
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(NULL=>NULL);
@@ -118,62 +118,62 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["ms_add"]);
+		$form->addElement('header', 'title', _("Add a Meta Service"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["ms_change"]);
+		$form->addElement('header', 'title', _("Modify a Meta Service"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["ms_view"]);
+		$form->addElement('header', 'title', _("View a Meta Service"));
 
 	# Sort 1
 	#
 	## Service basic information
 	#
-	$form->addElement('header', 'information', $lang['ms_infos']);
+	$form->addElement('header', 'information', _("General Information"));
 
-	$form->addElement('text', 'meta_name', $lang['ms_name'], $attrsText);
-	$form->addElement('text', 'meta_display', $lang['ms_display'], $attrsText);
-	$form->addElement('text', 'warning', $lang['ms_levelw'], $attrsText2);
-	$form->addElement('text', 'critical', $lang['ms_levelc'], $attrsText2);
-	$form->addElement('select', 'calcul_type', $lang['ms_calType'], $calType);
+	$form->addElement('text', 'meta_name', _("Meta Service Name"), $attrsText);
+	$form->addElement('text', 'meta_display', _("Display format"), $attrsText);
+	$form->addElement('text', 'warning', _("Warning Level"), $attrsText2);
+	$form->addElement('text', 'critical', _("Critical Level"), $attrsText2);
+	$form->addElement('select', 'calcul_type', _("Calculation Type"), $calType);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, $lang['ms_selList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, $lang['ms_sqlMatch'], '2');
-	$form->addGroup($tab, 'meta_select_mode', $lang['ms_selMod'], '<br>');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("Service List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("SQL matching"), '2');
+	$form->addGroup($tab, 'meta_select_mode', _("Selection Mode"), '<br>');
 	$form->setDefaults(array('meta_select_mode' => array('meta_select_mode'=>'1')));
 
-	$form->addElement('text', 'regexp_str', $lang['ms_sqlMatch'], $attrsText);
-	$form->addElement('select', 'metric', $lang['ms_metric'], $metrics);
+	$form->addElement('text', 'regexp_str', _("SQL matching"), $attrsText);
+	$form->addElement('select', 'metric', _("Metric"), $metrics);
 
 	#
 	## Check information
 	#
-	$form->addElement('header', 'check', $lang['ms_head_state']);
+	$form->addElement('header', 'check', _("Meta Service State"));
 
-	$form->addElement('select', 'check_period', $lang['ms_checkPeriod'], $tps);
-	$form->addElement('text', 'max_check_attempts', $lang['ms_checkMca'], $attrsText2);
-	$form->addElement('text', 'normal_check_interval', $lang['ms_normalCheckInterval'], $attrsText2);
-	$form->addElement('text', 'retry_check_interval', $lang['ms_retryCheckInterval'], $attrsText2);
+	$form->addElement('select', 'check_period', _("Check Period"), $tps);
+	$form->addElement('text', 'max_check_attempts', _("Max Check Attempts"), $attrsText2);
+	$form->addElement('text', 'normal_check_interval', _("Normal Check Interval"), $attrsText2);
+	$form->addElement('text', 'retry_check_interval', _("Retry Check Interval"), $attrsText2);
 
 	##
 	## Notification informations
 	##
-	$form->addElement('header', 'notification', $lang['ms_head_notif']);
+	$form->addElement('header', 'notification', _("Notification"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, $lang["yes"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, $lang["no"], '0');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, $lang["nothing"], '2');
-	$form->addGroup($tab, 'notifications_enabled', $lang['ms_notifEnabled'], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Yes"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("No"), '0');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Default"), '2');
+	$form->addGroup($tab, 'notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	$form->setDefaults(array('notifications_enabled' => '2'));
 
-    $ams3 =& $form->addElement('advmultiselect', 'ms_cgs', $lang['ms_CgMembers'], $notifCgs, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
+    $ams3 =& $form->addElement('advmultiselect', 'ms_cgs', _("Linked ContactGroups"), $notifCgs, $attrsAdvSelect);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
 
-	$form->addElement('text', 'notification_interval', $lang['ms_notifInt'], $attrsText2);
-	$form->addElement('select', 'notification_period', $lang['ms_notifTp'], $tps);
+	$form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
+	$form->addElement('select', 'notification_period', _("Notification Period"), $tps);
 
  	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
 	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
@@ -181,23 +181,23 @@ For information : contact@oreon-project.org
 	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', 'Recovery');
 	if ($oreon->user->get_version() == 2)
 		$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', 'Flapping');
-	$form->addGroup($msNotifOpt, 'ms_notifOpts', $lang['ms_notifOpts'], '&nbsp;&nbsp;');
+	$form->addGroup($msNotifOpt, 'ms_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
 	#
 	## Further informations
 	#
-	$form->addElement('header', 'furtherInfos', $lang['further_infos']);
-	$form->addElement('select', 'graph_id', $lang['sv_graphTpl'], $graphTpls);
-	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, $lang["enable"], '1');
-	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, $lang["disable"], '0');
-	$form->addGroup($msActivation, 'meta_activate', $lang["status"], '&nbsp;');
+	$form->addElement('header', 'furtherInfos', _("Additional Information"));
+	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
+	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Enabled"), '1');
+	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Disabled"), '0');
+	$form->addGroup($msActivation, 'meta_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('meta_activate' => '1'));
-	$form->addElement('textarea', 'meta_comment', $lang["cmt_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'meta_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'meta_id');
@@ -213,24 +213,24 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('meta_name', 'myReplace');
-	$form->addRule('meta_name', $lang['ErrName'], 'required');
-	$form->addRule('max_check_attempts', $lang['ErrRequired'], 'required');
-	$form->addRule('calcul_type', $lang['ErrRequired'], 'required');
-	$form->addRule('meta_select_mode', $lang['ErrRequired'], 'required');
-	$form->addRule('warning', $lang['ErrRequired'], 'required');
-	$form->addRule('critical', $lang['ErrRequired'], 'required');
-	$form->addRule('normal_check_interval', $lang['ErrRequired'], 'required');
-	$form->addRule('retry_check_interval', $lang['ErrRequired'], 'required');
-	$form->addRule('check_period', $lang['ErrTp'], 'required');
-	$form->addRule('ms_cgs', $lang['ErrCg'], 'required');
-	$form->addRule('notification_interval', $lang['ErrRequired'], 'required');
-	$form->addRule('notification_period', $lang['ErrTp'], 'required');
-	$form->addRule('notifications_enabled', $lang['ErrRequired'], 'required');
-	$form->addRule('ms_notifOpts', $lang['ErrRequired'], 'required');
-	$form->addRule('notifOpts', $lang['ErrOpt'], 'required');
+	$form->addRule('meta_name', _("Compulsory Name"), 'required');
+	$form->addRule('max_check_attempts', _("Required Field"), 'required');
+	$form->addRule('calcul_type', _("Required Field"), 'required');
+	$form->addRule('meta_select_mode', _("Required Field"), 'required');
+	$form->addRule('warning', _("Required Field"), 'required');
+	$form->addRule('critical', _("Required Field"), 'required');
+	$form->addRule('normal_check_interval', _("Required Field"), 'required');
+	$form->addRule('retry_check_interval', _("Required Field"), 'required');
+	$form->addRule('check_period', _("Compulsory Period"), 'required');
+	$form->addRule('ms_cgs', _("Compulsory Contact Group"), 'required');
+	$form->addRule('notification_interval', _("Required Field"), 'required');
+	$form->addRule('notification_period', _("Compulsory Period"), 'required');
+	$form->addRule('notifications_enabled', _("Required Field"), 'required');
+	$form->addRule('ms_notifOpts', _("Required Field"), 'required');
+	$form->addRule('notifOpts', _("Compulsory Option"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('meta_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('meta_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -243,24 +243,24 @@ For information : contact@oreon-project.org
 	# Just watch a host information
 	if ($o == "w")	{
 		if (!$min)
-			$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$meta_id."'"));
+			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$meta_id."'"));
 	    $form->setDefaults($ms);
 		$form->freeze();
 	}
 	# Modify a service information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ms);
 	}
 	# Add a service information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." ".$lang["time_sec"]);
+	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
 
 	$valid = false;
 	if ($form->validate())	{
@@ -270,7 +270,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateMetaServiceInDB($msObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$msObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&meta_id=".$msObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

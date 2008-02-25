@@ -84,11 +84,11 @@ For information : contact@oreon-project.org
 	
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "as")
-		$form->addElement('header', 'title', $lang["mss_add"]);
+		$form->addElement('header', 'title', _("Add a Service"));
 	else if ($o == "cs")
-		$form->addElement('header', 'title', $lang["mss_change"]);
+		$form->addElement('header', 'title', _("Modify a Service"));
 	else if ($o == "ws")
-		$form->addElement('header', 'title', $lang["mss_view"]);
+		$form->addElement('header', 'title', _("View a Service"));
 	#
 	## Indicator basic information
 	#
@@ -102,21 +102,21 @@ For information : contact@oreon-project.org
 	$formMetricId =& $form->addElement('hidden', 'metric_id');
 	$formMetricId->setValue($metric_id);
    
-	$hn =& $form->addElement('select', 'host_id', $lang["h"], $hosts, array("onChange"=>"this.form.submit()"));
-	$sel =& $form->addElement('hierselect', 'metric_sel', $lang["sv"]);
+	$hn =& $form->addElement('select', 'host_id', _("Host"), $hosts, array("onChange"=>"this.form.submit()"));
+	$sel =& $form->addElement('hierselect', 'metric_sel', _("Server"));
 	$sel->setOptions(array($services1, $services2));
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, $lang["enable"], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, $lang["disable"], '0');
-	$form->addGroup($tab, 'activate', $lang["status"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
+	$form->addGroup($tab, 'activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('activate' => '1'));
-	$form->addElement('textarea', 'msr_comment', $lang["cmt_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'msr_comment', _("Comments"), $attrsTextarea);
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 /*	
 	if ($o == "as")	{
@@ -127,22 +127,22 @@ For information : contact@oreon-project.org
 */		
 	# Just watch
 	if ($o == "ws")	{		
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msr_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msr_id."'"));
 	    $form->setDefaults($metric);
 		$form->freeze();
 	}
 	# Modify
 	else if ($o == "cs")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($metric);
 	    $hn->freeze();
 	    $sel->freeze();
 	}
 	# Add
 	else if ($o == "as")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
   
   	$valid = false;
@@ -153,7 +153,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateMetric($msrObj->getValue());
 		$o = "ws";
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msrObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msrObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
     }

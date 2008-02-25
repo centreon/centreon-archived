@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	$calcType = array("AVE"=>$lang['ms_selAvr'], "SOM"=>$lang['ms_selSum'], "MIN"=>$lang['ms_selMin'], "MAX"=>$lang['ms_selMax']);
+	$calcType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
 
 	if (!isset($oreon))
 		exit();
@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 
 	$meta =& $DBRESULT->fetchRow();
 	$tpl->assign("meta", 
-			array("meta"=>$lang["ms"],
+			array("meta"=>_("Meta Service"),
 				"name"=>$meta["meta_name"],
 				"calc_type"=>$calcType[$meta["calcul_type"]]));
 	$DBRESULT->free();
@@ -46,11 +46,11 @@ For information : contact@oreon-project.org
 	 * start header menu
 	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_host", $lang["h"]);
-	$tpl->assign("headerMenu_service", $lang["sv"]);
-	$tpl->assign("headerMenu_metric", $lang["ms_metric"]);
-	$tpl->assign("headerMenu_status", $lang["status"]);
-	$tpl->assign("headerMenu_options", $lang["options"]);
+	$tpl->assign("headerMenu_host", _("Host"));
+	$tpl->assign("headerMenu_service", _("Server"));
+	$tpl->assign("headerMenu_metric", _("Metric"));
+	$tpl->assign("headerMenu_status", _("Status"));
+	$tpl->assign("headerMenu_options", _("Options"));
 	
 	if ($oreon->user->admin || !HadUserLca($pearDB))
 		$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
@@ -74,9 +74,9 @@ For information : contact@oreon-project.org
 		$moptions = "";
 		$selectedElements =& $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
 		if ($metric["activate"])
-			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='".$lang['disable']."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
-			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='".$lang['enable']."'></a>&nbsp;&nbsp;";
+			$moptions .= "<a href='oreon.php?p=".$p."&msr_id=".$metric['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$DBRESULTO =& $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id = '".$metric['metric_id']."' and m.index_id=i.id");
 		$row =& $DBRESULTO->fetchRow();
 		$elemArr1[$i] = array("MenuClass"=>"list_".$style, 
@@ -85,7 +85,7 @@ For information : contact@oreon-project.org
 					"RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$metric['msr_id'],
 					"RowMenu_service"=>htmlentities($row["service_description"], ENT_QUOTES),
 					"RowMenu_metric"=>$row["metric_name"]." (".$row["unit_name"].")",
-					"RowMenu_status"=>$metric["activate"] ? $lang['enable'] : $lang['disable'],
+					"RowMenu_status"=>$metric["activate"] ? _("Enabled") : _("Disabled"),
 					"RowMenu_options"=>$moptions);
 		$DBRESULTO->free();
 		$style != "two" ? $style = "two" : $style = "one";
@@ -95,7 +95,7 @@ For information : contact@oreon-project.org
 	/*
 	 * Different messages we put in the template
 	 */
-	$tpl->assign('msg', array ("addL1"=>"?p=".$p."&o=as&meta_id=".$meta_id, "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL1"=>"?p=".$p."&o=as&meta_id=".$meta_id, "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 		
 	/*
 	 * Element we need when we reload the page
@@ -117,27 +117,27 @@ For information : contact@oreon-project.org
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "ds"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "ds"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
 	
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "ds"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs2);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ds"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 =& $form->getElement('o1');
