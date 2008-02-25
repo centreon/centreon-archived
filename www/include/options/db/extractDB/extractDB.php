@@ -47,7 +47,7 @@ For information : contact@oreon-project.org
 ?>
  <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;&nbsp;Oreon&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
- 	<tr class="list_one"><td class="FormRowField"><?php print _("Length") ; ?></td><td class="FormRowValue"><?php$dbsize /= 1024; print round($dbsize, 2); ?>Ko</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><?php print _("Length") ; ?></td><td class="FormRowValue"><?php $dbsize /= 1024; print round($dbsize, 2); ?>Ko</td></tr>
 	<tr class="list_two"><td class="FormRowField"><?php print _("Number of entries") ; ?></td><td class="FormRowValue"><?php print $rows; ?></td></tr>
 </table>
 <div id="validForm">
