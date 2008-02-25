@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 		$rCP =& $resCP->fetchRow();
 		$session_data[$cpt]["ip_address"] = $r["ip_address"];
 		$session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
-		$session_data[$cpt]["topology_name"] = $lang[$rCP["topology_name"]];
+		$session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
 		if ($rCP["topology_icone"])
 			$session_data[$cpt]["topology_icone"] = "<img src='".$rCP["topology_icone"]."'>";
 		else

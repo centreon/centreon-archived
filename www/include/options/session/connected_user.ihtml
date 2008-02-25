@@ -3,7 +3,7 @@
 	{if $msg}
 		<span class="msg">{ $msg }</span>
 	{/if}
-	<table id="ListTableMedium">
+	<table class="ListTableMedium">
 		<tr class="ListHeader">
 			<td class="ListColHeaderLeft">{ $wi_user }</td>
 			<td class="ListColHeaderCenter">{ $distant_location }</td>
