@@ -78,7 +78,7 @@ For information : contact@oreon-project.org
 								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
 								"Menu1UrlPopupOpen" => $elem["topology_url"],
-								"Menu1Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
+								"Menu1Name" => _($elem["topology_name"]),
 								"Menu1Popup" => $elem["topology_popup"] ? true : false);
 	$userUrl = "oreon.php?p=50104&o=c";
     $logDate = date($lang['header_format']);
@@ -99,11 +99,10 @@ For information : contact@oreon-project.org
 								"Menu2Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu2UrlPopup" => $elem["topology_popup"],
 								"Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
-								"Menu2Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
+								"Menu2Name" => _($elem["topology_name"]),
 								"Menu2Popup" => $elem["topology_popup"] ? true : false);
 		$sep = "|";
 	}
-
 
 	# Grab elements for level 3
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
@@ -125,7 +124,7 @@ For information : contact@oreon-project.org
 				print ($DBRESULT_title->getMessage());
 			$title = "";
 			if ($title = $DBRESULT_title->fetchRow())
-				$title = $lang[$title["topology_name"]];
+				$title = _($title["topology_name"]);
 			else
 				$title = $lang["m_main_menu"];
 
@@ -139,7 +138,7 @@ For information : contact@oreon-project.org
 									"MenuOnClick" => $elem["topology_OnClick"],
 									"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
 									"Menu3UrlPopup" => $elem["topology_url"],
-									"Menu3Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
+									"Menu3Name" => _($elem["topology_name"]),
 									"Menu3Popup" => $elem["topology_popup"] ? true : false);
 		}
 	}
@@ -156,7 +155,7 @@ For information : contact@oreon-project.org
 										"Menu4UrlPopup" => $elem["topology_url"],
 										"MenuOnClick" => $elem["topology_OnClick"],
 										"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
-										"Menu4Name" => array_key_exists($elem["topology_name"], $lang) ? $lang[$elem["topology_name"]] : "#UNDEF#",
+										"Menu4Name" => _($elem["topology_name"]),
 										"Menu4Popup" => $elem["topology_popup"] ? true : false);
 		}
 	}
