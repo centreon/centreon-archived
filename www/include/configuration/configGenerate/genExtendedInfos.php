@@ -108,7 +108,7 @@ For information : contact@oreon-project.org
 							$str .= print_line("action_url", $field);
 						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image"))
 							$str .= print_line("icon_image", $field);
-						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "icon_image_alt"))
+						if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt"))
 							$str .= print_line("icon_image_alt", $field);
 						$str .= "}\n\n";
 						$i++;
@@ -138,7 +138,7 @@ For information : contact@oreon-project.org
 						$str .= print_line("action_url", $field);
 					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image"))
 						$str .= print_line("icon_image", $field);
-					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "icon_image_alt"))
+					if ($field = getMyServiceExtendedInfoField($esi["service_id"], "esi_icon_image_alt"))
 						$str .= print_line("icon_image_alt", $field);
 					$str .= "}\n\n";
 					$i++;
