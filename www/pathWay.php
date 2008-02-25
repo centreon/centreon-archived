@@ -53,10 +53,7 @@ For information : contact@oreon-project.org
 	$tab = getTopologyParent($p);
 	$tabPath = array();
 
-	if (!isset($lang[$tab["topology_name"]]))
-		$NameTopology = "UNDEF";
-	else
-		$NameTopology = $lang[$tab["topology_name"]];
+	$NameTopology = _($tab["topology_name"]);
 
 	$tabPath[$tab["topology_page"]] = array();
 	$tabPath[$tab["topology_page"]]["name"] = $NameTopology;
@@ -67,7 +64,7 @@ For information : contact@oreon-project.org
 	while($tab["topology_parent"]){
 		$tab = getTopologyParent($tab["topology_parent"]);
 		$tabPath[$tab["topology_page"]] = array();
-		$tabPath[$tab["topology_page"]]["name"] = $lang[$tab["topology_name"]];
+		$tabPath[$tab["topology_page"]]["name"] = _($tab["topology_name"]);
 		$tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
 		$tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
 		$tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
@@ -90,7 +87,7 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$tabPath[$new_url["topology_page"]] = array();
-			$tabPath[$new_url["topology_page"]]["name"] = $lang[$new_url["topology_name"]];
+			$tabPath[$new_url["topology_page"]]["name"] = _($tab["topology_name"]);
 			$tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];
 			$tabPath[$new_url["topology_page"]]["page"] = $new_url["topology_page"];
 			$page = $new_url["topology_page"];
@@ -114,7 +111,7 @@ For information : contact@oreon-project.org
 		$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlueStart.gif" alt="" class="imgPathWay">&nbsp;';
 		foreach ($tabPath as $cle => $valeur){
 			echo $flag;
-			?><a href="oreon.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" ><?php echo $valeur["name"]; ?></a><?php
+			?><a href="oreon.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" ><?php print $valeur["name"]; ?></a><?php
 			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" alt="" class="imgPathWay">&nbsp;';
 		}
 	
