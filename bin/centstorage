@@ -237,7 +237,9 @@ sub GetPerfData(){
 			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
 						CheckMySQLConnexion();
 						checkAndUpdate(@line_tab);
-					}
+					} else {
+						print "";#updateServiceState($line_tab[5], $_[1]);
+			 		}
 					undef($line_tab);
 				}
 			}
@@ -302,12 +304,12 @@ sub CheckRestart(){
 sub purgeMysqlData(){
 	my $con_ods= CreateConnexionForCentstorage();
 	my $sth2 = $con_ods->prepare("SELECT * FROM config");	
-	writeLogFile("Error when getting len_storage_mysql properties : ".$sth2->errstr."\n")if (!$sth2->execute);
+	writeLogFile("Error when getting len_storage_mysql properties : ".$sth2->errstr."\n")if (!$sth2->execute());
 	my $data = $sth2->fetchrow_hashref();
 	if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0){
 		my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
 		$sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
-		writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute);
+		writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute());
 	}
 	$sth2->finish();
 	undef($sth2);
@@ -366,6 +368,44 @@ sub getModulesInterval($){
 	return $interval;
 }
 
+sub updateServiceState($$$){	
+	my $interval = 4000;
+	my $nb_value;
+	my $interval_length;
+	
+	my $RRDdatabase_status_path = getRRDdatabase_status_path();	
+	my %tab = ("OK"=>100, "WARNING"=>75,"CRITICAL"=>0,"UNKNWON"=>0);
+	
+	if (!-d $RRDdatabase_status_path){
+		writeLogFile("Directory ".$RRDdatabase_status_path." does not exists. Trying to create it....\n");
+		if (!mkdir($RRDdatabase_status_path, "775")) {
+			writeLogFile("Can't create ".$RRDdatabase_status_path." : permission denied\n");	
+		} else {
+			writeLogFile($RRDdatabase_status_path." Created\n");
+		}
+	}
+	
+	# call function to check if DB exist and else create it
+	if (-e $RRDdatabase_status_path."/".$_[0].".rrd"){
+		updateRRDDatabase($RRDdatabase_status_path, $_[0], "status", $_[2], $tab{$_[1]});
+	} else {
+		if ($_[0] && $_[1] && $_[2]){
+			my $begin = time() - 200000;
+			$interval = getServiceCheckIntervalWithSVCid($_[0]);
+			$interval = 3 if (!defined($interval));
+			$interval = getIntervalLenght() * $interval;
+			my $interval_hb = $interval * 2;
+			$nb_value = getLenStorageDB() / $interval;
+
+			createRRDDatabase($RRDdatabase_status_path, $_[0], $begin, $interval, "status", $nb_value);
+			tuneRRDDatabase($RRDdatabase_status_path, $_[0], "status", $interval_hb);
+			updateRRDDatabase($RRDdatabase_status_path, $_[0], "status", $_[2], $tab{$_[1]});
+	
+			undef($begin);
+		}
+	}
+}
+
 sub replaceMetricSpecialChar($){
 	my $metric_name = $_[0];
 	$metric_name =~ s/\//slash\_/g;
@@ -393,16 +433,19 @@ sub tuneRRDDatabase($$$$){
 }
 
 sub removeOldRRDDatabase($$$$){
-	my ($ERR, $RRDdatabase_path, $metric_id, $interval, $my_len_storage_rrd);
+	my ($RRDdatabase_path, $metric_id, $interval, $my_len_storage_rrd);
 	($RRDdatabase_path, $metric_id, $interval, $my_len_storage_rrd) = @_;
 	system("rm -Rf  ".$RRDdatabase_path.$metric_id.".rrd");
 	writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric_id.".rrd (interval : $interval - Len : $my_len_storage_rrd)\n");		
 }
 
 sub updateRRDDatabase($$$$$){
-	my ($ERR, $RRDdatabase_path, $metric_id, $metric_name, $ctime, $value);
-	($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value) = @_;
-	RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr($metric_name, 0, 19), $ctime.":".$value);
+	my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value) = @_;
+	my $ERR;
+	
+	$value =~ s/\,/\./g;
+	$metric_name = replaceMetricSpecialChar($metric_name);
+	RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr($metric_name, 0, 19), $ctime.":".sprintf("%e", $value));
 	$ERR = RRDs::error;
 	if ($ERR){writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR\n");}
 	undef($ERR);
@@ -411,8 +454,9 @@ sub updateRRDDatabase($$$$$){
 sub CheckRebuild(){
 	use vars qw($con_oreon $con_ods);
 	my ($RRDdatabase_path, $RRDdatabase_status_path, $len_storage_rrd, $svc_mst_be_rbld);
-	my ($sth2, $data, $ERR, $flag, $metric, $cpt);
+	my ($data, $ERR, $flag, $metric, $cpt);
 	
+	# ---------------------------------------------
 	# enable db connexion
 	my $con_ods = CreateConnexionForCentstorage();
 	my $con_oreon = CreateConnexionForOreon();
@@ -423,7 +467,7 @@ sub CheckRebuild(){
 	$RRDdatabase_status_path = getRRDdatabase_status_path();
 	$len_storage_rrd = getLenStorageDB();
 	
-	$sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
+	my $sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
 	writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
 	while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
 	
@@ -442,6 +486,8 @@ sub CheckRebuild(){
 		} else {
 			$interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght();
 		}
+		$interval = 330 if (!defined($interval));
+		
 		my $interval_hb = $interval * 2;
 		my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 		if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "\n");}
@@ -452,7 +498,6 @@ sub CheckRebuild(){
 			while ($metric = $sth3->fetchrow_hashref()){
 				# Replace Special chars
 				$metric->{'metric_name'} = replaceMetricSpecialChar($metric->{'metric_name'});
-				
 				writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd\n");					
 				
 				# Get All Data
@@ -464,7 +509,6 @@ sub CheckRebuild(){
 						# Calculate first entry in database					
 						my $begin = $data->{'ctime'} - 200;
 						
-						$interval = 330 if (!defined($interval));
 						my $my_len_storage_rrd = $len_storage_rrd / $interval;
 						
 						removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
@@ -479,7 +523,6 @@ sub CheckRebuild(){
 					}
 					updateRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'});				
 				}
-				writeLogFile("$cpt value insert\n");
 				undef($sth4);
 				# -----------------------------------------------------
 			}
@@ -490,7 +533,6 @@ sub CheckRebuild(){
 		writeLogFile("Error when getting perfdata file : " . $sth->errstr . "\n") if (!$sth->execute);
 		undef($sth);
 		undef($cpt);
-		undef($ERR);
 		undef($metric);
 	}
 	$sth2->finish();
@@ -512,7 +554,6 @@ $lastlineRead = 0;
 $lastvalueRecorded = 0;
 
 my $pid  = 0;
-my $time = time();
 my $timeParser = time();
 my $timePurge = time();
 my $timeSynchro = time();
@@ -531,78 +572,68 @@ my $pid_purge;
 my $pid_synchro;
 my $pid_Rebuild;
 
-# Starting ODS Engine
-writeLogFile("Starting ODS engine...\n");
 if ($pid ne fork()) {
 	  if (!fork()) {
 	    while (!$stop){
-           	if (time() - $timeParser >= 10){
-                my $timeP = time() - $timeParser;
-                $pid_parseur = fork();
-                if (!$pid_parseur){
-                    print time()." - $pid_parseur - GetPerfData\n";
-                    GetPerfData();
-                    exit();
-                } else {
-                	$tabPID[$pid_parseur] = $pid_parseur;
-                	my $id = waitpid($pid_parseur, &WNOHANG);
-                }
-                $timeParser = time();
+           	if (time() - $timeParser >= 10 && (!defined($pid_parseur) || !defined($tabPID[$pid_parseur]))){
+            	my $timeP = time() - $timeParser;
+	            $pid_parseur = fork();
+	            if (!$pid_parseur){
+	            	GetPerfData();
+	                exit();
+	            } else {
+	            	$tabPID[$pid_parseur] = $pid_parseur;
+	               	my $id = waitpid($pid_parseur, WNOHANG);
+	            }
+	            $timeParser = time();
             }
-            if (time() - $timePurge >= 60){
+            if (time() - $timePurge >= 60 && (!defined($pid_purge) || !defined($tabPID[$pid_purge]))){
                 $pid_purge = fork();
                 if (!$pid_purge){
-                    print time()." - $pid_purge - Purge\n";
                     purgeMysqlData();
                     exit();
                 } else {
                 	$tabPID[$pid_purge] = $pid_purge;
-	                my $id = waitpid($pid_purge, &WNOHANG);
+	                my $id = waitpid($pid_purge, WNOHANG);
                 }
                 $timePurge = time();
-            }
-            if (time() - $timeSynchro >= 5){
-                $pid_synchro = fork();
-                if (!$pid_synchro){
-                    print time()." - $pid_synchro - synchro\n";
-                    CheckRestart();
-                    exit();
-                } else {
-                	$tabPID[$pid_synchro] = $pid_synchro;
-	                my $id = waitpid($pid_synchro, &WNOHANG);
-                }
-                $timeSynchro = time();
-            }
-            if (time() - $timeRebuild >= 7){
-                $pid_Rebuild = fork();
-                if (!$pid_Rebuild){
-                    print time()." - $pid_Rebuild - Rebuild\n";
-                    CheckRebuild();
-                    exit();
-                } else {
-	               	$tabPID[$pid_Rebuild] = $pid_Rebuild;
-	               	my $id = waitpid($pid_Rebuild, &WNOHANG);
-                }
-                $timeRebuild = time();
-            }
+        	}
+            if (time() - $timeSynchro >= 5 && (!defined($pid_synchro) || !defined($tabPID[$pid_synchro]))){
+            	$pid_synchro = fork();
+	            if (!$pid_synchro){
+	            	CheckRestart();
+	                exit();
+	            } else {
+	              	$tabPID[$pid_synchro] = $pid_synchro;
+		            my $id = waitpid($pid_synchro, WNOHANG);
+	            }
+	            $timeSynchro = time();
+           	}
+            if (time() - $timeRebuild >= 7 && (!defined($pid_Rebuild) || !defined($tabPID[$pid_Rebuild]))){
+	        	$pid_Rebuild = fork();
+	            if (!$pid_Rebuild){
+	            	CheckRebuild();
+	                exit();
+	            } else {
+		           	$tabPID[$pid_Rebuild] = $pid_Rebuild;
+		          	my $id = waitpid($pid_Rebuild, WNOHANG);
+	            }
+	            $timeRebuild = time();
+           	}
            
             foreach (@tabPID){
             	if (defined($_)){
-	            	waitpid($_, 0);
-	            	undef($tabPID[$_]);
+            		my $pidzomb = waitpid($_, 0);
+					undef($tabPID[$_]);
             	}
             }
             sleep(1);
         }
-    }
-	writeLogFile("PID : ".$$."\n");
-	exit 0;
+    	writeLogFile("Stopping ODS engine...\n");
+		writeLogFile("Error When removing pid file : $!") if (!unlink($PID));
+	}
+    exit 0;
 } 
 
 waitpid($pid, 0);
-
-# Write in log file - Delete PID File
-writeLogFile("Stopping ODS engine...\n");
-writeLogFile("Error When removing pid file : $!") if (!unlink($PID));
-
 exit(1);

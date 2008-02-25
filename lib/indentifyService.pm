@@ -25,36 +25,23 @@ sub identify_service($$){
 	CheckMySQLConnexion();
 	while (!$con_ods->ping){;}
 	if ($con_ods->ping){
-		writeLogFile("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'\n");
-	    my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
-	    if (!$sth1->execute) {
-	    	writeLogFile("Error:" . $sth1->errstr . "\n");
-	    }
-	    writeLogFile("Rows Number : ".$sth1->rows()."\n");
+		my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
+	    if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 	    # IF service unknown, insert it.
 	    if ($sth1->rows() == 0){
-	    	writeLogFile("entered !! \n");
-			if ($_[0] && $_[1]){
-				writeLogFile("entered 2 !! \n");
+	    	if ($_[0] && $_[1]){
 				$host_id = getHostID($_[0]);
-				writeLogFile("host_id : $host_id \n");
 				if (defined($host_id) && $host_id ne 0){
-					writeLogFile("entered 3 !! \n");
 					$service_id = getServiceID($host_id, $_[1]);
-					writeLogFile("Service ID : $service_id \n");
 					if ($service_id){
 						$sth1 = $con_ods->prepare("SELECT * FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."'");
 						if (!$sth1->execute) {
 							writeLogFile("Error:" . $sth1->errstr . "\n");
 						}
-						writeLogFile($sth1->rows()."\n");
 						if ($sth1->rows() == 0){
-							writeLogFile("INSERT INTO `index_data` (`host_name`, `host_id`, `service_description`, `service_id`) VALUES ('".$_[0]."', '".$host_id."', '".$_[1]."', '".$service_id."')");
 							$sth1 = $con_ods->prepare(	"INSERT INTO `index_data` (`host_name`, `host_id`, `service_description`, `service_id`) ".
 														"VALUES ('".$_[0]."', '".$host_id."', '".$_[1]."', '".$service_id."')");
-							if (!$sth1->execute) {
-								writeLogFile("Error:" . $sth1->errstr . "\n");
-							}
+							if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 						} else {
 							$sth1 = $con_ods->prepare("UPDATE `index_data` SET `host_name` = '".$_[0]."' , `service_description` = '".$_[1]."' where `host_id` = '".$host_id."' AND `service_id` = '".$service_id."'");
 							if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}

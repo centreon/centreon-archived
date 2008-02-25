@@ -134,6 +134,22 @@ sub getServiceCheckInterval($){ # metric_id
     return $return;
 }
 
+sub getServiceCheckIntervalWithSVCid($){ # metric_id
+	my $conO = CreateConnexionForCentstorage();
+		
+    $sth1 = $conO->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
+    if (!$sth1->execute) {writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");}
+    my $data_hst_svc = $sth1->fetchrow_hashref();
+   	$sth1->finish();
+ 	$conO->disconnect();
+ 	undef($sth1);
+    undef($data_metric);
+    
+    my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
+    undef($data_hst_svc);
+    return $return;
+}
+
 sub getServiceCheckIntervalFromService($){ # service_id
     my $conO = CreateConnexionForCentstorage();
 
