@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 	}
 
 	function check_injection($g){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $g)) {
+		if ( eregi("(<|>|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $g)) {
 			get_error('sql injection detected');
 			return 1;
 		}
@@ -165,7 +165,7 @@ $lang["optionAdvanced"] = "Options";
 	}else
 		$multi = "-1";
 
-	if(isset($_GET["id"]) && !check_injection($_GET["id"])){
+	if(isset($_GET["id"])){
 		$openid = htmlentities($_GET["id"]);
 	}else
 		$openid = "-1";
@@ -177,12 +177,12 @@ $contact_id = '2';
 	if ($StartDate !=  "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
-		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
+		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 0) ;
 	}
 	if ($EndDate !=  "" && $EndTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
-		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
+		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 0) ;
 	}
 	
 	$period = 86400;
@@ -232,17 +232,60 @@ else{
 
 
 if($multi)
+{
 	echo "<opid>".$openid."</opid>";
+
+// for HG -> replace by all host
+
+$tab_tmp = $tab_id;
+$tab_id = array();
+	foreach($tab_tmp as $openid)
+	{
+		$id = substr($openid, 3, strlen($openid));
+		$type = substr($openid, 0, 2);		
+	
+		if($type == 'HG')
+		{
+			$hosts = getMyHostGroupHosts($id);
+			foreach($hosts as $host)
+			{
+				$services = getMyHostServices($host);
+				foreach($services as $svc_id => $svc_name)
+				{
+					$oid = "HS_".$svc_id;
+					array_push($tab_id,$oid);	
+				}
+			}
+		}
+		else if ($type == 'HH')
+		{
+			$services = getMyHostServices($id);
+			foreach($services as $svc_id => $svc_name)
+			{
+				$oid = "HS_".$svc_id;
+				array_push($tab_id,$oid);	
+			}
+			
+		}
+		else
+			array_push($tab_id,$openid);
+	}
+}
 
 foreach($tab_id as $openid)
 {
 	$id = substr($openid, 3, strlen($openid));
-	$type = substr($openid, 0, 2);	
+	$type = substr($openid, 0, 2);
+
+	echo "<opid>".$openid."</opid>";
+	echo "<print>".$id."</print>";
 
 
-if($multi)
+
+if($multi && $type == 'HS')
 	$type = "SS";
-
+else
+	$type = "NO";
 
 	if($type == "HH"){
 	
@@ -322,6 +365,7 @@ if($multi)
 							#}
 					}
 					
+					/*
 					# Create period
 					if (isset($_GET["start"]) && isset($_GET["end"]) && $_GET["start"] && $_GET["end"]){
 						preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["start"], $matches);
@@ -345,7 +389,7 @@ if($multi)
 						$start = time() - ($period + 30);
 						$end = time() + 10;
 					}			
-		
+		*/
 					if (isset($_GET["template_id"]))
 						$elem[$index_id]['template_id'] = $_GET["template_id"];	
 					unset($metrics_activate);
@@ -481,7 +525,6 @@ if($multi)
 				foreach ($metrics_active as $key => $value)
 					if (isset($metrics[$key]))
 						$pass = 1;
-			# 
 			
 			if ($msg_error == 0){
 				if (isset($_GET["metric"]) && $pass){
@@ -572,19 +615,7 @@ if($multi)
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	
 	
 	if($type == "SS"){
@@ -660,7 +691,7 @@ if($multi)
 			$svc_id["service_description"] = str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"]));
 	
 	
-			if($template_id == 1)
+			if($template_id ==  1 && isset($svc_id["service_id"]))
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 			$DBRESULT2->fetchInto($GraphTemplate);
@@ -672,141 +703,126 @@ if($multi)
 	
 	
 			
-			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' ORDER BY `metric_name`");
-			if (PEAR::isError($DBRESULT2))
-				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			$counter = 0;
-			while ($DBRESULT2->fetchInto($metrics_ret)){			
-				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#S#", "/", $metrics_ret["metric_name"]);
-				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#BS#", "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
-				$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
-				$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
-				$counter++;
-			}
+		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' ORDER BY `metric_name`");
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		$counter = 0;
+		while ($DBRESULT2->fetchInto($metrics_ret)){			
+			$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#S#", "/", $metrics_ret["metric_name"]);
+			$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#BS#", "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
+			$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
+			$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
+			$counter++;
+		}
+	
 		
-			if (isset($period) && $period){
-				$start = time() - ($period + 30);
-				$end = time() + 1;
+		# verify if metrics in parameter is for this index
+		$metrics_active =& $_GET["metric"];
+		$pass = 0;
+		if (isset($metrics_active))
+			foreach ($metrics_active as $key => $value)
+				if (isset($metrics[$key]))
+					$pass = 1;
+		# 
+		
+		if (isset($_GET["metric"]) && $pass){
+			$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$id."'");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			foreach ($metrics_active as $key => $metric){
+				if (isset($metrics_active[$metric["metric_id"]])){
+					$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index_id."');");
+					if (PEAR::isError($DBRESULT))
+						print "Mysql Error : ".$DBRESULT->getDebugInfo();
+				}
 			}
-			/*
-			 else if (!isset($_GET["period"])){
-				$start = $_GET["start"];
-				$end = $_GET["end"];
-			} else {
-				$start = $_GET["start"];
-				$end = $_GET["end"];	
-			}*/
+		} else {
+			$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index_id."' AND `contact_id` = '".$contact_id."'");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			$metrics_active = array();
+			if ($DBRESULT->numRows())
+				while ($DBRESULT->fetchInto($metric))
+					$metrics_active[$metric["metric_id"]] = 1;		
+			else
+				foreach ($metrics as $key => $value)
+					$metrics_active[$key] = 1;	
+		}
+
+	
+		if($multi)
+			echo "<multi_svc>";
+		
+		else
+			echo "<svc_zoom>";
+
+		echo "<sid>".$sid."</sid>";
+		echo "<id>".$id."</id>";
+		echo "<opid>".$openid."</opid>";
+		echo "<start>".$start."</start>";
+		echo "<end>".$end."</end>";
+		echo "<index>".$index_id."</index>";
+		echo "<split>".$split."</split>";
+		echo "<tpl>".$template_id."</tpl>";
+		
+		if(!$multi)
+		{
+			if($split == 0){
+				echo "<metricsTab>";
+				$flag = 0;
+				foreach($metrics as $id => $metric){
 			
-			
-			# verify if metrics in parameter is for this index
-			$metrics_active =& $_GET["metric"];
-			$pass = 0;
-			if (isset($metrics_active))
-				foreach ($metrics_active as $key => $value)
-					if (isset($metrics[$key]))
-						$pass = 1;
-			# 
-			
-			if (isset($_GET["metric"]) && $pass){
-				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$id."'");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getDebugInfo();
-				foreach ($metrics_active as $key => $metric){
-					if (isset($metrics_active[$metric["metric_id"]])){
-						$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index_id."');");
-						if (PEAR::isError($DBRESULT))
-							print "Mysql Error : ".$DBRESULT->getDebugInfo();
+					if(isset($_GET["metric"]) && $_GET["metric"][$id] == 1)
+					{
+						if($flag)
+							echo "&amp;";
+						$flag = 1;
+						echo "metric[".$id."]=1";
 					}
 				}
-			} else {
-				$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index_id."' AND `contact_id` = '".$contact_id."'");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getDebugInfo();
-				$metrics_active = array();
-				if ($DBRESULT->numRows())
-					while ($DBRESULT->fetchInto($metric))
-						$metrics_active[$metric["metric_id"]] = 1;		
-				else
-					foreach ($metrics as $key => $value)
-						$metrics_active[$key] = 1;	
+				echo "</metricsTab>";
 			}
-
-	/*
-		$period['Daily']= (time() - 60 * 60 * 24);
-		$period['Weekly']= (time() - 60 * 60 * 24 * 7);
-		$period['Monthly']= (time() - 60 * 60 * 24 * 31);
-		$period['Yearly']= (time() - 60 * 60 * 24 * 365);
-	*/
-	
-	if($multi)
-		echo "<multi_svc>";
-	
-	else
-		echo "<svc_zoom>";
-
-	echo "<sid>".$sid."</sid>";
-	echo "<id>".$id."</id>";
-	echo "<opid>".$openid."</opid>";
-	echo "<start>".$start."</start>";
-	echo "<end>".$end."</end>";
-	echo "<index>".$index_id."</index>";
-	echo "<split>".$split."</split>";
-	echo "<tpl>".$template_id."</tpl>";
-	
-	if(!$multi)
-	{
-		if($split == 0){
-			echo "<metricsTab>";
-			$flag = 0;
-			foreach($metrics as $id => $metric){
-		
-				if(isset($_GET["metric"]) && $_GET["metric"][$id] == 1)
-				{
-					if($flag)
-						echo "&amp;";
-					$flag = 1;
-					echo "metric[".$id."]=1";
-				}
-			}
-			echo "</metricsTab>";
-		}
-		else
-		{
-			echo "<metricsTab></metricsTab>";
-		}
-		
-		foreach($metrics as $id => $metric){
-			echo "<metrics>";
-			echo "<metric_id>" . $id ."</metric_id>";
-	
-			if(isset($_GET["metric"]) && $_GET["metric"][$id] == 0)
-				echo "<select>0</select>";
 			else
-				echo "<select>1</select>";
-	
-			echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
-			echo "</metrics>";
+			{
+				echo "<metricsTab></metricsTab>";
+			}
+			
+			foreach($metrics as $id => $metric){
+				echo "<metrics>";
+				echo "<metric_id>" . $id ."</metric_id>";
+		
+				if(isset($_GET["metric"]) && $_GET["metric"][$id] == 0)
+					echo "<select>0</select>";
+				else
+					echo "<select>1</select>";
+		
+				echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
+				echo "</metrics>";
+			}
 		}
+		
+		if(!$multi)
+		foreach($graphTs as $id => $tpl){
+			if($tpl && $id){
+				echo "<tpl>";
+					echo "<tpl_name>".$tpl."</tpl_name>";
+					echo "<tpl_id>".$id."</tpl_id>";
+				echo "</tpl>";	
+			}
+		}
+	
+	
+		if($multi)
+			echo "</multi_svc>";
+		else
+			echo "</svc_zoom>";
 	}
 	
-	if(!$multi)
-	foreach($graphTs as $id => $tpl){
-		if($tpl && $id){
-			echo "<tpl>";
-				echo "<tpl_name>".$tpl."</tpl_name>";
-				echo "<tpl_id>".$id."</tpl_id>";
-			echo "</tpl>";	
-		}
-	}
-	
-	
-	if($multi)
-	echo "</multi_svc>";
 	else
-	echo "</svc_zoom>";
-	
-	
+	{
+	// no output
 	}
+	
 } 
 /*
  * End foreach

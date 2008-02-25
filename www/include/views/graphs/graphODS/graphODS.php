@@ -54,9 +54,20 @@ For information : contact@oreon-project.org
 	else
 		$id = 1;
 
-	if(isset($_GET["id_tab"])){
-		$id = $_GET["id_tab"];
+
+	
+	if(isset($_POST["svc_id"]) && $_POST["svc_id"]){
+		$id = "";
+		$id_svc = $_POST["svc_id"];
+		$tab_svcs = explode(",", $id_svc);
+		foreach($tab_svcs as $svc)
+		{
+			$tmp = explode(";", $svc);
+			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+		}
 	}
+
+
 	
 	$id_log = "'RR_0'";
 	$multi = 0;
@@ -143,6 +154,7 @@ For information : contact@oreon-project.org
 			tree.enableDragAndDrop(0);
 			tree.enableTreeLines(false);	
 			tree.enableCheckBoxes(true);
+			tree.enableThreeStateCheckboxes(true);
 
 
 // linkBar to log/reporting/graph/ID_card
@@ -307,6 +319,12 @@ if(document.getElementById('menu_2'))
 				var proc = new Transformation();
 				var _addrXSL = "./include/views/graphs/graphODS/GraphService.xsl";
 				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?multi='+multi+'&split='+_split+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+
+
+				var header = document.getElementById('header');
+				header.innerHTML += _addrXML;
+
+
 				proc.setXml(_addrXML)
 				proc.setXslt(_addrXSL)
 				proc.transform("graphView4xml");
@@ -316,113 +334,7 @@ if(document.getElementById('menu_2'))
 
 
 				
-function displayTimePicker(timeFieldName, displayBelowThisObject, dtFormat)
-{
-	if (document.getElementsByName (timeFieldName).item(1))
-	  var targetDateField = document.getElementsByName (timeFieldName).item(1);
-	else
-	  var targetDateField = document.getElementsByName (timeFieldName).item(0);
 
-
-  var x = displayBelowThisObject.offsetLeft;
-  var y = displayBelowThisObject.offsetTop + displayBelowThisObject.offsetHeight ;
- 
-  // deal with elements inside tables and such
-  var parent = displayBelowThisObject;
-  while (parent.offsetParent) {
-    parent = parent.offsetParent;
-    x += parent.offsetLeft;
-    y += parent.offsetTop ;
-  }
-drawTimePicker(timeFieldName, targetDateField, x, y);
-}
-
-function drawTimePicker(timeFieldName, targetTimeField, x, y)
-{
- 	var timePickerDivID = timeFieldName + "_timePickerDivID";
- 
-	var newNode = document.createElement("select");
-    newNode.setAttribute("id", timePickerDivID);
-    newNode.setAttribute("class", "tpDiv");
-    newNode.setAttribute("size", 6);
-    newNode.setAttribute("style", "visibility: hidden;");
-	newNode.onchange = function() { 
-		var pickerDiv = document.getElementById(timePickerDivID);
-		targetTimeField.value = '';
-		targetTimeField.innerHTML = '';
-		
-		targetTimeField.value = pickerDiv.options[pickerDiv.selectedIndex].value;
-		pickerDiv.style.visibility = (pickerDiv.style.visibility == "visible" ? "hidden" : "visible");
-		pickerDiv.style.display = (pickerDiv.style.display == "block" ? "none" : "block");
-
-		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
-		pickerDiv_close.style.visibility = "hidden";
-		pickerDiv_close.style.display = "block";
-
-
-		return false;
-	};
-
-	var _zero = "0";
-	for (var i=0; i < 24; i++) {
-		if(i < 10)
-			_zero = "0";
-		else
-			_zero = "";
-		
-		var k = document.createElement('option');
-		k.value= _zero + i + ":00";
-		k.innerHTML= _zero + i + ":00";
-		var currentTime = new Date()
-		if(i == currentTime.getHours())
-		k.selected = true;
-		newNode.appendChild(k);		
-
-		var k = document.createElement('option');
-		k.value= _zero + i+":30";
-		k.innerHTML= _zero + i+":30";
-		newNode.appendChild(k);
-	}
-    document.body.appendChild(newNode);
-    
-  
-	var pickerDiv = document.getElementById(timePickerDivID);
-	pickerDiv.style.position = "absolute";
-	pickerDiv.style.left = x + "px";
-	pickerDiv.style.top = y + "px";
-	pickerDiv.style.visibility = (pickerDiv.style.visibility == "visible" ? "hidden" : "visible");
-	pickerDiv.style.display = (pickerDiv.style.display == "block" ? "none" : "block");
-	pickerDiv.style.zIndex = 10000;
-
-
-	var closeButton = document.createElement("input");
-    closeButton.type= "button";
-    closeButton.value= "close";
-	closeButton.style.position = "absolute";
-	closeButton.id = timePickerDivID + "_close";
-	closeButton.style.left = x + "px";
-	closeButton.style.top = y + 78 + "px";
-	closeButton.style.width = 45 + "px";
-	closeButton.style.zIndex = 10000;
-	closeButton.style.textDecoration = "none";
-
-	closeButton.onclick = function() { 
-
-		var pickerDiv = document.getElementById(timePickerDivID);
-		pickerDiv.style.visibility = "hidden";
-		pickerDiv.style.display = "block";
-		
-//		var pickerDiv_close = document.getElementById(timePickerDivID+"_close");
-		var pickerDiv_close = this;
-		pickerDiv_close.style.visibility = "hidden";
-		pickerDiv_close.style.display = "block";
-		return false;
-	};
-
-    document.body.appendChild(closeButton);
-
-    
-}
 
 graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
 
