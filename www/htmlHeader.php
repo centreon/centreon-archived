@@ -20,11 +20,10 @@ For information : contact@oreon-project.org
 		exit();
 	print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
 
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>" lang="<?php echo $mlang; ?>">
 <head>
-<title>Supervision Tool - Powered By Centreon</title>
+<title>Centreon </title>
 <HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
