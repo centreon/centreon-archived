@@ -19,34 +19,6 @@ For information : contact@oreon-project.org
 
 * {margin:0; padding:0}
 
-#menu_1{			
-	background-image: url("Images/menu_bg.gif");
-	height:28px;
-	background-position:top left;
-	background-repeat:repeat-x;
-}
-
-#menu_1 li {		height:24px;    padding-right:1px;    list-style-type: none;    float: left;    text-align: center;    background: url("Images/menu_r.gif") right no-repeat 0px;}
-#menu_1 li div{		float: left;    padding-top:3px;    padding-left:7px;    padding-right:3px;    height:24px;}
-#menu_1 li a{		font-family:Arial, Helvetica, Sans-Serif;    font-size:12px;    text-decoration: none;    color: #666;}
-
-#logli{	float:right;}
-
-#menu1_bgimg_{		float:left;}
-#menu1_bgcolor{		height:28px;}
-#menu_2{			padding-bottom:1px; font-family:Arial, Helvetica, Sans-Serif;    color:#666;    word-spacing: 5px;}
-#menu_2 a{			padding-left:5px;    padding-right:2px;    color:#666;    font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;}
-
-.separator_menu{	color:#afafaf;  font-weight:bolder;}
-
-#menu_3 a{			font-family:Arial, Helvetica, Sans-Serif;    font-size:11px;    color:#666;}
-#menu_3 a:hover{    color:#E8AB5C;}
-#menu_3 li{    		padding-left:1px; list-style-type: none;}
-
-#menu_3 {    		
-	padding-bottom:5px;
-	padding-left:50px;
-}
 
 #topright {			float: right;}
 #bottomright {		float: right;}
@@ -77,27 +49,17 @@ For information : contact@oreon-project.org
 .Tmenu3 {  border-collapse: collapse; background-color: white;}
 .Tmenu3 td {padding: 0px; }
 .Tmenu3 .top .left, .Tmenu3 .top .right, .Tmenu3 .bottom .left, .Tmenu3 .bottom .right {height: 9px;	width: 10px; }
-
 .Tmenu3 .top .left{width:10px;padding-left:10px;}
 .Tmenu3 .top .right{width:10px;padding-left:10px;}
-
 .Tmenu3 .right{width:10px;}
 .Tmenu3 .left{width:10px;}
 .Tmenu3 .center{width:100%;}
-
-
 .Tmenu3 .top .left { background-image: url(Images/topleft2.gif);}
 .Tmenu3 .top .right { background-image: url(Images/topright2.gif);}
 .Tmenu3 .bottom .left { background-image: url(Images/bottomleft2.gif); }
 .Tmenu3 .bottom .right { background-image: url(Images/bottomright2.gif); }
-
 .Tmenu3 .bottom .center{ background: url(Images/line.gif) bottom right repeat-x; }
 .Tmenu3 .top .center{ background: url(Images/line.gif) top right repeat-x; }
 .Tmenu3 .middle .left{ background: url(Images/line.gif) left repeat-y; }
 .Tmenu3 .middle .right{ background: url(Images/line.gif) right repeat-y; }
-
-.help{
-		position:absolute;
-		right:15px;
-		top:15px;
-}
+.help{position:absolute;right:15px;top:15px;}

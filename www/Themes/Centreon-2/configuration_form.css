@@ -110,8 +110,6 @@ For information : contact@oreon-project.org
 .ListHeader td{
 	padding-top:5px;
 	height:20px;
-	font-family: Verdana, Arial, sans-serif;
-	font-size: 11px;
 	font-weight: bold;
 	border-top-width: 0.1px;
 	border-top-style:solid;
@@ -134,9 +132,7 @@ For information : contact@oreon-project.org
     border-color:#eff1f6;
     background-color:#BFD0E2;
     color:#fff;
-    font-family:Verdana, Helvetica, Sans-Serif;
-    font-size:12px;
-    font-weight:bold;
+   font-weight:bold;
 	padding-bottom: 3px;
 	padding-top: 1px;
 	padding-left: 4px;
@@ -154,8 +150,6 @@ For information : contact@oreon-project.org
     border-color:#eff1f6;
     background-color:#BFD0E2;
     color:#fff;
-    font-family:Verdana, Helvetica, Sans-Serif;
-    font-size:12px;
     font-weight:bold;
 	padding-bottom: 3px;
 	width:80px;

@@ -20,8 +20,6 @@ For information : contact@oreon-project.org
 .form_lvl_1{
     background-color:#6797E3;
     color:#fff;
-    font-family:Arial, Helvetica, Sans-Serif;
-    font-size:12px;
     font-weight:bold;
     text-align:center;
     border:1px;
@@ -29,32 +27,24 @@ For information : contact@oreon-project.org
 .form_lvl_2{
     background-color:#9ca3fa;
     color:#fff;
-    font-family:Arial, Helvetica, Sans-Serif;
-    font-size:12px;
     font-weight:normal;
     border:1px;
 }
 .form_lvl_3{
     background-color:#c0c4fa;
     color:#fff;
-    font-family:Arial, Helvetica, Sans-Serif;
-    font-size:12px;
     font-weight:normal;
     border:1px;
 }
 .form_one{
     background-color:#fff;
     color:#fff;
-    font-family:Arial, Helvetica, Sans-Serif;
-    font-size:12px;
-    font-weight:normal;
+     font-weight:normal;
     border:1px;
 }
 .form_two{
     background-color:#fffaab;
     color:#fff;
-    font-family:Arial, Helvetica, Sans-Serif;
-    font-size:12px;
     font-weight:normal;
     border:1px;
 }
