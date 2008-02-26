@@ -29,15 +29,15 @@ $lang['ErrCct'] = "Compulsory Contact";
 $lang['ErrCg'] = "Compulsory Contact Group";
 $lang['ErrCmdLine'] = "Compulsory Command Line";
 $lang['ErrCmdType'] = "Compulsory  Command Type";
-$lang['ErrOidAlreadyExist'] = "A same Oid element already exist";
+$lang['ErrOidAlreadyExist'] = "A same Oid element already exists";
 $lang['ErrAlreadyExist'] = "Name is already in use";
-$lang['ErrAddress'] = "Compulsory Adress";
+$lang['ErrAddress'] = "Compulsory Address";
 $lang['ErrRequired'] = "Required Field";
-$lang['ErrSvLeast'] = "HostGroup or Host Require";
+$lang['ErrSvLeast'] = "HostGroup or Host Required";
 $lang['ErrCctPasswd'] = "Passwords do not match";
 $lang['ErrGenFileProb'] = "Can't access to file needed";
 $lang['ErrCycleDef'] = "Circular Definition";
-$lang['ErrSvConflict'] = "This description is in conflicts with another one already define in the relation(s) selected";
+$lang['ErrSvConflict'] = "This description is in conflict with another one that is already defined in the selected relation(s)";
 $lang['ErrNotEnoughtContact'] = "You have to keep at least one contact to access to Centreon";
 
 /* Configuration Menu */
@@ -66,17 +66,17 @@ $lang['h_change'] = "Modify a Host";
 $lang['h_view'] = "View a Host";
 
 $lang['h_extInf'] = "Host Extended Infos";
-$lang['h_ExtInf_add'] = "Add an Host Extended Info";
-$lang['h_ExtInf_change'] = "Modify an Host Extended Info";
-$lang['h_ExtInf_view'] = "View an Host Extended Info";
+$lang['h_ExtInf_add'] = "Add a Host Extended Info";
+$lang['h_ExtInf_change'] = "Modify a Host Extended Info";
+$lang['h_ExtInf_view'] = "View a Host Extended Info";
 
 $lang['h_childs'] = "Linked Services";
-$lang['h_parent'] = "Template parent";
+$lang['h_parent'] = "Parent Template";
 
 $lang['h_infos'] = "General Informations";
 $lang['h_name'] = "Host Name";
 $lang['h_alias'] = "Alias";
-$lang['h_address'] = "IP Address or DNS";
+$lang['h_address'] = "IP Address / DNS";
 $lang['h_snmpCom'] = "SNMP Community";
 $lang['h_snmpVer'] = "Version";
 $lang['h_template'] = "Host Template";
@@ -87,9 +87,9 @@ $lang['h_head_links'] = "Relations";
 $lang['h_Links_add'] = "Add relations";
 $lang['h_Links_change'] = "Modify relations";
 $lang['h_Links_view'] = "View relations";
-$lang['h_HostGroupMembers'] = "HostGroups Parents";
-$lang['h_HostParents'] = "Hosts Parents";
-$lang['h_HostChilds'] = "Hosts Childs";
+$lang['h_HostGroupMembers'] = "Parent HostGroups";
+$lang['h_HostParents'] = "Parent Hosts";
+$lang['h_HostChilds'] = "Child Hosts";
 
 $lang['h_head_state'] = "Host Check Properties";
 $lang['h_checkCmd'] = "Check Command";
@@ -107,10 +107,10 @@ $lang['h_perfdataOptions'] = "Perfdata Options";
 $lang['h_freshnessOptions'] = "Freshness Control options";
 $lang['h_flappingOptions'] = "Flapping options";
 
-$lang['h_head_treat'] = "Data Treatment";
-$lang['h_add_treat'] = "Add Data Treatment";
-$lang['h_modify_treat'] = "Modify Data Treatment";
-$lang['h_view_treat'] = "View Data Treatment";
+$lang['h_head_treat'] = "Data Processing";
+$lang['h_add_treat'] = "Add Data Processing";
+$lang['h_modify_treat'] = "Modify Data Processing";
+$lang['h_view_treat'] = "View Data Processing";
 
 $lang['h_ObsessOH'] = "Obsess Over Host";
 $lang['h_checkFreshness'] = "Check Freshness";
@@ -119,11 +119,11 @@ $lang['h_flapDetect'] = "Flap Detection Enabled";
 $lang['h_lowFT'] = "Low Flap threshold";
 $lang['h_highFT'] = "High Flap Threshold";
 $lang['h_processPD'] = "Process Perf Data";
-$lang['h_retainSI'] = "Retain Satatus Information";
+$lang['h_retainSI'] = "Retain Satus Information";
 $lang['h_retainNI'] = "Retain Non Status Information";
 
 $lang['h_head_notif'] = "Notification";
-$lang['h_CgMembers'] = "ContactGroups Linked";
+$lang['h_CgMembers'] = "Linked ContactGroups";
 $lang['h_notifInt'] = "Notification Interval";
 $lang['h_notifTp'] = "Notification Period";
 $lang['h_notifOpts'] = "Notification Options";
@@ -131,13 +131,13 @@ $lang['h_notifEnabled'] = "Notification Enabled";
 $lang['h_stalOpts'] = "Stalking Options";
 
 $lang['h_nagios'] = "Nagios";
-$lang['h_notes'] = "Note";
+$lang['h_notes'] = "Notes";
 $lang['h_notesUrl'] = "URL";
 $lang['h_actionUrl'] = "Action URL";
 $lang['h_iconImg'] = "Icon";
 $lang['h_iconImgAlt'] = "Alt icon";
 $lang['h_vrmlImg'] = "VRML Image";
-$lang['h_nagStatImg'] = "Nagios Statuts Map Image";
+$lang['h_nagStatImg'] = "Nagios Status Map Image";
 $lang['h_nag2dCoords'] = "Nagios 2d Coords";
 $lang['h_nag3dCoords'] = "Nagios 3d Coords";
 
@@ -151,13 +151,13 @@ $lang['hg_alias'] = "Alias";
 $lang['hg_add'] = "Add a HostGroup";
 $lang['hg_change'] = "Modify a HostGroup";
 $lang['hg_view'] = "View a HostGroup";
-$lang['hg_CgMembers'] = "ContactGroups linked";
-$lang['hg_HostMembers'] = "Hosts linked";
+$lang['hg_CgMembers'] = "Linked ContactGroups";
+$lang['hg_HostMembers'] = "Linked Hosts";
 $lang['hg_infos'] = "General Informations";
 $lang['hg_links'] = "Relations";
 $lang['hg_notif'] = "Notification";
-$lang['hg_HostAct'] = "Hosts activate";
-$lang['hg_HostDeact'] = "Hosts deactivate";
+$lang['hg_HostAct'] = "Enabled Hosts";
+$lang['hg_HostDeact'] = "Disabled Hosts";
 
 /* Escalation  */
 
@@ -215,13 +215,13 @@ $lang['dep_sort2'] = "Host Service Description";
 /* host template model */
 
 $lang['htm'] = "Host Template Model";
-$lang['htm_childs'] = "Services Template linked";
-$lang['htm_parent'] = "Template parent";
+$lang['htm_childs'] = "Linked Services Template";
+$lang['htm_parent'] = "Parent Template";
 $lang['htm_add'] = "Add a Host Template";
 $lang['htm_change'] = "Modify a Host Template";
 $lang['htm_view'] = "View a Host Template";
 $lang['htm_template'] = "Host Template";
-$lang['htm_templateText'] = "Use a Template allow you to have multi level Template relationship";
+$lang['htm_templateText'] = "Using a Template allows you to have multi-level Template connection";
 
 /* service */
 
@@ -230,28 +230,28 @@ $lang['sv_conf'] = "Service Configuration";
 $lang['sv_add'] = "Add a Service";
 $lang['sv_change'] = "Modify a Service";
 $lang['sv_view'] = "View a Service";
-$lang['sv_parent'] = "Template parent";
+$lang['sv_parent'] = "Parent Template";
 
-$lang['sv_extInf'] = "Service Extended Infos";
+$lang['sv_extInf'] = "Service Extended Info";
 $lang['sv_ExtInf_add'] = "Add an Extended Info";
 $lang['sv_ExtInf_change'] = "Modify an Extended Info";
 $lang['sv_ExtInf_view'] = "View an Extended Info";
 
-$lang['sv_infos'] = "General Informations";
+$lang['sv_infos'] = "General Information";
 $lang['sv_hPars'] = "Linked with Hosts";
 $lang['sv_hgPars'] = "Linked with HostGroups";
 $lang['sv_description'] = "Description";
 $lang['sv_alias'] = "Alias";
 $lang['sv_alias_interest'] = "Used for Service duplication";
 $lang['sv_template'] = "Service Template";
-$lang['sv_templateText'] = "Use a Template exempt you to fill require fields";
+$lang['sv_templateText'] = "Using a Template exempts you to fill required fields";
 $lang['sv_traps'] = "Service Trap Relation";
 
 $lang['sv_head_links'] = "Relations";
 $lang['sv_Links_add'] = "Add relations";
 $lang['sv_Links_change'] = "Modify relations";
 $lang['sv_Links_view'] = "View relations";
-$lang['sv_ServiceGroupMembers'] = "ServiceGroups parents";
+$lang['sv_ServiceGroupMembers'] = "Parent ServiceGroups";
 
 $lang['sv_head_state'] = "Service State";
 $lang['sv_isVolatile'] = "Is Volatile";
@@ -266,8 +266,8 @@ $lang['sv_eventHandlerE'] = "Event Handler Enabled";
 $lang['sv_eventHandler'] = "Event Handler";
 $lang['sv_args'] = "Args";
 
-$lang['sv_head_treat'] = "Data Treatment";
-$lang['sv_paraCheck'] = "Parallelize Check";
+$lang['sv_head_treat'] = "Data Processing";
+$lang['sv_paraCheck'] = "Parallel Check";
 $lang['sv_ObsessOS'] = "Obsess Over Service";
 $lang['sv_checkFreshness'] = "Check Freshness";
 $lang['sv_FreshnessThreshold'] = "Freshness Threshold";
@@ -279,7 +279,7 @@ $lang['sv_retainSI'] = "Retain Status Information";
 $lang['sv_retainNI'] = "Retain Non Status Information";
 
 $lang['sv_head_notif'] = "Notification";
-$lang['sv_CgMembers'] = "ContactGroups implied";
+$lang['sv_CgMembers'] = "Implied ContactGroups";
 $lang['sv_notifInt'] = "Notification Interval";
 $lang['sv_notifTp'] = "Notification Period";
 $lang['sv_notifOpts'] = "Notification Type";
@@ -301,7 +301,7 @@ $lang['sv_tplt_hPars'] = "Linked to host templates ";
 
 /* Service categories */
 
-$lang['sv_nb_linked'] = "Number of service linked";
+$lang['sv_nb_linked'] = "Number of linked services";
 
 /* Meta Service */
 
@@ -316,13 +316,13 @@ $lang['ms_display'] = "Display format";
 $lang['ms_comment'] = "Comment";
 $lang['ms_levelw'] = "Warning Level";
 $lang['ms_levelc'] = "Critical Level";
-$lang['ms_calType'] = "Calcul Type";
+$lang['ms_calType'] = "Calculation Type";
 $lang['ms_selSum'] = "Sum";
 $lang['ms_selAvr'] = "Average";
 $lang['ms_selMin'] = "Min";
 $lang['ms_selMax'] = "Max";
 $lang['ms_selMod'] = "Selection Mode";
-$lang['ms_selList'] = "Services List";
+$lang['ms_selList'] = "Service List";
 $lang['ms_regexp'] = "Regular Expression";
 $lang['ms_exp'] = "Expression";
 $lang['ms_sqlMatch'] = "SQL matching";
@@ -335,7 +335,7 @@ $lang['ms_retryCheckInterval'] = "Retry Check Interval";
 $lang['ms_checkPeriod'] = "Check Period";
 
 $lang['ms_head_notif'] = "Notification";
-$lang['ms_CgMembers'] = "ContactGroups linked";
+$lang['ms_CgMembers'] = "Linked ContactGroups";
 $lang['ms_notifInt'] = "Notification Interval";
 $lang['ms_notifTp'] = "Notification Period";
 $lang['ms_notifOpts'] = "Notification Type";
@@ -363,7 +363,7 @@ $lang['stm_add'] = "Add a Service Template Model";
 $lang['stm_change'] = "Modify a Service Template Model";
 $lang['stm_view'] = "View a Service Template Model";
 $lang['stm_template'] = "Template Service Model";
-$lang['stm_templateText'] = "Use a Template Model allow you to have multi level Template relationship";
+$lang['stm_templateText'] = "Using a Template Model allows you to have multi-level Template connections";
 
 /* service group*/
 
@@ -373,8 +373,8 @@ $lang['sg_alias'] = "Alias";
 $lang['sg_add'] = "Add a ServiceGroup";
 $lang['sg_change'] = "Modify a ServiceGroup";
 $lang['sg_view'] = "View a ServiceGroup";
-$lang['sg_hostServiceMembers'] = "Host Services linked";
-$lang['sg_hostGroupServiceMembers'] = "Host Group Services linked";
+$lang['sg_hostServiceMembers'] = "Linked Host Services";
+$lang['sg_hostGroupServiceMembers'] = "Linked Host Group Services";
 $lang['sg_infos'] = "General Informations";
 $lang['sg_links'] = "Relations";
 $lang['sg_notif'] = "Notification";
@@ -422,7 +422,7 @@ $lang['cct_ldap_search_filter_help'] = "Active Directory : (&(objectClass=user)(
 $lang['cg_infos'] = "General Informations";
 $lang['cg_name'] = "Contact Group Name";
 $lang['cg_alias'] = "Alias";
-$lang['cg_members'] = "Contacts linked";
+$lang['cg_members'] = "Linked Contacts";
 $lang['cg_notif'] = "Notification";
 $lang['cg_add'] = "Add a Contact Group";
 $lang['cg_change'] = "Modify a Contact Group";
@@ -819,7 +819,7 @@ $lang['m_traps_manufacturer'] = "Vendor Name";
 $lang['m_traps_desc'] = "Description";
 $lang['m_traps_alias'] = "Alias";
 $lang['m_traps_subtitle1'] = "Action 1 : Submit result to Nagios";
-$lang['m_traps_subtitle2'] = "Action 2 : Force rescheduling service check";
+$lang['m_traps_subtitle2'] = "Action 2 : Force service check rescheduling";
 $lang['m_traps_subtitle3'] = "Action 3 : Execute a Command";
 
 $lang['m_traps_add'] = "Add a Trap definition";
