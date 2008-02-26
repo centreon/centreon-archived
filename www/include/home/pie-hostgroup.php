@@ -93,7 +93,7 @@
 	// create the graph object:
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';
-	$g->title( 'Status des groupes d\'hotes', '{font-size:18px; color: #424242; margin: 5px; background-color: #F3F6F6; padding:5px; padding-left: 20px; padding-right: 20px;}' );
+	$g->title( _('Status of Host Groups'), '{font-size:18px; color: #424242; margin: 5px; background-color: #F3F6F6; padding:5px; padding-left: 20px; padding-right: 20px;}' );
 	
 	//$g->set_data( $data_1 );
 	//$g->bar_3D( 75, '#D54C78', '2006', 10 );
@@ -108,12 +108,12 @@
 	$g->x_axis_colour( '#909090', '#ADB5C7' );
 	$g->y_axis_colour( '#909090', '#ADB5C7' );
 	
-	$g->set_tool_tip( ' Accessibilite des hosts du groupe #x_label# : #val# %' );
+	$g->set_tool_tip( _(' Availability of hosts from the group ') . '#x_label# : #val# %' );
 	
 	$g->set_x_labels(array($strnameY));
 	$g->set_y_max( $percentmax );
 	$g->y_label_steps( 5 );
-	$g->set_y_legend( 'Availability', 12, '#424242' );
+	$g->set_y_legend( _('Availability'), 12, '#424242' );
 	echo $g->render();
 
 
