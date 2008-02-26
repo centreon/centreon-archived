@@ -410,7 +410,7 @@ $lang['page'] = "Page";
 $lang['required'] = "<font color='red'>*</font> required";
 $lang['nbr_per_page'] = "Nbr per page";
 $lang['reset'] = "Reset";
-$lang['time_sec'] = " secondes ";
+$lang['time_sec'] = " seconds ";
 $lang['time_min'] = " minutes ";
 $lang['time_hours'] = " Hours ";
 $lang['time_days'] = " Days ";
