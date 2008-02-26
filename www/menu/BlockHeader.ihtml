@@ -73,6 +73,7 @@
 		</tr>
 		</table>
 	</div>
+	<span id="linkBar"></span>
 	<span id="logli">
 		<img src='./img/icones/16x16/text_code.gif'>&nbsp;<a href='./oreon.php?p={$p}&doc=1&page=toc.html' alt='{$Documentation}'>{$Documentation}</a>&nbsp;&nbsp;
 		<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/text_view.gif" alt='{$legend1}' title='{$legend2}' alt='{$Help}'>&nbsp;<a onclick="DisplayHidden('legend');">{$Help}</a>&nbsp;&nbsp;

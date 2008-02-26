@@ -215,7 +215,6 @@ For information : contact@oreon-project.org
 	}
 
 	$tpl->assign("tab_user", $tab_user);
-	$tpl->assign('lang', $lang);
 	$tpl->assign('amIadmin', $oreon->user->admin);
 
 	# Display
