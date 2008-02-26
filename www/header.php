@@ -16,7 +16,9 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	# Bench
+	/*
+	 * Bench
+	 */
 	function microtime_float() 	{
 	   list($usec, $sec) = explode(" ", microtime());
 	   return ((float)$usec + (float)$sec);
@@ -27,10 +29,14 @@ For information : contact@oreon-project.org
 
 	$advanced_search = 0;
 
-	# Define
+	/*
+	 * Define
+	 */
 	define('SMARTY_DIR', '../GPL_LIB/Smarty/libs/');
 
-	# Include
+	/*
+	 * Include
+	 */
 	require_once ("../etc/centreon.conf.php");
 	require_once ("./DBconnect.php");
 	require_once ("./DBOdsConnect.php");
@@ -49,7 +55,9 @@ For information : contact@oreon-project.org
 	    ');
 	}
 
-	# Delete Session Expired
+	/*
+	 * Delete Session Expired
+	 */
 	$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 	$DBRESULT->fetchInto($session_expire);
@@ -58,10 +66,12 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
 	if (PEAR::isError($DBRESULT)) print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br>";
 
-	# Get session and Check if session is not expired
+	/*
+	 * Get session and Check if session is not expired
+	 */
 	$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
 	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-
+	
 	if (!$DBRESULT->numRows())
 		header("Location: index.php?disconnect=2");
 
@@ -139,11 +149,11 @@ For information : contact@oreon-project.org
 
 	# Load traduction in the selected language.
 	is_file ("./lang/".$oreon->user->get_lang().".php") ? include_once ("./lang/".$oreon->user->get_lang().".php") : include_once ("./lang/en.php");
-	is_file ("./include/configuration/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/configuration/lang/".$oreon->user->get_lang().".php") : include_once ("./include/configuration/lang/en.php");
+	//is_file ("./include/configuration/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/configuration/lang/".$oreon->user->get_lang().".php") : include_once ("./include/configuration/lang/en.php");
 	is_file ("./include/monitoring/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/monitoring/lang/".$oreon->user->get_lang().".php") : include_once ("./include/monitoring/lang/en.php");
-	is_file ("./include/options/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/options/lang/".$oreon->user->get_lang().".php") : include_once ("./include/options/lang/en.php");
-	is_file ("./include/reporting/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/reporting/lang/".$oreon->user->get_lang().".php") : include_once ("./include/reporting/lang/en.php");
-	is_file ("./include/inventory/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/inventory/lang/".$oreon->user->get_lang().".php") : include_once ("./include/inventory/lang/en.php");
+	//is_file ("./include/options/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/options/lang/".$oreon->user->get_lang().".php") : include_once ("./include/options/lang/en.php");
+	//is_file ("./include/reporting/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/reporting/lang/".$oreon->user->get_lang().".php") : include_once ("./include/reporting/lang/en.php");
+	//is_file ("./include/inventory/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/inventory/lang/".$oreon->user->get_lang().".php") : include_once ("./include/inventory/lang/en.php");
 	is_file ("./include/views/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/views/lang/".$oreon->user->get_lang().".php") : include_once ("./include/views/lang/en.php");
 	is_file ("./include/tools/lang/".$oreon->user->get_lang().".php") ? include_once ("./include/tools/lang/".$oreon->user->get_lang().".php") : include_once ("./include/tools/lang/en.php");
 

@@ -131,7 +131,8 @@
 /usr/local/centreon/www/include/views/graphs/graphODS/graphODSServiceZoom.php
 
 /usr/local/centreon/www/menu/Menu.php
-
+/usr/local/centreon/www/common/quickSearch.php
+/usr/local/centreon/www/common/pagination.php
 
 
 
