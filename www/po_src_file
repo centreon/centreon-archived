@@ -100,6 +100,20 @@
 /usr/local/centreon/www/include/configuration/configObject/traps-manufacturer/formMnftr.php
 /usr/local/centreon/www/include/configuration/configObject/traps-manufacturer/listMnftr.php
 /usr/local/centreon/www/include/configuration/configObject/traps-mibs/formMibs.php
+/usr/local/centreon/www/include/reporting/dashboard/ExportCSV_HostGroupLog.php
+/usr/local/centreon/www/include/reporting/dashboard/ExportCSV_HostLog.php
+/usr/local/centreon/www/include/reporting/dashboard/ExportCSV_ServiceGroupLog.php
+/usr/local/centreon/www/include/reporting/dashboard/ExportCSV_ServiceLog.php
+/usr/local/centreon/www/include/reporting/dashboard/HostGroupLog.php
+/usr/local/centreon/www/include/reporting/dashboard/HostLog.php
+/usr/local/centreon/www/include/reporting/dashboard/ServicesGroupLog.php
+/usr/local/centreon/www/include/reporting/dashboard/ServicesLog.php
+/usr/local/centreon/www/include/reporting/dashboard/simple-func.php
+/usr/local/centreon/www/include/reporting/dashboard/viewHostGroupLog.php
+/usr/local/centreon/www/include/reporting/dashboard/viewHostLog.php
+/usr/local/centreon/www/include/reporting/dashboard/viewServicesGroupLog.php
+/usr/local/centreon/www/include/reporting/dashboard/viewServicesLog.php
+/usr/local/centreon/www/include/tools/minTools.php
 
 /usr/local/centreon/www/menu/Menu.php
 
