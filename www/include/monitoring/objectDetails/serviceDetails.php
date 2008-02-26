@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-$ndo_base_prefix = "nagios";
+	$ndo_base_prefix = "nagios";
 
 	if (isset($_GET["host_name"]) && $_GET["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"]){
 		$host_name = $_GET["host_name"];
@@ -38,8 +38,8 @@ $ndo_base_prefix = "nagios";
 		include_once("./DBndoConnect.php");
 
 		/* start ndo service info */
-		$rq ="SELECT " .
-				"nss.current_state," .
+		$rq =	"SELECT " .
+				" nss.current_state," .
 				" nss.output as plugin_output," .
 				" nss.current_check_attempt as current_attempt," .
 				" nss.status_update_time as status_update_time," .
@@ -97,7 +97,7 @@ $ndo_base_prefix = "nagios";
 		$tab_host_status[1] = "DOWN";
 		$tab_host_status[2] = "UNREACHABLE";
 
-		$rq2 ="SELECT nhs.current_state" .
+		$rq2 =	"SELECT nhs.current_state" .
 				" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
@@ -107,9 +107,6 @@ $ndo_base_prefix = "nagios";
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 		/* end ndo host detail */
 	}
-
-
-
 
 	if (!isset($_GET["service_description"]))
 		$_GET["service_description"] = $svc_description;
@@ -243,6 +240,8 @@ $ndo_base_prefix = "nagios";
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;
 
+		$optionsURL = "session_id=".session_id()."&host_name=".$_GET["host_name"]."&service_description=".$_GET["service_description"];
+
 		$tpl->assign("lang", $lang);
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);
@@ -274,8 +273,9 @@ $ndo_base_prefix = "nagios";
 		$tpl->assign("sv_ext_notes_url", getMyServiceExtendedInfoField($service_id, "esi_notes_url"));
 		$tpl->assign("sv_ext_action_url_lang", $lang['h_actionUrl']);
 		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
-		//$tpl->assign("sv_ext_icon_image", getMyServiceExtendedInfoField($service_id, "esi_icon_image"));
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
+
+		$tpl->assign("options", $optionsURL);
 
 		$tpl->display("serviceDetails.ihtml");
 	}

@@ -104,38 +104,11 @@
 				<br>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter" colspan="2">Options</td>
+						<td class="ListColHeaderCenter" colspan="2">Status</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_check_active}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.active_checks_enabled]};'>&nbsp;{$en_disable[$service_data.active_checks_enabled]}&nbsp;</font></td>
+						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
 					</tr>
-					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_check_passif}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.passive_checks_enabled]};'>&nbsp;{$en_disable[$service_data.passive_checks_enabled]}&nbsp;</font></td>
-					</tr>
-					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_notification}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.notifications_enabled]};'>&nbsp;{$en_disable[$service_data.notifications_enabled]}&nbsp;</font></td>
-					</tr>
-					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_event_handler}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.event_handler_enabled]};'>&nbsp;{$en_disable[$service_data.event_handler_enabled]}&nbsp;</font></td>
-					</tr>
-					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_flap}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.flap_detection_enabled]};'>&nbsp;{$en_disable[$service_data.flap_detection_enabled]}&nbsp;</font></td>
-					</tr>
-					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_obsessing}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.obsess_over_service]};'>&nbsp;{$en_disable[$service_data.obsess_over_service]}&nbsp;</font></td>
-					</tr>
-					{if $service_data.current_state != OK}
-					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_acknowledge}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.pb_aknowledged]};'>&nbsp;{$en_disable[$service_data.pb_aknowledged]}&nbsp;</font></td>
-					</tr>
-					{/if}
 				</table>
 				<br><br>
 				{if $lcaTopo.602}
@@ -205,11 +178,38 @@
 				<br>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.m_mon_host_statistics}</td>
+						<td class="ListColHeaderCenter" colspan="2">Options</td>
 					</tr>
-					<tr>
-						<td class="ListColCenter"><img src='./include/monitoring/objectDetails/generate_images/pie_chart_service.php?o={$o}{$status}&host_name={$h.host_name}'></td>
+					<tr class='list_one'>
+						<td class="ListColLeft">{$lang.m_mon_services_en_check_active}</td>
+						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.active_checks_enabled]};'>&nbsp;{$en_disable[$service_data.active_checks_enabled]}&nbsp;</font></td>
 					</tr>
+					<tr class='list_two'>
+						<td class="ListColLeft">{$lang.m_mon_services_en_check_passif}</td>
+						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.passive_checks_enabled]};'>&nbsp;{$en_disable[$service_data.passive_checks_enabled]}&nbsp;</font></td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft">{$lang.m_mon_services_en_notification}</td>
+						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.notifications_enabled]};'>&nbsp;{$en_disable[$service_data.notifications_enabled]}&nbsp;</font></td>
+					</tr>
+					<tr class='list_two'>
+						<td class="ListColLeft">{$lang.m_mon_event_handler}</td>
+						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.event_handler_enabled]};'>&nbsp;{$en_disable[$service_data.event_handler_enabled]}&nbsp;</font></td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft">{$lang.m_mon_services_en_flap}</td>
+						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.flap_detection_enabled]};'>&nbsp;{$en_disable[$service_data.flap_detection_enabled]}&nbsp;</font></td>
+					</tr>
+					<tr class='list_two'>
+						<td class="ListColLeft">{$lang.m_mon_obsessing}</td>
+						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.obsess_over_service]};'>&nbsp;{$en_disable[$service_data.obsess_over_service]}&nbsp;</font></td>
+					</tr>
+					{if $service_data.current_state != OK}
+					<tr class='list_one'>
+						<td class="ListColLeft">{$lang.m_mon_services_en_acknowledge}</td>
+						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.pb_aknowledged]};'>&nbsp;{$en_disable[$service_data.pb_aknowledged]}&nbsp;</font></td>
+					</tr>
+					{/if}
 				</table>
 			</td>
 		</tr>
@@ -247,3 +247,4 @@
 	</table>
 	{/if}
 </div>
+<div><img srv="./include/views/statusGraphs/displayServiceStatus.php?{$optionsGraphs}"></div>
