@@ -136,9 +136,11 @@ a:hover	{text-decoration: underline;}
 
 hr{	border:0;
 	color: #CCCCCC;
-	//background-color: #CCCCCC;
+	background-color: #CCCCCC;
 	height: 1px;
-	margin-top:3px;}
+	margin-top:3px;
+	margin-bottom:10px;
+	}
 
 .imgPathWay {
 	border:0;
@@ -204,8 +206,19 @@ hr{	border:0;
 	font-weight: bold;}
 
 #logli a,#logOut a {
-	color:#666666;}
+	color:#666666;
+	}
 
+#date{
+	position:absolute;
+	top:131px;
+	right:20px;
+	color: #525252;
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	}
+	
 #logOut{
 	position:absolute;
 	top:131px;

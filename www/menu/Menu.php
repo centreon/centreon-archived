@@ -36,7 +36,7 @@ For information : contact@oreon-project.org
 
 	# Var init
 	$sep = NULL;
-	$elemArr = array(1=>array(), 2=>array(), 3=>array(), 4=>array());
+	$elemArr = array(1 => array(), 2 => array(), 3 => array(), 4 => array());
 
 	# Special Case
 	# Put the authentification in the URL
@@ -60,7 +60,22 @@ For information : contact@oreon-project.org
 	$color["UNREACHABLE"] = $oreon->optGen["color_unreachable"];
 
 	$tpl->assign("urlLogo", 'img/logo_centreon_wt.gif');
-	$tpl->assign("lang", $lang);
+	
+	$tpl->assign("Ok", _("Ok"));
+	$tpl->assign("Warning", _("Warning"));
+	$tpl->assign("Critical", _("Critical"));
+	$tpl->assign("Unknown", _("Unknown"));
+	$tpl->assign("Pending", _("Pending"));
+	$tpl->assign("Up", _("Up"));
+	$tpl->assign("Down", _("Down"));
+	$tpl->assign("Unreachable", _("Unreachable"));
+	$tpl->assign("Hosts_States", _("Hosts States"));
+	$tpl->assign("Services_States", _("Service States"));
+	
+	$tpl->assign("Logout", _("Logout"));
+	$tpl->assign("Help", _("Help"));
+	$tpl->assign("Documentation", _("Documentation"));
+	
 	$tpl->assign("p", $p);
 	$tpl->assign("color", $color);
 	$tpl->assign("version", $version);
@@ -110,13 +125,9 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	for($i = 0; $DBRESULT->fetchInto($elem);$i++)	{
-
-		if(!$gopt["archive_log"] && ( $elem["topology_page"] == 20311 || $elem["topology_page"] == 20312 || $elem["topology_page"] == 20313 || $elem["topology_page"] == 20314))
-		{
+		if(!$gopt["archive_log"] && ( $elem["topology_page"] == 20311 || $elem["topology_page"] == 20312 || $elem["topology_page"] == 20313 || $elem["topology_page"] == 20314)){
 			;
-		}
-		else
-		{
+		} else {
 			# grab menu title for each group
 			$rq_title = "SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1";
 			$DBRESULT_title =& $pearDB->query($rq_title);
@@ -210,6 +221,7 @@ For information : contact@oreon-project.org
 	# Display
 	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("BlockMenuType1.ihtml");
+	
 	count($elemArr[2]) ? $tpl->display("BlockMenuType2.ihtml") : NULL;
 	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : print '<div id="contener"><!-- begin contener --><table id="Tcontener"><tr><td id="Tmainpage" class="TcTD">';
 ?>

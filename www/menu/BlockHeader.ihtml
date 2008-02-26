@@ -31,15 +31,14 @@
 	<div id="resume_light">
 		<table cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td>&nbsp;</td>
 			<td>
 				<table class='Resume_light_table'>
 					<tr class='Resume_light_header'>
-						<td>{$lang.m_mon_hosts_status}</td>
-						<td>{$lang.m_mon_up}</td>
-						<td>{$lang.m_mon_down}</td>
-						<td>{$lang.m_mon_unreachable}</td>
-						<td>{$lang.m_mon_pending}</td>
+						<td>{$Hosts_States}</td>
+						<td>{$Up}</td>
+						<td>{$Down}</td>
+						<td>{$Unreachable}</td>
+						<td>{$Pending}</td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
@@ -54,12 +53,12 @@
 			<td>
 				<table class='Resume_light_table'>
 					<tr class='Resume_light_header'>
-						<td>{$lang.m_mon_services_status}</td>
-						<td>{$lang.m_mon_ok}</td>
-						<td>{$lang.m_mon_warning}</td>
-						<td>{$lang.m_mon_critical}</td>
-						<td>{$lang.m_mon_pending}</td>
-						<td>{$lang.m_mon_unknown}</td>		
+						<td>{$Services_States}</td>
+						<td>{$Ok}</td>
+						<td>{$Warning}</td>
+						<td>{$Critical}</td>
+						<td>{$Pending}</td>
+						<td>{$Unknown}</td>		
 					</tr>
 					<tr >
 						<td>&nbsp;</td>
@@ -73,14 +72,13 @@
 			</td>
 		</tr>
 		</table>
-
 	</div>
 	<span id="logli">
-		<img src='./img/icones/16x16/text_code.gif'>&nbsp;<a href='./oreon.php?p={$p}&doc=1&page=toc.html'>{$lang.top_doc}</a>&nbsp;&nbsp;
-		<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/text_view.gif" alt='{$legend1}' title='{$legend2}'>&nbsp;<a onclick="DisplayHidden('legend');">{$legend1}</a>&nbsp;&nbsp;
-		<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif"></a>&nbsp;<a href="{$LogOutUrl}">{$LogOut}</a>&nbsp;
+		<img src='./img/icones/16x16/text_code.gif'>&nbsp;<a href='./oreon.php?p={$p}&doc=1&page=toc.html' alt='{$Documentation}'>{$Documentation}</a>&nbsp;&nbsp;
+		<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/text_view.gif" alt='{$legend1}' title='{$legend2}' alt='{$Help}'>&nbsp;<a onclick="DisplayHidden('legend');">{$Help}</a>&nbsp;&nbsp;
+		<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif"></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
 	</span>
-	<div id="logOut">{$Date}&nbsp;&nbsp;</div>
+	<div id="date">{$Date}</div>
 </div>
 </div>
 
