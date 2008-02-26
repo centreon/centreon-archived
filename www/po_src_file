@@ -91,6 +91,17 @@
 /usr/local/centreon/www/include/configuration/configObject/service_template_model/listServiceTemplateModel.php
 /usr/local/centreon/www/include/configuration/configObject/servicegroup/formServiceGroup.php
 /usr/local/centreon/www/include/configuration/configObject/servicegroup/listServiceGroup.php
+/usr/local/centreon/www/include/configuration/configObject/servicegroup_dependency/formServiceGroupDependency.php
+/usr/local/centreon/www/include/configuration/configObject/servicegroup_dependency/listServiceGroupDependency.php
+/usr/local/centreon/www/include/configuration/configObject/timeperiod/formTimePeriod.php
+/usr/local/centreon/www/include/configuration/configObject/timeperiod/listTimePeriod.php
+/usr/local/centreon/www/include/configuration/configObject/traps/formTraps.php
+/usr/local/centreon/www/include/configuration/configObject/traps/listTraps.php
+/usr/local/centreon/www/include/configuration/configObject/traps-manufacturer/formMnftr.php
+/usr/local/centreon/www/include/configuration/configObject/traps-manufacturer/listMnftr.php
+/usr/local/centreon/www/include/configuration/configObject/traps-mibs/formMibs.php
+
+/usr/local/centreon/www/menu/Menu.php
 
 
 
