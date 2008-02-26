@@ -208,232 +208,105 @@ $contact_id = '2';
 
 
 
-$i = 0;
-$tab_id = array();
-if($multi == 0){
-//		$tab_id[0] = $tab_tmp;
+	$i = 0;
+	$tab_id = array();
 
 
-	if( substr($openid, 0, 2) == "HG")
-	{
-		$hosts = getMyHostGroupHosts(substr($openid, 3, strlen($openid)));
-		foreach($hosts as $host)
-			$tab_id[$i++] = "HH_".$host;
+	if($multi == 0){
+		$tab_tmp = split("_",$openid);
+		$id = $tab_tmp[1];
+		$type = $tab_tmp[0];
+		array_push($tab_id,$type."_".$id);
 	}
-	else
-		$tab_id = split(",",$openid);
+	else{
+		echo "<opid>".$openid."</opid>";
+		$tab_tmp = split(",",$openid);
 	
-}
-else{
-
-	$tab_id = split(",",$openid);
-
-}
-
-
-if($multi)
-{
-	echo "<opid>".$openid."</opid>";
-
-// for HG -> replace by all host
-
-$tab_tmp = $tab_id;
-$tab_id = array();
-	foreach($tab_tmp as $openid)
-	{
-		$id = substr($openid, 3, strlen($openid));
-		$type = substr($openid, 0, 2);		
-	
-		if($type == 'HG')
+		foreach($tab_tmp as $openid)
 		{
-			$hosts = getMyHostGroupHosts($id);
-			foreach($hosts as $host)
+			$tab_tmp = split("_",$openid);
+			$id = $tab_tmp[1];
+			$type = $tab_tmp[0];
+		
+			if($type == 'HG')
 			{
-				$services = getMyHostServices($host);
+				$hosts = getMyHostGroupHosts($id);
+				foreach($hosts as $host)
+				{
+					if(host_has_one_or_more_GraphService($host)){
+						$services = getMyHostServices($host);
+						foreach($services as $svc_id => $svc_name)
+						{
+							if(service_has_graph($host,$svc_id))
+							{
+								$oid = "HS_".$svc_id;
+								array_push($tab_id,$oid);	
+							}
+						}
+					}
+				}
+			}
+			else if ($type == 'HH')
+			{
+				$services = getMyHostServices($id);
 				foreach($services as $svc_id => $svc_name)
 				{
-					$oid = "HS_".$svc_id;
-					array_push($tab_id,$oid);	
+					if(service_has_graph($id,$svc_id))
+					{
+						$oid = "HS_".$svc_id;
+						array_push($tab_id,$oid);	
+					}
+				}
+				
+			}
+			else
+			{
+				$hosts = getMyServiceHosts($id);
+				if($hosts)
+				{
+					$host_id = array_pop($hosts);					
+					if( service_has_graph($host_id,$id) )
+					{
+						array_push($tab_id,$openid);
+					}
 				}
 			}
 		}
-		else if ($type == 'HH')
-		{
-			$services = getMyHostServices($id);
-			foreach($services as $svc_id => $svc_name)
-			{
-				$oid = "HS_".$svc_id;
-				array_push($tab_id,$oid);	
-			}
-			
-		}
-		else
-			array_push($tab_id,$openid);
 	}
+
+
+/*
+ * clean double in tab_id
+ */
+$tab_tmp = $tab_id;
+$tab_id = array();
+foreach($tab_tmp as $openid)
+{
+	$tab_opid = split("_",$openid);
+	$id = $tab_opid[1];
+	$type = $tab_opid[0];
+	if(!in_array($type."_".$id, $tab_id))
+		array_push($tab_id,$type."_".$id);
 }
+
 
 foreach($tab_id as $openid)
 {
-	$id = substr($openid, 3, strlen($openid));
-	$type = substr($openid, 0, 2);
+	$tab_tmp = split("_",$openid);
+	$id = $tab_tmp[1];
+	$type = $tab_tmp[0];
 
-	echo "<opid>".$openid."</opid>";
-	echo "<print>".$id."</print>";
+	if($multi && $type == 'HS')
+		$type = "SS";
+	else if($multi)
+		$type = "NO";
+	else
+		;
 
 
-
-if($multi && $type == 'HS')
-	$type = "SS";
-else
-	$type = "NO";
-
-	if($type == "HH"){
-	
-		# Verify if template exists
-		$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-	
 	/*
-		if (!$DBRESULT->numRows())
-			print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";	
-	*/
-	
-			
-		if ($id >= 0){
-	//		if (!$isRestreint || ($isRestreint && ((isset($_GET["host_name"]) && isset($lcaHostByName["LcaHost"][$_GET["host_name"]]))||(isset($_GET["host_id"]) && isset($lcaHostByName["LcaHost"][$_GET["host_id"]]))))) {
-				# Init variable in the page
-				$label = NULL;
-				
-				$elem = array();
-	
-				$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$id."' AND `trashed` = '0' ORDER BY service_description");
-				if (PEAR::isError($DBRESULT))
-					print "Mysql Error : ".$DBRESULT->getDebugInfo();
-				
-				while ($DBRESULT->fetchInto($index_data)){
-					
-	//				if($template_id == 1)
-						$template_id = getDefaultGraph($index_data["service_id"], 1);
-					$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-					$DBRESULT2->fetchInto($GraphTemplate);
-							
-					$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE host_id = '".$id."' AND service_description = '".$index_data["service_description"]."' ORDER BY `service_description`");	
-					if (PEAR::isError($DBRESULT2))
-						print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-					$DBRESULT2->fetchInto($svc_id);
-					$service_id = $svc_id["service_id"];
-					$index_id = $svc_id["id"];
-					$host_name = $svc_id["host_name"];
-					
-					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
-						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						if (PEAR::isError($DBRESULT_meta))
-							print "Mysql Error : ".$DBRESULT_meta->getDebugInfo();
-						$DBRESULT_meta->fetchInto($meta);
-						$svc_id["service_description"] = $meta["meta_name"];
-					}
-					
-					$elem[$index_id] = array("service_id" => $service_id ,"index_id" => $index_id, "service_description" => str_replace("#S#", "/", str_replace("#BS#", "\\", $svc_id["service_description"])));
-					
-	
-	
-	//				$DBRESULT_view =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$index_id."' AND `contact_id` = '".$contact_id."'");
-					$DBRESULT_view =& $pearDB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$index_id."' AND `contact_id` = '".$contact_id."'");
-					if (PEAR::isError($DBRESULT_view))
-						print "Mysql Error : ".$DBRESULT_view->getDebugInfo();
-						while ($metric_activate = $DBRESULT_view->fetchRow())
-						$metrics_activate[$metric_activate["metric_id"]] = $metric_activate["metric_id"];
-					
-					
-					if ($GraphTemplate["split_component"]){
-						$elem[$index_id]["split"] = 1;
-						$elem[$index_id]["metrics"] = array();
-					}
-					else
-						$elem[$index_id]["split"] = 0;
-	
-	 
-					$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_id."' ORDER BY `metric_name`");
-					if (PEAR::isError($DBRESULT2))
-						print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-					while ($DBRESULT2->fetchInto($metrics_ret)){	
-						$metrics[$metrics_ret["metric_id"]] = $metrics_ret;
-						if (isset($elem[$index_id]["split"]))
-							#if (!isset($metrics_activate) || (isset($metrics_activate) && isset($metrics_activate[$metrics_ret["metric_id"]]) && $metrics_activate[$metrics_ret["metric_id"]])){
-								$elem[$index_id]["metrics"][$metrics_ret["metric_id"]] = $metrics_ret["metric_name"];	
-							#}
-					}
-					
-					/*
-					# Create period
-					if (isset($_GET["start"]) && isset($_GET["end"]) && $_GET["start"] && $_GET["end"]){
-						preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["start"], $matches);
-						$start = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3], 1) ;
-						preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $_GET["end"], $matches);
-						$end = mktime("23", "59", "59", $matches[1], $matches[2], $matches[3], 1)  + 10;
-					} else if (!isset($_GET["period"]) || (isset($_GET["period"]) && !$_GET["period"])){
-						if (!isset($graph["graph_id"]))
-							$period = 86400;
-						else {
-							$DBRESULT2 =& $pearDB->query("SELECT period FROM giv_graphs_template WHERE graph_id = '".$graph["graph_id"]."'");
-							if (PEAR::isError($DBRESULT2))
-								print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-							$DBRESULT2->fetchInto($graph);
-							$period = $graph["period"];
-						}
-					} else if ($_GET["period"])
-						$period = $_GET["period"];
-					
-					if (!isset($start) && !isset($end)){
-						$start = time() - ($period + 30);
-						$end = time() + 10;
-					}			
-		*/
-					if (isset($_GET["template_id"]))
-						$elem[$index_id]['template_id'] = $_GET["template_id"];	
-					unset($metrics_activate);
-				}
-			}
-	
-	echo "<host>";
-	echo "<name>".$host_name."</name>";
-	echo "<sid>".$sid."</sid>";
-	echo "<start>".$start."</start>";
-	echo "<end>".$end."</end>";
-	echo "<id>".$id."</id>";
-	echo "<opid>".$openid."</opid>";
-	echo "<template_id>".$template_id."</template_id>";
-	
-	
-	foreach($elem as $svc)
-	{
-		echo "<svc>";
-		echo "<name>".$svc["service_description"]."</name>";
-		echo "<index>".$svc["index_id"]."</index>";
-		echo "<service_id>".$svc["service_id"]."</service_id>";
-		echo "<split>".$svc["split"]."</split>";
-	
-	
-		if($svc["split"])
-		foreach($svc["metrics"] as $metric_id => $metric)
-		{
-			echo "<metric>";
-			echo "<name>".$metric."</name>";
-			echo "<metric_id>".$metric_id."</metric_id>";	
-			echo "</metric>";
-		}
-	
-		echo "</svc>";
-	}
-	echo "</host>";
-	}
-	
-	
-	
-		
-	
-	
+	 * for one svc -> daily,weekly,monthly,yearly..
+	 */
 	if($type == "HS"){
 		$msg_error 		= 0;
 		$tab_class 		= array("1" => "list_one", "0" => "list_two");
@@ -596,19 +469,17 @@ else
 			echo "<start>".$start."</start>";
 			echo "<end>".time()."</end>";
 	
-	if($split)
-	foreach($metrics as $metric_id => $metric)
-	{
-		echo "<metric>";
-	//	echo "<name>".$metric."</name>";
-		echo "<metric_id>".$metric_id."</metric_id>";	
-		echo "</metric>";
-	}
-	
-			echo "</period>";	
+		if($split)
+		foreach($metrics as $metric_id => $metric)
+		{
+			echo "<metric>";
+			echo "<metric_id>".$metric_id."</metric_id>";	
+			echo "</metric>";
 		}
-		echo "</svc>";
+		echo "</period>";	
 	}
+	echo "</svc>";
+}
 	
 	
 	
@@ -617,7 +488,9 @@ else
 	
 		
 	
-	
+	/*
+	 * For service zoom or multi selected
+	 */
 	if($type == "SS"){
 		$tab_class 		= array("1" => "list_one", "0" => "list_two");
 		
@@ -693,6 +566,11 @@ else
 	
 			if($template_id ==  1 && isset($svc_id["service_id"]))
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
+/*
+			if($template_id ==  0)
+				$template_id = 1;
+*/				
+
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 			$DBRESULT2->fetchInto($GraphTemplate);
 			
@@ -835,18 +713,8 @@ else
 
 echo "<lang>";
 echo "<giv_gg_tpl>".$lang["giv_gg_tpl"]."</giv_gg_tpl>";
-
 echo "<advanced>".$lang["optionAdvanced"]."</advanced>";
 echo "<giv_split_component>".$lang['giv_split_component']."</giv_split_component>";
-
- 
- 
- /*
-echo "<>".."</>";
-	$tpl->assign("lgGraph", $lang['giv_gt_name']);
-	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
-	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
-*/
 echo "</lang>";
 
 /*

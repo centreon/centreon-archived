@@ -86,10 +86,10 @@ include_once("makeJS_Common.php");
 		var _menu_2 = document.getElementById('menu_2')
 		var _divBar = document.createElement("div");
 		
-		_divBar.appendChild(create_graph_link('select','id_svc'));
-		_divBar.appendChild(create_log_link('select','id_svc'));
-//		_divBar.appendChild(create_report_link('select','id_svc'));
-//		_divBar.appendChild(create_IDCard_link('select','id_svc'));
+		_divBar.appendChild(create_graph_link('select','svc_id'));
+		_divBar.appendChild(create_log_link('select','svc_id'));
+//		_divBar.appendChild(create_report_link('select','svc_id'));
+//		_divBar.appendChild(create_IDCard_link('select','svc_id'));
 
 		_divBar.setAttribute('style','float:right; margin-right:110px;' );
 		_menu_2.appendChild(_divBar);

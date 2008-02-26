@@ -69,82 +69,6 @@ echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 */
 
 
-function getAllHostgroups()
-{
-	global $pearDB;
-	$hgs = array();
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	while ($DBRESULT->fetchInto($hg))
-		$hgs[$hg["hg_id"]] = $hg["hg_name"];
-	return $hgs;
-}
-
-function service_has_graph($host, $service)
-{
-	global $pearDBO;
-	if(is_numeric($host) && is_numeric($service)){
-		$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		
-		if($DBRESULT->numRows() > 0)
-			return true;
-	}
-	if(!is_numeric($host) && !is_numeric($service)){
-		$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".$host."' AND service_description = '".$service."'");
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getDebugInfo();
-		
-		if($DBRESULT->numRows() > 0)
-			return true;
-	}
-	return false;	
-}
-
-function host_has_one_or_more_GraphService($host_id)
-{
-	global $pearDBO;
-
-	$services = getMyHostServices($host_id);
-	foreach($services as $svc_id => $svc_name)
-	{
-		if(service_has_graph($host_id, $svc_id))
-		return true;
-	}
-	return false;	
-}
-
-function HG_has_one_or_more_host($hg_id)
-{
-	global $pearDBO;
-
-	$hosts = getMyHostGroupHosts($hg_id);
-	foreach($hosts as $host_id => $host_name)
-	{
-		$services = getMyHostServices($host_id);
-		foreach($services as $svc_id => $svc_name)
-		{
-			return true;
-		}
-	}
-	return false;	
-}
-
-function getMyHostServiceID($service_id = NULL)
-{
-	if (!$service_id) return;
-	global $pearDB;
-	$DBRESULT =& $pearDB->query("SELECT host_id FROM host h,host_service_relation hsr WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '".$service_id."' LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-	if ($DBRESULT->numRows())	{
-		$row =& $DBRESULT->fetchRow();
-		return $row["host_id"];
-	}
-	return NULL;		
-}
 
 
 $normal_mode = 1;
@@ -182,8 +106,10 @@ if($normal_mode)
 		$hosts = getMyHostGroupHosts($id);
 		foreach($hosts as $host)
 		{
-	        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
-				print("</item>");
+				if(host_has_one_or_more_GraphService($host)){
+		        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
+					print("</item>");
+				}
 		}
 	}
 	else if($type == "HH") // get services for host
@@ -220,19 +146,30 @@ if($normal_mode)
 			print "Mysql Error : ".$DBRESULT->getDebugInfo();
 		while ($DBRESULT->fetchInto($HG)){
 				$i++;
-	
 			if(HG_has_one_or_more_host($HG["hg_id"])){
 	        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 				print("</item>");
 			}
 		}
-	
 		print("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
+
+
+		$rq2 = "SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name";
+		$DBRESULT2 =& $pearDB->query($rq2);
+		if (PEAR::isError($DBRESULT2))
+			print "Mysql Error : ".$DBRESULT2->getDebugInfo();
+		while ($DBRESULT2->fetchInto($host)){
+				$i++;
+	           	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
+				print("</item>");
+		}
+
+
 		print("</item>");
 	}
 	else
 	{
-		print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='All logs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+		print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='All Graphs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 		print("<itemtext>label</itemtext>");
 		print("</item>");
 	}
@@ -346,22 +283,6 @@ else// direct to ressource (ex: pre-selected by GET)
 			}
 		}
 	}
-
-
-
-echo "<pre>";
-print_r($hgs_selected);
-echo "</pre>";
-
-
-echo "<pre>";
-print_r($hosts_selected);
-echo "</pre>";
-
-echo "<pre>";
-print_r($svcs_selected);
-echo "</pre>";
-
 
 	$hostgroups = getAllHostgroups();
 	foreach($hostgroups as $hg_id => $hg_name){

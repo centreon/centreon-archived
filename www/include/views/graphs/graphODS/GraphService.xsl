@@ -214,9 +214,6 @@
 
 	<div>
 		<table class="ListTable">
-	        <tr class="ListHeader">
-	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Service : </td>
-	        </tr>
 		        <tr class="list_one">
 					<td class='ListColLeft' valign="top" align='center'> <xsl:value-of select="name"/></td>
 	
@@ -273,18 +270,10 @@
 <xsl:if test="//multi_svc">
 	<div>
 		<table class="ListTable">
-	        <tr class="ListHeader">
-	        	<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/column-chart.gif'/>Compare</td>
-	        </tr>
-
 
 			<xsl:for-each select="//multi_svc">
 
-
-
 		        <tr class="list_one">
-					<td class='ListColLeft' valign="top" align='center'> <b>Service : <xsl:value-of select="name"/></b></td>
-	
 					<td style="text-align:right;width:42px;">
 	
 						<xsl:element name="a">
@@ -304,7 +293,7 @@
 			<xsl:if test="split = 0">
 
 							<xsl:element name="a">
-							<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="id"/>', ''); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">multi=0;graph_4_host('SS_<xsl:value-of select="id"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
 
 									<xsl:element name="img">
@@ -318,7 +307,7 @@
 			<xsl:if test="split = 1">
 				<xsl:for-each select="//metric">
 								<xsl:element name="a">
-								<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="id"/>', ''); return false;</xsl:attribute>
+								<xsl:attribute name="onClick">multi=0;graph_4_host('SS_<xsl:value-of select="id"/>', ''); return false;</xsl:attribute>
 								<xsl:attribute name="href">#</xsl:attribute>
 	
 										<xsl:element name="img">

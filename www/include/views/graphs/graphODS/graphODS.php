@@ -140,10 +140,10 @@ For information : contact@oreon-project.org
 
 
             //link tree to xml
-            tree.setXMLAutoLoading("./include/common/GetODSXmlTree.php");
+            tree.setXMLAutoLoading("./include/views/graphs/graphODS/GetODSXmlTree.php");
             
             //load first level of tree
-            tree.loadXML("./include/common/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+            tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 			// system to reload page after link with new url
 			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
@@ -196,12 +196,15 @@ if(document.getElementById('menu_2'))
 			
 			function onNodeSelect(nodeId)
 			{
-				var graphView4xml = document.getElementById('graphView4xml');
-				graphView4xml.innerHTML="..graph.." + nodeId;
+				multi = 0;
 
 				tree.openItem(nodeId);
-
-				graph_4_host(nodeId);
+				if(nodeId.substring(0,2) == 'HS')
+				{
+					var graphView4xml = document.getElementById('graphView4xml');
+					graphView4xml.innerHTML="..graph.." + nodeId;
+					graph_4_host(nodeId);
+				}
 			}
 			
 			// it's fake methode for using ajax system by default
@@ -321,8 +324,8 @@ if(document.getElementById('menu_2'))
 				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?multi='+multi+'&split='+_split+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 
 
-				var header = document.getElementById('header');
-				header.innerHTML += _addrXML;
+//				var header = document.getElementById('header');
+//				header.innerHTML += _addrXML;
 
 
 				proc.setXml(_addrXML)

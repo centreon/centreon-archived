@@ -11,8 +11,6 @@
 	function goToLog(_input_name, _id)
 	{
 		var tab = getCheckedList(_input_name, _id);
-//		document.location.href='oreon.php?p=203&mode=0&'+_id+'=' +tab;  
-
 		myHeader = document.getElementById("header");
 
 		var _form = document.createElement("form");
@@ -23,7 +21,7 @@
 		var _idValue = document.createElement("input");
 		_idValue.type ='text';
 		_idValue.value = tab;
-		_idValue.name = 'svc_id';
+		_idValue.name = _id;//'svc_id';
 		_form.appendChild(_idValue);
 		myHeader.appendChild(_form);
 
@@ -31,10 +29,28 @@
 			document.forms['goToLogByPost'].submit();	
 		}
 	}
+	
 	function goToGraph(_input_name, _id)
 	{
 		var tab = getCheckedList(_input_name, _id);
-		document.location.href='oreon.php?p=40211&mode=0&'+_id+'=' +tab;  	
+//		document.location.href='oreon.php?p=40211&mode=0&'+_id+'=' +tab;  	
+		myHeader = document.getElementById("header");
+
+		var _form = document.createElement("form");
+		_form.setAttribute('id', 'goToGraphByPost');
+		_form.setAttribute('name', 'goToGraphByPost');
+		_form.setAttribute('method', 'POST');
+		_form.setAttribute('action', 'oreon.php?p=40211&mode=0');
+		var _idValue = document.createElement("input");
+		_idValue.type ='text';
+		_idValue.value = tab;
+		_idValue.name = _id;//'svc_id';
+		_form.appendChild(_idValue);
+		myHeader.appendChild(_form);
+
+		if(document.forms['goToGraphByPost']){
+			document.forms['goToGraphByPost'].submit();	
+		}
 	}
 	function goToReport(_input_name, _id)
 	{
@@ -66,7 +82,7 @@
 		var _img_graph = _mk_img('./img/icones/24x24/chart.png', "Graph");
 		var _linkaction_graph = document.createElement("a");
 		_linkaction_graph.href = '#';
-		_linkaction_graph.onclick=function(){goToGraph(_input_name, _id)}
+		_linkaction_graph.onclick=function(){goToGraph(_input_name, _id); false;}
 		_linkaction_graph.appendChild(_img_graph);
 		return(_linkaction_graph);	
 	}

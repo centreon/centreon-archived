@@ -18,56 +18,55 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) 
-{ 	
-	header("Content-type: application/xhtml+xml"); }
-else 
+if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") )
 {
-	header("Content-type: text/xml"); 
-} 
+	header("Content-type: application/xhtml+xml"); }
+else
+{
+	header("Content-type: text/xml");
+}
 
-echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
+echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 
 
-	/* if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml) */
-	$debugXML = 0;
-	$buffer = '';
+/* if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml) */
+$debugXML = 0;
+$buffer = '';
 
-	$oreonPath = '../../../';
+$oreonPath = '../../../';
 
-	/* pearDB init */
-	require_once 'DB.php';
+/* pearDB init */
+require_once 'DB.php';
 
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBOdsConnect.php");
+include_once($oreonPath . "etc/centreon.conf.php");
+include_once($oreonPath . "www/DBconnect.php");
+include_once($oreonPath . "www/DBOdsConnect.php");
 
-	/* PHP functions */
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once($oreonPath . "www/include/common/common-Func.php");
+/* PHP functions */
+include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+include_once($oreonPath . "www/include/common/common-Func.php");
 
-	/* Connect to oreon DB */
-	$dsn = array(
-		     'phptype'  => 'mysql',
-		     'username' => $conf_oreon['user'],
-		     'password' => $conf_oreon['password'],
-		     'hostspec' => $conf_oreon['host'],
-		     'database' => $conf_oreon['db'],
-		     );
-	$options = array(
-			 'debug'       => 2,
-			 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-			 );
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+/* Connect to oreon DB */
+$dsn = array(
+	     'phptype'  => 'mysql',
+	     'username' => $conf_oreon['user'],
+	     'password' => $conf_oreon['password'],
+	     'hostspec' => $conf_oreon['host'],
+	     'database' => $conf_oreon['db'],
+	     );
+$options = array(
+		 'debug'       => 2,
+		 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
+		 );
+$pearDB =& DB::connect($dsn, $options);
+if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
+$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 /*
 	$lcaHostByID = getLcaHostByID($pearDB);
 	$lcaHostByName = getLcaHostByName($pearDB);
 	$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 */
-
 
 function getAllHostgroups()
 {
