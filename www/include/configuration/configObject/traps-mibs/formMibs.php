@@ -43,13 +43,13 @@ For information : contact@oreon-project.org
 	## Form begin
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["m_mibs_title"]);
+	$form->addElement('header', 'title', _("Load a MIB"));
 
 	#
 	## Manufacturer information
 	#
-	$form->addElement('select', 'mnftr', $lang["m_mibs_mnftr"], $mnftr);
-	$form->addElement('file', 'filename', $lang["m_mibs_file"]);
+	$form->addElement('select', 'mnftr', _("Vendor Name"), $mnftr);
+	$form->addElement('file', 'filename', _("File (.mib)"));
 
 	#
 	## Further informations
@@ -60,9 +60,9 @@ For information : contact@oreon-project.org
 	#
 	
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('mnftr', $lang['ErrName'], 'required');
-	$form->addRule('filename', $lang['ErrName'], 'required');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('mnftr', _("Compulsory Name"), 'required');
+	$form->addRule('filename', _("Compulsory Name"), 'required');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -73,8 +73,8 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl);
 
 	# Just watch a Command information
-	$subA =& $form->addElement('submit', 'submit', $lang["gen_butOK"]);
-	$form->addElement('header', 'status',$lang["mibs_status"]);
+	$subA =& $form->addElement('submit', 'submit', _("Export"));
+	$form->addElement('header', 'status',_("Status"));
 	$valid = false;
 	$msg = NULL;
 	$stdout = NULL;

@@ -45,23 +45,23 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["m_mnftr_add"]);
+		$form->addElement('header', 'title', _("Add Vendor"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["m_mnftr_change"]);
+		$form->addElement('header', 'title', _("Modify Vendor"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["m_mnftr_view"]);
+		$form->addElement('header', 'title', _("View Vendor"));
 
 	#
 	## Manufacturer information
 	#
-	$form->addElement('text', 'name', $lang["m_mnftr_name"], $attrsText);
-	$form->addElement('text', 'alias', $lang["m_mnftr_alias"], $attrsText);
-	$form->addElement('textarea', 'description', $lang["m_mnftr_desc"], $attrsTextarea);
+	$form->addElement('text', 'name', _("Vendor Name"), $attrsText);
+	$form->addElement('text', 'alias', _("Alias"), $attrsText);
+	$form->addElement('textarea', 'description', _("Description"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	#
@@ -80,11 +80,11 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('name', 'myReplace');
-	$form->addRule('name', $lang['ErrName'], 'required');
-	$form->addRule('alias', $lang['ErrName'], 'required');
+	$form->addRule('name', _("Compulsory Name"), 'required');
+	$form->addRule('alias', _("Compulsory Name"), 'required');
 	$form->registerRule('exist', 'callback', 'testMnftrExistence');
-	$form->addRule('name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -96,20 +96,20 @@ For information : contact@oreon-project.org
 
 	# Just watch a Command information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$id."'"));
 	    $form->setDefaults($mnftr);
 		$form->freeze();
 	}
 	# Modify a Command information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($mnftr);
 	}
 	# Add a Command information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
@@ -120,7 +120,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateMnftrInDB($mnftrObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$mnftrObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$mnftrObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

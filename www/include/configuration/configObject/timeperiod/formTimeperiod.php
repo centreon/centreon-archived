@@ -38,40 +38,40 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["tp_add"]);
+		$form->addElement('header', 'title', _("Add a Time Period"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["tp_change"]);
+		$form->addElement('header', 'title', _("Modify a Time Period"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["tp_view"]);
+		$form->addElement('header', 'title', _("View a Time Period"));
 
 	#
 	## Time Period basic information
 	#
-	$form->addElement('header', 'information', $lang['tp_infos']);
-	$form->addElement('text', 'tp_name', $lang["tp_name"], $attrsText);
-	$form->addElement('text', 'tp_alias', $lang["tp_alias"], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('text', 'tp_name', _("Time Period Name"), $attrsText);
+	$form->addElement('text', 'tp_alias', _("Alias"), $attrsText);
 	
 	##
 	## Notification informations
 	##
-	$form->addElement('header', 'notification', $lang['tp_notif']);
+	$form->addElement('header', 'notification', _("Notification Time Range"));
 	
-	$form->addElement('text', 'tp_sunday', $lang["tp_sunday"], $attrsText);
-	$form->addElement('text', 'tp_monday', $lang["tp_monday"], $attrsText);
-	$form->addElement('text', 'tp_tuesday', $lang["tp_tuesday"], $attrsText);
-	$form->addElement('text', 'tp_wednesday', $lang["tp_wednesday"], $attrsText);
-	$form->addElement('text', 'tp_thursday', $lang["tp_thursday"], $attrsText);
-	$form->addElement('text', 'tp_friday', $lang["tp_friday"], $attrsText);
-	$form->addElement('text', 'tp_saturday', $lang["tp_saturday"], $attrsText);
+	$form->addElement('text', 'tp_sunday', _("Sunday"), $attrsText);
+	$form->addElement('text', 'tp_monday', _("Monday"), $attrsText);
+	$form->addElement('text', 'tp_tuesday', _("Tuesday"), $attrsText);
+	$form->addElement('text', 'tp_wednesday', _("Wednesday"), $attrsText);
+	$form->addElement('text', 'tp_thursday', _("Thursday"), $attrsText);
+	$form->addElement('text', 'tp_friday', _("Friday"), $attrsText);
+	$form->addElement('text', 'tp_saturday', _("Saturday"), $attrsText);
 	
 	#
 	## Further informations
 	#
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');	
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');	
 	$form->setDefaults(array('action' => '1'));
 	
 	$form->addElement('hidden', 'tp_id');
@@ -88,11 +88,11 @@ For information : contact@oreon-project.org
 	}
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('tp_name', 'myReplace');
-	$form->addRule('tp_name', $lang['ErrName'], 'required');
-	$form->addRule('tp_alias', $lang['ErrAlias'], 'required');
+	$form->addRule('tp_name', _("Compulsory Name"), 'required');
+	$form->addRule('tp_alias', _("Compulsory Alias"), 'required');
 	$form->registerRule('exist', 'callback', 'testTPExistence');
-	$form->addRule('tp_name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('tp_name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	# 
 	##End of form definition
@@ -104,20 +104,20 @@ For information : contact@oreon-project.org
 	
 	# Just watch a Time Period information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tp_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tp_id."'"));
 	    $form->setDefaults($tp);
 		$form->freeze();
 	}
 	# Modify a Time Period information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($tp);
 	}
 	# Add a Time Period information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;
@@ -128,7 +128,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateTimeperiodInDB($tpObj->getValue());
 		$o = NULL;		
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tpObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&tp_id=".$tpObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

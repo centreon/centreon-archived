@@ -62,19 +62,19 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', $lang["m_traps_add"]);
+		$form->addElement('header', 'title', _("Add a Trap definition"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', $lang["m_traps_change"]);
+		$form->addElement('header', 'title', _("Modify a Trap definition"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', $lang["m_traps_view"]);
+		$form->addElement('header', 'title', _("View a Trap definition"));
 
 	#
 	## Command information
 	#
-	$form->addElement('text', 'traps_name', $lang["m_traps_name"], $attrsText);
-	$form->addElement('select', 'traps_status', $lang["m_traps_status"], array(0=>$lang['m_mon_ok'], 1=>$lang['m_mon_warning'], 2=>$lang['m_mon_critical'], 3=>$lang['m_mon_unknown']));
-	$form->addElement('select', 'manufacturer_id', $lang["m_traps_manufacturer"], $mnftr);
-	$form->addElement('textarea', 'traps_comments', $lang["m_traps_comments"], $attrsTextarea);
+	$form->addElement('text', 'traps_name', _("Trap name"), $attrsText);
+	$form->addElement('select', 'traps_status', _("Status"), array(0=>_("Ok"), 1=>_("Warning"), 2=>_("Critical"), 3=>_("Unknown")));
+	$form->addElement('select', 'manufacturer_id', _("Vendor Name"), $mnftr);
+	$form->addElement('textarea', 'traps_comments', _("Comments"), $attrsTextarea);
 
 	/*
 	 * Three possibilities : 	- submit result
@@ -85,24 +85,24 @@ For information : contact@oreon-project.org
 	/*
 	 * submit result 
 	 */
-	$form->addElement('text', 'traps_oid', $lang["m_traps_oid"], $attrsText);
-	$form->addElement('text', 'traps_args', $lang["m_traps_args"], $attrsText);
+	$form->addElement('text', 'traps_oid', _("OID"), $attrsText);
+	$form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
 
-	$form->addElement('checkbox', 'traps_submit_result_enable', $lang["m_trap_submit_result_enable"]);
+	$form->addElement('checkbox', 'traps_submit_result_enable', _("Submit result"));
 	$form->setDefaults(1);
 	
 	/*
 	 * Schedule svc check forced
 	 */
-	$form->addElement('checkbox', 'traps_reschedule_svc_enable', $lang["m_traps_reschedule_svc"]);
+	$form->addElement('checkbox', 'traps_reschedule_svc_enable', _("Reschedule Associated Servcies"));
 	$form->setDefaults(0);
 	
 	
 	/*
 	 * execute commande
 	 */
-	$form->addElement('text', 'traps_execution_command', $lang["m_traps_execution_command"], $attrsText);
-	$form->addElement('checkbox', 'traps_execution_command_enable', $lang["m_traps_execution_command_enable"]);
+	$form->addElement('text', 'traps_execution_command', _("Special Command"), $attrsText);
+	$form->addElement('checkbox', 'traps_execution_command_enable', _("Execute special command"));
 	$form->setDefaults(0);
 
 	#
@@ -113,9 +113,9 @@ For information : contact@oreon-project.org
 	$redirect->setValue($o);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 	
 	#
@@ -124,13 +124,13 @@ For information : contact@oreon-project.org
 
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('traps_name', 'myReplace');
-	$form->addRule('traps_name', $lang['ErrName'], 'required');
-	$form->addRule('traps_oid', $lang['ErrName'], 'required');
-	$form->addRule('manufacturer_id', $lang['ErrName'], 'required');
-	$form->addRule('traps_args', $lang['ErrName'], 'required');
+	$form->addRule('traps_name', _("Compulsory Name"), 'required');
+	$form->addRule('traps_oid', _("Compulsory Name"), 'required');
+	$form->addRule('manufacturer_id', _("Compulsory Name"), 'required');
+	$form->addRule('traps_args', _("Compulsory Name"), 'required');
 	$form->registerRule('exist', 'callback', 'testTrapExistence');
-	$form->addRule('traps_oid', $lang['ErrOidAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('traps_oid', _("A same Oid element already exists"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -142,20 +142,20 @@ For information : contact@oreon-project.org
 
 	# Just watch a Command information
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$traps_id."'"));
 	    $form->setDefaults($trap);
 		$form->freeze();
 	}
 	# Modify a Command information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($trap);
 	}
 	# Add a Command information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
@@ -166,7 +166,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateTrapInDB($trapObj->getValue());
 		$o = NULL;
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$trapObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&traps_id=".$trapObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}
@@ -182,9 +182,9 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		
-		$tpl->assign('subtitle1', $lang["m_traps_subtitle1"]);
-		$tpl->assign('subtitle2', $lang["m_traps_subtitle2"]);
-		$tpl->assign('subtitle3', $lang["m_traps_subtitle3"]);
+		$tpl->assign('subtitle1', _("Action 1 : Submit result to Nagios"));
+		$tpl->assign('subtitle2', _("Action 2 : Force service check rescheduling "));
+		$tpl->assign('subtitle3', _("Action 3 : Execute a Command"));
 		
 		$tpl->display("formTraps.ihtml");
 	}
