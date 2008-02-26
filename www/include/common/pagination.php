@@ -23,13 +23,11 @@ For information : contact@oreon-project.org
 
 	global $num, $limit, $search, $url, $pearDB;
 	global $search_type_service, $search_type_host, $host_name;
+	global $rows, $p, $lang, $gopt, $pagination;
 	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
-
-	global $rows, $p, $lang, $gopt, $pagination;
-	
 	
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 	
 
@@ -152,6 +150,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
 	$tpl->assign("lang", $lang);
+	$tpl->assign("pagin_page", _("Page"));
 	$tpl->assign("order", $_GET["order"]);
 	$tpl->assign("tab_order", $tab_order);
 	$tpl->assign('form', $renderer->toArray());
