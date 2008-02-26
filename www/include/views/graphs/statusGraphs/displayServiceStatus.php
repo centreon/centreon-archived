@@ -153,8 +153,8 @@ For information : contact@oreon-project.org
 		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 ";
 		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
 
-		if ($oreon->optGen["rrdtool_version"] == "1.2")
-			$command_line .= " --slope-mode ";
+		//if ($oreon->optGen["rrdtool_version"] == "1.2")
+		//	$command_line .= " --slope-mode ";
 				
 		/*
 		 * Init Graph Template Value
@@ -187,10 +187,11 @@ For information : contact@oreon-project.org
 
 		$command_line .= " TICK:fail#ffffa0:1.0:\"Failures Average bits out\"";
 		*/
-		$command_line .= " CDEF:vname=v1,$len,TREND ";
-		$command_line .= "  CDEF:crit=v1,75,LT,v1,0,IF ";
-		$command_line .= "  CDEF:warn=v1,75,GT,v1,0,IF ";
-		$command_line .= "  CDEF:ok=v1,100,EQ,v1,0,IF ";
+		$command_line .= " CDEF:vname=v1,3600,TREND ";
+		$command_line .= "  CDEF:crit=v1,75,LT,100,0,IF ";
+		$command_line .= "  CDEF:warn=v1,74,GT,100,0,IF ";
+		$command_line .= "  CDEF:ok=v1,100,EQ,100,0,IF ";
+		$command_line .= "  CDEF:unk=v1,UN,100,0,IF ";
 
 		//$command_line .= " AREA:v1#AAFF33";
 		//$command_line .= " VDEF:max=v1,AVERAGE ";
@@ -198,10 +199,15 @@ For information : contact@oreon-project.org
 		$command_line .= " AREA:crit#F91E05 ";
 		$command_line .= " AREA:warn#F8C706 ";
 		$command_line .= " AREA:ok#19EE11 ";
-		$command_line .= " LINE1:vname#FF0000:\"tendance\" ";
+		$command_line .= " AREA:unk#FFFFFF ";
+		$command_line .= " COMMENT:\" \\l\" ";
+		$command_line .= " LINE1:ok#19EE11:\"Ok\" ";
+		$command_line .= " LINE1:warn#F8C706:\"Warning\" ";
+		$command_line .= " LINE1:crit#F91E05:\"Critical\" ";
+		$command_line .= " LINE1:unk#FFFFFF:\"Unknown\\l\" ";
+		$command_line .= " LINE1:vname#000000:\"tendance\" ";
 		//$command_line .= " HRULE:max#FF0000:\"tendance\" ";
 		
-		$command_line .= " COMMENT:\" \\l\" ";
 		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
 		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
 		$command_line .= " GPRINT:v1:MAX:\"Max\:%7.2lf%s\"";
