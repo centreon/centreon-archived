@@ -25,10 +25,13 @@ body	{
 /* Defined Polices */
 body, input, option, select, tab, div, td {
 	font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+	color:#555555;
 	font-size: 11px;
 	margin: 0;
 	padding: 0;
 	}
+
+input, select { border: 1px gray solid;}
 
 input, select, option, input, textarea, checkbox{
 	font-weight: normal;
@@ -83,14 +86,14 @@ hr	{
 #menu_1			{background-image: url("Images/menu_bg.gif");height:28px;background-position:top left;background-repeat:repeat-x;}
 #menu_1 li 		{height:24px;    padding-right:1px;    list-style-type: none;    float: left;    text-align: center;    background: url("Images/menu_r.gif") right no-repeat 0px;}
 #menu_1 li div	{float: left;    padding-top:3px;    padding-left:7px;    padding-right:3px;    height:24px;}
-#menu_1 li a	{font-size:13px; text-decoration: none;    color: #111111;}
+#menu_1 li a	{font-size:13px; text-decoration: none;    color: #555555;}
 
 /* Menu 2 */
 
 #menu1_bgimg_	{float:left;}
 #menu1_bgcolor	{height:28px;}
 #menu_2			{padding-bottom:1px;color:#000000;word-spacing:3px;}
-#menu_2 a		{font-size:11px;text-decoration:none;color:#111111;padding-left:5px;padding-right:2px;}
+#menu_2 a		{font-size:11px;text-decoration:none;color:#555555;padding-left:5px;padding-right:2px;}
 .separator_menu2	{color:#BBBBBB;font-weight:bolder;}
 
 /* Menu 3 */
