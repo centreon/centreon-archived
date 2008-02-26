@@ -1041,5 +1041,82 @@ For information : contact@oreon-project.org
 		}
 		return $langs;
 	}
+	function getAllHostgroups()
+	{
+		global $pearDB;
+		$hgs = array();
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		while ($DBRESULT->fetchInto($hg))
+			$hgs[$hg["hg_id"]] = $hg["hg_name"];
+		return $hgs;
+	}
+	
+	function service_has_graph($host, $service)
+	{
+		global $pearDBO;
+		if(is_numeric($host) && is_numeric($service)){
+			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			
+			if($DBRESULT->numRows() > 0)
+				return true;
+		}
+		if(!is_numeric($host) && !is_numeric($service)){
+			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".$host."' AND service_description = '".$service."'");
+			if (PEAR::isError($DBRESULT))
+				print "Mysql Error : ".$DBRESULT->getDebugInfo();
+			
+			if($DBRESULT->numRows() > 0)
+				return true;
+		}
+		return false;	
+	}
+	
+	function host_has_one_or_more_GraphService($host_id)
+	{
+		global $pearDBO;
+	
+		$services = getMyHostServices($host_id);
+		foreach($services as $svc_id => $svc_name)
+		{
+			if(service_has_graph($host_id, $svc_id))
+			return true;
+		}
+		return false;	
+	}
+	
+	function HG_has_one_or_more_host($hg_id)
+	{
+		global $pearDBO;
+	
+		$hosts = getMyHostGroupHosts($hg_id);
+		foreach($hosts as $host_id => $host_name)
+		{
+			$services = getMyHostServices($host_id);
+			foreach($services as $svc_id => $svc_name)
+			{
+				if(service_has_graph($host_id, $svc_id))
+					return true;
+			}
+		}
+		return false;	
+	}
+	
+	function getMyHostServiceID($service_id = NULL)
+	{
+		if (!$service_id) return;
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h,host_service_relation hsr WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '".$service_id."' LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		if ($DBRESULT->numRows())	{
+			$row =& $DBRESULT->fetchRow();
+			return $row["host_id"];
+		}
+		return NULL;		
+	}
 
 ?>
