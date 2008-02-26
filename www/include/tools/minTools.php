@@ -44,21 +44,21 @@ For information : contact@oreon-project.org
 	$attrsText 		= array("size"=>"15");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title',$lang["m_mon_tools"]);
+	$form->addElement('header', 'title', _("Tools"));
 
 	#
 	## Command information
 	#
-	$form->addElement('header', 'host_information', $lang['m_mon_host_info']);
-	$form->addElement('text', 'host_name', $lang ["m_mon_host"], $attrsText);
-	$form->addElement('text', 'host_ip', $lang ["m_mon_address_ip"], $attrsText);
+	$form->addElement('header', 'host_information', _("Host Information"));
+	$form->addElement('text', 'host_name', _("Host"), $attrsText);
+	$form->addElement('text', 'host_ip', _("IP Address"), $attrsText);
 
 	#
 	## Command information
 	#
-	$form->addElement('header', 'information', $lang["m_mon_tools_result"]);
-	$form->addElement('text', 'command_tool', $lang["m_mon_tools_command"], $attrsText);
-	$form->addElement('text', 'command_help', $lang['cmd_output'], $attrsText);
+	$form->addElement('header', 'information', _("Result"));
+	$form->addElement('text', 'command_tool', _("Command"), $attrsText);
+	$form->addElement('text', 'command_help', _("Output"), $attrsText);
 
 	#
 	##End of form definition

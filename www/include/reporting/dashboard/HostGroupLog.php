@@ -136,7 +136,7 @@ For information : contact@oreon-project.org
 		$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
 		if($Tnone <= 1)
 		$Tnone = 0;	
-		$tab["state"] = $lang["m_UpTitle"];
+		$tab["state"] = _("Up");
 		$tab["time"] = Duration::toString($Tup);
 		$tab["timestamp"] = $Tup;
 		$tab["pourcentTime"] = round($Tup/($timeTOTAL+1)*100,2) ;
@@ -144,7 +144,7 @@ For information : contact@oreon-project.org
 		$tab["nbAlert"] = $hbase["average"]["TupNBAlert"];
 	//	$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 		$tab_resume[0] = $tab;
-		$tab["state"] = $lang["m_DownTitle"];
+		$tab["state"] = _("Down");
 		$tab["time"] = Duration::toString($Tdown);
 		$tab["timestamp"] = $Tdown;
 		$tab["pourcentTime"] = round($Tdown/$timeTOTAL*100,2);
@@ -152,7 +152,7 @@ For information : contact@oreon-project.org
 		$tab["nbAlert"] = $hbase["average"]["TdownNBAlert"];
 //		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
 		$tab_resume[1] = $tab;
-		$tab["state"] = $lang["m_UnreachableTitle"];
+		$tab["state"] = _("Unreachable");
 		$tab["time"] = Duration::toString($Tunreach);
 		$tab["timestamp"] = $Tunreach;
 		$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
@@ -160,7 +160,7 @@ For information : contact@oreon-project.org
 		$tab["nbAlert"] = $hbase["average"]["TunreachableNBAlert"];
 //		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
 		$tab_resume[2] = $tab;
-		$tab["state"] = $lang["m_PendingTitle"];
+		$tab["state"] = _("Undetermined");
 		$tab["time"] = Duration::toString($Tnone);
 		$tab["timestamp"] = $Tnone;
 		$tab["pourcentTime"] = round($Tnone/$timeTOTAL*100,2);

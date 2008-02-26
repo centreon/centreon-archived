@@ -87,7 +87,7 @@ For information : contact@oreon-project.org
 	$formService->addElement('hidden', 'host', $mhost);
 	$serviceList = array();
 	$serviceList = getMyHostServices(getMyHostID($mhost));
-	$selService =& $formService->addElement('select', 'service', $lang["m_svc"], $serviceList, array("onChange" =>"this.form.submit();"));
+	$selService =& $formService->addElement('select', 'service', _(" Service "), $serviceList, array("onChange" =>"this.form.submit();"));
 	$formService->setDefaults(array('service' => $mservice));
 
 	#
@@ -95,30 +95,30 @@ For information : contact@oreon-project.org
 	#
 	$periodList = array();
 	$periodList[""] = "";
-	$periodList["today"] = $lang["today"];
-	$periodList["yesterday"] = $lang["yesterday"];
-	$periodList["thisweek"] = $lang["thisweek"];
-	$periodList["last7days"] = $lang["last7days"];
-	$periodList["thismonth"] = $lang["thismonth"];
-	$periodList["last30days"] = $lang["last30days"];
-	$periodList["lastmonth"] = $lang["lastmonth"];
-	$periodList["thisyear"] = $lang["thisyear"];
-	$periodList["lastyear"] = $lang["lastyear"];
-	$periodList["customized"] = $lang["m_customizedPeriod"];
+	$periodList["today"] = _("Today");
+	$periodList["yesterday"] = _("Yesterday");
+	$periodList["thisweek"] = _("This Week");
+	$periodList["last7days"] = _("Last 7 Days");
+	$periodList["thismonth"] = _("This Month");
+	$periodList["last30days"] = _("Last 30 Days");
+	$periodList["lastmonth"] = _("Last Month");
+	$periodList["thisyear"] = _("This Year");
+	$periodList["lastyear"] = _("Last Year");
+	$periodList["customized"] = _("Customized");
 	$formPeriod = new HTML_QuickForm('FormPeriod1', 'post', "?p=".$p."&type_period=predefined");
-	$selHost = $formPeriod->addElement('select', 'period', $lang["m_predefinedPeriod"], $periodList);
+	$selHost = $formPeriod->addElement('select', 'period', _("Predefined:"), $periodList);
 
 	isset($mhost) ? $formPeriod->addElement('hidden', 'host', $mhost) : NULL;
 	isset($mservice) ? $formPeriod->addElement('hidden', 'service', $mservice) : NULL;
 
-	$formPeriod->addElement('header', 'title', $lang["m_if_custom"]);
+	$formPeriod->addElement('header', 'title', _("If customized period..."));
 	$formPeriod->setDefaults(array('period' => $period));
-	$formPeriod->addElement('text', 'start', $lang["m_start"]);
-	$formPeriod->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
-	$formPeriod->addElement('text', 'end', $lang["m_end"]);
-	$formPeriod->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
-	$sub = $formPeriod->addElement('submit', 'submit', $lang["m_view"]);
-	$res = $formPeriod->addElement('reset', 'reset', $lang["reset"]);
+	$formPeriod->addElement('text', 'start', _("Begin date"));
+	$formPeriod->addElement('button', "startD", _("Modify"), array("onclick"=>"displayDatePicker('start')"));
+	$formPeriod->addElement('text', 'end', _("End date"));
+	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
+	$sub = $formPeriod->addElement('submit', 'submit', _("View"));
+	$res = $formPeriod->addElement('reset', 'reset', _("Reset"));
 
 	if($period == "customized") {
 
@@ -136,49 +136,49 @@ For information : contact@oreon-project.org
 	$tpl->assign('totalTime', Duration::toString($totalTime));
 	$tpl->assign('totalpTime', $totalpTime);
 	$tpl->assign('totalpkTime', $totalpkTime);
-	$tpl->assign("allTilte",  $lang["m_allTilte"]);
+	$tpl->assign("allTilte",  _("All"));
 
 
 	$tpl->assign('o', $o);
 	$tpl->assign('mhost', $mhost);
-	$tpl->assign('hostTitle', $lang["h"]);
-	$tpl->assign('actualTitle', $lang["actual"]);
+	$tpl->assign('hostTitle', _("Host"));
+	$tpl->assign('actualTitle', _(" Actual "));
 	$tpl->assign('date_start_select', $start_date_select);
 	$tpl->assign('date_end_select', $end_date_select);
-	$tpl->assign('to', $lang["m_to"]);
-	$tpl->assign('period', $lang["m_period"]);
+	$tpl->assign('to', _(" to "));
+	$tpl->assign('period', _(" From "));
 
 	$tt = 0 + ($ed - $sd);
 
 	if($mservice && $mhost)
-		$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($tt));	
+		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));	
 
-	$tpl->assign('periodTitle', $lang["m_selectPeriodTitle"]);
-	$tpl->assign('resumeTitle', $lang["m_serviceResumeTitle"]);
-	$tpl->assign('logTitle', $lang["m_hostLogTitle"]);
-	$tpl->assign('svcTitle', $lang["m_hostSvcAssocied"]);
+	$tpl->assign('periodTitle', _("Period Selection"));
+	$tpl->assign('resumeTitle', _("Service state"));
+	$tpl->assign('logTitle', _("Today's Host log"));
+	$tpl->assign('svcTitle', _("State Breakdowns For Host Services"));
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:".$oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_warning' , "class='ListColCenter' style='background:".$oreon->optGen["color_warning"]."'");
 	$tpl->assign('style_critical' , "class='ListColCenter' style='background:".$oreon->optGen["color_critical"]."'");
 	$tpl->assign('style_unknown' , "class='ListColCenter' style='background:".$oreon->optGen["color_unknown"]."'");
 	$tpl->assign('style_pending' , "class='ListColCenter' style='background:".$oreon->optGen["color_pending"]."'");
 
-	$tpl->assign('serviceTilte', $lang["m_serviceTilte"]);
-	$tpl->assign('OKTitle', $lang["m_OKTitle"]);
-	$tpl->assign('WarningTitle', $lang["m_WarningTitle"]);
-	$tpl->assign('UnknownTitle', $lang["m_UnknownTitle"]);
-	$tpl->assign('CriticalTitle', $lang["m_CriticalTitle"]);
-	$tpl->assign('PendingTitle', $lang["m_PendingTitle"]);
+	$tpl->assign('serviceTilte', _("Service"));
+	$tpl->assign('OKTitle', _("OK"));
+	$tpl->assign('WarningTitle', _("Warning"));
+	$tpl->assign('UnknownTitle', _("Unknown"));
+	$tpl->assign('CriticalTitle', _("Critical"));
+	$tpl->assign('PendingTitle', _("Undetermined"));
 
-	$tpl->assign('StateTitle', $lang["m_StateTitle"]);
-	$tpl->assign('TimeTitle', $lang["m_TimeTitle"]);
-	$tpl->assign('TimeTotalTitle', $lang["m_TimeTotalTitle"]);
-	$tpl->assign('KnownTimeTitle', $lang["m_KnownTimeTitle"]);
-	$tpl->assign('DateTitle', $lang["m_DateTitle"]);
-	$tpl->assign('EventTitle', $lang["m_EventTitle"]);
-	$tpl->assign('HostTitle', $lang["m_hostTitle"]);
-	$tpl->assign('InformationsTitle', $lang["m_InformationsTitle"]);
-	$tpl->assign('AlertTitle', $lang["m_AlertTitle"]);
+	$tpl->assign('StateTitle', _("Status"));
+	$tpl->assign('TimeTitle', _("Time"));
+	$tpl->assign('TimeTotalTitle', _("Total Time"));
+	$tpl->assign('KnownTimeTitle', _("Known Time"));
+	$tpl->assign('DateTitle', _("Date"));
+	$tpl->assign('EventTitle', _("Event"));
+	$tpl->assign('HostTitle', _("Host"));
+	$tpl->assign('InformationsTitle', _("Info"));
+	$tpl->assign('AlertTitle', _("Alert"));
 
 	$tpl->assign('infosTitle1', $mhost);
 	$tpl->assign('infosTitle2', $start_date_select." => ".$end_date_select);		

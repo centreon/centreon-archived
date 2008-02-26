@@ -73,11 +73,11 @@ For information : contact@oreon-project.org
 	header("Content-disposition: filename=".$mhostgroup.".csv");
 
 
-	echo $lang["HostgroupTitle"].";".$lang["start"]."; ".$lang["m_end"]."; ".$lang["duration"]."\n";
+	echo _("Hostgroup").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
 	echo $mhostgroup."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
 	echo "\n";
 
-	echo $lang["m_StateTitle"].";".$lang["m_TimeTitle"].";".$lang["m_TimeTotalTitle"].";".$lang["m_KnownTimeTitle"]."; ".$lang["m_AlertTitle"]."\n";
+	echo _("Status").";"._("Time").";"._("Total Time").";"._("Known Time")."; "._("Alert")."\n";
 	foreach ($tab_resume as $tab) {
 		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. ";".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
@@ -85,11 +85,11 @@ For information : contact@oreon-project.org
 	echo "\n";
 
 
-	echo $lang["day"].";".$lang["duration"].";".
-		 $lang["m_UpTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_UpTitle"].";".$lang["m_UpTitle"]." ".$lang["m_AlertTitle"].";".
-		 $lang["m_DownTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_DownTitle"].";".$lang["m_DownTitle"]." ".$lang["m_AlertTitle"].";".
-		 $lang["m_UnreachableTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_UnreachableTitle"].";".$lang["m_UnreachableTitle"]." ".$lang["m_AlertTitle"].";".
-		 $lang["m_PendingTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_PendingTitle"].";\n";
+	echo _("Day").";"._("Duration").";".
+		 _("Up")." "._("Time").";"._("Up").";"._("Up")." "._("Alert").";".
+		 _("Down")." "._("Time").";"._("Down").";"._("Down")." "._("Alert").";".
+		 _("Unreachable")." "._("Time").";"._("Unreachable").";"._("Unreachable")." "._("Alert").";".
+		 _("Undetermined")." "._("Time").";"._("Undetermined").";\n";
 
 	foreach ($tab_report as $day => $report) {
 		echo $day.";".$report["duration"].";".

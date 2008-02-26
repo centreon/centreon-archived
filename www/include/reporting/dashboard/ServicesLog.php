@@ -96,16 +96,16 @@ For information : contact@oreon-project.org
 	#
 	$periodList = array();
 	$periodList[""] = "";
-	$periodList["today"] = $lang["today"];
-	$periodList["yesterday"] = $lang["yesterday"];
-	$periodList["thisweek"] = $lang["thisweek"];
-	$periodList["last7days"] = $lang["last7days"];
-	$periodList["thismonth"] = $lang["thismonth"];
-	$periodList["last30days"] = $lang["last30days"];
-	$periodList["lastmonth"] = $lang["lastmonth"];
-	$periodList["thisyear"] = $lang["thisyear"];
-	$periodList["lastyear"] = $lang["lastyear"];
-	$periodList["customized"] = $lang["m_customizedPeriod"];
+	$periodList["today"] = _("Today");
+	$periodList["yesterday"] = _("Yesterday");
+	$periodList["thisweek"] = _("This Week");
+	$periodList["last7days"] = _("Last 7 Days");
+	$periodList["thismonth"] = _("This Month");
+	$periodList["last30days"] = _("Last 30 Days");
+	$periodList["lastmonth"] = _("Last Month");
+	$periodList["thisyear"] = _("This Year");
+	$periodList["lastyear"] = _("Last Year");
+	$periodList["customized"] = _("Customized");
 
 	
 	if($mhost){
@@ -173,7 +173,7 @@ For information : contact@oreon-project.org
 	$tab_resume = array();
 	$tab = array();	
 	if($mservice && $mhost){
-		$tab["state"] = $lang["m_OKTitle"];
+		$tab["state"] = _("OK");
 		$tab["timestamp"] = $tab_svc["timeOK"];
 		$tab["time"] = Duration::toString($tab_svc["timeOK"]);
 		$tab["pourcentTime"] = $tab_svc["PtimeOK"];
@@ -182,7 +182,7 @@ For information : contact@oreon-project.org
 		$today_OKnbEvent = $tab_svc["OKnbEvent"];
 		$tab_resume[0] = $tab;
 
-		$tab["state"] = $lang["m_CriticalTitle"];
+		$tab["state"] = _("Critical");
 		$tab["time"] = Duration::toString($tab_svc["timeCRITICAL"]);
 		$tab["timestamp"] = $tab_svc["timeCRITICAL"];
 		$tab["pourcentTime"] = $tab_svc["PtimeCRITICAL"];
@@ -191,7 +191,7 @@ For information : contact@oreon-project.org
 		$today_CRITICALnbEvent = $tab_svc["CRITICALnbEvent"];
 		$tab_resume[1] = $tab;
 		
-		$tab["state"] = $lang["m_WarningTitle"];
+		$tab["state"] = _("Warning");
 		$tab["time"] = Duration::toString($tab_svc["timeWARNING"]);
 		$tab["timestamp"] = $tab_svc["timeWARNING"];
 		$tab["pourcentTime"] = $tab_svc["PtimeWARNING"];
@@ -200,7 +200,7 @@ For information : contact@oreon-project.org
 		$today_WARNINGnbEvent = $tab_svc["WARNINGnbEvent"];
 		$tab_resume[2] = $tab;
 		
-		$tab["state"] = $lang["m_UnknownTitle"];
+		$tab["state"] = _("Unknown");
 		$tab["time"] = Duration::toString($tab_svc["timeUNKNOWN"]);
 		$tab["timestamp"] = $tab_svc["timeUNKNOWN"];
 		$tab["pourcentTime"] = $tab_svc["PtimeUNKNOWN"];
@@ -209,7 +209,7 @@ For information : contact@oreon-project.org
 		$today_UNKNOWNnbEvent = $tab_svc["UNKNOWNnbEvent"];
 		$tab_resume[3] = $tab;
 		
-		$tab["state"] = $lang["m_PendingTitle"];
+		$tab["state"] = _("Undetermined");
 		$tab_svc["timeNONE"] = $tab_svc["timeNONE"] < 0 ? 0 : $tab_svc["timeNONE"];
 		$tab["time"] = Duration::toString($tab_svc["timeNONE"]);
 		$tab["timestamp"] = $tab_svc["timeNONE"];

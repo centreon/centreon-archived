@@ -64,7 +64,7 @@ For information : contact@oreon-project.org
 						"NONE" => './img/icones/12x12/info.gif',
 						);
 
-		$tab["time"] = date($lang["header_format"], $time_event);
+		$tab["time"] = date(_("Y/m/d G:i"), $time_event);
 		$tab["timeb"] = $time_event;
 		$tab["host"] = $host;
 		$tab["service"] = $service;

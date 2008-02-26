@@ -61,8 +61,8 @@ $lang["m_customizedPeriod"] = "Customized";
 $lang["m_selectPeriodTitle"] = "Period Selection";
 $lang["m_hostResumeTitle"] = "Host state";
 $lang["m_serviceResumeTitle"] = "Service state";
-$lang["m_hostLogTitle"] = "service today log";
-$lang["m_serviceLogTitle"] = "service today log";
+$lang["m_hostLogTitle"] = "Today's Host log";
+$lang["m_serviceLogTitle"] = "Today's Service log";
 $lang["m_hostSvcAssocied"] = "State Breakdowns For Host Services";
 
 $lang["m_serviceTilte"] = "Service";
@@ -73,12 +73,12 @@ $lang["m_OKTitle"] = "OK";
 $lang["m_WarningTitle"] = "Warning";
 $lang["m_UnknownTitle"] = "Unknown";
 $lang["m_CriticalTitle"] = "Critical";
-$lang["m_PendingTitle"] = "Undeterminated";
+$lang["m_PendingTitle"] = "Undetermined";
 $lang["m_UpTitle"] = "Up";
 $lang["m_DownTitle"] = "Down";
 $lang["m_UnreachableTitle"] = "Unreachable";
 
-$lang["m_StateTitle"] = "State";
+$lang["m_StateTitle"] = "Status";
 $lang["m_TimeTitle"] = "Time";
 $lang["m_TimeTotalTitle"] = "Total Time";
 $lang["m_KnownTimeTitle"] = "Known Time";

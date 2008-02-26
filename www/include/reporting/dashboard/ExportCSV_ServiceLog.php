@@ -76,11 +76,11 @@ For information : contact@oreon-project.org
 	header("Content-disposition: filename=".$mhost. "_" .$service_name.".csv");
 
 
-	echo $lang["m_hostTitle"].";".$lang["m_serviceTilte"].";".$lang["start"]."; ".$lang["m_end"]."; ".$lang["duration"]."\n";
+	echo _("Host").";"._("Service").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
 	echo $mhost."; ".$service_name."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
 	echo "\n";
 
-	echo $lang["m_StateTitle"].";".$lang["m_TimeTitle"].";".$lang["m_TimeTotalTitle"].";".$lang["m_KnownTimeTitle"]."; ".$lang["m_AlertTitle"]."\n";
+	echo _("Status").";"._("Time").";"._("Total Time").";"._("Known Time")."; "._("Alert")."\n";
 	foreach ($tab_resume as $tab) {
 		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. " %;".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
@@ -88,12 +88,12 @@ For information : contact@oreon-project.org
 	echo "\n";
 
 
-	echo $lang["day"].";".$lang["duration"].";" 
-				   .$lang["m_OKTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_OKTitle"]."; ".$lang["m_OKTitle"]." Alert;"
-				   .$lang["m_WarningTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_WarningTitle"].";".$lang["m_WarningTitle"]." Alert;"
-				   .$lang["m_UnknownTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_UnknownTitle"].";".$lang["m_UnknownTitle"]." Alert;"
-				   .$lang["m_CriticalTitle"]." ".$lang["m_TimeTitle"]."; ".$lang["m_CriticalTitle"].";".$lang["m_CriticalTitle"]." Alert;"
-				   .$lang["m_PendingTitle"]." ".$lang["m_TimeTitle"].";\n";
+	echo _("Day").";"._("Duration").";" 
+				   ._("OK")." "._("Time")."; "._("OK")."; "._("OK")." Alert;"
+				   ._("Warning")." "._("Time")."; "._("Warning").";"._("Warning")." Alert;"
+				   ._("Unknown")." "._("Time")."; "._("Unknown").";"._("Unknown")." Alert;"
+				   ._("Critical")." "._("Time")."; "._("Critical").";"._("Critical")." Alert;"
+				   ._("Undetermined")." "._("Time").";\n";
 
 	foreach ($tab_report as $day => $report) {
 			echo $day.";".$report["duration"].";".

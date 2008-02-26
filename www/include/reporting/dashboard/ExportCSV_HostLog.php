@@ -73,20 +73,20 @@ For information : contact@oreon-project.org
 	header("Content-disposition: filename=".$mhost.".csv");
 
 
-	echo $lang["m_hostTitle"].";".$lang["start"]."; ".$lang["m_end"]."; ".$lang["duration"]."\n";
+	echo _("Host").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
 	echo $mhost."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
 	echo "\n";
 
-	echo $lang["m_StateTitle"].";".$lang["m_TimeTitle"].";".$lang["m_TimeTotalTitle"].";".$lang["m_KnownTimeTitle"]."; ".$lang["m_AlertTitle"]."\n";
+	echo _("Status").";"._("Time").";"._("Total Time").";"._("Known Time")."; "._("Alert")."\n";
 	foreach ($tab_resume as $tab) {
 		echo $tab["state"]. ";".$tab["time"]. ";".$tab["pourcentTime"]. ";".$tab["pourcentkTime"]. ";".$tab["nbAlert"]. ";\n";
 	}
 	echo "\n";
-	echo $lang["m_serviceTilte"].";".$lang["m_OKTitle"]."; ".$lang["m_OKTitle"]." Alert;"
-				   .$lang["m_WarningTitle"]."; ".$lang["m_WarningTitle"]." Alert;"
-				   .$lang["m_UnknownTitle"]."; ".$lang["m_UnknownTitle"]." Alert;"
-				   .$lang["m_CriticalTitle"]."; ".$lang["m_CriticalTitle"]." Alert;"
-				   .$lang["m_PendingTitle"].";\n";
+	echo _("Service").";"._("OK")."; "._("OK")." Alert;"
+				   ._("Warning")."; "._("Warning")." Alert;"
+				   ._("Unknown")."; "._("Unknown")." Alert;"
+				   ._("Critical")."; "._("Critical")." Alert;"
+				   ._("Undetermined").";\n";
 					
 	foreach ($tab_svc as $tab) {
 		echo $tab["svcName"]. ";".$tab["PtimeOK"]. "%;".$tab["OKnbEvent"].
@@ -99,11 +99,11 @@ For information : contact@oreon-project.org
 	echo "\n";
 	echo "\n";
 
-	echo $lang["day"].";".$lang["duration"].";".
-		 $lang["m_UpTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_UpTitle"].";".$lang["m_UpTitle"]." ".$lang["m_AlertTitle"].";".
-		 $lang["m_DownTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_DownTitle"].";".$lang["m_DownTitle"]." ".$lang["m_AlertTitle"].";".
-		 $lang["m_UnreachableTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_UnreachableTitle"].";".$lang["m_UnreachableTitle"]." ".$lang["m_AlertTitle"].";".
-		 $lang["m_PendingTitle"]." ".$lang["m_TimeTitle"].";".$lang["m_PendingTitle"].";\n";
+	echo _("Day").";"._("Duration").";".
+		 _("Up")." "._("Time").";"._("Up").";"._("Up")." "._("Alert").";".
+		 _("Down")." "._("Time").";"._("Down").";"._("Down")." "._("Alert").";".
+		 _("Unreachable")." "._("Time").";"._("Unreachable").";"._("Unreachable")." "._("Alert").";".
+		 _("Undetermined")." "._("Time").";"._("Undetermined").";\n";
 
 	foreach ($tab_report as $day => $report) {
 		echo $day.";".$report["duration"].";".
