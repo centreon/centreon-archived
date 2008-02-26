@@ -118,6 +118,17 @@
 /usr/local/centreon/www/include/home/pie-hostgroup.php
 /usr/local/centreon/www/include/home/pie-svc.php
 /usr/local/centreon/www/include/home/pie-svcgroup.php
+/usr/local/centreon/www/include/views/graphs/componentTemplates/formComponentTemplate.php
+/usr/local/centreon/www/include/views/graphs/componentTemplates/listComponentTemplates.php
+/usr/local/centreon/www/include/views/graphs/graphTemplates/formGraphTemplate.php
+/usr/local/centreon/www/include/views/graphs/graphTemplates/listGraphTemplates.php
+/usr/local/centreon/www/include/views/graphs/graphODS/changeODSGraphProperties.php
+/usr/local/centreon/www/include/views/graphs/graphODS/displayODSGraphProperties.php
+/usr/local/centreon/www/include/views/graphs/graphODS/GetODSXmlGraph.php
+/usr/local/centreon/www/include/views/graphs/graphODS/graphODS.php
+/usr/local/centreon/www/include/views/graphs/graphODS/graphODSByHost.php
+/usr/local/centreon/www/include/views/graphs/graphODS/graphODSService.php
+/usr/local/centreon/www/include/views/graphs/graphODS/graphODSServiceZoom.php
 
 /usr/local/centreon/www/menu/Menu.php
 
