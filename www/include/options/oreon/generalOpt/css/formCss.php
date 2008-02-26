@@ -55,7 +55,6 @@ For information : contact@oreon-project.org
 		}		
 	}
 	
-//	$rq = "SELECT topology_id,topology_name,topology_page FROM topology WHERE topology_parent IS NULL AND topology_id IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
 	$rq = "SELECT topology_id, topology_name, topology_page FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -94,7 +93,6 @@ For information : contact@oreon-project.org
 	#Different style between each lines
 	$style = "one";
 	
-	//print_r($tab_menu);
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
 	{
 		$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
@@ -105,11 +103,10 @@ For information : contact@oreon-project.org
 		$select_list .= '</select>';
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 							 "select"=> $select_list,
-							 "menuName"=> $lang[$tab_menu[$elem["menu_nb"]]["topology_name"]],
+							 "menuName"=> _($tab_menu[$elem["menu_nb"]]["topology_name"]),
 							 "css_name"=> $elem["css_name"]);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
-	//print_r($elemArr);
 	
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -122,7 +119,9 @@ For information : contact@oreon-project.org
 	$tpl->assign('nameTitle', _("Menu"));
 	$tpl->assign('fileTitle', _("CSS File"));
 	$tpl->assign('o', $o);
-	$tpl->assign('lang', $lang);
+	$tpl->assign("CSS_configuration", _("CSS configuration"));
+	$tpl->assign("CSS_File", _("CSS File"));
+	$tpl->assign("Menu", _("Menu"));
 	$tpl->assign('p', $p);
 	$tpl->display("formCss.ihtml");	
 ?>
