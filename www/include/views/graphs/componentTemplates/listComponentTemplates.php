@@ -48,11 +48,11 @@ For information : contact@oreon-project.org
 	 * start header menu
 	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", $lang['name']);
-	$tpl->assign("headerMenu_desc", $lang['giv_ct_dsName']);
-	$tpl->assign("headerMenu_Transp", $lang["giv_ct_transparency"]);
-	$tpl->assign("headerMenu_tickness", $lang["giv_ct_tickness"]);
-	$tpl->assign("headerMenu_options", $lang['options']);
+	$tpl->assign("headerMenu_name", _("Name"));
+	$tpl->assign("headerMenu_desc", _("Data Source Name"));
+	$tpl->assign("headerMenu_Transp", _("Transparency"));
+	$tpl->assign("headerMenu_tickness", _("Thickness"));
+	$tpl->assign("headerMenu_options", _("Options"));
 
 
 	$rq = "SELECT compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template gc $SearchTool ORDER BY name LIMIT ".$num * $limit.", ".$limit;
@@ -91,7 +91,7 @@ For information : contact@oreon-project.org
 	/*
 	 * Different messages we put in the template
 	 */
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	
 	/*
 	 * Toolbar select $lang["lgd_more_actions"]
@@ -105,28 +105,28 @@ For information : contact@oreon-project.org
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");	  
-    $form->addElement('select', 'o1', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs1);
+    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 	
 	$attrs = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('".$lang['confirm_duplication']."')) {" .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('".$lang['confirm_removing']."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>$lang["lgd_more_actions"], "m"=>$lang['dup'], "d"=>$lang['delete']/*, "mc"=>$lang['mchange']*/), $attrs);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")/*, "mc"=>$lang['mchange']*/), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o2 =& $form->getElement('o2');

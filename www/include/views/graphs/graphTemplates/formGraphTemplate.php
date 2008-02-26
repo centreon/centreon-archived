@@ -56,46 +56,46 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'ftitle', $lang["giv_gt_add"]);
+		$form->addElement('header', 'ftitle', _("Add a Graph Template"));
 	else if ($o == "c")
-		$form->addElement('header', 'ftitle', $lang["giv_gt_change"]);
+		$form->addElement('header', 'ftitle', _("Modify a Graph Template"));
 	else if ($o == "w")
-		$form->addElement('header', 'ftitle', $lang["giv_gt_view"]);
+		$form->addElement('header', 'ftitle', _("View a Graph Template"));
 
 	#
 	## Basic information
 	#
-	$form->addElement('header', 'information', $lang['giv_gt_infos']);
-	$form->addElement('header', 'color', $lang['giv_gt_color']);
-	$form->addElement('text', 'name', $lang["giv_gt_name"], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('header', 'color', _("Legend"));
+	$form->addElement('text', 'name', _("Template Name"), $attrsText);
 
-	$form->addElement('select', 'img_format', $lang["giv_gt_imgFormat"], array("PNG"=>"PNG", "GIF"=>"GIF"));
-	$form->addElement('text', 'vertical_label', $lang["giv_gt_vLabel"], $attrsText);
-	$form->addElement('text', 'width', $lang["giv_gt_width"], $attrsText2);
-	$form->addElement('text', 'height', $lang["giv_gt_height"], $attrsText2);
-	$form->addElement('text', 'lower_limit', $lang["giv_gt_lower_limit"], $attrsText2);
-	$form->addElement('text', 'upper_limit', $lang["giv_gt_upper_limit"], $attrsText2);
-	$form->addElement('text', 'ds_name', $lang["giv_ct_dsName"], $attrsText);
-	$form->addElement('text', 'base', $lang["giv_ct_dsBase"], $attrsText2);
+	$form->addElement('select', 'img_format', _("Image Type"), array("PNG"=>"PNG", "GIF"=>"GIF"));
+	$form->addElement('text', 'vertical_label', _("Vertical Label"), $attrsText);
+	$form->addElement('text', 'width', _("Width"), $attrsText2);
+	$form->addElement('text', 'height', _("Height"), $attrsText2);
+	$form->addElement('text', 'lower_limit', _("Lower Limit"), $attrsText2);
+	$form->addElement('text', 'upper_limit', _("Upper Limit"), $attrsText2);
+	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
+	$form->addElement('text', 'base', _("Base"), $attrsText2);
 	
-	$periods = array(	"10800"=>$lang["giv_sr_p3h"],
-						"21600"=>$lang["giv_sr_p6h"],
-						"43200"=>$lang["giv_sr_p12h"],
-						"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],	
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);	
+	$periods = array(	"10800"=>_("Last 3 Hours"),
+						"21600"=>_("Last 6 Hours"),
+						"43200"=>_("Last 12 Hours"),
+						"86400"=>_("Last 24 Hours"),
+						"172800"=>_("Last 2 Days"),
+						"302400"=>_("Last 4 Days"),	
+						"604800"=>_("Last 7 Days"),
+						"1209600"=>_("Last 14 Days"),
+						"2419200"=>_("Last 28 Days"),
+						"2592000"=>_("Last 30 Days"),
+						"2678400"=>_("Last 31 Days"),
+						"5184000"=>_("Last 2 Months"),
+						"10368000"=>_("Last 4 Months"),
+						"15552000"=>_("Last 6 Months"),
+						"31104000"=>_("Last Year"));	
 	
-	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
-	$steps = array(	"0"=>$lang["giv_sr_noStep"],
+	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
+	$steps = array(	"0"=>_("No Step"),
 					"2"=>"2",
 					"6"=>"6",
 					"10"=>"10",
@@ -103,7 +103,7 @@ For information : contact@oreon-project.org
 					"50"=>"50",
 					"100"=>"100");					
 	
-	$sel =& $form->addElement('select', 'step', $lang["giv_sr_step"], $steps);
+	$sel =& $form->addElement('select', 'step', _("Recovery Step"), $steps);
 
 	$TabColorNameAndLang 	= array(	"bg_grid_color"=>"giv_gt_bgGridClr",
                                     	"grid_main_color"=>"giv_gt_bgGridPClr",
@@ -119,7 +119,7 @@ For information : contact@oreon-project.org
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $lang[$val];
 		isset($graph[$nameColor]) ?	$codeColor = $graph[$nameColor] : $codeColor = NULL;
-		$title = $lang["genOpt_colorPicker"];
+		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"8","maxlength"=>"7");
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background: ".$codeColor." url() left repeat-x 0px; border-color:".$codeColor.";");
 		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
@@ -127,30 +127,30 @@ For information : contact@oreon-project.org
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
 		if ($o == "c" || $o == "a")	{
-			$form->addElement('button', $nameColor.'_modify', $lang['modify'], $attrsText5);
+			$form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
 		}
 	}
 
 	
-	$form->addElement('checkbox', 'stacked', $lang["giv_gt_stacked"]);
-	$form->addElement('checkbox', 'split_component', $lang["giv_split_component"]);
-	$form->addElement('textarea', 'comment', $lang["giv_gt_comment"], $attrsTextarea);
-	$form->addElement('checkbox', 'default_tpl1', $lang["giv_gt_defaultTpl1"]);
+	$form->addElement('checkbox', 'stacked', _("Stacking"));
+	$form->addElement('checkbox', 'split_component', _("Split Components"));
+	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
+	$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
 	
 	/*
 	 * Components linked with
 	 */
-	$form->addElement('header', 'compos', $lang["giv_compoChoice"]);
-    $ams1 =& $form->addElement('advmultiselect', 'graph_compos', $lang["giv_compoList"], $compos, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$form->addElement('header', 'compos', _("Data Source Choice"));
+    $ams1 =& $form->addElement('advmultiselect', 'graph_compos', _("Data Source List"), $compos, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'graph_id');
@@ -161,10 +161,10 @@ For information : contact@oreon-project.org
 	 * Form Rules
 	 */	
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('name', $lang['ErrName'], 'required');
-	$form->addRule('vertical_label', $lang['ErrRequired'], 'required');
-	$form->addRule('width', $lang['ErrRequired'], 'required');
-	$form->addRule('height', $lang['ErrRequired'], 'required');
+	$form->addRule('name', _("Compulsory Name"), 'required');
+	$form->addRule('vertical_label', _("Required Field"), 'required');
+	$form->addRule('width', _("Required Field"), 'required');
+	$form->addRule('height', _("Required Field"), 'required');
 	/* 
 	$form->addRule('bg_grid_color', $lang['ErrRequired'], 'required');
     $form->addRule('grid_main_color', $lang['ErrRequired'], 'required');
@@ -176,10 +176,10 @@ For information : contact@oreon-project.org
     $form->addRule('col_top', $lang['ErrRequired'], 'required');
     $form->addRule('col_bot', $lang['ErrRequired'], 'required');
 	*/
-	$form->addRule('title', $lang['ErrRequired'], 'required');
+	$form->addRule('title', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 
 	/*
@@ -191,21 +191,21 @@ For information : contact@oreon-project.org
 
 	# Just watch
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&graph_id=".$graph_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&graph_id=".$graph_id."'"));
 	    $form->setDefaults($graph);
 		$form->freeze();
 	} else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	    $form->setDefaults($graph);
 	} else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	}
-	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&graph_id=".$graph_id, "changeT"=>$lang['modify']));
+	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&graph_id=".$graph_id, "changeT"=>_("Modify")));
 
-	$tpl->assign("sort1", $lang['giv_gt_properties']);
-	$tpl->assign("sort2", $lang["giv_compo"]);
+	$tpl->assign("sort1", _("Properties"));
+	$tpl->assign("sort2", _("Data Sources"));
 
 	/*
 	 * Picker Color JS
@@ -236,7 +236,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateGraphTemplateInDB($graphObj->getValue());
 		$o = "w";
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&graph_id=".$graphObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&graph_id=".$graphObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

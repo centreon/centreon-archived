@@ -102,7 +102,7 @@ $lang['giv_gt_bgPol'] = "Text color";
 $lang['giv_gt_arrClr'] = "Arrow color";
 $lang['giv_gt_topClr'] = "Top color";
 $lang['giv_gt_botClr'] = "Bottom color";
-$lang['giv_gt_comment'] = "Comment";
+$lang['giv_gt_comment'] = "Comments";
 $lang['giv_gt_start'] = "Begin Date";
 $lang['giv_gt_end'] = "End Date";
 $lang['giv_gt_stacked'] = "Stacking";
@@ -114,8 +114,8 @@ $lang['giv_gt_upper_limit'] = "Upper Limit";
 # Component Templates
 
 $lang["giv_graphNbr"] = "Use";
-$lang["giv_graphChoice"] = "Graphs Choice";
-$lang["giv_graphList"] = "Graphs List";
+$lang["giv_graphChoice"] = "Graph Choice";
+$lang["giv_graphList"] = "Graph List";
 $lang["giv_graphs"] = "Graphs";
 
 $lang['giv_ct_infos'] = "General Informations";
@@ -151,7 +151,7 @@ $lang["giv_db_unavailable"] = "Database unavailable";
 
 # No template
 
-$lang["no_graphtpl"] = "There aren't graphs template : please configure your graphs template to show correctly graphs.";
+$lang["no_graphtpl"] = "There is no graph template : please configure your graph template in order to display graphs correctly.";
 
 # No Graph
 

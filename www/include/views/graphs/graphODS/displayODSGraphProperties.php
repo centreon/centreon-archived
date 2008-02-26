@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+	$form->addElement('header', 'title', _("Choose the source to graph"));
 	
 	## Indicator basic information
 	$redirect =& $form->addElement('hidden', 'o');
@@ -61,16 +61,16 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	if (!$DBRESULT->numRows())
-		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";
+		print "<div class='msg' align='center'>"._("There is no graph template : please configure your graph template in order to display graphs correctly.")."</div>";
 	
 	# Init variable in the page
 	$label = NULL;
-	$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
+	$tpl->assign("title2", _("Graph Renderer"));
 	if (isset($graph))
 		$tpl->assign("graph", $graph["name"]);
-	$tpl->assign("lgGraph", $lang['giv_gt_name']);
-	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
-	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
+	$tpl->assign("lgGraph", _("Template Name"));
+	$tpl->assign("lgMetric", _("Metric"));
+	$tpl->assign("lgCompoTmp", _("Template Name"));
 		
 	$elem = array();	
 	$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE id = '".$_GET["index"]."'");
@@ -131,7 +131,7 @@ For information : contact@oreon-project.org
 			$metrics[$metric["metric_id"]]["metric"] = str_replace("/", "", $metric["metric_name"]);
 			$metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];		
 			if ($tab_stat = stat($config["RRDdatabase_path"].$metric["metric_id"].".rrd")){
-				$metrics[$metric["metric_id"]]["last_update"] = date($lang["date_time_format_status"],$tab_stat[9]);
+				$metrics[$metric["metric_id"]]["last_update"] = date(_("d/m/Y H:i:s"),$tab_stat[9]);
 				$metrics[$metric["metric_id"]]["size"] = round($tab_stat[7] / 1024 / 1024, 2);	
 				$metrics[$metric["metric_id"]]["db_name"] = $config["RRDdatabase_path"].$metric["metric_id"].".rrd";
 			}

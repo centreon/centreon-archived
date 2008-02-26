@@ -55,31 +55,31 @@ For information : contact@oreon-project.org
 	#
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'ftitle', $lang["giv_ct_add"]);
+		$form->addElement('header', 'ftitle', _("Add a Data Source Template"));
 	else if ($o == "c")
-		$form->addElement('header', 'ftitle', $lang["giv_ct_change"]);
+		$form->addElement('header', 'ftitle', _("Modify a Data Source Template"));
 	else if ($o == "w")
-		$form->addElement('header', 'ftitle', $lang["giv_ct_view"]);
+		$form->addElement('header', 'ftitle', _("View a Data Source Template"));
 
 	# Basic information
 	
-	$form->addElement('header', 'information', $lang['giv_ct_infos']);
-	$form->addElement('header', 'color', $lang['giv_ct_legend']);
-	$form->addElement('header', 'legend', $lang['giv_ct_color']);
-	$form->addElement('text', 'name', $lang["giv_ct_name"], $attrsText);
+	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('header', 'color', _("Colors"));
+	$form->addElement('header', 'legend', _("Legend"));
+	$form->addElement('text', 'name', _("Template Name"), $attrsText);
 	
 	for ($cpt = 1; $cpt <= 100; $cpt++)
 		$orders[$cpt] = $cpt;
 	
-	$form->addElement('select', 'ds_order', $lang['giv_ct_order'], $orders);
-	$form->addElement('text', 'ds_name', $lang["giv_ct_dsName"], $attrsText);
+	$form->addElement('select', 'ds_order', _("Order"), $orders);
+	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	
 	$TabColorNameAndLang = array("ds_color_line"=>"giv_ct_lineClr","ds_color_area"=>"giv_ct_areaClr",);
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $lang[$val];
 		isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = NULL;
-		$title = $lang["genOpt_colorPicker"];
+		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"9","maxlength"=>"7");
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		
@@ -88,38 +88,38 @@ For information : contact@oreon-project.org
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
 		
 		if ($o == "c" || $o == "a")	{
-			$form->addElement('button', $nameColor.'_modify', $lang['modify'], $attrsText5);
+			$form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
 		}
 	}
 
-	$form->addElement('text', 'ds_transparency', $lang["giv_ct_transparency"], $attrsText3);
+	$form->addElement('text', 'ds_transparency', _("Transparency"), $attrsText3);
 
-	$form->addElement('checkbox', 'ds_filled', $lang["giv_ct_filled"]);
-	$form->addElement('checkbox', 'ds_max', $lang["giv_ct_max"]);
-	$form->addElement('checkbox', 'ds_min', $lang["giv_ct_min"]);
-	$form->addElement('checkbox', 'ds_average', $lang["giv_ct_avg"]);
-	$form->addElement('checkbox', 'ds_last', $lang["giv_ct_last"]);
-	$form->addElement('checkbox', 'ds_invert', $lang["giv_ct_invert"]);
-	$form->addElement('checkbox', 'default_tpl1', $lang["giv_gt_defaultTpl1"]);
+	$form->addElement('checkbox', 'ds_filled', _("Filling"));
+	$form->addElement('checkbox', 'ds_max', _("Print Max value"));
+	$form->addElement('checkbox', 'ds_min', _("Print Min value"));
+	$form->addElement('checkbox', 'ds_average', _("Print Average"));
+	$form->addElement('checkbox', 'ds_last', _("Print Last Value"));
+	$form->addElement('checkbox', 'ds_invert', _("Invert"));
+	$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
 	
-	$form->addElement('select', 'ds_tickness', $lang["giv_ct_tickness"], array("1"=>"1", "2"=>"2", "3"=>"3"));
+	$form->addElement('select', 'ds_tickness', _("Thickness"), array("1"=>"1", "2"=>"2", "3"=>"3"));
 
-	$form->addElement('textarea', 'comment', $lang["giv_gt_comment"], $attrsTextarea);
+	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
 	#
 	## Components linked with
 	#
-	$form->addElement('header', 'graphs', $lang["giv_graphChoice"]);
-    $ams1 =& $form->addElement('advmultiselect', 'compo_graphs', $lang["giv_graphList"], $graphs, $attrsAdvSelect);
-	$ams1->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams1->setButtonAttributes('remove', array('value' => $lang['delete']));
+	$form->addElement('header', 'graphs', _("Graph Choice"));
+    $ams1 =& $form->addElement('advmultiselect', 'compo_graphs', _("Graph List"), $graphs, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionList'], '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, $lang['actionForm'], '0');
-	$form->addGroup($tab, 'action', $lang["action"], '&nbsp;');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'compo_id');
@@ -130,15 +130,15 @@ For information : contact@oreon-project.org
 	## Form Rules
 	#
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('name', $lang['ErrName'], 'required');
-	$form->addRule('ds_name', $lang['ErrRequired'], 'required');
-	$form->addRule('ds_legend', $lang['ErrRequired'], 'required');
-	$form->addRule('ds_color_line', $lang['ErrRequired'], 'required');
-    $form->addRule('ds_color_area', $lang['ErrRequired'], 'required');
+	$form->addRule('name', _("Compulsory Name"), 'required');
+	$form->addRule('ds_name', _("Required Field"), 'required');
+	$form->addRule('ds_legend', _("Required Field"), 'required');
+	$form->addRule('ds_color_line', _("Required Field"), 'required');
+    $form->addRule('ds_color_area', _("Required Field"), 'required');
 
 	$form->registerRule('exist', 'callback', 'testExistence');
-	$form->addRule('name', $lang['ErrAlreadyExist'], 'exist');
-	$form->setRequiredNote($lang['requiredFields']);
+	$form->addRule('name', _("Name is already in use"), 'exist');
+	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
 	##End of form definition
@@ -150,25 +150,25 @@ For information : contact@oreon-project.org
 
 	# Just watch
 	if ($o == "w")	{
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&compo_id=".$compo_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&compo_id=".$compo_id."'"));
 	    $form->setDefaults($compo);
 		$form->freeze();
 	}
 	# Modify
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	    $form->setDefaults($compo);
 	}
 	# Add
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["delete"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Delete"));
 	}
-	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>$lang['modify']));
+	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>_("Modify")));
 
-	$tpl->assign("sort1", $lang['giv_ct_properties']);
-	$tpl->assign("sort2", $lang["giv_graphs"]);
+	$tpl->assign("sort1", _("Properties"));
+	$tpl->assign("sort2", _("Graphs"));
 
 	#
 	##Picker Color JS
@@ -197,7 +197,7 @@ For information : contact@oreon-project.org
 		else if ($form->getSubmitValue("submitC"))
 			updateComponentTemplateInDB($compoObj->getValue());
 		$o = "w";
-		$form->addElement("button", "change", $lang['modify'], array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&compo_id=".$compoObj->getValue()."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&compo_id=".$compoObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
 	}

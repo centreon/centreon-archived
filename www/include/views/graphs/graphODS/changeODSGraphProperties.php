@@ -41,7 +41,7 @@ For information : contact@oreon-project.org
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+	$form->addElement('header', 'title', _("Choose the source to graph"));
 	
 	## Indicator basic information
 	$redirect =& $form->addElement('hidden', 'o');
@@ -71,12 +71,12 @@ For information : contact@oreon-project.org
 		$index["host_name"] = "Meta Services";
 	# Init variable in the page
 	$label = NULL;
-	$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
+	$tpl->assign("title2", _("Graph Renderer"));
 	if (isset($graph))
 		$tpl->assign("graph", $graph["name"]);
-	$tpl->assign("lgGraph", $lang['giv_gt_name']);
-	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
-	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
+	$tpl->assign("lgGraph", _("Template Name"));
+	$tpl->assign("lgMetric", _("Metric"));
+	$tpl->assign("lgCompoTmp", _("Template Name"));
 		
 	$indexF =& $form->addElement('hidden', 'index');
 	$indexF->setValue($_GET["index"]);
@@ -85,11 +85,11 @@ For information : contact@oreon-project.org
 	$tpl->assign('storage_type_possibility', $storage_type);
 	$tpl->assign('storage_type', $index["storage_type"]);
 	
-	$form->addElement('select', 'storage_type', $lang['ods_storage_type'], $storage_type);
+	$form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);
 	$form->setDefaults($index);
 	
-	$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-	$form->addElement('reset', 'reset', $lang["reset"]);
+	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$form->addElement('reset', 'reset', _("Reset"));
     $valid = false;
 	
 	if (isset($_GET["submitC"]) && isset($_GET["storage_type"]))	{

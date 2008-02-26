@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+	$form->addElement('header', 'title', _("Choose the source to graph"));
 	
 	## Database retrieve information for differents elements list we need on the page
 	#   Resources comes from DB -> Store in $ppHosts Array
@@ -100,37 +100,37 @@ For information : contact@oreon-project.org
 		$minF->setValue($_GET["host_id"]);
 	}
 	
-	$host_nameForm =& $form->addElement('select', 'host_name', $lang["h"], $ppHosts, array("onChange"=>"this.form.submit()"));
-	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
+	$host_nameForm =& $form->addElement('select', 'host_name', _("Host"), $ppHosts, array("onChange"=>"this.form.submit()"));
+	$form->addElement('select', 'template_id', _("Template"), $graphTs);
 
-	$form->addElement('text', 'start', $lang['giv_gt_start']);
-	$form->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
+	$form->addElement('text', 'start', _("Begin Date"));
+	$form->addElement('button', "startD", _("Modify"), array("onclick"=>"displayDatePicker('start')"));
 
-	$form->addElement('text', 'end', $lang['giv_gt_end']);
-	$form->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
+	$form->addElement('text', 'end', _("End Date"));
+	$form->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 
 	$periods = array(	""=>"",
-						"10800"=>$lang["giv_sr_p3h"],
-						"21600"=>$lang["giv_sr_p6h"],
-						"43200"=>$lang["giv_sr_p12h"],
-						"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);
+						"10800"=>_("Last 3 Hours"),
+						"21600"=>_("Last 6 Hours"),
+						"43200"=>_("Last 12 Hours"),
+						"86400"=>_("Last 24 Hours"),
+						"172800"=>_("Last 2 Days"),
+						"302400"=>_("Last 4 Days"),
+						"604800"=>_("Last 7 Days"),
+						"1209600"=>_("Last 14 Days"),
+						"2419200"=>_("Last 28 Days"),
+						"2592000"=>_("Last 30 Days"),
+						"2678400"=>_("Last 31 Days"),
+						"5184000"=>_("Last 2 Months"),
+						"10368000"=>_("Last 4 Months"),
+						"15552000"=>_("Last 6 Months"),
+						"31104000"=>_("Last Year"));
 
-	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
-	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
+	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
+	$subC =& $form->addElement('submit', 'submitC', _("Graph"));
 	
-	$form->addElement('reset', 'reset', $lang["reset"]);
-  	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
+	$form->addElement('reset', 'reset', _("Reset"));
+  	$form->addElement('button', 'advanced', _("Advanced >>"), array("onclick"=>"DisplayHidden('div1');"));
 
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		$nb_rsp = 0;
@@ -140,18 +140,18 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	if (!$DBRESULT->numRows())
-		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";	
+		print "<div class='msg' align='center'>"._("There is no graph template : please configure your graph template in order to display graphs correctly.")."</div>";	
 		
 	if ($form->validate() && (isset($_GET["host_name"]) || isset($_GET["host_id"]))){
 		if (!$isRestreint || ($isRestreint && ((isset($_GET["host_name"]) && isset($lcaHostByName["LcaHost"][$_GET["host_name"]]))||(isset($_GET["host_id"]) && isset($lcaHostByName["LcaHost"][$_GET["host_id"]]))))) {
 			# Init variable in the page
 			$label = NULL;
-			$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
+			$tpl->assign("title2", _("Graph Renderer"));
 			if (isset($graph))
 				$tpl->assign("graph", $graph["name"]);
-			$tpl->assign("lgGraph", $lang['giv_gt_name']);
-			$tpl->assign("lgMetric", $lang['giv_ct_metric']);
-			$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
+			$tpl->assign("lgGraph", _("Template Name"));
+			$tpl->assign("lgMetric", _("Metric"));
+			$tpl->assign("lgCompoTmp", _("Template Name"));
 			
 			$elem = array();
 			if (isset($_GET["host_name"])){

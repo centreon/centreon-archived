@@ -40,7 +40,7 @@ For information : contact@oreon-project.org
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+	$form->addElement('header', 'title', _("Choose the source to graph"));
 		
 	$graphTs = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
@@ -58,20 +58,20 @@ For information : contact@oreon-project.org
 	$minF =& $form->addElement('hidden', 'min');
 	$minF->setValue($min);
 
-	$form->addElement('select', 'template_id', $lang["giv_gg_tpl"], $graphTs);
-	$subC =& $form->addElement('submit', 'submitC', $lang["giv_sr_button"]);
+	$form->addElement('select', 'template_id', _("Template"), $graphTs);
+	$subC =& $form->addElement('submit', 'submitC', _("Graph"));
 	
-	$form->addElement('reset', 'reset', $lang["reset"]);
-  	$form->addElement('button', 'advanced', $lang["advanced"], array("onclick"=>"DisplayHidden('div1');"));
+	$form->addElement('reset', 'reset', _("Reset"));
+  	$form->addElement('button', 'advanced', _("Advanced >>"), array("onclick"=>"DisplayHidden('div1');"));
 
 	# Init variable in the page
 	$label = NULL;
-	$tpl->assign("title2", $lang["giv_sr_rendTitle"]);
+	$tpl->assign("title2", _("Graph Renderer"));
 	if (isset($graph))
 		$tpl->assign("graph", $graph["name"]);
-	$tpl->assign("lgGraph", $lang['giv_gt_name']);
-	$tpl->assign("lgMetric", $lang['giv_ct_metric']);
-	$tpl->assign("lgCompoTmp", $lang['giv_ct_name']);
+	$tpl->assign("lgGraph", _("Template Name"));
+	$tpl->assign("lgMetric", _("Metric"));
+	$tpl->assign("lgCompoTmp", _("Template Name"));
 
 	if (((isset($_GET["submitC"]) && $_GET["submitC"]) || $min == 1))
 		$nb_rsp = 0;
@@ -81,7 +81,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	if (!$DBRESULT->numRows()){
-		print "<div class='msg' align='center'>".$lang["no_graphtpl"]."</div>";	
+		print "<div class='msg' align='center'>"._("There is no graph template : please configure your graph template in order to display graphs correctly.")."</div>";	
 	}
 	
 	$elem = array();
@@ -107,9 +107,9 @@ For information : contact@oreon-project.org
 	$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 	$DBRESULT2->fetchInto($GraphTemplate);
 	
-	$splitTab[] = &HTML_QuickForm::createElement('radio', 'split', null, $lang["yes"], '1');
-	$splitTab[] = &HTML_QuickForm::createElement('radio', 'split', null, $lang["no"], '0');
-	$form->addGroup($splitTab, 'split', $lang['giv_split_component'], '&nbsp;');
+	$splitTab[] = &HTML_QuickForm::createElement('radio', 'split', null, _("Yes"), '1');
+	$splitTab[] = &HTML_QuickForm::createElement('radio', 'split', null, _("No"), '0');
+	$form->addGroup($splitTab, 'split', _("Split Components"), '&nbsp;');
 
 	if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1)){
 		$split = 1;
@@ -150,7 +150,7 @@ For information : contact@oreon-project.org
 		if ($service_id || $svc_id["special"]) {
 			$tpl->assign('msg', NULL);
 		} else {
-			$tpl->assign('msg', $lang["no_graph_found"]);
+			$tpl->assign('msg', _("No graph associated to this service."));
 			$msg_error = 1;
 		}	
 		

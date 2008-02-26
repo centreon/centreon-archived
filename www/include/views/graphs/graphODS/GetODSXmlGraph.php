@@ -725,9 +725,9 @@ $metrics = array();
  */
 
 echo "<lang>";
-echo "<giv_gg_tpl>".$lang["giv_gg_tpl"]."</giv_gg_tpl>";
-echo "<advanced>".$lang["optionAdvanced"]."</advanced>";
-echo "<giv_split_component>".$lang['giv_split_component']."</giv_split_component>";
+echo "<giv_gg_tpl>"._("Template")."</giv_gg_tpl>";
+echo "<advanced>"._("Options")."</advanced>";
+echo "<giv_split_component>"._("Split Components")."</giv_split_component>";
 echo "</lang>";
 
 /*
