@@ -67,7 +67,7 @@
 /usr/local/centreon/www/include/configuration/configObject/host_dependency/formHostDependency.php
 /usr/local/centreon/www/include/configuration/configObject/host_dependency/listHostDependency.php
 /usr/local/centreon/www/include/configuration/configObject/host_template_model/listHostTemplateModel.php
-/usr/local/centreon/www/include/configuration/configObject/host_template_model/formhostTemolateModel.php
+/usr/local/centreon/www/include/configuration/configObject/host_template_model/formhostTemplateModel.php
 /usr/local/centreon/www/include/configuration/configObject/hostgroup/formHostGroup.php
 /usr/local/centreon/www/include/configuration/configObject/hostgroup/listHostGroup.php
 /usr/local/centreon/www/include/configuration/configObject/hostgroup_dependency/formHostGroupDependency.php
