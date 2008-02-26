@@ -114,6 +114,10 @@
 /usr/local/centreon/www/include/reporting/dashboard/viewServicesGroupLog.php
 /usr/local/centreon/www/include/reporting/dashboard/viewServicesLog.php
 /usr/local/centreon/www/include/tools/minTools.php
+/usr/local/centreon/www/include/home/pie-host.php
+/usr/local/centreon/www/include/home/pie-hostgroup.php
+/usr/local/centreon/www/include/home/pie-svc.php
+/usr/local/centreon/www/include/home/pie-svcgroup.php
 
 /usr/local/centreon/www/menu/Menu.php
 
