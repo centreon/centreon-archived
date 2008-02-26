@@ -266,35 +266,34 @@ else
 		}
 		$command_line .= " COMMENT:\" \\l\" ";
 		# Create Legende
-		$cpt = 1;
+		$cpt = 0;
 		foreach ($metrics as $key => $tm){
 			if ($metrics[$key]["ds_filled"])
-				$command_line .= " AREA:v".($cpt-1).$tm["ds_color_area"].$tm["ds_transparency"]." ";
+				$command_line .= " AREA:v".($cpt).$tm["ds_color_area"].$tm["ds_transparency"]." ";
 			//	$command_line .= " AREA:v".($cpt-1)."W#434343".$tm["ds_transparency"]." ";
 			//	$command_line .= " AREA:v".($cpt-1)."C#3918E6".$tm["ds_transparency"]." ";
 			//	$command_line .= " AREA:v".($cpt-1)."N".$tm["ds_color_area"].$tm["ds_transparency"]." ";
-			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt-1);
+			$command_line .= " LINE".$tm["ds_tickness"].":v".($cpt);
 			$command_line .= $tm["ds_color_line"].":\"";
 			$command_line .= $metrics[$key]["legend"];
 			for ($i = $metrics[$key]["legend_len"]; $i != $longer + 1; $i++)
 				$command_line .= " ";
 				$command_line .= "\"";
 			if ($tm["ds_last"]){
-				$command_line .= " GPRINT:v".($cpt-1).":LAST:\"Last\:%7.2lf%s";
+				$command_line .= " GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf%s";
 				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_min"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MIN:\"Min\:%7.2lf%s";
+				$command_line .= " GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf%s";
 				$tm["ds_max"] || $tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_max"]){
-				$command_line .= " GPRINT:v".($cpt-1).":MAX:\"Max\:%7.2lf%s";
+				$command_line .= " GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf%s";
 				$tm["ds_average"] ? $command_line .= "\"" : $command_line .= "\\l\" ";
 			}
 			if ($tm["ds_average"]){
-				$command_line .= " GPRINT:v".($cpt-1).":AVERAGE:\"Average\:%7.2lf%s\\l\"";
+				$command_line .= " GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf%s\\l\"";
 			}
-			
 			$cpt++;
 		}
 
