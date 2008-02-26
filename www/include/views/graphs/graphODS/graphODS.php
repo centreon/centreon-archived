@@ -239,23 +239,41 @@ if(document.getElementById('menu_2'))
 				if(currentTime.getMinutes() <= 9){
 					_zero_min = '0';
 				}
+
 				if(currentTime.getHours() >= 12){
 					StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
 					EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
 
-					if((currentTime.getHours()- 12) <= 12){
+					if((currentTime.getHours()- 12) <= 9){
 						_zero_hour = '0';					
 					}
+					else{
+						_zero_hour = '';											
+					}
 					StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-					EndTime   = currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+					if(currentTime.getHours() <= 9){
+						_zero_hour = '0';					
+					}
+					else{
+						_zero_hour = '';											
+					}	
+					EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
 				}
 				else
 				{
 					StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
 					EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
+
 					StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
-					EndTime= "0" + currentTime.getHours()+":" + _zero_min + currentTime.getMinutes();
-					EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+
+					if(currentTime.getHours() <= 9){
+						_zero_hour = '0';					
+					}
+					else{
+						_zero_hour = '';											
+					}
+					
+					EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
 				}
 			}
 
@@ -292,7 +310,7 @@ if(document.getElementById('menu_2'))
 				// Metrics
 				var _metrics ="";
 				var _checked = "0";
-				if(document.formu2){
+				if(document.formu2 && document.formu2.elements["metric"]){
 					for (i=0; i < document.formu2.elements["metric"].length; i++) {
 							_checked = "0";
 							if(document.formu2.elements["metric"][i].checked)
@@ -305,7 +323,7 @@ if(document.getElementById('menu_2'))
 
 				// Templates
 				var _tpl_id = 1;
-				if(document.formu2 && document.formu2.template_select.value != "")
+				if(document.formu2 && document.formu2.template_select && document.formu2.template_select.value != "")
 				{
 					_tpl_id = document.formu2.template_select.value;
 				}

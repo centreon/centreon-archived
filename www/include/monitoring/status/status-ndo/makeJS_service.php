@@ -327,7 +327,6 @@ function displayIMG(index, s_id, id)
 			Pdiv.style.top = posy +'px';
     }
     else{
-   // alert('ie ca pux');	
     }
 }
 

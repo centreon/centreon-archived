@@ -18,6 +18,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+
+
 	function get_error($motif){
 		$buffer = null;
 		$buffer .= '<reponse>';
@@ -642,7 +644,8 @@ foreach($tab_id as $openid)
 		echo "<index>".$index_id."</index>";
 		echo "<split>".$split."</split>";
 		echo "<tpl>".$template_id."</tpl>";
-		
+		echo "<multi>".$multi."</multi>";
+
 		if(!$multi)
 		{
 			if($split == 0){
@@ -662,7 +665,7 @@ foreach($tab_id as $openid)
 			}
 			else
 			{
-				echo "<metricsTab></metricsTab>";
+				echo "<metricsTab>..</metricsTab>";
 			}
 			
 			foreach($metrics as $id => $metric){
@@ -677,30 +680,40 @@ foreach($tab_id as $openid)
 				echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
 				echo "</metrics>";
 			}
-		}
-		
-		if(!$multi)
-		foreach($graphTs as $id => $tpl){
-			if($tpl && $id){
-				echo "<tpl>";
-					echo "<tpl_name>".$tpl."</tpl_name>";
-					echo "<tpl_id>".$id."</tpl_id>";
-				echo "</tpl>";	
+	
+			foreach($graphTs as $id => $tpl){
+				if($tpl && $id){
+					echo "<tpl>";
+						echo "<tpl_name>".$tpl."</tpl_name>";
+						echo "<tpl_id>".$id."</tpl_id>";
+					echo "</tpl>";	
+				}
 			}
+			echo "</svc_zoom>";
+		}
+		else
+		{
+			foreach($metrics as $id => $metric){
+				echo "<metrics>";
+				echo "<metric_id>" . $id ."</metric_id>";
+		
+				echo "<select>1</select>";
+		
+				echo "<metric_name>" . $metric["metric_name"] ."</metric_name>";
+				echo "</metrics>";
+			}
+
+
+			echo "</multi_svc>";
 		}
 	
-	
-		if($multi)
-			echo "</multi_svc>";
-		else
-			echo "</svc_zoom>";
 	}
 	
 	else
 	{
 	// no output
 	}
-	
+$metrics = array();	
 } 
 /*
  * End foreach
@@ -720,6 +733,12 @@ echo "</lang>";
 /*
  * end root
  */
+
+/*
+ * if you want debug img..
+ */
+ $debug = 0;
+ echo "<debug>".$debug."</debug>";
  echo "</root>";
 
 ?>

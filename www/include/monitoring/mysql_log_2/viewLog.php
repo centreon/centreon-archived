@@ -296,24 +296,44 @@ else
 	if(currentTime.getMinutes() <= 9){
 		_zero_min = '0';
 	}
+
 	if(currentTime.getHours() >= 12){
 		StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
 		EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
 
-		if((currentTime.getHours()- 12) <= 12){
+		if((currentTime.getHours()- 12) <= 9){
 			_zero_hour = '0';					
 		}
+		else{
+			_zero_hour = '';											
+		}
 		StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-		EndTime   = currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+		if(currentTime.getHours() <= 9){
+			_zero_hour = '0';					
+		}
+		else{
+			_zero_hour = '';											
+		}	
+		EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
 	}
 	else
 	{
 		StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
 		EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
+
 		StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
-		EndTime= "0" + currentTime.getHours()+":" + _zero_min + currentTime.getMinutes();
-		EndTime   = "0" + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+
+		if(currentTime.getHours() <= 9){
+			_zero_hour = '0';					
+		}
+		else{
+			_zero_hour = '';											
+		}
+		
+		EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
 	}
+	
+	
 }
 
 if(document.formu){
@@ -402,10 +422,6 @@ function log_4_host(id, formu)
 }
 
 log_4_host(<?php echo $id_log;?>,null);
-
-
-
-
 
 </script>
 
