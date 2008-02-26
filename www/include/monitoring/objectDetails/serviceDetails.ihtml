@@ -2,12 +2,7 @@
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderLeft" colspan="3">
-				<img src='./img/icones/16x16/element_new_after.gif'
-				{if $sv_ext_icon_image_alt}
-					alt='{$sv_ext_icon_image_alt}'
-				{/if}
-				>
-				&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]
+				<img src='./img/icones/16x16/gear.gif'{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}>&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]
 				{if $sv_ext_notes}
 					&nbsp;&nbsp;
 					{if $sv_ext_notes_url}
@@ -26,7 +21,7 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter" colspan="2">{$lang.m_mon_services}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$lang.m_mon_services}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$lang.m_mon_services_status}</td>
@@ -104,7 +99,7 @@
 				<br>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter" colspan="2">Status</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;Status</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
@@ -114,7 +109,7 @@
 				{if $lcaTopo.602}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
+						<td class="ListColHeaderLeft">{$lang.m_mon_tips}</td>
 					</tr>
 					<tr>
 						<td class="ListColLeft"><a href='./oreon.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
@@ -140,7 +135,7 @@
 						<td class="ListColHeaderCenter">{$lang.m_mon_service_command}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=7&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.active_checks_enabled]}'>{$en_inv_text[$service_data.active_checks_enabled]} {$lang.m_mon_check_this_service}</a></td>
+						<td class="ListColLeft">{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=7&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.active_checks_enabled]}' class='link'>{$en_inv_text[$service_data.active_checks_enabled]} {$lang.m_mon_check_this_service}</a></td>
 					</tr>
 					<tr class='list_two'>
 						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=3&select[{$h.host_name};{$svc_description}]=1&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_schedule}</a></td>
@@ -204,12 +199,6 @@
 						<td class="ListColLeft">{$lang.m_mon_obsessing}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.obsess_over_service]};'>&nbsp;{$en_disable[$service_data.obsess_over_service]}&nbsp;</font></td>
 					</tr>
-					{if $service_data.current_state != OK}
-					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_acknowledge}</td>
-						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.pb_aknowledged]};'>&nbsp;{$en_disable[$service_data.pb_aknowledged]}&nbsp;</font></td>
-					</tr>
-					{/if}
 				</table>
 			</td>
 		</tr>
