@@ -104,6 +104,12 @@ For information : contact@oreon-project.org
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
 			$base = "-b ".$GraphTemplate["base"];
 		
+		if (!isset($GraphTemplate["width"]) || $GraphTemplate["width"] == "")
+			$GraphTemplate["width"] = 600;
+		if (!isset($GraphTemplate["height"]) || $GraphTemplate["height"] == "")
+			$GraphTemplate["height"] = 200;
+		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
+			$GraphTemplate["vertical_label"] = "";		
 		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." --title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='".$GraphTemplate["vertical_label"]."' ";
 		if ($oreon->optGen["rrdtool_version"] == "1.2")
 			$command_line .= " --slope-mode ";
