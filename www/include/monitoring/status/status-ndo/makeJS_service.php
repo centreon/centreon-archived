@@ -81,9 +81,9 @@ include_once("makeJS_Common.php");
 		return tab;
 	}
 
-	if(document.getElementById('menu_2'))
+	if(document.getElementById('linkBar'))
 	{
-		var _menu_2 = document.getElementById('menu_2')
+		var _linkBar = document.getElementById('linkBar')
 		var _divBar = document.createElement("div");
 		
 		_divBar.appendChild(create_graph_link('select','svc_id'));
@@ -92,7 +92,7 @@ include_once("makeJS_Common.php");
 //		_divBar.appendChild(create_IDCard_link('select','svc_id'));
 
 		_divBar.setAttribute('style','float:right; margin-right:110px;' );
-		_menu_2.appendChild(_divBar);
+		_linkBar.appendChild(_divBar);
 	}
 //end for linkBar
 
@@ -228,7 +228,7 @@ function initM(_time_reload,_sid,_o){
 	}
 	_time=<?=$time?>;
 	if(_on)
-	goM(_time_reload,_sid,_o);
+		goM(_time_reload,_sid,_o);
 }
 
 function goM(_time_reload,_sid,_o){
