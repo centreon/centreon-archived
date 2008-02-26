@@ -19,12 +19,6 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-/*
-echo "<pre>";
-print_r($oreon);
-echo "</pre>";
-*/
-
 
 	function get_user_param($user_id, $pearDB)
 	{
@@ -58,7 +52,6 @@ echo "</pre>";
 	$open_id_type = substr($openid, 0, 2);
 	$open_id_sub = substr($openid, 3, strlen($openid));
 	}
-
 
 	if(isset($_GET["id"])){
 		$id = $_GET["id"];
@@ -196,17 +189,16 @@ echo "</pre>";
 			tree.enableThreeStateCheckboxes(true);
 
 
-// linkBar to log/reporting/graph/ID_card
 
+
+// linkBar to log/reporting/graph/ID_card
 function getCheckedList(tree)
 {
 	return tree.getAllChecked();
 }
-
-
-if(document.getElementById('menu_2'))
+if(document.getElementById('linkBar'))
 {
-	var _menu_2 = document.getElementById('menu_2')
+	var _menu_2 = document.getElementById('linkBar')
 	var _divBar = document.createElement("div");
 	
 	_divBar.appendChild(create_graph_link(tree,'id'));
@@ -218,6 +210,7 @@ if(document.getElementById('menu_2'))
 	_menu_2.appendChild(_divBar);
 }
 //end for linkBar
+
 
 
 function onDblClick(nodeId)
@@ -239,7 +232,13 @@ function onNodeSelect(nodeId)
 function onCheck()
 {
 	multi = 1;
-	log_4_host(tree.getAllChecked(),'');
+	
+	if(tree.getAllChecked()){
+		log_4_host(tree.getAllChecked(),'');		
+	}
+	else{
+//		var logView4xml = document.getElementById('logView4xml').innerHTML = '<- Check or select an item or more !';		
+	}
 }
 
 
@@ -367,13 +366,6 @@ function log_4_host(id, formu)
 	if(document.formu2 && document.formu2.alert)
 		_alert = document.formu2.alert.checked;
 
-
-	if(document.formu3 && document.formu3.host)
-		_host = document.formu3.host.checked;
-	if(document.formu4 && document.formu4.service)
-		_service = document.formu4.service.checked;
-
-
 	if(document.formu2 && document.formu2.up)
 		_up = document.formu2.up.checked;
 	if(document.formu2 && document.formu2.down)
@@ -405,10 +397,10 @@ function log_4_host(id, formu)
 		EndTime = document.formu.EndTime.value;
 
 	tree.selectItem(id);
-	
+
 	var proc = new Transformation();
 	var _addrXSL = "./include/monitoring/mysql_log_2/log.xsl";
-	var _addrXML = './include/monitoring/mysql_log_2/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&host='+_host+'&service='+_service+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+	var _addrXML = './include/monitoring/mysql_log_2/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 	proc.setXml(_addrXML)
 	proc.setXslt(_addrXSL)
 	proc.transform("logView4xml");

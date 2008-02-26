@@ -20,6 +20,8 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
+//print_r($_POST);
+
 	#Path to the configuration dir
 	$path = "./include/views/graphs/graphODS/";
 
@@ -54,6 +56,11 @@ For information : contact@oreon-project.org
 	else
 		$id = 1;
 
+	if(isset($_POST["id"])){
+		$id = $_POST["id"];
+	}
+	else
+		$id = 1;
 
 	
 	if(isset($_POST["svc_id"]) && $_POST["svc_id"]){
