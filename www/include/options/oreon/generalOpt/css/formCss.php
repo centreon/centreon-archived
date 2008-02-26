@@ -76,12 +76,6 @@ For information : contact@oreon-project.org
 				print ($DBRESULT->getMessage());
 		}
 	}
-
-
-	#
-	## Get css_file_name list
-	#
-
 	#
 	## Get menu_css_bdd list
 	#
