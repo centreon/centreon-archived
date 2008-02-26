@@ -55,6 +55,7 @@ For information : contact@oreon-project.org
 	$color["WARNING"] = 	$oreon->optGen["color_warning"];
 	$color["PENDING"] =  	$oreon->optGen["color_pending"];
 	$color["UNKNOWN"] =  	$oreon->optGen["color_unknown"];
+
 	$color["UP"] =  		$oreon->optGen["color_up"];
 	$color["DOWN"] =  		$oreon->optGen["color_down"];
 	$color["UNREACHABLE"] = $oreon->optGen["color_unreachable"];
@@ -71,11 +72,9 @@ For information : contact@oreon-project.org
 	$tpl->assign("Unreachable", _("Unreachable"));
 	$tpl->assign("Hosts_States", _("Hosts States"));
 	$tpl->assign("Services_States", _("Service States"));
-	
 	$tpl->assign("Logout", _("Logout"));
 	$tpl->assign("Help", _("Help"));
 	$tpl->assign("Documentation", _("Documentation"));
-	
 	$tpl->assign("p", $p);
 	$tpl->assign("color", $color);
 	$tpl->assign("version", $version);
@@ -97,10 +96,12 @@ For information : contact@oreon-project.org
 								"Menu1Popup" => $elem["topology_popup"] ? true : false);
 	$userUrl = "oreon.php?p=50104&o=c";
     $logDate = date($lang['header_format']);
-    $logOut = $lang['m_logout'];
+    $logOut = _("Logout");
     $logOutUrl = "index.php?disconnect=1";
 
-	# Grab elements for level 2
+	/*
+	 * Grab elements for level 2
+	 */
 	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
@@ -119,9 +120,10 @@ For information : contact@oreon-project.org
 		$sep = "|";
 	}
 
-	# Grab elements for level 3
-	$rq = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
-	$DBRESULT =& $pearDB->query($rq);
+	/*
+	 * Grab elements for level 3
+	 */
+	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order");
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	for($i = 0; $DBRESULT->fetchInto($elem);$i++)	{
@@ -129,15 +131,14 @@ For information : contact@oreon-project.org
 			;
 		} else {
 			# grab menu title for each group
-			$rq_title = "SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1";
-			$DBRESULT_title =& $pearDB->query($rq_title);
+			$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
 			if (PEAR::isError($DBRESULT_title))
 				print ($DBRESULT_title->getMessage());
 			$title = "";
 			if ($title = $DBRESULT_title->fetchRow())
 				$title = _($title["topology_name"]);
 			else
-				$title = $lang["m_main_menu"];
+				$title = _("Main Menu");
 
 			$Menu3Url = "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
 			$elemArr[3][$elem["topology_group"]]["title"] = $title;
@@ -154,24 +155,28 @@ For information : contact@oreon-project.org
 		}
 	}
 	unset($elem);
-	# Grab elements for level 4
+
+	/*
+	 * Grab elements for level 4
+	 */
 	if ($level1 && $level2 && $level3){
-		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order");
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());
 		for ($i = 0; $DBRESULT->fetchInto($elem);$i++){
-			$elemArr[4][$level1.$level2.$level3][$i] = array("Menu4Icone" => $elem["topology_icone"],
-										"Menu4Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
-										"Menu4UrlPopup" => $elem["topology_url"],
-										"MenuOnClick" => $elem["topology_OnClick"],
-										"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
-										"Menu4Name" => _($elem["topology_name"]),
-										"Menu4Popup" => $elem["topology_popup"] ? true : false);
+			$elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
+																"Menu4Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
+																"Menu4UrlPopup" => $elem["topology_url"],
+																"MenuOnClick" => $elem["topology_OnClick"],
+																"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
+																"Menu4Name" => _($elem["topology_name"]),
+																"Menu4Popup" => $elem["topology_popup"] ? true : false);
 		}
 	}
 
-	# Create Menu Level 1-2-3-4
+	/*
+	 * Create Menu Level 1-2-3-4
+	 */
 	$tpl->assign("UserInfoUrl", $userUrl);
 	$tpl->assign("UserName", $oreon->user->get_alias());
 	$tpl->assign("Date", $logDate);
@@ -185,23 +190,27 @@ For information : contact@oreon-project.org
 	$tpl->assign("Menu3ID", "menu3_bgcolor");
 	$tpl->assign("Menu4Color", "menu_4");
 	$tpl->assign("Menu4ID", "menu4_bgcolor");
+	$tpl->assign("connected_users", _("Connected"));
+	$tpl->assign("main_menu", _("Main Menu"));
 
-	$tpl->assign("connected_users", $lang["m_connected_users"]);
-	$tpl->assign("main_menu", $lang["m_main_menu"]);
-
-	# Assign for Smarty Template
+	/*
+	 * Assign for Smarty Template
+	 */
 	$tpl->assign("elemArr1", $elemArr[1]);
 	count($elemArr[2]) ? $tpl->assign("elemArr2", $elemArr[2]) : NULL;
 	count($elemArr[3]) ? $tpl->assign("elemArr3", $elemArr[3]) : NULL;
 	count($elemArr[4]) ? $tpl->assign("elemArr4", $elemArr[4]) : NULL;
-
 	$tpl->assign("idParent", $level1.$level2.$level3);
 
-	# Legend icon
-	$tpl->assign("legend1", $lang['m_help']);
-	$tpl->assign("legend2", $lang['lgd_legend']);
+	/*
+	 * Legend icon
+	 */
+	$tpl->assign("legend1", _("Help"));
+	$tpl->assign("legend2", _("Legend"));
 
-	# User Online
+	/*
+	 * User Online
+	 */
 	$tab_user = array();
 	$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
 	if (PEAR::isError($DBRESULT))
@@ -219,8 +228,7 @@ For information : contact@oreon-project.org
 
 	# Display
 	$tpl->display("BlockHeader.ihtml");
-	$tpl->display("BlockMenuType1.ihtml");
-	
+	$tpl->display("BlockMenuType1.ihtml");	
 	count($elemArr[2]) ? $tpl->display("BlockMenuType2.ihtml") : NULL;
 	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : print '<div id="contener"><!-- begin contener --><table id="Tcontener"><tr><td id="Tmainpage" class="TcTD">';
 ?>

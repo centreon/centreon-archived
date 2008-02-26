@@ -46,20 +46,20 @@ For information : contact@oreon-project.org
 
 #menu_3{padding:0px;}
 
-.Tmenu3 {  border-collapse: collapse; background-color: white;}
-.Tmenu3 td {padding: 0px; }
+.Tmenu3 				{border-collapse: collapse; background-color: white;}
+.Tmenu3 td 				{padding: 0px; }
 .Tmenu3 .top .left, .Tmenu3 .top .right, .Tmenu3 .bottom .left, .Tmenu3 .bottom .right {height: 9px;	width: 10px; }
-.Tmenu3 .top .left{width:10px;padding-left:10px;}
-.Tmenu3 .top .right{width:10px;padding-left:10px;}
-.Tmenu3 .right{width:10px;}
-.Tmenu3 .left{width:10px;}
-.Tmenu3 .center{width:100%;}
-.Tmenu3 .top .left { background-image: url(Images/topleft2.gif);}
-.Tmenu3 .top .right { background-image: url(Images/topright2.gif);}
-.Tmenu3 .bottom .left { background-image: url(Images/bottomleft2.gif); }
-.Tmenu3 .bottom .right { background-image: url(Images/bottomright2.gif); }
-.Tmenu3 .bottom .center{ background: url(Images/line.gif) bottom right repeat-x; }
-.Tmenu3 .top .center{ background: url(Images/line.gif) top right repeat-x; }
-.Tmenu3 .middle .left{ background: url(Images/line.gif) left repeat-y; }
-.Tmenu3 .middle .right{ background: url(Images/line.gif) right repeat-y; }
-.help{position:absolute;right:15px;top:15px;}
+.Tmenu3 .top .left		{width:10px;padding-left:10px;}
+.Tmenu3 .top .right		{width:10px;padding-left:10px;}
+.Tmenu3 .right			{width:10px;}
+.Tmenu3 .left			{width:10px;}
+.Tmenu3 .center			{width:100%;}
+.Tmenu3 .top .left 		{background-image: url(Images/topleft2.gif);}
+.Tmenu3 .top .right 	{background-image: url(Images/topright2.gif);}
+.Tmenu3 .bottom .left 	{background-image: url(Images/bottomleft2.gif); }
+.Tmenu3 .bottom .right 	{background-image: url(Images/bottomright2.gif); }
+.Tmenu3 .bottom .center	{background: url(Images/line.gif) bottom right repeat-x; }
+.Tmenu3 .top .center	{background: url(Images/line.gif) top right repeat-x; }
+.Tmenu3 .middle .left	{background: url(Images/line.gif) left repeat-y; }
+.Tmenu3 .middle .right	{background: url(Images/line.gif) right repeat-y; }
+.help					{position:absolute;right:15px;top:15px;}
