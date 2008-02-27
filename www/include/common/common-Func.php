@@ -1018,6 +1018,22 @@ For information : contact@oreon-project.org
 
 	function getLangs(){
 		$langs = array();
+		$chemintotal = "./locale/";
+		$default = "en_US";
+		
+		$langs["en_US"] = "en_US";
+		if ($handle  = opendir($chemintotal))   {
+		    while ($file = readdir($handle))
+		    	if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, "..")) {
+					//$tab = split('_', $file);
+		      		$langs[$file] = $file;
+		      	}
+			closedir($handle);
+		}
+		return $langs;
+	}
+	/*	function getLangs(){
+		$langs = array();
 		$chemintotal = "./lang/";
 		if ($handle  = opendir($chemintotal))   {
 		    while ($file = readdir($handle))
@@ -1028,7 +1044,7 @@ For information : contact@oreon-project.org
 			closedir($handle);
 		}
 		return $langs;
-	}
+	}*/
 	function getLangsByDir($chemintotal){
 		$langs = "";
 		if ($handle  = opendir($chemintotal))   {
