@@ -540,7 +540,7 @@ For information : contact@oreon-project.org
 		$tpl->assign('sort4', "Data");		
 		$tpl->assign('sort5', "Tunning");		
 		$tpl->assign('sort6', "Admin");
-		$tpl->assign('lang', $lang);
+		$tpl->assign("Seconds", _("Seconds"));
 		$tpl->display("formNagios.ihtml");
 	}
 ?>

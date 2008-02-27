@@ -17,7 +17,7 @@
 	<div id='tab1' class='tab'>
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.ndo2db_infos}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$ndo2db_configuration}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.description.label}</td><td class="FormRowValue">{$form.description.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
@@ -29,7 +29,7 @@
 	<div id='tab2' class='tab'>
 	<table class="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.ndo2db_infos2}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$Database_Information_for_ndo2db}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.db_type.label}</td><td class="FormRowValue">{$form.db_type.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.db_host.label}</td><td class="FormRowValue">{$form.db_host.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.db_name.label}</td><td class="FormRowValue">{$form.db_name.html}</td></tr>
@@ -42,7 +42,7 @@
 	<div id='tab3' class='tab'>
 	<table class="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.ndo2db_infos3}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$Retention_Informations_For_Ndo2db}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.max_timedevents_age.label}</td><td class="FormRowValue">{$form.max_timedevents_age.html}&nbsp;{$lang.time_sec}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.max_systemcommands_age.label}</td><td class="FormRowValue">{$form.max_systemcommands_age.html}&nbsp;{$lang.time_sec}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.max_servicechecks_age.label}</td><td class="FormRowValue">{$form.max_servicechecks_age.html}&nbsp;{$lang.time_sec}</td></tr>

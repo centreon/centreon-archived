@@ -149,12 +149,12 @@ For information : contact@oreon-project.org
 	    $form->setDefaults($nagios);
 		$form->freeze();
 	} else if ($o == "c")	{# Modify a nagios information
-		$subC =& $form->addElement('submit', 'submitC', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($nagios);
 	} else if ($o == "a")	{# Add a nagios information
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;
@@ -177,7 +177,9 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);	
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);
-		$tpl->assign('lang', $lang);	
+		$tpl->assign('ndo2db_configuration', _("Ndo2db Informations"));
+		$tpl->assign('Database_Information_for_ndo2db', _("Database Information for ndo2db"));
+		$tpl->assign('Retention_Informations_For_Ndo2db', _("Retention Informations For Ndo2db"));
 		$tpl->assign('sort1', _("General"));		
 		$tpl->assign('sort2', _("Database"));		
 		$tpl->assign('sort3', _("Retention"));

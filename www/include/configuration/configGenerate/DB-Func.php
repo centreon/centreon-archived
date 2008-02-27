@@ -539,7 +539,6 @@ For information : contact@oreon-project.org
 	
 	// Create File, print header and return handle. 	
 	function create_file($filename, $name, $header = true)	{
-		global $lang;
 		if (!$handle = fopen($filename, 'w')) {         
 	    	echo _("Can't access to needed file").$filename;         
 	    	exit;

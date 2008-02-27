@@ -179,7 +179,7 @@ For information : contact@oreon-project.org
 						$bool = @copy($filename , $oreon->Nagioscfg["cfg_dir"].basename($filename));
 						$filename = array_pop(explode("/", $filename));
 						if ($bool)
-							;//$msg_copy[$host["id"]] .= display_copying_file($filename, $lang['gen_mvOk']);
+							;
 						else
 							$msg_copy[$host["id"]] .= display_copying_file($filename, _(" - movement <font color='res'>KO</font>"));
 					}
