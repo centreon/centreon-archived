@@ -88,8 +88,8 @@ For information : contact@oreon-project.org
 		$tpl->assign("pageArr", $pageArr);
 
 	$tpl->assign("num", $num);
-	$tpl->assign("previous", $lang["previous"]);
-	$tpl->assign("next", $lang["next"]);
+	$tpl->assign("previous", _("previous"));
+	$tpl->assign("next", _("next"));
 
 	if (($prev = $num - 1) >= 0)
 		$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
@@ -123,7 +123,7 @@ For information : contact@oreon-project.org
 	</SCRIPT>
 	<?php
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
-	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit()"));
+	$selLim =& $form->addElement('select', 'l', _("number per page"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);
 	
 	#Element we need when we reload the page
