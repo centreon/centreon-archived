@@ -20,8 +20,6 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-//print_r($_POST);
-
 	#Path to the configuration dir
 	$path = "./include/views/graphs/graphODS/";
 
@@ -36,61 +34,48 @@ For information : contact@oreon-project.org
 
 	$openid = '0';
 	$open_id_sub = '0';
-	if(isset($_GET["openid"])){
-	$openid = $_GET["openid"];
-	$open_id_type = substr($openid, 0, 2);
-	$open_id_sub = substr($openid, 3, strlen($openid));
+	if (isset($_GET["openid"])){
+		$openid = $_GET["openid"];
+		$open_id_type = substr($openid, 0, 2);
+		$open_id_sub = substr($openid, 3, strlen($openid));
 	}
 
-	if(isset($_GET["host_id"]) && $open_id_type == "HH"){
+	if (isset($_GET["host_id"]) && $open_id_type == "HH"){
 		$_GET["host_id"] = $open_id_sub;
-	}
-	else
+	} else
 		$_GET["host_id"] = null;
 
-
-
-	if(isset($_GET["id"])){
+	if (isset($_GET["id"])){
 		$id = $_GET["id"];
-	}
-	else
+	} else
 		$id = 1;
 
-	if(isset($_POST["id"])){
+	if (isset($_POST["id"])){
 		$id = $_POST["id"];
-	}
-	else
+	} else
 		$id = 1;
 
-	
-	if(isset($_POST["svc_id"]) && $_POST["svc_id"]){
+	if (isset($_POST["svc_id"]) && $_POST["svc_id"]){
 		$id = "";
 		$id_svc = $_POST["svc_id"];
 		$tab_svcs = explode(",", $id_svc);
-		foreach($tab_svcs as $svc)
-		{
+		foreach($tab_svcs as $svc){
 			$tmp = explode(";", $svc);
 			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
 		}
 	}
-
-
 	
 	$id_log = "'RR_0'";
 	$multi = 0;
-	if(isset($_GET["mode"]) && $_GET["mode"] == "0"){
+	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
 		$mode = 0;
 		$id_log = "'".$id."'";
 		$multi = 1;
-	}
-	else{
+	} else {
 		$mode = 1;
 		$id = 1;
 	}
 
-
-
-//<div id="graphView4xml">..</div>
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$form->addElement('header', 'title', _("Choose the source to graph"));
@@ -130,10 +115,10 @@ For information : contact@oreon-project.org
 			var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
 		    var headID = document.getElementsByTagName("head")[0];  
 		    var cssNode = document.createElement('link');
-		       cssNode.type = 'text/css';
-		       cssNode.rel = 'stylesheet';
-		       cssNode.href = css_file;
-		       cssNode.media = 'screen';headID.appendChild(cssNode);
+		    cssNode.type = 'text/css';
+		    cssNode.rel = 'stylesheet';
+		    cssNode.href = css_file;
+		    cssNode.media = 'screen';headID.appendChild(cssNode);
  
  			var multi = <?php echo $multi; ?>;
  
@@ -336,16 +321,21 @@ if(document.getElementById('menu_2'))
 				}
 				// Split metric
 				var _split = 0;
-				if(document.formu2 && document.formu2.split.checked)
+				if(document.formu2 && document.formu2.split && document.formu2.split.checked)
 				{
 					_split = 1
 				}
 
+				var _status = 0;
+				if(document.formu2 && document.formu2.status && document.formu2.status.checked)
+				{
+					_status = 1
+				}
 				
 				tree.selectItem(id);
 				var proc = new Transformation();
 				var _addrXSL = "./include/views/graphs/graphODS/GraphService.xsl";
-				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?multi='+multi+'&split='+_split+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 
 
 //				var header = document.getElementById('header');
@@ -363,7 +353,7 @@ if(document.getElementById('menu_2'))
 				
 
 
-graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
+//graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
 
 </script>
 

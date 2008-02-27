@@ -315,6 +315,18 @@
 					</xsl:element>
 					<xsl:value-of select="//lang/giv_split_component"/>
            		</td>
+           		<td>
+					<xsl:element name='input'>
+						<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>',multi); return false;</xsl:attribute>
+						<xsl:attribute name="name">status</xsl:attribute>
+						<xsl:attribute name="type">checkbox</xsl:attribute>
+
+						<xsl:if test="//status = 1">
+							<xsl:attribute name="checked">checked</xsl:attribute>
+						</xsl:if>
+					</xsl:element>
+					<xsl:value-of select="//lang/status"/>
+           		</td>
 				</tr>
         	</table>
 		</form>
@@ -366,12 +378,19 @@
 			./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/>
 							  	</xsl:attribute>
 							</xsl:element>
+							
 							<br/>
 						</xsl:if>
 					</xsl:for-each>
+					
 				</xsl:if>
-
-
+				<xsl:if test="status = 1">
+								<xsl:element name="img">
+								  	<xsl:attribute name="src">
+./include/views/graphs/statusGraphs/displayServiceStatus.php?session_id=<xsl:value-of select="sid"/>&amp;index=<xsl:value-of select="index"/>&amp;end=<xsl:value-of select="end"/>&amp;start=<xsl:value-of select="start"/>
+								  	</xsl:attribute>
+								</xsl:element>
+								</xsl:if>
 						 </div> 
 					</td>
 				</tr>

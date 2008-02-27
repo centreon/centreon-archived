@@ -137,6 +137,11 @@ $lang["optionAdvanced"] = "Options";
 		$split = htmlentities($_GET["split"]);
 	}else
 		$split = "0";
+		
+	if(isset($_GET["status"]) && !check_injection($_GET["status"])){
+		$status = htmlentities($_GET["status"]);
+	}else
+		$status = "0";
 
 
 	if(isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])){
@@ -173,8 +178,7 @@ $lang["optionAdvanced"] = "Options";
 		$openid = "-1";
 
 
-//$oreon->user->user_id
-$contact_id = '2';
+	$contact_id = '2';
 
 	if ($StartDate !=  "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
@@ -464,6 +468,7 @@ foreach($tab_id as $openid)
 		echo "<index>".$index."</index>";
 		echo "<opid>".$openid."</opid>";
 		echo "<split>".$split."</split>";
+		echo "<status>".$status."</status>";
 		
 		foreach($tab_period as $name => $start){
 			echo "<period>";
@@ -643,6 +648,7 @@ foreach($tab_id as $openid)
 		echo "<end>".$end."</end>";
 		echo "<index>".$index_id."</index>";
 		echo "<split>".$split."</split>";
+		echo "<status>".$status."</status>";
 		echo "<tpl>".$template_id."</tpl>";
 		echo "<multi>".$multi."</multi>";
 
@@ -728,6 +734,7 @@ echo "<lang>";
 echo "<giv_gg_tpl>"._("Template")."</giv_gg_tpl>";
 echo "<advanced>"._("Options")."</advanced>";
 echo "<giv_split_component>"._("Split Components")."</giv_split_component>";
+echo "<status>"._("Display Status")."</status>";
 echo "</lang>";
 
 /*

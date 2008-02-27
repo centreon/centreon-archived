@@ -60,17 +60,17 @@ For information : contact@oreon-project.org
 	 * Verify if start and end date
 	 */	
 
-if (!isset($_GET["start"])){
-	$start = time() - (60*60*48);
-}
-else
-	$start = $_GET["start"];
-
-if (!isset($_GET["end"])){
-	$end = time();
-}
-else
-	$end = $_GET["end"];
+	if (!isset($_GET["start"])){
+		$start = time() - (60*60*48);
+	}
+	else
+		$start = $_GET["start"];
+	
+	if (!isset($_GET["end"])){
+		$end = time();
+	}
+	else
+		$end = $_GET["end"];
 
 
 
