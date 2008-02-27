@@ -42,7 +42,7 @@ For information : contact@oreon-project.org
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Nagios Configuration Files Export"));
-	$form->addElement('header', 'infos', _("Implied Serveur"));
+	$form->addElement('header', 'infos', _("Implied Server"));
 	$form->addElement('header', 'opt', _("Export Options"));	
     
     $form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
