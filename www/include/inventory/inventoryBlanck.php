@@ -18,5 +18,5 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 	
-	echo "<div class='msg' align='center'>".$lang["s_notAvl"]."</div>";
+	echo "<div class='msg' align='center'>"._("This ID Card is not available")."</div>";
 ?>
