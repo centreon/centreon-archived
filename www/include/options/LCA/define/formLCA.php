@@ -255,7 +255,7 @@ $lca["lca_topos"] = array();
 
 
 					/*old*/
-				 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;"._($topo4["topology_name"]."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px; margin-left: 55px;"));
+				 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;"._($topo4["topology_name"])."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px; margin-left: 55px;"));
 					/*old*/					
 					$d++;
 				}
