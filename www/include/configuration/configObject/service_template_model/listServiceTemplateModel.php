@@ -188,7 +188,7 @@ For information : contact@oreon-project.org
 				"else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"this.form.elements['o1'].selectedIndex = 0");
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>$lang_("Disable")), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 		
 	$attrs2 = array(

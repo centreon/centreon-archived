@@ -480,12 +480,6 @@ For information : contact@oreon-project.org
 	if ($o != "mc")
 		$form->setDefaults(array('host_retain_nonstatus_information' => '2'));
 
-	/*	
-	if ($oreon->optGen["perfparse_installed"])	{
-		$form->addElement('header', 'purge_policy', $lang["mod_purgePolicy"]);
-		$form->addElement('select', 'purge_policy_id', $lang["mod_purgePolicy_name"], $ppols);
-	}
-	*/
 	#
 	## Sort 4 - Extended Infos
 	#
@@ -504,11 +498,9 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 	if ($oreon->user->get_version() == 2)
 		$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
-//	$form->addElement('text', 'ehi_icon_image', $lang['h_iconImg'], $attrsText);
 	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('ehi_icon_image',this.form.elements['ehi_icon_image'].value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
 	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("onChange"=>"showLogo('ehi_vrml_image',this.form.elements['ehi_vrml_image'].value)"));
-//	$form->addElement('text', 'ehi_statusmap_image', $lang['h_nagStatImg'], $attrsText);
 	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"), $extImgStatusmap, array("onChange"=>"showLogo('ehi_statusmap_image',this.form.elements['ehi_statusmap_image'].value)"));	
 	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
@@ -646,7 +638,13 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('p', $p);
-		$tpl->assign('lang', $lang);
+
+		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
+		$tpl->assign("Flapping_Options", _("Flapping options"));
+		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
+		$tpl->assign("History_Options", _("History Options"));
+		$tpl->assign("Event_Handler", _("Event Handler"));
+
 		$tpl->display("formHost.ihtml");
 	}
 ?>

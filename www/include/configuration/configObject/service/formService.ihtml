@@ -109,24 +109,24 @@
 		<tr class="list_one"><td class="FormRowField">{$form.service_parallelize_check.label}</td><td class="FormRowValue">{$form.service_parallelize_check.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_obsess_over_service.label}</td><td class="FormRowValue">{$form.service_obsess_over_service.html}</td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$lang.sv_freshnessOptions}</td></tr>	
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.service_check_freshness.label}</td><td class="FormRowValue">{$form.service_check_freshness.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_freshness_threshold.label}</td><td class="FormRowValue">{$form.service_freshness_threshold.html}{$lang.time_sec}</td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$lang.sv_flappingOptions}</td></tr>		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Flapping_Options}</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.service_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.service_flap_detection_enabled.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_low_flap_threshold.label}</td><td class="FormRowValue">{$form.service_low_flap_threshold.html}&nbsp;%</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_high_flap_threshold.label}</td><td class="FormRowValue">{$form.service_high_flap_threshold.html}&nbsp;%</td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$lang.h_perfdataOptions}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$Perfdata_Options}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_process_perf_data.label}</td><td class="FormRowValue">{$form.service_process_perf_data.html}</td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.sv_loggingOptions}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$History_Options}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_retain_status_information.label}</td><td class="FormRowValue">{$form.service_retain_status_information.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.service_retain_nonstatus_information.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_stalOpts.label}</td><td class="FormRowValue">{$form.service_stalOpts.html}</td></tr>
 
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$lang.sv_eventHandlerST}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Event_Handler}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_event_handler_enabled.label}</td><td class="FormRowValue">{$form.service_event_handler_enabled.html}</td></tr>
 		<tr class="list_two">
 			<td class="FormRowField">{$form.command_command_id2.label}</td>

@@ -638,7 +638,6 @@ For information : contact@oreon-project.org
 		
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
 
-	$tpl->assign("lang", $lang);
 	$tpl->assign("p", $p);
 	
 	$valid = false;
@@ -671,8 +670,7 @@ For information : contact@oreon-project.org
 			require_once($path."listServiceByHostGroup.php");
 		else if ($p == "602")
 			require_once($path."listServiceByHost.php");
-	}
-	else	{
+	}	else	{
 		#Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -681,6 +679,13 @@ For information : contact@oreon-project.org
 		$tpl->assign('is_not_template', $service_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		
+		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
+		$tpl->assign("Flapping_Options", _("Flapping options"));
+		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
+		$tpl->assign("History_Options", _("History Options"));
+		$tpl->assign("Event_Handler", _("Event Handler"));
+		
 		$tpl->assign('v', $oreon->user->get_version());		
 		$tpl->display("formService.ihtml");
 	}

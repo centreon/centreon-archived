@@ -524,6 +524,13 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		
+		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
+		$tpl->assign("Flapping_Options", _("Flapping options"));
+		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
+		$tpl->assign("History_Options", _("History Options"));
+		$tpl->assign("Event_Handler", _("Event Handler"));
+		
 		$tpl->display("formHost.ihtml");
 	}
 ?>

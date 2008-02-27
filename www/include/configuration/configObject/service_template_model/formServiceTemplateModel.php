@@ -227,7 +227,7 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'information', _("General Information"));
 
 	if ($o != "mc")
-		$form->addElement('text', 'service_description', $_("Description"), $attrsText);
+		$form->addElement('text', 'service_description', _("Description"), $attrsText);
 	$form->addElement('text', 'service_alias', _("Alias"), $attrsText);
 	$form->addElement('header', 'service_alias_interest', _("Used for Service duplication"), $attrsText);
 
@@ -611,6 +611,13 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('v', $oreon->user->get_version());
+
+		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
+		$tpl->assign("Flapping_Options", _("Flapping options"));
+		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
+		$tpl->assign("History_Options", _("History Options"));
+		$tpl->assign("Event_Handler", _("Event Handler"));
+		
 		$tpl->display("formService.ihtml");
 	}
 ?>

@@ -135,21 +135,21 @@
 	 	{if $msg.nagios == 2}
 		<tr class="list_one"><td class="FormRowField">{$form.host_obsess_over_host.label}</td><td class="FormRowValue">{$form.host_obsess_over_host.html}</td></tr>
 		{/if}
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$lang.h_freshnessOptions}</td></tr>	
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code_java2.gif'>&nbsp;&nbsp;{$Freshness_Control_options}</td></tr>	
 	 	{if $msg.nagios == 2}
 		<tr class="list_two"><td class="FormRowField">{$form.host_check_freshness.label}</td><td class="FormRowValue">{$form.host_check_freshness.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_freshness_threshold.label}</td><td class="FormRowValue">{$form.host_freshness_threshold.html}&nbsp;{$lang.time_sec}</td></tr>
 		{/if}
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$lang.h_flappingOptions}</td></tr>		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Flapping_Options}</td></tr>		
 		<tr class="list_two"><td class="FormRowField">{$form.host_flap_detection_enabled.label}</td><td class="FormRowValue">{$form.host_flap_detection_enabled.html}</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.host_low_flap_threshold.label}</td><td class="FormRowValue">{$form.host_low_flap_threshold.html}&nbsp;%</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_high_flap_threshold.label}</td><td class="FormRowValue">{$form.host_high_flap_threshold.html}&nbsp;%</td></tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$lang.h_perfdataOptions}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$Perfdata_Options}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_process_perf_data.label}</td><td class="FormRowValue">{$form.host_process_perf_data.html}</td></tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$lang.h_loggingOptions}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$History_Options}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_retain_status_information.label}</td><td class="FormRowValue">{$form.host_retain_status_information.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_retain_nonstatus_information.label}</td><td class="FormRowValue">{$form.host_retain_nonstatus_information.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_stalOpts.label}</td><td class="FormRowValue">{$form.host_stalOpts.html}</td></tr>
@@ -159,7 +159,7 @@
 			<tr class="list_one"><td class="FormRowField">{$form.purge_policy_id.label}</td><td class="FormRowValue">{$form.purge_policy_id.html}</td></tr>
 		{/if}
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$lang.h_eventHandlerST}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$Event_Handler}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_event_handler_enabled.label}</td><td class="FormRowValue">{$form.host_event_handler_enabled.html}</td></tr>
 		<tr class="list_two">
 			<td class="FormRowField">{$form.command_command_id2.label}</td>
