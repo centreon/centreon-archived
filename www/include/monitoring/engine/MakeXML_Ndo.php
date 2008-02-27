@@ -197,8 +197,7 @@ For information : contact@oreon-project.org
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";	
-	while($DBRESULT_NDO1->fetchInto($ndo))
-	{
+	while($DBRESULT_NDO1->fetchInto($ndo)){
 		$host_status[$ndo["host_name"]] = $ndo;
 	}
 	/* end */
@@ -225,15 +224,13 @@ For information : contact@oreon-project.org
 
 	if($search_type_host && $search_type_service && $search){
 		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
-	}
-	else if(!$search_type_service && $search_type_host && $search){
+	} else if(!$search_type_service && $search_type_host && $search){
 		$rq .= " AND no.name1 like '%" . $search . "%'";
-	}
-	else if($search_type_service && !$search_type_host && $search){
+	} else if($search_type_service && !$search_type_host && $search){
 		$rq .= " AND no.name2 like '%" . $search . "%'";
-	}
-	else
-	;
+	} else
+		;
+		
 	if($o == "svcpb")
 		$rq .= " AND nss.current_state != 0 ";
 	if($o == "svc_ok")
@@ -256,9 +253,6 @@ For information : contact@oreon-project.org
 			default : $rq .= " order by no.name1 ". $order; break;
 	}
 	
-
-
-
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
 	$DBRESULT_NDO =& $pearDBndo->query($rq);
 	if (PEAR::isError($DBRESULT_NDO))
@@ -283,8 +277,7 @@ For information : contact@oreon-project.org
 
 	$host_prev = "";
 	$class = "list_one";
-	while($DBRESULT_NDO->fetchInto($ndo))
-	{
+	while($DBRESULT_NDO->fetchInto($ndo))	{
 		$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
 		$color_service = $tab_color_service[$ndo["current_state"]];
 		$passive = 0;
@@ -304,7 +297,7 @@ For information : contact@oreon-project.org
 				$class = "list_four";
 			else
 				$class = "list_down";
-		}else{
+		} else {
 			if( $ndo["problem_has_been_acknowledged"] == 1)
 				$class = "list_four";
 		}
@@ -355,5 +348,4 @@ For information : contact@oreon-project.org
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
 ?>
