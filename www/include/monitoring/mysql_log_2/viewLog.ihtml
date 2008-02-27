@@ -1,8 +1,6 @@
 <script language='javascript' src='./include/common/javascript/datePicker.js'></script>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
-
-
 <div id="div1">
 <form name="formu">
 
@@ -21,13 +19,14 @@
 			<td>
 				<input type="radio" name="period_choice" value="custom" CHECKED>
 
-				{$lang.m_from}
+				{$From}
 				&nbsp;
 				<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
 				&nbsp;
 				<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />  
 				&nbsp;
-				{$lang.m_to}
+				
+				{$To}
 				&nbsp;
 				<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
 				&nbsp;

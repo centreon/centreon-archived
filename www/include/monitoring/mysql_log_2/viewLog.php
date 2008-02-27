@@ -114,10 +114,9 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 
-	$tpl->assign('lang', $lang);
+	$tpl->assign('From', _("From"));
+	$tpl->assign('To', _("To"));
 	$tpl->display("viewLog.ihtml");
-
-
 /*
 	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
 	VALUES ('', 'log_filter_notif', '0', '6');
