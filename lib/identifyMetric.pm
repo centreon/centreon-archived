@@ -43,6 +43,16 @@ sub getGeneralConfig(){
 	return $configuration;
 }
 
+sub putSpecialCharInMetric($){
+	$_[0] =~ s/#S#/\//g;
+	$_[0] =~ s/#BS#/\\/g;
+	$_[0] =~ s/\-/\./g;
+	$_[0] =~ s/\-/\,/g;
+	$_[0] =~ s/\-/\:/g;
+	$_[0] =~ s/\-/\ /g;
+	return $_[0];
+}
+
 sub removeSpecialCharInMetric($){
 	$_[0] =~ s/\//#S#/g;
 	$_[0] =~ s/\\/#BS#/g;
@@ -100,8 +110,6 @@ sub identify_metric($$$$$$$){ # perfdata index status time type counter rebuild
 	
 	# Get All Configuration values   				
 	$configuration = getGeneralConfig();
-	
-	updateServiceState($_[1], $_[2], $_[3]);
 	
 	# Cut perfdata    	
 	my $metric = removeBackSpace($_[0]);

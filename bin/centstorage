@@ -26,7 +26,7 @@
 use strict;
 use warnings;
 use DBI;
-use POSIX ":sys_wait_h" ;
+use POSIX ":sys_wait_h";
 
 #use lib "@RRD_PERL@";
 use RRDs;
@@ -40,7 +40,7 @@ my $PID = $installedPath."var/centstorage.pid";
 
 # Init Globals
 use vars qw($debug $LOG %status $generalcounter);
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
 use vars qw($con_oreon $con_ods);
 
 $debug = 0;
@@ -149,6 +149,19 @@ sub CreateConnexionForOreon(){
 	return $oreoncnx;
 }
 
+sub CreateConnexionForNDO(){
+	my $ndocnx;
+	while (!defined($ndocnx) || !$ndocnx->ping){
+		if (!defined($ndocnx)) {
+			$ndocnx = DBI->connect("DBI:mysql:database=".$mysql_database_ndo.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+			if (!defined($ndocnx)) {
+				writeLogFile("Error when connecting to database : ".$DBI::errstr."\n");
+				sleep(5);
+			}
+		}
+	}
+	return $ndocnx;
+}
 
 ########################################
 # return perfdata file path
@@ -237,9 +250,7 @@ sub GetPerfData(){
 			    	if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "\n")){
 						CheckMySQLConnexion();
 						checkAndUpdate(@line_tab);
-					} else {
-						print "";#updateServiceState($line_tab[5], $_[1]);
-			 		}
+					}
 					undef($line_tab);
 				}
 			}
@@ -327,6 +338,8 @@ sub checkAndUpdate($){
 			}
 		} else {
 			@data_service = identify_service($_[1], $_[2]); # return index_id and storage
+			# Update status 
+			updateServiceState($line_tab[1], $line_tab[2], $line_tab[0], $data_service[0]);
 			if (defined($data_service[0]) && $data_service[0] ne 0) {
 				$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2]); # perfdata index status time type counter rebuild
 			}
@@ -368,13 +381,54 @@ sub getModulesInterval($){
 	return $interval;
 }
 
-sub updateServiceState($$$){	
+sub updateServiceState($$$$){ # Host name, sercvice desc, ctime, index
 	my $interval = 4000;
 	my $nb_value;
 	my $interval_length;
-	
+
+	my $index = $_[3];
+
 	my $RRDdatabase_status_path = getRRDdatabase_status_path();	
-	my %tab = ("OK"=>100, "WARNING"=>75,"CRITICAL"=>0,"UNKNWON"=>0);
+	my @tab = (0=>"100",1=>"75",2=>"0",3=>"0");	
+	
+	my $odscnx = CreateConnexionForCentstorage();
+	my $centcnx= CreateConnexionForOreon();
+	
+	my $service_description = removeSpecialCharInMetric($_[2]);
+	
+	my $sth = $centcnx->prepare("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+	writeLogFile("Error when getting informations about ndo connexions : ".$sth->errstr."\n") if (!$sth->execute);
+	my $conf = $sth->fetchrow_hashref();
+	
+	# Set NDO Prefix  
+	my $ndo_prefix = $conf->{"db_prefix"};
+	
+	# Connect To NDO DB
+	my $ndocnx = DBI->connect("DBI:mysql:database=".$conf->{"db_name"}.";host=".$conf->{"db_host"}, $conf->{"db_user"}, $conf->{"db_pass"}, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});		
+	my $reqH = "(SELECT `host_object_id` FROM `nagios_hosts` WHERE `display_name` = '".$_[0]."' LIMIT 1)";
+	my $reqS = "(SELECT `service_object_id` FROM `nagios_services` WHERE `display_name` = '".$_[1]."' AND `host_object_id` = ($reqH) LIMIT 1)";
+	my $req = "SELECT `last_hard_state` FROM `nagios_servicestatus` WHERE `service_object_id` = $reqS";
+	
+	my $sth2 = $ndocnx->prepare($req);
+	writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."\n") if (!$sth2->execute);
+	my $hard_state = $sth2->fetchrow_hashref();
+	
+	# Get Hard State
+	my $status = $hard_state->{"last_hard_state"};
+	$sth2->finish();
+	$ndocnx->disconnect();
+		
+	if (defined($status)){
+		if ($status eq 0){
+			$status = 100;
+		} elsif ($status eq 1){
+			$status = 75;
+		} elsif ($status eq 2){
+			$status = 0;
+		} elsif ($status eq 3){
+			undef($status);
+		}
+	}
 	
 	if (!-d $RRDdatabase_status_path){
 		writeLogFile("Directory ".$RRDdatabase_status_path." does not exists. Trying to create it....\n");
@@ -386,21 +440,19 @@ sub updateServiceState($$$){
 	}
 	
 	# call function to check if DB exist and else create it
-	if (-e $RRDdatabase_status_path."/".$_[0].".rrd"){
-		updateRRDDatabase($RRDdatabase_status_path, $_[0], "status", $_[2], $tab{$_[1]});
-	} else {
-		if ($_[0] && $_[1] && $_[2]){
+	if (defined($index) && defined($status) && $_[2]){
+		if (-e $RRDdatabase_status_path."/".$index.".rrd"){
+			updateRRDDatabase($RRDdatabase_status_path, $index, "status", $_[2], $status);
+		} else {
 			my $begin = time() - 200000;
-			$interval = getServiceCheckIntervalWithSVCid($_[0]);
+			$interval = getServiceCheckIntervalWithSVCid($index);
 			$interval = 3 if (!defined($interval));
 			$interval = getIntervalLenght() * $interval;
 			my $interval_hb = $interval * 2;
 			$nb_value = getLenStorageDB() / $interval;
-
-			createRRDDatabase($RRDdatabase_status_path, $_[0], $begin, $interval, "status", $nb_value);
-			tuneRRDDatabase($RRDdatabase_status_path, $_[0], "status", $interval_hb);
-			updateRRDDatabase($RRDdatabase_status_path, $_[0], "status", $_[2], $tab{$_[1]});
-	
+			createRRDDatabase($RRDdatabase_status_path, $index, $begin, $interval, "status", $nb_value);
+			tuneRRDDatabase($RRDdatabase_status_path, $index, "status", $interval_hb);
+			updateRRDDatabase($RRDdatabase_status_path,$index, "status", $_[2], $status);
 			undef($begin);
 		}
 	}
