@@ -7,7 +7,7 @@
 					alt='{$h_ext_icon_image_alt}'
 				{/if}
 				>
-				&nbsp;&nbsp;{$lang.m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address}
+				&nbsp;&nbsp;{$m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address}
 				{if $h_ext_notes}
 					&nbsp;&nbsp;
 					{if $h_ext_notes_url}
@@ -27,114 +27,114 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter" colspan="2">{$lang.m_mon_host_info}</td>
+						<td class="ListColHeaderCenter" colspan="2">{$m_mon_host_info}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_host_status}</td>
+						<td class="ListColLeft">{$m_mon_host_status}</td>
 						<td class="ListColLeft" style='background:{$host_data.status_color}'>{$host_data.current_state}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_host_status_info}</td>
+						<td class="ListColLeft">{$m_mon_host_status_info}</td>
 						<td class="ListColLeft">{$host_data.plugin_output}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_performance_data}</td>
+						<td class="ListColLeft">{$m_mon_performance_data}</td>
 						<td class="ListColLeft">{$host_data.performance_data}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_current_attempt}</td>
+						<td class="ListColLeft">{$m_mon_current_attempt}</td>
 						<td class="ListColLeft">{$host_data.current_attempt} / {$current_attempts}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_state_type}</td>
+						<td class="ListColLeft">{$m_mon_state_type}</td>
 						<td class="ListColLeft">{$host_data.state_type}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_host_last_check}</td>
+						<td class="ListColLeft">{$m_mon_host_last_check}</td>
 						<td class="ListColLeft">{$host_data.last_check}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_next_check}</td>
+						<td class="ListColLeft">{$m_mon_next_check}</td>
 						<td class="ListColLeft">{$host_data.next_check}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_check_latency}</td>
+						<td class="ListColLeft">{$m_mon_check_latency}</td>
 						<td class="ListColLeft">{$host_data.check_latency} s</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_check_execution_time}</td>
+						<td class="ListColLeft">{$m_mon_check_execution_time}</td>
 						<td class="ListColLeft">{$host_data.check_execution_time} s</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_last_change}</td>
+						<td class="ListColLeft">{$m_mon_last_change}</td>
 						<td class="ListColLeft">{$host_data.last_state_change}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_current_state_duration}</td>
+						<td class="ListColLeft">{$m_mon_current_state_duration}</td>
 						<td class="ListColLeft">{$host_data.duration}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_last_notification}</td>
+						<td class="ListColLeft">{$m_mon_last_notification}</td>
 						<td class="ListColLeft">{$host_data.last_notification}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_next_notification}</td>
+						<td class="ListColLeft">{$m_mon_next_notification}</td>
 						<td class="ListColLeft">{if ($host_data.next_notification == 0)} N/A {else}{$host_data.next_notification}{/if}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_notification_nb}</td>
+						<td class="ListColLeft">{$m_mon_notification_nb}</td>
 						<td class="ListColLeft">{$host_data.current_notification_number}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_host_flapping}</td>
+						<td class="ListColLeft">{$m_mon_host_flapping}</td>
 						<td class="ListColLeft">{$host_data.is_flapping}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_percent_state_change}</td>
+						<td class="ListColLeft">{$m_mon_percent_state_change}</td>
 						<td class="ListColLeft">{$host_data.percent_state_change} % </td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_downtime_sc}</td>
+						<td class="ListColLeft">{$m_mon_downtime_sc}</td>
 						<td class="ListColLeft" style='background:{$color_onoff_inv[$host_data.scheduled_downtime_depth]}'>{$en[$host_data.scheduled_downtime_depth]}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_last_update}</td>
+						<td class="ListColLeft">{$m_mon_last_update}</td>
 						<td class="ListColLeft">{$host_data.last_update}</td>
 					</tr>
 				</table>
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter" colspan="2">{$lang.options}</td>
+						<td class="ListColHeaderCenter" colspan="2">{$options}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_host_checks_active}</td>
+						<td class="ListColLeft">{$m_mon_host_checks_active}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.active_checks_enabled]};'>&nbsp;{$en_disable[$host_data.active_checks_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_host_checks_passive}</td>
+						<td class="ListColLeft">{$m_mon_host_checks_passive}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.passive_checks_enabled]};'>&nbsp;{$en_disable[$host_data.passive_checks_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_host_notification}</td>
+						<td class="ListColLeft">{$m_mon_host_notification}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.notifications_enabled]};'>&nbsp;{$en_disable[$host_data.notifications_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_obsess_over_host}</td>
+						<td class="ListColLeft">{$m_mon_obsess_over_host}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.obsess_over_host]};'>&nbsp;{$en_disable[$host_data.obsess_over_host]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_event_handler}</td>
+						<td class="ListColLeft">{$m_mon_event_handler}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.event_handler_enabled]};'>&nbsp;{$en_disable[$host_data.event_handler_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_flap_detection}</td>
+						<td class="ListColLeft">{$m_mon_flap_detection}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.flap_detection_enabled]};'>&nbsp;{$en_disable[$host_data.flap_detection_enabled]}&nbsp;</font></td>
 					</tr>
 					
 					{if $host_data.current_state != UP}
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_acknowledge}</td>
+						<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.problem_has_been_acknowledged]};'>&nbsp;{$en_disable[$host_data.problem_has_been_acknowledged]}&nbsp;</font></td>
 					</tr>
 					{/if}
@@ -143,26 +143,26 @@
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
+						<td class="ListColHeaderCenter">{$m_mon_tips}</td>
 					</tr>
 					{if $lcaTopo.6}
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./oreon.php?p=6&host_id={$h.host_id}&o=c'>{$lang.m_mon_configure} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./oreon.php?p=6&host_id={$h.host_id}&o=c'>{$m_mon_configure} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.7}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./oreon.php?p=70101&o=t&host_id={$h.host_id}'>{$lang.m_mon_view_identity_file} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./oreon.php?p=70101&o=t&host_id={$h.host_id}'>{$m_mon_view_identity_file} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.20201}
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./oreon.php?p=20201&o=svc&host_name={$h.host_name}'>{$lang.m_mon_all_services} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./oreon.php?p=20201&o=svc&host_name={$h.host_name}'>{$m_mon_all_services} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.40210}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./oreon.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$lang.m_mon_all_graphs} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./oreon.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$m_mon_all_graphs} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 				</table>
@@ -170,13 +170,13 @@
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
+						<td class="ListColHeaderCenter">{$m_mon_tools}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_ping} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$h.host_name}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$lang.m_mon_tools_tracert} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$h.host_name}</a></td>
 					</tr>
 					{if $h_ext_action_url}
 					<tr class='list_one'>
@@ -189,57 +189,57 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.hosts_command}</td>
+						<td class="ListColHeaderCenter">{$hosts_command}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$host_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=6&select[{$h.host_name}]=1&en={$en_inv[$host_data.active_checks_enabled]}'>{$en_inv_text[$host_data.active_checks_enabled]} {$lang.m_mon_check_this_host}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=6&select[{$h.host_name}]=1&en={$en_inv[$host_data.active_checks_enabled]}'>{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$img_en[$host_data.notifications_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=9&select[{$h.host_name}]=1&en={$en_inv[$host_data.notifications_enabled]}'>{$en_inv_text[$host_data.notifications_enabled]} {$lang.m_mon_notify_this_host}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.notifications_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=9&select[{$h.host_name}]=1&en={$en_inv[$host_data.notifications_enabled]}'>{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='oreon.php?p=20305&o=ah&host_name={$h.host_name}'>{$lang.m_mon_SCH_downtime}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='oreon.php?p=20305&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='oreon.php?p=20306&o=ah&host_name={$h.host_name}'>{$lang.m_mon_add_comment}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='oreon.php?p=20306&o=ah&host_name={$h.host_name}'>{$m_mon_add_comment}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=0'>{$lang.m_mon_disable_not_all_services}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=0'>{$m_mon_disable_not_all_services}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=1'>{$lang.m_mon_enable_not_all_services}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_not_all_services}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=1&select[{$h.host_name}]=1'>{$lang.m_mon_SCH_immediate_check}<a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=1&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check}<a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=2&select[{$h.host_name}]=1'>{$lang.m_mon_SCH_immediate_check_f}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=2&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check_f}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=0'>{$lang.m_mon_diable_check_all_svc}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=0'>{$m_mon_diable_check_all_svc}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=1'>{$lang.m_mon_enable_check_all_svc}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_check_all_svc}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$host_data.event_handler_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=45&select[{$h.host_name}]=1&en={$en_inv[$host_data.event_handler_enabled]}'>{$en_inv_text[$host_data.event_handler_enabled]} {$lang.m_mon_ed_event_handler}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.event_handler_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=45&select[{$h.host_name}]=1&en={$en_inv[$host_data.event_handler_enabled]}'>{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$img_en[$host_data.flap_detection_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=43&select[{$h.host_name}]=1&en={$en_inv[$host_data.flap_detection_enabled]}'>{$en_inv_text[$host_data.flap_detection_enabled]} {$lang.m_mon_ed_flapping_detect}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.flap_detection_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=43&select[{$h.host_name}]=1&en={$en_inv[$host_data.flap_detection_enabled]}'>{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}</a></td>
 					</tr>
 					{if $host_data.current_state != UP}
 					<tr class='list_one'>
 						<td class="ListColLeft">{$img_en[$host_data.problem_has_been_acknowledged]}&nbsp;
 						<a href='./oreon.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
 						{$en_acknowledge_text[$host_data.acknowledged]}
-						{$lang.m_mon_acknowledge}</a></td>
+						{$m_mon_acknowledge}</a></td>
 					</tr>
 					{/if}
 				</table>
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.m_mon_host_statistics}</td>
+						<td class="ListColHeaderCenter">{$m_mon_host_statistics}</td>
 					</tr>
 					<tr>
 						<td class="ListColCenter"><img src='./include/monitoring/objectDetails/generate_images/pie_chart_service.php?o={$o}{$status}&host_name={$h.host_name}'></td>
@@ -259,12 +259,12 @@
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter"><input type="checkbox" disabled checked></td>
-			<td class="ListColHeaderCenter">{$lang.cmt_host_name}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_entry_time}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_author}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_comment}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_persistent}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_actions}</td>
+			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
+			<td class="ListColHeaderCenter">{$cmt_entry_time}</td>
+			<td class="ListColHeaderCenter">{$cmt_author}</td>
+			<td class="ListColHeaderCenter">{$cmt_comment}</td>
+			<td class="ListColHeaderCenter">{$cmt_persistent}</td>
+			<td class="ListColHeaderCenter">{$cmt_actions}</td>
 		</tr>
 		{foreach item=tch from=$tab_comments_host}
 		<tr class={cycle values="list_two, list_one"}>
