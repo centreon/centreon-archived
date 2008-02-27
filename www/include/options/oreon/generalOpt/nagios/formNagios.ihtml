@@ -2,22 +2,22 @@
 {$colorJS}
 <form {$form.attributes}>
 	<table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$lang.genOpt_nagios_properties}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$lang.genOpt_nagios_version}</td></tr>
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$genOpt_nagios_properties}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$genOpt_nagios_version}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_version.label}</td><td class="FormRowValue">{$form.nagios_version.html}</td></tr>
 	
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$lang.genOpt_nagios_init_script}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$genOpt_nagios_init_script}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_init_script.label}</td><td class="FormRowValue">{$form.nagios_init_script.html}</td></tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$lang.genOpt_nagios_direstory}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$genOpt_nagios_direstory}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_path.label}</td><td class="FormRowValue">{$form.nagios_path.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_path_bin.label}</td><td class="FormRowValue">{$form.nagios_path_bin.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
 	
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$lang.genOpt_mailer_path}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_mailer_path}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$lang.genOpt_ndo_configuration}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_ndo_configuration}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ndo_activate.label}</td><td class="FormRowValue">{$form.ndo_activate.html}</td></tr>
 	</table>
 	{if !$valid}

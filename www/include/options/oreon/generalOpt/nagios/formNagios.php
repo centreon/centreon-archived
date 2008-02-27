@@ -137,7 +137,15 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign('lang', $lang);
+	$tpl->assign("genOpt_nagios_properties", _("Nagios Properties"));
+	$tpl->assign("genOpt_nagios_version", _("Nagios version"));
+	$tpl->assign("genOpt_nagios_init_script", _("Initialization Script "));
+	$tpl->assign("genOpt_nagios_direstory", _("Nagios Directories"));
+	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
+	$tpl->assign("genOpt_ndo_configuration", _("NDO Configuration"));
+	$tpl->assign("", _());
+	$tpl->assign("", _());
+	
 	$tpl->assign('valid', $valid);
 	$tpl->display("formNagios.ihtml");
 ?>
