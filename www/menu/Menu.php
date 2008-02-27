@@ -80,7 +80,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("version", $version);
 	$tpl->assign("fileStatus", $fileStatus);
 	$tpl->assign("fileOreonConf", $fileOreonConf);
-	$tpl->assign("date_time_format_status", $lang["date_time_format_status"]);
+	$tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 
 	# Grab elements for level 1
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
@@ -95,7 +95,7 @@ For information : contact@oreon-project.org
 								"Menu1Name" => _($elem["topology_name"]),
 								"Menu1Popup" => $elem["topology_popup"] ? true : false);
 	$userUrl = "oreon.php?p=50104&o=c";
-    $logDate = date($lang['header_format']);
+    $logDate = date(_("Y/m/d G:i"));
     $logOut = _("Logout");
     $logOutUrl = "index.php?disconnect=1";
 
