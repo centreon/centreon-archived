@@ -257,14 +257,15 @@ function get_network_vlan(_host_id)
 				var _Speed = _network.getElementsByTagName("Speed")[0].firstChild.nodeValue;
 				var _errorPaquet = _network.getElementsByTagName("errorPaquet")[0].firstChild.nodeValue;
 
-				var _interfaceName_label = '<?=$lang["s_status"]?>';
-				var _Status_label = '<?=$lang["s_status"]?>';
-				var _PhysAddress_label = '<?=$lang["s_PhysAddress"]?>';
-				var _Type_label = '<?=$lang["s_Type"]?>';
-				var _Trafic_label = '<?=$lang["s_traffic"]?>';
-				var _ipAdress_label = '<?=$lang["s_ipadress"]?>';
-				var _Speed_label = '<?=$lang["s_speed"]?>';
-				var _errorPaquet_label = '<?=$lang["s_pkt_error"]?>';
+				var _interfaceName_label = '<?= _("Status") ?>';
+				var _Status_label = '<?= _("Status") ?>';
+				var _PhysAddress_label = '<?= _("Physical Address") ?>';
+				var _Type_label = '<?= _("Type") ?>';
+				var _Trafic_label = '<?= _("Traffic") ?>';
+				var _ipAdress_label = '<?= _("IP Address") ?>';
+				var _Speed_label = '<?= _("speed") ?>';
+				var _errorPaquet_label = '<?= _("Packet Errors") ?>';
+				
 
 				var _classname = _network.getElementsByTagName("class")[0].firstChild.nodeValue;
 
@@ -360,15 +361,14 @@ function get_network_vlan(_host_id)
 				var _Speed = _vlan.getElementsByTagName("Speed")[0].firstChild.nodeValue;
 				var _errorPaquet = _vlan.getElementsByTagName("errorPaquet")[0].firstChild.nodeValue;
 
-				var _interfaceName_label = '<?=$lang["s_status"]?>';
-				var _Status_label = '<?=$lang["s_status"]?>';
-				var _PhysAddress_label = '<?=$lang["s_PhysAddress"]?>';
-				var _Type_label = '<?=$lang["s_Type"]?>';
-				var _Trafic_label = '<?=$lang["s_traffic"]?>';
-				var _ipAdress_label = '<?=$lang["s_ipadress"]?>';
-				var _Speed_label = '<?=$lang["s_speed"]?>';
-				var _errorPaquet_label = '<?=$lang["s_pkt_error"]?>';
-
+				var _interfaceName_label = '<?= _("Status") ?>';
+				var _Status_label = '<?= _("Status") ?>';
+				var _PhysAddress_label = '<?= _("Physical Address") ?>';
+				var _Type_label = '<?= _("Type") ?>';
+				var _Trafic_label = '<?= _("Traffic") ?>';
+				var _ipAdress_label = '<?= _("IP Address") ?>';
+				var _Speed_label = '<?= _("speed") ?>';
+				var _errorPaquet_label = '<?= _("Packet Errors") ?>';
 
 				var _classname = _vlan.getElementsByTagName("class")[0].firstChild.nodeValue;
 
