@@ -60,12 +60,12 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
-	$tpl->assign("mon_host", $lang['m_mon_hosts']);
-	$tpl->assign("mon_status", $lang['mon_status']);
-	$tpl->assign("mon_ip", $lang['mon_ip']);
-	$tpl->assign("mon_last_check", $lang['mon_last_check']);
-	$tpl->assign("mon_duration", $lang['mon_duration']);
-	$tpl->assign("mon_status_information", $lang['mon_status_information']);
+	$tpl->assign("mon_host", _("Hosts"));
+	$tpl->assign("mon_status", _("Status"));
+	$tpl->assign("mon_ip", _("IP"));
+	$tpl->assign("mon_last_check", _("Last Check"));
+	$tpl->assign("mon_duration", _("Duration"));
+	$tpl->assign("mon_status_information", _("Status information"));
 
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
@@ -90,42 +90,41 @@ For information : contact@oreon-project.org
 	<?php
 
 	$attrs = array(	'onchange'=>"javascript: setO(this.form.elements['o1'].value); submit();");
-    $form->addElement('select', 'o1', NULL, array(	NULL	=>	$lang["lgd_more_actions"],
-													"1"		=>	$lang['m_mon_resubmit_im_checks'],
-													"2"		=>	$lang['m_mon_resubmit_im_checks_f'],
-													"70" 	=> 	$lang['m_mon_acknoledge_thos_svc_pb'],
-													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
-													"80" 	=> 	$lang['m_mon_notification_svc_en'],
-													"81" 	=> 	$lang['m_mon_notification_svc_dis'],
-													"90" 	=> 	$lang['m_mon_check_svc_en'],
-													"91" 	=> 	$lang['m_mon_check_svc_dis'],
-													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
-													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'],
-													"82" 	=> 	$lang['m_mon_notification_host_en'],
-													"83" 	=> 	$lang['m_mon_notification_host_dis'],
-													"92" 	=> 	$lang['m_mon_check_host_en'],
-													"93" 	=> 	$lang['m_mon_check_host_dis']), $attrs);
-
+    $form->addElement('select', 'o1', NULL, array(	NULL	=>	_("More actions..."), 
+													"3"		=>	_("Verification Check"), 
+													"4"		=>	_("Verification Check (Forced)"), 
+													"70" 	=> 	_("Services : Acknowledge"), 
+													"71" 	=> 	_("Services : Disacknowledge"),
+													"80" 	=> 	_("Services : Enable Notification"), 
+													"81" 	=> 	_("Services : Disable Notification"),
+													"90" 	=> 	_("Services : Enable Check"), 
+													"91" 	=> 	_("Services : Disable Check"),
+													"72" 	=> 	_("Hosts : Acknowledge"),
+													"73" 	=> 	_("Hosts : Disacknowledge"), 
+													"82" 	=> 	_("Hosts : Enable Notification"),
+													"83" 	=> 	_("Hosts : Disable Notification"),
+													"92" 	=> 	_("Hosts : Enable Check"),
+													"93" 	=> 	_("Hosts : Disable Check")), $attrs);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 =& $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array('onchange'=>"javascript: setO(this.form.elements['o2'].value); submit();");
-    $form->addElement('select', 'o2', NULL, array(	NULL	=>	$lang["lgd_more_actions"],
-													"1"		=>	$lang['m_mon_resubmit_im_checks'],
-													"2"		=>	$lang['m_mon_resubmit_im_checks_f'],
-													"70" 	=> 	$lang['m_mon_acknoledge_thos_svc_pb'],
-													"71" 	=> 	$lang['m_mon_stop_acknoledge_svc_pb'],
-													"80" 	=> 	$lang['m_mon_notification_svc_en'],
-													"81" 	=> 	$lang['m_mon_notification_svc_dis'],
-													"90" 	=> 	$lang['m_mon_check_svc_en'],
-													"91" 	=> 	$lang['m_mon_check_svc_dis'],
-													"72" 	=> 	$lang['m_mon_acknoledge_thos_host_pb'],
-													"73" 	=> 	$lang['m_mon_stop_acknoledge_host_pb'],
-													"82" 	=> 	$lang['m_mon_notification_host_en'],
-													"83" 	=> 	$lang['m_mon_notification_host_dis'],
-													"92" 	=> 	$lang['m_mon_check_host_en'],
-													"93" 	=> 	$lang['m_mon_check_host_dis']), $attrs);
+    $form->addElement('select', 'o2', NULL, array(	NULL	=>	_("More actions..."), 
+													"3"		=>	_("Verification Check"), 
+													"4"		=>	_("Verification Check (Forced)"), 
+													"70" 	=> 	_("Services : Acknowledge"), 
+													"71" 	=> 	_("Services : Disacknowledge"),
+													"80" 	=> 	_("Services : Enable Notification"), 
+													"81" 	=> 	_("Services : Disable Notification"),
+													"90" 	=> 	_("Services : Enable Check"), 
+													"91" 	=> 	_("Services : Disable Check"),
+													"72" 	=> 	_("Hosts : Acknowledge"),
+													"73" 	=> 	_("Hosts : Disacknowledge"), 
+													"82" 	=> 	_("Hosts : Enable Notification"),
+													"83" 	=> 	_("Hosts : Disable Notification"),
+													"92" 	=> 	_("Hosts : Enable Check"),
+													"93" 	=> 	_("Hosts : Disable Check")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 	$o2 =& $form->getElement('o2');
 	$o2->setValue(NULL);

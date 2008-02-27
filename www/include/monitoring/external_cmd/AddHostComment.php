@@ -58,22 +58,22 @@ For information : contact@oreon-project.org
 		
 		$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 		if ($o == "ah")
-			$form->addElement('header', 'title', $lang["cmt_addH"]);
+			$form->addElement('header', 'title', _("Add a comment for Host"));
 
 		## Indicator basic information
 		
 		$redirect =& $form->addElement('hidden', 'o');
 		$redirect->setValue($o);
 		
-	    $selHost =& $form->addElement('select', 'host_id', $lang["cmt_host_name"], $hosts);
-		$form->addElement('checkbox', 'persistant', $lang["cmt_persistent"]);
-		$form->addElement('textarea', 'comment', $lang["cmt_comment"], $attrsTextarea);
+	    $selHost =& $form->addElement('select', 'host_id', _("Host Name"), $hosts);
+		$form->addElement('checkbox', 'persistant', _("Persistent"));
+		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 		
-		$form->addRule('host', $lang['ErrRequired'], 'required');
-		$form->addRule('comment', $lang['ErrRequired'], 'required');	
+		$form->addRule('host', _("Required Field"), 'required');
+		$form->addRule('comment', _("Required Field"), 'required');	
 		
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 		
 		$form->setDefaults($data);
 	  

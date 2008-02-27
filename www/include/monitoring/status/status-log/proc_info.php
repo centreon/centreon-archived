@@ -37,16 +37,16 @@ For information : contact@oreon-project.org
 				<td valign="top">
 					<table border='1' style='border-width: thin; border-style: dashed; border-color=#9C9C9C;' cellpadding='4' cellspacing='2'>
 						<tr>
-						  <td colspan=3 class="text14b" align="center"><?php echo $lang['mon_proc_options']; ?></td>
+						  <td colspan=3 class="text14b" align="center"><?php echo _("Process Options"); ?></td>
 						 </tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_notif_enabled']; ?></td>
+						  <td align=left><?php echo _("Notifications Enabled"); ?></td>
 						  <td align="center">
 							<?php
 							if (!strcmp($Logs->log_p->get_enable_notifications(), "0"))
-								echo $lang['no'];
+								echo _("No");
 							else 
-								echo $lang['yes']; 
+								echo _("Yes"); 
 							?>
 						  </td>
 						  <td align="center">
@@ -59,13 +59,13 @@ For information : contact@oreon-project.org
 						  </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_service_check_executed']; ?></td>
+						  <td align=left><?php echo _("Service Checks Being Executed"); ?></td>
 						  <td align="center">
 							<?php
 							if (!strcmp($Logs->log_p->get_execute_service_checks(), "0"))
-								echo $lang['no'];
+								echo _("No");
 							else 
-								echo $lang['yes']; 
+								echo _("Yes"); 
 							?>
 						  </td>
 						  <td align="center">
@@ -78,13 +78,13 @@ For information : contact@oreon-project.org
 						  </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_passive_service_check_executed']; ?></td>
+						  <td align=left><?php echo _("Passive Service Checks Being Accepted"); ?></td>
 						  <td align="center">
 							<?php
 							if (!strcmp($Logs->log_p->get_accept_passive_service_checks(), "0"))
-								echo $lang['no'];
+								echo _("No");
 							else 
-								echo $lang['yes']; 
+								echo _("Yes"); 
 							?>
 						  </td>
 						  <td align="center">
@@ -97,13 +97,13 @@ For information : contact@oreon-project.org
 						  </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_eh_enabled']; ?></td>
+						  <td align=left><?php echo _("Event Handlers Enabled"); ?></td>
 						  <td align="center">
 							<?php
 							if (!strcmp($Logs->log_p->get_enable_event_handlers(), "0"))
-								echo $lang['no'];
+								echo _("No");
 							else 
-								echo $lang['yes']; 
+								echo _("Yes"); 
 							?>
 						  </td>
 						  <td align="center">
@@ -116,13 +116,13 @@ For information : contact@oreon-project.org
 						  </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_obess_over_services']; ?></td>
+						  <td align=left><?php echo _("Obsess Over Services"); ?></td>
 						  <td align="center">
 							<?php
 							if (!strcmp($Logs->log_p->get_obsess_over_services(), "0"))
-								echo $lang['no'];
+								echo _("No");
 							else 
-								echo $lang['yes']; 
+								echo _("Yes"); 
 							?>
 						  </td>
 						  <td align="center">
@@ -135,13 +135,13 @@ For information : contact@oreon-project.org
 						  </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_fp_detection_enabled']; ?></td>
+						  <td align=left><?php echo _("Flap Detection Enabled"); ?></td>
 						  <td align="center">
 							<?php
 							if (!strcmp($Logs->log_p->get_enable_flap_detection(), "0"))
-								echo $lang['no'];
+								echo _("No");
 							else 
-								echo $lang['yes']; 
+								echo _("Yes"); 
 							?>
 						  </td>
 						  <td align="center">
@@ -154,13 +154,13 @@ For information : contact@oreon-project.org
 						  </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_perf_data_process']; ?></td>
+						  <td align=left><?php echo _("Performance Data Being Processed"); ?></td>
 						  <td align="center">
 							<?php
 							if (!strcmp($Logs->log_p->get_process_performance_data(), "0\n"))
-								echo $lang['no'];
+								echo _("No");
 							else 
-								echo $lang['yes']; 
+								echo _("Yes"); 
 							?>
 						  </td>
 						  <td align="center">
@@ -178,22 +178,22 @@ For information : contact@oreon-project.org
 				<td valign="top">
 					<table border='1' style='border-width: thin; border-style: dashed; border-color=#9C9C9C;' cellpadding='4' cellspacing='2'>
 						<tr>
-						  <td	class="text14b" align="center" colspan="2"><?php echo $lang['mon_process_infos']; ?></td>
+						  <td	class="text14b" align="center" colspan="2"><?php echo _("Process Information"); ?></td>
 						 </tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_process_start_time']; ?></td>
+						  <td align=left><?php echo _("Program Start Time"); ?></td>
 						  <td align="center"><?php	if (isset($Logs->log_p->program_start)){print date("j/m/Y - H:i:s", $Logs->log_p->get_program_start());}?></td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_total_run_time']; ?></td>
+						  <td align=left><?php echo _("Total Running Time"); ?></td>
 						  <td align="center"><?phpif (isset($Logs->log_p->last_command_check)){print Duration::toString($Logs->log_p->get_last_command_check() - $Logs->log_p->get_program_start());} ?></td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_last_ext_command_check']; ?></td>
+						  <td align=left><?php echo _("Last External Command Check"); ?></td>
 						  <td align="center"><?phpif (isset($Logs->log_p->last_command_check))print date("j/m/Y - H:i:s", $Logs->log_p->get_last_command_check()) ; ?></td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_last_log_file_rotation']; ?></td>
+						  <td align=left><?php echo _("Last Log File Rotation"); ?></td>
 						  <td align="center">
 							<?php
 							if (!isset($Logs->log_p->last_log_rotation))
@@ -204,7 +204,7 @@ For information : contact@oreon-project.org
 						   </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_nagios_pid']; ?></td>
+						  <td align=left><?php echo _("Nagios PID"); ?></td>
 						  <td align="center"><?phpif (isset($Logs->log_p->nagios_pid)) print $Logs->log_p->get_nagios_pid(); ?></td>
 						</tr>
 					</table>
@@ -213,15 +213,15 @@ For information : contact@oreon-project.org
 				<td valign="top">
 					<table border='1' style='border-width: thin; border-style: dashed; border-color=#9C9C9C;' cellpadding='4' cellspacing='2'>
 						<tr>
-						  <td colspan=2 class="text14b" align="center"><?php echo $lang['mon_process_cmds']; ?></td>
+						  <td colspan=2 class="text14b" align="center"><?php echo _("Process Commands"); ?></td>
 						</tr>
 						<tr bgColor="#eaecef">
 						  <td align=left>
 						  <?						  
 							if ($Logs->log_p->get_status_proc() == 1)
-								echo $lang['mon_stop_nagios_proc'];
+								echo _("Stop the Nagios Process");
 							else 
-								echo $lang['mon_start_nagios_proc']						  
+								echo _("Start the Nagios Process");						  
 						  ?>
 						  </td>
 						  <td align="center">
@@ -234,7 +234,7 @@ For information : contact@oreon-project.org
 						  </td>
 						</tr>
 						<tr bgColor="#eaecef">
-						  <td align=left><?php echo $lang['mon_restart_nagios_proc']; ?></td>
+						  <td align=left><?php echo _("Restart the Nagios Process"); ?></td>
 						  <td align="center"><a href='?p=306&cmd=25'><img src='./img/enabled.gif' border="0"></a></td>
 						</tr>
 					</table>
@@ -275,7 +275,7 @@ For information : contact@oreon-project.org
 				<td valign="top" align="center">
 					<table border='0' align="center" cellpadding='0' cellspacing="0" class="tabTableTitle">
 						<tr>
-							<td valign="middle"><?php echo $lang['mon_restart_nagios_proc']; ?></td>
+							<td valign="middle"><?php echo _("Restart the Nagios Process"); ?></td>
 							<td valign="middle"><form action="" method="post"><input name="o" type="hidden" value="r"><input name="Reboot" type="submit" value="<?php echo "Redemarrer"; ?>"></form></td>
 						</tr>
 					</table>

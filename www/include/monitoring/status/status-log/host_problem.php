@@ -42,7 +42,7 @@ For information : contact@oreon-project.org
 		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$name]))){			
 			$host_status[$name]["address"] = $host["host_address"];
 			$host_status[$name]["status_color"] = $oreon->optGen["color_".strtolower($h["current_state"])];
-			$host_status[$name]["last_check"] = date($lang["date_time_format_status"], $h["last_check"]);
+			$host_status[$name]["last_check"] = date(_("d/m/Y H:i:s"), $h["last_check"]);
 			$host_status[$name]["last_state_change"] = Duration::toString(time() - $h["last_state_change"]);
 			$host_status[$name]["class"] = $tab_class[$rows % 2];
 			$host_status[$name]["name"] = $name;
@@ -80,11 +80,11 @@ For information : contact@oreon-project.org
 	$tpl->assign("p", $p);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
-	$tpl->assign("mon_host", $lang['m_mon_hosts']);
-	$tpl->assign("mon_status", $lang['mon_status']);
-	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
-	$tpl->assign("mon_duration", $lang['mon_duration']);
-	$tpl->assign("mon_status_information", $lang['mon_status_information']); 
+	$tpl->assign("mon_host", _("Hosts"));
+	$tpl->assign("mon_status", _("Status"));
+	$tpl->assign("mon_last_check", _("Last Check")); 
+	$tpl->assign("mon_duration", _("Duration"));
+	$tpl->assign("mon_status_information", _("Status information")); 
 	$tpl->assign("host_status", $host_status);
 	if (!isset($_GET["sort_typeh"]))
 		$_GET["sort_typeh"] = "name";

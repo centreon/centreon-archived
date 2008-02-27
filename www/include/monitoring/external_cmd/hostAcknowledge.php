@@ -46,10 +46,10 @@ For information : contact@oreon-project.org
 
 	$form->addElement('header', 'title', 'Command Options');
 
-	$tpl->assign('hostlabel', $lang['h_name']);
+	$tpl->assign('hostlabel', _("Host Name"));
 	$tpl->assign('hostname', $host_name);
 	$tpl->assign('en', $en);
-	$tpl->assign('authorlabel', $lang['cg_alias']);
+	$tpl->assign('authorlabel', _("Alias"));
 	$tpl->assign('authoralias', $oreon->user->get_alias());
 
 	$form->addElement('checkbox', 'notify', 'notify');
@@ -65,11 +65,11 @@ For information : contact@oreon-project.org
 	$attr = "size=40";
 	$form->addElement('textarea', 'comment', 'comment', $attr);
 	
-	$form->addRule('comment', $lang["error_msg"], 'required', '', 'client');
-	$form->setJsWarnings($lang["herror"],$lang["ferror"]);
+	$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
+	$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));
 	
-	$form->addElement('submit', 'submit', ($en == 1) ? $lang["m_mon_ack_add"] : $lang["m_mon_ack_del"]);
-	$form->addElement('reset', 'reset', $lang["reset"]);
+	$form->addElement('submit', 'submit', ($en == 1) ? _("Add") : _("Delete"));
+	$form->addElement('reset', 'reset', _("Reset"));
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');

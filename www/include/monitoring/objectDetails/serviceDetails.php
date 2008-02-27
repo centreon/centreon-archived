@@ -202,9 +202,9 @@ For information : contact@oreon-project.org
 				unset($tab_comments_svc[$key]);
 		}
 
-		$en = array("0" => $lang["no"], "1" => $lang["yes"]);
+		$en = array("0" => _("No"), "1" => _("Yes"));
 
-		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
+		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
 
 		$en_disable = array("1" => $lang ["m_mon_enabled"], "0" => $lang ["m_mon_disabled"]);
@@ -219,15 +219,15 @@ For information : contact@oreon-project.org
 		 */
 
 		 $service_status[$host_name."_".$svc_description]["status_color"] = $oreon->optGen["color_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
-		 $service_status[$host_name."_".$svc_description]["last_check"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["last_check"]);
-		 $service_status[$host_name."_".$svc_description]["next_check"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["next_check"]);
+		 $service_status[$host_name."_".$svc_description]["last_check"] = date(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"]);
+		 $service_status[$host_name."_".$svc_description]["next_check"] = date(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"]);
 		!$service_status[$host_name."_".$svc_description]["check_latency"] ? $service_status[$host_name."_".$svc_description]["check_latency"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_latency"] = $service_status[$host_name."_".$svc_description]["check_latency"] . " seconds";
 		!$service_status[$host_name."_".$svc_description]["check_execution_time"] ? $service_status[$host_name."_".$svc_description]["check_execution_time"] = "< 1 second" : $service_status[$host_name."_".$svc_description]["check_execution_time"] = $service_status[$host_name."_".$svc_description]["check_execution_time"] . " seconds";
-		!$service_status[$host_name."_".$svc_description]["last_notification"] ? $service_status[$host_name."_".$svc_description]["notification"] = "": $service_status[$host_name."_".$svc_description]["last_notification"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["last_notification"]);
+		!$service_status[$host_name."_".$svc_description]["last_notification"] ? $service_status[$host_name."_".$svc_description]["notification"] = "": $service_status[$host_name."_".$svc_description]["last_notification"] = date(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_notification"]);
 		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString($service_status[$host_name."_".$svc_description]["last_time_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])]) : $service_status[$host_name."_".$svc_description]["duration"] = Duration::toString(time() - $service_status[$host_name."_".$svc_description]["last_state_change"]);
-		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = date($lang["date_time_format"],$service_status[$host_name."_".$svc_description]["last_state_change"]);
-		 $service_status[$host_name."_".$svc_description]["last_update"] = date($lang["date_time_format"], time());
-		!$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = date($lang["date_time_format"], $service_status[$host_name."_".$svc_description]["is_flapping"]);
+		!$service_status[$host_name."_".$svc_description]["last_state_change"] ? $service_status[$host_name."_".$svc_description]["last_state_change"] = "": $service_status[$host_name."_".$svc_description]["last_state_change"] = date(_("Y/m/d - H:i:s"),$service_status[$host_name."_".$svc_description]["last_state_change"]);
+		 $service_status[$host_name."_".$svc_description]["last_update"] = date(_("Y/m/d - H:i:s"), time());
+		!$service_status[$host_name."_".$svc_description]["is_flapping"] ? $service_status[$host_name."_".$svc_description]["is_flapping"] = $en[$service_status[$host_name."_".$svc_description]["is_flapping"]] : $service_status[$host_name."_".$svc_description]["is_flapping"] = date(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["is_flapping"]);
 
 //		$tab_status = array();
 		if (isset($ndo) && $ndo)
@@ -255,8 +255,8 @@ For information : contact@oreon-project.org
 		$tpl->assign("total_current_attempt", $total_current_attempts);
 		$tpl->assign("en_acknowledge_text", $en_acknowledge_text);
 		$tpl->assign("en_acknowledge", $en_acknowledge);
-		$tpl->assign("actpass", array("0"=>$lang["m_mon_active"], "1"=>$lang["m_mon_passive"]));
-		$tpl->assign("harsof", array("0"=>$lang["m_mon_soft"], "1"=>$lang["m_mon_hard"]));
+		$tpl->assign("actpass", array("0"=>_("Active"), "1"=>_("Passive")));
+		$tpl->assign("harsof", array("0"=>_("Soft"), "1"=>_("Hard")));
 		$tpl->assign("status", $status);
 		$tpl->assign("h", $host);
 		$tpl->assign("lcaTopo", $oreon->user->lcaTopo);

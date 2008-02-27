@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 	if (isset($_GET["start_time"]) && $_GET["start_time"])
 		$url_var  .= "&start_time=" . $_GET["start_time"];
 	else
-		$url_var  .= "&start_time=".date($lang["time_formatWOs"], $start);
+		$url_var  .= "&start_time=".date(_("H:i"), $start);
 		
 	if (isset($_GET["end"]) && $_GET["end"])
 		if (strpos($_GET["end"], "/"))
@@ -56,7 +56,7 @@ For information : contact@oreon-project.org
 	if (isset($_GET["end_time"]) && $_GET["end_time"])
 		$url_var  .= "&end_time=" . $_GET["end_time"];
 	else
-		$url_var  .= "&end_time=".date($lang["time_formatWOs"], time());
+		$url_var  .= "&end_time=".date(_("H:i"), time());
 	if (isset($_GET["search1"]) && $_GET["search1"])
 		$url_var  .= "&search1=" . $_GET["search1"];
 	else
@@ -91,8 +91,8 @@ For information : contact@oreon-project.org
 		$tpl->assign("pageArr", $pageArr);
 
 	$tpl->assign("num", $num);
-	$tpl->assign("previous", $lang["previous"]);
-	$tpl->assign("next", $lang["next"]);
+	$tpl->assign("previous", _("previous"));
+	$tpl->assign("next", _("next"));
 
 	if (($prev = $num - 1) >= 0)
 		$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&o=" . $o .$url_var));
@@ -125,7 +125,7 @@ For information : contact@oreon-project.org
 	</SCRIPT>
 	<?php
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-	$selLim =& $form->addElement('select', 'l', $lang['nbr_per_page'], $select, array("onChange" => "setL(this.value);  this.form.submit()"));
+	$selLim =& $form->addElement('select', 'l', _("Number per page"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);
 	
 	#Element we need when we reload the page

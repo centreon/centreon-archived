@@ -58,24 +58,24 @@ $o = "svcd";
 			$services[$svc_desc] = $svc_desc;
 		}
 		
-		$form->addElement('select', 'host_name', $lang["cmt_host_name"], $hosts, array("onChange" =>"this.form.submit();"));
-		$form->addElement('select', 'service_description', $lang["cmt_service_descr"], $services);
+		$form->addElement('select', 'host_name', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
+		$form->addElement('select', 'service_description', _("Services"), $services);
 	   	
-		$form->addRule('host_name', $lang['ErrRequired'], 'required');
-		$form->addRule('service_description', $lang['ErrRequired'], 'required');
+		$form->addRule('host_name', _("Required Field"), 'required');
+		$form->addRule('service_description', _("Required Field"), 'required');
 	
 		$return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");
 	
 		$form->addElement('select', 'return_code', 'checkResult',$return_code);
-		$form->addElement('text', 'output', $lang["mon_checkOutput"]);
-		$form->addElement('text', 'dataPerform', $lang["mon_dataPerform"]);
+		$form->addElement('text', 'output', _("Check output"));
+		$form->addElement('text', 'dataPerform', _("Performance data"));
 	
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());
 		$form->addElement('hidden', 'cmd', $cmd);
 		$form->addElement('hidden', 'p', $p);
 	
-		$form->addElement('submit', 'submit', $lang["save"]);
-		$form->addElement('reset', 'reset', $lang["reset"]);
+		$form->addElement('submit', 'submit', _("Save"));
+		$form->addElement('reset', 'reset', _("Reset"));
 		
 		# Smarty template Init
 		$tpl = new Smarty();

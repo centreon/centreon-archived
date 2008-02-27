@@ -28,14 +28,14 @@ For information : contact@oreon-project.org
 	# end quickSearch form
 
 	$color_en = array("1" => "#00ff00", "0" => "#ff0000");
-	$color_en_label = array("1" => $lang['enable'], "0" => $lang['disable']);
+	$color_en_label = array("1" => _("Enabled"), "0" => _("Disabled"));
 
 	$tab_color = array("0" => "list_one", "1" => "list_two");
 	$c = 0;
 	if (isset($service_status))
 		foreach ($service_status as $name => $svc){
-			$svc["next_check"] ? $service_status[$name]["next_check"] = date($lang["date_time_format_status"], $svc["next_check"]) : $service_status[$name]["next_check"] = "";
-			$svc["last_check"] ? $service_status[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]) : $service_status[$name]["last_check"] = "";
+			$svc["next_check"] ? $service_status[$name]["next_check"] = date(_("d/m/Y H:i:s"), $svc["next_check"]) : $service_status[$name]["next_check"] = "";
+			$svc["last_check"] ? $service_status[$name]["last_check"] = date(_("d/m/Y H:i:s"), $svc["last_check"]) : $service_status[$name]["last_check"] = "";
 			isset($host_status[$svc["host_name"]]) && $host_status[$svc["host_name"]]["current_state"] == "DOWN" ? $service_status[$name]["class"] = "list_down" : $service_status[$name]["class"] = $tab_color[++$c % 2];
 			$c++;
 		}
@@ -45,12 +45,12 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	
 	$tpl->assign("p", $p);
-	$tpl->assign("mon_host", $lang['m_mon_hosts']);
-	$tpl->assign("mon_status", $lang['mon_status']);
-	$tpl->assign("mon_ip", $lang['mon_ip']); 
-	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
-	$tpl->assign("mon_duration", $lang['mon_duration']);
-	$tpl->assign("mon_status_information", $lang['mon_status_information']); 
+	$tpl->assign("mon_host", _("Hosts"));
+	$tpl->assign("mon_status", _("Status"));
+	$tpl->assign("mon_ip", _("IP")); 
+	$tpl->assign("mon_last_check", _("Last Check")); 
+	$tpl->assign("mon_duration", _("Duration"));
+	$tpl->assign("mon_status_information", _("Status information")); 
 	
 	if (isset($service_status))
 		$tpl->assign("service_status", $service_status);

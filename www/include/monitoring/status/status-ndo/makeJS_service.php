@@ -41,7 +41,7 @@ var _num='<?=$num?>';
 var _limit='<?=$limit?>';
 var _sort_type='<?=$sort_type?>';
 var _order='<?=$order?>';
-var _date_time_format_status='<?=$lang["date_time_format_status"]?>';
+var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
 var _o='<?=$o?>';
 var _p='<?=$p?>';
 
@@ -117,44 +117,44 @@ function set_header_title(){
 	if(document.getElementById('host_name')){
 
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
+		h.innerHTML = '<?=_("Hosts")?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('service_description');
-		h.innerHTML = '<?=$lang['m_mon_services']?>';
+		h.innerHTML = '<?=_("Services")?>';
 	  	h.indice = 'service_description';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_state');
-		h.innerHTML = '<?=$lang['mon_status']?>';
+		h.innerHTML = '<?=_("Status")?>';
 	  	h.indice = 'current_state';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 
 		var h = document.getElementById('last_state_change');
-		h.innerHTML = '<?=$lang['mon_duration']?>';
+		h.innerHTML = '<?=_("Duration")?>';
 	  	h.indice = 'last_state_change';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('last_check');
-		h.innerHTML = '<?=$lang['mon_last_check']?>';
+		h.innerHTML = '<?=_("Last Check")?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_attempt');
-		h.innerHTML = '<?=$lang['m_mon_try']?>';
+		h.innerHTML = '<?=_("Tries")?>';
 	  	h.indice = 'current_attempt';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('plugin_output');
-		h.innerHTML = '<?=$lang['mon_status_information']?>';
+		h.innerHTML = '<?=_("Status information")?>';
 	  	h.indice = 'plugin_output';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";

@@ -55,8 +55,8 @@ $lang ['m_mon_acknoledge_thos_pb'] = "Acknowledge problems";
 
 $lang ['m_mon_acknoledge_thos_svc_pb'] = "Services : Acknowledge";
 $lang ['m_mon_acknoledge_thos_host_pb'] = "Hosts : Acknowledge";
-$lang ['m_mon_stop_acknoledge_svc_pb'] = "Services : Diacknowledge";
-$lang ['m_mon_stop_acknoledge_host_pb'] = "Hosts : Diacknowledge";
+$lang ['m_mon_stop_acknoledge_svc_pb'] = "Services : Disacknowledge";
+$lang ['m_mon_stop_acknoledge_host_pb'] = "Hosts : Disacknowledge";
 
 $lang ['m_mon_check_svc_en']  = "Services : Enable Check";
 $lang ['m_mon_check_svc_dis'] = "Services : Disable Check";
@@ -87,7 +87,7 @@ $lang ['m_mon_warning'] = "Warning";
 $lang ['m_mon_critical'] = "Critical";
 $lang ['m_mon_pending'] = "Pending";
 $lang ['m_mon_unknown'] = "Unknown";
-$lang ['m_mon_hostgroup'] = "Host Group ";
+$lang ['m_mon_hostgroup'] = "Host Group";
 $lang ['m_mon_host_stt_ttl'] = "Hosts Status";
 $lang ['m_mon_svc_stt_ttl'] = "Services Status";
 $lang ['m_mon_address_ip'] = "IP Address";
@@ -124,17 +124,17 @@ $lang ['m_mon_submit_passive'] = "Submit result for this service";
 $lang ['m_mon_accept_passive'] = "accepting passive checks for this service";
 $lang ['m_mon_notification_service'] = "notifications for this service";
 
-$lang ['m_mon_notification_svc_en']  = "Services : Activer Notification";
-$lang ['m_mon_notification_svc_dis'] = "Services : Desactiver Notification";
-$lang ['m_mon_notification_host_en']  = "Hosts : Activer Notification";
-$lang ['m_mon_notification_host_dis'] = "Hosts : Desactiver Notification";
+$lang ['m_mon_notification_svc_en']  = "Services : Enable Notification";
+$lang ['m_mon_notification_svc_dis'] = "Services : Disable Notification";
+$lang ['m_mon_notification_host_en']  = "Hosts : Enable Notification";
+$lang ['m_mon_notification_host_dis'] = "Hosts : Disable Notification";
 
 $lang ['m_mon_schedule_downtime'] = "Schedule downtime for this service";
 $lang ['m_mon_schedule_comment'] = "Add a comment for this service";
 
 $lang ['m_mon_acknowledge'] = "Acknowledge this host";
 
-$lang ['m_mon_disack'] = "Delete this Acknowledge";
+$lang ['m_mon_disack'] = "Delete this Acknowledgement";
 $lang ['m_mon_ack'] = "Acknowledge this service";
 $lang['m_mon_ack_add'] = "Add";
 $lang['m_mon_ack_del'] = "Delete";

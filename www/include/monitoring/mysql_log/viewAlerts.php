@@ -53,11 +53,11 @@
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
 	$tab = array ("contact_email" => "oreon");
 
-	$sort_type = array(	""=>NULL,"host_name" => $lang['m_log_Host_name']);
+	$sort_type = array(	""=>NULL,"host_name" => _("Host name"));
 	if (!isset($_GET["o"]) || (isset($_GET["o"]) && ($_GET["o"] == "alerts_svc" || $_GET["o"] == ""))) 
-		$sort_type["service_description"] = $lang['m_log_Service_desc'];
-	$sort_type["status"] = $lang['m_log_status'];
-	$sort_type["output"] = $lang['m_log_informations'];
+		$sort_type["service_description"] = _("Service Description");
+	$sort_type["status"] = _("Status");
+	$sort_type["output"] = _("Information");
 
 	$form->addElement('hidden', 'p', $p);
 	$form->addElement('hidden', 'o', $o);
@@ -139,8 +139,8 @@
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
 			$log["status"] != "UP" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 			$alerts[$cpt] = array(	"class"=>$class, 
-									"date"=> date($lang["date_format"], $log["ctime"]), 
-									"time" => date($lang["time_format"], $log["ctime"]), 
+									"date"=> date(_("Y/m/d"), $log["ctime"]), 
+									"time" => date(_("H:i:s"), $log["ctime"]), 
 									"status" => $log["status"], 
 									"type" => $log["type"], 
 									"host_name" => $log["host_name"], 
@@ -184,8 +184,8 @@
 	    for ($cpt = 0;$DBRESULT->fetchInto($log);$cpt++){
 			$log["status"] == "CRITICAL" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 			$alerts[$cpt] = array(	"class"=>$class, 
-									"date"=>date($lang["date_format"], $log["ctime"]), 
-									"time" => date($lang["time_format"], $log["ctime"]), 
+									"date"=>date(_("Y/m/d"), $log["ctime"]), 
+									"time" => date(_("H:i:s"), $log["ctime"]), 
 									"status" => $log["status"], 
 									"type" => $log["type"], 
 									"host_name" => $log["host_name"],
@@ -233,8 +233,8 @@
 			if (isset($log["service_description"]) && !$log["service_description"]){
 				$log["status"] != "UP" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 				$alerts[$cpt] = array(	"class"=>$class, 
-										"date"=>date($lang["date_format"], $log["ctime"]), 
-										"time" => date($lang["time_format"], $log["ctime"]), 
+										"date"=>date(_("Y/m/d"), $log["ctime"]), 
+										"time" => date(_("H:i:s"), $log["ctime"]), 
 										"status" => $log["status"], 
 										"type" => $log["type"], 
 										"host_name" => $log["host_name"], 
@@ -244,8 +244,8 @@
 			} else { 
 				$log["status"] == "CRITICAL" ? $class = "list_down" : $class = $tab_class[$cpt % 2];
 				$alerts[$cpt] = array(	"class"=>$class, 
-										"date"=>date($lang["date_format"], $log["ctime"]), 
-										"time" => date($lang["time_format"], $log["ctime"]), 
+										"date"=>date(_("Y/m/d"), $log["ctime"]), 
+										"time" => date(_("H:i:s"), $log["ctime"]), 
 										"status" => $log["status"], 
 										"type" => $log["type"], 
 										"host_name" => $log["host_name"],
@@ -256,25 +256,25 @@
 			}
 	    }
 	}
-	$tab_value = array("end"=> date("m/d/Y", $end), "start" =>date("m/d/Y", $start), "end_time"=> date($lang["time_formatWOs"], $end), "start_time" =>date($lang["time_formatWOs"], $start));
+	$tab_value = array("end"=> date("m/d/Y", $end), "start" =>date("m/d/Y", $start), "end_time"=> date(_("H:i"), $end), "start_time" =>date(_("H:i"), $start));
 	
-	$form->addElement('text', 'start', $lang["m_from"], $attrsTextDate);
-	$form->addElement('text', 'start_time', $lang["m_from"], $attrsTextHour);
-	$form->addElement('button', "startD", $lang['modify'], array("onclick"=>"displayDatePicker('start')"));
+	$form->addElement('text', 'start', _("From"), $attrsTextDate);
+	$form->addElement('text', 'start_time', _("From"), $attrsTextHour);
+	$form->addElement('button', "startD", _("Modify"), array("onclick"=>"displayDatePicker('start')"));
 	
-	$form->addElement('text', 'end', $lang["m_to"], $attrsTextDate);
-	$form->addElement('text', 'end_time', $lang["m_to"], $attrsTextHour);
-	$form->addElement('button', "endD", $lang['modify'], array("onclick"=>"displayDatePicker('end')"));
+	$form->addElement('text', 'end', _("To"), $attrsTextDate);
+	$form->addElement('text', 'end_time', _("To"), $attrsTextHour);
+	$form->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 	
-	$form->addElement('text', 'search1', $lang["m_log_search1"], $inputstyle);
-    $form->addElement('text', 'search2', $lang["m_log_search1"], $inputstyle);
+	$form->addElement('text', 'search1', _("Search : "), $inputstyle);
+    $form->addElement('text', 'search2', _("Search : "), $inputstyle);
     
-    $form->addElement('select', 'sort_type1', $lang["m_log_select1"], $sort_type);
-   	$form->addElement('select', 'sort_type2', $lang["m_log_select2"], $sort_type);   	
+    $form->addElement('select', 'sort_type1', _("Search 1 : "), $sort_type);
+   	$form->addElement('select', 'sort_type2', _("Search 2 : "), $sort_type);   	
    	$form->setDefaults($tab_value);
    	
-   	$sub =& $form->addElement('submit', 'ssubmit', $lang["m_log_view"]);
-	$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+   	$sub =& $form->addElement('submit', 'ssubmit', _("View"));
+	$res =& $form->addElement('reset', 'reset', _("Reset"));
 	
 	# Smarty template Init
 	$tpl = new Smarty();

@@ -38,13 +38,13 @@ For information : contact@oreon-project.org
 			if (is_file($oreon->Nagioscfg["log_archive_path"]."/$file"))	{
 				preg_match("/nagios\-([0-9]*)\-([0-9]*)\-([0-9]*)\-([0-9]*).log/", $file, $matches);
 				$time = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3]) - 1;
-				$tableFile2[$file] =  "  " . date($lang["date_format"], $time) . " ";
+				$tableFile2[$file] =  "  " . date(_("Y/m/d"), $time) . " ";
 			}
 		@closedir($handle);
 	}
 	krsort($tableFile2);
 	
-	$tableFile3 = array($oreon->Nagioscfg["log_file"] => " -- " . $lang["m_mon_today"] . " -- ");
+	$tableFile3 = array($oreon->Nagioscfg["log_file"] => " -- " . _("Today") . " -- ");
 	$tableFile1 = array_merge($tableFile3, $tableFile2);
 
 	$host = array();
@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 	#
 	
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', $lang["dtm_addS"]);
+	$form->addElement('header', 'title', _("Add a Service downtime"));
 	
 	#
 	## Indicator basic information
@@ -76,8 +76,8 @@ For information : contact@oreon-project.org
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
     
-    $selHost =& $form->addElement('select', 'file', $lang["nag_logFile"], $tableFile1, array("onChange" =>"this.form.submit();"));
-	$selHost =& $form->addElement('select', 'host', $lang["h"], $host, array("onChange" =>"this.form.submit();"));
+    $selHost =& $form->addElement('select', 'file', _("Log file"), $tableFile1, array("onChange" =>"this.form.submit();"));
+	$selHost =& $form->addElement('select', 'host', _("Host"), $host, array("onChange" =>"this.form.submit();"));
 	isset($_POST["host"]) ?	$form->setDefaults(array('file' => $_POST["host"])) : $form->setDefaults(array('file' => $oreon->Nagioscfg["log_file"]));
 	
 	$log = NULL;	

@@ -72,7 +72,7 @@ For information : contact@oreon-project.org
 		#
 		
 		$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-		$form->addElement('header', 'title', $lang["dtm_addS"]);
+		$form->addElement('header', 'title', _("Add a Service downtime"));
 		
 		#
 		## Indicator basic information
@@ -81,24 +81,24 @@ For information : contact@oreon-project.org
 		$redirect =& $form->addElement('hidden', 'o');
 		$redirect->setValue($o);
 	    
-	    $selHost =& $form->addElement('select', 'host_id', $lang["cmt_host_name"], $hosts, array("onChange" =>"this.form.submit();"));
-		$selSv =& $form->addElement('select', 'service_id', $lang["cmt_service_descr"], $services);
-	    $form->addElement('checkbox', 'persistant', $lang["dtm_fixed"]);
-		$form->addElement('textarea', 'comment', $lang["cmt_comment"], $attrsTextarea);
+	    $selHost =& $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
+		$selSv =& $form->addElement('select', 'service_id', _("Services"), $services);
+	    $form->addElement('checkbox', 'persistant', _("Fixed"));
+		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 		
-		$form->addElement('text', 'start', $lang["dtm_start_time"], $attrsText);
-		$form->addElement('text', 'end', $lang["dtm_end_time"], $attrsText);
-		$form->addElement('textarea', 'comment', $lang["cmt_comment"], $attrsTextarea);
+		$form->addElement('text', 'start', _("Start Time"), $attrsText);
+		$form->addElement('text', 'end', _("End Time"), $attrsText);
+		$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 		
-		$form->addRule('host', $lang['ErrRequired'], 'required');
-		$form->addRule('end', $lang['ErrRequired'], 'required');
-		$form->addRule('start', $lang['ErrRequired'], 'required');
-		$form->addRule('comment', $lang['ErrRequired'], 'required');	
+		$form->addRule('host', _("Required Field"), 'required');
+		$form->addRule('end', _("Required Field"), 'required');
+		$form->addRule('start', _("Required Field"), 'required');
+		$form->addRule('comment', _("Required Field"), 'required');	
 		
 		$form->setDefaults($data);
 		
-		$subA =& $form->addElement('submit', 'submitA', $lang["save"]);
-		$res =& $form->addElement('reset', 'reset', $lang["reset"]);
+		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	  
 	  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
 			if (!isset($_POST["persistant"]))

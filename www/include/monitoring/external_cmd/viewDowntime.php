@@ -181,8 +181,8 @@ For information : contact@oreon-project.org
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
 
-	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_downtime_host", $tab_downtime_host);
 	$tpl->assign("tab_downtime_svc", $tab_downtime_svc);

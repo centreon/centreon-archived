@@ -35,7 +35,7 @@ For information : contact@oreon-project.org
 	
 	function getLogData($time_event, $data){
 		global $lang, $tab_logo;
-		$tab["time"] = date($lang["header_format"], $time_event);
+		$tab["time"] = date(_("Y/m/d G:i"), $time_event);
 		$tab_data = split("\:", $data);
 		if (isset($tab_logo[$tab_data["0"]]))
 			$tab["logo"] = $tab_logo[$tab_data["0"]];
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 		$log = fopen($oreon->Nagioscfg["log_archive_path"] . $_POST["file"], "r");
 	else
 		if (file_exists($oreon->Nagioscfg["log_file"]) && !($log = fopen($oreon->Nagioscfg["log_file"], "r")))
-			echo $lang["pel_cant_open"] . $oreon->Nagioscfg["log_file"] . "<br />";
+			echo _("Cannot open pel") . $oreon->Nagioscfg["log_file"] . "<br />";
 	
 	
 	if (isset($log))

@@ -180,27 +180,27 @@ For information : contact@oreon-project.org
 			}
 		}
 
-		$en = array("0" => $lang["no"], "1" => $lang["yes"]);
+		$en = array("0" => _("No"), "1" => _("Yes"));
 
-		$en_acknowledge_text = array("1" => $lang ["m_mon_disack"], "0" => $lang ["m_mon_ack"]);
+		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
 
 		$en_inv = array("1" => "0", "0" => "1");
-		$en_inv_text = array("1" => $lang ["m_mon_disable"], "0" => $lang ["m_mon_enable"]);
+		$en_inv_text = array("1" => _("Disable"), "0" => _("Enable"));
 		$color_onoff = array("1" => "#00ff00", "0" => "#ff0000");
 		$color_onoff_inv = array("0" => "#00ff00", "1" => "#ff0000");
-		$en_disable = array("1" => $lang ["m_mon_enabled"], "0" => $lang ["m_mon_disabled"]);
+		$en_disable = array("1" => _("Enabled"), "0" => _("Disabled"));
 
 		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
 
 
 		$host_status[$host_name]["status_color"] = $oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])];
-		$host_status[$host_name]["last_check"] = date($lang["date_time_format"], $host_status[$host_name]["last_check"]);
-		$host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? date($lang["date_time_format"], $host_status[$host_name]["next_check"]) : "";
-		!$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = date($lang["date_time_format"], $host_status[$host_name]["last_notification"]);
+		$host_status[$host_name]["last_check"] = date(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_check"]);
+		$host_status[$host_name]["next_check"] = $host_status[$host_name]["next_check"] ? date(_("Y/m/d - H:i:s"), $host_status[$host_name]["next_check"]) : "";
+		!$host_status[$host_name]["last_notification"] ? $host_status[$host_name]["last_notification"] = "": $host_status[$host_name]["last_notification"] = date(_("Y/m/d - H:i:s"), $host_status[$host_name]["last_notification"]);
 		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["duration"] = "" : $host_status[$host_name]["duration"] = Duration::toString(time() - $host_status[$host_name]["last_state_change"]);
-		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = date($lang["date_time_format"],$host_status[$host_name]["last_state_change"]);
-		$host_status[$host_name]["last_update"] = date($lang["date_time_format"], time());
+		!$host_status[$host_name]["last_state_change"] ? $host_status[$host_name]["last_state_change"] = "": $host_status[$host_name]["last_state_change"] = date(_("Y/m/d - H:i:s"),$host_status[$host_name]["last_state_change"]);
+		$host_status[$host_name]["last_update"] = date(_("Y/m/d - H:i:s"), time());
 
 		$tab_status_type = array("1" => "HARD", "0" => "SOFT");
 		$host_status[$host_name]["state_type"] = $tab_status_type[$host_status[$host_name]["state_type"]];
@@ -243,7 +243,7 @@ For information : contact@oreon-project.org
 		//$tpl->assign("nagios_path_img", $oreon->optGen["nagios_path_img"]);
 		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
 		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));
-		$tpl->assign("h_ext_action_url_lang", $lang['h_actionUrl']);
+		$tpl->assign("h_ext_action_url_lang", _("URL Action"));
 		$tpl->assign("h_ext_action_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url"));
 		//$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));

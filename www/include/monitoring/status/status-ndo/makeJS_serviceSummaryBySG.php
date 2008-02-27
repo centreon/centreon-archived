@@ -44,7 +44,7 @@ var _num='<?=$num?>';
 var _limit='<?=$limit?>';
 var _sort_type='<?=$sort_type?>';
 var _order='<?=$order?>';
-var _date_time_format_status='<?=$lang["date_time_format_status"]?>';
+var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
 var _o='<?=$o?>';
 var _p='<?=$p?>';
 
@@ -73,13 +73,13 @@ function set_header_title(){
 
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
+		h.innerHTML = '<?=_("Hosts")?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('services');
-		h.innerHTML = '<?=$lang['m_mon_services']?>';
+		h.innerHTML = '<?=_("Services")?>';
 	  	h.indice = 'services';
 	
 		var h = document.getElementById(_sort_type);

@@ -153,8 +153,8 @@ For information : contact@oreon-project.org
 	$tab = array ("p" => $p);
 	$form->setDefaults($tab);
 
-	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
-	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>$lang['add'], "delConfirm"=>$lang['confirm_removing']));
+	$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+	$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	$tpl->assign("p", $p);
 	$tpl->assign("tab_comments_host", $tab_comments_host);
 	$tpl->assign("tab_comments_svc", $tab_comments_svc);
@@ -162,10 +162,10 @@ For information : contact@oreon-project.org
 	$tpl->assign("nb_comments_host", count($tab_comments_host));
 	$tpl->assign("nb_comments_svc", count($tab_comments_svc));
 
-	$tpl->assign("no_host_comments", $lang["no_host_comments"]);
-	$tpl->assign("no_svc_comments", $lang["no_svc_comments"]);
+	$tpl->assign("no_host_comments", _("No Comment for hosts."));
+	$tpl->assign("no_svc_comments", _("No Comment for services."));
 
-	$tpl->assign("delete", $lang['delete']);
+	$tpl->assign("delete", _("Delete"));
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);

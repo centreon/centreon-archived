@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 		foreach ($metaService_status as $name => $svc){
 			if (strstr($name, "meta_") && isset($metaService_status[$name]["current_state"])){				
 				$metaService_status_bis[$name]["status_color"] = $oreon->optGen["color_".strtolower($svc["current_state"])];
-				$metaService_status_bis[$name]["last_check"] = date($lang["date_time_format_status"], $svc["last_check"]);
+				$metaService_status_bis[$name]["last_check"] = date(_("d/m/Y H:i:s"), $svc["last_check"]);
 				$metaService_status_bis[$name]["last_state_change"] = Duration::toString(time() - $svc["last_state_change"]);
 				$metaService_status_bis[$name]["class"] = $tab_class[$c % 2];
 				$metaService_status_bis[$name]["current_state"] = $metaService_status[$name]["current_state"];
@@ -51,11 +51,11 @@ For information : contact@oreon-project.org
 	
 	$lang['mon_host'] = "Hosts";
 	$tpl->assign("p", $p);
-	$tpl->assign("mon_status", $lang['mon_status']);
-	$tpl->assign("mon_ip", $lang['mon_ip']); 
-	$tpl->assign("mon_last_check", $lang['mon_last_check']); 
-	$tpl->assign("mon_duration", $lang['mon_duration']);
-	$tpl->assign("mon_status_information", $lang['mon_status_information']);
+	$tpl->assign("mon_status", _("Status"));
+	$tpl->assign("mon_ip", _("IP")); 
+	$tpl->assign("mon_last_check", _("Last Check")); 
+	$tpl->assign("mon_duration", _("Duration"));
+	$tpl->assign("mon_status_information", _("Status information"));
 
 	if (!isset($_GET["sort_types"]))
 		$_GET["sort_types"] = "host_name";

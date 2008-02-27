@@ -682,8 +682,8 @@ else// only click on one element
 				echo "<service_description>".$log["service_description"]."</service_description>";
 				echo "<host_name>".$log["host_name"]."</host_name>";
 				echo "<class>".$tab_class[$cpts % 2]."</class>";
-				echo "<date>".date($lang["date_format"], $log["ctime"])."</date>";
-				echo "<time>".date($lang["time_format"], $log["ctime"])."</time>";
+				echo "<date>".date(_("Y/m/d"), $log["ctime"])."</date>";
+				echo "<time>".date(_("H:i:s"), $log["ctime"])."</time>";
 				echo "<output><![CDATA[".$log["output"]."]]></output>";
 				echo "<contact><![CDATA[".$log["notification_contact"]."]]></contact>";
 				echo "<contact_cmd><![CDATA[".$log["notification_cmd"]."]]></contact_cmd>";
@@ -718,22 +718,22 @@ $lang["unknown"] = "unknown";
 $lang["typeAlert"] = "Type";
 
 echo "<lang>";
-echo "<typeAlert>".$lang["typeAlert"]."</typeAlert>";
-echo "<notification>".$lang["notification"]."</notification>";
-echo "<alert>".$lang["alert"]."</alert>";
-echo "<error>".$lang["error"]."</error>";
+echo "<typeAlert>"._("Type")."</typeAlert>";
+echo "<notification>"._("notification")."</notification>";
+echo "<alert>"._("alert")."</alert>";
+echo "<error>"._("error")."</error>";
 
-echo "<service>".$lang["service"]."</service>";
-echo "<host>".$lang["host"]."</host>";
+echo "<service>"._("Service")."</service>";
+echo "<host>"._("Host")."</host>";
 
-echo "<down>".$lang["down"]."</down>";
-echo "<up>".$lang["up"]."</up>";
-echo "<unreachable>".$lang["unreachable"]."</unreachable>";
+echo "<down>"._("down")."</down>";
+echo "<up>"._("up")."</up>";
+echo "<unreachable>"._("unreachable")."</unreachable>";
 
-echo "<warning>".$lang["warning"]."</warning>";
-echo "<ok>".$lang["ok"]."</ok>";
-echo "<critical>".$lang["critical"]."</critical>";
-echo "<unknown>".$lang["unknown"]."</unknown>";
+echo "<warning>"._("warning")."</warning>";
+echo "<ok>"._("ok")."</ok>";
+echo "<critical>"._("critical")."</critical>";
+echo "<unknown>"._("unknown")."</unknown>";
 echo "</lang>";
 /*
  * END LANG

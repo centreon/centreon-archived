@@ -89,26 +89,26 @@ For information : contact@oreon-project.org
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
-	$form->addElement('header', 'title', $lang["giv_sr_infos"]);
+	$form->addElement('header', 'title', _("Choose the source to graph"));
 
 	$periods = array(	""=>"",
-						"10800"=>$lang["giv_sr_p3h"],
-						"21600"=>$lang["giv_sr_p6h"],
-						"43200"=>$lang["giv_sr_p12h"],
-						"86400"=>$lang["giv_sr_p24h"],
-						"172800"=>$lang["giv_sr_p2d"],
-						"302400"=>$lang["giv_sr_p4d"],
-						"604800"=>$lang["giv_sr_p7d"],
-						"1209600"=>$lang["giv_sr_p14d"],
-						"2419200"=>$lang["giv_sr_p28d"],
-						"2592000"=>$lang["giv_sr_p30d"],
-						"2678400"=>$lang["giv_sr_p31d"],
-						"5184000"=>$lang["giv_sr_p2m"],
-						"10368000"=>$lang["giv_sr_p4m"],
-						"15552000"=>$lang["giv_sr_p6m"],
-						"31104000"=>$lang["giv_sr_p1y"]);
+						"10800"=>_("Last 3 Hours"),
+						"21600"=>_("Last 6 Hours"),
+						"43200"=>_("Last 12 Hours"),
+						"86400"=>_("Last 24 Hours"),
+						"172800"=>_("Last 2 Days"),
+						"302400"=>_("Last 4 Days"),
+						"604800"=>_("Last 7 Days"),
+						"1209600"=>_("Last 14 Days"),
+						"2419200"=>_("Last 28 Days"),
+						"2592000"=>_("Last 30 Days"),
+						"2678400"=>_("Last 31 Days"),
+						"5184000"=>_("Last 2 Months"),
+						"10368000"=>_("Last 4 Months"),
+						"15552000"=>_("Last 6 Months"),
+						"31104000"=>_("Last Year"));
 
-	$sel =& $form->addElement('select', 'period', $lang["giv_sr_period"], $periods);
+	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);

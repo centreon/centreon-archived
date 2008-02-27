@@ -40,7 +40,7 @@ var _num='<?=$num?>';
 var _limit='<?=$limit?>';
 var _sort_type='<?=$sort_type?>';
 var _order='<?=$order?>';
-var _date_time_format_status='<?=$lang["date_time_format_status"]?>';
+var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
 var _o='<?=$o?>';
 var _p='<?=$p?>';
 
@@ -69,35 +69,35 @@ function set_header_title(){
 	if(document.getElementById('host_name')){
 
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?=$lang['m_mon_hosts']?>';
+		h.innerHTML = '<?=_("Hosts")?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 		
 		var h = document.getElementById('service_description');
-		h.innerHTML = '<?=$lang['m_mon_services']?>';
+		h.innerHTML = '<?=_("Services")?>';
 	  	h.indice = 'service_description';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('last_check');
-		h.innerHTML = '<?=$lang['mon_last_check']?>';
+		h.innerHTML = '<?=_("Last Check")?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('next_check');
-		h.innerHTML = '<?=$lang['mon_next_check']?>';
+		h.innerHTML = '<?=_("Next Check")?>';
 	  	h.indice = 'next_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('active_check');
-		h.innerHTML = '<?=$lang['mon_active_check']?>';
+		h.innerHTML = '<?=_("Active Check")?>';
 	  	h.indice = 'active_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
@@ -178,7 +178,7 @@ function goM(_time_reload,_sid,_o){
 
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceSchedule.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?=$host_name?>'+'&instance='+_instance+'&nc='+_nc+'&enable=<?=urlencode($lang["enable"])?>'+'&disable=<?=urlencode($lang["disable"])?>';
+	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceSchedule.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?=$host_name?>'+'&instance='+_instance+'&nc='+_nc+'&enable=<?=urlencode(_("Enabled"))?>'+'&disable=<?=urlencode(_("Disabled"))?>';
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");

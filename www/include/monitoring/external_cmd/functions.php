@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 	function send_cmd($arg, $lang){
 		if (isset($arg))
 			$flg = write_command($arg);
-		$flg ? $ret = $lang["cmd_send"] : $ret = "Problem Execution";
+		$flg ? $ret = _("Your command has been sent") : $ret = "Problem Execution";
 		return $ret;
 	}
 	
@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 		$tab_forced = array("0" => "", "1" => "_FORCED");
 		$tab_data = split(";", $arg);
 		$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". $tab_data[0] . ";" . $tab_data[1] . ";" . time());
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// host check
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 	function host_check($arg, $lang, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" ". $tab[$type]."_HOST_CHECK;". $arg);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	//  host notification
@@ -68,7 +68,7 @@ For information : contact@oreon-project.org
 	function host_notification($arg, $lang, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" ".$tab[$type]."_HOST_NOTIFICATIONS;". $arg);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// ENABLE_HOST_SVC_NOTIFICATIONS
@@ -76,7 +76,7 @@ For information : contact@oreon-project.org
 	function host_svc_notifications($arg, $lang, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;". $arg);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// ENABLE_HOST_SVC_CHECKS
@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 	function host_svc_checks($arg, $lang, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $arg);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// ENABLE_HOST_SVC_CHECKS
@@ -93,7 +93,7 @@ For information : contact@oreon-project.org
 		global $tab, $pearDB;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_CHECK;". $tab_data["0"] .";".$tab_data["1"]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// PASSIVE_SVC_CHECKS
@@ -102,7 +102,7 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_PASSIVE_SVC_CHECKS;". $tab_data[0] . ";". $tab_data[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// SVC_NOTIFICATIONS
@@ -111,7 +111,7 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_NOTIFICATIONS;". $tab_data[0] . ";". $tab_data[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// _SVC_EVENT_HANDLER
@@ -120,7 +120,7 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_EVENT_HANDLER;". $tab_data[0] .";".$tab_data[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	// _HOST_EVENT_HANDLER
@@ -129,7 +129,7 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_HOST_EVENT_HANDLER;". $arg);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	//_SVC_FLAP_DETECTION
@@ -138,7 +138,7 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_FLAP_DETECTION;". $tab_data[0] .";".$tab_data[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	//_HOST_FLAP_DETECTION
@@ -147,32 +147,32 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_HOST_FLAP_DETECTION;". $arg);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function notifi_host_hostgroup($arg, $lang, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $tab_data[0]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function acknowledgeHost($lang){
 		global $pearDB,$tab, $_GET;
 		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function acknowledgeHostDisable($lang){
 		global $pearDB,$tab, $_GET;
 		$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$_GET["host_name"]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function acknowledgeServiceDisable($lang){
 		global $pearDB,$tab;
 		$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$_GET["host_name"].";".$_GET["service_description"]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 
 	function acknowledgeService($lang){
@@ -180,13 +180,13 @@ For information : contact@oreon-project.org
 		$_GET["comment"] = htmlentities($_GET["comment"]);
 		$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
 		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$_GET["host_name"].";".$_GET["service_description"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 
 	function submitPassiveCheck($lang){
 		global $pearDB;
 		$flg = write_command(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	
@@ -199,7 +199,7 @@ For information : contact@oreon-project.org
 			$flg = write_command(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $rH["host_name"]);
 		}
 	*/
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function checks_svc_host_hostgroup($arg, $lang, $type){
@@ -208,7 +208,7 @@ For information : contact@oreon-project.org
 		$r =& $res->fetchRow();
 		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $rH["host_name"]);
 		*/
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	#############################################################################
@@ -222,7 +222,7 @@ For information : contact@oreon-project.org
 		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$ressource[0].";".$ressource[1].";1;1;1;".$oreon->user->alias.";".$comment);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoAcknowledgeServiceStop($key, $lang){
@@ -230,7 +230,7 @@ For information : contact@oreon-project.org
 		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$ressource[0].";".$ressource[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoAcknowledgeHostStart($key, $lang){
@@ -238,7 +238,7 @@ For information : contact@oreon-project.org
 		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$ressource[0].";1;1;1;".$oreon->user->alias.";".$comment);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoAcknowledgeHostStop($key, $lang){
@@ -246,7 +246,7 @@ For information : contact@oreon-project.org
 		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
 		$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$ressource[0]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	/* Notification */
@@ -255,28 +255,28 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoNotificationServiceStop($key, $lang){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoNotificationHostStart($key, $lang){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_HOST_NOTIFICATIONS;".$ressource[0]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoNotificationHostStop($key, $lang){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_HOST_NOTIFICATIONS;".$ressource[0]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	/* Check */
@@ -285,28 +285,28 @@ For information : contact@oreon-project.org
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_SVC_CHECK;".$ressource[0].";".$ressource[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoCheckServiceStop($key, $lang){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_SVC_CHECK;".$ressource[0].";".$ressource[1]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoCheckHostStart($key, $lang){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_HOST_CHECK;".$ressource[0]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 	function autoCheckHostStop($key, $lang){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_HOST_CHECK;".$ressource[0]);
-		return $lang["cmd_send"];
+		return _("Your command has been sent");
 	}
 	
 ?>

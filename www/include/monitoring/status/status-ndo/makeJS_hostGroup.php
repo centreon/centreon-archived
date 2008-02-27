@@ -37,7 +37,7 @@ var _num='<?=$num?>';
 var _limit='<?=$limit?>';
 var _sort_type='<?=$sort_type?>';
 var _order='<?=$order?>';
-var _date_time_format_status='<?=$lang["date_time_format_status"]?>';
+var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
 var _o='<?=$o?>';
 var _p='<?=$p?>';
 
@@ -68,17 +68,17 @@ function set_header_title(){
 
 	if(document.getElementById('hostGroup_name')){
 		var h = document.getElementById('hostGroup_name');
-		h.innerHTML = "<?=$lang['m_mon_hostgroup']?>";
+		h.innerHTML = "<?=_("Host Group")?>";
 	  	h.indice = 'hostGroup_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('host_status');
-		h.innerHTML = '<?=$lang['m_mon_host_stt_ttl']?>';
+		h.innerHTML = '<?=_("Hosts Status")?>';
 	  	h.indice = 'host_status';
 
 		var h = document.getElementById('service_status');
-		h.innerHTML = '<?=$lang['m_mon_svc_stt_ttl']?>';
+		h.innerHTML = '<?=_("Services Status")?>';
 	  	h.indice = 'service_status';
 	
 		
