@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 		<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 			<tr>
 				<td align='center' class='copyRight'>
-					Generated in <?php $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . $lang["time_sec"]; ?><br />
+					_("Generated in ")<?php $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . _(" seconds "); ?><br />
 					Copyright &copy; 1999-2007 Nagios - <a href="http://www.nagios.org/contact/">Ethan Galstad</a> | Copyright &copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Centreon</a><br />
 					All Rights Reserved<br />
 				</td>
