@@ -2,7 +2,7 @@
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderLeft" colspan="3">
-				<img src='./img/icones/16x16/gear.gif'{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}>&nbsp;{$lang.m_mon_services} {$svc_description} {$lang.m_mon_on_host} {$h.host_name} [{$h.host_alias}]
+				<img src='./img/icones/16x16/gear.gif'{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}>&nbsp;{$m_mon_services} {$svc_description} {$m_mon_on_host} {$h.host_name} [{$h.host_alias}]
 				{if $sv_ext_notes}
 					&nbsp;&nbsp;
 					{if $sv_ext_notes_url}
@@ -21,78 +21,78 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$lang.m_mon_services}</td>
+						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$m_mon_services}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_status}</td>
+						<td class="ListColLeft">{$m_mon_services_status}</td>
 						<td class="ListColLeft" style='background:{$service_data.status_color}'>{$service_data.current_state}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_host_status_info}</td>
+						<td class="ListColLeft">{$m_mon_host_status_info}</td>
 						<td class="ListColNoWrap">{$service_data.plugin_output}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_performance_data}</td>
+						<td class="ListColLeft">{$m_mon_performance_data}</td>
 						<td class="ListColLeft">{$service_data.performance_data}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_services_attempt}</td>
+						<td class="ListColLeft">{$m_mon_services_attempt}</td>
 						<td class="ListColLeft">{$service_data.current_attempt} / {$total_current_attempt}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_state}</td>
+						<td class="ListColLeft">{$m_mon_services_state}</td>
 						<td class="ListColLeft">{$harsof[$service_data.state_type]}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_last_check_type}</td>
+						<td class="ListColLeft">{$m_mon_last_check_type}</td>
 						<td class="ListColLeft">{$actpass[$service_data.check_type]}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_host_last_check}</td>
+						<td class="ListColLeft">{$m_mon_host_last_check}</td>
 						<td class="ListColLeft">{$service_data.last_check}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_services_active_check}</td>
+						<td class="ListColLeft">{$m_mon_services_active_check}</td>
 						<td class="ListColLeft">{$service_data.next_check}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_latency}</td>
+						<td class="ListColLeft">{$m_mon_services_latency}</td>
 						<td class="ListColLeft">{$service_data.check_latency}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_services_duration}</td>
+						<td class="ListColLeft">{$m_mon_services_duration}</td>
 						<td class="ListColLeft">{$service_data.check_execution_time}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_last_change}</td>
+						<td class="ListColLeft">{$m_mon_last_change}</td>
 						<td class="ListColLeft">{$service_data.last_state_change}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_current_state_duration}</td>
+						<td class="ListColLeft">{$m_mon_current_state_duration}</td>
 						<td class="ListColLeft">{$service_data.duration}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_last_notification_serv}</td>
+						<td class="ListColLeft">{$m_mon_last_notification_serv}</td>
 						<td class="ListColLeft">{if $service_data.last_notification}{$service_data.last_notification}{/if}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_notification_nb}</td>
+						<td class="ListColLeft">{$m_mon_notification_nb}</td>
 						<td class="ListColLeft">{$service_data.current_notification_number}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_flapping}</td>
+						<td class="ListColLeft">{$m_mon_services_flapping}</td>
 						<td class="ListColLeft">{$service_data.is_flapping}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_percent_state_change}</td>
+						<td class="ListColLeft">{$m_mon_percent_state_change}</td>
 						<td class="ListColLeft">{$service_data.percent_state_change} % </td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_downtime_sc}</td>
+						<td class="ListColLeft">{$m_mon_downtime_sc}</td>
 						<td class="ListColLeft" style='background:{$color_onoff_inv[$service_data.scheduled_downtime_depth]};'>{$en[$service_data.scheduled_downtime_depth]}</td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_last_update}</td>
+						<td class="ListColLeft">{$m_mon_last_update}</td>
 						<td class="ListColLeft">{$service_data.last_update}</td>
 					</tr>
 				</table>
@@ -109,7 +109,7 @@
 				{if $lcaTopo.602}
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft">{$lang.m_mon_tips}</td>
+						<td class="ListColHeaderLeft">{$m_mon_tips}</td>
 					</tr>
 					<tr>
 						<td class="ListColLeft"><a href='./oreon.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
@@ -120,7 +120,7 @@
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
+						<td class="ListColHeaderCenter">{$m_mon_tools}</td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft"><a href="{$sv_ext_action_url}" target="_blank">{$sv_ext_action_url_lang}</a></td>
@@ -132,37 +132,37 @@
 			<td style='vertical-align:top;'>
 				<table class="ListTable">
 					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$lang.m_mon_service_command}</td>
+						<td class="ListColHeaderCenter">{$m_mon_service_command}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=7&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.active_checks_enabled]}' class='link'>{$en_inv_text[$service_data.active_checks_enabled]} {$lang.m_mon_check_this_service}</a></td>
+						<td class="ListColLeft">{$img_en[$service_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=7&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.active_checks_enabled]}' class='link'>{$en_inv_text[$service_data.active_checks_enabled]} {$m_mon_check_this_service}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=3&select[{$h.host_name};{$svc_description}]=1&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_schedule}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=3&select[{$h.host_name};{$svc_description}]=1&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=4&select[{$h.host_name};{$svc_description}]=1&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_schedule_force}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=4&select[{$h.host_name};{$svc_description}]=1&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_force}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_submit_passive}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_submit_passive}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$service_data.passive_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=11&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.passive_checks_enabled]}'>{$en_inv_text[$service_data.passive_checks_enabled]} {$lang.m_mon_accept_passive}</a></td>
+						<td class="ListColLeft">{$img_en[$service_data.passive_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=11&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.passive_checks_enabled]}'>{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$img_en[$service_data.notifications_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=10&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.notifications_enabled]}'>{$en_inv_text[$service_data.notifications_enabled]} {$lang.m_mon_notification_service}</a></td>
+						<td class="ListColLeft">{$img_en[$service_data.notifications_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=10&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.notifications_enabled]}'>{$en_inv_text[$service_data.notifications_enabled]} {$m_mon_notification_service}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='./oreon.php?p=20305&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_schedule_downtime}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='./oreon.php?p=20305&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_downtime}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='./oreon.php?p=20306&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$lang.m_mon_schedule_comment}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='./oreon.php?p=20306&o=as&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_schedule_comment}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$service_data.event_handler_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=46&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.event_handler_enabled]}'>{$en_inv_text[$service_data.event_handler_enabled]} {$lang.m_mon_event_handler}</a></td>
+						<td class="ListColLeft">{$img_en[$service_data.event_handler_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=46&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.event_handler_enabled]}'>{$en_inv_text[$service_data.event_handler_enabled]} {$m_mon_event_handler}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$img_en[$service_data.flap_detection_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=44&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.flap_detection_enabled]}'>{$en_inv_text[$service_data.flap_detection_enabled]} {$lang.m_mon_flap_detection}</a></td>
+						<td class="ListColLeft">{$img_en[$service_data.flap_detection_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o={$o}&cmd=44&select[{$h.host_name};{$svc_description}]=1&en={$en_inv[$service_data.flap_detection_enabled]}'>{$en_inv_text[$service_data.flap_detection_enabled]} {$m_mon_flap_detection}</a></td>
 					</tr>
 					{if $service_data.current_state != OK}
 					<tr class='list_one'>
@@ -176,27 +176,27 @@
 						<td class="ListColHeaderCenter" colspan="2">Options</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_check_active}</td>
+						<td class="ListColLeft">{$m_mon_services_en_check_active}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.active_checks_enabled]};'>&nbsp;{$en_disable[$service_data.active_checks_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_check_passif}</td>
+						<td class="ListColLeft">{$m_mon_services_en_check_passif}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.passive_checks_enabled]};'>&nbsp;{$en_disable[$service_data.passive_checks_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_notification}</td>
+						<td class="ListColLeft">{$m_mon_services_en_notification}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.notifications_enabled]};'>&nbsp;{$en_disable[$service_data.notifications_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_event_handler}</td>
+						<td class="ListColLeft">{$m_mon_event_handler}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.event_handler_enabled]};'>&nbsp;{$en_disable[$service_data.event_handler_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$lang.m_mon_services_en_flap}</td>
+						<td class="ListColLeft">{$m_mon_services_en_flap}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.flap_detection_enabled]};'>&nbsp;{$en_disable[$service_data.flap_detection_enabled]}&nbsp;</font></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$lang.m_mon_obsessing}</td>
+						<td class="ListColLeft">{$m_mon_obsessing}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.obsess_over_service]};'>&nbsp;{$en_disable[$service_data.obsess_over_service]}&nbsp;</font></td>
 					</tr>
 				</table>
@@ -206,19 +206,19 @@
 	{if $count_comments_svc}
 	<table class="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderLeft" colspan="3">&nbsp;<img src="./img/icones/16x16/messages.gif">&nbsp;{$lang.m_comment_for_service}</td>
+			<td class="ListColHeaderLeft" colspan="3">&nbsp;<img src="./img/icones/16x16/messages.gif">&nbsp;{$m_comment_for_service}</td>
 		</tr>
 	</table>
 	<br />
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" disabled checked></td>
-			<td class="ListColHeaderCenter">{$lang.cmt_host_name}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_service_descr}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_entry_time}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_author}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_comment}</td>
-			<td class="ListColHeaderCenter">{$lang.cmt_persistent}</td>
+			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
+			<td class="ListColHeaderCenter">{$cmt_service_descr}</td>
+			<td class="ListColHeaderCenter">{$cmt_entry_time}</td>
+			<td class="ListColHeaderCenter">{$cmt_author}</td>
+			<td class="ListColHeaderCenter">{$cmt_comment}</td>
+			<td class="ListColHeaderCenter">{$cmt_persistent}</td>
 		</tr>
 		{foreach item=tcs from=$tab_comments_svc}
 		{if $tcs.host_name == $h.host_name}
