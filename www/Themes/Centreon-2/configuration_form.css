@@ -319,6 +319,7 @@ form	{padding-bottom:10px;}
 	z-index: 10;
 }
 
+/*
 input[type="submit"],input[type="button"],input[type="reset"]{
 	border-width : 1px;
 	border-style: solid;
@@ -328,6 +329,7 @@ input[type="submit"]:hover,input[type="button"]:hover,input[type="reset"]:hover{
 	border-width : 1px;	
 	border-style: solid;
 }
+*/
 .cachediv {	display: none;}
 
 .consol_button{

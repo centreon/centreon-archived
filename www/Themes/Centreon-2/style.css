@@ -358,14 +358,8 @@ a.infobulle:hover td	{padding:1px;}
 	white-space:nowrap;
 }
 
-.ListHeaderPopup{
-    background-color:white;
-	border-left:none 0px red;
-	font-weight: bold;
-}
-.ListHeaderPopup td{
-	border:solid 0px red;
-}
+.ListHeaderPopup		{background-color:white;border-left:none 0px red;font-weight: bold;}
+.ListHeaderPopup td		{border:solid 0px red;}
 
 /* END Info Bulles */
 
