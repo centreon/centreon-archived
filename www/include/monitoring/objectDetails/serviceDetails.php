@@ -207,9 +207,9 @@ For information : contact@oreon-project.org
 		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
 
-		$en_disable = array("1" => $lang ["m_mon_enabled"], "0" => $lang ["m_mon_disabled"]);
+		$en_disable = array("1" => _("Enabled"), "0" => _("Disabled"));
 		$en_inv = array("1" => "0", "0" => "1");
-		$en_inv_text = array("1" => $lang ["m_mon_disable"], "0" => $lang ["m_mon_enable"]);
+		$en_inv_text = array("1" => _("Disable"), "0" => _("Enable"));
 		$color_onoff = array("1" => "#00ff00", "0" => "#ff0000");
 		$color_onoff_inv = array("0" => "#00ff00", "1" => "#ff0000");
 		$img_en = array("0" => "<img src='./img/icones/16x16/element_next.gif' border='0'>", "1" => "<img src='./img/icones/16x16/element_previous.gif' border='0'>");
