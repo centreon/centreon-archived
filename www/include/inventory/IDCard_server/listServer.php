@@ -136,7 +136,7 @@ For information : contact@oreon-project.org
     	$option[$const['id']] = $const['alias'];
 
 	#
-	##Toolbar select $lang["lgd_more_actions"]
+	## Toolbar select $lang["lgd_more_actions"]
 	#
 	?>
 	<script type="text/javascript">
@@ -159,10 +159,6 @@ For information : contact@oreon-project.org
 				. "this.form.elements['o2'].selectedIndex = 0;submit();");
 
     $form->addElement('select', 'o2', NULL, $option, $attrs2);
-
-//    $form->addElement('select', 'select_manufacturer', _("Manufacturer"), $option);
-
-
 
 	##Apply a template definition
 
