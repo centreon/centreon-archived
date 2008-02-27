@@ -158,7 +158,6 @@ For information : contact@oreon-project.org
 		$form->accept($renderer);	
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);
-		$tpl->assign('lang', $lang);
 		$tpl->display("formNdomod.ihtml");
 	}
 ?>

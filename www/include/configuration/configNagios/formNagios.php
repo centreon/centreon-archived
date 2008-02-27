@@ -541,6 +541,7 @@ For information : contact@oreon-project.org
 		$tpl->assign('sort5', "Tunning");		
 		$tpl->assign('sort6', "Admin");
 		$tpl->assign("Seconds", _("Seconds"));
+		$tpl->assign("Minutes", _("Minutes"));
 		$tpl->display("formNagios.ihtml");
 	}
 ?>

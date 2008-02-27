@@ -198,7 +198,7 @@
 	
 		{if $msg.nagios == 2}
 			<tr class="list_two"><td class="FormRowField">{$form.service_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.service_inter_check_delay_method.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.max_service_check_spread.label}</td><td class="FormRowValue">{$form.max_service_check_spread.html}&nbsp;{$lang.time_min}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.max_service_check_spread.label}</td><td class="FormRowValue">{$form.max_service_check_spread.html}&nbsp;{$Minutes}</td></tr>
 		{/if}		
 		<tr class="list_one"><td class="FormRowField">{$form.service_interleave_factor.label}</td><td class="FormRowValue">{$form.service_interleave_factor.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.max_concurrent_checks.label}</td><td class="FormRowValue">{$form.max_concurrent_checks.html}</td></tr>
