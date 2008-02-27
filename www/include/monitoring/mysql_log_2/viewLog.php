@@ -48,18 +48,15 @@ For information : contact@oreon-project.org
 	$openid = '0';
 	$open_id_sub = '0';
 	if(isset($_GET["openid"])){
-	$openid = $_GET["openid"];
-	$open_id_type = substr($openid, 0, 2);
-	$open_id_sub = substr($openid, 3, strlen($openid));
+		$openid = $_GET["openid"];
+		$open_id_type = substr($openid, 0, 2);
+		$open_id_sub = substr($openid, 3, strlen($openid));
 	}
 
 	if(isset($_GET["id"])){
 		$id = $_GET["id"];
-	}
-	else
+	} else
 		$id = 1;
-
-//print_r($_POST);
 
 	if(isset($_POST["svc_id"]) && $_POST["svc_id"]){
 		$id = "";
@@ -77,15 +74,10 @@ For information : contact@oreon-project.org
 		$mode = 0;
 		$id_log = "'".$id."'";
 		$multi =1;
-	}
-	else{
+	} else{
 		$mode = 1;
 		$id = 1;
 	}
-
-
-
-
 
 	## Form begin
 	$form = new HTML_QuickForm('Form', 'get', "?p=".$p);
@@ -117,34 +109,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('From', _("From"));
 	$tpl->assign('To', _("To"));
 	$tpl->display("viewLog.ihtml");
-/*
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_notif', '0', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_alert', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_error', '0', '6');
-	
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host_up', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host_down', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_host_unreachable', '1', '6');
-	
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_ok', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_warning', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_critical', '1', '6');
-	INSERT INTO `centreon2_centreon`.`contact_param` (`id` ,`cp_key` ,`cp_value` ,`cp_contact_id`)
-	VALUES ('', 'log_filter_svc_unknown', '1', '6');
-*/
 
 ?>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
