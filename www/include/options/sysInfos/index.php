@@ -126,8 +126,11 @@ if ($lng == 'browser') {
 
 $charset = 'iso-8859-1';
 $lng = basename($lng);
-if (file_exists(APP_ROOT . '/includes/lang/' . $oreon->user->get_lang() . '.php')) {
-    require_once(APP_ROOT . '/includes/lang/' . $oreon->user->get_lang() . '.php'); // get our language include
+
+$tab_lng = split('_', $oreon->user->get_lang());
+
+if (file_exists(APP_ROOT . '/includes/lang/' . $tab_lng[0] . '.php')) {
+    require_once(APP_ROOT . '/includes/lang/' . $tab_lng[0] . '.php'); // get our language include
 } else {
     echo "Sorry, we don't support this language.";
     exit;
