@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
 	$form->addRule('snmp_trapd_path_conf', _("Can't write in directory"), 'is_writable_path');
-	$form->addRule('snmp_trapd_path_conf', $lang['ErrRequired'], 'required');
+	$form->addRule('snmp_trapd_path_conf', _("Required Field"), 'required');
 	$form->addRule('snmpttconvertmib_path_bin', _("Can't execute binary"), 'is_executable_binary');
 	$form->addRule('perl_library_path', _("Can't read in directory"), 'is_readable_path');
 	#

@@ -130,7 +130,8 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign('lang', $lang);
+	$tpl->assign("genOpt_rrdtool_properties", _("RRDTool Properties"));
+	$tpl->assign("genOpt_rrdtool_configurations", _("RRDTool Configuration"));
 	$tpl->assign('valid', $valid);
 	$tpl->display("formRRDTool.ihtml");
 ?>

@@ -1,13 +1,13 @@
 {if $msgErr != ''}
-	<div class="error">{$lang.$msgErr}</div>
+	<div class="error">{$msgErr}</div>
 {/if}
 {if $hasUpdate}
 	{if $security != ''}
-		<div class="updateSecu">{$lang.updateSecu} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$security}">{$security}</a></div>
+		<div class="updateSecu">{$updateSecu} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$security}">{$security}</a></div>
 	{/if}
 	{if $security != $lastVersion}
-		<div class="update">{$lang.update} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$lastVersion}">{$lastVersion} ({$lastVersionType})</a></div>
+		<div class="update">{$update} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$lastVersion}">{$lastVersion} ({$lastVersionType})</a></div>
 	{/if}
 {else}
-	<div class="uptodate">{$lang.uptodate}</div>
+	<div class="uptodate">{$uptodate}</div>
 {/if}

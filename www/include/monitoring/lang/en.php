@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 $lang ['m_mon_hosts'] = "Hosts";
 $lang ['m_mon_host'] = "Host";
-$lang ['m_mon_on_host'] = "de l'host";
+$lang ['m_mon_on_host'] = "on host";
 $lang ['m_mon_host_info'] = "Host Informations";
 $lang ['m_mon_host_status'] = "Host Status";
 $lang ['m_mon_host_status_info'] = "Status Informations";
@@ -117,12 +117,12 @@ $lang ['m_mon_services_en_flap'] = "Flap Detection Enabled :";
 $lang ['m_mon_services_en_acknowledge'] = "Acknowledge Enabled :";
 
 $lang ['m_mon_service_command'] = "Service Commands";
-$lang ['m_mon_check_this_service'] = "Checks of this service";
-$lang ['m_mon_schedule'] = "Re-schedule the next check of this service";
-$lang ['m_mon_schedule_force'] = "Re-schedule the next check of this service (forced)";
+$lang ['m_mon_check_this_service'] = "Checks for this service";
+$lang ['m_mon_schedule'] = "Re-schedule the next check for this service";
+$lang ['m_mon_schedule_force'] = "Re-schedule the next check for this service (forced)";
 $lang ['m_mon_submit_passive'] = "Submit result for this service";
-$lang ['m_mon_accept_passive'] = "accepting passive checks for this service";
-$lang ['m_mon_notification_service'] = "notifications for this service";
+$lang ['m_mon_accept_passive'] = "Accepting passive checks for this service";
+$lang ['m_mon_notification_service'] = "Notifications for this service";
 
 $lang ['m_mon_notification_svc_en']  = "Services : Enable Notification";
 $lang ['m_mon_notification_svc_dis'] = "Services : Disable Notification";
@@ -151,7 +151,7 @@ $lang['m_mon_state_type'] = "State Type";
 $lang['m_mon_check_latency'] = "Latency";
 $lang['m_mon_next_notification'] = "Next Notification";
 $lang['m_mon_obsess_over_host'] = "Obsess Over Host";
-$lang['m_mon_obsessing'] = "Obsessing";
+$lang['m_mon_obsessing'] = "Obsess";
 $lang['m_mon_host_checks_passive'] = "Passive Checks";
 $lang['m_mon_host_checks_active'] = "Active Checks";
 $lang['m_mon_check_execution_time'] = "Execution Time";

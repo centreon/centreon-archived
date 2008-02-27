@@ -81,18 +81,18 @@ For information : contact@oreon-project.org
 	}
 	$form->addElement('select', 'template', _("Template"), $templates);
 
-	$TabColorNameAndLang = array("color_up"=>"genOpt_oHCUP",
-                                    	"color_down"=>"genOpt_oHCDW",
-                                    	"color_unreachable"=>"genOpt_oHCUN",
-                                    	"color_ok"=>"genOpt_oSOK",
-                                    	"color_warning"=>"genOpt_oSWN",
-                                    	"color_critical"=>"genOpt_oSCT",
-                                    	"color_pending"=>"genOpt_oSPD",
-                                    	"color_unknown"=>"genOpt_oSUK",
+	$TabColorNameAndLang = array("color_up"=>_("Host UP Color"),
+                                    	"color_down"=>_("Host DOWN Color"),
+                                    	"color_unreachable"=>_("Host UNREACHABLE Color"),
+                                    	"color_ok"=>_("Service OK Color"),
+                                    	"color_warning"=>_("Service WARNING Color"),
+                                    	"color_critical"=>_("Service CRITICAL Color"),
+                                    	"color_pending"=>_("Service PENDING Color"),
+                                    	"color_unknown"=>_("Service UNKNOWN Color"),
 					);
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
-		$nameLang = $lang[$val];
+		$nameLang = $val;
 		$codeColor = $gopt[$nameColor];
 		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
@@ -117,7 +117,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'snmp_trapd_used', null, _("No"), '0');
 	$form->addGroup($tab, 'snmp_trapd_used', $lang["genOpt_snmp_trapd_used"], '&nbsp;');
 	$form->setDefaults(array('snmp_trapd_used' => '0'));
-	$form->addElement('text', 'snmp_trapd_path_conf', $lang["genOpt_snmp_trapd_pathConf"], $attrsText);
+	$form->addElement('text', 'snmp_trapd_path_conf', _("Directory of traps configuration files"), $attrsText);
 	$form->addElement('text', 'snmp_trapd_path_daemon', $lang["genOpt_snmp_trapd_pathBin"], $attrsText);
 
     #

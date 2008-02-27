@@ -45,18 +45,18 @@ For information : contact@oreon-project.org
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
 
-	$TabColorNameAndLang = array("color_up"=>"genOpt_oHCUP",
-                                    	"color_down"=>"genOpt_oHCDW",
-                                    	"color_unreachable"=>"genOpt_oHCUN",
-                                    	"color_ok"=>"genOpt_oSOK",
-                                    	"color_warning"=>"genOpt_oSWN",
-                                    	"color_critical"=>"genOpt_oSCT",
-                                    	"color_pending"=>"genOpt_oSPD",
-                                    	"color_unknown"=>"genOpt_oSUK",
+	$TabColorNameAndLang = array("color_up"=>_("Host UP Color"),
+                                    	"color_down"=>_("Host DOWN Color"),
+                                    	"color_unreachable"=>_("Host UNREACHABLE Color"),
+                                    	"color_ok"=>_("Service OK Color"),
+                                    	"color_warning"=>_("Service WARNING Color"),
+                                    	"color_critical"=>_("Service CRITICAL Color"),
+                                    	"color_pending"=>_("Service PENDING Color"),
+                                    	"color_unknown"=>_("Service UNKNOWN Color"),
 					);
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
-		$nameLang = $lang[$val];
+		$nameLang = $val;
 		$codeColor = $gopt[$nameColor];
 		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$nameColor,"size"=>"8","maxlength"=>"7");
@@ -143,7 +143,8 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign('lang', $lang);
+	$tpl->assign("genOpt_colors_properties", _("Status Properties Colors"));
+	
 	$tpl->assign('valid', $valid);
 	$tpl->display("formColors.ihtml");
 ?>

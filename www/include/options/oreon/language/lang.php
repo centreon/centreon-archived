@@ -83,7 +83,7 @@ For information : contact@oreon-project.org
 		    $stock = getLangs("./modules/".$mod["name"]."/lang/");	
 		}
 		else
-			$langdispo = $lang['lang_none'];
+			$langdispo = _("None");
 			$elemArr[$i] = array("ModuleTitle"=>_("Module")." ".$mod["name"],
 							"LangDispo"=>$langdispo,
 							"LangDispoName"=>_("Available language"),

@@ -67,7 +67,10 @@ For information : contact@oreon-project.org
 	$tpl->assign('security', $secu);
 	$tpl->assign('lastVersion', $newVersionInfo);
 	$tpl->assign('lastVersionType', getVersionType($newVersionInfo));
-	$tpl->assign('lang', $lang);
+	$tpl->assign("updateSecu", _("Security patch available"));
+	$tpl->assign("update", _("Update patch available"));
+	$tpl->assign("uptodate", _("Centreon is updated."));
+	
 	$tpl->assign('oreon_web_path', $oreon->optGen['oreon_web_path']);
 	$tpl->display("checkVersion.ihtml");
 ?>
