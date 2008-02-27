@@ -21,10 +21,9 @@ For information : contact@oreon-project.org
 	print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>" lang="<?php echo $mlang; ?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>">
 <head>
 <title>Centreon </title>
-<HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
@@ -44,11 +43,11 @@ For information : contact@oreon-project.org
 	$ndo = $gopt["ndo_activate"];
 
 	if (isset($ndo) && !$ndo)
-		print '<script language="javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php"; </script>';
+		print '<script type="text/javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php"; </script>';
 	else
-		print '<script language="javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php"; </script>';
+		print '<script type="text/javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php"; </script>';
 
-		print "<script language='javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>";
+		print "<script type='text/javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>";
 
 	}
 
@@ -57,7 +56,7 @@ For information : contact@oreon-project.org
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
 	if (isset($p) && $p == 310)
-		print "<SCRIPT language='javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>";
+		print "<SCRIPT type='text/javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>";
 
 	/*
 	 * include javascript
@@ -74,7 +73,7 @@ For information : contact@oreon-project.org
 		print $DBRESULT->getDebugInfo()."<br>";
 	while ($DBRESULT->fetchInto($topology_js)){
 		if(!$ndo || ($ndo && $topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js"))
-		echo "<script language='javascript' src='".$topology_js['PathName_js']."'></script> ";
+		echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script> ";
 	}
 	/*
 	 * init javascript

@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 	if($num < 0)
 		$num =0;
 ?>
-<SCRIPT LANGUAGE="JavaScript">
+<script type="text/javascript">
 var _debug = 0;
 
 var _search = '<?=$search?>';

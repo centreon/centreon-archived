@@ -241,7 +241,7 @@ For information : contact@oreon-project.org
 		include('ajaxReporting_js.php');
 	} else {
 		?>
-		<SCRIPT LANGUAGE="JavaScript">
+		<script type="text/javascript">
 		function initTimeline() {
 			;
 		}

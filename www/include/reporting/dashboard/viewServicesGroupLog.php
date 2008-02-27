@@ -494,7 +494,7 @@ For information : contact@oreon-project.org
 	}
 	else {
 			?>
-			<SCRIPT LANGUAGE="JavaScript">
+			<script type="text/javascript">
 			function initTimeline() {
 				;
 			}

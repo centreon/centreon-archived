@@ -161,7 +161,7 @@ For information : contact@oreon-project.org
 	 * Toolbar select $lang["lgd_more_actions"]
 	 */
 	?>
-	<SCRIPT LANGUAGE="JavaScript">
+	<script type="text/javascript">
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}

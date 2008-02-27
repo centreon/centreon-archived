@@ -93,7 +93,7 @@ For information : contact@oreon-project.org
 <?	}	?>
 	
 </div>
-<script language="Javascript">
+<script type="text/javascript">
 if (!Get_Cookie('showInvNetWork')) {
 	Set_Cookie('showInvNetWork','true',30,'/','','');
 }

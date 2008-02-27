@@ -30,7 +30,7 @@ For information : contact@oreon-project.org
 		$num =0;
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
-<SCRIPT LANGUAGE="JavaScript">
+<script type="text/javascript">
 var _debug = 0;
 
 var _search = '<?=$search?>';

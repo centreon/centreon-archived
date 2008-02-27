@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	$time = time();
 	
 ?>
-<SCRIPT LANGUAGE="JavaScript">
+<script type="text/javascript">
 var _debug = 0;
 
 var _search = '<?=$search?>';

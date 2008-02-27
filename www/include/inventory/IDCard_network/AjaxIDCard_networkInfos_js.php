@@ -17,7 +17,7 @@ For information : contact@oreon-project.org
 */
 
 ?>
-<SCRIPT LANGUAGE="JavaScript">
+<script type="text/javascript">
 
 var _current_id = '1';
 

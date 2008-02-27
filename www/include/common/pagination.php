@@ -113,7 +113,7 @@ For information : contact@oreon-project.org
 	ksort($select);
 		
 	?>
-	<SCRIPT LANGUAGE="JavaScript">
+	<script type="text/javascript">
 	function setL(_this){
 		var _l = document.getElementsByName('l');
 		document.forms['form'].elements['limit'].value = _this;

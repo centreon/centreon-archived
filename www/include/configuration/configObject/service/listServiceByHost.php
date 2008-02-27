@@ -215,7 +215,7 @@ For information : contact@oreon-project.org
 	 */
 	 
 	?>
-	<SCRIPT LANGUAGE="JavaScript">
+	<script type="text/javascript">
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}

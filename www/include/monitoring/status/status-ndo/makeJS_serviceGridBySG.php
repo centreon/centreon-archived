@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 	$obis .= '_ack_' . $_GET["acknowledge"];
 		
 ?>
-<SCRIPT LANGUAGE="JavaScript">
+<script type="text/javascript">
 var _debug = 0;
 
 var _search = '<?=$search?>';

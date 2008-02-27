@@ -100,7 +100,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add")));
 	
 	?>
-	<SCRIPT LANGUAGE="JavaScript">
+	<script type="text/javascript">
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}
