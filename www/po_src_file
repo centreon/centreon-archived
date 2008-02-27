@@ -4,6 +4,7 @@
 /usr/local/centreon/www/include/inventory/IDCard_network/infosNetwork.php
 /usr/local/centreon/www/include/inventory/inventoryUpdate.php
 /usr/local/centreon/www/include/inventory/inventory_cron_update.php
+/usr/local/centreon/www/include/inventory/inventoryBlanck.php
 /usr/local/centreon/www/include/options/about/about.php
 /usr/local/centreon/www/include/options/LCA/define/formLCA.php
 /usr/local/centreon/www/include/options/ods/viewData.php
