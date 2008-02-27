@@ -185,7 +185,7 @@ $name2 = $n."_color";
 			</td>
 		</tr>
 	</table>
-	<br>
+	<br />
 	<table align="center">
 		<tr valign="center">
 			<td><input type="button" name="btn_choose_color" value="&nbsp;" style="background-color:#000000; border-color:#000000; width:100px; height:35px;"></td>

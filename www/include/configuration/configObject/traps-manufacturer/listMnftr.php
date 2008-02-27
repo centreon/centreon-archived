@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps_vendor $SearchTool");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor $SearchTool ORDER BY name, alias LIMIT ".$num * $limit.", ".$limit);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 	
 	/*

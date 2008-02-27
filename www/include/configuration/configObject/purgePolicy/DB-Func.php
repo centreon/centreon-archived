@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('purge_policy_id');
 		$DBRESULT =& $pearDB->query("SELECT purge_policy_name, purge_policy_id FROM purge_policy WHERE purge_policy_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$pp =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $pp["purge_policy_id"] == $id)
@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 		foreach($ppols as $key=>$value)		{
 			$DBRESULT =& $pearDB->query("DELETE FROM purge_policy WHERE purge_policy_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["purge_policy_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -65,7 +65,7 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO purge_policy VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -104,10 +104,10 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(purge_policy_id) FROM purge_policy");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$purge_policy_id = $DBRESULT->fetchRow();
 		return ($purge_policy_id["MAX(purge_policy_id)"]);
 	}
@@ -140,6 +140,6 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE purge_policy_id = '".$purge_policy_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 ?>

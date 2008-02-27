@@ -33,5 +33,5 @@
 		{/foreach}
 		{/if}
 	</table>
-	<br>
+	<br />
 </div>

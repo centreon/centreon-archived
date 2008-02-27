@@ -15,5 +15,5 @@
 			</tr>
 		{/foreach}
 	</table>
-	<br>
+	<br />
 </div>

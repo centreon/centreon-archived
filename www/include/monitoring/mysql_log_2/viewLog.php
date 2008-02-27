@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 		$tab_row = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
 		if (PEAR::isError($DBRESULT)){
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			return null;		
 		}
 		while( $row = $DBRESULT->fetchRow()){

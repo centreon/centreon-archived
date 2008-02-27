@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndomod` WHERE `activate` = '1' AND `ns_nagios_server` = '".$tab['id']."' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$DBRESULT->numRows() ? $ndomod = $DBRESULT->fetchRow() : $ndomod = array();
 

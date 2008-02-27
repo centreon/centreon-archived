@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $server_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$server_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -36,7 +36,7 @@ For information : contact@oreon-project.org
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 	$attrsText2 	= array("size"=>"50");
 	$attrsText3 	= array("size"=>"10");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

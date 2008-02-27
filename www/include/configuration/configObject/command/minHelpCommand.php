@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 	if($command_id != NULL){
 		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmd = $DBRESULT->fetchRow();
 
 		$cmd_array = explode(" ", $cmd["command_line"]);
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 		if (preg_match("/@DOLLAR@USER([0-9]+)@DOLLAR@/", $resource_def, $matches))	{
 			$DBRESULT =& $pearDB->query("SELECT resource_line FROM cfg_resource WHERE resource_name = '\$USER".$matches[1]."\$' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$resource = $DBRESULT->fetchRow();
 			$resource_path = explode("=", $resource["resource_line"]);
 			$resource_path = $resource_path[1];
@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 
 	$command = str_replace("#S#", "/", $command);
 	$stdout = shell_exec($command." --help");
-	$msg = str_replace ("\n", "<br>", $stdout);
+	$msg = str_replace ("\n", "<br />", $stdout);
 
 	$attrsText 	= array("size"=>"25");
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);

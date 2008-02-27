@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndomod` $SearchTool");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -38,7 +38,7 @@ For information : contact@oreon-project.org
 	$nagios_servers = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM cfg_ndomod ORDER BY description");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["description"];
 	$DBRESULT->free();
@@ -74,7 +74,7 @@ For information : contact@oreon-project.org
 	$rq = "SELECT id, description, instance_name, ns_nagios_server, activate FROM cfg_ndomod $SearchTool ORDER BY description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 

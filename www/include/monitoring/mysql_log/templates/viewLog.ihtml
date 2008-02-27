@@ -15,7 +15,7 @@
 		<td class="ListColCenter">{$form.ssubmit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</td>
 	</tr>
 </table>
-<br>
+<br />
 <table class="Toolbar_TableTop">
 	<tr class="Toolbar_TR_Top">
 		{php}

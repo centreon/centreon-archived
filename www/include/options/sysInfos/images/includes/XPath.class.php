@@ -1412,7 +1412,7 @@ class XPathEngine extends XPathBase {
     $bDebugThisFunction = in_array($ThisFunctionName, $this->aDebugFunctions);
     $this->_beginDebugFunction($ThisFunctionName, $bDebugThisFunction);
     if ($bDebugThisFunction) {
-      echo "Exporting node: ".$node['xpath']."<br>\n";
+      echo "Exporting node: ".$node['xpath']."<br />\n";
     }
 
     ////////////////////////////////
@@ -1726,8 +1726,8 @@ class XPathEngine extends XPathBase {
     $bDebugThisFunction = in_array($ThisFunctionName, $this->aDebugFunctions);
     $this->_beginDebugFunction($ThisFunctionName, $bDebugThisFunction);
     if ($bDebugThisFunction) {
-      echo "Importing from string of length ".strlen($xmlString)." to node '$absoluteParentPath'\n<br>";
-      echo "Parser options:\n<br>";
+      echo "Importing from string of length ".strlen($xmlString)." to node '$absoluteParentPath'\n<br />";
+      echo "Parser options:\n<br />";
       print_r($this->parseOptions);
     }
 
@@ -1863,8 +1863,8 @@ class XPathEngine extends XPathBase {
     } 
 
     if ($this->bDebugXmlParse) {
-      echo "<blockquote>" . htmlspecialchars("Start node: <".$nodeName . ">")."<br>";
-      echo "Appended to stack entry: $this->parseStackIndex<br>\n";
+      echo "<blockquote>" . htmlspecialchars("Start node: <".$nodeName . ">")."<br />";
+      echo "Appended to stack entry: $this->parseStackIndex<br />\n";
       echo "Text part before element is: ".htmlspecialchars($this->parsedTextLocation);
       /*
       echo "<pre>";
@@ -1891,9 +1891,9 @@ class XPathEngine extends XPathBase {
     // Set the attributes.
     if (!empty($attributes)) {
       if ($this->bDebugXmlParse) {
-        echo 'Attributes: <br>';
+        echo 'Attributes: <br />';
         print_r($attributes);
-        echo '<br>';
+        echo '<br />';
       }
       $this->nodeStack[$this->parseStackIndex]['attributes'] = $attributes;
     }
@@ -1922,8 +1922,8 @@ class XPathEngine extends XPathBase {
     }
 
     if ($this->bDebugXmlParse) {
-      echo "Text part after element is: ".htmlspecialchars($this->parsedTextLocation)."<br>\n";
-      echo htmlspecialchars("Parent:<{$this->parseStackIndex}>, End-node:</$name> '".$this->parsedTextLocation) . "'<br>Text nodes:<pre>\n";
+      echo "Text part after element is: ".htmlspecialchars($this->parsedTextLocation)."<br />\n";
+      echo htmlspecialchars("Parent:<{$this->parseStackIndex}>, End-node:</$name> '".$this->parsedTextLocation) . "'<br />Text nodes:<pre>\n";
       $dataPartsCount = count($this->nodeStack[$this->parseStackIndex]['textParts']);
       for ($i = 0; $i < $dataPartsCount; $i++) {
         echo "$i:". htmlspecialchars($this->nodeStack[$this->parseStackIndex]['textParts'][$i])."\n";
@@ -1962,7 +1962,7 @@ class XPathEngine extends XPathBase {
   
     if ($this->parsInCData >0) $text = $this->_translateAmpersand($text, $reverse=TRUE);
     
-    if ($this->bDebugXmlParse) echo "Handling character data: '".htmlspecialchars($text)."'<br>";
+    if ($this->bDebugXmlParse) echo "Handling character data: '".htmlspecialchars($text)."'<br />";
     if ($this->parseSkipWhiteCache AND !empty($text) AND !$this->parsInCData) {
       // Special case CR. CR always comes in a separate data. Trans. it to '' or ' '. 
       // If txtBuffer is already ending with a space use '' otherwise ' '.
@@ -1976,7 +1976,7 @@ class XPathEngine extends XPathBase {
           $text = preg_replace('/\s+/', ' ', $text);
         }
       }
-      if ($this->bDebugXmlParse) echo "'Skip white space' is ON. reduced to : '" .htmlspecialchars($text) . "'<br>";
+      if ($this->bDebugXmlParse) echo "'Skip white space' is ON. reduced to : '" .htmlspecialchars($text) . "'<br />";
     }
     $this->parsedTextLocation .= $text;
   }
@@ -2000,7 +2000,7 @@ class XPathEngine extends XPathBase {
         if ($this->parsInCData < 0) $this->parsInCData = 0;
       }
       $this->parsedTextLocation .= $this->_translateAmpersand($text, $reverse=TRUE);
-      if ($this->bDebugXmlParse) echo "Default handler data: ".htmlspecialchars($text)."<br>";    
+      if ($this->bDebugXmlParse) echo "Default handler data: ".htmlspecialchars($text)."<br />";    
       break; // try-block
     } while (FALSE); // END try-block
   }
@@ -2075,7 +2075,7 @@ class XPathEngine extends XPathBase {
     $bDebugThisFunction = in_array($ThisFunctionName, $this->aDebugFunctions);
     $this->_beginDebugFunction($ThisFunctionName, $bDebugThisFunction);
     if ($bDebugThisFunction) {
-      echo "Current Node (parent-index) and the child to append : '{$stackParentIndex}' +  '{$nodeName}' \n<br>";
+      echo "Current Node (parent-index) and the child to append : '{$stackParentIndex}' +  '{$nodeName}' \n<br />";
     }
     */
      //////////////////////////////////////
@@ -4977,7 +4977,7 @@ class XPathEngine extends XPathBase {
    *   
    *   foreach ($aFunctions as $Function) {
    *       $id = $xPath->match("generate-id($Function)");
-   *       echo "<a href='#$id'>$Function</a><br>";
+   *       echo "<a href='#$id'>$Function</a><br />";
    *   }
    *   
    *   foreach ($aFunctions as $Function) {
@@ -6274,7 +6274,7 @@ class XPath extends XPathEngine {
       }
     } while (FALSE);
     
-    if ($this->properties['verboseLevel'] >= 2) $this->_displayMessage("'{$xPathQuery}' parameter from '{$function}' returned the following nodes: ".(count($xPathSet)?implode('<br>', $xPathSet):'[none]'), __LINE__, __FILE__);
+    if ($this->properties['verboseLevel'] >= 2) $this->_displayMessage("'{$xPathQuery}' parameter from '{$function}' returned the following nodes: ".(count($xPathSet)?implode('<br />', $xPathSet):'[none]'), __LINE__, __FILE__);
     return $xPathSet;
   }
 } // END OF CLASS XPath
@@ -6296,7 +6296,7 @@ class XPath extends XPathEngine {
  * Produces a short title line.
  */
 function _title($title) { 
-  echo "<br><hr><b>" . htmlspecialchars($title) . "</b><hr>\n";
+  echo "<br /><hr><b>" . htmlspecialchars($title) . "</b><hr>\n";
 }
 
 $self = isSet($_SERVER) ? $_SERVER['PHP_SELF'] : $PHP_SELF;
@@ -6323,10 +6323,10 @@ EOD;
   echo $xPath->exportAsHtml();
   
   _title("Get some content");
-  echo "Last text part in &lt;AAA&gt;: '" . $xPath->wholeText('/AAA[1]', -1) ."'<br>\n";
-  echo "All the text in  &lt;AAA&gt;: '" . $xPath->wholeText('/AAA[1]') ."'<br>\n";
-  echo "The attibute value  in  &lt;BBB&gt; using getAttributes('/AAA[1]/BBB[1]', 'FOO'): '" . $xPath->getAttributes('/AAA[1]', 'FOO') ."'<br>\n";
-  echo "The attibute value  in  &lt;BBB&gt; using getData('/AAA[1]/@FOO'): '" . $xPath->getData('/AAA[1]/@FOO') ."'<br>\n";
+  echo "Last text part in &lt;AAA&gt;: '" . $xPath->wholeText('/AAA[1]', -1) ."'<br />\n";
+  echo "All the text in  &lt;AAA&gt;: '" . $xPath->wholeText('/AAA[1]') ."'<br />\n";
+  echo "The attibute value  in  &lt;BBB&gt; using getAttributes('/AAA[1]/BBB[1]', 'FOO'): '" . $xPath->getAttributes('/AAA[1]', 'FOO') ."'<br />\n";
+  echo "The attibute value  in  &lt;BBB&gt; using getData('/AAA[1]/@FOO'): '" . $xPath->getData('/AAA[1]/@FOO') ."'<br />\n";
   
   _title("Append some additional XML below /AAA/BBB:");
   $xPath->appendChild('/AAA[1]/BBB[1]', '<CCC> Step 1. Append new node </CCC>', $afterText=FALSE);

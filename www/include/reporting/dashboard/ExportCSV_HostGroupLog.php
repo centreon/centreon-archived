@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 	}
 
 	function get_error($str){
-		echo $str."<br>";
+		echo $str."<br />";
 		exit(0);
 	}
 

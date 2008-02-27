@@ -195,7 +195,7 @@ Timeline.DefaultEventSource.Event = function(
     
     // Merethis modification by cedrick facon here
     
-//    description = description.replace(/~br~/ig, "<br>");
+//    description = description.replace(/~br~/ig, "<br />");
     description = description.replace(/{/ig, "<");
     description = description.replace(/}/ig, ">");
     

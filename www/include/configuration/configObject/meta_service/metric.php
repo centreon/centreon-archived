@@ -26,13 +26,13 @@ For information : contact@oreon-project.org
 		# Set base value
 		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 		# Set base value
 		$metric1 = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id=index_data.id");		
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$metric2 = array_map("myDecode", $DBRESULT->fetchRow());
 		$metric = array_merge($metric1, $metric2);
 		$host_id = $metric1["host_id"];
@@ -49,7 +49,7 @@ For information : contact@oreon-project.org
 	$hosts = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	while($DBRESULT->fetchInto($host))
 		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host["host_name"]])))
@@ -64,7 +64,7 @@ For information : contact@oreon-project.org
 		foreach ($services as $key=>$value)	{
 			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value."' and i.id=m.index_id ORDER BY metric_name, unit_name");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($DBRESULT->fetchInto($metricSV))	{
 				$services1[$key] = $value;
 				$services2[$key][$metricSV["metric_id"]] = $metricSV["metric_name"]."  (".$metricSV["unit_name"].")";

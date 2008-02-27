@@ -37,174 +37,174 @@
   dans la distribution de Nagios ou dans le sous-r&eacute;pertoire etc/ de votre 
   installation. (<i>c.a.d /usr/local/nagios/etc/)</i></p>
 <p> <strong><u>Index</u></strong> </p>
-<p> <a href="#log_file">Fichier journal</a><br>
-  <a href="#cfg_file">Fichier de configuration des objets</a><br>
+<p> <a href="#log_file">Fichier journal</a><br />
+  <a href="#cfg_file">Fichier de configuration des objets</a><br />
   <a href="#cfg_dir">R&eacute;pertoire des fichiers de configuration des objets 
-  </a><br>
-  <a href="#object_cache_file">Fichier de cache des objets</a><br>
-  <a href="#resource_file">Fichier de ressources</a><br>
+  </a><br />
+  <a href="#object_cache_file">Fichier de cache des objets</a><br />
+  <a href="#resource_file">Fichier de ressources</a><br />
   <a href="#temp_file">Fichier temporaire</a></p>
-<p><a href="#status_file">Fichier d'&eacute;tat (log d'&eacute;tat)</a><br>
+<p><a href="#status_file">Fichier d'&eacute;tat (log d'&eacute;tat)</a><br />
   <a href="#aggregate_status_updates">Option d'agr&eacute;gation des changements 
-  d'&eacute;tats</a><br>
+  d'&eacute;tats</a><br />
   <a href="#status_update_interval">Intervalle de mise &agrave; jour des &eacute;tats 
-  agr&eacute;g&eacute;s</a><br>
-  <br>
-  <a href="#nagios_user">Utilisateur de Nagios</a><br>
-  <a href="#nagios_group">Groupe de Nagios</a> <br>
-  <br>
-  <a href="#program_mode">Option des notifications</a> <br>
+  agr&eacute;g&eacute;s</a><br />
+  <br />
+  <a href="#nagios_user">Utilisateur de Nagios</a><br />
+  <a href="#nagios_group">Groupe de Nagios</a> <br />
+  <br />
+  <a href="#program_mode">Option des notifications</a> <br />
   <a href="#execute_service_checks">Option d'ex&eacute;cution des contr&ocirc;les 
-  de service</a><br>
+  de service</a><br />
   <a href="#accept_passive_service_checks">Option d'acceptation des contr&ocirc;les 
-  passifs de service</a><br>
+  passifs de service</a><br />
   <a href="#execute_host_checks">Option d'ex&eacute;cution des contr&ocirc;les 
-  d'h&ocirc;te</a><br>
+  d'h&ocirc;te</a><br />
   <a href="#accept_passive_host_checks">Option d'acceptation des contr&ocirc;les 
-  passifs d'h&ocirc;te</a><br>
-  <a href="#enable_event_handlers">Option de gestion d'&eacute;v&eacute;nement</a><br>
-  <br>
-  <a href="#log_rotation_method">M&eacute;thode de rotation du journal</a><br>
-  <a href="#log_archive_path">Chemin d'acc&egrave;s aux archives du journal</a><br>
-  <br>
-  <a href="#check_external_commands">Option de contr&ocirc;le des commandes externes</a><br>
+  passifs d'h&ocirc;te</a><br />
+  <a href="#enable_event_handlers">Option de gestion d'&eacute;v&eacute;nement</a><br />
+  <br />
+  <a href="#log_rotation_method">M&eacute;thode de rotation du journal</a><br />
+  <a href="#log_archive_path">Chemin d'acc&egrave;s aux archives du journal</a><br />
+  <br />
+  <a href="#check_external_commands">Option de contr&ocirc;le des commandes externes</a><br />
   <a href="#command_check_interval">Intervalle entre les contr&ocirc;les des commandes 
-  externes</a><br>
-  <a href="#command_file">Fichier de commandes externes<br>
-  </a><br>
-  <a href="#comment_file">Fichier de commentaire</a><br>
+  externes</a><br />
+  <a href="#command_file">Fichier de commandes externes<br />
+  </a><br />
+  <a href="#comment_file">Fichier de commentaire</a><br />
   <a href="#downtime_file">Fichier des temps d'indisponibilit&eacute; programm&eacute;s 
-  des h&ocirc;tes et services</a><br>
-  <a href="#lock_file">Fichier verrou</a><br>
-  <br>
-  <a href="#retain_state_information">Option de m&eacute;morisation de l'&eacute;tat</a><br>
-  <a href="#state_retention_file">Fichier de m&eacute;morisation de l'&eacute;tat</a><br>
+  des h&ocirc;tes et services</a><br />
+  <a href="#lock_file">Fichier verrou</a><br />
+  <br />
+  <a href="#retain_state_information">Option de m&eacute;morisation de l'&eacute;tat</a><br />
+  <a href="#state_retention_file">Fichier de m&eacute;morisation de l'&eacute;tat</a><br />
   <a href="#retention_update_interval">Intervalle de mise &agrave; jour des &eacute;tats 
-  m&eacute;moris&eacute;s</a><br>
+  m&eacute;moris&eacute;s</a><br />
   <a href="#use_retained_program_state">Option d'utilisation des &eacute;tats 
-  m&eacute;moris&eacute;s du programme </a><br>
+  m&eacute;moris&eacute;s du programme </a><br />
   <a href="#use_retained_scheduling_info">Option d'utilisation des &eacute;tats 
-  m&eacute;moris&eacute;s de l'ordonnanceur</a><br>
-  <br>
-  <a href="#use_syslog">Option de journalisation dans Syslog</a><br>
-  <a href="#log_notifications">Option de journalisation des notifications</a><br>
+  m&eacute;moris&eacute;s de l'ordonnanceur</a><br />
+  <br />
+  <a href="#use_syslog">Option de journalisation dans Syslog</a><br />
+  <a href="#log_notifications">Option de journalisation des notifications</a><br />
   <a href="#log_service_retries">Option de journalisation des tentatives de contr&ocirc;le 
-  de service</a><br>
+  de service</a><br />
   <a href="#log_host_retries">Option de journalisation des tentatives de contr&ocirc;le 
-  d'h&ocirc;te</a><br>
-  <a href="#log_event_handlers">Option de journalisation des gestions d'&eacute;v&eacute;nement</a><br>
-  <a href="#log_initial_states">Option de journalisation des &eacute;tats initiaux</a><br>
-  <a href="#log_external_commands">Option de journalisation des commandes externes</a><br>
-  <a href="#log_passive_checks">Option de journalisation des contr&ocirc;les passifs</a><br>
-  <br>
+  d'h&ocirc;te</a><br />
+  <a href="#log_event_handlers">Option de journalisation des gestions d'&eacute;v&eacute;nement</a><br />
+  <a href="#log_initial_states">Option de journalisation des &eacute;tats initiaux</a><br />
+  <a href="#log_external_commands">Option de journalisation des commandes externes</a><br />
+  <a href="#log_passive_checks">Option de journalisation des contr&ocirc;les passifs</a><br />
+  <br />
   <a href="#global_host_event_handler">Gestionnaire global des &eacute;v&eacute;nement 
-  relatifs aux h&ocirc;tes</a><br>
+  relatifs aux h&ocirc;tes</a><br />
   <a href="#global_service_event_handler">Gestionnaire global des &eacute;v&eacute;nements 
-  relatifs aux services</a><br>
-  <br>
-  <a href="#sleep_time">Temps de sommeil entre les contr&ocirc;les</a><br>
+  relatifs aux services</a><br />
+  <br />
+  <a href="#sleep_time">Temps de sommeil entre les contr&ocirc;les</a><br />
   <a href="#service_inter_check_delay_method">M&eacute;thode de d&eacute;lai inter-contr&ocirc;les 
-  de services</a><br>
+  de services</a><br />
   <a href="#max_service_check_spread">D&eacute;lai maximum de r&eacute;partition 
-  des contr&ocirc;les initiaux de services</a><br>
-  <a href="#service_interleave_factor">Facteur d'entrelacement des services</a><br>
+  des contr&ocirc;les initiaux de services</a><br />
+  <a href="#service_interleave_factor">Facteur d'entrelacement des services</a><br />
   <a href="#max_concurrent_checks">Nombre maximal de contr&ocirc;les de service 
-  simultan&eacute;s</a><br>
-  <a href="#service_reaper_frequency">Fr&eacute;quence de consolidation des services<br>
+  simultan&eacute;s</a><br />
+  <a href="#service_reaper_frequency">Fr&eacute;quence de consolidation des services<br />
   </a><a href="#host_inter_check_delay_method">M&eacute;thode de d&eacute;lai 
-  inter-contr&ocirc;les d'h&ocirc;tes<br>
+  inter-contr&ocirc;les d'h&ocirc;tes<br />
   </a><a href="#max_host_check_spread">D&eacute;lai maximum de r&eacute;partition 
-  des contr&ocirc;les initiaux d'h&ocirc;tes</a><br>
-  <a href="#interval_length">Valeur de l'intervalle de temps</a><br>
-  <a href="#auto_reschedule_checks">Option de r&eacute;ordonnancement automatique</a><br>
-  <a href="#auto_rescheduling_interval">Intervalle de r&eacute;ordonnancement automatique</a><br>
+  des contr&ocirc;les initiaux d'h&ocirc;tes</a><br />
+  <a href="#interval_length">Valeur de l'intervalle de temps</a><br />
+  <a href="#auto_reschedule_checks">Option de r&eacute;ordonnancement automatique</a><br />
+  <a href="#auto_rescheduling_interval">Intervalle de r&eacute;ordonnancement automatique</a><br />
   <a href="#auto_rescheduling_window">Fen&ecirc;tre de r&eacute;ordonnancement 
-  automatique </a><br>
-  <br>
+  automatique </a><br />
+  <br />
   <a href="#use_aggressive_host_checking">Option de contr&ocirc;le agressif des 
-  h&ocirc;tes</a><br>
-  <br>
+  h&ocirc;tes</a><br />
+  <br />
   <a href="#enable_flap_detection">Option de d&eacute;tection de l'oscillation 
-  d'un service ou d'un h&ocirc;te[flap]</a><br>
+  d'un service ou d'un h&ocirc;te[flap]</a><br />
   <a href="#low_service_flap_threshold">Seuil inf&eacute;rieur d'oscillation d'un 
-  service</a><br>
+  service</a><br />
   <a href="#high_service_flap_threshold">Seuil sup&eacute;rieur d'oscillation 
-  d'un service</a><br>
+  d'un service</a><br />
   <a href="#low_host_flap_threshold">Seuil inf&eacute;rieur d'oscillation d'un 
-  h&ocirc;te</a><br>
+  h&ocirc;te</a><br />
   <a href="#high_host_flap_threshold">Seuil sup&eacute;rieur d'oscillation d'un 
-  h&ocirc;te</a><br>
-  <br>
+  h&ocirc;te</a><br />
+  <br />
   <a href="#soft_service_dependencies">Option de d&eacute;pendance &quot;Soft&quot; 
   des services</a></p>
 <p><a href="#service_check_timeout">D&eacute;passement de d&eacute;lai du contr&ocirc;le 
-  de service</a><br>
+  de service</a><br />
   <a href="#host_check_timeout">D&eacute;passement de d&eacute;lai du contr&ocirc;le 
-  d'h&ocirc;te</a><br>
+  d'h&ocirc;te</a><br />
   <a href="#event_handler_timeout">D&eacute;passement de d&eacute;lai du contr&ocirc;le 
-  du gestionnaire d'&eacute;v&eacute;nement</a><br>
-  <a href="#notification_timeout">D&eacute;passement de d&eacute;lai de notification</a><br>
+  du gestionnaire d'&eacute;v&eacute;nement</a><br />
+  <a href="#notification_timeout">D&eacute;passement de d&eacute;lai de notification</a><br />
   <a href="#ocsp_timeout">D&eacute;passement de d&eacute;lai de la commande de 
-  remont&eacute;e de contr&ocirc;le de service</a><br>
+  remont&eacute;e de contr&ocirc;le de service</a><br />
   <a href="#ochp_timeout">D&eacute;passement de d&eacute;lai de la commande de 
-  remont&eacute;e de contr&ocirc;le d'h&ocirc;te</a><br>
+  remont&eacute;e de contr&ocirc;le d'h&ocirc;te</a><br />
   <a href="#perfdata_timeout">D&eacute;passement de d&eacute;lai de la commande 
-  de traitement des donn&eacute;es li&eacute;es aux performances</a><br>
-  <br>
+  de traitement des donn&eacute;es li&eacute;es aux performances</a><br />
+  <br />
   <a href="#obsess_over_services">Option de remont&eacute;e de contr&ocirc;le 
-  de service</a><br>
-  <a href="#ocsp_command">Commande de remont&eacute;e de contr&ocirc;le de service</a><br>
-  <a href="#obsess_over_hosts">Option de remont&eacute;e de contr&ocirc;le d'h&ocirc;te</a><br>
-  <a href="#ochp_command">Commande de remont&eacute;e de contr&ocirc;le d'h&ocirc;te</a><br>
-  <br>
+  de service</a><br />
+  <a href="#ocsp_command">Commande de remont&eacute;e de contr&ocirc;le de service</a><br />
+  <a href="#obsess_over_hosts">Option de remont&eacute;e de contr&ocirc;le d'h&ocirc;te</a><br />
+  <a href="#ochp_command">Commande de remont&eacute;e de contr&ocirc;le d'h&ocirc;te</a><br />
+  <br />
   <a href="#process_performance_data">Option de traitement des donn&eacute;es 
-  li&eacute;es aux performances</a><br>
-  <a href="#host_perfdata_command">Commande de performance li&eacute;e aux h&ocirc;tes</a><br>
+  li&eacute;es aux performances</a><br />
+  <a href="#host_perfdata_command">Commande de performance li&eacute;e aux h&ocirc;tes</a><br />
   <a href="#service_perfdata_command">Commande de performance li&eacute;e aux 
-  services</a><br>
-  <a href="#host_perfdata_file">Fichier de performance des h&ocirc;tes</a><br>
-  <a href="#service_perfdata_file">Fichier de performance des services</a><br>
+  services</a><br />
+  <a href="#host_perfdata_file">Fichier de performance des h&ocirc;tes</a><br />
+  <a href="#service_perfdata_file">Fichier de performance des services</a><br />
   <a href="#host_perfdata_file_template">Patron du fichier de performance des 
-  h&ocirc;tes</a><br>
+  h&ocirc;tes</a><br />
   <a href="#service_perfdata_file_template">Patron du fichier de performance des 
-  services</a><br>
+  services</a><br />
   <a href="#host_perfdata_file_mode">Mode d'ouverture du fichier de performance 
-  des h&ocirc;tes</a><br>
+  des h&ocirc;tes</a><br />
   <a href="#service_perfdata_file_mode">Mode d'ouverture du fichier de performance 
-  des services</a><br>
+  des services</a><br />
   <a href="#host_perfdata_file_processing_interval">Intervalle de traitement du 
-  fichier de performance des h&ocirc;tes</a><br>
+  fichier de performance des h&ocirc;tes</a><br />
   <a href="#service_perfdata_file_processing_interval">Intervalle de traitement 
-  du fichier de performance des services</a><br>
+  du fichier de performance des services</a><br />
   <a href="#host_perfdata_file_processing_command">Commande de traitement du fichier 
-  de performance des h&ocirc;tes</a><br>
+  de performance des h&ocirc;tes</a><br />
   <a href="#service_perfdata_file_processing_command">Commande de traitement du 
-  fichier de performance des services</a><br>
-  <br>
+  fichier de performance des services</a><br />
+  <br />
   <a href="#check_for_orphaned_services">Option de v&eacute;rification des contr&ocirc;les 
-  de service orphelins</a><br>
-  <br>
+  de service orphelins</a><br />
+  <br />
   <a href="#check_service_freshness">Option du contr&ocirc;le de la validit&eacute; 
-  des donn&eacute;es d'un service</a><br>
+  des donn&eacute;es d'un service</a><br />
   <a href="#freshness_check_interval">Intervalle de contr&ocirc;le de la validit&eacute; 
-  des donn&eacute;es d'un service</a> <br>
+  des donn&eacute;es d'un service</a> <br />
   <a href="#check_host_freshness">Option du contr&ocirc;le de la validit&eacute; 
-  des donn&eacute;es d'un h&ocirc;te</a><br>
+  des donn&eacute;es d'un h&ocirc;te</a><br />
   <a href="#host_freshness_check_interval">Intervalle du contr&ocirc;le de la 
-  validit&eacute; des donn&eacute;es d'un h&ocirc;te</a><br>
-  <br>
-  <a href="#date_format">Format de date</a><br>
-  <br>
+  validit&eacute; des donn&eacute;es d'un h&ocirc;te</a><br />
+  <br />
+  <a href="#date_format">Format de date</a><br />
+  <br />
   <a href="#illegal_object_name_chars">Caract&egrave;res ill&eacute;gaux dans la d&eacute;finition 
-  des objets</a><br>
-  <a href="#illegal_macro_output_chars">Caract&egrave;res ill&eacute;gaux dans la sortie des macros</a><br>
-  <br>
-  <a href="#use_regexp_matching">Option de concordance par expressions rationnelles</a><br>
+  des objets</a><br />
+  <a href="#illegal_macro_output_chars">Caract&egrave;res ill&eacute;gaux dans la sortie des macros</a><br />
+  <br />
+  <a href="#use_regexp_matching">Option de concordance par expressions rationnelles</a><br />
   <a href="#use_true_regexp_matching">Option de concordance syst&eacute;matique 
-  par expressions rationnelles </a><br>
-  <br>
-  <a href="#admin_email">Adresse email de l'administrateur</a><br>
-  <a href="#admin_pager">Pager de l'administrateur</a><br>
+  par expressions rationnelles </a><br />
+  <br />
+  <a href="#admin_email">Adresse email de l'administrateur</a><br />
+  <a href="#admin_pager">Pager de l'administrateur</a><br />
 </p>
 <p> <span class="Default"><a name="log_file"></a> </span>
 <table border="0" width="100%">
@@ -249,8 +249,8 @@
   <tr> 
     <td class="Default" valign="top">Exemple :</td>
     <td> 
-      <p class="Default"><font color="red"><strong>cfg_file=/usr/local/nagios/etc/hosts.cfg<br>
-        </strong></font><strong><font color="red">cfg_file=/usr/local/nagios/etc/services.cfg<br>
+      <p class="Default"><font color="red"><strong>cfg_file=/usr/local/nagios/etc/hosts.cfg<br />
+        </strong></font><strong><font color="red">cfg_file=/usr/local/nagios/etc/services.cfg<br />
         </font></strong><strong><font color="red">cfg_file=/usr/local/nagios/etc/commands.cfg</font></strong></p>
       </td>
   </tr>
@@ -282,8 +282,8 @@
   <tr> 
     <td class="Default" valign="top">Exemple :</td>
     <td> 
-      <p class="Default"><font color="red"><strong>cfg_dir=/usr/local/nagios/etc/commands<br>
-        </strong></font><strong><font color="red">cfg_dir=/usr/local/nagios/etc/services<br>
+      <p class="Default"><font color="red"><strong>cfg_dir=/usr/local/nagios/etc/commands<br />
+        </strong></font><strong><font color="red">cfg_dir=/usr/local/nagios/etc/services<br />
         </font></strong><strong><font color="red">cfg_dir=/usr/local/nagios/etc/hosts</font></strong></p>
       </td>
   </tr>
@@ -330,7 +330,7 @@
     <td bgcolor="#cbcbcb" class="Default"><strong>Fichier de ressources</strong></td>
   </tr>
 </table>
-<span class="Default"><br>
+<span class="Default"><br />
 </span> 
 <table border="0">
   <tr> 
@@ -2559,7 +2559,7 @@ dans le <a href="#host_perfdata_file_template">patron du fichier de performance
 des h&ocirc;tes</a>. Les donn&eacute;es ne seront &eacute;crites que si l'<a href="#process_performance_data">option 
 de traitement des donn&eacute;es de performance</a> est activ&eacute;e et si la 
 directive <i>process_perf_data </i>(<b>[NdT] : traitement des donn&eacute;es de 
-performance</b>) est activ&eacute;e dans la d&eacute;finition de l'h&ocirc;te.<br>
+performance</b>) est activ&eacute;e dans la d&eacute;finition de l'h&ocirc;te.<br />
 <p> <a name="service_perfdata_file"></a> 
 <table border="0" width="100%" class="Default">
   <tr> 
@@ -2640,7 +2640,7 @@ le <a href="#service_perfdata_file">fichier de performance des services</a>. Le
 patron peu contenir des <a href="macros.html">macros</a>, des caract&egrave;res 
 sp&eacute;ciaux (\t pour une tabulation, \r un retour charriot, \n pour un retour 
 &agrave; la ligne). Un retour &agrave; la ligne est ajout&eacute; apr&egrave;s 
-chaque &eacute;criture des donn&eacute;es de performance. <br>
+chaque &eacute;criture des donn&eacute;es de performance. <br />
 <p></p>
 <p> <a name="host_perfdata_file_mode"></a> 
 <table border="0" width="100%" class="Default">
@@ -2778,7 +2778,7 @@ pour le tra&icirc;tement du <a href="#host_perfdata_file">fichier de performance
 des h&ocirc;tes</a>. L'argument <i>command</i>e est le nom court d'une <a href="xodtemplate.html#command">d&eacute;finition 
 de commande</a> que vous avez d&eacute;finie dans le fichier de configuration 
 des objets. L'intervalle entre deux traitements est indiqu&eacute; par l'<a href="#host_perfdata_file_processing_interval">intervalle 
-de traitement du fichier de performance des h&ocirc;tes</a><br>
+de traitement du fichier de performance des h&ocirc;tes</a><br />
 <p></p>
 <p> <a name="service_perfdata_file_processing_command"></a> 
 <table border="0" width="100%" class="Default">
@@ -3126,7 +3126,7 @@ de traitement du fichier de performance des services</a>
     comme des expressions rationnelles. Fa&icirc;tes tr&egrave;s attention lorsque 
     vous activez cette option !</li>
 </ul>
-<p>Pour plus d'information, lisez <a href="templatetricks.html">ceci</a><br>
+<p>Pour plus d'information, lisez <a href="templatetricks.html">ceci</a><br />
 </p>
 <p> 
 <ul>

@@ -37,7 +37,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		print "<tr><td><b>Database &#146;".$_SESSION["nameOreonDB"]."&#146; : Creation</b></td>";
 		$requete = "CREATE DATABASE ". $_SESSION["nameOreonDB"] . ";";
 		if ($DEBUG) 
-			print $requete . "<br>";
+			print $requete . "<br />";
 		@mysql_query($requete, $res['0']);
 		if ($res['1'])
 			print '<td align="right"><b><span class="go">CRITICAL</b></td></tr>';
@@ -48,7 +48,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		print "<tr><td><b>Database &#146;".$_SESSION["nameOdsDB"]."&#146; : Creation</b></td>";
 		$requete = "CREATE DATABASE ". $_SESSION["nameOdsDB"] . ";";
 		if ($DEBUG) 
-			print $requete . "<br>";
+			print $requete . "<br />";
 		@mysql_query($requete, $res['0']);
 		if ($res['1'])
 			print '<td align="right"><b><span class="go">CRITICAL</b></td></tr>';
@@ -61,15 +61,15 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = "";
 		print "<tr><td><b>Database &#146;".$_SESSION["nameOreonDB"]."&#146; : Users Management</b></td>";
 		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOreonDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
-		if ($DEBUG) print $requete. "<br>";
+		if ($DEBUG) print $requete. "<br />";
 		mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 		$mysql_msg = $res['1'];
 		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOdsDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
-		if ($DEBUG) print $requete. "<br>";
+		if ($DEBUG) print $requete. "<br />";
 		mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 		$mysql_msg .= $res['1'];		
 		if ($res['1'])
-			print '<td align="right"><b><span class="go">CRITICAL</b><br>$mysql_msg<br></td></tr>';
+			print '<td align="right"><b><span class="go">CRITICAL</b><br />$mysql_msg<br /></td></tr>';
 		else
 			print '<td align="right"><b><span class="go">OK</b></td></tr>';	
 	}	
@@ -108,8 +108,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	            if ($pos != false)      {
 	                $str .= $line;
 	                $str = chop ($str);
-	  				if ($DEBUG) print $str . "<br>";
-	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+	  				if ($DEBUG) print $str . "<br />";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br /><span class='warning'>->" . mysql_error() ."</span><br />");
 	                $str = NULL;
 	            } else
 	            	$str .= $line;
@@ -118,7 +118,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}
@@ -149,8 +149,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	            if ($pos != false)      {
 	                $str .= $line;
 	                $str = chop ($str);
-	  				if ($DEBUG) print $str . "<br>";
-	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+	  				if ($DEBUG) print $str . "<br />";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br /><span class='warning'>->" . mysql_error() ."</span><br />");
 	                $str = NULL;
 	            } else
 	            	$str .= $line;
@@ -159,7 +159,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}
@@ -188,8 +188,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	            if ($pos != false)      {
 	                $str .= $line;
 	                $str = chop ($str);
-	  				if ($DEBUG) print $str . "<br>";
-	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+	  				if ($DEBUG) print $str . "<br />";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br /><span class='warning'>->" . mysql_error() ."</span><br />");
 	                $str = NULL;
 	            } else
 	            	$str .= $line;
@@ -198,7 +198,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}
@@ -214,8 +214,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	            if ($pos != false)      {
 	                $str .= $line;
 	                $str = chop ($str);
-	  				if ($DEBUG) print $str . "<br>";
-	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+	  				if ($DEBUG) print $str . "<br />";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br /><span class='warning'>->" . mysql_error() ."</span><br />");
 	                $str = NULL;
 	            } else
 	            	$str .= $line;
@@ -224,7 +224,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}
@@ -240,8 +240,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	            if ($pos != false)      {
 	                $str .= $line;
 	                $str = chop ($str);
-	  				if ($DEBUG) print $str . "<br>";
-	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+	  				if ($DEBUG) print $str . "<br />";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br /><span class='warning'>->" . mysql_error() ."</span><br />");
 	                $str = NULL;
 	            } else
 	            	$str .= $line;
@@ -250,7 +250,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}
@@ -266,8 +266,8 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	            if ($pos != false)      {
 	                $str .= $line;
 	                $str = chop ($str);
-	  				if ($DEBUG) print $str . "<br>";
-	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br><span class='warning'>->" . mysql_error() ."</span><br>");
+	  				if ($DEBUG) print $str . "<br />";
+	                $result = @mysql_query($str, $res['0']) or ( $mysql_msg= $mysql_msg . "$str<br /><span class='warning'>->" . mysql_error() ."</span><br />");
 	                $str = NULL;
 	            } else
 	            	$str .= $line;
@@ -276,7 +276,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}
@@ -293,18 +293,18 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		if (!$tab && !$nb){
 			$requete = "INSERT INTO `contact` (`contact_name` , `contact_alias` , `contact_passwd` , `contact_lang` , `contact_email` , `contact_oreon` , `contact_admin` , `contact_activate` ) VALUES ";
 			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES)."', '". md5($_SESSION["oreonpasswd"]) ."', '".$_SESSION["oreonlang"]."', '".$_SESSION['oreonemail']."', '1', '1', '1');";
-			if ($DEBUG) print $requete . "<br>";
+			if ($DEBUG) print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
 			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES);
 		} else {
 			$requete = "UPDATE `contact` SET `user_firstname` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES)."',`user_lastname` = '". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES)  ."',`user_alias` = '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES) ."',`user_passwd` = '". md5($_SESSION["oreonpasswd"]) ."',`user_mail` = '".$_SESSION['oreonemail']."',`user_status` = '32',`user_lang` = '".$_SESSION["oreonlang"]."' WHERE `user_id` =1 LIMIT 1 ;";
-			if ($DEBUG) print $requete . "<br>";
+			if ($DEBUG) print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
 		} 
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}
@@ -339,7 +339,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		$requete .= ", `ldap_auth_enable` = '".htmlentities($_SESSION["ldap_auth_enable"], ENT_QUOTES)."'";
 		$requete .= ", `debug_path` = '".$_SESSION["oreon_dir"]."log/' ;";
 	
-		if ($DEBUG) print $requete . "<br>";
+		if ($DEBUG) print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0'])or ( $mysql_msg= mysql_error());
 	
 		$conf_installoreon['status_file'] = ($conf_installoreon['status_file'] === "" ?  "/usr/local/nagios/var/status.log" : $conf_installoreon['status_file']);
@@ -356,18 +356,18 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 		$requete .= "`log_archive_path` = '".$conf_installoreon['log_archive_path']."', `state_retention_file` = '".$conf_installoreon['state_retention_file']."',`comment_file` = '".$conf_installoreon['comment_file']."',`downtime_file` = '".$conf_installoreon['downtime_file']."',`lock_file` = '".$conf_installoreon['lock_file']."',`temp_file` = '". $conf_installoreon['temp_file']."',`log_file` = '".$conf_installoreon['log_file']."' ";
 		$requete .= " WHERE `nagios_activate` =1 LIMIT 1;";
 	
-		if ($DEBUG) print $requete . "<br>";
+		if ($DEBUG) print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 	
 		$requete = "UPDATE `cfg_resource` SET `resource_line` = '\$USER1\$=".$_SESSION["nagios_plugins"]."' WHERE `resource_id` =1 LIMIT 1  ;";
 	
-		if ($DEBUG) print $requete . "<br>";
+		if ($DEBUG) print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']) or ( $mysql_msg= mysql_error());
 		
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br>'.$res[1].'<br></td></tr>';
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
 		    $return_false = 1;
 		}
 	}

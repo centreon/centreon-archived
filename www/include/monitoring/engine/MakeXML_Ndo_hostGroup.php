@@ -173,7 +173,7 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBndoConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 
@@ -193,7 +193,7 @@ For information : contact@oreon-project.org
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT->fetchInto($tab);
 
 		return($tab["nb"]);
@@ -233,7 +233,7 @@ For information : contact@oreon-project.org
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT->fetchInto($tab);
 
 		return($tab["nb"]);
@@ -310,7 +310,7 @@ For information : contact@oreon-project.org
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	/* End Pagination Rows */
 
@@ -326,7 +326,7 @@ For information : contact@oreon-project.org
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;

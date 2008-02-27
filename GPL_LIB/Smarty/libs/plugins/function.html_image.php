@@ -9,11 +9,11 @@
 /**
  * Smarty {html_image} function plugin
  *
- * Type:     function<br>
- * Name:     html_image<br>
- * Date:     Feb 24, 2003<br>
- * Purpose:  format HTML tags for the image<br>
- * Input:<br>
+ * Type:     function<br />
+ * Name:     html_image<br />
+ * Date:     Feb 24, 2003<br />
+ * Purpose:  format HTML tags for the image<br />
+ * Input:<br />
  *         - file = file (and path) of image (required)
  *         - height = image height (optional, default actual height)
  *         - width = image width (optional, default actual width)

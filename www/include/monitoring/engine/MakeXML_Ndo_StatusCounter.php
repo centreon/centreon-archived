@@ -113,7 +113,7 @@ For information : contact@oreon-project.org
 					" WHERE session_id = '".$_POST["sid"]."'";
 			$DBRESULT =& $pearDB->query($sql);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -132,7 +132,7 @@ For information : contact@oreon-project.org
 
 		$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 		if (PEAR::isError($DBRESULT_OPT))
-			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 		$DBRESULT_OPT->fetchInto($general_opt);
 
 		include_once($oreonPath . "www/DBndoConnect.php");
@@ -143,7 +143,7 @@ For information : contact@oreon-project.org
 				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 1 GROUP BY nhs.current_state ORDER by nhs.current_state";
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
-			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 		$host_stat = array();
 		$host_stat[0] = 0;
 		$host_stat[1] = 0;
@@ -163,7 +163,7 @@ For information : contact@oreon-project.org
 
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO2))
-			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
 
 		$svc_stat = array();
 		$svc_stat[0] = 0;

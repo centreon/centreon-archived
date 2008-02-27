@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			
 	# Set base value
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());

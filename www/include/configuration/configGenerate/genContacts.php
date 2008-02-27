@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath.$tab['id']."/contacts.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM contact ORDER BY `contact_name`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$contact = array();
 	$i = 1;
 	$str = NULL;
@@ -50,7 +50,7 @@ For information : contact@oreon-project.org
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_contact_relation ccr, contactgroup cg WHERE ccr.contact_contact_id = '".$contact["contact_id"]."' AND ccr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($DBRESULT2->fetchInto($contactGroup))	{
 					$BP = false;
 					array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;
@@ -66,7 +66,7 @@ For information : contact@oreon-project.org
 			$timeperiod = array();
 			$DBRESULT2 =& $pearDB->query("SELECT cct.timeperiod_tp_id AS cctTP1, cct.timeperiod_tp_id2 AS cctTP2, tp.tp_id, tp.tp_name FROM contact cct, timeperiod tp WHERE cct.contact_id = '".$contact["contact_id"]."' AND (tp.tp_id = cct.timeperiod_tp_id OR tp.tp_id = cct.timeperiod_tp_id2) ORDER BY `cctTP1`");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($DBRESULT2->fetchInto($timeperiod))	{
 				$timeperiod["cctTP1"] == $timeperiod["tp_id"] ? $str .= print_line("host_notification_period", $timeperiod["tp_name"]) : NULL;
 				$timeperiod["cctTP2"] == $timeperiod["tp_id"] ? $str .= print_line("service_notification_period", $timeperiod["tp_name"]) : NULL;
@@ -80,7 +80,7 @@ For information : contact@oreon-project.org
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM contact_hostcommands_relation chr, command cmd WHERE chr.contact_contact_id = '".$contact["contact_id"]."' AND chr.command_command_id = cmd.command_id ORDER BY `command_name`");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($DBRESULT2->fetchInto($command))
 				$strTemp != NULL ? $strTemp .= ", ".$command["command_name"] : $strTemp = $command["command_name"];
 			$DBRESULT2->free();
@@ -91,7 +91,7 @@ For information : contact@oreon-project.org
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT cmd.command_name FROM contact_servicecommands_relation csr, command cmd WHERE csr.contact_contact_id = '".$contact["contact_id"]."' AND csr.command_command_id = cmd.command_id ORDER BY `command_name`");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($DBRESULT2->fetchInto($command))
 				$strTemp != NULL ? $strTemp .= ", ".$command["command_name"] : $strTemp = $command["command_name"];
 			$DBRESULT2->free();

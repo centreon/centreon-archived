@@ -78,7 +78,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 		$oreon->user->name = $ret["contact_name"];
 		$oreon->user->alias = $ret["contact_alias"];
 		$oreon->user->lang = $ret["contact_lang"];

@@ -43,7 +43,7 @@
 <p> <strong><u>Exemple de configuration</u></strong></p>
 <p> Un exemple de fichier de configuration est cr&eacute;&eacute; lorsque vous 
   lancez le script &quot;configure&quot;. Vous pouvez trouver le fichier exemple 
-  dans le r&eacute;pertoire <i>sample-config </i>de la distribution Nagios.<br>
+  dans le r&eacute;pertoire <i>sample-config </i>de la distribution Nagios.<br />
   En lan&ccedil;ant la commande '<b>make install-config</b>', les fichiers seront 
   copi&eacute;s dans le r&eacute;pertoire Nagios destination.</p>
 
@@ -59,43 +59,43 @@
 
 <p> <strong><u>Index</u></strong> </p>
 
-<p> <a href="#main_cfg_file">Emplacement du fichier de configuration principal</a><br>
-  <a href="#physical_html_path">Chemin d'acc&egrave;s physique aux fichiers HTML</a><br>
-  <a href="#url_html_path">URL d'acc&egrave;s aux pages HTML</a><br>
-  <br>
+<p> <a href="#main_cfg_file">Emplacement du fichier de configuration principal</a><br />
+  <a href="#physical_html_path">Chemin d'acc&egrave;s physique aux fichiers HTML</a><br />
+  <a href="#url_html_path">URL d'acc&egrave;s aux pages HTML</a><br />
+  <br />
 
-  <a href="#use_authentication">Utilisation de l'authentification</a><br>
-  <a href="#default_user_name">Nom d'utilisateur par d&eacute;faut</a><br>
+  <a href="#use_authentication">Utilisation de l'authentification</a><br />
+  <a href="#default_user_name">Nom d'utilisateur par d&eacute;faut</a><br />
   <a href="#authorized_for_system_information">Acc&egrave;s aux informations sur 
-  le syst&egrave;me/processus</a><br>
-  <a href="#authorized_for_system_commands">Acc&egrave;s aux commandes du syst&egrave;me/processus</a><br>
+  le syst&egrave;me/processus</a><br />
+  <a href="#authorized_for_system_commands">Acc&egrave;s aux commandes du syst&egrave;me/processus</a><br />
 
   <a href="#authorized_for_configuration_information">Acc&egrave;s aux informations 
-  de configuration</a><br>
+  de configuration</a><br />
   <a href="#authorized_for_all_hosts">Acc&egrave;s global aux informations sur 
-  les h&ocirc;tes</a><br>
+  les h&ocirc;tes</a><br />
   <a href="#authorized_for_all_host_commands">Acc&egrave;s global aux commandes 
-  des h&ocirc;tes</a><br>
+  des h&ocirc;tes</a><br />
   <a href="#authorized_for_all_services">Acc&egrave;s global aux informations 
-  sur les services</a><br>
+  sur les services</a><br />
 
   <a href="#authorized_for_all_service_commands">Acc&egrave;s global aux commandes 
-  des services</a><br>
-  <br>
+  des services</a><br />
+  <br />
   <a href="#statusmap_background_image">Image de fond du CGI de cartographie des 
-  &eacute;tats (Statusmap)</a><br>
+  &eacute;tats (Statusmap)</a><br />
   <a href="#default_statusmap_layout">Dessin de la cartographie des &eacute;tats: 
-  valeur par d&eacute;faut</a><br>
+  valeur par d&eacute;faut</a><br />
  <a href="#statuswrl_include">Monde inclus dans 
-  le CGI du monde des &eacute;tats (Statuswrl)</a><br>
+  le CGI du monde des &eacute;tats (Statuswrl)</a><br />
 
   <a href="#default_statuswrl_layout">Dessin du monde des &eacute;tats : valeur 
-  par d&eacute;faut</a><br>
-<br>
-  <a href="#refresh_rate">Fr&eacute;quence de rafra&icirc;chissement des CGI</a><br>
-  <a href="#audio_alerts">Alertes auditives</a><br>
-  <br>
-  <a href="#ping_syntax">Syntaxe du Ping</a><br>
+  par d&eacute;faut</a><br />
+<br />
+  <a href="#refresh_rate">Fr&eacute;quence de rafra&icirc;chissement des CGI</a><br />
+  <a href="#audio_alerts">Alertes auditives</a><br />
+  <br />
+  <a href="#ping_syntax">Syntaxe du Ping</a><br />
 
 </p>
 <p>
@@ -709,22 +709,22 @@
   <tr> 
     <td valign=top class="Default">Formats :</td>
 
-    <td> <span class="Default"><strong>host_unreachable_sound=&lt;fichier_son&gt;</strong><br>
-      <strong>host_down_sound=&lt;fichier_son&gt;</strong><br>
-      <strong>service_critical_sound=&lt;fichier_son&gt;</strong><br>
-      <strong>service_warning_sound=&lt;fichier_son&gt;</strong><br>
+    <td> <span class="Default"><strong>host_unreachable_sound=&lt;fichier_son&gt;</strong><br />
+      <strong>host_down_sound=&lt;fichier_son&gt;</strong><br />
+      <strong>service_critical_sound=&lt;fichier_son&gt;</strong><br />
+      <strong>service_warning_sound=&lt;fichier_son&gt;</strong><br />
 
-      <strong>service_unknown_sound=&lt;fichier_son&gt;</strong><br>
+      <strong>service_unknown_sound=&lt;fichier_son&gt;</strong><br />
       </span></td>
   </tr>
   <tr> 
     <td valign=top class="Default">Exemples :</td>
-    <td> <span class="Default"><font color="red"><strong>host_unreachable_sound=hostu.wav</strong></font><br>
-      <font color="red"><strong>host_down_sound=hostd.wav</strong></font><br>
+    <td> <span class="Default"><font color="red"><strong>host_unreachable_sound=hostu.wav</strong></font><br />
+      <font color="red"><strong>host_down_sound=hostd.wav</strong></font><br />
 
-      <font color="red"><strong>service_critical_sound=critical.wav</strong></font><br>
-      <font color="red"><strong>service_warning_sound=warning.wav</strong></font><br>
-      <font color="red"><strong>service_unknown_sound=unknown.wav</strong></font><br>
+      <font color="red"><strong>service_critical_sound=critical.wav</strong></font><br />
+      <font color="red"><strong>service_warning_sound=warning.wav</strong></font><br />
+      <font color="red"><strong>service_unknown_sound=unknown.wav</strong></font><br />
       </span></td>
   </tr>
 </table>

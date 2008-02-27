@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $tp_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$tp = array_map("myDecode", $DBRESULT->fetchRow());
 	}

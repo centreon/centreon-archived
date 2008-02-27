@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $resource_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$resource_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$rs = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();

@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
     	$ping->setArgs(array("count" => 4));
 		$response = $ping->ping($host);
 		foreach ($response->getRawData() as $key => $data)
-   			$msg .= $data ."<br>";
+   			$msg .= $data ."<br />";
 		print $msg;
 	}
 

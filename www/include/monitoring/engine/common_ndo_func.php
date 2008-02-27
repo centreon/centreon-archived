@@ -25,7 +25,7 @@ function get_Host_Status($host_name,$pearDBndo,$general_opt){
 
 	$DBRESULT =& $pearDBndo->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$status = array();
 //	$status[0] = array();
 //	$status[0]["current_state"] = "0";

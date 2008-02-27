@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 		$SearchTool = "WHERE (sc_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sc_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service_categories $SearchTool");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$DBRESULT->free();
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM service_categories $SearchTool ORDER BY sc_name LIMIT ".$num * $limit.", ".$limit);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$search = tidySearchKey($search, $advanced_search);
 

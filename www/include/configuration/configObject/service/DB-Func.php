@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 		$name = str_replace('\\', "#BS#", $name);
 		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$service =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $service["service_id"] == $id)
@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 		foreach ($hPars as $host)	{
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$service =& $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id)
@@ -72,7 +72,7 @@ For information : contact@oreon-project.org
 		foreach ($hgPars as $hostgroup)	{
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hostgroup."' AND hsr.service_service_id = service_id AND service.service_description = '".htmlentities($name, ENT_QUOTES)."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$service =& $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id)
@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 		foreach($service_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -102,7 +102,7 @@ For information : contact@oreon-project.org
 		foreach($service_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	function deleteServiceInDB ($services = array())	{
@@ -111,15 +111,15 @@ For information : contact@oreon-project.org
 		foreach($services as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_template_model_stm_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($DBRESULT->fetchInto($row))	{
 				$DBRESULT2 =& $pearDB->query("UPDATE service SET service_template_model_stm_id = NULL WHERE service_id = '".$row["service_id"]."'");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			}
 			$DBRESULT =& $pearDB->query("DELETE FROM service WHERE service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$files = glob($oreon->optGen["oreon_rrdbase_path"]."*_".$key.".rrd");
 			foreach ($files as $filename)
 				unlink ($filename);
@@ -136,21 +136,21 @@ For information : contact@oreon-project.org
 			$lap= 0;
 			$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($DBRESULT->fetchInto($relation))	{
 				if ($relation["hostgroup_hg_id"])	{
 					if ($lap)	{
 						$sv_id = NULL;
 						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND hostgroup_hg_id = '".$relation["hostgroup_hg_id"]."'");
 						if (PEAR::isError($DBRESULT2))
-							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), NULL, 0, $relation["hostgroup_hg_id"], array(), array($relation["hostgroup_hg_id"]=>NULL));
 						if ($sv_id)	{
 							$hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
 							foreach($hosts as $host)	{
 								$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host."' AND service_id = '".$key."'");
 								if (PEAR::isError($DBRESULT3))
-									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
+									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							}
 						}
 					}
@@ -161,12 +161,12 @@ For information : contact@oreon-project.org
 						$sv_id = NULL;
 						$DBRESULT2 =& $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$key."' AND host_host_id = '".$relation["host_host_id"]."'");
 						if (PEAR::isError($DBRESULT2))
-							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						$sv_id = multipleServiceInDB(array($key=>"1"), array($key=>"1"), $relation["host_host_id"], 0, NULL, array($relation["host_host_id"]=>NULL), array());
 						if ($sv_id)	{
 							$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$relation["host_host_id"]."' AND service_id = '".$key."'");
 							if (PEAR::isError($DBRESULT3))
-								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 						}
 					}
 					$lap++;
@@ -184,7 +184,7 @@ For information : contact@oreon-project.org
 			# Get all information about it
 			$DBRESULT =& $pearDB->query("SELECT * FROM service WHERE service_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();			
 			$row["service_id"] = '';
 			# Loop on the number of Service we want to duplicate
@@ -206,10 +206,10 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO service VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(service_id) FROM service");
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(service_id)"]))	{
 						# Host duplication case -> Duplicate the Service for the Host we create
@@ -221,45 +221,45 @@ For information : contact@oreon-project.org
 						# Service duplication case -> Duplicate the Service for each relation the base Service have
 							$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
 							if (PEAR::isError($DBRESULT))
-								print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 							while($DBRESULT->fetchInto($service))	{
 								if ($service["host_host_id"])				
 									$DBRESULT2 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
 								else if ($service["hostgroup_hg_id"])	
 									$DBRESULT2 =& $pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$service["hostgroup_hg_id"]."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
 								if (PEAR::isError($DBRESULT2))
-									print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+									print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 							}
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($Cg)){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_service_relation VALUES ('', '".$Cg["contactgroup_cg_id"]."', '".$maxId["MAX(service_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id, servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($Sg)){
 							$Sg["host_host_id"] ? $host_id = "'".$Sg["host_host_id"]."'" : $host_id = "NULL";
 							$Sg["hostgroup_hg_id"] ? $hg_id = "'".$Sg["hostgroup_hg_id"]."'" : $hg_id = "NULL";
 							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$host_id.", ".$hg_id.", '".$maxId["MAX(service_id)"]."', '".$Sg["servicegroup_sg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($traps)){
 							$DBRESULT2 =& $pearDB->query("INSERT INTO traps_service_relation VALUES ('', '".$traps["traps_id"]."', '".$maxId["MAX(service_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT * FROM extended_service_information WHERE service_service_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($esi))	{
 							$val = null;
 							$esi["service_service_id"] = $maxId["MAX(service_id)"];
@@ -269,7 +269,7 @@ For information : contact@oreon-project.org
 							$val ? $rq = "INSERT INTO extended_service_information VALUES (".$val.")" : $rq = null;
 							$DBRESULT2 =& $pearDB->query($rq);
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 					}
 				}
@@ -434,10 +434,10 @@ For information : contact@oreon-project.org
 				$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(service_id) FROM service");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$service_id = $DBRESULT->fetchRow();
 		return ($service_id["MAX(service_id)"]);
 	}
@@ -462,7 +462,7 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function updateService($service_id = null, $from_MC = false)	{
@@ -572,7 +572,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function updateService_MC($service_id = null)	{
@@ -643,7 +643,7 @@ For information : contact@oreon-project.org
 			$rq .= "WHERE service_id = '".$service_id."'";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 		
@@ -655,7 +655,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["service_cgs"]))
 			$ret = $ret["service_cgs"];
 		else
@@ -667,7 +667,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$ret[$i]."', '".$service_id."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -680,7 +680,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cgs = array();
 		while($DBRESULT->fetchInto($arr))
 			$cgs[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
@@ -693,7 +693,7 @@ For information : contact@oreon-project.org
 				$rq .= "('".$ret[$i]."', '".$service_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -706,7 +706,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["service_sgs"]))
 			$ret = $ret["service_sgs"];
 		else
@@ -729,7 +729,7 @@ For information : contact@oreon-project.org
 					$rq .= "(NULL, '".$value."', '".$service_id."', '".$ret[$i]."')";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			else if (count($ret1))
 				foreach($ret1 as $key=>$value)	{
@@ -739,7 +739,7 @@ For information : contact@oreon-project.org
 					$rq .= "('".$value."', NULL, '".$service_id."', '".$ret[$i]."')";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 		}
 	}	
@@ -753,7 +753,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hsgs = array();
 		$hgsgs = array();
 		while($DBRESULT->fetchInto($arr))	{
@@ -776,7 +776,7 @@ For information : contact@oreon-project.org
 						$rq .= "(NULL, '".$hg."', '".$service_id."', '".$ret[$i]."')";
 						$DBRESULT =& $pearDB->query($rq);
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					}
 				}
 			else if (count($ret1))
@@ -788,7 +788,7 @@ For information : contact@oreon-project.org
 						$rq .= "('".$h."', NULL, '".$service_id."', '".$ret[$i]."')";
 						$DBRESULT =& $pearDB->query($rq);
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					}
 				}
 		}
@@ -802,7 +802,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["service_traps"]))
 			$ret = $ret["service_traps"];
 		else
@@ -814,7 +814,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$ret[$i]."', '".$service_id."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}	
 	
@@ -827,7 +827,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$traps = array();
 		while($DBRESULT->fetchInto($arr))
 			$traps[$arr["traps_id"]] = $arr["traps_id"];
@@ -840,7 +840,7 @@ For information : contact@oreon-project.org
 				$rq .= "('".$ret[$i]."', '".$service_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -853,7 +853,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret1 = array();
 		$ret2 = array();
 		if (isset($ret["service_hPars"]))
@@ -872,7 +872,7 @@ For information : contact@oreon-project.org
 				$rq .= "('".$ret2[$i]."', NULL, NULL, '".$service_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		else if (count($ret1))
 			for($i = 0; $i < count($ret1); $i++)	{
@@ -882,7 +882,7 @@ For information : contact@oreon-project.org
 				$rq .= "(NULL, '".$ret1[$i]."', NULL, '".$service_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 	}
 	
@@ -894,7 +894,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$hsvs = array();
 		$hgsvs = array();
 		while($DBRESULT->fetchInto($arr))	{
@@ -914,14 +914,14 @@ For information : contact@oreon-project.org
 					$rq .= "WHERE service_service_id = '".$service_id."' AND host_host_id IS NOT NULL";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$rq = "INSERT INTO host_service_relation ";
 					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
 					$rq .= "VALUES ";
 					$rq .= "('".$ret2[$i]."', NULL, NULL, '".$service_id."')";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		else if (count($ret1))
@@ -931,14 +931,14 @@ For information : contact@oreon-project.org
 					$rq .= "WHERE service_service_id = '".$service_id."' AND hostgroup_hg_id IS NOT NULL";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$rq = "INSERT INTO host_service_relation ";
 					$rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
 					$rq .= "VALUES ";
 					$rq .= "(NULL, '".$ret1[$i]."', NULL, '".$service_id."')";
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 	}
@@ -964,7 +964,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function updateServiceExtInfos_MC($service_id = null)	{
@@ -984,7 +984,7 @@ For information : contact@oreon-project.org
 			$rq .= "WHERE service_service_id = '".$service_id."'";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -995,7 +995,7 @@ For information : contact@oreon-project.org
 		foreach ($useTpls as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE service SET service_template_model_stm_id = '".getMyServiceTPLID($value)."' WHERE service_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -1008,7 +1008,7 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM service_categories_relation WHERE service_service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["service_categories"]))
 			$ret = $ret["service_categories"];
 		else
@@ -1020,7 +1020,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$ret[$i]."', '".$service_id."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 ?>

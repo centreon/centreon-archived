@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 	# ODS Database retrieve information
 	$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$result_config = $DBRESULT->fetchRow();
 	if (isset($result_config) && $result_config)
 		$gopt = array_map("myDecode", $result_config);
@@ -88,7 +88,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
-		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : NULL,
+		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
 								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
 								"Menu1UrlPopupOpen" => $elem["topology_url"],

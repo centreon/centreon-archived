@@ -225,7 +225,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	$tab_color_service = array();
@@ -265,7 +265,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
-		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	while($DBRESULT_NDO1->fetchInto($ndo))
 	{
 		$host_status[$ndo["host_name"]] = $ndo;
@@ -345,7 +345,7 @@ For information : contact@oreon-project.org
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
 	$DBRESULT_NDO =& $pearDBndo->query($rq);
 	if (PEAR::isError($DBRESULT_NDO))
-		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 	$buffer .= '<reponse>';
 	$ct = 0;
 	$flag = 0;
@@ -353,7 +353,7 @@ For information : contact@oreon-project.org
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
-		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	$buffer .= '<i>';
 	$buffer .= '<numrows>'.$numRows.'</numrows>';

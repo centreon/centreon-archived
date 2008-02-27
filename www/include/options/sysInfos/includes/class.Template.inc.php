@@ -142,7 +142,7 @@
 				{
 					if ($this->debug)
 					{
-						print "scalar: set *$varname* to *$value*<br>\n";
+						print "scalar: set *$varname* to *$value*<br />\n";
 					}
 					$this->varkeys[$varname] = $this->varname($varname);
 					$this->varvals[$varname] = str_replace('phpGroupWare','eGroupWare',$value);
@@ -157,7 +157,7 @@
 					{
 						if ($this->debug)
 						{
-							print "array: set *$k* to *$v*<br>\n";
+							print "array: set *$k* to *$v*<br />\n";
 						}
 						$this->varkeys[$k] = $this->varname($k);
 						$this->varvals[$k] = str_replace('phpGroupWare','eGroupWare',$v);
@@ -444,6 +444,6 @@
 		 */
 		function haltmsg($msg)
 		{
-			printf("<b>Template Error:</b> %s<br>\n", $msg);
+			printf("<b>Template Error:</b> %s<br />\n", $msg);
 		}
 	}

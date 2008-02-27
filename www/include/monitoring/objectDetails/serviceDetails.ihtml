@@ -15,7 +15,7 @@
 				{/if}
 			</td>
 		</tr>
-	</table><br>
+	</table><br />
 	<table width='100%'>
 		<tr>
 			<td style='vertical-align:top;'>
@@ -96,7 +96,7 @@
 						<td class="ListColLeft">{$service_data.last_update}</td>
 					</tr>
 				</table>
-				<br>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft" colspan="2"><img src='./img/icones/16x16/column-chart.gif'>&nbsp;Status</td>
@@ -105,7 +105,7 @@
 						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
 					</tr>
 				</table>
-				<br><br>
+				<br /><br />
 				{if $lcaTopo.602}
 				<table class="ListTable">
 					<tr class='ListHeader'>
@@ -117,7 +117,7 @@
 				</table>
 				{/if}
 				{if $sv_ext_action_url}		
-				<br>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
@@ -170,7 +170,7 @@
 					</tr>
 					{/if}
 				</table>
-				<br>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter" colspan="2">Options</td>
@@ -202,14 +202,14 @@
 				</table>
 			</td>
 		</tr>
-	</table><br>
+	</table><br />
 	{if $count_comments_svc}
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderLeft" colspan="3">&nbsp;<img src="./img/icones/16x16/messages.gif">&nbsp;{$lang.m_comment_for_service}</td>
 		</tr>
 	</table>
-	<br>
+	<br />
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderPicker"><input type="checkbox" disabled checked></td>

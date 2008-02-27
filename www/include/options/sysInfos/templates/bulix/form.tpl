@@ -6,9 +6,9 @@
  <tr>
   <td width="50%" valign="top">
    {vitals}
-   <br>
+   <br />
    {network}
-   <br>
+   <br />
    {memory}
   </td>
 
@@ -19,7 +19,7 @@
 
  <tr>
   <td colspan="2">
-   <br>
+   <br />
    {filesystems}
   </td>
  </tr>

@@ -18,47 +18,47 @@ For information : contact@oreon-project.org
 	function deleteAllConfCFG()	{
 		global $pearDB;
 		global $oreon;
-		//echo "delete all cfg conf<br>";
+		//echo "delete all cfg conf<br />";
 		$rq = "DELETE FROM command";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM timeperiod";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM contact WHERE contact_id != '".$oreon->user->get_id()."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM contactgroup";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM host";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM service";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM hostgroup";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM servicegroup";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM dependency";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rq = "DELETE FROM escalation";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 
 	function insertResourceCFG(& $buf)	{
@@ -95,7 +95,7 @@ For information : contact@oreon-project.org
 		$rq = "DELETE * FROM cfg_resource; ";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : DELETE * FROM cfg_resource; : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : DELETE * FROM cfg_resource; : ".$DBRESULT->getMessage()."<br />";
 	}
 
 	function insertNagiosCFG(& $buf)	{
@@ -150,7 +150,7 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM cfg_nagios; ";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : DELETE FROM cfg_nagios; : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : DELETE FROM cfg_nagios; : ".$DBRESULT->getMessage()."<br />";
 	}
 
 	function insertCgiCFG(& $buf)	{
@@ -182,7 +182,7 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM cfg_cgi; ";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : DELETE FROM cfg_cgi;  : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : DELETE FROM cfg_cgi;  : ".$DBRESULT->getMessage()."<br />";
 	}
 
 	function deletePerfparseCFG()	{
@@ -190,7 +190,7 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM cfg_perfparse; ";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : DELETE FROM cfg_perfparse;  : ".$DBRESULT->getMessage()."<br>";
+			print "DB Error : DELETE FROM cfg_perfparse;  : ".$DBRESULT->getMessage()."<br />";
 	
 	}
 
@@ -1093,7 +1093,7 @@ For information : contact@oreon-project.org
 						$host_host_id = getMyHostID($tvalue);
 						$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
 						if (PEAR::isError($DBRESULT_TEMP))
-							print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT_TEMP->getDebugInfo()."<br />";
 					}			
 			}
 		} else {

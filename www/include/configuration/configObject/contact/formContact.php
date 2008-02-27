@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 		$cct["contact_cgNotif"] = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 		$cct["contact_passwd"] = NULL;
@@ -42,27 +42,27 @@ For information : contact@oreon-project.org
 		# Set Contact Group Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$contact_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		# Set Host Notification Commands
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$contact_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($notifCmd); $i++)
 			$cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
 		# Set Service Notification Commands
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$contact_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($notifCmd); $i++)
 			$cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
 		$DBRESULT->free();
 		$DBRESULT =& $pearDB->query("SELECT ldap_auth_enable FROM general_opt LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT->fetchInto($ldap_auth);
 		$DBRESULT->free();
 	}
@@ -79,7 +79,7 @@ For information : contact@oreon-project.org
 	$notifTps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($notifTp))
 		$notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
 	$DBRESULT->free();
@@ -87,7 +87,7 @@ For information : contact@oreon-project.org
 	$notifCmds = array();
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($notifCmd))
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
@@ -95,7 +95,7 @@ For information : contact@oreon-project.org
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 	$attrsText2 		= array("size"=>"60");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

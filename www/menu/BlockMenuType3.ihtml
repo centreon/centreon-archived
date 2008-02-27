@@ -16,11 +16,11 @@
 					<tr class="middle">
 						<td class="left"></td>
 						<td class="center" style="white-space: nowrap;">
-							{if $cpt}<br>{/if}<img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;'>&nbsp;{$curr_id.title}<br><br>								
+							{if $cpt}<br />{/if}<img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;' alt='icon_design' />&nbsp;{$curr_id.title}<br /><br />								
 							<ul>
 								{foreach from=$curr_id.tab item=curr_id2}
 									<li{if $curr_id2.MenuIsOnClick} onclick="{$curr_id2.MenuOnClick}()"{/if} id="menu_{$curr_id2.Menu3ID}">
-									{if $curr_id2.Menu3Icone}<img src='{$curr_id2.Menu3Icone}' alt="{$curr_id2.Menu3Name}" style="padding-left:5px;">{/if}
+									{if $curr_id2.Menu3Icone}<img src='{$curr_id2.Menu3Icone}' alt="{$curr_id2.Menu3Name}" style="padding-left:5px;" />{/if}
 									{if $curr_id2.Menu3Popup}
 										<a href={$curr_id2.Menu3UrlPopup} target="_blank" title="{$curr_id2.Menu3Name}">{$curr_id2.Menu3Name}</a>											
 									{else}
@@ -48,7 +48,7 @@
 						<td class="center"></td>
 						<td class="right"></td>
 					</tr>
-				</table><br>
+				</table><br />
 		{if $amIadmin}
 		<table class="Tmenu3" width="100%">
 		<tr class="top">
@@ -59,12 +59,12 @@
 		<tr class="middle">
 			<td class="left"></td>
 			<td class="center" style="white-space: nowrap;">
-				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}' style='padding-bottom:2px;'>&nbsp;{$connected_users} <br><br>
+				<img src='./img/icones/12x12/doublearrowsnav.gif' title='{$user.ip}' style='padding-bottom:2px;' alt='icon_design' />&nbsp;{$connected_users} <br /><br />
   	             	<ul>
 	  	              { foreach item=user from=$tab_user }
 	  	             	{if $user.admin}
 	  	             	<li>
-	  	             		<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;'>
+	  	             		<img src='./img/icones/16x16/guard.gif' title='{$user.ip}' style='padding:1px;' />
 	  	             		{if $user.alias == $UserName}
 	 	       					<a href="{$UserInfoUrl}">{$user.alias}</a>
 	  	             		{else}
@@ -72,7 +72,7 @@
 	  	           			{/if}
 	  	             	</li>
 	  	             	{else}
-		  	             	<li><img src='./img/icones/16x16/user1.gif' title='{$user.ip}' style='padding:1px;'>&nbsp;{$user.alias}</li>
+		  	             	<li><img src='./img/icones/16x16/user1.gif' title='{$user.ip}' style='padding:1px;' />&nbsp;{$user.alias}</li>
 	  	           		{/if}
 	  	              {/foreach} 
 					</ul>

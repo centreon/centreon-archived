@@ -91,7 +91,7 @@ if (!$hide_picklist) {
 
   echo "\n\n</center>";
 } else {
-  echo "\n\n<br>";
+  echo "\n\n<br />";
 } 
 
 echo "\n<hr>\n" . $text['created'];
@@ -100,5 +100,5 @@ echo "\n<hr>\n" . $text['created'];
 
 echo '&nbsp;<a href="http://phpsysinfo.sourceforge.net" target="_blank">phpSysInfo-' . $VERSION . '</a> ';
 
-echo "\n<br>\n</body>\n</html>\n";
+echo "\n<br />\n</body>\n</html>\n";
 ?>

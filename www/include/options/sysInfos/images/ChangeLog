@@ -1399,7 +1399,7 @@
 
 	* includes/os/class.Linux.inc.php: linux 2.5 or above memory
 	  display bug fix    ( Marcelo de Paula Bezerra <mosca at
-	  users.sf.net> ) and ( Frederik Schüler <fschueler at gmx.net> )
+	  users.sf.net> ) and ( Frederik Schï¿½ler <fschueler at gmx.net> )
 
 2003-10-14 18:28  webbie (webbie at ipfw dot org)
 
@@ -1483,7 +1483,7 @@
 2003-03-31 21:22  precision    Uriah Welcome (precision at users.sf.net)
 
 	* includes/lang/pt-br.php: Adding Portuguese-Brazil translation
-	  (Marcílio Maia <marcilio at edn.org.br>)
+	  (Marcï¿½lio Maia <marcilio at edn.org.br>)
 
 2003-02-23 09:04  webbie (webbie at ipfw dot org)
 
@@ -2501,7 +2501,7 @@
 
 2001-05-30 18:07  precision    Uriah Welcome (precision at users.sf.net)
 
-	* templates/classic/form.tpl (tags: rel-1-9): added a <br>
+	* templates/classic/form.tpl (tags: rel-1-9): added a <br />
 
 2001-05-30 18:07  precision    Uriah Welcome (precision at users.sf.net)
 

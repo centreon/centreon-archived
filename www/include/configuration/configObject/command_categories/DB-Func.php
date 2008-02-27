@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('cmd_category_id');
 		$DBRESULT =& $pearDB->query("SELECT `category_name`, `cmd_category_id` FROM `command_categories` WHERE `category_name` = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT->fetchInto($cat);
 		if ($DBRESULT->numRows() >= 1 && $cat["cmd_category_id"] == $id)
 			return true;
@@ -40,7 +40,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["cmd_category_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -54,10 +54,10 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO `command_categories` VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(cmd_category_id) FROM `command_categories`");
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 				}
 			}
@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 		if (testCommandCategorieExistence($_POST["category_name"])){
 			$DBRESULT =& $pearDB->query("INSERT INTO `command_categories` (`category_name` , `category_alias`, `category_order`) VALUES ('".$_POST["category_name"]."', '".$_POST["category_alias"]."', '1')");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -77,7 +77,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE `command_categories` SET `category_name` = '".$_POST["category_name"]."' , `category_alias` = '".$_POST["category_alias"]."' , `category_order` = '".$_POST["category_order"]."' WHERE `cmd_category_id` = '".$_POST["cmd_category_id"]."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function deleteCommandCategorieInDB($sc_id = NULL){
@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 		foreach ($select as $key => $value){
 			$DBRESULT =& $pearDB->query("DELETE FROM `command_categories` WHERE `cmd_category_id` = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 

@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 	global $pearDB;
 	$DBRESULT =& $pearDB->query("SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br />";
 
 	$debug = $DBRESULT->fetchRow();
 
@@ -59,13 +59,13 @@ For information : contact@oreon-project.org
 	$form->setDefaults(array('comment' => '0'));
 
 	$form->addElement('header', 'fileType', _("File Type"));
-	$form->addElement('header', 'fileMis1', _("For archive upload, be sure that the first line of each file has no importance because it is not handled.<br>Avoid to begin with a definition."));
+	$form->addElement('header', 'fileMis1', _("For archive upload, be sure that the first line of each file has no importance because it is not handled.<br />Avoid to begin with a definition."));
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("nagios.cfg"), 'nagios');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("cgi.cfg"), 'cgi');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("resource.cfg"), 'res');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("Template based method file"), 'cfg');
-	$form->addGroup($tab, 'Type', _("Type"), '<br>');
+	$form->addGroup($tab, 'Type', _("Type"), '<br />');
 	$form->setDefaults(array('Type' => array("Type"=>"cfg")));
 
 	$tab = array();
@@ -112,23 +112,23 @@ For information : contact@oreon-project.org
 
 		# File Moving
 		switch ($fDataz["type"])	{
-			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." "._("Not supported extension")."<br>"; break;
-			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br>"; break; // tar.gz
-			case "application/x-tar" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br>"; break; // tar
-			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= _("Manual filling OK")." "._("File loading OK")."<br>"; break; // Text
-			default : $msg .= _("File loading KO")."<br>";
+			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." "._("Not supported extension")."<br />"; break;
+			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br />"; break; // tar.gz
+			case "application/x-tar" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." "._("File loading OK")."<br />"; break; // tar
+			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= _("Manual filling OK")." "._("File loading OK")."<br />"; break; // Text
+			default : $msg .= _("File loading KO")."<br />";
 		}
 		# Buffering Data
 		if (is_file($nagiosCFGPath.$fDataz["name"]))	{
 			$buf =& gzfile($nagiosCFGPath.$fDataz["name"]);
-			$buf ? $msg .= _("Data recovery OK")."<br>" :	$msg .= _("Data recovery KO")."<br>";
+			$buf ? $msg .= _("Data recovery OK")."<br />" :	$msg .= _("Data recovery KO")."<br />";
 		}
 		else if ($ret["manualDef"])	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Manual Definition\n", 3, $debug_path."cfgimport.log");
 
-			$msg .= _("Manual filling OK")."<br>";
-			$msg .= _("Data recovery OK")."<br>";
+			$msg .= _("Manual filling OK")."<br />";
+			$msg .= _("Data recovery OK")."<br />";
 			$buf =& explode("\n", $ret["manualDef"]);
 		}
 		# Enum Object Types
@@ -142,18 +142,18 @@ For information : contact@oreon-project.org
 					if ($ret["del"]["del"])
 						deleteNagiosCFG();
 					if (insertNagiosCFG($buf))
-						$msg .= "1 "._("Entries are registered")."<br>";
+						$msg .= "1 "._("Entries are registered")."<br />";
 					break;
 				case "cgi" :
 					if ($ret["del"]["del"])
 						deleteCgiCFG();
 					if (insertCgiCFG($buf))
-						$msg .= "1 "._("Entries are registered")."<br>";
+						$msg .= "1 "._("Entries are registered")."<br />";
 					break;
 				case "res" :
 					if ($ret["del"]["del"])
 						deleteResourceCFG();
-					$msg .= insertResourceCFG($buf)." "._("Entries are registered")."<br>";
+					$msg .= insertResourceCFG($buf)." "._("Entries are registered")."<br />";
 					break;
 				case "cfg" :
 					if ($ret["del"]["del"]) {
@@ -162,18 +162,18 @@ For information : contact@oreon-project.org
 							error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Delete All Conf\n", 3, $debug_path."cfgimport.log");
 					}
 					$nbr =& insertCFG($buf, $ret);
-					($nbr["cmd"] ? $msg .= "Command : ".$nbr["cmd"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["tp"] ? $msg .= "Time Period : ".$nbr["tp"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["cct"] ? $msg .= "Contact : ".$nbr["cct"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["cg"] ? $msg .= "Contact Group : ".$nbr["cg"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["h"] ? $msg .= "Host : ".$nbr["h"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["hei"] ? $msg .= "Host Extended Infos : ".$nbr["hei"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["hg"] ? $msg .= "Host Group : ".$nbr["hg"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["hd"] ? $msg .= "Host Dependency : ".$nbr["hd"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["sv"] ? $msg .= "Service : ".$nbr["sv"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["svd"] ? $msg .= "Service Dependency : ".$nbr["svd"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["sg"] ? $msg .= "Service Group : ".$nbr["sg"]." "._("Entries are registered")."<br>" : 0);
-					($nbr["sgd"] ? $msg .= "Service Group Dependency : ".$nbr["sgd"]." "._("Entries are registered")."<br>" : 0);
+					($nbr["cmd"] ? $msg .= "Command : ".$nbr["cmd"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["tp"] ? $msg .= "Time Period : ".$nbr["tp"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["cct"] ? $msg .= "Contact : ".$nbr["cct"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["cg"] ? $msg .= "Contact Group : ".$nbr["cg"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["h"] ? $msg .= "Host : ".$nbr["h"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["hei"] ? $msg .= "Host Extended Infos : ".$nbr["hei"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["hg"] ? $msg .= "Host Group : ".$nbr["hg"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["hd"] ? $msg .= "Host Dependency : ".$nbr["hd"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["sv"] ? $msg .= "Service : ".$nbr["sv"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["svd"] ? $msg .= "Service Dependency : ".$nbr["svd"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["sg"] ? $msg .= "Service Group : ".$nbr["sg"]." "._("Entries are registered")."<br />" : 0);
+					($nbr["sgd"] ? $msg .= "Service Group Dependency : ".$nbr["sgd"]." "._("Entries are registered")."<br />" : 0);
 					break;
 			}
 		}

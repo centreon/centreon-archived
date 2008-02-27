@@ -158,7 +158,7 @@ function html_hardware ()
 
     for ($i = 1, $max = sizeof($XPath->getDataParts('/phpsysinfo/Hardware/PCI')); $i < $max; $i++) {
         if ($XPath->match("/phpsysinfo/Hardware/PCI/Device[$i]/Name")) {
-            $pci_devices .= $XPath->getData("/phpsysinfo/Hardware/PCI/Device[$i]/Name") . '<br>';
+            $pci_devices .= $XPath->getData("/phpsysinfo/Hardware/PCI/Device[$i]/Name") . '<br />';
         } 
     } 
 
@@ -168,7 +168,7 @@ function html_hardware ()
 	    if ($XPath->match("/phpsysinfo/Hardware/IDE/Device[$i]/Capacity")) {
 		$ide_devices .= " (" . $text['capacity'] . ": " . format_bytesize($XPath->getData("/phpsysinfo/Hardware/IDE/Device[$i]/Capacity") / 2) . ")";
 	    }
-	    $ide_devices .= '<br>';
+	    $ide_devices .= '<br />';
         } 
     } 
 
@@ -178,13 +178,13 @@ function html_hardware ()
 	    if ($XPath->match("/phpsysinfo/Hardware/SCSI/Device[$i]/Capacity")) {
 		$scsi_devices .= " (" . $text['capacity'] . ": " . format_bytesize($XPath->getData("/phpsysinfo/Hardware/SCSI/Device[$i]/Capacity") / 2) . ")";
 	    }
-	    $scsi_devices .= '<br>';
+	    $scsi_devices .= '<br />';
         } 
     } 
 
     for ($i = 1, $max = sizeof($XPath->getDataParts('/phpsysinfo/Hardware/USB')); $i < $max; $i++) {
         if ($XPath->match("/phpsysinfo/Hardware/USB/Device[$i]/Name")) {
-            $usb_devices .= $XPath->getData("/phpsysinfo/Hardware/USB/Device[$i]/Name") . '<br>';
+            $usb_devices .= $XPath->getData("/phpsysinfo/Hardware/USB/Device[$i]/Name") . '<br />';
         } 
     } 
 

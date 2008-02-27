@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 		$rqPath = "SELECT topology_url, topology_url_opt, topology_parent, topology_name, topology_page FROM topology WHERE topology_page = '".$p."' ORDER BY topology_page";
 		$DBRESULT =& $pearDB->query($rqPath);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
 		return $redirectPath;
 	}
@@ -34,7 +34,7 @@ For information : contact@oreon-project.org
 		$rqPath = "SELECT topology_url, topology_url_opt, topology_parent, topology_name, topology_page FROM topology WHERE topology_page = '".$p."' ORDER BY topology_page";
 		$DBRESULT =& $pearDB->query($rqPath);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
 		return $redirectPath;
 	}
@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 		$rqPath = "SELECT topology_parent FROM topology WHERE topology_page = '".$p."'";
 		$DBRESULT =& $pearDB->query($rqPath);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$redirectPath =& $DBRESULT->fetchRow();
 		return $redirectPath["topology_parent"];
 	}
@@ -73,7 +73,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$DBRESULT->fetchInto($current);
 	
 	$page = $p;
@@ -85,7 +85,7 @@ For information : contact@oreon-project.org
 				break;
 			$DBRESULT->fetchInto($new_url);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$tabPath[$new_url["topology_page"]] = array();
 			$tabPath[$new_url["topology_page"]]["name"] = _($tab["topology_name"]);
 			$tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];

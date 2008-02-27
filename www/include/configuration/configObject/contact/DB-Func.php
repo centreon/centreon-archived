@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('contact_id');
 		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$contact =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id)
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('contact_id');
 		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$contact =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $contact["contact_id"] == $id)
@@ -63,7 +63,7 @@ For information : contact@oreon-project.org
 		global $form;
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) AS nbr_valid FROM contact WHERE contact_activate = '1' AND contact_oreon = '1'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($form))
 			$cct_oreon = $form->getSubmitValue('contact_oreon');
 		else
@@ -86,7 +86,7 @@ For information : contact@oreon-project.org
 		foreach($contact_arr as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '1' WHERE contact_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 			if (keepOneContactAtLeast())	{
 				$DBRESULT =& $pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 		foreach($contacts as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM contact WHERE contact_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -118,7 +118,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["contact_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -132,35 +132,35 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO contact VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(contact_id) FROM contact");
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(contact_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($hostCmd))	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contact_hostcommands_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$hostCmd["command_command_id"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($serviceCmd))	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contact_servicecommands_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$serviceCmd["command_command_id"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($Cg))	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_contact_relation VALUES ('', '".$maxId["MAX(contact_id)"]."', '".$Cg["contactgroup_cg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 					}
 				}
@@ -249,10 +249,10 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(contact_id) FROM contact");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$contact_id = $DBRESULT->fetchRow();
 		return ($contact_id["MAX(contact_id)"]);
 	}
@@ -304,7 +304,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 
 	function updateContact_MC($contact_id = null)	{
@@ -336,7 +336,7 @@ For information : contact@oreon-project.org
 			$rq .= "WHERE contact_id = '".$contact_id."'";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -348,7 +348,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["contact_hostNotifCmds"]))
 			$ret = $ret["contact_hostNotifCmds"];
 		else
@@ -360,7 +360,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$contact_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -373,7 +373,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmds = array();
 		while($DBRESULT->fetchInto($arr))
 			$cmds[$arr["command_command_id"]] = $arr["command_command_id"];
@@ -386,7 +386,7 @@ For information : contact@oreon-project.org
 				$rq .= "('".$contact_id."', '".$ret[$i]."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -399,7 +399,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["contact_svNotifCmds"]))
 			$ret = $ret["contact_svNotifCmds"];
 		else
@@ -411,7 +411,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$contact_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -424,7 +424,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmds = array();
 		while($DBRESULT->fetchInto($arr))
 			$cmds[$arr["command_command_id"]] = $arr["command_command_id"];
@@ -437,7 +437,7 @@ For information : contact@oreon-project.org
 				$rq .= "('".$contact_id."', '".$ret[$i]."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -450,7 +450,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if (isset($ret["contact_cgNotif"]))
 			$ret = $ret["contact_cgNotif"];
 		else
@@ -462,7 +462,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$contact_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 
@@ -475,7 +475,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$cmds = array();
 		while($DBRESULT->fetchInto($arr))
 			$cmds[$arr["contactgroup_cg_id"]] = $arr["contactgroup_cg_id"];
@@ -488,7 +488,7 @@ For information : contact@oreon-project.org
 				$rq .= "('".$contact_id."', '".$ret[$i]."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}

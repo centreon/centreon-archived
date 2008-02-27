@@ -103,9 +103,9 @@ Si vous voulez que Nagios soit averti des scans de ports, vous pouvez mettre en 
 
 <p>
 <ul>
-<li>Modifiez votre fichier de configuration de PortSentry (portsentry.conf), et d&eacute;finissez une commande pour la directive <b>KILL_RUN_CMD</b> comme suit ::<br><br>
+<li>Modifiez votre fichier de configuration de PortSentry (portsentry.conf), et d&eacute;finissez une commande pour la directive <b>KILL_RUN_CMD</b> comme suit ::<br /><br />
  <font color="red">KILL_RUN_CMD="/usr/local/Nagios/libexec/eventhandlers/submit_check_result <i>&lt;host_name&gt;</i> 'Port Scans' 2 'Port scan from host $TARGET$ on port $PORT$.  Host has been firewalled.'"</font>
-<br><br>
+<br /><br />
 Assurez-vous de remplacer <i>&lt;host_name&gt;</i> avec le nom court de l'h&ocirc;te avec lequel le service est associ&eacute;.
 </ul>
 </p>

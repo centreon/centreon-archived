@@ -15,10 +15,10 @@
 		</tr>
 		<tr class="list_one">
 			<td class="ListColLeft" colspan="2">
-				<br><b>{$lang.ods_explain}</b>
-				<br><br><u><i>{$lang.ods_choose_storage_type}</i></u>
-				<br><br><b>1. RRDTool : </b>{$lang.ods_rrdtool_choose}.
-				<br><br><b>2. RRDTool & MySQL : </b>{$lang.ods_mysql_choose}. 
+				<br /><b>{$lang.ods_explain}</b>
+				<br /><br /><u><i>{$lang.ods_choose_storage_type}</i></u>
+				<br /><br /><b>1. RRDTool : </b>{$lang.ods_rrdtool_choose}.
+				<br /><br /><b>2. RRDTool & MySQL : </b>{$lang.ods_mysql_choose}. 
 			</td>
 		</tr>
 	</table>

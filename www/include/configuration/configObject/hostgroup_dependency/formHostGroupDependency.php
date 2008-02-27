@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
@@ -37,14 +37,14 @@ For information : contact@oreon-project.org
 		# Set HostGroup Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($hgP); $i++)
 			$dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
 		$DBRESULT->free();
 		# Set HostGroup Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($hgC); $i++)
 			$dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
 		$DBRESULT->free();
@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
@@ -73,7 +73,7 @@ For information : contact@oreon-project.org
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 250px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

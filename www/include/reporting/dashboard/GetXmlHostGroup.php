@@ -189,13 +189,13 @@ For information : contact@oreon-project.org
 			#
 			## make bubul
 			#
-			$bubultab = '{table class=bubultab}';
-			$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($uptime) .'{/td}{td class=bubul}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bubul}'.number_format($h["UPnbEvent"], 1,'.','').'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($downtime).'{/td}{td class=bubul}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bubul}'.number_format($h["DOWNnbEvent"], 1,'.','').'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString($unreachalbetime).'{/td}{td class=bubul}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bubul}'.number_format($h["UNREACHABLEnbEvent"], 1,'.','').'{/td}{/tr}';
-			$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($undeterminatetime).'{/td}{td class=bubul}'.(($pundet > 0) ? $pundet : "0").'%{/td}{/tr}';
-			$bubultab .= '{/table}';
+			$bulleDashtab = '{table class=bulleDashtab}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($tt).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($uptime) .'{/td}{td class=bulleDash}'.(($pup > 0) ? $pup : "0").'%{/td}{td class=bulleDash}'.number_format($h["UPnbEvent"], 1,'.','').'{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($downtime).'{/td}{td class=bulleDash}'.(($pdown > 0) ? $pdown : "0").'%{/td}{td class=bulleDash}'.number_format($h["DOWNnbEvent"], 1,'.','').'{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString($unreachalbetime).'{/td}{td class=bulleDash}'.(($punreach > 0) ? $punreach : "0").'%{/td}{td class=bulleDash}'.number_format($h["UNREACHABLEnbEvent"], 1,'.','').'{/td}{/tr}';
+			$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($undeterminatetime).'{/td}{td class=bulleDash}'.(($pundet > 0) ? $pundet : "0").'%{/td}{/tr}';
+			$bulleDashtab .= '{/table}';
 			
 			$tp = round(($pundet * $t / 100 ),2);
 			if($pundet > 0){
@@ -206,7 +206,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#cccccc"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pundet > 0) ? $pundet : "0") . '%" >' ;
-				$buffer .= $bubultab;
+				$buffer .= $bulleDashtab;
 				$buffer .= '</event>';
 			}
 
@@ -219,7 +219,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($punreach > 0) ? $punreach : "0") . '%" >' ;
-				$buffer .= $bubultab;
+				$buffer .= $bulleDashtab;
 				$buffer .= '</event>';
 			}
 
@@ -233,7 +233,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorDOWN . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pdown > 0) ? $pdown : "0") . '%" >' ;
-				$buffer .= $bubultab;
+				$buffer .= $bulleDashtab;
 				$buffer .= '</event>';
 			}
 
@@ -247,7 +247,7 @@ For information : contact@oreon-project.org
 				$buffer .= ' color="#' . $colorUP . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pup > 0) ? $pup : "0") .   '%" >' ;
-				$buffer .= $bubultab;
+				$buffer .= $bulleDashtab;
 				$buffer .= '</event>';	
 			}
 
@@ -272,13 +272,13 @@ For information : contact@oreon-project.org
 	#
 	## make bubul
 	#
-	$bubultab = '{table class=bubultab}';
-	$bubultab .= '{tr}{td class=bubuleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bubuleft }Alert{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bubul}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bubul}'.$_GET["today_up"].'%{/td}{td class=bubul}'.$_GET["today_UPnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bubul}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bubul}'.$_GET["today_down"].'%{/td}{td class=bubul}'.$_GET["today_DOWNnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bubul}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bubul}'.$_GET["today_unreachable"].'%{/td}{td class=bubul}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bubuleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bubul}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bubul}'.$_GET["today_pending"].'%{/td}{/tr}';
-	$bubultab .= '{/table}';
+	$bulleDashtab = '{table class=bulleDashtab}';
+	$bulleDashtab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
+	$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_up"].'%{/td}{td class=bulleDash}'.$_GET["today_UPnbEvent"].'{/td}{/tr}';
+	$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_down"].'%{/td}{td class=bulleDash}'.$_GET["today_DOWNnbEvent"].'{/td}{/tr}';
+	$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_unreachable"].'%{/td}{td class=bulleDash}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
+	$bulleDashtab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_pending"].'%{/td}{/tr}';
+	$bulleDashtab .= '{/table}';
 
 	$t = round(($t - ($t * 0.11574074074)),2);
 	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
@@ -291,7 +291,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#cccccc"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-		$buffer .= $bubultab;
+		$buffer .= $bulleDashtab;
 		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
@@ -303,7 +303,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUNREACHABLE . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
-		$buffer .= $bubultab;
+		$buffer .= $bulleDashtab;
 		$buffer .= '</event>';
 	}
 	$tp = round(($_GET["today_down"] * $t / 100 ),2);
@@ -315,7 +315,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorDOWN . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
-		$buffer .= $bubultab;
+		$buffer .= $bulleDashtab;
 		$buffer .= '</event>';
 	}
 
@@ -328,7 +328,7 @@ For information : contact@oreon-project.org
 		$buffer .= ' color="#' . $colorUP . '"';
 		$buffer .= ' isDuration="true" ';
 		$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
-		$buffer .= $bubultab;
+		$buffer .= $bulleDashtab;
 		$buffer .= '</event>';
 	}
 	}

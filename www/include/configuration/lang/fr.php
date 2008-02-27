@@ -414,7 +414,7 @@ $lang['cct_ldap_search_filter'] ="Filtre de recherche";
 $lang['cct_ldap_search_result_output'] ="R&eacute;sultat";
 $lang['cct_ldap_import_users'] = "Importer";
 $lang['cct_ldap_search_filter_help_title'] ="Exemples de filtre";
-$lang['cct_ldap_search_filter_help'] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))";
+$lang['cct_ldap_search_filter_help'] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br />Lotus Domino : (&(objectClass=person)(cn=*))<br />OpenLDAP : (&(objectClass=person)(cn=*))";
 
 /* contact group */
 
@@ -743,7 +743,7 @@ $lang['upl_del'] = "Supprimer toute la configuration existante pour le type de f
 $lang['upl_over'] = "Mettre &agrave; jour une d&eacute;finition en cas de doublons";
 $lang['upl_comment'] = "Inclure les commentaires";
 $lang['upl_type'] = "Cat&eacute;gorie du Fichier";
-$lang['upl_mis1'] = "Pour l'upload d'une archive, la premi&egrave;re ligne de chaque fichier doit etre sans importance car elle n'est pas prise en compte.<br>Evitez de faire d&eacute;marrer une d&eacute;finition d&egrave;s le d&eacute;but.";
+$lang['upl_mis1'] = "Pour l'upload d'une archive, la premi&egrave;re ligne de chaque fichier doit etre sans importance car elle n'est pas prise en compte.<br />Evitez de faire d&eacute;marrer une d&eacute;finition d&egrave;s le d&eacute;but.";
 $lang['upl_typeNag'] = "nagios.cfg";
 $lang['upl_typeCgi'] = "cgi.cfg";
 $lang['upl_typePerfparse'] = "perfparse.cfg";
@@ -814,9 +814,9 @@ $lang['m_traps_handler'] = "Handler";
 $lang['m_traps_args'] = "Message &agrave; afficher";
 $lang['m_traps_status'] = "Statut";
 $lang['m_trap_submit_result_enable'] = "Envoyer les r&eacute;sultat";
-$lang['m_traps_reschedule_svc'] = "R&eacute;ordonnancer les services associés";
+$lang['m_traps_reschedule_svc'] = "R&eacute;ordonnancer les services associï¿½s";
 $lang['m_traps_reschedule_svc_enable'] = "Activer le R&eacute;ordonnancement forc&eacute;";
-$lang['m_traps_execution_command_enable'] = "Executer une commande spécifique";
+$lang['m_traps_execution_command_enable'] = "Executer une commande spï¿½cifique";
 $lang['m_traps_execution_command'] = "Commande sp&eacute;cifique";
 $lang['m_traps_status'] = "Statut";
 $lang['m_traps_comments'] = "Commentaires";

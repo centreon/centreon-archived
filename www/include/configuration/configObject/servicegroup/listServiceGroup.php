@@ -41,7 +41,7 @@ For information : contact@oreon-project.org
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE $SearchTool");
 	}
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -81,7 +81,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	

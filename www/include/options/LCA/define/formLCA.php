@@ -112,7 +112,7 @@ $lca["lca_topos"] = array();
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin
@@ -208,7 +208,7 @@ $lca["lca_topos"] = array();
 		$lca_topos2[$a]["childs"] = array();
 
 		/*old*/
-	 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo1["topology_id"], null, array_key_exists($topo1["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo1["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px;", "id"=>$topo1["topology_id"]));
+	 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo1["topology_id"], null, array_key_exists($topo1["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo1["topology_name"]]."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px;", "id"=>$topo1["topology_id"]));
 	 	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 	 	$DBRESULT2 =& $pearDB->query($rq);
 		/*old*/
@@ -224,7 +224,7 @@ $lca["lca_topos"] = array();
 
 
 			/*old*/
-		 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, array_key_exists($topo2["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo2["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 20px;"));
+		 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, array_key_exists($topo2["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo2["topology_name"]]."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px; margin-left: 20px;"));
 		 	$rq = "SELECT topology_id, topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 		 	$DBRESULT3 =& $pearDB->query($rq);
 			/*old*/
@@ -240,7 +240,7 @@ $lca["lca_topos"] = array();
 
 
 				/*old*/
-			 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, array_key_exists($topo3["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo3["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 40px;"));
+			 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, array_key_exists($topo3["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo3["topology_name"]]."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px; margin-left: 40px;"));
 				$rq = "SELECT topology_id, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
 			 	$DBRESULT4 =& $pearDB->query($rq);
 				/*old*/
@@ -256,7 +256,7 @@ $lca["lca_topos"] = array();
 
 
 					/*old*/
-				 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo4["topology_name"]]."<br>" : "&nbsp;&nbsp;#UNDEF#"."<br>", array("style"=>"margin-top: 5px; margin-left: 55px;"));
+				 	$lca_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;".$lang[$topo4["topology_name"]]."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px; margin-left: 55px;"));
 					/*old*/					
 					$d++;
 				}

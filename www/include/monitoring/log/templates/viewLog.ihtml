@@ -9,7 +9,7 @@
 	{$form.hidden}
 	</form>
 </div>
-	<br><br><br>
+	<br /><br /><br />
 <div>
 	<table class="ListTable">
 		<tr class='ListHeader'>

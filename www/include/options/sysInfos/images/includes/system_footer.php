@@ -91,13 +91,13 @@ if (!$hide_picklist) {
 
   echo "\n\n</center>";
 } else {
-  echo "\n\n<br>";
+  echo "\n\n<br />";
 } 
 
 echo "\n<hr>\n" . $text['created'];
   */
 echo '&nbsp;<a href="http://phpsysinfo.sourceforge.net" target="_blank">phpSysInfo-' . $VERSION . '</a> ' . strftime ($text['gen_time'], time());
 
-echo "\n<br>\n</body>\n</html>\n";
+echo "\n<br />\n</body>\n</html>\n";
 
 ?>

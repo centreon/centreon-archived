@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 					" WHERE session_id = '".$_POST["sid"]."'";	
 			$DBRESULT =& $pearDB->query($sql);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 

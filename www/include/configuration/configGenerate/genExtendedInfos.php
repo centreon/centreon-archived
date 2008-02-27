@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostextinfo.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY `host_name`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$ehi = array();
 	$i = 1;
 	$str = NULL;
@@ -79,7 +79,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_register = '1'");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($esi))	{
 		$BP = false;
 		array_key_exists($esi["service_id"], $gbArr[4]) ? $BP = true : NULL;		

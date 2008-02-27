@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $perfparse_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_perfparse WHERE perfparse_id = '".$perfparse_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$ppTemp = array_map("myDecode", $DBRESULT->fetchRow());
 		foreach ($ppTemp as $key=>$value)
@@ -38,7 +38,7 @@ For information : contact@oreon-project.org
 	$attrsText2 	= array("size"=>"50");
 	$attrsText3 	= array("size"=>"10");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

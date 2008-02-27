@@ -31,19 +31,19 @@
  	<tr class="list_one">
  		<td colspan="2" align="center">
  			{if $output1}
- 				{$output1}<br>
+ 				{$output1}<br />
  			{/if}
  			{if $output2}
- 				{$output2}<br>
+ 				{$output2}<br />
  			{/if}
  			{if $output3}
- 				{$output3}<br>
+ 				{$output3}<br />
  			{/if}
  			{if $output4}
- 				{$output4}<br>
+ 				{$output4}<br />
  			{/if}
  			 <form {$form1.attributes}>	
-	 		<br>&nbsp;{$form1.install.html}&nbsp{$form1.list.html}<br>
+	 		<br />&nbsp;{$form1.install.html}&nbsp{$form1.list.html}<br />
 	 		 {$form1.hidden}
 	 		 </form>
   		</td>
@@ -53,7 +53,7 @@
 	 	<tr class="list_one">
 	 		<td colspan="2" align="center">
 	 			<form {$form2.attributes}>
-	 			<br>
+	 			<br />
 	 			{$form2.list.html}
 	 			 </form>
 	 		</td>
@@ -62,7 +62,7 @@
  </table>
 
 
-<br><br>
+<br /><br />
  {section name=elem loop=$elemArr}
  	{$form.javascript}
  	<form {$form.attributes}>
@@ -111,5 +111,5 @@
 	 </table>
 	 {$form.hidden}
 	</form>
-	 <br>
+	 <br />
  {/section}

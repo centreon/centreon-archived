@@ -35,7 +35,7 @@ For information : contact@oreon-project.org
 		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -70,7 +70,7 @@ For information : contact@oreon-project.org
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	

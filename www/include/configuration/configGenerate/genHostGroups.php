@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostgroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup ORDER BY `hg_name`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$hostGroup = array();
 	$i = 1;
 	$str = NULL;
@@ -66,7 +66,7 @@ For information : contact@oreon-project.org
 			$strTemp = NULL;
 			$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM hostgroup_relation hgr, host WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND hgr.host_host_id = host.host_id ORDER BY `host_name`");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($DBRESULT2->fetchInto($host))	{
 				$BP = false;
 				array_key_exists($host["host_id"], $gbArr[2]) ? $BP = true : NULL;
@@ -90,7 +90,7 @@ For information : contact@oreon-project.org
 				$strTemp = NULL;
 				$DBRESULT2 =& $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_hostgroup_relation cghgr, contactgroup cg WHERE cghgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND cghgr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				while($DBRESULT2->fetchInto($contactGroup))	{
 					$BP = false;
 					array_key_exists($contactGroup["cg_id"], $gbArr[1]) ? $BP = true : NULL;

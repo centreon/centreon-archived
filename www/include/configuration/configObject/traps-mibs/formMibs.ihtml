@@ -20,7 +20,7 @@
 		<p class="oreonbutton">{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 	</div>
 	{if $msg}
-		<br><br><br><br>
+		<br /><br /><br /><br />
 		<div>
 	 <table class="ListTable">
 	 	<tr class="ListHeader">

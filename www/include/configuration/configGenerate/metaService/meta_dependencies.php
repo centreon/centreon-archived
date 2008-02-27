@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmscr WHERE dmscr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*)... : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*)... : ".$DBRESULT->getMessage()."<br />";
 	$dependency = array();
 	$i = 1;
 	$str = NULL;
@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation.. : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation.. : ".$DBRESULT2->getMessage()."<br />";
 		$metaPar = NULL;
 		while ($DBRESULT2->fetchInto($metaPar))	{
 			$BP = false;
@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 			if ($BP)	{
 				$DBRESULT3 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
 				if (PEAR::isError($DBRESULT3))
-					print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation.. : ".$DBRESULT3->getMessage()."<br>";
+					print "DB Error : SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation.. : ".$DBRESULT3->getMessage()."<br />";
 				$metaCh = NULL;
 				while ($DBRESULT3->fetchInto($metaCh))	{					
 					$BP = false;

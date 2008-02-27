@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 
 	$res =& $pearDB->query("SELECT * FROM inventory_manufacturer");
 	if (PEAR::isError($res))
-			print $res->getDebugInfo()."<br>";	
+			print $res->getDebugInfo()."<br />";	
 	$manu_array = array();
 	$manu_array[0] = "Server";
 	while ($r =& $res->fetchRow())
@@ -32,9 +32,9 @@ For information : contact@oreon-project.org
 		$resHost =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$r["host_id"]."'");
 		$rH =& $resHost->fetchRow();
 		if (isset($manu_array[$r["type_ressources"]]))
-			print $rH["host_name"] . " - " . $manu_array[$r["type_ressources"]] . "<br>";
+			print $rH["host_name"] . " - " . $manu_array[$r["type_ressources"]] . "<br />";
 		else
-			print $rH["host_name"] . " - " . "Not defined" . "<br>";
+			print $rH["host_name"] . " - " . "Not defined" . "<br />";
 	}
 
 

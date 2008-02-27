@@ -21,7 +21,7 @@
 			</td>
 		</tr>
 	</table>
-	<br>
+	<br />
 	<table width='100%'>
 		<tr>
 			<td style='vertical-align:top;'>
@@ -102,7 +102,7 @@
 						<td class="ListColLeft">{$host_data.last_update}</td>
 					</tr>
 				</table>
-				<br>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter" colspan="2">{$lang.options}</td>
@@ -140,7 +140,7 @@
 					{/if}
 				</table>
 				{if $lcaTopo.6 || $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
-				<br>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tips}</td>
@@ -167,7 +167,7 @@
 					{/if}
 				</table>
 				{/if}
-				<br>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_tools}</td>
@@ -236,7 +236,7 @@
 					</tr>
 					{/if}
 				</table>
-				<br>
+				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderCenter">{$lang.m_mon_host_statistics}</td>
@@ -248,14 +248,14 @@
 			</td>
 		</tr>
 	</table>
-	<br>
+	<br />
 	{if count($tab_comments_host)}
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter" colspan="3">Comments For this host</td>
 		</tr>
 	</table>
-	<br>
+	<br />
 	<table class="ListTable">
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter"><input type="checkbox" disabled checked></td>

@@ -4,16 +4,16 @@
 <FORM id="fsave">
         <INPUT type="hidden" name="type" value="service_problem" size=12>
         <INPUT type="hidden" name="len" value="0" size=12>
-        time:<INPUT type="hidden" name="time" value="{$time}" size=12><br>
-        lastreload session:<INPUT type="hidden" name="slastreload" value="{$slastreload}"><br>
-        maxtime:<INPUT type="hidden" name="smaxtime" value="{$smaxtime}"><br>
-        search:<INPUT type="hidden" name="search" value="{$search}"><br>
-        search_type_host:<INPUT type="hidden" name="search_type_host" value="{$search_type_host}"><br>
-        search_type_service:<INPUT type="hidden" name="search_type_service" value="{$search_type_service}"><br>
-        limit:<INPUT type="hidden" name="limit" value="{$limit}"><br>
-        num:<INPUT type="hidden" name="num" value="{$num}"><br>
-        order:<INPUT type="hidden" name="order" value="{$order}"><br>
-       	sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br>
+        time:<INPUT type="hidden" name="time" value="{$time}" size=12><br />
+        lastreload session:<INPUT type="hidden" name="slastreload" value="{$slastreload}"><br />
+        maxtime:<INPUT type="hidden" name="smaxtime" value="{$smaxtime}"><br />
+        search:<INPUT type="hidden" name="search" value="{$search}"><br />
+        search_type_host:<INPUT type="hidden" name="search_type_host" value="{$search_type_host}"><br />
+        search_type_service:<INPUT type="hidden" name="search_type_service" value="{$search_type_service}"><br />
+        limit:<INPUT type="hidden" name="limit" value="{$limit}"><br />
+        num:<INPUT type="hidden" name="num" value="{$num}"><br />
+        order:<INPUT type="hidden" name="order" value="{$order}"><br />
+       	sort_types:<INPUT type="hidden" name="sort_types" value="{$sort_types}"><br />
 </FORM>
 </div>
 <form name='form'>

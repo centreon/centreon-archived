@@ -9,8 +9,8 @@
 /**
  * Smarty {counter} function plugin
  *
- * Type:     function<br>
- * Name:     counter<br>
+ * Type:     function<br />
+ * Name:     counter<br />
  * Purpose:  print out a counter value
  * @author Monte Ohrt <monte at ohrt dot com>
  * @link http://smarty.php.net/manual/en/language.function.counter.php {counter}

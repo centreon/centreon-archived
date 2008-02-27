@@ -51,7 +51,7 @@
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	while($sg = $DBRESULT->fetchRow()){
 		$counterTotal = 0;
@@ -60,7 +60,7 @@
 		$counterCrit = 0;
 		$DBRESULT2 =& $pearDB->query("SELECT host_name, service_description FROM service, host, servicegroup_relation WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND servicegroup_relation.host_host_id = host.host_id AND servicegroup_relation.service_service_id = service.service_id");
 		while ($s = $DBRESULT2->fetchRow()){
-			print $s["host_name"] . " - " . $s["service_description"]."<br>";
+			print $s["host_name"] . " - " . $s["service_description"]."<br />";
 			$DBRESULT3 =& $pearDBndo->query(	"SELECT current_state " .
 												"FROM nagios_servicestatus, nagios_services, nagios_hosts " .
 												"WHERE nagios_services.display_name = '".$s["service_description"]."' " .
@@ -68,9 +68,9 @@
 												"AND nagios_hosts.display_name = '".$s["host_name"]."'" .
 												"AND nagios_services.host_object_id = nagios_hosts.host_object_id ");
 			if (PEAR::isError($DBRESULT3))
-				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			while($stt = $DBRESULT3->fetchRow()){
-				print "Status : ".$stt["current_state"]."<br>";
+				print "Status : ".$stt["current_state"]."<br />";
 				if ($stt["current_state"] == 1)
 					$counterWarn++;
 				if ($stt["current_state"] == 0)

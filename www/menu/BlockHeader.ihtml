@@ -3,31 +3,34 @@
 <img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('header')" style="position:absolute;top:0px;left:15px;" alt="hide_or_show_menu" />
 	<img src='{$urlLogo}' alt='Centreon logo' title='Centreon Logo' id="logo" />
 	<!-- informations bank for ajax -->
-	<FORM id="AjaxBankBasic">
-			<INPUT type="hidden" name="color_OK" value="{$color.OK}">
-			<INPUT type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" >
-			<INPUT type="hidden" name="color_WARNING" value="{$color.WARNING}" >
-			<INPUT type="hidden" name="color_PENDING" value="{$color.PENDING}" >
-			<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >	        
-			<INPUT type="hidden" name="color_UP" value="{$color.UP}">
-			<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >
-			<INPUT type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" >
-			<INPUT type="hidden" name="icone_is_flapping" value="./img/icones/16x16/flapping.gif" >
-			<INPUT type="hidden" name="icone_problem_has_been_acknowledged" value="./img/icones/16x16/worker.gif" >
-			<INPUT type="hidden" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" >
-			<INPUT type="hidden" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" >
-			<INPUT type="hidden" name="icone_notifications_enabled" value="./img/icones/14x14/noloudspeaker.gif" >
-			<INPUT type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" >
-			<INPUT type="hidden" name="icone_graph" value="./img/icones/16x16/column-chart.gif">
-			<INPUT type="hidden" name="icone_host_has_been_acknowledged" value="./img/icones/16x16/worker.gif">
-			<INPUT type="hidden" name="icone_notifications_disabled" value="./img/icones/14x14/noloudspeaker.gif" >
-			<INPUT type="hidden" name="icon_downtime" value="./img/icones/14x14/breakpoint.gif" >
-			<INPUT type="hidden" name="icon_comment" value="./img/icones/14x14/about.gif" >
-			<INPUT type="hidden" name="version" value="{$version}">
-			<INPUT type="hidden" name="fileStatus" value="{$fileStatus}">
-			<INPUT type="hidden" name="fileOreonConf" value="{$fileOreonConf}">
-			<INPUT type="hidden" name="date_time_format_status" value="{$date_time_format_status}">			
-	</FORM>
+
+	<form id="AjaxBankBasic" action="#" method="post">
+		<div>
+			<input type="hidden" name="color_OK" value="{$color.OK}"/>
+			<input type="hidden" name="color_CRITICAL" value="{$color.CRITICAL}" />
+			<input type="hidden" name="color_WARNING" value="{$color.WARNING}" />
+			<input type="hidden" name="color_PENDING" value="{$color.PENDING}" />
+			<input type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" />	        
+			<input type="hidden" name="color_UP" value="{$color.UP}"/>
+			<input type="hidden" name="color_DOWN" value="{$color.DOWN}" />
+			<input type="hidden" name="color_UNREACHABLE" value="{$color.UNREACHABLE}" />
+			<input type="hidden" name="icone_is_flapping" value="./img/icones/16x16/flapping.gif" />
+			<input type="hidden" name="icone_problem_has_been_acknowledged" value="./img/icones/16x16/worker.gif" />
+			<input type="hidden" name="icone_accept_passive_check0" value="./img/icones/14x14/gears_pause.gif" />
+			<input type="hidden" name="icone_accept_passive_check1" value="./img/icones/14x14/gears_stop.gif" />
+			<input type="hidden" name="icone_notifications_enabled" value="./img/icones/14x14/noloudspeaker.gif" />
+			<input type="hidden" name="icone_undo" value="./img/icones/14x14/undo.gif" />
+			<input type="hidden" name="icone_graph" value="./img/icones/16x16/column-chart.gif"/>
+			<input type="hidden" name="icone_host_has_been_acknowledged" value="./img/icones/16x16/worker.gif"/>
+			<input type="hidden" name="icone_notifications_disabled" value="./img/icones/14x14/noloudspeaker.gif" />
+			<input type="hidden" name="icon_downtime" value="./img/icones/14x14/breakpoint.gif" />
+			<input type="hidden" name="icon_comment" value="./img/icones/14x14/about.gif" />
+			<input type="hidden" name="version" value="{$version}"/>
+			<input type="hidden" name="fileStatus" value="{$fileStatus}"/>
+			<input type="hidden" name="fileOreonConf" value="{$fileOreonConf}"/>
+			<input type="hidden" name="date_time_format_status" value="{$date_time_format_status}"/>			
+		</div>
+	</form>
 	<!-- stat -->
 	<div id="resume_light">
 		<table cellpadding="0" cellspacing="0" border="0">
@@ -76,11 +79,10 @@
 	</div>
 	<span id="linkBar"></span>
 	<span id="logli">
-		<img src='./img/icones/16x16/text_code.gif'>&nbsp;<a href='./oreon.php?p={$p}&doc=1&page=toc.html' alt='{$Documentation}'>{$Documentation}</a>&nbsp;&nbsp;
-		<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/text_view.gif" alt='{$legend1}' title='{$legend2}' alt='{$Help}'>&nbsp;<a onclick="DisplayHidden('legend');">{$Help}</a>&nbsp;&nbsp;
-		<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif"></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
+		<img src='./img/icones/16x16/text_code.gif' alt="icon_link_doc" />&nbsp;<a href='./oreon.php?p={$p}&amp;doc=1&amp;page=toc.html' title='{$Documentation}'>{$Documentation}</a>&nbsp;&nbsp;
+		<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/text_view.gif" alt='{$legend1}' title='{$legend2}'/>&nbsp;<a onclick="DisplayHidden('legend');">{$Help}</a>&nbsp;&nbsp;
+		<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif" alt="icon_logout"/></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
 	</span>
 	<div id="date">{$Date}</div>
-</div>
 </div>
 

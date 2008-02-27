@@ -47,7 +47,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM host WHERE $SearchTool $LCATool host_register = '1'");
 	
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
@@ -78,7 +78,7 @@ For information : contact@oreon-project.org
 	 
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool $LCATool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 
 	$search = tidySearchKey($search, $advanced_search);
 

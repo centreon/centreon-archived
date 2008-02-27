@@ -33,7 +33,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM traps $SearchTool");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM traps $SearchTool ORDER BY manufacturer_id, traps_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 
 	/*
@@ -81,7 +81,7 @@ For information : contact@oreon-project.org
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$trap['traps_id']."]'></input>";
 		$DBRESULT2 =& $pearDB->query("select alias from traps_vendor where id='".$trap['manufacturer_id']."' LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$DBRESULT2->fetchInto($mnftr);
 		$DBRESULT2->free();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,

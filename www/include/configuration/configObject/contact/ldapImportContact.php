@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT ldap_host, ldap_port, ldap_base_dn, ldap_login_attrib, ldap_ssl, ldap_auth_enable, ldap_search_user, ldap_search_user_pwd, ldap_search_filter, ldap_search_timeout, ldap_search_limit FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$ldap_auth = array_map("myDecode", $DBRESULT->fetchRow());
 
 	$attrsText 	= array("size"=>"80");
@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$tpl->assign('ldap_search_filter_help', _("Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))"));
+	$tpl->assign('ldap_search_filter_help', _("Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br />Lotus Domino : (&(objectClass=person)(cn=*))<br />OpenLDAP : (&(objectClass=person)(cn=*))"));
 	$tpl->assign('ldap_search_filter_help_title', _("Filter Examples"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/ajaxLdapSearch.js"></script>');
 

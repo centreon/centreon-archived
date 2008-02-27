@@ -54,8 +54,8 @@
 		$total_v += ($data["value"] - $average) * ($data["value"] - $average); 
 	}
 	$variance = $total_v  / $count;
-	print "Min : " . $min . "<br>\n";
-	print "Max : " . $max . "<br>\n";
-	print "Average : " . $average . "<br>\n";
-	print "Variance : " . $variance . "<br>\n";	
+	print "Min : " . $min . "<br />\n";
+	print "Max : " . $max . "<br />\n";
+	print "Average : " . $average . "<br />\n";
+	print "Variance : " . $variance . "<br />\n";	
 ?>

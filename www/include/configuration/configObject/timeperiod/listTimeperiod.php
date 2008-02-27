@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM timeperiod $SearchTool");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 	 */
 	$DBRESULT = &$pearDB->query("SELECT tp_id, tp_name, tp_alias FROM timeperiod $SearchTool ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$search = tidySearchKey($search, $advanced_search);
 	

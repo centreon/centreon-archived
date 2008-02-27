@@ -18,7 +18,7 @@ For information : contact@oreon-project.org
 
 aff_header("Oreon Setup Wizard", "DataBase Configuration", 6);
 if (isset($passwd_error) && $passwd_error)
-	print "<center><b><span class=\"stop\">$passwd_error</span></b></center><br>";
+	print "<center><b><span class=\"stop\">$passwd_error</span></b></center><br />";
 ?>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
   <tr>

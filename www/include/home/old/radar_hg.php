@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $db->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	if (!$session->numRows())
 		exit;
@@ -97,14 +97,14 @@ For information : contact@oreon-project.org
 
 		$DBRESULT =& $db->query("SELECT * FROM `hostgroup` WHERE hg_activate = '1'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		else { 
 			$tab_hg = array();
 			while ($hg =& $DBRESULT->fetchRow()){
 				$tab_hg[$hg["hg_name"]] = array();
 				$DBRESULT2 =& $db->query("SELECT host_host_id, host_name FROM hostgroup_relation, host WHERE hostgroup_relation.hostgroup_hg_id = '".$hg["hg_id"]."' AND host.host_id = hostgroup_relation.host_host_id");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				for ($total = 0, $up = 0; $rH =& $DBRESULT2->fetchRow(); $total++)
 					if (!strcmp($oreon->status_graph_host[$rH["host_name"]]["status"], "UP"))
 						$up++;

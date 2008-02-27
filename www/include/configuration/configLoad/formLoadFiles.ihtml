@@ -14,15 +14,15 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/document_into.gif'>&nbsp;&nbsp;{$form.header.fileType}</td></tr>
 		<tr class="list_one">
 			<td class="FormRowField">
-				<b>{$form.Type.label}</b><br>		
+				<b>{$form.Type.label}</b><br />		
 				{$form.header.fileMis1}
 			</td>
 			<td class="FormRowValue">{$form.Type.html}</td>
 		</tr>
 		<tr class="list_two">
 			<td class="FormRowField">
-				<b>{$form.cmdType.label}</b><br>				
-				{$form.header.fileCmt1}<br>
+				<b>{$form.cmdType.label}</b><br />				
+				{$form.header.fileCmt1}<br />
 				{$form.header.fileCmt2}
 			</td>
 			<td class="FormRowValue">{$form.cmdType.html}</td>
@@ -34,7 +34,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.debug.label}</td><td class="FormRowValue">{$form.debug.html}</td></tr>
 
 	</table>
-	<br><br>
+	<br /><br />
 	{if $msg}
 	 <table class="ListTable">
 	 	<tr class="ListHeader">

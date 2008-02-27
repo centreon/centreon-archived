@@ -23,13 +23,13 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $cg_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM contactgroup WHERE cg_id = '".$cg_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cg = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Contact Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM contactgroup_contact_relation WHERE contactgroup_cg_id = '".$cg_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($contacts); $i++)
 			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$DBRESULT->free();
@@ -41,7 +41,7 @@ For information : contact@oreon-project.org
 	$contacts = array();
 	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($contact))
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
@@ -53,7 +53,7 @@ For information : contact@oreon-project.org
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 250px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
-	$template 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

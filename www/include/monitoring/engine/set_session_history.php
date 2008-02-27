@@ -26,10 +26,10 @@ if(isset($_POST["sid"])){
 $path = '/srv/oreon/www';
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 // dossier courant
-//echo getcwd() . "<br>";
+//echo getcwd() . "<br />";
 chdir('/srv/oreon/www');
 // dossier courant
-//echo getcwd() . "<br>";
+//echo getcwd() . "<br />";
 require_once("class/Oreon.class.php");
 session_id($sid);
 

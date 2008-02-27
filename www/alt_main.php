@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 						<td width="<?php print (100 - $Logs->Service_health) * 1.7 ; ?>" bgcolor="#999999"><?phpif ($Logs->Service_health != 100) print "<img src='./img/blank.gif' width='1' height='1'>"; ?></td>
 						<td width="15">&nbsp;</td>
 					</tr>
-				</table><br>
+				</table><br />
 			</td>
 		</tr>
 		<tr>

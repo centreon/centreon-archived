@@ -4,7 +4,7 @@
  <tr>
   <td width="50%" valign="top">
    {vitals}
-   <br>
+   <br />
    {network}
   </td>
 
@@ -30,7 +30,7 @@
  <tr>
   <td width="55%" valign="top">
    {mbtemp}
-   <br>
+   <br />
    {mbfans}
   </td>
 

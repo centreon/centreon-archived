@@ -29,7 +29,7 @@
 <form {$form.attributes}>
 {/if}
 <div style="padding-top: 10px;">
-   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div><br><br><br><br>{/if}
+   {if $title2}<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div><br /><br /><br /><br />{/if}
        	<div>
        		<table class="ListTable">
                 <tr class="ListHeader">
@@ -55,15 +55,15 @@
 	    		<tr class="{$s.class}">
 	    			<td>&nbsp;&nbsp;<input type="checkbox" name="metric[{$s.metric_id}]"{if $metrics_active[$s.metric_id] } checked{/if}>&nbsp;{$s.metric_name}&nbsp;</td>
 	    			{if $cpt == 0}
-	    			<td rowspan="{$nb_metrics}" valign="top" style="padding:10px;"><b><i>Aide : </i></b><br><br>Vous pouvez désactiver une source de données pour qu'elle n'apparaisse plus sur le graphique. <br>Cela peut vous servir lorsque les deux sources de données sont issues d'un même service mais dont les echelles sont completement differentes.</td>{assign var="cpt" value="1"}
+	    			<td rowspan="{$nb_metrics}" valign="top" style="padding:10px;"><b><i>Aide : </i></b><br /><br />Vous pouvez dï¿½sactiver une source de donnï¿½es pour qu'elle n'apparaisse plus sur le graphique. <br />Cela peut vous servir lorsque les deux sources de donnï¿½es sont issues d'un mï¿½me service mais dont les echelles sont completement differentes.</td>{assign var="cpt" value="1"}
 	    			{/if}
 	    		</tr>
 	    		{/foreach}
     	    </table>
     	  	{if !$title2}
-    		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p><br><br><br><br></div>
+    		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p><br /><br /><br /><br /></div>
      	   	{/if}
-    	    <br>
+    	    <br />
         </div>
 		<input type="hidden" name="end" value="{$end}">
 		<input type="hidden" name="start" value="{$start}">

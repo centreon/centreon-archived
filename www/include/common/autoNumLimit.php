@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 			$pagination = "maxViewConfiguration";
 			$DBRESULT =& $pearDB->query("SELECT maxViewConfiguration FROM general_opt LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$gopt = array_map("myDecode", $DBRESULT->fetchRow());		
 			$limit = $gopt["maxViewConfiguration"];
 		} else 

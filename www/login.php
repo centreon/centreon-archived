@@ -36,16 +36,16 @@ For information : contact@oreon-project.org
 			<td class="LoginInvitLogo" colspan="2"><img src="img/logo_centreon_wt.gif" alt="Centreon logo" title="Centreon Logo"></td>
 		</tr>
 		<tr>
-			<td class="LoginInvitVersion"><br>
+			<td class="LoginInvitVersion"><br />
 			<?php
 			$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$release = $DBRESULT->fetchRow();
 			print $release["value"];
 			?>
 			</td>
-			<td class="LoginInvitDate"><br><?php echo $date; ?></td>
+			<td class="LoginInvitDate"><br /><?php echo $date; ?></td>
 		</tr>
 		<tr>
 			<td colspan="2">
@@ -68,7 +68,7 @@ For information : contact@oreon-project.org
 		</tr>
 		<tr>
 			<td id="LoginInvitcpy" colspan="2">
-				<br>
+				<br />
 				&copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Centreon</a>
 			</td>
 		</tr>

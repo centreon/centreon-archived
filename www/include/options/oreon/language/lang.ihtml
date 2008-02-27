@@ -6,7 +6,7 @@
         <dd>{$elemArr[elem].LangDispoName}&nbsp;&nbsp;{$elemArr[elem].LangDispo}</dd>
         <dd>{$elemArr[elem].LangUtilName}&nbsp;&nbsp;{$elemArr[elem].LangUtil}</dd>
     </dl>
-    <br>
+    <br />
 	{/section}
 </div>
 

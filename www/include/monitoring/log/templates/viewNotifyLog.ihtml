@@ -9,7 +9,7 @@
 	{$form.hidden}
 	</form>
 </div>
-<br><br>
+<br /><br />
 <div>
 	<ul id="mainnav">
 		<li class="a" id='c1'><a href="#"  onclick="javascript:montre('1');">Hosts Notifications</a></li>
@@ -70,4 +70,4 @@
 		{/foreach}
 	</table>
 </div>
-<br><br><br>
+<br /><br /><br />

@@ -56,7 +56,7 @@ function get_user_param($user_id, $pearDB)
 	$tab_row = array();
 	$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
 	if (PEAR::isError($DBRESULT)){
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		return null;		
 	}
 	while( $row = $DBRESULT->fetchRow()){
@@ -71,7 +71,7 @@ function set_user_param($user_id, $pearDB, $key, $value)
 	$DBRESULT =& $pearDB->query("UPDATE contact_param set cp_value ='".$value."' where cp_contact_id like '".$user_id."' AND cp_key like '".$key."' ");
 	
 	if (PEAR::isError($DBRESULT)) {
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 }
 
@@ -142,7 +142,7 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '".$svc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())	{
 			$row =& $DBRESULT->fetchRow();
 			return $row["host_id"];
@@ -313,7 +313,7 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	$tab_color_service = array();

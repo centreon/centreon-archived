@@ -8,7 +8,7 @@
 		<fieldset id="advanced_options" STYLE = "padding:3px;-moz-border-radius : 5px 5px;">
 		<legend><a href="#" onclick="advanced_options('advanced_options');" >Advanced Options</a></legend>
 		next check:<input type="checkbox" name="next_check_case" onclick="addORdelTab('next_check_case');">
-		<br>
+		<br />
 		</fieldset>
 	</td></tr>
 	<tr class="Toolbar_TR_Top">

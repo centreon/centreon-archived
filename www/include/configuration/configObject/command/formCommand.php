@@ -34,7 +34,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $command_id)	{		
 		$DBRESULT =& $pearDB->query("SELECT * FROM command WHERE command_id = '".$command_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
@@ -45,7 +45,7 @@ For information : contact@oreon-project.org
 	$resource = array();
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($row))	{
 		$row["resource_line"] = explode("=", $row["resource_line"]);
 		$resource[$row["resource_line"][0]] = $row["resource_line"][0];
@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($graphTpl))
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 	$macros = array();
 	$DBRESULT =& $pearDB->query("SELECT macro_name FROM nagios_macro ORDER BY macro_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($row))
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	$DBRESULT->free();

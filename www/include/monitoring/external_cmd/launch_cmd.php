@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	function reschedule_chk_host($oreon, $id)
 	{
 		?>
-		<br><br>
+		<br /><br />
 		<table border=0 width="35%" height="50%">
 		<tr>
 			<td>
@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 					<td><textarea name="cmt[comment]" cols="40" rows="7"></textarea></td>
 				</tr>
 				<tr>
-					<td colspan="2" align="center"><br><bR><br> <input name="envoyer" type="submit"></td>
+					<td colspan="2" align="center"><br /><br /><br /> <input name="envoyer" type="submit"></td>
 				</tr>
 				</table>
 			<?phpinclude("./tab3Bot.php"); ?></form>

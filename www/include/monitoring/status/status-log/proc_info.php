@@ -253,11 +253,11 @@ For information : contact@oreon-project.org
 								$i = 0;					
 								foreach ($tab as $str){
 									if (preg_match("/^Running configuration check/", $str, $matches))
-										print "<b><font color='blue'>" . $str . "</font></b><br>";
+										print "<b><font color='blue'>" . $str . "</font></b><br />";
 									else if (preg_match("/^Starting/", $str, $matches))
-										print "<b><font color='red'>" . $str . "</font></b><br>";
+										print "<b><font color='red'>" . $str . "</font></b><br />";
 									else if (preg_match("/^/", $str, $matches))
-										print  $str . "<br>";
+										print  $str . "<br />";
 									$i++;
 									unset($str);
 								}

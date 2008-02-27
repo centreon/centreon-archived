@@ -35,11 +35,11 @@
     	if ($old_time == 0){
 	    	$i = $data["ctime"];
     		$is = $i / 60;
-	    	print date ("G:i:s (d)", $data["ctime"]) . " <br>\n";
+	    	print date ("G:i:s (d)", $data["ctime"]) . " <br />\n";
     	} else {
     		$i = $data["ctime"] - $old_time;
     		$is = $i / 60;
-    		print date ("G:i:s (d)", $data["ctime"]) . " : " . $data["ctime"] .  " - " .$old_time . " = ". $i." sec (".$is.")<br>\n";
+    		print date ("G:i:s (d)", $data["ctime"]) . " : " . $data["ctime"] .  " - " .$old_time . " = ". $i." sec (".$is.")<br />\n";
     	}
     	$old_time = $data["ctime"];
     }

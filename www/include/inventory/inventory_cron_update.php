@@ -73,7 +73,7 @@ For information : contact@oreon-project.org
 
  	$res =& $pearDB->query("SELECT debug_path, debug_inventory  FROM general_opt LIMIT 1");
 	if (PEAR::isError($res))
-		print $res->getDebugInfo()."<br>";
+		print $res->getDebugInfo()."<br />";
 
   $debug = $res->fetchRow();
 
@@ -92,7 +92,7 @@ For information : contact@oreon-project.org
 
   	$resHost =& $pearDB->query("SELECT * FROM host WHERE host_register= '1'");
 	if (PEAR::isError($resHost))
-		print $resHost->getDebugInfo()."<br>";
+		print $resHost->getDebugInfo()."<br />";
 		
  print "<table id='ListTable'>\n";
  print "	<tr class='ListHeader'>\n";

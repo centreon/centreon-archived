@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('meta_id');
 		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$meta =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id)	
@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE meta_service SET meta_activate = '1' WHERE meta_id = '".$meta_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function disableMetaServiceInDB ($meta_id = null)	{
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '".$meta_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function deleteMetaServiceInDB ($metas = array())	{
@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 		foreach($metas as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM meta_service WHERE meta_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -68,7 +68,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE meta_service_relation SET activate = '1' WHERE msr_id = '".$msr_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function disableMetricInDB ($msr_id = null)	{
@@ -76,7 +76,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE meta_service_relation SET activate = '0' WHERE msr_id = '".$msr_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function deleteMetricInDB ($metrics = array())	{
@@ -84,7 +84,7 @@ For information : contact@oreon-project.org
 		foreach($metrics as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM meta_service_relation WHERE msr_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}	
 	
@@ -95,7 +95,7 @@ For information : contact@oreon-project.org
 			# Get all information about it
 			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["meta_id"] = '';
 			# Loop on the number of MetaService we want to duplicate
@@ -110,23 +110,23 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO meta_service VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(meta_id)"]))	{
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($Cg))	{
 							$DBRESULT2 =& $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 						$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-							print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+							print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($metric))	{
 							$val = null;
 							$metric["msr_id"] = '';
@@ -136,7 +136,7 @@ For information : contact@oreon-project.org
 							}
 							$DBRESULT2 =& $pearDB->query("INSERT INTO meta_service_relation VALUES (".$val.")");
 							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 						}
 					}
 				}
@@ -163,7 +163,7 @@ For information : contact@oreon-project.org
 			# Get all information about it
 			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["msr_id"] = '';
 			# Loop on the number of Metric we want to duplicate
@@ -175,7 +175,7 @@ For information : contact@oreon-project.org
 				$val ? $rq = "INSERT INTO meta_service_relation VALUES (".$val.")" : $rq = null;
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -214,10 +214,10 @@ For information : contact@oreon-project.org
 				$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$meta_id = $DBRESULT->fetchRow();
 		return ($meta_id["MAX(meta_id)"]);
 	}
@@ -270,7 +270,7 @@ For information : contact@oreon-project.org
 		$rq .= " WHERE meta_id = '".$meta_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 		
 	function updateMetaServiceContactGroup($meta_id = null)	{
@@ -281,7 +281,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE meta_id = '".$meta_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("ms_cgs");
 		for($i = 0; $i < count($ret); $i++)	{
@@ -291,7 +291,7 @@ For information : contact@oreon-project.org
 			$rq .= "('".$meta_id."', '".$ret[$i]."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 	
@@ -322,10 +322,10 @@ For information : contact@oreon-project.org
 				$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$msr_id = $DBRESULT->fetchRow();
 		return ($msr_id["MAX(msr_id)"]);
 	}
@@ -351,6 +351,6 @@ For information : contact@oreon-project.org
 		$rq .= " WHERE msr_id = '".$msr_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 ?>

@@ -127,7 +127,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 //				if ( strstr (strtoupper( ini_get('include_path')),"PEAR") || strstr (strtoupper( ini_get('include_path')),"PHP")) {
 				echo '<b><span class="go">OK</font></b>';
 			} else {
-				echo '<b><span class="stop">Warning: PHP Pear not found <br>'. $pear_path . '/PEAR.php</font></b>';
+				echo '<b><span class="stop">Warning: PHP Pear not found <br />'. $pear_path . '/PEAR.php</font></b>';
 			    $return_false = 1;
 			}?>
 		</td>
@@ -146,7 +146,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 			} else {
 	            echo '<b><span class="stop">Critical: Not Writeable</font></b>';
 	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>' ;
-	          	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['nagios_group'].' (775)';
+	          	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':'.$_SESSION['nagios_group'].' (775)';
 			    $return_false = 1;
 	       }
 	    } else {
@@ -173,7 +173,7 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
 					} else {
 		              	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
 		              	$msg = $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-		              	$msg .=  '<br>Should be '. $_SESSION['apache_user'].':'.$_SESSION['nagios_group'].' (775)';
+		              	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':'.$_SESSION['nagios_group'].' (775)';
 					    $return_false = 1;
 		           }
 		    } else {

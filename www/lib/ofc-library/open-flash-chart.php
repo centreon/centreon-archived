@@ -301,10 +301,10 @@ class graph
 	 * Replaceable tokens that can be used in the string include: \n
 	 * #val# - The actual value of whatever the mouse is over. \n
 	 * #key# - The key string. \n
-	 * \<br>  - New line. \n
+	 * \<br />  - New line. \n
 	 * #x_label# - The X label string. \n
 	 * #x_legend# - The X axis legend text. \n
-	 * Default string is: "#x_label#<br>#val#" \n
+	 * Default string is: "#x_label#<br />#val#" \n
 	 * 
 	 * @param tip a string argument.
 	 *   A formatted string to show as the tooltip.

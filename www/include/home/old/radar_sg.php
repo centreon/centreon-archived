@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	if (!$DBRESULT->numRows())
 		exit;
@@ -98,14 +98,14 @@ For information : contact@oreon-project.org
 		
 		$DBRESULT =& $pearDB->query("SELECT * FROM `servicegroup` WHERE sg_activate = '1'");
 		if (PEAR::isError($DBRESULT))
-		    print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		    print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		else { 
 			$tab_sg = array();
 			while ($sg =& $DBRESULT->fetchRow()){
 				$tab_sg[$sg["sg_name"]] = array();
 				$DBRESULT2 =& $pearDB->query("SELECT service_service_id, service_description FROM servicegroup_relation, service WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND service.service_id = servicegroup_relation.service_service_id");
 				if (PEAR::isError($DBRESULT2))
-				    print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				    print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 				for ($total = 0, $ok = 0;$rS =& $DBRESULT2->fetchRow();$total++){
 					if (!$rS["service_description"])
 						$rS["service_description"] = getMyHostName($rS["service_service_id"]);

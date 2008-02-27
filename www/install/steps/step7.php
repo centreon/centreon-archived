@@ -50,7 +50,7 @@ aff_header("Oreon Setup Wizard", "DataBase Verification", 7);
 	if ($mysql_msg == '') {
 
 		$requete = "SELECT VERSION() AS mysql_version;";
-		if ($DEBUG) print $requete . "<br>";
+		if ($DEBUG) print $requete . "<br />";
 		$result = mysql_query($requete, $res['0']);
 		$row = mysql_fetch_assoc($result);
 		if(preg_match("/^(4\.1|5\.)/", $row['mysql_version'])){

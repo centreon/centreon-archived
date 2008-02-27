@@ -47,7 +47,7 @@
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	while($hg = $DBRESULT->fetchRow()){
 		$counterTotal = 0;
@@ -57,7 +57,7 @@
 		while($h = $DBRESULT2->fetchRow()){
 			$DBRESULT3 =& $pearDBndo->query("SELECT current_state FROM nagios_hoststatus, nagios_hosts WHERE nagios_hoststatus.host_object_id = nagios_hosts.host_object_id AND nagios_hosts.alias = '".$h["host_name"]."'");
 			if (PEAR::isError($DBRESULT3))
-				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			while($stt = $DBRESULT3->fetchRow()){
 				if ($stt["current_state"] == 1)
 					$counterDown++;

@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 				ORDER BY topology_order, topology_group "; 
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT->fetchInto($redirect);
 		return $redirect;
 	}
@@ -62,7 +62,7 @@ For information : contact@oreon-project.org
 				LIMIT 1"; 
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$root_menu = array();
 		if ($DBRESULT->numRows())
 			$DBRESULT->fetchInto($root_menu);

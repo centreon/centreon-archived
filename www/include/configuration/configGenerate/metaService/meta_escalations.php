@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : SELECT DISTINCT meta_service_meta_id FROM escalation_meta_service_relation : ".$DBRESULT->getMessage()."<br />";
 	while($DBRESULT->fetchInto($service))	{
 		$BP = false;
 		if ($ret["level"]["level"] == 1)
@@ -34,7 +34,7 @@ For information : contact@oreon-project.org
 		if ($BP)	{
 			$DBRESULT2 =& $pearDB->query("SELECT esc.* FROM escalation esc, escalation_meta_service_relation emsr WHERE emsr.meta_service_meta_id = '".$service["meta_service_meta_id"]."' AND esc.esc_id = emsr.escalation_esc_id ORDER BY esc.esc_name");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : SELECT esc.* FROM escalation esc, escalation_meta_service_relation emsr.. : ".$DBRESULT2->getMessage()."<br>";
+				print "DB Error : SELECT esc.* FROM escalation esc, escalation_meta_service_relation emsr.. : ".$DBRESULT2->getMessage()."<br />";
 			$escalation = array();
 			while($DBRESULT2->fetchInto($escalation))	{
 				$ret["comment"]["comment"] ? ($str .= "# '".$escalation["esc_name"]."' service escalation definition ".$i."\n") : NULL;
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 				$strTemp = NULL;
 				$DBRESULT3 =& $pearDB->query("SELECT DISTINCT cg.cg_id, cg.cg_name FROM escalation_contactgroup_relation ecgr, contactgroup cg WHERE ecgr.escalation_esc_id = '".$escalation["esc_id"]."' AND ecgr.contactgroup_cg_id = cg.cg_id ORDER BY cg.cg_name");
 				if (PEAR::isError($DBRESULT3))
-					print "DB Error : SELECT DISTINCT cg.cg_id, cg.cg_name.. : ".$DBRESULT3->getMessage()."<br>";
+					print "DB Error : SELECT DISTINCT cg.cg_id, cg.cg_name.. : ".$DBRESULT3->getMessage()."<br />";
 				while($DBRESULT3->fetchInto($cg))	{
 					$BP = false;				
 					if ($ret["level"]["level"] == 1)
@@ -72,7 +72,7 @@ For information : contact@oreon-project.org
 				if ($oreon->user->get_version() == 2)	{
 					$DBRESULT4 =& $pearDB->query("SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."'");
 					if (PEAR::isError($DBRESULT4))
-						print "DB Error : SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."' : ".$DBRESULT4->getMessage()."<br>";
+						print "DB Error : SELECT tp_name FROM timeperiod WHERE tp_id = '".$escalation["escalation_period"]."' : ".$DBRESULT4->getMessage()."<br />";
 					$tp =& $DBRESULT4->fetchRow();
 					$DBRESULT4->free();		
 					if ($tp["tp_name"]) $str .= print_line("escalation_period", $tp["tp_name"]);

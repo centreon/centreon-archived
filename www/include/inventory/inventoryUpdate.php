@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 
 
 		$tpl->assign("initJS", "<script type='text/javascript'>
-		display('". _("Please wait, inventory is loading...") ."<br><br><img src=\'./img/icones/16x16/spinner_blue.gif\'>','inventory');
+		display('". _("Please wait, inventory is loading...") ."<br /><br /><img src=\'./img/icones/16x16/spinner_blue.gif\'>','inventory');
 		//display('Please wait during inventory...','inventory');
 		loadXMLDoc('include/inventory/inventory_cron_update.php','inventory');
 		</script>");

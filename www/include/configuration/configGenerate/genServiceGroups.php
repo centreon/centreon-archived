@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
 	$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$serviceGroup = array();
 	$i = 1;
@@ -65,7 +65,7 @@ For information : contact@oreon-project.org
 									"AND host.host_activate = '1' " .
 									"AND  servicegroup_relation.host_host_id IS NOT NULL");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($DBRESULT2->fetchInto($service)){
 				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				
@@ -94,7 +94,7 @@ For information : contact@oreon-project.org
 									"AND hostgroup.hg_activate = '1' " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while($DBRESULT2->fetchInto($service)){
 				isset($gbArr[4][$service["service_id"]]) ? $BP = true : NULL;
 				
@@ -106,7 +106,7 @@ For information : contact@oreon-project.org
 						if ($BP){
 							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
 							if (PEAR::isError($DBRESULT3)) 
-								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br>";
+								print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 							while($DBRESULT3->fetchInto($host))	{
 								$BP = false;
 								isset($gbArr[2][$host["host_host_id"]]) ? $BP = true : NULL;

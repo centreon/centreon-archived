@@ -103,9 +103,9 @@
 
     Perl). Il ex&eacute;cute maintenant votre plugin gr&acirc;ce &agrave; un appel 
 
-    de biblioth&egrave;que.<br>
+    de biblioth&egrave;que.<br />
 
-    <br>
+    <br />
 
   <li>Il r&eacute;duit grandement l'impact sur le syst&egrave;me des plugins Perl 
 
@@ -121,9 +121,9 @@
 
     s'ils tournent a peu pr&egrave;s dix fois plus vite &#151; TCL &eacute;tant 
 
-    une exception).<br>
+    une exception).<br />
 
-    <br>
+    <br />
 
   <li>Si vous n'&ecirc;tes pas un d&eacute;veloppeur C, vous pouvez quand m&ecirc;me 
 
@@ -141,11 +141,11 @@
 
     <i>n'a pas de prix</i> pour comparer les performances des &eacute;l&eacute;ments 
 
-    de langage Perl).<br>
+    de langage Perl).<br />
 
-    <br>
+    <br />
 
-  <li>L'utilisation de ePN est un excellent moyen d'en apprendre plus sur Perl.<br>
+  <li>L'utilisation de ePN est un excellent moyen d'en apprendre plus sur Perl.<br />
 
 </ul>
 
@@ -169,41 +169,41 @@
 
     peut <i>ne pas</i> fonctionner avec ePN. Il vous faudra peut-&ecirc;tre modifier 
 
-    vos plugins pour qu'ils tournent.<br>
+    vos plugins pour qu'ils tournent.<br />
 
-    <br>
+    <br />
 
   <li>Les plugins Perl sont plus difficiles &agrave; d&eacute;boguer sous ePN 
 
-    qu'avec un Nagios standard.<br>
+    qu'avec un Nagios standard.<br />
 
-    <br>
+    <br />
 
   <li>Votre ePN aura une plus grande taille (encombrement en m&eacute;moire) qu'un 
 
-    Nagios standard.<br>
+    Nagios standard.<br />
 
-    <br>
+    <br />
 
   <li>Certaines constructions [constructs] Perl ne peuvent pas &ecirc;tre utilis&eacute;es, 
 
     ou peuvent se comporter diff&eacute;remment de ce &agrave; quoi vous vous 
 
-    attendiez.<br>
+    attendiez.<br />
 
-    <br>
+    <br />
 
   <li>Il vous faudra conna&icirc;tre &quot;plus d'une fa&ccedil;on de le faire&quot;, 
 
-    et peut-&ecirc;tre choisir celle qui semble la moins attirante ou &eacute;vidente.<br>
+    et peut-&ecirc;tre choisir celle qui semble la moins attirante ou &eacute;vidente.<br />
 
-    <br>
+    <br />
 
   <li>Il vous faudra une meilleure connaissance de Perl (mais rien de bien &eacute;sot&eacute;rique 
 
     ou concernant la structure interne de Perl &#151; sauf si vous utilisez les 
 
-    XSUBS).<br>
+    XSUBS).<br />
 
 </ul>
 
@@ -219,21 +219,21 @@
 
     des fonctionnalit&eacute;s du langage sans en conna&icirc;tre les rouages 
 
-    internes.<br>
+    internes.<br />
 
-    <br>
+    <br />
 
   <li>Ceux qui ont un point de vue utilitaire plut&ocirc;t qu'une profonde compr&eacute;hension 
 
-    [sic].<br>
+    [sic].<br />
 
-    <br>
+    <br />
 
   <li>Si vous aimez les objets Perl, la gestion de noms, les structures de donn&eacute;es, 
 
-    et le d&eacute;bogueur, cela suffit sans doute.<br>
+    et le d&eacute;bogueur, cela suffit sans doute.<br />
 
-    <br>
+    <br />
 
 </ul>
 
@@ -247,21 +247,21 @@
 
 <ul>
 
-  <li>G&eacute;n&eacute;rez <b>toujours</b> un affichage<br>
+  <li>G&eacute;n&eacute;rez <b>toujours</b> un affichage<br />
 
-    <br>
+    <br />
 
   <li>Utilisez &quot;use utils&quot; et importez ce qui en est export&eacute; 
 
-    ($TIMEOUT %ERRORS &amp;print_revision &amp;support)<br>
+    ($TIMEOUT %ERRORS &amp;print_revision &amp;support)<br />
 
-    <br>
+    <br />
 
   <li>Jetez un &#156;il sur la fa&ccedil;on dont sont &eacute;crits les plugins 
 
-    Perl standard, comme par exemple :<br>
+    Perl standard, comme par exemple :<br />
 
-    <br>
+    <br />
 
     <ul>
 
@@ -301,9 +301,9 @@
 
   <li>&lt;DATA&gt; ne peut pas &ecirc;tre utilis&eacute; ; utilisez ici des documents 
 
-    &agrave; la place, par exemple :<br>
+    &agrave; la place, par exemple :<br />
 
-    <br>
+    <br />
 
     <dir> 
 
@@ -339,15 +339,15 @@ DATA
 
   <li>Les blocks BEGIN ne fonctionneront pas comme vous l'attendez. Il vaut mieux 
 
-    les &eacute;viter.<br>
+    les &eacute;viter.<br />
 
-    <br>
+    <br />
 
   <li>Assurez-vous de la parfaite propret&eacute; du code &agrave; la compilation, 
 
-    i.e.<br>
+    i.e.<br />
 
-    <br>
+    <br />
 
     <ul>
 
@@ -361,9 +361,9 @@ DATA
 
     </ul>
 
-    <br>
+    <br />
 
-    <br>
+    <br />
 
   <li>Evitez les variables de port&eacute;e lexicale (my) d&eacute;clar&eacute;es 
 
@@ -383,17 +383,17 @@ DATA
 
     Ce que Bekman <a href="http://perl.apache.org/guide/">recommande en remplacement</a> 
 
-    est une des solutions suivantes :<br>
+    est une des solutions suivantes :<br />
 
-    <br>
+    <br />
 
     <ul>
 
       <li>faites une fonction anonyme et appelez-la &agrave; travers une r&eacute;f&eacute;rence 
 
-        au code, par exemple :<br>
+        au code, par exemple :<br />
 
-        <br>
+        <br />
 
         <dir> 
 
@@ -439,11 +439,11 @@ a ;                           &amp;$a_cr ;
 
     </ul>
 
-    <br>
+    <br />
 
-  <li>Sachez o&ugrave; trouvez plus d'informations.<br>
+  <li>Sachez o&ugrave; trouvez plus d'informations.<br />
 
-    <br>
+    <br />
 
     <dir> 
 
@@ -479,13 +479,13 @@ a ;                           &amp;$a_cr ;
 
   <li>Sachez que votre plugin peut retourner d'&eacute;tranges valeurs avec ePN, 
 
-    et que cela est probablement d&ucirc; au point 4 ci-dessus.<br>
+    et que cela est probablement d&ucirc; au point 4 ci-dessus.<br />
 
-    <br>
+    <br />
 
-  <li>Soyez pr&ecirc;t &agrave; d&eacute;boguer en :<br>
+  <li>Soyez pr&ecirc;t &agrave; d&eacute;boguer en :<br />
 
-    <br>
+    <br />
 
     <ul>
 
@@ -513,17 +513,17 @@ a ;                           &amp;$a_cr ;
 
     </ul>
 
-    <br>
+    <br />
 
     <dir> perl -MO::Deparse &lt;votre_programme&gt; </dir>
 
-    <br>
+    <br />
 
   <li>Sachez qu'ePN transforme votre plugin lui aussi, et si tout le reste a &eacute;chou&eacute; 
 
-    essayez de d&eacute;boguer la version transform&eacute;e.<br>
+    essayez de d&eacute;boguer la version transform&eacute;e.<br />
 
-    <br>
+    <br />
 
     <dir> 
 
@@ -625,15 +625,15 @@ a ;                           &amp;$a_cr ;
 
     </dir>
 
-    <br>
+    <br />
 
   <li>Ne pas utiliser &quot;use diagnostics&quot; dans un plugin lanc&eacute; 
 
     par votre ePN de production. Je pense qu'il force la valeur de retour &agrave; 
 
-    CRITICAL dans <u>tous</u> les plugins Perl.<br>
+    CRITICAL dans <u>tous</u> les plugins Perl.<br />
 
-    <br>
+    <br />
 
   <li>Envisagez l'utilisation d'un mini Perl int&eacute;gr&eacute; pour v&eacute;rifier 
 
@@ -651,9 +651,9 @@ a ;                           &amp;$a_cr ;
 
     o&ugrave; se trouve p1.pl (ce fichier est distribu&eacute; avec Nagios).</font> 
 
-    <br>
+    <br />
 
-    <br>
+    <br />
 
 </ol>
 

@@ -70,7 +70,7 @@ For information : contact@oreon-project.org
 
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 
 		$tab_status_service = array();
 		$tab_status_service[0] = "OK";
@@ -102,7 +102,7 @@ For information : contact@oreon-project.org
 				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		$DBRESULT_NDO->fetchInto($ndo2);
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 		/* end ndo host detail */
@@ -139,7 +139,7 @@ For information : contact@oreon-project.org
 			$log = fopen($oreon->Nagioscfg["comment_file"], "r");
 			if ($oreon->user->get_version() == 1){
 				while ($str = fgets($log))	{
-					print $str . "<br>";
+					print $str . "<br />";
 					$res = preg_split("/;/", $str);
 					if (preg_match("/^\[([0-9]*)\] SERVICE_COMMENT;/", $str, $matches)){
 						if (!strcmp($res[2], $host_name)){

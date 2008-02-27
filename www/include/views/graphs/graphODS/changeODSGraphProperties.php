@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 		$rq = "UPDATE `index_data` SET `storage_type` = '".$ret["storage_type"]."' WHERE `id` = '".$index."' LIMIT 1 ;";
 		$DBRESULT =& $pearDBO->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	# Smarty template Init

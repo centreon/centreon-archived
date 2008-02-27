@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 		$tpl->assign("module_infos", $module_conf[$name]["infos"]);
 		if (is_dir("./modules/".$name."/infos") && is_file("./modules/".$name."/infos/infos.txt"))	{
 			$infos_streams = file("./modules/".$name."/infos/infos.txt");
-			$infos_streams = implode("<br>", $infos_streams);
+			$infos_streams = implode("<br />", $infos_streams);
 			$tpl->assign("module_infosTxt", $infos_streams);
 		} else
 			$tpl->assign("module_infosTxt", false);		
@@ -134,7 +134,7 @@ For information : contact@oreon-project.org
 						}
 						if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos") && is_file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt"))	{
 							$infos_streams = file("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
-							$infos_streams = implode("<br>", $infos_streams);
+							$infos_streams = implode("<br />", $infos_streams);
 							$upgrade_infosTxt = $infos_streams;
 						}
 						else

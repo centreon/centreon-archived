@@ -28,7 +28,7 @@ function getConfigPatch() {
 	$query = "SELECT `patch_type_stable`, `patch_type_RC`, `patch_type_patch`, `patch_type_secu`, `patch_type_beta`, `patch_url_service`, `patch_url_download`, `patch_path_download` FROM `general_opt` LIMIT 1";
 	$result = $pearDB->query($query);
 	if (PEAR::isError($result)) {
-		print $result->getDebugInfo()."<br>";
+		print $result->getDebugInfo()."<br />";
 		return(false);
 	}
 	$row =& $result->fetchRow();
@@ -45,7 +45,7 @@ function getCurrentVersion() {
 	$query = "SELECT value FROM oreon_informations WHERE `key`='version'";
 	$DBRESULT =& $pearDB->query($query);
 	if (PEAR::isError($DBRESULT)) {
-		print $DBRESULT->getDebugInfo()."<br>";
+		print $DBRESULT->getDebugInfo()."<br />";
 		return(false);
 	}
 	if ($DBRESULT->numRows() != 1) {

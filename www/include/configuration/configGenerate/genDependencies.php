@@ -32,7 +32,7 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhcr WHERE dhcr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$dependency = array();
 	$i = 1;
 	$str = "";
@@ -40,7 +40,7 @@ For information : contact@oreon-project.org
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$host = array();
 		$strTemp1 = "";
 		while ($DBRESULT2->fetchInto($host))	{
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 		}
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostChild_relation dhcr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhcr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhcr.host_host_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$host = array();
 		$strTemp2 = "";
 		while ($DBRESULT2->fetchInto($host))	{
@@ -91,7 +91,7 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgcr WHERE dhgcr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$dependency = array();
 	while($DBRESULT->fetchInto($dependency))	{
 		$BP = false;
@@ -100,7 +100,7 @@ For information : contact@oreon-project.org
 		$strDef = "";
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupParent_relation dhgpr, hostgroup WHERE dhgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgpr.hostgroup_hg_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$hg = array();
 		$strTemp1 = "";
 		while ($DBRESULT2->fetchInto($hg))	{
@@ -115,7 +115,7 @@ For information : contact@oreon-project.org
 		$DBRESULT2->free();
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hostgroup.hg_id, hostgroup.hg_name FROM dependency_hostgroupChild_relation dhgcr, hostgroup WHERE dhgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND hostgroup.hg_id = dhgcr.hostgroup_hg_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$hg = array();
 		$strTemp2 = "";
 		while ($DBRESULT2->fetchInto($hg))	{
@@ -160,7 +160,7 @@ For information : contact@oreon-project.org
 
 	$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($DBRESULT->fetchInto($svPar))	{
 		$BP = false;
 		array_key_exists($svPar["service_service_id"], $gbArr[4]) ? $BP = true : "";
@@ -175,7 +175,7 @@ For information : contact@oreon-project.org
 			# Service Child
 			$DBRESULT2 =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
 			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			while ($DBRESULT2->fetchInto($svCh))	{
 				$BP = false;
 				array_key_exists($svCh["service_service_id"], $gbArr[4]) ? $BP = true : "";
@@ -223,13 +223,13 @@ For information : contact@oreon-project.org
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgcr WHERE dsgcr.dependency_dep_id = dep.dep_id) > 0";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$dependency = array();
 	while($DBRESULT->fetchInto($dependency))	{
 		$BP = false;
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupParent_relation dsgpr, servicegroup WHERE dsgpr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgpr.servicegroup_sg_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$sg = array();
 		$strTemp1 = "";
 		while ($DBRESULT2->fetchInto($sg))	{
@@ -242,7 +242,7 @@ For information : contact@oreon-project.org
 		$DBRESULT2->free();
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name FROM dependency_servicegroupChild_relation dsgcr, servicegroup WHERE dsgcr.dependency_dep_id = '".$dependency["dep_id"]."' AND servicegroup.sg_id = dsgcr.servicegroup_sg_id");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$sg= array();
 		$strTemp2 = "";
 		while ($DBRESULT2->fetchInto($sg))	{

@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('sg_id');
 		$DBRESULT =& $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$sg =& $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] == $id)	
@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function disableServiceGroupInDB ($sg_id = null)	{
@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function deleteServiceGroupInDB ($serviceGroups = array())	{
@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 		foreach($serviceGroups as $key=>$value)
 			$DBRESULT =& $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print $DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())	{
@@ -69,7 +69,7 @@ For information : contact@oreon-project.org
 		foreach($serviceGroups as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print $DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["sg_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -83,20 +83,20 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO servicegroup VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print $DBRESULT->getDebugInfo()."<br>";
+						print $DBRESULT->getDebugInfo()."<br />";
 					$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
 					if (PEAR::isError($DBRESULT))
-						print $DBRESULT->getDebugInfo()."<br>";
+						print $DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
 						# Update LCA
 						$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 						if (PEAR::isError($DBRESULT))
-							print $DBRESULT->getDebugInfo()."<br>";
+							print $DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($contactGroup))	{
 						 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
 							if (PEAR::isError($DBRESULT2))
-								print $DBRESULT2->getDebugInfo()."<br>";
+								print $DBRESULT2->getDebugInfo()."<br />";
 							while ($DBRESULT2->fetchInto($lca))	{
 								$rq = "INSERT INTO lca_define_servicegroup_relation ";
 								$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
@@ -104,21 +104,21 @@ For information : contact@oreon-project.org
 								$rq .= "('".$lca["lca_define_lca_id"]."', '".$maxId["MAX(sg_id)"]."')";
 								$DBRESULT3 =& $pearDB->query($rq);
 								if (PEAR::isError($DBRESULT3))
-									print $DBRESULT3->getDebugInfo()."<br>";
+									print $DBRESULT3->getDebugInfo()."<br />";
 							}
 							$DBRESULT2->free();
 						}
 						$DBRESULT->free();
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
-								print $DBRESULT->getDebugInfo()."<br>";
+								print $DBRESULT->getDebugInfo()."<br />";
 						while($DBRESULT->fetchInto($service))	{
 							$val = null;
 							foreach ($service as $key2=>$value2)
 								$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$val.", '".$maxId["MAX(sg_id)"]."')");
 							if (PEAR::isError($DBRESULT2))
-								print $DBRESULT2->getDebugInfo()."<br>";
+								print $DBRESULT2->getDebugInfo()."<br />";
 						}						
 					}
 				}
@@ -153,21 +153,21 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 			
 		$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 		$sg_id = $DBRESULT->fetchRow();
 		
 		# Update LCA
 		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 		while($DBRESULT->fetchInto($contactGroup))	{
 		 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
 			if (PEAR::isError($DBRESULT2))
-				print $DBRESULT2->getDebugInfo()."<br>";
+				print $DBRESULT2->getDebugInfo()."<br />";
 			while ($DBRESULT2->fetchInto($lca))	{
 				$rq = "INSERT INTO lca_define_servicegroup_relation ";
 				$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
@@ -175,7 +175,7 @@ For information : contact@oreon-project.org
 				$rq .= "('".$lca["lca_define_lca_id"]."', '".$sg_id["MAX(sg_id)"]."')";
 				$DBRESULT3 =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT3))
-					print $DBRESULT3->getDebugInfo()."<br>";
+					print $DBRESULT3->getDebugInfo()."<br />";
 			}
 			$DBRESULT2->free();
 		}
@@ -197,7 +197,7 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE sg_id = '".$sg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function updateServiceGroupServices($sg_id, $ret = array())	{
@@ -207,7 +207,7 @@ For information : contact@oreon-project.org
 		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT)) 
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
@@ -215,7 +215,7 @@ For information : contact@oreon-project.org
 				$rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
-					print $DBRESULT->getDebugInfo()."<br>";
+					print $DBRESULT->getDebugInfo()."<br />";
 			}
 		}
 		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
@@ -224,7 +224,7 @@ For information : contact@oreon-project.org
 			$rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print $DBRESULT->getDebugInfo()."<br />";
 		}
 	}
 ?>

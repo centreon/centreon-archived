@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 			$rq = "SELECT * FROM modules_informations WHERE name='".$name."' LIMIT 1";		
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())
 			return ($DBRESULT->fetchRow());
 		else
@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 			$rq = "SELECT id FROM modules_informations WHERE name = '".$name."'  LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 		if ($DBRESULT->numRows())
 			return true;
 		else
@@ -55,7 +55,7 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT mod_release FROM modules_informations WHERE id = '".$id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br>";
+			print $DBRESULT->getDebugInfo()."<br />";
 		$module = $DBRESULT->fetchRow();
 		if ($module["mod_release"] == $release)
 			return true;
@@ -82,10 +82,10 @@ For information : contact@oreon-project.org
 		$rq .= ")";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM modules_informations");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$id = $DBRESULT->fetchRow();
 		return ($id["MAX(id)"]);
 	}
@@ -109,7 +109,7 @@ For information : contact@oreon-project.org
 			$rq .= "WHERE id = '".$id."'";
 			$DBRESULT =& $pearDB->query($rq);
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			return true;
 		}
 		return NULL;
@@ -121,7 +121,7 @@ For information : contact@oreon-project.org
 		$rq = "DELETE FROM `modules_informations` WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		return true;
 	}
 	
@@ -139,7 +139,7 @@ For information : contact@oreon-project.org
                     $str = chop ($str);
                     $DBRESULT =& $pearDB->query($str);
                     if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
                     $str = NULL;
                 }
                 else

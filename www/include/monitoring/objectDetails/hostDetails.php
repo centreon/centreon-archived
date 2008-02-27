@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 
 		$tab_status_service = array();
 		$tab_status_service[0] = "OK";
@@ -115,7 +115,7 @@ For information : contact@oreon-project.org
 
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
-			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		$DBRESULT_NDO->fetchInto($ndo2);
 
 

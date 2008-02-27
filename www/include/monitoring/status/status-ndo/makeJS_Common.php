@@ -97,7 +97,7 @@ function construct_selecteList_ndo_instance(id){
 	}
 	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM nagios_server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($nagios_server))
 	{
 	 	$isntance_id = get_ndo_instance_id($nagios_server["name"]);

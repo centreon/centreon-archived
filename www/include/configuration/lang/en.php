@@ -415,7 +415,7 @@ $lang['cct_ldap_search_result_output'] ="Result";
 $lang['cct_ldap_search'] = "Search";
 $lang['cct_ldap_import_users'] = "Import";
 $lang['cct_ldap_search_filter_help_title'] ="Filter Examples";
-$lang['cct_ldap_search_filter_help'] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br>Lotus Domino : (&(objectClass=person)(cn=*))<br>OpenLDAP : (&(objectClass=person)(cn=*))";
+$lang['cct_ldap_search_filter_help'] = "Active Directory : (&(objectClass=user)(samaccounttype=805306368)(objectCategory=person)(cn=*))<br />Lotus Domino : (&(objectClass=person)(cn=*))<br />OpenLDAP : (&(objectClass=person)(cn=*))";
 
 /* contact group */
 
@@ -744,7 +744,7 @@ $lang['upl_del'] = "Delete all configuration for the chosen type of files";
 $lang['upl_over'] = "Update definition in case of double definition";
 $lang['upl_comment'] = "Include comments";
 $lang['upl_type'] = "File Type";
-$lang['upl_mis1'] = "For archive upload, be sure that the first line of each file has no importance because it is not handled.<br>Avoid to begin with a definition.";
+$lang['upl_mis1'] = "For archive upload, be sure that the first line of each file has no importance because it is not handled.<br />Avoid to begin with a definition.";
 $lang['upl_typeNag'] = "nagios.cfg";
 $lang['upl_typeCgi'] = "cgi.cfg";
 $lang['upl_typePerfparse'] = "perfparse.cfg";

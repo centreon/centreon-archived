@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
@@ -37,14 +37,14 @@ For information : contact@oreon-project.org
 		# Set Meta Service Parents
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($msP); $i++)
 			$dep["dep_msParents"][$i] = $msP["meta_service_meta_id"];
 		$DBRESULT->free();
 		# Set Meta Service Childs
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($msC); $i++)
 			$dep["dep_msChilds"][$i] = $msC["meta_service_meta_id"];
 		$DBRESULT->free();
@@ -56,7 +56,7 @@ For information : contact@oreon-project.org
 	$metas = array();
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($meta))
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
@@ -70,7 +70,7 @@ For information : contact@oreon-project.org
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 250px; height: 150px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

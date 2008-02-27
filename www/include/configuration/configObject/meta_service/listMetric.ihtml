@@ -5,7 +5,7 @@
 	</td>
 	</tr>
 </table>
-<br>
+<br />
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'  method='POST'>
 <input type='hidden' name='o' id='o' value='42'>

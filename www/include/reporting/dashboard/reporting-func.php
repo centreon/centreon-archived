@@ -114,7 +114,7 @@ For information : contact@oreon-project.org
 
 		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
-			print "DB Error : ".$DBres->getDebugInfo()."<br>";
+			print "DB Error : ".$DBres->getDebugInfo()."<br />";
 		$log = array();
 		while ($DBres->fetchInto($log)){
 			if($log["status"] == "UP"){
@@ -189,7 +189,7 @@ For information : contact@oreon-project.org
 		# ODS Database retrieve information
 		$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$result_config = $DBRESULT->fetchRow();
 		if (isset($result_config) && $result_config)
 			$gopt = array_map("myDecode", $result_config);
@@ -230,7 +230,7 @@ For information : contact@oreon-project.org
 		# ODS Database retrieve information
 		$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$result_config = $DBRESULT->fetchRow();
 		if (isset($result_config) && $result_config)
 			$gopt = array_map("myDecode", $result_config);
@@ -428,7 +428,7 @@ For information : contact@oreon-project.org
 			' GROUP BY service_id';
 		$DBres =& $pearDB->query($rq);
 		if (PEAR::isError($DBres))
-			print "DB Error : ".$DBres->getDebugInfo()."<br>";
+			print "DB Error : ".$DBres->getDebugInfo()."<br />";
 		while ($DBres->fetchInto($s)){
 			$tab_log[$s["service_id"]] = $s;
 		}
@@ -479,7 +479,7 @@ For information : contact@oreon-project.org
 
 		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
-			print "DB Error : ".$DBres->getDebugInfo()."<br>";
+			print "DB Error : ".$DBres->getDebugInfo()."<br />";
 		$log = array();
 		while ($DBres->fetchInto($log)){
 			if($log["status"] == "OK"){
@@ -649,7 +649,7 @@ For information : contact@oreon-project.org
 		$day_in_second = 86400;
 	
 		if (file_exists($file) && !($log = fopen($file, "r")))
-			echo "pel_cant_open" . $file . "<br>";
+			echo "pel_cant_open" . $file . "<br />";
 		if ($log)
 			for ($a=0, $b= 0, $i = 0; $str = fgets($log); $i++){
 				if (preg_match("/^\[([0-9]*)\] (.+)/", $str, $matches)){

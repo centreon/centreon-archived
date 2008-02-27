@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	if (($o == "c" || $o == "w") && $esc_id)	{	
 		$DBRESULT =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
 		$esc = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Host Options
@@ -37,42 +37,42 @@ For information : contact@oreon-project.org
 		# Set Host Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
 		# Set Service Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($sg); $i++)
 			$esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
 		# Set Host relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for ($i = 0; $DBRESULT->fetchInto($host); $i++)
 			$esc["esc_hosts"][$i] = $host["host_host_id"];
 		$DBRESULT->free();
 		# Set Meta Service
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($metas); $i++)
 			$esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
 		$DBRESULT->free();
 		# Set Host Service
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for ($i = 0; $DBRESULT->fetchInto($services); $i++)
 			$esc["esc_hServices"][$i] = $services["host_host_id"]."_".$services["service_service_id"];
 		$DBRESULT->free();
 		# Set Contact Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		for($i = 0; $DBRESULT->fetchInto($cg); $i++)
 			$esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
 		$DBRESULT->free();		
@@ -87,7 +87,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupstr.") ORDER BY sg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($sg))
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
@@ -111,7 +111,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
@@ -123,7 +123,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_id IN (".$lcaHoststr.") ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($elem))	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)	{
@@ -137,7 +137,7 @@ For information : contact@oreon-project.org
 	$metas = array();
 	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($meta))
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
@@ -145,7 +145,7 @@ For information : contact@oreon-project.org
 	$cgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($cg))
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
@@ -154,7 +154,7 @@ For information : contact@oreon-project.org
 	$tps = array();
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
@@ -169,7 +169,7 @@ For information : contact@oreon-project.org
 	$attrsAdvSelect = array("style" => "width: 250px; height: 150px;");
 	$attrsAdvSelect2 = array("style" => "width: 250px; height: 400px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

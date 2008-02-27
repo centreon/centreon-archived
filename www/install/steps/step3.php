@@ -17,7 +17,7 @@ For information : contact@oreon-project.org
 */
 
 aff_header("Oreon Setup Wizard", "Environment Configuration", 3);   ?>
-In order for your Oreon installation to function properly, please complete the following fields.<br><br>
+In order for your Oreon installation to function properly, please complete the following fields.<br /><br />
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
   	<tr>
     	<th style="padding-left:20px " colspan="2">Environment Configurations</th>

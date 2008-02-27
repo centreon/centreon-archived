@@ -20,7 +20,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : SELECT * FROM meta_service WHERE meta_activate = '1' : ".$DBRESULT->getMessage()."<br>";
+		print "DB Error : SELECT * FROM meta_service WHERE meta_activate = '1' : ".$DBRESULT->getMessage()."<br />";
 	# Write Virtual Services For meta 
 	while ($DBRESULT->fetchInto($meta))	{
 		$strEval = NULL;
@@ -36,7 +36,7 @@ For information : contact@oreon-project.org
 		
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br />";
 		$period =& $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("check_period", $period["tp_name"]);
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 		
 		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1 : ".$DBRESULT2->getMessage()."<br />";
 		$period =& $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("notification_period", $period["tp_name"]);
@@ -59,7 +59,7 @@ For information : contact@oreon-project.org
 		$strTemp = NULL;
 		$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr,.. : ".$DBRESULT2->getMessage()."<br>";
+			print "DB Error : SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr,.. : ".$DBRESULT2->getMessage()."<br />";
 		while($DBRESULT2->fetchInto($contactGroup))	{				
 			$BP = false;
 			if ($ret["level"]["level"] == 1)

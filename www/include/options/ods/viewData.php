@@ -49,60 +49,60 @@ For information : contact@oreon-project.org
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";		
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";		
 			}	
 		} else if ($_POST["o"] == "nrg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";		
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";		
 			}
 		} else if ($_POST["o"] == "ed"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE  `index_id` = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";
 				while($DBRESULT->fetchInto($metrics)){
 					$DBRESULT2 =& $pearDBO->query("DELETE FROM data_bin WHERE `id_metric` = '".$metrics['metric_id']."'");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br />";
 					$DBRESULT2 =& $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
 					if (PEAR::isError($DBRESULT2))
-						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT2->postDebugInfo()."<br />";
 				}
 				$DBRESULT =& $pearDBO->query("DELETE FROM index_data WHERE `id` = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->postDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT->postDebugInfo()."<br />";
 			}
 		} else if ($_POST["o"] == "hg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
 		} else if ($_POST["o"] == "nhg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '0' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
 		} else if ($_POST["o"] == "lk"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
 		} else if ($_POST["o"] == "nlk"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
 				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";		
+					print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";		
 			}
 		}
 	}
@@ -110,13 +110,13 @@ For information : contact@oreon-project.org
 	if (isset($_POST["o"]) && $_POST["o"] == "d" && isset($_POST["id"])){
 		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$_POST["id"]."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";
 	}
 	
 	if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])){
 		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$_POST["id"]."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";
 	}
 	
 	$search_string = "";
@@ -126,7 +126,7 @@ For information : contact@oreon-project.org
 	
 	$DBRESULT =& $pearDBO->query("SELECT COUNT(*) FROM `index_data`$search_string");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->POSTDebugInfo()."<br />";
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 			
@@ -137,12 +137,12 @@ For information : contact@oreon-project.org
 		
 	$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data`$search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$data = array();
 	for ($i = 0;$DBRESULT->fetchInto($index_data);$i++){
 		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."'");
 		if (PEAR::isError($DBRESULT2))
-			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 		$metric = "";
 		for ($im = 0;$DBRESULT2->fetchInto($metrics);$im++){
 			if ($im)

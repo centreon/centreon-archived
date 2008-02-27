@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 	# Skin path
 	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
 	$DBRESULT->fetchInto($data);
 	$skin = "./Themes/".$data["template"]."/";
 	
@@ -51,7 +51,7 @@ For information : contact@oreon-project.org
 			$rq = "UPDATE `css_color_menu` SET `css_name` = '".$name."' WHERE `id_css_color_menu` = $id";
 			$res =& $pearDB->query($rq);
 			if (PEAR::isError($res))
-				print ($res->getMessage() . "<br>");
+				print ($res->getMessage() . "<br />");
 		}		
 	}
 	

@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 	else
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_perfparse");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 		$rq = "SELECT perfparse_id, perfparse_name, perfparse_comment, perfparse_activate FROM cfg_perfparse ORDER BY perfparse_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines

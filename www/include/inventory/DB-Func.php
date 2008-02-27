@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 		foreach($hosts as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("UPDATE `inventory_index` SET `type_ressources` = ".$manufacturer_id." WHERE `host_id` = ".$key);
 			if (PEAR::isError($DBRESULT))
-				print $DBRESULT->getDebugInfo()."<br>";
+				print $DBRESULT->getDebugInfo()."<br />";
 		}
 	}	
 ?>	

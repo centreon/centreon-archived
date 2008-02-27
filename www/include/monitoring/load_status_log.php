@@ -32,14 +32,14 @@ For information : contact@oreon-project.org
 	// Is User Admin ?
 	$DBRESULT1 =& $pearDB->query("SELECT contact_admin FROM contact, session WHERE contact.contact_id = session.user_id AND session_id = '$sid'");
 	if (PEAR::isError($DBRESULT1))
-		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 	$DBRESULT1->fetchInto($user);
 	$user_admin = $user["contact_admin"];
 	
 	// Read 
 	$DBRESULT1 =& $pearDB->query("SELECT * FROM general_opt");
 	if (PEAR::isError($DBRESULT1))
-		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";	
+		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";	
 	$DBRESULT1->fetchInto($general_opt);
 	$version = $general_opt["nagios_version"];
 	
@@ -55,13 +55,13 @@ For information : contact@oreon-project.org
 	if (isset($session_id) && $session_id){
 		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$session_id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		if($session =& $DBRESULT->fetchRow()){
 			$time_limit = time() - $general_opt["session_expire"] * 60;
 			if ($session["last_reload"] >= $time_limit){
 				$DBRESULT2 =& $pearDB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$session_id."' LIMIT 1");
 				if (PEAR::isError($DBRESULT2))
-					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br>";
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			}
 		}
 	}
@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 	if (isset($pearDBO))
 		$DBRESULT =& $pearDBO->query("SELECT fast_parsing FROM config");
 	if (PEAR::isError($DBRESULT)){
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$fast_parsing = 0;
 	} else {
 		$DBRESULT->fetchInto($config);
@@ -101,7 +101,7 @@ For information : contact@oreon-project.org
 	# Read File
 	$DBRESULT1 =& $pearDB->query("SELECT status_file FROM cfg_nagios WHERE nagios_activate = '1'");
 	if (PEAR::isError($DBRESULT1))
-		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 	$DBRESULT1->fetchInto($nagios_cfg);
 	
 	if (($version == 1 || $version == 2) && $fast_parsing == 0)
@@ -118,7 +118,7 @@ For information : contact@oreon-project.org
 		$hostgroup = array();
 		$DBRESULT1 =& $pearDB->query("SELECT host_name FROM host, hostgroup, hostgroup_relation WHERE hostgroup.hg_name = '".$hg_name."' AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND host.host_id = hostgroup_relation.host_host_id");
 		if (PEAR::isError($DBRESULT1))
-			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
 		while ($DBRESULT1->fetchInto($h))
 			$hostgroup[$h["host_name"]] = 1;
 		unset($h);

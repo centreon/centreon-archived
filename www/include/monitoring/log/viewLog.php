@@ -60,7 +60,7 @@ For information : contact@oreon-project.org
 		$log = fopen($oreon->Nagioscfg["log_archive_path"] . $_POST["file"], "r");
 	else
 		if (file_exists($oreon->Nagioscfg["log_file"]) && !($log = fopen($oreon->Nagioscfg["log_file"], "r")))
-			echo $lang["pel_cant_open"] . $oreon->Nagioscfg["log_file"] . "<br>";
+			echo $lang["pel_cant_open"] . $oreon->Nagioscfg["log_file"] . "<br />";
 	
 	
 	if (isset($log))

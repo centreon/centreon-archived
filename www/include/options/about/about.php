@@ -26,30 +26,30 @@ For information : contact@oreon-project.org
 	<?php
 	$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$release = $DBRESULT->fetchRow();
 	print $release["value"];
 	?></h3></div>
 	
-	<br><br>
+	<br /><br />
 	<div class="list_one"><h3>
 	<b><?php echo _("Project Leaders"); ?> :</b>
-	</h3></div><br>
-	<a href="mailto:rlemerlus@oreon-project.org" class="list_two">Romain Le Merlus (rom)</a><br>
-	<a href="mailto:jmathis@oreon-project.org" class="list_two">Julien Mathis (Julio)</a><br>
+	</h3></div><br />
+	<a href="mailto:rlemerlus@oreon-project.org" class="list_two">Romain Le Merlus (rom)</a><br />
+	<a href="mailto:jmathis@oreon-project.org" class="list_two">Julien Mathis (Julio)</a><br />
 	
-	<br>
+	<br />
 	<div class="list_one"><h3>
 	<b><?php echo _("Contributors"); ?> :</b>
-	</h3></div><br>
-	<a href="mailto:ccoraboeuf@oreon-project.org" class="list_two">Christophe Coraboeuf (Wistof)</a><br>
-	<a href="mailto:cfacon@oreon-project.org" class="list_two">Cedrick Facon (Apo)</a><br>
-	Mathavarajan Sugumaran (MrBrown)<br>
-	Guillaume Watteeux (Watt)<br>
-	Maximilien Bersoult (leoncx)<br>
-	Gaetan Lucas de Couville (gae)<br>
-	Nathanael Guyot (Tor)<br>
-	Jean Marc Grisard (Jmou)<br>
-	Ira Janssen (Iralein)<br>
+	</h3></div><br />
+	<a href="mailto:ccoraboeuf@oreon-project.org" class="list_two">Christophe Coraboeuf (Wistof)</a><br />
+	<a href="mailto:cfacon@oreon-project.org" class="list_two">Cedrick Facon (Apo)</a><br />
+	Mathavarajan Sugumaran (MrBrown)<br />
+	Guillaume Watteeux (Watt)<br />
+	Maximilien Bersoult (leoncx)<br />
+	Gaetan Lucas de Couville (gae)<br />
+	Nathanael Guyot (Tor)<br />
+	Jean Marc Grisard (Jmou)<br />
+	Ira Janssen (Iralein)<br />
 	</ul>
 </div>

@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 		
 
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 
 		while($DBRESULT->fetchInto($trap)){

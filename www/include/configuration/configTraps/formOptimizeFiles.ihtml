@@ -20,7 +20,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.optimize.label}</td><td class="FormRowValue">{$form.optimize.html}</td></tr>
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
-	<br><br><br><br>
+	<br /><br /><br /><br />
 	{if $msg}
 	 <table class="ListTable">
 	 	<tr class="ListHeader">

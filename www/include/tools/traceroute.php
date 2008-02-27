@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 		$tr->setArgs(array('timeout' => 5));
 	    $response = $tr->traceroute($host);
 		foreach ($response->getRawData() as $key => $data)
-   			$msg .= $data ."<br>";
+   			$msg .= $data ."<br />";
 		print $msg;
 	}
 

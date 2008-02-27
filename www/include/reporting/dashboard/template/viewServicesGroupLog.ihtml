@@ -3,7 +3,7 @@
 {$styleB}
 <div class="cachediv">
 <FORM id="datareport">
-	<INPUT type="hidden" name="hostID" value="{$hostID}"><br>
+	<INPUT type="hidden" name="hostID" value="{$hostID}"><br />
 	<INPUT type="hidden" name="color_UNKNOWN" value="{$color.UNKNOWN}" >
 	<INPUT type="hidden" name="color_UP" value="{$color.UP}">
 	<INPUT type="hidden" name="color_DOWN" value="{$color.DOWN}" >

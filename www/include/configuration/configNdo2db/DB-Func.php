@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 			$id = $form->getSubmitValue('ndo2db_id');
 		$DBRESULT =& $pearDB->query("SELECT description, id FROM cfg_ndo2db WHERE `description` = '".htmlentities($name, ENT_QUOTES)."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ndo2db =& $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $ndo2db["id"] == $id)#Modif case	
 			return true;
@@ -40,7 +40,7 @@ For information : contact@oreon-project.org
 		global $pearDB, $oreon;
 		$DBRESULT =& $pearDB->query("UPDATE `cfg_ndo2db` SET `activate` = '1' WHERE id = '".$id."'");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function disableNdo2dbInDB ($id = null)	{
@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 		foreach($ndo2db as $key => $value)	{
 			$DBRESULT =& $pearDB->query("DELETE FROM `cfg_ndo2db` WHERE id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
 		$DBRESULT->free();
 	}
@@ -64,7 +64,7 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndo2db` WHERE id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["activate"] = '0';
@@ -79,7 +79,7 @@ For information : contact@oreon-project.org
 					$val ? $rq = "INSERT INTO `cfg_ndo2db` VALUES (".$val.")" : $rq = null;
 					$DBRESULT =& $pearDB->query($rq);
 					if (PEAR::isError($DBRESULT))
-						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
 			}
 		}
@@ -125,10 +125,10 @@ For information : contact@oreon-project.org
         isset($ret["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."')" : $rq .= "NULL )";
        	$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM `cfg_ndo2db`");
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ndo2db_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return ($ndo2db_id["MAX(id)"]);
@@ -161,6 +161,6 @@ For information : contact@oreon-project.org
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 ?>

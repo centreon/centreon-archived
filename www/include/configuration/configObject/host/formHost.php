@@ -27,7 +27,7 @@ For information : contact@oreon-project.org
 			$rq = "SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 		/*
 		 * Set base value
@@ -206,7 +206,7 @@ For information : contact@oreon-project.org
 	$attrsAdvSelectsmall= array("style" => "width: 220px; height: 50px;");
 	$attrsAdvSelectbig 	= array("style" => "width: 220px; height: 130px;");
 	$attrsTextarea 		= array("rows"=>"4", "cols"=>"80");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin

@@ -34,7 +34,7 @@ if (!isset($oreon))
 	$cmd = "SELECT hg_id, hg_name FROM hostgroup";
 	$DBRESULT = $pearDB->query($cmd);
 	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($hostgroup))
 		$hostgroup_ary[$hostgroup["hg_id"]] = $hostgroup["hg_name"];
 	$DBRESULT->free();
@@ -79,7 +79,7 @@ if (!isset($oreon))
 	$attrsText2		= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br><br><br>{remove}</td><td>{selected}</td></tr></table>";
+	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	$form->addElement('header', 'title', _("Escalations View"));
 	$form->addElement('select', 'hostgroup_escalation', _("Hostgroups Escalation"), $hostgroup_ary, array("onChange" =>"this.form.submit();"));

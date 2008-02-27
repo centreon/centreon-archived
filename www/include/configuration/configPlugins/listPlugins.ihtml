@@ -49,7 +49,7 @@
 			{/php}
 		</tr>
 	</table>
-<br><br>
+<br /><br />
 
 <input name="p" value="{$p}" type="hidden">
 <!--<table class="ListTable">

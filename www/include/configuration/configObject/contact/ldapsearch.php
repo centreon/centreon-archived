@@ -52,7 +52,7 @@ require_once 'DB.php';
 
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB))
-		print "DB Error : ".$pearDB->getDebugInfo()."<br>";
+		print "DB Error : ".$pearDB->getDebugInfo()."<br />";
 
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 

@@ -59,18 +59,18 @@ For information : contact@oreon-project.org
 	 * Delete Session Expired
 	 */
 	$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$DBRESULT->fetchInto($session_expire);
 	$time_limit = time() - ($session_expire["session_expire"] * 60);
 
 	$DBRESULT =& $pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
-	if (PEAR::isError($DBRESULT)) print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br>";
+	if (PEAR::isError($DBRESULT)) print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br />";
 
 	/*
 	 * Get session and Check if session is not expired
 	 */
 	$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
-	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	if (!$DBRESULT->numRows())
 		header("Location: index.php?disconnect=2");
@@ -119,7 +119,7 @@ For information : contact@oreon-project.org
 	# Skin path
 	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB error : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
 	$DBRESULT->fetchInto($data);
 	$skin = "./Themes/".$data["template"]."/";
 
@@ -145,7 +145,7 @@ For information : contact@oreon-project.org
 	# Update Session Table For last_reload and current_page row
 	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
-		print "DB Error WHERE Updating Session : ".$DBRESULT->getDebugInfo()."<br>";
+		print "DB Error WHERE Updating Session : ".$DBRESULT->getDebugInfo()."<br />";
 
 	# Load traduction in the selected language.
 	is_file ("./lang/".$oreon->user->get_lang().".php") ? include_once ("./lang/".$oreon->user->get_lang().".php") : include_once ("./lang/en.php");
