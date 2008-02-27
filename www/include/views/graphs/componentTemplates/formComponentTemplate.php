@@ -74,10 +74,10 @@ For information : contact@oreon-project.org
 	$form->addElement('select', 'ds_order', _("Order"), $orders);
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	
-	$TabColorNameAndLang = array("ds_color_line"=>"giv_ct_lineClr","ds_color_area"=>"giv_ct_areaClr",);
+	$TabColorNameAndLang = array("ds_color_line"=>_("Line color"),"ds_color_area"=>_("Area color"));
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
-		$nameLang = $lang[$val];
+		$nameLang = $val;
 		isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = NULL;
 		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"9","maxlength"=>"7");

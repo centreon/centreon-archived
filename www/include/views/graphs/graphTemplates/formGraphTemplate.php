@@ -105,19 +105,19 @@ For information : contact@oreon-project.org
 	
 	$sel =& $form->addElement('select', 'step', _("Recovery Step"), $steps);
 
-	$TabColorNameAndLang 	= array(	"bg_grid_color"=>"giv_gt_bgGridClr",
-                                    	"grid_main_color"=>"giv_gt_bgGridPClr",
-                                    	"grid_sec_color"=>"giv_gt_bgGridSClr",
-                                    	"contour_cub_color"=>"giv_gt_bgContClr",
-                                    	"bg_color"=>"giv_gt_bgClr",
-                                    	"police_color"=>"giv_gt_bgPol",
-                                    	"col_arrow"=>"giv_gt_arrClr",
-                                    	"col_top"=>"giv_gt_topClr",
-                                    	"col_bot"=>"giv_gt_botClr",
+	$TabColorNameAndLang 	= array(	"bg_grid_color"=>_("Grid background color"),
+                                    	"grid_main_color"=>_("Main grid color"),
+                                    	"grid_sec_color"=>_("Secondary grid color"),
+                                    	"contour_cub_color"=>_("Outline color"),
+                                    	"bg_color"=>_("Background color"),
+                                    	"police_color"=>_("Text color"),
+                                    	"col_arrow"=>_("Arrow color"),
+                                    	"col_top"=>_("Top color"),
+                                    	"col_bot"=>_("Bottom color"),
 					);
 
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
-		$nameLang = $lang[$val];
+		$nameLang = $val;
 		isset($graph[$nameColor]) ?	$codeColor = $graph[$nameColor] : $codeColor = NULL;
 		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"8","maxlength"=>"7");
@@ -165,17 +165,6 @@ For information : contact@oreon-project.org
 	$form->addRule('vertical_label', _("Required Field"), 'required');
 	$form->addRule('width', _("Required Field"), 'required');
 	$form->addRule('height', _("Required Field"), 'required');
-	/* 
-	$form->addRule('bg_grid_color', $lang['ErrRequired'], 'required');
-    $form->addRule('grid_main_color', $lang['ErrRequired'], 'required');
-	$form->addRule('grid_sec_color', $lang['ErrRequired'], 'required');
-    $form->addRule('contour_cub_color', $lang['ErrRequired'], 'required');
-    $form->addRule('bg_color', $lang['ErrRequired'], 'required');
-    $form->addRule('police_color', $lang['ErrRequired'], 'required');
-    $form->addRule('col_arrow', $lang['ErrRequired'], 'required');
-    $form->addRule('col_top', $lang['ErrRequired'], 'required');
-    $form->addRule('col_bot', $lang['ErrRequired'], 'required');
-	*/
 	$form->addRule('title', _("Required Field"), 'required');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('name', _("Name is already in use"), 'exist');
