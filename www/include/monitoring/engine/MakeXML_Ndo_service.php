@@ -21,26 +21,6 @@ For information : contact@oreon-project.org
 	$buffer = '';
 	$oreonPath = '/usr/local/centreon/';
 
-	$ndo_base_prefixe = "nagios";
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
-
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
 		get_error('please set your oreonPath');
@@ -51,6 +31,9 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBOdsConnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();
 
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -60,7 +43,7 @@ For information : contact@oreon-project.org
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if($res->fetchInto($session)){
 			;
-		}else
+		} else
 			get_error('bad session id');
 	}
 	else
@@ -258,15 +241,6 @@ For information : contact@oreon-project.org
 
 
 	/* Get Host status */
-	/*
-	$rq1 = "SELECT nhs.current_state," .
-			" nhs.problem_has_been_acknowledged, " .
-			" nhs.passive_checks_enabled," .
-			" nhs.active_checks_enabled," .
-			" no.name1 as host_name" .
-			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
-			" WHERE no.object_id = nhs.host_object_id AND no.objecttype_id = 1";
-*/
 	$rq1 = "SELECT nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled," .
@@ -279,7 +253,6 @@ For information : contact@oreon-project.org
 			" nh.address" .
 			" FROM ".$ndo_base_prefixe."_hoststatus nhs, ".$ndo_base_prefixe."_objects no, ".$ndo_base_prefixe."_hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id AND no.objecttype_id = 1 AND no.object_id = nh.host_object_id";
-	//$rq1 .=	" AND no.is_active = 1";
 
 	if(!$is_admin)
 		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
@@ -295,14 +268,10 @@ For information : contact@oreon-project.org
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
-	while($DBRESULT_NDO1->fetchInto($ndo))
-	{
+	while($DBRESULT_NDO1->fetchInto($ndo)){
 		$host_status[$ndo["host_name"]] = $ndo;
 	}
 	/* end */
-
-
-
 
 	/* Get Service status */
 	$rq ="SELECT " .
@@ -327,7 +296,6 @@ For information : contact@oreon-project.org
 			" FROM ".$ndo_base_prefixe."_servicestatus nss, ".$ndo_base_prefixe."_objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'";
-//	$rq .= " AND no.is_active = 1";
 	$rq .= " AND objecttype_id = 2";
 
 
@@ -407,8 +375,8 @@ For information : contact@oreon-project.org
 
 	$host_prev = "";
 	$class = "list_one";
-	while($DBRESULT_NDO->fetchInto($ndo))
-	{
+	while($DBRESULT_NDO->fetchInto($ndo)){
+
 		if( isset($host_status[$ndo["host_name"]]) ){
 			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
 			$color_service = $tab_color_service[$ndo["current_state"]];
@@ -432,7 +400,7 @@ For information : contact@oreon-project.org
 					$class = "list_four";
 				else
 					$class = "list_down";
-			}else{
+			} else {
 				if( $ndo["problem_has_been_acknowledged"] == 1)
 					$class = "list_four";
 			}
@@ -467,6 +435,8 @@ For information : contact@oreon-project.org
 			$buffer .= '<hs><![CDATA['. $host_status[$ndo["host_name"]]["current_state"]  . ']]></hs>';///
 			$buffer .= '<sd><![CDATA['. $ndo["service_description"] . ']]></sd>';
 			$buffer .= '<svc_id>'. $ndo["object_id"] . '</svc_id>';
+			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
+			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
 			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"]).'</svc_index>';
 			$buffer .= '<sid>'.$sid.'</sid>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
@@ -480,11 +450,9 @@ For information : contact@oreon-project.org
 			$buffer .= '<eh>'. $ndo["event_handler_enabled"] . '</eh>';
 			$buffer .= '<is>'. $ndo["is_flapping"] . '</is>';
 			$buffer .= '<fd>'. $ndo["flap_detection_enabled"] . '</fd>';
-	        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';///
-	        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';///
-	        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';///
-	//		$buffer .= '<lsc>'. $ndo["last_state_change"] . '</lsc>';
-
+	        $buffer .= '<ha>'.$host_status[$ndo["host_name"]]["problem_has_been_acknowledged"]  .'</ha>';
+	        $buffer .= '<hae>'.$host_status[$ndo["host_name"]]["active_checks_enabled"] .'</hae>';
+	        $buffer .= '<hpe>'.$host_status[$ndo["host_name"]]["passive_checks_enabled"]  .'</hpe>';
 			$buffer .= '<nc>'. date($date_time_format_status, $ndo["next_check"]) . '</nc>';
 			$buffer .= '<lc>'. date($date_time_format_status, $ndo["last_check"]) . '</lc>';
 			$buffer .= '<d>'. $duration . '</d>';
@@ -498,7 +466,6 @@ For information : contact@oreon-project.org
 		$buffer .= 'none';
 		$buffer .= '</infos>';
 	}
-
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;

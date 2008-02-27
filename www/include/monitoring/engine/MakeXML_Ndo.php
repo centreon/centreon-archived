@@ -21,24 +21,6 @@ For information : contact@oreon-project.org
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
 
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';	
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
-
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
 		get_error('please set your oreonPath');
@@ -46,6 +28,11 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();
 
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -61,9 +48,6 @@ For information : contact@oreon-project.org
 	else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
-
-
-
 
 	/* requisit */
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
@@ -174,7 +158,6 @@ For information : contact@oreon-project.org
 	}
 
 
-	include_once($oreonPath . "www/DBndoConnect.php");
 	$service = array();
 	$host_status = array();
 	$service_status = array();

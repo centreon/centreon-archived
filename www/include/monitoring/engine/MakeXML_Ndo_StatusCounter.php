@@ -18,42 +18,19 @@ For information : contact@oreon-project.org
 
 	$debug = 0;
 	$flag_reset = 0;
-	$ndo_base_prefix = "nagios";
-
+	
 	$oreonPath = '/srv/oreon/';
-
-/*
-	if($oreonPath == '@INSTALL_DIR_OREON@'){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= 'none';
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-*/
-
-
 
 	## pearDB init
 	require_once 'DB.php';
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
 
-	/* Connect to oreon DB */
-
-	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_oreon['user'],
-			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['db'],);
-	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-
+	$ndo_base_prefix = getNDOPrefix();
 
 	# Session...
 	$debug_session = 'KO';
@@ -61,24 +38,6 @@ For information : contact@oreon-project.org
 	# sessionID check and refresh
 	$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
 	$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
-
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-	function check_injection($sid){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $sid)) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
 
 	/* security check 2/2*/
 	if(!check_injection($sid)){
@@ -119,7 +78,7 @@ For information : contact@oreon-project.org
 
 
 	function read($sid){
-		global $pearDB, $flag,$oreonPath, $ndo_base_prefix;
+		global $pearDB, $flag,$oreonPath, $ndo_base_prefix, $pearDBndo;
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
@@ -135,11 +94,9 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 		$DBRESULT_OPT->fetchInto($general_opt);
 
-		include_once($oreonPath . "www/DBndoConnect.php");
-
 		/* Get HostNDO status */
 		$rq1 = "SELECT count(nhs.current_state) as cnt, nhs.current_state" .
-				" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
+				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 1 GROUP BY nhs.current_state ORDER by nhs.current_state";
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
@@ -155,11 +112,10 @@ For information : contact@oreon-project.org
 
 		/* Get ServiceNDO status */
 		$rq2 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
-				" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like 'OSL_Module'".
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
-	//			" AND no.instance_id = 1";
 
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO2))
@@ -184,8 +140,6 @@ For information : contact@oreon-project.org
 		$statistic_host["DOWN"] = $host_stat[1];
 		$statistic_host["UNREACHABLE"] = $host_stat[2];
 		$statistic_host["PENDING"] = $host_stat[3];
-
-
 
 		restore_session($statistic_service, $statistic_host);
 
@@ -212,10 +166,6 @@ For information : contact@oreon-project.org
 		header('Content-Type: text/xml');
 		echo $buffer;
 	}
-
-
-
-
 
 	read($sid);
 ?>

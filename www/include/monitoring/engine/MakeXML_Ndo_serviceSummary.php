@@ -20,27 +20,7 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = "nagios";
-
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
-
+	
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
 		get_error('please set your oreonPath');
@@ -50,7 +30,10 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
 
+	$ndo_base_prefix = getNDOPrefix();
+	
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
@@ -200,7 +183,7 @@ For information : contact@oreon-project.org
 		global $o;
 
 		$rq = "SELECT count( nss.service_object_id ) AS nb".
-		" FROM " .$ndo_base_prefix."_servicestatus nss".
+		" FROM " .$ndo_base_prefix."servicestatus nss".
 		" WHERE nss.current_state = '".$status."'";
 
 		if($o == "svcSum_ack_0")
@@ -212,7 +195,7 @@ For information : contact@oreon-project.org
 		$rq .= " AND nss.service_object_id".
 		" IN (".
 		" SELECT nno.object_id".
-		" FROM " .$ndo_base_prefix."_objects nno".
+		" FROM " .$ndo_base_prefix."objects nno".
 		" WHERE nno.objecttype_id = 2 ".
 			" AND nno.name1 not like 'OSL_Module'".
 		" AND nno.name1 = '".$host_name."'".
@@ -256,26 +239,26 @@ For information : contact@oreon-project.org
 	$rq1 = "SELECT " .
 			" no.name1 as host_name," .
 			" nhs.current_state" .
-			" FROM " .$ndo_base_prefix."_objects no, " .$ndo_base_prefix."_hoststatus nhs " .
+			" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs " .
 			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 			" AND no.name1 not like 'OSL_Module'";
 
 
 	if($o == "svcSum_pb")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcSum_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcSum_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0" .
 				")";
 

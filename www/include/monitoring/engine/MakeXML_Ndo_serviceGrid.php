@@ -20,27 +20,7 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = "nagios";
-
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
-
+	
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
 		get_error('please set your oreonPath');
@@ -50,9 +30,12 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();
 
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
@@ -201,7 +184,7 @@ For information : contact@oreon-project.org
 		global $o, $instance, $is_admin, $lcaSTR;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
-				" FROM `" .$ndo_base_prefix."_servicestatus` nss, `" .$ndo_base_prefix."_objects` no" .
+				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
 				" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'";
 
@@ -219,7 +202,7 @@ For information : contact@oreon-project.org
 				" IN (" .
 
 				" SELECT nno.object_id" .
-				" FROM " .$ndo_base_prefix."_objects nno" .
+				" FROM " .$ndo_base_prefix."objects nno" .
 				" WHERE nno.objecttype_id =2" .
 				" AND nno.name1 = '".$host_name."'" .
 				" )";
@@ -271,7 +254,7 @@ For information : contact@oreon-project.org
 	$rq1 = "SELECT " .
 			" no.name1 as host_name," .
 			" nhs.current_state" .
-			" FROM " .$ndo_base_prefix."_objects no, " .$ndo_base_prefix."_hoststatus nhs " .
+			" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs " .
 			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 			" AND no.name1 not like 'OSL_Module'";
 		if(!$is_admin)
@@ -280,19 +263,19 @@ For information : contact@oreon-project.org
 
 	if($o == "svcgrid_pb" || $o == "svcOV_pb")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 				")";
 
@@ -348,30 +331,20 @@ For information : contact@oreon-project.org
 	$ct = 0;
 	$flag = 0;
 
-
 	$tab_final = array();
-	while($DBRESULT_NDO1->fetchInto($ndo))
-	{
+	while($DBRESULT_NDO1->fetchInto($ndo))	{
 		$tab_svc = get_services($ndo["host_name"]);
-
-//		if(count($tab_svc) > 0)	{
-			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
-			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-//		}
+		$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
+		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
 	}
 
-
-//	while($DBRESULT_NDO1->fetchInto($ndo))
-	foreach($tab_final as $host_name => $tab)
-	{
+	foreach($tab_final as $host_name => $tab){
 		if($class == "list_one")
 			$class = "list_two";
 		else
 			$class = "list_one";
 
 		$buffer .= '<l class="'.$class.'">';
-
-//		$tab_svc = get_services($ndo["host_name"]);
 
 		foreach ($tab["tab_svc"] as $svc => $state) {
 			$buffer .= '<svc>';

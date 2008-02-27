@@ -20,27 +20,6 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = "nagios";
-
-
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
 
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
@@ -50,30 +29,24 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
 
+	$ndo_base_prefix = getNDOPrefix();
 
 	/* LCA */
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-//	$lcaHostName =  getLCAHostByName();
-
-//	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
-
-
-
-
 
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if($res->fetchInto($session)){
 			;
-		}else
+		} else
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
@@ -81,13 +54,13 @@ For information : contact@oreon-project.org
 
 
 	/* requisit */
-	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
+	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
-	}else
+	} else
 		get_error('num unknown');
 	if(isset($_GET["limit"]) && !check_injection($_GET["limit"])){
 		$limit = htmlentities($_GET["limit"]);
-	}else
+	} else
 		get_error('limit unknown');
 
 
@@ -251,7 +224,7 @@ For information : contact@oreon-project.org
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
 			" no.name1 as host_name" .
-			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
+			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nhs.host_object_id AND no.objecttype_id = 1";
 
 	if($instance != "ALL")
@@ -290,7 +263,7 @@ For information : contact@oreon-project.org
 			" nss.flap_detection_enabled," .
 			" no.name1 as host_name," .
 			" no.name2 as service_description" .
-			" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
+			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'".
 			" AND no.is_active = 1 AND objecttype_id = 2";

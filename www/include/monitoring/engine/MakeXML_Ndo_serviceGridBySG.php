@@ -20,26 +20,6 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = "nagios";
-
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
 
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
@@ -50,6 +30,10 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();
+	
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
@@ -198,7 +182,7 @@ For information : contact@oreon-project.org
 		global $o;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
-				" FROM `" .$ndo_base_prefix."_servicestatus` nss, `" .$ndo_base_prefix."_objects` no" .
+				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
 				" WHERE no.object_id = nss.service_object_id" ;
 	if($instance != "ALL")
 		$rq .= " AND no.instance_id = ".$instance;
@@ -217,7 +201,7 @@ For information : contact@oreon-project.org
 				" IN (" .
 
 				" SELECT nno.object_id" .
-				" FROM ".$ndo_base_prefix."_objects nno" .
+				" FROM ".$ndo_base_prefix."objects nno" .
 				" WHERE nno.objecttype_id =2" .
 				" AND nno.name1 = '".$host_name."'" ;
 /*
@@ -268,7 +252,7 @@ For information : contact@oreon-project.org
 
 
 	$rq1 = "SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
-			" FROM " .$ndo_base_prefix."_servicegroups sg," .$ndo_base_prefix."_servicegroup_members sgm, " .$ndo_base_prefix."_servicestatus ss, " .$ndo_base_prefix."_objects no".
+			" FROM " .$ndo_base_prefix."servicegroups sg," .$ndo_base_prefix."servicegroup_members sgm, " .$ndo_base_prefix."servicestatus ss, " .$ndo_base_prefix."objects no".
 			" WHERE sg.config_type = 0 " .
 			" AND ss.service_object_id = sgm.service_object_id".
 			" AND no.object_id = sgm.service_object_id" .
@@ -288,7 +272,7 @@ For information : contact@oreon-project.org
 		$rq1 .= " AND ss.current_state != 0" ;
 /*
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 */
@@ -296,13 +280,13 @@ For information : contact@oreon-project.org
 		$rq1 .= " AND ss.current_state != 0 AND ss.problem_has_been_acknowledged = 0" ;
 /*
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 */
 	if($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."_objects nno," .$ndo_base_prefix."_servicestatus nss " .
+					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 				")";
 	if($search != ""){
@@ -334,10 +318,12 @@ For information : contact@oreon-project.org
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
 
-		$buffer .= '<rq>';
+/*
+ * 
+ 		$buffer .= '<rq>';
 		$buffer .= $rq1;
 		$buffer .= '</rq>';
-
+*/
 
 	if($o == "svcOVSG")
 		$buffer .= '<s>1</s>';
@@ -358,8 +344,7 @@ For information : contact@oreon-project.org
 	$h = "";
 	$flag = 0;
 
-	while($DBRESULT_NDO1->fetchInto($tab))
-	{
+	while($DBRESULT_NDO1->fetchInto($tab)){
 		if($class == "list_one")
 			$class = "list_two";
 		else
@@ -389,27 +374,15 @@ For information : contact@oreon-project.org
 			$buffer .= '<hc><![CDATA['. $tab_color_host[$hs]  . ']]></hc>';
 		}
 
-
-
 		$buffer .= '<svc>';
 		$buffer .= '<sn><![CDATA['. $tab["service_description"] . ']]></sn>';
 		$buffer .= '<sc><![CDATA['. $tab_color_service[$tab["current_state"]] . ']]></sc>';
 		$buffer .= '</svc>';
 
-
-
 	}
 	if($sg != "")
 		$buffer .= '</h></sg>';
 
-
-
-/*
-		$buffer .= '<infos>';
-		$buffer .= 'none';
-		$buffer .= '</infos>';
-	}
-*/
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;

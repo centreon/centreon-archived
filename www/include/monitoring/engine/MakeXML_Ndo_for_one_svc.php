@@ -20,25 +20,6 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = "nagios";
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
 
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
@@ -49,6 +30,9 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();
 
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -229,7 +213,7 @@ For information : contact@oreon-project.org
 			" nss.execution_time," .
 			" nss.event_handler_enabled" .
 
-			" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
+			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = " . $svc_id .
 			" AND no.object_id = nss.service_object_id " .
 			" AND no.name1 not like 'OSL_Module'".

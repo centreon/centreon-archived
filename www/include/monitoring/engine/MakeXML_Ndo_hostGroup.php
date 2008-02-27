@@ -20,27 +20,7 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = "nagios";
-
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
-
+	
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
 		get_error('please set your oreonPath');
@@ -48,8 +28,12 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
 
+	$ndo_base_prefix = getNDOPrefix();
+	
 	/* security check 2/2*/
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
@@ -170,7 +154,6 @@ For information : contact@oreon-project.org
 	}
 
 
-	include_once($oreonPath . "www/DBndoConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
@@ -182,12 +165,12 @@ For information : contact@oreon-project.org
 		global $general_opt;
 
 		$rq = "SELECT count( nhs.host_object_id ) AS nb".
-			" FROM " .$ndo_base_prefix."_hoststatus nhs".
+			" FROM " .$ndo_base_prefix."hoststatus nhs".
 			" WHERE nhs.current_state = '".$status."'".
 			" AND nhs.host_object_id".
 			" IN (".
 			" SELECT nhgm.host_object_id".
-			" FROM " .$ndo_base_prefix."_hostgroup_members nhgm".
+			" FROM " .$ndo_base_prefix."hostgroup_members nhgm".
 			" WHERE nhgm.hostgroup_id =".$host_group_id.
 			")";
 
@@ -205,12 +188,12 @@ For information : contact@oreon-project.org
 
 
 		$rq = "SELECT count( nss.service_object_id ) AS nb".
-		" FROM " .$ndo_base_prefix."_servicestatus nss".
+		" FROM " .$ndo_base_prefix."servicestatus nss".
 		" WHERE nss.current_state = '".$status."'".
 		" AND nss.service_object_id".
 		" IN (".
 		" SELECT nno.object_id".
-		" FROM " .$ndo_base_prefix."_objects nno".
+		" FROM " .$ndo_base_prefix."objects nno".
 		" WHERE nno.objecttype_id =2";
 
 		if(!$is_admin)
@@ -225,7 +208,7 @@ For information : contact@oreon-project.org
 		" IN (".
 
 		" SELECT no.name1".
-		" FROM " .$ndo_base_prefix."_objects no, " .$ndo_base_prefix."_hostgroup_members nhgm".
+		" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hostgroup_members nhgm".
 		" WHERE nhgm.hostgroup_id =".$host_group_id.
 		" AND no.object_id = nhgm.host_object_id".
 		" )".
@@ -286,12 +269,9 @@ For information : contact@oreon-project.org
 	$rq1 = "SELECT " .
 			" no.name1 as hostgroup_name," .
 			" hg.hostgroup_id" .
-			" FROM " .$ndo_base_prefix."_hostgroups hg, ". //$ndo_base_prefix."_hostgroup_members hgm, ".
-			$ndo_base_prefix."_objects no ".
+			" FROM " .$ndo_base_prefix."hostgroups hg, ". //$ndo_base_prefix."hostgroup_members hgm, ".
+			$ndo_base_prefix."objects no ".
 			" WHERE no.object_id = hg.hostgroup_object_id";
-
-
-
 
 	if($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
@@ -299,8 +279,7 @@ For information : contact@oreon-project.org
 
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
-
-
+		
 	$rq1 .= " group by no.name1 ";
 	$rq1 .= " order by no.name1 ". $order;
 

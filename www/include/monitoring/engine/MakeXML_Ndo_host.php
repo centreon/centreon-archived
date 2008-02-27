@@ -20,26 +20,6 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
-	$ndo_base_prefix = "nagios";
-
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
 
 	/* security check 1/2*/
 	if($oreonPath == '@INSTALL_DIR_OREON@')
@@ -50,41 +30,44 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBndoConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+	
+	$ndo_base_prefix = getNDOPrefix();
+	
 
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			;
-		}else
+		if (!$res->fetchInto($session))
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
 	/* requisit */
-	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+	if (isset($_GET["instance"]) && !check_injection($_GET["instance"]))
 		$instance = htmlentities($_GET["instance"]);
-	}else
+	else
 		$instance = "ALL";
-	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
+		
+	if (isset($_GET["num"]) && !check_injection($_GET["num"]))
 		$num = htmlentities($_GET["num"]);
-	}else
+	else
 		get_error('num unknown');
-	if(isset($_GET["limit"]) && !check_injection($_GET["limit"])){
+	
+	if (isset($_GET["limit"]) && !check_injection($_GET["limit"]))
 		$limit = htmlentities($_GET["limit"]);
-	}else
+	else
 		get_error('limit unknown');
 
 
 	/* options */
-	if(isset($_GET["search"]) && !check_injection($_GET["search"])){
+	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
 		$search = htmlentities($_GET["search"]);
-	}else
+	} else
 		$search = "";
 
 	if(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
@@ -232,7 +215,7 @@ For information : contact@oreon-project.org
 			" nh.notes_url," .
 			" nh.icon_image," .
 			" nh.icon_image_alt" .
-			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh" .
+			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh" .
 			" WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
 			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
