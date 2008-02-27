@@ -10,7 +10,7 @@
         <tr>
         	<td>
 
-			<input type="radio" name="period_choice" value="auto">
+			<input type="radio" name="period_choice" value="auto" />
 
 		       {$form.period.label}
 				&nbsp;
@@ -19,7 +19,7 @@
 
 
 			<td>
-				<input type="radio" name="period_choice" value="custom" CHECKED>
+				<input type="radio" name="period_choice" value="custom" checked="checked" />
 
 				{$lang.m_from}
 				&nbsp;
@@ -37,7 +37,7 @@
 
 
 			<td>
-				<input type="button" name="graph" value="Apply" onClick="apply_period();">
+				<input type="button" name="graph" value="Apply" onClick="apply_period();" />
 			</td>
 
 

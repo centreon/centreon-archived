@@ -125,8 +125,8 @@ For information : contact@oreon-project.org
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
-<script language='javascript' src='./include/common/javascript/tool.js'></script>
-<script>
+<script type="text/javascript" src='./include/common/javascript/tool.js'></script>
+<script type="text/javascript">
 			var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
 		    var headID = document.getElementsByTagName("head")[0];  
 		    var cssNode = document.createElement('link');
@@ -343,7 +343,6 @@ if(document.getElementById('menu_2'))
 
 				
 				tree.selectItem(id);
-				
 				var proc = new Transformation();
 				var _addrXSL = "./include/views/graphs/graphODS/GraphService.xsl";
 				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?multi='+multi+'&split='+_split+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
