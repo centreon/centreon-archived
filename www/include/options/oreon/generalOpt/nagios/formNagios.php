@@ -143,8 +143,6 @@ For information : contact@oreon-project.org
 	$tpl->assign("genOpt_nagios_direstory", _("Nagios Directories"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
 	$tpl->assign("genOpt_ndo_configuration", _("NDO Configuration"));
-	$tpl->assign("", _());
-	$tpl->assign("", _());
 	
 	$tpl->assign('valid', $valid);
 	$tpl->display("formNagios.ihtml");
