@@ -18,24 +18,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-function get_error($motif){
-	$buffer = null;
-	$buffer .= '<reponse>';
-	$buffer .= $motif;
-	$buffer .= '</reponse>';
-	header('Content-Type: text/xml');
-	echo $buffer;
-	exit(0);
-}
-
-function check_injection($g){
-	if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $g)) {
-		get_error('sql injection detected');
-		return 1;
-	}
-	return 0;
-}
-
 function check_session($sid, $pearDB){
 	if(isset($sid) && !check_injection($sid)){
 		$sid = htmlentities($sid);
