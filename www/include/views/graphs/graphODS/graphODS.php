@@ -45,15 +45,13 @@ For information : contact@oreon-project.org
 	} else
 		$_GET["host_id"] = null;
 
+	$id = 1;
 	if (isset($_GET["id"])){
 		$id = $_GET["id"];
-	} else
-		$id = 1;
-
+	} 
 	if (isset($_POST["id"])){
 		$id = $_POST["id"];
-	} else
-		$id = 1;
+	}
 
 	if (isset($_POST["svc_id"]) && $_POST["svc_id"]){
 		$id = "";
@@ -182,7 +180,8 @@ if(document.getElementById('menu_2'))
 			function onCheck(nodeId)
 			{
 				multi = 1;
-				document.getElementById('openid').innerHTML = tree.getAllChecked();
+				if(document.getElementById('openid'))
+					document.getElementById('openid').innerHTML = tree.getAllChecked();
 				graph_4_host(tree.getAllChecked(),1);
 			}
 			
@@ -191,7 +190,7 @@ if(document.getElementById('menu_2'))
 				multi = 0;
 
 				tree.openItem(nodeId);
-				if(nodeId.substring(0,2) == 'HS')
+				if(nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS')
 				{
 					var graphView4xml = document.getElementById('graphView4xml');
 					graphView4xml.innerHTML="..graph.." + nodeId;
@@ -337,23 +336,35 @@ if(document.getElementById('menu_2'))
 				var _addrXSL = "./include/views/graphs/graphODS/GraphService.xsl";
 				var _addrXML = './include/views/graphs/graphODS/GetODSXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 
-
 //				var header = document.getElementById('header');
 //				header.innerHTML += _addrXML;
-
 
 				proc.setXml(_addrXML)
 				proc.setXslt(_addrXSL)
 				proc.transform("graphView4xml");
-
 		}
 
-
-
-				
-
-
 //graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
+
+
+    
+    var nowOnload = window.onload; // Let's save the existing assignment, if any
+    window.onload = function () {
+        // Here is your precious function
+        // You can call as many functions as you want here;
+        myOnloadFunction1();
+//graph_4_host('HS_1506', '0');
+graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
+
+        // Now we call old function which was assigned to onLoad, thus playing nice
+        if(nowOnload != null && typeof(nowOnload) == 'function') {
+            nowOnload();
+        }
+    }
+
+    // Your precious function
+    function myOnloadFunction1() {
+    }
 
 </script>
 

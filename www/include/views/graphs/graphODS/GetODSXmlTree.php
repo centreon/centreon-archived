@@ -163,8 +163,19 @@ if($normal_mode)
 	           	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
 				print("</item>");
 		}
+		print("</item>");
 
+		print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
 
+		$rq = "SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "Mysql Error : ".$DBRESULT->getDebugInfo();
+		while ($DBRESULT->fetchInto($MS)){
+				$i++;
+	           	print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
+				print("</item>");
+		}
 		print("</item>");
 	}
 	else
