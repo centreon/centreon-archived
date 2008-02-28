@@ -117,7 +117,6 @@ For information : contact@oreon-project.org
 		} else
 			$template_id = $_GET["template_id"];
 		$DBRESULT->free();	
-
 		/*
 		 * Create command line
 		 */
@@ -192,10 +191,10 @@ For information : contact@oreon-project.org
 		$command_line .= " TICK:fail#ffffa0:1.0:\"Failures Average bits out\"";
 		*/
 		$command_line .= " CDEF:vname=v1,3600,TREND ";
-		$command_line .= "  CDEF:crit=v1,75,LT,100,0,IF ";
-		$command_line .= "  CDEF:warn=v1,74,GT,100,0,IF ";
-		$command_line .= "  CDEF:ok=v1,100,EQ,100,0,IF ";
-		$command_line .= "  CDEF:unk=v1,UN,100,0,IF ";
+		$command_line .= " CDEF:crit=v1,75,LT,100,0,IF ";
+		$command_line .= " CDEF:warn=v1,74,GT,100,0,IF ";
+		$command_line .= " CDEF:ok=v1,100,EQ,100,0,IF ";
+		$command_line .= " CDEF:unk=v1,UN,100,0,IF ";
 
 		//$command_line .= " AREA:v1#AAFF33";
 		//$command_line .= " VDEF:max=v1,AVERAGE ";
