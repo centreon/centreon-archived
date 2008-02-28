@@ -18,6 +18,19 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
+	
+	function get_ndo_instance_id($name_instance){
+		global $gopt,$pearDBndo;
+		$rq = "SELECT instance_id FROM nagios_instances WHERE instance_name like '".$name_instance."'";
+		$DBRESULT_NDO =& $pearDBndo->query($rq);
+		$DBRESULT_NDO->fetchInto($ndo);
+		return $ndo["instance_id"];
+	}
+	
+	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM nagios_server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	
 ?>
 function getXhrC(){
 	if(window.XMLHttpRequest) // Firefox et autres
@@ -86,18 +99,7 @@ function construct_selecteList_ndo_instance(id){
 
 
 <?php
-	include_once("./DBndoConnect.php");
-	function get_ndo_instance_id($name_instance)
-	{
-		global $gopt,$pearDBndo;
-		$rq = "SELECT instance_id FROM nagios_instances WHERE instance_name like '".$name_instance."'";
-		$DBRESULT_NDO =& $pearDBndo->query($rq);
-		$DBRESULT_NDO->fetchInto($ndo);
-		return $ndo["instance_id"];
-	}
-	$DBRESULT =& $pearDB->query("SELECT cfg.instance_name as name FROM nagios_server ns, cfg_ndomod cfg WHERE cfg.ns_nagios_server = ns.id AND ns.ns_activate = 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+
 	while($DBRESULT->fetchInto($nagios_server))
 	{
 	 	$isntance_id = get_ndo_instance_id($nagios_server["name"]);

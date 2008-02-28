@@ -179,7 +179,7 @@ For information : contact@oreon-project.org
 	}
 
 
-	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/DBNDOConnect.php");
 	$service = array();
 	$host_status = array();
 	$service_status = array();

@@ -135,7 +135,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 		$DBRESULT_OPT->fetchInto($general_opt);
 
-		include_once($oreonPath . "www/DBndoConnect.php");
+		include_once($oreonPath . "www/DBNDOConnect.php");
 
 		/* Get HostNDO status */
 		$rq1 = "SELECT count(nhs.current_state) as cnt, nhs.current_state" .

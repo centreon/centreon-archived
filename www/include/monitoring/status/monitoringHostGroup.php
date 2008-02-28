@@ -44,7 +44,7 @@ For information : contact@oreon-project.org
 	$pathDetails = "./include/monitoring/objectDetails/";
 
 	if ($ndo){
-		include_once("./DBndoConnect.php");
+		include_once("./DBNDOConnect.php");
 	
 		if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
 			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";

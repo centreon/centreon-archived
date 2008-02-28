@@ -35,7 +35,7 @@ For information : contact@oreon-project.org
 	$tab_status = array();
 
 	if (isset($ndo) && $ndo){
-		include_once("./DBndoConnect.php");
+		include_once("./DBNDOConnect.php");
 
 		/* start ndo service info */
 		$rq =	"SELECT " .

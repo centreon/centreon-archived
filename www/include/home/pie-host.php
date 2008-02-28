@@ -30,7 +30,7 @@
 	## calcul stat for resume
 	$statistic_host = array("UP" => 0, "DOWN" => 0, "UNREACHABLE" => 0, "PENDING" => 0);
 
-	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/DBNDOConnect.php");
 
 	## calcul stat for resume
 	$statistic_host = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE",3 => "PENDING");

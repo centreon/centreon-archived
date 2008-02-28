@@ -292,25 +292,20 @@ function hiddenPOPUP(id){
 		span.innerHTML = '';
 }
 
-function displayIMG(index, s_id, id)
-{
-	
-	   // Pour les navigateurs récents
+function displayIMG(index, s_id, id)	{
+	// Pour les navigateurs récents
     if ( document.getElementById && document.getElementById( 'div_img' ) ){
         Pdiv = document.getElementById( 'div_img' );
         PcH = true;
-    }
-    // Pour les veilles versions
-    else if ( document.all && document.all[ 'div_img' ] ){
+    } else if ( document.all && document.all[ 'div_img' ] ){
+	    // Pour les veilles versions
         Pdiv = document.all[ 'div_img' ];
         PcH = true;
-    }
+    } else if ( document.layers && document.layers[ 'div_img' ] ){
     // Pour les très veilles versions
-    else if ( document.layers && document.layers[ 'div_img' ] ){
         Pdiv = document.layers[ 'div_img' ];
         PcH = true;
-    }
-    else{
+    } else {
         PcH = false;
     }
     if ( PcH ){
@@ -325,8 +320,6 @@ function displayIMG(index, s_id, id)
 			Pdiv.style.display = "block";
 			Pdiv.style.left = tempX +'px';
 			Pdiv.style.top = posy +'px';
-    }
-    else{
     }
 }
 

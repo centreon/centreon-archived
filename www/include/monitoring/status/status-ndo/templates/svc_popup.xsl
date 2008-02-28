@@ -17,7 +17,7 @@
 		<tr class='list_separator'>
 			<td class="separator" colspan="2">Status</td>
 		</tr>
-</xsl:comment>
+	</xsl:comment>
 
 		<tr class='list_two'>
 

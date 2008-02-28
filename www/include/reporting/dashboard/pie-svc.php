@@ -28,7 +28,7 @@
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 	
-	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/DBNDOConnect.php");
 
 	## calcul stat for resume
 	$statistic = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");

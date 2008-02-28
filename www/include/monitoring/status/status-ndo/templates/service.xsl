@@ -2,7 +2,6 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:variable name="i" select="//i"/>
 <xsl:template match="/">
-
 <table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -13,33 +12,30 @@
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>
-
-	<xsl:for-each select="//i">
+		<xsl:for-each select="//i">
 			<xsl:if test="nc = 1">
 				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="next_check">next check</td>
 			</xsl:if>
-	</xsl:for-each>
-
-
+		</xsl:for-each>
 	</tr>
 	<xsl:for-each select="//l">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
-				<td class="ListColPicker">
-				<xsl:element name="input">
-						<xsl:attribute name="type">checkbox</xsl:attribute>
-						<xsl:attribute name="value">1</xsl:attribute>
-						<xsl:attribute name="name">select[<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>]</xsl:attribute>
-				</xsl:element>
-				</td>
-				<td class="ListColLeft">
+		<td class="ListColPicker">
+		<xsl:element name="input">
+				<xsl:attribute name="type">checkbox</xsl:attribute>
+				<xsl:attribute name="value">1</xsl:attribute>
+				<xsl:attribute name="name">select[<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>]</xsl:attribute>
+		</xsl:element>
+		</td>
+		<td class="ListColLeft">
 
-<xsl:comment>
+					<xsl:comment>
 						<xsl:attribute name="style">
 							background-color:<xsl:value-of select="hc"/>;
     					</xsl:attribute>
-</xsl:comment>
+					</xsl:comment>
 						<xsl:if test="hn/@none = 0">
 
 							<xsl:element name="span">
@@ -147,10 +143,10 @@
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 
-					<xsl:if test="svc_index > 0">
+							<xsl:if test="svc_index > 0">
 								<xsl:attribute name="onmouseover">displayIMG('<xsl:value-of select="svc_index"/>','<xsl:value-of select="sid"/>','<xsl:value-of select="svc_id"/>');</xsl:attribute>
 								<xsl:attribute name="onmouseout">hiddenIMG('<xsl:value-of select="svc_id"/>');</xsl:attribute>
-					</xsl:if>
+							</xsl:if>
 
 							</xsl:element>
 

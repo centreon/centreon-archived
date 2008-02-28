@@ -28,7 +28,7 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/DBNDOConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	include_once($oreonPath . "www/include/common/common-Func.php");
 	

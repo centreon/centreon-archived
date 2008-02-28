@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/DBNDOConnect.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
@@ -155,7 +155,7 @@ For information : contact@oreon-project.org
 	}
 
 
-	include_once($oreonPath . "www/DBndoConnect.php");
+	include_once($oreonPath . "www/DBNDOConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
