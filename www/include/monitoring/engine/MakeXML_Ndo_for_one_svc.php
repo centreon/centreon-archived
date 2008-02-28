@@ -35,36 +35,32 @@ For information : contact@oreon-project.org
 	$ndo_base_prefix = getNDOPrefix();
 
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			;
-		}else
+		if(!$res->fetchInto($session))
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
-	if(isset($_GET["svc_id"]) && !check_injection($_GET["svc_id"])){
+	if (isset($_GET["svc_id"]) && !check_injection($_GET["svc_id"])){
 		$svc_id = htmlentities($_GET["svc_id"]);
-	}else
+	} else
 		$svc_id = "0";
 
-	if(isset($_GET["enable"]) && !check_injection($_GET["enable"])){
+	if (isset($_GET["enable"]) && !check_injection($_GET["enable"])){
 		$enable = htmlentities($_GET["enable"]);
-	}else
+	} else
 		$enable = "enable";
-	if(isset($_GET["disable"]) && !check_injection($_GET["disable"])){
+	if (isset($_GET["disable"]) && !check_injection($_GET["disable"])){
 		$disable = htmlentities($_GET["disable"]);
-	}else
+	} else
 		$disable = "disable";
-	if(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
+	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	}else
+	} else
 		$date_time_format_status = "d/m/Y H:i:s";
 
 	/* security end*/
@@ -144,10 +140,7 @@ For information : contact@oreon-project.org
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
 
-
 	$lang_ext = $admin["contact_lang"];
-	include_once("../lang/$lang_ext.php");
-
 
 	// if is admin -> lca
 	if(!$is_admin){
@@ -155,7 +148,6 @@ For information : contact@oreon-project.org
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
-
 
 	$service = array();
 	$host_status = array();
@@ -165,7 +157,6 @@ For information : contact@oreon-project.org
 	$tab_host_service = array();
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-//	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
@@ -212,7 +203,6 @@ For information : contact@oreon-project.org
 			" nss.state_type," .
 			" nss.execution_time," .
 			" nss.event_handler_enabled" .
-
 			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = " . $svc_id .
 			" AND no.object_id = nss.service_object_id " .
@@ -231,12 +221,8 @@ For information : contact@oreon-project.org
 	$c = array("1" => "#00ff00", "0" => "#ff0000");
 	$en = array("0" => _("No"), "1" => _("Yes"));
 
-	
-	if($DBRESULT_NDO1->fetchInto($ndo))
-	{
+	if($DBRESULT_NDO1->fetchInto($ndo)){
 		$buffer .= '<svc_name><![CDATA['. $ndo["service_description"]  . ']]></svc_name>';
-
-
 		$duration = "";
 		if($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
@@ -325,16 +311,9 @@ For information : contact@oreon-project.org
 
 	$buffer .= '</reponse>';
 
-header('Content-type: text/xml; charset=iso-8859-1');
-header('Cache-Control: no-cache, must-revalidate');
+	header('Content-type: text/xml; charset=iso-8859-1');
+	header('Cache-Control: no-cache, must-revalidate');
 
-echo '<'.'?xml version="1.0" ?'.">\n";
-
+	echo '<'.'?xml version="1.0" ?'.">\n";
 	echo $buffer;
-
-
-
-
-
-
 ?>

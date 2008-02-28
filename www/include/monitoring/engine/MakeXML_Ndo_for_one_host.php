@@ -143,18 +143,14 @@ For information : contact@oreon-project.org
 	$res2->fetchInto($admin);
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
-
 	$lang_ext = $admin["contact_lang"];
-	include_once("../lang/$lang_ext.php");
-
-
+	
 	// if is admin -> lca
 	if(!$is_admin){
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
-
 
 	$service = array();
 	$host_status = array();
@@ -186,7 +182,7 @@ For information : contact@oreon-project.org
 	$state_type = array("1" => "HARD","0" => "SOFT");
 
 	/* Get Host status */
-	$rq1 = "SELECT nhs.current_state," .
+	$rq1 =  " SELECT nhs.current_state," .
 			" nh.address," .
 			" no.name1 as host_name," .
 			" nhs.perfdata," .
@@ -205,18 +201,13 @@ For information : contact@oreon-project.org
 			" unix_timestamp(nhs.last_time_down) as last_time_down," .
 			" unix_timestamp(nhs.last_time_unreachable) as last_time_unreachable," .
 			" nhs.current_notification_number," .
-//			" nhs.is_flapping," .
 			" nhs.scheduled_downtime_depth," .
 			" nhs.output," .
 			" ROUND(nhs.percent_state_change) as percent_state_change," .
-//			" nh.flap_detection_enabled," .
-//			" nh.passive_checks_enabled," .
-//			" nh.active_checks_enabled," .
-//			" nh.obsess_over_host," .
 			" nh.notifications_enabled," .
 			" nh.event_handler_enabled," .
 			" nh.icon_image_alt" .
-			" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no, ".$ndo_base_prefix."_hosts nh" .
+			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh" .
 			" WHERE no.object_id = " . $host_id .
 			" AND no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
@@ -234,9 +225,7 @@ For information : contact@oreon-project.org
 	$c = array("1" => "#00ff00", "0" => "#ff0000");
 	$en = array("0" => _("No"), "1" => _("Yes"));
 
-	
-	if($DBRESULT_NDO1->fetchInto($ndo))
-	{
+	if($DBRESULT_NDO1->fetchInto($ndo)){
 		$duration = "";
 		if($ndo["last_state_change"] > 0)
 			$duration = Duration::toString(time() - $ndo["last_state_change"]);
@@ -285,30 +274,20 @@ For information : contact@oreon-project.org
 		$buffer .= '<last_notification>'.  get_centreon_date($last_notification)  . '</last_notification>';
 		$buffer .= '<last_notification_name><![CDATA['.html_entity_decode(_("Last Notification")).']]></last_notification_name>';
 
-
 		$buffer .= '<next_notification>'.  get_centreon_date($next_notification)  . '</next_notification>';
 		$buffer .= '<next_notification_name><![CDATA['.html_entity_decode(_("Next Notification")).']]></next_notification_name>';
-
 
 		$buffer .= '<current_notification_number>'. $ndo["current_notification_number"]  . '</current_notification_number>';
 		$buffer .= '<current_notification_number_name><![CDATA['._("Current Notification Number").']]></current_notification_number_name>';
 
-/*
-		$buffer .= '<is_flapping>'. $ndo["is_flapping"]  . '</is_flapping>';
-		$buffer .= '<is_flapping_name><![CDATA['.$lang["m_mon_host_flapping"].']]></is_flapping_name>';
-*/
-
 		$buffer .= '<percent_state_change>'. $ndo["percent_state_change"]  . '</percent_state_change>';
 		$buffer .= '<percent_state_change_name><![CDATA['._("Percent State Change").']]></percent_state_change_name>';
-
 
 		$buffer .= '<is_downtime>'. $en[$ndo["scheduled_downtime_depth"]]  . '</is_downtime>';
 		$buffer .= '<is_downtime_name><![CDATA['._("In Scheduled Downtime?").']]></is_downtime_name>';
 
-
 		$buffer .= '<last_update>'. get_centreon_date( time())  . '</last_update>';
 		$buffer .= '<last_update_name><![CDATA['._("Last Update").']]></last_update_name>';
-
 
 		$buffer .= '<last_time_up name="'.html_entity_decode(_("Last up time")).'">'. get_centreon_date( $ndo["last_time_up"])  . '</last_time_up>';
 		$buffer .= '<last_time_down name="'.html_entity_decode(_("Last down time")).'">'. get_centreon_date( $ndo["last_time_down"])  . '</last_time_down>';
@@ -325,17 +304,9 @@ For information : contact@oreon-project.org
 	}
 
 	$buffer .= '</reponse>';
+	header('Content-type: text/xml; charset=iso-8859-1');
+	header('Cache-Control: no-cache, must-revalidate');
 
-header('Content-type: text/xml; charset=iso-8859-1');
-header('Cache-Control: no-cache, must-revalidate');
-
-echo '<'.'?xml version="1.0" ?'.">\n";
-
+	echo '<'.'?xml version="1.0" ?'.">\n";
 	echo $buffer;
-
-
-
-
-
-
 ?>
