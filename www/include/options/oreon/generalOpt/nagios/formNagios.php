@@ -19,15 +19,17 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	#
-	## Database retrieve information
-	#
+	/*
+	 * Database retrieve information
+	 */
 	$DBRESULT =& $pearDB->query("SELECT * FROM general_opt LIMIT 1");
 	# Set base value
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
+	
+	/*
+	 * Database retrieve information for differents elements list we need on the page
+	 */
+	
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -39,15 +41,15 @@ For information : contact@oreon-project.org
 	$attrsText2		= array("size"=>"5");
 	$attrsAdvSelect = null;
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Modify General Options"));
 
-	#
-	## Nagios information
-	#
+	/*
+	 * Nagios information
+	 */
 	$form->addElement('header', 'nagios', _("Nagios information"));
 	$form->addElement('text', 'nagios_path', _("Directory"), $attrsText);
 	$form->addElement('text', 'nagios_path_bin', _("Directory + Binary"), $attrsText);
