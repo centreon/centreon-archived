@@ -287,7 +287,7 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_agressive_host_checking', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'use_agressive_host_checking', _("Aggressive Host Checking Option"), '&nbsp;');
+	$form->addGroup($nagTab, 'use_agressive_host_checking', _("Agressive Host Checks"), '&nbsp;');
 	
 	## Part 13
 	$nagTab = array();
@@ -374,7 +374,7 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("Default"), '2');
-	$form->addGroup($nagTab, 'check_service_freshness', _("Service Freshness Checking Option"), '&nbsp;');
+	$form->addGroup($nagTab, 'check_service_freshness', _("Service Freshness Check Option"), '&nbsp;');
 	if ($oreon->user->get_version() == 1)
 		$form->addElement('text', 'freshness_check_interval', _("Freshness Check Interval"), $attrsText);
 	else if ($oreon->user->get_version() == 2)	{
@@ -383,7 +383,7 @@ For information : contact@oreon-project.org
 		$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Yes"), '1');
 		$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("No"), '0');
 		$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'check_host_freshness', _("Host Freshness Checking Option"), '&nbsp;');
+		$form->addGroup($nagTab, 'check_host_freshness', _("Host Freshness Check Option"), '&nbsp;');
 		$form->addElement('text', 'host_freshness_check_interval', _("Host Freshness Check Interval"), $attrsText);
 	}
 	
@@ -417,6 +417,101 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	
+	
+	if ($oreon->user->get_version() == 3)
+	{
+		## Part 23
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_host_dependency_checks', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'enable_predictive_host_dependency_checks', _("Predictive Host Dependency Checks"), '&nbsp;');
+		
+		## Part 24
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'enable_predictive_service_dependency_checks', _("Predictive Service Dependency Checks"), '&nbsp;');
+	
+		## Part 25
+		$form->addElement('text', 'cached_host_check_horizon', _("Cached Host Check"), $attrsText);
+		
+		## Part 26
+		$form->addElement('text', 'cached_service_check_horizon', _("Cached Service Check"), $attrsText);
+	
+		## Part 27
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_large_installation_tweaks', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'use_large_installation_tweaks', _("Use large installation tweaks"), '&nbsp;');	
+	
+		## Part 28
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'free_child_process_memory', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'free_child_process_memory', _("Free child process memory"), '&nbsp;');	
+	
+		## Part 29
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'child_processes_fork_twice', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'child_processes_fork_twice', _("Child processes fork twice"), '&nbsp;');	
+		
+		## Part 30
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'enable_environment_macros', _("Enable environment macros"), '&nbsp;');
+	
+		## Part 31
+		$form->addElement('text', 'additional_freshness_latency', _("Additional freshness latency"), $attrsText);
+	
+		## Part 32
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'enable_embedded_perl', _("Enable embedded Perl"), '&nbsp;');
+	
+		## Part 33
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Yes"), '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("No"), '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_embedded_perl_implicitly', null, _("Default"), '2');
+		$form->addGroup($nagTab, 'use_embedded_perl_implicitly', _("Use embedded Perl implicitly"), '&nbsp;');
+	
+		## Part 34
+		$form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
+		
+		## Part 35
+		$debugLevel = array();
+		$debugLevel["-1"]= "Log everything";
+		$debugLevel["0"]= "Log nothing (default)";
+		$debugLevel["1"]= "Function enter/exit information";
+		$debugLevel["2"]= "Config information";
+		$debugLevel["4"]= "Process information";
+		$debugLevel["8"]= "Scheduled event information";
+		$debugLevel["16"]= "Host/service check information";
+		$debugLevel["32"]= "Notification information";
+		$debugLevel["64"]= "Event broker information";
+		$form->addElement('select', 'debug_level', _("Debug Level"), $debugLevel);
+	
+		## Part 36
+		$nagTab = array();
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 0 ", '0');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 1 ", '1');
+		$nagTab[] = &HTML_QuickForm::createElement('radio', 'debug_verbosity', null, " 2 ", '2');
+		$form->addGroup($nagTab, 'debug_verbosity', _("Debug Verbosity"), '&nbsp;');
+	
+		## Part 37
+		$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
+	}
+
 	$form->setDefaults(array(
 	"nagios_activate"=>'0',
 	"aggregate_status_updates"=>'1',
@@ -446,7 +541,9 @@ For information : contact@oreon-project.org
 	"service_interleave_factor"=>'s',
 	"host_inter_check_delay_method"=>'s',
 	"auto_reschedule_checks"=>'2',
-	"use_aggressive_host_checking"=>'0',
+	"use_agressive_host_checking"=>'0',
+	"enable_predictive_host_dependency_checks"=>'2',
+	"enable_predictive_service_dependency_checks"=>'2',
 	"enable_flap_detection"=>'0',
 	"soft_state_dependencies"=>'0',
 	"obsess_over_services"=>'0',
@@ -461,6 +558,12 @@ For information : contact@oreon-project.org
 	"illegal_macro_output_chars"=>"`~$^&\"|'<>",
 	"use_regexp_matching"=>'0',
 	"use_true_regexp_matching"=>'0',
+	"use_large_installation_tweaks"=>'2',
+	"free_child_process_memory"=>'2',
+	"child_processes_fork_twice"=>'2',
+	"enable_environment_macros"=>'2',
+	"enable_embedded_perl"=>'2',
+	"use_embedded_perl_implicitly"=>'2',
 	'action'=>'1'
 	));
 		
@@ -540,8 +643,10 @@ For information : contact@oreon-project.org
 		$tpl->assign('sort4', "Data");		
 		$tpl->assign('sort5', "Tunning");		
 		$tpl->assign('sort6', "Admin");
+		$tpl->assign('sort7', "Debug");
 		$tpl->assign("Seconds", _("Seconds"));
 		$tpl->assign("Minutes", _("Minutes"));
+		$tpl->assign("Bytes", _("Bytes"));
 		$tpl->display("formNagios.ihtml");
 	}
 ?>

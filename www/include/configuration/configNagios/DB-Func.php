@@ -155,16 +155,16 @@ For information : contact@oreon-project.org
 				"`global_service_event_handler` , `sleep_time` , `inter_check_delay_method` , `service_inter_check_delay_method` , " .
 				"`host_inter_check_delay_method` , `service_interleave_factor` , `max_concurrent_checks` , `max_service_check_spread` , " .
 				"`max_host_check_spread` , `service_reaper_frequency` , `interval_length` , `auto_reschedule_checks` , `auto_rescheduling_interval` , " .
-				"`auto_rescheduling_window` , `use_agressive_host_checking` , `enable_flap_detection` , `low_service_flap_threshold` , " .
-				"`high_service_flap_threshold` , `low_host_flap_threshold` , `high_host_flap_threshold` , `soft_state_dependencies` , " .
+				"`auto_rescheduling_window` , `use_agressive_host_checking` , `enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , " .
+				"`high_service_flap_threshold` , `low_host_flap_threshold` , `high_host_flap_threshold` , `soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , " .
 				"`service_check_timeout` , `host_check_timeout` , `event_handler_timeout` , `notification_timeout` , `ocsp_timeout` , `ochp_timeout` , " .
 				"`perfdata_timeout` , `obsess_over_services` , `ocsp_command` , `obsess_over_hosts` , `ochp_command` , `process_performance_data` , " .
 				"`host_perfdata_command` , `service_perfdata_command` , `host_perfdata_file` , `service_perfdata_file` , `host_perfdata_file_template` , " .
 				"`service_perfdata_file_template` , `host_perfdata_file_mode` , `service_perfdata_file_mode` , `host_perfdata_file_processing_interval` , " .
 				"`service_perfdata_file_processing_interval` , `host_perfdata_file_processing_command` , `service_perfdata_file_processing_command` , " .
-				"`check_for_orphaned_services` , `check_service_freshness` , `service_freshness_check_interval` , `freshness_check_interval` , " .
-				"`check_host_freshness` , `host_freshness_check_interval` , `date_format` , `illegal_object_name_chars` , `illegal_macro_output_chars` , " .
-				"`use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, `broker_module`, `event_broker_options`) ";
+				"`check_for_orphaned_services` , `check_service_freshness` , `service_freshness_check_interval` , `cached_host_check_horizon`, `cached_service_check_horizon`, `freshness_check_interval` ,`additional_freshness_latency` , " .
+				"`check_host_freshness` , `host_freshness_check_interval` , `date_format` , `illegal_object_name_chars` , `illegal_macro_output_chars` ,`use_large_installation_tweaks` , `free_child_process_memory` , `child_processes_fork_twice` , `debug_file` , `debug_level` , `debug_verbosity` , `max_debug_file_size` , " .
+				"`enable_environment_macros` , `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, `broker_module`, `event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly` ) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
@@ -223,12 +223,14 @@ For information : contact@oreon-project.org
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES)."', " : $rq .= "NULL, ";
         isset($ret["use_agressive_host_checking"]["use_agressive_host_checking"]) && $ret["use_agressive_host_checking"]["use_agressive_host_checking"] != 2 ? $rq .= "'".$ret["use_agressive_host_checking"]["use_agressive_host_checking"]."',  " : $rq .= "'2', ";
+        isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]) && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ? $rq .= "'".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  " : $rq .= "'2', ";
         isset($ret["enable_flap_detection"]["enable_flap_detection"]) && $ret["enable_flap_detection"]["enable_flap_detection"] != 2 ? $rq .= "'".$ret["enable_flap_detection"]["enable_flap_detection"]."',  " : $rq .= "'2', ";
         isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != NULL ? $rq .= "'".htmlentities($ret["low_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["high_service_flap_threshold"]) && $ret["high_service_flap_threshold"] != NULL ? $rq .= "'".htmlentities($ret["high_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["low_host_flap_threshold"]) && $ret["low_host_flap_threshold"] != NULL ? $rq .= "'".htmlentities($ret["low_host_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["high_host_flap_threshold"]) && $ret["high_host_flap_threshold"] != NULL ? $rq .= "'".htmlentities($ret["high_host_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["soft_state_dependencies"]["soft_state_dependencies"]) && $ret["soft_state_dependencies"]["soft_state_dependencies"] != 2 ? $rq .= "'".$ret["soft_state_dependencies"]["soft_state_dependencies"]."',  " : $rq .= "'2', ";
+        isset($ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"]) && $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"] != 2 ? $rq .= "'".$ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"]."',  " : $rq .= "'2', ";
         isset($ret["service_check_timeout"]) && $ret["service_check_timeout"] != NULL ? $rq .= "'".htmlentities($ret["service_check_timeout"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["host_check_timeout"]) && $ret["host_check_timeout"] != NULL ? $rq .= "'".htmlentities($ret["host_check_timeout"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["event_handler_timeout"]) && $ret["event_handler_timeout"] != NULL ? $rq .= "'".htmlentities($ret["event_handler_timeout"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -257,11 +259,22 @@ For information : contact@oreon-project.org
 		isset($ret["check_service_freshness"]["check_service_freshness"]) && $ret["check_service_freshness"]["check_service_freshness"] != 2 ? $rq .= "'".$ret["check_service_freshness"]["check_service_freshness"]."',  " : $rq .= "'2', ";
 		isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["service_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
 	    isset($ret["freshness_check_interval"]) && $ret["freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+	    isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "'".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+	    isset($ret["cached_host_check_horizon"]) && $ret["cached_host_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_host_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+	    isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["check_host_freshness"]["check_host_freshness"]) && $ret["check_host_freshness"]["check_host_freshness"] != 2 ? $rq .= "'".$ret["check_host_freshness"]["check_host_freshness"]."',  " : $rq .= "'2', ";
         isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["date_format"]) && $ret["date_format"] != NULL ? $rq .= "'".htmlentities($ret["date_format"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != NULL ? $rq .= "'".htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != NULL ? $rq .= "'".htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]) && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ? $rq .= "'".$ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]."',  " : $rq .= "'2', ";
+        isset($ret["free_child_process_memory"]["free_child_process_memory"]) && $ret["free_child_process_memory"]["free_child_process_memory"] != 2 ? $rq .= "'".$ret["free_child_process_memory"]["free_child_process_memory"]."',  " : $rq .= "'2', ";
+        isset($ret["child_processes_fork_twice"]["child_processes_fork_twice"]) && $ret["child_processes_fork_twice"]["child_processes_fork_twice"] != 2 ? $rq .= "'".$ret["child_processes_fork_twice"]["child_processes_fork_twice"]."',  " : $rq .= "'2', ";
+        isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "'".htmlentities($ret["debug_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["debug_level"]) && $ret["debug_level"] != NULL ? $rq .= "'".htmlentities($ret["debug_level"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2 ? $rq .= "'".$ret["debug_verbosity"]["debug_verbosity"]."',  " : $rq .= "'2', ";
+        isset($ret["max_debug_file_size"]) && $ret["max_debug_file_size"] != NULL ? $rq .= "'".htmlentities($ret["max_debug_file_size"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["enable_environment_macros"]["enable_environment_macros"]) && $ret["enable_environment_macros"]["enable_environment_macros"] != 2 ? $rq .= "'".$ret["enable_environment_macros"]["enable_environment_macros"]."',  " : $rq .= "'2', ";
         isset($ret["use_regexp_matching"]["use_regexp_matching"]) && $ret["use_regexp_matching"]["use_regexp_matching"] != 2 ? $rq .= "'".$ret["use_regexp_matching"]["use_regexp_matching"]."',  " : $rq .= "'2', ";
         isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"]) && $ret["use_true_regexp_matching"]["use_true_regexp_matching"] != 2 ? $rq .= "'".$ret["use_true_regexp_matching"]["use_true_regexp_matching"]."',  " : $rq .= "'2', ";
         isset($ret["admin_email"]) && $ret["admin_email"] != NULL ? $rq .= "'".htmlentities($ret["admin_email"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -269,7 +282,9 @@ For information : contact@oreon-project.org
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."'," : $rq .= "'0',";
 		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "'".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES)."') " : $rq .= "NULL) ";
+		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES)."') " : $rq .= "NULL, ";
+		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "'".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "'2', ";
+		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "'2' ) ";
  
         $DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -362,12 +377,14 @@ For information : contact@oreon-project.org
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "auto_rescheduling_interval = '".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES)."', " : $rq .= "auto_rescheduling_interval = NULL, ";
         isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != NULL ? $rq .= "auto_rescheduling_window = '".htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES)."', " : $rq .= "auto_rescheduling_window = NULL, ";
         isset($ret["use_agressive_host_checking"]["use_agressive_host_checking"]) && $ret["use_agressive_host_checking"]["use_agressive_host_checking"] != 2 ? $rq .= "use_agressive_host_checking   = '".$ret["use_agressive_host_checking"]["use_agressive_host_checking"]."',  " : $rq .= "use_agressive_host_checking   = '2', ";
+        isset($ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]) && $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] != 2 ? $rq .= "enable_predictive_host_dependency_checks   = '".$ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"]."',  " : $rq .= "enable_predictive_host_dependency_checks   = '2', ";
         isset($ret["enable_flap_detection"]["enable_flap_detection"]) && $ret["enable_flap_detection"]["enable_flap_detection"] != 2 ? $rq .= "enable_flap_detection = '".$ret["enable_flap_detection"]["enable_flap_detection"]."',  " : $rq .= "enable_flap_detection = '2', ";
         isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != NULL ? $rq .= "low_service_flap_threshold = '".htmlentities($ret["low_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "low_service_flap_threshold = NULL, ";
         isset($ret["high_service_flap_threshold"]) && $ret["high_service_flap_threshold"] != NULL ? $rq .= "high_service_flap_threshold = '".htmlentities($ret["high_service_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "high_service_flap_threshold = NULL, ";
         isset($ret["low_host_flap_threshold"]) && $ret["low_host_flap_threshold"] != NULL ? $rq .= "low_host_flap_threshold = '".htmlentities($ret["low_host_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "low_host_flap_threshold = NULL, ";
         isset($ret["high_host_flap_threshold"]) && $ret["high_host_flap_threshold"] != NULL ? $rq .= "high_host_flap_threshold = '".htmlentities($ret["high_host_flap_threshold"], ENT_QUOTES)."',  " : $rq .= "high_host_flap_threshold = NULL, ";
         isset($ret["soft_state_dependencies"]["soft_state_dependencies"]) && $ret["soft_state_dependencies"]["soft_state_dependencies"] != 2 ? $rq .= "soft_state_dependencies   = '".$ret["soft_state_dependencies"]["soft_state_dependencies"]."',  " : $rq .= "soft_state_dependencies   = '2', ";
+        isset($ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"]) && $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"] != 2 ? $rq .= "enable_predictive_service_dependency_checks   = '".$ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"]."',  " : $rq .= "enable_predictive_service_dependency_checks   = '2', ";
         isset($ret["service_check_timeout"]) && $ret["service_check_timeout"] != NULL ? $rq .= "service_check_timeout = '".htmlentities($ret["service_check_timeout"], ENT_QUOTES)."',  " : $rq .= "service_check_timeout = NULL, ";
         isset($ret["host_check_timeout"]) && $ret["host_check_timeout"] != NULL ? $rq .= "host_check_timeout = '".htmlentities($ret["host_check_timeout"], ENT_QUOTES)."',  " : $rq .= "host_check_timeout = NULL, ";
         isset($ret["event_handler_timeout"]) && $ret["event_handler_timeout"] != NULL ? $rq .= "event_handler_timeout = '".htmlentities($ret["event_handler_timeout"], ENT_QUOTES)."',  " : $rq .= "event_handler_timeout = NULL, ";
@@ -395,12 +412,19 @@ For information : contact@oreon-project.org
 		isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"]) && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2 ? $rq .= "check_for_orphaned_services  = '".$ret["check_for_orphaned_services"]["check_for_orphaned_services"]."',  " : $rq .= "check_for_orphaned_services  = '2', ";
 		isset($ret["check_service_freshness"]["check_service_freshness"]) && $ret["check_service_freshness"]["check_service_freshness"] != 2 ? $rq .= "check_service_freshness  = '".$ret["check_service_freshness"]["check_service_freshness"]."',  " : $rq .= "check_service_freshness   = '2', ";
 		isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != NULL ? $rq .= "service_freshness_check_interval   = '".htmlentities($ret["service_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "service_freshness_check_interval   = NULL, ";
+		isset($ret["cached_host_check_horizon"]) && $ret["cached_host_check_horizon"] != NULL ? $rq .= "cached_host_check_horizon   = '".htmlentities($ret["cached_host_check_horizon"], ENT_QUOTES)."',  " : $rq .= "cached_host_check_horizon   = NULL, ";
+		isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "cached_service_check_horizon   = '".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "cached_service_check_horizon   = NULL, ";
 	    isset($ret["freshness_check_interval"]) && $ret["freshness_check_interval"] != NULL ? $rq .= "freshness_check_interval = '".htmlentities($ret["freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "freshness_check_interval = NULL, ";
+	    isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "additional_freshness_latency = '".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "additional_freshness_latency = NULL, ";
         isset($ret["check_host_freshness"]["check_host_freshness"]) && $ret["check_host_freshness"]["check_host_freshness"] != 2 ? $rq .= "check_host_freshness = '".$ret["check_host_freshness"]["check_host_freshness"]."',  " : $rq .= "check_host_freshness = '2', ";
         isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != NULL ? $rq .= "host_freshness_check_interval = '".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "host_freshness_check_interval = NULL, ";
         isset($ret["date_format"]) && $ret["date_format"] != NULL ? $rq .= "date_format = '".htmlentities($ret["date_format"], ENT_QUOTES)."',  " : $rq .= "date_format = NULL, ";
         isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != NULL ? $rq .= "illegal_object_name_chars  = '".htmlentities($ret["illegal_object_name_chars"], ENT_QUOTES)."',  " : $rq .= "illegal_object_name_chars  = NULL, ";
         isset($ret["illegal_macro_output_chars"]) && $ret["illegal_macro_output_chars"] != NULL ? $rq .= "illegal_macro_output_chars  = '".htmlentities($ret["illegal_macro_output_chars"], ENT_QUOTES)."',  " : $rq .= "illegal_macro_output_chars  = NULL, ";
+        isset($ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]) && $ret["use_large_installation_tweaks"]["use_large_installation_tweaks"] != 2 ? $rq .= "use_large_installation_tweaks = '".$ret["use_large_installation_tweaks"]["use_large_installation_tweaks"]."',  " : $rq .= "use_large_installation_tweaks = '2', ";
+        isset($ret["free_child_process_memory"]["free_child_process_memory"]) && $ret["free_child_process_memory"]["free_child_process_memory"] != 2 ? $rq .= "free_child_process_memory = '".$ret["free_child_process_memory"]["free_child_process_memory"]."',  " : $rq .= "free_child_process_memory = '2', ";
+        isset($ret["child_processes_fork_twice"]["child_processes_fork_twice"]) && $ret["child_processes_fork_twice"]["child_processes_fork_twice"] != 2 ? $rq .= "child_processes_fork_twice = '".$ret["child_processes_fork_twice"]["child_processes_fork_twice"]."',  " : $rq .= "child_processes_fork_twice = '2', ";
+        isset($ret["enable_environment_macros"]["enable_environment_macros"]) && $ret["enable_environment_macros"]["enable_environment_macros"] != 2 ? $rq .= "enable_environment_macros = '".$ret["enable_environment_macros"]["enable_environment_macros"]."',  " : $rq .= "enable_environment_macros = '2', ";        
         isset($ret["use_regexp_matching"]["use_regexp_matching"]) && $ret["use_regexp_matching"]["use_regexp_matching"] != 2 ? $rq .= "use_regexp_matching = '".$ret["use_regexp_matching"]["use_regexp_matching"]."',  " : $rq .= "use_regexp_matching = '2', ";
         isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"]) && $ret["use_true_regexp_matching"]["use_true_regexp_matching"] != 2 ? $rq .= "use_true_regexp_matching = '".$ret["use_true_regexp_matching"]["use_true_regexp_matching"]."',  " : $rq .= "use_true_regexp_matching = '2', ";
         isset($ret["admin_email"]) && $ret["admin_email"] != NULL ? $rq .= "admin_email = '".htmlentities($ret["admin_email"], ENT_QUOTES)."',  " : $rq .= "admin_email = NULL, ";
@@ -408,6 +432,14 @@ For information : contact@oreon-project.org
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "nagios_comment = '".htmlentities($ret["nagios_comment"], ENT_QUOTES)."', " : $rq .= "nagios_comment = NULL, ";
 		isset($ret["broker_module"]) && $ret["broker_module"] != NULL ? $rq .= "broker_module = '".htmlentities($ret["broker_module"], ENT_QUOTES)."', " : $rq .= "broker_module = NULL, ";
 		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "event_broker_options = '".htmlentities($ret["event_broker_options"], ENT_QUOTES)."', " : $rq .= "event_broker_options = NULL, ";
+		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "enable_embedded_perl   = '".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "enable_embedded_perl   = '2', ";
+		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "use_embedded_perl_implicitly   = '".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "use_embedded_perl_implicitly   = '2', ";
+		
+		isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "debug_file = '".htmlentities($ret["debug_file"], ENT_QUOTES)."',  " : $rq .= "debug_file = NULL, ";
+		isset($ret["debug_level"]) && $ret["debug_level"] != NULL ? $rq .= "debug_level = '".$ret["debug_level"]."',  " : $rq .= "debug_level = NULL, ";
+		isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2 ? $rq .= "debug_verbosity   = '".$ret["debug_verbosity"]["debug_verbosity"]."',  " : $rq .= "debug_verbosity   = '2', ";
+		isset($ret["max_debug_file_size"]) && $ret["max_debug_file_size"] != NULL ? $rq .= "max_debug_file_size = '".htmlentities($ret["max_debug_file_size"], ENT_QUOTES)."',  " : $rq .= "max_debug_file_size = NULL, ";
+		
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
 		$DBRESULT =& $pearDB->query($rq);
