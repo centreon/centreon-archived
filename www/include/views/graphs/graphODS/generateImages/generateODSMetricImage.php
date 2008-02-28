@@ -23,6 +23,7 @@ For information : contact@oreon-project.org
 	$path = "/srv/oreon/";
 	
 	require_once ('DB.php');
+	require_once ('./DB-Func.php');
 	require_once ($path."www/class/Session.class.php");
 	require_once ($path."www/class/Oreon.class.php");
 
