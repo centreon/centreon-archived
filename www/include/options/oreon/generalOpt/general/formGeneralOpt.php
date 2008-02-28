@@ -149,16 +149,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("time_sec", _(" seconds "));
 	$tpl->assign("genOpt_display_options", _("Display Options"));
 	$tpl->assign("genOpt_time_zone", _("Time Zone"));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
-	$tpl->assign("", _(""));
+
 	
 	$tpl->assign('valid', $valid);
 	$tpl->display("formGeneralOpt.ihtml");

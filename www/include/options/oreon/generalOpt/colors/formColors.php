@@ -143,7 +143,7 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
-	$tpl->assign("genOpt_colors_properties", _("Status Properties Colors"));
+	$tpl->assign("genOpt_colors_properties", _("Status Color Properties"));
 	
 	$tpl->assign('valid', $valid);
 	$tpl->display("formColors.ihtml");
