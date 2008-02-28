@@ -30,7 +30,12 @@ For information : contact@oreon-project.org
 	$flag_begin = 0;
 	$flag_end = 0;
 	print "<div style='padding=20px'>";
-	$doc = fopen("../doc/".$oreon->user->get_lang()."/".$_GET["page"], "r");	
+	if (!file_exists("../doc/".$oreon->user->get_lang()."/"))
+		$lang = "en_US";
+	else 
+		$lang = $oreon->user->get_lang();
+
+	$doc = fopen("../doc/".$lang."/".$_GET["page"], "r");	
 	while ($line = fgets($doc)){
 		if ($flag_begin && !$flag_end){
 			$line = preg_replace("/href\=\"/", "href=\"./oreon.php?p=$p&doc=1&page=", $line);
