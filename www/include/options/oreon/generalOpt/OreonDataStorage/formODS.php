@@ -70,8 +70,6 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 	$form->addElement('text', 'nagios_log_file', _("Nagios current log file to parse"), $attrsText);
 	
-	$form->addElement('checkbox', 'fast_parsing', _("Fast status log parsing"));
-	
 	$redirect =& $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	

@@ -285,8 +285,6 @@ For information : contact@oreon-project.org
 			$ret["auto_drop"] = "0";
 		if (!isset($ret["archive_log"]))
 			$ret["archive_log"] = "0";
-		if (!isset($ret["fast_parsing"]))
-			$ret["fast_parsing"] = "0";
 		if (!$ret["purge_interval"])
 			$ret["purge_interval"] = 60;
 		if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/")
@@ -301,7 +299,6 @@ For information : contact@oreon-project.org
 				`drop_file` = '".$ret["drop_file"]."',
 				`perfdata_file` = '".$ret["perfdata_file"]."',
 				`archive_log` = '".$ret["archive_log"]."',
-				`fast_parsing` = '".$ret["fast_parsing"]."',
 				`nagios_log_file` = '".$ret["nagios_log_file"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
