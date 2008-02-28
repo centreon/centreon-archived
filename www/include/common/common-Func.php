@@ -1024,10 +1024,8 @@ For information : contact@oreon-project.org
 		$langs["en_US"] = "en_US";
 		if ($handle  = opendir($chemintotal))   {
 		    while ($file = readdir($handle))
-		    	if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, "..")) {
-					//$tab = split('_', $file);
+		    	if (is_dir("$chemintotal/$file") && strcmp($file, ".") && strcmp($file, ".."))
 		      		$langs[$file] = $file;
-		      	}
 			closedir($handle);
 		}
 		return $langs;
@@ -1134,5 +1132,46 @@ For information : contact@oreon-project.org
 		}
 		return NULL;		
 	}
+	
+	function getNDOInformations(){
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$conf_ndo = $DBRESULT->fetchRow();
+		unset($DBRESULT);
+		return $conf_ndo;		
+	}
+	
+	function getNDOPrefix(){
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1;");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$conf_ndo = $DBRESULT->fetchRow();
+		unset($DBRESULT);
+		return $conf_ndo["db_prefix"];		
+	}
+	
+	/* Ajax tests */
+	
+	function get_error($motif){
+		$buffer = null;
+		$buffer .= '<reponse>';
+		$buffer .= $motif;
+		$buffer .= '</reponse>';
+		header('Content-Type: text/xml');
+		echo $buffer;
+		exit(0);
+	}
+
+	function check_injection(){
+		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
+			get_error('sql injection detected');
+			return 1;
+		}
+		return 0;
+	}
+	/* End Ajax Test */
 
 ?>
