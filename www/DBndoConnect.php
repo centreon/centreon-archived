@@ -16,40 +16,39 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	global $pearDBndo;
+
 	// This file have to be included whenever we want to connect to the DB
-
 	require_once("DB.php");
+	
+	if (!function_exists('getNDOInformations')){
+		function getNDOInformations(){
+			global $pearDB;
+			$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$conf_ndo = $DBRESULT->fetchRow();
+			unset($DBRESULT);
+			return $conf_ndo;		
+		}
+	}	
+	$confNDO = getNDOInformations();
+	$debug = 0;
+	$dsn = array(
+	    'phptype'  => 'mysql',
+	    'username' => $confNDO['db_user'],
+	    'password' => $confNDO['db_pass'],
+	    'hostspec' => $confNDO['db_host'],
+	    'database' => $confNDO['db_name'],
+	);
 
-//	if (isset($conf_oreon["ods"])){
-		// Pear connection
+	$options = array( 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 
-		$debug = 0;
-		$dsn = array(
-		    'phptype'  => 'mysql',
-		    'username' => 'centreon',
-		    'password' => 'centreon',
-		    'hostspec' => '192.168.1.204',
-		    'database' => 'centreon2_ndo',
-		);
 
-		$options = array(
-		    'debug'       => 2,
-		    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-		);
-
-		global $pearDBndo;
-
-		$pearDBndo =& DB::connect($dsn, $options);
-		if (PEAR::isError($pearDBndo))
-		    die($pearDBndo->getMessage());
-
+	$pearDBndo =& DB::connect($dsn, $options);
+	if (PEAR::isError($pearDBndo)) 
+		;//print ($pearDBndo->getMessage());
+	else
 		$pearDBndo->setFetchMode(DB_FETCHMODE_ASSOC);
 
-
-		$ndo_prefix = "ndo";
-		$ndo_base_name = "ndo";
-
-
-		// End of Pear connection
-//	}
 ?>

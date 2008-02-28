@@ -71,34 +71,40 @@ For information : contact@oreon-project.org
 	$pathRoot = "./include/monitoring/";
 	$pathExternal = "./include/monitoring/external_cmd/";
 	$pathDetails = "./include/monitoring/objectDetails/";
-
-	switch ($o)	{
-		case "svc" 			: require_once($path."service.php"); 					break;
-
-		case "svcpb" 		: require_once($path."service".$problem.".php");		break;
-		case "svc_warning" 	: require_once($path."service".$problem.".php");		break;
-		case "svc_critical" : require_once($path."service".$problem.".php");		break;
-		case "svc_unknown" 	: require_once($path."service".$problem.".php");		break;
-		case "svc_ok" 		: require_once($path."service".$problem.".php");		break;
-
-		case "svcd" 		: require_once($pathDetails."serviceDetails.php"); 		break;
-		case "svcak" 		: require_once($pathExternal."serviceAcknowledge.php"); break;
-		case "svcpc" 		: require_once($pathExternal."servicePassiveCheck.php");break;
-
-		case "svcgrid" 		: require_once($path."serviceGrid.php"); 				break;
-		case "svcOV" 		: require_once($path."serviceGrid.php");	 			break;
-		case "svcSum" 		: require_once($path."serviceSummary.php"); 			break;
-
-		case "svcgridSG" 	: require_once($path."serviceGridBySG.php"); 			break;
-		case "svcOVSG" 		: require_once($path."serviceGridBySG.php"); 		break;
-		case "svcSumSG" 	: require_once($path."serviceSummaryBySG.php"); 		break;
-
-		case "svcgridHG" 	: require_once($path."serviceGridByHG.php"); 			break;
-		case "svcOVHG" 		: require_once($path."serviceGridByHG.php"); 		break;
-		case "svcSumHG" 	: require_once($path."serviceSummaryByHG.php"); 		break;
-
-		case "meta" 		: require_once($metaservicepath); 				break;
-		case "svcSch" 		: require_once($path."serviceSchedule.php"); 			break;
-		default 			: require_once($path."service.php"); 					break;
+	
+	include_once("./DBndoConnect.php");
+	
+	if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
+		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
+	else {
+		switch ($o)	{
+			case "svc" 			: require_once($path."service.php"); 					break;
+	
+			case "svcpb" 		: require_once($path."service".$problem.".php");		break;
+			case "svc_warning" 	: require_once($path."service".$problem.".php");		break;
+			case "svc_critical" : require_once($path."service".$problem.".php");		break;
+			case "svc_unknown" 	: require_once($path."service".$problem.".php");		break;
+			case "svc_ok" 		: require_once($path."service".$problem.".php");		break;
+	
+			case "svcd" 		: require_once($pathDetails."serviceDetails.php"); 		break;
+			case "svcak" 		: require_once($pathExternal."serviceAcknowledge.php"); break;
+			case "svcpc" 		: require_once($pathExternal."servicePassiveCheck.php");break;
+	
+			case "svcgrid" 		: require_once($path."serviceGrid.php"); 				break;
+			case "svcOV" 		: require_once($path."serviceGrid.php");	 			break;
+			case "svcSum" 		: require_once($path."serviceSummary.php"); 			break;
+	
+			case "svcgridSG" 	: require_once($path."serviceGridBySG.php"); 			break;
+			case "svcOVSG" 		: require_once($path."serviceGridBySG.php"); 		break;
+			case "svcSumSG" 	: require_once($path."serviceSummaryBySG.php"); 		break;
+	
+			case "svcgridHG" 	: require_once($path."serviceGridByHG.php"); 			break;
+			case "svcOVHG" 		: require_once($path."serviceGridByHG.php"); 		break;
+			case "svcSumHG" 	: require_once($path."serviceSummaryByHG.php"); 		break;
+	
+			case "meta" 		: require_once($metaservicepath); 				break;
+			case "svcSch" 		: require_once($path."serviceSchedule.php"); 			break;
+			default 			: require_once($path."service.php"); 					break;
+		}
 	}
 ?>

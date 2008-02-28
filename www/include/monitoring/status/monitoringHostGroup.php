@@ -44,13 +44,19 @@ For information : contact@oreon-project.org
 	$pathDetails = "./include/monitoring/objectDetails/";
 
 	if ($ndo){
-		switch ($o)	{
-			case "hg" 	: require_once($path."hostGroup.php"); break;
-			case "hgpb" : require_once($path."hostGroup.php"); break;
-			case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
-			default 	: require_once($path."hostGroup.php"); break;
+		include_once("./DBndoConnect.php");
+	
+		if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
+			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
+		else {
+			switch ($o)	{
+				case "hg" 	: require_once($path."hostGroup.php"); break;
+				case "hgpb" : require_once($path."hostGroup.php"); break;
+				case "hgd" 	: require_once($pathDetails."hostgroupDetails.php"); break;
+				default 	: require_once($path."hostGroup.php"); break;
+			}
 		}
-	}else{
+	} else {
 		include("./include/monitoring/status/resume.php");
 		switch ($o)	{
 			case "hg" 	: require_once($path."hostgroup.php"); break;

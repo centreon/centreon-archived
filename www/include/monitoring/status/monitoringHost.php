@@ -57,7 +57,6 @@ For information : contact@oreon-project.org
 			default : require_once($pathTools."tools.php"); break;
 		}
 	} else {
-
 		if (!$ndo){
 			include("./include/monitoring/status/resume.php");
 			switch ($o)	{
@@ -67,13 +66,18 @@ For information : contact@oreon-project.org
 				case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
 				default 	: require_once($path."host.php"); 					break;
 			}
-		}else{
-			switch ($o)	{
-				case "h" 	: require_once($path."host.php"); 					break;
-				case "hpb" 	: require_once($path."host.php"); 					break;
-				case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
-				case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
-				default 	: require_once($path."host.php"); 					break;
+		} else {
+			include_once("./DBndoConnect.php");
+			if (preg_match("/connect\ failed/", $pearDBndo->toString(), $str)) 
+				print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
+			else {
+				switch ($o)	{
+					case "h" 	: require_once($path."host.php"); 					break;
+					case "hpb" 	: require_once($path."host.php"); 					break;
+					case "hd" 	: require_once($pathDetails."hostDetails.php"); 	break;
+					case "hak" 	: require_once($pathRoot."external_cmd/hostAcknowledge.php"); 	break;
+					default 	: require_once($path."host.php"); 					break;
+				}
 			}
 		}
 	}
