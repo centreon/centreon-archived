@@ -131,7 +131,7 @@
 
 			<xsl:if test="//split = 0">
 							<xsl:element name="a">
-							<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
 							<xsl:attribute name="href">#</xsl:attribute>
 
 									<xsl:element name="img">
@@ -148,7 +148,7 @@
 			<xsl:if test="//split = 1">
 				<xsl:for-each select="metric">
 								<xsl:element name="a">
-							<xsl:attribute name="onClick">graph_4_host('SS_<xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
+							<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', ''); return false;</xsl:attribute>
 								<xsl:attribute name="href">#</xsl:attribute>
 	
 										<xsl:element name="img">
