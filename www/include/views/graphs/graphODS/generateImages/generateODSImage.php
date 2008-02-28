@@ -31,7 +31,6 @@ For information : contact@oreon-project.org
 	$oreon =& $_SESSION["oreon"];
 
 	include($path."etc/centreon.conf.php");
-	is_file ($path."www/lang/".$oreon->user->get_lang().".php") ? include_once ($path."www/lang/".$oreon->user->get_lang().".php") : include_once ($path."www/lang/en.php");
 	require_once $path."www/include/common/common-Func.php";
 
 	/*
