@@ -75,5 +75,60 @@ class Duration
         return $str;
     }
 }
+
+class Duration_hours_minutes
+{
+	function toString ($duration, $periods = null)
+    {
+        if (!is_array($duration)) {
+            $duration = Duration_hours_minutes::int2array($duration, $periods);
+        }
+        return Duration_hours_minutes::array2string($duration);
+    }
  
+    function int2array ($seconds, $periods = null)
+    {        
+        // Define time periods
+        if (!is_array($periods)) {
+            $periods = array (
+                    'h' => 3600,
+                    'm' => 60,
+                    's' => 1
+                    );
+        }
+ 
+        // Loop
+        $seconds = (int) $seconds;
+        foreach ($periods as $period => $value) {
+            $count = floor($seconds / $value);
+ 
+            if ($count == 0) {
+                continue;
+            }
+ 
+            $values[$period] = $count;
+            $seconds = $seconds % $value;
+        }
+ 
+        // Return
+        if (empty($values)) {
+            $values = null;
+        }
+ 
+        return $values;
+    }
+ 
+    function array2string ($duration)
+    {
+        if (!is_array($duration)) {
+            return false;
+        }
+        foreach ($duration as $key => $value) {
+            $segment = $value . '' . $key;
+            $array[] = $segment;
+        }
+        $str = implode(' ', $array);
+        return $str;
+    }
+}
 ?>
