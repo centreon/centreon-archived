@@ -26,6 +26,8 @@ For information : contact@oreon-project.org
 		get_error('please set your oreonPath');
 	/* security end 1/2 */
 
+	include("DB.php");
+
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBOdsConnect.php");
@@ -251,7 +253,7 @@ For information : contact@oreon-project.org
 			" nh.notes_url," .
 			" nh.notes," .
 			" nh.address" .
-			" FROM ".$ndo_base_prefixe."_hoststatus nhs, ".$ndo_base_prefixe."_objects no, ".$ndo_base_prefixe."_hosts nh " .
+			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id AND no.objecttype_id = 1 AND no.object_id = nh.host_object_id";
 
 	if(!$is_admin)
@@ -293,7 +295,7 @@ For information : contact@oreon-project.org
 			" no.name1 as host_name," .
 			" no.object_id," .
 			" no.name2 as service_description" .
-			" FROM ".$ndo_base_prefixe."_servicestatus nss, ".$ndo_base_prefixe."_objects no" .
+			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'";
 	$rq .= " AND objecttype_id = 2";
