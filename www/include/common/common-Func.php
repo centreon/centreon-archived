@@ -1133,16 +1133,18 @@ For information : contact@oreon-project.org
 		return NULL;		
 	}
 	
-	function getNDOInformations(){
-		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$conf_ndo = $DBRESULT->fetchRow();
-		unset($DBRESULT);
-		return $conf_ndo;		
+	if (!function_exists('getNDOInformations')){
+		function getNDOInformations(){
+			global $pearDB;
+			$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			$conf_ndo = $DBRESULT->fetchRow();
+			unset($DBRESULT);
+			return $conf_ndo;		
+		}
 	}
-	
+		
 	function getNDOPrefix(){
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1;");
