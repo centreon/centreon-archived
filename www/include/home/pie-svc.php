@@ -2,21 +2,16 @@
 
 	require_once ("../../class/Session.class.php");
 	require_once ("../../class/Oreon.class.php");
-
+	
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
-
-	$ndo_base_prefix = "nagios";
-	$oreonPath = '/srv/oreon/';
-
-	## pearDB init
-	require_once 'DB.php';	
-
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-
-	/* Connect to oreon DB */
 	
+	$oreonPath = '/srv/oreon/';
+	
+	require_once("DB.php");
+	include_once($oreonPath . "etc/centreon.conf.php");
+		
+	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
@@ -27,6 +22,11 @@
 	$pearDB =& DB::connect($dsn, $options);
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();
 	
 	include_once($oreonPath . "www/DBndoConnect.php");
 
@@ -36,7 +36,7 @@
 	/* Get HostNDO status */
 	/* Get ServiceNDO status */
 	$rq1 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
-			" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
+			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 			" WHERE no.object_id = nss.service_object_id".
 			" AND no.name1 not like 'OSL_Module'".
 			" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";

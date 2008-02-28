@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 		exit(); 
 	
 	include_once("./include/monitoring/common-Func.php");
-	include_once("./include/monitoring/status/resume.php"); 
+	//include_once("./include/monitoring/status/resume.php"); 
 
 	unset($tpl);
 	unset($path);					

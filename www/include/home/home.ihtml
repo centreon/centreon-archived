@@ -7,14 +7,14 @@
 					<td>{php}
 						
 							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 350, 220, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-host.php' );
+							open_flash_chart_object( 350, 220, './include/home/pie-host.php' );
 						
 						{/php}
 					</td>
 					<td>{php}
 						
 							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 350, 220, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-svc.php' );
+							open_flash_chart_object( 350, 220, './include/home/pie-svc.php' );
 						
 						{/php}
 					</td>
@@ -24,7 +24,7 @@
 						{php}
 						
 							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 700, 220, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-hostgroup.php' );
+							open_flash_chart_object( 700, 220, './include/home/pie-hostgroup.php' );
 						
 						{/php}
 					</td>
@@ -34,8 +34,8 @@
 						{php}
 						
 							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 700, 220, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/home/pie-svcgroup.php' );
-						
+							open_flash_chart_object( 700, 220, './include/home/pie-svcgroup.php' );
+							
 						{/php}
 					</td>
 				</tr>

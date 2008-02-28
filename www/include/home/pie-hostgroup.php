@@ -6,19 +6,12 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	$ndo_base_prefix = "nagios";
 	$oreonPath = '/srv/oreon/';
 
-	## pearDB init
-	require_once 'DB.php';	
-
+	require_once("DB.php");
 	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
-	
-	
+		
 	/* Connect to oreon DB */
-	
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
@@ -27,9 +20,14 @@
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) 
-		die("Connecting problems with oreon database : " . $pearDB->getMessage());
+	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+
+	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();	
 	
 	include_once($oreonPath . "www/DBndoConnect.php");
 

@@ -6,19 +6,12 @@
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	$ndo_base_prefix = "nagios";
 	$oreonPath = '/srv/oreon/';
 
-	## pearDB init
-	require_once 'DB.php';	
-
+	require_once("DB.php");
 	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
-	
-	
+		
 	/* Connect to oreon DB */
-	
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
@@ -27,9 +20,14 @@
 	$options = array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,);	
 
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) 
-		die("Connecting problems with oreon database : " . $pearDB->getMessage());
+	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+
+	include_once('/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+
+	$ndo_base_prefix = getNDOPrefix();	
 	
 	include_once($oreonPath . "www/DBndoConnect.php");
 
@@ -60,7 +58,6 @@
 		$counterCrit = 0;
 		$DBRESULT2 =& $pearDB->query("SELECT host_name, service_description FROM service, host, servicegroup_relation WHERE servicegroup_relation.servicegroup_sg_id = '".$sg["sg_id"]."' AND servicegroup_relation.host_host_id = host.host_id AND servicegroup_relation.service_service_id = service.service_id");
 		while ($s = $DBRESULT2->fetchRow()){
-			print $s["host_name"] . " - " . $s["service_description"]."<br />";
 			$DBRESULT3 =& $pearDBndo->query(	"SELECT current_state " .
 												"FROM nagios_servicestatus, nagios_services, nagios_hosts " .
 												"WHERE nagios_services.display_name = '".$s["service_description"]."' " .
@@ -70,7 +67,6 @@
 			if (PEAR::isError($DBRESULT3))
 				print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
 			while($stt = $DBRESULT3->fetchRow()){
-				print "Status : ".$stt["current_state"]."<br />";
 				if ($stt["current_state"] == 1)
 					$counterWarn++;
 				if ($stt["current_state"] == 0)
@@ -100,22 +96,10 @@
 	 *  create the dataset
 	 */
 	
-	//
-	// create a 2nd set of bars:
-	//
-	
-	
-	
 	// create the graph object:
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';
 	$g->title( _('Status of Service Groups'), '{font-size:18px; color: #424242; margin: 5px; background-color: #F3F6F6; padding:5px; padding-left: 20px; padding-right: 20px;}' );
-	
-	//$g->set_data( $data_1 );
-	//$g->bar_3D( 75, '#D54C78', '2006', 10 );
-	
-	//$g->set_data( $data_2 );
-	//$g->bar_3D( 75, '#3334AD', '2007', 10 );
 	
 	$g->data_sets[] = $bar_blue;
 	$g->data_sets[] = $bar_orange;

@@ -19,7 +19,6 @@ For information : contact@oreon-project.org
 		exit(); 
 	
 	include_once("./include/monitoring/common-Func.php");
-	include_once("./include/monitoring/status/resume.php"); 
 
 	unset($tpl);
 	unset($path);					
@@ -67,7 +66,6 @@ For information : contact@oreon-project.org
 		$tpl->assign('tab_server', $tab_server);	
 	
 	$tpl->assign("options", $options);
-		
 	$tpl->assign("session", session_id());
 	$tpl->display("nagiosStats.ihtml");
 	
