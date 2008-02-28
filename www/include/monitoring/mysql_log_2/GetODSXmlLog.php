@@ -721,8 +721,8 @@ echo "</lang>";
  * END LANG
  */
 
-
-			echo "<req><![CDATA[".$req."]]></req>";
+//print req for debug only
+//echo "<req><![CDATA[".$req."]]></req>";
 
 
 

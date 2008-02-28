@@ -376,7 +376,26 @@ function log_4_host(id, formu)
 		}
 }
 
+//log_4_host(<?php echo $id_log;?>,null);
+
+    var nowOnload = window.onload; // Let's save the existing assignment, if any
+    window.onload = function () {
+        // Here is your precious function
+        // You can call as many functions as you want here;
+        myOnloadFunction1();
+
 log_4_host(<?php echo $id_log;?>,null);
+
+        // Now we call old function which was assigned to onLoad, thus playing nice
+        if(nowOnload != null && typeof(nowOnload) == 'function') {
+            nowOnload();
+        }
+    }
+
+    // Your precious function
+    function myOnloadFunction1() {
+    }
+
 
 </script>
 
