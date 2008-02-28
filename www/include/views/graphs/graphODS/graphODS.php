@@ -62,6 +62,15 @@ For information : contact@oreon-project.org
 			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
 		}
 	}
+	if (isset($_GET["svc_id"]) && $_GET["svc_id"]){
+		$id = "";
+		$id_svc = $_GET["svc_id"];
+		$tab_svcs = explode(",", $id_svc);
+		foreach($tab_svcs as $svc){
+			$tmp = explode(";", $svc);
+			$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+		}
+	}
 	
 	$id_log = "'RR_0'";
 	$multi = 0;
