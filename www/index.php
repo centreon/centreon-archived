@@ -44,11 +44,11 @@ For information : contact@oreon-project.org
 
 	ini_set("session.gc_maxlifetime", "31536000");
 	
-	if (!isset($cas) || !$cas["auth_cas_enable"]){	
+	if (!isset($cas) || !isset($cas["auth_cas_enable"])){	
 		Session::start();
 	}
 	if (isset($_GET["disconnect"])) {
-		if (isset($cas) && $cas["auth_cas_enable"]){
+		if (isset($cas) && isset($cas["auth_cas_enable"]) && $cas["auth_cas_enable"]){
 			include_once('/var/www/CAS/CAS.php');
 			phpCAS::client(CAS_VERSION_2_0, $cas["cas_server"], 443, $cas["cas_url"]);
 			phpCAS::logout();
@@ -68,7 +68,7 @@ For information : contact@oreon-project.org
 		Session::start();
 	}
 	
-	if (isset($cas) && $cas["auth_cas_enable"]){
+	if (isset($cas) && isset($cas["auth_cas_enable"]) && $cas["auth_cas_enable"]){
         include_once('/var/www/CAS/CAS.php');
         phpCAS::client(CAS_VERSION_2_0, $cas["cas_server"], 443, $cas["cas_url"]);
         phpCAS::checkAuthentication();
@@ -245,8 +245,7 @@ For information : contact@oreon-project.org
 	$res->fetchInto($data);
 	$skin = "./Themes/".$data["template"]."/";
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <title>Centreon, Revisited Experience Of Nagios</title>
