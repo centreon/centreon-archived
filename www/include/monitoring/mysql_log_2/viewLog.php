@@ -57,6 +57,10 @@ For information : contact@oreon-project.org
 		$id = $_GET["id"];
 	} else
 		$id = 1;
+	if(isset($_POST["id"])){
+		$id = $_POST["id"];
+	} else
+		$id = 1;
 
 	if(isset($_POST["svc_id"]) && $_POST["svc_id"]){
 		$id = "";
