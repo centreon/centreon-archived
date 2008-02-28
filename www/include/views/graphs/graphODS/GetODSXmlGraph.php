@@ -18,49 +18,42 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
-	header("Content-type: application/xhtml+xml"); 
-} else {
-	header("Content-type: text/xml"); 
-} 
-echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
-
-/*
- * Start document root
- */
-echo "<root>";
-
-# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-$debugXML = 0;
-$buffer = '';
-
-$oreonPath = '../../../../../';
-
-/*
- * pearDB init
- */ 
-require_once 'DB.php';
-include_once($oreonPath . "etc/centreon.conf.php");
-include_once($oreonPath . "www/DBconnect.php");
-include_once($oreonPath . "www/DBOdsConnect.php");
-
-
-/*
- * PHP functions
- */
-include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-include_once($oreonPath . "www/include/common/common-Func.php");
-
-/*
- * Lang file
- */
-	if (isset($_GET["lang"]) && !check_injection($_GET["lang"])){
-		$lang_ = htmlentities($_GET["lang"]);
+	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
+		header("Content-type: application/xhtml+xml"); 
 	} else {
-		$lang_ = "-1";
-	}
-	is_file ("../lang/".$lang_.".php") ? include_once ("../lang/".$lang_.".php") : include_once ("../../lang/en.php");
-
+		header("Content-type: text/xml"); 
+	} 
+	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
+	
+	/*
+	 * Start document root
+	 */
+	echo "<root>";
+	
+	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	$debugXML = 0;
+	$buffer = '';
+	
+	$oreonPath = '../../../../../';
+	
+	/*
+	 * pearDB init
+	 */ 
+	require_once 'DB.php';
+	include_once($oreonPath . "etc/centreon.conf.php");
+	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBOdsConnect.php");
+	
+	
+	/*
+	 * PHP functions
+	 */
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+	
+	/*
+	 * Lang file
+	 */
 	function getMyHostIDService($svc_id = NULL)	{
 		if (!$svc_id) return;
 		global $pearDB;
