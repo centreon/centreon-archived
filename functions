@@ -16,48 +16,48 @@ SNMP_DIR="/etc/snmp/";
 CENTREON_CONF="/etc/centreon.conf"
 
 function  echo_info() {
-    $ECHO -n "$1"
+    echo -n "$1"
     $MOVE_TO_COL
     $SETCOLOR_INFO
-    $ECHO -n "$2"
+    echo -n "$2"
     $SETCOLOR_NORMAL
-    $ECHO -e "\r"
+    echo -e "\r"
 }
 
 function  echo_success() {
-    $ECHO -n "$1"
+    echo -n "$1"
     $MOVE_TO_COL
     $SETCOLOR_SUCCESS
-    $ECHO -n "$2"
+    echo -n "$2"
     $SETCOLOR_NORMAL
-    $ECHO -e "\r"
+    echo -e "\r"
 }
 
 function echo_failure() {
-    $ECHO -n "$1"
+    echo -n "$1"
     $MOVE_TO_COL
     $SETCOLOR_FAILURE
-    $ECHO -n "$2"
+    echo -n "$2"
     $SETCOLOR_NORMAL
-    $ECHO -e "\r"
+    echo -e "\r"
 }
 
 function echo_passed() {
-    $ECHO -n "$1"
+    echo -n "$1"
     $MOVE_TO_COL
     $SETCOLOR_WARNING
-    $ECHO -n "$2"
+    echo -n "$2"
     $SETCOLOR_NORMAL
-    $ECHO -e "\r"
+    echo -e "\r"
 }
 
 function echo_warning() {
-    $ECHO -n "$1"
+    echo -n "$1"
     $MOVE_TO_COL
     $SETCOLOR_WARNING
-    $ECHO -n "$2"
+    echo -n "$2"
     $SETCOLOR_NORMAL
-    $ECHO -e "\r"
+    echo -e "\r"
 }
 
 ## FUNCTION
@@ -67,24 +67,24 @@ function echo_warning() {
 
 function configureApache()
 {
-    $ECHO ""
-    $ECHO "------------------------------------------------------------------------"
-    $ECHO "                        Configure Apache server"
-    $ECHO "------------------------------------------------------------------------"
-    $ECHO ""
-    $ECHO ""
+    echo ""
+    echo "------------------------------------------------------------------------"
+    echo "                        Configure Apache server"
+    echo "------------------------------------------------------------------------"
+    echo ""
+    echo ""
 
     if test -e $DIR_APACHE_CONF/centreon.conf ; then
-		$ECHO "Finding Apache Centreon configuration file"
+		echo "Finding Apache Centreon configuration file"
 		echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "OK"
-		$ECHO "Do you want rewrite Apache configuration file ?"
-		$ECHO -n "    [y/n], default to [y]:"
+		echo "Do you want rewrite Apache configuration file ?"
+		echo -n "    [y/n], default to [y]:"
 		read temp
 		if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
 		    while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
 		      do
-		      $ECHO "Do you want rewrite Apache configuration file ?"
-		      $ECHO -n "    [y/n], default to [y]:"
+		      echo "Do you want rewrite Apache configuration file ?"
+		      echo -n "    [y/n], default to [y]:"
 		      read temp
 		    done
 		fi
@@ -96,8 +96,8 @@ function configureApache()
     	fi
     
 	    if [ $temp = "y" ];then
-			$ECHO "" > $DIR_APACHE_CONF/centreon.conf
-			$CAT << EOF >> $DIR_APACHE_CONF/centreon.conf
+			echo "" > $DIR_APACHE_CONF/centreon.conf
+			cat << EOF >> $DIR_APACHE_CONF/centreon.conf
 ##
 ## Section add by Centreon Install Setup
 ##
@@ -122,13 +122,13 @@ EOF
     # restart apache !
     if [ -x /etc/init.d/apache ] ; then
 		/etc/init.d/apache restart 2>&1 >> $LOG_FILE
-    elsif [ -x /etc/init.d/httpd ] ; then
+    elif [ -x /etc/init.d/httpd ] ; then
 		/etc/init.d/httpd restart 2>&1 >> $LOG_FILE
-    elsif [ -e /etc/init.d/apache2 ] ; then
+    elif [ -e /etc/init.d/apache2 ] ; then
 		/etc/init.d/apache2 restart 2>&1 >> $LOG_FILE
-	elsif [ -e /usr/local/etc/rc.d/apache ] ; then
+	elif [ -e /usr/local/etc/rc.d/apache ] ; then
 		/usr/local/etc/rc.d/apache restart 2>&1 >> $LOG_FILE
-    elsif [ -e /usr/local/etc/rc.d/apache2 ] ; then
+    elif [ -e /usr/local/etc/rc.d/apache2 ]; then
 		/etc/init.d/apache2 restart 2>&1 >> $LOG_FILE
     else
 		echo_warning "Unable to restart apache server" "WARNING"
@@ -136,20 +136,20 @@ EOF
 }
 
 function configureSUDO(){
-    $ECHO ""
-    $ECHO "------------------------------------------------------------------------"
-    $ECHO "                            Configure Sudo"
-    $ECHO "------------------------------------------------------------------------"
-    $ECHO ""
-    $ECHO ""
+    echo ""
+    echo "------------------------------------------------------------------------"
+    echo "                            Configure Sudo"
+    echo "------------------------------------------------------------------------"
+    echo ""
+    echo ""
     
     # Find Nagios Init Script
     check_nagios_init_script
 
     sudo=`cat $SUDO_FILE | grep CENTREON > /dev/null; echo $?`
     
-    if [ $sudo == '1' ]; then
-    	cat << __EOF__ >> $SUDO_FILE
+    if [ $sudo = '1' ]; then
+    	cat <<__EOF__>> $SUDO_FILE
 #Add by CENTREON installation script
 User_Alias      CENTREON= $WEB_USER
 ## Nagios Restart
@@ -168,17 +168,17 @@ __EOF__
 
 function createConfFile()
 {
-	$ECHO ""
-	$ECHO "------------------------------------------------------------------------"
-	$ECHO "                         Centreon Post Install"
-	$ECHO "------------------------------------------------------------------------"
-	$ECHO ""
-	$ECHO ""
+	echo ""
+	echo "------------------------------------------------------------------------"
+	echo "                         Centreon Post Install"
+	echo "------------------------------------------------------------------------"
+	echo ""
+	echo ""
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
 	
-	$ECHO "" > $INSTALL_DIR_CENTREON_CONF
-	$CAT << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
+	echo "" > $INSTALL_DIR_CENTREON_CONF
+	cat <<__EOF__>> $INSTALL_DIR_CENTREON_CONF
 <?
 /**
 Centreon is developped with GPL Licence 2.0 :
@@ -197,53 +197,49 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
-$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
-$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
-$conf_centreon['nagios'] = "$INSTALL_DIR_NAGIOS/";
-$conf_centreon['nagios_conf'] = "$NAGIOS_ETC/";
-$conf_centreon['nagios_plugins'] = "$NAGIOS_PLUGIN/";
-$conf_centreon['nagios_bin'] = "$NAGIOS_BIN/";
-$conf_centreon['nagios_init_script'] = "$NAGIOS_INIT_SCRIPT";
-$conf_centreon['rrdtool_dir'] = "$BIN_RRDTOOL";
-$conf_centreon['apache_user'] = "$WEB_USER";
-$conf_centreon['apache_group'] = "$WEB_GROUP";
-$conf_centreon['nagios_user'] = "$NAGIOS_USER";
-$conf_centreon['nagios_group'] = "$NAGIOS_GROUP";
-$conf_centreon['mail'] = "$BIN_MAIL";
-$conf_centreon['pear_dir'] = "$PEAR_PATH";
-__EOF__	
+\$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
+\$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
+\$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
+\$conf_centreon['nagios'] = "$INSTALL_DIR_NAGIOS/";
+\$conf_centreon['nagios_conf'] = "$NAGIOS_ETC/";
+\$conf_centreon['nagios_plugins'] = "$NAGIOS_PLUGIN/";
+\$conf_centreon['nagios_bin'] = "$NAGIOS_BIN/";
+\$conf_centreon['nagios_init_script'] = "$NAGIOS_INIT_SCRIPT";
+\$conf_centreon['rrdtool_dir'] = "$BIN_RRDTOOL";
+\$conf_centreon['apache_user'] = "$WEB_USER";
+\$conf_centreon['apache_group'] = "$WEB_GROUP";
+\$conf_centreon['nagios_user'] = "$NAGIOS_USER";
+\$conf_centreon['nagios_group'] = "$NAGIOS_GROUP";
+\$conf_centreon['mail'] = "$BIN_MAIL";
+\$conf_centreon['pear_dir'] = "$PEAR_PATH";
+
+__EOF__
 
 	# Conf nagios.cfg
 	
 	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
 	do
-	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
-$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
-__EOF__
+		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
 	done
 	
 	# Conf nagios.cfg
 	
 	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
 	do
-	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
-$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
-__EOF__
+		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
 	done
 	
 	# Conf GCI.cfg
 	
 	for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
 	do
-	cat << __EOF__ >> $INSTALL_DIR_CENTREON_CONF
-$conf_centreon['$($ECHO "$fichier" | cut -d= -f1)'] = "$($ECHO "$fichier" | cut -d= -f2)";
-__EOF__
+		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF		
 	done
-	$ECHO "?>" >> $INSTALL_DIR_CENTREON_CONF
+	
+	echo "?>" >> $INSTALL_DIR_CENTREON_CONF
 	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
 	
-	cat << __EOF__ >> $CENTREON_CONF
+	cat <<__EOF__>> $CENTREON_CONF
 INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 NAGIOS_ETC=$NAGIOS_ETC
 NAGIOS_PLUGIN=$NAGIOS_PLUGIN
@@ -259,7 +255,7 @@ NAGIOS_GROUP=$NAGIOS_GROUP
 BIN_RRDTOOL=$BIN_RRDTOOL
 BIN_MAIL=$BIN_MAIL
 PEAR_PATH=$PEAR_PATH
-__EOF__	
+__EOF__
 	echo_success "Create $CENTREON_CONF " "OK"
 }
 
@@ -364,7 +360,7 @@ function check_group_nagios()
 	echo ""
 	echo "You have to create you nagios group"
 	echo "groupadd $NAGIOS_GROUP"
-	exit
+	exit 1
     fi
 }
 
@@ -372,13 +368,13 @@ function check_nagios_init_script()
 {
     if [ -x "/etc/init.d/nagios" ]; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
-    elsif [ -x "/etc/init.d/nagios2" ] ; then
+    elif [ -x "/etc/init.d/nagios2" ] ; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
-    elsif [ -x "/etc/init.d/nagios3" ] ; then
+    elif [ -x "/etc/init.d/nagios3" ] ; then
 		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
-    elsif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
+    elif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
 		NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
-    elsif [ -x $DEFAULT_NAGIOS_INIT_SCRIPT ] ; then
+    elif [ -x $DEFAULT_NAGIOS_INIT_SCRIPT ] ; then
 		NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
     fi
     
@@ -402,23 +398,23 @@ function check_httpd_directory()
 		DIR_APACHE="/etc/apache/conf"
 		DIR_APACHE_CONF="/etc/apache/conf.d"
 		HTPASSWD="htpasswd"
-    elsif [ -d /usr/local/apache2/conf ] ; then
+    elif [ -d /usr/local/apache2/conf ] ; then
 		DIR_APACHE="/usr/local/apache2/conf"
 		DIR_APACHE_CONF="/usr/local/apache2/conf"
 		HTPASSWD="htpasswd2"
-    elsif [ -d /etc/apache2 ] ; then
+    elif [ -d /etc/apache2 ] ; then
 		DIR_APACHE="/etc/apache2"
 		DIR_APACHE_CONF="/etc/apache2/conf.d"
 		HTPASSWD="htpasswd2"
-    elsif [ -d /etc/httpd/conf ] ; then
+    elif [ -d /etc/httpd/conf ] ; then
 		DIR_APACHE="/etc/httpd/conf"
 		DIR_APACHE_CONF="/etc/httpd/conf.d"
 		HTPASSWD="htpasswd"
-    elsif [ -d /usr/local/etc/apache ] ; then
+    elif [ -d /usr/local/etc/apache ] ; then
 		DIR_APACHE="/usr/local/etc/apache"
 		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
 		HTPASSWD="htpasswd"
-    elsif [ -d /usr/local/etc/apache2 ] ; then
+    elif [ -d /usr/local/etc/apache2 ] ; then
 		DIR_APACHE="/usr/local/etc/apache2"
 		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
 		HTPASSWD="htpasswd"
@@ -427,9 +423,9 @@ function check_httpd_directory()
 
     if [ -e $DIR_APACHE/apache2.conf ] ; then
 		APACHE_CONF="apache2.conf"
-    elsif [ -e $DIR_APACHE/commondhttpd.conf ] ; then
+    elif [ -e $DIR_APACHE/commondhttpd.conf ] ; then
 		APACHE_CONF="commondhttpd.conf"
-    elsif [ -e $DIR_APACHE/httpd.conf ] ; then
+    elif [ -e $DIR_APACHE/httpd.conf ] ; then
 		APACHE_CONF="httpd.conf"
     fi
 }
@@ -473,44 +469,44 @@ function check_group_apache()
 function copyInTempFile()
 {
 	# Prepare centreon Plugins
-    $ECHO "Preparing Centreon Plugins..."
+    echo "Preparing Centreon Plugins..."
     if test -d $TMPDIR ; then
-		$ECHO "$TMPDIR exists"
+		echo "$TMPDIR exists"
     else
-		$MKDIR $TMPDIR
+		mkdir $TMPDIR
     fi
-	$CP -Rf * $TMPDIR/
+	cp -Rf * $TMPDIR/
 }
 
 function InstallPlugins()
 {
 	# set Plugins in unix mod
-    $FIND $TMPDIR/Plugins/ -name "*" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+    find $TMPDIR/Plugins/ -name "*" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
     
     # Prepare code
-    $MKDIR $TMPDIR/Plugins-Ready/
+    mkdir $TMPDIR/Plugins-Ready/
 
 	for fichier in $TMPDIR/Plugins/*
     do
     	if [ -d "$fichier" ]; then
-	  		$ECHO ""
+	  		echo ""
       	else
 			filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-	  		`$SED -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g'  "$fichier" > "$TMPDIR/Plugins-Ready/$filename"`
+	  		`sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g'  "$fichier" > "$TMPDIR/Plugins-Ready/$filename"`
 	 		echo_success " - $filename" "OK"  
       	fi
     done
 
     # Set restriction 
-    $CHMOD 755 $TMPDIR/Plugins-Ready/*
-    $CHMOD 444 $TMPDIR/Plugins-Ready/centreon.conf
-    $CHOWN $NAGIOS_USER.$NAGIOS_GROUP $TMPDIR/Plugins-Ready/*
+    chmod 755 $TMPDIR/Plugins-Ready/*
+    chmod 444 $TMPDIR/Plugins-Ready/centreon.conf
+    chown $NAGIOS_USER.$NAGIOS_GROUP $TMPDIR/Plugins-Ready/*
 
     # Check if plugin dir exists
     if test -d $NAGIOS_PLUGIN ; then
 		echo_success "Directory $NAGIOS_PLUGIN" "OK"
     else
-		mkdir_result=`$MKDIR $NAGIOS_PLUGIN 2>&1 >> $LOG_FILE; echo $?`
+		mkdir_result=`mkdir $NAGIOS_PLUGIN 2>&1 >> $LOG_FILE; echo $?`
 		if [ $mkdir_result = "0" ]; then
 	    	echo_success "mkdir '$NAGIOS_PLUGIN'" "OK"
 		else
@@ -520,15 +516,15 @@ function InstallPlugins()
     fi
 
     # Copy plugins in nagios plugins dir
-    $ECHO "Do you want to install Centreon Plugins ? "
-    $ECHO ""
-    $ECHO -n "[y/n], default to [y]:"
+    echo "Do you want to install Centreon Plugins ? "
+    echo ""
+    echo -n "[y/n], default to [y]:"
     read temp
     if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
 	while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
 		do
-	  	$ECHO "Do you want to install Centreon Plugins ? "
-	  	$ECHO -n "[y/n], default to [y]:"
+	  	echo "Do you want to install Centreon Plugins ? "
+	  	echo -n "[y/n], default to [y]:"
 	  	read temp
 	done
     fi
@@ -536,7 +532,7 @@ function InstallPlugins()
 		temp=y
     fi
     if [ $temp = "y" ];then
-		$CP -a $TMPDIR/Plugins-Ready/* $NAGIOS_PLUGIN/ 2>&1 >> $LOG_FILE
+		cp -a $TMPDIR/Plugins-Ready/* $NAGIOS_PLUGIN/ 2>&1 >> $LOG_FILE
 		echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
     fi
 }
