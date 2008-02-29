@@ -4,8 +4,12 @@ $n = "";
 $name = "";
 $title = "";
 
-$n = str_replace("\/", "", $_GET['n']);
 $n = str_replace("\%", "", $_GET['n']);
+$n = str_replace("\/", "", $n);
+$n = str_replace("\;", "", $n);
+$n = str_replace("\(", "", $n);
+$n = str_replace("\)", "", $n);
+$n = str_replace("\.", "", $n);
 $title = "Pick a Color";
 
 $name1 = $n."";
