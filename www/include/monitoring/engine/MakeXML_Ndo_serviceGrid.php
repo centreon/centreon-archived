@@ -170,13 +170,10 @@ For information : contact@oreon-project.org
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
 
-
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
-
-
 
 	function get_services($host_name){
 		global $pearDBndo,$ndo_base_prefix;

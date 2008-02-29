@@ -38,12 +38,11 @@ For information : contact@oreon-project.org
 	$ndo_base_prefix = getNDOPrefix();
 
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
+		if ($session = $res->fetchRow()){
 			;
 		} else
 			get_error('bad session id');
@@ -52,71 +51,74 @@ For information : contact@oreon-project.org
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
-
-
-
 	/* requisit */
-	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
+	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
-	}else
+	} else
 		get_error('num unknown');
-	if(isset($_GET["limit"]) && !check_injection($_GET["limit"])){
+	
+	if (isset($_GET["limit"]) && !check_injection($_GET["limit"])){
 		$limit = htmlentities($_GET["limit"]);
-	}else
+	} else
 		get_error('limit unknown');
 
 
 
 	/* options */
-	if(isset($_GET["nc"]) && !check_injection($_GET["nc"])){
+	if (isset($_GET["nc"]) && !check_injection($_GET["nc"])){
 		$nc = htmlentities($_GET["nc"]);
-	}else
+	} else
 		$nc = "0";
-	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+
+	if (isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/){
 		$instance = htmlentities($_GET["instance"]);
-	}else
+	} else
 		$instance = "ALL";
-	if(isset($_GET["search"]) && !check_injection($_GET["search"])){
+
+	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
 		$search = htmlentities($_GET["search"]);
-	}else
+	} else
 		$search = "";
-	if(isset($_GET["host_name"]) && !check_injection($_GET["host_name"])){
+
+	if (isset($_GET["host_name"]) && !check_injection($_GET["host_name"])){
 		$host_name = htmlentities($_GET["host_name"]);
-	}else
+	} else
 		$host_name = "";
-	if(isset($_GET["search_type_host"]) && !check_injection($_GET["search_type_host"])){
+
+	if (isset($_GET["search_type_host"]) && !check_injection($_GET["search_type_host"])){
 		$search_type_host = htmlentities($_GET["search_type_host"]);
-	}else
+	} else
 		$search_type_host = 1;
-	if(isset($_GET["search_type_service"]) && !check_injection($_GET["search_type_service"])){
+	
+	if (isset($_GET["search_type_service"]) && !check_injection($_GET["search_type_service"])){
 		$search_type_service = htmlentities($_GET["search_type_service"]);
-	}else
+	} else
 		$search_type_service = 1;
-	if(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
+	
+	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
 		$sort_type = htmlentities($_GET["sort_type"]);
-	}else
+	} else
 		$sort_type = "host_name";
 
-	if(isset($_GET["order"]) && !check_injection($_GET["order"])){
+	if (isset($_GET["order"]) && !check_injection($_GET["order"])){
 		$order = htmlentities($_GET["order"]);
-	}else
+	} else
 		$oreder = "ASC";
 
-	if(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
+	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	}else
+	} else
 		$date_time_format_status = "d/m/Y H:i:s";
 
-	if(isset($_GET["o"]) && !check_injection($_GET["o"])){
+	if (isset($_GET["o"]) && !check_injection($_GET["o"])){
 		$o = htmlentities($_GET["o"]);
-	}else
+	} else
 		$o = "svc";
-	if(isset($_GET["p"]) && !check_injection($_GET["p"])){
+	
+	if (isset($_GET["p"]) && !check_injection($_GET["p"])){
 		$p = htmlentities($_GET["p"]);
-	}else
+	} else
 		$p = "2";
-
-
 
 	/* security end*/
 
@@ -175,9 +177,6 @@ For information : contact@oreon-project.org
 	    }
 	}
 
-
-
-
 	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL)	{
 		if (!$service_description || !$host_name) return NULL;
 		global $pearDBO;
@@ -190,9 +189,6 @@ For information : contact@oreon-project.org
 		}
 		return NULL;
 	}
-
-
-
 
 	/* LCA */
 	// check is admin
@@ -210,8 +206,6 @@ For information : contact@oreon-project.org
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
-
-
 
 	$service = array();
 	$host_status = array();
@@ -270,9 +264,8 @@ For information : contact@oreon-project.org
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
-	while($DBRESULT_NDO1->fetchInto($ndo)){
+	while($DBRESULT_NDO1->fetchInto($ndo))
 		$host_status[$ndo["host_name"]] = $ndo;
-	}
 	/* end */
 
 	/* Get Service status */

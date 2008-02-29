@@ -18,12 +18,9 @@ For information : contact@oreon-project.org
 
 	$debug = 0;
 	$flag_reset = 0;
-	$ndo_base_prefix = "nagios";
-
 	$oreonPath = '/srv/oreon/';
 
-/*
-	if($oreonPath == '@INSTALL_DIR_OREON@'){
+	if ($oreonPath == '@INSTALL_DIR_OREON@'){
 		$buffer = null;
 		$buffer .= '<reponse>';
 		$buffer .= 'none';
@@ -32,15 +29,19 @@ For information : contact@oreon-project.org
 		echo $buffer;
 		exit(0);
 	}
-*/
 
-
+	foreach ($_GET as $key => $value){
+	//	$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+		$value = filter_var($value, INPUT_GET);	
+		$_GET[$key] = $value;
+	}
 
 	## pearDB init
 	require_once 'DB.php';
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
 
 	/* Connect to oreon DB */
 
@@ -54,6 +55,8 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+	$ndo_base_prefix = getNDOPrefix();
+	
 
 	# Session...
 	$debug_session = 'KO';
@@ -62,44 +65,44 @@ For information : contact@oreon-project.org
 	$sid = isset($_POST["sid"]) ? $_POST["sid"] : 0;
 	$sid = isset($_GET["sid"]) ? $_GET["sid"] : $sid;
 
-
-	function get_error($motif){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= $motif;
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-	function check_injection($sid){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $sid)) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
-
 	/* security check 2/2*/
 	if(!check_injection($sid)){
-
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if($res->fetchInto($session)){
 			/* update session */
 			$DBRESULT2 =& $pearDB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".$sid."' LIMIT 1");
-		}else
+		} else
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
+	/*
+	 * LCA
+	 */
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$user = $res1->fetchRow();
+	$user_id = $user["user_id"];
 
+	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$admin = $res2->fetchrow();
+	
+	$is_admin = 0;
+	$is_admin = $admin["contact_admin"];
+	
+	global $is_admin;
+
+	if (!$is_admin){
+		$_POST["sid"] = $sid;
+		$lca =  getLCAHostByName($pearDB);
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+	}
+	 
 
 	function restore_session($statistic_service = 'null', $statistic_host = 'null'){
 		global $pearDB;
-		if(isset($statistic_service) && !is_null($statistic_service)){
+		if (isset($statistic_service) && !is_null($statistic_service)){
 			$sql = "UPDATE session SET " .
 					" s_nbHostsUp = '".$statistic_host["UP"]."'," .
 					" s_nbHostsDown = '".$statistic_host["DOWN"]."'," .
@@ -117,9 +120,8 @@ For information : contact@oreon-project.org
 		}
 	}
 
-
-	function read($sid){
-		global $pearDB, $flag,$oreonPath, $ndo_base_prefix;
+	function read($sid, $lcaSTR){
+		global $pearDB, $flag,$oreonPath, $ndo_base_prefix, $is_admin;
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
@@ -138,29 +140,49 @@ For information : contact@oreon-project.org
 		include_once($oreonPath . "www/DBNDOConnect.php");
 
 		/* Get HostNDO status */
-		$rq1 = "SELECT count(nhs.current_state) as cnt, nhs.current_state" .
-				" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
-				" WHERE no.object_id = nhs.host_object_id AND no.is_active = 1 GROUP BY nhs.current_state ORDER by nhs.current_state";
+		if (!$is_admin)
+			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state) , ".$ndo_base_prefix."hoststatus.current_state" .
+					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
+					" AND ".$ndo_base_prefix."objects.name1 IN (".$lcaSTR." )" .
+					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+		else
+			$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state) , ".$ndo_base_prefix."hoststatus.current_state" .
+					" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
+					" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 1 " .
+					" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
+					" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 		$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 		if (PEAR::isError($DBRESULT_NDO1))
 			print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
+		
 		$host_stat = array();
 		$host_stat[0] = 0;
 		$host_stat[1] = 0;
 		$host_stat[2] = 0;
 		$host_stat[3] = 0;
 		while($DBRESULT_NDO1->fetchInto($ndo))
-			$host_stat[$ndo["current_state"]] = $ndo["cnt"];
+			$host_stat[$ndo["current_state"]] = $ndo["count(nagios_hoststatus.current_state)"];
 		/* end */
 
 		/* Get ServiceNDO status */
-		$rq2 = "SELECT count(nss.current_state) as cnt, nss.current_state" .
-				" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
-				" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 not like 'OSL_Module'".
-				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
-	//			" AND no.instance_id = 1";
-
+		if (!$is_admin)
+			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+					" WHERE no.object_id = nss.service_object_id".
+					" AND no.name1 not like 'OSL_Module' ".
+					" AND no.name1 not like 'Meta_Module' ".
+					" AND no.name1 IN (".$lcaSTR." ) ".
+					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+		else
+			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+					" WHERE no.object_id = nss.service_object_id".
+					" AND no.name1 not like 'OSL_Module' ".
+					" AND no.name1 not like 'Meta_Module' ".
+					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+			
 		$DBRESULT_NDO2 =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO2))
 			print "DB Error : ".$DBRESULT_NDO2->getDebugInfo()."<br />";
@@ -172,7 +194,7 @@ For information : contact@oreon-project.org
 		$svc_stat[3] = 0;
 		$svc_stat[4] = 0;
 		while($DBRESULT_NDO2->fetchInto($ndo))
-			$svc_stat[$ndo["current_state"]] = $ndo["cnt"];
+			$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 		/* end */
 
 		$statistic_service["OK"] = $svc_stat[0];
@@ -185,8 +207,6 @@ For information : contact@oreon-project.org
 		$statistic_host["UNREACHABLE"] = $host_stat[2];
 		$statistic_host["PENDING"] = $host_stat[3];
 
-
-
 		restore_session($statistic_service, $statistic_host);
 
 		$buffer = null;
@@ -196,7 +216,6 @@ For information : contact@oreon-project.org
 		$buffer .= '<filetime>'.time().'</filetime>';
 		$buffer .= '</infos>';
 		$buffer .= '<stats>';
-
 		$buffer .= '<statistic_service_ok>'.$svc_stat["0"].'</statistic_service_ok>';
 		$buffer .= '<statistic_service_warning>'.$svc_stat["1"].'</statistic_service_warning>';
 		$buffer .= '<statistic_service_critical>'.$svc_stat["2"].'</statistic_service_critical>';
@@ -206,16 +225,12 @@ For information : contact@oreon-project.org
 		$buffer .= '<statistic_host_down>'.$host_stat["1"].'</statistic_host_down>';
 		$buffer .= '<statistic_host_unreachable>'.$host_stat["2"].'</statistic_host_unreachable>';
 		$buffer .= '<statistic_host_pending>'.$host_stat["3"].'</statistic_host_pending>';
-
 		$buffer .= '</stats>';
 		$buffer .= '</reponse>';
 		header('Content-Type: text/xml');
 		echo $buffer;
 	}
-
-
-
-
-
-	read($sid);
+	if (!isset($lcaSTR))
+		$lcaSTR = array();
+	read($sid, $lcaSTR);
 ?>
