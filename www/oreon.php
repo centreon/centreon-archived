@@ -18,12 +18,15 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 	
-	foreach ($_GET as $key => $value){
-		$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-		$value = filter_var($value, INPUT_GET);	
-		$_GET[$key] = $value;
+	
+	 foreach ($_GET as $key => $value){
+		if (!is_array($value)){
+			$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+			$value = filter_var($value, INPUT_GET);	
+			$_GET[$key] = $value;
+		}
 	}
-
+	
 	if (isset($_GET["p"]))
 		$p = $_GET["p"];
 	else if (isset($_POST["p"]))
