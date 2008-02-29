@@ -14,10 +14,24 @@ of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	
+	$img = filter_var($_GET["img"], FILTER_SANITIZE_SPECIAL_CHARS);
+	$img = filter_var($img, INPUT_GET);
 
-	$img = fopen("../../../doc/".$_GET["lang"]."/images/".$_GET["img"], "r");	
-	while ($line = fgets($img)){
-		print $line;
+	$lang = filter_var($_GET["lang"], FILTER_SANITIZE_SPECIAL_CHARS);
+	$lang = filter_var($lang, INPUT_GET);
+
+
+	$tab_images = split("/", $img);
+	foreach ($tab_images as $value)
+		$image = $value;
+	
+	header("Content-Type: image/png");
+	
+	if (file_exists("../../../doc/".$lang."/images/".$image)){
+		$img = fopen("../../../doc/".$lang."/images/".$image, "r");	
+		if (isset($img) && $img)
+			while ($line = fgets($img))
+				print $line;
 	}
 ?>
-
