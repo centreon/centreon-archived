@@ -1,20 +1,19 @@
 <?php
+$n ="";
+$name ="";
+$title ="";
 
-$n = "";
-$name = "";
-$title = "";
+$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);;
+$n = filter_var($n, INPUT_GET);;
 
-$n = str_replace("\%", "", $_GET['n']);
-$n = str_replace("\/", "", $n);
-$n = str_replace("\;", "", $n);
-$n = str_replace("\(", "", $n);
-$n = str_replace("\)", "", $n);
-$n = str_replace("\.", "", $n);
-$title = "Pick a Color";
+$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);;
+$name = filter_var($name, INPUT_GET);;
+
+$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);;
+$title = filter_var($title, INPUT_GET);;
 
 $name1 = $n."";
 $name2 = $n."_color";
-
 ?>
 <html>
 <head>
@@ -132,11 +131,11 @@ $name2 = $n."_color";
 			      new_color = '#'+dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
 			   }
 
-               window.opener.document.forms['Form'].elements['<?php echo $name1; ?>'].value = new_color;
-        	   window.opener.document.forms['Form'].elements['<?php echo $name2;?>'].style.borderColor = new_color;
+                window.opener.document.forms['Form'].elements['<?php echo $name1; ?>'].value = new_color;
+        	     window.opener.document.forms['Form'].elements['<?php echo $name2;?>'].style.borderColor = new_color;
 			   window.opener.document.forms['Form'].elements['<?php echo $name2; ?>'].style.backgroundColor = new_color;
-			   window.opener.focus();
-			   window.close();
+				window.opener.focus();
+				window.close();
 			}
 		}
 		
@@ -147,6 +146,7 @@ $name2 = $n."_color";
 <body>
    <form name="colpick_form" action="#" method="post">
 	<h2><?php echo $title; ?></h2>
+	<h3><?php echo $name; ?></h3>
 	<table border="0" cellspacing="0" cellpadding="0" align="center">
 		<tr>
 			<td>
@@ -169,16 +169,19 @@ $name2 = $n."_color";
 				<table border="1" cellspacing="0" cellpadding="0" class="table_black_border" style="cursor:crosshair">
 					<script type="text/javascript">
 					
-						for(i = 0; i < detail; i++){
+						for(i = 0; i < detail; i++)
+						{
 							document.write('<tr><td id="gs'+i+'" style="background-color:#000000; width:20px; height:3px; border-style:none; border-width:0px;"'
                         + ' onclick="changeFinalColor(this.style.backgroundColor)"'
                         + ' onmousedown="is_mouse_down = true; return false;"'
                         + ' onmouseup="is_mouse_down = false;"'
                         + ' onmousemove="if (is_mouse_down && is_mouse_over) changeFinalColor(this.style.backgroundColor); return false;"'
                         + ' onmouseover="is_mouse_over = true;"'
-				   		+ ' onmouseout="is_mouse_over = false;"'
+				   + ' onmouseout="is_mouse_over = false;"'
+                        
                         + '></td></tr>');
 						}
+					
 					</script>
 				</table>
 			</td>
