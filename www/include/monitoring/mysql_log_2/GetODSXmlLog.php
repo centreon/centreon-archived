@@ -18,106 +18,82 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-function check_session($sid, $pearDB){
-	if(isset($sid) && !check_injection($sid)){
-		$sid = htmlentities($sid);
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			return $session["user_id"];
-		}else
-			get_error('bad session id');		
+	function check_session($sid, $pearDB){
+		if (isset($sid) && !check_injection($sid)){
+			$sid = htmlentities($sid);
+			$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+			if($res->fetchInto($session)){
+				return $session["user_id"];
+			} else
+				get_error('bad session id');		
+		}
+		else
+			get_error('need session identifiant !');
+		return 0;
 	}
-	else
-		get_error('need session identifiant !');
-	return 0;
-}
 
 
-function get_user_param($user_id, $pearDB)
-{
-	$tab_row = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
-	if (PEAR::isError($DBRESULT)){
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		return null;		
-	}
-	while( $row = $DBRESULT->fetchRow()){
-		$tab_row[$row["cp_key"]] = $row["cp_value"];
-	}
-	return $tab_row;
-}
-
-function set_user_param($user_id, $pearDB, $key, $value)
-{
-//	$DBRESULT =& $pearDB->query("INSERT into contact_param (cp_key, cp_value, cp_contact_id) VALUES ('".$key."','".$value."','".$user_id."')");
-	$DBRESULT =& $pearDB->query("UPDATE contact_param set cp_value ='".$value."' where cp_contact_id like '".$user_id."' AND cp_key like '".$key."' ");
-	
-	if (PEAR::isError($DBRESULT)) {
+	function get_user_param($user_id, $pearDB){
+		$tab_row = array();
+		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
+		if (PEAR::isError($DBRESULT)){
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			return null;		
+		}
+		while( $row = $DBRESULT->fetchRow())
+			$tab_row[$row["cp_key"]] = $row["cp_value"];
+		return $tab_row;
 	}
-}
+
+	function set_user_param($user_id, $pearDB, $key, $value){
+		$DBRESULT =& $pearDB->query("UPDATE contact_param set cp_value ='".$value."' where cp_contact_id like '".$user_id."' AND cp_key like '".$key."' ");		
+		if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	}
+
+	/*
+	 * XML tag
+	 */
+	
+	if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ){
+		header("Content-type: application/xhtml+xml"); }
+	else
+		header("Content-type: text/xml"); 
+	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
+	
+	/*
+	 * Start XML document root
+	 */
+ 
+echo "<root>";
+
+	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
+	$debugXML = 0;
+	$buffer = '';
+	
+	$oreonPath = '../../../../';
 
 
 
-
-
-/*
- * XML tag
- */
-
-
-if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") )
-{
-	header("Content-type: application/xhtml+xml"); }
-else
-{
-	header("Content-type: text/xml");
-}
-echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
-
-
-
-/*
- * Start XML document root
- */
- echo "<root>";
-
-
-
-# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
-$debugXML = 0;
-$buffer = '';
-
-$oreonPath = '../../../../';
-
-
-
-/*
- * pearDB init
- */ 
-require_once 'DB.php';
-
-include_once($oreonPath . "etc/centreon.conf.php");
-include_once($oreonPath . "www/DBconnect.php");
-include_once($oreonPath . "www/DBOdsConnect.php");
-
-
-/*
- * PHP functions
- */
-include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-include_once($oreonPath . "www/include/common/common-Func.php");
-
-/*
- * Lang file
- */
+	/*
+	 * pearDB init
+	 */ 
+	require_once 'DB.php';
+	
+	include_once($oreonPath . "etc/centreon.conf.php");
+	include_once($oreonPath . "www/DBconnect.php");
+	include_once($oreonPath . "www/DBOdsConnect.php");
+	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once($oreonPath . "www/include/common/common-Func.php");
+	
+	/*
+	 * Lang file
+	 */
+	 
 	if(isset($_GET["lang"]) && !check_injection($_GET["lang"])){
 		$lang_ = htmlentities($_GET["lang"]);
-	}else
+	} else
 		$lang_ = "-1";
-
-	is_file ("../lang/".$lang_.".php") ? include_once ("../lang/".$lang_.".php") : include_once ("../lang/en.php");
-	is_file ("../../../lang/".$lang_.".php") ? include_once ("../../../lang/".$lang_.".php") : include_once ("../../../lang/en.php");
 
 	function getMyHostIDService($svc_id = NULL)	{
 		if (!$svc_id) return;
@@ -132,31 +108,22 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 		return NULL;
 	}
 
-
-
-
 	if(isset($_GET["id"]) && !check_injection($_GET["id"])){
 		$openid = htmlentities($_GET["id"]);
-	}else
+	} else
 		$openid = "-1";
-
-
-
-
-
 
 	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = htmlentities($_GET["sid"]);
-	}else
+	} else
 		$sid = "-1";
 
 
 	$contact_id = check_session($sid,$pearDB);
 
-
 	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
-	}else
+	} else
 		$num = "0";
 
 	if(isset($_GET["limit"]) && !check_injection($_GET["limit"])){
@@ -214,49 +181,46 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 	}else
 		$alert = "true";
 		
-	if(isset($_GET["error"]) && !check_injection($_GET["error"])){
+	if (isset($_GET["error"]) && !check_injection($_GET["error"])){
 		$error = htmlentities($_GET["error"]);
 		set_user_param($contact_id, $pearDB, "log_filter_error", $error);
-	}else
+	} else
 		$error = "false";
 
 
-	if(isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])){
+	if (isset($_GET["StartDate"]) && !check_injection($_GET["StartDate"])){
 		$StartDate = htmlentities($_GET["StartDate"]);
-	}else
+	} else
 		$StartDate = "";
-	if(isset($_GET["EndDate"]) && !check_injection($_GET["EndDate"])){
+	if (isset($_GET["EndDate"]) && !check_injection($_GET["EndDate"])){
 		$EndDate = htmlentities($_GET["EndDate"]);
-	}else
+	} else
 		$EndDate = "";
 
-	if(isset($_GET["StartTime"]) && !check_injection($_GET["StartTime"])){
+	if (isset($_GET["StartTime"]) && !check_injection($_GET["StartTime"])){
 		$StartTime = htmlentities($_GET["StartTime"]);
-	}else
+	} else
 		$StartTime = "";
-	if(isset($_GET["EndTime"]) && !check_injection($_GET["EndTime"])){
+	
+	if (isset($_GET["EndTime"]) && !check_injection($_GET["EndTime"])){
 		$EndTime = htmlentities($_GET["EndTime"]);
-	}else
+	} else
 		$EndTime = "";
 
 
-	if(isset($_GET["period"]) && !check_injection($_GET["period"])){
+	if (isset($_GET["period"]) && !check_injection($_GET["period"])){
 		$auto_period = htmlentities($_GET["period"]);
-	}else
+	} else
 		$auto_period = "-1";
 
 
 	if(isset($_GET["multi"]) && !check_injection($_GET["multi"])){
 		$multi = htmlentities($_GET["multi"]);
-	}else
+	} else
 		$multi = "-1";
 
-
-
-
 	if($contact_id){
-		$user_params = get_user_param($contact_id, $pearDB);
-		
+		$user_params = get_user_param($contact_id, $pearDB);		
 		$alert = $user_params["log_filter_alert"];
 		$notification = $user_params["log_filter_notif"];
 		$error = $user_params["log_filter_error"];
@@ -270,8 +234,6 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 	}
 
 
-
-
 	if ($StartDate !=  "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
@@ -283,15 +245,12 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 1) ;
 	}
 
-
 	$period = 86400;
 	if($auto_period > 0){
 		$period = $auto_period;
 		$start = time() - ($period);
 		$end = time();
 	}
-
-
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
@@ -309,8 +268,6 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 	$tab_color_host["UP"] = $general_opt["color_up"];
 	$tab_color_host["DOWN"] = $general_opt["color_down"];
 	$tab_color_host["UNREACHABLE"] = $general_opt["color_unreachable"];
-
-	
 	
 	$tab_type = array("1" => "HARD", "0" => "SOFT");
 	$tab_class = array("0" => "list_one", "1" => "list_two");
@@ -319,230 +276,167 @@ include_once($oreonPath . "www/include/common/common-Func.php");
 
 	$logs = array();	
 
-
-/*
- * Print infos..
- */
-echo "<infos>";
-echo "<multi>".$multi."</multi>";
-echo "<sid>".$sid."</sid>";
-echo "<opid>".$openid."</opid>";
-echo "<start>".$start."</start>";
-echo "<end>".$end."</end>";
-echo "<notification>".$notification."</notification>";
-echo "<alert>".$alert."</alert>";
-echo "<error>".$error."</error>";
-echo "<up>".$up."</up>";
-echo "<down>".$down."</down>";
-echo "<unreachable>".$unreachable."</unreachable>";
-echo "<ok>".$ok."</ok>";
-echo "<warning>".$warning."</warning>";
-echo "<critical>".$critical."</critical>";
-echo "<unknown>".$unknown."</unknown>";
-echo "</infos>";
-
-
- 
-
-$msg_type_set = array ();
-if($alert == 'true' ){
-	array_push ($msg_type_set, "'0'");
-}
-if($alert == 'true' ){
-	array_push ($msg_type_set, "'1'");
-}
-if($notification == 'true'){
-	array_push ($msg_type_set, "'2'");
-}
-if($notification== 'true'){
-	array_push ($msg_type_set, "'3'");
-}
-if($error == 'true')
-array_push ($msg_type_set, "'4'");
-
-$msg_req='';
-if( count($msg_type_set) > 0 )
-	$msg_req .= ' AND msg_type IN (' . implode(",",$msg_type_set). ') ';
-
-$msg_status_set = array ();
-
-
-if($error == 'true'){
-	array_push ($msg_status_set, "'NULL'");
-}
-
-if($up == 'true' ){
-	array_push ($msg_status_set, "'UP'");
-}
-if($down == 'true' ){
-	array_push ($msg_status_set, "'DOWN'");
-}
-if($unreachable == 'true' ){
-	array_push ($msg_status_set, "'UNREACHABLE'");
-}
-
-if($ok == 'true' ){
-	array_push ($msg_status_set, "'ok'");
-}
-if($warning == 'true' ){
-	array_push ($msg_status_set, "'warning'");
-}
-if($critical == 'true' ){
-	array_push ($msg_status_set, "'critical'");
-}
-if($unknown == 'true' ){
-	array_push ($msg_status_set, "'unknown'");
-}
-
-if( count($msg_status_set) > 0 )
-{
-	$msg_req .= ' AND (status IN (' . implode(",",$msg_status_set). ') ';
-
-	if($error  == 'true' || $notification == 'true')
-		$msg_req .= 'OR status is null';
-
-	$msg_req .=')';
-}
-
-
-/*
-** If multi checked 
-*/
-if($multi == 1){
-	$tab_id = split(",",$openid);
-	$tab_host_name= array();
-	$tab_svc = array();
-
 	/*
-	 * prepare tab with host and svc
+	 * Print infos..
 	 */
-	foreach($tab_id as $openid)
-	{
-		$tab_tmp = split("_",$openid);
-		$id = $tab_tmp[1];
-		$type = $tab_tmp[0];
-
+	echo "<infos>";
+	echo "<multi>".$multi."</multi>";
+	echo "<sid>".$sid."</sid>";
+	echo "<opid>".$openid."</opid>";
+	echo "<start>".$start."</start>";
+	echo "<end>".$end."</end>";
+	echo "<notification>".$notification."</notification>";
+	echo "<alert>".$alert."</alert>";
+	echo "<error>".$error."</error>";
+	echo "<up>".$up."</up>";
+	echo "<down>".$down."</down>";
+	echo "<unreachable>".$unreachable."</unreachable>";
+	echo "<ok>".$ok."</ok>";
+	echo "<warning>".$warning."</warning>";
+	echo "<critical>".$critical."</critical>";
+	echo "<unknown>".$unknown."</unknown>";
+	echo "</infos>";
 	
-		if($type == "HG"){
-			$hosts = getMyHostGroupHosts($id);
-			foreach($hosts as $h_id)
-			{
-				$host_name = getMyHostName($h_id);
-				array_push ($tab_host_name, "'".$host_name."'");
-			}
-
-		}/* end HG */
-		else if($type == "HH"){
-			$host_name = getMyHostName($id);
-			array_push ($tab_host_name, "'".$host_name."'");		
-		}/* end HH */
-		else if($type == "HS"){
-			$service_description = getMyServiceName($id);
-			$host_id = getMyHostIDService($id);
-			$host_name = getMyHostName($host_id);
-			$tmp["svc_name"] = $service_description;
-			$tmp["host_name"] = $host_name;
-			array_push($tab_svc, $tmp);
-		}/* end HH */
+	
+	 
+	
+	$msg_type_set = array ();
+	if ($alert == 'true' )
+		array_push ($msg_type_set, "'0'");
+	if($alert == 'true' )
+		array_push ($msg_type_set, "'1'");
+	if($notification == 'true')
+		array_push ($msg_type_set, "'2'");
+	if($notification== 'true')
+		array_push ($msg_type_set, "'3'");
+	if($error == 'true')
+		array_push ($msg_type_set, "'4'");
+	$msg_req='';
+	if( count($msg_type_set) > 0 )
+		$msg_req .= ' AND msg_type IN (' . implode(",",$msg_type_set). ') ';
+	
+	$msg_status_set = array ();
+	
+	if($error == 'true')
+		array_push ($msg_status_set, "'NULL'");
+	if($up == 'true' )
+		array_push ($msg_status_set, "'UP'");
+	if($down == 'true' )
+		array_push ($msg_status_set, "'DOWN'");
+	if($unreachable == 'true' )
+		array_push ($msg_status_set, "'UNREACHABLE'");
+	
+	if($ok == 'true' )
+		array_push ($msg_status_set, "'ok'");
+	if($warning == 'true' )
+		array_push ($msg_status_set, "'warning'");
+	if($critical == 'true' )
+		array_push ($msg_status_set, "'critical'");
+	if($unknown == 'true' )
+		array_push ($msg_status_set, "'unknown'");
+	
+	if( count($msg_status_set) > 0 ){
+		$msg_req .= ' AND (status IN (' . implode(",",$msg_status_set). ') ';
+		if($error  == 'true' || $notification == 'true')
+			$msg_req .= 'OR status is null';
+		$msg_req .=')';
 	}
 
 
 	/*
-	 * Making the request
-	 */
+	** If multi checked 
+	*/
+	if ($multi == 1){
+		$tab_id = split(",",$openid);
+		$tab_host_name = array();
+		$tab_svc = array();
+		/*
+		 * prepare tab with host and svc
+		 */
+		foreach($tab_id as $openid){
+			$tab_tmp = split("_",$openid);
+			$id = $tab_tmp[1];
+			$type = $tab_tmp[0];
 
-
-	$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req";
-
-	if(count($tab_host_name) > 0){
-	$req .= " AND (host_name in(".implode(",",$tab_host_name).") ";
-
-
-	if($error  == 'true' || $notification == 'true'){
-		$req .= ' OR host_name is null';		
-	}
-	$req .= ")";
-		
-	}
-
-
-	if(count($tab_svc) > 0){
-		$req .= " AND ( ";
-		$flag = 0;
-		foreach($tab_svc as $svc){
-		
+			if($type == "HG"){
+				$hosts = getMyHostGroupHosts($id);
+				foreach($hosts as $h_id)	{
+					$host_name = getMyHostName($h_id);
+					array_push ($tab_host_name, "'".$host_name."'");
+				}
+			} else if($type == "HH"){
+				$host_name = getMyHostName($id);
+				array_push ($tab_host_name, "'".$host_name."'");		
+			} else if($type == "HS"){
+				$service_description = getMyServiceName($id);
+				$host_id = getMyHostIDService($id);
+				$host_name = getMyHostName($host_id);
+				$tmp["svc_name"] = $service_description;
+				$tmp["host_name"] = $host_name;
+				array_push($tab_svc, $tmp);
+			}
+		}
+		/*
+		 * Making the request
+		 */
+		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req";
+		if	(count($tab_host_name) > 0){
+			$req .= " AND (host_name in(".implode(",",$tab_host_name).") ";
+			if($error  == 'true' || $notification == 'true')
+				$req .= ' OR host_name is null';		
+			$req .= ")";
+		}
+		if(count($tab_svc) > 0){
+			$req .= " AND ( ";
+			$flag = 0;
+			foreach($tab_svc as $svc){
 				if($flag)
-				 $req .= " OR ";
+				 	$req .= " OR ";
 				$flag = 1;			
 				$req .= " ((host_name like '".$svc["host_name"]."'";
 				if($error  == 'true' || $notification == 'true')
 					$req .= ' OR host_name is null';
 				$req .= ")";
-			
 				$req .= " AND (service_description like '".$svc["svc_name"]."' ";
 				$req .= ")) ";
+			}
+			$req .= " )";
+		}	
+	} else {// only click on one element 
+		$id = substr($openid, 3, strlen($openid));
+		$type = substr($openid, 0, 2);	
+		if($type == "HG"){
+			$hosts = getMyHostGroupHosts($id);
+			$tab_host_name= array();
+			foreach($hosts as $h_id)	{
+				$host_name = getMyHostName($h_id);
+				array_push ($tab_host_name, "'".$host_name."'");
+			}
+			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name in(".implode(",",$tab_host_name).") ";
+			if($error  == 'true' || $notification == 'true')
+				$req .= ' OR host_name is null';
+			$req .= ")";
+		} else if($type == "HH") {
+			$host_name = getMyHostName($id);
+			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name like '".$host_name."' ";
+			if($error  == 'true' || $notification == 'true')
+				$req .= ' OR host_name is null';
+			$req .= ")";
+		} else if($type == "HS"){
+			$service_description = getMyServiceName($id);
+			$host_id = getMyHostIDService($id);
+			$host_name = getMyHostName($host_id);
+		
+			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name like '".$host_name."'";
+			if($error  == 'true' || $notification == 'true')
+				$req .= ' OR host_name is null';				
+			$req .= ")";
+			$req .= " AND (service_description like '".$service_description."' ";
+			$req .= ") ";		
+		} else { 
+			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req";
 		}
-		$req .= " )";
-	}	
-	
-}
-else// only click on one element
-{
-	$id = substr($openid, 3, strlen($openid));
-	$type = substr($openid, 0, 2);	
-
-
-	if($type == "HG"){
-		$hosts = getMyHostGroupHosts($id);
-		$tab_host_name= array();
-		foreach($hosts as $h_id)
-		{
-			$host_name = getMyHostName($h_id);
-			array_push ($tab_host_name, "'".$host_name."'");
-		}
-		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name in(".implode(",",$tab_host_name).") ";
-		if($error  == 'true' || $notification == 'true')
-			$req .= ' OR host_name is null';
-		$req .= ")";
-	}/* end HG */
-	else if($type == "HH"){
-		$host_name = getMyHostName($id);
-	
-		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name like '".$host_name."' ";
-	
-		if($error  == 'true' || $notification == 'true')
-			$req .= ' OR host_name is null';
-		$req .= ")";
-	}/* end HH */
-	else if($type == "HS"){
-		$service_description = getMyServiceName($id);
-		$host_id = getMyHostIDService($id);
-		$host_name = getMyHostName($host_id);
-	
-		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req AND (host_name like '".$host_name."'";
-
-		if($error  == 'true' || $notification == 'true')
-			$req .= ' OR host_name is null';
-			
-		$req .= ")";
-	
-		$req .= " AND (service_description like '".$service_description."' ";
-/*
-		if($error  == 'true' || $notification == 'true')
-			$req .= ' OR service_description is null';
-			*/
-		$req .= ") ";
-	
-	
-	}/* end HH */
-	else{ /* RR_0*/
-		$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end'  $msg_req";
 	}
-}
-
-
-
-
 
 	/*
 	 * calculate size before limit for pagination 
