@@ -151,8 +151,8 @@ For information : contact@oreon-project.org
 				"`lock_file` , `retain_state_information` , `state_retention_file` , `retention_update_interval` , " .
 				"`use_retained_program_state` , `use_retained_scheduling_info` , `use_syslog` , `log_notifications` , " .
 				"`log_service_retries` , `log_host_retries` , `log_event_handlers` , `log_initial_states` , " .
-				"`log_external_commands` , `log_passive_service_checks` , `log_passive_checks` , `global_host_event_handler` , " .
-				"`global_service_event_handler` , `sleep_time` , `inter_check_delay_method` , `service_inter_check_delay_method` , " .
+				"`log_external_commands` , `log_passive_checks` , `global_host_event_handler` , " .
+				"`global_service_event_handler` , `sleep_time` , `service_inter_check_delay_method` , " .
 				"`host_inter_check_delay_method` , `service_interleave_factor` , `max_concurrent_checks` , `max_service_check_spread` , " .
 				"`max_host_check_spread` , `service_reaper_frequency` , `interval_length` , `auto_reschedule_checks` , `auto_rescheduling_interval` , " .
 				"`auto_rescheduling_window` , `use_agressive_host_checking` , `enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , " .
@@ -162,7 +162,7 @@ For information : contact@oreon-project.org
 				"`host_perfdata_command` , `service_perfdata_command` , `host_perfdata_file` , `service_perfdata_file` , `host_perfdata_file_template` , " .
 				"`service_perfdata_file_template` , `host_perfdata_file_mode` , `service_perfdata_file_mode` , `host_perfdata_file_processing_interval` , " .
 				"`service_perfdata_file_processing_interval` , `host_perfdata_file_processing_command` , `service_perfdata_file_processing_command` , " .
-				"`check_for_orphaned_services` , `check_service_freshness` , `service_freshness_check_interval` , `cached_host_check_horizon`, `cached_service_check_horizon`, `freshness_check_interval` ,`additional_freshness_latency` , " .
+				"`check_for_orphaned_services` , `check_service_freshness` , `service_freshness_check_interval` , `cached_host_check_horizon`, `cached_service_check_horizon` , `additional_freshness_latency` , " .
 				"`check_host_freshness` , `host_freshness_check_interval` , `date_format` , `illegal_object_name_chars` , `illegal_macro_output_chars` ,`use_large_installation_tweaks` , `free_child_process_memory` , `child_processes_fork_twice` , `debug_file` , `debug_level` , `debug_verbosity` , `max_debug_file_size` , " .
 				"`enable_environment_macros` , `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, `broker_module`, `event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly` ) ";
 		$rq .= "VALUES (";
@@ -205,12 +205,10 @@ For information : contact@oreon-project.org
         isset($ret["log_event_handlers"]["log_event_handlers"]) && $ret["log_event_handlers"]["log_event_handlers"] != 2 ? $rq .= "'".$ret["log_event_handlers"]["log_event_handlers"]."',  " : $rq .= "'2', ";
         isset($ret["log_initial_states"]["log_initial_states"]) && $ret["log_initial_states"]["log_initial_states"] != 2 ? $rq .= "'".$ret["log_initial_states"]["log_initial_states"]."',  " : $rq .= "'2', ";
         isset($ret["log_external_commands"]["log_external_commands"]) && $ret["log_external_commands"]["log_external_commands"] != 2 ? $rq .= "'".$ret["log_external_commands"]["log_external_commands"]."',  " : $rq .= "'2', ";
-        isset($ret["log_passive_service_checks"]["log_passive_service_checks"]) && $ret["log_passive_service_checks"]["log_passive_service_checks"] != 2 ?$rq .= "'".$ret["log_passive_service_checks"]["log_passive_service_checks"]."',  " : $rq .= "'2', ";
         isset($ret["log_passive_checks"]["log_passive_checks"]) && $ret["log_passive_checks"]["log_passive_checks"] != 2 ? $rq .= "'".$ret["log_passive_checks"]["log_passive_checks"]."',  " : $rq .= "'2', ";
         isset($ret["global_host_event_handler"]) && $ret["global_host_event_handler"] != NULL ? $rq .= "'".$ret["global_host_event_handler"]."',  " : $rq .= "NULL, ";
 	    isset($ret["global_service_event_handler"]) && $ret["global_service_event_handler"] != NULL ? $rq .= "'".$ret["global_service_event_handler"]."',  " : $rq .= "NULL, ";
-        isset($ret["sleep_time"]) && $ret["sleep_time"] != NULL ? $rq .= "'".htmlentities($ret["sleep_time"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["inter_check_delay_method"]) && $ret["inter_check_delay_method"] != NULL ? $rq .= "'".$ret["inter_check_delay_method"]."',  " : $rq .= "NULL, ";
+        isset($ret["sleep_time"]) && $ret["sleep_time"] != NULL ? $rq .= "'".htmlentities($ret["sleep_time"], ENT_QUOTES)."',  " : $rq .= "NULL, ";        
         isset($ret["service_inter_check_delay_method"]) && $ret["service_inter_check_delay_method"] != NULL ? $rq .= "'".$ret["service_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
         isset($ret["host_inter_check_delay_method"]) && $ret["host_inter_check_delay_method"] != NULL ? $rq .= "'".$ret["host_inter_check_delay_method"]."',  " : $rq .= "NULL, ";
         isset($ret["service_interleave_factor"]["service_interleave_factor"]) && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ? $rq .= "'".$ret["service_interleave_factor"]["service_interleave_factor"]."',  " : $rq .= "'2', ";
@@ -258,7 +256,6 @@ For information : contact@oreon-project.org
 		isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"]) && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2 ? $rq .= "'".$ret["check_for_orphaned_services"]["check_for_orphaned_services"]."',  " : $rq .= "'2', ";
 		isset($ret["check_service_freshness"]["check_service_freshness"]) && $ret["check_service_freshness"]["check_service_freshness"] != 2 ? $rq .= "'".$ret["check_service_freshness"]["check_service_freshness"]."',  " : $rq .= "'2', ";
 		isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["service_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-	    isset($ret["freshness_check_interval"]) && $ret["freshness_check_interval"] != NULL ? $rq .= "'".htmlentities($ret["freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
 	    isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "'".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
 	    isset($ret["cached_host_check_horizon"]) && $ret["cached_host_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_host_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
 	    isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "'".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -359,12 +356,10 @@ For information : contact@oreon-project.org
         isset($ret["log_event_handlers"]["log_event_handlers"]) && $ret["log_event_handlers"]["log_event_handlers"] != 2 ? $rq .= "log_event_handlers = '".$ret["log_event_handlers"]["log_event_handlers"]."',  " : $rq .= "log_event_handlers = '2', ";
         isset($ret["log_initial_states"]["log_initial_states"]) && $ret["log_initial_states"]["log_initial_states"] != 2 ? $rq .= "log_initial_states = '".$ret["log_initial_states"]["log_initial_states"]."',  " : $rq .= "log_initial_states = '2', ";
         isset($ret["log_external_commands"]["log_external_commands"]) && $ret["log_external_commands"]["log_external_commands"] != 2 ? $rq .= "log_external_commands = '".$ret["log_external_commands"]["log_external_commands"]."',  " : $rq .= "log_external_commands = '2', ";
-        isset($ret["log_passive_service_checks"]["log_passive_service_checks"]) && $ret["log_passive_service_checks"]["log_passive_service_checks"] != 2 ?$rq .= "log_passive_service_checks = '".$ret["log_passive_service_checks"]["log_passive_service_checks"]."',  " : $rq .= "log_passive_service_checks = '2', ";
         isset($ret["log_passive_checks"]["log_passive_checks"]) && $ret["log_passive_checks"]["log_passive_checks"] != 2 ? $rq .= "log_passive_checks = '".$ret["log_passive_checks"]["log_passive_checks"]."',  " : $rq .= "log_passive_checks = '2', ";
         isset($ret["global_host_event_handler"]) && $ret["global_host_event_handler"] != NULL ? $rq .= "global_host_event_handler = '".$ret["global_host_event_handler"]."',  " : $rq .= "global_host_event_handler = NULL, ";
 	    isset($ret["global_service_event_handler"]) && $ret["global_service_event_handler"] != NULL ? $rq .= "global_service_event_handler = '".$ret["global_service_event_handler"]."',  " : $rq .= "global_service_event_handler = NULL, ";
         isset($ret["sleep_time"]) && $ret["sleep_time"] != NULL ? $rq .= "sleep_time = '".htmlentities($ret["sleep_time"], ENT_QUOTES)."',  " : $rq .= "sleep_time = NULL, ";
-        isset($ret["inter_check_delay_method"]) && $ret["inter_check_delay_method"] != NULL ? $rq .= "inter_check_delay_method = '".$ret["inter_check_delay_method"]."',  " : $rq .= "inter_check_delay_method = NULL, ";
         isset($ret["service_inter_check_delay_method"]) && $ret["service_inter_check_delay_method"] != NULL ? $rq .= "service_inter_check_delay_method = '".$ret["service_inter_check_delay_method"]."',  " : $rq .= "service_inter_check_delay_method = NULL, ";
         isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != NULL ? $rq .= "max_service_check_spread = '".htmlentities($ret["max_service_check_spread"], ENT_QUOTES)."',  " : $rq .= "max_service_check_spread = NULL, ";
         isset($ret["service_interleave_factor"]["service_interleave_factor"]) && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ? $rq .= "service_interleave_factor = '".$ret["service_interleave_factor"]["service_interleave_factor"]."',  " : $rq .= "service_interleave_factor = '2', ";
@@ -413,8 +408,7 @@ For information : contact@oreon-project.org
 		isset($ret["check_service_freshness"]["check_service_freshness"]) && $ret["check_service_freshness"]["check_service_freshness"] != 2 ? $rq .= "check_service_freshness  = '".$ret["check_service_freshness"]["check_service_freshness"]."',  " : $rq .= "check_service_freshness   = '2', ";
 		isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != NULL ? $rq .= "service_freshness_check_interval   = '".htmlentities($ret["service_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "service_freshness_check_interval   = NULL, ";
 		isset($ret["cached_host_check_horizon"]) && $ret["cached_host_check_horizon"] != NULL ? $rq .= "cached_host_check_horizon   = '".htmlentities($ret["cached_host_check_horizon"], ENT_QUOTES)."',  " : $rq .= "cached_host_check_horizon   = NULL, ";
-		isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "cached_service_check_horizon   = '".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "cached_service_check_horizon   = NULL, ";
-	    isset($ret["freshness_check_interval"]) && $ret["freshness_check_interval"] != NULL ? $rq .= "freshness_check_interval = '".htmlentities($ret["freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "freshness_check_interval = NULL, ";
+		isset($ret["cached_service_check_horizon"]) && $ret["cached_service_check_horizon"] != NULL ? $rq .= "cached_service_check_horizon   = '".htmlentities($ret["cached_service_check_horizon"], ENT_QUOTES)."',  " : $rq .= "cached_service_check_horizon   = NULL, ";	    
 	    isset($ret["additional_freshness_latency"]) && $ret["additional_freshness_latency"] != NULL ? $rq .= "additional_freshness_latency = '".htmlentities($ret["additional_freshness_latency"], ENT_QUOTES)."',  " : $rq .= "additional_freshness_latency = NULL, ";
         isset($ret["check_host_freshness"]["check_host_freshness"]) && $ret["check_host_freshness"]["check_host_freshness"] != 2 ? $rq .= "check_host_freshness = '".$ret["check_host_freshness"]["check_host_freshness"]."',  " : $rq .= "check_host_freshness = '2', ";
         isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != NULL ? $rq .= "host_freshness_check_interval = '".htmlentities($ret["host_freshness_check_interval"], ENT_QUOTES)."',  " : $rq .= "host_freshness_check_interval = NULL, ";

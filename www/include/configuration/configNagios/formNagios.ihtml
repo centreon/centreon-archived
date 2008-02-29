@@ -38,9 +38,8 @@
 		<tr class="list_one"><td class="FormRowField">{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.p1_file.label}</td><td class="FormRowValue">{$form.p1_file.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
-		{if $msg.nagios == 2}
+
 		<tr class="list_one"><td class="FormRowField">{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
-		{/if}
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row.gif'>&nbsp;&nbsp;Status</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.status_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
@@ -80,14 +79,10 @@
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Freshness</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.check_service_freshness.label}</td><td class="FormRowValue">{$form.check_service_freshness.html}</td></tr>
-		{if $msg.nagios == 1}
-		<tr class="list_two"><td class="FormRowField">{$form.freshness_check_interval.label}</td><td class="FormRowValue">{$form.freshness_check_interval.html}&nbsp;{$Seconds}</td></tr>
-		{/if}
-		{if $msg.nagios == 2}
-			<tr class="list_two"><td class="FormRowField">{$form.service_freshness_check_interval.label}</td><td class="FormRowValue">{$form.service_freshness_check_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.check_host_freshness.label}</td><td class="FormRowValue">{$form.check_host_freshness.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.host_freshness_check_interval.label}</td><td class="FormRowValue">{$form.host_freshness_check_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
-		{/if}
+		<tr class="list_two"><td class="FormRowField">{$form.service_freshness_check_interval.label}</td><td class="FormRowValue">{$form.service_freshness_check_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.check_host_freshness.label}</td><td class="FormRowValue">{$form.check_host_freshness.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_freshness_check_interval.label}</td><td class="FormRowValue">{$form.host_freshness_check_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
+
 	 	<tr class="list_one"><td class="FormRowField">{$form.additional_freshness_latency.label}</td><td class="FormRowValue">{$form.additional_freshness_latency.html}&nbsp;&nbsp;{$Seconds}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Flapping Options</td></tr>
@@ -114,10 +109,9 @@
 		<tr class="list_two"><td class="FormRowField">{$form.execute_service_checks.label}</td><td class="FormRowValue">{$form.execute_service_checks.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.accept_passive_service_checks.label}</td><td class="FormRowValue">{$form.accept_passive_service_checks.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.enable_event_handlers.label}</td><td class="FormRowValue">{$form.enable_event_handlers.html}</td></tr>
-		{if $msg.nagios == 2}
-			<tr class="list_one"><td class="FormRowField">{$form.execute_host_checks.label}</td><td class="FormRowValue">{$form.execute_host_checks.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.accept_passive_host_checks.label}</td><td class="FormRowValue">{$form.accept_passive_host_checks.html}</td></tr>
-		{/if}
+		<tr class="list_one"><td class="FormRowField">{$form.execute_host_checks.label}</td><td class="FormRowValue">{$form.execute_host_checks.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.accept_passive_host_checks.label}</td><td class="FormRowValue">{$form.accept_passive_host_checks.html}</td></tr>
+
 	</table>
 	</div>	
 	<div id='tab3' class='tab'>
@@ -132,12 +126,8 @@
 		<tr class="list_one"><td class="FormRowField">{$form.log_event_handlers.label}</td><td class="FormRowValue">{$form.log_event_handlers.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.log_initial_states.label}</td><td class="FormRowValue">{$form.log_initial_states.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.log_external_commands.label}</td><td class="FormRowValue">{$form.log_external_commands.html}</td></tr>
-		{if $msg.nagios == 1}
-		<tr class="list_two"><td class="FormRowField">{$form.log_passive_service_checks.label}</td><td class="FormRowValue">{$form.log_passive_service_checks.html}</td></tr>
-		{/if}
-		{if $msg.nagios == 2}
-			<tr class="list_two"><td class="FormRowField">{$form.log_passive_checks.label}</td><td class="FormRowValue">{$form.log_passive_checks.html}</td></tr>
-		{/if}
+		<tr class="list_two"><td class="FormRowField">{$form.log_passive_checks.label}</td><td class="FormRowValue">{$form.log_passive_checks.html}</td></tr>
+
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;Timouts</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_check_timeout.label}</td><td class="FormRowValue">{$form.service_check_timeout.html}&nbsp;{$Seconds}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_check_timeout.label}</td><td class="FormRowValue">{$form.host_check_timeout.html}&nbsp;{$Seconds}</td></tr>
@@ -145,9 +135,9 @@
 		<tr class="list_two"><td class="FormRowField">{$form.notification_timeout.label}</td><td class="FormRowValue">{$form.notification_timeout.html}&nbsp;{$Seconds}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.perfdata_timeout.label}</td><td class="FormRowValue">{$form.perfdata_timeout.html}&nbsp;{$Seconds}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ocsp_timeout.label}</td><td class="FormRowValue">{$form.ocsp_timeout.html}&nbsp;{$Seconds}</td></tr>
-		{if $msg.nagios == 2}
-			<tr class="list_one"><td class="FormRowField">{$form.ochp_timeout.label}</td><td class="FormRowValue">{$form.ochp_timeout.html}&nbsp;{$Seconds}</td></tr>
-		{/if}
+		
+		<tr class="list_one"><td class="FormRowField">{$form.ochp_timeout.label}</td><td class="FormRowValue">{$form.ochp_timeout.html}&nbsp;{$Seconds}</td></tr>
+		
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;Archives</td></tr>	
 		<tr class="list_one"><td class="FormRowField">{$form.log_rotation_method.label}</td><td class="FormRowValue">{$form.log_rotation_method.html}</td></tr>
@@ -158,9 +148,8 @@
 		<tr class="list_two"><td class="FormRowField">{$form.state_retention_file.label}</td><td class="FormRowValue">{$form.state_retention_file.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.retention_update_interval.label}</td><td class="FormRowValue">{$form.retention_update_interval.html}&nbsp;{$Seconds}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.use_retained_program_state.label}</td><td class="FormRowValue">{$form.use_retained_program_state.html}</td></tr>
-		{if $msg.nagios == 2}
-			<tr class="list_one"><td class="FormRowField">{$form.use_retained_scheduling_info.label}</td><td class="FormRowValue">{$form.use_retained_scheduling_info.html}</td></tr>
-		{/if}
+		<tr class="list_one"><td class="FormRowField">{$form.use_retained_scheduling_info.label}</td><td class="FormRowValue">{$form.use_retained_scheduling_info.html}</td></tr>
+
 	
 	</table>
 	</div>	
@@ -176,18 +165,18 @@
 		<tr class="list_one"><td class="FormRowField">{$form.process_performance_data.label}</td><td class="FormRowValue">{$form.process_performance_data.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_command.label}</td><td class="FormRowValue">{$form.host_perfdata_command.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_command.label}</td><td class="FormRowValue">{$form.service_perfdata_command.html}</td></tr>
-		{if $msg.nagios == 2}	
-			<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file.label}</td><td class="FormRowValue">{$form.host_perfdata_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file.label}</td><td class="FormRowValue">{$form.service_perfdata_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_template.label}</td><td class="FormRowValue">{$form.host_perfdata_file_template.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_template.label}</td><td class="FormRowValue">{$form.service_perfdata_file_template.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_mode.label}</td><td class="FormRowValue">{$form.host_perfdata_file_mode.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_mode.label}</td><td class="FormRowValue">{$form.service_perfdata_file_mode.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_processing_interval.label}</td><td class="FormRowValue">{$form.host_perfdata_file_processing_interval.html}&nbsp;{$Seconds}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_processing_interval.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_interval.html}&nbsp;{$Seconds}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.host_perfdata_file_processing_command.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_command.html}</td></tr>
-		{/if}
+
+		<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file.label}</td><td class="FormRowValue">{$form.host_perfdata_file.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file.label}</td><td class="FormRowValue">{$form.service_perfdata_file.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_template.label}</td><td class="FormRowValue">{$form.host_perfdata_file_template.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_template.label}</td><td class="FormRowValue">{$form.service_perfdata_file_template.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_mode.label}</td><td class="FormRowValue">{$form.host_perfdata_file_mode.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_mode.label}</td><td class="FormRowValue">{$form.service_perfdata_file_mode.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_processing_interval.label}</td><td class="FormRowValue">{$form.host_perfdata_file_processing_interval.html}&nbsp;{$Seconds}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_processing_interval.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_interval.html}&nbsp;{$Seconds}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.host_perfdata_file_processing_command.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.service_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_command.html}</td></tr>
+
 	</table>
 	</div>	
 	<div id='tab5' class='tab'>
@@ -197,31 +186,25 @@
 		<tr class="list_one"><td class="FormRowField">{$form.interval_length.label}</td><td class="FormRowValue">{$form.interval_length.html}&nbsp;{$Seconds}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;Host Check Scheduling Options</td></tr>
-		{if $msg.nagios == 2}
-			<tr class="list_two"><td class="FormRowField">{$form.host_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.host_inter_check_delay_method.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.max_host_check_spread.label}</td><td class="FormRowValue">{$form.max_host_check_spread.html}</td></tr>
-		{/if}
+		<tr class="list_two"><td class="FormRowField">{$form.host_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.host_inter_check_delay_method.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.max_host_check_spread.label}</td><td class="FormRowValue">{$form.max_host_check_spread.html}</td></tr>
+
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;Service Check Scheduling Options</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.sleep_time.label}</td><td class="FormRowValue">{$form.sleep_time.html}</td></tr>
 	
-		{if $msg.nagios == 1}
-		<tr class="list_two"><td class="FormRowField">{$form.inter_check_delay_method.label}</td><td class="FormRowValue">{$form.inter_check_delay_method.html}</td></tr>
-		{/if}
-	
-		{if $msg.nagios == 2}
-			<tr class="list_two"><td class="FormRowField">{$form.service_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.service_inter_check_delay_method.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.max_service_check_spread.label}</td><td class="FormRowValue">{$form.max_service_check_spread.html}&nbsp;{$Minutes}</td></tr>
-		{/if}		
+		<tr class="list_two"><td class="FormRowField">{$form.service_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.service_inter_check_delay_method.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.max_service_check_spread.label}</td><td class="FormRowValue">{$form.max_service_check_spread.html}&nbsp;{$Minutes}</td></tr>
+		
 		<tr class="list_one"><td class="FormRowField">{$form.service_interleave_factor.label}</td><td class="FormRowValue">{$form.service_interleave_factor.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.max_concurrent_checks.label}</td><td class="FormRowValue">{$form.max_concurrent_checks.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_reaper_frequency.label}</td><td class="FormRowValue">{$form.service_reaper_frequency.html}&nbsp;{$Seconds}</td></tr>
 
-		{if $msg.nagios == 2}
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;Auto Rescheduling</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.auto_reschedule_checks.label}</td><td class="FormRowValue">{$form.auto_reschedule_checks.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.auto_rescheduling_interval.label}</td><td class="FormRowValue">{$form.auto_rescheduling_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.auto_rescheduling_window.label}</td><td class="FormRowValue">{$form.auto_rescheduling_window.html}&nbsp;&nbsp;{$Seconds}</td></tr>
-		{/if}
+
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;Auto Rescheduling</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.auto_reschedule_checks.label}</td><td class="FormRowValue">{$form.auto_reschedule_checks.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.auto_rescheduling_interval.label}</td><td class="FormRowValue">{$form.auto_rescheduling_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.auto_rescheduling_window.label}</td><td class="FormRowValue">{$form.auto_rescheduling_window.html}&nbsp;&nbsp;{$Seconds}</td></tr>
+
 		
 		{if $msg.nagios == 3}
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;Optimization</td></tr>
@@ -243,10 +226,10 @@
 		<tr class="list_one"><td class="FormRowField">{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.illegal_object_name_chars.label}</td><td class="FormRowValue">{$form.illegal_object_name_chars.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.illegal_macro_output_chars.label}</td><td class="FormRowValue">{$form.illegal_macro_output_chars.html}</td></tr>
-		{if $msg.nagios == 2}
-			<tr class="list_two"><td class="FormRowField">{$form.use_regexp_matching.label}</td><td class="FormRowValue">{$form.use_regexp_matching.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.use_true_regexp_matching.label}</td><td class="FormRowValue">{$form.use_true_regexp_matching.html}</td></tr>
-		{/if}
+
+		<tr class="list_two"><td class="FormRowField">{$form.use_regexp_matching.label}</td><td class="FormRowValue">{$form.use_regexp_matching.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.use_true_regexp_matching.label}</td><td class="FormRowValue">{$form.use_true_regexp_matching.html}</td></tr>
+
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;&nbsp;</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.admin_email.label}</td><td class="FormRowValue">{$form.admin_email.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.admin_pager.label}</td><td class="FormRowValue">{$form.admin_pager.html}</td></tr>

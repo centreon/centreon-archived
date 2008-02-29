@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 	
-	$form->addElement('select', 'nagios_version', _("Nagios Release"), array(1=>"1", 2=>"2", 3=>"3"));
+	$form->addElement('select', 'nagios_version', _("Nagios Release"), array(2=>"2", 3=>"3"));
 	
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("Yes"), '1');
 	$ppUse[] = &HTML_QuickForm::createElement('radio', 'perfparse_installed', null, _("No"), '0');

@@ -288,41 +288,6 @@ For information : contact@oreon-project.org
 		$tpl->assign("cmt_author", _("Author"));
 		$tpl->assign("cmt_comment", _("Comments"));
 		$tpl->assign("cmt_persistent", _("Persistent"));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		$tpl->assign("", _(""));
-		
 		
 		
 		$tpl->assign("p", $p);

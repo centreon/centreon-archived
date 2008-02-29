@@ -88,8 +88,7 @@ For information : contact@oreon-project.org
 	## Part 1
 	$form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 	$form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
-	if ($oreon->user->get_version() == 2)
-		$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
+	$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
 	$form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
 	$form->addElement('text', 'p1_file', _("P1 File"), $attrsText2);
 	
@@ -122,18 +121,17 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_service_checks', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_service_checks', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'accept_passive_service_checks', _("Passive Service Check Acceptance Option"), '&nbsp;');
-	if($oreon->user->get_version() == 2)	{
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'execute_host_checks', _("Host Check Execution Option"), '&nbsp;');
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'accept_passive_host_checks', _("Passive Host Check Acceptance Option"), '&nbsp;');
-	}
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'execute_host_checks', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'execute_host_checks', _("Host Check Execution Option"), '&nbsp;');
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'accept_passive_host_checks', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'accept_passive_host_checks', _("Passive Host Check Acceptance Option"), '&nbsp;');
+
 	$nagTab = array();
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("Yes"), '1');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("No"), '0');
@@ -177,13 +175,11 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_program_state', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_program_state', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_retained_program_state', _("Use Retained Program State Option"), '&nbsp;');
-	if($oreon->user->get_version() == 2)	{
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'use_retained_scheduling_info', _("Use Retained Scheduling Info Option"), '&nbsp;');
-	}
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'use_retained_scheduling_info', _("Use Retained Scheduling Info Option"), '&nbsp;');
 	
 	## Part 9
 	$nagTab = array();
@@ -221,20 +217,12 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_external_commands', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'log_external_commands', _("External Command Logging Option"), '&nbsp;');
-	if ($oreon->user->get_version() == 1)	{
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_service_checks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_service_checks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_service_checks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'log_passive_service_checks', _("Passive Service Check Logging Option"), '&nbsp;');
-	}
-	else if ($oreon->user->get_version() == 2)	{
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'log_passive_checks', _("Passive Check Logging Option"), '&nbsp;');
-	}
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'log_passive_checks', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'log_passive_checks', _("Passive Check Logging Option"), '&nbsp;');
+
 	
 	## Part 10
 	$form->addElement('select', 'global_host_event_handler', _("Global Host Event Handler"), $checkCmds);
@@ -242,45 +230,23 @@ For information : contact@oreon-project.org
 	
 	## Part 11
 	$form->addElement('text', 'sleep_time', _("Inter-Check Sleep Time"), $attrsText3);
-	if ($oreon->user->get_version() == 1)	{
-		/*$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'inter_check_delay_method', null, 'n', 'n');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'inter_check_delay_method', null, 'd', 'd');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'inter_check_delay_method', null, 's', 's');	
-		$form->addGroup($nagTab, 'inter_check_delay_method', $lang["nag_intCheckDelMth"], '&nbsp;');*/
-		$form->addElement('text', 'inter_check_delay_method', _("Inter-Check Delay Method"), $attrsText3);
-	}
-	else if ($oreon->user->get_version() == 2)	{
-		/*$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_inter_check_delay_method', null, 'n', 'n');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_inter_check_delay_method', null, 'd', 'd');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_inter_check_delay_method', null, 's', 's');	
-		$form->addGroup($nagTab, 'service_inter_check_delay_method', $lang["nag_svIntCheckDelMth"], '&nbsp;');*/
-		$form->addElement('text', 'service_inter_check_delay_method', _("Service Inter-Check Delay Method"), $attrsText3);
-		$form->addElement('text', 'max_service_check_spread', _("Maximum Service Check Spread"), $attrsText3);
-	}
+	$form->addElement('text', 'service_inter_check_delay_method', _("Service Inter-Check Delay Method"), $attrsText3);
+	$form->addElement('text', 'max_service_check_spread', _("Maximum Service Check Spread"), $attrsText3);
 	$form->addElement('text', 'service_interleave_factor', _("Service Interleave Factor"), $attrsText3);
 	$form->addElement('text', 'max_concurrent_checks', _("Maximum Concurrent Service Checks"), $attrsText3);
 	$form->addElement('text', 'service_reaper_frequency', _("Service Repear Frequency"), $attrsText3);
-	if ($oreon->user->get_version() == 2)	{
-		/*$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_inter_check_delay_method', null, 'n', 'n');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_inter_check_delay_method', null, 'd', 'd');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_inter_check_delay_method', null, 's', 's');	
-		$form->addGroup($nagTab, 'host_inter_check_delay_method', $lang["nag_hostIntCheckDelMth"], '&nbsp;');*/
-		$form->addElement('text', 'host_inter_check_delay_method', _("Host Inter-Check Delay Method"), $attrsText3);
-		$form->addElement('text', 'max_host_check_spread', _("Maximum Host Check Spread"), $attrsText3);
-	}
+	$form->addElement('text', 'host_inter_check_delay_method', _("Host Inter-Check Delay Method"), $attrsText3);
+	$form->addElement('text', 'max_host_check_spread', _("Maximum Host Check Spread"), $attrsText3);
 	$form->addElement('text', 'interval_length', _("Timing Interval Length"), $attrsText3);
-	if ($oreon->user->get_version() == 2)	{
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'auto_reschedule_checks', _("Auto-Rescheduling Option"), '&nbsp;');
-		$form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Interval"), $attrsText3);
-		$form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Window"), $attrsText3);
-	}
+
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'auto_reschedule_checks', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'auto_reschedule_checks', _("Auto-Rescheduling Option"), '&nbsp;');
+	$form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Interval"), $attrsText3);
+	$form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Window"), $attrsText3);
+
 	
 	## Part 12
 	$nagTab = array();
@@ -313,8 +279,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'event_handler_timeout', _("Event Handler Timeout"), $attrsText3);
 	$form->addElement('text', 'notification_timeout', _("Notification Timeout"), $attrsText3);
 	$form->addElement('text', 'ocsp_timeout', _("Obsessive Compulsive Service Processor Timeout"), $attrsText3);
-	if ($oreon->user->get_version() == 2)
-		$form->addElement('text', 'ochp_timeout', _("Obsessive Compulsive Host Processor Timeout"), $attrsText3);
+	$form->addElement('text', 'ochp_timeout', _("Obsessive Compulsive Host Processor Timeout"), $attrsText3);
 	$form->addElement('text', 'perfdata_timeout', _("Performance Data Processor Command Timeout"), $attrsText3);
 	
 	## Part 16
@@ -324,14 +289,13 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_services', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'obsess_over_services', _("Obsess Over Services Option"), '&nbsp;');
 	$form->addElement('select', 'ocsp_command', _("Obsessive Compulsive Service Processor Command"), $checkCmds);
-	if ($oreon->user->get_version() == 2)	{
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
-		$form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
-	}
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'obsess_over_hosts', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
+	$form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
+
 	
 	## Part 17
 	$nagTab = array();
@@ -341,26 +305,26 @@ For information : contact@oreon-project.org
 	$form->addGroup($nagTab, 'process_performance_data', _("Performance Data Processing Option"), '&nbsp;');
 	$form->addElement('select', 'host_perfdata_command', _("Host Performance Data Processing Command"), $checkCmds);
 	$form->addElement('select', 'service_perfdata_command', _("Service Performance Data Processing Command"), $checkCmds);
-	if ($oreon->user->get_version() == 2)	{
-		$form->addElement('text', 'host_perfdata_file', _("Host Performance Data File"), $attrsText2);
-		$form->addElement('text', 'service_perfdata_file', _("Service Performance Data File"), $attrsText2);
-		$form->addElement('textarea', 'host_perfdata_file_template', _("Host Performance Data File Template"), $attrsTextarea);
-		$form->addElement('textarea', 'service_perfdata_file_template', _("Service Performance Data File Template"), $attrsTextarea);
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'a', 'a');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'w', 'w');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'host_perfdata_file_mode', _("Host Performance Data File Mode"), '&nbsp;');
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'a', 'a');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'w', 'w');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'service_perfdata_file_mode', _("Service Performance Data File Mode"), '&nbsp;');
-		$form->addElement('text', 'host_perfdata_file_processing_interval', _("Host Performance Data File Processing Interval"), $attrsText3);
-		$form->addElement('text', 'service_perfdata_file_processing_interval', _("Service Performance Data File Processing Interval"), $attrsText3);
-		$form->addElement('select', 'host_perfdata_file_processing_command', _("Host Performance Data File Processing Command"), $checkCmds);
-		$form->addElement('select', 'service_perfdata_file_processing_command', _("Service Performance Data File Processing Command"), $checkCmds);		
-	}
+
+	$form->addElement('text', 'host_perfdata_file', _("Host Performance Data File"), $attrsText2);
+	$form->addElement('text', 'service_perfdata_file', _("Service Performance Data File"), $attrsText2);
+	$form->addElement('textarea', 'host_perfdata_file_template', _("Host Performance Data File Template"), $attrsTextarea);
+	$form->addElement('textarea', 'service_perfdata_file_template', _("Service Performance Data File Template"), $attrsTextarea);
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'a', 'a');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, 'w', 'w');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'host_perfdata_file_mode', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'host_perfdata_file_mode', _("Host Performance Data File Mode"), '&nbsp;');
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'a', 'a');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, 'w', 'w');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'service_perfdata_file_mode', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'service_perfdata_file_mode', _("Service Performance Data File Mode"), '&nbsp;');
+	$form->addElement('text', 'host_perfdata_file_processing_interval', _("Host Performance Data File Processing Interval"), $attrsText3);
+	$form->addElement('text', 'service_perfdata_file_processing_interval', _("Service Performance Data File Processing Interval"), $attrsText3);
+	$form->addElement('select', 'host_perfdata_file_processing_command', _("Host Performance Data File Processing Command"), $checkCmds);
+	$form->addElement('select', 'service_perfdata_file_processing_command', _("Service Performance Data File Processing Command"), $checkCmds);		
+
 	
 	## Part 18
 	$nagTab = array();
@@ -375,34 +339,28 @@ For information : contact@oreon-project.org
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("No"), '0');
 	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_service_freshness', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'check_service_freshness', _("Service Freshness Check Option"), '&nbsp;');
-	if ($oreon->user->get_version() == 1)
-		$form->addElement('text', 'freshness_check_interval', _("Freshness Check Interval"), $attrsText);
-	else if ($oreon->user->get_version() == 2)	{
-		$form->addElement('text', 'service_freshness_check_interval', _("Service Freshness Check Interval"), $attrsText);
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'check_host_freshness', _("Host Freshness Check Option"), '&nbsp;');
-		$form->addElement('text', 'host_freshness_check_interval', _("Host Freshness Check Interval"), $attrsText);
-	}
+	$form->addElement('text', 'service_freshness_check_interval', _("Service Freshness Check Interval"), $attrsText);
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'check_host_freshness', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'check_host_freshness', _("Host Freshness Check Option"), '&nbsp;');
+	$form->addElement('text', 'host_freshness_check_interval', _("Host Freshness Check Interval"), $attrsText);
 	
 	## Part 20
 	$form->addElement('text', 'date_format', _("Date Format"), $attrsText);
 	$form->addElement('text', 'illegal_object_name_chars', _("Illegal Object Name Characters"), $attrsText2);
 	$form->addElement('text', 'illegal_macro_output_chars', _("Illegal Macro Output Characters"), $attrsText2);
-	if ($oreon->user->get_version() == 2)	{
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'use_regexp_matching', _("Regular Expression Matching Option"), '&nbsp;');
-		$nagTab = array();
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("Yes"), '1');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("No"), '0');
-		$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("Default"), '2');
-		$form->addGroup($nagTab, 'use_true_regexp_matching', _("True Regular Expression Matching Option"), '&nbsp;');
-	}
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_regexp_matching', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'use_regexp_matching', _("Regular Expression Matching Option"), '&nbsp;');
+	$nagTab = array();
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("Yes"), '1');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("No"), '0');
+	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_true_regexp_matching', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'use_true_regexp_matching', _("True Regular Expression Matching Option"), '&nbsp;');
 	
 	## Part 21
 	$form->addElement('text', 'admin_email', _("Administrator Email Address"), $attrsText);
