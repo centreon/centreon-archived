@@ -1167,9 +1167,11 @@ For information : contact@oreon-project.org
 		exit(0);
 	}
 
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
+	function check_injection($sid){
+		if (!isset($sid))
+			$sid = $_GET["sid"];
+		if (eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $sid)) {
+			get_error(_('sql injection detected'));
 			return 1;
 		}
 		return 0;
