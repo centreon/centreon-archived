@@ -3,14 +3,14 @@ $n ="";
 $name ="";
 $title ="";
 
-$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);;
-$n = filter_var($n, INPUT_GET);;
+$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);
+$n = filter_var($n, INPUT_GET);
 
-$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);;
-$name = filter_var($name, INPUT_GET);;
+$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
+$name = filter_var($name, INPUT_GET);
 
-$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);;
-$title = filter_var($title, INPUT_GET);;
+$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);
+$title = filter_var($title, INPUT_GET);
 
 $name1 = $n."";
 $name2 = $n."_color";
