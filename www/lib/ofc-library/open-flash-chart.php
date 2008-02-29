@@ -1030,7 +1030,7 @@ class graph
 			$tmp[] = '<div id="my_chart' . $this->occurence . '"></div>';
 			$tmp[] = '<script type="text/javascript" src="' . $this->base . 'swfobject.js"></script>';
 			$tmp[] = '<script type="text/javascript">';
-			$tmp[] = 'var so = new SWFObject("open-flash-chart.swf", "ofc", "'. $this->width . '", "' . $this->height . '", "9", "#FFFFFF");';
+			$tmp[] = 'var so = new SWFObject("./img/open-flash-chart.swf", "ofc", "'. $this->width . '", "' . $this->height . '", "9", "#FFFFFF");';
 			$tmp[] = 'so.addVariable("variables","true");';
 		}
 

@@ -81,7 +81,7 @@ function _ofc( $width, $height, $url, $use_swfobject, $base )
 		// Using library for auto-enabling Flash object on IE, disabled-Javascript proof  
 	    $out[] = '<div id="'. $div_name .'"></div>';
 		$out[] = '<script type="text/javascript">';
-		$out[] = 'var so = new SWFObject("http://192.168.1.61/oreon/open-flash-chart.swf", "'. $obj_id .'", "'. $width . '", "' . $height . '", "9", "#FFFFFF");';
+		$out[] = 'var so = new SWFObject("./img/animations/open-flash-chart.swf", "'. $obj_id .'", "'. $width . '", "' . $height . '", "9", "#FFFFFF");';
 		//$out[] = 'so.addVariable("width", "' . $width . '");';
 		//$out[] = 'so.addVariable("height", "' . $height . '");';
 		$out[] = 'so.addVariable("data", "'. $url . '");';
@@ -94,15 +94,15 @@ function _ofc( $width, $height, $url, $use_swfobject, $base )
     $out[] = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="' . $protocol . '://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" ';
     $out[] = 'width="' . $width . '" height="' . $height . '" id="ie_'. $obj_id .'" align="middle">';
     $out[] = '<param name="allowScriptAccess" value="sameDomain" />';
-    $out[] = '<param name="movie" value="http://192.168.1.61/oreon/open-flash-chart.swf?width='. $width .'&height='. $height . '&data='. $url .'" />';
+    $out[] = '<param name="movie" value="./img/animations/open-flash-chart.swf?width='. $width .'&height='. $height . '&data='. $url .'" />';
     $out[] = '<param name="quality" value="high" />';
     $out[] = '<param name="bgcolor" value="#FFFFFF" />';
-    $out[] = '<embed src="http://192.168.1.61/oreon/open-flash-chart.swf?data=' . $url .'" quality="high" bgcolor="#FFFFFF" width="'. $width .'" height="'. $height .'" name="'. $obj_id .'" align="middle" allowScriptAccess="sameDomain" ';
+    $out[] = '<embed src="./img/animations/open-flash-chart.swf?data=' . $url .'" quality="high" bgcolor="#FFFFFF" width="'. $width .'" height="'. $height .'" name="'. $obj_id .'" align="middle" allowScriptAccess="sameDomain" ';
     $out[] = 'type="application/x-shockwave-flash" pluginspage="' . $protocol . '://www.macromedia.com/go/getflashplayer" id="'. $obj_id .'"/>';
     $out[] = '</object>';
 
     if ( $use_swfobject ) {
-	$out[] = '</noscript>';
+		$out[] = '</noscript>';
     }
     
     return implode("\n",$out);
