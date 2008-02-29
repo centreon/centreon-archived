@@ -17,6 +17,12 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+	
+	foreach ($_GET as $key => $value){
+		$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+		$value = filter_var($value, INPUT_GET);	
+		$_GET[$key] = $value;
+	}
 
 	if (isset($_GET["p"]))
 		$p = $_GET["p"];
@@ -184,8 +190,8 @@ For information : contact@oreon-project.org
 		}
 	}
 
-	print "\t\t\t</td>\t\t</tr>\t</table>\n</div><!-- end contener -->";
-
+	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
+	print "<!-- Footer -->";
 	# Display Footer
 	if (!$min)
 		require_once("footer.php");
