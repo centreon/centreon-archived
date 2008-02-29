@@ -54,7 +54,8 @@ For information : contact@oreon-project.org
 	
 	## Oreon information
 	$form->addElement('header', 'oreon', _("Centreon information"));
-	$form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database"), $attrsText);
+	$form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
+	$form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
 	$form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsText2);
 	$form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
 	$form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
