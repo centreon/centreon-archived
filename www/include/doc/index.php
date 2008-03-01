@@ -17,6 +17,16 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit(); 
+
+	$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
+	$page = filter_var($page, INPUT_GET);
+
+	$lang = filter_var($_GET["lang"], FILTER_SANITIZE_SPECIAL_CHARS);
+	$lang = filter_var($lang, INPUT_GET);
+
+	$tab_pages = split("/", $page);
+	foreach ($tab_images as $value)
+		$page = $value;
 		
 	unset($tpl);
 	unset($path);
@@ -35,7 +45,7 @@ For information : contact@oreon-project.org
 	else 
 		$lang = $oreon->user->get_lang();
 
-	$doc = fopen("../doc/".$lang."/".$_GET["page"], "r");	
+	$doc = fopen("../doc/".$lang."/".$page, "r");	
 	while ($line = fgets($doc)){
 		if ($flag_begin && !$flag_end){
 			$line = preg_replace("/href\=\"/", "href=\"./oreon.php?p=$p&doc=1&page=", $line);
