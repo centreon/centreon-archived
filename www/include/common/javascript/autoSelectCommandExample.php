@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	# return argument for specific command in txt format
 	# use by ajax
 
-	require_once("../../../centreon.conf.php");
+	require_once("../../../../etc/centreon.conf.php");
 	require_once("../../../DBconnect.php");
 
 	function myDecodeService($arg)	{
