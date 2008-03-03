@@ -18,9 +18,9 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 	
-	isset($_GET["lca_id"]) ? $cG = $_GET["lca_id"] : $cG = NULL;
-	isset($_POST["lca_id"]) ? $cP = $_POST["lca_id"] : $cP = NULL;
-	$cG ? $lca_id = $cG : $lca_id = $cP;
+	isset($_GET["acl_topo_id"]) ? $cG = $_GET["acl_topo_id"] : $cG = NULL;
+	isset($_POST["acl_topo_id"]) ? $cP = $_POST["acl_topo_id"] : $cP = NULL;
+	$cG ? $acl_id = $cG : $acl_id = $cP;
 
 	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
 	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 	#Path to the configuration dir
-	$path = "./include/options/accessLists/";
+	$path = "./include/options/accessLists/menusACL/";
 	
 	#PHP functions
 	require_once $path."DB-Func.php";
@@ -47,10 +47,10 @@ For information : contact@oreon-project.org
 		case "a" : require_once($path."formMenusAccess.php"); break; #Add a LCA
 		case "w" : require_once($path."formMenusAccess.php"); break; #Watch a LCA
 		case "c" : require_once($path."formMenusAccess.php"); break; #Modify a LCA
-		case "s" : enableLCAInDB($lca_id); require_once($path."listMenusAccess.php"); break; #Activate a LCA
-		case "u" : disableLCAInDB($lca_id); require_once($path."listMenusAccess.php"); break; #Desactivate a LCA
-		case "m" : multipleLCAInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listMenusAccess.php"); break; #Duplicate n LCAs
-		case "d" : deleteLCAInDB(isset($select) ? $select : array()); require_once($path."listMenusAccess.php"); break; #Delete n LCAs
-		default : require_once($path."listLCA.php"); break;
+		case "s" : enableLCAInDB($acl_id); require_once($path."listsMenusAccess.php"); break; #Activate a LCA
+		case "u" : disableLCAInDB($acl_id); require_once($path."listsMenusAccess.php"); break; #Desactivate a LCA
+		case "m" : multipleLCAInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listsMenusAccess.php"); break; #Duplicate n LCAs
+		case "d" : deleteLCAInDB(isset($select) ? $select : array()); require_once($path."listsMenusAccess.php"); break; #Delete n LCAs
+		default : require_once($path."listsMenusAccess.php"); break;
 	}
 ?>

@@ -1,5 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
 <form name='form' method='POST'>
 	<table class="Toolbar_TableTop">
 		<tr class="Toolbar_TR_Top">
@@ -8,7 +7,6 @@
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
 			</td>
-
 			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
@@ -35,7 +33,6 @@
 		</tr>
 		{/section}	
 	</table>
-
 	<table class="Toolbar_TableBottom">
 		<tr>
 			<td class="Toolbar_TDSelectAction_Bottom">
@@ -49,9 +46,7 @@
 			{/php}
 		</tr>
 	</table>
-
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
