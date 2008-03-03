@@ -94,8 +94,7 @@ For information : contact@oreon-project.org
 			else if ($key == "log_event_handlers" && $value == 2);
 			else if ($key == "log_initial_states" && $value == 2);
 			else if ($key == "log_external_commands" && $value == 2);
-			else if ($key == "log_passive_service_checks" && ($value == 2 || $oreon->user->get_version() == 2));
-			else if ($key == "log_passive_checks" && ($value == 2 || $oreon->user->get_version() == 1));
+			else if ($key == "log_passive_checks" && $value == 2);
 			else if ($key == "auto_reschedule_checks" && $value == 2);
 			else if ($key == "use_agressive_host_checking" && $value == 2);
 			else if ($key == "enable_flap_detection" && $value == 2);
@@ -103,16 +102,15 @@ For information : contact@oreon-project.org
 			else if ($key == "obsess_over_services" && $value == 2);
 			else if ($key == "obsess_over_hosts" && $value == 2);
 			else if ($key == "process_performance_data" && $value == 2);
-			else if ($key == "max_service_check_spread" && $oreon->user->get_version() == 1);
-			else if ($key == "max_host_check_spread" && $oreon->user->get_version() == 1);
+			else if ($key == "max_service_check_spread");
+			else if ($key == "max_host_check_spread");
 			else if ($key == "check_for_orphaned_services" && $value == 2);
 			else if ($key == "check_service_freshness" && $value == 2);
 			else if ($key == "check_host_freshness" && $value == 2);
 			else if ($key == "use_regexp_matching" && $value == 2);
 			else if ($key == "use_true_regexp_matching" && $value == 2);
-			else if ($key == "service_inter_check_delay_method" && ($value == 2 || $oreon->user->get_version() == 1));
-			else if ($key == "host_inter_check_delay_method" && ($value == 2 || $oreon->user->get_version() == 1));
-			else if ($key == "inter_check_delay_method" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "service_inter_check_delay_method" && $value == 2);
+			else if ($key == "host_inter_check_delay_method" && $value == 2);
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				if (PEAR::isError($DBRESULT2))
@@ -169,6 +167,29 @@ For information : contact@oreon-project.org
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			}
+			/*
+			 * Nagios 3 part
+			 */
+			else if ($key == "enable_predictive_host_dependency_checks" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "enable_predictive_service_dependency_checks" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "use_large_installation_tweaks" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "free_child_process_memory" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "child_processes_fork_twice" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "enable_environment_macros" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "enable_embedded_perl" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "use_embedded_perl_implicitly" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "debug_verbosity" && ($value == 2 || $oreon->user->get_version() == 2));
+
+			else if ($key == "cached_host_check_horizon" && $oreon->user->get_version() == 2);
+			else if ($key == "cached_service_check_horizon" && $oreon->user->get_version() == 2);
+			else if ($key == "additional_freshness_latency" && $oreon->user->get_version() == 2);
+			else if ($key == "debug_level" && $oreon->user->get_version() == 2);
+			else if ($key == "max_debug_file_size" && $oreon->user->get_version() == 2);
+			
+			else if ($key == "debug_file" && $oreon->user->get_version() == 2);
+			 /*
+			  *  End of Nagios 3 part
+			  */
 			else
 				$str .= $key."=".$value."\n";
 		}
