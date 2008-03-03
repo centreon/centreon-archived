@@ -35,18 +35,12 @@ For information : contact@oreon-project.org
 	
 	header('Content-type: text/html; charset=iso-8859-1');
 
-	if(isset($_POST["index"]))
-	{
-
-		$res =& $pearDB->query("SELECT command_example FROM command WHERE" .
-			" command_id = '". $_POST["index"] ."' ");
-		if (PEAR::isError($res)) {
+	if(isset($_POST["index"])){
+		$res =& $pearDB->query("SELECT command_example FROM command WHERE command_id = '". $_POST["index"] ."' ");
+		if (PEAR::isError($res))
 			print "Mysql Error : ".$res->getMessage();
-		}
-		while($res->fetchInto($arg))
+		while ($arg = $res->fetchRow())
 			echo utf8_encode(myDecodeService($arg["command_example"]));
-
 		$pearDB->disconnect();
 	}	
-
 ?>
