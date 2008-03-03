@@ -56,7 +56,6 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	print $rq;
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
@@ -67,8 +66,6 @@ For information : contact@oreon-project.org
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
 	for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {		
-		print "K";
-		print_r($topo);
 		$selectedElements =& $form->addElement('checkbox', "select[".$topo['acl_topo_id']."]");	
 		/*
 		 * 

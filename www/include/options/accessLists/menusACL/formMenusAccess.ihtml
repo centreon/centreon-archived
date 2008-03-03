@@ -15,7 +15,8 @@
 		<tr class="list_one"><td class="FormRowField">{$form.acl_topo_name.label}</td><td class="FormRowValue">{$form.acl_topo_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.acl_topo_alias.label}</td><td class="FormRowValue">{$form.acl_topo_alias.html}</td></tr>
 		<!--<tr class="list_one"><td class="FormRowField">{$form.acl_topo_activate.label}</td><td class="FormRowValue">{$form.acl_topo_activate.html}</td></tr>-->
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.pages}</td></tr>
+	 	<tr class="list_two"><td class="FormRowField">{$form.acl_groups.label}</td><td class="FormRowValue">{$form.acl_groups.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.pages}</td></tr>
 		<tr >
 			<td colspan="2">
 				<ul class="arbo_a">

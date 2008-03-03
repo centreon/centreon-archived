@@ -24,14 +24,32 @@ For information : contact@oreon-project.org
 	 */
 	if ($o == "c" || $o == "w")	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_topology WHERE acl_topo_id = '".$acl_id."' LIMIT 1");
+		
 		# Set base value
 		$acl = array_map("myDecode", $DBRESULT->fetchRow());
+		
 		# Set Topology relations
-		$DBRESULT =& $pearDB->query("SELECT topology_topology_id FROM lca_define_topology_relation WHERE lca_define_lca_id = '".$acl_id."'");
+		print "SELECT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_id."'";
+		$DBRESULT =& $pearDB->query("SELECT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_id."'");
 		for ($i = 0; $DBRESULT->fetchInto($topo); $i++)
 			$acl["lca_topos"][$topo["topology_topology_id"]] = 1;
 		$DBRESULT->free();
+		print_r($acl["lca_topos"]);
+		# Set Contact Groups relations
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
+		for($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
+			$acl["acl_groups"][$i] = $groups["acl_group_id"];
+		$DBRESULT->free();
 	}
+
+	$groups = array();
+	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while($group = $DBRESULT->fetchRow())
+		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
+	$DBRESULT->free();
+
 
 	if	(!isset($acl["lca_topos"]))
 		$acl["lca_topos"] = array();
@@ -71,6 +89,13 @@ For information : contact@oreon-project.org
 	$form->addElement('text',	'acl_topo_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 	'acl_topo_alias', _("Alias"), $attrsText);
 
+    $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams1->setElementTemplate($template);
+	echo $ams1->getElementJs(false);
+
+
 /*	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Enabled"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Disabled"), '0');
@@ -87,7 +112,7 @@ For information : contact@oreon-project.org
 	## Topology concerned
 	#
 	$form->addElement('header', 'pages', _("Accessible Pages"));
-	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
+	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order, topology_group";
 	$DBRESULT1 =& $pearDB->query($rq);
 	#
 	$acl_topos 	= array();

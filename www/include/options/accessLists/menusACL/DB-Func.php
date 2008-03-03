@@ -96,11 +96,13 @@ For information : contact@oreon-project.org
 		if (!$acl_id) return;
 		updateLCA($acl_id);
 		updateLCATopology($acl_id);
+		updateGroups($acl_id);
 	}	
 	
 	function insertLCAInDB ()	{
 		$acl_id = insertLCA();
 		updateLCATopology($acl_id);
+		updateGroups($acl_id);
 		return ($acl_id);
 	}
 	
@@ -149,6 +151,25 @@ For information : contact@oreon-project.org
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]))	{
 				$rq = "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES ('".$acl_id."', '".$ret[$i]."')";
+				print $rq . "<br>";
+				$DBRESULT =& $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			}
+		}
+	}
+
+	function updateGroups($acl_id = null)	{
+		if (!$acl_id) return;
+		global $form, $pearDB;
+		$DBRESULT =& $pearDB->query("DELETE FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$ret = array();
+		$ret = $form->getSubmitValue("acl_groups");
+		foreach ($ret as $key => $value){
+			if (isset($value))	{
+				$rq = "INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')";
 				$DBRESULT =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
