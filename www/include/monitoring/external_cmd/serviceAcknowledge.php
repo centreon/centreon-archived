@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 		$attr = array("rows"=>"5", "cols"=>"40");
 		$form->addElement('textarea', 'comment', 'comment', $attr);
 		
-		$form->addRule('comment', $_("Comment is required"), 'required', '', 'client');
+		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
 		$form->setJsWarnings(_("Invalid information entered"),_("Please correct these fields"));
 		
 		$form->addElement('submit', 'submit', ($en == 1) ? _("Add") : _("Delete"));
