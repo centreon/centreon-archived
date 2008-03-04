@@ -18,10 +18,6 @@ For information : contact@oreon-project.org
 	if (!isset ($oreon))
 		exit ();
 	
-	print "<br><br>";
-	print_r($_GET);
-	print_r($_POST);
-	print "<br><br>";
 	isset($_GET["acl_topo_id"]) ? $cG = $_GET["acl_topo_id"] : $cG = NULL;
 	isset($_POST["acl_topo_id"]) ? $cP = $_POST["acl_topo_id"] : $cP = NULL;
 	$cG ? $acl_id = $cG : $acl_id = $cP;

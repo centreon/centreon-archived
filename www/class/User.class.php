@@ -113,52 +113,40 @@ class User	{
 				$this->lcaTopo[$topo["topology_page"]] = 1;			
 		unset($res3);
   	} else {
-		print "SELECT acl_groups.acl_group_id FROM acl_groups, acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."' AND acl_group.acl_group_id = acl_group_contacts_relations.agcr_id";
-  		$res1 =& $pearDB->query("SELECT acl_groups.acl_group_id FROM acl_groups, acl_group_contacts_relations WHERE acl_group_relations.contact_contact_id = '".$this->user_id."' AND acl_group.acl_group_id = acl_group_contacts_relations.agcr_id");
+  		$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."'");
   		if ($num = $res1->numRows())	{
   			$str = "";
 			while ($group = $res1->fetchRow())	{
-				$str .= $group["acl_group_id"] . ", ";
+				if ($str != "")
+					$str .= ", ";
+				$str .= $group["acl_group_id"];
 			}
-  		}
-  	}
-  	/* 
-  	 	$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$this->user_id."'");
-		if ($num = $res1->numRows())	{
-			while ($res1->fetchInto($contactGroup))	{
-			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-				 if ($res2->numRows())	{
-					$have_an_lca = 1;
-					while ($res2->fetchInto($lca))	{
-  						$res3 =& $pearDB->query("SELECT topology_topology_id FROM lca_define_topology_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."'");	
-						while ($res3->fetchInto($topo)){
-							$res4 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_id = '".$topo["topology_topology_id"]."' AND topology_page IS NOT NULL");	
-							while ($res4->fetchInto($topo_page))						
-								$this->lcaTopo[$topo_page["topology_page"]] = 1;
-							unset($res4);
-						}
-						unset($res3);
-					}
-				}
-				unset($res2);
-			}
-			unset($res1);
 		}
+		$str_topo = "";
+		$DBRESULT =& $pearDB->query("SELECT acl_topology_id FROM `acl_group_topology_relations` WHERE acl_group_id IN ($str)");
+		while ($topo_group = $DBRESULT->fetchRow()){
+	  		$DBRESULT2 =& $pearDB->query("SELECT topology_topology_id FROM `acl_topology_relations` WHERE acl_topo_id = '".$topo_group["acl_topology_id"]."'");
+	  		while ($topo_page = $DBRESULT2->fetchRow()){
+	  			$have_an_lca = 1;
+	  			if ($str_topo != "")
+	  				$str_topo .= ", ";
+	  			$str_topo .= $topo_page["topology_topology_id"];
+	  		}
+			unset($DBRESULT2);
+  		}
+  		unset($DBRESULT);
+  		$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_id IN ($str_topo) AND topology_page IS NOT NULL");	
+		while ($topo_page = $DBRESULT->fetchRow())						
+			$this->lcaTopo[$topo_page["topology_page"]] = 1;
+		unset($DBRESULT);
   	}
-  	*/
-  	if (!$num || !$have_an_lca) {
-		$res3 =& $pearDB->query("SELECT topology_page FROM topology");	
-		while ($res3->fetchInto($topo))
-			$this->lcaTopo[$topo["topology_page"]] = 1;
-		unset($res3);			
-	}
-  	$this->lcaTStr = NULL;
+
+  	$this->lcaTStr = '';
   	foreach ($this->lcaTopo as $key => $tmp){
   		if (isset($key) && $key){
-	  		if ($this->lcaTStr)
-	  			$this->lcaTStr .= ", ".$key;
-	  		else
-	  			$this->lcaTStr = $key;
+	  		if ($this->lcaTStr != "")
+	  			$this->lcaTStr .= ", ";
+	  		$this->lcaTStr .= $key;
   		}
   	}
   	if (!$this->lcaTStr) 

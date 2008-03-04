@@ -29,12 +29,11 @@ For information : contact@oreon-project.org
 		$acl = array_map("myDecode", $DBRESULT->fetchRow());
 		
 		# Set Topology relations
-		print "SELECT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_id."'";
-		$DBRESULT =& $pearDB->query("SELECT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_id."'");
+		$DBRESULT =& $pearDB->query("SELECT topology_topology_id FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
 		for ($i = 0; $DBRESULT->fetchInto($topo); $i++)
-			$acl["lca_topos"][$topo["topology_topology_id"]] = 1;
+			$acl["acl_topos"][$topo["topology_topology_id"]] = 1;
 		$DBRESULT->free();
-		print_r($acl["lca_topos"]);
+		
 		# Set Contact Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
 		for($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
@@ -44,15 +43,13 @@ For information : contact@oreon-project.org
 
 	$groups = array();
 	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($group = $DBRESULT->fetchRow())
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	$DBRESULT->free();
 
-
-	if	(!isset($acl["lca_topos"]))
-		$acl["lca_topos"] = array();
+	if	(!isset($acl["acl_topos"]))
+		$acl["acl_topos"] = array();
 
 /*	# Init LCA 
 
@@ -82,9 +79,9 @@ For information : contact@oreon-project.org
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View an ACL"));
 
-	#
-	## LCA basic information
-	#
+	/*
+	 * LCA basic information
+	 */
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text',	'acl_topo_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 	'acl_topo_alias', _("Alias"), $attrsText);
@@ -102,19 +99,18 @@ For information : contact@oreon-project.org
 	$form->addGroup($tab, 'lca_topo_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('lca_topo_activate' => '1'));
 */
-	#
-	## Further informations
-	#
+	/*
+	 * Further informations
+	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('textarea', 'lca_comment', _("Comments"), $attrsTextarea);
 	
-	#
-	## Topology concerned
-	#
+	/*
+	 * Topology concerned
+	 */
 	$form->addElement('header', 'pages', _("Accessible Pages"));
-	$rq = "SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order, topology_group";
-	$DBRESULT1 =& $pearDB->query($rq);
-	#
+	$DBRESULT1 =& $pearDB->query("SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order, topology_group");
+	
 	$acl_topos 	= array();
 	$acl_topos2 = array();
 	$a = 0;
@@ -122,7 +118,7 @@ For information : contact@oreon-project.org
 		$acl_topos2[$a] = array();
 		$acl_topos2[$a]["name"] = _($topo1["topology_name"]);
 		$acl_topos2[$a]["id"] = $topo1["topology_id"];
-		$acl_topos2[$a]["checked"] = array_key_exists($topo1["topology_id"],$acl["lca_topos"]) ? "true" : "false";
+		$acl_topos2[$a]["checked"] = isset($acl["acl_topos"][$topo1["topology_id"]]) ? "true" : "false";
 		$acl_topos2[$a]["c_id"] = $a;
 		$acl_topos2[$a]["childs"] = array();
 
@@ -136,7 +132,7 @@ For information : contact@oreon-project.org
 			$acl_topos2[$a]["childs"][$b] = array();
 			$acl_topos2[$a]["childs"][$b]["name"] = _($topo2["topology_name"]);
 			$acl_topos2[$a]["childs"][$b]["id"] = $topo2["topology_id"];
-			$acl_topos2[$a]["childs"][$b]["checked"] = array_key_exists($topo2["topology_id"],$acl["lca_topos"]) ? "true" : "false";
+			$acl_topos2[$a]["childs"][$b]["checked"] = isset($acl["acl_topos"][$topo2["topology_id"]]) ? "true" : "false";
 			$acl_topos2[$a]["childs"][$b]["c_id"] = $a."_".$b;
 			$acl_topos2[$a]["childs"][$b]["childs"] = array();
 			
@@ -150,7 +146,7 @@ For information : contact@oreon-project.org
 				$acl_topos2[$a]["childs"][$b]["childs"][$c] = array();
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["name"] = _($topo3["topology_name"]);
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["id"] = $topo3["topology_id"];
-				$acl_topos2[$a]["childs"][$b]["childs"][$c]["checked"] = array_key_exists($topo3["topology_id"],$acl["lca_topos"]) ? "true" : "false";
+				$acl_topos2[$a]["childs"][$b]["childs"][$c]["checked"] = isset($acl["acl_topos"][$topo3["topology_id"]]) ? "true" : "false";
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["c_id"] = $a."_".$b."_".$c;
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"] = array();
 
@@ -164,12 +160,12 @@ For information : contact@oreon-project.org
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d] = array();
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["name"] = _("topology_name");
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["id"] = $topo4["topology_id"];
-					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["checked"] = array_key_exists( $topo4["topology_id"],$acl["lca_topos"]) ? "true" : "false";
+					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["checked"] = isset($acl["acl_topos"][$topo4["topology_id"]]) ? "true" : "false";
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["c_id"] = $a."_".$b."_".$c."_".$d;
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["childs"] = array();
 
 					/*old*/
-				 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, array_key_exists($topo4["topology_name"], $lang) ? "&nbsp;&nbsp;"._($topo4["topology_name"])."<br />" : "&nbsp;&nbsp;#UNDEF#"."<br />", array("style"=>"margin-top: 5px; margin-left: 55px;"));
+				 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, _("Name"), array("style"=>"margin-top: 5px; margin-left: 55px;"));
 					/*old*/					
 					$d++;
 				}
@@ -179,7 +175,7 @@ For information : contact@oreon-project.org
 		}
 		$a++;
 	}
-	
+	/*
 	if ($o == "a")	{
 		function one($v)	{
 			$v->setValue(1);
@@ -187,8 +183,8 @@ For information : contact@oreon-project.org
 		}
 		$acl_topos = array_map("one", $acl);
 	}
-	
-	$form->addGroup($acl_topos, 'lca_topos', _("Visible page"), '&nbsp;&nbsp;');
+	*/
+	$form->addGroup($acl_topos, 'acl_topos', _("Visible page"), '&nbsp;&nbsp;');
 	$form->addElement('hidden', 'acl_topo_id');
 	
 	$redirect =& $form->addElement('hidden', 'o');
@@ -214,7 +210,7 @@ For information : contact@oreon-project.org
 	 * Just watch a LCA information
 	 */
 	if ($o == "w")	{
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&lca_id=".$acl_id."'"));
+		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&acl_id=".$acl_id."'"));
 	    $form->setDefaults($acl);
 		$form->freeze();
 	} else if ($o == "c"){ # Modify a LCA information
@@ -252,6 +248,7 @@ For information : contact@oreon-project.org
 			$form->accept($renderer);
 			$tpl->assign('form', $renderer->toArray());
 			$tpl->assign('o', $o);
+			$tpl->assign('acl_topos2', $acl_topos2);
 			$tpl->display("formMenusAccess.ihtml");
 		}
 	}

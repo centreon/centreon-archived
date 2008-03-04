@@ -65,14 +65,14 @@ For information : contact@oreon-project.org
 			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM `acl_topology` WHERE acl_topo_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
-			$row["acl_id"] = '';
+			$row["acl_topo_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "acl_name" ? ($lca_name = $value2 = $value2."_".$i) : null;
+					$key2 == "acl_topo_name" ? ($acl_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
-				if (testExistence($lca_name))	{
+				if (testExistence($acl_name))	{
 					$val ? $rq = "INSERT INTO acl_topology VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
 					$DBRESULT =& $pearDB->query("SELECT MAX(acl_topo_id) FROM acl_topology");
@@ -145,14 +145,12 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
-		$ret = $form->getSubmitValue("lca_topos");
+		$ret = $form->getSubmitValue("acl_topos");
 		if (is_array($ret))
 			$ret = array_keys($ret);		
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]))	{
-				$rq = "INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES ('".$acl_id."', '".$ret[$i]."')";
-				print $rq . "<br>";
-				$DBRESULT =& $pearDB->query($rq);
+				$DBRESULT =& $pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id) VALUES ('".$acl_id."', '".$ret[$i]."')");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			}
@@ -167,14 +165,14 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_groups");
-		foreach ($ret as $key => $value){
-			if (isset($value))	{
-				$rq = "INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')";
-				$DBRESULT =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		if (isset($ret))
+			foreach ($ret as $key => $value){
+				if (isset($value))	{
+					$DBRESULT =& $pearDB->query("INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				}
 			}
-		}
 	}
 
 ?>
