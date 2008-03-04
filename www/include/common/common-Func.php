@@ -1170,10 +1170,21 @@ For information : contact@oreon-project.org
 	function check_injection($sid){
 		if (!isset($sid))
 			$sid = $_GET["sid"];
-		if (eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $sid)) {
+		/*
+		 * 
+		if (preg_match("/\</", strtoupper($sid), $matches) ||
+			preg_match("/\>/", strtoupper($sid), $matches) ||
+			preg_match("/\;/", strtoupper($sid), $matches) ||
+			preg_match("/UNION/", strtoupper($sid), $matches) ||
+			preg_match("/ALL/", strtoupper($sid), $matches) ||
+			preg_match("/OR/", strtoupper($sid), $matches) ||
+			preg_match("/AND/", strtoupper($sid), $matches) ||
+			preg_match("/ORDER/", strtoupper($sid), $matches) ||
+			preg_match("/SELECT/", strtoupper($sid), $matches) ||
+			preg_match("/WHERE/", strtoupper($sid), $matches)) {
 			get_error(_('sql injection detected'));
 			return 1;
-		}
+		}*/
 		return 0;
 	}
 	/* End Ajax Test */
