@@ -204,7 +204,7 @@ For information : contact@oreon-project.org
 	echo $ams1->getElementJs(false);
 
 	# Service notif
-	$form->addElement('header', 'serviceNotification', _("Server"));
+	$form->addElement('header', 'serviceNotification', _("Service"));
  	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', 'Warning');
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', 'Unknown');
 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', 'Critical');
