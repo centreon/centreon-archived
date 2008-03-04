@@ -50,9 +50,6 @@ For information : contact@oreon-project.org
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
-
-
-
 	/* requisit */
 	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
@@ -81,52 +78,69 @@ For information : contact@oreon-project.org
 	$disable = str_replace('&eacute', '&#233', $disable);
 
 
-	if(isset($_GET["nc"]) && !check_injection($_GET["nc"])){
-		$nc = htmlentities($_GET["nc"]);
-	}else
-		$nc = "0";
-	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+	/*
+	 * Instance
+	 */
+	if (isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/){
 		$instance = htmlentities($_GET["instance"]);
-	}else
+	} else
 		$instance = "ALL";
-	if(isset($_GET["search"]) && !check_injection($_GET["search"])){
+	/*
+	 * Num
+	 */
+	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
+		$num = htmlentities($_GET["num"]);
+	} else
+		get_error('num unknown');
+	/*
+	 * Limit
+	 */
+	if (isset($_GET["limit"]) && !check_injection($_GET["limit"])){
+		$limit = htmlentities($_GET["limit"]);
+	} else
+		get_error('limit unknown');
+
+	/*
+	 * Search
+	 */
+	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
 		$search = htmlentities($_GET["search"]);
-	}else
+	} else
 		$search = "";
-	if(isset($_GET["host_name"]) && !check_injection($_GET["host_name"])){
-		$host_name = htmlentities($_GET["host_name"]);
-	}else
-		$host_name = "";
-	if(isset($_GET["search_type_host"]) && !check_injection($_GET["search_type_host"])){
-		$search_type_host = htmlentities($_GET["search_type_host"]);
-	}else
-		$search_type_host = 1;
-	if(isset($_GET["search_type_service"]) && !check_injection($_GET["search_type_service"])){
-		$search_type_service = htmlentities($_GET["search_type_service"]);
-	}else
-		$search_type_service = 1;
-	if(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
+	/*
+	 * Sort type
+	 */
+	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
 		$sort_type = htmlentities($_GET["sort_type"]);
-	}else
+	} else
 		$sort_type = "host_name";
-
-	if(isset($_GET["order"]) && !check_injection($_GET["order"])){
+	/*
+	 * Order
+	 */
+	if (isset($_GET["order"]) && !check_injection($_GET["order"])){
 		$order = htmlentities($_GET["order"]);
-	}else
+	} else
 		$oreder = "ASC";
-
-	if(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
+	/*
+	 * Date status
+	 */
+	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	}else
+	} else
 		$date_time_format_status = "d/m/Y H:i:s";
-
-	if(isset($_GET["o"]) && !check_injection($_GET["o"])){
+	/*
+	 * Options
+	 */
+	if (isset($_GET["o"]) && !check_injection($_GET["o"])){
 		$o = htmlentities($_GET["o"]);
-	}else
-		$o = "svc";
-	if(isset($_GET["p"]) && !check_injection($_GET["p"])){
+	} else
+		$o = "h";
+	/*
+	 * Page
+	 */
+	if (isset($_GET["p"]) && !check_injection($_GET["p"])){
 		$p = htmlentities($_GET["p"]);
-	}else
+	} else
 		$p = "2";
 
 

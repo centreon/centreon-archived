@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	}
 
 	foreach ($_GET as $key => $value){
-	//	$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+		$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
 		$value = filter_var($value, INPUT_GET);	
 		$_GET[$key] = $value;
 	}
@@ -57,7 +57,6 @@ For information : contact@oreon-project.org
 
 	$ndo_base_prefix = getNDOPrefix();
 	
-
 	# Session...
 	$debug_session = 'KO';
 
@@ -88,11 +87,11 @@ For information : contact@oreon-project.org
 	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
 	$admin = $res2->fetchrow();
 	
+	global $is_admin;
+	
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
 	
-	global $is_admin;
-
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);

@@ -36,65 +36,79 @@ For information : contact@oreon-project.org
 
 	/* security check 2/2*/
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			;
-		}else
+		if(!$res->numRows())
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
 	/* requisit */
-	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
+	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
-	}else
+	} else
 		get_error('num unknown');
-	if(isset($_GET["limit"]) && !check_injection($_GET["limit"])){
+	
+	if (isset($_GET["limit"]) && !check_injection($_GET["limit"])){
 		$limit = htmlentities($_GET["limit"]);
-	}else
+	} else
 		get_error('limit unknown');
 
 
 	/* options */
-	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+	/*
+	 * Instance
+	 */
+	if (isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/){
 		$instance = htmlentities($_GET["instance"]);
-	}else
+	} else
 		$instance = "ALL";
-	if(isset($_GET["search"]) && !check_injection($_GET["search"])){
+	/*
+	 * Search
+	 */
+	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
 		$search = htmlentities($_GET["search"]);
-	}else
+	} else
 		$search = "";
-
-	if(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
+	/*
+	 * Sort type
+	 */
+	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
 		$sort_type = htmlentities($_GET["sort_type"]);
-	}else
+	} else
 		$sort_type = "host_name";
-
-	if(isset($_GET["order"]) && !check_injection($_GET["order"])){
+	/*
+	 * order
+	 */
+	if (isset($_GET["order"]) && !check_injection($_GET["order"])){
 		$order = htmlentities($_GET["order"]);
-	}else
+	} else
 		$oreder = "ASC";
 
-	if(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
+	/*
+	 * Date Format
+	 */
+	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	}else
+	} else
 		$date_time_format_status = "d/m/Y H:i:s";
 
-	if(isset($_GET["o"]) && !check_injection($_GET["o"])){
+	/*
+	 * O options
+	 */
+	if (isset($_GET["o"]) && !check_injection($_GET["o"])){
 		$o = htmlentities($_GET["o"]);
-	}else
+	} else
 		$o = "h";
-	if(isset($_GET["p"]) && !check_injection($_GET["p"])){
+	/*
+	 * Page
+	 */
+	if (isset($_GET["p"]) && !check_injection($_GET["p"])){
 		$p = htmlentities($_GET["p"]);
-	}else
+	} else
 		$p = "2";
-
-
 
 	/* security end*/
 
@@ -170,7 +184,8 @@ For information : contact@oreon-project.org
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 	}
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable " .
+									" FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
@@ -180,10 +195,10 @@ For information : contact@oreon-project.org
 		global $general_opt;
 		global $o, $instance, $is_admin, $lcaSTR;
 
-		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
+		$rq = 	"SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
 				" WHERE no.object_id = nss.service_object_id".
-			" AND no.name1 not like 'OSL_Module'";
+				" AND no.name1 not like 'OSL_Module'";
 
 		if($o == "svcgrid_pb" || $o == "svcOV_pb")
 			$rq .= " AND nss.current_state != 0" ;
@@ -210,15 +225,12 @@ For information : contact@oreon-project.org
 		if(!$is_admin)
 			$rq .= " AND no.name1 IN (".$lcaSTR." )";
 
-
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while($DBRESULT->fetchInto($svc)){
-
+		while($DBRESULT->fetchInto($svc))
 			$tab[$svc["service_name"]] = $svc["current_state"];
-		}
 		return($tab);
 	}
 
@@ -254,47 +266,39 @@ For information : contact@oreon-project.org
 			" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs " .
 			" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 			" AND no.name1 not like 'OSL_Module'";
-		if(!$is_admin)
-			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+	if(!$is_admin)
+		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
 
 
 	if($o == "svcgrid_pb" || $o == "svcOV_pb")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
 	if($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 				")";
 
-
-
-
-	if($search != ""){
+	if($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-	}
-
 
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
-
-
 
 	switch($sort_type){
 			case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;
 			default : $rq1 .= " order by no.name1 ". $order; break;
 	}
 
-//	$rq1 .= " order by no.name1 ". $order;
 
 	$rq_pagination = $rq1;
 
@@ -340,17 +344,13 @@ For information : contact@oreon-project.org
 			$class = "list_two";
 		else
 			$class = "list_one";
-
 		$buffer .= '<l class="'.$class.'">';
-
 		foreach ($tab["tab_svc"] as $svc => $state) {
 			$buffer .= '<svc>';
 			$buffer .= '<sn><![CDATA['. $svc . ']]></sn>';
 			$buffer .= '<sc><![CDATA['. $tab_color_service[$state] . ']]></sc>';
 			$buffer .= '</svc>';
 		}
-
-
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
 		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
