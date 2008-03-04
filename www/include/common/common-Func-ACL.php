@@ -50,15 +50,26 @@ For information : contact@oreon-project.org
 		return $lcaServiceGroup;
 	}
 	
-	function getLCAHostByID($pearDB){
+	function getLCAHostByIDold($pearDB){
 		if (!$pearDB)
 			return ;
-		if (session_id() == "") $uid = $_POST["sid"]; else $uid = session_id();
+		/*
+		 * Get Session id
+		 */
+		if (session_id() == "") 
+			$uid = $_POST["sid"]; 
+		else 
+			$uid = session_id();
+	
+		/*
+		 * Get User ID
+		 */
 		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$DBRESULT->fetchInto($user);
+		$user = $DBRESULT->fetchRow();
 		$user_id = $user["user_id"];
+		
 		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -109,28 +120,115 @@ For information : contact@oreon-project.org
 		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
 		$res1->fetchInto($user);
 		$user_id = $user["user_id"];
-		$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
-		if ($res1->numRows())	{
-			while($res1->fetchInto($contactGroup))	{
-			 	$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-				 if ($res2->numRows())
-					while ($res2->fetchInto($lca))	{
-						$res3 =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host, lca_define_host_relation ldr WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND host_id = ldr.host_host_id");
-						while ($res3->fetchInto($host))
-							$lcaHost[$host["host_name"]] = $host["host_id"];
-					 	$res3 =& $pearDB->query("SELECT DISTINCT hg_id, hg_name FROM hostgroup, lca_define_hostgroup_relation WHERE lca_define_lca_id = '".$lca["lca_id"]."' AND hg_id = hostgroup_hg_id");	
-						while ($res3->fetchInto($hostGroup))	{
-							$lcaHostGroup[$hostGroup["hg_name"]] = $hostGroup["hg_id"];
-							# Apply the LCA to hosts contains in
-							if ($lca["lca_hg_childs"])	{
-								$res4 =& $pearDB->query("SELECT h.host_name, hgr.host_host_id FROM hostgroup_relation hgr, host h WHERE hgr.hostgroup_hg_id = '".$hostGroup["hg_id"]."' AND h.host_id = hgr.host_host_id");	
-								while ($res4->fetchInto($host))	
-									$lcaHost[$host["host_name"]] = $host["host_host_id"];
-							}
-						}
-					}
+		
+		$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user_id."'");
+  		if ($num = $res1->numRows()) {
+  			$str = "";
+			while ($group = $res1->fetchRow()) {
+				if ($str != "")
+					$str .= ", ";
+				$str .= $group["acl_group_id"];
 			}
 		}
+		
+		$str_topo = "";
+		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id IN (".$str.")");
+		$host = array();
+  		while ($res = $DBRESULT2->fetchRow()){
+  			/*
+  			 * Hosts
+  			 */
+  			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
+	  		while ($host = $DBRESULT3->fetchRow())
+				$lcaHost[$host["host_name"]] = $host["host_id"];
+			unset($DBRESULT3);
+			/*
+			 * Hosts Groups Inclus
+			 */
+			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_name " .
+											"FROM `hostgroup`, `acl_resources_hg_relations` " .
+											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
+											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
+	  		while ($hostgroup = $DBRESULT3->fetchRow()){
+	  			$DBRESULT4 =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation` WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
+	  			while ($host_hostgroup = $DBRESULT4->fetchRow())
+					$lcaHost[$host_hostgroup["host_name"]] = $host_hostgroup["host_id"];
+				$LcaHHG[$hostgroup["hg_name"]] = $hostgroup["hg_id"];	
+	  		}
+			/*
+			 * Hosts Exclus
+			 */
+			$DBRESULT3 =& $pearDB->query("SELECT host_name FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
+	  		if ($DBRESULT3->numRows())
+		  		while ($host = $DBRESULT3->fetchRow())
+					if (isset($lcaHost[$host["host_name"]]))
+						unset($lcaHost[$host["host_name"]]);
+			unset($DBRESULT3);
+  		}
+		$lcaHost[$host["host_name"]] = $host["host_id"];
+		unset($DBRESULT2);
+  		$LcaHHG = array();
+		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
+		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
+		//print_r($LcaHHG);
+		return $LcaHHG;
+	}
+	
+	function getLCAHostByID($pearDB){
+		if (!$pearDB)
+			return ;
+		if (session_id() == "")
+			$uid = $_POST["sid"];
+		else 
+			$uid = session_id();
+		$lcaHost = array();
+		$lcaHostGroup = array();
+		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
+		$res1->fetchInto($user);
+		
+		$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user["user_id"]."'");
+  		if ($num = $res1->numRows()) {
+  			$str = "";
+			while ($group = $res1->fetchRow()) {
+				if ($str != "")
+					$str .= ", ";
+				$str .= $group["acl_group_id"];
+			}
+		}
+		
+		$str_topo = "";
+		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id IN (".$str.")");
+		$host = array();
+  		while ($res = $DBRESULT2->fetchRow()){
+			/*
+			 * Hosts inclus
+			 */
+  			$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
+	  		while ($host = $DBRESULT3->fetchRow())
+				$lcaHost[$host["host_id"]] = $host["host_id"];
+			/*
+			 * Hosts Groups Inclus
+			 */
+			$DBRESULT3 =& $pearDB->query("SELECT hg_id FROM `hostgroup`, `acl_resources_hg_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
+	  		while ($hostgroup = $DBRESULT3->fetchRow()){
+				$DBRESULT4 =& $pearDB->query("SELECT host_host_id FROM `hostgroup_relation` WHERE hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
+	  			while ($host_hostgroup = $DBRESULT4->fetchRow())
+					$lcaHost[$host_hostgroup["host_host_id"]] = $host_hostgroup["host_host_id"];	
+				$LcaHHG[$hostgroup["hg_id"]] = $hostgroup["hg_id"];	
+	  		}
+			/*
+			 * Hosts Exclus
+			 */
+			$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_hostex_relations.host_host_id = host.host_id");
+			if ($DBRESULT3->numRows())
+		  		while ($host = $DBRESULT3->fetchRow())
+					if (isset($lcaHost[$host["host_id"]]))
+						unset($lcaHost[$host["host_id"]]);
+			unset($DBRESULT3);
+  		}
+		$lcaHost[$host["host_name"]] = $host["host_id"];
+		unset($DBRESULT2);
+		
 		$LcaHHG = array();
 		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
 		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
@@ -172,21 +270,17 @@ For information : contact@oreon-project.org
 		else 
 			$uid = session_id();
 		$num = 0;
+		
 		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
 		$res1->fetchInto($user);
 		$res1 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user["user_id"]."'");
 		$res1->fetchInto($user_status);
-		
 		if ($user_status["contact_admin"]){
 			return 0;
 		} else {
 			$user_id = $user["user_id"];
-			$res1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$user_id."'");
-			if ($res1->numRows())
-				while($res1->fetchInto($contactGroup))	{
-					$res2 =& $pearDB->query("SELECT lca.lca_id, lca.lca_hg_childs FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id AND lca.lca_activate = '1'");	
-				 	$num = $res2->numRows();
-				}
+			$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user_id."'");
+  			$num = $res1->numRows();
 			return $num;
 		}
 	}
