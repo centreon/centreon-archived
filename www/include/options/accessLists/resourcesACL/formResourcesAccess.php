@@ -28,16 +28,38 @@ For information : contact@oreon-project.org
 		# Set base value
 		$acl = array_map("myDecode", $DBRESULT->fetchRow());
 		
-		# Set Topology relations
+		# Set Hosts relations
+		$hostnotexludes = array();
 		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
 			$acl["acl_hosts"][$i] = $hosts_list["host_host_id"];
+			$hostnotexludes[$hosts_list["host_host_id"]] = 1;
+		}
+		$DBRESULT->free();
+		
+		# Set Hosts exludes relations
+		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
+		for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++)
+			$acl["acl_hostexclude"][$i] = $hosts_list["host_host_id"];		
+		$DBRESULT->free();
+		
+		# Set Hosts Groups relations
+		$DBRESULT =& $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
+		for ($i = 0; $hg_list = $DBRESULT->fetchRow(); $i++)
+			$acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
 		$DBRESULT->free();
 
 		# Set Contact Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
-		for($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
 			$acl["acl_groups"][$i] = $groups["acl_group_id"];
+		$DBRESULT->free();
+		
+		# Set Contact Groups relations
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
+		if ($DBRESULT->numRows())
+			for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++)
+				$acl["acl_sc"][$i] = $sc["sc_id"];
 		$DBRESULT->free();
 	}
 
@@ -52,6 +74,26 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	while($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
+	$DBRESULT->free();
+	
+	$hosttoexcludes = array();
+	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while($DBRESULT->fetchInto($host))
+		$hosttoexcludes[$host["host_id"]] = $host["host_name"];
+	$DBRESULT->free();
+	
+	$hostgroups = array();
+	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	while($hg = $DBRESULT->fetchRow())
+		$hostgroups[$hg["hg_id"]] = $hg["hg_name"];
+	$DBRESULT->free();
+	
+	$service_categories = array();
+	$DBRESULT =& $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
+	while($DBRESULT->fetchInto($sc)){
+		//if (!isset($hostnotexludes[$host["host_id"]]))
+			$service_categories[$sc["sc_id"]] = $sc["sc_name"];
+	}
 	$DBRESULT->free();
 	
 	/*
@@ -101,6 +143,24 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'Host_infos', _("Shared Hosts Informations"));
 	
 	$ams2 =& $form->addElement('advmultiselect', 'acl_hosts', _("Hosts Access"), $hosts, $attrsAdvSelect);
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setElementTemplate($template);
+	echo $ams2->getElementJs(false);
+	
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Hosts fordidden"), $hosttoexcludes, $attrsAdvSelect);
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setElementTemplate($template);
+	echo $ams2->getElementJs(false);
+	
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostgroup', _("Hosts Groups Access"), $hostgroups, $attrsAdvSelect);
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setElementTemplate($template);
+	echo $ams2->getElementJs(false);
+	
+	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Service Categories Access"), $service_categories, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);

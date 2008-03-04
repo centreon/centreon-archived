@@ -97,12 +97,16 @@ For information : contact@oreon-project.org
 		updateLCA($acl_id);
 		updateGroups($acl_id);
 		updateHosts($acl_id);
+		updateHostGroups($acl_id);
+		updateHostexcludes($acl_id);
 	}	
 	
 	function insertLCAInDB ()	{
 		$acl_id = insertLCA();
 		updateGroups($acl_id);
 		updateHosts($acl_id);
+		updateHostGroups($acl_id);
+		updateHostexcludes($acl_id);
 		return ($acl_id);
 	}
 	
@@ -169,6 +173,42 @@ For information : contact@oreon-project.org
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				}
+			}
+	}
+	
+	function updateHostexcludes($acl_id = null)	{
+		if (!$acl_id) return;
+		global $form, $pearDB;
+		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$ret = array();
+		$ret = $form->getSubmitValue("acl_hostexclude");
+		if (isset($ret))
+			foreach ($ret as $key => $value){
+				if (isset($value))	{
+					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				}
+			}
+	}
+	
+	function updateHostGroups($acl_id = null)	{
+		if (!$acl_id) return;
+		global $form, $pearDB;
+		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$ret = array();
+		$ret = $form->getSubmitValue("acl_hostgroup");
+		if (isset($ret))
+			foreach ($ret as $key => $value){
+				if (isset($value))	{
+					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('".$acl_id."', '".$value."')");
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
