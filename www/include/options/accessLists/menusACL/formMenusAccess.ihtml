@@ -9,7 +9,7 @@
 {/if}
 </div>
 <div id='tab1' class="tab">
-	 <table class="ListTable">
+	 <table class="ListTable" border=1>
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>	 	
 		<tr class="list_one"><td class="FormRowField">{$form.acl_topo_name.label}</td><td class="FormRowValue">{$form.acl_topo_name.html}</td></tr>
@@ -19,22 +19,37 @@
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.pages}</td></tr>
 		<tr >
 			<td colspan="2">
+			<table border=1 width="100%"><tr><td>
 				<ul class="arbo_a">
 				{foreach key=key item=a from=$acl_topos2}
-				<li><img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');">
-					<input id="i{$a.c_id}" name="acl_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" /><label for="{$a.id}">{$a.name}</label>
-					<ul class="arbo_b" id="{$a.c_id}">
+				<li><table cellpadding=0 cellspacing=0 border=1 margin=0 padding=0><tr><td width="100"><img id="img_{$a.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$a.c_id}');"><label for="{$a.id}">{$a.name}</label> : </td>
+					<td>Read <input id="i{$a.c_id}" name="acl_r_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+					 - Write <input id="i{$a.c_id}" name="acl_w_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+					 - Both <input id="i{$a.c_id}" name="acl_a_topos[{$a.id}]" type="checkbox" {if $a.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$a.c_id}');" />
+					</td></tr></table>
+					&nbsp;<ul class="arbo_b" id="{$a.c_id}">					
 					{foreach key=key item=b from=$a.childs}
-					<li><img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');">
-						<input id="i{$b.c_id}" name="acl_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" /><label for="{$b.id}">{$b.name}</label>
+					<table cellpadding=0 cellspacing=0 border=1 margin=0><tr><td width="150"><li><img id="img_{$b.c_id}" src="img/icones/16x16/navigate_plus.gif" onclick="toggleDisplay('{$b.c_id}');"><label for="{$b.id}">{$b.name}</label> : </td>
+						<td>Read <input id="i{$b.c_id}" name="acl_r_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+						 - Write <input id="i{$b.c_id}" name="acl_w_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+						 - Both <input id="i{$b.c_id}" name="acl_a_topos[{$b.id}]" type="checkbox"  {if $b.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$b.c_id}');" />
+						</td></tr></table>
 						<ul class="arbo_c" id="{$b.c_id}">
 						{foreach key=key item=c from=$b.childs}
-						<li><img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.gif"  onclick="toggleDisplay('{$c.c_id}');">
-							<input id="i{$c.c_id}" name="acl_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" /><label for="{$c.id}">{$c.name}</label>
+						<table cellpadding=0 cellspacing=0 border=1 margin=0><tr><td width="200"><li><img id="img_{$c.c_id}" src="img/icones/16x16/navigate_plus.gif"  onclick="toggleDisplay('{$c.c_id}');">
+							<label for="{$c.id}">{$c.name}</label> : </td>
+							<td<Read <input id="i{$c.c_id}" name="acl_r_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							- Write <input id="i{$c.c_id}" name="acl_w_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							- Both <input id="i{$c.c_id}" name="acl_a_topos[{$c.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" onclick="toggleCheckAll(this, 'i{$c.c_id}');" />
+							</td></tr></table>
 							<ul class="arbo_d" id="{$c.c_id}">
-							{foreach key=key item=d from=$c.childs}
-							<li><input id="i{$d.c_id}" name="acl_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" /><label for="{$d.id}">{$d.name}</label></li>
-							{/foreach}
+								{foreach key=key item=d from=$c.childs}
+								<table cellpadding=0 cellspacing=0 border=0 margin=0><tr><td width="170"><li> - <label for="{$d.id}">{$d.name}</label> : </td>
+								<td>Read <input id="i{$d.c_id}" name="acl_r_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" /> 
+								- Write <input id="i{$d.c_id}" name="acl_w_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" /> 
+								- Both <input id="i{$d.c_id}" name="acl_a_topos[{$d.id}]" type="checkbox" {if $c.checked == "true"}checked="checked"{/if} value="1" /></li>
+								</td></tr></table>
+								{/foreach}
 							</ul>
 						</li>
 						{/foreach}
@@ -45,6 +60,7 @@
 				</li>
 				{/foreach}
 				</ul>
+				</td></tr></table>
 			</td>
 		</tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>

@@ -36,7 +36,8 @@ For information : contact@oreon-project.org
 	}
 	
 	function enableLCAInDB ($acl_id = null)	{
-		if (!$acl_id) return;
+		if (!$acl_id) 
+			return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET lca_activate = '1' WHERE `acl_topo_id` = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -44,7 +45,8 @@ For information : contact@oreon-project.org
 	}
 	
 	function disableLCAInDB ($acl_id = null)	{
-		if (!$acl_id) return;
+		if (!$acl_id) 
+			return;
 		global $pearDB;
 		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET lca_activate = '0' WHERE `acl_topo_id` = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
@@ -125,27 +127,26 @@ For information : contact@oreon-project.org
 	}
 	
 	function updateLCA($acl_id = null)	{
-		if (!$acl_id) return;
+		if (!$acl_id) 
+			return;
 		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `acl_topology` ";
-		$rq .= "SET acl_topo_name = '".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', " .
-				"acl_topo_alias = '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."' " .
-				"WHERE acl_topo_id = '".$acl_id."'";
+		$rq = "UPDATE `acl_topology` SET acl_topo_name = '".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', acl_topo_alias = '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."' WHERE acl_topo_id = '".$acl_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function updateLCATopology($acl_id = null)	{
-		if (!$acl_id) return;
+		if (!$acl_id) 
+			return;
 		global $form, $pearDB;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$ret = array();
-		$ret = $form->getSubmitValue("acl_topos");
+		$ret = $form->getSubmitValue("acl_r_topos");
 		if (is_array($ret))
 			$ret = array_keys($ret);		
 		for ($i = 0; $i < count($ret); $i++)	{

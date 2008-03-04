@@ -158,7 +158,7 @@ For information : contact@oreon-project.org
 				$d = 0;
 				while ($topo4 = $DBRESULT4->fetchRow()){
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d] = array();
-					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["name"] = _("topology_name");
+					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["name"] = _($topo4["topology_name"]);
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["id"] = $topo4["topology_id"];
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["checked"] = isset($acl["acl_topos"][$topo4["topology_id"]]) ? "true" : "false";
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["c_id"] = $a."_".$b."_".$c."_".$d;
