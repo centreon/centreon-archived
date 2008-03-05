@@ -16,7 +16,9 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	/* LCA Generation */
+	/*
+	 * LCA Generation
+	 */
 	
 	function getLCASG($pearDB){
 		if (!$pearDB)
