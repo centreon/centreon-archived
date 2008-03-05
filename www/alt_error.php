@@ -17,5 +17,5 @@ For information : contact@oreon-project.org
 */
 	if (!isset($oreon))
 		exit();
-	echo "<div class='msg' align='center'>".$lang['not_allowed']."</div>";
+	echo "<div class='msg' align='center'>"._("You are not allowed to reach this page")."</div>";
 ?>
