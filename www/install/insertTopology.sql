@@ -294,6 +294,10 @@ INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `to
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_ODS', './img/icones/16x16/chart.gif', 501, 50106, 60, 1, './include/options/ods/manageData.php', NULL, '0', '0', '1');
 INSERT INTO `topology` (`topology_id` , `topology_name` , `topology_icone` , `topology_parent` , `topology_page` , `topology_order` , `topology_group` , `topology_url` , `topology_url_opt` , `topology_popup` , `topology_modules` , `topology_show`) VALUES ('', 'menu_ODS_manage', './img/icones/16x16/data_down.gif', 50106, 5010602, 20, 1, './include/options/ods/manageData.php', NULL, '0', '0', '1');
 
+-- Images
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'Media', NULL, 5, 507, 15, 1, NULL, NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'Images', './img/icones/16x16/download.gif', 507, 50701, 10, 1, './include/options/media/images/images.php', NULL, '0', '0', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`) VALUES ('', 'Directories', './img/icones/16x16/folder.gif', 507, 50702, 20, 1, './include/options/media/directory/directory.php', NULL, '0', '0', '1');
 
 --
 -- Reporting

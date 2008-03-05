@@ -782,10 +782,10 @@ CREATE TABLE `extended_host_information` (
   `ehi_notes` varchar(200) default NULL,
   `ehi_notes_url` varchar(200) default NULL,
   `ehi_action_url` varchar(200) default NULL,
-  `ehi_icon_image` varchar(200) default NULL,
+  `ehi_icon_image` int(11) default NULL,
   `ehi_icon_image_alt` varchar(200) default NULL,
-  `ehi_vrml_image` varchar(200) default NULL,
-  `ehi_statusmap_image` varchar(200) default NULL,
+  `ehi_vrml_image` int(11) default NULL,
+  `ehi_statusmap_image` int(11) default NULL,
   `ehi_2d_coords` varchar(200) default NULL,
   `ehi_3d_coords` varchar(200) default NULL,
   PRIMARY KEY  (`ehi_id`),
@@ -804,7 +804,7 @@ CREATE TABLE `extended_service_information` (
   `esi_notes` varchar(200) default NULL,
   `esi_notes_url` varchar(200) default NULL,
   `esi_action_url` varchar(200) default NULL,
-  `esi_icon_image` varchar(200) default NULL,
+  `esi_icon_image` int(11) default NULL,
   `esi_icon_image_alt` varchar(200) default NULL,
   `graph_id` int(11) default NULL,
   PRIMARY KEY  (`esi_id`),
@@ -1792,6 +1792,50 @@ KEY `user_id` (`user_id`)
 
 -- --------------------------------------------------------
 
+--
+-- Structure de la table `view_img`
+--
+
+CREATE TABLE IF NOT EXISTS `view_img` (
+  `img_id` int(11) NOT NULL auto_increment,
+  `img_name` varchar(255) default NULL,
+  `img_path` varchar(255) default NULL,
+  `img_comment` text,
+  PRIMARY KEY  (`img_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `view_img_dir`
+--
+
+CREATE TABLE IF NOT EXISTS `view_img_dir` (
+  `dir_id` int(11) NOT NULL auto_increment,
+  `dir_name` varchar(255) default NULL,
+  `dir_alias` varchar(255) default NULL,
+  `dir_comment` text,
+  PRIMARY KEY  (`dir_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `view_img_dir_relation`
+--
+
+CREATE TABLE IF NOT EXISTS `view_img_dir_relation` (
+  `vidr_id` int(11) NOT NULL auto_increment,
+  `dir_dir_parent_id` int(11) default NULL,
+  `img_img_id` int(11) default NULL,
+  PRIMARY KEY  (`vidr_id`),
+  KEY `directory_parent_index` (`dir_dir_parent_id`),
+  KEY `image_index` (`img_img_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+ALTER TABLE `view_img_dir_relation`
+  ADD CONSTRAINT `view_img_dir_relation_ibfk_1` FOREIGN KEY (`dir_dir_parent_id`) REFERENCES `view_img_dir` (`dir_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `view_img_dir_relation_ibfk_2` FOREIGN KEY (`img_img_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `topology_JS`
@@ -1995,14 +2039,18 @@ ALTER TABLE `escalation_service_relation`
 -- Contraintes pour la table `extended_host_information`
 --
 ALTER TABLE `extended_host_information`
-  ADD CONSTRAINT `extended_host_information_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `extended_host_information_ibfk_1` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `extended_host_information_ibfk_2` FOREIGN KEY (`ehi_icon_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `extended_host_information_ibfk_3` FOREIGN KEY (`ehi_vrml_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `extended_host_information_ibfk_4` FOREIGN KEY (`ehi_statusmap_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `extended_service_information`
 --
 ALTER TABLE `extended_service_information`
   ADD CONSTRAINT `extended_service_information_ibfk_1` FOREIGN KEY (`graph_id`) REFERENCES `giv_graphs_template` (`graph_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `extended_service_information_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `extended_service_information_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `extended_service_information_ibfk_3` FOREIGN KEY (`esi_icon_image`) REFERENCES `view_img` (`img_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `giv_graphT_componentT_relation`
@@ -2174,15 +2222,15 @@ ALTER TABLE `traps_service_relation`
   --
   -- Contraintes pour la table traps
   --
-  ALTER TABLE `traps`
+ALTER TABLE `traps`
   ADD CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE;
   
   
- ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `service_service_id` ) REFERENCES `centreon`.`service` (
+ ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `service_service_id` ) REFERENCES `service` (
 `service_id`
 ) ON DELETE CASCADE ;
 
-ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `sc_id` ) REFERENCES `centreon`.`service_categories` (
+ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `sc_id` ) REFERENCES ``service_categories` (
 `sc_id`
 ) ON DELETE CASCADE ;
 
@@ -2192,4 +2240,11 @@ ALTER TABLE `service_categories_relation` ADD FOREIGN KEY ( `sc_id` ) REFERENCES
   
 ALTER TABLE `user_preferencies` ADD FOREIGN KEY ( `user_id` ) REFERENCES `centreon`.`contact` (`contact_id`) ON DELETE CASCADE ;
 
-  
+
+-- --------------------------------------------------------
+
+ALTER TABLE `view_img_dir_relation`
+  ADD CONSTRAINT `view_img_dir_relation_ibfk_1` FOREIGN KEY (`dir_dir_parent_id`) REFERENCES `view_img_dir` (`dir_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `view_img_dir_relation_ibfk_2` FOREIGN KEY (`img_img_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE;
+ 
+ 
