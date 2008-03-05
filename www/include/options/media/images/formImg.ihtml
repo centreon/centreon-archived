@@ -1,0 +1,79 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/download.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.directories.label}</td><td class="FormRowValue">{$form.directories.html}</td></tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.filename.label}</td>
+			<td class="FormRowValue">
+				{if $o == "a" || $o == "c"}
+					{$form.filename.html}
+				{else if $o == "w"}
+					<div align="center">
+					<b>{$form.img_path.html}</b><br>
+					<img src='{$form.img_path.label}'>
+					</div>
+				{/if}
+			</td>
+		</tr>
+		{if $o == "a"}
+		<tr class="list_one">
+			<td class="FormRowField">
+				{$form.filename1.label}</td><td class="FormRowValue">
+				{if $o == "a" || $o == "c"}
+					{$form.filename1.html}
+				{/if}
+			</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">
+				{$form.filename2.label}</td><td class="FormRowValue">
+				{if $o == "a" || $o == "c"}
+					{$form.filename2.html}
+				{/if}
+			</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField">
+				{$form.filename3.label}</td><td class="FormRowValue">
+				{if $o == "a" || $o == "c"}
+					{$form.filename3.html}
+				{/if}
+			</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">
+				{$form.filename4.label}</td><td class="FormRowValue">
+				{if $o == "a" || $o == "c"}
+					{$form.filename4.html}
+				{/if}
+			</td>
+		</tr>
+		{/if}
+		<tr class="list_two"><td class="FormRowField">{$form.img_comment.label}</td><td class="FormRowValue">{$form.img_comment.html}</td></tr>
+		
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p>{$form.action.html}</p>
+		<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p>{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
