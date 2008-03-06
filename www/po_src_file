@@ -185,6 +185,18 @@
 /usr/local/centreon/www/include/monitoring/status/status-ndo/serviceSummaryByHG.php
 /usr/local/centreon/www/include/monitoring/status/status-ndo/serviceSummaryBySG.php
 
+/usr/local/centreon/www/include/options/accessLists/menusACL/formMenusACL.php
+/usr/local/centreon/www/include/options/accessLists/menusACL/listsMenusACL.php
+/usr/local/centreon/www/include/options/accessLists/menusACL/menusAccess.php
+
+/usr/local/centreon/www/include/options/accessLists/groupsACL/formGroupConfig.php
+/usr/local/centreon/www/include/options/accessLists/groupsACL/listGroupConfig.php
+/usr/local/centreon/www/include/options/accessLists/groupsACL/groupsConfig.php
+
+/usr/local/centreon/www/include/options/accessLists/resourcesACL/formResourcesAccess.php
+/usr/local/centreon/www/include/options/accessLists/resourcesACL/listsResourcesAccess.php
+/usr/local/centreon/www/include/options/accessLists/resourcesACL/resourcesAccess.php
+
 /usr/local/centreon/www/menu/Menu.php
 /usr/local/centreon/www/common/quickSearch.php
 /usr/local/centreon/www/common/pagination.php
