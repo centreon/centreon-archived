@@ -448,6 +448,14 @@ For information : contact@oreon-project.org
 		global $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		/*
+		 * Check if image selected isn't a directory
+		 */
+		if (isset($ret["esi_icon_image"]) && strrchr("REP_", $ret["esi_icon_image"]))
+			$ret["esi_icon_image"] = NULL;
+		/*
+		 * 
+		 */
 		$rq = 	"INSERT INTO `extended_service_information` " .
 				"( `esi_id` , `service_service_id`, `esi_notes` , `esi_notes_url` , " .
 				"`esi_action_url` , `esi_icon_image` , `esi_icon_image_alt`, `graph_id` )" .
@@ -948,6 +956,14 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		/*
+		 * Check if image selected isn't a directory
+		 */
+		if (isset($ret["esi_icon_image"]) && strrchr("REP_", $ret["esi_icon_image"]))
+			$ret["esi_icon_image"] = NULL;
+		/*
+		 * 
+		 */
 		$rq = "UPDATE extended_service_information ";		
 		$rq .= "SET esi_notes = ";
 		isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL ? $rq .= "'".htmlentities($ret["esi_notes"], ENT_QUOTES)."', ": $rq .= "NULL, ";

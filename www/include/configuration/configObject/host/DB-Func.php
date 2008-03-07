@@ -454,6 +454,18 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		/*
+		 * Check if image selected isn't a directory
+		 */
+		if (isset($ret["ehi_icon_image"]) && strrchr("REP_", $ret["ehi_icon_image"]))
+			$ret["ehi_icon_image"] = NULL;
+		if (isset($ret["ehi_vrml_image"]) && strrchr("REP_", $ret["ehi_vrml_image"]))
+			$ret["ehi_vrml_image"] = NULL;
+		if (isset($ret["ehi_statusmap_image"]) && strrchr("REP_", $ret["ehi_statusmap_image"]))
+			$ret["ehi_statusmap_image"] = NULL;
+		/*
+		 * 
+		 */
 		$rq = 	"INSERT INTO `extended_host_information` " .
 				"( `ehi_id` , `host_host_id` , `ehi_notes` , `ehi_notes_url` , " .
 				"`ehi_action_url` , `ehi_icon_image` , `ehi_icon_image_alt` , " .
@@ -738,6 +750,18 @@ For information : contact@oreon-project.org
 		global $form, $pearDB;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
+		/*
+		 * Check if image selected isn't a directory
+		 */
+		if (isset($ret["ehi_icon_image"]) && strrchr("REP_", $ret["ehi_icon_image"]))
+			$ret["ehi_icon_image"] = NULL;		
+		if (isset($ret["ehi_vrml_image"]) && strrchr("REP_", $ret["ehi_vrml_image"]))
+			$ret["ehi_vrml_image"] = NULL;
+		if (isset($ret["ehi_statusmap_image"]) && strrchr("REP_", $ret["ehi_statusmap_image"]))
+			$ret["ehi_statusmap_image"] = NULL;
+		/*
+		 * 
+		 */
 		$rq = "UPDATE extended_host_information ";		
 		$rq .= "SET ehi_notes = ";
 		isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL ? $rq .= "'".htmlentities($ret["ehi_notes"], ENT_QUOTES)."', ": $rq .= "NULL, ";
