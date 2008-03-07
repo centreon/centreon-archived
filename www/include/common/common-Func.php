@@ -959,60 +959,38 @@ For information : contact@oreon-project.org
 
 	# Nagios Images
 	function return_image_list($mode = 0, $rep = NULL, $full = true, $origin_path = NULL) {
-		global $oreon;
-		$elems = array();
+		global $pearDB;
 		$images = array();
 		if ($full)
 			$images = array(NULL=>NULL);
-
 		$is_not_an_image = array(".","..","README","readme","LICENCE","licence");
 		$is_a_valid_image = array(
-			0 => array('png'),
-			1 => array('gif', 'png', 'jpg'),
-			2 => array('gif', 'png', 'jpg', 'gd2')
+			0 => array('png'=>'png'),
+			1 => array('gif'=>'gif', 'png'=>'png', 'jpg'=>'jpg'),
+			2 => array('gif'=>'gif', 'png'=>'png', 'jpg'=>'jpg', 'gd2'=>'gd2')
 		);
-
-		if ( ! $rep )
-			if ($oreon->optGen["nagios_path_img"] && is_dir($oreon->optGen["nagios_path_img"]))
-				$rep=$oreon->optGen["nagios_path_img"];
-			else
-				return ($images);
-		$rep .= "/"; // XXX not clean
-
-		if ( ! $origin_path)
-			$origin_path = $rep;
-		$path_len = strlen($origin_path);
-
-		if (! ($dh = @opendir($rep)) ) {
-			// error_log("WARNING: can't open directory '".$rep."'",0);
-			return ($images);
-		}
-
-		while (false !== ($filename = readdir($dh))) {
-			if ( $filename == "." || $filename == ".." || $filename == ".svn")
-				continue;
-
-			# WARNING: recursive call
-			if (is_dir($rep.$filename)) {
-				$tmp_images = return_image_list($mode, $rep.$filename, $full, $origin_path);
-				$images = array_merge($images,$tmp_images);
-				continue;
+		
+		$DBRESULT =& $pearDB->query("SELECT img_id, img_name, img_path, dir_name FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE img_id = vidr.img_img_id AND dir_id = vidr.dir_dir_parent_id ORDER BY dir_name, img_name");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		$dir_name = NULL;
+		$dir_name2 = NULL;
+		$cpt = 1;
+		while($elem = $DBRESULT->fetchRow())	{
+			$dir_name = $elem["dir_name"];
+			if ($dir_name2 != $dir_name)	{
+				$dir_name2 = $dir_name;
+				$images["REP_".$cpt] = $dir_name;
+				$cpt++;
 			}
-
-			if (in_array($filename, $is_not_an_image))
-				continue;
-
-			$pinfo = pathinfo($filename);
-
-			if (isset($pinfo["extension"]) && isset($is_a_valid_image[$mode][$pinfo["extension"]]))
-				continue;
-
-			$key = substr($rep.$filename, $path_len);
-			$images[$key] = $key;
+			else	{
+				$ext = NULL;
+				$pinfo = pathinfo($elem["img_path"]);
+				if (isset($pinfo["extension"]) && isset($is_a_valid_image[$mode][$pinfo["extension"]]))
+					$ext = "&nbsp;(".$pinfo["extension"].")";
+				$images[$elem["img_id"]] = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$elem["img_name"].$ext;
+			}
 		}
-
-		closedir($dh);
-		ksort($images);
 		return ($images);
 	}
 
