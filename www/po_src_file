@@ -200,6 +200,16 @@
 /usr/local/centreon/www/menu/Menu.php
 /usr/local/centreon/www/common/quickSearch.php
 /usr/local/centreon/www/common/pagination.php
+/usr/local/centreon/www/alt_error.php
+
+/usr/local/centreon/www/options/media/directory/directory.php
+/usr/local/centreon/www/options/media/directory/formDirectory.php
+/usr/local/centreon/www/options/media/directory/listDirectory.php
+/usr/local/centreon/www/options/media/images/images.php
+/usr/local/centreon/www/options/media/images/formImg.php
+/usr/local/centreon/www/options/media/images/listImg.php
+
+
 
 
 
