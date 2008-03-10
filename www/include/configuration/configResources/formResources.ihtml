@@ -9,16 +9,30 @@
 	</div>
 	 <div id='tab1' class='tab'>
 	 	<table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-	 	
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.resource_name.label}</td><td class="FormRowValue">{$form.resource_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.resource_line.label}</td><td class="FormRowValue">{$form.resource_line.html}</td></tr>
-	 	
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.resource_activate.label}</td><td class="FormRowValue">{$form.resource_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.resource_comment.label}</td><td class="FormRowValue">{$form.resource_comment.html}</td></tr>
-		
+	 		<tr class="ListHeader">
+	 			<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.title}</td>
+	 		</tr>
+		 	<tr class="list_lvl_1">
+		 		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td>
+		 	</tr>
+			<tr class="list_one">
+				<td class="FormRowField">{$form.resource_name.label}</td><td class="FormRowValue">{$form.resource_name.html}</td>
+			</tr>
+			<tr class="list_two">
+				<td class="FormRowField">{$form.resource_line.label}</td>
+				<td class="FormRowValue">{$form.resource_line.html}</td>
+			</tr>
+			<tr class="list_lvl_1">
+				<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.information}</td>
+			</tr>
+			<tr class="list_one">
+				<td class="FormRowField">{$form.resource_activate.label}</td>
+				<td class="FormRowValue">{$form.resource_activate.html}</td>
+			</tr>
+			<tr class="list_two">
+				<td class="FormRowField">{$form.resource_comment.label}</td>
+				<td class="FormRowValue">{$form.resource_comment.html}</td>
+			</tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
