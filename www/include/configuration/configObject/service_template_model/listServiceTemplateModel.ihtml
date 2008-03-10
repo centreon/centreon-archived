@@ -45,7 +45,7 @@
 					<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a>				
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_alias}</a></td>
-				<td class="ListColCenter">{$elemArr[elem].RowMenu_parent}</td>
+				<td class="ListColRight">{$elemArr[elem].RowMenu_parent}</td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 				<td class="ListColRight" align="right">{$elemArr[elem].RowMenu_options}</td>
 			</tr>
