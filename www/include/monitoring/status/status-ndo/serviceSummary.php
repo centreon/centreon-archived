@@ -47,10 +47,7 @@ For information : contact@oreon-project.org
 
 	/* row ? */
 	$rows = 10;
-
-
-	//include("./include/common/checkPagination.php");
-
+	
 	include_once("makeJS_serviceSummary.php");
 
 
@@ -70,9 +67,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
 
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
 
 	$tpl->assign("lang", $lang);
 

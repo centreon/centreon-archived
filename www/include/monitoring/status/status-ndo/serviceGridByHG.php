@@ -41,16 +41,10 @@ For information : contact@oreon-project.org
 	include_once("./include/common/quickSearch.php");
 	# end quickSearch form
 
-
 	$tab_class = array("0" => "list_one", "1" => "list_two");
-	$rows = 0;
-
-	/* row ? */
 	$rows = 10;
 
-
 	include_once("makeJS_serviceGridByHG.php");
-
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -68,18 +62,12 @@ For information : contact@oreon-project.org
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
 
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
-
-
-	$tpl->assign("lang", $lang);
 
 	$tpl->assign("order", strtolower($order));
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
 
-
-	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
