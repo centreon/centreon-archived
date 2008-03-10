@@ -2,7 +2,7 @@
 /**
 Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Cedrick Facon
+Developped by : Cedrick Facon, Julien Mathis
 
 The Software is provided to you AS IS and WITH ALL FAULTS.
 OREON makes no representation and gives no warranty whatsoever,
@@ -191,9 +191,7 @@ For information : contact@oreon-project.org
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services($host_name){
-		global $pearDBndo,$ndo_base_prefix;
-		global $general_opt;
-		global $o, $instance, $is_admin, $lcaSTR;
+		global $pearDBndo,$ndo_base_prefix,$general_opt,$o,$instance,$is_admin,$lcaSTR;
 
 		$rq = 	"SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
@@ -209,15 +207,8 @@ For information : contact@oreon-project.org
 		if($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
 			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
 
-
-		$rq .= " AND no.object_id" .
-				" IN (" .
-
-				" SELECT nno.object_id" .
-				" FROM " .$ndo_base_prefix."objects nno" .
-				" WHERE nno.objecttype_id =2" .
-				" AND nno.name1 = '".$host_name."'" .
-				" )";
+		$rq .=  " AND no.object_id" .
+				" IN (SELECT nno.object_id FROM " .$ndo_base_prefix."objects nno WHERE nno.objecttype_id =2 AND nno.name1 = '".$host_name."')";
 
 		if($instance != "ALL")
 			$rq .= " AND no.instance_id = ".$instance;
@@ -270,18 +261,18 @@ For information : contact@oreon-project.org
 		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
 
 
-	if($o == "svcgrid_pb" || $o == "svcOV_pb")
+	if($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
 				")";
-
+	/*	
 	if($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
-
+	*/
 	if($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
