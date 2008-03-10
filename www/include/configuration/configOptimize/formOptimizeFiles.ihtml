@@ -22,19 +22,20 @@
 	<a name="generate">
 	{assign var='cpt' value=0}
 	{foreach from=$host_list key=key item=item}
+	{if $msg_optimize[$key]}
 	{assign var='cpt' value=$cpt+1}
 	<div id='tab{$cpt}' class='tab'>
 	 	<table class="ListTable">
 		 	<tr class="ListHeader">
 		 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
 		 	</tr>
-		 	{if $msg_optimize[$key]}
+		 	
 		 	<tr class="list_two_fixe">
 		 		<td class="ListColLvl1_name">{$msg_optimize[$key]}</td>
 		 	</tr>
-		 	{/if}	
 		 </table>
 	</div>
+ 	{/if}
 	{/foreach} 	
 	{/if}
 	{$form.hidden}

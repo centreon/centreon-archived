@@ -95,7 +95,6 @@ For information : contact@oreon-project.org
 		$tpl->assign('msg_optimize', $msg_optimize);
 	if (isset($host_list) && $host_list)
 		$tpl->assign('host_list', $host_list);
-		
 	if (isset($tab_server) && $tab_server)
 		$tpl->assign('tab_server', $tab_server);
 
