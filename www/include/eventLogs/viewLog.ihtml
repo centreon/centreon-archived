@@ -3,47 +3,29 @@
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <div id="div1">
 <form name="formu">
-
 		<table class="period">
         <tr>
         	<td>
-
 			<input type="radio" name="period_choice" value="auto">
 
 		       {$form.period.label}
 				&nbsp;
 				{$form.period.html}
 			</td>
-
-
 			<td>
 				<input type="radio" name="period_choice" value="custom" CHECKED>
-
 				{$From}
-				&nbsp;
-				<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
-				&nbsp;
-				<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />  
-				&nbsp;
-				
+				&nbsp;<input id="StartDate" name="StartDate" type="text" value="" onclick="displayDatePicker('StartDate', this)" size="8" />
+				&nbsp;<input id="StartTime" name="StartTime" type="text" value="" onclick="displayTimePicker('StartTime', this)" size="5" />&nbsp;
 				{$To}
-				&nbsp;
-				<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
-				&nbsp;
-				<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />
-				&nbsp;
+				&nbsp;<input id="EndDate" name="EndDate" type="text" value="" onclick="displayDatePicker('EndDate', this)" size="8" />
+				&nbsp;<input id="EndTime" name="EndTime" type="text" value="" onclick="displayTimePicker('EndTime', this)" size="5" />&nbsp;
 			</td>			
-
-
 			<td>
 				<input type="button" name="graph" value="Apply" onClick="apply_period();">
 			</td>
-
-
 		</tr>
 	</table>
 </form>
 </div>
-
-
 <div id="logView4xml">..select a log..</div>

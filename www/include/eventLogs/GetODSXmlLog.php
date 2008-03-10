@@ -71,7 +71,7 @@ echo "<root>";
 	$debugXML = 0;
 	$buffer = '';
 	
-	$oreonPath = '../../../../';
+	$oreonPath = "../../../";
 
 
 
@@ -221,6 +221,32 @@ echo "<root>";
 
 	if($contact_id){
 		$user_params = get_user_param($contact_id, $pearDB);		
+		
+		if (!isset($user_params["log_filter_host"]))
+			$user_params["log_filter_host"] = 1;
+		if (!isset($user_params["log_filter_svc"]))
+			$user_params["log_filter_svc"] = 1;
+		if (!isset($user_params["log_filter_host_down"]))
+			$user_params["log_filter_host_down"] = 1;
+		if (!isset($user_params["log_filter_host_up"]))
+			$user_params["log_filter_host_up"] = 1;
+		if (!isset($user_params["log_filter_host_unreachable"]))
+			$user_params["log_filter_host_unreachable"] = 1;
+		if (!isset($user_params["log_filter_svc_ok"]))
+			$user_params["log_filter_svc_ok"] = 1;
+		if (!isset($user_params["log_filter_svc_warning"]))
+			$user_params["log_filter_svc_warning"] = 1;
+		if (!isset($user_params["log_filter_svc_critical"]))
+			$user_params["log_filter_svc_critical"] = 1;
+		if (!isset($user_params["log_filter_svc_unknown"]))
+			$user_params["log_filter_svc_unknown"] = 1;
+		if (!isset($user_params["log_filter_notif"]))
+			$user_params["log_filter_notif"] = 1;
+		if (!isset($user_params["log_filter_error"]))
+			$user_params["log_filter_error"] = 1;
+		if (!isset($user_params["log_filter_alert"]))
+			$user_params["log_filter_alert"] = 1;
+		
 		$alert = $user_params["log_filter_alert"];
 		$notification = $user_params["log_filter_notif"];
 		$error = $user_params["log_filter_error"];

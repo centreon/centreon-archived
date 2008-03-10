@@ -20,23 +20,46 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	function get_user_param($user_id, $pearDB)
-	{
+	function get_user_param($user_id, $pearDB){
 		$tab_row = array();
 		$DBRESULT =& $pearDB->query("SELECT * FROM contact_param where cp_contact_id = '".$user_id."'");
 		if (PEAR::isError($DBRESULT)){
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			return null;		
 		}
-		while( $row = $DBRESULT->fetchRow()){
+		while( $row = $DBRESULT->fetchRow())
 			$tab_row[$row["cp_key"]] = $row["cp_value"];
-		}
 		return $tab_row;
 	}
 	$user_params = get_user_param($oreon->user->user_id, $pearDB);
-
+	
+	if (!isset($user_params["log_filter_host"]))
+		$user_params["log_filter_host"] = 1;
+	if (!isset($user_params["log_filter_svc"]))
+		$user_params["log_filter_svc"] = 1;
+	if (!isset($user_params["log_filter_host_down"]))
+		$user_params["log_filter_host_down"] = 1;
+	if (!isset($user_params["log_filter_host_up"]))
+		$user_params["log_filter_host_up"] = 1;
+	if (!isset($user_params["log_filter_host_unreachable"]))
+		$user_params["log_filter_host_unreachable"] = 1;
+	if (!isset($user_params["log_filter_svc_ok"]))
+		$user_params["log_filter_svc_ok"] = 1;
+	if (!isset($user_params["log_filter_svc_warning"]))
+		$user_params["log_filter_svc_warning"] = 1;
+	if (!isset($user_params["log_filter_svc_critical"]))
+		$user_params["log_filter_svc_critical"] = 1;
+	if (!isset($user_params["log_filter_svc_unknown"]))
+		$user_params["log_filter_svc_unknown"] = 1;
+	if (!isset($user_params["log_filter_notif"]))
+		$user_params["log_filter_notif"] = 1;
+	if (!isset($user_params["log_filter_error"]))
+		$user_params["log_filter_error"] = 1;
+	if (!isset($user_params["log_filter_alert"]))
+		$user_params["log_filter_alert"] = 1;
+	
 	#Path to the configuration dir
-	$path = "./include/monitoring/mysql_log_2/";
+	$path = "./include/eventLogs/";
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -138,11 +161,11 @@ For information : contact@oreon-project.org
 
 
             //link tree to xml
-//            tree.setXMLAutoLoading("./include/monitoring/mysql_log_2/GetODSXmlTree.php"); 
+//            tree.setXMLAutoLoading("./include/eventLogs/GetODSXmlTree.php"); 
             tree.setXMLAutoLoading("./include/common/GetODSXmlTree.php"); 
             
             //load first level of tree
-//            tree.loadXML("./include/monitoring/mysql_log_2/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+//            tree.loadXML("./include/eventLogs/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
             tree.loadXML("./include/common/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 			// system to reload page after link with new url
@@ -366,8 +389,8 @@ function log_4_host(id, formu)
 	tree.selectItem(id);
 
 	var proc = new Transformation();
-	var _addrXSL = "./include/monitoring/mysql_log_2/log.xsl";
-	var _addrXML = './include/monitoring/mysql_log_2/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+	var _addrXSL = "./include/eventLogs/log.xsl";
+	var _addrXML = './include/eventLogs/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
 	proc.setXml(_addrXML)
 	proc.setXslt(_addrXSL)
 	proc.transform("logView4xml");
@@ -388,7 +411,7 @@ function log_4_host(id, formu)
         // You can call as many functions as you want here;
         myOnloadFunction1();
 
-log_4_host(<?php echo $id_log;?>,null);
+	log_4_host(<?php echo $id_log;?>,null);
 
         // Now we call old function which was assigned to onLoad, thus playing nice
         if(nowOnload != null && typeof(nowOnload) == 'function') {
@@ -402,10 +425,3 @@ log_4_host(<?php echo $id_log;?>,null);
 
 
 </script>
-
-
-<?php
-
-?>
-
-
