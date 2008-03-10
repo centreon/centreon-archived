@@ -65,36 +65,35 @@ For information : contact@oreon-project.org
 
 
 	/* options */
-	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
+	if (isset($_GET["search"]) && !check_injection($_GET["search"]))
 		$search = htmlentities($_GET["search"]);
-	} else
+	else
 		$search = "";
 
-	if(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
+	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"]))
 		$sort_type = htmlentities($_GET["sort_type"]);
-	}else
+	else
 		$sort_type = "host_name";
 
-	if(isset($_GET["order"]) && !check_injection($_GET["order"])){
+	if (isset($_GET["order"]) && !check_injection($_GET["order"]))
 		$order = htmlentities($_GET["order"]);
-	}else
+	else
 		$oreder = "ASC";
 
-	if(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
+	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"]))
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	}else
+	else
 		$date_time_format_status = "d/m/Y H:i:s";
 
-	if(isset($_GET["o"]) && !check_injection($_GET["o"])){
+	if (isset($_GET["o"]) && !check_injection($_GET["o"]))
 		$o = htmlentities($_GET["o"]);
-	}else
+	else
 		$o = "h";
-	if(isset($_GET["p"]) && !check_injection($_GET["p"])){
+		
+	if (isset($_GET["p"]) && !check_injection($_GET["p"]))
 		$p = htmlentities($_GET["p"]);
-	}else
+	else
 		$p = "2";
-
-
 
 	/* security end*/
 
@@ -198,9 +197,8 @@ For information : contact@oreon-project.org
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-
 	/* Get Host status */
-	$rq1 = "SELECT nhs.current_state," .
+	$rq1 = 	" SELECT nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
@@ -217,7 +215,8 @@ For information : contact@oreon-project.org
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh" .
 			" WHERE no.object_id = nhs.host_object_id and nh.host_object_id = no.object_id " .
 			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1";
+			" AND no.is_active = 1 AND no.objecttype_id = 1 AND nh.config_type = 1" .
+			" AND no.name1 NOT LIKE 'Meta_Module'";
 
 		if(!$is_admin)
 			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";

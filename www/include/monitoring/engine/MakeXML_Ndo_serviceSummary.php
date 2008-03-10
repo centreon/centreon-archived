@@ -179,7 +179,7 @@ For information : contact@oreon-project.org
 	$is_admin = $admin["contact_admin"];
 
 	// if is admin -> lca
-	if(!$is_admin){
+	if (!$is_admin){
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
@@ -270,7 +270,7 @@ For information : contact@oreon-project.org
 	if($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 
-	if($is_admin != "")
+	if (!$is_admin)
 		$rq1 .= " AND no.name1 IN (".$lcaSTR.") ";
 
 	switch($sort_type){

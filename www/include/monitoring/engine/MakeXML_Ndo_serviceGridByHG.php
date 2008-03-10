@@ -174,16 +174,15 @@ For information : contact@oreon-project.org
 
 		$rq .= " AND no.object_id" .
 				" IN (" .
-
 				" SELECT nno.object_id" .
 				" FROM ".$ndo_base_prefix."objects nno" .
 				" WHERE nno.objecttype_id =2" .
 				" AND nno.name1 = '".$host_name."'" .
-			" AND nno.name1 not like 'OSL_Module'".
+				" AND nno.name1 not like 'OSL_Module'".
 				" )";
-	if($instance != "ALL")
-		$rq .= " AND no.instance_id = ".$instance;
-
+		
+		if($instance != "ALL")
+			$rq .= " AND no.instance_id = ".$instance;
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -238,60 +237,45 @@ For information : contact@oreon-project.org
 
 	/* Get Host status */
 
-	$rq1 =  " SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
-			" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no".
-			" WHERE hs.host_object_id = hgm.host_object_id".
-			" AND no.object_id = hgm.host_object_id" .
-			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND no.name1 not like 'OSL_Module'".
-			" AND no.is_active = 1";
-
-		if(!$is_admin){
-			$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
-		}
-
-	if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+	$rq1 =  	" SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
+				" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no".
+				" WHERE hs.host_object_id = hgm.host_object_id".
+				" AND no.object_id = hgm.host_object_id" .
+				" AND hgm.hostgroup_id = hg.hostgroup_id".
+				" AND no.name1 not like 'OSL_Module'".
+				" AND no.name1 not like 'Meta_Module'".
+				" AND no.is_active = 1";
+			
+	if (!$is_admin)
+		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+	
+	if ($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
-			" AND nno.name1 not like 'OSL_Module')";
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
+				" AND nno.name1 not like 'OSL_Module')";
 
-	if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+	if ($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
-			" AND nno.name1 not like 'OSL_Module')";
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
+				" AND nno.name1 not like 'OSL_Module')";
 
-	if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+	if ($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
-			" AND nno.name1 not like 'OSL_Module')";
-
-	if($search != "")
+				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
+				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
+				" AND nno.name1 not like 'OSL_Module')";
+	
+	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
-	$rq_pagination = $rq1;
-/*
-	$rq_pagination = " SELECT hg.alias, count( * ) ".
-					 " FROM ndo_hostgroups hg, ndo_hostgroup_members hgm, ndo_hoststatus hs, ndo_objects no ".
-					 " WHERE hs.host_object_id = hgm.host_object_id ".
-					 " AND no.object_id = hgm.host_object_id ".
-					 " AND hgm.hostgroup_id = hg.hostgroup_id ".
-					 " AND no.name1 NOT LIKE 'OSL_Module' ".
-					 " AND no.is_active =0 ";
-		if(!$is_admin){
-			$rq_pagination .= " AND no.name1 IN (".$lcaSTR." )";
-		}
-	$rq_pagination .= " GROUP BY hg.alias ";
-	*/
 
-	/*
-	 *  Get Pagination Rows 
-	 */
+	$rq_pagination = $rq1;
+
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
@@ -301,7 +285,6 @@ For information : contact@oreon-project.org
 			case 'current_state' : $rq1 .= " order by hg.alias, hs.current_state ". $order.",no.name1 "; break;
 			default : $rq1 .= " order by hg.alias, no.name1 ". $order; break;
 	}
-	
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$buffer .= '<reponse>';
@@ -313,10 +296,7 @@ For information : contact@oreon-project.org
 	$buffer .= '<services>'._("Services").'</services>';
 	$buffer .= '<p>'.$p.'</p>';
 
-	if($o == "svcOVHG")
-		$buffer .= '<s>1</s>';
-	else
-		$buffer .= '<s>0</s>';
+	$o == "svcOVHG" ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
 
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
@@ -335,11 +315,8 @@ For information : contact@oreon-project.org
 	}
 
 	$hg = "";
-	foreach($tab_final as $host_name => $tab)	{
-		if($class == "list_one")
-			$class = "list_two";
-		else
-			$class = "list_one";
+	foreach($tab_final as $host_name => $tab){
+		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 
 		if($hg != $tab["hg_name"]){
 			if($hg != "")
