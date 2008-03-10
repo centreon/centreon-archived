@@ -316,6 +316,8 @@ For information : contact@oreon-project.org
 	$buffer .= '<numrows>'.$numRows.'</numrows>';
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
+	$buffer .= '<host_name>'._("Hosts").'</host_name>';
+	$buffer .= '<services>'._("Services").'</services>';
 	$buffer .= '<p>'.$p.'</p>';
 
 /*

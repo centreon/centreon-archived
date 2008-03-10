@@ -21,9 +21,8 @@ For information : contact@oreon-project.org
 	$buffer = '';
 	$oreonPath = '/srv/oreon/';
 
-
 	/* security check 1/2*/
-	if($oreonPath == '@INSTALL_DIR_OREON@')
+	if ($oreonPath == '@INSTALL_DIR_OREON@')
 		get_error('please set your oreonPath');
 	/* security end 1/2 */
 
@@ -36,66 +35,62 @@ For information : contact@oreon-project.org
 	$ndo_base_prefix = getNDOPrefix();
 	
 	/* security check 2/2*/
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
-
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			;
-		}else
+		if (!$res->fetchInto($session))
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
 	/* requisit */
-	if(isset($_GET["instance"]) && !check_injection($_GET["instance"])){
+	if (isset($_GET["instance"]) && !check_injection($_GET["instance"])){
 		$instance = htmlentities($_GET["instance"]);
-	}else
+	} else
 		$instance = "ALL";
-	if(isset($_GET["num"]) && !check_injection($_GET["num"])){
+		
+	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
 		$num = htmlentities($_GET["num"]);
-	}else
+	} else
 		get_error('num unknown');
-	if(isset($_GET["limit"]) && !check_injection($_GET["limit"])){
+	
+	if (isset($_GET["limit"]) && !check_injection($_GET["limit"])){
 		$limit = htmlentities($_GET["limit"]);
-	}else
+	} else
 		get_error('limit unknown');
 
-
 	/* options */
-	if(isset($_GET["search"]) && !check_injection($_GET["search"])){
+	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
 		$search = htmlentities($_GET["search"]);
-	}else
+	} else
 		$search = "";
 
-	if(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
+	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
 		$sort_type = htmlentities($_GET["sort_type"]);
-	}else
+	} else
 		$sort_type = "host_name";
 
-	if(isset($_GET["order"]) && !check_injection($_GET["order"])){
+	if (isset($_GET["order"]) && !check_injection($_GET["order"])){
 		$order = htmlentities($_GET["order"]);
-	}else
+	} else
 		$oreder = "ASC";
 
-	if(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
+	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
 		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	}else
+	} else
 		$date_time_format_status = "d/m/Y H:i:s";
 
-	if(isset($_GET["o"]) && !check_injection($_GET["o"])){
+	if (isset($_GET["o"]) && !check_injection($_GET["o"])){
 		$o = htmlentities($_GET["o"]);
-	}else
+	} else
 		$o = "h";
-	if(isset($_GET["p"]) && !check_injection($_GET["p"])){
+	
+	if (isset($_GET["p"]) && !check_injection($_GET["p"])){
 		$p = htmlentities($_GET["p"]);
-	}else
+	} else
 		$p = "2";
-
-
 
 	/* security end*/
 
@@ -154,17 +149,13 @@ For information : contact@oreon-project.org
 	    }
 	}
 
-
-	include_once($oreonPath . "www/DBNDOConnect.php");
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services($host_name){
-		global $pearDBndo,$ndo_base_prefix;
-		global $general_opt;
-		global $o,$instance;
+		global $pearDBndo,$ndo_base_prefix, $general_opt, $o, $instance;
 
 		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
 				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
@@ -216,13 +207,12 @@ For information : contact@oreon-project.org
 	$is_admin = $admin["contact_admin"];
 
 	// if is admin -> lca
-	if(!$is_admin){
+	if (!$is_admin){
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
 		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
 	}
-
 
 	$service = array();
 	$host_status = array();
@@ -230,7 +220,6 @@ For information : contact@oreon-project.org
 	$host_services = array();
 	$metaService_status = array();
 	$tab_host_service = array();
-
 
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -247,11 +236,9 @@ For information : contact@oreon-project.org
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-
 	/* Get Host status */
 
-
-	$rq1 = "SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
+	$rq1 =  " SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
 			" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no".
 			" WHERE hs.host_object_id = hgm.host_object_id".
 			" AND no.object_id = hgm.host_object_id" .
@@ -280,15 +267,14 @@ For information : contact@oreon-project.org
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1" .
 			" AND nno.name1 not like 'OSL_Module')";
-	if($search != ""){
+
+	if($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-	}
 
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
-
-$rq_pagination = $rq1;
+	$rq_pagination = $rq1;
 /*
 	$rq_pagination = " SELECT hg.alias, count( * ) ".
 					 " FROM ndo_hostgroups hg, ndo_hostgroup_members hgm, ndo_hoststatus hs, ndo_objects no ".
@@ -303,31 +289,28 @@ $rq_pagination = $rq1;
 	$rq_pagination .= " GROUP BY hg.alias ";
 	*/
 
-	/* Get Pagination Rows */
+	/*
+	 *  Get Pagination Rows 
+	 */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
-	/* End Pagination Rows */
-
 
 	switch($sort_type){
 			case 'current_state' : $rq1 .= " order by hg.alias, hs.current_state ". $order.",no.name1 "; break;
 			default : $rq1 .= " order by hg.alias, no.name1 ". $order; break;
 	}
-/*
-echo $rq1;
-exit();
-*/
-
+	
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-
 
 	$buffer .= '<reponse>';
 	$buffer .= '<i>';
 	$buffer .= '<numrows>'.$numRows.'</numrows>';
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
+	$buffer .= '<host_name>'._("Hosts").'</host_name>';
+	$buffer .= '<services>'._("Services").'</services>';
 	$buffer .= '<p>'.$p.'</p>';
 
 	if($o == "svcOVHG")
@@ -343,10 +326,8 @@ exit();
 	$ct = 0;
 	$flag = 0;
 
-
 	$tab_final = array();
-	while($DBRESULT_NDO1->fetchInto($ndo))
-	{
+	while($DBRESULT_NDO1->fetchInto($ndo))	{
 		$tab_svc = get_services($ndo["host_name"]);
 		$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
@@ -354,19 +335,15 @@ exit();
 	}
 
 	$hg = "";
-	foreach($tab_final as $host_name => $tab)
-	{
+	foreach($tab_final as $host_name => $tab)	{
 		if($class == "list_one")
 			$class = "list_two";
 		else
 			$class = "list_one";
 
-
 		if($hg != $tab["hg_name"]){
-
 			if($hg != "")
 				$buffer .= '</hg>';
-
 			$hg = $tab["hg_name"];
 			$buffer .= '<hg>';
 			$buffer .= '<hgn><![CDATA['. $tab["hg_name"]  .']]></hgn>';
@@ -392,7 +369,6 @@ exit();
 		$buffer .= 'none';
 		$buffer .= '</infos>';
 	}
-
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
