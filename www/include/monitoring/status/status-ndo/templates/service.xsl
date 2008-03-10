@@ -23,167 +23,141 @@
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 		<td class="ListColPicker">
-		<xsl:element name="input">
+			<xsl:element name="input">
 				<xsl:attribute name="type">checkbox</xsl:attribute>
 				<xsl:attribute name="value">1</xsl:attribute>
 				<xsl:attribute name="name">select[<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>]</xsl:attribute>
-		</xsl:element>
+			</xsl:element>
 		</td>
 		<td class="ListColLeft">
-
-					<xsl:comment>
-						<xsl:attribute name="style">
-							background-color:<xsl:value-of select="hc"/>;
-    					</xsl:attribute>
-					</xsl:comment>
-						<xsl:if test="hn/@none = 0">
-
-							<xsl:element name="span">
-								<xsl:if test="hs != 0">
-										<xsl:attribute name="class">host_error</xsl:attribute>
-								</xsl:if>
-								<xsl:element name="a">
-								  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
-									<xsl:attribute name="class">infobulle</xsl:attribute>
-									<xsl:attribute name="onmouseover">displayPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
-									<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
-		  							<xsl:value-of select="hn"/>
-									<xsl:element name="span">
-										<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
-									</xsl:element>
-								</xsl:element>
-							</xsl:element>
+			<xsl:comment>
+				<xsl:attribute name="style">
+					background-color:<xsl:value-of select="hc"/>;
+				</xsl:attribute>
+			</xsl:comment>
+				<xsl:if test="hn/@none = 0">
+					<xsl:element name="span">
+						<xsl:if test="hs != 0">
+								<xsl:attribute name="class">host_error</xsl:attribute>
 						</xsl:if>
-
-
-
-
-				</td>
-				<td class="ListColLeft">
-
-					<xsl:if test="hnu != 'none'">
-
 						<xsl:element name="a">
-						  	<xsl:attribute name="classe">infobulle</xsl:attribute>
-						  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
-							www
-						</xsl:element>
-
-					</xsl:if>
-
-
-					<xsl:if test="hn/@none = 0">
-						<xsl:if test="ha = 1">
-								<xsl:element name="img">
-								  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-								</xsl:element>
-						</xsl:if>
-						<xsl:if test="hae = 0 and hpe = 1">
-								<xsl:element name="img">
-								  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
-								</xsl:element>
-						</xsl:if>
-						<xsl:if test="hae = 0 and hpe = 0">
-								<xsl:element name="img">
-								  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
-								</xsl:element>
-						</xsl:if>
-					</xsl:if>
-				</td>
-
-				<td class="ListColLeft">
-					<xsl:element name="a">
-					  	<xsl:attribute name="href">oreon.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
-						<xsl:attribute name="class">infobulle</xsl:attribute>
-						<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
-						<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
-
-  						<xsl:value-of select="sd"/>
-
-						<xsl:element name="span">
-							<xsl:attribute name="id">span_<xsl:value-of select="svc_id"/></xsl:attribute>
+						  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+							<xsl:attribute name="class">infobulle</xsl:attribute>
+							<xsl:attribute name="onmouseover">displayPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
+							<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
+							<xsl:value-of select="hn"/>
+							<xsl:element name="span">
+								<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
+							</xsl:element>
 						</xsl:element>
 					</xsl:element>
-
-					<xsl:if test="pa = 1">
-							<xsl:element name="img">
-							  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-							</xsl:element>
-					</xsl:if>
-					<xsl:if test="ac = 0 and pc = 1">
-							<xsl:element name="img">
-							  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
-							</xsl:element>
-					</xsl:if>
-					<xsl:if test="ac = 0 and pc = 0">
-							<xsl:element name="img">
-							  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
-							</xsl:element>
-					</xsl:if>
-				</td>
-				<td class="ListColRight">
-					<xsl:if test="is = 1">
-							<xsl:element name="img">
-							  	<xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>
-							</xsl:element>
-					</xsl:if>
-					<xsl:if test="ne = 0">
-							<xsl:element name="img">
-							  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
-							</xsl:element>
-					</xsl:if>
-				</td>
-				<td class="ListColRight">
-
-					<xsl:if test="ppd > 0">
-						<xsl:element name="a">
-
-						  	<xsl:attribute name="href">oreon.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
-
-							<xsl:element name="img">
-							  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
-
-							<xsl:if test="svc_index > 0">
-								<xsl:attribute name="onmouseover">displayIMG('<xsl:value-of select="svc_index"/>','<xsl:value-of select="sid"/>','<xsl:value-of select="svc_id"/>');</xsl:attribute>
-								<xsl:attribute name="onmouseout">hiddenIMG('<xsl:value-of select="svc_id"/>');</xsl:attribute>
-							</xsl:if>
-
-							</xsl:element>
-
-
-						</xsl:element>
-					</xsl:if>
-				</td>
-				<td class="ListColCenter">
-					<xsl:attribute name="style">
-						background-color:<xsl:value-of select="sc"/>;
-    				</xsl:attribute>
-					<xsl:value-of select="cs"/>
-				</td>
-				<td class="ListColCenter" style="white-space:nowrap;">
-					<xsl:value-of select="d"/>
-				</td>
-	            <td class="ListColCenter">
-	            	<xsl:value-of select="lc"/>
-	            </td>
-	            <td class="ListColCenter">
-	            	<xsl:value-of select="ca"/>
-	            </td>
-	            <td class="ListColLeft" >
-	            	<xsl:value-of select="po"/>
-	            </td>
-
-			<xsl:if test="//i/nc = 1">
-				<td class="ListColCenter" style="white-space:nowrap;">
-					<xsl:value-of select="nc"/>
-				</td>
+				</xsl:if>
+		</td>
+		<td class="ListColLeft">
+			<xsl:if test="hnu != 'none'">
+				<xsl:element name="a">
+				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+				  	<xsl:attribute name="href"><xsl:value-of select="hnu"/></xsl:attribute>
+					www
+				</xsl:element>
 			</xsl:if>
+			<xsl:if test="hn/@none = 0">
+				<xsl:if test="ha = 1">
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+						</xsl:element>
+				</xsl:if>
+				<xsl:if test="hae = 0 and hpe = 1">
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+						</xsl:element>
+				</xsl:if>
+				<xsl:if test="hae = 0 and hpe = 0">
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+						</xsl:element>
+				</xsl:if>
+			</xsl:if>
+		</td>
+		<td class="ListColLeft">
+			<xsl:element name="a">
+			  	<xsl:attribute name="href">oreon.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
+				<xsl:attribute name="class">infobulle</xsl:attribute>
+				<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
+				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
+				<xsl:value-of select="sd"/>
+				<xsl:element name="span">
+					<xsl:attribute name="id">span_<xsl:value-of select="svc_id"/></xsl:attribute>
+				</xsl:element>
+			</xsl:element>
+			<xsl:if test="pa = 1">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+					</xsl:element>
+			</xsl:if>
+			<xsl:if test="ac = 0 and pc = 1">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/14x14/gears_pause.gif</xsl:attribute>
+					</xsl:element>
+			</xsl:if>
+			<xsl:if test="ac = 0 and pc = 0">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/14x14/gears_stop.gif</xsl:attribute>
+					</xsl:element>
+			</xsl:if>
+		</td>
+		<td class="ListColRight">
+			<xsl:if test="is = 1">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>
+					</xsl:element>
+			</xsl:if>
+			<xsl:if test="ne = 0">
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+					</xsl:element>
+			</xsl:if>
+		</td>
+		<td class="ListColRight">
+			<xsl:if test="ppd > 0">
+				<xsl:element name="a">
+				  	<xsl:attribute name="href">oreon.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
+					<xsl:if test="svc_index > 0">
+						<xsl:attribute name="onmouseover">displayIMG('<xsl:value-of select="svc_index"/>','<xsl:value-of select="sid"/>','<xsl:value-of select="svc_id"/>');</xsl:attribute>
+						<xsl:attribute name="onmouseout">hiddenIMG('<xsl:value-of select="svc_id"/>');</xsl:attribute>
+					</xsl:if>
+					</xsl:element>
+				</xsl:element>
+			</xsl:if>
+		</td>
+		<td class="ListColCenter">
+			<xsl:attribute name="style">
+				background-color:<xsl:value-of select="sc"/>;
+			</xsl:attribute>
+			<xsl:value-of select="cs"/>
+		</td>
+		<td class="ListColCenter" style="white-space:nowrap;">
+			<xsl:value-of select="d"/>
+		</td>
+        <td class="ListColCenter" style="white-space:nowrap;">
+        	<xsl:value-of select="lc"/>
+        </td>
+        <td class="ListColCenter">
+        	<xsl:value-of select="ca"/>
+        </td>
+        <td class="ListColLeft" >
+        	<xsl:value-of select="po"/>
+        </td>
+		<xsl:if test="//i/nc = 1">
+			<td class="ListColCenter" style="white-space:nowrap;">
+				<xsl:value-of select="nc"/>
+			</td>
+		</xsl:if>
 	</tr>
 </xsl:for-each>
 </table>
-
 <div id="div_img" class="img_volante"></div>
-
-
 </xsl:template>
 </xsl:stylesheet>

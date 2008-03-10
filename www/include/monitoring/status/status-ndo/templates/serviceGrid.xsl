@@ -3,48 +3,46 @@
   <!ENTITY nbsp "&#160;" >
 ]>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-
 <xsl:template match="/">
 <table class="ListTable">
 	<tr class='ListHeader'>
-		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"    width="160"></td>
-
-	<xsl:for-each select="//i">
-			<xsl:if test="s = 1">
-				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"  width="70">Status</td>
-			</xsl:if>
-	</xsl:for-each>
-
+		<td colspan="2"  class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name" width="160"></td>
+			<xsl:for-each select="//i">
+				<xsl:if test="s = 1">
+					<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"  width="70">Status</td>
+				</xsl:if>
+			</xsl:for-each>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
 	</tr>
 	<xsl:for-each select="//l">
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
-
-				<td class="ListColLeft">
+				<td class="ListColLeft" style="white-space:nowrap;">
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 						<xsl:attribute name="class">pop</xsl:attribute>
 						<xsl:value-of select="hn"/>
 					</xsl:element>
 				</td>
-
-				<td class="ListColLeft">
+				<td class="ListColLeft" style="white-space:nowrap;">
+					<span>
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">oreon.php?o=svc&amp;p=20201&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
 							</xsl:element>
 					</xsl:element>
+					<span>
+					</span>
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">oreon.php?p=40210&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 							<xsl:element name="img">
 							  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 							</xsl:element>
 					</xsl:element>
+					</span>
 				</td>
-
 			<xsl:if test="//i/s = 1">
 				<td class="ListColLeft">
 							<xsl:attribute name="style">
