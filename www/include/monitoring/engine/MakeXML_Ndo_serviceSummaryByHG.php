@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 	$oreonPath = '/srv/oreon/';
 
 	/* security check 1/2*/
-	if($oreonPath == '@INSTALL_DIR_OREON@')
+	if ($oreonPath == '@INSTALL_DIR_OREON@')
 		get_error('please set your oreonPath');
 	/* security end 1/2 */
 
@@ -40,61 +40,22 @@ For information : contact@oreon-project.org
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if($res->fetchInto($session)){
-			;
-		}else
+		if (!$res->fetchInto($session))
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
 
 	/* requisit */
-	if (isset($_GET["instance"]) && !check_injection($_GET["instance"])){
-		$instance = htmlentities($_GET["instance"]);
-	} else
-		$instance = "ALL";
-	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
-		$num = htmlentities($_GET["num"]);
-	} else
-		get_error('num unknown');
-	if (isset($_GET["limit"]) && !check_injection($_GET["limit"])){
-		$limit = htmlentities($_GET["limit"]);
-	} else
-		get_error('limit unknown');
 
-	/* options */
-	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
-		$search = htmlentities($_GET["search"]);
-	} else
-		$search = "";
-
-	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
-		$sort_type = htmlentities($_GET["sort_type"]);
-	} else
-		$sort_type = "host_name";
-
-	if (isset($_GET["order"]) && !check_injection($_GET["order"])){
-		$order = htmlentities($_GET["order"]);
-	} else
-		$oreder = "ASC";
-
-	if(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
-		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	}else
-		$date_time_format_status = "d/m/Y H:i:s";
-
-	if(isset($_GET["o"]) && !check_injection($_GET["o"])){
-		$o = htmlentities($_GET["o"]);
-	}else
-		$o = "h";
-	if(isset($_GET["p"]) && !check_injection($_GET["p"])){
-		$p = htmlentities($_GET["p"]);
-	}else
-		$p = "2";
-
-
-
-	/* security end*/
+	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
+	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
+	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
+	(isset($_GET["search"]) && !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
+	(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
+	(isset($_GET["order"]) && !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $order = "ASC";
+	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
+	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
+	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
 	# class init
 	class Duration
@@ -166,50 +127,49 @@ For information : contact@oreon-project.org
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
 	}
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
+	$general_opt = $DBRESULT_OPT->fetchRow();
 
 	function get_services_status($host_name, $status){
-		global $pearDBndo, $ndo_base_prefix;
-		global $general_opt;
-		global $o,$instance;
 
-		$rq = "SELECT count( nss.service_object_id ) AS nb".
-		" FROM " .$ndo_base_prefix."servicestatus nss".
-		" WHERE nss.current_state = '".$status."'";
+		global $pearDBndo, $ndo_base_prefix, $general_opt, $o, $instance;
 
-		if($o == "svcSumHG_pb")
-			$rq .= " AND nss.current_state != 0";
-		if($o == "svcSumHG_ack_0")
-			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0";
+		$rq = 		"SELECT count( nss.service_object_id ) AS nb".
+					" FROM " .$ndo_base_prefix."servicestatus nss".
+					" WHERE nss.current_state = '".$status."'";
 
-		if($o == "svcSumHG_ack_1")
-			$rq .= " AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0";
+		if ($o == "svcSumHG_pb")
+			$rq .= 	" AND nss.current_state != 0";
+		
+		if ($o == "svcSumHG_ack_0")
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0";
 
-		$rq .= " AND nss.service_object_id".
-		" IN (".
-		" SELECT nno.object_id".
-		" FROM " .$ndo_base_prefix."objects nno".
-		" WHERE nno.objecttype_id =2".
-		" AND nno.name1 = '".$host_name."'";
+		if ($o == "svcSumHG_ack_1")
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0";
 
-	if($instance != "ALL")
-		$rq .= " AND nno.instance_id = ".$instance;
+		$rq .= 		" AND nss.service_object_id".
+					" IN (".
+					" SELECT nno.object_id".
+					" FROM " .$ndo_base_prefix."objects nno".
+					" WHERE nno.objecttype_id =2".
+					" AND nno.name1 = '".$host_name."'";
 
+		if ($instance != "ALL")
+			$rq .= 	" AND nno.instance_id = ".$instance;
 		$rq .= " )";
 
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$DBRESULT->fetchInto($tab);
+		$tab = $DBRESULT->fetchRow();
 
-		return($tab["nb"]);
+		return ($tab["nb"]);
 	}
-
 
 	$service = array();
 	$host_status = array();
@@ -217,7 +177,6 @@ For information : contact@oreon-project.org
 	$host_services = array();
 	$metaService_status = array();
 	$tab_host_service = array();
-
 
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
@@ -234,55 +193,45 @@ For information : contact@oreon-project.org
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
-
-
-
-
 	/* Get Host status */
 
+	$rq1 = 			" SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
+					" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no".
+					" WHERE hs.host_object_id = hgm.host_object_id".
+					" AND no.object_id = hgm.host_object_id" .
+					" AND hgm.hostgroup_id = hg.hostgroup_id".
+					" AND no.name1 not like 'OSL_Module'";
 
-	$rq1 = "SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
-			" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no".
-			" WHERE hs.host_object_id = hgm.host_object_id".
-			" AND no.object_id = hgm.host_object_id" .
-			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND no.name1 not like 'OSL_Module'";
+	if (!$is_admin)
+		$rq1 .= 	" AND no.name1 IN (".$lcaSTR.")";
 
-	if($instance != "ALL")
-		$rq1 .= " AND no.instance_id = ".$instance;
-
-
-	if($o == "svcSumHG_pb")
-		$rq1 .= " AND no.name1 IN (" .
+	if ($instance != "ALL")
+		$rq1 .= 	" AND no.instance_id = ".$instance;
+	
+	if ($o == "svcSumHG"){
+		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0" .
-				")";
-
-	if($o == "svcSumHG_ack_0")
-		$rq1 .= " AND no.name1 IN (" .
+					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
+	} else if ($o == "svcSumHG_ack_0") {
+		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
-				")";
-
-	if($o == "svcSumHG_ack_1")
-		$rq1 .= " AND no.name1 IN (" .
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
+	} else if ($o == "svcSumHG_ack_1"){
+		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0" .
-				")";
-	if($search != ""){
-		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
 	}
-
-
-
+		
+	if ($search != "")
+		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		
 	$rq_pagination = $rq1;
+	
 	/* Get Pagination Rows */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
-	/* End Pagination Rows */
-
 
 	$rq1 .= " ORDER BY hg.alias";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
@@ -293,24 +242,19 @@ For information : contact@oreon-project.org
 	$buffer .= '<num>'.$num.'</num>';
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
-
-	if($o == "svcOVHG")
-		$buffer .= '<s>1</s>';
-	else
-		$buffer .= '<s>0</s>';
-
+	$o == "svcOVHG" ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
 	$buffer .= '</i>';
+
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
+
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
 
-
 	$tab_final = array();
-	while($DBRESULT_NDO1->fetchInto($ndo))
-	{
+	while($DBRESULT_NDO1->fetchInto($ndo))	{
 		if($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
 			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
 		else
@@ -320,29 +264,26 @@ For information : contact@oreon-project.org
 		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
 		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + get_services_status($ndo["host_name"], 4);
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-		$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+		if (isset($lca["LcaHostGroup"][$ndo["alias"]]))
+			$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
 	}
 
 	$hg = "";
-	foreach($tab_final as $host_name => $tab)
-	{
+	foreach($tab_final as $host_name => $tab){
 		if($class == "list_one")
 			$class = "list_two";
 		else
 			$class = "list_one";
 
-
-		if($hg != $tab["hg_name"]){
-
-			if($hg != "")
+		if (isset($tab["hg_name"]) && $hg != $tab["hg_name"]){
+			if ($hg != "")
 				$buffer .= '</hg>';
-
 			$hg = $tab["hg_name"];
 			$buffer .= '<hg>';
 			$buffer .= '<hgn><![CDATA['. $tab["hg_name"]  .']]></hgn>';
 		}
+		
 		$buffer .= '<l class="'.$class.'">';
-
 		$buffer .= '<sk><![CDATA['. $tab["nb_service_k"]  . ']]></sk>';
 		$buffer .= '<skc><![CDATA['. $tab_color_service[0]  . ']]></skc>';
 		$buffer .= '<sw><![CDATA['. $tab["nb_service_w"]  . ']]></sw>';
@@ -353,8 +294,6 @@ For information : contact@oreon-project.org
 		$buffer .= '<suc><![CDATA['. $tab_color_service[3]  . ']]></suc>';
 		$buffer .= '<sp><![CDATA['. $tab["nb_service_p"]  . ']]></sp>';
 		$buffer .= '<spc><![CDATA['. $tab_color_service[4]  . ']]></spc>';
-
-
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
 		$buffer .= '<hs><![CDATA['. $tab_status_host[$tab["cs"]]  . ']]></hs>';
@@ -362,18 +301,13 @@ For information : contact@oreon-project.org
 		$buffer .= '</l>';
 	}
 	$buffer .= '</hg>';
-	/* end */
 
-
-
-	if(!$ct){
+	if (!$ct){
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';
 	}
-
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
 ?>

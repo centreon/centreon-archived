@@ -155,31 +155,31 @@ For information : contact@oreon-project.org
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services($host_name){
+		
 		global $pearDBndo,$ndo_base_prefix, $general_opt, $o, $instance;
 
-		$rq = "SELECT no.name1, no.name2 as service_name, nss.current_state" .
-				" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
-				" WHERE no.object_id = nss.service_object_id" .
-			" AND no.name1 not like 'OSL_Module'";
+		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
+					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
+					" WHERE no.object_id = nss.service_object_id" .
+					" AND no.name1 not like 'OSL_Module'";
 
-		if($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
-			$rq .= " AND nss.current_state != 0" ;
+		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
+			$rq .= 	" AND nss.current_state != 0" ;
 
-		if($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
-			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
+		if ($o == "svcgridHG_ack_0" || $o == "svcOVHG_ack_0")
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
-		if($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
-			$rq .= " AND nss.problem_has_been_acknowledged = 1" ;
+		if ($o == "svcgridHG_ack_1" || $o == "svcOVHG_ack_1")
+			$rq .= 	" AND nss.problem_has_been_acknowledged = 1" ;
 
-
-		$rq .= " AND no.object_id" .
-				" IN (" .
-				" SELECT nno.object_id" .
-				" FROM ".$ndo_base_prefix."objects nno" .
-				" WHERE nno.objecttype_id =2" .
-				" AND nno.name1 = '".$host_name."'" .
-				" AND nno.name1 not like 'OSL_Module'".
-				" )";
+		$rq .= 		" AND no.object_id" .
+					" IN (" .
+					" SELECT nno.object_id" .
+					" FROM ".$ndo_base_prefix."objects nno" .
+					" WHERE nno.objecttype_id =2" .
+					" AND nno.name1 = '".$host_name."'" .
+					" AND nno.name1 not like 'OSL_Module'".
+					" )";
 		
 		if($instance != "ALL")
 			$rq .= " AND no.instance_id = ".$instance;
@@ -247,7 +247,7 @@ For information : contact@oreon-project.org
 				" AND no.is_active = 1";
 			
 	if (!$is_admin)
-		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+		$rq1 .= " AND no.name1 IN (".$lcaSTR.")";
 	
 	if ($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
@@ -273,7 +273,6 @@ For information : contact@oreon-project.org
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
-
 	$rq_pagination = $rq1;
 
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
@@ -281,7 +280,7 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
-	switch($sort_type){
+	switch ($sort_type){
 			case 'current_state' : $rq1 .= " order by hg.alias, hs.current_state ". $order.",no.name1 "; break;
 			default : $rq1 .= " order by hg.alias, no.name1 ". $order; break;
 	}
@@ -295,31 +294,31 @@ For information : contact@oreon-project.org
 	$buffer .= '<host_name>'._("Hosts").'</host_name>';
 	$buffer .= '<services>'._("Services").'</services>';
 	$buffer .= '<p>'.$p.'</p>';
-
 	$o == "svcOVHG" ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
-
 	$buffer .= '</i>';
+	
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	$class = "list_one";
 	$ct = 0;
 	$flag = 0;
-
+		
 	$tab_final = array();
 	while($DBRESULT_NDO1->fetchInto($ndo))	{
 		$tab_svc = get_services($ndo["host_name"]);
 		$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-		$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+		if (isset($lca["LcaHostGroup"][$ndo["alias"]]))
+			$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
 	}
 
 	$hg = "";
 	foreach($tab_final as $host_name => $tab){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 
-		if($hg != $tab["hg_name"]){
-			if($hg != "")
+		if (isset($tab["hg_name"]) && $hg != $tab["hg_name"]){
+			if ($hg != "")
 				$buffer .= '</hg>';
 			$hg = $tab["hg_name"];
 			$buffer .= '<hg>';
@@ -341,7 +340,7 @@ For information : contact@oreon-project.org
 	$buffer .= '</hg>';
 	/* end */
 
-	if(!$ct){
+	if (!$ct) {
 		$buffer .= '<infos>';
 		$buffer .= 'none';
 		$buffer .= '</infos>';
@@ -349,5 +348,4 @@ For information : contact@oreon-project.org
 	$buffer .= '</reponse>';
 	header('Content-Type: text/xml');
 	echo $buffer;
-
 ?>
