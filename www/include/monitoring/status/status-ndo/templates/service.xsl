@@ -29,7 +29,7 @@
 				<xsl:attribute name="name">select[<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/>]</xsl:attribute>
 			</xsl:element>
 		</td>
-		<td class="ListColLeft">
+		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:comment>
 				<xsl:attribute name="style">
 					background-color:<xsl:value-of select="hc"/>;
@@ -53,7 +53,7 @@
 					</xsl:element>
 				</xsl:if>
 		</td>
-		<td class="ListColLeft">
+		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="hnu != 'none'">
 				<xsl:element name="a">
 				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
@@ -79,7 +79,7 @@
 				</xsl:if>
 			</xsl:if>
 		</td>
-		<td class="ListColLeft">
+		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">oreon.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
 				<xsl:attribute name="class">infobulle</xsl:attribute>
