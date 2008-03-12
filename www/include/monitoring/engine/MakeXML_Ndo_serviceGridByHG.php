@@ -305,12 +305,14 @@ For information : contact@oreon-project.org
 	$flag = 0;
 		
 	$tab_final = array();
-	while($DBRESULT_NDO1->fetchInto($ndo))	{
-		$tab_svc = get_services($ndo["host_name"]);
-		$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
-		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-		if (isset($lca["LcaHostGroup"][$ndo["alias"]]))
+	while ($ndo = $DBRESULT_NDO1->fetchRow())	{
+		if (isset($lca["LcaHostGroup"][$ndo["alias"]]) || !isset($lca["LcaHostGroup"])){
+			$tab_svc = get_services($ndo["host_name"]);
+			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
+			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
 			$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+		}
+		unset($ndo);
 	}
 
 	$hg = "";

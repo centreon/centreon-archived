@@ -204,7 +204,7 @@ For information : contact@oreon-project.org
 	
 	if (!$is_admin)
 		$rq1 .= " AND no.name1 IN (".$lcaSTR.")";
-
+	
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
@@ -232,6 +232,8 @@ For information : contact@oreon-project.org
 			default : $rq1 .= " order by no.name1 ". $order; break;
 	}
 
+	//print $rq1;
+
 	$rq_pagination = $rq1;
 
 	/* Get Pagination Rows */
@@ -249,11 +251,8 @@ For information : contact@oreon-project.org
 	$buffer .= '<limit>'.$limit.'</limit>';
 	$buffer .= '<p>'.$p.'</p>';
 
-	if($o == "svcOV")
-		$buffer .= '<s>1</s>';
-	else
-		$buffer .= '<s>0</s>';
-
+	preg_match("/svcOV/",$_GET["o"], $matches) ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
+//	$buffer .= '<s>1</s>';
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))

@@ -26,6 +26,7 @@ For information : contact@oreon-project.org
 		get_error('please set your oreonPath');
 	/* security end 1/2 */
 
+	include_once($oreonPath . "www/class/other.class.php");
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBNDOConnect.php");
@@ -58,60 +59,7 @@ For information : contact@oreon-project.org
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
 	# class init
-	class Duration
-	{
-		function toString ($duration, $periods = null)
-	    {
-	        if (!is_array($duration)) {
-	            $duration = Duration::int2array($duration, $periods);
-	        }
-	        return Duration::array2string($duration);
-	    }
-	    function int2array ($seconds, $periods = null)
-	    {
-	        // Define time periods
-	        if (!is_array($periods)) {
-	            $periods = array (
-	                    'y'	=> 31556926,
-	                    'M' => 2629743,
-	                    'w' => 604800,
-	                    'd' => 86400,
-	                    'h' => 3600,
-	                    'm' => 60,
-	                    's' => 1
-	                    );
-	        }
-	        // Loop
-	        $seconds = (int) $seconds;
-	        foreach ($periods as $period => $value) {
-	            $count = floor($seconds / $value);
-	            if ($count == 0) {
-	                continue;
-	            }
-	            $values[$period] = $count;
-	            $seconds = $seconds % $value;
-	        }
-	        // Return
-	        if (empty($values)) {
-	            $values = null;
-	        }
-	        return $values;
-	    }
-
-	    function array2string ($duration)
-	    {
-	        if (!is_array($duration)) {
-	            return false;
-	        }
-	        foreach ($duration as $key => $value) {
-	            $segment = $value . '' . $key;
-	            $array[] = $segment;
-	        }
-	        $str = implode(' ', $array);
-	        return $str;
-	    }
-	}
-
+	
 	/* LCA */
 	// check is admin
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
@@ -122,8 +70,7 @@ For information : contact@oreon-project.org
 	$is_admin = 0;
 	$is_admin = $admin["contact_admin"];
 
-	// if is admin -> lca
-	if(!$is_admin){
+	if (!$is_admin){
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
@@ -136,7 +83,6 @@ For information : contact@oreon-project.org
 	$general_opt = $DBRESULT_OPT->fetchRow();
 
 	function get_services_status($host_name, $status){
-
 		global $pearDBndo, $ndo_base_prefix, $general_opt, $o, $instance;
 
 		$rq = 		"SELECT count( nss.service_object_id ) AS nb".
@@ -201,6 +147,7 @@ For information : contact@oreon-project.org
 					" AND no.object_id = hgm.host_object_id" .
 					" AND hgm.hostgroup_id = hg.hostgroup_id".
 					" AND no.name1 not like 'OSL_Module'";
+					" AND no.name1 not like 'Meta_Module'";
 
 	if (!$is_admin)
 		$rq1 .= 	" AND no.name1 IN (".$lcaSTR.")";
@@ -208,15 +155,17 @@ For information : contact@oreon-project.org
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;
 	
-	if ($o == "svcSumHG"){
+	/*if ($o == "svcSumHG"){
 		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
-	} else if ($o == "svcSumHG_ack_0") {
+	}*/
+	if ($o == "svcSumHG_ack_0") {
 		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
-	} else if ($o == "svcSumHG_ack_1"){
+	}
+	if ($o == "svcSumHG_ack_1"){
 		$rq1 .= 	" AND no.name1 IN (" .
 					" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
@@ -224,6 +173,8 @@ For information : contact@oreon-project.org
 		
 	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+	
+	//print $rq1;
 		
 	$rq_pagination = $rq1;
 	
@@ -255,26 +206,28 @@ For information : contact@oreon-project.org
 
 	$tab_final = array();
 	while($DBRESULT_NDO1->fetchInto($ndo))	{
-		if($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
-			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
-		else
-			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
-		$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + get_services_status($ndo["host_name"], 1);
-		$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + get_services_status($ndo["host_name"], 2);
-		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
-		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + get_services_status($ndo["host_name"], 4);
-		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-		if (isset($lca["LcaHostGroup"][$ndo["alias"]]))
+		if (isset($lca["LcaHostGroup"][$ndo["alias"]]) || !isset($lca["LcaHostGroup"])){
+			
+			if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
+				$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
+			else
+				$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
+				
+			$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + get_services_status($ndo["host_name"], 1);
+			$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + get_services_status($ndo["host_name"], 2);
+			$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
+			$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + get_services_status($ndo["host_name"], 4);
+			
+			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
 			$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+			if ($tab_final[$ndo["host_name"]]["nb_service_w"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_k"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_c"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_u"] == 0 && $tab_final[$ndo["host_name"]]["nb_service_p"] == 0)
+				unset($tab_final[$ndo["host_name"]]);
+		}
 	}
 
 	$hg = "";
-	foreach($tab_final as $host_name => $tab){
-		if($class == "list_one")
-			$class = "list_two";
-		else
-			$class = "list_one";
-
+	foreach ($tab_final as $host_name => $tab){
+		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 		if (isset($tab["hg_name"]) && $hg != $tab["hg_name"]){
 			if ($hg != "")
 				$buffer .= '</hg>';
@@ -282,7 +235,6 @@ For information : contact@oreon-project.org
 			$buffer .= '<hg>';
 			$buffer .= '<hgn><![CDATA['. $tab["hg_name"]  .']]></hgn>';
 		}
-		
 		$buffer .= '<l class="'.$class.'">';
 		$buffer .= '<sk><![CDATA['. $tab["nb_service_k"]  . ']]></sk>';
 		$buffer .= '<skc><![CDATA['. $tab_color_service[0]  . ']]></skc>';
