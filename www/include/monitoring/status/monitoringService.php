@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 	} else if(isset($_GET["cmd"]) && $_GET["cmd"] == 15 && isset($_GET["author"]) && isset($_GET["en"]) && $_GET["en"] == 0)
 		acknowledgeServiceDisable($lang);
 
-	if(isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
+	if (isset($_GET["cmd"]) && $_GET["cmd"] == 16 && isset($_GET["output"]))
 		submitPassiveCheck($lang);
 
 	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
@@ -46,31 +46,27 @@ For information : contact@oreon-project.org
 
 	$ndo = $gopt["ndo_activate"];
 
-	if($o == "svcSch")
-		{
-			$_GET["sort_types"] = "next_check";
-			$_GET["order"] = "sort_asc";
-		}
+	if ($o == "svcSch"){
+		$_GET["sort_types"] = "next_check";
+		$_GET["order"] = "sort_asc";
+	}
 
 	$metaservicepath = "metaService.php";
-
-
+	
 	if (isset($ndo) && !$ndo){
 		$path = "./include/monitoring/status/status-log/";
 		include("./include/monitoring/status/resume.php");
 		$problem = "_problem";
-
 		$metaservicepath = $path."metaService.php";
-
 	} else {
 		$problem = "";
 		$path = "./include/monitoring/status/status-ndo/";
 		$metaservicepath = $path."service.php";
 	}
 
-	$pathRoot = "./include/monitoring/";
-	$pathExternal = "./include/monitoring/external_cmd/";
-	$pathDetails = "./include/monitoring/objectDetails/";
+	$pathRoot 		= "./include/monitoring/";
+	$pathExternal 	= "./include/monitoring/external_cmd/";
+	$pathDetails	= "./include/monitoring/objectDetails/";
 	
 	include_once("./DBNDOConnect.php");
 	
@@ -79,30 +75,43 @@ For information : contact@oreon-project.org
 	else {
 		switch ($o)	{
 			case "svc" 			: require_once($path."service.php"); 					break;
-	
+			/*
+			 * View of Service
+			 */
 			case "svcpb" 		: require_once($path."service".$problem.".php");		break;
 			case "svc_warning" 	: require_once($path."service".$problem.".php");		break;
 			case "svc_critical" : require_once($path."service".$problem.".php");		break;
 			case "svc_unknown" 	: require_once($path."service".$problem.".php");		break;
 			case "svc_ok" 		: require_once($path."service".$problem.".php");		break;
-	
+			/*
+			 * Special Views 
+			 */
 			case "svcd" 		: require_once($pathDetails."serviceDetails.php"); 		break;
 			case "svcak" 		: require_once($pathExternal."serviceAcknowledge.php"); break;
 			case "svcpc" 		: require_once($pathExternal."servicePassiveCheck.php");break;
-	
+			/*
+			 * View Bu hosts groups
+			 */
 			case "svcgrid" 		: require_once($path."serviceGrid.php"); 				break;
 			case "svcOV" 		: require_once($path."serviceGrid.php");	 			break;
 			case "svcSum" 		: require_once($path."serviceSummary.php"); 			break;
-	
+			/*
+			 * View by Service Groups
+			 */
 			case "svcgridSG" 	: require_once($path."serviceGridBySG.php"); 			break;
 			case "svcOVSG" 		: require_once($path."serviceGridBySG.php"); 		break;
 			case "svcSumSG" 	: require_once($path."serviceSummaryBySG.php"); 		break;
-	
+			
 			case "svcgridHG" 	: require_once($path."serviceGridByHG.php"); 			break;
 			case "svcOVHG" 		: require_once($path."serviceGridByHG.php"); 		break;
 			case "svcSumHG" 	: require_once($path."serviceSummaryByHG.php"); 		break;
-	
+			/*
+			 * Meta Services
+			 */
 			case "meta" 		: require_once($metaservicepath); 				break;
+			/*
+			 * Scheduling Queue
+			 */
 			case "svcSch" 		: require_once($path."serviceSchedule.php"); 			break;
 			default 			: require_once($path."service.php"); 					break;
 		}
