@@ -207,7 +207,7 @@ For information : contact@oreon-project.org
 		return $LcaHHG;
 	}
 	
-	function getAuthorizedCategories($groupstr){
+	function getAuthorizedCategories2($groupstr){
 		global $pearDB;
 		
 		$tab_categories = array();
@@ -215,6 +215,25 @@ For information : contact@oreon-project.org
 									"FROM acl_resources_sc_relations, acl_res_group_relations " .
 									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
 									"AND acl_res_group_relations.acl_group_id IN (".$groupstr.")");
+		print "SELECT sc_id " .
+									"FROM acl_resources_sc_relations, acl_res_group_relations " .
+									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+									"AND acl_res_group_relations.acl_group_id IN (".$groupstr.")\n";
+		while ($res = $DBRESULT->fetchRow())
+			$tab_categories[$res["sc_id"]] = $res["sc_id"];
+	  	unset($res);
+	  	unset($DBRESULT);
+	  	return $tab_categories;
+	}
+
+	function getAuthorizedCategories($groupstr){
+		global $pearDB;
+		
+		$tab_categories = array();
+		$DBRESULT =& $pearDB->query("SELECT sc_id " .
+									"FROM acl_resources_sc_relations, acl_res_group_relations " .
+									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
+									"AND acl_res_group_relations.acl_group_id = '".$groupstr."'");
 		while ($res = $DBRESULT->fetchRow())
 			$tab_categories[$res["sc_id"]] = $res["sc_id"];
 	  	unset($res);
@@ -222,7 +241,7 @@ For information : contact@oreon-project.org
 	  	return $tab_categories;
 	}
 	
-	function getServiceTemplateList($service_id = NULL)	{
+	function getServiceTemplateList2($service_id = NULL)	{
 		if (!$service_id) 
 			return;
 		global $pearDB;
@@ -231,7 +250,7 @@ For information : contact@oreon-project.org
 		 */
 		$strTemplate = "'$service_id'";
 
-		while(1)	{
+		while (1)	{
 			/*
 			 * Get template Informations
 			 */
@@ -275,8 +294,8 @@ For information : contact@oreon-project.org
 		$tab_services = array();
 		if ($nb){
 			if ($tab_svc)
-				foreach ($tab_svc as $svc_id => $svc_descr){
-					$tmp = getServiceTemplateList($svc_id);
+				foreach ($tab_svc as $svc_descr => $svc_id){
+					$tmp = getServiceTemplateList2($svc_id);
 					$tab = getServicesCategories($tmp);
 					foreach ($tab as $t){
 						if (isset($tab_cat[$t]))
