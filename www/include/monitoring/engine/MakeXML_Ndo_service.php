@@ -250,11 +250,10 @@ For information : contact@oreon-project.org
 	if($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
 
-	if($o == "meta")
+	if ($o == "meta")
 		$rq1 .= " AND no.name1 = 'Meta_Module'";
 	else
 		$rq1 .= " AND no.name1 != 'Meta_Module'";
-
 
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
