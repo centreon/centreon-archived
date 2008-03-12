@@ -30,17 +30,13 @@ For information : contact@oreon-project.org
 
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
-
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-//	!isset($_GET["limit"]) ? $limit = 0 : $limit = $_GET["limit"];
 	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 0;
@@ -78,8 +74,6 @@ For information : contact@oreon-project.org
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
 
-
-	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
