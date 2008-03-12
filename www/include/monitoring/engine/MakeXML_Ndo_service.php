@@ -93,6 +93,7 @@ For information : contact@oreon-project.org
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		//$lca = getLCASVC($lca);
 	}
 
 	$service = array();
@@ -174,14 +175,16 @@ For information : contact@oreon-project.org
 				" no.name1 as host_name," .
 				" no.object_id," .
 				" no.name2 as service_description" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like 'OSL_Module'" .
 			  	" AND objecttype_id = 2";
 
 
-	if (!$is_admin)
-			$rq .= " AND no.name1 IN (".$lcaSTR." )";
+	if (!$is_admin){
+			//$rq .= " AND no.name1 IN (".$lcaSTR." )";
+			$rq .= " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND group_id = '5'";
+	}
 
 	($o == "meta") ? $rq .= " AND no.name1 = 'Meta_Module'" : $rq .= " AND no.name1 != 'Meta_Module'";
 
@@ -241,14 +244,17 @@ For information : contact@oreon-project.org
 	$buffer .= '<p>'.$p.'</p>';
 	$buffer .= '<nc>'.$nc.'</nc>';
 	$buffer .= '<o>'.$o.'</o>';
+	$buffer .= '<sid>'.$sid.'</sid>';
 	$buffer .= '</i>';
 	/* End Pagination Rows */
 
 	$host_prev = "";
 	$class = "list_one";
-	while($DBRESULT_NDO->fetchInto($ndo)){
-		if( isset($host_status[$ndo["host_name"]]) ){
-			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
+	while ($ndo = $DBRESULT_NDO->fetchRow()){
+		// && isset($lca["LcaHost"][$ndo["host_name"]]["svc"][$ndo["service_description"]])
+		// && isset($lca["LcaHost"][$ndo["host_name"]]["svc"][$ndo["service_description"]])
+		if (isset($host_status[$ndo["host_name"]])){
+			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]];
 			$color_service = $tab_color_service[$ndo["current_state"]];
 			$passive = 0;
 			$active = 1;
@@ -304,7 +310,6 @@ For information : contact@oreon-project.org
 			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
 			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
 			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"]).'</svc_index>';
-			$buffer .= '<sid>'.$sid.'</sid>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
