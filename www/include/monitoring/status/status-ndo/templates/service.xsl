@@ -125,7 +125,7 @@
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 					<xsl:if test="svc_index > 0">
-						<xsl:attribute name="onmouseover">displayIMG('<xsl:value-of select="svc_index"/>','<xsl:value-of select="sid"/>','<xsl:value-of select="svc_id"/>');</xsl:attribute>
+						<xsl:attribute name="onmouseover">displayIMG('<xsl:value-of select="svc_index"/>','<xsl:value-of select="//sid"/>','<xsl:value-of select="svc_id"/>');</xsl:attribute>
 						<xsl:attribute name="onmouseout">hiddenIMG('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 					</xsl:if>
 					</xsl:element>
