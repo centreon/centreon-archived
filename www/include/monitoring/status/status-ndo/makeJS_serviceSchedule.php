@@ -26,41 +26,40 @@ For information : contact@oreon-project.org
 	$sid = session_id();
 	$time = time();
 	
-	if($num < 0)
+	if ($num < 0)
 		$num =0;
 ?>
 <script type="text/javascript">
-var _debug = 0;
+	var _debug = 0;
+	
+	var _search = '<?=$search?>';
+	var _sid='<?=$sid?>';
+	var _search_type_host='<?=$search_type_host?>';
+	var _search_type_service='<?=$search_type_service?>';
+	var _num='<?=$num?>';
+	var _limit='<?=$limit?>';
+	var _sort_type='<?=$sort_type?>';
+	var _order='<?=$order?>';
+	var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
+	var _o='<?=$o?>';
+	var _p='<?=$p?>';
+	
+	var _addrXSL = "./include/monitoring/status/status-ndo/templates/serviceSchedule.xsl";
+	var _timeoutID = 0;
+	var _on = 1;
+	var _time_reload = <?=$tM?>;
+	var _time_live = <?=$tFM?>;
+	var _nb = 0;
+	var _oldInputFieldValue = '<?=$search?>';
+	var _currentInputFieldValue=""; // valeur actuelle du champ texte
+	var _resultCache=new Object();
+	var _first = 1;
+	var _lock = 0;
+	var _instance = 'ALL';
+	var _default_instance = '0';
+	var _nc = 0;
 
-var _search = '<?=$search?>';
-var _sid='<?=$sid?>';
-var _search_type_host='<?=$search_type_host?>';
-var _search_type_service='<?=$search_type_service?>';
-var _num='<?=$num?>';
-var _limit='<?=$limit?>';
-var _sort_type='<?=$sort_type?>';
-var _order='<?=$order?>';
-var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
-var _o='<?=$o?>';
-var _p='<?=$p?>';
-
-var _addrXSL = "./include/monitoring/status/status-ndo/templates/serviceSchedule.xsl";
-var _timeoutID = 0;
-var _on = 1;
-var _time_reload = <?=$tM?>;
-var _time_live = <?=$tFM?>;
-var _nb = 0;
-var _oldInputFieldValue = '<?=$search?>';
-var _currentInputFieldValue=""; // valeur actuelle du champ texte
-var _resultCache=new Object();
-var _first = 1;
-var _lock = 0;
-var _instance = 'ALL';
-var _default_instance = '0';
-var _nc = 0;
-<?php
-include_once("makeJS_Common.php");
-?>
+<?php include_once("makeJS_Common.php"); ?>
 
 function set_header_title(){
 	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
@@ -112,19 +111,14 @@ function set_header_title(){
 		_linkaction_asc.href = '#' ;
 		_linkaction_asc.onclick=function(){change_order()};
 		h.appendChild(_linkaction_asc);
-
 	}
-
 }
-
-
 
 function monitoring_refresh()	{
 	_tmp_on = _on;
 	_time_live = _time_reload;
 	_on = 1;
 	window.clearTimeout(_timeoutID);
-
 	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
 	_on = _tmp_on;
 
@@ -182,17 +176,13 @@ function goM(_time_reload,_sid,_o){
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
-
-
 	_lock = 0;	
 
 	viewDebugInfo('--end--');
 
-
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
-	
 	
 	set_header_title();
 }

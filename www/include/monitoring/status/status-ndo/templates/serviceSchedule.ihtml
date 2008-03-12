@@ -3,7 +3,8 @@
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
 <table class="Toolbar_TableTop">
-	<tr><td>
+	<tr>
+		<td>
 		<a href="#" onclick="advanced_options('advanced_options');" id="advanced_1">Advanced Options</a>
 		<fieldset id="advanced_options" STYLE = "padding:3px;-moz-border-radius : 5px 5px;">
 		<legend><a href="#" onclick="advanced_options('advanced_options');" >Advanced Options</a></legend>
