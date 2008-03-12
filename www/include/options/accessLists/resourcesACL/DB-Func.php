@@ -99,6 +99,7 @@ For information : contact@oreon-project.org
 		updateHosts($acl_id);
 		updateHostGroups($acl_id);
 		updateHostexcludes($acl_id);
+		updateServiceCategories($acl_id);
 	}	
 	
 	function insertLCAInDB ()	{
@@ -107,6 +108,7 @@ For information : contact@oreon-project.org
 		updateHosts($acl_id);
 		updateHostGroups($acl_id);
 		updateHostexcludes($acl_id);
+		updateServiceCategories($acl_id);
 		return ($acl_id);
 	}
 	
@@ -144,8 +146,9 @@ For information : contact@oreon-project.org
 	}
 
 	function updateGroups($acl_id = null)	{
-		if (!$acl_id) return;
 		global $form, $pearDB;
+		if (!$acl_id) 
+			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -162,8 +165,9 @@ For information : contact@oreon-project.org
 	}
 	
 	function updateHosts($acl_id = null)	{
-		if (!$acl_id) return;
 		global $form, $pearDB;
+		if (!$acl_id) 
+			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -180,8 +184,9 @@ For information : contact@oreon-project.org
 	}
 	
 	function updateHostexcludes($acl_id = null)	{
-		if (!$acl_id) return;
 		global $form, $pearDB;
+		if (!$acl_id) 
+			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -198,8 +203,9 @@ For information : contact@oreon-project.org
 	}
 	
 	function updateHostGroups($acl_id = null)	{
-		if (!$acl_id) return;
 		global $form, $pearDB;
+		if (!$acl_id)
+			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -209,6 +215,25 @@ For information : contact@oreon-project.org
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
 					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('".$acl_id."', '".$value."')");
+					if (PEAR::isError($DBRESULT))
+						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				}
+			}
+	}
+	
+	function updateServiceCategories($acl_id = null)	{
+		global $form, $pearDB;
+		if (!$acl_id) 
+			return;
+		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$ret = array();
+		$ret = $form->getSubmitValue("acl_sc");
+		if (isset($ret))
+			foreach ($ret as $key => $value){
+				if (isset($value))	{
+					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES ('".$acl_id."', '".$value."')");
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 				}
