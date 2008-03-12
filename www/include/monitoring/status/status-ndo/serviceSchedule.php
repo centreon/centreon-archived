@@ -20,7 +20,8 @@ For information : contact@oreon-project.org
 		exit();
 
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
-	if($order == 'sort_asc')
+	
+	if ($order == 'sort_asc')
 		$order = 'ASC';
 
 	$pagination = "maxViewMonitoring";
@@ -33,30 +34,21 @@ For information : contact@oreon-project.org
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
 
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
-//	!isset($_GET["limit"]) ? $limit = 0 : $limit = $_GET["limit"];
 	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
 	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
-	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
+	!isset($_GET["sort_type"]) ? $sort_type = "next_check" : $sort_type = $_GET["sort_type"];
 	!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
 
 	# start quickSearch form
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
-
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
-	$rows = 0;
-
-	/* row ? */
 	$rows = 10;
 
-
-	//include("./include/common/checkPagination.php");
+	include("./include/common/checkPagination.php");
 
 	include_once("makeJS_serviceSchedule.php");
-
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -67,6 +59,10 @@ For information : contact@oreon-project.org
 	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
+	
+	/*
+	 * translations
+	 */
 	$tpl->assign("mon_host", _("Hosts"));
 	$tpl->assign("mon_status", _("Status"));
 	$tpl->assign("mon_ip", _("IP"));
@@ -74,14 +70,8 @@ For information : contact@oreon-project.org
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information"));
 
-
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
-
-	$tpl->assign("lang", $lang);
-
-
-	##Toolbar select $lang["lgd_more_actions"]
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
@@ -143,8 +133,7 @@ For information : contact@oreon-project.org
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
-
+	
 	if ($oreon->optGen["nagios_version"] == 2 && isset($pgr_nagios_stat["created"]))
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);
 	else
