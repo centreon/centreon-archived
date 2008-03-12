@@ -5,9 +5,9 @@
  * http://www.opensource.org/licenses/mit-license.php
  *
  */
-if(typeof deconcept == "undefined") var deconcept = new Object();
-if(typeof deconcept.util == "undefined") deconcept.util = new Object();
-if(typeof deconcept.SWFObjectUtil == "undefined") deconcept.SWFObjectUtil = new Object();
+if (typeof deconcept == "undefined") var deconcept = new Object();
+if (typeof deconcept.util == "undefined") deconcept.util = new Object();
+if (typeof deconcept.SWFObjectUtil == "undefined") deconcept.SWFObjectUtil = new Object();
 deconcept.SWFObject = function(swf, id, w, h, ver, c, quality, xiRedirectUrl, redirectUrl, detectKey) {
 	if (!document.getElementById) { return; }
 	this.DETECT_KEY = detectKey ? detectKey : 'detectflash';
