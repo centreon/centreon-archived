@@ -71,9 +71,8 @@ For information : contact@oreon-project.org
 	$form->addElement('header', 'information', _("Satellite configuration"));
 	$form->addElement('text', 'name', _("Sattelite Name"), $attrsText);
 	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
-	$form->addElement('text', 'user', _("User"), $attrsText);
-	$form->addElement('text', 'password', _("Password"), $attrsText);
-	$form->addElement('text', 'ns_key', _("Authentificatin Key"), $attrsText3);
+	$form->addElement('text', 'init_script', _("Nagios Init Script"), $attrsText);
+	$form->addElement('text', 'nagios_bin', _("Nagios Binary"), $attrsText);
 		
 	$Tab = array();
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');

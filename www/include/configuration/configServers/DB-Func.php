@@ -99,16 +99,13 @@ For information : contact@oreon-project.org
 		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `ns_ip_address`, `user`, `password` , `ns_http_suffix` , `ns_http_port` , `ns_key` , `ns_activate`) ";
+		$rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `ns_ip_address`, `nagios_bin` , `init_script` , `ns_activate`) ";
 		$rq .= "VALUES (";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
 		isset($ret["localhost"]) && $ret["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "'".htmlentities($ret["ns_ip_address"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-       	isset($ret["user"]) && $ret["user"] != NULL ? $rq .= "'".htmlentities($ret["user"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-       	isset($ret["password"]) && $ret["password"] != NULL ? $rq .= "'".htmlentities($ret["password"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-       	//isset($ret["ns_http_suffix"]) && $ret["ns_http_suffix"] != NULL ? $rq .= "'".htmlentities($ret["ns_http_suffix"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        //isset($ret["ns_http_port"]) && $ret["ns_http_port"] != NULL ? $rq .= "'".htmlentities($ret["ns_http_port"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["ns_key"]) && $ret["ns_key"] != NULL ? $rq .= "'".htmlentities($ret["ns_key"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "'".htmlentities($ret["nagios_bin"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "'".htmlentities($ret["init_script"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["ns_activate"]) && $ret["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]."',  "  : $rq .= "NULL)";
        	$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
@@ -135,11 +132,8 @@ For information : contact@oreon-project.org
         isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "name = '".htmlentities($ret["name"], ENT_QUOTES)."', " : $rq .= "name = NULL, ";
         isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "localhost = '".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES)."', " : $rq .= "localhost = NULL, ";
 		isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "ns_ip_address = '".htmlentities($ret["ns_ip_address"], ENT_QUOTES)."',  " : $rq .= "ns_ip_address = NULL, ";
-        isset($ret["user"]) && $ret["user"] != NULL ? $rq .= "user = '".htmlentities($ret["user"], ENT_QUOTES)."',  " : $rq .= "user = NULL, ";
-        isset($ret["password"]) && $ret["password"] != NULL ? $rq .= "password = '".htmlentities($ret["password"], ENT_QUOTES)."',  " : $rq .= "password = NULL, ";
-        //isset($ret["ns_http_suffix"]) && $ret["ns_http_suffix"] != NULL ? $rq .= "ns_http_suffix = '".htmlentities($ret["ns_http_suffix"], ENT_QUOTES)."',  " : $rq .= "ns_http_suffix = NULL, ";
-       	//isset($ret["ns_http_port"]) && $ret["ns_http_port"] != NULL ? $rq .= "ns_http_port = '".htmlentities($ret["ns_http_port"], ENT_QUOTES)."',  " : $rq .= "ns_http_port = NULL, ";
-        isset($ret["ns_key"]) && $ret["ns_key"] != NULL ? $rq .= "ns_key = '".htmlentities($ret["ns_key"], ENT_QUOTES)."',  " : $rq .= "ns_key = NULL, ";
+        isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "init_script = '".htmlentities($ret["init_script"], ENT_QUOTES)."',  " : $rq .= "init_script = NULL, ";
+        isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "nagios_bin = '".htmlentities($ret["nagios_bin"], ENT_QUOTES)."',  " : $rq .= "nagios_bin = NULL, ";
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT =& $pearDB->query($rq);
