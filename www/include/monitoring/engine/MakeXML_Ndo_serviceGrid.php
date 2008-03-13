@@ -138,7 +138,7 @@ For information : contact@oreon-project.org
 		global $pearDBndo,$ndo_base_prefix,$general_opt,$o,$instance,$is_admin,$lcaSTR;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
-					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no" .
+					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no, centreon_acl " .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 not like 'OSL_Module'";
 					" AND no.name1 not like 'Meta_Module'";
@@ -158,9 +158,11 @@ For information : contact@oreon-project.org
 
 		if ($instance != "ALL")
 			$rq .= 	" AND no.instance_id = ".$instance;
-		if (!$is_admin)
-			$rq .= 	" AND no.name1 IN (".$lcaSTR." )";
 
+		if (!$is_admin){
+			//$rq .= 	" AND no.name1 IN (".$lcaSTR." )";
+			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
+		}
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -196,15 +198,15 @@ For information : contact@oreon-project.org
 	 * Get Host status 
 	 */
 	 
-	$rq1 =	  	" SELECT no.name1 as host_name, nhs.current_state" .
-				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs " .
+	$rq1 =	  	" SELECT DISTINCT no.name1 as host_name, nhs.current_state" .
+				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs, centreon_acl" .
 				" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE 'OSL_Module'".
 				" AND no.name1 NOT LIKE 'Meta_Module'";
 	
 	if (!$is_admin)
-		$rq1 .= " AND no.name1 IN (".$lcaSTR.")";
-	
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id = '5'";
+
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .

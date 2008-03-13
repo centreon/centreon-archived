@@ -124,11 +124,12 @@ For information : contact@oreon-project.org
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
 
 	/* Get Host status */
-	$rq1 = "SELECT nhs.current_state," .
+	$rq1 = "SELECT " .
+			" DISTINCT no.name1 as host_name," .
+			" nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
 			" nhs.passive_checks_enabled," .
 			" nhs.active_checks_enabled," .
-			" no.name1 as host_name," .
 			" no.object_id," .
 			" nh.action_url," .
 			" nh.notes_url," .
@@ -138,7 +139,9 @@ For information : contact@oreon-project.org
 			" WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id AND no.objecttype_id = 1 AND no.object_id = nh.host_object_id";
 
 	if (!$is_admin)
-		$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+		;//$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id = '5'";
+	
+		//$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
 
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
@@ -157,6 +160,7 @@ For information : contact@oreon-project.org
 
 	/* Get Service status */
 	$rq =		" SELECT " .
+				" no.name1 as host_name," .
 				" nss.process_performance_data," . 
 				" nss.current_state," .
 				" nss.output as plugin_output," .
@@ -172,7 +176,6 @@ For information : contact@oreon-project.org
 				" nss.event_handler_enabled," .
 				" nss. is_flapping," .
 				" nss.flap_detection_enabled," .
-				" no.name1 as host_name," .
 				" no.object_id," .
 				" no.name2 as service_description" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl" .
@@ -180,10 +183,8 @@ For information : contact@oreon-project.org
 				" AND no.name1 not like 'OSL_Module'" .
 			  	" AND objecttype_id = 2";
 
-
 	if (!$is_admin){
-			//$rq .= " AND no.name1 IN (".$lcaSTR." )";
-			$rq .= " AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND group_id = '5'";
+		$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
 	}
 
 	($o == "meta") ? $rq .= " AND no.name1 = 'Meta_Module'" : $rq .= " AND no.name1 != 'Meta_Module'";
@@ -244,15 +245,12 @@ For information : contact@oreon-project.org
 	$buffer .= '<p>'.$p.'</p>';
 	$buffer .= '<nc>'.$nc.'</nc>';
 	$buffer .= '<o>'.$o.'</o>';
-	$buffer .= '<sid>'.$sid.'</sid>';
 	$buffer .= '</i>';
 	/* End Pagination Rows */
 
 	$host_prev = "";
 	$class = "list_one";
 	while ($ndo = $DBRESULT_NDO->fetchRow()){
-		// && isset($lca["LcaHost"][$ndo["host_name"]]["svc"][$ndo["service_description"]])
-		// && isset($lca["LcaHost"][$ndo["host_name"]]["svc"][$ndo["service_description"]])
 		if (isset($host_status[$ndo["host_name"]])){
 			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]];
 			$color_service = $tab_color_service[$ndo["current_state"]];
@@ -310,6 +308,7 @@ For information : contact@oreon-project.org
 			$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
 			$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
 			$buffer .= '<svc_index>'.getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"]).'</svc_index>';
+			$buffer .= '<sid>'.$sid.'</sid>';
 			$buffer .= '<sc>'.$color_service.'</sc>';
 			$buffer .= '<cs>'. $tab_status_svc[$ndo["current_state"]].'</cs>';
 			$buffer .= '<po><![CDATA['. $ndo["plugin_output"].']]></po>';
