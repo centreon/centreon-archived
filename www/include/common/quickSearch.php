@@ -29,7 +29,6 @@ For information : contact@oreon-project.org
 	else
 		$search = NULL; 
 	
-	
 	if (isset($search) && $search)
 		$attrsText = array("size"=>"25", "id"=>"input_search", "class"=>"search_input_active");
 	else
@@ -76,7 +75,7 @@ For information : contact@oreon-project.org
 	$form_search->accept($renderer);	
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
-	$tpl->assign("num", 1);	
+	//$tpl->assign("num", 1);	
 	$tpl->display("quickSearch.ihtml");
 	
 ?>

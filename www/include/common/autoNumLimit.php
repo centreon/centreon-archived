@@ -22,7 +22,7 @@ For information : contact@oreon-project.org
 		$limit = $_POST["limit"];
 	else if (isset($_GET["limit"]))
 		$limit = $_GET["limit"];
-	else if (isset($oreon->historyLimit[$url]))
+	else if (!isset($_POST["limit"]) && !isset($_GET["limit"]) && isset($oreon->historyLimit[$url]))
 		$limit = $oreon->historyLimit[$url];
 	else {
 		if ($p != 2 || ($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)){
@@ -40,10 +40,10 @@ For information : contact@oreon-project.org
 		$num = $_POST["num"];
 	else if (isset($_GET["num"]) && $_GET["num"])
 		$num = $_GET["num"];
-	else if (isset($oreon->historyPage[$url]))
+	else if (!isset($_POST["num"]) && !isset($_GET["num"]) && isset($oreon->historyPage[$url]))
 		$num = $oreon->historyPage[$url];
 	else 
 		$num = 0;
-			
+	
 	global $search;
 ?>

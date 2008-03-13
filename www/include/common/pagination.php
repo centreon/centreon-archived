@@ -26,6 +26,7 @@ For information : contact@oreon-project.org
 	global $rows, $p, $lang, $gopt, $pagination;
 	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
+	
 	isset ($_GET["num"]) ? $num = $_GET["num"] : $num = 0;
 	isset ($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 	
@@ -77,9 +78,9 @@ For information : contact@oreon-project.org
 		
 	$pageArr = array();
 	$istart = 0;
-	for($i = 5, $istart = $num; $istart && $i > 0; $i--)
+	for ($i = 5, $istart = $num; $istart && $i > 0; $i--)
 		$istart--;
-	for($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
+	for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
 		$iend++;
 	for ($i = $istart; $i <= $iend; $i++){
 		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);
@@ -111,7 +112,7 @@ For information : contact@oreon-project.org
 	if (isset($rows) && $rows)
 		$select[$rows]=$rows;
 	ksort($select);
-		
+	
 	?>
 	<script type="text/javascript">
 	function setL(_this){
@@ -141,15 +142,13 @@ For information : contact@oreon-project.org
 	$form->accept($renderer);
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
-	$tpl->assign("host_name", $host_name);
-	
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 	
+	$tpl->assign("host_name", $host_name);
 	$tpl->assign("status", $status);
 	$tpl->assign("limite", $limite);
 	$tpl->assign("begin", $num);
 	$tpl->assign("end", $limit);
-	$tpl->assign("lang", $lang);
 	$tpl->assign("pagin_page", _("Page"));
 	$tpl->assign("order", $_GET["order"]);
 	$tpl->assign("tab_order", $tab_order);
