@@ -88,6 +88,7 @@ For information : contact@oreon-project.org
 		for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++)
 			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
 		$DBRESULT->free();
+		$host["nagios_server_id"] = $ns["nagios_server_id"];
 		unset($ns);
 	}
 
@@ -237,6 +238,8 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
 	$form->addElement('select', 'host_snmp_version', _("Version"), array(0=>null, 1=>"1", 2=>"2c", 3=>"3"));
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
+	
+	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
@@ -411,12 +414,13 @@ For information : contact@oreon-project.org
 		$form->addGroup($mc_mod_hhg, 'mc_mod_nsid', _("Update options"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_nsid'=>'0'));
 	}
+	/*
     $ams3 =& $form->addElement('advmultiselect', 'nagios_server_id', _("Monitored from "), $nsServers, $attrsAdvSelectsmall);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams3->setElementTemplate($template);
 	echo $ams3->getElementJs(false);
-
+	*/
 	#
 	## Sort 3 - Data treatment
 	#
