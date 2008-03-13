@@ -20,6 +20,12 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	/*
+	 * start quickSearch form
+	 */
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
+
 	if (isset($search))
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM host WHERE (host_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR host_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND host_register = '0'");
 	else
@@ -28,12 +34,6 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
 
 	include("./include/common/checkPagination.php");
 
@@ -74,9 +74,7 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($host); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");	
-		$moptions = "<!--<a href='oreon.php?p=".$p."&host_id=".$host['host_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&host_id=".$host['host_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&host_id=".$host['host_id']."&o=d&select[".$host['host_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>&nbsp;&nbsp;-->";
+		$moptions = "";
 		if ($host["host_activate"])
 			$moptions .= "<a href='oreon.php?p=".$p."&host_id=".$host['host_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
