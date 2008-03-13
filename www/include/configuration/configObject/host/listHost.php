@@ -68,6 +68,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Description"));
 	$tpl->assign("headerMenu_address", _("IP Address / DNS"));
+	$tpl->assign("headerMenu_poller", _("Poller"));
 	$tpl->assign("headerMenu_parent", _("Parent Template"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
@@ -76,7 +77,7 @@ For information : contact@oreon-project.org
 	 * Host list
 	 */
 	 
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h WHERE $SearchTool $LCATool host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
+	$DBRESULT =& $pearDB->query("SELECT ns.name, host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, nagios_server ns , ns_host_relation nhr WHERE $SearchTool $LCATool host_register = '1' AND ns.id = nhr.nagios_server_id AND nhr.host_host_id = h.host_id ORDER BY host_name LIMIT ".$num * $limit.", ".$limit); 
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 
@@ -139,6 +140,7 @@ For information : contact@oreon-project.org
 						"RowMenu_link"=>"?p=".$p."&o=c&host_id=".$host['host_id'],
 						"RowMenu_desc"=>$host["host_alias"],
 						"RowMenu_address"=>$host["host_address"],
+						"RowMenu_poller"=>$host["name"],
 						"RowMenu_parent"=>$tplStr,
 						"RowMenu_status"=>$host["host_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);

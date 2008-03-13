@@ -19,6 +19,7 @@
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_address}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_poller}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_parent}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
@@ -30,7 +31,7 @@
 			{/if}
 			{if $elemArr[elem].pattern && $pattern_mode == 0}
 				<tr class="list_lvl_1">
-					<td class="ListColLeft" colspan="7"><b>{$elemArr[elem].pattern}</b></td>
+					<td class="ListColLeft" colspan="8"><b>{$elemArr[elem].pattern}</b></td>
 				</tr>
 				{assign var=pattern_mode value=1}
 				{assign var=pattern_value value=$elemArr[elem].pattern}
@@ -45,6 +46,7 @@
 			</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_address}</td>
+			<td class="ListColRight">{$elemArr[elem].RowMenu_poller}</td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_parent}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
