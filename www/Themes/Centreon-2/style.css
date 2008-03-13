@@ -229,6 +229,8 @@ hr	{
 	color: #525252;
 	font-weight: bold;}
 
+div.tab {width:100%;}
+
 div.uptodate {
 	margin: 3px;
 	padding: 3px;
