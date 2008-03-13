@@ -20,6 +20,13 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	/*
+	 * start quickSearch form
+	 */
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
+	
+	
 	if (isset($search))
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service sv WHERE (sv.service_description LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sv.service_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sv.service_register = '0'");
 	else
@@ -30,12 +37,6 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
-
 	include("./include/common/checkPagination.php");
 
 	/*
