@@ -25,23 +25,33 @@
 
 use strict;
 use POSIX qw(mkfifo);
+use POSIX qw(setsid :sys_wait_h);
 use DBI;
 
-use IO::Select;
-use IO::File;
+use File::Copy;
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
-use vars qw($con);
+use vars qw($con $ssh $installedPath);
 
-$method = "system";
+#if (POSIX::getuid() != 0 ) { print  STDERR "You must exec with root user \n"; exit 1;}
+#if ( -e $PID) { print STDERR "CentCore already in use \n"; exit 1;}
 
-$debug = 0;
+my $method = "system";
+
+my $echo = "/bin/echo";
+
 my $installedPath = "/srv/oreon/";
-$LOG = $installedPath."var/centcore.log";
+my $LOG = $installedPath."var/centcore.log";
 my $PID = $installedPath."var/centcore.pid";
-my $FIFO = $installedPath."var/centcore";
-$stop = 1;
+my $cmdFile = "/usr/local/centreon/var/centcore.cmd";
+
+$ssh = "/usr/bin/ssh";
+
+my $stop = 1;
+my $debug = 0;
+my $cfg;
+
 
 # Include Configuration Data
 require $installedPath."etc/conf.pm";
@@ -54,6 +64,7 @@ sub catch_zap {
 sub writeLogFile($){
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
 	print LOG time()." - ".$_[0];
+	print time()." - ".$_[0];
 	close LOG or warn $!;
 }
 
@@ -76,45 +87,26 @@ close PID or warn $!;
 
 # Set signals
 $SIG{INT}  		= \&catch_zap;
-$SIG{'CHLD'} 	= 'IGNORE' ;
+$SIG{'CHLD'} 	= 'IGNORE';
+
+# Declare functions
 
 sub parseRequest($);
 sub GetAllNagiosServerPerfData();
-
-my $readset   = new IO::Select();
-
-unlink $FIFO if (-p $FIFO);
-
-unless (-p $FIFO) {
-    unlink $FIFO;
-    require POSIX;
-    POSIX::mkfifo($FIFO, 0755) or die "can't mkfifo $FIFO: $!";
-}
-
-if (!(-p $FIFO && -w _ && -r _)){
-	print $LOG "FIFO not open ! centcore stopped\n";
-	exit(1);
-}
-
-my $fifoHandle = new IO::File($FIFO, O_RDWR|O_NONBLOCK, 0666);
+sub moveCmdFile($);
 
 # Add the handles for our programs into the readset.
 # In other words, we're keeping track of these handles.
 
 my $timeSyncPerf = 0;
-while ($stop) {
-	$readset->add($fifoHandle);
+while ($stop) {  
 	# Select Wait
-	while(my @ready = $readset->can_read(60)){
-		# We have received a commande 
-		foreach my $handle (@ready) {
-    		my $str = Read($handle);
-	    	# Let's go to parse KeyWords
-	    	print "Parse Request ! \n";
-	    	parseRequest($str);
-	    }
-	
+	if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
+		while (<FILE>){
+			parseRequest($_);
+		}
 	}
+	close(FILE);
 	writeLogFile("Receiving order to stop...\n") if (!$stop);
 	my $flag = 1;
 	my $difTime = time() - $timeSyncPerf if (defined($timeSyncPerf) && $timeSyncPerf);
@@ -126,23 +118,14 @@ while ($stop) {
 		$timeSyncPerf = time();
 	}
 	print "############################################\n";
-	print "Timed out.\n";
+	sleep(2);	
 }
-$fifoHandle->close();
 
-sub Read {
-    my ($handle, $bytesToRead ) = @_;
-    $bytesToRead = 1 unless $bytesToRead;
-
-    my $message = '';
-    my $readByte;
-
-    while(1) {
-        my $bytesRead = sysread( $handle, $readByte, $bytesToRead ) or last;
-        $message .= $readByte if $bytesRead;
-    }
-    chomp $message if $message;
-    return $message;
+sub moveCmdFile($){
+	my $CMDFILE = $_[0];
+	if (move($CMDFILE, $CMDFILE."_read")){
+		return(1);
+	}
 }
 
 sub GetAllNagiosServerPerfData(){
@@ -181,6 +164,13 @@ sub getLocalOptionsField($){
 	return $data->{$_[0]};
 }
 
+sub getLocalServerID(){
+	CheckMySQLConnexion();
+	my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '1'");
+	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	return $sth2->fetchrow_hashref();
+}
+
 sub getServerConfig($){
 	CheckMySQLConnexion();
 	my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."'");
@@ -211,33 +201,36 @@ sub CheckMySQLConnexion(){
 }
 
 #
-# Function : create a SSH connexion with a remote server : poller
-#
-
-sub createSSHConnexion($){
-	return(-1) if (!defined($_[0]));
-	my $data = getServerConfig($_[0]);
-	my $ssh = Net::SSH::Perl->new($data->{'ns_ip_address'});
-	print "user : ".$data->{'user'}."\n";
-	print "password : ". $data->{'password'}."\n";
-	$ssh->login($data->{'user'}, $data->{'password'});
-	undef($data);
-	return($ssh);
-}
-
-#
 # Send an external command on a remote server.
 # Param : id_remote_server, external command
 #
 
 sub sendExternalCommand($$){
+	# Init Parameters
 	my $id = $_[0];
 	my $cmd = $_[1];
 	
+	# Get command file 
 	my $command_file = getNagiosConfigurationField($id, "command_file");
-	my $str = "echo \"".$cmd."\" >> $command_file"; 
-	my $stdout = `sudo $str`;
-    print " RESULT : ".$stdout . "\n";
+	# Get server informations
+	my $server_info = getServerConfig($id);
+	# check if ip address is defined
+	if (defined($server_info->{'ns_ip_address'})){
+		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." echo \"".$cmd."\" >> $command_file\n";
+		my $stdout = `$cmd`;
+	    writeLogFile("External command : poller $id : \"".$cmd."\"\n");
+	    if (defined($stdout) && $stdout){
+		    writeLogFile("Result : $stdout\n");
+	    }
+	    # Free
+		undef($stdout);
+	} else {
+		writeLogFile("Ip address not defined for poller $id \n");
+	}
+	# Free
+	undef($id);
+	undef($cmd);
+	undef($server_info);
 	undef($command_file);
 }
 
@@ -250,68 +243,83 @@ sub getNagiosInformation($){
 }
 
 sub GetPerfData($){
+	# init Values
+	my $debug = 1;
 	my $id = $_[0];
+
+	# Get Server Infos
 	my $server_info = getServerConfig($id);
-	#my $distantconnexion = $server_info->{'user'}."@".$server_info->{'ns_ip_address'};
 	my $distantconnexion = $server_info->{'ns_ip_address'};
 	
-	my $distantperffile = "/usr/local/nagios/var/service-perfdata";
-	my $distanttmpperffile = "/usr/local/nagios/var/service-perfdata-old";
+	my $distantperffile = getNagiosConfigurationField($id, "service_perfdata_file");
+	my $distanttmpperffile = $distantperffile."-old";
 	
-	my $localtmpperffile = "/usr/local/nagios/var/service-perfdata-tmpsat".$id;
-	my $localperffile = "/usr/local/nagios/var/service-perfdata";
+	my $localbasevardir = "$installedPath/var/perfdata/$id";
+	# check if directory exist
+	mkdir $localbasevardir if (!-d $localbasevardir);
+	
+	my $localhost_id = getLocalServerID(); 
+	my $localtmpperffile = "$localbasevardir/service-perfdata";
+	my $localperffile = getNagiosConfigurationField($localhost_id->{'id'}, "service_perfdata_file");
 	
 	my $origin = $distantconnexion.":".$distanttmpperffile;
 	
-	print "ssh -q -i ~/.ssh/id_dsa $distantconnexion ls -l $distantperffile | wc -l 2>> /dev/null\n";
-	my $ls = `ssh -q -i ~/.ssh/id_dsa $distantconnexion ls -l $distantperffile | wc -l 2>> /dev/null`;
-	print $ls."\n";
+	writeLogFile("$ssh -q -i $distantconnexion ls -l $distantperffile | wc -l 2>> /dev/null\n") if ($debug);
+	my $ls = `$ssh -q $distantconnexion ls -l $distantperffile | wc -l 2>> /dev/null`;
 	
+	# Check if distant perfdata file 
 	if ($ls){
 		# Move perfdata file in temp dir
-		print "ssh -q -i ~/.ssh/id_dsa $distantconnexion mv $distantperffile $distanttmpperffile\n";
-		`ssh -q -i ~/.ssh/id_dsa $distantconnexion mv $distantperffile $distanttmpperffile`;
+		writeLogFile("$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile\n") if ($debug);
+		`$ssh -q $distantconnexion mv $distantperffile $distanttmpperffile`;
 		
 		# Get Perfdata file
-		print "scp -q -i ~/.ssh/id_dsa $origin $localtmpperffile\n";
-		`scp -q -i ~/.ssh/id_dsa $origin $localtmpperffile`;
+		writeLogFile("scp -q $origin $localtmpperffile\n") if ($debug);
+		`scp -q $origin $localtmpperffile`;
 		
 		# Remove old perfdata file 
-		print "ssh -q -i ~/.ssh/id_dsa $distantconnexion rm $distanttmpperffile\n";
-		`ssh -q -i ~/.ssh/id_dsa $distantconnexion rm $distanttmpperffile`;
+		writeLogFile("$ssh -q $distantconnexion rm $distanttmpperffile\n") if ($debug);
+		`$ssh -q $distantconnexion rm $distanttmpperffile`;
 		
+		# Write data from distant poller on local file for centstorage
 		if (-f $localtmpperffile){
-			print "cat $localtmpperffile >> $localperffile\n";
+			writeLogFile("cat $localtmpperffile >> $localperffile\n") if ($debug);
 			`cat $localtmpperffile >> $localperffile`;
-			`rm -f $localtmpperffile`;
-			#`rm -f /usr/local/nagios/var/service-perfdata.$id`;
+			#`rm -f $localtmpperffile`;
 		}
 	}
 }
-	
 
 sub GetLogFile($){
+	# Init values
 	my $id = $_[0];
+	# Get Server informations
 	my $server_info = getServerConfig($id);
 
+	# Check configuration
 	my $distantconnexion = $server_info->{'ns_ip_address'};
-	
-	mkdir "/usr/local/centreon/var/log/nagios/$id/" if (!-d "/usr/local/centreon/var/log/nagios/$id/");
-	if (-d "/usr/local/centreon/var/log/nagios/$id/"){
-		
-		my $distantlogfile = "/usr/local/nagios/var/nagios.log";
-		my $locallogfile = "/usr/local/centreon/var/log/nagios/$id/nagios.log";
-		
-		my $origin = $distantconnexion.":".$distantlogfile;
-		
-		my $ls = `ssh -q -i ~/.ssh/id_dsa $distantconnexion ls -l $distantlogfile | wc -l 2>> /dev/null`;
-		
-		if ($ls){
-			# Get log file
-			`scp -q -i ~/.ssh/id_dsa $origin $locallogfile`;
+	writeLogFile("IP address not defined for poller $id\n") if (!defined($distantconnexion));	
+
+	# Set local directory
+	my $localDir = $installedPath."/var/log/nagios/$id/";
+	# Create tmp directory
+	mkdir $localDir if (!-d $localDir);
+	if (-d $localDir){
+		# Get distant log file path
+		my $distantlogfile = getNagiosConfigurationField($id, "log_file");;
+		my $locallogfile = $localDir."nagios.log";
+		# check if we can do the transfert
+		if (defined($distantconnexion) && defined($distantlogfile)){
+			# check if log file exists
+			my $ls = `ssh -q -i ~/.ssh/id_dsa $distantconnexion ls -l $distantlogfile | wc -l 2>> /dev/null`;
+			if ($ls){
+				# Get log file
+				my $ret = `scp -q -i ~/.ssh/id_dsa $distantconnexion:$distantlogfile $locallogfile`;
+				#writeLogFile("Cannot get log file or log file doesn't exists on poller $id") if (!$ret);
+			}
 		}
 	} else {
-		writeLogFile("Unable to create /usr/local/centreon/var/log/nagios/$id/. Can get nagios log file for poller $id\n");
+		writeLogFile("Unable to create $localDir. Can get nagios log file for poller $id\n");
 	}
 }
 
@@ -319,15 +327,10 @@ sub GetLogFile($){
 # Send config files to a remote server 
 #
 
-sub sendFile($$){
-	my $filename = $_[0];
-	my $destination = $_[1];
-	
-	return 1;
-}
-
 sub sendConfigFile($){
+	# Init Values
 	my $id = $_[0];
+	
 	my $cfg_dir = getNagiosConfigurationField($_[0], "cfg_dir");
 	my $server_info = getServerConfig($_[0]);
 	my ($md5local, $md5dist, $scpe);
@@ -356,111 +359,72 @@ sub sendConfigFile($){
 
 sub restartNagios($){
 	my $id = $_[0];
-	my($stdout, $stderr, $exit);
-	if ($method =~ /system/){
-		my $data = getServerConfig($id);
-		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
-		print "ssh $distantconnexion sudo /etc/init.d/nagios restart\n";
-		$stdout = `ssh $distantconnexion sudo /etc/init.d/nagios restart`;
-		undef($distantconnexion);
-	} else {
-		my $ssh = createSSHConnexion($_[0]);
-	   	($stdout, $stderr, $exit) = $ssh->cmd("/etc/init.d/nagios restart");
-	}
-    print " RESULT : ".$stdout . "\n";
-}
 
-sub synchronizePlugins($){
-	my $scpe = Net::SCP::Expect->new("timeout", "20");
-	$scpe->login("root", "catakijy!");
-	my $nagios_path_plugins = getLocalOptionsField("nagios_path_plugins");
-	print "SYNCHRO : " .$nagios_path_plugins . "\n";
+	my $conf = getServerConfig($id);
+	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." restart\n";
+	my $stdout = `$cmd`;
+    writeLogFile("$stdout\n");
+	undef($conf);
+	undef($distantconnexion);
+	undef($cmd);
+	undef($stdout);
 }
 
 sub reloadNagios($){
 	my $id = $_[0];
-	my $data = getServerConfig($id);
-	my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
-	my $stdout = `ssh $distantconnexion sudo /etc/init.d/nagios reload`;
-    print " RESULT : ".$stdout . "\n";
+	
+	my $conf = getServerConfig($id);
+	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." reload\n";
+	my $stdout = `$cmd`;
+    writeLogFile("$stdout\n");
+	undef($conf);
 	undef($distantconnexion);
-    undef($stdout);
-	undef($data);
-	undef($id);
+	undef($cmd);
+	undef($stdout);
 }
 
 sub stopNagios($){
 	my $id = $_[0];
-	# 
-	# Just start nagios daemon
-	# 
 	
-	# Get server configuration to create SSH connexion 
-	my $data = getServerConfig($id);
-	
-	# Create SSH connexion string
-	my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
-	
-	# Launch command line
-	my $stdout = `ssh $distantconnexion sudo /etc/init.d/nagios stop`;
-	print " RESULT : ".$stdout . "\n";
+	my $conf = getServerConfig($id);
+	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." stop\n";
+	my $stdout = `$cmd`;
+    writeLogFile("$stdout\n");
+	undef($conf);
 	undef($distantconnexion);
-    undef($stdout);
-	undef($data);
-	undef($id);
+	undef($cmd);
+	undef($stdout);
 }
 
 sub startNagios($){
 	my $id = $_[0];
-	# 
-	# Just start nagios daemon
-	# 
 	
-	# Get server configuration to create SSH connexion 
-	my $data = getServerConfig($id);
-	
-	# Create SSH connexion string
-	my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
-
-	# Launch command line
-	my $stdout = `ssh $distantconnexion sudo /etc/init.d/nagios start`;
-	print " RESULT : ".$stdout . "\n";
+	my $conf = getServerConfig($id);
+	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." start\n";
+	my $stdout = `$cmd`;
+    writeLogFile("$stdout\n");
+	undef($conf);
 	undef($distantconnexion);
-    undef($stdout);
-	undef($data);
-	undef($id);
-}
-
-sub NagioStat($){
-	my $id = $_[0];
-	my $data = getServerConfig($id);
-	my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
-	my $stdout = `ssh $distantconnexion sudo /usr/sbin/nagiostats`;
-	print " RESULT : ".$stdout . "\n";
-	undef($distantconnexion);
-    undef($stdout);
-	undef($data);
-	undef($id);
-}
-
-sub CheckPerf($){
-
+	undef($cmd);
+	undef($stdout);
 }
 
 sub testConfig($){
 	my $id = $_[0];
-	my($stdout, $stderr, $exit);
+	
 	my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
-	if ($method =~ /system/){
-		my $data = getServerConfig($id);
-		my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
-		$stdout = `ssh $distantconnexion sudo /usr/sbin/nagios -v $cfg_dir/nagios.cfg`;
-		undef($distantconnexion);
-	} else {
-		my $ssh = createSSHConnexion($id);
-	    ($stdout, $stderr, $exit) = $ssh->cmd("sudo /usr/sbin/nagios -v $cfg_dir/nagios.cfg");
-    }
-    print " RESULT : ".$stdout . "\n";
+	my $data = getServerConfig($id);
+	my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+	my $cmd = "$ssh $distantconnexion sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
+	my $stdout = `$cmd`;
+	undef($cmd);
+	undef($data);
+	undef($distantconnexion);
+    writeLogFile("$stdout\n");
     undef($cfg_dir);
 }
 
@@ -476,16 +440,14 @@ sub parseRequest($){
 		sendConfigFile($1);
 	} elsif ($_[0] =~ /STOP\:([0-9]*)/){
 		stopNagios($1);
-	} elsif ($_[0] =~ /PERF\:([0-9]*)/){
-		CheckPerf($1);
 	} elsif ($_[0] =~ /NAGIOSTAT\:([0-9]*)/){
-		NagioStat($1);
+		;
 	} elsif ($_[0] =~ /TEST\:([0-9]*)/){
 		testConfig($1);
 	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:([.]*)/){
 		sendExternalCommand($1, $2);
 	} elsif ($_[0] =~ /SYNCHRONIZEPLUGINS\:([0-9]*)\:([.]*)/){
-		synchronizePlugins($1);
+		;
 	} else {
 		writeLogFile("$_[0] : UNKNWON KEY \n");
 	}
