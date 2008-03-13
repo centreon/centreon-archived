@@ -186,7 +186,8 @@ For information : contact@oreon-project.org
 					}
 					$msg_copy[$host["id"]] .= "</table>";
 				} else {
-					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore", $return);	
+					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd", $return);
+					print("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd");	
 				}
 		}
 		
@@ -203,13 +204,13 @@ For information : contact@oreon-project.org
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " reload");
 					} else { 
-						system("echo 'RELOAD:".$host["id"]."' >> /srv/oreon/var/centcore");
+						system("echo 'RELOAD:".$host["id"]."' >> /srv/oreon/var/centcore.cmd");
 					}
 				} else if ($ret["restart_mode"] == 2) {
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
-						system("echo \"RESTART:".$host["id"]."\" >> /srv/oreon/var/centcore", $return);
+						system("echo \"RESTART:".$host["id"]."\" >> /srv/oreon/var/centcore.cmd", $return);
 					}
 				} else if ($ret["restart_mode"] == 3)	{
 					require_once("./include/monitoring/external_cmd/functions.php");
@@ -217,7 +218,7 @@ For information : contact@oreon-project.org
 					$_GET["cmd"] = 25;
 					require_once("./include/monitoring/external_cmd/cmd.php");
 					$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
-					system("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /srv/oreon/var/centcore");
+					system("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /srv/oreon/var/centcore.cmd");
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT))
