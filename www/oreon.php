@@ -62,7 +62,8 @@ For information : contact@oreon-project.org
 	$isRestreint = HadUserLca($pearDB);
 
 	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
-	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	if (PEAR::isError($DBRESULT)) 
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$redirect =& $DBRESULT->fetchRow();
 
 	$nb_page = NULL;
@@ -157,7 +158,7 @@ For information : contact@oreon-project.org
 		require_once ("menu/Menu.php");
 
 	# Display PathWay
-	if($min != 1)
+	if ($min != 1)
 		include("pathWay.php");
 
 	# Go on our page

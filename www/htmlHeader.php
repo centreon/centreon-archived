@@ -18,19 +18,22 @@ For information : contact@oreon-project.org
 
 	if (!isset($oreon))
 		exit();
+		
 	print "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $mlang; ?>">
 <head>
-<title>Centreon </title>
+<title> Centreon </title>
 <link rel="shortcut icon" href="./img/iconOreon.ico"/>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/autocompletion.css" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>menu.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>configuration_form.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
+
 <script src="./include/common/javascript/scriptaculous/prototype.js" type="text/javascript"></script>
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <?php
@@ -72,24 +75,27 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print $DBRESULT->getDebugInfo()."<br />";
 	while ($DBRESULT->fetchInto($topology_js)){
-		if(!$ndo || ($ndo && $topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js"))
-		echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script> ";
+		if (!$ndo || ($ndo && $topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js"))
+			echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script> ";
 	}
+	
 	/*
 	 * init javascript
 	 */
+	
+	$sid = session_id();
 
 	$tS = $oreon->optGen["AjaxTimeReloadStatistic"] * 1000;
 	$tM = $oreon->optGen["AjaxTimeReloadMonitoring"] * 1000;
-	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;
-//	$oreon->optGen["AjaxFirstTimeReloadMonitoring"] == 0 ? $tFM = 10 : $tFM = $oreon->optGen["AjaxFirstTimeReloadMonitoring"] * 1000;
-	$sid = session_id();
-
+	$oreon->optGen["AjaxFirstTimeReloadStatistic"] == 0 ? $tFS = 10 : $tFS = $oreon->optGen["AjaxFirstTimeReloadStatistic"] * 1000;	
+	
 	?>
 	<script type='text/javascript'>
 	    window.onload = function () {
+	
 	<?php
-	if($min != 1)
+	
+	if ($min != 1)
 		print "setTimeout('reloadStatusCounter($tS, \"$sid\")', $tFS);\n";
 
 	$res = null;
@@ -104,9 +110,9 @@ For information : contact@oreon-project.org
 	?>
     	};
     </script>
-<?php
-if($ndo)
-    print '<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>';
-?>
+	<?php
+	if ($ndo)
+		print '<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>';
+	?>
 </head>
 <body>

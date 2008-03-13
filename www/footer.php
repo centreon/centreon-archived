@@ -55,21 +55,16 @@ For information : contact@oreon-project.org
 		</table>
 		</div>
 <?php
-if(isset($_GET["mini"]) && $_GET["mini"] == 1)
-{
-?>		
-<script>
-new Effect.toggle('header');
-new Effect.toggle('menu_3');
-new Effect.toggle('menu_2');
-new Effect.toggle('menu_2');
-Effect.toggle('menu1_bgcolor');
-Effect.toggle('QuickSearch');
-</script>
-<?php
-	
-}
-?>		
-		
+if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
+?>
+	<script>
+		new Effect.toggle('header');
+		new Effect.toggle('menu_3');
+		new Effect.toggle('menu_2');
+		new Effect.toggle('menu_2');
+		Effect.toggle('menu1_bgcolor');
+		Effect.toggle('QuickSearch');
+	</script>
+<?php } ?>
 </body>
 </html>
