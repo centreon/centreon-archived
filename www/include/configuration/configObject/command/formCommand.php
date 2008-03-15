@@ -43,12 +43,13 @@ For information : contact@oreon-project.org
 	#
 	# Resource Macro
 	$resource = array();
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT resource_line FROM cfg_resource ORDER BY resource_line");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT resource_name, resource_comment FROM cfg_resource ORDER BY resource_line");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($row))	{
-		$row["resource_line"] = explode("=", $row["resource_line"]);
-		$resource[$row["resource_line"][0]] = $row["resource_line"][0];
+	while ($row = $DBRESULT->fetchRow()){
+		$resource[$row["resource_name"]] = $row["resource_name"];
+		if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
+			 $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
 	}
 	$DBRESULT->free();
 	
