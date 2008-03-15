@@ -38,7 +38,7 @@ For information : contact@oreon-project.org
 	function enableLCAInDB ($acl_id = null)	{
 		if (!$acl_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET lca_res_activate = '1' WHERE `acl_res_id` = '".$acl_id."'");
+		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
@@ -46,7 +46,7 @@ For information : contact@oreon-project.org
 	function disableLCAInDB ($acl_id = null)	{
 		if (!$acl_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET lca_res_activate = '0' WHERE `acl_res_id` = '".$acl_id."'");
+		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
@@ -72,6 +72,7 @@ For information : contact@oreon-project.org
 					$key2 == "acl_res_name" ? ($acl_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
+				$val .= ", '".time()."'";
 				if (testExistence($acl_name))	{
 					$val ? $rq = "INSERT INTO acl_resources VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
@@ -118,8 +119,8 @@ For information : contact@oreon-project.org
 		$ret = $form->getSubmitValues();
 		print_r($ret);
 		$rq = "INSERT INTO `acl_resources` ";
-		$rq .= "(acl_res_name, acl_res_alias, acl_res_activate) ";
-		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."')";
+		$rq .= "(acl_res_name, acl_res_alias, acl_res_activate, changed) ";
+		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."', '1')";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -138,7 +139,8 @@ For information : contact@oreon-project.org
 		$rq = "UPDATE `acl_resources` ";
 		$rq .= "SET acl_res_name = '".htmlentities($ret["acl_res_name"], ENT_QUOTES)."', " .
 				"acl_res_alias = '".htmlentities($ret["acl_res_alias"], ENT_QUOTES)."', " .
-				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."' " .
+				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES)."', " .
+				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))

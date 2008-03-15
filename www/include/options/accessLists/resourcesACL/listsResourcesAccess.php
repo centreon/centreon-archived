@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
-	$tpl->assign("headerMenu_desc", _("Description"));
+	$tpl->assign("headerMenu_alias", _("Description"));
 	$tpl->assign("headerMenu_contacts", _("Contacts"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 	$SearchStr = "";
 	if ($search)
 		$SearchStr = "WHERE (acl_res_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR acl_res_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";	
-	$rq = "SELECT acl_res_id, acl_res_name, acl_res_alias FROM acl_resources $SearchStr ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT acl_res_id, acl_res_name, acl_res_alias, acl_res_activate FROM acl_resources $SearchStr ORDER BY acl_res_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -67,14 +67,11 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$resources['acl_res_id']."]");	
-		/*
-		 * 
 		 if ($resources["acl_res_activate"])
-			$moptions = "<a href='oreon.php?p=".$p."&acl_group_id=".$resources['acl_res_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+			$moptions = "<a href='oreon.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
-			$moptions = "<a href='oreon.php?p=".$p."&acl_group_id=".$resources['acl_res_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
-		*/
-		$moptions = "&nbsp;";
+			$moptions = "<a href='oreon.php?p=".$p."&acl_res_id=".$resources['acl_res_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+		$moptions .= "&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$resources['acl_res_id']."]'></input>";
 		/* Contacts */
 		$ctNbr = array();
@@ -86,9 +83,10 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$resources["acl_res_name"],
+						"RowMenu_alias"=>$resources["acl_res_alias"],
 						"RowMenu_link"=>"?p=".$p."&o=c&acl_res_id=".$resources['acl_res_id'],
-						"RowMenu_desc"=>$resources["acl_res_alias"],
-						"RowMenu_options"=>$moptions);
+						"RowMenu_status" => $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
+						"RowMenu_options" => $moptions);
 						
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
