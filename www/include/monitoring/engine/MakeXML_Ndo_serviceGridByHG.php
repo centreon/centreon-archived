@@ -26,6 +26,7 @@ For information : contact@oreon-project.org
 		get_error('please set your oreonPath');
 	/* security end 1/2 */
 
+	include_once($oreonPath . "www/class/other.class.php");
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBNDOConnect.php");
@@ -46,122 +47,51 @@ For information : contact@oreon-project.org
 	/* security end 2/2 */
 
 	/* requisit */
-	if (isset($_GET["instance"]) && !check_injection($_GET["instance"])){
-		$instance = htmlentities($_GET["instance"]);
-	} else
-		$instance = "ALL";
-		
-	if (isset($_GET["num"]) && !check_injection($_GET["num"])){
-		$num = htmlentities($_GET["num"]);
-	} else
-		get_error('num unknown');
-	
-	if (isset($_GET["limit"]) && !check_injection($_GET["limit"])){
-		$limit = htmlentities($_GET["limit"]);
-	} else
-		get_error('limit unknown');
-
-	/* options */
-	if (isset($_GET["search"]) && !check_injection($_GET["search"])){
-		$search = htmlentities($_GET["search"]);
-	} else
-		$search = "";
-
-	if (isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])){
-		$sort_type = htmlentities($_GET["sort_type"]);
-	} else
-		$sort_type = "host_name";
-
-	if (isset($_GET["order"]) && !check_injection($_GET["order"])){
-		$order = htmlentities($_GET["order"]);
-	} else
-		$oreder = "ASC";
-
-	if (isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])){
-		$date_time_format_status = htmlentities($_GET["date_time_format_status"]);
-	} else
-		$date_time_format_status = "d/m/Y H:i:s";
-
-	if (isset($_GET["o"]) && !check_injection($_GET["o"])){
-		$o = htmlentities($_GET["o"]);
-	} else
-		$o = "h";
-	
-	if (isset($_GET["p"]) && !check_injection($_GET["p"])){
-		$p = htmlentities($_GET["p"]);
-	} else
-		$p = "2";
-
-	/* security end*/
-
-	# class init
-	class Duration
-	{
-		function toString ($duration, $periods = null)
-	    {
-	        if (!is_array($duration)) {
-	            $duration = Duration::int2array($duration, $periods);
-	        }
-	        return Duration::array2string($duration);
-	    }
-	    function int2array ($seconds, $periods = null)
-	    {
-	        // Define time periods
-	        if (!is_array($periods)) {
-	            $periods = array (
-	                    'y'	=> 31556926,
-	                    'M' => 2629743,
-	                    'w' => 604800,
-	                    'd' => 86400,
-	                    'h' => 3600,
-	                    'm' => 60,
-	                    's' => 1
-	                    );
-	        }
-	        // Loop
-	        $seconds = (int) $seconds;
-	        foreach ($periods as $period => $value) {
-	            $count = floor($seconds / $value);
-	            if ($count == 0) {
-	                continue;
-	            }
-	            $values[$period] = $count;
-	            $seconds = $seconds % $value;
-	        }
-	        // Return
-	        if (empty($values)) {
-	            $values = null;
-	        }
-	        return $values;
-	    }
-
-	    function array2string ($duration)
-	    {
-	        if (!is_array($duration)) {
-	            return false;
-	        }
-	        foreach ($duration as $key => $value) {
-	            $segment = $value . '' . $key;
-	            $array[] = $segment;
-	        }
-	        $str = implode(' ', $array);
-	        return $str;
-	    }
-	}
+	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
+	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
+	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
+	(isset($_GET["search"]) && !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
+	(isset($_GET["sort_type"]) && !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "host_name";
+	(isset($_GET["order"]) && !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
+	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
+	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
+	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
 	if (PEAR::isError($DBRESULT_OPT))
 		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 	$DBRESULT_OPT->fetchInto($general_opt);
 
+	// check is admin
+	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$res1->fetchInto($user);
+	$user_id = $user["user_id"];
+	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+	$res2->fetchInto($admin);
+	global $is_admin;
+	$is_admin = 0;
+	$is_admin = $admin["contact_admin"];
+
+	// if is admin -> lca
+	if (!$is_admin){
+		$_POST["sid"] = $sid;
+		$lca =  getLCAHostByName($pearDB);
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
+	}
+
 	function get_services($host_name){
 		
-		global $pearDBndo,$ndo_base_prefix, $general_opt, $o, $instance;
+		global $pearDBndo,$ndo_base_prefix, $general_opt, $o, $instance, $is_admin;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
-					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no" .
+					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no, centreon_acl" .
 					" WHERE no.object_id = nss.service_object_id" .
-					" AND no.name1 not like 'OSL_Module'";
+					" AND no.name1 NOT LIKE 'OSL_Module'" .
+					" AND no.name1 NOT LIKE 'Meta_Module'";
+		
+		if (!$is_admin)
+			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
 
 		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
@@ -195,23 +125,6 @@ For information : contact@oreon-project.org
 		return($tab);
 	}
 
-	/* LCA */
-	// check is admin
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$res1->fetchInto($user);
-	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$res2->fetchInto($admin);
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
-
-	// if is admin -> lca
-	if (!$is_admin){
-		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
-		$lcaSTR_HG = getLCAHostStr($lca["LcaHostGroup"]);
-	}
 
 	$service = array();
 	$host_status = array();
@@ -237,18 +150,20 @@ For information : contact@oreon-project.org
 
 	/* Get Host status */
 
-	$rq1 =  	" SELECT hg.alias, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
-				" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no".
+	$rq1 =  	" SELECT DISTINCT no.name1 as host_name, hg.alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
+				" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no, centreon_acl".
 				" WHERE hs.host_object_id = hgm.host_object_id".
 				" AND no.object_id = hgm.host_object_id" .
 				" AND hgm.hostgroup_id = hg.hostgroup_id".
 				" AND no.name1 not like 'OSL_Module'".
 				" AND no.name1 not like 'Meta_Module'".
 				" AND no.is_active = 1";
-			
+	if (!$is_admin)
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id = '5'";
+	/*
 	if (!$is_admin)
 		$rq1 .= " AND no.name1 IN (".$lcaSTR.")";
-	
+	*/
 	if ($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
@@ -308,15 +223,17 @@ For information : contact@oreon-project.org
 	while ($ndo = $DBRESULT_NDO1->fetchRow())	{
 		if (isset($lca["LcaHostGroup"][$ndo["alias"]]) || !isset($lca["LcaHostGroup"])){
 			$tab_svc = get_services($ndo["host_name"]);
-			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
-			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
-			$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+			if (count($tab_svc)){
+				$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
+				$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+				$tab_final[$ndo["host_name"]]["hg_name"] = $ndo["alias"];
+			}
 		}
 		unset($ndo);
 	}
 
 	$hg = "";
-	foreach($tab_final as $host_name => $tab){
+	foreach ($tab_final as $host_name => $tab){
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 
 		if (isset($tab["hg_name"]) && $hg != $tab["hg_name"]){

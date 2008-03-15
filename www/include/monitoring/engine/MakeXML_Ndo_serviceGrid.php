@@ -26,6 +26,7 @@ For information : contact@oreon-project.org
 		get_error('please set your oreonPath');
 	/* security end 1/2 */
 
+	include_once($oreonPath . "www/class/other.class.php");
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBNDOConnect.php");
@@ -57,62 +58,6 @@ For information : contact@oreon-project.org
 	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
-	# class init
-	class Duration
-	{
-		function toString ($duration, $periods = null)
-	    {
-	        if (!is_array($duration)) {
-	            $duration = Duration::int2array($duration, $periods);
-	        }
-	        return Duration::array2string($duration);
-	    }
-	    function int2array ($seconds, $periods = null)
-	    {
-	        // Define time periods
-	        if (!is_array($periods)) {
-	            $periods = array (
-	                    'y'	=> 31556926,
-	                    'M' => 2629743,
-	                    'w' => 604800,
-	                    'd' => 86400,
-	                    'h' => 3600,
-	                    'm' => 60,
-	                    's' => 1
-	                    );
-	        }
-	        // Loop
-	        $seconds = (int) $seconds;
-	        foreach ($periods as $period => $value) {
-	            $count = floor($seconds / $value);
-	            if ($count == 0) {
-	                continue;
-	            }
-	            $values[$period] = $count;
-	            $seconds = $seconds % $value;
-	        }
-	        // Return
-	        if (empty($values)) {
-	            $values = null;
-	        }
-	        return $values;
-	    }
-
-	    function array2string ($duration)
-	    {
-	        if (!is_array($duration)) {
-	            return false;
-	        }
-	        foreach ($duration as $key => $value) {
-	            $segment = $value . '' . $key;
-	            $array[] = $segment;
-	        }
-	        $str = implode(' ', $array);
-	        return $str;
-	    }
-	}
-
-	/* LCA */
 	// check is admin
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
 	$res1->fetchInto($user);
@@ -125,8 +70,9 @@ For information : contact@oreon-project.org
 	// if is admin -> lca
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+		/*
+		 * Get ACL Groups List
+		 */
 	}
 
 	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
@@ -135,7 +81,7 @@ For information : contact@oreon-project.org
 	$DBRESULT_OPT->fetchInto($general_opt);
 
 	function get_services($host_name){
-		global $pearDBndo,$ndo_base_prefix,$general_opt,$o,$instance,$is_admin,$lcaSTR;
+		global $pearDBndo,$ndo_base_prefix,$general_opt,$o,$instance,$is_admin;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no, centreon_acl " .
@@ -160,7 +106,6 @@ For information : contact@oreon-project.org
 			$rq .= 	" AND no.instance_id = ".$instance;
 
 		if (!$is_admin){
-			//$rq .= 	" AND no.name1 IN (".$lcaSTR." )";
 			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
 		}
 		$DBRESULT =& $pearDBndo->query($rq);
@@ -254,7 +199,6 @@ For information : contact@oreon-project.org
 	$buffer .= '<p>'.$p.'</p>';
 
 	preg_match("/svcOV/",$_GET["o"], $matches) ? $buffer .= '<s>1</s>' : $buffer .= '<s>0</s>';
-//	$buffer .= '<s>1</s>';
 	$buffer .= '</i>';
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -265,10 +209,11 @@ For information : contact@oreon-project.org
 
 	$tab_final = array();
 	while ($DBRESULT_NDO1->fetchInto($ndo))	{
-//		print "HOST : ". $ndo["host_name"] . "\n";
 		$tab_svc = get_services($ndo["host_name"]);
-		$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
-		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		if (count($tab_svc)){
+			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
+			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		}
 	}
 
 	foreach($tab_final as $host_name => $tab){

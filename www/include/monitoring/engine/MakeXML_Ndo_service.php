@@ -79,7 +79,6 @@ For information : contact@oreon-project.org
 		return NULL;
 	}
 
-	/* LCA */
 	// check is admin
 	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
 	$res1->fetchInto($user);
@@ -91,9 +90,10 @@ For information : contact@oreon-project.org
 
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
-		//$lca = getLCASVC($lca);
+		/*
+		 * Get ACL Groups List
+		 */
+		 
 	}
 
 	$service = array();
@@ -160,7 +160,7 @@ For information : contact@oreon-project.org
 
 	/* Get Service status */
 	$rq =		" SELECT " .
-				" no.name1 as host_name," .
+				" DISTINCT no.name1 as host_name," .
 				" nss.process_performance_data," . 
 				" nss.current_state," .
 				" nss.output as plugin_output," .
