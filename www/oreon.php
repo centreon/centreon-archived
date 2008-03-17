@@ -17,8 +17,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	
-	
+		
 	 foreach ($_GET as $key => $value){
 		if (!is_array($value)){
 			$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -34,7 +33,10 @@ For information : contact@oreon-project.org
 	else
 		$p = NULL;
 
-	/* POST have priority on GET due to option in listing configuration form */
+	/* 
+	 * POST have priority on GET due to 
+	 * option in listing configuration form 
+	 */
 	if (isset($_POST["o"]))
 		$o = $_POST["o"];
 	else if (isset($_GET["o"]))
@@ -52,12 +54,16 @@ For information : contact@oreon-project.org
 	if (isset($_GET["AutoLogin"]) && $_GET["AutoLogin"])
 		print $_GET["AutoLogin"];
 
-	# Include all func
+	/*
+	 * Include all func
+	 */
 	require_once ("./func.php");
 	require_once ("./include/common/common-Func.php");
 	require_once ("./header.php");
 
-	# LCA Init Common Var
+	/*
+	 * LCA Init Common Var
+	 */
 	global $isRestreint;
 	$isRestreint = HadUserLca($pearDB);
 
@@ -76,7 +82,9 @@ For information : contact@oreon-project.org
 	} else
 		$nb_page = 1;
 
-	# Init URL
+	/*
+	 * Init URL
+	 */
 	$url = "";
 	if (!isset($_GET["doc"])){
 		if ((isset($nb_page) && $nb_page) || !$isRestreint){
@@ -150,18 +158,26 @@ For information : contact@oreon-project.org
 	} else
 		$url = "./include/doc/index.php";
 
-	# Header HTML
+	/*
+	 *  Header HTML
+	 */
 	require_once ("./htmlHeader.php");
 
-	# Display Menu
+	/*
+	 * Display Menu
+	 */
 	if (!$min)
 		require_once ("menu/Menu.php");
 
-	# Display PathWay
+	/*
+	 * Display PathWay
+	 */
 	if ($min != 1)
 		include("pathWay.php");
 
-	# Go on our page
+	/*
+	 * Go on our page
+	 */
 	if (isset($url) && $url)
     	require_once($url);
 
@@ -183,20 +199,23 @@ For information : contact@oreon-project.org
 			$oreon->historyLimit[$url] = $_POST["limit"];
 	}
 
-	# Display Legend
+	/*
+	 * Display Legend
+	 */
 	if (isset($path) && $path){
 		$lg_path = get_path($path);
 		if (file_exists($lg_path."legend.ihtml")){
 			$tpl = new Smarty();
 			$tpl = initSmartyTpl("./", $tpl);
-			$tpl->assign('lang', $lang);
 			$tpl->display($lg_path."legend.ihtml");
 		}
 	}
 
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 	print "<!-- Footer -->";
-	# Display Footer
+	/*
+	 * Display Footer
+	 */
 	if (!$min)
 		require_once("footer.php");
 ?>

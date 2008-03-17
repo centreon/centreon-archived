@@ -126,10 +126,9 @@ For information : contact@oreon-project.org
 	$tab_file_css = array();
 	$i = 0;
 	if ($handle  = @opendir($skin."Color"))	{
-		while ($file = @readdir($handle)){
-			if (is_file($skin."Color"."/$file"))	{
+		while ($file = @readdir($handle)) {
+			if (is_file($skin."Color"."/$file"))
 				$tab_file_css[$i++] = $file;
-			}
 		}
 		@closedir($handle);
 	}
@@ -139,7 +138,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
-	if($DBRESULT->numRows() && $DBRESULT->fetchInto($elem))
+	if ($DBRESULT->numRows() && $DBRESULT->fetchInto($elem))
 		$colorfile = "Color/".$elem["css_name"];
 
 	# Update Session Table For last_reload and current_page row
