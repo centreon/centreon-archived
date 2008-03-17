@@ -18,7 +18,6 @@ For information : contact@oreon-project.org
 	
 	if (!isset($oreon))
 		exit();
-
 	/*
 	 * Database retrieve information for LCA
 	 */
@@ -51,14 +50,6 @@ For information : contact@oreon-project.org
 	if	(!isset($acl["acl_topos"]))
 		$acl["acl_topos"] = array();
 
-/*	# Init LCA 
-
-	$lca_data = getLCAHostByID($pearDB);
-	$lcaHostStr = getLCAHostStr($lca_data["LcaHost"]);
-	$lcaHGStr = getLCAHGStr($lca_data["LcaHostGroup"]);
-	$lca_sg = getLCASG($pearDB);
-	$lcaSGStr = getLCASGStr($lca_sg);
-*/	
 	/*
 	 * Var information to format the element
 	 */
@@ -92,13 +83,12 @@ For information : contact@oreon-project.org
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-
-/*	$tab = array();
+	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Enabled"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Disabled"), '0');
-	$form->addGroup($tab, 'lca_topo_activate', _("Status"), '&nbsp;');
-	$form->setDefaults(array('lca_topo_activate' => '1'));
-*/
+	$form->addGroup($tab, 'acl_topo_activate', _("Status"), '&nbsp;');
+	$form->setDefaults(array('acl_topo_activate' => '1'));
+
 	/*
 	 * Further informations
 	 */
@@ -122,12 +112,10 @@ For information : contact@oreon-project.org
 		$acl_topos2[$a]["c_id"] = $a;
 		$acl_topos2[$a]["childs"] = array();
 
-		/* old */
-		
 		$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo1["topology_id"], null, _($topo1["topology_name"]), array("style"=>"margin-top: 5px;", "id"=>$topo1["topology_id"]));
-	 	$DBRESULT2 =& $pearDB->query("SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order");
-		/*old*/
+
 		$b = 0;
+	 	$DBRESULT2 =& $pearDB->query("SELECT topology_id, topology_page, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order");
 		while ($topo2 = $DBRESULT2->fetchRow())	{
 			$acl_topos2[$a]["childs"][$b] = array();
 			$acl_topos2[$a]["childs"][$b]["name"] = _($topo2["topology_name"]);
@@ -136,12 +124,9 @@ For information : contact@oreon-project.org
 			$acl_topos2[$a]["childs"][$b]["c_id"] = $a."_".$b;
 			$acl_topos2[$a]["childs"][$b]["childs"] = array();
 			
-			/*old*/
 		 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, _($topo2["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 20px;"));
-		 	$rq = "SELECT topology_id, topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
-		 	$DBRESULT3 =& $pearDB->query($rq);
-			/*old*/
 			$c = 0;
+		 	$DBRESULT3 =& $pearDB->query("SELECT topology_id, topology_name, topology_parent, topology_page FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order");
 			while ($topo3 = $DBRESULT3->fetchRow()){
 				$acl_topos2[$a]["childs"][$b]["childs"][$c] = array();
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["name"] = _($topo3["topology_name"]);
@@ -150,12 +135,9 @@ For information : contact@oreon-project.org
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["c_id"] = $a."_".$b."_".$c;
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"] = array();
 
-				/*old*/
 			 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, _($topo3["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 40px;"));
-				$rq = "SELECT topology_id, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order";
-			 	$DBRESULT4 =& $pearDB->query($rq);
-				/*old*/
 				$d = 0;
+			 	$DBRESULT4 =& $pearDB->query("SELECT topology_id, topology_name, topology_parent FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IN (".$oreon->user->lcaTStr.") ORDER BY topology_order");
 				while ($topo4 = $DBRESULT4->fetchRow()){
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d] = array();
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["name"] = _($topo4["topology_name"]);
@@ -209,6 +191,7 @@ For information : contact@oreon-project.org
 	/*
 	 * Just watch a LCA information
 	 */
+
 	if ($o == "w")	{
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&acl_id=".$acl_id."'"));
 	    $form->setDefaults($acl);

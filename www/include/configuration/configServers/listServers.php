@@ -21,10 +21,11 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	$LCASearch = "";
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `nagios_server` WHERE description LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
-	else
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `nagios_server`");
+		$LCASearch = " WHERE description LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
+
+	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `nagios_server`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
@@ -61,16 +62,14 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_ip_address", _("IP Address"));
+	$tpl->assign("headerMenu_localisation", _("Localhost"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	/*
 	 * Nagios list
 	 */
-	if ($search)
-		$rq = "SELECT id, name, ns_activate, ns_ip_address FROM `nagios_server` WHERE name LIKE '%".htmlentities($search, ENT_QUOTES)."%' ORDER BY name LIMIT ".$num * $limit.", ".$limit;
-	else
-		$rq = "SELECT id, name, ns_activate, ns_ip_address FROM `nagios_server` ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT id, name, ns_activate, ns_ip_address, localhost FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -100,6 +99,7 @@ For information : contact@oreon-project.org
 						"RowMenu_name"=>$config["name"],
 						"RowMenu_ip_address"=>$config["ns_ip_address"],
 						"RowMenu_link"=>"?p=".$p."&o=c&server_id=".$config['id'],
+						"RowMenu_localisation"=>$config["localhost"] ? _("Yes") : "-",
 						"RowMenu_status"=>$config["ns_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	

@@ -58,11 +58,10 @@ For information : contact@oreon-project.org
 	function getLCAHostByName($pearDB){
 		if (!$pearDB)
 			return ;
-		
 		/*
 		 * Get Groups list
 		 */	
-		$groups = getGroupListofUser($pearDB);	
+		$groups = getGroupListofUser($pearDB);
 		$str 	= groupsListStr($groups);
 		
 		$str_topo = "";
@@ -120,8 +119,16 @@ For information : contact@oreon-project.org
 		/*
 		 * Get session ID
 		 */
-		(session_id() == "") ? $uid = $_POST["sid"] : $uid = session_id();
-
+		if (session_id() != "")
+			$uid = session_id();
+		if (isset($_GET["sid"])) 
+			$uid = $_GET["sid"];
+		else if (isset($_POST["sid"]))
+			$uid = $_POST["sid"];
+		else if (isset($_GET["uid"])) 
+			$uid = $_GET["uid"];
+		else if (isset($_POST["uid"]))
+			$uid = $_POST["uid"]; 
 		/*
 		 * Get User
 		 */			

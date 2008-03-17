@@ -143,8 +143,6 @@ For information : contact@oreon-project.org
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
-
-
 			var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
 		    var headID = document.getElementsByTagName("head")[0];  
 		    var cssNode = document.createElement('link');
@@ -162,11 +160,11 @@ For information : contact@oreon-project.org
 
             //link tree to xml
 //            tree.setXMLAutoLoading("./include/eventLogs/GetODSXmlTree.php"); 
-            tree.setXMLAutoLoading("./include/common/GetODSXmlTree.php"); 
+            tree.setXMLAutoLoading("./include/common/XmlTree/GetODSXmlTree.php"); 
             
             //load first level of tree
 //            tree.loadXML("./include/eventLogs/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
-            tree.loadXML("./include/common/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+            tree.loadXML("./include/common/XmlTree/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 			// system to reload page after link with new url
 			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
@@ -177,9 +175,6 @@ For information : contact@oreon-project.org
 			tree.enableTreeLines(false);
 			tree.enableCheckBoxes(true);
 			tree.enableThreeStateCheckboxes(true);
-
-
-
 
 // linkBar to log/reporting/graph/ID_card
 function getCheckedList(tree)
@@ -395,33 +390,28 @@ function log_4_host(id, formu)
 	proc.setXslt(_addrXSL)
 	proc.transform("logView4xml");
 
-		if(document.formu){					
-			document.formu.StartDate.value = StartDate;
-			document.formu.EndDate.value = EndDate;
-			document.formu.StartTime.value = StartTime;
-			document.formu.EndTime.value = EndTime;
-		}
+	if (document.formu){					
+		document.formu.StartDate.value = StartDate;
+		document.formu.EndDate.value = EndDate;
+		document.formu.StartTime.value = StartTime;
+		document.formu.EndTime.value = EndTime;
+	}
 }
 
-//log_4_host(<?php echo $id_log;?>,null);
-
-    var nowOnload = window.onload; // Let's save the existing assignment, if any
-    window.onload = function () {
-        // Here is your precious function
-        // You can call as many functions as you want here;
-        myOnloadFunction1();
+	var nowOnload = window.onload;
+	window.onload = function () {
+    // Here is your precious function
+    // You can call as many functions as you want here;
+    myOnloadFunction1();
 
 	log_4_host(<?php echo $id_log;?>,null);
 
-        // Now we call old function which was assigned to onLoad, thus playing nice
-        if(nowOnload != null && typeof(nowOnload) == 'function') {
-            nowOnload();
-        }
+    // Now we call old function which was assigned to onLoad, thus playing nice
+    if(nowOnload != null && typeof(nowOnload) == 'function') {
+        nowOnload();
     }
+}
 
-    // Your precious function
-    function myOnloadFunction1() {
-    }
-
-
+// Your precious function
+function myOnloadFunction1() {}
 </script>

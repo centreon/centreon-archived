@@ -36,19 +36,19 @@ For information : contact@oreon-project.org
 	}
 	
 	function enableLCAInDB ($acl_id = null)	{
+		global $pearDB;
 		if (!$acl_id) 
 			return;
-		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET lca_activate = '1' WHERE `acl_topo_id` = '".$acl_id."'");
+		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '1' WHERE `acl_topo_id` = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function disableLCAInDB ($acl_id = null)	{
+		global $pearDB;
 		if (!$acl_id) 
 			return;
-		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET lca_activate = '0' WHERE `acl_topo_id` = '".$acl_id."'");
+		$DBRESULT =& $pearDB->query("UPDATE `acl_topology` SET acl_topo_activate = '0' WHERE `acl_topo_id` = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
@@ -63,8 +63,8 @@ For information : contact@oreon-project.org
 	}
 	
 	function multipleLCAInDB ($lcas = array(), $nbrDup = array())	{
+		global $pearDB;
 		foreach($lcas as $key=>$value)	{
-			global $pearDB;
 			$DBRESULT =& $pearDB->query("SELECT * FROM `acl_topology` WHERE acl_topo_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["acl_topo_id"] = '';
@@ -113,9 +113,8 @@ For information : contact@oreon-project.org
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		print_r($ret);
-		$rq = "INSERT INTO `acl_topology` ";
-		$rq .= "(acl_topo_name, acl_topo_alias) ";
-		$rq .= "VALUES ('".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."')";
+		$rq = "INSERT INTO `acl_topology` (acl_topo_name, acl_topo_alias, acl_topo_activate) ";
+		$rq .= "VALUES ('".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."', '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES)."')";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -127,21 +126,21 @@ For information : contact@oreon-project.org
 	}
 	
 	function updateLCA($acl_id = null)	{
+		global $form, $pearDB;
 		if (!$acl_id) 
 			return;
-		global $form, $pearDB;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "UPDATE `acl_topology` SET acl_topo_name = '".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', acl_topo_alias = '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."' WHERE acl_topo_id = '".$acl_id."'";
+		$rq = "UPDATE `acl_topology` SET acl_topo_name = '".htmlentities($ret["acl_topo_name"], ENT_QUOTES)."', acl_topo_alias = '".htmlentities($ret["acl_topo_alias"], ENT_QUOTES)."', acl_topo_activate = '".htmlentities($ret["acl_topo_activate"]["acl_topo_activate"], ENT_QUOTES)."' WHERE acl_topo_id = '".$acl_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
 	
 	function updateLCATopology($acl_id = null)	{
+		global $form, $pearDB;
 		if (!$acl_id) 
 			return;
-		global $form, $pearDB;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_topology_relations WHERE acl_topo_id = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -159,8 +158,9 @@ For information : contact@oreon-project.org
 	}
 
 	function updateGroups($acl_id = null)	{
-		if (!$acl_id) return;
 		global $form, $pearDB;
+		if (!$acl_id) 
+			return;
 		$DBRESULT =& $pearDB->query("DELETE FROM acl_group_topology_relations WHERE acl_topology_id = '".$acl_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -175,5 +175,4 @@ For information : contact@oreon-project.org
 				}
 			}
 	}
-
 ?>

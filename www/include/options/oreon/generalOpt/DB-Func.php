@@ -307,4 +307,26 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}	
 	
+	function updateCASConfigData($gopt_id = null)	{
+		if (!$gopt_id) return;
+		global $form, $pearDB, $oreon;
+		$ret = array();
+		$ret = $form->getSubmitValues();
+		$rq = "UPDATE `general_opt` SET ";
+		$rq .= "`auth_cas_enable` = ";
+		isset($ret["auth_cas_enable"]["auth_cas_enable"]) && $ret["auth_cas_enable"]["auth_cas_enable"] != NULL ? $rq .= "'".$ret["auth_cas_enable"]["auth_cas_enable"]."', ": $rq .= "NULL, ";
+		$rq .= "`cas_server` = ";
+		isset($ret["cas_server"]) && $ret["cas_server"] != NULL ? $rq .= "'".$ret["cas_server"]."', ": $rq .= "NULL, ";
+		$rq .= "`cas_port` = ";
+		isset($ret["cas_port"]) && $ret["cas_port"] != NULL ? $rq .= "'".$ret["cas_port"]."',  ": $rq .= "NULL,  ";
+		$rq .= "`cas_url` = ";
+		isset($ret["cas_url"]) && $ret["cas_url"] != NULL ? $rq .= "'".$ret["cas_url"]."',  ": $rq .= "NULL,  ";
+		$rq .= "`cas_version` = ";
+		isset($ret["cas_version"]) && $ret["cas_version"] != NULL ? $rq .= "'".$ret["cas_version"]."', ": $rq .= "NULL ";
+		$rq .= "WHERE gopt_id = '".$gopt_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+	}
+	
 ?>

@@ -45,6 +45,7 @@ For information : contact@oreon-project.org
 		case "css" : require_once($path."css/formCss.php"); break;
 		case "ods" : require_once($path."OreonDataStorage/formODS.php"); break;
 		case "ndo" : require_once($path."ndo/formNDO.php"); break;
+		case "cas" : require_once($path."CAS/formCAS.php"); break;
 		default : require_once($path."general/formGeneralOpt.php"); break;
 	}
 ?>

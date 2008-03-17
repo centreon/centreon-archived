@@ -90,28 +90,22 @@ For information : contact@oreon-project.org
 	
 	$service_categories = array();
 	$DBRESULT =& $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
-	while($DBRESULT->fetchInto($sc)){
-		//if (!isset($hostnotexludes[$host["host_id"]]))
-			$service_categories[$sc["sc_id"]] = $sc["sc_name"];
-	}
+	while($DBRESULT->fetchInto($sc))
+		$service_categories[$sc["sc_id"]] = $sc["sc_name"];
 	$DBRESULT->free();
 	
-	/*
-	if	(!isset($acl["acl_hosts"]))
-		$acl["acl_hosts"] = array();
-	*/
 	/*
 	 * Var information to format the element
 	 */
 	
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
+	$attrsTextarea 	= array("rows"=>"3", "cols"=>"80");
 	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
+	/*
+	 * Form begin
+	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add an ACL"));
@@ -124,6 +118,8 @@ For information : contact@oreon-project.org
 	 * LCA basic information
 	 */
 	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('header', 'hostgroups', _("Hosts Groups Shared"));
+	$form->addElement('header', 'services', _("Services Categories Shared"));
 	$form->addElement('text',	'acl_res_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 	'acl_res_alias', _("Alias"), $attrsText);
 
@@ -148,7 +144,7 @@ For information : contact@oreon-project.org
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Hosts fordidden"), $hosttoexcludes, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_hostexclude', _("Exclude hosts on hosts groups"), $hosttoexcludes, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
