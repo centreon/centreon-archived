@@ -71,7 +71,7 @@ For information : contact@oreon-project.org
 		$is_admin = $admin["contact_admin"];
 		if (!$is_admin){	
 			$lca = getLcaHostByName($pearDB);
-			print_r($lca);
+			///print_r($lca);
 		}
 	}	
 

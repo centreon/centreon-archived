@@ -119,6 +119,10 @@ For information : contact@oreon-project.org
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src='./include/common/javascript/tool.js'></script>
 <script type="text/javascript">
+		
+		var session_id = "<?php echo session_id(); ?>";
+		alert(session_id);
+
 		var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
 	    var headID = document.getElementsByTagName("head")[0];  
 	    var cssNode = document.createElement('link');
@@ -326,7 +330,7 @@ For information : contact@oreon-project.org
 		graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
 
         // Now we call old function which was assigned to onLoad, thus playing nice
-        if(nowOnload != null && typeof(nowOnload) == 'function') {
+        if (nowOnload != null && typeof(nowOnload) == 'function') {
             nowOnload();
         }
     }
