@@ -37,29 +37,30 @@ For information : contact@oreon-project.org
 <script src="./include/common/javascript/scriptaculous/prototype.js" type="text/javascript"></script>
 <script src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects" type="text/javascript"></script>
 <?php
-	if($min != 1){
+	if ($min != 1){
 
-	$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
-	# Set base value
-	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
-
-	$ndo = $gopt["ndo_activate"];
-
-	if (isset($ndo) && !$ndo)
-		print '<script type="text/javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php"; </script>';
-	else
-		print '<script type="text/javascript"> var _adrrsearchC = "./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php"; </script>';
-
-		print "<script type='text/javascript' src='./include/common/javascript/ajaxStatusCounter.js'></script>";
-
+		$DBRESULT =& $pearDB->query("SELECT ndo_activate FROM general_opt LIMIT 1");
+		# Set base value
+		$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	
+		$ndo = $gopt["ndo_activate"];
+	
+		if (isset($ndo) && !$ndo)
+			print "<script type=\"text/javascript\"> var _adrrsearchC = \"./include/monitoring/engine/MakeXML4statusCounter.php\";</script>\n";
+		else
+			print "<script type=\"text/javascript\"> var _adrrsearchC = \"./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php\";</script>\n";
+		
+		print "<script type=\"text/javascript\" src=\"./include/common/javascript/ajaxStatusCounter.js\"></script>\n";
 	}
 
 	# Add Template CSS for sysInfos Pages
 	if (isset($p) && !strcmp($p, "505") && file_exists("./include/options/sysInfos/templates/classic/classic.css"))
 		echo "  <link rel=\"stylesheet\" type=\"text/css\" href=\"./include/options/sysInfos/templates/classic/classic.css\">\n";
 
+	print "<SCRIPT type='text/javascript' src='./include/common/javascript/codebase/dhtmlxtree.php?sid=".session_id()."'></SCRIPT>\n";
+	
 	if (isset($p) && $p == 310)
-		print "<SCRIPT type='text/javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>";
+		print "<SCRIPT type='text/javascript' src='./include/common/javascript/datepicker.js'></SCRIPT>\n";
 
 	/*
 	 * include javascript
@@ -75,8 +76,8 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print $DBRESULT->getDebugInfo()."<br />";
 	while ($DBRESULT->fetchInto($topology_js)){
-		if (!$ndo || ($ndo && $topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js"))
-			echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script> ";
+		if (!$ndo || ($ndo && $topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js"))
+			echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
 	}
 	
 	/*
@@ -102,17 +103,18 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
 	if (PEAR::isError($DBRESULT)) print $DBRESULT->getDebugInfo()."<br />";
 	while ($DBRESULT->fetchInto($topology_js)){
-		if($topology_js['init'] == "initM")	{
+		if ($topology_js['init'] == "initM")	{
 			?>setTimeout('initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o;?>")', 0);<?php
-		} else if ($topology_js['init'])
+		} else if ($topology_js['init']){
 			echo $topology_js['init'] ."();";
+		}
 	}
 	?>
     	};
     </script>
-	<?php
+<?php
 	if ($ndo)
-		print '<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>';
-	?>
+		print '<script src="./include/common/javascript/xslt.js" type="text/javascript"></script>';?>
+		
 </head>
 <body>

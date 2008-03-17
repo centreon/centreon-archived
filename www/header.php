@@ -64,13 +64,15 @@ For information : contact@oreon-project.org
 	$time_limit = time() - ($session_expire["session_expire"] * 60);
 
 	$DBRESULT =& $pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
-	if (PEAR::isError($DBRESULT)) print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br />";
+	if (PEAR::isError($DBRESULT)) 
+		print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br />";
 
 	/*
 	 * Get session and Check if session is not expired
 	 */
 	$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
-	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	if (PEAR::isError($DBRESULT)) 
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	if (!$DBRESULT->numRows())
 		header("Location: index.php?disconnect=2");
