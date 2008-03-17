@@ -43,8 +43,6 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBOdsConnect.php");
-	
-	
 	/*
 	 * PHP functions
 	 */

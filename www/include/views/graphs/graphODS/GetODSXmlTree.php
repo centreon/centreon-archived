@@ -18,22 +18,10 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-if ( stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ) 
-{ 	
-	header("Content-type: application/xhtml+xml"); }
-else 
-{
-	header("Content-type: text/xml"); 
-} 
+	$oreonPath = '../../../../../';
 
-echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
-
-
-	/* if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml) */
 	$debugXML = 0;
 	$buffer = '';
-
-	$oreonPath = '../../../../../';
 
 	/* pearDB init */
 	require_once 'DB.php';
@@ -46,9 +34,21 @@ echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
+	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
+		header("Content-type: application/xhtml+xml"); 
+	} else {
+		header("Content-type: text/xml"); 
+	} 
+	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
+
+	/* 
+	 * if debug == 0 => Normal, debug == 1 => get use, 
+	 * debug == 2 => log in file (log.xml) 
+	 */
+	
+
 	/* Connect to oreon DB */
-	$dsn = array(
-			     'phptype'  => 'mysql',
+	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
 			     'hostspec' => $conf_oreon['host'],
@@ -56,53 +56,52 @@ echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 	$options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 	
 	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
+	if (PEAR::isError($pearDB)) 
+		die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-/*
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
-*/
+	global $is_admin, $user_id;
 
+	if (isset($_GET["sid"]) && $_GET["sid"]){
+		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$_GET["sid"]."'");
+		$user = $res1->fetchRow();
+		$user_id = $user["user_id"];
+		$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
+		$admin = $res2->fetchRow();
+		$is_admin = $admin["contact_admin"];
+		if (!$is_admin){	
+			$lca = getLcaHostByName($pearDB);
+			print_r($lca);
+		}
+	}	
 
 	$normal_mode = 1;
-	if (isset($_GET["mode"]))
-        $normal_mode=$_GET["mode"];
-	else
-        $normal_mode=1;
-
-
-	if (isset($_GET["id"]))
-        $url_var=$_GET["id"];
-	else
-        $url_var=0;
+	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
+	(isset($_GET["id"])) ? $url_var = $_GET["id"] : $url_var = 0;
 
 	$type = "root";
 	$id = "0";
-	if(strlen($url_var) > 1){
+	if (strlen($url_var) > 1){
 		$id = "42";
 		$type = substr($url_var, 0, 2);
 		$id = substr($url_var, 3, strlen($url_var));
 	}
 
-
-
-	if($normal_mode){
+	if ($normal_mode){
 		$i = 0;
 		print("<tree id='".$url_var."' >");	
-		if($type == "HG") {
+		if ($type == "HG") {
 			/*
 			 * Get Hosts
 			 */
 			$hosts = getMyHostGroupHosts($id);
-			foreach($hosts as $host){
-				if(host_has_one_or_more_GraphService($host)){
+			foreach ($hosts as $host){
+				if (host_has_one_or_more_GraphService($host)){
 		        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
 					print("</item>");
 				}
 			}
-		} else if($type == "HH") {
+		} else if ($type == "HH") {
 			/*
 			 * get services for host
 			 */
@@ -126,11 +125,18 @@ echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			while ($DBRESULT->fetchInto($HG)){
+			while ($HG = $DBRESULT->fetchRow()){
 				$i++;
-				if (HG_has_one_or_more_host($HG["hg_id"])){
-		        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
-					print("</item>");
+				if ($is_admin){
+					if (HG_has_one_or_more_host($HG["hg_id"])){
+			        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+						print("</item>");
+					}					
+				} else {
+					if (HG_has_one_or_more_host($HG["hg_id"]) && isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_name"]])){
+			        	print("<item child='1' id='HG_".$HG["hg_id"]."' text='".$HG["hg_name"]."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
+						print("</item>");
+					}					
 				}
 			}
 			print("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
@@ -255,24 +261,24 @@ echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 	
 				$hg_open = $hg_checked = "";
 	
-				if(isset($hgs_selected[$hg_id]))
+				if (isset($hgs_selected[$hg_id]))
 					$hg_checked = " checked='1' ";
-				if(isset($hgs_open[$hg_id]))
+				if (isset($hgs_open[$hg_id]))
 					$hg_open = " open='1' ";
 	    		print("<item ".$hg_open." ".$hg_checked." child='1' id='HG_".$hg_id."' text='".$hg_name."' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 	
 				/*
 				 * Hosts
 				 */
-				if($hg_open){
+				if ($hg_open){
 					$hosts = getMyHostGroupHosts($hg_id);
-					foreach($hosts as $host_id => $host_name){
+					foreach ($hosts as $host_id => $host_name){
 						$host_checked = "";
 						$host_open = "";
 	
-						if(isset($hosts_selected[$host_id]))
+						if (isset($hosts_selected[$host_id]))
 							$host_checked = " checked='1' ";
-						if(isset($hosts_open[$host_id]))
+						if (isset($hosts_open[$host_id]))
 							$host_open = " open='1' ";
 		        		print("<item  ".$host_open." ".$host_checked." child='1' id='HH_".$host_id."_".$hg_id."' text='".getMyHostName($host_id)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
 	
