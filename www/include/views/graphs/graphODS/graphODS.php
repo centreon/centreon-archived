@@ -256,7 +256,7 @@ For information : contact@oreon-project.org
 			}
 		}
 
-		if(document.formu){
+		if (document.formu){
 			document.formu.StartDate.value = StartDate;
 			document.formu.EndDate.value = EndDate;
 			document.formu.StartTime.value = StartTime;
