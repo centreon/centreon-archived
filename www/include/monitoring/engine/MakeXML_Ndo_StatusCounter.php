@@ -44,11 +44,7 @@ For information : contact@oreon-project.org
 	
 	/* Connect to oreon DB */
 
-	$dsn = array('phptype'  => 'mysql',
-			     'username' => $conf_oreon['user'],
-			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['db']);
+	$dsn = array('phptype'=> 'mysql','username' => $conf_oreon['user'],'password' => $conf_oreon['password'],'hostspec' => $conf_oreon['host'],'database' => $conf_oreon['db']);
 
 	$pearDB =& DB::connect($dsn, array('debug'=> 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE));
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
@@ -182,7 +178,6 @@ For information : contact@oreon-project.org
 		$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 		while($DBRESULT_NDO2->fetchInto($ndo))
 			$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
-		/* end */
 
 		restore_session($statistic_service, $statistic_host);
 
