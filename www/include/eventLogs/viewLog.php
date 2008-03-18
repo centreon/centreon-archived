@@ -143,271 +143,236 @@ For information : contact@oreon-project.org
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>
 
-			var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
-		    var headID = document.getElementsByTagName("head")[0];  
-		    var cssNode = document.createElement('link');
-		       cssNode.type = 'text/css';
-		       cssNode.rel = 'stylesheet';
-		       cssNode.href = css_file;
-		       cssNode.media = 'screen';headID.appendChild(cssNode);
+	var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
+	var headID = document.getElementsByTagName("head")[0];  
+	var cssNode = document.createElement('link');
+	cssNode.type = 'text/css';
+	cssNode.rel = 'stylesheet';
+	cssNode.href = css_file;
+	cssNode.media = 'screen';headID.appendChild(cssNode);
  
- 			var multi = <? echo $multi; ?>;
+ 	var multi = <? echo $multi; ?>;
  
-    		tree=new dhtmlXTreeObject("menu_20301","100%","100%","1");
-            tree.setImagePath("./img/icones/csh_vista/");
-			//tree.setImagePath("./include/common/javascript/codebase/imgs/csh_vista/");
-
-
-            //link tree to xml
-//            tree.setXMLAutoLoading("./include/eventLogs/GetODSXmlTree.php"); 
-            tree.setXMLAutoLoading("./include/common/XmlTree/GetODSXmlTree.php"); 
+    tree=new dhtmlXTreeObject("menu_20301","100%","100%","1");
+    tree.setImagePath("./img/icones/csh_vista/");
+    
+    //link tree to xml
+    tree.setXMLAutoLoading("./include/common/XmlTree/GetODSXmlTree.php"); 
             
-            //load first level of tree
-//            tree.loadXML("./include/eventLogs/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
-            tree.loadXML("./include/common/XmlTree/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+    //load first level of tree
+    tree.loadXML("./include/common/XmlTree/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
-			// system to reload page after link with new url
-			tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
-			tree.attachEvent("onDblClick",onDblClick)//set function object to call on node select 
-			tree.attachEvent("onCheck",onCheck)//set function object to call on node select 
+	// system to reload page after link with new url
+	tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
+	tree.attachEvent("onDblClick",onDblClick)//set function object to call on node select 
+	tree.attachEvent("onCheck",onCheck)//set function object to call on node select 
 
-			tree.enableDragAndDrop(0);
-			tree.enableTreeLines(false);
-			tree.enableCheckBoxes(true);
-			tree.enableThreeStateCheckboxes(true);
+	tree.enableDragAndDrop(0);
+	tree.enableTreeLines(false);
+	tree.enableCheckBoxes(true);
+	tree.enableThreeStateCheckboxes(true);
 
-// linkBar to log/reporting/graph/ID_card
-function getCheckedList(tree)
-{
-	return tree.getAllChecked();
-}
-if(document.getElementById('linkBar'))
-{
-	var _menu_2 = document.getElementById('linkBar')
-	var _divBar = document.createElement("div");
-	
-	_divBar.appendChild(create_graph_link(tree,'id'));
-	_divBar.appendChild(create_monitoring_link(tree,'id'));
-//	_divBar.appendChild(create_report_link(tree,'id'));
-//	_divBar.appendChild(create_IDCard_link(tree,'id'));
-
-	_divBar.setAttribute('style','float:right; margin-right:110px;' );
-	_menu_2.appendChild(_divBar);
-}
-//end for linkBar
-
-
-
-function onDblClick(nodeId)
-{
-	tree.openAllItems(nodeId);
-	return(false);
-}
-
-function onNodeSelect(nodeId)
-{
-	var logView4xml = document.getElementById('logView4xml');
-	logView4xml.innerHTML="Waiting XML log";
-
-	tree.openItem(nodeId);
-	multi = 0;
-	log_4_host(nodeId,'');
-}
-
-function onCheck()
-{
-	multi = 1;
-	
-	if(tree.getAllChecked()){
-		log_4_host(tree.getAllChecked(),'');		
+	// linkBar to log/reporting/graph/ID_card
+	function getCheckedList(tree){
+		return tree.getAllChecked();
 	}
-	else{
-//		var logView4xml = document.getElementById('logView4xml').innerHTML = '<- Check or select an item or more !';		
-	}
-}
-
-
-// it's fake methode for using ajax system by default
-function mk_pagination(){;}
-function set_header_title(){;}
-
-function apply_period()
-{
-	var openid = document.getElementById('openid').innerHTML;
-	log_4_host(openid);
-}
-
-var _num = 0;
-function log_4_host_page(id, formu, num)
-{
-	_num = num;
-	log_4_host(id, formu);
-}
-
-var _host = <? echo $user_params["log_filter_host"]; ?>;
-var _service = <? echo $user_params["log_filter_svc"]; ?>;
-
-var _down = <? echo $user_params["log_filter_host_down"]; ?>;
-var _up = <? echo $user_params["log_filter_host_up"]; ?>;
-var _unreachable = <? echo $user_params["log_filter_host_unreachable"]; ?>;
-
-var _ok = <? echo $user_params["log_filter_svc_ok"]; ?>;
-var _warning = <? echo $user_params["log_filter_svc_warning"]; ?>;
-var _critical = <? echo $user_params["log_filter_svc_critical"]; ?>;
-var _unknown = <? echo $user_params["log_filter_svc_unknown"]; ?>;
-
-var _notification = <? echo $user_params["log_filter_notif"]; ?>;
-var _error = <? echo $user_params["log_filter_error"]; ?>;
-var _alert = <? echo $user_params["log_filter_alert"]; ?>;
-
-// Period
-var currentTime = new Date();
-var period ='';
-
-var _zero_hour = '';
-var _zero_min = '';
-var StartDate='';
-var EndDate='';
-var StartTime='';
-var EndTime='';
-
-if(document.formu && !document.formu.period_choice[1].checked)
-{
-	period = document.formu.period.value;
-}
-else
-{
-	if(currentTime.getMinutes() <= 9){
-		_zero_min = '0';
-	}
-
-	if(currentTime.getHours() >= 12){
-		StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
-		EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
-
-		if((currentTime.getHours()- 12) <= 9){
-			_zero_hour = '0';					
-		}
-		else{
-			_zero_hour = '';											
-		}
-		StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
-		if(currentTime.getHours() <= 9){
-			_zero_hour = '0';					
-		}
-		else{
-			_zero_hour = '';											
-		}	
-		EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
-	}
-	else
-	{
-		StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
-		EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
-
-		StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
-
-		if(currentTime.getHours() <= 9){
-			_zero_hour = '0';					
-		}
-		else{
-			_zero_hour = '';											
-		}
+	if(document.getElementById('linkBar')){
+		var _menu_2 = document.getElementById('linkBar')
+		var _divBar = document.createElement("div");
 		
-		EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+		_divBar.appendChild(create_graph_link(tree,'id'));
+		_divBar.appendChild(create_monitoring_link(tree,'id'));
+	//	_divBar.appendChild(create_report_link(tree,'id'));
+	//	_divBar.appendChild(create_IDCard_link(tree,'id'));
+		_divBar.setAttribute('style','float:right; margin-right:110px;' );
+		_menu_2.appendChild(_divBar);
+	}
+	//end for linkBar
+
+	function onDblClick(nodeId){
+		tree.openAllItems(nodeId);
+		return(false);
 	}
 	
+	function onNodeSelect(nodeId){
+		var logView4xml = document.getElementById('logView4xml');
+		logView4xml.innerHTML="Waiting XML log";
 	
-}
+		tree.openItem(nodeId);
+		multi = 0;
+		log_4_host(nodeId,'');
+	}
+	
+	function onCheck(){
+		multi = 1;
+		
+		if(tree.getAllChecked()){
+			log_4_host(tree.getAllChecked(),'');		
+		} else {
+			//		var logView4xml = document.getElementById('logView4xml').innerHTML = '<- Check or select an item or more !';		
+		}
+	}
+		
+	// it's fake methode for using ajax system by default
+	function mk_pagination(){;}
+	function set_header_title(){;}
+	
+	function apply_period(){
+		var openid = document.getElementById('openid').innerHTML;
+		log_4_host(openid);
+	}
+	
+	var _num = 0;
+	function log_4_host_page(id, formu, num)	{
+		_num = num;
+		log_4_host(id, formu);
+	}
 
-if(document.formu){
-	document.formu.StartDate.value = StartDate;
-	document.formu.EndDate.value = EndDate;
-	document.formu.StartTime.value = StartTime;
-	document.formu.EndTime.value = EndTime;
-}
+	var _host 		= <? echo $user_params["log_filter_host"]; ?>;
+	var _service 	= <? echo $user_params["log_filter_svc"]; ?>;
+	
+	var _down 		= <? echo $user_params["log_filter_host_down"]; ?>;
+	var _up 		= <? echo $user_params["log_filter_host_up"]; ?>;
+	var _unreachable = <? echo $user_params["log_filter_host_unreachable"]; ?>;
+	
+	var _ok 		= <? echo $user_params["log_filter_svc_ok"]; ?>;
+	var _warning 	= <? echo $user_params["log_filter_svc_warning"]; ?>;
+	var _critical 	= <? echo $user_params["log_filter_svc_critical"]; ?>;
+	var _unknown 	= <? echo $user_params["log_filter_svc_unknown"]; ?>;
+	
+	var _notification = <? echo $user_params["log_filter_notif"]; ?>;
+	var _error 		= <? echo $user_params["log_filter_error"]; ?>;
+	var _alert 		= <? echo $user_params["log_filter_alert"]; ?>;
+	
+	// Period
+	var currentTime = new Date();
+	var period ='';
+	
+	var _zero_hour = '';
+	var _zero_min = '';
+	var StartDate='';
+	var EndDate='';
+	var StartTime='';
+	var EndTime='';
 
-function log_4_host(id, formu)
-{
-
-	if(document.formu && !document.formu.period_choice[1].checked)
-	{
+	if (document.formu && !document.formu.period_choice[1].checked)	{
 		period = document.formu.period.value;
+	} else {
+		if(currentTime.getMinutes() <= 9){
+			_zero_min = '0';
+		}
+
+		if (currentTime.getHours() >= 12){
+			StartDate= currentTime.getMonth()+1+"/"+currentTime.getDate()+"/"+currentTime.getFullYear();
+			EndDate= currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();						
+	
+			if ((currentTime.getHours()- 12) <= 9){
+				_zero_hour = '0';					
+			} else {
+				_zero_hour = '';											
+			}
+			StartTime = _zero_hour + (currentTime.getHours() - 12) +":" + _zero_min + currentTime.getMinutes();
+			if (currentTime.getHours() <= 9){
+				_zero_hour = '0';					
+			} else {
+				_zero_hour = '';											
+			}	
+			EndTime   = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+		} else {
+			StartDate= currentTime.getMonth()+1+"/"+(currentTime.getDate()-1)+"/"+currentTime.getFullYear();
+			EndDate=   currentTime.getMonth()+1+"/"+ currentTime.getDate()+"/"+currentTime.getFullYear();
+	
+			StartTime=  (24 -(12 - currentTime.getHours()))+ ":00";
+			if (currentTime.getHours() <= 9){
+				_zero_hour = '0';					
+			} else {
+				_zero_hour = '';											
+			}		
+			EndTime = _zero_hour + currentTime.getHours() + ":" + _zero_min + currentTime.getMinutes();
+		}	
 	}
-	else if(document.formu)
-	{
-		period = '';
-		StartDate = document.formu.StartDate.value;
-		EndDate = document.formu.EndDate.value;
-		StartTime = document.formu.StartTime.value;
-		EndTime = document.formu.EndTime.value;
-	}
 
-	// type
-	if(document.formu2 && document.formu2.notification)
-		_notification = document.formu2.notification.checked;
-	if(document.formu2 && document.formu2.error)
-		_error = document.formu2.error.checked;
-	if(document.formu2 && document.formu2.alert)
-		_alert = document.formu2.alert.checked;
-
-	if(document.formu2 && document.formu2.up)
-		_up = document.formu2.up.checked;
-	if(document.formu2 && document.formu2.down)
-		_down = document.formu2.down.checked;
-	if(document.formu2 && document.formu2.unreachable)
-		_unreachable = document.formu2.unreachable.checked;
-
-
-	if(document.formu2 && document.formu2.ok)
-		_ok = document.formu2.ok.checked;
-
-	if(document.formu2 && document.formu2.warning)
-		_warning = document.formu2.warning.checked;
-
-	if(document.formu2 && document.formu2.critical)
-		_critical = document.formu2.critical.checked;
-
-	if(document.formu2 && document.formu2.unknown)
-		_unknown = document.formu2.unknown.checked;
-
-	if(document.formu && document.formu.StartDate.value != "")
-		StartDate = document.formu.StartDate.value;
-	if(document.formu && document.formu.EndDate.value != "")
-		EndDate = document.formu.EndDate.value;
-
-	if(document.formu && document.formu.StartTime.value != "")
-		StartTime = document.formu.StartTime.value;
-	if(document.formu && document.formu.EndTime.value != "")
-		EndTime = document.formu.EndTime.value;
-
-	tree.selectItem(id);
-
-	var proc = new Transformation();
-	var _addrXSL = "./include/eventLogs/log.xsl";
-	var _addrXML = './include/eventLogs/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
-	proc.setXml(_addrXML)
-	proc.setXslt(_addrXSL)
-	proc.transform("logView4xml");
-
-	if (document.formu){					
+	if (document.formu){
 		document.formu.StartDate.value = StartDate;
 		document.formu.EndDate.value = EndDate;
 		document.formu.StartTime.value = StartTime;
 		document.formu.EndTime.value = EndTime;
 	}
-}
+
+	function log_4_host(id, formu){	
+		if(document.formu && !document.formu.period_choice[1].checked)	{
+			period = document.formu.period.value;
+		} else if(document.formu)	{
+			period = '';
+			StartDate = document.formu.StartDate.value;
+			EndDate = document.formu.EndDate.value;
+			StartTime = document.formu.StartTime.value;
+			EndTime = document.formu.EndTime.value;
+		}
+	
+		// type
+		if(document.formu2 && document.formu2.notification)
+			_notification = document.formu2.notification.checked;
+		if(document.formu2 && document.formu2.error)
+			_error = document.formu2.error.checked;
+		if(document.formu2 && document.formu2.alert)
+			_alert = document.formu2.alert.checked;
+	
+		if(document.formu2 && document.formu2.up)
+			_up = document.formu2.up.checked;
+		if(document.formu2 && document.formu2.down)
+			_down = document.formu2.down.checked;
+		if(document.formu2 && document.formu2.unreachable)
+			_unreachable = document.formu2.unreachable.checked;
+	
+		if(document.formu2 && document.formu2.ok)
+			_ok = document.formu2.ok.checked;
+	
+		if(document.formu2 && document.formu2.warning)
+			_warning = document.formu2.warning.checked;
+	
+		if(document.formu2 && document.formu2.critical)
+			_critical = document.formu2.critical.checked;
+	
+		if(document.formu2 && document.formu2.unknown)
+			_unknown = document.formu2.unknown.checked;
+	
+		if(document.formu && document.formu.StartDate.value != "")
+			StartDate = document.formu.StartDate.value;
+		if(document.formu && document.formu.EndDate.value != "")
+			EndDate = document.formu.EndDate.value;
+	
+		if(document.formu && document.formu.StartTime.value != "")
+			StartTime = document.formu.StartTime.value;
+		if(document.formu && document.formu.EndTime.value != "")
+			EndTime = document.formu.EndTime.value;
+	
+		tree.selectItem(id);
+	
+		var proc = new Transformation();
+		var _addrXSL = "./include/eventLogs/log.xsl";
+		var _addrXML = './include/eventLogs/GetODSXmlLog.php?multi='+multi+'&warning='+_warning+'&unknown='+_unknown+'&critical='+_critical+'&ok='+_ok+'&unreachable='+_unreachable+'&down='+_down+'&up='+_up+'&num='+_num+'&error='+_error+'&alert='+_alert+'&notification='+_notification+'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?>';
+		proc.setXml(_addrXML)
+		proc.setXslt(_addrXSL)
+		proc.transform("logView4xml");
+	
+		if (document.formu){					
+			document.formu.StartDate.value = StartDate;
+			document.formu.EndDate.value = EndDate;
+			document.formu.StartTime.value = StartTime;
+			document.formu.EndTime.value = EndTime;
+		}
+	}
 
 	var nowOnload = window.onload;
 	window.onload = function () {
     // Here is your precious function
     // You can call as many functions as you want here;
     myOnloadFunction1();
-
 	log_4_host(<?php echo $id_log;?>,null);
 
     // Now we call old function which was assigned to onLoad, thus playing nice
-    if(nowOnload != null && typeof(nowOnload) == 'function') {
+    if (nowOnload != null && typeof(nowOnload) == 'function') {
         nowOnload();
     }
 }
