@@ -69,8 +69,10 @@ For information : contact@oreon-project.org
 		$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
 		$admin = $res2->fetchRow();
 		$is_admin = $admin["contact_admin"];
-		if (!$is_admin)
+		if (!$is_admin){
 			$lca = getLcaHostByName($pearDB);
+			$lca = getLCASVC($lca);
+		}
 	}	
 
 	$normal_mode = 1;
@@ -84,7 +86,7 @@ For information : contact@oreon-project.org
 		$type = substr($url_var, 0, 2);
 		$id = substr($url_var, 3, strlen($url_var));
 	}
-	
+
 	if ($normal_mode){
 		$i = 0;
 		print("<tree id='".$url_var."' >");	
@@ -94,16 +96,12 @@ For information : contact@oreon-project.org
 			 */
 			$hosts = getMyHostGroupHosts($id);
 			foreach ($hosts as $host){
-			print_r($lca);
-				print $host . "\n";
-				if (!$is_admin){
-					if (host_has_one_or_more_GraphService($host)){
-			        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
-					}
+				if ($is_admin){
+					if (host_has_one_or_more_GraphService($host))
+				        print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 				} else {
-					if (host_has_one_or_more_GraphService($host) && isset($lca["LcaHost"]) && isset($lca["LcaHost"][getMyHostName($host)])){
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][getMyHostName($host)]) && host_has_one_or_more_GraphService($host))
 			        	print("<item child='1' id='HH_".$host."_".$id."' text='".getMyHostName($host)."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
-					}
 				}
 			}
 		} else if ($type == "HH") {
@@ -112,8 +110,9 @@ For information : contact@oreon-project.org
 			 */
 			$services = getMyHostServices($id);
 			foreach($services as $svc_id => $svc_name){
-		        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'>");
-				print("</item>");			
+				$host_name = getMyHostName($id);
+		        if ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
+			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 			}
 		} else if ($type == "HS") {	
 			;
@@ -122,9 +121,8 @@ For information : contact@oreon-project.org
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($DBRESULT2->fetchInto($host)){
-					$i++;
-		           	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'>");
-					print("</item>");
+				$i++;
+		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
 		} else if ($type == "RR") {
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
@@ -151,7 +149,12 @@ For information : contact@oreon-project.org
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($DBRESULT2->fetchInto($host)){
 				$i++;
-	           	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+				if ($is_admin){
+		           	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+				} else {
+					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
+					   	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");	
+				}
 			}
 			print("</item>");	
 			/*
