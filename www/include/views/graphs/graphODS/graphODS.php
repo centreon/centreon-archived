@@ -119,9 +119,6 @@ For information : contact@oreon-project.org
 <link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src='./include/common/javascript/tool.js'></script>
 <script type="text/javascript">
-		
-		var session_id = "<?php echo session_id(); ?>";
-		alert(session_id);
 
 		var css_file = './include/common/javascript/codebase/dhtmlxtree.css';
 	    var headID = document.getElementsByTagName("head")[0];  
