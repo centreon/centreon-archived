@@ -102,7 +102,7 @@ function configureApache()
 ## Section add by Centreon Install Setup
 ##
 	
-AddType application/x-java-jnlp-file .jnlp
+#AddType application/x-java-jnlp-file .jnlp
 Alias /centreon $INSTALL_DIR_OREON/www/
 <Directory "$INSTALL_DIR_OREON/www">
     Options None
