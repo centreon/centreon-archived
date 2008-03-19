@@ -32,11 +32,8 @@ For information : contact@oreon-project.org
 		$SearchTool = " WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	
 	$LcaTool = "";
-	if ($isRestreint){
-		if ($SearchTool != "")
-			$LcaTool .= " AND hg_id IN (".$lcaHostGroupstr.")";
-		else 
-			$LcaTool .= " WHERE hg_id IN (".$lcaHostGroupstr.")";
+	if (!isUserAdmin(session_id())){
+		$SearchTool != "" ? $LcaTool .= " AND hg_id IN (".$lcaHostGroupstr.")" : $LcaTool .= " WHERE hg_id IN (".$lcaHostGroupstr.")";
 	}
 	
 	$request = "SELECT COUNT(*) FROM hostgroup $SearchTool $LcaTool";
@@ -85,9 +82,13 @@ For information : contact@oreon-project.org
 	$search = tidySearchKey($search, $advanced_search);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($hg); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$hg['hg_id']."]");	
@@ -122,12 +123,11 @@ For information : contact@oreon-project.org
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	}
 	$tpl->assign("elemArr", $elemArr);
-	#Different messages we put in the template
+	/*
+	 * Different messages we put in the template
+	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	
-	#
-	##Toolbar select $lang["lgd_more_actions"]
-	#
 	?>
 	<script type="text/javascript">
 	function setO(_i) {
@@ -169,9 +169,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('limit', $limit);
 
-	#
-	##Apply a template definition
-	#
+	/*
+	 * Apply a template definition
+	 */
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
