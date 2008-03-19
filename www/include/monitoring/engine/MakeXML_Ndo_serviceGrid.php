@@ -84,8 +84,12 @@ For information : contact@oreon-project.org
 		global $pearDBndo,$ndo_base_prefix,$general_opt,$o,$instance,$is_admin;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
-					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no, centreon_acl " .
-					" WHERE no.object_id = nss.service_object_id".
+					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no";
+				
+				if (!$is_admin)
+					$rq .= ", centreon_acl ";
+					
+		$rq .= 		" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 not like 'OSL_Module'";
 					" AND no.name1 not like 'Meta_Module'";
 

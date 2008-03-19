@@ -80,13 +80,7 @@ For information : contact@oreon-project.org
 	}
 
 	// check is admin
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$res1->fetchInto($user);
-	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$res2->fetchInto($admin);
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	$is_admin = !isUserAdmin($sid);
 
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
@@ -136,12 +130,11 @@ For information : contact@oreon-project.org
 			" nh.notes," .
 			" nh.address" .
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
-			" WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id AND no.objecttype_id = 1 AND no.object_id = nh.host_object_id";
-
-	if (!$is_admin)
-		;//$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id = '5'";
-	
-		//$rq1 .= " AND no.name1 IN (".$lcaSTR." )";
+			" WHERE no.object_id = nhs.host_object_id " .
+			" AND nh.host_object_id = no.object_id " .
+			" AND no.objecttype_id = 1 " .
+			" AND no.is_active = 1 " .
+			" AND no.object_id = nh.host_object_id";
 
 	if ($instance != "ALL")
 		$rq1 .= " AND no.instance_id = ".$instance;
@@ -178,9 +171,15 @@ For information : contact@oreon-project.org
 				" nss.flap_detection_enabled," .
 				" no.object_id," .
 				" no.name2 as service_description" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl" .
-				" WHERE no.object_id = nss.service_object_id".
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
+				
+				if (!$is_admin)
+					$rq .= ", centreon_acl ";
+					
+		$rq .= 	" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like 'OSL_Module'" .
+				" AND no.name1 not like 'Meta_Module'" .
+				" AND no.is_active = 1" .
 			  	" AND objecttype_id = 2";
 
 	if (!$is_admin){
