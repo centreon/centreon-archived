@@ -64,8 +64,11 @@ For information : contact@oreon-project.org
 	/*
 	 * LCA Init Common Var
 	 */
-	global $isRestreint;
-	$isRestreint = HadUserLca($pearDB);
+	//global $isRestreint;
+	//$isRestreint = HadUserLca($pearDB);
+	
+	global $is_admin;
+	$is_admin = isUserAdmin(session_id());
 
 	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
 	if (PEAR::isError($DBRESULT)) 
@@ -73,7 +76,7 @@ For information : contact@oreon-project.org
 	$redirect =& $DBRESULT->fetchRow();
 
 	$nb_page = NULL;
-	if ($isRestreint){
+	if (!$is_admin){
 		if (!count(!$oreon->user->lcaTopo) || !isset($oreon->user->lcaTopo[$p])){
 			$nb_page = 0;
 			require_once("./alt_error.php");
@@ -87,7 +90,7 @@ For information : contact@oreon-project.org
 	 */
 	$url = "";
 	if (!isset($_GET["doc"])){
-		if ((isset($nb_page) && $nb_page) || !$isRestreint){
+		if ((isset($nb_page) && $nb_page) || $is_admin){
 			if ($redirect["topology_page"] < 100){
 				$ret = get_child($redirect["topology_page"], $oreon->user->lcaTStr);
 				if (!$ret['topology_page']){
