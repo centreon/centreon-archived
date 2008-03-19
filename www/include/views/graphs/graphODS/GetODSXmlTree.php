@@ -63,13 +63,7 @@ For information : contact@oreon-project.org
 	global $is_admin, $user_id;
 
 	if (isset($_GET["sid"]) && $_GET["sid"]){
-		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$_GET["sid"]."'");
-		$user = $res1->fetchRow();
-		$user_id = $user["user_id"];
-		$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-		$admin = $res2->fetchRow();
-		$is_admin = $admin["contact_admin"];
-		if (!$is_admin){
+		if (!isUserAdmin($_GET["sid"])){
 			$lca = getLcaHostByName($pearDB);
 			$lca = getLCASVC($lca);
 		}
