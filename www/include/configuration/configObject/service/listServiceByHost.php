@@ -59,10 +59,10 @@ For information : contact@oreon-project.org
 		$search = str_replace('/', "#S#", $search);
 		$search = str_replace('\\', "#BS#", $search);
 		if ($search_type_service) {
-			if ($oreon->user->admin || !$isRestreint)
+			if ($is_admin)
 				$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
 			else
-				$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.")");	
+				$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr WHERE sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) ");	
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			while ($DBRESULT->fetchInto($service))
@@ -78,10 +78,10 @@ For information : contact@oreon-project.org
 				}
 		}
 		if ($search_type_host)	{
-			if ($oreon->user->admin || !$isRestreint)
+			if ($is_admin)
 				$locale_query = "SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL";
 			else
-				$locale_query = "SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.")";				
+				$locale_query = "SELECT service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE host_name like '%".$search."%' AND hsr.host_host_id=host.host_id AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) ";				
 			$DBRESULT =& $pearDB->query($locale_query);
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -91,19 +91,20 @@ For information : contact@oreon-project.org
 			}
 		}
     } else {
-    	if ($oreon->user->admin || !$isRestreint)
+    	if ($is_admin)
 			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL");
 		else
-			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IN (".$lcaHostStr.") AND hsr.hostgroup_hg_id IS NULL");
+			$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) AND hsr.hostgroup_hg_id IS NULL");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rows = $DBRESULT->numRows();
 	}
 	
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -111,9 +112,7 @@ For information : contact@oreon-project.org
 	
 	include("./include/common/checkPagination.php");
 
-	$tpl->assign("search_type_service", $search_type_service);
-	$tpl->assign("search_type_host", $search_type_host);
-
+	
 	# start header menu
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Host"));
@@ -122,9 +121,15 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_parent", _("Parent Template"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
-	# end header menu
-	#Host/service list
-	$oreon->user->admin || !$isRestreint ? $strLCA = "" : $strLCA = "AND host.host_id IN (".$lcaHostStr.") "; 
+	
+	$tpl->assign("search_type_service", $search_type_service);
+	$tpl->assign("search_type_host", $search_type_host);
+	
+	/*
+	 * Host/service list
+	 */
+	 
+	$is_admin ? $strLCA = "" : $strLCA = "AND host.host_id IN (".$lcaHostStr.") AND sv.service_id IN ($lcaSvcStr) "; 
 	if ($search)
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, sv.service_retry_check_interval, sv.service_max_check_attempts FROM service sv, host, host_service_relation hsr WHERE sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND sv.service_register = '1' AND hsr.service_service_id = sv.service_id AND host.host_id = hsr.host_host_id $strLCA AND host.host_register = '1' ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	else
@@ -145,12 +150,11 @@ For information : contact@oreon-project.org
 	
 	$time_min = $oreon->Nagioscfg['interval_length'] / 60;
 	
-	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
+	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		
 		/*
 		 * If the name of our Host is in the Template definition, we have to catch it, whatever the level of it :-)
 		 */
-		
 		$fgHost["value"] != $service["host_name"] ? ($fgHost["print"] = true && $fgHost["value"] = $service["host_name"]) : $fgHost["print"] = false;
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");	
 		$moptions = "";
@@ -159,8 +163,7 @@ For information : contact@oreon-project.org
 		else
 			$moptions .= "<a href='oreon.php?p=".$p."&service_id=".$service['service_id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 
-		$moptions .= "&nbsp;";
-		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
+		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$service['service_id']."]'></input>";
 
 		/*
 		 * If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
@@ -189,19 +192,19 @@ For information : contact@oreon-project.org
 		$normal_check_interval = getMyServiceField($service['service_id'], "service_normal_check_interval") / $time_min;
 		$retry_check_interval  = getMyServiceField($service['service_id'], "service_retry_check_interval") / $time_min;
 		
-		$elemArr[$i] = array("MenuClass"=>"list_".($service["nbr"]>1 ? "three" : $style), 
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$service["host_name"],
-						"RowMenu_link"=>"?p=60101&o=c&host_id=".$service['host_id'],
-						"RowMenu_link2"=>"?p=".$p."&o=c&service_id=".$service['service_id'],
-						"RowMenu_parent"=>$tplStr,
-						"RowMenu_retry"=> $normal_check_interval . " min / ".$retry_check_interval." min",
-						"RowMenu_attempts"=>getMyServiceField($service['service_id'], "service_max_check_attempts"),
-						"RowMenu_desc"=>$service["service_description"],
-						"RowMenu_status"=>$service["service_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options"=>$moptions);
+		$elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style), 
+								"RowMenu_select"	=> $selectedElements->toHtml(),
+								"RowMenu_name"		=> $service["host_name"],
+								"RowMenu_link"		=> "?p=60101&o=c&host_id=".$service['host_id'],
+								"RowMenu_link2"		=> "?p=".$p."&o=c&service_id=".$service['service_id'],
+								"RowMenu_parent"	=> $tplStr,
+								"RowMenu_retry"		=> $normal_check_interval . " min / ".$retry_check_interval." min",
+								"RowMenu_attempts"	=> getMyServiceField($service['service_id'], "service_max_check_attempts"),
+								"RowMenu_desc"		=> $service["service_description"],
+								"RowMenu_status"	=> $service["service_activate"] ? _("Enabled") : _("Disabled"),
+								"RowMenu_options"	=> $moptions);
 		$fgHost["print"] ? NULL : $elemArr[$i]["RowMenu_name"] = NULL;
-		$style != "two" ? $style = "two" : $style = "one";	
+		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
 	

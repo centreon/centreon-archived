@@ -33,8 +33,8 @@ For information : contact@oreon-project.org
 	$lcaHost = getLCAHostByID($pearDB);
 	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
 	$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
-	$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
+	//$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
+	$lcaSvcStr = getLCASVCStr($lcaHost);
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
