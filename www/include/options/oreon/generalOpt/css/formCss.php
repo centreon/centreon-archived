@@ -43,7 +43,7 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$tab_css = array();
-	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++){
+	for ($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++){
 		$tab_css[$elem["menu_nb"]] = $elem;
 		if(isset($_GET["css_color_".$elem["id_css_color_menu"]])){
 			$name = $_GET["css_color_".$elem["id_css_color_menu"]];			
@@ -60,15 +60,13 @@ For information : contact@oreon-project.org
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$tab_menu = array();
-	for(; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);)
+	while ($DBRESULT->numRows() && $elem = $DBRESULT->fetchRow()){
 		$tab_menu[$elem["topology_page"]] = $elem;
-
+	}
 	## insert new menu in table css_color_menu
 	$tab_create_menu = array();
-	foreach($tab_menu as $key => $val)
-	{
-		if(!isset($tab_css[$tab_menu[$key]["topology_page"]]))
-		{
+	foreach ($tab_menu as $key => $val)	{
+		if(!isset($tab_css[$tab_menu[$key]["topology_page"]]))	{
 			$rq = "INSERT INTO `css_color_menu` ( `id_css_color_menu` , `menu_nb` , `css_name` )" .
 					"VALUES ( NULL , ".$tab_menu[$key]["topology_page"].", '".$css_default."' )";
 			$DBRESULT =& $pearDB->query($rq);
@@ -76,39 +74,46 @@ For information : contact@oreon-project.org
 				print ($DBRESULT->getMessage());
 		}
 	}
-	#
-	## Get menu_css_bdd list
-	#
+	
+	/*
+	 * Get menu_css_bdd list
+	 */
 	$rq = "SELECT * FROM css_color_menu";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$elemArr = array();
-	#Different style between each lines
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
 	
-	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
-	{
-		$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
-		for($j=0;isset($tab_file_css[$j]);$j++){
-			$selected = ($elem["css_name"] == $tab_file_css[$j]) ? "selected=selected": "";
-			$select_list .= '<option value="'.$tab_file_css[$j].'"   "' . $selected . '">'.$tab_file_css[$j].'</option>';
+	if ($DBRESULT->numRows())
+		for ($i = 0; $elem = $DBRESULT->fetchRow();$i++)	{
+				$select_list =	'<select name="css_color_'. $elem["id_css_color_menu"] .'">';
+				for ($j=0 ; isset($tab_file_css[$j]) ; $j++){
+					$selected = ($elem["css_name"] == $tab_file_css[$j]) ? "selected=selected": "";
+					$select_list .= '<option value="'.$tab_file_css[$j].'"   "' . $selected . '">'.$tab_file_css[$j].'</option>';
+				}
+				$select_list .= '</select>';
+				$elemArr[$i] = array("MenuClass"=>"list_".$style,
+									 "select"=> $select_list,
+									 "menuName"=> _($tab_menu[$elem["menu_nb"]]["topology_name"]),
+									 "css_name"=> $elem["css_name"]);
+				$style != "two" ? $style = "two" : $style = "one";
 		}
-		$select_list .= '</select>';
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-							 "select"=> $select_list,
-							 "menuName"=> _($tab_menu[$elem["menu_nb"]]["topology_name"]),
-							 "css_name"=> $elem["css_name"]);
-		$style != "two" ? $style = "two" : $style = "one";
-	}
 	
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path.'css/', $tpl);
+
+	/*
+	 * Apply a template definition
+	 */
+	
 	$tpl->assign("elemArr", $elemArr);
-
-	## Apply a template definition
-
 	$tpl->assign('submitTitle', _("Save"));
 	$tpl->assign('nameTitle', _("Menu"));
 	$tpl->assign('fileTitle', _("CSS File"));
