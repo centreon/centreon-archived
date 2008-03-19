@@ -101,43 +101,76 @@ class User	{
   	
   }
   
+  function getAllTopology($pearDB){
+  	$res3 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
+	while ($topo = $res3->fetchRow())
+		if (isset($topo["topology_page"]))
+			$lcaTopo[$topo["topology_page"]] = 1;			
+	unset($res3);
+	return $lcaTopo;
+  }
+  
   function createLCA($pearDB = NULL)	{
   	$have_an_lca = 0;
   	$num = 0;
-   	if(!$pearDB)
+   	if (!$pearDB)
   		return; 
-  	if ($this->admin){
-	  	$res3 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-		while ($res3->fetchInto($topo))
-			if (isset($topo["topology_page"]))
-				$this->lcaTopo[$topo["topology_page"]] = 1;			
-		unset($res3);
-  	} else {
-  		$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."'");
-  		if ($num = $res1->numRows())	{
-  			$str = "";
-			while ($group = $res1->fetchRow())	{
-				if ($str != "")
-					$str .= ", ";
-				$str .= $group["acl_group_id"];
-			}
+  	
+  	$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."'");
+	if (PEAR::isError($res1)) 
+		print "DB Error : ".$res1->getDebugInfo()."<br />";
+	
+	$i = 0;
+	if ($num = $res1->numRows())	{
+		$str = "";
+		while ($group = $res1->fetchRow())	{
+			if ($str != "")
+				$str .= ", ";
+			$str .= $group["acl_group_id"];
+			$i++;
 		}
+	}
+  	
+  	if ($this->admin || $i == 0){
+		$this->lcaTopo = $this->getAllTopology($pearDB);
+  	} else {  		
 		$str_topo = "";
 		$DBRESULT =& $pearDB->query("SELECT acl_topology_id FROM `acl_group_topology_relations` WHERE acl_group_id IN ($str)");
-		while ($topo_group = $DBRESULT->fetchRow()){
-	  		$DBRESULT2 =& $pearDB->query("SELECT topology_topology_id FROM `acl_topology_relations` WHERE acl_topo_id = '".$topo_group["acl_topology_id"]."'");
-	  		while ($topo_page = $DBRESULT2->fetchRow()){
-	  			$have_an_lca = 1;
-	  			if ($str_topo != "")
-	  				$str_topo .= ", ";
-	  			$str_topo .= $topo_page["topology_topology_id"];
+		if (PEAR::isError($DBRESULT)) 
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		if (!$DBRESULT->numRows()){
+			$res3 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
+			while ($topo = $res3->fetchRow())
+				if (isset($topo["topology_page"]))
+					$this->lcaTopo[$topo["topology_page"]] = 1;			
+			unset($res3);
+		} else {
+			while ($topo_group = $DBRESULT->fetchRow()){
+		  		$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
+		  										"FROM `acl_topology_relations`, acl_topology " .
+		  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
+		  												"AND acl_topology.acl_topo_activate = '1' " .
+		  												"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
+	  		if (PEAR::isError($DBRESULT2)) 
+					print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+		  		$count = 0;
+		  		while ($topo_page = $DBRESULT2->fetchRow()){
+		  			$have_an_lca = 1;
+		  			if ($str_topo != "")
+		  				$str_topo .= ", ";
+		  			$str_topo .= $topo_page["topology_topology_id"];
+		  			$count++;
+		  		}
+				unset($DBRESULT2);
 	  		}
-			unset($DBRESULT2);
-  		}
-  		unset($DBRESULT);
-  		$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_id IN ($str_topo) AND topology_page IS NOT NULL");	
-		while ($topo_page = $DBRESULT->fetchRow())						
-			$this->lcaTopo[$topo_page["topology_page"]] = 1;
+	  		$count ? $ACL = "topology_id IN ($str_topo) AND ": $ACL = "";
+	  		unset($DBRESULT);
+	  		$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
+			if (PEAR::isError($DBRESULT)) 
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+			while ($topo_page = $DBRESULT->fetchRow())						
+				$this->lcaTopo[$topo_page["topology_page"]] = 1;
+		}
 		unset($DBRESULT);
   	}
 
