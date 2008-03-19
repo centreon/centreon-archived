@@ -165,41 +165,45 @@ For information : contact@oreon-project.org
 	function getLCAHostByID($pearDB){
 		if (!$pearDB)
 			return ;
-		
 		/*
 		 * Get Groups list
 		 */	
-		$groups = getGroupListofUser($pearDB);	
-		$str = groupsListStr($groups);
-
+		$groups = getGroupListofUser($pearDB);
+		$str 	= groupsListStr($groups);
+		
 		$str_topo = "";
 		$condition = "";
 		if ($str != "")
-			$condition = " WHERE acl_group_id IN (".$str.")";
+			$condition = " WHERE acl_group_id IN (".$str.")";		
 		$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
-		//$host = array();
-  		while ($res = $DBRESULT2->fetchRow()){
-			/*
-			 * Hosts inclus
-			 */
-  			$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
+		
+		while ($res = $DBRESULT2->fetchRow()){
+  			/*
+  			 * Hosts
+  			 */
+  			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
 	  		while ($host = $DBRESULT3->fetchRow())
-				$lcaHost[$host["host_id"]] = $host["host_id"];
+				if ($host["host_id"] != "")
+					$lcaHost[$host["host_id"]] = $host["host_id"];
+			unset($DBRESULT3);
 			/*
 			 * Hosts Groups Inclus
 			 */
-			$DBRESULT3 =& $pearDB->query("SELECT hg_id FROM `hostgroup`, `acl_resources_hg_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
+			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_alias " .
+											"FROM `hostgroup`, `acl_resources_hg_relations` " .
+											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
+											"AND acl_resources_hg_relations.hg_hg_id = hostgroup.hg_id");
 	  		while ($hostgroup = $DBRESULT3->fetchRow()){
-				$DBRESULT4 =& $pearDB->query("SELECT host_host_id FROM `hostgroup_relation` WHERE hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
+	  			$DBRESULT4 =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation` WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hostgroup["hg_id"]."'");
 	  			while ($host_hostgroup = $DBRESULT4->fetchRow())
-					$lcaHost[$host_hostgroup["host_host_id"]] = $host_hostgroup["host_host_id"];	
-				$LcaHHG[$hostgroup["hg_id"]] = $hostgroup["hg_id"];	
+					$lcaHost[$host_hostgroup["host_id"]] = $host_hostgroup["host_id"];
+				$lcaHostGroup[$hostgroup["hg_id"]] = $hostgroup["hg_id"];	
 	  		}
 			/*
 			 * Hosts Exclus
 			 */
-			$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_hostex_relations.host_host_id = host.host_id");
-			if ($DBRESULT3->numRows())
+			$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
+	  		if ($DBRESULT3->numRows())
 		  		while ($host = $DBRESULT3->fetchRow())
 					if (isset($lcaHost[$host["host_id"]]))
 						unset($lcaHost[$host["host_id"]]);
@@ -207,8 +211,7 @@ For information : contact@oreon-project.org
   		}
 		$lcaHost[$host["host_name"]] = $host["host_id"];
 		unset($DBRESULT2);
-		
-		$LcaHHG = array();
+  		$LcaHHG = array();
 		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
 		isset($lcaHostGroup) ? $LcaHHG["LcaHostGroup"] = $lcaHostGroup : $LcaHHG["LcaHostGroup"] = array();
 		return $LcaHHG;
@@ -333,6 +336,28 @@ For information : contact@oreon-project.org
 		return $lca;
 	}
 	
+	function getLCASVCStr($lca = NULL){
+		global $pearDB;
+		
+		if (!$lca)
+			return array();
+		
+		$groups 	= getGroupListofUser($pearDB);
+		$groupstr 	= groupsListStr($groups);
+		$str = "";
+		foreach ($lca["LcaHost"] as $key => $value){
+			$host = array();
+			$host["id"] = $value;
+			$svc_list = getAuthorizedServicesHost($value, $groupstr);
+			foreach ($svc_list as $service_id){
+				if ($str)
+					$str .= ", ";
+				$str .= $service_id;
+			}			
+		}
+		return $str;
+	}
+	
 	function getLCAHostStr($lcaHost){
 		$lcaHStr = "";
 	  	foreach ($lcaHost as $key => $value){
@@ -367,6 +392,18 @@ For information : contact@oreon-project.org
 	  	if (!$lcaSGStr) 
 	  		$lcaSGStr = '\'\'';
 		return $lcaSGStr;
+	}
+	
+	function isUserAdmin($sid = NULL){
+		if (!isset($sid))
+			return ;
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT contact_admin FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin = $DBRESULT->fetchRow();
+		unset($DBRESULT);
+		if (!isset($admin["contact_admin"]))
+			return $admin["contact_admin"];
+		return 0;
 	}
 	
 	function HadUserLca($pearDB){

@@ -63,15 +63,10 @@ For information : contact@oreon-project.org
 	global $is_admin, $user_id;
 
 	if (isset($_GET["sid"]) && $_GET["sid"]){
-		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$_GET["sid"]."'");
-		$user = $res1->fetchRow();
-		$user_id = $user["user_id"];
-		$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-		$admin = $res2->fetchRow();
-		$is_admin = $admin["contact_admin"];
-		if (!$is_admin)
+		if (!isUserAdmin($_GET["sid"]))
 			$lca = getLcaHostByName($pearDB);
-	}	
+	} else 
+		exit();
 
 	$normal_mode = 1;
 	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
@@ -133,8 +128,7 @@ For information : contact@oreon-project.org
 					}					
 				}
 			}	
-			print("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
-			print("</item>");
+			print("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' ></item>");
 		} else {
 			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='All logs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 			print("<itemtext>label</itemtext>");
