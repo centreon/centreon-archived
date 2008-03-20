@@ -401,7 +401,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT contact_admin FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
 		$admin = $DBRESULT->fetchRow();
 		unset($DBRESULT);
-		if (!isset($admin["contact_admin"]))
+		if (isset($admin["contact_admin"]))
 			return $admin["contact_admin"];
 		return 0;
 	}
