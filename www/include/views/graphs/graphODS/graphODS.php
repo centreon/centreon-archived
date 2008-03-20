@@ -126,7 +126,8 @@ For information : contact@oreon-project.org
 	    cssNode.type = 'text/css';
 	    cssNode.rel = 'stylesheet';
 	    cssNode.href = css_file;
-	    cssNode.media = 'screen';headID.appendChild(cssNode);
+	    cssNode.media = 'screen';
+	    headID.appendChild(cssNode);
 
 		var multi = <?php echo $multi; ?>;
 	  	var _menu_div = document.getElementById("menu_40211");
@@ -137,7 +138,7 @@ For information : contact@oreon-project.org
         tree.setXMLAutoLoading("./include/views/graphs/graphODS/GetODSXmlTree.php");
             
         //load first level of tree
-        tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
+        tree.loadXML("./include/views/graphs/graphODS/GetODSXmlTree.php?&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
 
 		// system to reload page after link with new url
 		//set function object to call on node select 

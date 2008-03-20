@@ -62,12 +62,14 @@ For information : contact@oreon-project.org
 
 	global $is_admin, $user_id;
 
+	$is_admin = isUserAdmin($_GET["sid"]);
 	if (isset($_GET["sid"]) && $_GET["sid"]){
 		if (!isUserAdmin($_GET["sid"])){
 			$lca = getLcaHostByName($pearDB);
 			$lca = getLCASVC($lca);
 		}
-	}	
+	} else 
+		exit();
 
 	$normal_mode = 1;
 	(isset($_GET["mode"])) ? $normal_mode = $_GET["mode"] : $normal_mode = 1;
@@ -105,7 +107,9 @@ For information : contact@oreon-project.org
 			$services = getMyHostServices($id);
 			foreach($services as $svc_id => $svc_name){
 				$host_name = getMyHostName($id);
-		        if ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
+		        if ($is_admin || 	(!$is_admin 
+		        						&& isset($lca["LcaHost"][$host_name]) 
+		        						&& isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
 			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 			}
 		} else if ($type == "HS") {	
@@ -193,8 +197,7 @@ For information : contact@oreon-project.org
 			print_r($id_full);
 			echo "</idfull>";
 			
-			
-			if($type == "HH") {
+			if ($type == "HH") {
 				/*
 				 * host + hg_parent
 				 */	
@@ -205,7 +208,7 @@ For information : contact@oreon-project.org
 				foreach($services as $svc_id => $svc_name)
 					$svcs_selected[$svc_id] = $svc_name;
 				// 	hg_parent
-				if(isset($id_full[2]))
+				if (isset($id_full[2]))
 					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
 				else {
 					$hgs = getMyHostGroups($id);
@@ -214,12 +217,11 @@ For information : contact@oreon-project.org
 				}				
 			} else if($type == "HS"){ // svc + host_parent + hg_parent
 				// svc
-				
 				$svcs_selected[$id] = getMyServiceName($id);
 				$svcs_selected[$id] = getMyServiceName($id);
 	
 				//host_parent
-				if(isset($id_full[1])) {
+				if (isset($id_full[1])) {
 					$host_id = $id_full[1];
 					$hosts_open[$host_id] = getMyHostName($host_id);
 				} else {
@@ -228,7 +230,7 @@ For information : contact@oreon-project.org
 				}
 
 				// 	hg_parent
-				if(isset($id_full[2]))
+				if (isset($id_full[2]))
 					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
 				else {
 					$hgs = getMyHostGroups($host_id);
@@ -262,7 +264,6 @@ For information : contact@oreon-project.org
 			if (HG_has_one_or_more_host($hg_id)){
 	
 				$hg_open = $hg_checked = "";
-	
 				if (isset($hgs_selected[$hg_id]))
 					$hg_checked = " checked='1' ";
 				if (isset($hgs_open[$hg_id]))
@@ -277,7 +278,6 @@ For information : contact@oreon-project.org
 					foreach ($hosts as $host_id => $host_name){
 						$host_checked = "";
 						$host_open = "";
-	
 						if (isset($hosts_selected[$host_id]))
 							$host_checked = " checked='1' ";
 						if (isset($hosts_open[$host_id]))
@@ -293,8 +293,7 @@ For information : contact@oreon-project.org
 								$svc_checked = "";
 								if (isset($svcs_selected[$svc_id]))
 									$svc_checked = " checked='1' ";
-					        	print("<item ".$svc_checked."  child='0' id='HS_".$svc_id."_".$host_id."_".$hg_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'>");
-								print("</item>");			
+					        	print("<item ".$svc_checked."  child='0' id='HS_".$svc_id."_".$host_id."_".$hg_id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 							}
 						}
 						print("</item>");
