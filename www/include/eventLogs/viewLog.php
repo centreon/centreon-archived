@@ -160,7 +160,7 @@ For information : contact@oreon-project.org
     tree.setXMLAutoLoading("./include/common/XmlTree/GetODSXmlTree.php"); 
             
     //load first level of tree
-    tree.loadXML("./include/common/XmlTree/GetODSXmlTree.php?id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+    tree.loadXML("./include/common/XmlTree/GetODSXmlTree.php?sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
 
 	// system to reload page after link with new url
 	tree.attachEvent("onClick",onNodeSelect)//set function object to call on node select 
