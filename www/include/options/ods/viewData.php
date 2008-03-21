@@ -120,9 +120,11 @@ For information : contact@oreon-project.org
 	}
 	
 	$search_string = "";
-	if (isset($search) && $search)
-		$search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
-	
+	if (isset($search) && $search){
+		$searchFormated = str_replace("/", "#S#", $search);
+		$searchFormated = str_replace("\\", "#BS#", $searchFormated);
+		$search_string = " WHERE `host_name` LIKE '%$searchFormated%' OR `service_description` LIKE '%$searchFormated%'";
+	}
 	
 	$DBRESULT =& $pearDBO->query("SELECT COUNT(*) FROM `index_data`$search_string");
 	if (PEAR::isError($DBRESULT))
@@ -135,7 +137,7 @@ For information : contact@oreon-project.org
 	$yesOrNo = array(0 => "No", 1 => "Yes", 2 => "Rebuilding");	
 	//$yesOrNo = array(0 => "<input type='checkbox' hidden='1' disabled>", 1 => "<input type='checkbox' checked disabled>", 2 => "Rebuilding");	
 		
-	$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data`$search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
+	$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` $search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$data = array();
@@ -241,12 +243,10 @@ For information : contact@oreon-project.org
 	$tpl->assign('o', $o);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
-	
 	$tpl->assign("data", $data);
 	
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-		
     $tpl->display("viewData.ihtml");
 ?>
