@@ -41,7 +41,7 @@ my $method = "system";
 
 my $echo = "/bin/echo";
 
-my $installedPath = "/srv/oreon/";
+my $installedPath = "/usr/local/centreon/";
 my $LOG = $installedPath."var/centcore.log";
 my $PID = $installedPath."var/centcore.pid";
 my $cmdFile = "/usr/local/centreon/var/centcore.cmd";
@@ -337,6 +337,7 @@ sub sendConfigFile($){
 	
 	opendir(DIR, $installedPath."/filesGeneration/nagiosCFG/$id/");
 	while (my $file = readdir(DIR)){
+	
 		if ($file ne "." && $file ne ".." && $file !~ /\~/ && $file ne "nagiosCFG.DEBUG"){
 			my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/$file";
 			my $dest = $server_info->{'user'}."@".$server_info->{'ns_ip_address'}.":$cfg_dir$file";
