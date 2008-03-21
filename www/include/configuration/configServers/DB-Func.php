@@ -71,7 +71,6 @@ For information : contact@oreon-project.org
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					
 					$key2 == "name" ? ($server_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
@@ -102,11 +101,12 @@ For information : contact@oreon-project.org
 		$rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `ns_ip_address`, `nagios_bin` , `init_script` , `ns_activate`) ";
 		$rq .= "VALUES (";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES)."', " : $rq .= "NULL, ";
-		isset($ret["localhost"]) && $ret["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+		isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "'".htmlentities($ret["ns_ip_address"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["nagios_bin"]) && $ret["nagios_bin"] != NULL ? $rq .= "'".htmlentities($ret["nagios_bin"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "'".htmlentities($ret["init_script"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["ns_activate"]) && $ret["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]."',  "  : $rq .= "NULL)";
+        isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."'  "  : $rq .= "NULL)";
+       	$rq .= ")";
        	$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
