@@ -38,6 +38,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.p1_file.label}</td><td class="FormRowValue">{$form.p1_file.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
 
 		<tr class="list_one"><td class="FormRowField">{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
 		
