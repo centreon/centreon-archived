@@ -43,7 +43,7 @@
 				/*
 				 * Get all Hosts 
 				 */
-				$DBRESULT3 =& $pearDB->query("SELECT host_id, host_name FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1'");
+				$DBRESULT3 =& $pearDB->query("SELECT host_id, host_name FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
 			  	while ($h = $DBRESULT3->fetchRow())
 					$Host[$h["host_id"]] = $h["host_name"];
 					
