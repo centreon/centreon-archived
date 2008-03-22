@@ -15,17 +15,18 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
+
+	if (!isset($oreon))
+		exit();
 	/*
 	 * Database retrieve information for Host
 	 */
 
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
-		if ($oreon->user->admin || !HadUserLca($pearDB))
-			$rq = "SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1";
-		else
-			$rq = "SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id AND host_id IN (".$lcaHoststr.") LIMIT 1";
-		$DBRESULT =& $pearDB->query($rq);
+		!$is_admin ? $restriction = "AND host_id IN (".$lcaHoststr.") " : $restriction = "";
+		$restriction = "";
+		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id $restriction LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
@@ -53,7 +54,7 @@ For information : contact@oreon-project.org
 		 * Set Contact Group
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
+		for ($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		
@@ -61,7 +62,7 @@ For information : contact@oreon-project.org
 		 * Set Host Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $DBRESULT->fetchInto($parent); $i++)
+		for ($i = 0; $DBRESULT->fetchInto($parent); $i++)
 			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 		$DBRESULT->free();
 		
@@ -69,7 +70,7 @@ For information : contact@oreon-project.org
 		 * Set Host Childs
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation WHERE host_parent_hp_id = '".$host_id."'");
-		for($i = 0; $DBRESULT->fetchInto($child); $i++)
+		for ($i = 0; $DBRESULT->fetchInto($child); $i++)
 			$host["host_childs"][$i] = $child["host_host_id"];
 		$DBRESULT->free();
 		
@@ -77,7 +78,7 @@ For information : contact@oreon-project.org
 		 * Set Host Group Parents
 		 */
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
-		for($i = 0; $DBRESULT->fetchInto($hg); $i++)
+		for ($i = 0; $DBRESULT->fetchInto($hg); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
 		
@@ -155,11 +156,11 @@ For information : contact@oreon-project.org
 	 * Host Groups comes from DB -> Store in $hgs Array
 	 */
 	$hgs = array();
-	if ($oreon->user->admin || !HadUserLca($pearDB))		
+//	if ($oreon->user->admin || !HadUserLca($pearDB))		
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	else
+/*	else
 		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHostGroupstr.") ORDER BY hg_name");
-
+*/
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
@@ -168,11 +169,11 @@ For information : contact@oreon-project.org
 	 * Host Parents comes from DB -> Store in $hostPs Array
 	 */
 	$hostPs = array();
-	if ($oreon->user->admin || !HadUserLca($pearDB))
+//	if ($oreon->user->admin || !HadUserLca($pearDB))
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
-	else
+/*	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
-	while($DBRESULT->fetchInto($hostP))	{
+*/	while($DBRESULT->fetchInto($hostP))	{
 		if (!$hostP["host_name"])
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
 		$hostPs[$hostP["host_id"]] = $hostP["host_name"];
@@ -282,7 +283,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 	
 	# Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 	$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
 
 	$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
@@ -314,7 +315,7 @@ For information : contact@oreon-project.org
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
 	
 	#Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		if ($o == "mc")	{
 			$mc_mod_hcg = array();
 			$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
@@ -435,7 +436,7 @@ For information : contact@oreon-project.org
 
 	$form->addElement('header', 'treatment', _("Data Processing"));
 	# Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Yes"), '1');
 		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
 		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
@@ -457,7 +458,7 @@ For information : contact@oreon-project.org
 	if ($o != "mc")
 		$form->setDefaults(array('host_flap_detection_enabled' => '2'));
 	# Nagios 2
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
 
 	$form->addElement('text', 'host_low_flap_threshold', _("Low Flap threshold"), $attrsText2);
@@ -497,10 +498,10 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title4', _("Massive Change"));
 
 	$form->addElement('header', 'nagios', _("Nagios"));
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('ehi_icon_image',this.form.elements['ehi_icon_image'].value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
@@ -641,14 +642,13 @@ For information : contact@oreon-project.org
 		$tpl->assign('is_not_template', $host_register);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		$tpl->assign('seconds', _("seconds"));
 		$tpl->assign('p', $p);
-
 		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
 		$tpl->assign("Flapping_Options", _("Flapping options"));
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
 		$tpl->assign("History_Options", _("History Options"));
 		$tpl->assign("Event_Handler", _("Event Handler"));
-
 		$tpl->display("formHost.ihtml");
 	}
 ?>
