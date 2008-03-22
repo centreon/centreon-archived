@@ -72,7 +72,8 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'name', _("Sattelite Name"), $attrsText);
 	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 	$form->addElement('text', 'init_script', _("Nagios Init Script"), $attrsText);
-	$form->addElement('text', 'nagios_bin', _("Nagios Binary"), $attrsText);
+	$form->addElement('text', 'nagios_bin', _("nagios Binary"), $attrsText);
+	$form->addElement('text', 'nagiosstats_bin', _("nagiosstats Binary"), $attrsText);
 		
 	$Tab = array();
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
@@ -89,9 +90,9 @@ For information : contact@oreon-project.org
 		"name"=>'',
 		"localhost"=>'0',
 		"ns_ip_address"=>"127.0.0.1",
-		"ns_http_suffix"=>"/oreon/",
-		"ns_http_port"=>"80",
-		"ns_key"=>'',
+		"nagios_bin"=>"/usr/sbin/nagios2",
+		"nagiosstats_bin"=>"/usr/sbin/nagiosstats",
+		"init_script"=>"/etc/init.d/nagios".$oreon->user->get_version(),
 		"ns_activate"=>'1'));
 	} else {
 		if (isset($cfg_server))
