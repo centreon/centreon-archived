@@ -22,6 +22,14 @@ For information : contact@oreon-project.org
 	function myDecode($arg)	{
 		return html_entity_decode($arg, ENT_QUOTES);
 	}
+	
+	function getStatusColor($pearDB){
+		$DBRESULT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error When selection color status : ".$DBRESULT->getDebugInfo()."<br />";
+		
+		return $DBRESULT->fetchRow();	
+	}
 
 	function tidySearchKey($search, $advanced_search){
 		if ($advanced_search == 1){
