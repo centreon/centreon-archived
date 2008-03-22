@@ -67,8 +67,9 @@ For information : contact@oreon-project.org
 	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
 
 	function getMyIndexGraph4Service($host_name = NULL, $service_description = NULL)	{
-		if (!$service_description || !$host_name) return NULL;
 		global $pearDBO;
+		if (!$service_description || !$host_name) 
+			return NULL;
 		$DBRESULT =& $pearDBO->query("SELECT id FROM index_data WHERE host_name = '".$host_name."' AND service_description = '".$service_description."' ");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -84,10 +85,6 @@ For information : contact@oreon-project.org
 
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
-		/*
-		 * Get ACL Groups List
-		 */
-		 
 	}
 
 	$service = array();
@@ -97,10 +94,6 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
 
 	$tab_color_service = array();
 	$tab_color_service[0] = $general_opt["color_ok"];
