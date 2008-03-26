@@ -21,13 +21,13 @@ For information : contact@oreon-project.org
 	/*
 	 * Access List
 	 */
-	 
-	$lcaHostByName 	= getLcaHostByName($pearDB);
-	$lcaHostByID 	= getLcaHostByID($pearDB);
-	$lcaHoststr 	= getLCAHostStr($lcaHostByID["LcaHost"]);
-	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-	$isRestreint 	= HadUserLca($pearDB);
-	
+	if (!$is_admin){ 
+		$lcaHostByName 	= getLcaHostByName($pearDB);
+		$lcaHostByID 	= getLcaHostByID($pearDB);
+		$lcaHoststr 	= getLCAHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	}
+		
 	isset($_GET["host_id"]) ? $hG = $_GET["host_id"] : $hG = NULL;
 	isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = NULL;
 	$hG ? $host_id = $hG : $host_id = $hP;
