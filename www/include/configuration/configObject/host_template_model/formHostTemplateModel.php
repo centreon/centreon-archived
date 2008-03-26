@@ -23,6 +23,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+
 		# Set base value
 		if ($DBRESULT->numRows())	{
 			$host = array_map("myDecode", $DBRESULT->fetchRow());
@@ -30,11 +31,13 @@ For information : contact@oreon-project.org
 			$tmp = explode(',', $host["host_notification_options"]);
 			foreach ($tmp as $key => $value)
 				$host["host_notifOpts"][trim($value)] = 1;
+
 			# Set Stalking Options
 			$tmp = explode(',', $host["host_stalking_options"]);
 			foreach ($tmp as $key => $value)
 				$host["host_stalOpts"][trim($value)] = 1;
 			$DBRESULT->free();
+
 			# Set Contact Group
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
 			if (PEAR::isError($DBRESULT))
@@ -42,6 +45,7 @@ For information : contact@oreon-project.org
 			for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
 				$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 			$DBRESULT->free();
+
 			# Set Host Parents
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
 			if (PEAR::isError($DBRESULT))
@@ -49,6 +53,7 @@ For information : contact@oreon-project.org
 			for($i = 0; $DBRESULT->fetchInto($parent); $i++)
 				$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 			$DBRESULT->free();
+
 			# Set Service Templates Childs
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
 			if (PEAR::isError($DBRESULT))
@@ -104,6 +109,7 @@ For information : contact@oreon-project.org
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
 	$DBRESULT->free();
+
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
@@ -112,6 +118,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
+
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
@@ -120,6 +127,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
+
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
@@ -128,6 +136,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
+
 	# Deletion Policy definition comes from DB -> Store in $ppols Array
 	$ppols = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
@@ -136,8 +145,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($ppol))
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
-	
-		
+			
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
 	$extImg = return_image_list(1);
@@ -214,7 +222,7 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
 	# Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		$form->addElement('text', 'host_check_interval', _("Normal Check Interval"), $attrsText2);
 	
 		$hostACE[] = &HTML_QuickForm::createElement('radio', 'host_active_checks_enabled', null, _("Yes"), '1');
@@ -245,7 +253,7 @@ For information : contact@oreon-project.org
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
 	#Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		if ($o == "mc")	{
 			$mc_mod_hcg = array();
 			$mc_mod_hcg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
@@ -327,7 +335,7 @@ For information : contact@oreon-project.org
 
 	$form->addElement('header', 'treatment', _("Data Processing"));
 	# Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Yes"), '1');
 		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
 		$hostOOH[] = &HTML_QuickForm::createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
@@ -349,7 +357,7 @@ For information : contact@oreon-project.org
 	if ($o != "mc")
 		$form->setDefaults(array('host_flap_detection_enabled' => '2'));
 	# Nagios 2
-	if ($oreon->user->get_version() == 2)	{
+	if ($oreon->user->get_version() >= 2)	{
 		$form->addElement('text', 'host_freshness_threshold', _("Freshness Threshold"), $attrsText2);
 	}
 	$form->addElement('text', 'host_low_flap_threshold', _("Low Flap threshold"), $attrsText2);
@@ -387,10 +395,10 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title4', _("View a Host Extended Info"));
 
 	$form->addElement('header', 'nagios', _("Nagios"));
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('ehi_icon_image',this.form.elements['ehi_icon_image'].value)"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
