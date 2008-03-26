@@ -76,12 +76,10 @@ For information : contact@oreon-project.org
 					$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
 				}
 	}
-	$str .= "resource_file=".$nagios["cfg_dir"]."resource.cfg\n";
+	$str .= "resource_file=".$nagios["cfg_dir"].$tab['id']."/resource.cfg\n";
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
-			print $key ."->".$value."\n<br>";
-			
 			if ($key == "aggregate_status_updates" && $value == 2);
 			else if ($key == "enable_notifications" && $value == 2);	
 			else if ($key == "execute_service_checks" && $value == 2);	
@@ -182,27 +180,24 @@ For information : contact@oreon-project.org
 			/*
 			 * Nagios 3 part
 			 */
-			else if ($key == "enable_predictive_host_dependency_checks" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "enable_predictive_service_dependency_checks" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "use_large_installation_tweaks" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "free_child_process_memory" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "child_processes_fork_twice" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "enable_environment_macros" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "enable_embedded_perl" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "use_embedded_perl_implicitly" && ($value == 2 || $oreon->user->get_version() == 3));
-			else if ($key == "debug_verbosity" && ($value == 2 || $oreon->user->get_version() == 3));
-
-			else if ($key == "cached_host_check_horizon" && $oreon->user->get_version() == 3);
-			else if ($key == "cached_service_check_horizon" && $oreon->user->get_version() == 3);
-			else if ($key == "additional_freshness_latency" && $oreon->user->get_version() == 3);
-			else if ($key == "debug_level" && $oreon->user->get_version() == 3);
-			else if ($key == "max_debug_file_size" && $oreon->user->get_version() == 3);
-			
-			else if ($key == "debug_file" && $oreon->user->get_version() == 3);
-			 /*
-			  *  End of Nagios 3 part
-			  */
-			 else {
+			else if ($key == "enable_predictive_host_dependency_checks" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "enable_predictive_service_dependency_checks" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "use_large_installation_tweaks" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "free_child_process_memory" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "child_processes_fork_twice" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "enable_environment_macros" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "enable_embedded_perl" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "use_embedded_perl_implicitly" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "debug_verbosity" && ($value == 2 || $oreon->user->get_version() == 2));
+			else if ($key == "cached_host_check_horizon" && $oreon->user->get_version() == 2);
+			else if ($key == "cached_service_check_horizon" && $oreon->user->get_version() == 2);
+			else if ($key == "additional_freshness_latency" && $oreon->user->get_version() == 2);
+			else if ($key == "debug_level" && $oreon->user->get_version() == 2);
+			else if ($key == "max_debug_file_size" && $oreon->user->get_version() == 2);
+			else if ($key == "debug_file" && $oreon->user->get_version() == 2);
+			else if ($key == "downtime_file" && $oreon->user->get_version() == 3);
+			else if ($key == "comment_file" && $oreon->user->get_version() == 3);
+			else {
 				$str .= $key."=".$value."\n";
 			}
 		}

@@ -91,7 +91,7 @@ For information : contact@oreon-project.org
 				unset($strTemp);
 
 				// Nagios V2 : Hostgroups relation
-				if ($oreon->user->get_version() == 2)	{
+				if ($oreon->user->get_version() >= 2)	{
 					$hostGroup = array();
 					$strTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT hg.hg_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.host_host_id = '".$host["host_id"]."' AND hgr.hostgroup_hg_id = hg.hg_id ORDER BY `hg_name`");
@@ -130,7 +130,7 @@ For information : contact@oreon-project.org
 				if ($host["host_check_interval"] != NULL) $str .= print_line("check_interval", $host["host_check_interval"]);
 				if ($oreon->user->get_version() == 1)
 					if ($host["host_checks_enabled"] != 2) $str .= print_line("checks_enabled", $host["host_checks_enabled"] == 1 ? "1" : "0");
-				if ($oreon->user->get_version() == 2)	{
+				if ($oreon->user->get_version() >= 2)	{
 					if ($host["host_active_checks_enabled"] != 2) $str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
 					if ($host["host_passive_checks_enabled"] != 2) $str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
 					//Check Period
@@ -171,7 +171,7 @@ For information : contact@oreon-project.org
 				if ($host["host_retain_status_information"] != 2) $str .= print_line("retain_status_information", $host["host_retain_status_information"] == 1 ? "1": "0");
 				if ($host["host_retain_nonstatus_information"] != 2) $str .= print_line("retain_nonstatus_information", $host["host_retain_nonstatus_information"] == 1 ? "1": "0");
 				//Nagios V2 : contactGroups relation
-				if ($oreon->user->get_version() == 2)	{
+				if ($oreon->user->get_version() >= 2)	{
 					$contactGroup = array();
 					$strTemp = NULL;
 					$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.host_host_id = '".$host["host_id"]."' AND chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
