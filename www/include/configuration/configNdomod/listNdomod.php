@@ -36,11 +36,11 @@ For information : contact@oreon-project.org
 	 * nagios servers comes from DB 
 	 */
 	$nagios_servers = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM cfg_ndomod ORDER BY description");
+	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($nagios_server = $DBRESULT->fetchRow())
-		$nagios_servers[$nagios_server["id"]] = $nagios_server["description"];
+		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
 
 	/*
@@ -63,6 +63,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_instance_name", _("Instance Name"));
 	$tpl->assign("headerMenu_desc", _("Requester"));
+	$tpl->assign("headerMenu_interface_type", _("Interface Type"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
@@ -71,7 +72,7 @@ For information : contact@oreon-project.org
 	 */
 	
 		
-	$rq = "SELECT id, description, instance_name, ns_nagios_server, activate FROM cfg_ndomod $SearchTool ORDER BY description LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT id, description, instance_name, ns_nagios_server, activate, output_type FROM cfg_ndomod $SearchTool ORDER BY description LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -98,9 +99,10 @@ For information : contact@oreon-project.org
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$config["description"],
-						"RowMenu_instance_name"=>substr($nagios_servers[$config["ns_nagios_server"]], 0, 40),
+						"RowMenu_instance_name"=>$config["instance_name"],
+						"RowMenu_interface_type"=>$config["output_type"],
 						"RowMenu_link"=>"?p=".$p."&o=c&id=".$config['id'],
-						"RowMenu_desc"=>$config["instance_name"],
+						"RowMenu_desc"=>substr($nagios_servers[$config["ns_nagios_server"]], 0, 40),
 						"RowMenu_status"=>$config["activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";	
