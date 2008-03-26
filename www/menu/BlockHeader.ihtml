@@ -2,7 +2,6 @@
 <div id="header">
 	<img src='{$urlLogo}' alt='Centreon logo' title='Centreon Logo' id="logo" />
 	<!-- informations bank for ajax -->
-
 	<form id="AjaxBankBasic" action="#" method="post">
 		<div>
 			<input type="hidden" name="color_OK" value="{$color.OK}"/>
