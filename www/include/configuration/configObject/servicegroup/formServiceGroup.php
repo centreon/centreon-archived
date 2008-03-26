@@ -16,12 +16,13 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	$lcaHost = getLCAHostByID($pearDB);
-	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
-	$lcaSGStr = getLCASGStr(getLCASG($pearDB));
-	$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
-	
+	if (!$is_admin){
+		$lcaHost = getLCAHostByID($pearDB);
+		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+		$lcaSGStr = getLCASGStr(getLCASG($pearDB));
+		$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
+	}
+		
 	#
 	## Database retrieve information for ServiceGroup
 	#
@@ -58,7 +59,7 @@ For information : contact@oreon-project.org
 	$hServices = array();
 	$hgServices = array();
 	$initName = NULL;
-	if ($oreon->user->admin || !$isRestreint)		
+	if ($is_admin)		
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' AND host_id IN (".$lcaHostStr.") ORDER BY host_name");
@@ -73,7 +74,7 @@ For information : contact@oreon-project.org
 
 	# Host Group LCA
 	$lcaHGStr ? $lcaHGStr = $lcaHGStr : $lcaHGStr =  '\'\'';
-	if ($oreon->user->admin || !$isRestreint)		
+	if ($is_admin)		
 		$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
 								"FROM host_service_relation hsr, service sv, hostgroup hg " .
 								"WHERE sv.service_register = '1' " .

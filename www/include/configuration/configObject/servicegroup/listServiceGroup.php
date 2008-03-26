@@ -21,21 +21,23 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
-	$lcaHost 	= getLCAHostByID($pearDB);
-	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
-	$lcaSGStr 	= getLCASGStr(getLCASG($pearDB));
-	$lcaHGStr 	= getLCAHGStr($lcaHost["LcaHostGroup"]);
+	if (!$is_admin){
+		$lcaHost 	= getLCAHostByID($pearDB);
+		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+		$lcaSGStr 	= getLCASGStr(getLCASG($pearDB));
+		$lcaHGStr 	= getLCAHGStr($lcaHost["LcaHostGroup"]);
+	}
 
 	if (isset($search) && $search)
 		$SearchTool = "sg_id IN (".$lcaSGStr.")";
 
 	if (isset($search)){
-		if ($oreon->user->admin || !$isRestreint)		
+		if ($is_admin)		
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 		else
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND sg_id IN (".$lcaServiceGroupStr.")");
 	} else {
-		if ($oreon->user->admin || !$isRestreint)		
+		if ($is_admin)		
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
 		else
 			$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE $SearchTool");
@@ -66,14 +68,14 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
-	!$isRestreint ? $lcaStr = " AND sg_id IN (".$lcaSGStr.") " : $lcaStr = ""; 
+	!$is_admin ? $lcaStr = " AND sg_id IN (".$lcaSGStr.") " : $lcaStr = ""; 
 	if ($search) {
-		if ($oreon->user->admin || !$isRestreint)
+		if ($is_admin)
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 		else
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE (sg_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR sg_alias LIKE '".htmlentities($search, ENT_QUOTES)."') AND sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		if ($oreon->user->admin || !$isRestreint)
+		if ($is_admin)
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 		else
 			$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup WHERE sg_id IN (".$lcaSGStr.") ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
