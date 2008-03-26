@@ -30,12 +30,13 @@ For information : contact@oreon-project.org
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	$lcaHost = getLCAHostByID($pearDB);
-	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
-	$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
-	$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
-	$isRestreint = HadUserLca($pearDB);
-
+	if (!$is_admin){
+		$lcaHost = getLCAHostByID($pearDB);
+		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+		$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
+		$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
+	}
+	
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';

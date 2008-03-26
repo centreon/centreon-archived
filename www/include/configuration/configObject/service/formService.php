@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 	#
 	# Hosts comes from DB -> Store in $hosts Array
 	$hosts = array();
-	if (!$isRestreint || $oreon->user->admin)
+	if ($is_admin)
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	else
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");		
@@ -125,15 +125,16 @@ For information : contact@oreon-project.org
 	$DBRESULT->free();
 	# HostGroups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	if (!$isRestreint || $oreon->user->admin)
-		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	else
-		$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (".$lcaHGStr.") ORDER BY hg_name");
+	$lcaSTR = "";
+	if (!$is_admin)
+		$lcaSTR = " WHERE hg_id IN (".$lcaHGStr.") ";
+	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $lcaSTR ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while($DBRESULT->fetchInto($hg))
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
+
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
@@ -142,6 +143,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($tp))
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
+
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
@@ -150,6 +152,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
+
 	# Check commands comes from DB -> Store in $checkCmdEvent Array
 	$checkCmdEvent = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
@@ -158,6 +161,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($checkCmd))
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
+
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
@@ -166,6 +170,7 @@ For information : contact@oreon-project.org
 	while($DBRESULT->fetchInto($notifCg))
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
+
 	# Service Groups comes from DB -> Store in $sgs Array
 	$sgs = array();
 //	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup WHERE sg_id IN (".$lcaServiceGroupStr.") ORDER BY sg_name");

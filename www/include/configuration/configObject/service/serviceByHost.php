@@ -30,12 +30,14 @@ For information : contact@oreon-project.org
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	$lcaHost = getLCAHostByID($pearDB);
-	$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
-	$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
-	//$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
-	$lcaSvcStr = getLCASVCStr($lcaHost);
-	
+	if (!$is_admin){
+		$lcaHost = getLCAHostByID($pearDB);
+		$lcaHostStr = getLCAHostStr($lcaHost["LcaHost"]);
+		$lcaServiceGroupStr = getLCASGStr($lcaHost["LcaHost"]);
+		//$lcaHGStr = getLCAHGStr($lcaHost["LcaHostGroup"]);
+		$lcaSvcStr = getLCASVCStr($lcaHost);
+	}
+		
 	#Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
@@ -45,7 +47,6 @@ For information : contact@oreon-project.org
 	$path = "./include/configuration/configObject/service/";
 	
 	#PHP functions
-	require_once("./DBOdsConnect.php");
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 	
