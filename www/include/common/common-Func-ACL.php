@@ -217,25 +217,6 @@ For information : contact@oreon-project.org
 		return $LcaHHG;
 	}
 	
-	function getAuthorizedCategories2($groupstr){
-		global $pearDB;
-		
-		$tab_categories = array();
-		$DBRESULT =& $pearDB->query("SELECT sc_id " .
-									"FROM acl_resources_sc_relations, acl_res_group_relations " .
-									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-									"AND acl_res_group_relations.acl_group_id IN (".$groupstr.")");
-		print "SELECT sc_id " .
-									"FROM acl_resources_sc_relations, acl_res_group_relations " .
-									"WHERE acl_resources_sc_relations.acl_res_id = acl_res_group_relations.acl_res_id " .
-									"AND acl_res_group_relations.acl_group_id IN (".$groupstr.")\n";
-		while ($res = $DBRESULT->fetchRow())
-			$tab_categories[$res["sc_id"]] = $res["sc_id"];
-	  	unset($res);
-	  	unset($DBRESULT);
-	  	return $tab_categories;
-	}
-
 	function getAuthorizedCategories($groupstr){
 		global $pearDB;
 		
@@ -406,36 +387,4 @@ For information : contact@oreon-project.org
 		return 0;
 	}
 	
-	function HadUserLca($pearDB){
-		if (!$pearDB)
-			return ;
-		if (session_id() == "")
-			$uid = $_POST["sid"];
-		else 
-			$uid = session_id();
-		$num = 0;
-		
-		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
-		$res1->fetchInto($user);
-		$res1 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user["user_id"]."'");
-		$res1->fetchInto($user_status);
-		if ($user_status["contact_admin"]){
-			return 0;
-		} else {
-			$user_id = $user["user_id"];
-			$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user_id."'");
-  			$num = $res1->numRows();
-			return $num;
-		}
-	}
-	
-	function IsHostReadable($lcaHostByName, $host_name){
-		global $oreon, $pearDB, $isRestreint;
-		if (!isset($isRestreint))
-			$isRestreint = HadUserLca($pearDB);
-		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host_name])))
-			return 1;
-		return 0;		
-	}
-
 ?>
