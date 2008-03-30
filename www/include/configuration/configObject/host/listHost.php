@@ -31,7 +31,7 @@ For information : contact@oreon-project.org
 	 * Access list activation
 	 */
 	$LCATool = "";
-	if ($isRestreint)
+	if (!$is_admin)
 		$LCATool = "host_id IN (".$lcaHoststr.") AND";
 	
 	/*
