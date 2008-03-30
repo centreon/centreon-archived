@@ -17,42 +17,40 @@ For information : contact@oreon-project.org
 */
 
 
-	function my_getTimeTamps($dateSTR)
-	{
+	function my_getTimeTamps($dateSTR)	{
 		list($m,$d,$y) = split('/',$dateSTR);
 		return (mktime(0,0,0,$m,$d,$y));
 	}
-	function my_getStartDay($date)
-	{
+	
+	function my_getStartDay($date){
 		$d = date("d",$date);
 		$y = date("Y",$date);
 		$m = date("m",$date);
 		return (mktime(0,0,0,$m,$d,$y));
 	}
-	function my_getEndDay($date)
-	{
-		$d = date("d",$date);
-		$y = date("Y",$date);
-		$m = date("m",$date);
-		return (mktime(0,0,0,$m,$d+1,$y));
-	}
-	function my_getNextStartDay($date)
-	{
-		$d = date("d",$date);
-		$y = date("Y",$date);
-		$m = date("m",$date);
-		return (mktime(0,0,0,$m,$d+1,$y));
-	}
-	function my_getNextEndDay($date)
-	{
+	
+	function my_getEndDay($date){
 		$d = date("d",$date);
 		$y = date("Y",$date);
 		$m = date("m",$date);
 		return (mktime(0,0,0,$m,$d+1,$y));
 	}
 	
-	function trim_value(&$value)
-	{
+	function my_getNextStartDay($date){
+		$d = date("d",$date);
+		$y = date("Y",$date);
+		$m = date("m",$date);
+		return (mktime(0,0,0,$m,$d+1,$y));
+	}
+	
+	function my_getNextEndDay($date){
+		$d = date("d",$date);
+		$y = date("Y",$date);
+		$m = date("m",$date);
+		return (mktime(0,0,0,$m,$d+1,$y));
+	}
+	
+	function trim_value(&$value){
 	   $value = trim($value);
 	}
 	
@@ -74,5 +72,4 @@ For information : contact@oreon-project.org
 		$tab["img"] = $tab_img[$status];
 		return $tab ;
 	}
-
 ?>

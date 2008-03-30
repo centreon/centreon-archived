@@ -19,6 +19,10 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit;
 
+	if (!$is_admin){
+		$lca = getLcaHostByName($pearDB);	
+	}
+
 	# Smarty template Init
 	$path = "./include/reporting/dashboard";
 	$tpl = new Smarty();
@@ -32,7 +36,66 @@ For information : contact@oreon-project.org
 	require_once './include/common/common-Func.php';
 	require_once './include/common/common-Func-ACL.php';
 	require_once 'HostLog.php';
-	include("./include/monitoring/log/choose_log_file.php");
+
+	#Pear library
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+	
+	$lcaHostByName = getLcaHostByName($pearDB);
+	
+	$tableFile2 = array();
+	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
+		while ($file = @readdir($handle))
+			if (is_file($oreon->Nagioscfg["log_archive_path"]."/$file"))	{
+				preg_match("/nagios\-([0-9]*)\-([0-9]*)\-([0-9]*)\-([0-9]*).log/", $file, $matches);
+				$time = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3]) - 1;
+				$tableFile2[$file] =  "  " . date(_("Y/m/d"), $time) . " ";
+			}
+		@closedir($handle);
+	}
+	krsort($tableFile2);
+	
+	$tableFile3 = array($oreon->Nagioscfg["log_file"] => " -- " . _("Today") . " -- ");
+	$tableFile1 = array_merge($tableFile3, $tableFile2);
+
+	$host = array();
+	
+	$host[""] = "";
+	$DBRESULT =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($h))
+		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
+			$host[$h["host_name"]] = $h["host_name"];
+
+	$debug = 0;
+	$attrsTextI		= array("size"=>"3");
+	$attrsText 		= array("size"=>"30");
+	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+	
+	#
+	## Form begin
+	#
+	
+	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	$form->addElement('header', 'title', _("Add a Service downtime"));
+	
+	#
+	## Indicator basic information
+	#
+	
+	$redirect =& $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
+    
+    $selHost =& $form->addElement('select', 'file', _("Log file"), $tableFile1, array("onChange" =>"this.form.submit();"));
+	$selHost =& $form->addElement('select', 'host', _("Host"), $host, array("onChange" =>"this.form.submit();"));
+	isset($_POST["host"]) ?	$form->setDefaults(array('file' => $_POST["host"])) : $form->setDefaults(array('file' => $oreon->Nagioscfg["log_file"]));
+	
+	$log = NULL;	
+	$tab_log = array();
+
+
+//	include("./include/monitoring/log/choose_log_file.php");
 
 
 	#
@@ -59,8 +122,8 @@ For information : contact@oreon-project.org
 	#
 	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' AND host_id IN (".$lcaHoststr.") and host_register = '1' ORDER BY host_name");
 
-	while ($res->fetchInto($h)){
-		if (IsHostReadable($lcaHostByName, $h["host_name"]))
+	while ($h = $res->fetchRow()){
+		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
 			$host[$h["host_name"]] = $h["host_name"];
 	}
 	$selHost =& $formHost->addElement('select', 'host', _("Host"), $host, array("onChange" =>"this.form.submit();"));
@@ -102,24 +165,15 @@ For information : contact@oreon-project.org
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
 	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
 
-
-
-
-
-	if($mhost){
+	if ($mhost){
 		$i=0;
-
-
-
+	
 	$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($end_date_select - $start_date_select));
-
-
 	$tpl->assign('host_name', $mhost);
 	global $host_name;
 	$host_name = $mhost;
 
 	$tpl->assign('totalAlert', $totalAlert);
-
 	$tpl->assign('totalTime', Duration::toString($totalTime));
 	$tpl->assign('totalpTime', $totalpTime);
 	$tpl->assign('totalpkTime', $totalpkTime);
@@ -143,7 +197,6 @@ For information : contact@oreon-project.org
 	}## end of period requirement
 
 	$tpl->assign("tab_log", $tab_log);
-
 	$tpl->assign('actualTitle', _(" Actual "));
 
 	$tpl->assign('date_start_select', $start_date_select);
@@ -151,7 +204,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('to', _(" to "));
 	$tpl->assign('period_name', _(" From "));
 	$tpl->assign('period', $var_url_export_csv);
-
 
 	$tpl->assign('style_ok', "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_ok_alert', "class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
@@ -181,7 +233,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('KnownTimeTitle', _("Known Time"));
 	$tpl->assign('AlertTitle', _("Alert"));
 
-
 	$tpl->assign('DateTitle', _("Date"));
 	$tpl->assign('EventTitle', _("Event"));
 	$tpl->assign('InformationsTitle', _("Info"));
@@ -192,8 +243,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('svcTitle', _("State Breakdowns For Host Services"));
 
 	$formPeriod->setDefaults(array('period' => $period));
-
-
 
 	$tpl->assign('hostID', getMyHostID($mhost));
 	$color = array();
@@ -228,7 +277,7 @@ For information : contact@oreon-project.org
 	$today_unreachable = ($today_unreachable <= 0) ? 0 : round($today_unreachable / $tt *100,2);
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
-	if($mhost)	{
+	if ($mhost)	{
 		$color = substr($oreon->optGen["color_up"],1) .':'.
 		 		 substr($oreon->optGen["color_down"],1) .':'.
 		 		 substr($oreon->optGen["color_unreachable"],1) .':'. 
@@ -248,7 +297,5 @@ For information : contact@oreon-project.org
 		</SCRIPT>
 		<?php
 	}
-
 	$tpl->display("template/viewHostLog.ihtml");
-
 ?>

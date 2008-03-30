@@ -25,16 +25,9 @@ For information : contact@oreon-project.org
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<data>';
 
-
-	if(isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"])&& isset($_GET["today_down"])&& isset($_GET["today_unreachable"])&& isset($_GET["today_pending"]))
+	if (isset($_GET["oreonPath"]) && isset($_GET["hostID"]) && isset($_GET["color"]) && isset($_GET["today_up"])&& isset($_GET["today_down"])&& isset($_GET["today_unreachable"])&& isset($_GET["today_pending"]))
 	{
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
-
-		# use for debug only
-		#$colorUP = "red";
-		#$colorDOWN = "red"; 
-		#$colorUNREACHABLE = "red"; 
-		#$colorUNKNOWN = "red";
 
 		$oreonPath = $_GET["oreonPath"];
 		include_once($oreonPath . "/etc/centreon.conf.php");
@@ -55,10 +48,21 @@ For information : contact@oreon-project.org
 		  die("Connecting probems with oreon database : " . $pearDB->getMessage());		
 		$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
+		$dsn = array(
+			     'phptype'  => 'mysql',
+			     'username' => $conf_oreon['user'],
+			     'password' => $conf_oreon['password'],
+			     'hostspec' => $conf_oreon['host'],
+			     'database' => $conf_oreon['ods'],
+			     );
+		
 
-		function create_date_timeline_format($time_unix)
-		{
-//			date("m d Y G:i:s", $start)
+		$pearDBO =& DB::connect($dsn, $options);
+		if (PEAR::isError($pearDB)) 
+		  die("Connecting probems with oreon database : " . $pearDBO->getMessage());		
+		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
+
+		function create_date_timeline_format($time_unix)	{
 			$tab_month = array(
 			"01" => "Jan",
 			"02" => "Feb",
@@ -140,13 +144,8 @@ For information : contact@oreon-project.org
 		    }
 		}
 			
-
-			
-		$rq = 'SELECT ' .
-		' * FROM `log_archive_host` WHERE host_id = ' . $_GET["hostID"] .
-		' order by date_start desc';
-			
-		$res = & $pearDB->query($rq);
+		$rq = 'SELECT  * FROM `log_archive_host` WHERE host_id = ' . $_GET["hostID"] . ' order by date_start desc';			
+		$res = & $pearDBO->query($rq);
 
 		  while ($h =& $res->fetchRow()) {
 			$uptime = $h["UPTimeScheduled"];
@@ -154,29 +153,30 @@ For information : contact@oreon-project.org
 			$unreachalbetime = $h["UNREACHABLETimeScheduled"];
 
 			$tt = 0 + ($h["date_end"] - $h["date_start"]);
-			if(($uptime + $downtime + $unreachalbetime) < $tt)
+			if (($uptime + $downtime + $unreachalbetime) < $tt)
 				$undeterminatetime = 0 + $tt - ($uptime + $downtime + $unreachalbetime);
 			else
-			$undeterminatetime = 0;
-			if($unreachalbetime > 0)
-			$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
+				$undeterminatetime = 0;
+			
+			if ($unreachalbetime > 0)
+				$punreach = 0 +round(($unreachalbetime / $tt * 100),2);
 			else
-			$punreach = "0.00";
+				$punreach = "0.00";
 
-			if($uptime > 0)
-			$pup = 0 +round(($uptime / $tt * 100),2);
+			if ($uptime > 0)
+				$pup = 0 +round(($uptime / $tt * 100),2);
 			else
-			$pup = "0.00";
+				$pup = "0.00";
 			
-			if($downtime > 0)
-			$pdown = 0 +round(($downtime / $tt * 100),2);
+			if ($downtime > 0)
+				$pdown = 0 +round(($downtime / $tt * 100),2);
 			else
-			$pdown = "0.00";
+			 	$pdown = "0.00";
 			
-			if($undeterminatetime > 0)
-			$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
+			if ($undeterminatetime > 0)
+				$pundet = 0 +round(($undeterminatetime / $tt * 100),2);
 			else
-			$pundet = "0.00";
+				$pundet = "0.00";
 
 			$t = 0 + ($h["date_end"] - $h["date_start"]);
 			$t = round(($t - ($t * 0.11574074074)),2);
@@ -194,7 +194,7 @@ For information : contact@oreon-project.org
 			$bubultab .= '{/table}';
 			
 			$tp = round(($pundet * $t / 100 ),2);
-			if($pundet > 0){
+			if ($pundet > 0){
 				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
@@ -207,7 +207,7 @@ For information : contact@oreon-project.org
 			}
 
 			$tp = round(($punreach * $t / 100 ),2);
-			if($punreach > 0){
+			if ($punreach > 0){
 				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
@@ -219,9 +219,8 @@ For information : contact@oreon-project.org
 				$buffer .= '</event>';
 			}
 
-
 			$tp = round(($pdown * $t / 100 ),2);
-			if($pdown > 0){
+			if ($pdown > 0){
 				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
@@ -235,7 +234,7 @@ For information : contact@oreon-project.org
 
 
 			$tp = round(($pup * $t / 100 ),2);
-			if($pup > 0){
+			if ($pup > 0){
 				$end = $h["date_start"] + $tp + 5000;
 				$buffer .= '<event ';
 				$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
@@ -246,95 +245,90 @@ For information : contact@oreon-project.org
 				$buffer .= $bubultab;
 				$buffer .= '</event>';	
 			}
-
-
 		  }
 		 
-#
-## Today purcent if period 
-#
-	$day = date("d",time());
-	$year = date("Y",time());
-	$month = date("m",time());
-	$today_start = mktime(0, 0, 0, $month, $day, $year);
-	$today_end = time();
-
-	$t = 0 + ($today_end - $today_start);
-	$start = $today_start + 5000;
-
-	$NbAlert = "Unknown";
-
-
-	#
-	## make bubul
-	#
-	$bubultab = '{table class=bulleDashtab}';
-	$bubultab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_up"].'%{/td}{td class=bulleDash}'.$_GET["today_UPnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_down"].'%{/td}{td class=bulleDash}'.$_GET["today_DOWNnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_unreachable"].'%{/td}{td class=bulleDash}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
-	$bubultab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_pending"].'%{/td}{/tr}';
-	$bubultab .= '{/table}';
-
-	$t = round(($t - ($t * 0.11574074074)),2);
-	$tp = round(($_GET["today_pending"] * $t / 100 ),2);
-
-	if($_GET["today_pending"] > 0){
-		$end = $today_start + $tp + 5000;
-		$buffer .= '<event ';
-		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-		$buffer .= ' color="#cccccc"';
-		$buffer .= ' isDuration="true" ';
-		$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
-		$buffer .= $bubultab;
-		$buffer .= '</event>';
-	}
-	$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
-	if($_GET["today_unreachable"] > 0){
-		$end = $today_start + $tp + 5000;
-		$buffer .= '<event ';
-		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-		$buffer .= ' color="#' . $colorUNREACHABLE . '"';
-		$buffer .= ' isDuration="true" ';
-		$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
-		$buffer .= $bubultab;
-		$buffer .= '</event>';
-	}
-	$tp = round(($_GET["today_down"] * $t / 100 ),2);
-	if($_GET["today_down"] > 0){
-		$end = $today_start + $tp + 5000;
-		$buffer .= '<event ';
-		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-		$buffer .= ' color="#' . $colorDOWN . '"';
-		$buffer .= ' isDuration="true" ';
-		$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
-		$buffer .= $bubultab;
-		$buffer .= '</event>';
-	}
-
-	$tp = round(($_GET["today_up"] * $t / 100 ),2);
-	if($_GET["today_up"] > 0){
-		$end = $today_start + $tp + 5000;
-		$buffer .= '<event ';
-		$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
-		$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
-		$buffer .= ' color="#' . $colorUP . '"';
-		$buffer .= ' isDuration="true" ';
-		$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
-		$buffer .= $bubultab;
-		$buffer .= '</event>';
-	}
-	}
-	else
-	{
+		#
+		## Today purcent if period 
+		#
+	
+		$day = date("d",time());
+		$year = date("Y",time());
+		$month = date("m",time());
+		$today_start = mktime(0, 0, 0, $month, $day, $year);
+		$today_end = time();
+	
+		$t = 0 + ($today_end - $today_start);
+		$start = $today_start + 5000;
+	
+		$NbAlert = "Unknown";
+	
+		#
+		## make bubul
+		#
+		$bubultab  = '{table class=bulleDashtab}';
+		$bubultab .= '{tr}{td class=bulleDashleft colspan=3}Day: '. date("d/m/Y", $start) .' --  Duration: '.Duration::toString($t).'{/td}{td class=bulleDashleft }Alert{/td}{/tr}';
+		$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUP.';"  }Up:{/td}{td class=bulleDash}'. Duration::toString($_GET["today_up"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_up"].'%{/td}{td class=bulleDash}'.$_GET["today_UPnbEvent"].'{/td}{/tr}';
+		$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorDOWN.';" }Down:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_down"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_down"].'%{/td}{td class=bulleDash}'.$_GET["today_DOWNnbEvent"].'{/td}{/tr}';
+		$bubultab .= '{tr}{td class=bulleDashleft style="background:#'.$colorUNREACHABLE.';" }Unreachable:{/td}{td class=bulleDash}'.Duration::toString(0+$_GET["today_unreachable"] * $t / 100) .'{/td}{td class=bulleDash}'.$_GET["today_unreachable"].'%{/td}{td class=bulleDash}'.$_GET["today_UNREACHABLEnbEvent"].'{/td}{/tr}';
+		$bubultab .= '{tr}{td class=bulleDashleft style="background:#cccccc;" }Undeterminated:{/td}{td class=bulleDash}'.Duration::toString($_GET["today_pending"] * $t / 100).'{/td}{td class=bulleDash}'.$_GET["today_pending"].'%{/td}{/tr}';
+		$bubultab .= '{/table}';
+	
+		$t = round(($t - ($t * 0.11574074074)),2);
+		$tp = round(($_GET["today_pending"] * $t / 100 ),2);
+	
+		if ($_GET["today_pending"] > 0){
+			$end = $today_start + $tp + 5000;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#cccccc"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . $_GET["today_pending"] . '%" >' ;
+			$buffer .= $bubultab;
+			$buffer .= '</event>';
+		}
+		$tp = round(($_GET["today_unreachable"] * $t / 100 ),2);
+		if ($_GET["today_unreachable"] > 0){
+			$end = $today_start + $tp + 5000;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorUNREACHABLE . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . $_GET["today_unreachable"] . '%" >' ;
+			$buffer .= $bubultab;
+			$buffer .= '</event>';
+		}
+		$tp = round(($_GET["today_down"] * $t / 100 ),2);
+		if ($_GET["today_down"] > 0){
+			$end = $today_start + $tp + 5000;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorDOWN . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . $_GET["today_down"] . '%" >' ;
+			$buffer .= $bubultab;
+			$buffer .= '</event>';
+		}
+	
+		$tp = round(($_GET["today_up"] * $t / 100 ),2);
+		if ($_GET["today_up"] > 0){
+			$end = $today_start + $tp + 5000;
+			$buffer .= '<event ';
+			$buffer .= ' start="' .create_date_timeline_format($start) . ' GMT"';
+			$buffer .= ' end="' . create_date_timeline_format($end). ' GMT"';
+			$buffer .= ' color="#' . $colorUP . '"';
+			$buffer .= ' isDuration="true" ';
+			$buffer .= ' title= "' . $_GET["today_up"] . '%" >' ;
+			$buffer .= $bubultab;
+			$buffer .= '</event>';
+		}
+	} else {
 		$buffer .= '<error>error</error>';
 	}
 
 	$buffer .= '</data>';
-
 	header('Content-Type: text/xml');
 	echo $buffer;
 ?>

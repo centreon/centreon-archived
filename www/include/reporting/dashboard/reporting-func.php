@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 		$second = date("s",time());
 		$start_date_day = mktime(0, 0, 0, $month, $day, $year);
 
-		if(!is_null($period)){
+		if (!is_null($period)){
 			if($period == "today"){
 				$start_date_select = mktime(0, 0, 0, $month, $day, $year);
 				$end_date_select = time();
@@ -96,6 +96,7 @@ For information : contact@oreon-project.org
 			$start_date_select = $start;
 		}
 	}
+
 	function getTodayLogForHost($host_name, &$hbase, $pearDBO, $today_start, $today_end){
 		$tab_tmp = array();
 		$tab_tmp["state"] = "UP";
@@ -111,12 +112,11 @@ For information : contact@oreon-project.org
 		$rq = "select * from log where host_name like '%".$host_name."%' and ctime <= ". 
 			$today_end . " AND service_description is null and ctime >= " . $today_start . " AND ( msg_type = '7' OR msg_type = '9' OR msg_type = '1')";
 
-
 		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
 			print "DB Error : ".$DBres->getDebugInfo()."<br />";
 		$log = array();
-		while ($DBres->fetchInto($log)){
+		while ($log = $DBres->fetchRow()){
 			if($log["status"] == "UP"){
 				$tab_tmp["Tup"] += $log["ctime"] - $tab_tmp["time"];
 				$tab_tmp["TupNBAlert"] += 1;
@@ -212,7 +212,7 @@ For information : contact@oreon-project.org
 
 		$ttmp = $end_date_select - $start_date_select;
 
-		$res = & $pearDB->query($rq);
+		$res = & $pearDBO->query($rq);
 		if (PEAR::isError($res)){
 		  die($res->getMessage());
 		} else {
@@ -391,13 +391,7 @@ For information : contact@oreon-project.org
 		$sbase["average"]["UNKNOWNnbEvent"] > 0 ? $sbase["average"]["UNKNOWNnbEvent"] /= $i : 0;
 		$sbase["average"]["CRITICALnbEvent"] > 0 ? $sbase["average"]["CRITICALnbEvent"] /= $i : 0;
 
-		/*
-					echo "<pre>";
-					print_r($sbase);
-					echo "</pre><hr>";
-		*/
 	}
-
 
 	function getLogInDbForSVC(&$tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select, $pearDBO, $today_start, $today_end){
 		$tab_svc_bdd = array();
@@ -426,7 +420,7 @@ For information : contact@oreon-project.org
 			' AND date_start >=  ' . ($start_date_select-1) .
 			' AND date_end <= ' . ($end_date_select + 1) .
 			' GROUP BY service_id';
-		$DBres =& $pearDB->query($rq);
+		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
 			print "DB Error : ".$DBres->getDebugInfo()."<br />";
 		while ($DBres->fetchInto($s)){
@@ -569,7 +563,7 @@ For information : contact@oreon-project.org
 			' AND date_end <= ' . ($end_date_select + 1) .
 			' GROUP BY service_id';
 
-		$res = & $pearDB->query($rq);
+		$res = & $pearDBO->query($rq);
 		if (PEAR::isError($res)){
 		  die($res->getMessage());
 		} else { 
@@ -714,16 +708,6 @@ For information : contact@oreon-project.org
 								$tab_hosts[$res1[0]]["timeNONE"] += ($time_event-$tab_hosts[$res1[0]]["current_time"]);
 							$tab_hosts[$res1[0]]["current_state"] = $res1[1];
 							$tab_hosts[$res1[0]]["current_time"] = $time_event; //save time
-/*
-							$tmp_log = array();
-							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
-							$tmp_log["status"] = $res1[1];
-							$tmp_log["host"] = $res1[0];
-							$tmp_log["type"] = $type;
-							$tmp_log["state"] = $res1[2];
-							$tmp_log["output"] = $res1[4];
-							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
-*/
 						}
 						else {
 							$tab_hosts[$res1[0]] = array();
@@ -738,17 +722,7 @@ For information : contact@oreon-project.org
 							$tab_hosts[$res1[0]]["UNREACHABLEnbEvent"] = 0;
 							$tab_hosts[$res1[0]]["start_time"] = $day_current_start;
 							$tab_hosts[$res1[0]]["tab_svc_log"] = array();
-/*
-							$tmp_log = array();
-							$tmp_log["time"] = date("d/m/Y H:i:s", $time_event);
-							$tmp_log["status"] = $res1[1];
-							$tmp_log["host"] = $res1[0];
-							$tmp_log["type"] = $type;
-							$tmp_log["state"] = $res1[2];
-							$tmp_log["output"] = $res1[4];
-							$tab_hosts[$res1[0]]["log"][$time_event] = $tmp_log; //log
-*/
-							}
+						}
 					}
 					
 					#
@@ -807,10 +781,8 @@ For information : contact@oreon-project.org
 							$tab_services[$res1[1]][$res1[0]] = $tab_tmp;
 						}
 					}
-				}//end if todaylog
+				}
 				}
 			}
 	}
-
-
 ?>
