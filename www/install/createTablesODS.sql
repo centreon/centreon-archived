@@ -1,3 +1,85 @@
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `log_archive_file_name`
+--
+
+CREATE TABLE IF NOT EXISTS `log_archive_file_name` (
+  `id_log_file` int(11) NOT NULL auto_increment,
+  `file_name` varchar(200) default NULL,
+  `date` int(11) default NULL,
+  PRIMARY KEY  (`id_log_file`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `log_archive_host`
+--
+
+CREATE TABLE IF NOT EXISTS `log_archive_host` (
+  `log_id` int(11) NOT NULL auto_increment,
+  `host_id` int(11) default NULL,
+  `UPTimeScheduled` int(11) default NULL,
+  `UPnbEvent` int(11) default NULL,
+  `UPTimeAverageAck` int(11) NOT NULL,
+  `UPTimeAverageRecovery` int(11) NOT NULL,
+  `DOWNTimeScheduled` int(11) default NULL,
+  `DOWNnbEvent` int(11) default NULL,
+  `DOWNTimeAverageAck` int(11) NOT NULL,
+  `DOWNTimeAverageRecovery` int(11) NOT NULL,
+  `UNREACHABLETimeScheduled` int(11) default NULL,
+  `UNREACHABLEnbEvent` int(11) default NULL,
+  `UNREACHABLETimeAverageAck` int(11) NOT NULL,
+  `UNREACHABLETimeAverageRecovery` int(11) NOT NULL,
+  `date_end` int(11) default NULL,
+  `date_start` int(11) default NULL,
+  PRIMARY KEY  (`log_id`),
+  UNIQUE KEY `log_id` (`log_id`),
+  KEY `host_index` (`host_id`),
+  KEY `date_end_index` (`date_end`),
+  KEY `date_start_index` (`date_start`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `log_archive_service`
+--
+
+CREATE TABLE IF NOT EXISTS `log_archive_service` (
+  `log_id` int(11) NOT NULL auto_increment,
+  `host_id` int(11) NOT NULL default '0',
+  `service_id` int(11) NOT NULL default '0',
+  `OKTimeScheduled` int(11) NOT NULL default '0',
+  `OKnbEvent` int(11) NOT NULL default '0',
+  `OKTimeAverageAck` int(11) NOT NULL,
+  `OKTimeAverageRecovery` int(11) NOT NULL,
+  `WARNINGTimeScheduled` int(11) NOT NULL default '0',
+  `WARNINGnbEvent` int(11) NOT NULL default '0',
+  `WARNINGTimeAverageAck` int(11) NOT NULL,
+  `WARNINGTimeAverageRecovery` int(11) NOT NULL,
+  `UNKNOWNTimeScheduled` int(11) NOT NULL default '0',
+  `UNKNOWNnbEvent` int(11) NOT NULL default '0',
+  `UNKNOWNTimeAverageAck` int(11) NOT NULL,
+  `UNKNOWNTimeAverageRecovery` int(11) NOT NULL,
+  `CRITICALTimeScheduled` int(11) NOT NULL default '0',
+  `CRITICALnbEvent` int(11) NOT NULL default '0',
+  `CRITICALTimeAverageAck` int(11) NOT NULL,
+  `CRITICALTimeAverageRecovery` int(11) NOT NULL,
+  `UNDETERMINATETimeScheduled` int(11) NOT NULL default '0',
+  `UNDETERMINATETimeUnScheduled` int(11) NOT NULL default '0',
+  `date_start` int(11) default NULL,
+  `date_end` int(11) default NULL,
+  PRIMARY KEY  (`log_id`),
+  KEY `host_index` (`host_id`),
+  KEY `service_index` (`service_id`),
+  KEY `date_end_index` (`date_end`),
+  KEY `date_start_index` (`date_start`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+
 -- 
 -- Structure de la table `config`
 -- 
