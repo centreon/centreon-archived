@@ -19,7 +19,12 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
-	
+
+	# start quickSearch form
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+		
 	if (isset($search))
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')");
 	else
@@ -36,11 +41,6 @@ For information : contact@oreon-project.org
 
 	$DBRESULT->fetchInto($ldap_auth);
 	$DBRESULT->free();
-
-	# start quickSearch form
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 	

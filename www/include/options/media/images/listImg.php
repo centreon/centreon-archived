@@ -19,6 +19,10 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 	
 	if (isset($search))
 		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img WHERE img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
@@ -28,10 +32,6 @@ For information : contact@oreon-project.org
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	# Smarty template Init
 	$tpl = new Smarty();

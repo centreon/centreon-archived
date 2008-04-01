@@ -23,11 +23,13 @@ For information : contact@oreon-project.org
 	/*
 	 * start quickSearch form
 	 */
-	 
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
-	
-	$SearchTool = "";
+	/*
+	 * end quickSearch form
+	 */	
+
+	$SearchTool = NULL;
 	if (isset($search) && $search)	
 		$SearchTool = " WHERE (hg_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR hg_alias LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	
@@ -43,10 +45,6 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";	
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	/*
-	 * end quickSearch form
-	 */
 
 	include("./include/common/checkPagination.php");
 

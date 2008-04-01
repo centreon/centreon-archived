@@ -20,6 +20,11 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	# start quickSearch form
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+		
 	if (isset($search))
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
@@ -29,10 +34,6 @@ For information : contact@oreon-project.org
 		
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 

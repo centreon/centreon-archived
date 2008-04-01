@@ -20,6 +20,12 @@ For information : contact@oreon-project.org
 
 	include("./include/common/autoNumLimit.php");
 
+	/*
+	 * start quickSearch form
+	 */
+	$advanced_search = 1;
+	include_once("./include/common/quickSearch.php");
+	
 	if (isset($_GET["search_type_service"])){
 		$search_type_service = $_GET["search_type_service"];
 		$oreon->search_type_service = $_GET["search_type_service"];
@@ -35,7 +41,6 @@ For information : contact@oreon-project.org
 		 $search_type_host = $oreon->search_type_host;
 	else
 		$search_type_host = NULL;
-
 
 	$rows = 0;
 	$tmp = NULL;
@@ -64,14 +69,6 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$rows = $DBRESULT->numRows();
 	}
-
-	$advanced_search = 0;
-
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
 
 	/*
 	 * Smarty template Init

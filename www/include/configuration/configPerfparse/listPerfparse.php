@@ -20,6 +20,10 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+	
 	if ($search)
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_perfparse WHERE perfparse_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
@@ -29,10 +33,6 @@ For information : contact@oreon-project.org
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 

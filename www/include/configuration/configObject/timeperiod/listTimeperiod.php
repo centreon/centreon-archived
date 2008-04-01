@@ -20,7 +20,13 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
-	$SearchTool = "";
+	/*
+	 * start quickSearch form
+	 */
+	$advanced_search = 1;
+	include_once("./include/common/quickSearch.php");
+	
+	$SearchTool = NULL;
 	if (isset($search) && $search)
 		$SearchTool = " WHERE tp_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 	
@@ -29,12 +35,6 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
 
 	include("./include/common/checkPagination.php");
 

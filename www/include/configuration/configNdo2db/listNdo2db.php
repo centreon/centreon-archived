@@ -15,11 +15,15 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	
 	if (!isset($oreon))
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	# start quickSearch form
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 	
 	if (isset($search))
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db` WHERE description LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
@@ -41,11 +45,6 @@ For information : contact@oreon-project.org
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 
 	include("./include/common/checkPagination.php");
 

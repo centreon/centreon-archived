@@ -20,6 +20,11 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	# start quickSearch form
+	$advanced_search = 1;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	$rq = "SELECT COUNT(*) FROM dependency dep";
 	if ($oreon->user->admin || !HadUserLca($pearDB))
@@ -34,11 +39,6 @@ For information : contact@oreon-project.org
 
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-	
-	# start quickSearch form
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 	
 	include("./include/common/checkPagination.php");
 	

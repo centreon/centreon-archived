@@ -20,6 +20,11 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	/*
+	 * start quickSearch form
+	 */
+	include_once("./include/common/quickSearch.php");
+	
 	if (isset($search))
 		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
 	else
@@ -28,11 +33,6 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 	
 	include("./include/common/checkPagination.php");
 

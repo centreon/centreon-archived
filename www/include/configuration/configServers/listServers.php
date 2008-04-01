@@ -20,6 +20,11 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	/*
+	 * start quickSearch form
+	 */
+	include_once("./include/common/quickSearch.php");
 	
 	$LCASearch = "";
 	if (isset($search))
@@ -42,11 +47,6 @@ For information : contact@oreon-project.org
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 	
 	include("./include/common/checkPagination.php");
 

@@ -19,8 +19,14 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	/*
+	 * start quickSearch form
+	 */
+	$advanced_search = 0;
+	include_once("./include/common/quickSearch.php");
 	
-	$SearchTool = "";
+	$SearchTool = NULL;
 	if (isset($search) && $search)
 		$SearchTool = "WHERE (sc_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR sc_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";
 	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM service_categories $SearchTool");
@@ -30,12 +36,6 @@ For information : contact@oreon-project.org
 	$tmp = & $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	$rows = $tmp["COUNT(*)"];
-
-	/*
-	 * start quickSearch form
-	 */
-	$advanced_search = 0;
-	include_once("./include/common/quickSearch.php");
 
 	include("./include/common/checkPagination.php");
 	

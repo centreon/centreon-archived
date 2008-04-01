@@ -20,6 +20,11 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	# start quickSearch form
+	$advanced_search = 1;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	
@@ -33,11 +38,6 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 	
 	include("./include/common/checkPagination.php");
 	

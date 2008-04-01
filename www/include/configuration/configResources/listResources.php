@@ -19,11 +19,16 @@ For information : contact@oreon-project.org
 		exit();
 
 	include("./include/common/autoNumLimit.php");
-
+	
+	/*
+	 * start quickSearch form
+	 */
+	include_once("./include/common/quickSearch.php");
+	
 	/*
 	 * Search engine
 	 */
-	$SearchTool = "";
+	$SearchTool = NULL;
 	if (isset($search) && $search)
 		$SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'";
 
@@ -33,11 +38,6 @@ For information : contact@oreon-project.org
 
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 
 	include("./include/common/checkPagination.php");
 

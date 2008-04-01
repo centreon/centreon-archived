@@ -20,6 +20,10 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	# start quickSearch form
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 	
 	if (isset($_GET["plugin_dir"]) && $_GET["plugin_dir"])
 		$dir = $_GET["plugin_dir"];
@@ -33,10 +37,6 @@ For information : contact@oreon-project.org
 	$plugin_dir = return_plugin_dir("");
 	
 	$rows = count($plugin_list);
-
-	# start quickSearch form
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 

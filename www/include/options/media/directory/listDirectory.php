@@ -19,6 +19,11 @@ For information : contact@oreon-project.org
 		exit();
 		
 	include("./include/common/autoNumLimit.php");
+
+	# start quickSearch form
+	$advanced_search = 1;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
 	
 	if (isset($search))
 		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM view_img_dir WHERE (dir_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dir_alias LIKE '".htmlentities($search, ENT_QUOTES)."')");
@@ -29,11 +34,6 @@ For information : contact@oreon-project.org
 		
 	$tmp =& $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
-
-	# start quickSearch form
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 
 	include("./include/common/checkPagination.php");
 

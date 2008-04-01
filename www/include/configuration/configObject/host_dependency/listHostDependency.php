@@ -21,6 +21,11 @@ For information : contact@oreon-project.org
 		
 	include("./include/common/autoNumLimit.php");
 	
+	# start quickSearch form
+	$advanced_search = 1;
+	include_once("./include/common/quickSearch.php");
+	# end quickSearch form
+	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 	
 	if ($oreon->user->admin || !$isRestreint){
@@ -30,11 +35,6 @@ For information : contact@oreon-project.org
 		$rq = "SELECT COUNT(*) FROM dependency dep";
 		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id AND dhpr.host_host_id IN (".$lcaHoststr.")) > 0";
 	}
-	
-	# start quickSearch form
-	$advanced_search = 1;
-	include_once("./include/common/quickSearch.php");
-	# end quickSearch form
 	 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '".htmlentities($search, ENT_QUOTES)."' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES)."%')";

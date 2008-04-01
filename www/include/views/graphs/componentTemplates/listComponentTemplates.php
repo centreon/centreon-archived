@@ -26,7 +26,7 @@ For information : contact@oreon-project.org
 	 */
 	include_once("./include/common/quickSearch.php");
 	
-	$SearchTool = "";
+	$SearchTool = NULL;
 	if (isset($search) && $search)
 		$SearchTool = " WHERE name LIKE '%".$search."%'";
 	
