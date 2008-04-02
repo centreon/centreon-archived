@@ -21,7 +21,7 @@ For information : contact@oreon-project.org
 	function testDirectoryExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
-		$id = NULL;
+		$id = "";
 		if (isset($form))
 			$id = $form->getSubmitValue('dir_id');
 		$DBRESULT =& $pearDB->query("SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '".htmlentities($name, ENT_QUOTES)."'");
@@ -134,16 +134,16 @@ For information : contact@oreon-project.org
 			return ($dir_id["MAX(dir_id)"]);
 		}
 		else
-			return NULL;
+			return "";
 	}
 	
-	function updateDirectoryInDB ($dir_id = NULL)	{
+	function updateDirectoryInDB ($dir_id = "")	{
 		if (!$dir_id) return;
 		updateDirectory($dir_id);
 		updateDirectoryElems($dir_id);
 	}
 	
-	function updateDirectory($dir_id = null)	{
+	function updateDirectory($dir_id = "")	{
 		if (!$dir_id) return;
 		global $form;
 		global $pearDB;
