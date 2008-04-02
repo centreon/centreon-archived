@@ -58,6 +58,7 @@ For information : contact@oreon-project.org
 	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
+	require_once "./include/common/common-Func-ACL.php";
 	
 	switch ($o)	{
 		case "a" 	: require_once($path."formHost.php"); break; #Add a host

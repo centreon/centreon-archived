@@ -427,19 +427,14 @@ For information : contact@oreon-project.org
 		/*
 		 *  Update LCA
 		 */
+		$group_list = getGroupListofUser($pearDB);
 		
-		$DBRESULT1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		if (PEAR::isError($DBRESULT1))
-			print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
-		while($DBRESULT1->fetchInto($contactGroup))	{
-		 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
-			if (PEAR::isError($DBRESULT2))
-				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-			while ($DBRESULT2->fetchInto($lca))	{
-				$rq = "INSERT INTO lca_define_host_relation ";
-				$rq .= "(lca_define_lca_id, host_host_id) ";
+		if ($ret["host_register"]["host_register"] == 1 && count($group_list)){
+			foreach ($group_list as $group_id)	{			
+				$rq = "INSERT INTO `acl_resources_host_relations` ";
+				$rq .= "(acl_res_id, host_host_id) ";
 				$rq .= "VALUES ";
-				$rq .= "('".$lca["lca_define_lca_id"]."', '".$host_id["MAX(host_id)"]."')";
+				$rq .= "('".$group_id."', '".$host_id["MAX(host_id)"]."')";
 				$DBRESULT3 =& $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT3))
 					print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
