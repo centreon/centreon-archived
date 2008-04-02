@@ -95,7 +95,6 @@ For information : contact@oreon-project.org
 				require($path."genNdomod.php");
 				require($path."genNagiosCFG-DEBUG.php");
 				require($path."genResourceCFG.php");
-				require($path."genPerfparseCFG.php");
 				require($path."genTimeperiods.php");
 				require($path."genCommands.php");
 				require($path."genContacts.php");
@@ -104,7 +103,7 @@ For information : contact@oreon-project.org
 				require($path."genExtendedInfos.php");
 				require($path."genHostGroups.php");
 				require($path."genServices.php");
-				if ($oreon->user->get_version() == 2)
+				if ($oreon->user->get_version() >= 2)
 					require($path."genServiceGroups.php");
 				require($path."genEscalations.php");
 				require($path."genDependencies.php");
