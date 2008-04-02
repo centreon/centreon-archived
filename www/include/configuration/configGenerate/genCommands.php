@@ -19,9 +19,9 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 		mkdir($nagiosCFGPath.$tab['id']."/");
-	}
+
 
 	$handle1 = create_file($nagiosCFGPath.$tab['id']."/misccommands.cfg", $oreon->user->get_name());
 	$handle2 = create_file($nagiosCFGPath.$tab['id']."/checkcommands.cfg", $oreon->user->get_name());
@@ -47,9 +47,8 @@ For information : contact@oreon-project.org
 			$str1 .= print_line("command_line", str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]));
 			$str1 .= "}\n\n";
 			$i1++;
-		}	
+		} else if ($command["command_type"] == 2)	{
 		# Check Command case -> command_type == 2
-		else if ($command["command_type"] == 2)	{
 			$ret["comment"] ? ($str2 .= "# '" . $command["command_name"] . "' command definition " . $i2 . "\n") : NULL;
 			$str2 .= "define command{\n";
 			if ($command["command_name"]) $str2 .= print_line("command_name", $command["command_name"]);
