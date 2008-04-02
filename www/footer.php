@@ -31,25 +31,8 @@ For information : contact@oreon-project.org
 			<tr>
 				<td align='center' class='copyRight'>
 					<?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . _(" seconds "); ?><br />
-					Copyright &copy; 1999-2007 Nagios - <a href="http://www.nagios.org/contact/">Ethan Galstad</a> | Copyright &copy; 2004-2007 <a href="mailto:infos@oreon-project.org">Centreon</a><br />
+					Copyright &copy; 1999-2008 Nagios - <a href="http://www.nagios.org/contact/">Ethan Galstad</a> | Copyright &copy; 2004-2008 <a href="mailto:infos@oreon-project.org">Centreon</a><br />
 					All Rights Reserved<br />
-				</td>
-			</tr>
-			<tr>
-				<td align="center" style="padding-top:5px;"><div class='footer'>
-				<a href='http://www.w3c.org'><img src="<?php echo $skin; ?>Images/footer/colophon_css.png"
-				          height="15" width="80" alt="Valid CSS"
-				          title="Centreon was built with valid CSS." /></a>
-				<a href='http://www.php.net'><img src="<?php echo $skin; ?>Images/footer/button-php.gif"
-				          height="15" width="80" alt="Powered By PHP"
-				          title="Powered By PHP." /></a>
-				<a href='http://sourceforge.net/donate/index.php?group_id=140316'><img src="<?php echo $skin; ?>Images/footer/button-donate.gif"
-				          height="15" width="80" alt="Donate"
-				          title="Donate" /></a>
-				<a href='http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt'><img src="<?php echo $skin; ?>Images/footer/button-gpl.gif"
-				          height="15" width="80" alt="GPL Licenced"
-				          title="GPL Licenced" /></a>
-				</div>
 				</td>
 			</tr>
 		</table>
