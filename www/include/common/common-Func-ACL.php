@@ -330,11 +330,12 @@ For information : contact@oreon-project.org
 			$host = array();
 			$host["id"] = $value;
 			$svc_list = getAuthorizedServicesHost($value, $groupstr);
-			foreach ($svc_list as $service_id){
-				if ($str)
-					$str .= ", ";
-				$str .= $service_id;
-			}			
+			if (count($svc_list))
+				foreach ($svc_list as $service_id){
+					if ($str)
+						$str .= ", ";
+					$str .= $service_id;
+				}			
 		}
 		return $str;
 	}
