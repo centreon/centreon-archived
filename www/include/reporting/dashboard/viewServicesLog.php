@@ -28,10 +28,7 @@ For information : contact@oreon-project.org
 	$today_warning = 0;
 	$today_unknown = 0;
 	$today_critical = 0;
-/*
-	$start_date_select = 0;
-	$end_date_select = 0;
-*/
+
 	$tab_svc = array();
 
 	$path = "./include/reporting/dashboard";
@@ -42,25 +39,80 @@ For information : contact@oreon-project.org
 	$tpl->assign('o', $o);
 	require_once './class/other.class.php';
 	require_once './include/common/common-Func.php';
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
-	include("./include/monitoring/log/choose_log_file.php");
-	require_once 'ServicesLog.php';
-
-	# LCA
-	$lcaHostByName = getLcaHostByName($pearDB);
-
+	require_once 'simple-func.php';
+	require_once 'reporting-func.php';
+	//include("./include/monitoring/log/choose_log_file.php");
+	
+	#Pear library
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+	
+	if (!$is_admin)
+		$lca = getLcaHostByName($pearDB);
+	
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
 
 	isset ($_GET["service"]) ? $mservice = $_GET["service"] : $mservice = NULL;
 	isset ($_POST["service"]) ? $mservice = $_POST["service"] : $mservice = $mservice;
 
+	$tableFile2 = array();
+	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
+		while ($file = @readdir($handle))
+			if (is_file($oreon->Nagioscfg["log_archive_path"]."/$file"))	{
+				preg_match("/nagios\-([0-9]*)\-([0-9]*)\-([0-9]*)\-([0-9]*).log/", $file, $matches);
+				$time = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3]) - 1;
+				$tableFile2[$file] =  "  " . date(_("Y/m/d"), $time) . " ";
+			}
+		@closedir($handle);
+	}
+	krsort($tableFile2);
+
+	$tableFile3 = array($oreon->Nagioscfg["log_file"] => " -- " . _("Today") . " -- ");
+	$tableFile1 = array_merge($tableFile3, $tableFile2);
+
+	$host = array();
+	
+	$host[""] = "";
+	$DBRESULT =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($h))
+		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
+			$host[$h["host_name"]] = $h["host_name"];
+
+	$debug = 0;
+	$attrsTextI		= array("size"=>"3");
+	$attrsText 		= array("size"=>"30");
+	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+	
+	#
+	## Form begin
+	#
+	
+	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	$form->addElement('header', 'title', _("Add a Service downtime"));
+	
+	#
+	## Indicator basic information
+	#
+	
+	$redirect =& $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
+    
+    $selHost =& $form->addElement('select', 'file', _("Log file"), $tableFile1, array("onChange" =>"this.form.submit();"));
+	$selHost =& $form->addElement('select', 'host', _("Host"), $host, array("onChange" =>"this.form.submit();"));
+	isset($_POST["host"]) ?	$form->setDefaults(array('file' => $_POST["host"])) : $form->setDefaults(array('file' => $oreon->Nagioscfg["log_file"]));
+	
+	$log = NULL;	
+	$tab_log = array();	
+
+	require_once 'ServicesLog.php';
+
 	#
 	## Select form part 1
 	#
 	$formService = new HTML_QuickForm('formService', 'post', "?p=".$p);
-
 
 	#
 	## period selection

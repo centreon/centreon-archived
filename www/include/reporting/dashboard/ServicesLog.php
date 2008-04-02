@@ -269,11 +269,11 @@ For information : contact@oreon-project.org
 	$tab_report[date("d/m/Y", $today_start)]["CRITICALnbEvent"] = $today_CRITICALnbEvent;
 
 
-	$rq = 'SELECT ' .
-	' * FROM `log_archive_service` WHERE host_id = ' . $host_id . ' AND service_id = ' . $svc_id .
-	' AND date_start >= ' . $sd . ' AND date_end <= ' . $ed .
-	' order by date_start desc';
-	$res = & $pearDB->query($rq);
+	$rq = 	'SELECT ' .
+			' * FROM `log_archive_service` WHERE host_id = ' . $host_id . ' AND service_id = ' . $svc_id .
+			' AND date_start >= ' . $sd . ' AND date_end <= ' . $ed .
+			' order by date_start desc';
+	$res = & $pearDBO->query($rq);
 	while ($h =& $res->fetchRow()) {
 		$oktime = $h["OKTimeScheduled"];
 		$criticaltime = $h["CRITICALTimeScheduled"];
@@ -328,12 +328,5 @@ For information : contact@oreon-project.org
 
 		$tab_report[date("d/m/Y", $startd)] = $tab_tmp;
 	  }
-
-
-/*
-			Duration::toString($pendingtime) .'{/td}{td class=bubul}'.(($ppending > 0) ? $ppending : "0").'%{/td}{td class=bubul}-{/td}{/tr}';
-			Duration::toString($unknowntime) .'{/td}{td class=bubul}'.(($punknown > 0) ? $punknown : "0").'%{/td}{/tr}';
-			
-*/
 
 ?>
