@@ -102,9 +102,8 @@ For information : contact@oreon-project.org
 			}
 			if (!$service["service_register"] && $service["service_description"])	{
 				$strTMP .= print_line("name", $service["service_description"]);
-				$strTMP .= print_line("service_description", $service["service_description"]);
-			}
-			else if ($service["service_description"]) 
+				$strTMP .= print_line("service_description", $service["service_alias"]);
+			} else if ($service["service_description"]) 
 				$strTMP .= print_line("service_description", $service["service_description"]);
 			# Template Model Relation
 			if ($service["service_template_model_stm_id"]) {
