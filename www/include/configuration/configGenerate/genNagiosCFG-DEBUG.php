@@ -76,7 +76,7 @@ For information : contact@oreon-project.org
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key=>$value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{	
-			if ($key == "aggregate_status_updates" && $value == 2);
+			if ($key == "aggregate_status_updates" && ($value == 2 || $oreon->user->get_version() == 3));
 			else if ($key == "enable_notifications" && $value == 2);	
 			else if ($key == "execute_service_checks" && $value == 2);	
 			else if ($key == "accept_passive_service_checks" && $value == 2);	
@@ -187,6 +187,9 @@ For information : contact@oreon-project.org
 			else if ($key == "debug_file" && $oreon->user->get_version() == 3);
 			else if ($key == "downtime_file" && $oreon->user->get_version() == 3);
 			else if ($key == "comment_file" && $oreon->user->get_version() == 3);
+			else if ($key == "enable_embedded_perl" && $oreon->user->get_version() == 2);
+			else if ($key == "use_embedded_perl_implicitly" && $oreon->user->get_version() == 2);
+			else if ($key == "debug_level" && $oreon->user->get_version() == 2);
 			else
 				$str .= $key."=".$value."\n";
 		}
