@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	
-	if ($oreon->user->admin || !HadUserLca($pearDB))
+	if ($is_admin)
 		$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
 	else
 		$rq = "SELECT * FROM `meta_service_relation` WHERE host_id IN (".$lcaHoststr.") AND meta_id = '".$meta_id."' ORDER BY host_id";

@@ -52,7 +52,7 @@ For information : contact@oreon-project.org
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 
 	while($DBRESULT->fetchInto($host))
-		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$host["host_name"]])))
+		//if ($is_admin || (!$is_admin && isset($lcaHostByName["LcaHost"][$host["host_name"]])))
 			$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
