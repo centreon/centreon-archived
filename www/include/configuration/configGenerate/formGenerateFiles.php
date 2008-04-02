@@ -186,7 +186,7 @@ For information : contact@oreon-project.org
 					$msg_copy[$host["id"]] .= "</table>";
 				} else {
 					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd", $return);
-					print("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd");	
+					//print("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd");	
 				}
 		}
 		
