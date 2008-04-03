@@ -1,35 +1,31 @@
 <?php
-/**
-Created on 3 janv. 08
-
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	$oreonPath = '../../../../../';
 
 	$debugXML = 0;
 	$buffer = '';
 
-	/* pearDB init */
 	require_once 'DB.php';
 
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBOdsConnect.php");
-
+	
 	/* PHP functions */
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	include_once($oreonPath . "www/include/common/common-Func.php");
@@ -41,12 +37,24 @@ For information : contact@oreon-project.org
 	} 
 	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n"); 
 
+	function getMyHostGraphs($host_id = NULL)	{
+		global $pearDBO;
+		if (!$host_id)
+			return NULL;
+		$tab_svc = array();
+		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."'");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($row =& $DBRESULT->fetchRow())
+			$tab_svc[$row["service_id"]] = 1;
+		return $tab_svc;
+	}
+
 	/* 
 	 * if debug == 0 => Normal, debug == 1 => get use, 
 	 * debug == 2 => log in file (log.xml) 
 	 */
 	
-
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
@@ -64,10 +72,8 @@ For information : contact@oreon-project.org
 
 	$is_admin = isUserAdmin($_GET["sid"]);
 	if (isset($_GET["sid"]) && $_GET["sid"]){
-		if (!isUserAdmin($_GET["sid"])){
-			$lca = getLcaHostByName($pearDB);
-			$lca = getLCASVC($lca);
-		}
+		if (!isUserAdmin($_GET["sid"]))
+			$lca = getLCASVC(getLcaHostByName($pearDB));
 	} else 
 		exit();
 
@@ -105,11 +111,13 @@ For information : contact@oreon-project.org
 			 * get services for host
 			 */
 			$services = getMyHostServices($id);
-			foreach($services as $svc_id => $svc_name){
-				$host_name = getMyHostName($id);
-		        if ($is_admin || 	(!$is_admin 
+			$graphList = getMyHostGraphs($id);
+		    $host_name = getMyHostName($id);
+		        
+		    foreach ($services as $svc_id => $svc_name){
+				if ((isset($graphList[$svc_id]) && $is_admin) || (!$is_admin && isset($graphList[$svc_id]) 
 		        						&& isset($lca["LcaHost"][$host_name]) 
-		        						&& isset($lca["LcaHost"][$host_name]["svc"][getMyServiceName($svc_id)])))
+		        						&& isset($lca["LcaHost"][$host_name]["svc"][$services[$svc_id]])))
 			        print("<item child='0' id='HS_".$svc_id."_".$id."' text='".$svc_name."' im0='../16x16/gear.gif' im1='../16x16/gear.gif' im2='../16x16/gear.gif'></item>");			
 			}
 		} else if ($type == "HS") {	
