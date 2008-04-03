@@ -141,32 +141,44 @@ For information : contact@oreon-project.org
 			/*
 			 * Hosts Alone
 			 */
-			print ("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
+			$cpt = 0;
+			$str = "";
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($DBRESULT2->fetchInto($host)){
 				$i++;
+				$cpt++;
 				if ($is_admin){
-		           	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+		           	$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
 				} else {
 					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
-					   	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");	
+						$str .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";	
 				}
 			}
-			print("</item>");	
+			if ($cpt){
+				print ("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
+				print $str ;
+				print("</item>");	
+			}
 			/*
 			 * Meta Services
 			 */
-			print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
+			$cpt = 0;
+			$str = 0;
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
 			while ($DBRESULT->fetchInto($MS)){
 				$i++;
+				$cpt++;
 		        print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
-			print("</item>");
+			if ($cpt){
+				print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
+				print $str ;
+				print("</item>");
+			}
 		} else {
 			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='All Graphs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 			print("<itemtext>label</itemtext>");
@@ -216,11 +228,15 @@ For information : contact@oreon-project.org
 						$hgs_open[$hg_id] = $hg_name;
 				}				
 			} else if($type == "HS"){ // svc + host_parent + hg_parent
-				// svc
+				/*
+				 * svc
+				 */
 				$svcs_selected[$id] = getMyServiceName($id);
 				$svcs_selected[$id] = getMyServiceName($id);
 	
-				//host_parent
+				/*
+				 * host_parent
+				 */
 				if (isset($id_full[1])) {
 					$host_id = $id_full[1];
 					$hosts_open[$host_id] = getMyHostName($host_id);
@@ -229,7 +245,9 @@ For information : contact@oreon-project.org
 					$hosts_open[$host_id] = getMyHostName($host_id);				
 				}
 
-				// 	hg_parent
+				/*
+				 * hg_parent
+				 */
 				if (isset($id_full[2]))
 					$hgs_open[$id_full[2]] = getMyHostGroupName($id_full[2]);
 				else {
@@ -248,7 +266,9 @@ For information : contact@oreon-project.org
 					$hosts_open[$host_id] = $host_name;
 					$hosts_selected[$host_id] = $host_name;
 	
-					/* + all svc*/
+					/* 
+					 * + all svc
+					 */
 					$services = getMyHostServices($host_id);
 					foreach($services as $svc_id => $svc_name)
 						$svcs_selected[$svc_id] = $svc_name;
