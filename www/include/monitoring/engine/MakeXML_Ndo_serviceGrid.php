@@ -34,7 +34,8 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
-
+	$general_opt = getStatusColor($pearDB);
+	
 	/* 
 	 * security check 2/2
 	 */
@@ -47,7 +48,9 @@ For information : contact@oreon-project.org
 	} else
 		get_error('need session identifiant !');
 
-	/* requisit */
+	/* 
+	 * requisit 
+	 */
 	(isset($_GET["num"]) && !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) && !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
@@ -59,47 +62,34 @@ For information : contact@oreon-project.org
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
 	// check is admin
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$res1->fetchInto($user);
-	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$res2->fetchInto($admin);
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	$is_admin = isUserAdmin($sid);
 
 	// if is admin -> lca
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
-		/*
-		 * Get ACL Groups List
-		 */
 	}
-
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
-
-	function get_services($host_name){
-		global $pearDBndo,$ndo_base_prefix,$general_opt,$o,$instance,$is_admin;
+	
+	function get_services_status($host_name){
+	
+		global $pearDBndo,$pearDB, $ndo_base_prefix, $general_opt, $o, $instance,$is_admin;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `".$ndo_base_prefix."servicestatus` nss, `".$ndo_base_prefix."objects` no";
 				
-				if (!$is_admin)
-					$rq .= ", centreon_acl ";
+		if (!$is_admin)
+			$rq .= ", centreon_acl ";
 					
 		$rq .= 		" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 not like 'OSL_Module'";
 					" AND no.name1 not like 'Meta_Module'";
 
-		if($o == "svcgrid_pb" || $o == "svcOV_pb")
+		if ($o == "svcgrid_pb" || $o == "svcOV_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
 
-		if($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
+		if ($o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 			$rq .= 	" AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" ;
 
-		if($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
+		if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1")
 			$rq .= 	" AND nss.problem_has_been_acknowledged = 1" ;
 
 		$rq .=  	" AND no.object_id IN (" .
@@ -109,14 +99,14 @@ For information : contact@oreon-project.org
 		if ($instance != "ALL")
 			$rq .= 	" AND no.instance_id = ".$instance;
 
-		if (!$is_admin){
-			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
-		}
+		if (!$is_admin)
+			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+
 		$DBRESULT =& $pearDBndo->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$tab = array();
-		while ($DBRESULT->fetchInto($svc))
+		while ($svc = $DBRESULT->fetchRow())
 			$tab[$svc["service_name"]] = $svc["current_state"];
 		return($tab);
 	}
@@ -148,13 +138,16 @@ For information : contact@oreon-project.org
 	 */
 	 
 	$rq1 =	  	" SELECT DISTINCT no.name1 as host_name, nhs.current_state" .
-				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs, centreon_acl" .
-				" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
+				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs ";
+	if (!$is_admin)
+		$rq1 	.= ", centreon_acl ";
+	
+	$rq1 .=		" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 NOT LIKE 'OSL_Module'".
 				" AND no.name1 NOT LIKE 'Meta_Module'";
 	
 	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id = '5'";
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
 
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
@@ -182,8 +175,6 @@ For information : contact@oreon-project.org
 			case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;
 			default : $rq1 .= " order by no.name1 ". $order; break;
 	}
-
-	//print $rq1;
 
 	$rq_pagination = $rq1;
 
@@ -213,7 +204,7 @@ For information : contact@oreon-project.org
 
 	$tab_final = array();
 	while ($DBRESULT_NDO1->fetchInto($ndo))	{
-		$tab_svc = get_services($ndo["host_name"]);
+		$tab_svc = get_services_status($ndo["host_name"]);
 		if (count($tab_svc)){
 			$tab_final[$ndo["host_name"]]["tab_svc"] = $tab_svc;
 			$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];

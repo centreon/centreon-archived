@@ -29,11 +29,13 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "www/class/other.class.php");
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBNDOConnect.php");
+	include_once($oreonPath . "www/DBNDOConnect.php");	
+	include_once($oreonPath . "www/include/monitoring/engine/common-Func.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
+	$general_opt = getStatusColor($pearDB);
 	
 	/* security check 2/2*/
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
@@ -57,23 +59,10 @@ For information : contact@oreon-project.org
 	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
-
 	// check is admin
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$res1->fetchInto($user);
-	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$res2->fetchInto($admin);
-	global $is_admin;
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	$is_admin = isUserAdmin($sid);
 
-	// if is admin -> lca
-	if (!$is_admin){
+	if (!$is_admin)	{
 		$_POST["sid"] = $sid;
 		$lca =  getLCAHostByName($pearDB);
 		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
@@ -82,7 +71,7 @@ For information : contact@oreon-project.org
 
 	function get_services($host_name){
 		
-		global $pearDBndo,$ndo_base_prefix, $general_opt, $o, $instance, $is_admin;
+		global $pearDBndo, $pearDB, $ndo_base_prefix, $general_opt, $o, $instance, $is_admin;
 
 		$rq = 		" SELECT no.name1, no.name2 as service_name, nss.current_state" .
 					" FROM `" .$ndo_base_prefix."servicestatus` nss, `" .$ndo_base_prefix."objects` no";
@@ -95,7 +84,7 @@ For information : contact@oreon-project.org
 					" AND no.name1 NOT LIKE 'Meta_Module'";
 		
 		if (!$is_admin)
-			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
+			$rq .= 	" AND no.name1 = centreon_acl.host_name AND no.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
 
 		if	($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 			$rq .= 	" AND nss.current_state != 0" ;
@@ -137,17 +126,8 @@ For information : contact@oreon-project.org
 	$metaService_status = array();
 	$tab_host_service = array();
 
-	$tab_color_service = array();
-	$tab_color_service[0] = $general_opt["color_ok"];
-	$tab_color_service[1] = $general_opt["color_warning"];
-	$tab_color_service[2] = $general_opt["color_critical"];
-	$tab_color_service[3] = $general_opt["color_unknown"];
-	$tab_color_service[4] = $general_opt["color_pending"];
-
-	$tab_color_host = array();
-	$tab_color_host[0] = $general_opt["color_up"];
-	$tab_color_host[1] = $general_opt["color_down"];
-	$tab_color_host[2] = $general_opt["color_unreachable"];
+	$tab_color_service = array(0 => $general_opt["color_ok"], 1 => $general_opt["color_warning"], 2 => $general_opt["color_critical"], 3 => $general_opt["color_unknown"], 4 => $general_opt["color_pending"]);
+	$tab_color_host = array(0 => "normal", 1 => "#FD8B46", /* $general_opt["color_down"];*/ 2 => "normal");
 
 	$tab_status_svc = array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 	$tab_status_host = array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
@@ -155,19 +135,20 @@ For information : contact@oreon-project.org
 	/* Get Host status */
 
 	$rq1 =  	" SELECT DISTINCT no.name1 as host_name, hg.alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
-				" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no, centreon_acl".
-				" WHERE hs.host_object_id = hgm.host_object_id".
+				" FROM " .$ndo_base_prefix."hostgroups hg," .$ndo_base_prefix."hostgroup_members hgm, " .$ndo_base_prefix."hoststatus hs, " .$ndo_base_prefix."objects no ";
+	if (!$is_admin)
+		$rq1 .= ", centreon_acl ";
+	
+	$rq1 .=  	" WHERE hs.host_object_id = hgm.host_object_id".
 				" AND no.object_id = hgm.host_object_id" .
 				" AND hgm.hostgroup_id = hg.hostgroup_id".
 				" AND no.name1 not like 'OSL_Module'".
 				" AND no.name1 not like 'Meta_Module'".
 				" AND no.is_active = 1";
+	
 	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id = '5'";
-	/*
-	if (!$is_admin)
-		$rq1 .= " AND no.name1 IN (".$lcaSTR.")";
-	*/
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
+	
 	if ($o == "svcgridHG_pb" || $o == "svcOVHG_pb")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .

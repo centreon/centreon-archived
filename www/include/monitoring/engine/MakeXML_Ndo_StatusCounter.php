@@ -162,7 +162,7 @@ For information : contact@oreon-project.org
 					" AND no.name1 not like 'Meta_Module' ".
 					" AND no.name1 = centreon_acl.host_name ".
 					" AND no.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (5) ".
+					" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") ".
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 		else
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .

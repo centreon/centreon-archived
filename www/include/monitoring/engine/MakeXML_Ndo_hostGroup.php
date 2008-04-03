@@ -34,7 +34,9 @@ For information : contact@oreon-project.org
 
 	$ndo_base_prefix = getNDOPrefix();
 	
-	/* security check 2/2*/
+	/* 
+	 * security check 2/2
+	 */
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
@@ -58,19 +60,19 @@ For information : contact@oreon-project.org
 	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
+	/*
+	 * Get Status Colors
+	 */
+	$general_opt = getStatusColor($pearDB);
 
 	function get_hosts_status($host_group_id, $status){
-		global $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin;
+		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $is_admin;
 
 		$tab_acl = "";
 		$condition_acl = "";
 		if (!$is_admin){
 			$tab_acl = ", centreon_acl";
-			$condition_acl = " AND nh.display_name = centreon_acl.host_name AND centreon_acl.group_id IN (5) ";
+			$condition_acl = " AND nh.display_name = centreon_acl.host_name AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") ";
 		}
 		$rq = 	" SELECT count( nhs.host_object_id ) AS nb".
 				" FROM " .$ndo_base_prefix."hoststatus nhs".
@@ -85,7 +87,7 @@ For information : contact@oreon-project.org
 	}
 
 	function get_services_status($host_group_id, $status){
-		global $pearDBndo, $ndo_base_prefix, $general_opt, $instance,$lcaSTR, $is_admin;
+		global $pearDB, $pearDBndo, $ndo_base_prefix, $general_opt, $instance,$lcaSTR, $is_admin;
 
 		$rq = 			" SELECT count( nss.service_object_id ) AS nb".
 						" FROM " .$ndo_base_prefix."servicestatus nss ".
@@ -94,7 +96,7 @@ For information : contact@oreon-project.org
 						" IN (SELECT nno.object_id FROM " .$ndo_base_prefix."objects nno, centreon_acl WHERE nno.objecttype_id = '2' ";
 						
 		if (!$is_admin)
-			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
+			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
 
 		if ($instance != "ALL")
 			$rq .= 	" AND nno.instance_id = ".$instance;
@@ -112,19 +114,11 @@ For information : contact@oreon-project.org
 		return($tab["nb"]);
 	}
 
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$res1->fetchInto($user);
-	$user_id = $user["user_id"];
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$res2->fetchInto($admin);
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	// check is admin
+	$is_admin = isUserAdmin($sid);
 
-	// if is admin -> lca
-	if(!$is_admin){
+	if (!$is_admin)
 		$_POST["sid"] = $sid;
-		$lca =  getLCAHostByName($pearDB);
-	}
 
 
 	$service = array();
@@ -159,6 +153,7 @@ For information : contact@oreon-project.org
 
 	if ($search != "")
 		$rq1 .= 	" AND no.name1 like '%" . $search . "%' ";
+	
 	if ($instance != "ALL")
 		$rq1 .= 	" AND no.instance_id = ".$instance;
 	$rq1 .= 		" group by no.name1 ";
@@ -166,7 +161,9 @@ For information : contact@oreon-project.org
 
 	$rq_pagination = $rq1;
 
-	/* Get Pagination Rows */
+	/* 
+	 * Get Pagination Rows 
+	 */
 	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
 	if (PEAR::isError($DBRESULT_PAGINATION))
 		print "DB Error : ".$DBRESULT_PAGINATION->getDebugInfo()."<br />";
@@ -188,7 +185,8 @@ For information : contact@oreon-project.org
 	$ct = 0;
 	$flag = 0;
 
-	while ( $ndo = $DBRESULT_NDO1->fetchRow()) {
+	while ($ndo = $DBRESULT_NDO1->fetchRow()) 
+	{
 		if (isset($lca["LcaHostGroup"][$ndo["hostgroup_name"]]) || !isset($lca)) {
 			$nb_host_up = 0 + get_hosts_status($ndo["hostgroup_id"], 0);
 			$nb_host_down = 0 + get_hosts_status($ndo["hostgroup_id"], 1);
@@ -206,27 +204,28 @@ For information : contact@oreon-project.org
 			$duration = " ";
 	
 			$class == "list_one" ? $class = "list_two" : $class = "list_one";
-	
-			$buffer .= '<l class="'.$class.'">';
-			$buffer .= '<o>'. $ct++ . '</o>';
-			$buffer .= '<hn><![CDATA['. $ndo["hostgroup_name"]  . ']]></hn>';
-			$buffer .= '<hu>'. $nb_host_up  . '</hu>';
-			$buffer .= '<huc>'. $tab_color_host[0]  . '</huc>';
-			$buffer .= '<hd>'. $nb_host_down  . '</hd>';
-			$buffer .= '<hdc>'. $tab_color_host[1]  . '</hdc>';
-			$buffer .= '<hur>'. $nb_host_unreachable  . '</hur>';
-			$buffer .= '<hurc>'. $tab_color_host[2]  . '</hurc>';
-			$buffer .= '<sk>'. $nb_service_k  . '</sk>';
-			$buffer .= '<skc>'. $tab_color_service[0]  . '</skc>';
-			$buffer .= '<sw>'. $nb_service_w  . '</sw>';
-			$buffer .= '<swc>'. $tab_color_service[1]  . '</swc>';
-			$buffer .= '<sc>'. $nb_service_c  . '</sc>';
-			$buffer .= '<scc>'. $tab_color_service[2]  . '</scc>';
-			$buffer .= '<su>'. $nb_service_u  . '</su>';
-			$buffer .= '<suc>'. $tab_color_service[3]  . '</suc>';
-			$buffer .= '<sp>'. $nb_service_p  . '</sp>';
-			$buffer .= '<spc>'. $tab_color_service[4]  . '</spc>';
-			$buffer .= '</l>';
+			if ($nb_host_up || $nb_host_down || $nb_host_unreachable || $nb_service_k || $nb_service_w || $nb_service_c || $nb_service_u || $nb_service_p){
+				$buffer .= '<l class="'.$class.'">';
+				$buffer .= '<o>'. $ct++ . '</o>';
+				$buffer .= '<hn><![CDATA['. $ndo["hostgroup_name"]  . ']]></hn>';
+				$buffer .= '<hu>'. $nb_host_up  . '</hu>';
+				$buffer .= '<huc>'. $tab_color_host[0]  . '</huc>';
+				$buffer .= '<hd>'.  $nb_host_down . '</hd>';
+				$buffer .= '<hdc>'. $tab_color_host[1]  . '</hdc>';
+				$buffer .= '<hur>'. $nb_host_unreachable  . '</hur>';
+				$buffer .= '<hurc>'. $tab_color_host[2]  . '</hurc>';
+				$buffer .= '<sk>'. $nb_service_k  . '</sk>';
+				$buffer .= '<skc>'. $tab_color_service[0]  . '</skc>';
+				$buffer .= '<sw>'. $nb_service_w  . '</sw>';
+				$buffer .= '<swc>'. $tab_color_service[1]  . '</swc>';
+				$buffer .= '<sc>'. $nb_service_c  . '</sc>';
+				$buffer .= '<scc>'. $tab_color_service[2]  . '</scc>';
+				$buffer .= '<su>'. $nb_service_u  . '</su>';
+				$buffer .= '<suc>'. $tab_color_service[3]  . '</suc>';
+				$buffer .= '<sp>'. $nb_service_p  . '</sp>';
+				$buffer .= '<spc>'. $tab_color_service[4]  . '</spc>';
+				$buffer .= '</l>';
+			}
 		}
 	}
 

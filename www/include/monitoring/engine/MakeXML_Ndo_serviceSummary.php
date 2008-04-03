@@ -30,6 +30,7 @@ For information : contact@oreon-project.org
 	include_once($oreonPath . "etc/centreon.conf.php");
 	include_once($oreonPath . "www/DBconnect.php");
 	include_once($oreonPath . "www/DBNDOConnect.php");
+	include_once($oreonPath . "www/include/monitoring/engine/common-Func.php");
 	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
 	include_once($oreonPath . "www/include/common/common-Func.php");
 
@@ -57,57 +58,17 @@ For information : contact@oreon-project.org
 	(isset($_GET["o"]) && !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
 	(isset($_GET["p"]) && !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
 
-	// check is admin
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$user = $res1->fetchRow();
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user["user_id"]."'");
-	$admin = $res2->fetchRow();
-	global $is_admin;
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
+	$is_admin = isUserAdmin($sid);
 
 	// if is admin -> lca
 	if (!$is_admin){
 		$_POST["sid"] = $sid;
 	}
-
-	$DBRESULT_OPT =& $pearDB->query("SELECT color_ok,color_warning,color_critical,color_unknown,color_pending,color_up,color_down,color_unreachable FROM general_opt");
-	if (PEAR::isError($DBRESULT_OPT))
-		print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
-	$DBRESULT_OPT->fetchInto($general_opt);
-
-	function get_services_status($host_name, $status){
-		global $pearDBndo, $ndo_base_prefix, $general_opt, $o, $is_admin;
-
-		$rq = 	" SELECT count( nss.service_object_id ) AS nb".
-				" FROM " .$ndo_base_prefix."servicestatus nss".
-				" WHERE nss.current_state = '".$status."'";
-
-		if ($o == "svcSum_ack_0")
-			$rq .= " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0";
-
-		if ($o == "svcSum_ack_1")
-			$rq .= " AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0";
-
-		$rq .= 	" AND nss.service_object_id".
-				" IN (".
-				" SELECT nno.object_id".
-				" FROM " .$ndo_base_prefix."objects nno, centreon_acl".
-				" WHERE nno.objecttype_id = 2 ".
-				" AND nno.name1 not like 'OSL_Module'" .
-				" AND nno.name1 not like 'Meta_Module'";
-		
-		if (!$is_admin)
-			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (5)";
-
-		$rq .=	" AND nno.name1 = '".$host_name."')";		
-		
-		$DBRESULT =& $pearDBndo->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		$tab = $DBRESULT->fetchRow();
-		return ($tab["nb"]);
-	}
+	
+	/*
+	 * Get status Color
+	 */
+	$general_opt = getStatusColor($pearDB);
 
 	$service = array();
 	$host_status = array();
@@ -135,37 +96,41 @@ For information : contact@oreon-project.org
 	$rq1 = 		" SELECT " .
 				" DISTINCT no.name1 as host_name," .
 				" nhs.current_state" .
-				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs, centreon_acl " .
-				" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
+				" FROM " .$ndo_base_prefix."objects no, " .$ndo_base_prefix."hoststatus nhs";
+	
+	if (!$is_admin)
+		$rq1 .= ", centreon_acl ";
+
+		$rq1 .=	" WHERE no.objecttype_id = 1 AND nhs.host_object_id = no.object_id ".
 				" AND no.name1 not like 'OSL_Module'" .
 				" AND no.name1 not like 'Meta_Module'";
 
-	if($o == "svcSum_pb")
+	if ($o == "svcSum_pb")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
 
-	if($o == "svcSum_ack_0")
+	if ($o == "svcSum_ack_0")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0" .
 				")";
 
-	if($o == "svcSum_ack_1")
+	if ($o == "svcSum_ack_1")
 		$rq1 .= " AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$ndo_base_prefix."objects nno," .$ndo_base_prefix."servicestatus nss " .
 				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0" .
 				")";
 
-	if($search != "")
+	if ($search != "")
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 
 	if (!$is_admin)
-		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id = '5'";
+		$rq1 .= " AND no.name1 = centreon_acl.host_name AND group_id IN (".groupsListStr(getGroupListofUser($pearDB)).")";
 
 	switch($sort_type){
-			case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;
-			default : $rq1 .= " order by no.name1 ". $order; break;
+		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;
+		default : $rq1 .= " order by no.name1 ". $order; break;
 	}
 
 	$rq_pagination = $rq1;
@@ -194,14 +159,11 @@ For information : contact@oreon-project.org
 	$ct = 0;
 	$flag = 0;
 
-
 	$tab_final = array();
-	while($DBRESULT_NDO1->fetchInto($ndo))
-	{
-		if($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
-			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0 + get_services_status($ndo["host_name"], 0);
-		else
-			$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
+	while ($DBRESULT_NDO1->fetchInto($ndo)){
+		$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
+		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0")
+			$tab_final[$ndo["host_name"]]["nb_service_k"] =  get_services_status($ndo["host_name"], 0);
 		$tab_final[$ndo["host_name"]]["nb_service_w"] = 0 + get_services_status($ndo["host_name"], 1);
 		$tab_final[$ndo["host_name"]]["nb_service_c"] = 0 + get_services_status($ndo["host_name"], 2);
 		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + get_services_status($ndo["host_name"], 3);
@@ -209,12 +171,9 @@ For information : contact@oreon-project.org
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
 	}
 
-	foreach($tab_final as $host_name => $tab)	{
-		if($class == "list_one")
-			$class = "list_two";
-		else
-			$class = "list_one";
-
+	foreach ($tab_final as $host_name => $tab)	
+	{
+		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 		$buffer .= '<l class="'.$class.'">';
 		$buffer .= '<o>'. $ct++ . '</o>';
 		$buffer .= '<hn><![CDATA['. $host_name  . ']]></hn>';
