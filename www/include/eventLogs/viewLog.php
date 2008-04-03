@@ -85,7 +85,7 @@ For information : contact@oreon-project.org
 	} else
 		$id = 1;
 
-	if(isset($_POST["svc_id"]) && $_POST["svc_id"]){
+	if (isset($_POST["svc_id"]) && $_POST["svc_id"]){
 		$id = "";
 		$id_svc = $_POST["svc_id"];
 		$tab_svcs = explode(",", $id_svc);
