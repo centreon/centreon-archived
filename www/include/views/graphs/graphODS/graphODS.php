@@ -40,10 +40,7 @@ For information : contact@oreon-project.org
 		$open_id_sub = substr($openid, 3, strlen($openid));
 	}
 
-	if (isset($_GET["host_id"]) && $open_id_type == "HH"){
-		$_GET["host_id"] = $open_id_sub;
-	} else
-		$_GET["host_id"] = null;
+	(isset($_GET["host_id"]) && $open_id_type == "HH") ? $_GET["host_id"] = $open_id_sub : $_GET["host_id"] = null;
 
 	$id = 1;
 	if (isset($_GET["id"])){
