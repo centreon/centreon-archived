@@ -54,24 +54,12 @@ For information : contact@oreon-project.org
 	    die("Unable to connect : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-
 	/*
 	 * Verify if start and end date
 	 */	
 
-	if (!isset($_GET["start"])){
-		$start = time() - (60*60*48);
-	}
-	else
-		$start = $_GET["start"];
-	
-	if (!isset($_GET["end"])){
-		$end = time();
-	}
-	else
-		$end = $_GET["end"];
-
-
+	(!isset($_GET["start"])) ? $start = time() - (60*60*48) : $start = $_GET["start"];
+	(!isset($_GET["end"])) ? $end = time() - 120 : $end = $_GET["end"] - 120;
 
 	/*
 	 * Verify if session is active
@@ -79,14 +67,10 @@ For information : contact@oreon-project.org
 
 	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
-		
-		
 		$image = imagecreate(250,100);
-		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);
-		
+		$fond = imagecolorallocate($image,0xEF,0xF2,0xFB);		
 		header("Content-Type: image/gif");
 		imagegif($image);
-
 		exit;
 	} else {
 		/*
@@ -100,7 +84,6 @@ For information : contact@oreon-project.org
 		 */
 		 
 		include_once($path."www/DBOdsConnect.php");
-
 		$RRDdatabase_path = getRRDToolPath($pearDBO);
 	
 		/*
