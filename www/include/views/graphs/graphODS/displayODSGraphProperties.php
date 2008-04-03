@@ -20,7 +20,8 @@ For information : contact@oreon-project.org
 		exit();
 
 	# LCA 
-	if ($isRestreint){
+	$is_admin = isUserAdmin(session_id());
+	if (!$is_admin){
 		$lcaHostByName = getLcaHostByName($pearDB);
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
@@ -112,7 +113,7 @@ For information : contact@oreon-project.org
 	}
 	$tpl->assign('service_description', str_replace("#BS#", "\\", str_replace("#S#", "/", $svc_id["service_description"])));
 
-	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
+	if ($is_admin || (!$is_admin && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT =& $pearDBO->query("SELECT * FROM config");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();

@@ -20,7 +20,8 @@ For information : contact@oreon-project.org
 		exit();
 
 	# LCA 
-	if ($isRestreint){
+	$is_admin = isUserAdmin(session_id());
+	if (!$is_admin){
 		$lcaHostByID 	= getLcaHostByID($pearDB);
 		$lcaHostByName 	= getLcaHostByName($pearDB);
 		$LcaHostStr 	= getLcaHostStr($lcaHostByID["LcaHost"]);
@@ -123,7 +124,7 @@ For information : contact@oreon-project.org
 	else if (isset($svc_id["id"]))
 		$index = $svc_id["id"];
 
-	if (!$isRestreint || ($isRestreint && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
+	if ($is_admin || (!$is_admin && isset($lcaHostByName["LcaHost"][$svc_id["host_name"]]))){	
 		$DBRESULT2 =& $pearDBO->query("SELECT id, service_description  FROM index_data WHERE `trashed` = '0' AND host_name = '".$svc_id["host_name"]."' ORDER BY service_description");
 		if (PEAR::isError($DBRESULT2))
 			print "Mysql Error : ".$DBRESULT2->getDebugInfo();

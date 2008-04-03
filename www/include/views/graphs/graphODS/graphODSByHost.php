@@ -20,7 +20,8 @@ For information : contact@oreon-project.org
 		exit();
 
 	# LCA 
-	if ($isRestreint){
+	$is_admin = isUserAdmin(session_id());
+	if (!$is_admin){
 		$lcaHostByName = getLcaHostByName($pearDB);
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
@@ -44,7 +45,7 @@ For information : contact@oreon-project.org
 	# Get all host_list
 	
 	$ppHosts = array( NULL => NULL );
-	$rq = "SELECT DISTINCT host_name FROM index_data ".($isRestreint && !$oreon->user->admin ? "WHERE host_id IN ($LcaHostStr) AND " : "WHERE ")."  `trashed` = '0' ORDER BY `host_name`";
+	$rq = "SELECT DISTINCT host_name FROM index_data ".(!$is_admin ? "WHERE host_id IN ($LcaHostStr) AND " : "WHERE ")."  `trashed` = '0' ORDER BY `host_name`";
 	$DBRESULT =& $pearDBO->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
@@ -143,7 +144,7 @@ For information : contact@oreon-project.org
 		print "<div class='msg' align='center'>"._("There is no graph template : please configure your graph template in order to display graphs correctly.")."</div>";	
 		
 	if ($form->validate() && (isset($_GET["host_name"]) || isset($_GET["host_id"]))){
-		if (!$isRestreint || ($isRestreint && ((isset($_GET["host_name"]) && isset($lcaHostByName["LcaHost"][$_GET["host_name"]]))||(isset($_GET["host_id"]) && isset($lcaHostByName["LcaHost"][$_GET["host_id"]]))))) {
+		if ($is_admin || (!$is_admin && ((isset($_GET["host_name"]) && isset($lcaHostByName["LcaHost"][$_GET["host_name"]]))||(isset($_GET["host_id"]) && isset($lcaHostByName["LcaHost"][$_GET["host_id"]]))))) {
 			# Init variable in the page
 			$label = NULL;
 			$tpl->assign("title2", _("Graph Renderer"));

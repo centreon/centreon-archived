@@ -20,7 +20,8 @@ For information : contact@oreon-project.org
 		exit();
 
 	# LCA 
-	if ($isRestreint){
+	$is_admin = isUserAdmin(session_id());
+	if (!$is_admin){
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$LcaHostStr = getLcaHostStr($lcaHostByID["LcaHost"]);
 	}
