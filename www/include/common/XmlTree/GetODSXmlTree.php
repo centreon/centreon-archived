@@ -120,7 +120,7 @@ For information : contact@oreon-project.org
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
 			while ($DBRESULT2->fetchInto($host)){
 				$i++;
-		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+		        print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/clients.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
 			}
 		} else if ($type == "RR") {
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
@@ -142,32 +142,44 @@ For information : contact@oreon-project.org
 			/*
 			 * Hosts Alone
 			 */
-			print ("<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");
 			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
 			if (PEAR::isError($DBRESULT2))
 				print "Mysql Error : ".$DBRESULT2->getDebugInfo();
-			while ($DBRESULT2->fetchInto($host)){
+			$cpt = 0;
+			$hostaloneSTR2 = "";
+			while ($host = $DBRESULT2->fetchRow()){
 				$i++;
+				$cpt++;
 				if ($is_admin){
-		           	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+		           	$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";
 				} else {
 					if (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))
-					   	print("<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");	
+					   	$hostaloneSTR2 .= "<item child='1' id='HH_".$host["host_id"]."' text='".$host["host_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>\n";	
 				}
 			}
-			print("</item>");	
+			if ($cpt){
+				print "<item child='1' id='HO_0' text='Hosts Alone' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >";
+				print $hostaloneSTR2;
+				print("</item>");
+			}
+				
 			/*
 			 * Meta Services
 			 */
-			print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
+			$str = "";
+			$cpt = 0;
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
 			if (PEAR::isError($DBRESULT))
 				print "Mysql Error : ".$DBRESULT->getDebugInfo();
-			while ($DBRESULT->fetchInto($MS)){
-				$i++;
-		        print("<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>");
+			while ($MS = $DBRESULT->fetchRow()){
+				$i++;$cpt++;
+		        $str .= "<item child='0' id='MS_".$MS["meta_id"]."' text='".$MS["meta_name"]."' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif'></item>";
 			}
-			print("</item>");
+			if ($cpt){
+				print("<item child='1' id='MS_0' text='Meta services' im0='../16x16/server_network.gif' im1='../16x16/server_network.gif' im2='../16x16/server_network.gif' >");	
+				print $str;
+				print("</item>");
+			}
 		} else {
 			print("<item nocheckbox='1' open='1' call='1' select='1' child='1' id='RR_0' text='All Graphs' im0='../16x16/clients.gif' im1='../16x16/clients.gif' im2='../16x16/clients.gif' >");
 			print("<itemtext>label</itemtext>");
