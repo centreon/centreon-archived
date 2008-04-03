@@ -1,22 +1,19 @@
 <?php
-/**
-Created on 3 janv. 08
-
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) { 	
 		header("Content-type: application/xhtml+xml"); 
@@ -34,20 +31,20 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 	
-	$oreonPath = '../../../../../';
+	$centreon_Path = '../../../../../';
 	
 	/*
 	 * pearDB init
 	 */ 
 	require_once 'DB.php';
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBOdsConnect.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_Path . "www/DBconnect.php");
+	include_once($centreon_Path . "www/DBOdsConnect.php");
 	/*
 	 * PHP functions
 	 */
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once($oreonPath . "www/include/common/common-Func.php");
+	include_once($centreon_Path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_Path . "www/include/common/common-Func.php");
 	
 	/*
 	 * Lang file
@@ -67,22 +64,11 @@ For information : contact@oreon-project.org
 	
 	$sid = $_GET['sid'];
 	
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$user = $res1->fetchRow();
-	$user_id = $user["user_id"];
-
-	$res2 =& $pearDB->query("SELECT contact_admin FROM contact WHERE contact_id = '".$user_id."'");
-	$admin = $res2->fetchrow();
-	
-	global $is_admin;
-	
-	$is_admin = 0;
-	$is_admin = $admin["contact_admin"];
-	
+	$is_admin = isUserAdmin($sid);
+		
 	if (!$is_admin)	{
 		$lca = getLcaHostByName($pearDB);
 		$lca = getLCASVC($lca);
-		//print_r($lca);
 	}
 
 	(isset($_GET["sid"]) && !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"]) : $sid = "-1";
@@ -97,18 +83,17 @@ For information : contact@oreon-project.org
 	(isset($_GET["multi"]) && !check_injection($_GET["multi"])) ? $multi = htmlentities($_GET["multi"]) : $multi = "-1";
 	(isset($_GET["id"])) ? $openid = htmlentities($_GET["id"]) : $openid = "-1";
 
-
 	$contact_id = '2';
 
 	if ($StartDate !=  "" && $StartTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $StartDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $StartTime, $matchesT);
-		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 0) ;
+		$start = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
 	}
 	if ($EndDate !=  "" && $EndTime != ""){
 		preg_match("/^([0-9]*)\/([0-9]*)\/([0-9]*)/", $EndDate, $matchesD);
 		preg_match("/^([0-9]*):([0-9]*)/", $EndTime, $matchesT);
-		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], 0) ;
+		$end = mktime($matchesT[1], $matchesT[2], "0", $matchesD[1], $matchesD[2], $matchesD[3], -1);
 	}
 	
 	$period = 86400;
