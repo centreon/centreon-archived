@@ -1,60 +1,64 @@
 <?php
-/**
-Oreon is developped with Apache Licence 2.0 :
-http://www.apache.org/licenses/LICENSE-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
-
-	#
-	## pearDB init
-	#
-	require_once 'DB.php';
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
+ 	require_once 'DB.php';
+	require_once '../../../class/other.class.php';
+	require_once("/etc/centreon/centreon.conf.php");
 	
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<data>';
 
 
-	if(isset($_GET["oreonPath"]) && isset($_GET["svc_group_id"]) &&
-	   isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"])&& 
-	   isset($_GET["today_unknown"])&& isset($_GET["today_pending"]))
-	{
+	if (isset($_GET["svc_group_id"]) && isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"]) && isset($_GET["today_unknown"])&& isset($_GET["today_pending"])){
 		list($colorOK, $colorWARNING, $colorCRITICAL, $colorPENDING, $colorUNKNOWN)= split (":", $_GET["color"], 5);
 
-		$oreonPath = $_GET["oreonPath"];
-		include_once($oreonPath . "/etc/centreon.conf.php");
 		$dsn = array(
 			     'phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
 			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['db'],
+			     'database' => $conf_oreon['ods'],
 			     );
+
 		$options = array(
 				 'debug'       => 2,
 				 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
 				 );
 			
-		$pearDB =& DB::connect($dsn, $options);
+		$pearDBO =& DB::connect($dsn, $options);
 		if (PEAR::isError($pearDB)) 
-		  die("Connecting probems with oreon database : " . $pearDB->getMessage());		
-		$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
+		  	die("Connecting probems with oreon database : " . $pearDB->getMessage());		
+		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
+
+		$dsn = array(
+			     'phptype'  => 'mysql',
+			     'username' => $conf_oreon['user'],
+			     'password' => $conf_oreon['password'],
+			     'hostspec' => $conf_oreon['host'],
+			     'database' => $conf_oreon['ods'],
+			     );
+		
+		$pearDBO =& DB::connect($dsn, $options);
+		if (PEAR::isError($pearDB)) 
+		  die("Connecting probems with oreon database : " . $pearDBO->getMessage());		
+		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 
 
-		function create_date_timeline_format($time_unix)
-		{
-//			date("m d Y G:i:s", $start)
+		function create_date_timeline_format($time_unix)	{
 			$tab_month = array(
 			"01" => "Jan",
 			"02" => "Feb",
@@ -69,79 +73,13 @@ For information : contact@oreon-project.org
 			"11"=> "Nov",
 			"12"=> "Dec"
 			);
-			$date = date('m', $time_unix);
-			$date = $tab_month[$date] .  date(" d Y G:i:s", $time_unix);
+			$date = $tab_month[date('m', $time_unix)].date(" d Y G:i:s", $time_unix);
 			return $date;
 		}
-
-		#
-		## class init
-		#			
-		class Duration
-		{
-			function toString ($duration, $periods = null)
-		    {
-		        if (!is_array($duration)) {
-		            $duration = Duration::int2array($duration, $periods);
-		        }
-		        return Duration::array2string($duration);
-		    }
-		 
-		    function int2array ($seconds, $periods = null)
-		    {        
-		        // Define time periods
-		        if (!is_array($periods)) {
-		            $periods = array (
-		                    'y'	=> 31556926,
-		                    'M' => 2629743,
-		                    'w' => 604800,
-		                    'd' => 86400,
-		                    'h' => 3600,
-		                    'm' => 60,
-		                    's' => 1
-		                    );
-		        }
-		 
-		        // Loop
-		        $seconds = (int) $seconds;
-		        foreach ($periods as $period => $value) {
-		            $count = floor($seconds / $value);
-		 
-		            if ($count == 0) {
-		                continue;
-		            }
-		 
-		            $values[$period] = $count;
-		            $seconds = $seconds % $value;
-		        }
-		 
-		        // Return
-		        if (empty($values)) {
-		            $values = null;
-		        }
-		        return $values;
-		    }
-		 
-		    function array2string ($duration)
-		    {
-		        if (!is_array($duration)) {
-		            return false;
-		        }
-		        foreach ($duration as $key => $value) {
-		            $segment = $value . '' . $key;
-		            $array[] = $segment;
-		        }
-		        $str = implode(' ', $array);
-		        return $str;
-		    }
-		}
-
 			
-		$rq = 'SELECT ' .
-		' * FROM `log_archive_service` WHERE host_id = ' . $_GET["hostID"] . ' AND service_id = ' . $_GET["svc_group_id"] .
-		' order by date_start desc';
+		$request = "SELECT * FROM `log_archive_service` WHERE host_id = " . $_GET["hostID"] . " AND service_id = " . $_GET["svc_group_id"] . " order by date_start desc";
 			
-		$rq = 'SELECT ' .
+		$request = 'SELECT ' .
 				'date_start, date_end, ' .
 				'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
 				'avg( `OKnbEvent` ) as "OKnbEvent", ' .

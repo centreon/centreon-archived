@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 
 	if (!isset($oreon))
@@ -122,11 +121,10 @@ For information : contact@oreon-project.org
 	isset($_POST["period"]) ? $period = $_POST["period"] : $period = "today"; 
 	isset($_GET["period"]) ? $period = $_GET["period"] :  $period = $period;
 	
-	#
-	## Select form part 1
-	#
+	/*
+	 * Select form part 1
+	 */
 	$formHostGroup = new HTML_QuickForm('formHost', 'post', "?p=".$p);
-
 	if ($mhostgroup)	{
 		/*
 		 * Init Value to 0
@@ -150,19 +148,16 @@ For information : contact@oreon-project.org
 
 			$var_url_export_csv = "&period=customized&start=".$start."&end=".$end."&lang=" .$oreon->user->get_lang();
 
-		} else {
-			
+		} else {			
 			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formHostGroup->addElement('hidden', 'period', $period);
 		}
 		
 		$hostgroup_id = getMyHostGroupID($mhostgroup);
-//		$sd = $start_date_select;
-//		$ed = $end_date_select;
-		#
-		## database log
-		#
+		/*
+		 * database log
+		 */
 		$hbase = array();
 		$Tup = NULL;
 		$Tdown = NULL;
@@ -211,13 +206,14 @@ For information : contact@oreon-project.org
 	$selHost =& $formPeriod->addElement('select', 'period', _("Predefined:"), $periodList);
 
 	isset($mhostgroup) ? $formPeriod->addElement('hidden', 'hostgroup', $mhostgroup) : NULL;
-	$formPeriod->addElement('hidden', 'timeline', "1");
 
+	$formPeriod->addElement('hidden', 'timeline', "1");
 	$formPeriod->addElement('header', 'title', _("If customized period..."));
 	$formPeriod->addElement('text', 'start', _("Begin date"));
 	$formPeriod->addElement('button', "startD", _("Modify"), array("onclick"=>"displayDatePicker('start')"));
 	$formPeriod->addElement('text', 'end', _("End date"));
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
+
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
 	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
 
@@ -240,178 +236,173 @@ For information : contact@oreon-project.org
 	$today_DOWNnbEvent = 0;
 	
 	if ($mhostgroup){
-	#
-	## today log for xml timeline
-	#
-	$today_up = 0 + $hbase["average"]["today"]["Tup"];
-	$today_down = 0 + $hbase["average"]["today"]["Tdown"];
-	$today_unreachable = 0 + $hbase["average"]["today"]["Tunreachable"];
-
-	$today_UPnbEvent = 0 + $hbase["average"]["today"]["TupNBAlert"];
-	$today_UNREACHABLEnbEvent = 0 + $hbase["average"]["today"]["TunreachableNBAlert"];
-	$today_DOWNnbEvent = 0 + $hbase["average"]["today"]["TdownNBAlert"];
-
-	$tab_log = array();
-	$day = date("d",time());
-	$year = date("Y",time());
-	$month = date("m",time());
-	$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year);
-	$tab_host_list_average = array();
-	$tab_host_list_average["PTUP"] = 0;
-	$tab_host_list_average["PAUP"] = 0;
-	$tab_host_list_average["PTD"] = 0;
-	$tab_host_list_average["PAD"] = 0;
-	$tab_host_list_average["PTUR"] = 0;
-	$tab_host_list_average["PAUR"] = 0;
-	$tab_host_list_average["PTU"] = 0;
-	$tab_host_list_average["PKTup"] = 0;
-	$tab_host_list_average["PKTd"] = 0;
-	$tab_host_list_average["PKTu"] = 0;
-	$tab_host_list_average["nb_host"] = 0;	
-	$tab_hosts = array();	
-	$day_current_start = 0;
-	$day_current_end = time() + 1;
-	$time = time();
-
-	#
-	## calculate resume
-	#
-	$tab_resume = array();
-	$tab = array();
-	$timeTOTAL = $end_date_select - $start_date_select;	
-	$Tup = $hbase["average"]["Tup"];
-	$Tdown = $hbase["average"]["Tdown"];
-	$Tunreach = $hbase["average"]["Tunreachable"];
-	$Tnone = $hbase["average"]["Tnone"];
-	$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
-
-	if ($Tnone <= 1)
-		$Tnone = 0;	
-
-	function formatData($state, $time, $timeTOTAL, $time_none, $nb_alert, $color){
+		#
+		## today log for xml timeline
+		#
+		$today_up = 0 + $hbase["average"]["today"]["Tup"];
+		$today_down = 0 + $hbase["average"]["today"]["Tdown"];
+		$today_unreachable = 0 + $hbase["average"]["today"]["Tunreachable"];
+	
+		$today_UPnbEvent = 0 + $hbase["average"]["today"]["TupNBAlert"];
+		$today_UNREACHABLEnbEvent = 0 + $hbase["average"]["today"]["TunreachableNBAlert"];
+		$today_DOWNnbEvent = 0 + $hbase["average"]["today"]["TdownNBAlert"];
+	
+		$tab_log = array();
+		$day = date("d",time());
+		$year = date("Y",time());
+		$month = date("m",time());
+	
+		$startTimeOfThisDay = mktime(0, 0, 0, $month, $day, $year, -1);
+	
+		$tab_host_list_average = array("PTUP" => 0, "PAUP" => 0, "PTD" => 0, "PAD" => 0, "PTUR" => 0, "PAUR" => 0, "PTU" => 0, "PKTup" => 0, "PKTd" => 0, "PKTu" => 0, "nb_host" => 0);	
+		$tab_hosts = array();	
+	
+		$day_current_start = 0;
+		$day_current_end = time() + 1;
+		$time = time();
+	
+		#
+		## calculate resume
+		#
+		$tab_resume = array();
 		$tab = array();
-		$tab["state"] = _($state);
-		$tab["time"] = Duration::toString($time);
-		$tab["timestamp"] = $time;
-		$tab["pourcentTime"] = round($time/($timeTOTAL+1)*100,2) ;
-		$tab["pourcentkTime"] = round($Tup/($timeTOTAL-$time_none+1)*100,2). "%";
-		$tab["nbAlert"] = $nb_alert;
-		$tab["style"] = "class='ListColCenter' style='background:" . $color."'";	
-		return $tab;
-	}
+		$timeTOTAL = $end_date_select - $start_date_select;	
+		$Tup = $hbase["average"]["Tup"];
+		$Tdown = $hbase["average"]["Tdown"];
+		$Tunreach = $hbase["average"]["Tunreachable"];
+		$Tnone = $hbase["average"]["Tnone"];
+		$Tnone = $timeTOTAL - ($Tup + $Tdown + $Tunreach);
 	
-	$tab_resume[0] = formatData("Up", $Tup, $timeTOTAL, $Tnone, $hbase["average"]["TupNBAlert"], $oreon->optGen["color_up"]);
-	$tab_resume[1] = formatData("Down", $Tdown, $timeTOTAL, $Tnone, $hbase["average"]["TdownNBAlert"], $oreon->optGen["color_down"]);
-	$tab_resume[2] = formatData("Unreachable", $Tunreach, $timeTOTAL, $Tnone, $hbase["average"]["TunreachableNBAlert"], $oreon->optGen["color_unreachable"]);
-	$tab_resume[3] = formatData("Undetermined", $Tnone, $timeTOTAL , "", "#cccccc");
+		if ($Tnone <= 1)
+			$Tnone = 0;	
 	
-	/*
-	 * calculate tablist
-	 */
-	$i=0;
-	foreach ($hbase as $host_id => $tab)	{
-		if ($host_id != "average"){
-			$tab_tmp = array();
-			$tab_tmp["hostName"] = getMyHostName($host_id);
-			$tt = $end_date_select - $start_date_select;
-			$tab_tmp["PtimeUP"] = round($tab["Tup"] / $tt *100,2);
-			$tab_tmp["PtimeDOWN"] = round( $tab["Tdown"]/ $tt *100,2);
-			$tab_tmp["PtimeUNREACHABLE"] = round( $tab["Tunreachable"]/ $tt *100,2);
-			$tab_tmp["PtimeUNDETERMINATED"] = round( ( $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"])													 )  / $tt *100,2);
-			$tmp_none = $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"]);
-			$tab_tmp["UPnbEvent"] = isset($tab["TupNBAlert"]) ? $tab["TupNBAlert"] : 0;
-			$tab_tmp["DOWNnbEvent"] = isset($tab["TdownNBAlert"]) ? $tab["TdownNBAlert"] : 0;
-			$tab_tmp["UNREACHABLEnbEvent"] = isset($tab["TunreachableNBAlert"]) ? $tab["TunreachableNBAlert"] : 0;
-			$tab_tmp["PktimeUP"] = $tab["Tup"] ? round($tab["Tup"] / ($tt - $tmp_none) *100,2): 0;
-			$tab_tmp["PktimeDOWN"] = $tab["Tdown"] ? round( $tab["Tdown"]/ ($tt - $tmp_none) *100,2):0;
-			$tab_tmp["PktimeUNREACHABLE"] =  $tab["Tunreachable"] ? round( $tab["Tunreachable"]/ ($tt - $tmp_none) *100,2):0;
-			$tab_tmp["PtimeUP"] = number_format($tab_tmp["PtimeUP"], 1, '.', '');
-			$tab_tmp["PtimeDOWN"] = number_format($tab_tmp["PtimeDOWN"], 1, '.', '');
-			$tab_tmp["PtimeUNREACHABLE"] = number_format($tab_tmp["PtimeUNREACHABLE"], 1, '.', '');
-			$tab_tmp["PtimeUNDETERMINATED"] = number_format($tab_tmp["PtimeUNDETERMINATED"], 1, '.', '');
-			$tab_tmp["PtimeUNDETERMINATED"] = ($tab_tmp["PtimeUNDETERMINATED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINATED"];
-			$tab_tmp["PktimeUP"] = number_format($tab_tmp["PktimeUP"], 1, '.', '');
-			$tab_tmp["PktimeDOWN"] = number_format($tab_tmp["PktimeDOWN"], 1, '.', '');
-			$tab_tmp["PktimeUNREACHABLE"] = number_format($tab_tmp["PktimeUNREACHABLE"], 1, '.', '');
-
-			/*
-			 * fill average svc table
-			 */
-			$tab_host_list_average["PTUP"] += $tab_tmp["PtimeUP"];
-			$tab_host_list_average["PAUP"] += $tab_tmp["UPnbEvent"];
-			$tab_host_list_average["PTD"] += $tab_tmp["PtimeDOWN"];
-			$tab_host_list_average["PAD"] += $tab_tmp["DOWNnbEvent"];
-			$tab_host_list_average["PTUR"] += $tab_tmp["PtimeUNREACHABLE"];
-			$tab_host_list_average["PAUR"] += $tab_tmp["UNREACHABLEnbEvent"];
-			$tab_host_list_average["PTU"] += $tab_tmp["PtimeUNDETERMINATED"];
-			$tab_host_list_average["PKTup"] += $tab_tmp["PktimeUP"];
-			$tab_host_list_average["PKTd"] += $tab_tmp["PktimeDOWN"];
-			$tab_host_list_average["PKTu"] += $tab_tmp["PktimeUNREACHABLE"];
-			$tab_host_list_average["nb_host"] += 1;
-			$tab_host[$i++] = $tab_tmp;
+		function formatData($state, $time, $timeTOTAL, $time_none, $nb_alert, $color){
+			$tab = array();
+			$tab["state"] = _($state);
+			$tab["time"] = Duration::toString($time);
+			$tab["timestamp"] = $time;
+			$tab["pourcentTime"] = round($time/($timeTOTAL+1)*100,2) ;
+			if ($state != "Undetermined")
+				$tab["pourcentkTime"] = round($time/($timeTOTAL-$time_none+1)*100,2). "%";
+			else
+				$tab["pourcentkTime"] = NULL;
+			$tab["nbAlert"] = $nb_alert;
+			$tab["style"] = "class='ListColCenter' style='background:" . $color."'";	
+			return $tab;
 		}
-	}
-
-	/*
-	 * calculate svc average
-	 */	
-
-	# Alert
-	if($tab_host_list_average["PAUP"] > 0)
-		$tab_host_list_average["PAUP"] = number_format($tab_host_list_average["PAUP"] / $tab_host_list_average["nb_host"], 1, '.', '');
-	if($tab_host_list_average["PAD"] > 0)
-		$tab_host_list_average["PAD"] = number_format($tab_host_list_average["PAD"] / $tab_host_list_average["nb_host"], 1, '.', '');
-	if($tab_host_list_average["PAUR"] > 0)
-		$tab_host_list_average["PAUR"] = number_format($tab_host_list_average["PAUR"] / $tab_host_list_average["nb_host"], 1, '.', '');
+		
+		$tab_resume[0] = formatData("Up", $Tup, $timeTOTAL, $Tnone, $hbase["average"]["TupNBAlert"], $oreon->optGen["color_up"]);
+		$tab_resume[1] = formatData("Down", $Tdown, $timeTOTAL, $Tnone, $hbase["average"]["TdownNBAlert"], $oreon->optGen["color_down"]);
+		$tab_resume[2] = formatData("Unreachable", $Tunreach, $timeTOTAL, $Tnone, $hbase["average"]["TunreachableNBAlert"], $oreon->optGen["color_unreachable"]);
+		$tab_resume[3] = formatData("Undetermined", $Tnone, $timeTOTAL , $Tnone, "", "#cccccc");
+		
+		/*
+		 * calculate tablist
+		 */
+		$i=0;
+		foreach ($hbase as $host_id => $tab)	{
+			if ($host_id != "average"){
+				$tab_tmp = array();
+				$tab_tmp["hostName"] = getMyHostName($host_id);
+				$tt = $end_date_select - $start_date_select;
+				$tab_tmp["PtimeUP"] = round($tab["Tup"] / $tt *100,2);
+				$tab_tmp["PtimeDOWN"] = round( $tab["Tdown"]/ $tt *100,2);
+				$tab_tmp["PtimeUNREACHABLE"] = round( $tab["Tunreachable"]/ $tt *100,2);
+				$tab_tmp["PtimeUNDETERMINATED"] = round( ( $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"])													 )  / $tt *100,2);
+				$tmp_none = $tt - ($tab["Tup"] + $tab["Tdown"] + $tab["Tunreachable"]);
+				$tab_tmp["UPnbEvent"] = isset($tab["TupNBAlert"]) ? $tab["TupNBAlert"] : 0;
+				$tab_tmp["DOWNnbEvent"] = isset($tab["TdownNBAlert"]) ? $tab["TdownNBAlert"] : 0;
+				$tab_tmp["UNREACHABLEnbEvent"] = isset($tab["TunreachableNBAlert"]) ? $tab["TunreachableNBAlert"] : 0;
+				$tab_tmp["PktimeUP"] = $tab["Tup"] ? round($tab["Tup"] / ($tt - $tmp_none) *100,2): 0;
+				$tab_tmp["PktimeDOWN"] = $tab["Tdown"] ? round( $tab["Tdown"]/ ($tt - $tmp_none) *100,2):0;
+				$tab_tmp["PktimeUNREACHABLE"] =  $tab["Tunreachable"] ? round( $tab["Tunreachable"]/ ($tt - $tmp_none) *100,2):0;
+				$tab_tmp["PtimeUP"] = number_format($tab_tmp["PtimeUP"], 1, '.', '');
+				$tab_tmp["PtimeDOWN"] = number_format($tab_tmp["PtimeDOWN"], 1, '.', '');
+				$tab_tmp["PtimeUNREACHABLE"] = number_format($tab_tmp["PtimeUNREACHABLE"], 1, '.', '');
+				$tab_tmp["PtimeUNDETERMINATED"] = number_format($tab_tmp["PtimeUNDETERMINATED"], 1, '.', '');
+				$tab_tmp["PtimeUNDETERMINATED"] = ($tab_tmp["PtimeUNDETERMINATED"] < 0.1) ? 0.0 : $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_tmp["PktimeUP"] = number_format($tab_tmp["PktimeUP"], 1, '.', '');
+				$tab_tmp["PktimeDOWN"] = number_format($tab_tmp["PktimeDOWN"], 1, '.', '');
+				$tab_tmp["PktimeUNREACHABLE"] = number_format($tab_tmp["PktimeUNREACHABLE"], 1, '.', '');
 	
-	# Time
-	if($tab_host_list_average["PTUP"] > 0)
-		$tab_host_list_average["PTUP"] = number_format($tab_host_list_average["PTUP"] / $tab_host_list_average["nb_host"], 3, '.', '');
-	if($tab_host_list_average["PTD"] > 0)
-		$tab_host_list_average["PTD"] = number_format($tab_host_list_average["PTD"] / $tab_host_list_average["nb_host"], 3, '.', '');
-	if($tab_host_list_average["PTUR"] > 0)
-		$tab_host_list_average["PTUR"] = number_format($tab_host_list_average["PTUR"] / $tab_host_list_average["nb_host"], 3, '.', '');
-	if($tab_host_list_average["PTU"] > 0)
-		$tab_host_list_average["PTU"] = number_format($tab_host_list_average["PTU"] / $tab_host_list_average["nb_host"], 3, '.', '');
-	# %
-	if($tab_host_list_average["PKTup"] > 0)
-		$tab_host_list_average["PKTup"] = number_format($tab_host_list_average["PKTup"] / $tab_host_list_average["nb_host"], 3, '.', '');
-	if($tab_host_list_average["PKTd"] > 0)
-		$tab_host_list_average["PKTd"] = number_format($tab_host_list_average["PKTd"] / $tab_host_list_average["nb_host"], 3, '.', '');
-	if($tab_host_list_average["PKTu"] > 0)
-		$tab_host_list_average["PKTu"] = number_format($tab_host_list_average["PKTu"] / $tab_host_list_average["nb_host"], 3, '.', '');
-
-	$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
-	$end_date_select_save_timestamp =  $end_date_select;
-	$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
-	$status = "";
-	$totalTime = 0;
-	$totalpTime = 0;
-	$totalpkTime = 0;
+				/*
+				 * fill average svc table
+				 */
+				$tab_host_list_average["PTUP"] += $tab_tmp["PtimeUP"];
+				$tab_host_list_average["PAUP"] += $tab_tmp["UPnbEvent"];
+				$tab_host_list_average["PTD"] += $tab_tmp["PtimeDOWN"];
+				$tab_host_list_average["PAD"] += $tab_tmp["DOWNnbEvent"];
+				$tab_host_list_average["PTUR"] += $tab_tmp["PtimeUNREACHABLE"];
+				$tab_host_list_average["PAUR"] += $tab_tmp["UNREACHABLEnbEvent"];
+				$tab_host_list_average["PTU"] += $tab_tmp["PtimeUNDETERMINATED"];
+				$tab_host_list_average["PKTup"] += $tab_tmp["PktimeUP"];
+				$tab_host_list_average["PKTd"] += $tab_tmp["PktimeDOWN"];
+				$tab_host_list_average["PKTu"] += $tab_tmp["PktimeUNREACHABLE"];
+				$tab_host_list_average["nb_host"] += 1;
+				$tab_host[$i++] = $tab_tmp;
+			}
+		}
 	
-	foreach ($tab_resume  as $tb){
-		if ($tb["pourcentTime"] >= 0)
-			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
-		$totalTime += $tb["timestamp"];
-		$totalpTime += $tb["pourcentTime"];
-		$totalpkTime += $tb["pourcentkTime"];
-	}
-	$totalAlert = $hbase["average"]["TunreachableNBAlert"] + $hbase["average"]["TdownNBAlert"] + $hbase["average"]["TupNBAlert"];
-
-	$tpl->assign('totalAlert', $totalAlert);
-	$tpl->assign('totalTime', Duration::toString($totalTime));
-	$tpl->assign('totalpTime', $totalpTime);
-	$tpl->assign('totalpkTime', $totalpkTime);
-	$tpl->assign('status', $status);
+		/*
+		 * calculate svc average
+		 */	
 	
+		# Alert
+		if($tab_host_list_average["PAUP"] > 0)
+			$tab_host_list_average["PAUP"] = number_format($tab_host_list_average["PAUP"] / $tab_host_list_average["nb_host"], 1, '.', '');
+		if($tab_host_list_average["PAD"] > 0)
+			$tab_host_list_average["PAD"] = number_format($tab_host_list_average["PAD"] / $tab_host_list_average["nb_host"], 1, '.', '');
+		if($tab_host_list_average["PAUR"] > 0)
+			$tab_host_list_average["PAUR"] = number_format($tab_host_list_average["PAUR"] / $tab_host_list_average["nb_host"], 1, '.', '');
+		
+		# Time
+		if($tab_host_list_average["PTUP"] > 0)
+			$tab_host_list_average["PTUP"] = number_format($tab_host_list_average["PTUP"] / $tab_host_list_average["nb_host"], 3, '.', '');
+		if($tab_host_list_average["PTD"] > 0)
+			$tab_host_list_average["PTD"] = number_format($tab_host_list_average["PTD"] / $tab_host_list_average["nb_host"], 3, '.', '');
+		if($tab_host_list_average["PTUR"] > 0)
+			$tab_host_list_average["PTUR"] = number_format($tab_host_list_average["PTUR"] / $tab_host_list_average["nb_host"], 3, '.', '');
+		if($tab_host_list_average["PTU"] > 0)
+			$tab_host_list_average["PTU"] = number_format($tab_host_list_average["PTU"] / $tab_host_list_average["nb_host"], 3, '.', '');
+		# %
+		if($tab_host_list_average["PKTup"] > 0)
+			$tab_host_list_average["PKTup"] = number_format($tab_host_list_average["PKTup"] / $tab_host_list_average["nb_host"], 3, '.', '');
+		if($tab_host_list_average["PKTd"] > 0)
+			$tab_host_list_average["PKTd"] = number_format($tab_host_list_average["PKTd"] / $tab_host_list_average["nb_host"], 3, '.', '');
+		if($tab_host_list_average["PKTu"] > 0)
+			$tab_host_list_average["PKTu"] = number_format($tab_host_list_average["PKTu"] / $tab_host_list_average["nb_host"], 3, '.', '');
 	
-	$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
-	$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
-	$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
-	$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+		$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
+		$end_date_select_save_timestamp =  $end_date_select;
+		$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
+		$status = "";
+		$totalTime = 0;
+		$totalpTime = 0;
+		$totalpkTime = 0;
+		
+		foreach ($tab_resume  as $tb){
+			if ($tb["pourcentTime"] >= 0)
+				$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
+			$totalTime += $tb["timestamp"];
+			$totalpTime += $tb["pourcentTime"];
+			$totalpkTime += $tb["pourcentkTime"];
+		}
+		$totalAlert = $hbase["average"]["TunreachableNBAlert"] + $hbase["average"]["TdownNBAlert"] + $hbase["average"]["TupNBAlert"];
 	
-	$tpl->assign("tab_resume", $tab_resume);
-	$tpl->assign("tab_host_average", $tab_host_list_average);
+		$tpl->assign('totalAlert', $totalAlert);
+		$tpl->assign('totalTime', Duration::toString($totalTime));
+		$tpl->assign('totalpTime', $totalpTime);
+		$tpl->assign('totalpkTime', $totalpkTime);
+		$tpl->assign('status', $status);
+		
+		
+		$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
+		$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
+		$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
+		$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+		
+		$tpl->assign("tab_resume", $tab_resume);
+		$tpl->assign("tab_host_average", $tab_host_list_average);
 
 	}
 
@@ -469,7 +460,8 @@ For information : contact@oreon-project.org
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod->accept($renderer);
 	$tpl->assign('formPeriod', $renderer->toArray());
-	$tpl->assign('period', $var_url_export_csv);
+	if (isset($var_url_export_csv))
+		$tpl->assign('period', $var_url_export_csv);
 
 	/*
 	 * Apply a template definition
