@@ -1,17 +1,13 @@
 {$form.javascript}
-<div>
+<div align=center>
 	<form {$form.attributes}>
-		<table class="ListTable">
+		<table class="ListTableMedium">
 			<tr class="ListHeader">
 				<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$form.header.title}</td>
 			<tr>
-			<tr class="list_one">
+			<tr class="list_two">
 				<td  class="ListColLeft">{$form.host_id.label}</td>
 				<td  class="ListColLeft">{$form.host_id.html}</td>
-			</tr>
-			<tr class="list_two">
-				<td  class="ListColLeft">{$form.service_id.label}</td>
-				<td  class="ListColLeft">{$form.service_id.html}</td>
 			</tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.persistant.label}</td>
@@ -26,9 +22,8 @@
 				<td  class="ListColLeft">{$form.end.html}</td>
 			</tr>
 			<tr class="list_two">
-				<td  class="ListColLeft">{$form.comment.label}</td>
+				<td  class="ListColLeft" valign='top'>{$form.comment.label}</td>
 				<td  class="ListColLeft">{$form.comment.html}</td>
-			</tr>
 			</tr>
 		</table>		
 		<div id="validForm">

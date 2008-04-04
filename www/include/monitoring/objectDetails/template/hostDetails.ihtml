@@ -139,34 +139,6 @@
 					</tr>
 					{/if}
 				</table>
-				{if $lcaTopo.6 || $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
-				<br />
-				<table class="ListTable">
-					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$m_mon_tips}</td>
-					</tr>
-					{if $lcaTopo.6}
-					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./oreon.php?p=6&host_id={$h.host_id}&o=c'>{$m_mon_configure} {$h.host_name}</a></td>
-					</tr>
-					{/if}
-					{if $url_id && $lcaTopo.7}
-					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./oreon.php?p=70101&o=t&host_id={$h.host_id}'>{$m_mon_view_identity_file} {$h.host_name}</a></td>
-					</tr>
-					{/if}
-					{if $url_id && $lcaTopo.20201}
-					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./oreon.php?p=20201&o=svc&host_name={$h.host_name}'>{$m_mon_all_services} {$h.host_name}</a></td>
-					</tr>
-					{/if}
-					{if $url_id && $lcaTopo.40210}
-					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./oreon.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$m_mon_all_graphs} {$h.host_name}</a></td>
-					</tr>
-					{/if}
-				</table>
-				{/if}
 				<br />
 				<table class="ListTable">
 					<tr class='ListHeader'>
@@ -245,6 +217,34 @@
 						<td class="ListColCenter"><img src='./include/monitoring/objectDetails/generate_images/pie_chart_service.php?o={$o}{$status}&host_name={$h.host_name}'></td>
 					</tr>
 				</table>
+				{if $lcaTopo.6 || $lcaTopo.70101 || $lcaTopo.20201 || $lcaTopo.40210}
+				<br />
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderCenter">{$m_mon_tips}</td>
+					</tr>
+					{if $lcaTopo.6}
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./oreon.php?p=6&host_id={$h.host_id}&o=c'>{$m_mon_configure} {$h.host_name}</a></td>
+					</tr>
+					{/if}
+					{if $url_id && $lcaTopo.7}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./oreon.php?p=70101&o=t&host_id={$h.host_id}'>{$m_mon_view_identity_file} {$h.host_name}</a></td>
+					</tr>
+					{/if}
+					{if $url_id && $lcaTopo.20201}
+					<tr class='list_two'>
+						<td class="ListColLeft"><a href='./oreon.php?p=20201&o=svc&host_name={$h.host_name}'>{$m_mon_all_services} {$h.host_name}</a></td>
+					</tr>
+					{/if}
+					{if $url_id && $lcaTopo.40210}
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href='./oreon.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$m_mon_all_graphs} {$h.host_name}</a></td>
+					</tr>
+					{/if}
+				</table>
+				{/if}
 			</td>
 		</tr>
 	</table>

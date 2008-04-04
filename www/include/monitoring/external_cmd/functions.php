@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 	if (!isset($oreon))
 		exit();
 
@@ -22,14 +21,19 @@ For information : contact@oreon-project.org
 	$tab["0"] = "DISABLE";
 
 	function write_command($cmd){
-		global $oreon;
+		global $oreon, $key, $pearDB;
 		$str = NULL;
 		$cmd = htmlentities($cmd);
-		$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
+
+		$informations = split(";", $key);
+		if (isHostLocalhost($pearDB, $informations[0]))
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
+		else
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . "/usr/local/centreon/var/centreon.cmd";
 		return passthru($str);
 	}
 
-	function send_cmd($arg, $lang){
+	function send_cmd($arg){
 		if (isset($arg))
 			$flg = write_command($arg);
 		$flg ? $ret = _("Your command has been sent") : $ret = "Problem Execution";
@@ -217,7 +221,7 @@ For information : contact@oreon-project.org
 	
 	/* Aknowledge */
 	
-	function autoAcknowledgeServiceStart($key, $lang){
+	function autoAcknowledgeServiceStart($key){
 		global $pearDB,$tab,$oreon;
 		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
@@ -225,7 +229,7 @@ For information : contact@oreon-project.org
 		return _("Your command has been sent");
 	}
 	
-	function autoAcknowledgeServiceStop($key, $lang){
+	function autoAcknowledgeServiceStop($key){
 		global $pearDB,$tab,$oreon;
 		$comment = "Service Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
@@ -233,7 +237,7 @@ For information : contact@oreon-project.org
 		return _("Your command has been sent");
 	}
 	
-	function autoAcknowledgeHostStart($key, $lang){
+	function autoAcknowledgeHostStart($key){
 		global $pearDB,$tab,$oreon;
 		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
@@ -241,7 +245,7 @@ For information : contact@oreon-project.org
 		return _("Your command has been sent");
 	}
 	
-	function autoAcknowledgeHostStop($key, $lang){
+	function autoAcknowledgeHostStop($key){
 		global $pearDB,$tab,$oreon;
 		$comment = "Host Auto Aknowledge by ".$oreon->user->alias."\n";
 		$ressource = split(";", $key);
@@ -251,28 +255,28 @@ For information : contact@oreon-project.org
 	
 	/* Notification */
 	
-	function autoNotificationServiceStart($key, $lang){
+	function autoNotificationServiceStart($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1]);
 		return _("Your command has been sent");
 	}
 	
-	function autoNotificationServiceStop($key, $lang){
+	function autoNotificationServiceStop($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_SVC_NOTIFICATIONS;".$ressource[0].";".$ressource[1]);
 		return _("Your command has been sent");
 	}
 	
-	function autoNotificationHostStart($key, $lang){
+	function autoNotificationHostStart($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_HOST_NOTIFICATIONS;".$ressource[0]);
 		return _("Your command has been sent");
 	}
 	
-	function autoNotificationHostStop($key, $lang){
+	function autoNotificationHostStop($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_HOST_NOTIFICATIONS;".$ressource[0]);
@@ -281,28 +285,28 @@ For information : contact@oreon-project.org
 	
 	/* Check */
 	
-	function autoCheckServiceStart($key, $lang){
+	function autoCheckServiceStart($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_SVC_CHECK;".$ressource[0].";".$ressource[1]);
 		return _("Your command has been sent");
 	}
 	
-	function autoCheckServiceStop($key, $lang){
+	function autoCheckServiceStop($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_SVC_CHECK;".$ressource[0].";".$ressource[1]);
 		return _("Your command has been sent");
 	}
 	
-	function autoCheckHostStart($key, $lang){
+	function autoCheckHostStart($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" ENABLE_HOST_CHECK;".$ressource[0]);
 		return _("Your command has been sent");
 	}
 	
-	function autoCheckHostStop($key, $lang){
+	function autoCheckHostStop($key){
 		global $pearDB,$tab;
 		$ressource = split(";", $key);
 		$flg = write_command(" DISABLE_HOST_CHECK;".$ressource[0]);

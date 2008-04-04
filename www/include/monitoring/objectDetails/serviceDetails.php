@@ -19,15 +19,14 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 
-	$ndo_base_prefix = "nagios";
+	$ndo_base_prefix = getNDOPrefix();
 
-	if (isset($_GET["host_name"]) && $_GET["host_name"] && isset($_GET["service_description"]) && $_GET["service_description"]){
+	if (isset($_GET["host_name"]) && $_GET["host_name"] != "" && isset($_GET["service_description"]) && $_GET["service_description"] != ""){
 		$host_name = $_GET["host_name"];
 		$svc_description = $_GET["service_description"];
 	} else {
-		foreach ($_GET["select"] as $key => $value)
-			$host_service_key = $key;
-		$tab_data = split(";", $host_service_key);
+		foreach ($_GET["select"] as $key => $value )
+			$tab_data = split(";", $key);
 		$host_name = $tab_data[0];
 		$svc_description = $tab_data[1];
 	}
@@ -65,7 +64,7 @@ For information : contact@oreon-project.org
 				" unix_timestamp(nss.last_notification) as last_notification," .
 				" no.name1 as host_name," .
 				" no.name2 as service_description" .
-				" FROM ".$ndo_base_prefix."_servicestatus nss, ".$ndo_base_prefix."_objects no" .
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
 
 		$DBRESULT_NDO =& $pearDBndo->query($rq);
@@ -79,8 +78,7 @@ For information : contact@oreon-project.org
 		$tab_status_service[3] = "UNKNOWN";
 		$tab_status_service[4] = "PENDING";
 
-		while($DBRESULT_NDO->fetchInto($ndo))
-		{
+		while ($ndo =& $DBRESULT_NDO->fetchRow()){
 			if($ndo["service_description"] == $svc_description)
 				$service_status[$host_name."_".$svc_description]= $ndo;
 
@@ -98,7 +96,7 @@ For information : contact@oreon-project.org
 		$tab_host_status[2] = "UNREACHABLE";
 
 		$rq2 =	"SELECT nhs.current_state" .
-				" FROM ".$ndo_base_prefix."_hoststatus nhs, ".$ndo_base_prefix."_objects no" .
+				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
@@ -129,81 +127,26 @@ For information : contact@oreon-project.org
 
 		# Smarty template Init
 		$tpl = new Smarty();
-		$tpl = initSmartyTpl($path, $tpl, "./");
+		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
-		if (!file_exists($oreon->Nagioscfg["comment_file"]))
-			print ("downtime file not found");
-		else	{
-			$tab_comments_svc = array();
-			$i = 0;
-			$log = fopen($oreon->Nagioscfg["comment_file"], "r");
-			if ($oreon->user->get_version() == 1){
-				while ($str = fgets($log))	{
-					print $str . "<br />";
-					$res = preg_split("/;/", $str);
-					if (preg_match("/^\[([0-9]*)\] SERVICE_COMMENT;/", $str, $matches)){
-						if (!strcmp($res[2], $host_name)){
-							print $res[6];
-							$tab_comments_svc[$i] = array();
-							$tab_comments_svc[$i]["id"] = $res[1];
-							$tab_comments_svc[$i]["host_name"] = $res[2];
-							$tab_comments_svc[$i]["service_descr"] = $res[3];
-							$tab_comments_svc[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
-							$tab_comments_svc[$i]["author"] = $res[5];
-							$tab_comments_svc[$i]["comment"] = $res[6];
-							$tab_comments_svc[$i]["persistent"] = $res[4];
-						}
-					}
-					$i++;
-				}
-			} else {
-				while ($str = fgets($log))	{
-                if (preg_match("/^hostcomment/", $str)){
-                	$tab_comments_host[$i] = array();
-                    $flag_host = 1;
-                } else if (preg_match("/^servicecomment /", $str)){
-                	$tab_comments_svc[$i] = array();
-                    $flag_svc = 1;
-                } else {
-                    if(isset($flag_svc) && $flag_svc == 1) {
-                      	$res = preg_split("/=/", $str);
-                      	$res[0] = trim($res[0]);
-                      	if (isset($res[1]))
-                      		$res[1] = trim($res[1]);
-                        if (preg_match('`comment_id$`', $res[0]))
-                            $tab_comments_svc[$i]["id"] = $res[1];
-                        if (preg_match('`service_description$`', $res[0])){
-                          $tab_comments_svc[$i]["service_description"] = $res[1];}
-                        if (preg_match('`host_name$`', $res[0]))
-                          $tab_comments_svc[$i]["host_name"] = $res[1];
-                        if (preg_match('`entry_time$`', $res[0]))
-                        	$tab_comments_svc[$i]["time"] = date("d-m-Y G:i:s", $res[1]);
-                        if (preg_match('`author$`', $res[0]))
-                        	$tab_comments_svc[$i]["author"] = $res[1];
-                        if (preg_match('`comment_data$`', $res[0]))
-                        	$tab_comments_svc[$i]["comment"] = $res[1];
-                        if (preg_match('`persistent$`', $res[0]))
-                        	$tab_comments_svc[$i]["persistent"] = $res[1];
-                        if (preg_match('`}$`', $str)){
-                            $flag_svc = 0;
-                        	$i++;
-                        }
-                    }
-                }
-			}
-
-			}
+		$tab_comments_svc = array();
+		$rq2 =	" SELECT cmt.comment_id, cmt.entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+				" WHERE obj.name1 = '".$host_name."' AND obj.name2 = '".$svc_description."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.entry_time";
+		$DBRESULT_NDO =& $pearDBndo->query($rq2);
+		if (PEAR::isError($DBRESULT_NDO))
+			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
+		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+			$tab_comments_svc[$i] = $data;
 		}
+		unset($data);	
 
-		foreach ($tab_comments_svc as $key => $value){
-			if ( ($value["host_name"] == $_GET["host_name"]) && ($value["service_description"] == $_GET["service_description"]))
-				;
-			else
-				unset($tab_comments_svc[$key]);
-		}
-
+		
 		$en = array("0" => _("No"), "1" => _("Yes"));
-
+		foreach ($tab_comments_svc as $key => $value){
+			$tab_comments_svc[$key]["is_persistent"] = $en[$tab_comments_svc[$key]["is_persistent"]];
+		}
+		
 		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
 
@@ -240,9 +183,11 @@ For information : contact@oreon-project.org
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;
 
-		$optionsURL = "session_id=".session_id()."&host_name=".$_GET["host_name"]."&service_description=".$_GET["service_description"];
+//		$optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$service_description;
 
-		//$tpl->assign("lang", $lang);
+		/*
+		 * Assign translations
+		 */
 		$tpl->assign("m_mon_services", _("Services"));
 		$tpl->assign("m_mon_on_host", _("on host"));
 		$tpl->assign("m_mon_services_status", _("Services Status"));
@@ -289,7 +234,6 @@ For information : contact@oreon-project.org
 		$tpl->assign("cmt_comment", _("Comments"));
 		$tpl->assign("cmt_persistent", _("Persistent"));
 		
-		
 		$tpl->assign("p", $p);
 		$tpl->assign("o", $o);
 		$tpl->assign("en", $en);
@@ -320,7 +264,7 @@ For information : contact@oreon-project.org
 		$tpl->assign("sv_ext_action_url_lang", _("Action URL"));
 		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
-		$tpl->assign("options", $optionsURL);
+		//$tpl->assign("options", $optionsURL);
 		$tpl->display("serviceDetails.ihtml");
 	}
 ?>

@@ -87,8 +87,8 @@ For information : contact@oreon-project.org
 			 * Special Views 
 			 */
 			case "svcd" 		: require_once($pathDetails."serviceDetails.php"); 		break;
-			case "svcak" 		: require_once($pathExternal."serviceAcknowledge.php"); break;
-			case "svcpc" 		: require_once($pathExternal."servicePassiveCheck.php");break;
+			case "svcak" 		: require_once("./include/monitoring/acknowlegement/serviceAcknowledge.php"); break;
+			case "svcpc" 		: require_once("./include/monitoring/submitPassivResults/servicePassiveCheck.php");break;
 			/*
 			 * View Bu hosts groups
 			 */

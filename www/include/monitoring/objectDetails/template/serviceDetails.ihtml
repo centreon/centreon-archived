@@ -105,28 +105,6 @@
 						<td class="ListColCenter" colspan="2"><img src="./include/views/graphs/statusGraphs/displayServiceStatus.php?{$options}"></td>
 					</tr>
 				</table>
-				<br /><br />
-				{if $lcaTopo.602}
-				<table class="ListTable">
-					<tr class='ListHeader'>
-						<td class="ListColHeaderLeft">{$m_mon_tips}</td>
-					</tr>
-					<tr>
-						<td class="ListColLeft"><a href='./oreon.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
-					</tr>
-				</table>
-				{/if}
-				{if $sv_ext_action_url}		
-				<br />
-				<table class="ListTable">
-					<tr class='ListHeader'>
-						<td class="ListColHeaderCenter">{$m_mon_tools}</td>
-					</tr>
-					<tr class='list_one'>
-						<td class="ListColLeft"><a href="{$sv_ext_action_url}" target="_blank">{$sv_ext_action_url_lang}</a></td>
-					</tr>
-				</table>
-				{/if}
 			</td>
 			<td style='width:20px;'>&nbsp;</td>
 			<td style='vertical-align:top;'>
@@ -200,6 +178,28 @@
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.obsess_over_service]};'>&nbsp;{$en_disable[$service_data.obsess_over_service]}&nbsp;</font></td>
 					</tr>
 				</table>
+				<br />
+				{if $lcaTopo.602}
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderLeft">{$m_mon_tips}</td>
+					</tr>
+					<tr>
+						<td class="ListColLeft"><a href='./oreon.php?p=602&service_id={$service_id}&o=c'>Configure {$svc_description}</a></td>
+					</tr>
+				</table>
+				{/if}
+				{if $sv_ext_action_url}		
+				<br />
+				<table class="ListTable">
+					<tr class='ListHeader'>
+						<td class="ListColHeaderCenter">{$m_mon_tools}</td>
+					</tr>
+					<tr class='list_one'>
+						<td class="ListColLeft"><a href="{$sv_ext_action_url}" target="_blank">{$sv_ext_action_url_lang}</a></td>
+					</tr>
+				</table>
+				{/if}
 			</td>
 		</tr>
 	</table><br />
@@ -212,7 +212,7 @@
 	<br />
 	<table class="ListTable">
 		<tr class='ListHeader'>
-			<td class="ListColHeaderPicker"><input type="checkbox" disabled checked></td>
+			<!--<td class="ListColHeaderPicker"><input type="checkbox" disabled checked></td>-->
 			<td class="ListColHeaderCenter">{$cmt_host_name}</td>
 			<td class="ListColHeaderCenter">{$cmt_service_descr}</td>
 			<td class="ListColHeaderCenter">{$cmt_entry_time}</td>
@@ -223,13 +223,13 @@
 		{foreach item=tcs from=$tab_comments_svc}
 		{if $tcs.host_name == $h.host_name}
 		<tr class={cycle values="list_two, list_one"}>
-			<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.id}]'></td>
+			<!--<td class="ListColPicker"><input type="checkbox" name='select[{$tcs.id}]'></td>-->
 			<td class="ListColLeft" width="120">{$tcs.host_name}</td>
 			<td class="ListColLeft" width="120">{$tcs.service_description}</td>
-			<td class="ListColRight" width="150" style="white-space:nowrap;">{$tcs.time}</td>
-			<td class="ListColCenter" width="100">{$tcs.author}</td>
-			<td class="ListColNoWrap">{$tcs.comment}</td>
-			<td class="ListColLeft" width="50">{$tcs.persistent}</td>
+			<td class="ListColRight" width="150" style="white-space:nowrap;">{$tcs.entry_time}</td>
+			<td class="ListColCenter" width="100">{$tcs.author_name}</td>
+			<td class="ListColNoWrap">{$tcs.comment_data}</td>
+			<td class="ListColCenter" width="50">{$tcs.is_persistent}</td>
 			</tr>
 		{/if}
 		{/foreach}

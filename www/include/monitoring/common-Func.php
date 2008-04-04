@@ -89,10 +89,6 @@ For information : contact@oreon-project.org
 			exec("echo \"[".$timestamp."] SCHEDULE_HOST_DOWNTIME;".$r["host_name"].";".$start_time.";".$end_time.";".$persistant.";".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]) ;
 		else
 			exec("echo \"[".$timestamp."] SCHEDULE_HOST_DOWNTIME;".$r["host_name"].";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]) ;
-		$DBRESULT =& $pearDB->query("INSERT INTO downtime (host_id, entry_time , author , comment , start_time , end_time , fixed , duration , deleted) ".
-									"VALUES ('".$host."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start_time."', '".$end_time."', '".$persistant."', '".$duration."', '0')");
-		if (PEAR::isError($DBRESULT)) 
-			print $DBRESULT->getMessage();
 	}
 
 	function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant){
@@ -103,11 +99,11 @@ For information : contact@oreon-project.org
 		$res = preg_split("/ /", $start);
 		$res1 = preg_split("/\//", $res[0]);
 		$res2 = preg_split("/:/", $res[1]);
-		$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
+		$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0], -1);
 		$res = preg_split("/ /", $end);
 		$res3 = preg_split("/\//", $res[0]);
 		$res4 = preg_split("/:/", $res[1]);
-		$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
+		$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0], -1);
 
 		$duration = $end_time - $start_time;
 
@@ -118,19 +114,12 @@ For information : contact@oreon-project.org
 		if (isset($host))
 			$svc_description = getMyServiceName($service);
 
-		//attention timestamp ki peu etre decaler !
 		$timestamp = time();
 
 		if ($oreon->user->get_version() == 1)
 			exec("echo \"[".$timestamp."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$svc_description.";".$start_time.";".$end_time.";".$persistant.";".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 		else
 			exec("echo \"[".$timestamp."] SCHEDULE_SVC_DOWNTIME;".$r["host_name"].";".$svc_description.";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$oreon->user->get_alias().";".$comment."\n\" >> " . $oreon->Nagioscfg["command_file"]);
-
-		$cmd = "INSERT INTO downtime (host_id , service_id , entry_time , author , comment , start_time , end_time , fixed , duration , deleted) ";
-		$cmd .= "VALUES ('".$host."', '".$service."', '".$timestamp."', '".$oreon->user->get_id()."', '".$comment."', '".$start_time."', '".$end_time."', '".$persistant."', '".$duration."', '0')";
-		$DBRESULT =& $pearDB->query($cmd);
-		if (PEAR::isError($DBRESULT))
-			print "Mysql Error : ".$DBRESULT->getMessage();
 	}
 
 	function DeleteComment($type,$hosts = array()){
@@ -145,7 +134,7 @@ For information : contact@oreon-project.org
 		
 		foreach ($hosts as $key => $value)	{
 			$res = split(";", $key);
-			exec ("echo \"[".time()."] DEL_".$type."_DOWNTIME;".$res[0]."\n\" >> " . $oreon->Nagioscfg["command_file"]);
+			exec ("echo \"[".time()."] DEL_".$type."_DOWNTIME;".$res[1]."\n\" >> " . $oreon->Nagioscfg["command_file"]);
 		}
 	}
 ?>

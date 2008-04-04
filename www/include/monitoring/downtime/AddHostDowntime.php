@@ -1,31 +1,32 @@
 <?php
-/** 
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	if (!isset($oreon))
 		exit();
 	
 	# Init
 	$LCA_error = 0;
-	$lcaHostByName = getLcaHostByName($pearDB);
+	if (!$is_admin){
+		$lcaHostByName = getLcaHostByName($pearDB);
+	}
 	
 	if (isset($_GET["host_name"])){
 		$host_id = getMyHostID($_GET["host_name"]);
-		if (!isset($lcaHostByName[LcaHost] [$_GET["host_name"]]) && $isRestreint)
+		if (!isset($lcaHostByName["LcaHost"] [$_GET["host_name"]]) && $isRestreint)
 			$LCA_error = 1;
 		$host_name = $_GET["host_name"];
 	} else
@@ -47,14 +48,14 @@ For information : contact@oreon-project.org
 		while ($DBRESULT->fetchInto($host)){
 			if (!$host["host_name"])
 				$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-			if (IsHostReadable($lcaHostByName, $host["host_name"]))
+			if (isset($lcaHostByName["LcaHost"][$host["host_name"]]) || $is_admin)
 				$hosts[$host["host_id"]]= $host["host_name"];
 		}
 		
 		$debug = 0;
 		$attrsTextI		= array("size"=>"3");
 		$attrsText 		= array("size"=>"30");
-		$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+		$attrsTextarea 	= array("rows"=>"7", "cols"=>"100");
 		
 		#
 		## Form begin
@@ -91,11 +92,11 @@ For information : contact@oreon-project.org
 			if (!isset($_POST["comment"]))
 				$_POST["comment"] = 0;
 			AddHostDowntime($_POST["host_id"], $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
-			require_once($path."viewDowntime.php");
+			require_once("viewDowntime.php");
 	    } else {	
 			# Smarty template Init
 			$tpl = new Smarty();
-			$tpl = initSmartyTpl($path, $tpl, "templates/");
+			$tpl = initSmartyTpl($path, $tpl, "template/");
 				
 			#Apply a template definition	
 			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);

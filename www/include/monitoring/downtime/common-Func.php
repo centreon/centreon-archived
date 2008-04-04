@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 	if (!isset($oreon))
 		exit();
 		
@@ -189,5 +188,37 @@ For information : contact@oreon-project.org
 		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime deleted successfully. <br><br>Click <a href='./oreon.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
 		system($str);
 		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='oreon.php?p=308'\",2000)</SCRIPT>";
+	}
+	
+	function write_command($cmd){
+		global $oreon, $key, $pearDB;
+		$str = NULL;
+		$cmd = htmlentities($cmd);
+
+		$informations = split(";", $key);
+		if (isHostLocalhost($pearDB, $informations[0]))
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
+		else
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . "/usr/local/centreon/var/centreon.cmd";
+		return passthru($str);
+	}
+	
+	function DeleteHostDowntime($select){
+		foreach ($select as $keycode => $value)
+			$key = $keycode;
+		$informations = split(";", $key);
+		print_r($informations);
+		$str = "echo '[" . time() . "] DEL_HOST_DOWNTIME;".$informations[2]."'";
+		write_command($str);
+	}
+	
+	
+	function DeleteServiceDowntime($select){
+		foreach ($select as $keycode => $value)
+			$key = $keycode;
+		$informations = split(";", $key);
+		print_r($informations);
+		$str = "echo '[" . time() . "] DEL_SVC_DOWNTIME;".$informations[1]."'";
+		write_command($str);
 	}
 ?>

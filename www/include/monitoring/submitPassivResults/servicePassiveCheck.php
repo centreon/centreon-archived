@@ -1,22 +1,21 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
-
-$o = "svcd";
+	$o = "svcd";
 
 	if (!isset ($oreon))
 		exit ();
@@ -25,12 +24,14 @@ $o = "svcd";
 	isset($_GET["service_description"]) ? $service_description = $_GET["service_description"] : $service_description = NULL;
 	isset($_GET["cmd"]) ? $cmd = $_GET["cmd"] : $cmd = NULL;
 
-	$path = $pathExternal;
+	$path = "./include/monitoring/submitPassivResults/";
 	
 	# HOST LCA
-	$lcaHostByName = getLcaHostByName($pearDB);
+	if (!$is_admin){
+		$lcaHostByName = getLcaHostByName($pearDB);
+	}
 	
-	if ($oreon->user->admin || !$isRestreint || (isset($lcaHostByName["LcaHost"][$host_name]) && $isRestreint)){
+	if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]) && !$is_admin)){
 
 		#Pear library
 		require_once "HTML/QuickForm.php";
@@ -67,8 +68,8 @@ $o = "svcd";
 		$return_code = array("0" => "OK","1" => "WARNING", "3" => "UNKNOWN", "2" => "CRITICAL");
 	
 		$form->addElement('select', 'return_code', 'checkResult',$return_code);
-		$form->addElement('text', 'output', _("Check output"));
-		$form->addElement('text', 'dataPerform', _("Performance data"));
+		$form->addElement('text', 'output', _("Check output"), array("size"=>"100"));
+		$form->addElement('text', 'dataPerform', _("Performance data"), array("size"=>"100"));
 	
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());
 		$form->addElement('hidden', 'cmd', $cmd);

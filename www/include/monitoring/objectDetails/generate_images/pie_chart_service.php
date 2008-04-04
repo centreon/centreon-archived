@@ -13,8 +13,6 @@
  * @package Image_Graph
  * @author Jesper Veggerby <pear.nosey@veggerby.dk>
  */
-
-	require_once 'Image/Graph.php';
 	
 	require_once ("../../../../class/Session.class.php");
 	require_once ("../../../../class/Oreon.class.php");

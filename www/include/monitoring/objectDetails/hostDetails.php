@@ -26,11 +26,13 @@ For information : contact@oreon-project.org
 		foreach ($_GET["select"] as $key => $value)
 			$host_name = $key;
 
+	if (!$is_admin)
+		$lcaHost = getLcaHostByName($pearDB);
+
 	$tab_status = array();
 
 	if (isset($ndo) && $ndo){
 		include_once("./DBNDOConnect.php");
-
 		/* start ndo svc info */
 		$rq ="SELECT " .
 				"nss.current_state," .
@@ -66,9 +68,7 @@ For information : contact@oreon-project.org
 		$tab_status_service[3] = "UNKNOWN";
 		$tab_status_service[4] = "PENDING";
 
-		while($DBRESULT_NDO->fetchInto($ndo))
-		{
-
+		while($DBRESULT_NDO->fetchInto($ndo))	{
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
 			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
@@ -80,7 +80,6 @@ For information : contact@oreon-project.org
 		$tab_host_status[0] = "UP";
 		$tab_host_status[1] = "DOWN";
 		$tab_host_status[2] = "UNREACHABLE";
-
 
 		$rq2 = "SELECT nhs.current_state," .
 			" nhs.problem_has_been_acknowledged, " .
@@ -118,18 +117,12 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
 		$DBRESULT_NDO->fetchInto($ndo2);
 
-
 		$host_status[$host_name] = $ndo2;
 		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
 		/* end ndo host detail */
 	}
 
-
-
-
-	$lcaHost = getLcaHostByName($pearDB);
-
-	isset($lcaHost["LcaHost"][$host_name]) || $oreon->user->admin || !$isRestreint ? $key = true : $key = NULL;
+	isset($lcaHost["LcaHost"][$host_name]) || $is_admin  ? $key = true : $key = NULL;
 	if ($key == NULL){
 		include_once("alt_error.php");
 	} else {
@@ -155,29 +148,37 @@ For information : contact@oreon-project.org
 
 		# Smarty template Init
 		$tpl = new Smarty();
-		$tpl = initSmartyTpl($path, $tpl, "./");
+		$tpl = initSmartyTpl($path, $tpl, "./template/");
 
-		if (!file_exists($oreon->Nagioscfg["comment_file"]))
-			print ("downtime file not found");
-		else	{
-			$log = fopen($oreon->Nagioscfg["comment_file"], "r");
-			$tab_comments_host = array();
-			$i = 0;
-			while ($str = fgets($log))	{
-				$res = preg_split("/;/", $str);
-				if (preg_match("/^\[([0-9]*)\] HOST_COMMENT;/", $str, $matches)){
-					if (!strcmp($res[2], $host_name)){
-						$tab_comments_host[$i] = array();
-						$tab_comments_host[$i]["id"] = $res[1];
-						$tab_comments_host[$i]["host_name"] = $res[2];
-						$tab_comments_host[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
-						$tab_comments_host[$i]["author"] = $res[4];
-						$tab_comments_host[$i]["comment"] = $res[5];
-						$tab_comments_host[$i]["persistent"] = $res[3];
+		if ($oreon->user->get_version() == 2){
+			
+			if (!file_exists($oreon->Nagioscfg["comment_file"]))
+				print ("downtime file not found");
+			else	{
+				$log = fopen($oreon->Nagioscfg["comment_file"], "r");
+				$tab_comments_host = array();
+				$i = 0;
+				while ($str = fgets($log))	{
+					$res = preg_split("/;/", $str);
+					if (preg_match("/^\[([0-9]*)\] HOST_COMMENT;/", $str, $matches)){
+						if (!strcmp($res[2], $host_name)){
+							$tab_comments_host[$i] = array();
+							$tab_comments_host[$i]["id"] = $res[1];
+							$tab_comments_host[$i]["host_name"] = $res[2];
+							$tab_comments_host[$i]["time"] = date("d-m-Y G:i:s", $matches[1]);
+							$tab_comments_host[$i]["author"] = $res[4];
+							$tab_comments_host[$i]["comment"] = $res[5];
+							$tab_comments_host[$i]["persistent"] = $res[3];
+						}
 					}
+					$i++;
 				}
-				$i++;
 			}
+		} else {
+			/*
+			 * Read Comments
+			 */
+				
 		}
 
 		$en = array("0" => _("No"), "1" => _("Yes"));
