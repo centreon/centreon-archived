@@ -1200,4 +1200,16 @@ For information : contact@oreon-project.org
 	}
 	/* End Ajax Test */
 
+	function isHostLocalhost($pearDB, $host_name = NULL){
+		if (!isset($host_name))
+			return 0;
+		$DBRESULT =& $pearDB->query("SELECT `localhost` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		$nagios_server = $DBRESULT->fetchRow();
+		if (isset($nagios_server['localhost']))
+			return $nagios_server['localhost'];
+		return 0;
+	}
+
 ?>
