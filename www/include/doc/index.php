@@ -1,21 +1,19 @@
 <?php
-/**
-	Centreon is developped with GPL Licence 2.0 :
-	http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-	Developped by : Julien Mathis - Romain Le Merlus
-	
-	The Software is provided to you AS IS and WITH ALL FAULTS.
-	Centreon makes no representation and gives no warranty whatsoever,
-	whether express or implied, and without limitation, with regard to the quality,
-	safety, contents, performance, merchantability, non-infringement or suitability for
-	any particular or intended purpose of the Software found on the Centreon web site.
-	In no event will Centreon be liable for any direct, indirect, punitive, special,
-	incidental or consequential damages however they may arise and even if Centreon has
-	been previously advised of the possibility of such damages.
-	
-	For information : contact@oreon-project.org
-*/
-
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	if (!isset($oreon))
 		exit(); 
@@ -23,11 +21,10 @@
 	$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
 	$page = filter_var($page, INPUT_GET);
 
-	$lang = filter_var($_GET["lang"], FILTER_SANITIZE_SPECIAL_CHARS);
-	$lang = filter_var($lang, INPUT_GET);
+	$lang = $oreon->user->get_lang();
 
 	$tab_pages = split("/", $page);
-	foreach ($tab_images as $value)
+	foreach ($tab_pages as $value)
 		$page = $value;
 		
 	unset($tpl);
