@@ -41,9 +41,8 @@ For information : contact@oreon-project.org
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	if (!$is_admin){
+	if (!$is_admin)
 		$lca = getLcaHostByName($pearDB);
-	}
 	
 	$tableFile2 = array();
 	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
@@ -95,10 +94,6 @@ For information : contact@oreon-project.org
 	
 	$log = NULL;	
 	$tab_log = array();
-
-
-//	include("./include/monitoring/log/choose_log_file.php");
-
 
 	#
 	## Selection de l'host
