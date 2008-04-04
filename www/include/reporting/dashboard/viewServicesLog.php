@@ -41,7 +41,6 @@ For information : contact@oreon-project.org
 	require_once './include/common/common-Func.php';
 	require_once 'simple-func.php';
 	require_once 'reporting-func.php';
-	//include("./include/monitoring/log/choose_log_file.php");
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
