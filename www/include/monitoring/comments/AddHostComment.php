@@ -45,7 +45,7 @@
 		while ($DBRESULT->fetchInto($host)){
 			if (!$host["host_name"])
 				$host["host_name"] = getMyHostName($host["host_template_model_htm_id"]);
-			if (isset($lcaHostByName["LcaHost"][$host["host_name"]]))
+			if (isset($lcaHostByName["LcaHost"][$host["host_name"]])  || $is_admin)
 				$hosts[$host["host_id"]]= $host["host_name"];
 		}
 	
