@@ -89,7 +89,7 @@ For information : contact@oreon-project.org
 		for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++)
 			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
 		$DBRESULT->free();
-		$host["nagios_server_id"] = $ns["nagios_server_id"];
+		//$host["nagios_server_id"] = $ns["nagios_server_id"];
 		unset($ns);
 	}
 
@@ -98,7 +98,7 @@ For information : contact@oreon-project.org
 	 * Host Templates comes from DB -> Store in $hTpls Array
 	 */
 
-	$hTpls = array(NULL=>NULL);
+	$hTpls = array( NULL => NULL );
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
 	while($DBRESULT->fetchInto($hTpl))	{
 		if (!$hTpl["host_name"])
