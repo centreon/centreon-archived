@@ -15,7 +15,7 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	include_once ("../../etc/centreon.conf.php");
+	include_once ("/etc/centreon/centreon.conf.php");
 	include_once("DB.php");
 	include_once("../DBconnect.php");
 	

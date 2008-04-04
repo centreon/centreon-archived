@@ -43,7 +43,7 @@
 
 	require_once 'DB.php';	
 
-	include_once($path_centreon ."/etc/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 	include_once($path_centreon ."/cron/reporting/DB-Func.php");
 	require_once($path_centreon ."/www/include/reporting/dashboard/reporting-func.php");
 	require_once($path_centreon ."/www/include/reporting/dashboard/simple-func.php");
