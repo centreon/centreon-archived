@@ -112,8 +112,11 @@
 	if (PEAR::isError($res)){
 	  	die($res->getMessage());
 	} else { 
-	  	while ($s =& $res->fetchRow())
+	  	while ($s =& $res->fetchRow()){
+	  		$s["service_description"] = str_replace("#S#", "/", $s["service_description"]);
+	  		$s["service_description"] = str_replace("#BS#", "\\", $s["service_description"]);	  		
 	  		$service_list[$s["service_description"]] = $s["service_id"];
+	  	}
 	}	
 	require_once $path_centreon . '/www/include/common/common-Func.php';
 
