@@ -29,7 +29,7 @@
 		if (isHostLocalhost($pearDB, $informations[0]))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . "/usr/local/centreon/var/centreon.cmd";
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . "/srv/centreon/var/centreon.cmd";
 		return passthru($str);
 	}
 
@@ -42,7 +42,7 @@
 	
 	// Re-Schedule for all service of an host
 	
-	function schedule_host_svc_checks($arg, $lang, $forced){
+	function schedule_host_svc_checks($arg, $forced){
 		global $pearDB;
 		$tab_forced = array("0" => "", "1" => "_FORCED");
 		$flg = write_command(" SCHEDULE".$tab_forced[$forced]."_HOST_SVC_CHECKS;" . $arg . ";" . time());
@@ -51,7 +51,7 @@
 	
 	// SCHEDULE_SVC_CHECK
 	
-	function schedule_svc_checks($arg, $lang, $forced){
+	function schedule_svc_checks($arg, $forced){
 		global $pearDB;
 		$tab_forced = array("0" => "", "1" => "_FORCED");
 		$tab_data = split(";", $arg);
@@ -61,7 +61,7 @@
 	
 	// host check
 	
-	function host_check($arg, $lang, $type){
+	function host_check($arg, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" ". $tab[$type]."_HOST_CHECK;". $arg);
 		return _("Your command has been sent");
@@ -69,7 +69,7 @@
 	
 	//  host notification
 	
-	function host_notification($arg, $lang, $type){
+	function host_notification($arg, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" ".$tab[$type]."_HOST_NOTIFICATIONS;". $arg);
 		return _("Your command has been sent");
@@ -77,7 +77,7 @@
 	
 	// ENABLE_HOST_SVC_NOTIFICATIONS
 	
-	function host_svc_notifications($arg, $lang, $type){
+	function host_svc_notifications($arg, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_NOTIFICATIONS;". $arg);
 		return _("Your command has been sent");
@@ -85,7 +85,7 @@
 	
 	// ENABLE_HOST_SVC_CHECKS
 	
-	function host_svc_checks($arg, $lang, $type){
+	function host_svc_checks($arg, $type){
 		global $tab, $pearDB;
 		$flg = write_command(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $arg);
 		return _("Your command has been sent");
@@ -93,7 +93,7 @@
 	
 	// ENABLE_HOST_SVC_CHECKS
 	
-	function svc_check($arg, $lang, $type){
+	function svc_check($arg, $type){
 		global $tab, $pearDB;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_CHECK;". $tab_data["0"] .";".$tab_data["1"]);
@@ -102,7 +102,7 @@
 	
 	// PASSIVE_SVC_CHECKS
 	
-	function passive_svc_check($arg, $lang, $type){
+	function passive_svc_check($arg, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_PASSIVE_SVC_CHECKS;". $tab_data[0] . ";". $tab_data[1]);
@@ -111,7 +111,7 @@
 	
 	// SVC_NOTIFICATIONS
 	
-	function svc_notifications($arg, $lang, $type){
+	function svc_notifications($arg, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_NOTIFICATIONS;". $tab_data[0] . ";". $tab_data[1]);
@@ -120,7 +120,7 @@
 	
 	// _SVC_EVENT_HANDLER
 	
-	function svc_event_handler($arg, $lang, $type){
+	function svc_event_handler($arg, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_EVENT_HANDLER;". $tab_data[0] .";".$tab_data[1]);
@@ -129,7 +129,7 @@
 	
 	// _HOST_EVENT_HANDLER
 	
-	function host_event_handler($arg, $lang, $type){
+	function host_event_handler($arg, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_HOST_EVENT_HANDLER;". $arg);
@@ -138,7 +138,7 @@
 	
 	//_SVC_FLAP_DETECTION
 	
-	function svc_flapping_enable($arg, $lang, $type){
+	function svc_flapping_enable($arg, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_SVC_FLAP_DETECTION;". $tab_data[0] .";".$tab_data[1]);
@@ -147,14 +147,14 @@
 	
 	//_HOST_FLAP_DETECTION
 	
-	function host_flapping_enable($arg, $lang, $type){
+	function host_flapping_enable($arg, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_HOST_FLAP_DETECTION;". $arg);
 		return _("Your command has been sent");
 	}
 	
-	function notifi_host_hostgroup($arg, $lang, $type){
+	function notifi_host_hostgroup($arg, $type){
 		global $pearDB,$tab;
 		$tab_data = split(";", $arg);
 		$flg = write_command(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $tab_data[0]);
@@ -194,7 +194,7 @@
 	}
 	
 	
-	function notifi_svc_host_hostgroup($arg, $lang, $type){
+	function notifi_svc_host_hostgroup($arg, $type){
 		global $tab, $pearDB;
 	/*	$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
 		while ($r =& $res->fetchRow()){
@@ -206,7 +206,7 @@
 		return _("Your command has been sent");
 	}
 	
-	function checks_svc_host_hostgroup($arg, $lang, $type){
+	function checks_svc_host_hostgroup($arg, $type){
 		global $tab, $pearDB;
 		/*$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
 		$r =& $res->fetchRow();
