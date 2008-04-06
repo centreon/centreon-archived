@@ -37,7 +37,7 @@ For information : contact@oreon-project.org
 	/*
 	 * Include
 	 */
-	require_once ("../etc/centreon.conf.php");
+	require_once ("/etc/centreon/centreon.conf.php");
 	require_once ("./DBconnect.php");
 	require_once ("./DBOdsConnect.php");
 	require_once ("$classdir/Session.class.php");
