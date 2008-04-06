@@ -199,7 +199,7 @@
 		if (isHostLocalhost($pearDB, $informations[0]))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . "/usr/local/centreon/var/centreon.cmd";
+			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . "/srv/centreon/var/centreon.cmd";
 		return passthru($str);
 	}
 	
