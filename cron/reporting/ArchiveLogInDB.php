@@ -38,15 +38,12 @@
 		$option = true;
 	}
 
-	$path_centreon = '@OREON_PATH@';
-	$path_centreon = '/usr/local/centreon';
-
 	require_once 'DB.php';	
 
 	include_once("/etc/centreon/centreon.conf.php");
-	include_once($path_centreon ."/cron/reporting/DB-Func.php");
-	require_once($path_centreon ."/www/include/reporting/dashboard/reporting-func.php");
-	require_once($path_centreon ."/www/include/reporting/dashboard/simple-func.php");
+	include_once($centreon_path ."/cron/reporting/DB-Func.php");
+	require_once($centreon_path ."/www/include/reporting/dashboard/reporting-func.php");
+	require_once($centreon_path ."/www/include/reporting/dashboard/simple-func.php");
 
 	global $pearDB, $pearDBO;
 
@@ -118,7 +115,7 @@
 	  		$service_list[$s["service_description"]] = $s["service_id"];
 	  	}
 	}	
-	require_once $path_centreon . '/www/include/common/common-Func.php';
+	require_once $centreon_path . '/www/include/common/common-Func.php';
 
 	$tableFile2 = array();
 	if ($handle  = @opendir($NagiosPathArchive))	{

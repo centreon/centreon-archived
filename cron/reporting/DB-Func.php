@@ -28,10 +28,10 @@
 	}
 	
 	function insert_in_db($file, $tab_hosts, $tab_services, $day_current_start, $day_current_end){
-		global $host_list, $service_list, $pearDB, $path_centreon;
+		global $host_list, $service_list, $pearDB, $centreon_path;
 		
 		## Api insert in db type
-		$directory = "$path_centreon/cron/reporting/api";
+		$directory = "$centreon_path/cron/reporting/api";
 		if ($handle  = opendir($directory))	{
 			while ($file = @readdir($handle)){
 				if (is_file("$directory/$file"))
