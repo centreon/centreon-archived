@@ -25,7 +25,7 @@ For information : contact@oreon-project.org
 
 	# Get Poller List
 	$tab_nagios_server = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `localhost` DESC");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	while ($nagios =& $DBRESULT->fetchRow())
