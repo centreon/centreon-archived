@@ -1,0 +1,162 @@
+<br>
+<div id="hostStats">
+	<table>
+		<tr>
+			<td style="text-decoration:bold;">&nbsp;::&nbsp;Hosts</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top;">
+				<table class="SubTableTactical">
+					<tr>
+						<td class='SubTableTactical'>{$HostStatus[1]} Down</td>
+					</tr>
+					<tr>
+						<td>
+							<table>
+								<tr>
+									<td class='SubTacticalDT'>fdsdfsdfsd</td>
+								</tr>
+								<tr>
+									<td class='SubTacticalDT'>fdsdfsdfsd</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td>{$HostStatus[2]} Unreacheable</td>
+					</tr>
+					<tr>
+						<td class='SubTacticalDT'></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td style="background-color:{$color.color_up};">{$HostStatus[0]} Up</td>
+					</tr>
+					<tr>
+						<td class='SubTacticalDT'></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td>{$HostStatus[3]} Pending</td>
+					</tr>
+					<tr>
+						<td class='SubTacticalDT'></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+			</td>
+		</tr>
+	</table>
+</div>
+<div id="serviceStats">
+	<table>
+		<tr>
+			<td style="text-decoration:bold;">&nbsp;::&nbsp;Services</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td>{$ServiceStatus.2} Critical</td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td>{$ServiceStatus.1} Warning</td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td style="background-color:{$color.color_ok};">{$ServiceStatus.0} Ok</td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td>{$ServiceStatus.3} Unknown</td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+			<td>
+				<table class="SubTableTactical">
+					<tr>
+						<td>{$ServiceStatus.4} Pending</td>
+					</tr>
+					<tr>
+						<td></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+		</tr>
+	</table>
+</div>
+<div id='unhandledproblems'>
+	<table>
+		<tr>
+			<td style="text-decoration:bold;">&nbsp;::&nbsp;Unhandled Services problems</td>
+		</tr>
+		<tr>
+			<td>
+				<table>
+					<tr>
+						<td>HostName</td>
+						<td>ServiceName</td>
+						<td>Status</td>
+						<td>LastCheck</td>
+						<td>Duration</td>
+						<td>Output</td>
+					</tr>
+					<tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table>
+					<tr>
+						<td>{$tab.host_name}</td>
+						<td>{$tab.service_description}</td>
+						<td>{$tab.status}</td>
+						<td>{$tab.last_check}</td>
+						<td>{$tab.duration}</td>
+						<td>{$tab.output}</td>
+					</tr>
+					<tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</div>
