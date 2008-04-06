@@ -5,11 +5,9 @@
 	
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
-	
-	$oreonPath = '/srv/oreon/';
-	
+
 	require_once("DB.php");
-	include_once($oreonPath . "etc/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 		
 	/* Connect to oreon DB */
 	$dsn = array('phptype'  => 'mysql',
@@ -23,12 +21,12 @@
 	if (PEAR::isError($pearDB)) die("Connecting problems with oreon database : " . $pearDB->getMessage());
 	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once($oreonPath . "www/include/common/common-Func.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
 	
-	include_once($oreonPath . "www/DBNDOConnect.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");
 
 	## calcul stat for resume
 	$statistic = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");
@@ -62,7 +60,7 @@
 	 *  create the dataset
 	 */
 	
-	include_once( '/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
+	include_once($centreon_path.'/www/lib/ofc-library/open-flash-chart.php' );
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';
 	//

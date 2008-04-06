@@ -5,33 +5,13 @@
 			<table class="ListTable">
 				<tr>
 					<td>{php}
-							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
+							include_once './lib/ofc-library/open_flash_chart_object.php';
 							open_flash_chart_object( 350, 220, './include/home/pie-host.php?sid='.session_id());						
 						{/php}
 					</td>
 					<td>{php}
-							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
+							include_once './lib/ofc-library/open_flash_chart_object.php';
 							open_flash_chart_object( 350, 220, './include/home/pie-svc.php?sid='.session_id());
-						{/php}
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						{php}
-						
-							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 700, 220, './include/home/pie-hostgroup.php?sid='.session_id());
-						
-						{/php}
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						{php}
-						
-							include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-							open_flash_chart_object( 700, 220, './include/home/pie-svcgroup.php?sid='.session_id());
-							
 						{/php}
 					</td>
 				</tr>
