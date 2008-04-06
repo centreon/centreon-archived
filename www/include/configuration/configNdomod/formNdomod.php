@@ -77,6 +77,8 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'tcp_port', _("TCP Port"), $attrsText3);
 	$form->addElement('text', 'output_buffer_items', _("Buffer size of the interface"), $attrsText);
 
+	$form->addElement('text', 'buffer_file', _("Buffer File"), $attrsText);
+	
 	$form->addElement('text', 'file_rotation_interval', _("Rotation interval"), $attrsText);
 	$form->addElement('text', 'file_rotation_command', _("Rotation command"), $attrsText);
 	$form->addElement('text', 'file_rotation_timeout', _("Rotation timeout"), $attrsText);

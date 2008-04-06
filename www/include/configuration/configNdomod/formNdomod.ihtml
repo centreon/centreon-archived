@@ -17,6 +17,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.instance_name.label}</td><td class="FormRowValue">{$form.instance_name.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.output_type.label}</td><td class="FormRowValue">{$form.output_type.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.output.label}</td><td class="FormRowValue">{$form.output.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.buffer_file.label}</td><td class="FormRowValue">{$form.buffer_file.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.tcp_port.label}</td><td class="FormRowValue">{$form.tcp_port.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.output_buffer_items.label}</td><td class="FormRowValue">{$form.output_buffer_items.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.file_rotation_interval.label}</td><td class="FormRowValue">{$form.file_rotation_interval.html}</td></tr>

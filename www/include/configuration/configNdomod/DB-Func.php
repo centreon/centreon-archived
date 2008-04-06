@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `cfg_ndomod` (" .
-				"`description` , `ns_nagios_server` , `instance_name` , `output_type` , `output` , " .
+				"`description` , `ns_nagios_server` , `instance_name` , `output_type` , `output` , `buffer_file` , " .
 				"`tcp_port` , `output_buffer_items`, `file_rotation_interval` , `file_rotation_command` , `file_rotation_timeout` , `reconnect_interval` , " .
 				"`reconnect_warning_interval` , `data_processing_options` , `config_output_options`, `activate`) ";
 		$rq .= "VALUES (";
@@ -108,6 +108,7 @@ For information : contact@oreon-project.org
         isset($ret["instance_name"]) && $ret["instance_name"] != NULL ? $rq .= "'".htmlentities($ret["instance_name"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
        	isset($ret["output_type"]) && $ret["output_type"] != NULL ? $rq .= "'".htmlentities($ret["output_type"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["output"]) && $ret["output"] != NULL ? $rq .= "'".htmlentities($ret["output"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["buffer_file"]) && $ret["buffer_file"] != NULL ? $rq .= "'".htmlentities($ret["buffer_file"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["tcp_port"]) && $ret["tcp_port"] != NULL ? $rq .= "'".htmlentities($ret["tcp_port"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["output_buffer_items"]) && $ret["output_buffer_items"] != 2 ? $rq .= "'".$ret["output_buffer_items"]."',  "  : $rq .= "NULL, ";
         isset($ret["file_rotation_interval"]) && $ret["file_rotation_interval"] != NULL ? $rq .= "'".htmlentities($ret["file_rotation_interval"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -142,6 +143,7 @@ For information : contact@oreon-project.org
 		isset($ret["instance_name"]) && $ret["instance_name"] != NULL ? $rq .= "instance_name = '".htmlentities($ret["instance_name"], ENT_QUOTES)."',  " : $rq .= "instance_name = NULL, ";
         isset($ret["output_type"]) && $ret["output_type"] != NULL ? $rq .= "output_type = '".htmlentities($ret["output_type"], ENT_QUOTES)."',  " : $rq .= "output_type = NULL, ";
        	isset($ret["output"]) && $ret["output"] != NULL ? $rq .= "output = '".htmlentities($ret["output"], ENT_QUOTES)."',  " : $rq .= "output = NULL, ";
+        isset($ret["buffer_file"]) && $ret["buffer_file"] != NULL ? $rq .= "buffer_file = '".htmlentities($ret["buffer_file"], ENT_QUOTES)."',  " : $rq .= "buffer_file = NULL, ";
         isset($ret["tcp_port"]) && $ret["tcp_port"] != NULL ? $rq .= "tcp_port = '".htmlentities($ret["tcp_port"], ENT_QUOTES)."',  " : $rq .= "tcp_port = NULL, ";
         isset($ret["output_buffer_items"]) && $ret["output_buffer_items"] != NULL ? $rq .= "output_buffer_items = '".htmlentities($ret["output_buffer_items"], ENT_QUOTES)."',  " : $rq .= "output_buffer_items = NULL, ";
  	    isset($ret["file_rotation_interval"]) && $ret["file_rotation_interval"] != NULL ? $rq .= "file_rotation_interval = '".htmlentities($ret["file_rotation_interval"], ENT_QUOTES)."',  " : $rq .= "file_rotation_interval = NULL, ";
