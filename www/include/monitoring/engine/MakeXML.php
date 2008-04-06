@@ -20,22 +20,11 @@ For information : contact@oreon-project.org
 	$debugXML = 0;
 	$buffer = '';
 
-	$oreonPath = '@INSTALL_DIR_OREON@';
-	if($oreonPath == '@INSTALL_DIR_OREON@'){
-		$buffer = null;
-		$buffer .= '<reponse>';	
-		$buffer .= 'none';
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
 	# pearDB init
 	require_once 'DB.php';
 
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
 
 	/* Connect to oreon DB */
 	$dsn = array(

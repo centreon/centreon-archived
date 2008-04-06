@@ -19,15 +19,14 @@ For information : contact@oreon-project.org
 	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	$debugXML = 0;
 	$buffer = '';
-	$oreonPath = '/srv/oreon/';
 
-	include_once($oreonPath . "www/class/other.class.php");
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBNDOConnect.php");	
-	include_once($oreonPath . "www/include/monitoring/engine/common-Func.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once($oreonPath . "www/include/common/common-Func.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_path . "www/class/other.class.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");	
+	include_once($centreon_path . "www/include/monitoring/engine/common-Func.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);

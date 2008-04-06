@@ -18,18 +18,7 @@ For information : contact@oreon-project.org
 
 	$debug = 0;
 	$flag_reset = 0;
-	$oreonPath = '/srv/oreon/';
-
-	if ($oreonPath == '@INSTALL_DIR_OREON@'){
-		$buffer = null;
-		$buffer .= '<reponse>';
-		$buffer .= 'none';
-		$buffer .= '</reponse>';
-		header('Content-Type: text/xml');
-		echo $buffer;
-		exit(0);
-	}
-
+	
 	foreach ($_GET as $key => $value){
 		$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
 		$value = filter_var($value, INPUT_GET);	
@@ -38,9 +27,9 @@ For information : contact@oreon-project.org
 
 	include_once 'DB.php';
 
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once($oreonPath . "www/include/common/common-Func.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 	
 	/* Connect to oreon DB */
 
@@ -112,7 +101,7 @@ For information : contact@oreon-project.org
 	}
 
 	function read($sid, $lcaSTR){
-		global $pearDB, $flag,$oreonPath, $ndo_base_prefix, $is_admin;
+		global $pearDB, $flag,$centreon_path, $ndo_base_prefix, $is_admin;
 		$oreon = "";
 		$search = "";
 		$search_type_service = 0;
@@ -127,7 +116,7 @@ For information : contact@oreon-project.org
 			print "DB Error : ".$DBRESULT_OPT->getDebugInfo()."<br />";
 		$DBRESULT_OPT->fetchInto($general_opt);
 
-		include_once($oreonPath . "www/DBNDOConnect.php");
+		include_once($centreon_path . "www/DBNDOConnect.php");
 
 		/* Get HostNDO status */
 		if (!$is_admin)

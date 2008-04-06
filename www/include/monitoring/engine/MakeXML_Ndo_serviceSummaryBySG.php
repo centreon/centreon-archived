@@ -19,18 +19,12 @@ For information : contact@oreon-project.org
 	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	$debugXML = 0;
 	$buffer = '';
-	$oreonPath = '/srv/oreon/';
-	
-	/* security check 1/2*/
-	if($oreonPath == '@INSTALL_DIR_OREON@')
-		get_error('please set your oreonPath');
-	/* security end 1/2 */
 
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBNDOConnect.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once($oreonPath . "www/include/common/common-Func.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBNDOConnect.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 
 	$ndo_base_prefix = getNDOPrefix();
 
