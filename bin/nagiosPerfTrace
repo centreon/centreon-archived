@@ -201,13 +201,14 @@ sub check_dir
 sub get_poller
 {
     my $user = "centreon";
-    my $password = "centreon";
-    my $database = "centreon2_centreon";
-    my $host = "192.168.1.204";
+    my $password = "jui3bap";
+    my $database = "centreon";
+    my $host = "127.0.0.1";
     my $item;
     my $id;
     my $ip;
     my $is_localhost;
+    my $nagiosstats_bin;
     my $cfg_item;
     my $cfg_dir;
     my $nagiostats;
@@ -216,9 +217,9 @@ sub get_poller
     my $dbh = DBI->connect("DBI:mysql:database=$database;host=$host",$user, $password, {'RaiseError' => 1});
     if (defined($dbh))
     {
-		$item = $dbh->prepare("SELECT id, ns_ip_address, localhost FROM nagios_server");
+		$item = $dbh->prepare("SELECT id, ns_ip_address, localhost, nagiosstats_bin FROM nagios_server WHERE ns_activate = 1");
 		if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
-		while (($id, $ip, $is_localhost) = $item->fetchrow_array)
+		while (($id, $ip, $is_localhost, $nagiosstats_bin) = $item->fetchrow_array())
 		{
 		    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
 		    if (!$cfg_item->execute) {
@@ -226,11 +227,10 @@ sub get_poller
 		    }
 		    $cfg_dir = $cfg_item->fetchrow_hashref;
 		    if ($is_localhost){
-				$nagiostats = `/usr/local/nagios/bin/nagiostats`;
+				$nagiostats = `$nagiosstats_bin`;
 		    } else {
 				$tmp = $cfg_dir->{'cfg_dir'};
-				$nagiostats = `ssh $ip /usr/sbin/nagiostats -c ${tmp}nagios.cfg`;
-		#		$nagiostats = `sudo -u nagios ssh $ip /usr/sbin/nagiostats -c ${tmp}nagios.cfg`;
+				$nagiostats = `ssh $ip $item->{'nagiosstats_bin'} -c ${tmp}nagios.cfg`;
 		    }
 		    check_dir($id);
 		    rrd_process($nagiostats, $is_localhost);
