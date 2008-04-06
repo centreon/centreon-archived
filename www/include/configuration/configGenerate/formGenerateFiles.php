@@ -92,6 +92,7 @@ For information : contact@oreon-project.org
 				unset($DBRESULT2);
 				require($path."genCGICFG.php");
 				require($path."genNagiosCFG.php");
+				require($path."genNdo2db.php");
 				require($path."genNdomod.php");
 				require($path."genNagiosCFG-DEBUG.php");
 				require($path."genResourceCFG.php");
