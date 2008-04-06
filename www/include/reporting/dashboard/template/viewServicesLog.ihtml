@@ -37,8 +37,8 @@
 									global $host_name;
 									global $status;
 									global $service_name;
-									include_once '/usr/local/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-									open_flash_chart_object( 300, 250, 'http://'. $_SERVER['SERVER_NAME'] .'/oreon/include/reporting/dashboard/pie-charts.php?service_name='.$service_name.'&host_name='.$service_name.$host_name.$status );
+									include_once '/srv/centreon/www/lib/ofc-library/open_flash_chart_object.php';
+									open_flash_chart_object( 300, 250, 'http://'. $_SERVER['SERVER_NAME'] .'/centreon/include/reporting/dashboard/pie-charts.php?service_name='.$service_name.'&host_name='.$service_name.$host_name.$status );
 								{/php}
 							</td>					
 						</tr>
