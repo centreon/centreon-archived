@@ -25,7 +25,6 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["nagios_conf"] = $_POST["nagios_conf"];
 	$_SESSION["nagios_plugins"] = $_POST["nagios_plugins"];
 	$_SESSION["rrdtool_dir"] = $_POST["rrdtool_dir"];
-//	$_SESSION["snmp_dir"] = $_POST["snmp_dir"];
 	chdir('..');
 	$_SESSION["oreon_dir_www"] = getcwd() . '/';
 	chdir('..');
@@ -33,7 +32,7 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["oreon_dir_rrd"] = getcwd() . '/rrd/';
 	chdir('www/install');
 }
-aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
+aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
   	<tr>
     	<th align="left">Component</th>
@@ -123,8 +122,16 @@ aff_header("Oreon Setup Wizard", "Verifying Configuration", 4);	?>
   <tr>
 		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
     	<td align="right"><?php
-			if (file_exists($pear_path. '/PEAR.php')){
-//				if ( strstr (strtoupper( ini_get('include_path')),"PEAR") || strstr (strtoupper( ini_get('include_path')),"PHP")) {
+    		$tab_path = split(":", get_include_path());
+    		$ok = 0;
+    		foreach ($tab_path as $path){
+    			if (file_exists($path. '/PEAR.php')){
+    				$_SESSION["include_path"] = $path;
+    				$ok = 1;
+    			}
+    		}
+    		
+			if ($ok){
 				echo '<b><span class="go">OK</font></b>';
 			} else {
 				echo '<b><span class="stop">Warning: PHP Pear not found <br />'. $pear_path . '/PEAR.php</font></b>';

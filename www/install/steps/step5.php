@@ -16,13 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-//$include_paths = explode(":", ini_get('include_path'));
-
-aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
-/*foreach($include_paths as $key => $value) {
-	if ( strstr (strtoupper($value),"PEAR") || strstr (strtoupper( $value),"PHP"))
-  		$pear_path = $value;
-}*/
+aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 5);
 
 ?>
 <table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
@@ -35,17 +29,23 @@ aff_header("Oreon Setup Wizard", "Verifying PHP Pear Component", 5);
     <td align="right">&nbsp;</td>
   </tr>
 
-<?php
-$msg = NULL;  
-$alldeps = NULL;
-foreach ($pear_module as $module) {
-  
-?>
+	<?php
+	$msg = NULL;  
+	$alldeps = NULL;
+	
+	$tab_path = split(":", get_include_path());
+	
+	foreach ($pear_module as $module) {	?>
    <tr>
     <td><b>&nbsp;&nbsp;&nbsp;<?php echo $module["name"] ?></b></td>
     <td align="right"><?php
     	$msg = NULL;  
-    	if (file_exists($pear_path. '/'.$module["path"])) {
+    	$ok = 0;
+    	foreach ($tab_path as $path){
+			if (file_exists($path. '/PEAR.php'))
+				$ok = 1;
+		}
+    	if ($ok) {
           	echo '<b><span class="go">OK</font></b>';
 		} else {
 			echo '<b><span class="stop">Failed</font></b>';
@@ -55,21 +55,21 @@ foreach ($pear_module as $module) {
 		}
 		?></td>
   </tr>
-  <?phpif($msg)  { ?>
+  <?php if($msg)  { ?>
   <tr>
     <td align="right" colspan="2"><?php echo $msg ; ?></td>
   </tr>
-  <?php} ?>
+  <?php } ?>
 
-  <?php} ?>
-  <?phpif($alldeps)  { ?>
+  <?php } ?>
+  <?php if($alldeps)  { ?>
    <tr>
     <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
   </tr>
   <tr>
     <td colspan="2" ><span class="warning">pear install -o -f --alldeps <?php echo $alldeps; ?> </span></td>
   </tr>
-   <?php} ?>
+   <?php } ?>
 
 </table>
 <?php

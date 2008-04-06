@@ -60,11 +60,10 @@ aff_header("Oreon Setup Wizard", "DataBase Verification", 7);
 			$mysql_msg = "MySQL 4.1 or newer needed";
 			$return_false = 1;
 		}
-	?>
-  <?php} else {
+	} else {
   		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
 		$return_false = 1;
-	 } ?>
+	} ?>
 	<tr>
     	<td colspan="2" align="right"><?php echo $mysql_msg; ?></td>
 	</tr>

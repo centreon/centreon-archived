@@ -16,8 +16,8 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-aff_header("Oreon Setup Wizard", "Environment Configuration", 3);   ?>
-In order for your Oreon installation to function properly, please complete the following fields.<br /><br />
+aff_header("Centreon Setup Wizard", "Environment Configuration", 3);   ?>
+In order for your Centreon installation to function properly, please complete the following fields.<br /><br />
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
   	<tr>
     	<th style="padding-left:20px " colspan="2">Environment Configurations</th>
@@ -42,9 +42,8 @@ In order for your Oreon installation to function properly, please complete the f
     	<td style="padding-left:50px ">Nagios Version</td>
 		<td>
 		<select name="nagios_version">
-			<option value="2" <?phpif (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "2") print "selected"; else if (!isset($_SESSION["nagios_version"])) print "selected"; ?>>2.x</option>
-    		<option value="1" <?phpif (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "1") print "selected"; ?>>1.x</option>
-    	<!--	<option value="3" <?phpif (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "3") print "selected"; ?>>3.x</option>-->
+			<option value="2" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "2") print "selected"; else if (!isset($_SESSION["nagios_version"])) print "selected"; ?>>2.x</option>
+    		<option value="3" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "3") print "selected"; ?>>3.x</option>
     	</select>
 		</td>
   	</tr>
