@@ -449,3 +449,39 @@ a.infobulle:hover td	{padding:1px;}
 div.pagination{
 	margin-left: 40%;
 }
+
+.tacticakDiv{border: 1px #CCCCCC solid;}
+#hostStats {
+	margin-bottom: 20px;
+	border: 1px #CCCCCC solid;
+}
+#serviceStats {
+	margin-bottom: 20px;
+	border: 1px #CCCCCC solid;
+}
+#unhandledproblems {
+	margin-bottom: 20px;
+	border: 1px #CCCCCC solid;
+}
+
+.SubTableTactical{
+	pargin : 2px;
+	//background-color:#aeaeee;
+}
+
+.SubTableTactical td{
+	pargin : 2px;
+	vertical-align:top;
+	width:120px;
+	background-color:#D9D9D9;
+}
+.SubTableTactical table {margin:3px;}
+
+.SubTacticalDT{
+	pargin : 2px;
+	border: 2px #FFFFFF solid;
+	background-color:#FFFFFF;
+}
+
+.tacWarn 	{background-color:#F8C706;}
+.tacPB 		{background-color:#2AD1D4;}
