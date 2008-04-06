@@ -73,7 +73,8 @@ For information : contact@oreon-project.org
 	$DBRESULT->free();
 
 	# Host Group LCA
-	$lcaHGStr ? $lcaHGStr = $lcaHGStr : $lcaHGStr =  '\'\'';
+	if (!$is_admin)
+		$lcaHGStr ? $lcaHGStr = $lcaHGStr : $lcaHGStr =  '\'\'';
 	if ($is_admin)		
 		$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
 								"FROM host_service_relation hsr, service sv, hostgroup hg " .
