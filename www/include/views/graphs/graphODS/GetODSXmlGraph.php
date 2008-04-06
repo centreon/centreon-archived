@@ -31,20 +31,18 @@
 	$debugXML = 0;
 	$buffer = '';
 	
-	$centreon_Path = '../../../../../';
-	
 	/*
 	 * pearDB init
 	 */ 
 	require_once 'DB.php';
 	include_once("/etc/centreon/centreon.conf.php");
-	include_once($centreon_Path . "www/DBconnect.php");
-	include_once($centreon_Path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBOdsConnect.php");
 	/*
 	 * PHP functions
 	 */
-	include_once($centreon_Path . "www/include/common/common-Func-ACL.php");
-	include_once($centreon_Path . "www/include/common/common-Func.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 	
 	/*
 	 * Lang file

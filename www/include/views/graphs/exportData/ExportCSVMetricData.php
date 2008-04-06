@@ -15,8 +15,6 @@
  * For information : contact@oreon-project.org
  */
 
-	$oreonPath = '/srv/oreon/';
-
 	function check_injection(){
 		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
 			get_error('sql injection detected');

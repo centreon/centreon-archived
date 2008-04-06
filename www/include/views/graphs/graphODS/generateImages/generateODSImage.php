@@ -20,18 +20,18 @@ For information : contact@oreon-project.org
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
 
-	$path = "/srv/oreon/";
-	
 	require_once ('DB.php');
 	require_once ('./DB-Func.php');
-	require_once ($path."www/class/Session.class.php");
-	require_once ($path."www/class/Oreon.class.php");
+	
+	include("/etc/centreon/centreon.conf.php");
+	
+	require_once ($centreon_path."www/class/Session.class.php");
+	require_once ($centreon_path."www/class/Oreon.class.php");
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
-	include($path."etc/centreon.conf.php");
-	require_once $path."www/include/common/common-Func.php";
+	require_once $centreon_path."www/include/common/common-Func.php";
 
 	/*
 	 *  Connect to Oreon DB
@@ -83,7 +83,7 @@ For information : contact@oreon-project.org
 		 * Connect to ods
 		 */
 		 
-		include_once($path."www/DBOdsConnect.php");
+		include_once($centreon_path."www/DBOdsConnect.php");
 		$RRDdatabase_path = getRRDToolPath($pearDBO);
 	
 		/*
