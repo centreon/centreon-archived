@@ -42,13 +42,13 @@ For information : contact@oreon-project.org
 	<div class="list_one"><h3>
 	<b><?php echo _("Contributors"); ?> :</b>
 	</h3></div><br />
-	<a href="mailto:ccoraboeuf@oreon-project.org" class="list_two">Christophe Coraboeuf (Wistof)</a><br />
-	<a href="mailto:cfacon@oreon-project.org" class="list_two">Cedrick Facon (Apo)</a><br />
+	Guillaume Watteeux (Watt)<br />
+	Maximilien Bersoult (leoncx)<br />
+	Christophe Coraboeuf (Wistof)<br />
 	Mathavarajan Sugumaran (MrBrown)<br />
 	Sylvestre Ho Tam Chay<br />
 	Nicolas Cordier<br />
-	Guillaume Watteeux (Watt)<br />
-	Maximilien Bersoult (leoncx)<br />
+	Cedrick Facon (Apo)<br />
 	Gaetan Lucas de Couville (gae)<br />
 	Nathanael Guyot (Tor)<br />
 	Jean Marc Grisard (Jmou)<br />
@@ -58,13 +58,12 @@ For information : contact@oreon-project.org
 	<div class="list_one"><h3>
 	<b><?php echo _("Translators"); ?> :</b>
 	</h3></div><br />
-	Christoph Ziemann
-	guigui2607
-	Silvio Rodrigo Damasceno de Souza
-	Tobias Boehnert
-	Luiz Gustavo
-	Danil Makeyev
-	Duy-Huan BUI  
-
+	Christoph Ziemann<br>
+	guigui2607<br>
+	Silvio Rodrigo Damasceno de Souza<br>
+	Tobias Boehnert<br>
+	Luiz Gustavo<br>
+	Danil Makeyev<br>
+	Duy-Huan BUI<br>
 	</ul>
 </div>
