@@ -587,6 +587,30 @@ For information : contact@oreon-project.org
 		$DBRESULT->free();
 		return $hSvs;
 	}
+	
+	function getMyHostActiveServices($host_id = NULL)	{
+		if (!$host_id) return;
+		global $pearDB;
+		$hSvs = array();
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($DBRESULT->fetchInto($elem))	{
+			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
+			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
+			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES);
+		}
+		$DBRESULT->free();
+		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
+				" AND service_id = hsr.service_service_id AND service_activate = 1");
+		if (PEAR::isError($DBRESULT))
+			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+		while ($DBRESULT->fetchInto($elem))
+			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES);
+		$DBRESULT->free();
+		return $hSvs;
+	}
 
 	function getMyHostServicesByName($host_id = NULL)	{
 		if (!$host_id) return;
