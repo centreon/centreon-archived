@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
 	#Path to the option dir
-	$path = "./include/configuration/configGenerate/";
+	$path = "./include/configuration/configGenerateTraps/";
 	$nagiosCFGPath = "../filesGeneration/nagiosCFG/";
 	$XMLConfigPath = "../filesGeneration/osm/";
 	$DebugPath = "filesGeneration/nagiosCFG/";
@@ -34,6 +34,6 @@ For information : contact@oreon-project.org
 	require_once "./include/common/common-Func.php";
 	
 	switch ($o)	{
-		default : require_once($path."formGenerateFiles.php"); break;
+		default : require_once($path."formGenerateTraps.php"); break;
 	}
 ?>
