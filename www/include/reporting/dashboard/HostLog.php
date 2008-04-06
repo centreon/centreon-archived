@@ -75,7 +75,7 @@ For information : contact@oreon-project.org
 		
 		$tab_svc_bdd = array();
 		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
-		$serviceList = getMyHostServices($host_id);
+		$serviceList = getMyHostActiveServices($host_id);
 	}
 
 	$today_up = 0;

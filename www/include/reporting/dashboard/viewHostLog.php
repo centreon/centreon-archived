@@ -2,7 +2,7 @@
 /*
  * Centreon is developped with GPL Licence 2.0 :
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * Developped by : Julien Mathis - Romain Le Merlus
  * 
  * The Software is provided to you AS IS and WITH ALL FAULTS.
  * Centreon makes no representation and gives no warranty whatsoever,
@@ -61,7 +61,7 @@
 	$host = array();
 	
 	$host[""] = "";
-	$DBRESULT =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
+	$DBRESULT =& $pearDB->query("SELECT host_name FROM host WHERE host_activate = '1' AND host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	while ($DBRESULT->fetchInto($h))
@@ -101,7 +101,7 @@
 
 	$var_url_export_csv = "";
 		
-	if($mhost)	{
+	if ($mhost)	{
 		if($period == "customized") {
 			$formHost->addElement('hidden', 'end', $end);
 			$formHost->addElement('hidden', 'start', $start);
@@ -116,8 +116,11 @@
 	#
 	## Selection de l'host/service (suite)
 	#
-	$res =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' AND host_id IN (".$lcaHoststr.") and host_register = '1' ORDER BY host_name");
-
+	if (!$is_admin)
+		$res =& $pearDB->query("SELECT host_name FROM host WHERE host_activate = '1' AND host_id IN (".$lcaHoststr.") AND host_register = '1' ORDER BY host_name");
+	else
+		$res =& $pearDB->query("SELECT host_name FROM host WHERE host_activate = '1' AND host_register = '1' ORDER BY host_name");
+		
 	while ($h = $res->fetchRow()){
 		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
 			$host[$h["host_name"]] = $h["host_name"];
@@ -147,7 +150,7 @@
 	$periodList["customized"] = _("Customized");
 	
 	$formPeriod = new HTML_QuickForm('FormPeriod', 'post', "?p=".$p."&type_period=predefined");
-	$selHost =& $formPeriod->addElement('select', 'period', _("Predefined:"), $periodList);
+	$selHost =& $formPeriod->addElement('select', 'period', _("Predefined : "), $periodList);
 
 	isset($mhost) ? $formPeriod->addElement('hidden', 'host', $mhost) : NULL;
 	$formPeriod->addElement('hidden', 'timeline', "1");
@@ -164,33 +167,34 @@
 	if ($mhost){
 		$i=0;
 	
-	$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($end_date_select - $start_date_select));
-	$tpl->assign('host_name', $mhost);
-	global $host_name;
-	$host_name = $mhost;
-
-	$tpl->assign('totalAlert', $totalAlert);
-	$tpl->assign('totalTime', Duration::toString($totalTime));
-	$tpl->assign('totalpTime', $totalpTime);
-	$tpl->assign('totalpkTime', $totalpkTime);
-
-	global $status;
-	$tpl->assign('status', $status);
+		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($end_date_select - $start_date_select));
+		$tpl->assign('host_name', $mhost);
+		global $host_name;
+		$host_name = $mhost;
 	
-	$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
-	$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
-	$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
-	$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+		$tpl->assign('totalAlert', $totalAlert);
+		$tpl->assign('totalTime', Duration::toString($totalTime));
+		$tpl->assign('totalpTime', $totalpTime);
+		$tpl->assign('totalpkTime', $totalpkTime);
 	
-	$tpl->assign("tab_resume", $tab_resume);
-	if (isset($tab_svc))
-		$tpl->assign("tab_svc", $tab_svc);
-	$tpl->assign("tab_svc_average", $tab_svc_average);
-
-	$tt = 0 + ($ed - $sd);
-
-	$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
-	}## end of period requirement
+		global $status;
+		$tpl->assign('status', $status);
+		
+		$tab_resume[0]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
+		$tab_resume[1]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
+		$tab_resume[2]["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
+		$tab_resume[3]["style"] =  "class='ListColCenter' style='background:#cccccc'";
+		
+		$tpl->assign("tab_resume", $tab_resume);
+		if (isset($tab_svc))
+			$tpl->assign("tab_svc", $tab_svc);
+		$tpl->assign("tab_svc_average", $tab_svc_average);
+	
+		$tt = 0 + ($ed - $sd);
+	
+		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
+	}
+	## end of period requirement
 
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('actualTitle', _(" Actual "));
@@ -259,7 +263,7 @@
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
-	if($mhost){
+	if ($mhost){
 		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_HostLog.php?sid=".$sid."&host=".$mhost.$var_url_export_csv);
 		$tpl->assign("link_csv_name", "Export CSV");
 	}
