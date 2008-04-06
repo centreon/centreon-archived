@@ -16,26 +16,13 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	$oreonPath = '/srv/oreon/';
 
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 
-	function get_error($str){
-		echo $str."<br />";
-		exit(0);
-	}
-
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBOdsConnect.php");
-
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
@@ -44,10 +31,8 @@ For information : contact@oreon-project.org
 			$_POST["sid"] = $sid;
 		}else
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
-	/* security end 2/2 */
 
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
@@ -59,13 +44,6 @@ For information : contact@oreon-project.org
 
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
-
-	$user_lang = "fr";
-
-	# Load traduction in the selected language.
-	is_file ("../../../lang/".$user_lang.".php") ? include_once ("../../../lang/".$user_lang.".php") : include_once ("./lang/en.php");
-	is_file ("../../reporting/lang/".$user_lang.".php") ? include_once ("../../reporting/lang/".$user_lang.".php") : include_once ("./include/reporting/lang/en.php");
-
 
 	require_once 'HostLog.php';
 

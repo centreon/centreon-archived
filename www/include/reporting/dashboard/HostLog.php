@@ -30,11 +30,12 @@ For information : contact@oreon-project.org
 	require_once('reporting-func.php');
 
 	# LCA
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
-	$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
-
+	if (!$is_admin){
+		$lcaHostByName = getLcaHostByName($pearDB);
+		$lcaHostByID = getLcaHostByID($pearDB);
+		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	}
 	#
 	## period selection
 	#
@@ -77,6 +78,7 @@ For information : contact@oreon-project.org
 		getLogInDbForSVC($tab_svc_bdd, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end);
 		$serviceList = getMyHostActiveServices($host_id);
 	}
+	
 
 	$today_up = 0;
 	$today_down = 0;

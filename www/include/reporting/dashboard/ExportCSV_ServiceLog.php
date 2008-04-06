@@ -16,37 +16,20 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBOdsConnect.php");
 
-	$oreonPath = '/srv/oreon/';
-
-	function check_injection(){
-		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
-			get_error('sql injection detected');
-			return 1;
-		}
-		return 0;
-	}
-
-	function get_error($str){
-		echo $str."<br />";
-		exit(0);
-	}
-
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBOdsConnect.php");
-
-	if(isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid);
 		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 		if($res->fetchInto($session)){
 			$_POST["sid"] = $sid;
-		}else
+		} else
 			get_error('bad session id');
-	}
-	else
+	} else
 		get_error('need session identifiant !');
 	/* security end 2/2 */
 
@@ -65,16 +48,10 @@ For information : contact@oreon-project.org
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
-	# Load traduction in the selected language.
-	is_file ("../../../lang/".$user_lang.".php") ? include_once ("../../../lang/".$user_lang.".php") : include_once ("./lang/en.php");
-	is_file ("../../reporting/lang/".$user_lang.".php") ? include_once ("../../reporting/lang/".$user_lang.".php") : include_once ("./include/reporting/lang/en.php");
-
-
 	require_once 'ServicesLog.php';
 
 	header("Content-Type: application/csv-tab-delimited-table");
 	header("Content-disposition: filename=".$mhost. "_" .$service_name.".csv");
-
 
 	echo _("Host").";"._("Service").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
 	echo $mhost."; ".$service_name."; ".$start_date_select."; ".$end_date_select."; ". Duration::toString($ed - $sd) ."\n";
