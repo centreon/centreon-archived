@@ -88,7 +88,8 @@ For information : contact@oreon-project.org
 						"RowMenu_status" => $resources["acl_res_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options" => $moptions);
 						
-		$style != "two" ? $style = "two" : $style = "one";	}
+		$style != "two" ? $style = "two" : $style = "one";	
+	}
 	$tpl->assign("elemArr", $elemArr);
 	
 	/*
@@ -143,5 +144,5 @@ For information : contact@oreon-project.org
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("listsMenusAccess.ihtml");
+	$tpl->display("listsResourcesAccess.ihtml");
 ?>
