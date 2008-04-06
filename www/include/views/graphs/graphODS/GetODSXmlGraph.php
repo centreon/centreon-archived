@@ -30,7 +30,6 @@
 	# if debug == 0 => Normal, debug == 1 => get use, debug == 2 => log in file (log.xml)
 	$debugXML = 0;
 	$buffer = '';
-	
 	/*
 	 * pearDB init
 	 */ 

@@ -15,8 +15,6 @@
  * For information : contact@oreon-project.org
  */
 
-	$centreon_Path = '/usr/local/centreon/';
-
 	function check_injection(){
 		if ( eregi("(<|>|;|UNION|ALL|OR|AND|ORDER|SELECT|WHERE)", $_GET["sid"])) {
 			get_error('sql injection detected');
@@ -31,9 +29,9 @@
 	}
 
 	include_once("/etc/centreon/centreon.conf.php");
-	include_once($centreon_Path."www/DBconnect.php");
+	include_once($centreon_path."www/DBconnect.php");
 	//$oreon = 1;
-	include_once($centreon_Path."www/DBOdsConnect.php");
+	include_once($centreon_path."www/DBOdsConnect.php");
 
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];

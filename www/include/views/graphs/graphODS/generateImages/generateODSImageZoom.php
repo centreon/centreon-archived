@@ -19,14 +19,13 @@ For information : contact@oreon-project.org
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
 	}
-		
-	require_once ('DB.php');
-	require_once ('./DB-Func.php');
 	
 	include("/etc/centreon/centreon.conf.php");
+	require_once ('DB.php');
+	require_once ('./DB-Func.php');
 	require_once ($centreon_path."www/class/Session.class.php");
 	require_once ($centreon_path."www/class/Oreon.class.php");
-
+	
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
 
