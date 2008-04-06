@@ -33,7 +33,7 @@
 	<table class="ListTable">
 		<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$Database_Information_for_ndo2db}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.db_type.label}</td><td class="FormRowValue">{$form.db_type.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.db_servertype.label}</td><td class="FormRowValue">{$form.db_servertype.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.db_host.label}</td><td class="FormRowValue">{$form.db_host.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.db_name.label}</td><td class="FormRowValue">{$form.db_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.db_port.label}</td><td class="FormRowValue">{$form.db_port.html}</td></tr>
