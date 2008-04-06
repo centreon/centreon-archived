@@ -1,24 +1,36 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	if (!isset($oreon))
 		exit;
 
+	require_once './class/other.class.php';
+	require_once './include/common/common-Func.php';
+	require_once './include/common/common-Func-ACL.php';
+	require_once('simple-func.php');
+	require_once('reporting-func.php');
+
+	#Pear library
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+	
+	if (!$is_admin)
+		$lca = getLcaHostByName($pearDB);
+	
 	#
 	## init
 	#
@@ -38,19 +50,88 @@ For information : contact@oreon-project.org
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
 	$tpl->assign('o', $o);
-	require_once './class/other.class.php';
-	require_once './include/common/common-Func.php';
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
-	include("./include/monitoring/log/choose_log_file.php");
+	
+	$tableFile2 = array();
+	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
+		while ($file = @readdir($handle))
+			if (is_file($oreon->Nagioscfg["log_archive_path"]."/$file"))	{
+				preg_match("/nagios\-([0-9]*)\-([0-9]*)\-([0-9]*)\-([0-9]*).log/", $file, $matches);
+				$time = mktime("0", "0", "0", $matches[1], $matches[2], $matches[3]) - 1;
+				$tableFile2[$file] =  "  " . date(_("Y/m/d"), $time) . " ";
+			}
+		@closedir($handle);
+	}
+	krsort($tableFile2);
+	
+	$tableFile3 = array($oreon->Nagioscfg["log_file"] => " -- " . _("Today") . " -- ");
+	$tableFile1 = array_merge($tableFile3, $tableFile2);
+
+	$host = array();
+	
+	$host[""] = "";
+	$DBRESULT =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
+	if (PEAR::isError($DBRESULT))
+		print "Mysql Error : ".$DBRESULT->getMessage();
+	while ($DBRESULT->fetchInto($h))
+		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
+			$host[$h["host_name"]] = $h["host_name"];
+
+	$debug = 0;
+	$attrsTextI		= array("size"=>"3");
+	$attrsText 		= array("size"=>"30");
+	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
+	
+	#
+	## Form begin
+	#
+	
+	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	$form->addElement('header', 'title', _("Add a Service downtime"));
+	
+	#
+	## Indicator basic information
+	#
+	
+	$redirect =& $form->addElement('hidden', 'o');
+	$redirect->setValue($o);
+    
+    $selHost =& $form->addElement('select', 'file', _("Log file"), $tableFile1, array("onChange" =>"this.form.submit();"));
+	$selHost =& $form->addElement('select', 'host', _("Host"), $host, array("onChange" =>"this.form.submit();"));
+	isset($_POST["host"]) ?	$form->setDefaults(array('file' => $_POST["host"])) : $form->setDefaults(array('file' => $oreon->Nagioscfg["log_file"]));
+	
+	$log = NULL;	
+	$tab_log = array();
+	
+	#
+	## init
+	#
+	
+	$totalAlert = 0;
+	$day = date("d",time());
+	$year = date("Y",time());
+	$month = date("m",time());
+	
+	$today_start = mktime(0, 0, 0, $month, $day, $year);
+	$today_end = time();
+	$tt = 0;
+	$start_date_select = 0;
+	$end_date_select = 0;
+	
+	$path = "./include/reporting/dashboard";
+
+	# Smarty template Init
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl);
 
 	# LCA
-	/*
-	$lcaHostByName = getLcaHostByName($pearDB);
-	$lcaHGByName = getLcaHostByName($pearDB);
-	$lcaHostByID = getLcaHostByID($pearDB);
-	$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
-*/
+	if (!$is_admin){
+		$lcaHostByName = getLcaHostByName($pearDB);
+		$lcaHGByName = getLcaHostByName($pearDB);
+		$lcaHostByID = getLcaHostByID($pearDB);
+		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	}
+
 	#
 	## Selectioned ?
 	#		
@@ -68,10 +149,10 @@ For information : contact@oreon-project.org
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
-	if($mservicegroup)	{
+	if ($mservicegroup)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		if($period == "customized") {
+		if ($period == "customized") {
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
@@ -80,8 +161,7 @@ For information : contact@oreon-project.org
 			$formservicegroup->addElement('hidden', 'end', $end);
 			$formservicegroup->addElement('hidden', 'start', $start);
 			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end"."&lang=" .$oreon->user->get_lang();
-		}
-		else {
+		} else {
 			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 			$formservicegroup->addElement('hidden', 'period', $period);
@@ -90,9 +170,10 @@ For information : contact@oreon-project.org
 		$sd = $start_date_select;
 		$ed = $end_date_select;
 
-		#
-		## database log
-		#
+		/*
+		 * database log
+		 */
+		 
 		$sbase = array();
 		$Tup = NULL;
 		$Tdown = NULL;
@@ -104,17 +185,18 @@ For information : contact@oreon-project.org
 	#
 	## Select form part 2
 	#
-	$res =& $pearDB->query("SELECT sg_name FROM servicegroup where sg_activate = '1' ORDER BY sg_name");
-
+	
 	$servicegroup = array();
 	$servicegroup[""] = "";
+	$res =& $pearDB->query("SELECT sg_name FROM servicegroup where sg_activate = '1' ORDER BY sg_name");
 	while ($res->fetchInto($sg)){
 			$servicegroup[$sg["sg_name"]] = $sg["sg_name"];
 	}
+	
 	$selHost =& $formservicegroup->addElement('select', 'servicegroup', _("Service Group"), $servicegroup, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["servicegroup"])){
 		$formservicegroup->setDefaults(array('servicegroup' => $_POST["servicegroup"]));
-	}else if (isset($_GET["servicegroup"])){
+	} else if (isset($_GET["servicegroup"])) {
 		$formservicegroup->setDefaults(array('servicegroup' => $_GET["servicegroup"]));
 	}
 
@@ -138,25 +220,25 @@ For information : contact@oreon-project.org
 	$selHost =& $formPeriod->addElement('select', 'period', _("Predefined:"), $periodList);
 
 	isset($mservicegroup) ? $formPeriod->addElement('hidden', 'servicegroup', $mservicegroup) : NULL;
-	$formPeriod->addElement('hidden', 'timeline', "1");
 
+	$formPeriod->addElement('hidden', 'timeline', "1");
 	$formPeriod->addElement('header', 'title', _("If customized period..."));
 	$formPeriod->addElement('text', 'start', _("Begin date"));
 	$formPeriod->addElement('button', "startD", _("Modify"), array("onclick"=>"displayDatePicker('start')"));
 	$formPeriod->addElement('text', 'end', _("End date"));
+
 	$formPeriod->addElement('button', "endD", _("Modify"), array("onclick"=>"displayDatePicker('end')"));
 	$sub =& $formPeriod->addElement('submit', 'submit', _("View"));
 	$res =& $formPeriod->addElement('reset', 'reset', _("Reset"));
 
-	if($period == "customized") {
+	if ($period == "customized") {
 		$formPeriod->setDefaults(array('start' => date("m/d/Y", $start_date_select)));
 		$formPeriod->setDefaults(array('end' => date("m/d/Y", $end_date_select)));
 	}
 
-
-	#
-	## ressource selected
-	#
+	/*
+	 * ressource selected
+	 */
 	$today_ok = 0;
 	$today_warning = 0;
 	$today_unknown = 0;
@@ -166,12 +248,13 @@ For information : contact@oreon-project.org
 	$today_WARNINGnbEvent = 0;
 	$today_CRITICALnbEvent = 0;
 	
-	if($mservicegroup){
+	if ($mservicegroup){
 		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($end_date_select - $start_date_select));
 		$tpl->assign('servicegroup_name', $mservicegroup);
-		#
-		## today log for xml timeline
-		#
+		
+		/*
+		 * today log for xml timeline
+		 */
 		$today_ok = 0 + $sbase["average"]["today"]["Tok"];
 		$today_warning = 0 + $sbase["average"]["today"]["Twarning"];
 		$today_unknown = 0 + $sbase["average"]["today"]["Tunknown"];
@@ -209,9 +292,9 @@ For information : contact@oreon-project.org
 		$day_current_end = time() + 1;
 		$time = time();
 
-		#
-		## calculate resume
-		#
+		/*
+		 * calculate resume
+		 */
 		$tab_resume = array();
 		$tab = array();
 		$timeTOTAL = $end_date_select - $start_date_select;	
@@ -220,40 +303,34 @@ For information : contact@oreon-project.org
 		$Tunreach = $sbase["average"]["Tunknown"];
 		$Tcritical = $sbase["average"]["Tcritical"];
 		$Tnone = $timeTOTAL - ($Tok + $Twarning + $Tunreach + $Tcritical);
-		if($Tnone <= 1)
-		$Tnone = 0;	
+		if	($Tnone <= 1)
+			$Tnone = 0;	
+		
+		
 		$tab["state"] = _("Up");
 		$tab["time"] = Duration::toString($Tok);
 		$tab["timestamp"] = $Tok;
 		$tab["pourcentTime"] = round($Tok/($timeTOTAL+1)*100,2) ;
 		$tab["pourcentkTime"] = round($Tok/($timeTOTAL-$Tnone+1)*100,2). "%";
 		$tab["nbAlert"] = $sbase["average"]["OKnbEvent"];
-		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'";
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_up"]."'";
 		$tab_resume[0] = $tab;
-		$tab["state"] = _("Critical");
-		$tab["time"] = Duration::toString($Tcritical);
-		$tab["timestamp"] = $Tcritical;
-		$tab["pourcentTime"] = round($Tcritical/$timeTOTAL*100,2);
-		$tab["pourcentkTime"] = null;
-		$tab["nbAlert"] = $sbase["average"]["CRITICALnbEvent"];
-		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_critical"]."'";
-		$tab_resume[1] = $tab;
 		$tab["state"] = _("Down");
 		$tab["time"] = Duration::toString($Twarning);
 		$tab["timestamp"] = $Twarning;
 		$tab["pourcentTime"] = round($Twarning/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = round($Twarning/($timeTOTAL-$Tnone+1)*100,2)."%";
 		$tab["nbAlert"] = $sbase["average"]["WARNINGnbEvent"];
-		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_warning"]."'";
-		$tab_resume[2] = $tab;
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
+		$tab_resume[1] = $tab;
 		$tab["state"] = _("Unreachable");
 		$tab["time"] = Duration::toString($Tunreach);
 		$tab["timestamp"] = $Tunreach;
 		$tab["pourcentTime"] = round($Tunreach/$timeTOTAL*100,2);
 		$tab["pourcentkTime"] = round($Tunreach/($timeTOTAL-$Tnone+1)*100,2)."%";
 		$tab["nbAlert"] = $sbase["average"]["UNKNOWNnbEvent"];
-		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unknown"]."'";
-		$tab_resume[3] = $tab;
+		$tab["style"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";
+		$tab_resume[2] = $tab;
 		$tab["state"] = _("Undetermined");
 		$tab["time"] = Duration::toString($Tnone);
 		$tab["timestamp"] = $Tnone;
@@ -261,15 +338,15 @@ For information : contact@oreon-project.org
 		$tab["pourcentkTime"] = null;
 		$tab["nbAlert"] = "";
 		$tab["style"] = "class='ListColCenter' style='background:#cccccc'";
-		$tab_resume[4] = $tab;
+		$tab_resume[3] = $tab;
 
-		#
-		## calculate tablist
-		#
-		$i=0;
-		foreach($sbase as $svc_name => $tab)
+		/*
+		 * Calculate table list
+		 */
+		$i = 0;
+		foreach ($sbase as $svc_name => $tab)
 		{
-			if($svc_name != "average"){
+			if ($svc_name != "average"){
 				$tab_tmp = array();
 				$tab_tmp["hostName"] = getMyHostName($tab["host_id"]);
 				$tab_tmp["serviceName"] = getMyServiceName($tab["svc_id"]);
@@ -289,13 +366,12 @@ For information : contact@oreon-project.org
 				$tab_tmp["CRITICALnbEvent"] = isset($tab["TcriticalNBAlert"]) ? $tab["TcriticalNBAlert"] : 0;
 
 				$kt = $tt - $tmp_none;
-				if($kt > 0){
+				if ($kt > 0){
 					$tab_tmp["PktimeOK"] = $tab["Tok"] ? round($tab["Tok"] / ($kt) *100,2): 0;
 					$tab_tmp["PktimeWARNING"] = $tab["Twarning"] ? round( $tab["Twarning"]/ ($kt) *100,2):0;
 					$tab_tmp["PktimeUNKNOWN"] =  $tab["Tunknown"] ? round( $tab["Tunknown"]/ ($kt) *100,2):0;
 					$tab_tmp["PktimeCRITICAL"] =  $tab["Tcritical"] ? round( $tab["Tcritical"]/ ($kt) *100,2):0;
-				}
-				else{
+				} else{
 					$tab_tmp["PktimeOK"] = 0;
 					$tab_tmp["PktimeWARNING"] = 0;
 					$tab_tmp["PktimeUNKNOWN"] = 0;
@@ -333,7 +409,6 @@ For information : contact@oreon-project.org
 				$tab_svc_list_average["PKTC"] += $tab_tmp["PktimeCRITICAL"];
 				$tab_svc_list_average["nb_svc"]+= 1;
 
-
 				$tab_svc[$i++] = $tab_tmp;
 			}
 		}
@@ -342,35 +417,36 @@ For information : contact@oreon-project.org
 		## calculate svc average
 		#
 		# Alert
-		if($tab_svc_list_average["PAOK"] > 0)
-		$tab_svc_list_average["PAOK"] = number_format($tab_svc_list_average["PAOK"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
-		if($tab_svc_list_average["PAW"] > 0)
-		$tab_svc_list_average["PAW"] = number_format($tab_svc_list_average["PAW"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
-		if($tab_svc_list_average["PAU"] > 0)
-		$tab_svc_list_average["PAU"] = number_format($tab_svc_list_average["PAU"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
-		if($tab_svc_list_average["PAC"] > 0)
-		$tab_svc_list_average["PAC"] = number_format($tab_svc_list_average["PAC"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+		if ($tab_svc_list_average["PAOK"] > 0)
+			$tab_svc_list_average["PAOK"] = number_format($tab_svc_list_average["PAOK"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+		if ($tab_svc_list_average["PAW"] > 0)
+			$tab_svc_list_average["PAW"] = number_format($tab_svc_list_average["PAW"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+		if ($tab_svc_list_average["PAU"] > 0)
+			$tab_svc_list_average["PAU"] = number_format($tab_svc_list_average["PAU"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+		if ($tab_svc_list_average["PAC"] > 0)
+			$tab_svc_list_average["PAC"] = number_format($tab_svc_list_average["PAC"] / $tab_svc_list_average["nb_svc"], 1, '.', '');
+		
 		# Time
-		if($tab_svc_list_average["PTOK"] > 0)
-		$tab_svc_list_average["PTOK"] = number_format($tab_svc_list_average["PTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
-		if($tab_svc_list_average["PTW"] > 0)
-		$tab_svc_list_average["PTW"] = number_format($tab_svc_list_average["PTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
-		if($tab_svc_list_average["PTC"] > 0)
-		$tab_svc_list_average["PTC"] = number_format($tab_svc_list_average["PTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
-		if($tab_svc_list_average["PTU"] > 0)
-		$tab_svc_list_average["PTU"] = number_format($tab_svc_list_average["PTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
-		if($tab_svc_list_average["PTN"] > 0)
-		$tab_svc_list_average["PTN"] = number_format($tab_svc_list_average["PTN"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PTOK"] > 0)
+			$tab_svc_list_average["PTOK"] = number_format($tab_svc_list_average["PTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PTW"] > 0)
+			$tab_svc_list_average["PTW"] = number_format($tab_svc_list_average["PTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PTC"] > 0)
+			$tab_svc_list_average["PTC"] = number_format($tab_svc_list_average["PTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PTU"] > 0)
+			$tab_svc_list_average["PTU"] = number_format($tab_svc_list_average["PTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PTN"] > 0)
+			$tab_svc_list_average["PTN"] = number_format($tab_svc_list_average["PTN"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 
 		# %
-		if($tab_svc_list_average["PKTOK"] > 0)
-		$tab_svc_list_average["PKTOK"] = number_format($tab_svc_list_average["PKTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
-		if($tab_svc_list_average["PKTW"] > 0)
-		$tab_svc_list_average["PKTW"] = number_format($tab_svc_list_average["PKTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
-		if($tab_svc_list_average["PKTC"] > 0)
-		$tab_svc_list_average["PKTC"] = number_format($tab_svc_list_average["PKTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
-		if($tab_svc_list_average["PKTU"] > 0)
-		$tab_svc_list_average["PKTU"] = number_format($tab_svc_list_average["PKTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PKTOK"] > 0)
+			$tab_svc_list_average["PKTOK"] = number_format($tab_svc_list_average["PKTOK"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PKTW"] > 0)
+			$tab_svc_list_average["PKTW"] = number_format($tab_svc_list_average["PKTW"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PKTC"] > 0)
+			$tab_svc_list_average["PKTC"] = number_format($tab_svc_list_average["PKTC"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
+		if ($tab_svc_list_average["PKTU"] > 0)
+			$tab_svc_list_average["PKTU"] = number_format($tab_svc_list_average["PKTU"] / $tab_svc_list_average["nb_svc"], 3, '.', '');
 
 		$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
 		$end_date_select_save_timestamp =  $end_date_select;
@@ -389,21 +465,21 @@ For information : contact@oreon-project.org
 		}
 		$totalAlert = $sbase["average"]["UNKNOWNnbEvent"] + $sbase["average"]["WARNINGnbEvent"] + $sbase["average"]["OKnbEvent"] + $sbase["average"]["CRITICALnbEvent"];
 
-	$tpl->assign('totalAlert', $totalAlert);
-	$tpl->assign('totalTime', Duration::toString($totalTime));
-	$tpl->assign('totalpTime', $totalpTime);
-	$tpl->assign('totalpkTime', $totalpkTime);
-	$tpl->assign('status', $status);
-	$tpl->assign("tab_resume", $tab_resume);
-	$tpl->assign("tab_svc_list_average", $tab_svc_list_average);
-	$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
-	$tpl->assign('date_start_select', $start_date_select);
-	$tpl->assign('date_end_select', $end_date_select);
-	$tpl->assign('to', _(" to "));
+		$tpl->assign('totalAlert', $totalAlert);
+		$tpl->assign('totalTime', Duration::toString($totalTime));
+		$tpl->assign('totalpTime', $totalpTime);
+		$tpl->assign('totalpkTime', $totalpkTime);
+		$tpl->assign('status', $status);
+		$tpl->assign("tab_resume", $tab_resume);
+		$tpl->assign("tab_svc_list_average", $tab_svc_list_average);
+		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));
+		$tpl->assign('date_start_select', $start_date_select);
+		$tpl->assign('date_end_select', $end_date_select);
+		$tpl->assign('to', _(" to "));
 	}
-
-	if(isset($tab_svc))
-	$tpl->assign("tab_svc", $tab_svc);
+	
+	if (isset($tab_svc))
+		$tpl->assign("tab_svc", $tab_svc);
 
 	$tpl->assign("tab_log", $tab_log);
 	$tpl->assign('actualTitle', _(" Actual "));
@@ -465,7 +541,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
-	if($mservicegroup){
+	if ($mservicegroup){
 		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_ServiceGroupLog.php?sid=".$sid."&servicegroup=".$mservicegroup.$var_url_export_csv);
 		$tpl->assign("link_csv_name", "Export CSV");
 	}
@@ -481,7 +557,7 @@ For information : contact@oreon-project.org
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
 
-	if($mservicegroup)	{
+	if ($mservicegroup)	{
 		$color = substr($oreon->optGen["color_ok"],1) .':'.
 		 		 substr($oreon->optGen["color_warning"],1) .':'.
 		 		 substr($oreon->optGen["color_unknown"],1) .':'. 
@@ -491,15 +567,12 @@ For information : contact@oreon-project.org
 		$type = 'ServiceGroup';
 		$host_id = $servicegroup_id;
 		include('ajaxReporting_js.php');
+	} else {
+		?>
+		<script type="text/javascript">
+		function initTimeline() {;}
+		</SCRIPT>
+		<?php
 	}
-	else {
-			?>
-			<script type="text/javascript">
-			function initTimeline() {
-				;
-			}
-			</SCRIPT>
-			<?php
-		}
 	$tpl->display("template/viewServicesGroupLog.ihtml");
 ?>

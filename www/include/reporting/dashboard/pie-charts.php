@@ -16,8 +16,10 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	require_once ("../../../class/Session.class.php");
-	require_once ("../../../class/Oreon.class.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	
+	require_once ($centreon_path."www/class/Session.class.php");
+	require_once ($centreon_path."www/class/Oreon.class.php");
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
@@ -38,7 +40,7 @@ For information : contact@oreon-project.org
 				$legend[] =$key;
 			}
 	}
-	include_once( '/usr/local/centreon/www/lib/ofc-library/open-flash-chart.php' );
+	include_once($centreon_path . '/www/lib/ofc-library/open-flash-chart.php' );
 	$g = new graph();
 	$g->bg_colour = '#F3F6F6';
 	//

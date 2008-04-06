@@ -15,12 +15,9 @@
  * For information : contact@oreon-project.org
  */
 
-	#
-	## pearDB init
-	#
 	require_once 'DB.php';
-	require_once '../../../class/other.class.php';
 	require_once("/etc/centreon/centreon.conf.php");
+	require_once $centreon_path.'www/class/other.class.php';
 	
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';

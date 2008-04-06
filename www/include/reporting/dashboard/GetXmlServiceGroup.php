@@ -15,16 +15,33 @@
  * For information : contact@oreon-project.org
  */
  	require_once 'DB.php';
-	require_once '../../../class/other.class.php';
 	require_once("/etc/centreon/centreon.conf.php");
+	require_once $centreon_path.'/class/other.class.php';
 	
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<data>';
 
-
 	if (isset($_GET["svc_group_id"]) && isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"]) && isset($_GET["today_unknown"])&& isset($_GET["today_pending"])){
 		list($colorOK, $colorWARNING, $colorCRITICAL, $colorPENDING, $colorUNKNOWN)= split (":", $_GET["color"], 5);
+
+		$dsn = array(
+			     'phptype'  => 'mysql',
+			     'username' => $conf_oreon['user'],
+			     'password' => $conf_oreon['password'],
+			     'hostspec' => $conf_oreon['host'],
+			     'database' => $conf_oreon['db'],
+			     );
+
+		$options = array(
+				 'debug'       => 2,
+				 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
+				 );
+			
+		$pearDB =& DB::connect($dsn, $options);
+		if (PEAR::isError($pearDB)) 
+		  	die("Connecting probems with oreon database : " . $pearDB->getMessage());		
+		$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 		$dsn = array(
 			     'phptype'  => 'mysql',
@@ -44,20 +61,6 @@
 		  	die("Connecting probems with oreon database : " . $pearDB->getMessage());		
 		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 
-		$dsn = array(
-			     'phptype'  => 'mysql',
-			     'username' => $conf_oreon['user'],
-			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['ods'],
-			     );
-		
-		$pearDBO =& DB::connect($dsn, $options);
-		if (PEAR::isError($pearDB)) 
-		  die("Connecting probems with oreon database : " . $pearDBO->getMessage());		
-		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
-
-
 		function create_date_timeline_format($time_unix)	{
 			$tab_month = array(
 			"01" => "Jan",
@@ -76,59 +79,45 @@
 			$date = $tab_month[date('m', $time_unix)].date(" d Y G:i:s", $time_unix);
 			return $date;
 		}
+		
+		$str = "";
+		$request = "SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$_GET["svc_group_id"]."'";
+		$DBRESULT = & $pearDB->query($request);
+		while ($sg =& $DBRESULT->fetchRow()) {
+			if ($str != "")
+				$str .= ", ";
+			$str .= $sg["service_service_id"]; 
+		}
+		unset($sg);
+		unset($DBRESULT);
 			
 		$request = "SELECT * FROM `log_archive_service` WHERE host_id = " . $_GET["hostID"] . " AND service_id = " . $_GET["svc_group_id"] . " order by date_start desc";
 			
-		$request = 'SELECT ' .
-				'date_start, date_end, ' .
-				'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
-				'avg( `OKnbEvent` ) as "OKnbEvent", ' .
-				'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", ' .
-				'avg( `WARNINGnbEvent` ) as "WARNINGnbEvent", ' .
-				'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", ' .
-				'avg( `UNKNOWNnbEvent` ) as "UNKNOWNnbEvent", ' .
-				'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
-				'avg( `CRITICALnbEvent` ) as "CRITICALnbEvent" ' .
-				'FROM `log_archive_service` WHERE `service_id` IN (' .
-				'SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = ' . $_GET["svc_group_id"] .') group by date_end, date_start order by date_start desc';
-		$res = & $pearDB->query($rq);
-		  while ($h =& $res->fetchRow()) {
+		$request =  'SELECT ' .
+					'date_start, date_end, ' .
+					'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
+					'avg( `OKnbEvent` ) as "OKnbEvent", ' .
+					'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", ' .
+					'avg( `WARNINGnbEvent` ) as "WARNINGnbEvent", ' .
+					'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", ' .
+					'avg( `UNKNOWNnbEvent` ) as "UNKNOWNnbEvent", ' .
+					'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
+					'avg( `CRITICALnbEvent` ) as "CRITICALnbEvent" ' .
+					'FROM `log_archive_service` WHERE `service_id` IN ('.$str.') group by date_end, date_start order by date_start desc';
+		$res = & $pearDBO->query($request);
+		while ($h =& $res->fetchRow()) {
 			$oktime = $h["OKTimeScheduled"];
 			$criticaltime = $h["CRITICALTimeScheduled"];
 			$warningtime = $h["WARNINGTimeScheduled"];
 			$unknowntime = $h["UNKNOWNTimeScheduled"];
 	
 			$tt = 0 + ($h["date_end"] - $h["date_start"]);
-			if(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt)
-				$pendingtime = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime);
-			else
-				$pendingtime = 0;
-
-
-			if($oktime > 0)
-				$pok = 0 +round(($oktime / $tt * 100),2);
-			else
-				$pok = "0.00";
-						
-			if($criticaltime > 0)
-				$pcritical = 0 +round(($criticaltime / $tt * 100),2);
-			else
-				$pcritical = "0.00";
-
-			if($warningtime > 0)
-				$pwarning = 0 +round(($warningtime / $tt * 100),2);
-			else
-				$pwarning = "0.00";
-
-			if($unknowntime > 0)
-				$punknown = 0 +round(($unknowntime / $tt * 100),2);
-			else
-				$punknown = "0.00";
-
-			if($pendingtime > 0)
-				$ppending = 0 +round(($pendingtime / $tt * 100),2);
-			else
-				$ppending = "0.00";
+			(($oktime + $criticaltime + $warningtime + $unknowntime) < $tt) ? $pendingtime = 	$tt - ($oktime + $criticaltime + $warningtime + $unknowntime) : $pendingtime = 0;
+			($oktime > 0) ? $pok = 0 +round(($oktime / $tt * 100),2) : $pok = "0.00";
+			($criticaltime > 0) ? $pcritical = 0 +round(($criticaltime / $tt * 100),2) : $pcritical = "0.00";
+			($warningtime > 0) ? $pwarning = 0 +round(($warningtime / $tt * 100),2) : $pwarning = "0.00";
+			($unknowntime > 0) ? $punknown = 0 +round(($unknowntime / $tt * 100),2) : $punknown = "0.00";
+			($pendingtime > 0) ? $ppending = 0 +round(($pendingtime / $tt * 100),2) : $ppending = "0.00";
 
 			$sortTab = array();
 			$ntab = array();
@@ -166,7 +155,6 @@
 				$buffer .= ' color="#' . $colorUNKNOWN . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($punknown > 0) ? $punknown : "0") . '%" >' ;
-//				$buffer .= '~br~ UnknownTime: ' . Duration::toString($unknowntime);
 				$buffer .= $bubultab;
 				$buffer .= '</event>';	
 			}
@@ -181,7 +169,6 @@
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($ppending > 0) ? $ppending : "0") . '%" >' ;
 				$buffer .= $bubultab;
-//				$buffer .= '~br~ UndeterminatedTime: ' . Duration::toString($pendingtime);		
 				$buffer .= '</event>';	
 			}
 
@@ -195,7 +182,6 @@
 			$buffer .= ' isDuration="true" ';
 			$buffer .= ' title= "' . (($pwarning > 0) ? $pwarning : "0") . '%" >' ;
 			$buffer .= $bubultab;
-//			$buffer .= '~br~ WarningTime: ' . Duration::toString($warningtime);		
 			$buffer .= '</event>';		
 			}
 
@@ -209,7 +195,6 @@
 				$buffer .= ' color="#' . $colorCRITICAL . '"';
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pcritical > 0) ? $pcritical : "0") . '%" >' ;
-//				$buffer .= '~br~ CriticalTime: ' . Duration::toString($criticaltime);
 				$buffer .= $bubultab;
 				$buffer .= '</event>';
 			}
@@ -224,7 +209,6 @@
 				$buffer .= ' isDuration="true" ';
 				$buffer .= ' title= "' . (($pok > 0) ? $pok : "0") .   '%" >' ;
 				$buffer .= $bubultab;
-//				$buffer .= '~br~ Oktime: ' . Duration::toString($oktime);		
 				$buffer .= '</event>';
 			}
 		  }

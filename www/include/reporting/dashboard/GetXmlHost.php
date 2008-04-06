@@ -20,6 +20,8 @@ For information : contact@oreon-project.org
 	## pearDB init
 	#
 	require_once 'DB.php';
+	require_once("/etc/centreon/centreon.conf.php");
+	require_once $centreon_path.'www/class/other.class.php';
 	
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
@@ -29,8 +31,6 @@ For information : contact@oreon-project.org
 	{
 		list($colorUP, $colorDOWN, $colorUNREACHABLE, $colorUNKNOWN)= split (":", $_GET["color"], 4);
 
-		$oreonPath = $_GET["oreonPath"];
-		include_once($oreonPath . "/etc/centreon.conf.php");
 		$dsn = array(
 			     'phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
@@ -80,68 +80,6 @@ For information : contact@oreon-project.org
 			$date = date('m', $time_unix);
 			$date = $tab_month[$date] .  date(" d Y G:i:s", $time_unix);
 			return $date;
-		}
-
-		#
-		## class init
-		#			
-		class Duration
-		{
-			function toString ($duration, $periods = null)
-		    {
-		        if (!is_array($duration)) {
-		            $duration = Duration::int2array($duration, $periods);
-		        }
-		        return Duration::array2string($duration);
-		    }
-		 
-		    function int2array ($seconds, $periods = null)
-		    {        
-		        // Define time periods
-		        if (!is_array($periods)) {
-		            $periods = array (
-		                    'y'	=> 31556926,
-		                    'M' => 2629743,
-		                    'w' => 604800,
-		                    'd' => 86400,
-		                    'h' => 3600,
-		                    'm' => 60,
-		                    's' => 1
-		                    );
-		        }
-		 
-		        // Loop
-		        $seconds = (int) $seconds;
-		        foreach ($periods as $period => $value) {
-		            $count = floor($seconds / $value);
-		 
-		            if ($count == 0) {
-		                continue;
-		            }
-		 
-		            $values[$period] = $count;
-		            $seconds = $seconds % $value;
-		        }
-		 
-		        // Return
-		        if (empty($values)) {
-		            $values = null;
-		        }
-		        return $values;
-		    }
-		 
-		    function array2string ($duration)
-		    {
-		        if (!is_array($duration)) {
-		            return false;
-		        }
-		        foreach ($duration as $key => $value) {
-		            $segment = $value . '' . $key;
-		            $array[] = $segment;
-		        }
-		        $str = implode(' ', $array);
-		        return $str;
-		    }
 		}
 			
 		$rq = 'SELECT  * FROM `log_archive_host` WHERE host_id = ' . $_GET["hostID"] . ' order by date_start desc';			
