@@ -100,7 +100,7 @@ For information : contact@oreon-project.org
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `cfg_ndo2db` (" .
-				"`description` , `ns_nagios_server` , `socket_type` , `socket_name` , `tcp_port` , " .
+				"`description` , `ns_nagios_server` , `socket_type` , `socket_name` , `tcp_port` , `ndo2db_user` , `ndo2db_group` ," .
 				"`db_type` , `db_host`, `db_name`, `db_port` , `db_prefix` , `db_user` , `db_pass` , " .
 				"`max_timedevents_age` , `max_systemcommands_age` , `max_servicechecks_age` , `max_hostchecks_age` , " .
 				"`max_eventhandlers_age` , `activate`) ";
@@ -110,7 +110,9 @@ For information : contact@oreon-project.org
         isset($ret["socket_type"]["socket_type"]) && $ret["socket_type"]["socket_type"] != NULL ? $rq .= "'".htmlentities($ret["socket_type"]["socket_type"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
        	isset($ret["socket_name"]) && $ret["socket_name"] != NULL ? $rq .= "'".htmlentities($ret["socket_name"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["tcp_port"]) && $ret["tcp_port"] != NULL ? $rq .= "'".htmlentities($ret["tcp_port"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
-        isset($ret["db_type"]) && $ret["db_type"] != NULL ? $rq .= "'".htmlentities($ret["db_type"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+       	isset($ret["ndo2db_user"]) && $ret["ndo2db_user"] != NULL ? $rq .= "'".htmlentities($ret["ndo2db_user"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+       	isset($ret["ndo2db_group"]) && $ret["ndo2db_group"] != NULL ? $rq .= "'".htmlentities($ret["ndo2db_group"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
+        isset($ret["db_servertype"]) && $ret["db_servertype"] != NULL ? $rq .= "'".htmlentities($ret["db_servertype"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
         isset($ret["db_host"]) && $ret["db_host"] != 2 ? $rq .= "'".$ret["db_host"]."',  "  : $rq .= "NULL, ";
         isset($ret["db_name"]) && $ret["db_name"] != 2 ? $rq .= "'".$ret["db_name"]."',  "  : $rq .= "NULL, ";
         isset($ret["db_port"]) && $ret["db_port"] != NULL ? $rq .= "'".htmlentities($ret["db_port"], ENT_QUOTES)."',  " : $rq .= "NULL, ";
@@ -145,7 +147,9 @@ For information : contact@oreon-project.org
 		isset($ret["socket_type"]) && $ret["socket_type"] != NULL ? $rq .= "socket_type = '".htmlentities($ret["socket_type"], ENT_QUOTES)."',  " : $rq .= "socket_type = NULL, ";
         isset($ret["socket_name"]) && $ret["socket_name"] != NULL ? $rq .= "socket_name = '".htmlentities($ret["socket_name"], ENT_QUOTES)."',  " : $rq .= "socket_name = NULL, ";
        	isset($ret["tcp_port"]) && $ret["tcp_port"] != NULL ? $rq .= "tcp_port = '".htmlentities($ret["tcp_port"], ENT_QUOTES)."',  " : $rq .= "tcp_port = NULL, ";
-        isset($ret["db_type"]) && $ret["db_type"] != NULL ? $rq .= "db_type = '".htmlentities($ret["db_type"], ENT_QUOTES)."',  " : $rq .= "db_type = NULL, ";
+        isset($ret["ndo2db_user"]) && $ret["ndo2db_user"] != NULL ? $rq .= "ndo2db_user = '".htmlentities($ret["ndo2db_user"], ENT_QUOTES)."',  " : $rq .= "ndo2db_user = NULL, ";
+        isset($ret["ndo2db_group"]) && $ret["ndo2db_group"] != NULL ? $rq .= "ndo2db_group = '".htmlentities($ret["ndo2db_group"], ENT_QUOTES)."',  " : $rq .= "ndo2db_group = NULL, ";
+        isset($ret["db_servertype"]) && $ret["db_servertype"] != NULL ? $rq .= "db_servertype = '".htmlentities($ret["db_servertype"], ENT_QUOTES)."',  " : $rq .= "db_servertype = NULL, ";
         isset($ret["db_host"]) && $ret["db_host"] != NULL ? $rq .= "db_host = '".htmlentities($ret["db_host"], ENT_QUOTES)."',  " : $rq .= "db_host = NULL, ";
  	    isset($ret["db_name"]) && $ret["db_name"] != NULL ? $rq .= "db_name = '".htmlentities($ret["db_name"], ENT_QUOTES)."',  " : $rq .= "db_host = NULL, ";
  	    isset($ret["db_port"]) && $ret["db_port"] != NULL ? $rq .= "db_port = '".htmlentities($ret["db_port"], ENT_QUOTES)."',  " : $rq .= "db_port = NULL, ";

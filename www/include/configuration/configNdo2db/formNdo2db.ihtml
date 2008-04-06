@@ -24,6 +24,9 @@
 		<tr class="list_two"><td class="FormRowField">{$form.socket_type.label}</td><td class="FormRowValue">{$form.socket_type.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.socket_name.label}</td><td class="FormRowValue">{$form.socket_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.tcp_port.label}</td><td class="FormRowValue">{$form.tcp_port.html}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$ndo2db_access}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ndo2db_user.label}</td><td class="FormRowValue">{$form.ndo2db_user.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.ndo2db_group.label}</td><td class="FormRowValue">{$form.ndo2db_group.html}</td></tr>
 	</table>
 	</div>	
 	<div id='tab2' class='tab'>

@@ -87,8 +87,11 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'socket_name', _("Socket Name"), $attrsText2);
 	$form->addElement('text', 'tcp_port', _("TCP Port"), $attrsText3);
 	
+	$form->addElement('text', 'ndo2db_user', _("User ndo2db"), $attrsText);
+	$form->addElement('text', 'ndo2db_group', _("Group ndo2db"), $attrsText);
+	
 	# DB configuration
-	$form->addElement('select', 'db_type', _("Database Type"), array("mysql"=>"MySQL","pgsql"=>"PostgreSQL"));
+	$form->addElement('select', 'db_servertype', _("Database Type"), array("mysql"=>"MySQL","pgsql"=>"PostgreSQL"));
 	$form->addElement('text', 'db_host', _("Database Hoster"), $attrsText);
 	$form->addElement('text', 'db_name', _("Database Name"), $attrsText);
 	$form->addElement('text', 'db_port', _("Listening Port"), $attrsText);
@@ -178,6 +181,7 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());	
 		$tpl->assign('o', $o);
 		$tpl->assign('ndo2db_configuration', _("Ndo2db Informations"));
+		$tpl->assign('ndo2db_access', _("Ndo2db execution access"));
 		$tpl->assign('Database_Information_for_ndo2db', _("Database Information for ndo2db"));
 		$tpl->assign('Retention_Informations_For_Ndo2db', _("Retention Informations For Ndo2db"));
 		$tpl->assign('sort1', _("General"));		
