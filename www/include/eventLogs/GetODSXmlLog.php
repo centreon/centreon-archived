@@ -2,7 +2,7 @@
 /*
  * Centreon is developped with GPL Licence 2.0 :
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * Developped by : Julien Mathis - Romain Le Merlus 
  * 
  * The Software is provided to you AS IS and WITH ALL FAULTS.
  * Centreon makes no representation and gives no warranty whatsoever,
@@ -23,8 +23,6 @@
 	 * XML tag
 	 */
 	
-	$oreonPath = "../../../";
-	
 	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml"); 
 	echo("<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n");
 	
@@ -39,13 +37,12 @@
 	 */ 
 	require_once 'DB.php';
 	
-	include_once($oreonPath."www/include/eventLogs/common-Func.php");
-	
-	include_once($oreonPath . "etc/centreon.conf.php");
-	include_once($oreonPath . "www/DBconnect.php");
-	include_once($oreonPath . "www/DBOdsConnect.php");
-	include_once($oreonPath . "www/include/common/common-Func-ACL.php");
-	include_once($oreonPath . "www/include/common/common-Func.php");
+	include_once("/etc/centreon/centreon.conf.php");
+	include_once($centreon_path."www/include/eventLogs/common-Func.php");
+	include_once($centreon_path . "www/DBconnect.php");
+	include_once($centreon_path . "www/DBOdsConnect.php");
+	include_once($centreon_path . "www/include/common/common-Func-ACL.php");
+	include_once($centreon_path . "www/include/common/common-Func.php");
 	
 	/*
 	 * Lang file
