@@ -36,8 +36,8 @@
 		<td class="FormRowValue"> 
 			{$form.host_template_model_htm_id.html}
 			{if $o == "a" || $o == "c"}
-				&nbsp;<img src='./img/icones/16x16/server_network.gif' onClick="window.open('oreon.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
-				&nbsp;<img src='./img/icones/16x16/server_network.gif' onClick="window.open('oreon.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
+				&nbsp;<img src='./img/icones/16x16/server_network.gif' onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
+				&nbsp;<img src='./img/icones/16x16/data_edit.gif' onClick="window.open('main.php?p=60103&host_id='+ document.Form.elements['host_template_model_htm_id'].options[document.Form.elements['host_template_model_htm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=620');">
 			{/if}
 		</td>
 	</tr>		
