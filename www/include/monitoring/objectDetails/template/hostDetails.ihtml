@@ -145,10 +145,10 @@
 						<td class="ListColHeaderCenter">{$m_mon_tools}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#ping" name="ping" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_ping} {$h.host_name}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('oreon.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href="#tracert" name="tracert" onClick="window.open('main.php?p=201&host_id={$h.host_id}&o=tr&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=750, height=300');">{$m_mon_tools_tracert} {$h.host_name}</a></td>
 					</tr>
 					{if $h_ext_action_url}
 					<tr class='list_one'>
@@ -164,45 +164,45 @@
 						<td class="ListColHeaderCenter">{$hosts_command}</td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$host_data.active_checks_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=6&select[{$h.host_name}]=1&en={$en_inv[$host_data.active_checks_enabled]}'>{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.active_checks_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=6&select[{$h.host_name}]=1&en={$en_inv[$host_data.active_checks_enabled]}'>{$en_inv_text[$host_data.active_checks_enabled]} {$m_mon_check_this_host}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$img_en[$host_data.notifications_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=9&select[{$h.host_name}]=1&en={$en_inv[$host_data.notifications_enabled]}'>{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.notifications_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=9&select[{$h.host_name}]=1&en={$en_inv[$host_data.notifications_enabled]}'>{$en_inv_text[$host_data.notifications_enabled]} {$m_mon_notify_this_host}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='oreon.php?p=20305&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='main.php?p=20305&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='oreon.php?p=20306&o=ah&host_name={$h.host_name}'>{$m_mon_add_comment}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='main.php?p=20306&o=ah&host_name={$h.host_name}'>{$m_mon_add_comment}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=0'>{$m_mon_disable_not_all_services}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=0'>{$m_mon_disable_not_all_services}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_not_all_services}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=8&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_not_all_services}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=1&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check}<a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=1&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check}<a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=2&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check_f}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=2&select[{$h.host_name}]=1'>{$m_mon_SCH_immediate_check_f}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=0'>{$m_mon_diable_check_all_svc}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_previous.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=0'>{$m_mon_diable_check_all_svc}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_check_all_svc}</a></td>
+						<td class="ListColLeft"><img src='./img/icones/16x16/element_next.gif' border='0'>&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=5&select[{$h.host_name}]=1&en=1'>{$m_mon_enable_check_all_svc}</a></td>
 					</tr>
 					<tr class='list_one'>
-						<td class="ListColLeft">{$img_en[$host_data.event_handler_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=45&select[{$h.host_name}]=1&en={$en_inv[$host_data.event_handler_enabled]}'>{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.event_handler_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=45&select[{$h.host_name}]=1&en={$en_inv[$host_data.event_handler_enabled]}'>{$en_inv_text[$host_data.event_handler_enabled]} {$m_mon_ed_event_handler}</a></td>
 					</tr>
 					<tr class='list_two'>
-						<td class="ListColLeft">{$img_en[$host_data.flap_detection_enabled]}&nbsp;<a href='./oreon.php?p={$p}&o=hd&cmd=43&select[{$h.host_name}]=1&en={$en_inv[$host_data.flap_detection_enabled]}'>{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}</a></td>
+						<td class="ListColLeft">{$img_en[$host_data.flap_detection_enabled]}&nbsp;<a href='./main.php?p={$p}&o=hd&cmd=43&select[{$h.host_name}]=1&en={$en_inv[$host_data.flap_detection_enabled]}'>{$en_inv_text[$host_data.flap_detection_enabled]} {$m_mon_ed_flapping_detect}</a></td>
 					</tr>
 					{if $host_data.current_state != UP}
 					<tr class='list_one'>
 						<td class="ListColLeft">{$img_en[$host_data.problem_has_been_acknowledged]}&nbsp;
-						<a href='./oreon.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
+						<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
 						{$en_acknowledge_text[$host_data.acknowledged]}
 						{$m_mon_acknowledge}</a></td>
 					</tr>
@@ -225,22 +225,22 @@
 					</tr>
 					{if $lcaTopo.6}
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./oreon.php?p=6&host_id={$h.host_id}&o=c'>{$m_mon_configure} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=6&host_id={$h.host_id}&o=c'>{$m_mon_configure} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.7}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./oreon.php?p=70101&o=t&host_id={$h.host_id}'>{$m_mon_view_identity_file} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=70101&o=t&host_id={$h.host_id}'>{$m_mon_view_identity_file} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.20201}
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href='./oreon.php?p=20201&o=svc&host_name={$h.host_name}'>{$m_mon_all_services} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./main.php?p=20201&o=svc&host_name={$h.host_name}'>{$m_mon_all_services} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 					{if $url_id && $lcaTopo.40210}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href='./oreon.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$m_mon_all_graphs} {$h.host_name}</a></td>
+						<td class="ListColLeft"><a href='./main.php?host_name={$h.host_name}&period=&start=&end=&o=&p=40210&min='>{$m_mon_all_graphs} {$h.host_name}</a></td>
 					</tr>
 					{/if}
 				</table>
@@ -274,7 +274,7 @@
 			<td class="ListColCenter">{$tch.author}</td>
 			<td class="ListColLeft">{$tch.comment}</td>
 			<td class="ListColLeft">{$tch.persistent}</td>
-			<td class="ListColCenter"><a href='./oreon.php?p={$p}&o=dh&id={$tch.id}'><img src='./img/icones/16x16/delete.gif'></a></td>
+			<td class="ListColCenter"><a href='./main.php?p={$p}&o=dh&id={$tch.id}'><img src='./img/icones/16x16/delete.gif'></a></td>
 		</tr>
 		{/foreach}
 	</table>

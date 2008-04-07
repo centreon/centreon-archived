@@ -20,7 +20,7 @@
   		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 				<xsl:attribute name="class">pop</xsl:attribute>
 				<xsl:value-of select="hn"/>
 			</xsl:element>
@@ -28,7 +28,7 @@
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<span>
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">oreon.php?o=svc&amp;p=20201&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+			  	<xsl:attribute name="href">main.php?o=svc&amp;p=20201&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 				<xsl:element name="img">
 				  	<xsl:attribute name="src">./img/icones/16x16/view.gif</xsl:attribute>
 				</xsl:element>
@@ -36,7 +36,7 @@
 			<span>
 			</span>
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">oreon.php?p=40210&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+			  	<xsl:attribute name="href">main.php?p=40210&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 				<xsl:element name="img">
 				  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 				</xsl:element>
@@ -58,7 +58,7 @@
 					background-color:<xsl:value-of select="sc"/>;
 				</xsl:attribute>
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">oreon.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hn"/>&amp;service_description=<xsl:value-of select="sn"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hn"/>&amp;service_description=<xsl:value-of select="sn"/></xsl:attribute>
 					<xsl:value-of select="sn"/>
 				</xsl:element>
 			</span>

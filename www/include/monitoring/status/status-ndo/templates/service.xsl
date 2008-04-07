@@ -41,7 +41,7 @@
 								<xsl:attribute name="class">host_error</xsl:attribute>
 						</xsl:if>
 						<xsl:element name="a">
-						  	<xsl:attribute name="href">oreon.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
+						  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn"/></xsl:attribute>
 							<xsl:attribute name="class">infobulle</xsl:attribute>
 							<xsl:attribute name="onmouseover">displayPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
 							<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
@@ -81,7 +81,7 @@
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:element name="a">
-			  	<xsl:attribute name="href">oreon.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
+			  	<xsl:attribute name="href">main.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hn"/>&amp;service_description=<xsl:value-of select="sd"/></xsl:attribute>
 				<xsl:attribute name="class">infobulle</xsl:attribute>
 				<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
@@ -121,7 +121,7 @@
 		<td class="ListColRight">
 			<xsl:if test="ppd > 0">
 				<xsl:element name="a">
-				  	<xsl:attribute name="href">oreon.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
+				  	<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hn"/>;<xsl:value-of select="sd"/></xsl:attribute>
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>
 					<xsl:if test="svc_index > 0">

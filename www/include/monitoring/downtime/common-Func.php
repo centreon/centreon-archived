@@ -96,8 +96,8 @@
 		add_host_downtime_in_db(&$oreon, $dtm, $start_time, $end_time,$duration);
 		$str = "echo '[" . time() . "] SCHEDULE_HOST_DOWNTIME;".$oreon->hosts[$dtm["host_name"]]->get_name().";".$start_time.";".$end_time.";".$check[$dtm["fixed"]].";".$duration.";".$oreon->user->get_alias().";".$dtm["comment"]."' >> " . $oreon->Nagioscfg->command_file;
 		system($str);
-		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./oreon.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
-		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='oreon.php?p=308'\",2000)</SCRIPT>";
+		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./main.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
+		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
 	function add_svc_downtime($oreon, $dtm, $lang){
@@ -115,8 +115,8 @@
 		add_svc_downtime_in_db(&$oreon, $dtm, $start_time, $end_time,$duration);
 		$str = "echo '[" . time() . "] SCHEDULE_SVC_DOWNTIME;".$oreon->hosts[$dtm["host_id"]]->get_name().";".$oreon->services[$dtm["service"]]->get_description().";".$start_time.";".$end_time.";".$check[$dtm["fixed"]].";".$duration.";".$oreon->user->get_alias().";".$dtm["comment"]."' >> " . $oreon->Nagioscfg->command_file;
 		system($str);
-		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./oreon.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
-		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='oreon.php?p=308'\",2000)</SCRIPT>";
+		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./main.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
+		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
 	function add_svc_hostgroup_downtime($oreon, $dtm, $lang){
@@ -147,8 +147,8 @@
 				system($str);
 				unset($h);
 			}
-		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./oreon.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
-		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='oreon.php?p=308'\",2000)</SCRIPT>";
+		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./main.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
+		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
 	function add_hostgroup_downtime($oreon, $dtm, $lang){
@@ -169,25 +169,25 @@
 			$str = "echo '[" . time() . "] SCHEDULE_HOST_DOWNTIME;".$h->get_name().";".$start_time.";".$end_time.";".$check[$dtm["fixed"]].";".$duration.";".$oreon->user->get_alias().";".$dtm["comment"]."' >> " . $oreon->Nagioscfg->command_file;
 			system($str);
 		}
-		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./oreon.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
-		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='oreon.php?p=308'\",2000)</SCRIPT>";
+		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime added successfully. <br><br>Click <a href='./main.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
+		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
 	function del_host_downtime($oreon, $arg, $lang){
 		$str = "echo '[" . time() . "] DEL_HOST_DOWNTIME;".$arg["id"]."' >> " . $oreon->Nagioscfg->command_file;
 		del_host_downtime_in_db($arg["start_time"], $arg["host"]);
-		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime deleted successfully. <br><br>Click <a href='./oreon.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
+		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime deleted successfully. <br><br>Click <a href='./main.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
 		system($str);
-		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='oreon.php?p=308'\",2000)</SCRIPT>";
+		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
 	function del_svc_downtime($oreon, $arg, $lang){
 		$str = "echo '[" . time() . "] DEL_SVC_DOWNTIME;".$arg["id"]."' >> " . $oreon->Nagioscfg->command_file;
 		//print $arg["svc"];
 		del_svc_downtime_in_db($arg["start_time"], $arg["host"], $arg["svc"]);
-		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime deleted successfully. <br><br>Click <a href='./oreon.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
+		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime deleted successfully. <br><br>Click <a href='./main.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
 		system($str);
-		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='oreon.php?p=308'\",2000)</SCRIPT>";
+		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
 	function write_command($cmd){
