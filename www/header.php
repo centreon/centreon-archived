@@ -1,21 +1,20 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
-
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
+ 
 	/*
 	 * Bench
 	 */
@@ -58,19 +57,20 @@ For information : contact@oreon-project.org
 	/*
 	 * Delete Session Expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT session_expire FROM general_opt LIMIT 1");
-	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	$DBRESULT =& $pearDB->query("SELECT `session_expire` FROM `general_opt` LIMIT 1");
+	if (PEAR::isError($DBRESULT)) 
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$DBRESULT->fetchInto($session_expire);
 	$time_limit = time() - ($session_expire["session_expire"] * 60);
 
-	$DBRESULT =& $pearDB->query("DELETE FROM session WHERE last_reload < '".$time_limit."'");
+	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
 	if (PEAR::isError($DBRESULT)) 
 		print "DB error Where deleting Sessions : ".$DBRESULT->getDebugInfo()."<br />";
 
 	/*
 	 * Get session and Check if session is not expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE `session_id` = '".session_id()."'");
+	$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
 	if (PEAR::isError($DBRESULT)) 
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
@@ -96,7 +96,10 @@ For information : contact@oreon-project.org
 
 	if (!$p){
 		$root_menu = get_my_first_allowed_root_menu($oreon->user->lcaTStr);
-		if (isset($root_menu["topology_page"])) $p = $root_menu["topology_page"] ; else $p = NULL;
+		if (isset($root_menu["topology_page"])) 
+			$p = $root_menu["topology_page"]; 
+		else 
+			$p = NULL;
 		if (isset($root_menu["topology_url_opt"])){
 			$tab = split("\=", $root_menu["topology_url_opt"]);
 			if (isset($tab[1]))
@@ -119,7 +122,7 @@ For information : contact@oreon-project.org
 	}
 
 	# Skin path
-	$DBRESULT =& $pearDB->query("SELECT template FROM general_opt LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT `template` FROM `general_opt` LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
 	$DBRESULT->fetchInto($data);
