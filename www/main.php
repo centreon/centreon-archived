@@ -64,9 +64,7 @@ For information : contact@oreon-project.org
 	/*
 	 * LCA Init Common Var
 	 */
-	//global $isRestreint;
-	//$isRestreint = HadUserLca($pearDB);
-	
+	 
 	global $is_admin;
 	$is_admin = isUserAdmin(session_id());
 
