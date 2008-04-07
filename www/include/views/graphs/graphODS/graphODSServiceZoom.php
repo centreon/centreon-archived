@@ -222,6 +222,10 @@ For information : contact@oreon-project.org
 		}
 		
 		#Apply a template definition
+		
+		$tips = _("Tips : ");
+		$tipsMsg = _("You can disable a data source in order to stop them from appearing on the graph. <br>This could help when two data sources are from the same service and for which the scales are completely different.");		
+		
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -246,6 +250,8 @@ For information : contact@oreon-project.org
 		$tpl->assign('lang', $lang);
 		$tpl->assign('index', $_GET["index"]);
 		$tpl->assign('session_id', session_id());
+		$tpl->assign('tips', $tips);
+		$tpl->assign('tipsMsg', $tipsMsg);
 		$tpl->display("graphODSServiceZoom.ihtml");
 	}
 ?>

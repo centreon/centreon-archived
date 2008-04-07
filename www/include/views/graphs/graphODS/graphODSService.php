@@ -250,6 +250,10 @@ For information : contact@oreon-project.org
 			}
 			$tpl->assign('metrics_list', $metrics_list);
 		}
+		
+		$tips = _("Tips : ");
+		$tipsMsg = _("You can disable a data source in order to stop them from appearing on the graph. <br>This could help when two data sources are from the same service and for which the scales are completely different.");
+		
 		$tpl->assign('host_name', $svc_id);
 		$tpl->assign('isAvl', 1);
 		$tpl->assign('lang', $lang);
@@ -258,6 +262,8 @@ For information : contact@oreon-project.org
 		$tpl->assign('sid', session_id());	
 		$tpl->assign('split', $split);	
 		$tpl->assign('session_id', session_id());
+		$tpl->assign('tips', $tips);
+		$tpl->assign('tipsMsg', $tipsMsg);
 		$tpl->display("graphODSService.ihtml");
 	}
 ?>
