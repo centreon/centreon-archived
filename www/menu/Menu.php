@@ -1,21 +1,20 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
-
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
+ 
 	if (!isset($oreon))
 		exit();
 
@@ -89,12 +88,12 @@ For information : contact@oreon-project.org
 		print ($DBRESULT->getMessage());
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
-								"Menu1Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
+								"Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
 								"Menu1UrlPopupOpen" => $elem["topology_url"],
 								"Menu1Name" => _($elem["topology_name"]),
 								"Menu1Popup" => $elem["topology_popup"] ? true : false);
-	$userUrl = "oreon.php?p=50104&o=c";
+	$userUrl = "main.php?p=50104&o=c";
     $logDate = date(_("Y/m/d G:i"));
     $logOut = _("Logout");
     $logOutUrl = "index.php?disconnect=1";
@@ -109,10 +108,10 @@ For information : contact@oreon-project.org
 	$firstP = NULL;
 	$sep = "&nbsp;";
 	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem); $i++)	{
-		$elem["topology_url"] == "./ext/osm/osm_jnlp.php" ? $auth = "?al=".md5($oreon->user->get_alias())."&pwd=".$oreon->user->get_passwd() : $auth = NULL;
+		//$elem["topology_url"] == "./ext/osm/osm_jnlp.php" ? $auth = "?al=".md5($oreon->user->get_alias())."&pwd=".$oreon->user->get_passwd() : $auth = NULL;
 		$firstP ? null : $firstP = $elem["topology_page"];
 	    $elemArr[2][$i] = array("Menu2Sep" => $sep,
-								"Menu2Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
+								"Menu2Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu2UrlPopup" => $elem["topology_popup"],
 								"Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
 								"Menu2Name" => _($elem["topology_name"]),
@@ -140,7 +139,7 @@ For information : contact@oreon-project.org
 			else
 				$title = _("Main Menu");
 
-			$Menu3Url = "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
+			$Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
 			$elemArr[3][$elem["topology_group"]]["title"] = $title;
 		    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
 									"Menu3Url" => $Menu3Url,
@@ -165,7 +164,7 @@ For information : contact@oreon-project.org
 			print ($DBRESULT->getMessage());
 		for ($i = 0; $DBRESULT->fetchInto($elem);$i++){
 			$elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
-																"Menu4Url" => "oreon.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
+																"Menu4Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 																"Menu4UrlPopup" => $elem["topology_url"],
 																"MenuOnClick" => $elem["topology_OnClick"],
 																"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
