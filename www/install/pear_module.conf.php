@@ -23,7 +23,7 @@ $pear_module[4]["name"] = "Date";
 $pear_module[4]["version"] = "1.4.6";
 $pear_module[4]["file"] = "Date-1.4.6.tgz";
 $pear_module[4]["path"] = "Date.php";
-
+/*
 $pear_module[5]["name"] = "Numbers_Roman";
 $pear_module[5]["version"] = "1.0.1";
 $pear_module[5]["file"] = "Numbers_Roman-1.0.1.tgz";
@@ -33,7 +33,7 @@ $pear_module[6]["name"] = "Numbers_Words";
 $pear_module[6]["version"] = "0.14.0";
 $pear_module[6]["file"] = "Numbers_Words-0.14.0.tgz";
 $pear_module[6]["path"] = "Numbers/Words.php";
-
+*/
 $pear_module[7]["name"] = "HTML_Common";
 $pear_module[7]["version"] = "1.2.2";
 $pear_module[7]["file"] = "HTML_Common-1.2.2.tgz";
@@ -73,7 +73,7 @@ $pear_module[14]["name"] = "HTTP";
 $pear_module[14]["version"] = "1.2.2";
 $pear_module[14]["file"] = "HTTP-1.2.2.tgz";
 $pear_module[14]["path"] = "HTTP.php";
-
+/*
 $pear_module[15]["name"] = "Image_Canvas";
 $pear_module[15]["version"] = "0.2.4";
 $pear_module[15]["file"] = "Image_Canvas-0.2.4.tgz";
@@ -88,12 +88,13 @@ $pear_module[17]["name"] = "Image_Graph";
 $pear_module[17]["version"] = "0.7.1";
 $pear_module[17]["file"] = "Image_Graph-0.7.1.tgz";
 $pear_module[17]["path"] = "Image/Graph.php";
-
+*/
 $pear_module[18]["name"] = "Image_GraphViz";
 $pear_module[18]["version"] = "1.1.0";
 $pear_module[18]["file"] = "Image_GraphViz-1.1.0.tgz";
 $pear_module[18]["path"] = "Image/GraphViz.php";
 
+/*
 $pear_module[19]["name"] = "Mail";
 $pear_module[19]["version"] = "1.1.9";
 $pear_module[19]["file"] = "Mail-1.1.9.tgz";
@@ -108,7 +109,7 @@ $pear_module[21]["name"] = "Net_SMTP";
 $pear_module[21]["version"] = "1.2.8";
 $pear_module[21]["file"] = "Net_SMTP-1.2.8.tgz";
 $pear_module[21]["path"] = "Net/SMTP.php";
-
+*/
 $pear_module[22]["name"] = "Net_Socket";
 $pear_module[22]["version"] = "1.0.1";
 $pear_module[22]["file"] = "Net_Socket-1.0.1.tgz";
