@@ -1,28 +1,23 @@
-/**
-Oreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 // JavaScript Document
 
-//var xhrC = null; 
-//var _adrrsearchC = "./include/monitoring/engine/MakeXML4statusCounter.php" //l'adresse   interroger pour trouver les suggestions
-//var _adrrsearchC = "./include/monitoring/engine/MakeXML_Ndo_StatusCounter.php" //l'adresse   interroger pour trouver les suggestions
-
 function getXhrC(){
-	if(window.XMLHttpRequest) // Firefox et autres
+	if (window.XMLHttpRequest) // Firefox and others
 	   var xhrC = new XMLHttpRequest();
 	else if(window.ActiveXObject){ // Internet Explorer
 	   try {
@@ -32,14 +27,13 @@ function getXhrC(){
             }
 	}
 	else { // XMLHttpRequest non support2 par le navigateur
-	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+	   alert("Your Browser doesn't support XMLHTTPRequest object...");
 	   var xhrC = false;
 	}
 	return xhrC;
 }
 
 function reloadStatusCounter(_relaod_time,_sid){
-
 
 	_form=document.getElementById('AjaxBankBasic');		       
 	_version=_form.version.value;
@@ -68,7 +62,6 @@ function reloadStatusCounter(_relaod_time,_sid){
 				var _statistic_host_down = stat.getElementsByTagName("statistic_host_down")[0].firstChild.nodeValue;
 				var _statistic_host_unreachable = stat.getElementsByTagName("statistic_host_unreachable")[0].firstChild.nodeValue;
 				var _statistic_host_pending = stat.getElementsByTagName("statistic_host_pending")[0].firstChild.nodeValue;
-
 
 				/*
 				 * host
@@ -101,42 +94,39 @@ function reloadStatusCounter(_relaod_time,_sid){
 				_linkHostpending.appendChild(_text_host_pending);
 				document.getElementById('host_pending').appendChild(_linkHostpending);
 
-
 				/* 
 				 * svc
 				 */
-				document.getElementById('service_ok').innerHTML = '';//_statistic_service_ok;
+				// Ok service Stats
+				document.getElementById('service_ok').innerHTML = '';
 				var _text_service_ok = document.createTextNode(_statistic_service_ok);
 				var _linkservice_ok = document.createElement("a");
 			  	_linkservice_ok.href = 'oreon.php?p=20201&o=svc_ok';
 				_linkservice_ok.appendChild(_text_service_ok);
 				document.getElementById('service_ok').appendChild(_linkservice_ok);
-
-
-				document.getElementById('service_warning').innerHTML = ''//_statistic_service_warning;
+				// Warning service stats
+				document.getElementById('service_warning').innerHTML = '';
 				var _text_service_warning = document.createTextNode(_statistic_service_warning);
 				var _linkservice_warning = document.createElement("a");
 			  	_linkservice_warning.href = 'oreon.php?p=20202&o=svc_warning';
 				_linkservice_warning.appendChild(_text_service_warning);
 				document.getElementById('service_warning').appendChild(_linkservice_warning);
-
-
-				document.getElementById('service_critical').innerHTML = '';//_statistic_service_critical;
+				// Critcal Service Stats
+				document.getElementById('service_critical').innerHTML = '';
 				var _text_service_critical = document.createTextNode(_statistic_service_critical);
 				var _linkservice_critical = document.createElement("a");
 			  	_linkservice_critical.href = 'oreon.php?p=20202&o=svc_critical';
 				_linkservice_critical.appendChild(_text_service_critical);
 				document.getElementById('service_critical').appendChild(_linkservice_critical);
-
-
-				document.getElementById('service_unknown').innerHTML = ''//_statistic_service_unknown;
+				// Unknwon Service Stats
+				document.getElementById('service_unknown').innerHTML = '';
 				var _text_service_unknown = document.createTextNode(_statistic_service_unknown);
 				var _linkservice_unknown = document.createElement("a");
 			  	_linkservice_unknown.href = 'oreon.php?p=20202&o=svc_unknown';
 				_linkservice_unknown.appendChild(_text_service_unknown);
 				document.getElementById('service_unknown').appendChild(_linkservice_unknown);
-
-				document.getElementById('service_pending').innerHTML = ''//_statistic_service_pending;
+				// Pending Services Stats
+				document.getElementById('service_pending').innerHTML = '';
 				var _text_service_pending = document.createTextNode(_statistic_service_pending);
 				var _linkservice_pending = document.createElement("a");
 			  	_linkservice_pending.href = 'oreon.php?p=20202&o=svcpb';
@@ -149,8 +139,6 @@ function reloadStatusCounter(_relaod_time,_sid){
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	xhrC.send("sid="+_sid+"&version="+_version+"&fileStatus="+_fileStatus+"&fileOreonConf="+_fileOreonConf+"&session_expire="+(_relaod_time/1000));
-
+	
 	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
-
-
 }
