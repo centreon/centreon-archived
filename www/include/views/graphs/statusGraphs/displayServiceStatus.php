@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	function escape_command($command) {
 		return ereg_replace("(\\\$|`)", "", $command);
@@ -22,35 +21,14 @@ For information : contact@oreon-project.org
 	
 	require_once ('DB.php');
 	require_once("/etc/centreon/centreon.conf.php");
+	require_once $centreon_path."www/DBconnect.php";
 	require_once ($centreon_path."www/class/Session.class.php");
 	require_once ($centreon_path."www/class/Oreon.class.php");
 
 	Session::start();
 	$oreon =& $_SESSION["oreon"];
-
+	
 	require_once $centreon_path."www/include/common/common-Func.php";
-
-	/*
-	 *  Connect to Oreon DB
-	 */ 
-	$dsn = array(
-	    'phptype'  => 'mysql',
-	    'username' => $conf_oreon['user'],
-	    'password' => $conf_oreon['password'],
-	    'hostspec' => $conf_oreon['host'],
-	    'database' => $conf_oreon['db'],
-	);
-
-	$options = array(
-	    'debug'       => 2,
-	    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
-	);
-
-	$pearDB =& DB::connect($dsn, $options);
-	if (PEAR::isError($pearDB))
-	    die("Unable to connect : " . $pearDB->getMessage());
-	$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
-
 
 	/*
 	 * Verify if start and end date
@@ -101,6 +79,10 @@ For information : contact@oreon-project.org
 		 * Get index information to have acces to graph
 		 */
 		
+		if (isset($_GET["service_description"])){
+			$_GET["service_description"] = str_replace("/", "#S#", $_GET["service_description"]);
+			$_GET["service_description"] = str_replace("\\", "#BS#", $_GET["service_description"]);
+		}
 		if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])){
 			$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
 		} else {
@@ -153,9 +135,6 @@ For information : contact@oreon-project.org
 		
 		$command_line .= " --interlaced $base --imgformat PNG --width=500 --height=120 ";
 		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
-
-		//if ($oreon->optGen["rrdtool_version"] == "1.2")
-		//	$command_line .= " --slope-mode ";
 				
 		/*
 		 * Init Graph Template Value
@@ -181,22 +160,13 @@ For information : contact@oreon-project.org
 		$command_line .= "--upper-limit 105 ";
 		$command_line .= "--lower-limit 0 --rigid ";			
 		$command_line .= " DEF:v1=".$RRDdatabase_path.$index.".rrd:status:AVERAGE:start=\"-8 days\":end=\"start + 8 days\" ";
-		/*
-		$command_line .= " DEF:pred=".$RRDdatabase_path.$index.".rrd:status:HWPREDICT ";
-		$command_line .= " DEF:dev=".$RRDdatabase_path.$index.".rrd:status:DEVPREDICT ";
-		$command_line .= " DEF:fail=".$RRDdatabase_path.$index.".rrd:status:FAILURES ";
 
-		$command_line .= " TICK:fail#ffffa0:1.0:\"Failures Average bits out\"";
-		*/
 		$command_line .= " CDEF:vname=v1,3600,TREND ";
 		$command_line .= " CDEF:crit=v1,75,LT,100,0,IF ";
 		$command_line .= " CDEF:warn=v1,74,GT,100,0,IF ";
 		$command_line .= " CDEF:ok=v1,100,EQ,100,0,IF ";
 		$command_line .= " CDEF:unk=v1,UN,100,0,IF ";
-
-		//$command_line .= " AREA:v1#AAFF33";
-		//$command_line .= " VDEF:max=v1,AVERAGE ";
-		
+	
 		$command_line .= " AREA:crit#F91E05 ";
 		$command_line .= " AREA:warn#F8C706 ";
 		$command_line .= " AREA:ok#19EE11 ";
@@ -206,8 +176,7 @@ For information : contact@oreon-project.org
 		$command_line .= " LINE1:warn#F8C706:\"Warning\" ";
 		$command_line .= " LINE1:crit#F91E05:\"Critical\" ";
 		$command_line .= " LINE1:unk#FFFFFF:\"Unknown\\l\" ";
-		$command_line .= " LINE1:vname#000000:\"tendance\" ";
-		//$command_line .= " HRULE:max#FF0000:\"tendance\" ";
+		$command_line .= " LINE1:vname#000000:\"tendance1\" ";
 		
 		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
 		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
