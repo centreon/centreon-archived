@@ -21,14 +21,6 @@
 	# Path to the configuration dir
 	$path = "./menu/";
 
-	# ODS Database retrieve information
-	$DBRESULT =& $pearDBO->query("SELECT * FROM config LIMIT 1");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	$result_config = $DBRESULT->fetchRow();
-	if (isset($result_config) && $result_config)
-		$gopt = array_map("myDecode", $result_config);
-
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -82,11 +74,15 @@
 	$tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 
 	# Grab elements for level 1
-	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+	if (!$is_admin)
+		$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+	else
+		$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order";
+		
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
-	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
+	for ($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem);$i++)
 		$elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
 								"Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
@@ -101,13 +97,17 @@
 	/*
 	 * Grab elements for level 2
 	 */
-	$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_group, topology_order";
+	if (!$is_admin)
+		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_group, topology_order";
+	else
+		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_show = '1'  ORDER BY topology_group, topology_order";
+	
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$firstP = NULL;
 	$sep = "&nbsp;";
-	for($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem); $i++)	{
+	for ($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem); $i++)	{
 		//$elem["topology_url"] == "./ext/osm/osm_jnlp.php" ? $auth = "?al=".md5($oreon->user->get_alias())."&pwd=".$oreon->user->get_passwd() : $auth = NULL;
 		$firstP ? null : $firstP = $elem["topology_page"];
 	    $elemArr[2][$i] = array("Menu2Sep" => $sep,
@@ -122,36 +122,37 @@
 	/*
 	 * Grab elements for level 3
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order");
+	if (!$is_admin)
+		$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
+	else
+		$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
+	
+	$DBRESULT =& $pearDB->query($request);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
-	for($i = 0; $DBRESULT->fetchInto($elem);$i++)	{
-		if(!$gopt["archive_log"] && ( $elem["topology_page"] == 20311 || $elem["topology_page"] == 20312 || $elem["topology_page"] == 20313 || $elem["topology_page"] == 20314)){
-			;
-		} else {
-			# grab menu title for each group
-			$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
-			if (PEAR::isError($DBRESULT_title))
-				print ($DBRESULT_title->getMessage());
-			$title = "";
-			if ($title = $DBRESULT_title->fetchRow())
-				$title = _($title["topology_name"]);
-			else
-				$title = _("Main Menu");
+	for ($i = 0; $DBRESULT->fetchInto($elem);$i++)	{
+		# grab menu title for each group
+		$DBRESULT_title =& $pearDB->query("SELECT topology_name FROM topology WHERE topology_parent = '".$elem["topology_parent"]."' AND topology_show = '1' AND topology_page IS NULL AND topology_group = '".$elem["topology_group"]."' LIMIT 1");
+		if (PEAR::isError($DBRESULT_title))
+			print ($DBRESULT_title->getMessage());
+		$title = "";
+		if ($title = $DBRESULT_title->fetchRow())
+			$title = _($title["topology_name"]);
+		else
+			$title = _("Main Menu");
 
-			$Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
-			$elemArr[3][$elem["topology_group"]]["title"] = $title;
-		    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
-									"Menu3Url" => $Menu3Url,
-									"Menu3ID" => $elem["topology_page"],
-									"MenuStyleClass" => $elem["topology_style_class"],
-									"MenuStyleID" => $elem["topology_style_id"],
-									"MenuOnClick" => $elem["topology_OnClick"],
-									"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
-									"Menu3UrlPopup" => $elem["topology_url"],
-									"Menu3Name" => _($elem["topology_name"]),
-									"Menu3Popup" => $elem["topology_popup"] ? true : false);
-		}
+		$Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
+		$elemArr[3][$elem["topology_group"]]["title"] = $title;
+	    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
+								"Menu3Url" => $Menu3Url,
+								"Menu3ID" => $elem["topology_page"],
+								"MenuStyleClass" => $elem["topology_style_class"],
+								"MenuStyleID" => $elem["topology_style_id"],
+								"MenuOnClick" => $elem["topology_OnClick"],
+								"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
+								"Menu3UrlPopup" => $elem["topology_url"],
+								"Menu3Name" => _($elem["topology_name"]),
+								"Menu3Popup" => $elem["topology_popup"] ? true : false);
 	}
 	unset($elem);
 
@@ -159,7 +160,11 @@
 	 * Grab elements for level 4
 	 */
 	if ($level1 && $level2 && $level3){
-		$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order");
+		if (!$is_admin)
+			$request = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
+		else
+			$request = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_show = '1' ORDER BY topology_order";
+		$DBRESULT =& $pearDB->query($request);
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());
 		for ($i = 0; $DBRESULT->fetchInto($elem);$i++){
@@ -210,19 +215,21 @@
 	/*
 	 * User Online
 	 */
-	$tab_user = array();
-	$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
-	if (PEAR::isError($DBRESULT))
-		print ($DBRESULT->getMessage());
-	while ($DBRESULT->fetchInto($session)){
-		$tab_user[$session["user_id"]] = array();
-		$tab_user[$session["user_id"]]["ip"] = $session["ip_address"];
-		$tab_user[$session["user_id"]]["id"] = $session["user_id"];
-		$tab_user[$session["user_id"]]["alias"] = $session["contact_alias"];
-		$tab_user[$session["user_id"]]["admin"] = $session["contact_admin"];
+	if ($is_admin){
+		$tab_user = array();
+		$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
+		if (PEAR::isError($DBRESULT))
+			print ($DBRESULT->getMessage());
+		while ($DBRESULT->fetchInto($session)){
+			$tab_user[$session["user_id"]] = array();
+			$tab_user[$session["user_id"]]["ip"] = $session["ip_address"];
+			$tab_user[$session["user_id"]]["id"] = $session["user_id"];
+			$tab_user[$session["user_id"]]["alias"] = $session["contact_alias"];
+			$tab_user[$session["user_id"]]["admin"] = $session["contact_admin"];
+		}
+		
+		$tpl->assign("tab_user", $tab_user);
 	}
-
-	$tpl->assign("tab_user", $tab_user);
 	$tpl->assign('amIadmin', $oreon->user->admin);
 
 	# Display

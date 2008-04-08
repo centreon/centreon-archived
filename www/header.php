@@ -143,7 +143,7 @@
 	$DBRESULT =& $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
-	if ($DBRESULT->numRows() && $DBRESULT->fetchInto($elem))
+	if ($DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()))
 		$colorfile = "Color/".$elem["css_name"];
 
 	# Update Session Table For last_reload and current_page row
