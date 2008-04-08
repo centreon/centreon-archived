@@ -1,20 +1,19 @@
 <?php
-/** 
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 class User	{
 
@@ -32,6 +31,7 @@ class User	{
 	## User LCA
 	# Array with elements ID for loop test
 	var $lcaTopo;
+	
 	# String with elements ID separated by commas for DB requests
 	var $lcaTStr;
 	  
@@ -48,13 +48,19 @@ class User	{
   	}
   
   	function getAllTopology($pearDB){
-	  	$res3 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-		while ($topo = $res3->fetchRow())
+	  	$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
+		while ($topo =& $DBRESULT->fetchRow())
 			if (isset($topo["topology_page"]))
-				$lcaTopo[$topo["topology_page"]] = 1;			
-		unset($res3);
+				$lcaTopo[$topo["topology_page"]] = 1;
+		unset($topo);
+		$DBRESULT->free();
 		return $lcaTopo;
   	}
+  	
+  	/*
+  	 * Init topology restriction reference for centreon
+  	 * Create a liste of page who user has access
+  	 */
   
   	function createLCA($pearDB = NULL)	{
 	  	$have_an_lca = 0;
@@ -64,32 +70,30 @@ class User	{
 	  	
 	  	$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$this->user_id."'");
 		if (PEAR::isError($res1)) 
-			print "DB Error : ".$res1->getDebugInfo()."<br />";
+			print "[Create ACL] DB Error : ".$res1->getDebugInfo()."<br />";
 		
-		$i = 0;
 		if ($num = $res1->numRows())	{
-			$str = "";
-			while ($group = $res1->fetchRow())	{
+			for ($str = "", $i = 0;$group = $res1->fetchRow() ; $i++)	{
 				if ($str != "")
 					$str .= ", ";
 				$str .= $group["acl_group_id"];
-				$i++;
 			}
 		}
 	  	
 	  	if ($this->admin || $i == 0){
 			$this->lcaTopo = $this->getAllTopology($pearDB);
 	  	} else {  		
-			$str_topo = "";
+
 			$DBRESULT =& $pearDB->query("SELECT acl_topology_id FROM `acl_group_topology_relations` WHERE acl_group_id IN ($str)");
 			if (PEAR::isError($DBRESULT)) 
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				print "[Create ACL] DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			if (!$DBRESULT->numRows()){
-				$res3 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-				while ($topo = $res3->fetchRow())
+				$DBRESULT2 =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
+				for ($str_topo = ""; $topo = $DBRESULT2->fetchRow(); )
 					if (isset($topo["topology_page"]))
-						$this->lcaTopo[$topo["topology_page"]] = 1;			
-				unset($res3);
+						$this->lcaTopo[$topo["topology_page"]] = 1;
+				unset($str_topo);
+				$DBRESULT2->free();
 			} else {
 				while ($topo_group = $DBRESULT->fetchRow()){
 			  		$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
@@ -97,25 +101,29 @@ class User	{
 			  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
 			  												"AND acl_topology.acl_topo_activate = '1' " .
 			  												"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
-		  		if (PEAR::isError($DBRESULT2)) 
+			  		if (PEAR::isError($DBRESULT2)) 
 						print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
 			  		$count = 0;
-			  		while ($topo_page = $DBRESULT2->fetchRow()){
+			  		while ($topo_page =& $DBRESULT2->fetchRow()){
 			  			$have_an_lca = 1;
 			  			if ($str_topo != "")
 			  				$str_topo .= ", ";
 			  			$str_topo .= $topo_page["topology_topology_id"];
 			  			$count++;
 			  		}
-					unset($DBRESULT2);
+			  		$DBRESULT2->free();
 		  		}
+		  		unset($topo_group);
+		  		unset($topo_page);
 		  		$count ? $ACL = "topology_id IN ($str_topo) AND ": $ACL = "";
 		  		unset($DBRESULT);
 		  		$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE $ACL topology_page IS NOT NULL");	
 				if (PEAR::isError($DBRESULT)) 
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-				while ($topo_page = $DBRESULT->fetchRow())						
+				while ($topo_page =& $DBRESULT->fetchRow())						
 					$this->lcaTopo[$topo_page["topology_page"]] = 1;
+				unset($topo_page);
+				$DBRESULT->free();
 			}
 			unset($DBRESULT);
 	  	}
@@ -128,6 +136,7 @@ class User	{
 		  		$this->lcaTStr .= $key;
 	  		}
 	  	}
+	  	unset($key);
 	  	if (!$this->lcaTStr) 
 	  		$this->lcaTStr = '\'\'';	
   	}
