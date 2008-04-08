@@ -37,8 +37,8 @@
 									global $host_name;
 									global $status;
 									global $service_name;
-									include_once '/srv/centreon/www/lib/ofc-library/open_flash_chart_object.php';
-									open_flash_chart_object( 300, 250, 'http://'. $_SERVER['SERVER_NAME'] .'/centreon/include/reporting/dashboard/pie-charts.php?host_name='.$host_name.$status );
+									include_once 'lib/ofc-library/open_flash_chart_object.php';
+									open_flash_chart_object( 300, 250, 'include/reporting/dashboard/imagesGenerations/pie-charts.php?host_name='.$host_name.$status );
 								{/php}
 								</td>					
 							</tr>
@@ -107,10 +107,11 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td class="FormHeader" colspan=10>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+							<td class="FormHeader" colspan=11>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$serviceTilte}</td>
+							<td colspan=1 class="ListColHeaderCenter">&nbsp;</td>
 							<td colspan=2 class="ListColHeaderCenter">{$OKTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
@@ -118,7 +119,7 @@
 							<td class="ListColHeaderCenter">{$PendingTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
-							<td class="ListColHeaderCenter"></td>
+							<td class="ListColHeaderCenter" colspan="2"></td>
 							<td class="ListColHeaderCenter">%</td>
 							<td class="ListColHeaderCenter">Alert</td>
 							<td class="ListColHeaderCenter">%</td>
@@ -131,7 +132,8 @@
 						</tr>
 						{foreach item=tb from=$tab_svc}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderCenter"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
+							<td class="ListColHeaderLeft"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
+							<td class="ListColHeaderCenter"><img src="./img/icones/16x16/column-chart.gif"></td>
 							<td {$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
 							<td {$style_ok_alert} >{$tb.OKnbEvent}</td>
 							<td {$style_warning}>{$tb.PtimeWARNING}% ({$tb.PktimeWARNING}%)</td>
@@ -144,7 +146,7 @@
 						</tr>
 						{/foreach}
 						<tr class="list_lvl_2">
-							<td class="ListColHeaderCenter">{$averageTilte}</td>
+							<td class="ListColHeaderCenter" colspan="2">{$averageTilte}</td>
 							<td class='ListColHeaderCenter'{$style_ok}>{$tab_svc_average.PTOK}% ({$tab_svc_average.PKTOK}%)</td>
 							<td class='ListColHeaderCenter'{$style_ok_alert}>{$tab_svc_average.PAOK}</td>
 							<td class='ListColHeaderCenter'{$style_warning}>{$tab_svc_average.PTW}% ({$tab_svc_average.PKTW}%)</td>
@@ -163,7 +165,7 @@
 					<div id="my-timeline" style="height: 250px; border: 1px solid #aaa"></div>
 				</td>
 			</tr>
-			<tr>
+<!--			<tr>
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable" class="left">
 						<tr class='ListHeader'>
@@ -189,7 +191,7 @@
 						{/foreach}
 					</table>
 				</td>
-			</tr>			
+			</tr>-->			
 			</table>
 		</td>
 	</tr>

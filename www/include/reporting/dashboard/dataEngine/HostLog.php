@@ -1,21 +1,20 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
-
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
+ 
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
@@ -26,11 +25,11 @@ For information : contact@oreon-project.org
 	$start_date_select = 0;
 	$end_date_select = 0;
 
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
+	require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
+	require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 
 	# LCA
-	if (!$is_admin){
+	if (isset($is_admin) && !$is_admin){
 		$lcaHostByName = getLcaHostByName($pearDB);
 		$lcaHostByID = getLcaHostByID($pearDB);
 		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
@@ -45,7 +44,7 @@ For information : contact@oreon-project.org
 	if ($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		if($period == "customized") {
+		if ($period == "customized") {
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
