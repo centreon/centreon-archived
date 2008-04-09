@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 	
 	if (!isset($oreon))
 		exit();
@@ -22,6 +21,7 @@ For information : contact@oreon-project.org
 	/*
 	 * Database retrieve information for LCA
 	 */
+	 
 	if ($o == "c" || $o == "w")	{
 		$DBRESULT =& $pearDB->query("SELECT * FROM acl_resources WHERE acl_res_id = '".$acl_id."' LIMIT 1");
 		
@@ -49,50 +49,66 @@ For information : contact@oreon-project.org
 			$acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
 		$DBRESULT->free();
 
-		# Set Contact Groups relations
+		# Set Groups relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
 		for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
 			$acl["acl_groups"][$i] = $groups["acl_group_id"];
 		$DBRESULT->free();
 		
-		# Set Contact Groups relations
+		# Set Service Categories relations
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
 			for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sc"][$i] = $sc["sc_id"];
 		$DBRESULT->free();
+
+		# Set Service Groups relations
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
+		if ($DBRESULT->numRows())
+			for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
+				$acl["acl_sg"][$i] = $sg["sg_id"];
+		$DBRESULT->free();
+
 	}
 
 	$groups = array();
 	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
-	if (PEAR::isError($DBRESULT)) print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($group = $DBRESULT->fetchRow())
+	if (PEAR::isError($DBRESULT)) 
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($group = $DBRESULT->fetchRow())
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	$DBRESULT->free();
 	
 	$hosts = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while($DBRESULT->fetchInto($host))
+	while ($DBRESULT->fetchInto($host))
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
 	$hosttoexcludes = array();
 	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while($DBRESULT->fetchInto($host))
+	while ($DBRESULT->fetchInto($host))
 		$hosttoexcludes[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
 	$hostgroups = array();
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while($hg = $DBRESULT->fetchRow())
+	while ($hg = $DBRESULT->fetchRow())
 		$hostgroups[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 	
 	$service_categories = array();
 	$DBRESULT =& $pearDB->query("SELECT sc_id, sc_name FROM service_categories ORDER BY sc_name");
-	while($DBRESULT->fetchInto($sc))
+	while ($DBRESULT->fetchInto($sc))
 		$service_categories[$sc["sc_id"]] = $sc["sc_name"];
 	$DBRESULT->free();
+	
+	$service_groups = array();
+	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	while ($sg =& $DBRESULT->fetchRow())
+		$service_groups[$sg["sg_id"]] = $sg["sg_name"];
+	$DBRESULT->free();
+	
 	
 	/*
 	 * Var information to format the element
@@ -156,12 +172,18 @@ For information : contact@oreon-project.org
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 	
-	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Service Categories Access"), $service_categories, $attrsAdvSelect);
+	$ams2 =& $form->addElement('advmultiselect', 'acl_sc', _("Services Categories Access"), $service_categories, $attrsAdvSelect);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams2->setElementTemplate($template);
 	echo $ams2->getElementJs(false);
 
+	$ams2 =& $form->addElement('advmultiselect', 'acl_sg', _("Services Groups"), $service_groups, $attrsAdvSelect);
+	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams2->setButtonAttributes('remove', array('value' => _("Delete")));
+	$ams2->setElementTemplate($template);
+	echo $ams2->getElementJs(false);
+		
 	/*
 	 * Further informations
 	 */

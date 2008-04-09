@@ -15,6 +15,9 @@
  * For information : contact@oreon-project.org
  */
 
+	if (!isset($oreon))
+		exit();
+	
 	/*
 	 * LCA Generation
 	 */
@@ -131,17 +134,19 @@
 		/*
 		 * Get User
 		 */			
-		$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
-		$user = $res1->fetchRow();
+		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
+		$user = $DBRESULT->fetchRow();
+		$DBRESULT->free();
 		/*
 		 * Get Groups
 		 */
 		$groups = array();
-		$res1 =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user["user_id"]."'");
-  		if ($num = $res1->numRows()){
-			while ($group = $res1->fetchRow()) {
+		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user["user_id"]."'");
+  		if ($num = $DBRESULT->numRows()){
+			while ($group = $DBRESULT->fetchRow()) {
 				$groups[$group["acl_group_id"]] = $group["acl_group_id"];
 			}
+			$DBRESULT->free();
   		}
   		/*
   		 * Free
@@ -149,6 +154,13 @@
   		unset($user);
   		unset($res1);
 		return $groups;
+	}
+
+	function getGroupListStrofUser($pearDB){
+		if (!$pearDB)
+			return ;
+		getGroupListStrofUser($pearDB);
+		return groupsListStr($groups);
 	}
 	
 	function groupsListStr($groups){
@@ -239,7 +251,6 @@
 		 * Init Table of template
 		 */
 		$strTemplate = "'$service_id'";
-
 		while (1)	{
 			/*
 			 * Get template Informations
@@ -263,9 +274,8 @@
 		
 		$tab = array();
 		$DBRESULT =& $pearDB->query("SELECT sc_id FROM `service_categories_relation` WHERE service_service_id IN (".$str.")");
-		while ($res = $DBRESULT->fetchRow()){
+		while ($res = $DBRESULT->fetchRow())
 			$tab[$res["sc_id"]] = $res["sc_id"];
-	  	}
 		unset($res);		
 		unset($DBRESULT);
 		return $tab;

@@ -10,19 +10,20 @@
 </div>
 <div id='tab1' class="tab">
 	 <table class="ListTable">
-	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/application_lock.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lock_new.gif'>&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>	 	
 		<tr class="list_one"><td class="FormRowField">{$form.acl_res_name.label}</td><td class="FormRowValue">{$form.acl_res_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.acl_res_alias.label}</td><td class="FormRowValue">{$form.acl_res_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.acl_res_activate.label}</td><td class="FormRowValue">{$form.acl_res_activate.html}</td></tr>
 	 	<tr class="list_two"><td class="FormRowField">{$form.acl_groups.label}</td><td class="FormRowValue">{$form.acl_groups.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/window_application_delete.gif'>&nbsp;&nbsp;{$form.header.Host_infos}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.Host_infos}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.acl_hosts.label}</td><td class="FormRowValue">{$form.acl_hosts.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.hostgroups}</td></tr>	 	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.hostgroups}</td></tr>	 	
 		<tr class="list_two"><td class="FormRowField">{$form.acl_hostgroup.label}</td><td class="FormRowValue">{$form.acl_hostgroup.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.acl_hostexclude.label}</td><td class="FormRowValue">{$form.acl_hostexclude.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/house.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>	 	
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>	 	
 		<tr class="list_two"><td class="FormRowField">{$form.acl_sc.label}</td><td class="FormRowValue">{$form.acl_sc.html}</td></tr>	
+		<tr class="list_one"><td class="FormRowField">{$form.acl_sg.label}</td><td class="FormRowValue">{$form.acl_sg.html}</td></tr>	
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lca_comment.label}</td><td class="FormRowValue">{$form.lca_comment.html}</td></tr>
 	</table>
