@@ -20,7 +20,8 @@
 		
 	function testHostExistence ($name = NULL)	{
 		global $pearDB, $form;
-		$selected_host =& $_POST["select"];
+		if (isset($form))
+			$id = $form->getSubmitValue('host_id');;
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -30,18 +31,15 @@
 		 * Modif case
 		 */
 		 
-		if ($DBRESULT->numRows() >= 1 && isset($selected_host[$host["host_id"]])){
+		if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id)	
 			return true;
-		}
 		/*
 		 * Duplicate entry
 		 */
-		
-		else if ($DBRESULT->numRows() >= 1 && !isset($selected_host[$host["host_id"]])){
+		else if ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id)
 			return false;
-		} else {
+		else
 			return true;
-		}
 	}
 	
 	function testHostTplExistence ($name = NULL)	{
