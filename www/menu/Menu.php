@@ -73,12 +73,17 @@
 	$tpl->assign("fileOreonConf", $fileOreonConf);
 	$tpl->assign("date_time_format_status", _("d/m/Y H:i:s"));
 
-	# Grab elements for level 1
+	/*
+	 * Fixe ACL
+	 */
+
+	$lcaSTR = "";
 	if (!$is_admin)
-		$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
-	else
-		$rq = "SELECT * FROM topology WHERE topology_parent IS NULL AND topology_show = '1' ORDER BY topology_order";
-		
+		$lcaSTR = "AND topology_page IN (".$oreon->user->lcaTStr.")";
+	
+
+	# Grab elements for level 1
+	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
@@ -89,6 +94,8 @@
 								"Menu1UrlPopupOpen" => $elem["topology_url"],
 								"Menu1Name" => _($elem["topology_name"]),
 								"Menu1Popup" => $elem["topology_popup"] ? true : false);
+	$DBRESULT->free();
+	
 	$userUrl = "main.php?p=50104&o=c";
     $logDate = date(_("Y/m/d G:i"));
     $logOut = _("Logout");
@@ -97,18 +104,13 @@
 	/*
 	 * Grab elements for level 2
 	 */
-	if (!$is_admin)
-		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1'  ORDER BY topology_group, topology_order";
-	else
-		$rq = "SELECT * FROM topology WHERE topology_parent = '".$level1."' AND topology_show = '1'  ORDER BY topology_group, topology_order";
-	
+	$rq = "SELECT topology_page, topology_url_opt, topology_popup, topology_url, topology_name FROM topology WHERE topology_parent = '".$level1."' $lcaSTR AND topology_show = '1'  ORDER BY topology_group, topology_order";
 	$DBRESULT =& $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	$firstP = NULL;
 	$sep = "&nbsp;";
 	for ($i = 0; $DBRESULT->numRows() && $DBRESULT->fetchInto($elem); $i++)	{
-		//$elem["topology_url"] == "./ext/osm/osm_jnlp.php" ? $auth = "?al=".md5($oreon->user->get_alias())."&pwd=".$oreon->user->get_passwd() : $auth = NULL;
 		$firstP ? null : $firstP = $elem["topology_page"];
 	    $elemArr[2][$i] = array("Menu2Sep" => $sep,
 								"Menu2Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
@@ -122,11 +124,7 @@
 	/*
 	 * Grab elements for level 3
 	 */
-	if (!$is_admin)
-		$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
-	else
-		$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";
-	
+	$request = "SELECT * FROM topology WHERE topology_parent = '".($level2 ? $level1.$level2 : $firstP)."' $lcaSTR AND topology_show = '1' AND topology_page is not null ORDER BY topology_group, topology_order";	
 	$DBRESULT =& $pearDB->query($request);
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
@@ -160,10 +158,7 @@
 	 * Grab elements for level 4
 	 */
 	if ($level1 && $level2 && $level3){
-		if (!$is_admin)
-			$request = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_page IN (".$oreon->user->lcaTStr.") AND topology_show = '1' ORDER BY topology_order";
-		else
-			$request = "SELECT * FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' AND topology_show = '1' ORDER BY topology_order";
+		$request = "SELECT topology_icone, topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 		$DBRESULT =& $pearDB->query($request);
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());

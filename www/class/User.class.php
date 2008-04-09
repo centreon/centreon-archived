@@ -79,12 +79,15 @@ class User	{
 				$str .= $group["acl_group_id"];
 			}
 		}
-	  	
+	  	$str_topo = "";
 	  	if ($this->admin || $i == 0){
 			$this->lcaTopo = $this->getAllTopology($pearDB);
 	  	} else {  		
-
-			$DBRESULT =& $pearDB->query("SELECT acl_topology_id FROM `acl_group_topology_relations` WHERE acl_group_id IN ($str)");
+			$DBRESULT =& $pearDB->query(	"SELECT acl_topology_id " .
+											"FROM `acl_group_topology_relations`, `acl_topology`, `acl_topology_relations` " .
+											"WHERE acl_topology_relations.acl_topo_id = acl_topology.acl_topo_id " .
+											"AND acl_group_topology_relations.acl_group_id IN ($str) " .
+											"AND acl_topology.acl_topo_activate = '1'");
 			if (PEAR::isError($DBRESULT)) 
 				print "[Create ACL] DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 			if (!$DBRESULT->numRows()){
@@ -96,7 +99,7 @@ class User	{
 				$DBRESULT2->free();
 			} else {
 				while ($topo_group = $DBRESULT->fetchRow()){
-			  		$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
+					$DBRESULT2 =& $pearDB->query(	"SELECT topology_topology_id " .
 			  										"FROM `acl_topology_relations`, acl_topology " .
 			  										"WHERE acl_topology_relations.acl_topo_id = '".$topo_group["acl_topology_id"]."' " .
 			  												"AND acl_topology.acl_topo_activate = '1' " .
