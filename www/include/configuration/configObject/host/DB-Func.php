@@ -429,7 +429,6 @@
 					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_host_relations` (acl_res_id, host_host_id) VALUES ('".$res_id."', '".$host_id["MAX(host_id)"]."')");
 					if (PEAR::isError($DBRESULT3))
 						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
-					$DBRESULT3->free();
 				}
 				unset($resource_list);
 			}
