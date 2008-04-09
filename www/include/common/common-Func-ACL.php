@@ -387,6 +387,18 @@
 		return 0;
 	}
 	
+	function getUserIdFromSID($sid = NULL){
+		if (!isset($sid))
+			return ;
+		global $pearDB;
+		$DBRESULT =& $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin = $DBRESULT->fetchRow();
+		unset($DBRESULT);
+		if (isset($admin["contact_id"]))
+			return $admin["contact_id"];
+		return 0;
+	}
+	
 	function getResourceACLList($group_list){
 		if (!isset($group_list))
 			return ;
