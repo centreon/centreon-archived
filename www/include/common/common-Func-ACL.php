@@ -387,4 +387,25 @@
 		return 0;
 	}
 	
+	function getResourceACLList($group_list){
+		if (!isset($group_list))
+			return ;
+		global $pearDB;
+		$str = "";
+		foreach ($group_list as $gl){
+			if ($str)
+				$str .= ", ";
+			$str .= $gl; 
+		}	
+		$tab_res = array();
+		$DBRESULT =& $pearDB->query("SELECT `acl_res_id` FROM `acl_res_group_relations` WHERE `acl_group_id` IN ($str)");
+		while ($res = $DBRESULT->fetchRow())
+			$tab_res[$res["acl_res_id"]] = $res["acl_res_id"];
+		$DBRESULT->free();
+		unset($str);
+		if (count($tab_res))
+			return $tab_res;
+		return array();
+	}
+	
 ?>
