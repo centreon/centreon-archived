@@ -15,23 +15,32 @@
  * For information : contact@oreon-project.org
  */
 
-
 	if (!isset($oreon))
 		exit;
+
+	if (!$is_admin)
+		$lca = getLcaHostByName($pearDB);	
+
+	# Smarty template Init
+	$path = "./include/reporting/dashboard";
+	$tpl = new Smarty();
+	$tpl = initSmartyTpl($path, $tpl, "");
+	$tpl->assign('o', $o);
+
+	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
+	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	require_once './class/other.class.php';
 	require_once './include/common/common-Func.php';
 	require_once './include/common/common-Func-ACL.php';
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
-
-	#Pear library
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	if (!$is_admin)
-		$lca = getLcaHostByName($pearDB);
+	require_once("./include/reporting/dashboard/initReport.php");
 	
+	require_once './include/reporting/dashboard/dataEngine/HostGroupLog.php';
+		
 	$tableFile2 = array();
 	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
 		while ($file = @readdir($handle))
@@ -47,14 +56,13 @@
 	$tableFile3 = array($oreon->Nagioscfg["log_file"] => " -- " . _("Today") . " -- ");
 	$tableFile1 = array_merge($tableFile3, $tableFile2);
 
-	$host = array();
 	
-	$host[""] = "";
+	$host = array(""=>"");
 	$DBRESULT =& $pearDB->query("SELECT host_name FROM host where host_activate = '1' and host_register = '1' ORDER BY host_name");
 	if (PEAR::isError($DBRESULT))
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	while ($DBRESULT->fetchInto($h))
-		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
+		if ($is_admin || isset($lca["LcaHost"][$h['host_name']]))
 			$host[$h["host_name"]] = $h["host_name"];
 
 	$debug = 0;
@@ -447,7 +455,7 @@
 	$tpl->assign('logTitle', _("Today's Host log"));
 
 	if ($mhostgroup){
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_HostGroupLog.php?sid=".$sid."&hostgroup=".$mhostgroup.$var_url_export_csv);
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_HostGroupLogs.php?sid=".$sid."&hostgroup=".$mhostgroup.$var_url_export_csv);
 		$tpl->assign("link_csv_name", "Export CSV");
 	}
 
@@ -494,11 +502,7 @@
 		$host_id = $hostgroup_id;
 		include('ajaxReporting_js.php');
 	}	else {
-		?>
-		<script type="text/javascript">
-		function initTimeline() {;}
-		</SCRIPT>
-		<?php
+		?><script type="text/javascript">function initTimeline() {;}</SCRIPT><?php
 	}
 	$tpl->display("template/viewHostGroupLog.ihtml");
 ?>

@@ -18,38 +18,28 @@
 	if (!isset($oreon))
 		exit;
 
-	require_once './class/other.class.php';
-	require_once './include/common/common-Func.php';
-	require_once './include/common/common-Func-ACL.php';
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
-
-	#Pear library
-	require_once "HTML/QuickForm.php";
-	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-	
 	if (!$is_admin)
-		$lca = getLcaHostByName($pearDB);
-	
-	#
-	## init
-	#
-	$totalAlert = 0;
-	$day = date("d",time());
-	$year = date("Y",time());
-	$month = date("m",time());
-	$today_start = mktime(0, 0, 0, $month, $day, $year);
-	$today_end = time();
-	$tt = 0;
-	$start_date_select = 0;
-	$end_date_select = 0;
-	$path = "./include/reporting/dashboard";
-	$var_url_export_csv = "";
+		$lca = getLcaHostByName($pearDB);	
 
 	# Smarty template Init
+	$path = "./include/reporting/dashboard";
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "");
 	$tpl->assign('o', $o);
+
+	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
+	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
+
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+
+	require_once './class/other.class.php';
+	require_once './include/common/common-Func.php';
+	require_once './include/common/common-Func-ACL.php';
+	
+	require_once("./include/reporting/dashboard/initReport.php");
+	
+	require_once './include/reporting/dashboard/dataEngine/HostGroupLog.php';
 	
 	$tableFile2 = array();
 	if ($handle  = @opendir($oreon->Nagioscfg["log_archive_path"]))	{
@@ -74,13 +64,7 @@
 		print "Mysql Error : ".$DBRESULT->getMessage();
 	while ($DBRESULT->fetchInto($h))
 		if (!isset($lca) || isset($lca["LcaHost"][$h['host_name']]))
-			$host[$h["host_name"]] = $h["host_name"];
-
-	$debug = 0;
-	$attrsTextI		= array("size"=>"3");
-	$attrsText 		= array("size"=>"30");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	
+			$host[$h["host_name"]] = $h["host_name"];	
 	#
 	## Form begin
 	#
@@ -101,23 +85,6 @@
 	
 	$log = NULL;	
 	$tab_log = array();
-	
-	#
-	## init
-	#
-	
-	$totalAlert = 0;
-	$day = date("d",time());
-	$year = date("Y",time());
-	$month = date("m",time());
-	
-	$today_start = mktime(0, 0, 0, $month, $day, $year);
-	$today_end = time();
-	$tt = 0;
-	$start_date_select = 0;
-	$end_date_select = 0;
-	
-	$path = "./include/reporting/dashboard";
 
 	# Smarty template Init
 	$tpl = new Smarty();
@@ -532,7 +499,7 @@
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod->accept($renderer);
 	$tpl->assign('formPeriod', $renderer->toArray());
-	$tpl->assign('period', $var_url_export_csv);
+//	$tpl->assign('period', $var_url_export_csv);
 
 	#Apply a template definition
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
@@ -542,7 +509,7 @@
 	$tpl->assign("p", $p);
 
 	if ($mservicegroup){
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_ServiceGroupLog.php?sid=".$sid."&servicegroup=".$mservicegroup.$var_url_export_csv);
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php?sid=".$sid."&servicegroup=".$mservicegroup.$var_url_export_csv);
 		$tpl->assign("link_csv_name", "Export CSV");
 	}
 

@@ -1,37 +1,33 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
-
-
-	#
-	## init
-	#
-	$totalAlert = 0;
+ 
 	$day = date("d",time());
 	$year = date("Y",time());
 	$month = date("m",time());
 	$today_start = mktime(0, 0, 0, $month, $day, $year);
 	$today_end = time();
+
 	$tt = 0;
 	$start_date_select = 0;
 	$end_date_select = 0;
 
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
+	require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
+	require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 
 	# LCA
 	$lcaHostByName = getLcaHostByName($pearDB);
@@ -89,7 +85,7 @@ For information : contact@oreon-project.org
 	$today_UNREACHABLEnbEvent = 0;
 	$today_DOWNnbEvent = 0;
 	
-	if($mhostgroup){
+	if ($mhostgroup){
 		#
 		## today log for xml timeline
 		#
@@ -296,7 +292,17 @@ For information : contact@oreon-project.org
 	$today_pending = ($today_pending < 0.1) ? "0" : $today_pending;
 
 
-if($mhostgroup){
+	if ($mhostgroup){
+		
+		$str = NULL;
+		$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $hostgroup_id ."'";
+		$res = & $pearDB->query($request);
+		while ($h =& $res->fetchRow()) {
+			if ($str)
+				$str .= ', ';
+			$str .= $h["host_host_id"];
+		}
+		
 		$rq = "SELECT " .
 				"date_start, date_end, " .
 				"avg( `UPTimeScheduled` ) as 'UPTimeScheduled', " .
@@ -306,12 +312,10 @@ if($mhostgroup){
 				"avg( `UNREACHABLETimeScheduled` ) as 'UNREACHABLETimeScheduled', " .
 				"avg( `UNREACHABLEnbEvent` ) as 'UNREACHABLEnbEvent' " .
 				"FROM `log_archive_host` WHERE `date_start` >= " . $sd . " AND `date_end` <= " . $ed .
-				" AND `host_id` IN (" .
-				"SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $hostgroup_id ."') group by date_end, date_start order by date_start desc";
+				" AND `host_id` IN ($str) group by date_end, date_start order by date_start desc";
 
-		$res = & $pearDB->query($rq);
-		//$tab_report = array();
-		  while ($h =& $res->fetchRow()) {
+		$res = & $pearDBO->query($rq);
+		while ($h =& $res->fetchRow()) {
 
 			$uptime = $h["UPTimeScheduled"];
 			$downtime = $h["DOWNTimeScheduled"];
