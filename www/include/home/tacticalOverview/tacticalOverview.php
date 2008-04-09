@@ -51,9 +51,10 @@
 	/*
 	 * Check ACL and generate ACL restrictions
 	 */
-	if (!$is_admin)
+	if (!$is_admin){
 		$lca = getLcaHostByName($pearDB);
-	
+		$lcaSTR = getLCAHostStr($lca["LcaHost"]);
+	}
 	/*
 	 * Get Status Globals for hosts
 	 */

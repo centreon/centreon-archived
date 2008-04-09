@@ -20,9 +20,7 @@ For information : contact@oreon-project.org
 		
 	function testHostExistence ($name = NULL)	{
 		global $pearDB, $form;
-		$id = NULL;
-		if (isset($form))
-			$id = $form->getSubmitValue('host_id');
+		$selected_host =& $_POST["select"];
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '1'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -32,23 +30,25 @@ For information : contact@oreon-project.org
 		 * Modif case
 		 */
 		 
-		if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && isset($selected_host[$host["host_id"]])){
 			return true;
+		}
 		/*
 		 * Duplicate entry
 		 */
 		
-		else if ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id)
+		else if ($DBRESULT->numRows() >= 1 && !isset($selected_host[$host["host_id"]])){
 			return false;
-		else
+		} else {
 			return true;
+		}
 	}
 	
 	function testHostTplExistence ($name = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;
 		if (isset($form))
-			$id = $form->getSubmitValue('host_id');
+			$id = $form->getSubmitValue('host_id');;
 		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_name = '".htmlentities($name, ENT_QUOTES)."' AND host_register = '0'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -60,11 +60,9 @@ For information : contact@oreon-project.org
 		
 		if ($DBRESULT->numRows() >= 1 && $host["host_id"] == $id)	
 			return true;
-		
 		/*
 		 * Duplicate entry
 		 */
-		
 		else if ($DBRESULT->numRows() >= 1 && $host["host_id"] != $id)
 			return false;
 		else
@@ -119,9 +117,7 @@ For information : contact@oreon-project.org
 	
 	function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
 		foreach($hosts as $key=>$value)	{
-			global $pearDB;
-			global $path;
-			global $oreon;
+			global $pearDB, $path, $oreon, $is_admin;
 			$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -143,22 +139,20 @@ For information : contact@oreon-project.org
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(host_id)"]))	{
-						# Update LCA
-						$DBRESULT1 =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-						if (PEAR::isError($DBRESULT1))
-							print "DB Error : ".$DBRESULT1->getDebugInfo()."<br />";
-						while($DBRESULT1->fetchInto($contactGroup))	{
-						 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
-							if (PEAR::isError($DBRESULT2))
-								print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
-							while ($DBRESULT2->fetchInto($lca))	{
-								$rq = "INSERT INTO lca_define_host_relation ";
-								$rq .= "(lca_define_lca_id, host_host_id) ";
-								$rq .= "VALUES ";
-								$rq .= "('".$lca["lca_define_lca_id"]."', '".$maxId["MAX(host_id)"]."')";
-								$DBRESULT3 =& $pearDB->query($rq);
-								if (PEAR::isError($DBRESULT3))
-									print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+						
+						/*
+						 *  Update LCA
+						 */
+						if (!$is_admin){
+							$group_list = getGroupListofUser($pearDB);
+							$resource_list = getResourceACLList($group_list);
+							if (count($resource_list)){
+								foreach ($resource_list as $res_id)	{			
+									$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_host_relations` (acl_res_id, host_host_id) VALUES ('".$res_id."', '".$maxId["MAX(host_id)"]."')");
+									if (PEAR::isError($DBRESULT3))
+										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+								}
+								unset($resource_list);
 							}
 						}
 						#
@@ -356,7 +350,7 @@ For information : contact@oreon-project.org
 	}
 	
 	function insertHost($ret)	{
-		global $form, $pearDB, $oreon;
+		global $form, $pearDB, $oreon, $is_admin;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
@@ -427,17 +421,17 @@ For information : contact@oreon-project.org
 		/*
 		 *  Update LCA
 		 */
-		$group_list = getGroupListofUser($pearDB);
-		
-		if ($ret["host_register"]["host_register"] == 1 && count($group_list)){
-			foreach ($group_list as $group_id)	{			
-				$rq = "INSERT INTO `acl_resources_host_relations` ";
-				$rq .= "(acl_res_id, host_host_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$group_id."', '".$host_id["MAX(host_id)"]."')";
-				$DBRESULT3 =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT3))
-					print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+		if (!$is_admin){
+			$group_list = getGroupListofUser($pearDB);
+			$resource_list = getResourceACLList($group_list);
+			if ($ret["host_register"]["host_register"] == 1 && count($resource_list)){
+				foreach ($resource_list as $res_id)	{			
+					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_host_relations` (acl_res_id, host_host_id) VALUES ('".$res_id."', '".$host_id["MAX(host_id)"]."')");
+					if (PEAR::isError($DBRESULT3))
+						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+					$DBRESULT3->free();
+				}
+				unset($resource_list);
 			}
 		}
 		#
