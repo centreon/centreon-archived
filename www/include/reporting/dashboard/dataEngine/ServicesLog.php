@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	$day = date("d",time());
 	$year = date("Y",time());
@@ -32,11 +31,16 @@ For information : contact@oreon-project.org
 
 	$tab_svc = array();
 
-	require_once('simple-func.php');
-	require_once('reporting-func.php');
+	require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
+	require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
 
 	# LCA
-	$lcaHostByName = getLcaHostByName($pearDB);
+	if (isset($is_admin) && !$is_admin){
+		$lcaHostByName = getLcaHostByName($pearDB);
+		$lcaHostByID = getLcaHostByID($pearDB);
+		$lcaHoststr = getLCAHostStr($lcaHostByID["LcaHost"]);
+		$lcaHostGroupstr = getLCAHGStr($lcaHostByID["LcaHostGroup"]);
+	}
 
 	isset ($_GET["host"]) ? $mhost = $_GET["host"] : $mhost = NULL;
 	isset ($_POST["host"]) ? $mhost = $_POST["host"] : $mhost = $mhost;
@@ -52,26 +56,27 @@ For information : contact@oreon-project.org
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
-	if($mhost)	{
+	if ($mhost)	{
 		$end_date_select = 0;
 		$start_date_select= 0;
-		if($period == "customized") {
+		
+		if ($period == "customized") {
 			$end = (isset($_POST["end"])) ? $_POST["end"] : NULL;
 			$end = (isset($_GET["end"])) ? $_GET["end"] : $end;
 			$start = (isset($_POST["start"])) ? $_POST["start"] : NULL;
 			$start = (isset($_GET["start"])) ? $_GET["start"] : $start;			
 			getDateSelect_customized($end_date_select, $start_date_select, $start,$end);
-		}
-		else {
+		} else {
 			getDateSelect_predefined($end_date_select, $start_date_select, $period);
 		}
 		$host_id = getMyHostID($mhost);
 		$sd = $start_date_select;
 		$ed = $end_date_select;
 
-		#
-		## database log
-		#
+		/*
+		 * database log
+		 */
+		 
 		$Tup = NULL;
 		$Tdown = NULL;
 		$Tunreach = NULL;
@@ -89,11 +94,10 @@ For information : contact@oreon-project.org
 		$tab_svc["svcName"] = getMyServiceName($mservice);
 	}
 
+	/*
+	 * fourchette de temps
+	 */
 
-
-	#
-	## fourchette de temps
-	#
 	$periodList = array();
 	$periodList[""] = "";
 	$periodList["today"] = _("Today");
@@ -108,7 +112,7 @@ For information : contact@oreon-project.org
 	$periodList["customized"] = _("Customized");
 
 	
-	if($mhost){
+	if ($mhost){
 		$tab_log = array();
 		$tab_svc = array();
 		$day = date("d",time());
@@ -143,12 +147,12 @@ For information : contact@oreon-project.org
 		$tab_svc["PtimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ $tt *100,3);
 		$tab_svc["PtimeNONE"] = round(($tab_svc["timeNONE"])  / $tt *100,3);
 		#
-		if($tt != $tab_svc["timeNONE"]){
+		if ($tt != $tab_svc["timeNONE"]){
 			$tab_svc["PktimeOK"] = round($tab_svc["timeOK"] / ($tt-$tab_svc["timeNONE"]) *100,3);
 			$tab_svc["PktimeWARNING"] = round( $tab_svc["timeWARNING"]/ ($tt-$tab_svc["timeNONE"]) *100,3);
 			$tab_svc["PktimeUNKNOWN"] = round( $tab_svc["timeUNKNOWN"]/ ($tt-$tab_svc["timeNONE"]) *100,3);
 			$tab_svc["PktimeCRITICAL"] = round( $tab_svc["timeCRITICAL"]/ ($tt-$tab_svc["timeNONE"]) *100,3);
-		}else {
+		} else {
 			$tab_svc["PktimeOK"] = round(0,3);
 			$tab_svc["PktimeWARNING"] = round(0,3);
 			$tab_svc["PktimeUNKNOWN"] = round(0,3);
@@ -172,7 +176,7 @@ For information : contact@oreon-project.org
 	## calculate service  resume
 	$tab_resume = array();
 	$tab = array();	
-	if($mservice && $mhost){
+	if ($mservice && $mhost){
 		$tab["state"] = _("OK");
 		$tab["timestamp"] = $tab_svc["timeOK"];
 		$tab["time"] = Duration::toString($tab_svc["timeOK"]);
@@ -227,7 +231,7 @@ For information : contact@oreon-project.org
 	$totalpTime = 0;
 	$totalpkTime = 0;
 	foreach ($tab_resume  as $tb){
-		if($tb["pourcentTime"] >= 0)
+		if ($tb["pourcentTime"] >= 0)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];
 		$totalTime += $tb["timestamp"];
 		$totalpTime += $tb["pourcentTime"];
@@ -238,7 +242,7 @@ For information : contact@oreon-project.org
 
 	$status = "";
 	foreach ($tab_resume  as $tb)
-		if($tb["pourcentTime"] >= 0)
+		if ($tb["pourcentTime"] >= 0)
 			$status .= "&value[".$tb["state"]."]=".$tb["pourcentTime"];  
 	# For today in timeline
 	$tt = 0 + ($today_end - $today_start);

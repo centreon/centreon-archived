@@ -132,7 +132,7 @@
 						</tr>
 						{foreach item=tb from=$tab_svc}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderLeft"><a href="oreon.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
+							<td class="ListColHeaderLeft"><a href="main.php?p=30702&host={$host_name}&service={$tb.service_id}{$period}">{$tb.svcName}</a></td>
 							<td class="ListColHeaderCenter"><img src="./img/icones/16x16/column-chart.gif"></td>
 							<td {$style_ok}>{$tb.PtimeOK}% ({$tb.PktimeOK}%)</td>
 							<td {$style_ok_alert} >{$tb.OKnbEvent}</td>

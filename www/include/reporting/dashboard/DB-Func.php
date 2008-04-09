@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	function getDateSelect_predefined(&$end_date_select, &$start_date_select, $period){
 
@@ -68,8 +67,8 @@ For information : contact@oreon-project.org
 	}
 	
 	function getDateSelect_customized(&$end_date_select, &$start_date_select, $start, $end){
-		if(!is_null($end) && !is_null($start)){
-			if(!$end){
+		if (!is_null($end) && !is_null($start)){
+			if (!$end){
 				$end = time();
 				$endday = date("d",$end);
 				$endyear = date("Y",$end);
@@ -78,8 +77,7 @@ For information : contact@oreon-project.org
 				$endminute = date("i",$end);
 				$endsecond = date("s",$end);
 				$end_date_select = mktime($endhour, $endminute, $endsecond, $endmonth, $endday, $endyear);
-			}
-			else{
+			} else {
 				$end = my_getTimeTamps($end);
 				$endday = date("d",$end);
 				$endyear = date("Y",$end);
@@ -89,10 +87,7 @@ For information : contact@oreon-project.org
 				$endsecond = date("s",$end);
 				$end_date_select = mktime(23, 59, 59, $endmonth, $endday, $endyear);
 			}
-			if(!$start)
-				$start = mktime(0, 0, 0, $endmonth, $endday, $endyear);
-			else
-				$start = my_getTimeTamps($start);
+			!$start ? $start = mktime(0, 0, 0, $endmonth, $endday, $endyear) : $start = my_getTimeTamps($start);
 			$start_date_select = $start;
 		}
 	}
@@ -109,72 +104,43 @@ For information : contact@oreon-project.org
 		$tab_tmp["TunreachableNBAlert"] = 0;
 		$tab_tmp["Tnone"] = 0;
 
-		$rq = "select * from log where host_name like '%".$host_name."%' and ctime <= ". 
-			$today_end . " AND service_description is null and ctime >= " . $today_start . " AND ( msg_type = '7' OR msg_type = '9' OR msg_type = '1')";
+		$rq = "select * from log where host_name like '%".$host_name."%' and ctime <= ".$today_end." AND service_description is null and ctime >= " . $today_start . " AND ( msg_type = '7' OR msg_type = '9' OR msg_type = '1')";
 
 		$DBres =& $pearDBO->query($rq);
 		if (PEAR::isError($DBres))
 			print "DB Error : ".$DBres->getDebugInfo()."<br />";
 		$log = array();
 		while ($log = $DBres->fetchRow()){
-			if($log["status"] == "UP"){
+			if ($log["status"] == "UP"){
 				$tab_tmp["Tup"] += $log["ctime"] - $tab_tmp["time"];
 				$tab_tmp["TupNBAlert"] += 1;
 			}
-			if($log["status"] == "DOWN"){
+			if ($log["status"] == "DOWN"){
 				$tab_tmp["Tdown"] += $log["ctime"] - $tab_tmp["time"];
 				$tab_tmp["TdownNBAlert"] += 1;
 			}
-			if($log["status"] == "UNREACHABLE"){
+			if ($log["status"] == "UNREACHABLE"){
 				$tab_tmp["Tunreachable"] += $log["ctime"] - $tab_tmp["time"];
 				$tab_tmp["TunreachableNBAlert"] += 1;
-			}
-			else
+			} else
 				$tab_tmp["Tnone"] += $log["ctime"] - $tab_tmp["time"];
 			$tab_tmp["state"] = $log["status"];
 			$tab_tmp["time"] = $log["ctime"];
 		}
 
-		if($tab_tmp["state"] == "UP"){
+		if ($tab_tmp["state"] == "UP")
 			$tab_tmp["Tup"] += $today_end - $tab_tmp["time"];
-		}
-		if($tab_tmp["state"] == "DOWN"){
+		if ($tab_tmp["state"] == "DOWN")
 			$tab_tmp["Tdown"] += $today_end - $tab_tmp["time"];
-		}
-		if($tab_tmp["state"] == "UNREACHABLE"){
-			$tab_tmp["Tunreachable"] += $today_end - $tab_tmp["time"];
-		}
-		else
-			$tab_tmp["Tnone"] += $today_end - $tab_tmp["time"];
+		($tab_tmp["state"] == "UNREACHABLE") ? $tab_tmp["Tunreachable"] += $today_end - $tab_tmp["time"] : $tab_tmp["Tnone"] += $today_end - $tab_tmp["time"];
 
-		if(isset($hbase["Tup"]))
-			$hbase["Tup"] += $tab_tmp["Tup"];
-		else
-			$hbase["Tup"] = $tab_tmp["Tup"];
-		if(isset($hbase["TupNBAlert"]))
-			$hbase["TupNBAlert"] += $tab_tmp["TupNBAlert"];
-		else
-			$hbase["TupNBAlert"] = $tab_tmp["TupNBAlert"];
-		if(isset($hbase["Tdown"]))
-			$hbase["Tdown"] += $tab_tmp["Tdown"];
-		else
-			$hbase["Tdown"] = $tab_tmp["Tdown"];
-		if(isset($hbase["TdownNBAlert"]))
-			$hbase["TdownNBAlert"] += $tab_tmp["TdownNBAlert"];
-		else
-			$hbase["TdownNBAlert"] = $tab_tmp["TdownNBAlert"];
-		if(isset($hbase["Tunreachable"]))
-			$hbase["Tunreachable"] += $tab_tmp["Tunreachable"];
-		else
-			$hbase["Tunreachable"] = $tab_tmp["Tunreachable"];
-		if(isset($hbase["TunreachableNBAlert"]))
-			$hbase["TunreachableNBAlert"] += $tab_tmp["TunreachableNBAlert"];
-		else
-			$hbase["TunreachableNBAlert"] = $tab_tmp["TunreachableNBAlert"];
-		if(isset($hbase["Tnone"]))
-			$hbase["Tnone"] += $tab_tmp["Tnone"];
-		else
-			$hbase["Tnone"] = $tab_tmp["Tnone"];
+		(isset($hbase["Tup"])) 				? $hbase["Tup"] += $tab_tmp["Tup"] : $hbase["Tup"] = $tab_tmp["Tup"];
+		(isset($hbase["TupNBAlert"])) 		? $hbase["TupNBAlert"] += $tab_tmp["TupNBAlert"] : $hbase["TupNBAlert"] = $tab_tmp["TupNBAlert"];
+		(isset($hbase["Tdown"]))	 		? $hbase["Tdown"] += $tab_tmp["Tdown"] : $hbase["Tdown"] = $tab_tmp["Tdown"];
+		(isset($hbase["TdownNBAlert"])) 	? $hbase["TdownNBAlert"] += $tab_tmp["TdownNBAlert"] : $hbase["TdownNBAlert"] = $tab_tmp["TdownNBAlert"];
+		(isset($hbase["Tunreachable"])) 	? $hbase["Tunreachable"] += $tab_tmp["Tunreachable"] : $hbase["Tunreachable"] = $tab_tmp["Tunreachable"];
+		(isset($hbase["TunreachableNBAlert"])) ? $hbase["TunreachableNBAlert"] += $tab_tmp["TunreachableNBAlert"] : $hbase["TunreachableNBAlert"] = $tab_tmp["TunreachableNBAlert"];
+		(isset($hbase["Tnone"])) 			? $hbase["Tnone"] += $tab_tmp["Tnone"] : $hbase["Tnone"] = $tab_tmp["Tnone"];
 	}
 
 	function getLogInDbForHost(&$hbase, $pearDB, $host_id, $start_date_select, $end_date_select,$pearDBO, $today_start, $today_end){
@@ -293,7 +259,7 @@ For information : contact@oreon-project.org
 		$hbase["average"]["Tunreachable"] > 0 ? $hbase["average"]["Tunreachable"] /= $i: 0;
 		$hbase["average"]["TunreachableNBAlert"] > 0 ? $hbase["average"]["TunreachableNBAlert"] /= $i: 0;
 		$hbase["average"]["Tnone"] > 0 ? $hbase["average"]["Tnone"] /= $i: 0;
-		if($end_date_select > $today_start){
+		if ($end_date_select > $today_start){
 			$hbase["average"]["today"]["Tup"] > 0 ? $hbase["average"]["today"]["Tup"] /= $i: 0;
 			$hbase["average"]["today"]["TupNBAlert"] > 0 ? $hbase["average"]["today"]["TupNBAlert"] /= $i: 0;
 			$hbase["average"]["today"]["Tdown"] > 0 ? $hbase["average"]["today"]["Tdown"] /= $i: 0;

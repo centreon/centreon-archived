@@ -15,6 +15,7 @@
  * For information : contact@oreon-project.org
  */
 	
+	require_once("/etc/centreon/centreon.conf.php");
 ?>
 <script type="text/javascript">
 
@@ -42,11 +43,11 @@
 	  	bandInfos[1].highlight = true;
 	  	bandInfos[1].eventPainter.setLayout(bandInfos[0].eventPainter.getLayout());
 	
-		var arg = 'oreonPath=<?php echo $oreon->optGen["oreon_path"] ?>&hostID=<?php echo $host_id ?>&color=<?php echo $color.$today_var ?>';
+		var arg = 'oreonPath=<?php print $centreon_path; ?>&hostID=<?php echo $host_id ?>&color=<?php echo $color.$today_var ?>';
 		 		  	
 	  	tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
 	
-	  	Timeline.loadXML('./include/reporting/dashboard/GetXml<?php echo $type ?>.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
+	  	Timeline.loadXML('./include/reporting/dashboard/xmlInformations/GetXml<?php echo $type ?>.php?'+arg, function(xml, url) { eventSource.loadXML(xml, url); });
 	}
 
 </SCRIPT>

@@ -16,17 +16,15 @@
  */
 
 	require_once 'DB.php';
-	require_once '../../../class/other.class.php';
 	require_once("/etc/centreon/centreon.conf.php");
+	require_once $centreon_path.'www/class/other.class.php';
 	
 	$buffer = null;
 	$buffer  = '<?xml version="1.0"?>';
 	$buffer .= '<data>';
 
-	if (isset($_GET["hostID"]) && isset($_GET["serviceID"]) &&
-	   isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"]) && 
-	   isset($_GET["today_unknown"])&& isset($_GET["today_pending"]))
-	{
+	if (isset($_GET["hostID"]) && isset($_GET["serviceID"]) && isset($_GET["color"]) && isset($_GET["today_ok"])&& isset($_GET["today_critical"]) && isset($_GET["today_unknown"])&& isset($_GET["today_pending"])){
+
 		list($colorOK, $colorWARNING, $colorCRITICAL, $colorPENDING, $colorUNKNOWN)= split (":", $_GET["color"], 5);
 
 		$dsn = array(
@@ -34,18 +32,17 @@
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
 			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['ods'],
+			     'database' => $conf_oreon['db'],
 			     );
-
 		$options = array(
 				 'debug'       => 2,
 				 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE,
 				 );
 			
-		$pearDBO =& DB::connect($dsn, $options);
+		$pearDB =& DB::connect($dsn, $options);
 		if (PEAR::isError($pearDB)) 
-		  	die("Connecting probems with oreon database : " . $pearDB->getMessage());		
-		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
+		  die("Connecting probems with oreon database : " . $pearDB->getMessage());		
+		$pearDB->setFetchMode(DB_FETCHMODE_ASSOC);
 
 		$dsn = array(
 			     'phptype'  => 'mysql',
@@ -55,9 +52,10 @@
 			     'database' => $conf_oreon['ods'],
 			     );
 		
+
 		$pearDBO =& DB::connect($dsn, $options);
 		if (PEAR::isError($pearDB)) 
-		  die("Connecting probems with oreon database : " . $pearDBO->getMessage());		
+		  die("Connecting probems with centstorage database : " . $pearDBO->getMessage());		
 		$pearDBO->setFetchMode(DB_FETCHMODE_ASSOC);
 
 		function create_date_timeline_format($time_unix)

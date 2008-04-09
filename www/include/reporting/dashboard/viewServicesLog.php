@@ -1,22 +1,26 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
+ 
 	if (!isset($oreon))
 		exit;
+
+	if (!$is_admin)
+		$lca = getLcaHostByName($pearDB);	
+	
 
 	$day = date("d",time());
 	$year = date("Y",time());
@@ -39,8 +43,9 @@ For information : contact@oreon-project.org
 	$tpl->assign('o', $o);
 	require_once './class/other.class.php';
 	require_once './include/common/common-Func.php';
-	require_once 'simple-func.php';
-	require_once 'reporting-func.php';
+	require_once($centreon_path."www/include/reporting/dashboard/common-Func.php");
+	require_once($centreon_path."www/include/reporting/dashboard/DB-Func.php");
+	
 	
 	#Pear library
 	require_once "HTML/QuickForm.php";
@@ -106,7 +111,7 @@ For information : contact@oreon-project.org
 	$log = NULL;	
 	$tab_log = array();	
 
-	require_once 'ServicesLog.php';
+	require_once $centreon_path."www/include/reporting/dashboard/dataEngine/ServicesLog.php";
 
 	#
 	## Select form part 1
@@ -119,13 +124,12 @@ For information : contact@oreon-project.org
 	$period = (isset($_POST["period"])) ? $_POST["period"] : "today"; 
 	$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
 
-	if($mhost)	{
-		if($period == "customized") {
+	if ($mhost)	{
+		if ($period == "customized") {
 			$formService->addElement('hidden', 'end', $end);
 			$formService->addElement('hidden', 'start', $start);
 			$var_url_export_csv = "&period=customized&start=".$start."&end="."$end"."&lang=" .$oreon->user->get_lang();
-		}
-		else {
+		} else {
 			$formService->addElement('hidden', 'period', $period);
 			$var_url_export_csv = "&period=".$period."&lang=" .$oreon->user->get_lang();
 		}
@@ -171,7 +175,7 @@ For information : contact@oreon-project.org
 	$sub = $formPeriod->addElement('submit', 'submit', _("View"));
 	$res = $formPeriod->addElement('reset', 'reset', _("Reset"));
 
-	if($period == "customized") {
+	if ($period == "customized") {
 
 		$formPeriod->setDefaults(array('start' => date("m/d/Y", $sd)));
 		$formPeriod->setDefaults(array('end' => date("m/d/Y", $ed)));
@@ -201,7 +205,7 @@ For information : contact@oreon-project.org
 
 	$tt = 0 + ($ed - $sd);
 
-	if($mservice && $mhost)
+	if ($mservice && $mhost)
 		$tpl->assign('infosTitle', _("Duration : ") . Duration::toString($tt));	
 
 	$tpl->assign('periodTitle', _("Period Selection"));
@@ -281,12 +285,10 @@ For information : contact@oreon-project.org
 	$today_warning = ($today_warning <= 0) ? 0 : round($today_warning / $tt *100,2);
 	$today_unknown = ($today_unknown <= 0) ? 0 : round($today_unknown / $tt *100,2);
 	$today_critical = ($today_critical <= 0) ? 0 : round($today_critical / $tt *100,2);
-
 	$today_none = ($today_none < 0.1) ? "0" : $today_none;
 
-
-	if($mhost){
-		$tpl->assign("link_csv_url", "./include/reporting/dashboard/ExportCSV_ServiceLog.php?sid=".$sid."&host=".$mhost."&service=".$mservice.$var_url_export_csv);
+	if ($mhost){
+		$tpl->assign("link_csv_url", "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?sid=".$sid."&host=".$mhost."&service=".$mservice.$var_url_export_csv);
 		$tpl->assign("link_csv_name", "Export CSV");
 		$color = substr($oreon->optGen["color_ok"],1) .':'.
 		 		 substr($oreon->optGen["color_warning"],1) .':'.
@@ -297,16 +299,9 @@ For information : contact@oreon-project.org
 		$today_var .= '&today_WARNINGnbEvent='.$today_WARNINGnbEvent.'&today_CRITICALnbEvent='.$today_CRITICALnbEvent.'&today_OKnbEvent='.$today_OKnbEvent.'&today_UNKNOWNnbEvent='.$today_UNKNOWNnbEvent;
 		$type = 'Service';
 		include('ajaxReporting_js.php');
-	}
-	else {
-	?>
-	<script type="text/javascript">
-	function initTimeline() {
-		;
-	}
-	</SCRIPT>
-<?php
-}	
+	} else {
+		?><script type="text/javascript">function initTimeline() {;}</SCRIPT><?php
+	}	
 	
 	$tpl->display("template/viewServicesLog.ihtml");
 ?>
