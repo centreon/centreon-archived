@@ -133,7 +133,7 @@ For information : contact@oreon-project.org
 		 */
 		 
 		if (isset($tab['localhost']) && $tab['localhost'])
-			foreach ($oreon->modules as $key=>$value)
+			foreach ($oreon->modules as $key => $value)
 				if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
 					foreach ($files as $filename)
 						require_once($filename);
