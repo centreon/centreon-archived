@@ -66,7 +66,6 @@ sub getServiceID($$){
 sub getServiceName($){	
    	if ($_[0]){
    		my $con = CreateConnexionForOreon();
-   		
    		my $sth2 = $con->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` = '1'");
 		if (!$sth2->execute) {
 			writeLogFile("Error getting service name : " . $sth2->errstr . "\n");

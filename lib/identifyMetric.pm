@@ -187,7 +187,7 @@ sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter r
 	return $generalcounter if ($_[1] eq 0);
     $just_insert = 0;   				
 	# Get conf Data
-	my $sth1 = $con_ods->prepare("SELECT * FROM config");
+	my $sth1 = $con_ods->prepare("SELECT * FROM `config`");
 	if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 	my $configuration = $sth1->fetchrow_hashref();
 	undef($sth1);

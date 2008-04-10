@@ -63,24 +63,15 @@ sub catch_zap {
 sub writeLogFile($){
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
 	print LOG time()." - ".$_[0];
-	print time()." - ".$_[0];
+#	print time()." - ".$_[0];
 	close LOG or warn $!;
 }
-
-# Starting ODS Engine
-writeLogFile("Starting ODS engine...\n");
-writeLogFile("PID : ".$$."\n");
 
 # checking if pid file exists.
 if (-x $PID){
 	writeLogFile("ods already runnig. can't launch again....\n");
 	exit(2);
 }
-
-# Writing PID
-open (PID, ">> ".$PID) || print "can't write PID : $!";
-print PID $$ ;
-close PID or warn $!;
 
 # Set signals
 $SIG{INT}  = \&catch_zap;
@@ -89,7 +80,7 @@ require $installedPath."lib/misc.pm";
 require $installedPath."lib/purge.pm";
 require $installedPath."lib/getHostData.pm";
 require $installedPath."lib/getServiceData.pm";
-require $installedPath."lib/indentifyService.pm";
+require $installedPath."lib/identifyService.pm";
 require $installedPath."lib/verifyHostServiceIdName.pm";
 require $installedPath."lib/identifyMetric.pm";
 require $installedPath."lib/updateFunctions.pm";
@@ -233,8 +224,6 @@ sub GetPerfData(){
 			}
 			undef($data);
 			while (<PFDT>){
-				print $_;
-				#$lineRead++;
 				#if (!$stop){
 				#	writeLogFile("can't write in ".$installedPath."var/service-perfdata.bckp : $!") if (!open(BCKP, ">> ".$installedPath."/var/service-perfdata.bckp"));
 				#	while (<PFDT>){
@@ -263,7 +252,7 @@ sub GetPerfData(){
 			undef($line_tab);
 			undef($flag_drop);
 		} else {
-			writeLogFile("Error When reading data in tmp read file : $!");
+			writeLogFile("Error When writing data in tmp read file : $!");
 		}
 		my $i,
 		$sleeptime = getSleepTime();
@@ -371,7 +360,7 @@ sub getModulesInterval($){
 		if (defined($osl_conf->{'normal_check_interval'}) && $osl_conf->{'normal_check_interval'}){
 			$interval = $osl_conf->{'normal_check_interval'} * getIntervalLenght();
 		} else {
-			$interval = 1 * getIntervalLenght();
+			$interval = 2 * getIntervalLenght();
 		}
 		undef($osl_conf);
 		undef($sth_interval);
@@ -396,12 +385,15 @@ sub updateServiceState($$$$){ # Host name, sercvice desc, ctime, index
 	
 	my $service_description = removeSpecialCharInMetric($_[2]);
 	
-	my $sth = $centcnx->prepare("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+	my $sth = $centcnx->prepare("SELECT `db_name`, `db_prefix`, `db_user`, `db_pass`, `db_host` FROM `cfg_ndo2db` LIMIT 1;");
 	writeLogFile("Error when getting informations about ndo connexions : ".$sth->errstr."\n") if (!$sth->execute);
 	my $conf = $sth->fetchrow_hashref();
 	
 	# Set NDO Prefix  
 	my $ndo_prefix = $conf->{"db_prefix"};
+	
+	$_[1] =~ s/#S#/\//g;
+	$_[1] =~ s/#BS#/\\/g;
 	
 	# Connect To NDO DB
 	my $ndocnx = DBI->connect("DBI:mysql:database=".$conf->{"db_name"}.";host=".$conf->{"db_host"}, $conf->{"db_user"}, $conf->{"db_pass"}, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});		
@@ -616,7 +608,7 @@ my $flagPurge = 0;
 my $flagSynchro = 0;
 my $flagRebuild = 0;
 
-$stop = 0;
+$stop = 1;
 
 my @tabPID;
 my $pid_parseur;
@@ -626,8 +618,18 @@ my $pid_Rebuild;
 
 if ($pid ne fork()) {
 	  if (!fork()) {
-	    while (!$stop){
-           	if (time() - $timeParser >= 10 && (!defined($pid_parseur) || !defined($tabPID[$pid_parseur]))){
+	  	
+	  	# Starting ODS Engine
+		writeLogFile("Starting ODS engine...\n");
+		writeLogFile("PID : ".$$."\n");
+		
+		# Writing PID
+		open (PID, ">> ".$PID) || print "can't write PID : $!";
+		print PID $$ ;
+		close PID or warn $!;
+	    
+	    while ($stop){
+	    	if (time() - $timeParser >= 10 && (!defined($pid_parseur) || !defined($tabPID[$pid_parseur]))){
             	my $timeP = time() - $timeParser;
 	            $pid_parseur = fork();
 	            if (!$pid_parseur){
