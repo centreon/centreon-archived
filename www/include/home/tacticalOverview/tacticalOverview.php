@@ -16,7 +16,7 @@
  */
  
 	
-	if (!isset($centreon))
+	if (!isset($oreon))
 		exit;
 
 	require_once './class/other.class.php';
@@ -399,7 +399,7 @@
 	$tpl->assign("tb_last", $tab_last);
 	$tpl->assign("tb_output", $tab_output);
 	$tpl->assign("tb_duration", $tab_duration);
-	$tpl->assign("refresh_interval", $centreon->optGen["oreon_refresh"]);
+	$tpl->assign("refresh_interval", $oreon->optGen["oreon_refresh"]);
 	
 	/*
 	 * URL
