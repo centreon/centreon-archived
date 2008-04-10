@@ -224,6 +224,7 @@ sub GetPerfData(){
 			}
 			undef($data);
 			while (<PFDT>){
+				#print $_;
 				#if (!$stop){
 				#	writeLogFile("can't write in ".$installedPath."var/service-perfdata.bckp : $!") if (!open(BCKP, ">> ".$installedPath."/var/service-perfdata.bckp"));
 				#	while (<PFDT>){
@@ -276,25 +277,26 @@ sub GetPerfData(){
 sub CheckRestart(){
 	my ($last_restart_stt, $last_restart, $sth2, $data, $y);
 	use vars qw($con_oreon $con_ods);
-	
 	$y = 1;
-	while($stop){
-		CheckMySQLConnexion();
-		$last_restart = getLastRestart();
-    	$last_restart_stt = getLastRestartInMemory();
-		if (!$last_restart_stt || $last_restart ne $last_restart_stt){
-			check_HostServiceID();
-			if (getPurgeConfig()){
-				CheckMySQLDrain();
-				DeleteOldRrdDB();
-			}
-			saveLastRestartInMemory($last_restart);
+	CheckMySQLConnexion();
+	$last_restart = getLastRestart();
+	$last_restart_stt = getLastRestartInMemory();
+	if (!$last_restart_stt || $last_restart ne $last_restart_stt){
+		check_HostServiceID();
+		if (getPurgeConfig()){
+			print "Drain \n";
+			CheckMySQLDrain();
+			print "OK\n";
+			print "Delete \n";
+			DeleteOldRrdDB();
+			print "OK\n";
 		}
-		$con_oreon->disconnect();
-        $con_ods->disconnect();
-		$y++;
-		sleep(5);
+		saveLastRestartInMemory($last_restart);
 	}
+	$con_oreon->disconnect();
+    $con_ods->disconnect();
+	$y++;
+	sleep(5);
 }
 
 ########################################
@@ -627,13 +629,16 @@ if ($pid ne fork()) {
 		open (PID, ">> ".$PID) || print "can't write PID : $!";
 		print PID $$ ;
 		close PID or warn $!;
-	    
+	    my $i = 0;
 	    while ($stop){
-	    	if (time() - $timeParser >= 10 && (!defined($pid_parseur) || !defined($tabPID[$pid_parseur]))){
+	    	print "STOP : $stop --- $i\n";
+	    	if (time() - $timeParser >= 15 && (!defined($pid_parseur) || !defined($tabPID[$pid_parseur]))){
             	my $timeP = time() - $timeParser;
 	            $pid_parseur = fork();
 	            if (!$pid_parseur){
-	            	GetPerfData();
+		        	print "PARSE : $i\n";
+                	GetPerfData();
+	            	print "END PARSE : $i\n";
 	                exit();
 	            } else {
 	            	$tabPID[$pid_parseur] = $pid_parseur;
@@ -641,10 +646,12 @@ if ($pid ne fork()) {
 	            }
 	            $timeParser = time();
             }
-            if (time() - $timePurge >= 60 && (!defined($pid_purge) || !defined($tabPID[$pid_purge]))){
+            if (time() - $timePurge >= 50 && (!defined($pid_purge) || !defined($tabPID[$pid_purge]))){
                 $pid_purge = fork();
                 if (!$pid_purge){
+                   	print "PURGE : $i\n";
                     purgeMysqlData();
+                   	print "END PURGE : $i\n";
                     exit();
                 } else {
                 	$tabPID[$pid_purge] = $pid_purge;
@@ -652,10 +659,12 @@ if ($pid ne fork()) {
                 }
                 $timePurge = time();
         	}
-            if (time() - $timeSynchro >= 5 && (!defined($pid_synchro) || !defined($tabPID[$pid_synchro]))){
+            if (time() - $timeSynchro >= 10 && (!defined($pid_synchro) || !defined($tabPID[$pid_synchro]))){
             	$pid_synchro = fork();
-	            if (!$pid_synchro){
-	            	CheckRestart();
+		        if (!$pid_synchro){
+        			print "RESTART : $i\n";
+    	          	CheckRestart();
+        			print "END RESTART : $i\n";
 	                exit();
 	            } else {
 	              	$tabPID[$pid_synchro] = $pid_synchro;
@@ -663,10 +672,12 @@ if ($pid ne fork()) {
 	            }
 	            $timeSynchro = time();
            	}
-            if (time() - $timeRebuild >= 7 && (!defined($pid_Rebuild) || !defined($tabPID[$pid_Rebuild]))){
+            if (time() - $timeRebuild >= 120 && (!defined($pid_Rebuild) || !defined($tabPID[$pid_Rebuild]))){
 	        	$pid_Rebuild = fork();
 	            if (!$pid_Rebuild){
+	      			print "REBUILD : $i\n";
 	            	CheckRebuild();
+	      			print "END REBUILD : $i\n";
 	                exit();
 	            } else {
 		           	$tabPID[$pid_Rebuild] = $pid_Rebuild;
@@ -677,11 +688,12 @@ if ($pid ne fork()) {
            
             foreach (@tabPID){
             	if (defined($_)){
-            		my $pidzomb = waitpid($_, 0);
-					undef($tabPID[$_]);
+            		my $pidzomb = waitpid($_, WNOHANG);
+#					undef($tabPID[$_]);
             	}
             }
             sleep(1);
+            $i++;
         }
     	writeLogFile("Stopping ODS engine...\n");
 		writeLogFile("Error When removing pid file : $!") if (!unlink($PID));

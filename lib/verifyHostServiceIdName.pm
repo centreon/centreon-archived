@@ -123,10 +123,10 @@ sub DeleteOldRrdDB(){
 # If hosts or services have change, it update their id.
    
 sub check_HostServiceID(){
- 	my ($data, $host_name, $service_description, $purge_mod);
+	my ($data, $host_name, $service_description, $purge_mod);
 	$con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	my $sth1 = $con->prepare("SELECT * FROM index_data ORDER BY host_name");
-    if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
+	if (!$sth1->execute) {writeLogFile("Error : " . $sth1->errstr . "\n");}
     while ($data = $sth1->fetchrow_hashref()){
     	$host_name = getHostName($data->{'host_id'});
     	$service_description = getServiceName($data->{'service_id'});

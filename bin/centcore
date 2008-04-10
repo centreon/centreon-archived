@@ -441,14 +441,10 @@ sub parseRequest($){
 		sendConfigFile($1);
 	} elsif ($_[0] =~ /STOP\:([0-9]*)/){
 		stopNagios($1);
-	} elsif ($_[0] =~ /NAGIOSTAT\:([0-9]*)/){
-		;
-	} elsif ($_[0] =~ /TEST\:([0-9]*)/){
+	}  elsif ($_[0] =~ /TEST\:([0-9]*)/){
 		testConfig($1);
 	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:([.]*)/){
 		sendExternalCommand($1, $2);
-	} elsif ($_[0] =~ /SYNCHRONIZEPLUGINS\:([0-9]*)\:([.]*)/){
-		;
 	} else {
 		writeLogFile("$_[0] : UNKNWON KEY \n");
 	}
