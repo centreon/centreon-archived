@@ -15,7 +15,8 @@
  * For information : contact@oreon-project.org
  */
  
-	if (!isset($oreon))
+	
+	if (!isset($centreon))
 		exit;
 
 	require_once './class/other.class.php';
@@ -88,7 +89,7 @@
 	 * Get the  id's of problem hosts
 	*/
 	if (!$is_admin)
-		$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state, " . $ndo_base_prefix."objects.name1".
+		$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
 				" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
 				" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
 				" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
@@ -96,7 +97,7 @@
 				" AND ".$ndo_base_prefix."objects.name1 IN ($lcaSTR) ".
 				" GROUP BY nagios_services.host_object_id";
 	else
-		$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state, " . $ndo_base_prefix."objects.name1".
+		$rq1 = 	" SELECT ".$ndo_base_prefix."services.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state" . 
 				" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
 				" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" . 
 				" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
@@ -112,8 +113,7 @@
 	{
 		if ($ndo["current_state"] != 0)
 		{
-			$hostPb[$pbCount] = $ndo["host_object_id"];
-			$hostPbName[$pbCount] = $ndo["name1"];
+			$hostPb[$pbCount] = $ndo["host_object_id"];			
 			$pbCount++;
 		}
 	}
@@ -329,18 +329,20 @@
 	 * Get problem table
 	*/
 	if (!$is_admin)
-		$rq1 = 	" SELECT obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat" .
+		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id" .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc" .
 				" WHERE obj.object_id = stat.service_object_id" .
+				" AND stat.service_object_id = svc.service_object_id" .
 				" AND stat.current_state > 0" .
 				" AND stat.problem_has_been_acknowledged = 0" .
-				" AND obj.is_active = 1" .				
+				" AND obj.is_active = 1" .
 				" AND obj.name1 IN ($lcaSTR)" .
 				" ORDER by stat.current_state DESC, obj.name1, stat.last_check";
 	else
-		$rq1 = 	" SELECT obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat" .
+		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id" .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc" .
 				" WHERE obj.object_id = stat.service_object_id" .
+				" AND stat.service_object_id = svc.service_object_id" .
 				" AND stat.current_state > 0" .
 				" AND stat.problem_has_been_acknowledged = 0" .
 				" AND obj.is_active = 1" .				
@@ -354,9 +356,11 @@
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())
 	{
 		$is_unhandled = 1;	
-		for($i=0; $i<=$pbCount && $is_unhandled; $i++)
-			if (isSet($hostPbName[$i]) && ($hostPbName[$i] == $ndo["name1"]))
+		for($i=0; $i<$pbCount && $is_unhandled; $i++)
+		{
+			if (isSet($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
 				$is_unhandled = 0;
+		}
 		if ($is_unhandled)
 		{
 			$tab_hostname[$j] = $ndo["name1"];
@@ -395,6 +399,19 @@
 	$tpl->assign("tb_last", $tab_last);
 	$tpl->assign("tb_output", $tab_output);
 	$tpl->assign("tb_duration", $tab_duration);
+	$tpl->assign("refresh_interval", $centreon->optGen["oreon_refresh"]);
+	
+	/*
+	 * URL
+	*/
+	$tpl->assign("url_hostPb", "main.php?p=20103&o=hpb");
+	$tpl->assign("url_ok", "main.php?p=2020101&o=svc_ok");
+	$tpl->assign("url_critical", "main.php?p=2020202&o=svc_critical");
+	$tpl->assign("url_warning", "main.php?p=2020201&o=svc_warning");
+	$tpl->assign("url_unknown", "main.php?p=2020203&o=svc_unknown");
+	$tpl->assign("url_hostdetail", "main.php?p=201&o=hd&host_name=");
+	$tpl->assign("url_svcdetail", "main.php?p=202&o=svcd&host_name=");
+	$tpl->assign("url_svcdetail2", "&service_description=");
 	
 	/*
 	 *  Strings for the host part
