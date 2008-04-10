@@ -57,7 +57,7 @@ For information : contact@oreon-project.org
 	
 	function checkDependenciesStrong()	{
 		global $pearDB;
-		global $oreon;
+		global $centreon;
 		$cctEnb = array();
 		$cgEnb = array();
 		$hostEnb = array();
@@ -105,7 +105,7 @@ For information : contact@oreon-project.org
 		# Host
 		$host = array();
 		# In Nagios V2 -> Contact Group are obligatory
-		if ($oreon->user->get_version() == 2)	{
+		if ($centreon->user->get_version() == 2)	{
 			$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id, host_id FROM host WHERE host.host_register = '1' AND host.host_activate = '1'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -162,7 +162,7 @@ For information : contact@oreon-project.org
 		unset($host);
 		# Host Group
 		$hostGroup = array();
-		if ($oreon->user->get_version() == 1)	{
+		if ($centreon->user->get_version() == 1)	{
 			$DBRESULT =& $pearDB->query("SELECT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -182,7 +182,7 @@ For information : contact@oreon-project.org
 			}
 			$DBRESULT->free();
 		}
-		else if ($oreon->user->get_version() == 2)	{
+		else if ($centreon->user->get_version() == 2)	{
 			$DBRESULT =& $pearDB->query("SELECT DISTINCT hg.hg_id FROM hostgroup hg WHERE hg.hg_activate = '1'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -275,7 +275,7 @@ For information : contact@oreon-project.org
 	
 	function checkDependenciesLite()	{
 		global $pearDB;
-		global $oreon;
+		global $centreon;
 		$cctEnb = array();
 		$cgEnb = array();
 		$hostEnb = array();
@@ -404,7 +404,7 @@ For information : contact@oreon-project.org
 	
 	function checkNoDependencies()	{
 		global $pearDB;
-		global $oreon;
+		global $centreon;
 		$cctEnb = array();
 		$cgEnb = array();
 		$hostEnb = array();

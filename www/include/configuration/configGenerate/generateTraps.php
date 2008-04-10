@@ -15,21 +15,25 @@ been previously advised of the possibility of such damages.
 
 For information : contact@oreon-project.org
 */
-	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_contactgroup.cfg", $oreon->user->get_name());
-	$str = NULL;
+	if (!isset ($centreon))
+		exit ();
 	
-	# Host Creation
-	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
-	$nb = $DBRESULT->numRows();
+	#Pear library
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/advmultiselect.php';
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
-	if ($nb){
-		$str .= "define contactgroup{\n";
-		$str .= print_line("contactgroup_name", "meta_contactgroup");
-		$str .= print_line("alias", "meta_contactgroup");
-		$str .= print_line("members", "meta_contact");
-		$str .= "}\n\n";
+	#Path to the option dir
+	$path = "./include/configuration/configGenerateTraps/";
+	$nagiosCFGPath = "../filesGeneration/nagiosCFG/";
+	$XMLConfigPath = "../filesGeneration/osm/";
+	$DebugPath = "filesGeneration/nagiosCFG/";
+	
+	#PHP functions
+	require_once $path."DB-Func.php";
+	require_once "./include/common/common-Func.php";
+	
+	switch ($o)	{
+		default : require_once($path."formGenerateTraps.php"); break;
 	}
-	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_contactgroup.cfg");
-	fclose($handle);
-	unset($str);
 ?>
