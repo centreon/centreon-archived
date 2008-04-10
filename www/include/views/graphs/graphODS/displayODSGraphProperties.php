@@ -159,6 +159,7 @@ For information : contact@oreon-project.org
 		$tpl->assign('index', $_GET["index"]);
 		$tpl->assign('session_id', session_id());
 		$tpl->assign('metrics', $metrics);
+		$tpl->assign('ods_on', _("on "));
 		$tpl->display("displayODSGraphProperties.ihtml");
 	}
 ?>

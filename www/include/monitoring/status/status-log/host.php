@@ -81,6 +81,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("mon_duration", _("Duration"));
 	$tpl->assign("mon_status_information", _("Status information")); 
 	$tpl->assign("host_status", $host_status);
+	$tpl->assign("mon_address_ip", _("IP Address / DNS"));
 	if (!isset($_GET["sort_typeh"]))
 		$_GET["sort_typeh"] = "name";
 	$tpl->assign("sort_type", $_GET["sort_typeh"]);

@@ -3,9 +3,9 @@
 <div>
 	<table class="ListTable">	
 		<tr class='ListHeader'>
-			<td>{$lang.m_mon_hostgroup}</td>
-			<td>{$lang.m_mon_host_stt_ttl}</td>
-			<td>{$lang.m_mon_svc_stt_ttl}</td>
+			<td>{$mon_hostgroup}</td>
+			<td>{$mon_host_stt_ttl}</td>
+			<td>{$mon_svc_stt_ttl}</td>
 		</tr>
 		{foreach item=d from=$data}
 			<tr class="{cycle values="list_one,list_two"}">

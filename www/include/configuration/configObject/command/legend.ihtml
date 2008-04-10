@@ -67,7 +67,7 @@
 <td>
 <img src='img/icones/16x16/view.gif' border="0" alt="{$view}">
 &nbsp;=&nbsp;
-{$lang.lgd_view}
+{$view}
 </td>
 <td>
 <img src="./img/icones/16x16/arrow_right_blue.gif" border="0" alt="{$next}">

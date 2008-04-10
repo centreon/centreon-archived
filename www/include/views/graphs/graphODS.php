@@ -103,6 +103,10 @@
 
 	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
+	
+	$tpl->assign('from', _(" from "));
+	$tpl->assign('to', _(" to "));
+	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("graphODS.ihtml");
 

@@ -84,6 +84,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("mon_status", _("Status"));
 	$tpl->assign("mon_last_check", _("Last Check")); 
 	$tpl->assign("mon_duration", _("Duration"));
+	$tpl->assign("mon_address_ip", _("IP Address / DNS"));
 	$tpl->assign("mon_status_information", _("Status information")); 
 	$tpl->assign("host_status", $host_status);
 	if (!isset($_GET["sort_typeh"]))
@@ -104,7 +105,7 @@ For information : contact@oreon-project.org
     $tpl->assign('sid', session_id());
     $tpl->assign('slastreload', $session["last_reload"]);
     $tpl->assign('smaxtime', $session_expire["session_expire"]);
-	$tpl->assign("lang", $lang);
+	
 	$tpl->assign("o", $o);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host_problem.ihtml");	

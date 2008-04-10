@@ -685,6 +685,8 @@ For information : contact@oreon-project.org
 		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
 		$tpl->assign("History_Options", _("History Options"));
 		$tpl->assign("Event_Handler", _("Event Handler"));
+		$tpl->assign("topdoc", _("Documentation"));
+		$tpl->assign("seconds", _("seconds"));
 		
 		$tpl->assign('v', $oreon->user->get_version());		
 		$tpl->display("formService.ihtml");

@@ -72,7 +72,9 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign("begin", $begin);
 	$tpl->assign("end", $nb);
-	$tpl->assign("lang", $lang);
+	$tpl->assign("mon_services", _("Services"));
+	$tpl->assign("mon_status", _("Status"));
+	$tpl->assign("mon_try", _("Tries"));
 	$tpl->assign("order", $_GET["order"]);
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc"); 
 	$tpl->assign("tab_order", $tab_order);

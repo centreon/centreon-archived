@@ -17,7 +17,7 @@
 </div>
 <div id='tab1' class='tab'>
  <table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./oreon.php?p={$p}&min=1&doc=1&page=xodtemplate.html#host" target="_blank" alt='{$lang.$top_doc}'><img src="./img/icones/16x16/text_code.gif" title="{$lang.$top_doc}"></a>&nbsp;&nbsp;</td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./oreon.php?p={$p}&min=1&doc=1&page=xodtemplate.html#host" target="_blank" alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 	{if $o != "mc"}
 		<tr class="list_one"><td class="FormRowField">{$form.host_name.label}</td><td class="FormRowValue">{$form.host_name.html}</td></tr>

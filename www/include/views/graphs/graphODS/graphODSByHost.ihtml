@@ -19,7 +19,7 @@
 	    	    <br /><br />
 	    	    <table class="ListTable">
 	                <tr class="ListHeader">
-	                	<td class="FormHeader" colspan="2">{$lang.advanced}</td>
+	                	<td class="FormHeader" colspan="2">{$advanced}</td>
 	                <tr>
 	               <tr class="list_one"><td>{$form.period.label}</td><td>{$form.period.html}</td></tr>
 					<tr class="list_two">

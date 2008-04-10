@@ -348,7 +348,7 @@
 				" AND stat.current_state > 0" .
 				" AND stat.problem_has_been_acknowledged = 0" .
 				" AND obj.is_active = 1" .				
-				" ORDER by stat.current_state DESC, obj.name1, stat.last_check";
+				" ORDER by stat.last_check DESC";
 				
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -361,7 +361,7 @@
 	$tab_last[$j] = "";
 	$tab_duration[$j] = "";
 	$tab_output[$j] = "";
-	while ($ndo =& $DBRESULT_NDO1->fetchRow())
+	while ($ndo =& $DBRESULT_NDO1->fetchRow() && $j < 15)
 	{
 		$is_unhandled = 1;	
 		for($i=0; $i<$pbCount && $is_unhandled; $i++)
@@ -450,7 +450,7 @@
 	/*
 	 *  Strings for service problems
 	 */
-	$tpl->assign("str_unhandled", _("Unhandled Service problems"));
+	$tpl->assign("str_unhandled", _("15 last Unhandled Service problems"));
 	$tpl->assign("str_hostname", _("Host Name"));
 	$tpl->assign("str_servicename", _("Service Name"));
 	$tpl->assign("str_status", _("Status"));

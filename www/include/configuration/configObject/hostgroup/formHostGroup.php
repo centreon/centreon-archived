@@ -214,7 +214,8 @@ For information : contact@oreon-project.org
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	
 		$tpl->assign('form', $renderer->toArray());	
-		$tpl->assign('o', $o);		
+		$tpl->assign('o', $o);
+		$tpl->assign('topdoc', _("Documentation"));		
 		$tpl->display("formHostGroup.ihtml");
 	}
 ?>

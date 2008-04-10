@@ -29,7 +29,7 @@
 		</tr>		
 	</table>
 	{else}
-	<center><b>{$lang.no_host_comments}</b></center>
+	<center><b>{$no_host_comments}</b></center>
 	{/if}
 	{$form.hidden}
 	</form>
@@ -64,7 +64,7 @@
 		</tr>	
 	</table>
 	{else}
-	<center><b>{$lang.no_svc_comments}</b></center>
+	<center><b>{$no_svc_comments}</b></center>
 	{/if}
 	{$form.hidden}
 </form>

@@ -274,7 +274,7 @@ For information : contact@oreon-project.org
 	}
 	if (isset($elem))
 		$tpl->assign('elemArr', $elem);
-	
+	$tpl->assign('advanced', "Advanced");
 	$tpl->assign('session_id', session_id());
 	$tpl->display("graphODSByHost.ihtml");
 ?>

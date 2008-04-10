@@ -83,9 +83,14 @@ For information : contact@oreon-project.org
 	$tpl = initSmartyTpl($path, $tpl, "/templates/");
 	$tpl->assign("refresh", $oreon->optGen["oreon_refresh"]);	
 	$tpl->assign("p", $p);
+	
+	$tpl->assign("mon_hostgroup", _("Hostgroup"));
+	$tpl->assign("mon_host_stt_ttl", _("Host status"));
+	$tpl->assign("mon_svc_stt_ttl", _("Service status"));
+	
 	$tpl->assign("hostgroup", $hg);
 	if (isset($data))
 		$tpl->assign("data", $data);
-	$tpl->assign("lang", $lang);
+	
 	$tpl->display("hostgroup.ihtml");
 ?>

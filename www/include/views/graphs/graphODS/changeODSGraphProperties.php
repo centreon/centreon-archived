@@ -133,6 +133,14 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('admin', $oreon->user->admin);
 	$tpl->assign('index', $_GET["index"]);
+	
+	$tpl->assign('ods_storProper', _("Storage properties for "));
+	$tpl->assign('ods_on', _("on "));
+	$tpl->assign('ods_explain', _("Tips :"));
+	$tpl->assign('ods_choose_storage_type', _("You can choose here the type of storage of data collected by your plugin for this service. There are several possible storage types :"));
+	$tpl->assign('ods_rrdtool_choose', _("The metrics will be stored only in <a href=\"http://oss.oetiker.ch/rrdtool/\">RRDTool bases. The purpose of this type of database is to occupy minimal space compared to classical bases. It is a circular base. As it goes, old data are averaged."));
+	$tpl->assign('$ods_mysql_choose', _("This will allow you to stock possibilities from the two types of data gathering : on the one hand, Igres bases for an optimized view and on the other hand, a complete storage of data. The metrics are also stored in a <a href=\"http://www.mysql.com\">MySQL</a> base. The integrity of data is kept in the database, thus allowing you to have a complete report of your collected values in the end of the year."));
+	
 	$tpl->assign('session_id', session_id());
 	$tpl->display("changeODSGraphProperties.ihtml");
 ?>

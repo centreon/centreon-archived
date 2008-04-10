@@ -263,6 +263,7 @@ For information : contact@oreon-project.org
 		$tpl->assign('session_id', session_id());
 		$tpl->assign('tips', $tips);
 		$tpl->assign('tipsMsg', $tipsMsg);
+		$tpl->assign('properties', _("Properties"));
 		$tpl->display("graphODSService.ihtml");
 	}
 ?>
