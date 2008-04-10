@@ -70,13 +70,13 @@
 					 * Acknowledge status
 					 */
 					
-					case 14:	acknowledgeHost($lang); 					break;
-					case 15:	acknowledgeService($lang); 					break;
+					case 14:	acknowledgeHost(); 					break;
+					case 15:	acknowledgeService(); 					break;
 					
 					/*
 					 * Submit passiv checks
 					 */
-					//case 16:	submitPassiveCheck($lang);					break;
+					//case 16:	submitPassiveCheck();					break;
 					
 					/*
 					 * Configure nagios Core

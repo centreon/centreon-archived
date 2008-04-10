@@ -263,7 +263,6 @@ For information : contact@oreon-project.org
 	$tpl->assign('p', $p);
 	$tpl->assign('min', $min);
 	$tpl->assign('isAvl', 1);
-	$tpl->assign('lang', $lang);
 	
 	$tpl->assign('sid', session_id());	
 	$tpl->assign('session_id', session_id());

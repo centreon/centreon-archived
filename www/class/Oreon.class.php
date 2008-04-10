@@ -59,7 +59,7 @@ class Oreon	{
 	
 	function creatModuleList($pearDB){
 		$this->modules = array();
-		$DBRESULT =& $pearDB->query("SELECT `name`,`sql_file`,`lang_file`,`php_file` FROM `modules_informations`");
+		$DBRESULT =& $pearDB->query("SELECT `name`,`sql_files`,`lang_files`,`php_files` FROM `modules_informations`");
 		while ($result =& $DBRESULT->fetchRow()){
 			$this->modules[$result["name"]]["name"] = $result["name"];
 			is_dir("./modules/".$result["name"]."/generate_files/") ? $this->modules[$filename]["gen"] = true : $this->modules[$filename]["gen"] = false;

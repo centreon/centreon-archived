@@ -273,7 +273,6 @@
 		if	($Tnone <= 1)
 			$Tnone = 0;	
 		
-		
 		$tab["state"] = _("Up");
 		$tab["time"] = Duration::toString($Tok);
 		$tab["timestamp"] = $Tok;

@@ -486,7 +486,6 @@ For information : contact@oreon-project.org
 	
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min"=>$min));
 	$tpl->assign('min', $min);
-	$tpl->assign('lang', $lang);
 	$tpl->assign('p', $p);
 	$tpl->assign("sort1", _("Host Configuration"));
 	$tpl->assign("sort2", _("Relations"));

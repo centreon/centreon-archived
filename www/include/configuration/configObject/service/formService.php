@@ -498,12 +498,7 @@ For information : contact@oreon-project.org
 	$form->addGroup($serviceRNI, 'service_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
 	if ($o != "mc")
 		$form->setDefaults(array('service_retain_nonstatus_information' => '2'));
-	/*
-	if ($oreon->optGen["perfparse_installed"])	{
-		$form->addElement('header', 'purge_policy', $lang["mod_purgePolicy"]);
-		$form->addElement('select', 'purge_policy_id', $lang["mod_purgePolicy_name"], $ppols);
-	}
-	*/
+
 	#
 	## Sort 4 - Extended Infos
 	#

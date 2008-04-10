@@ -1064,19 +1064,7 @@
 		}
 		return $langs;
 	}
-	/*	function getLangs(){
-		$langs = array();
-		$chemintotal = "./lang/";
-		if ($handle  = opendir($chemintotal))   {
-		    while ($file = readdir($handle))
-		    	if (!is_dir("$chemintotal/$file") && strcmp($file, "index.php") && strcmp($file, "index.html") && strcmp($file, "index.ihtml")) {
-					$tab = split('\.', $file);
-		      		$langs[$tab[0]] = $tab[0];
-		      	}
-			closedir($handle);
-		}
-		return $langs;
-	}*/
+	
 	function getLangsByDir($chemintotal){
 		$langs = "";
 		if ($handle  = opendir($chemintotal))   {

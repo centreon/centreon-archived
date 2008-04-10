@@ -256,7 +256,6 @@ For information : contact@oreon-project.org
 		
 		$tpl->assign('host_name', $svc_id);
 		$tpl->assign('isAvl', 1);
-		$tpl->assign('lang', $lang);
 		$tpl->assign('index', $index_id);
 		$tpl->assign('min', $min);	
 		$tpl->assign('sid', session_id());	

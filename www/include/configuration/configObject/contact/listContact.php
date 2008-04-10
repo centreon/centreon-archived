@@ -115,7 +115,7 @@ For information : contact@oreon-project.org
 		$tpl->assign('ldap', $oreon->optGen['ldap_auth_enable'] );
 
 	#
-	##Toolbar select $lang["lgd_more_actions"]
+	## Toolbar select  
 	#
 	?>
 	<script type="text/javascript">

@@ -161,25 +161,25 @@
 		return _("Your command has been sent");
 	}
 	
-	function acknowledgeHost($lang){
+	function acknowledgeHost(){
 		global $pearDB,$tab, $_GET;
 		$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$_GET["host_name"].";1;".$_GET["notify"].";".$_GET["persistent"].";".$_GET["author"].";".$_GET["comment"]);
 		return _("Your command has been sent");
 	}
 	
-	function acknowledgeHostDisable($lang){
+	function acknowledgeHostDisable(){
 		global $pearDB,$tab, $_GET;
 		$flg = write_command(" REMOVE_HOST_ACKNOWLEDGEMENT;".$_GET["host_name"]);
 		return _("Your command has been sent");
 	}
 	
-	function acknowledgeServiceDisable($lang){
+	function acknowledgeServiceDisable(){
 		global $pearDB,$tab;
 		$flg = write_command(" REMOVE_SVC_ACKNOWLEDGEMENT;".$_GET["host_name"].";".$_GET["service_description"]);
 		return _("Your command has been sent");
 	}
 
-	function acknowledgeService($lang){
+	function acknowledgeService(){
 		global $pearDB,$tab;
 		$_GET["comment"] = htmlentities($_GET["comment"]);
 		$_GET["comment"] = str_replace('\'', ' ', $_GET["comment"]);
@@ -187,7 +187,7 @@
 		return _("Your command has been sent");
 	}
 
-	function submitPassiveCheck($lang){
+	function submitPassiveCheck(){
 		global $pearDB;
 		$flg = write_command(" PROCESS_SERVICE_CHECK_RESULT;".$_GET["host_name"].";".$_GET["service_description"].";".$_GET["return_code"].";".$_GET["output"]."|".$_GET["dataPerform"]);
 		return _("Your command has been sent");

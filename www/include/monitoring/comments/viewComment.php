@@ -25,8 +25,6 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "template/");
 
-	$tpl->assign("lang", $lang);
-
 	$ndo_base_prefix = getNDOPrefix();
 	include_once("./DBNDOConnect.php");
 

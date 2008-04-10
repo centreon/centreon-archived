@@ -61,13 +61,6 @@ For information : contact@oreon-project.org
 	$form->addElement('text', 'sc_name', _("Name"), $attrsText);
 	$form->addElement('text', 'sc_description', _("Description"), $attrsText);
 
-/*
-    $ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', $lang["cct_cgNotif"], $notifCgs, $attrsAdvSelect);
-	$ams3->setButtonAttributes('add', array('value' =>  $lang['add']));
-	$ams3->setButtonAttributes('remove', array('value' => $lang['delete']));
-	$ams3->setElementTemplate($template);
-	echo $ams3->getElementJs(false);
-*/
 	$sc_activate[] = &HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
 	$sc_activate[] = &HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Disabled"), '0');
 	$form->addGroup($sc_activate, 'sc_activate', _("Status"), '&nbsp;');
@@ -160,7 +153,6 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('p', $p);
-		$tpl->assign('lang', $lang);
 		$tpl->display("formServiceCategories.ihtml");
 	}
 ?>

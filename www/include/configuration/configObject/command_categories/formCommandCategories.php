@@ -143,7 +143,6 @@ For information : contact@oreon-project.org
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('p', $p);
-		$tpl->assign('lang', $lang);
 		$tpl->display("formCommandCategories.ihtml");
 	}
 ?>

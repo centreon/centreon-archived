@@ -128,6 +128,5 @@ For information : contact@oreon-project.org
 	
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
 	$tpl->display("include/common/legend.ihtml");
 	?>

@@ -247,7 +247,6 @@ For information : contact@oreon-project.org
 		$tpl->assign('start', $start);
 		$tpl->assign('end', $end);
 		$tpl->assign('isAvl', 1);
-		$tpl->assign('lang', $lang);
 		$tpl->assign('index', $_GET["index"]);
 		$tpl->assign('session_id', session_id());
 		$tpl->assign('tips', $tips);

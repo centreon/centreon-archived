@@ -27,7 +27,6 @@
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "template/");
-	$tpl->assign("lang", $lang);
 
 	#Pear library
 	require_once "HTML/QuickForm.php";

@@ -282,13 +282,11 @@
 		$tab["nbAlert"] = "";	
 		$tab_resume[3] = $tab;
 	
-	//	$tpl->assign('infosTitle', $lang["m_duration"] . Duration::toString($end_date_select - $start_date_select));
 	
 		$start_date_select = date("d/m/Y (G:i:s)", $start_date_select);
 		$end_date_select_save_timestamp =  $end_date_select;
 		$end_date_select =  date("d/m/Y (G:i:s)", $end_date_select);
 	
-	//	$tpl->assign('host_name', $mhost);
 		$status = "";
 		$totalTime = 0;
 		$totalpTime = 0;

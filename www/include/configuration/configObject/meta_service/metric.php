@@ -118,13 +118,7 @@ For information : contact@oreon-project.org
 	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
-/*	
-	if ($o == "as")	{
-		$form->addRule('host_name', $lang['ErrRequired'], 'required');
-		$form->addRule('metric_sel', $lang['ErrRequired'], 'required');
-		$form->addRule('meta_id', $lang['ErrRequired'], 'required');
-	}
-*/		
+
 	# Just watch
 	if ($o == "ws")	{		
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=cs&msr_id=".$msr_id."'"));

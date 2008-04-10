@@ -152,7 +152,6 @@ For information : contact@oreon-project.org
 	$form->applyFilter('hg_name', 'myReplace');
 	$form->addRule('hg_name', _("Compulsory Name"), 'required');
 	$form->addRule('hg_alias', _("Compulsory Alias"), 'required');
-	//$form->addRule('hg_hosts', $lang['ErrCct'], 'required');
 	if ($oreon->user->get_version() == 1)
 		$form->addRule('hg_cgs', _("Compulsory Contact Group"), 'required');
 	$form->registerRule('exist', 'callback', 'testHostGroupExistence');
@@ -186,7 +185,6 @@ For information : contact@oreon-project.org
 	}
 	
 	$tpl->assign('p', $p);
-	$tpl->assign('lang', $lang);
 	$tpl->assign('nagios', $oreon->user->get_version());
 	$tpl->assign("initJS", "<script type='text/javascript'>
 							window.onload = function () {

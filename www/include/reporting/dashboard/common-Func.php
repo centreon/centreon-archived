@@ -54,7 +54,6 @@
 	}
 	
 	function getLogData($time_event, $host, $service, $status, $output, $type){
-		global $lang;
 		$tab_img = array("UP" => './img/icones/12x12/recovery.gif',
 						"DOWN" => './img/icones/12x12/alert.gif',
 						"UNREACHABLE" => './img/icones/12x12/queue.gif',

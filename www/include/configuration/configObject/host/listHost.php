@@ -188,7 +188,7 @@
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	
 	/*
-	 * Toolbar select $lang["lgd_more_actions"]
+	 * Toolbar select 
 	 */
 	?>
 	<script type="text/javascript">

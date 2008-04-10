@@ -22,7 +22,7 @@
 
 	global $num, $limit, $search, $url, $pearDB;
 	global $search_type_service, $search_type_host, $host_name;
-	global $rows, $p, $lang, $gopt, $pagination;
+	global $rows, $p, $gopt, $pagination;
 	
 	isset ($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
 	

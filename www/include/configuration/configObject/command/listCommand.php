@@ -158,7 +158,7 @@ For information : contact@oreon-project.org
 	$redirectType->setValue($type);
 
 	/*
-	 * Toolbar select $lang["lgd_more_actions"]
+	 * Toolbar select 
 	 */
 	?>
 	<script type="text/javascript">

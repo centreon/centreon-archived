@@ -272,7 +272,6 @@
 
 	$tpl->assign("tab_resume", $tab_resume);
 	$tpl->assign("tab_log", $tab_log);
-	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 	
 	# For today in timeline

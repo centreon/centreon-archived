@@ -80,7 +80,7 @@
    			die($pearDB->getMessage());
 	}
 	
-	function add_host_downtime($oreon, $dtm, $lang){
+	function add_host_downtime($oreon, $dtm){
 		$check = array("on" => 1, "off" => 0);
 		$res = preg_split("/ /", $dtm["strtime"]);
 		$res1 = preg_split("/-/", $res[0]);
@@ -100,7 +100,7 @@
 		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
-	function add_svc_downtime($oreon, $dtm, $lang){
+	function add_svc_downtime($oreon, $dtm){
 		$check = array("on" => 1, "off" => 0);
 		$res = preg_split("/ /", $dtm["strtime"]);
 		$res1 = preg_split("/-/", $res[0]);
@@ -119,7 +119,7 @@
 		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
-	function add_svc_hostgroup_downtime($oreon, $dtm, $lang){
+	function add_svc_hostgroup_downtime($oreon, $dtm){
 		$check = array("on" => 1, "off" => 0);
 		$res = preg_split("/ /", $dtm["strtime"]);
 		$res1 = preg_split("/-/", $res[0]);
@@ -151,7 +151,7 @@
 		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
-	function add_hostgroup_downtime($oreon, $dtm, $lang){
+	function add_hostgroup_downtime($oreon, $dtm){
 		$check = array("on" => 1, "off" => 0);
 		$res = preg_split("/ /", $dtm["strtime"]);
 		$res1 = preg_split("/-/", $res[0]);
@@ -173,7 +173,7 @@
 		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
-	function del_host_downtime($oreon, $arg, $lang){
+	function del_host_downtime($oreon, $arg){
 		$str = "echo '[" . time() . "] DEL_HOST_DOWNTIME;".$arg["id"]."' >> " . $oreon->Nagioscfg->command_file;
 		del_host_downtime_in_db($arg["start_time"], $arg["host"]);
 		print "<div style='padding-top: 50px' class='text11b'><center>"._("Downtime deleted successfully. <br><br>Click <a href='./main.php?p=308' class='text11b'>here</a> to return to the Downtimes page. ")."</center></div>";
@@ -181,7 +181,7 @@
 		print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"javascript:document.location.href='main.php?p=308'\",2000)</SCRIPT>";
 	}
 	
-	function del_svc_downtime($oreon, $arg, $lang){
+	function del_svc_downtime($oreon, $arg){
 		$str = "echo '[" . time() . "] DEL_SVC_DOWNTIME;".$arg["id"]."' >> " . $oreon->Nagioscfg->command_file;
 		//print $arg["svc"];
 		del_svc_downtime_in_db($arg["start_time"], $arg["host"], $arg["svc"]);

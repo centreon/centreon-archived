@@ -127,7 +127,7 @@ For information : contact@oreon-project.org
 
 	$form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 	
-	## Toolbar select $lang["lgd_more_actions"]
+	## Toolbar select 
 
 	?>
 	<script type="text/javascript">
