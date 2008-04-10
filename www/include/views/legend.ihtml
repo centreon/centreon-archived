@@ -5,34 +5,34 @@
 
 <tr>
 <td>
-<img src="./img/icones/16x16/document_exchange.gif"  alt="{$lang.duplicate}"/>
+<img src="./img/icones/16x16/document_exchange.gif"  alt="{$duplicate}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_duplicate}
+{$duplicate}
 </td>
 
 <td>
-<img src="./img/icones/16x16/element_next.gif"  alt="{$lang.duplicate}"/>
+<img src="./img/icones/16x16/element_next.gif"  alt="{$enable}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_on}
+{$enable}
 </td>
 
 <td>
-<img src="./img/icones/16x16/delete.gif"  alt="{$lang.delete}"/>
+<img src="./img/icones/16x16/delete.gif"  alt="{$delete}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_delOne}
+{$delete}
 
 </td>
 <td>
-<img src='img/icones/16x16/document_edit.gif'  alt="{$lang.duplicate}"/>
+<img src='img/icones/16x16/document_edit.gif'  alt="{$edit}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_edit}
+{$edit}
 </td>
 
 
 <td>
-<img src="./img/icones/16x16/arrow_left_blue.gif"  alt="{$lang.duplicate}"/>
+<img src="./img/icones/16x16/arrow_left_blue.gif"  alt="{$previous}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_prev}
+{$previous}
 
 </td>
 
@@ -45,34 +45,34 @@
 
 
 <td>
-<img src="./img/icones/16x16/selection_delete.gif"  alt="{$lang.delete}"/>
+<img src="./img/icones/16x16/selection_delete.gif"  alt="{$deleteall}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_delAll}
+{$deleteall}
 </td>
 
 
 <td>
-<img src='img/icones/16x16/element_previous.gif'  alt="{$lang.delete}"/>
+<img src='img/icones/16x16/element_previous.gif'  alt="{$disable}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_off}
+{$disable}
 </td>
 <td>
-<img src="./img/icones/16x16/signpost.gif"  alt="{$lang.duplicate}"/>
+<img src="./img/icones/16x16/signpost.gif"  alt="{$sign}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_signpost}
+{$sign}
 
 </td>
 
 
 <td>
-<img src='img/icones/16x16/view.gif'  alt="{$lang.delete}"/>
+<img src='img/icones/16x16/view.gif'  alt="{$view}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_view}
+{$view}
 </td>
 <td>
-<img src="./img/icones/16x16/arrow_right_blue.gif"  alt="{$lang.duplicate}"/>
+<img src="./img/icones/16x16/arrow_right_blue.gif"  alt="{$next}"/>
 &nbsp;=&nbsp;
-{$lang.lgd_next}
+{$next}
 </td>
 </tr>
 </table>

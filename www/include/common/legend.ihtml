@@ -5,34 +5,34 @@
 
 <tr>
 <td>
-<img src="./img/icones/16x16/document_exchange.gif" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/document_exchange.gif" border="0" alt="{$duplicate}">
 &nbsp;=&nbsp;
-{$lang.lgd_duplicate}
+{$duplicate}
 </td>
 
 <td>
-<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$enable}">
 &nbsp;=&nbsp;
-{$lang.lgd_on}
+{$enable}
 </td>
 
 <td>
-<img src="./img/icones/16x16/delete.gif" border="0" alt="{$lang.delete}">
+<img src="./img/icones/16x16/delete.gif" border="0" alt="{$delete}">
 &nbsp;=&nbsp;
-{$lang.lgd_delOne}
+{$delete}
 
 </td>
 <td>
-<img src='img/icones/16x16/document_edit.gif' border="0" alt="{$lang.duplicate}">
+<img src='img/icones/16x16/document_edit.gif' border="0" alt="{$edit}">
 &nbsp;=&nbsp;
-{$lang.lgd_edit}
+{$edit}
 </td>
 
 
 <td>
-<img src="./img/icones/16x16/arrow_left_blue.png" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/arrow_left_blue.gif" border="0" alt="{$previous}">
 &nbsp;=&nbsp;
-{$lang.lgd_prev}
+{$previous}
 
 </td>
 
@@ -45,34 +45,34 @@
 
 
 <td>
-<img src="./img/icones/16x16/selection_delete.gif" border="0" alt="{$lang.delete}">
+<img src="./img/icones/16x16/selection_delete.gif" border="0" alt="{$deleteall}">
 &nbsp;=&nbsp;
-{$lang.lgd_delAll}
+{$deleteall}
 </td>
 
 
 <td>
-<img src='img/icones/16x16/element_previous.gif' border="0" alt="{$lang.delete}">
+<img src='img/icones/16x16/element_previous.gif' border="0" alt="{$disable}">
 &nbsp;=&nbsp;
-{$lang.lgd_off}
+{$disable}
 </td>
 <td>
-<img src="./img/icones/16x16/signpost.gif" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/signpost.gif" border="0" alt="{$sign}">
 &nbsp;=&nbsp;
-{$lang.lgd_signpost}
+{$sign}
 
 </td>
 
 
 <td>
-<img src='img/icones/16x16/view.gif' border="0" alt="{$lang.delete}">
+<img src='img/icones/16x16/view.gif' border="0" alt="{$view}">
 &nbsp;=&nbsp;
-{$lang.lgd_view}
+{$view}
 </td>
 <td>
-<img src="./img/icones/16x16/arrow_right_blue.png" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/arrow_right_blue.gif" border="0" alt="{$next}">
 &nbsp;=&nbsp;
-{$lang.lgd_next}
+{$next}
 </td>
 </tr>
 </table>

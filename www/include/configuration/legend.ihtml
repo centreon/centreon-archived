@@ -2,18 +2,18 @@
 <table id="tabLegend">
 <tr>
 	<td>
-		<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$lang.duplicate}">&nbsp;=&nbsp;{$lang.lgd_on}
+		<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$enable}">&nbsp;=&nbsp;{$enable}
 	</td>	
 	<td>	
-		<img src="./img/icones/16x16/delete.gif" border="0" alt="{$lang.delete}">&nbsp;=&nbsp;{$lang.lgd_delOne}
+		<img src="./img/icones/16x16/delete.gif" border="0" alt="{$delete}">&nbsp;=&nbsp;{$delete}
 	</td>
 	<td>
-		<img src='img/icones/16x16/document_edit.gif' border="0" alt="{$lang.duplicate}">&nbsp;=&nbsp;{$lang.lgd_edit}
+		<img src='img/icones/16x16/document_edit.gif' border="0" alt="{$edit}">&nbsp;=&nbsp;{$edit}
 	</td>
 <td>
-<img src="./img/icones/16x16/arrow_left_blue.gif" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/arrow_left_blue.gif" border="0" alt="{$previous}">
 &nbsp;=&nbsp;
-{$lang.lgd_prev}
+{$previous}
 
 </td>
 
@@ -24,27 +24,27 @@
 
 
 <td>
-<img src='img/icones/16x16/element_previous.gif' border="0" alt="{$lang.delete}">
+<img src='img/icones/16x16/element_previous.gif' border="0" alt="{$disable}">
 &nbsp;=&nbsp;
-{$lang.lgd_off}
+{$disable}
 </td>
 <td>
-<img src="./img/icones/16x16/signpost.gif" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/signpost.gif" border="0" alt="{$sign}">
 &nbsp;=&nbsp;
-{$lang.lgd_signpost}
+{$sign}
 
 </td>
 
 
 <td>
-<img src='img/icones/16x16/view.gif' border="0" alt="{$lang.delete}">
+<img src='img/icones/16x16/view.gif' border="0" alt="{$view}">
 &nbsp;=&nbsp;
-{$lang.lgd_view}
+{$view}
 </td>
 <td>
-<img src="./img/icones/16x16/arrow_right_blue.gif" border="0" alt="{$lang.duplicate}">
+<img src="./img/icones/16x16/arrow_right_blue.gif" border="0" alt="{$next}">
 &nbsp;=&nbsp;
-{$lang.lgd_next}
+{$next}
 </td>
 </tr>
 </table>

@@ -5,91 +5,91 @@
 
 <tr>
 	<td>
-	<img src="./img/icones/14x14/undo.gif" border="0" alt="{$lang.duplicate}">
+	<img src="./img/icones/14x14/undo.gif" border="0" alt="{$force}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_force}
+	{$force}
 	</td>
 	
 	<td>
-	<img src="./img/icones/16x16/column-chart.gif" border="0" alt="{$lang.duplicate}">
+	<img src="./img/icones/16x16/column-chart.gif" border="0" alt="{$graph}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_graph}
+	{$graph}
 	</td>
 	
 	<td>
-	<img src="./img/icones/14x14/noloudspeaker.gif" border="0" alt="{$lang.delete}">
+	<img src="./img/icones/14x14/noloudspeaker.gif" border="0" alt="{$notification}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_notification}
+	{$notification}
 	
 	</td>
 	<td>
-	<img src='./img/icones/14x14/gears_pause.gif' border="0" alt="{$lang.duplicate}">
+	<img src='./img/icones/14x14/gears_pause.gif' border="0" alt="{$passive}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_passiv}
+	{$passive}
 	</td>
 	
 	<td>
-	<img src="./img/icones/16x16/worker.gif" border="0" alt="{$lang.duplicate}">
+	<img src="./img/icones/16x16/worker.gif" border="0" alt="{$work}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_work}
+	{$work}
 	</td>
 
 
 </tr>
 <tr>
 	<td>
-	<img src="./img/icones/16x16/selection_delete.gif" border="0" alt="{$lang.delete}">
+	<img src="./img/icones/16x16/selection_delete.gif" border="0" alt="{$deleteall}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_delAll}
+	{$deleteall}
 	</td>
 	
 	<td>
-	<img src='img/icones/16x16/view.gif' border="0" alt="{$lang.delete}">
+	<img src='img/icones/16x16/view.gif' border="0" alt="{$view}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_view}
+	{$view}
 	</td>
 	
 	<td>
-	<img src='./img/icones/16x16/delete.gif' border="0" alt="{$lang.delete}">
+	<img src='./img/icones/16x16/delete.gif' border="0" alt="{$delete}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_delOne}
+	{$delete}
 	</td>
 	
 	<td>
-	<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$lang.duplicate}">
+	<img src="./img/icones/16x16/element_next.gif" border="0" alt="{$enable}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_on}
+	{$enable}
 	</td>
 		
 	<td>
-	<img src='img/icones/16x16/element_previous.gif' border="0" alt="{$lang.delete}">
+	<img src='img/icones/16x16/element_previous.gif' border="0" alt="{$disable}">
 	&nbsp;=&nbsp;
-	{$lang.lgd_off}
+	{$disable}
 	</td>
 </tr>
 <tr>
         <td colspan="2">
-        <img src="./img/icones/16x16/refresh.gif" border="0" alt="{$lang.lgd_refresh}">
+        <img src="./img/icones/16x16/refresh.gif" border="0" alt="{$refresh}">
         &nbsp;=&nbsp;
-        {$lang.lgd_refresh}
+        {$refresh}
         </td>
 
         <td>
-        <img src="./img/icones/16x16/media_play.gif" border="0" alt="{$lang.lgd_play}">
+        <img src="./img/icones/16x16/media_play.gif" border="0" alt="{$play}">
         &nbsp;=&nbsp;
-        {$lang.lgd_play}
+        {$play}
         </td>
 
         <td>
-        <img src="./img/icones/16x16/media_pause.gif" border="0" alt="{$lang.lgd_pause}">
+        <img src="./img/icones/16x16/media_pause.gif" border="0" alt="{$pause}">
         &nbsp;=&nbsp;
-        {$lang.lgd_pause}
+        {$pause}
         </td>
 
 		<td>
-        <img src="./img/icones/14x14/gears_stop.gif" border="0" alt="{$lang.lgd_desactivated}">
+        <img src="./img/icones/14x14/gears_stop.gif" border="0" alt="{$inactive}">
         &nbsp;=&nbsp;
-        {$lang.lgd_desactivated}
+        {$inactive}
         </td>
         
 </tr>

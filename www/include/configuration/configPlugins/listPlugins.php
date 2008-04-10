@@ -171,9 +171,22 @@ For information : contact@oreon-project.org
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('form2', $renderer2->toArray());
 	$tpl->assign('p', $p);
+		
 	$tpl->display("listPlugins.ihtml");
 	
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
+	
+	$tpl->assign('delete', _("Delete"));
+	$tpl->assign('enable', _("Enable"));
+	$tpl->assign('disable', _("Disable"));
+	$tpl->assign('duplicate', _("Duplicate"));
+	$tpl->assign('edit', _("Edit"));
+	$tpl->assign('view', _("View"));
+	$tpl->assign('previous', _("Previous"));
+	$tpl->assign('next', _("Next"));
+	$tpl->assign('deleteall', _("Delete all"));
+	$tpl->assign('sign', _("Sign"));
+	
 	$tpl->display("include/common/legend.ihtml");
 ?>

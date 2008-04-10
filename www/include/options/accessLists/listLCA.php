@@ -142,5 +142,26 @@ For information : contact@oreon-project.org
 	$tpl->display("listLCA.ihtml");	
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
+	
+	$tpl->assign('enable', _("Enable"));
+	$tpl->assign('disable', _("Disable"));
+	$tpl->assign('duplicate', _("Duplicate"));
+	$tpl->assign('sign', _("Sign"));
+	$tpl->assign('delete', _("Delete"));
+	$tpl->assign('deleteall', _("Delete all"));
+	$tpl->assign('view', _("View"));
+	$tpl->assign('edit', _("Edit"));
+	$tpl->assign('previous', _("Previous"));
+	$tpl->assign('next', _("Next"));
+	$tpl->assign('force', _("Force"));
+	$tpl->assign('graph', _("Graph"));
+	$tpl->assign('notification', _("Notification"));
+	$tpl->assign('passive', _("Passive"));
+	$tpl->assign('work', _("Work"));
+	$tpl->assign('refresh', _("Refresh"));
+	$tpl->assign('play', _("Play"));
+	$tpl->assign('pause', _("Pause"));
+	$tpl->assign('inactive', _("Inactive"));
+	
 	$tpl->display("include/common/legend.ihtml");		
 ?>
