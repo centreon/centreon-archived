@@ -330,13 +330,15 @@
 	*/
 	if (!$is_admin)
 		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc" .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl" .
 				" WHERE obj.object_id = stat.service_object_id" .
 				" AND stat.service_object_id = svc.service_object_id" .
 				" AND stat.current_state > 0" .
 				" AND stat.problem_has_been_acknowledged = 0" .
 				" AND obj.is_active = 1" .
 				" AND obj.name1 IN ($lcaSTR)" .
+				" AND obj.name2 = centreon_acl.service_description " .
+				" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
 				" ORDER by stat.current_state DESC, obj.name1, stat.last_check";
 	else
 		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id" .
@@ -353,6 +355,12 @@
 		print "DB Error : ".$DBRESULT_NDO1->getDebugInfo()."<br />";
 	
 	$j = 0;	
+	$tab_hostname[$j] = "";
+	$tab_svcname[$j] = "";
+	$tab_state[$j] = "";
+	$tab_last[$j] = "";
+	$tab_duration[$j] = "";
+	$tab_output[$j] = "";
 	while ($ndo =& $DBRESULT_NDO1->fetchRow())
 	{
 		$is_unhandled = 1;	
