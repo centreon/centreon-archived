@@ -36,31 +36,37 @@ class Oreon	{
 	function Oreon($user = NULL, $pages = array())	{
 		global $pearDB;
 		
+		/*
+		 * Get User informations
+		 */
 		$this->user = $user;
+		
+		/*
+		 * Get Local nagios.cfg file
+		 */
 		$this->initNagiosCFG($pearDB);
+		
+		/*
+		 * Get general options
+		 */
 		$this->initOptGen($pearDB);
 		
-		# Grab Modules
+		/*
+		 * Grab Modules
+		 */
+		$this->creatModuleList($pearDB);
+	}
+	
+	function creatModuleList($pearDB){
 		$this->modules = array();
-		$handle = opendir("./modules");	
-		while (false !== ($filename = readdir($handle)))	{
-			if ($filename != "." && $filename != "..")	{
-				$this->modules[$filename]["name"] = $filename;
-				if (is_dir("./modules/".$filename."/generate_files/"))
-					$this->modules[$filename]["gen"] = true;
-				else
-					$this->modules[$filename]["gen"] = false;
-				if (is_dir("./modules/".$filename."/sql/"))
-					$oreon->modules[$filename]["sql"] = true;
-				else
-					$this->modules[$filename]["sql"] = false;
-				if (is_dir("./modules/".$filename."/lang/"))
-					$this->modules[$filename]["lang"] = true;
-				else
-					$this->modules[$filename]["lang"] = false;
-			}
+		$DBRESULT =& $pearDB->query("SELECT `name`,`sql_file`,`lang_file`,`php_file` FROM `modules_informations`");
+		while ($result =& $DBRESULT->fetchRow()){
+			$this->modules[$result["name"]]["name"] = $result["name"];
+			is_dir("./modules/".$result["name"]."/generate_files/") ? $this->modules[$filename]["gen"] = true : $this->modules[$filename]["gen"] = false;
+			is_dir("./modules/".$result["name"]."/sql/") ? $this->modules[$filename]["sql"] = true : $this->modules[$filename]["sql"] = false;
+			is_dir("./modules/".$result["name"]."/lang/") ? $this->modules[$filename]["lang"] = true : $this->modules[$filename]["lang"] = false;		
 		}
-		closedir($handle);
+		$DBRESULT->free();
 	}
 	
 	function createHistory(){
@@ -74,15 +80,17 @@ class Oreon	{
 	function initNagiosCFG($pearDB = NULL)	{
 		if (!$pearDB)	return;
 		$this->Nagioscfg = array();
-		$res =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-		$this->Nagioscfg = $res->fetchRow();	
+		$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+		$this->Nagioscfg = $DBRESULT->fetchRow();
+		$DBRESULT->free();	
 	}
 	
 	function initOptGen($pearDB = NULL)	{
 		if (!$pearDB)	return;
 		$this->optGen = array();
-		$res =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
-		$this->optGen = $res->fetchRow();	
+		$DBRESULT =& $pearDB->query("SELECT * FROM `general_opt` LIMIT 1");
+		$this->optGen = $DBRESULT->fetchRow();
+		$DBRESULT->free();
 	}
 }
 ?>
