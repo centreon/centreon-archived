@@ -84,9 +84,9 @@ For information : contact@oreon-project.org
 				$args = NULL;
 				foreach($_GET as $key=>$value)
 					$args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
-				header("Location: ./oreon.php?".$args."");
+				header("Location: ./main.php?".$args."");
 			} else {
-				header("Location: ./oreon.php");
+				header("Location: ./main.php");
 			}
 			$connect = true;
         }
@@ -229,10 +229,10 @@ For information : contact@oreon-project.org
 								$args = NULL;
 								foreach($_GET as $key=>$value)
 									$args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
-								header("Location: ./oreon.php?".$args."");
+								header("Location: ./main.php?".$args."");
 							}
 							else
-								header("Location: ./oreon.php");
+								header("Location: ./main.php");
 							$connect = true;
 						}
 					}
