@@ -477,7 +477,6 @@
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formHostGroup->accept($renderer);
 	$tpl->assign('formHostGroup', $renderer->toArray());
-	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
 	/*

@@ -129,7 +129,6 @@ For information : contact@oreon-project.org
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
 
 	if ($oreon->optGen["nagios_version"] == 2 && isset($pgr_nagios_stat["created"]))
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);

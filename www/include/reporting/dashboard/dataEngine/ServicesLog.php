@@ -273,10 +273,8 @@
 	$tab_report[date("d/m/Y", $today_start)]["CRITICALnbEvent"] = $today_CRITICALnbEvent;
 
 
-	$rq = 	'SELECT ' .
-			' * FROM `log_archive_service` WHERE host_id = ' . $host_id . ' AND service_id = ' . $svc_id .
-			' AND date_start >= ' . $sd . ' AND date_end <= ' . $ed .
-			' order by date_start desc';
+	$rq = 	"SELECT * FROM `log_archive_service` WHERE host_id = '".$host_id."' AND service_id = '".$svc_id."' AND date_start >= '".$sd."' AND date_end <= '".$ed."' order by date_start desc";
+	print $rq;
 	$res = & $pearDBO->query($rq);
 	while ($h =& $res->fetchRow()) {
 		$oktime = $h["OKTimeScheduled"];

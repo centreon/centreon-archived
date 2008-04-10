@@ -73,9 +73,6 @@ For information : contact@oreon-project.org
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
-
-	$tpl->assign("lang", $lang);
-
 	$tpl->assign("order", strtolower($order));
 	$tab_order = array("sort_asc" => "sort_desc", "sort_desc" => "sort_asc");
 	$tpl->assign("tab_order", $tab_order);
@@ -143,7 +140,6 @@ For information : contact@oreon-project.org
 
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./", $tpl);
-	$tpl->assign('lang', $lang);
 
 	if ($oreon->optGen["nagios_version"] == 2 && isset($pgr_nagios_stat["created"]))
 		$pgr_nagios_stat["created"] = date("d/m/Y G:i", $pgr_nagios_stat["created"]);

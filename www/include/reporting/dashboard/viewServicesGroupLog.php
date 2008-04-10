@@ -499,13 +499,11 @@
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formPeriod->accept($renderer);
 	$tpl->assign('formPeriod', $renderer->toArray());
-//	$tpl->assign('period', $var_url_export_csv);
 
 	#Apply a template definition
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$formservicegroup->accept($renderer);
 	$tpl->assign('formservicegroup', $renderer->toArray());
-	$tpl->assign('lang', $lang);
 	$tpl->assign("p", $p);
 
 	if ($mservicegroup){
