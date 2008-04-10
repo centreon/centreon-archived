@@ -278,25 +278,20 @@ sub CheckRestart(){
 	my ($last_restart_stt, $last_restart, $sth2, $data, $y);
 	use vars qw($con_oreon $con_ods);
 	$y = 1;
-	CheckMySQLConnexion();
+	#CheckMySQLConnexion();
 	$last_restart = getLastRestart();
 	$last_restart_stt = getLastRestartInMemory();
 	if (!$last_restart_stt || $last_restart ne $last_restart_stt){
 		check_HostServiceID();
 		if (getPurgeConfig()){
-			print "Drain \n";
 			CheckMySQLDrain();
-			print "OK\n";
-			print "Delete \n";
 			DeleteOldRrdDB();
-			print "OK\n";
 		}
 		saveLastRestartInMemory($last_restart);
 	}
 	$con_oreon->disconnect();
     $con_ods->disconnect();
 	$y++;
-	sleep(5);
 }
 
 ########################################
@@ -613,10 +608,26 @@ my $flagRebuild = 0;
 $stop = 1;
 
 my @tabPID;
-my $pid_parseur;
-my $pid_purge;
-my $pid_synchro;
-my $pid_Rebuild;
+
+# Init Proc table
+my %tabProc;
+$tabProc{'parser'} = 0;
+$tabProc{'purge'} = 0;
+$tabProc{'synchro'} = 0;
+$tabProc{'rebuild'} = 0;
+
+sub killProc($){
+#	my $str = " - ". $_[0]." ->";
+	if ($_[0]){
+		if (waitpid($_[0], WNOHANG)){
+#			print $str."0\n";
+			return 0;
+		} else {
+#			print $str.$_[0]."\n";
+			return $_[0];
+		}	
+	}
+}
 
 if ($pid ne fork()) {
 	  if (!fork()) {
@@ -631,68 +642,54 @@ if ($pid ne fork()) {
 		close PID or warn $!;
 	    my $i = 0;
 	    while ($stop){
-	    	print "STOP : $stop --- $i\n";
-	    	if (time() - $timeParser >= 15 && (!defined($pid_parseur) || !defined($tabPID[$pid_parseur]))){
+	    	if (time() - $timeParser >= 15 && !$tabProc{'parser'}){
             	my $timeP = time() - $timeParser;
-	            $pid_parseur = fork();
-	            if (!$pid_parseur){
-		        	print "PARSE : $i\n";
+	            $tabProc{'parser'} = fork();
+	            if (!$tabProc{'parser'}){
                 	GetPerfData();
-	            	print "END PARSE : $i\n";
 	                exit();
 	            } else {
-	            	$tabPID[$pid_parseur] = $pid_parseur;
-	               	my $id = waitpid($pid_parseur, WNOHANG);
+	               	my $id = waitpid($tabProc{'parser'}, WNOHANG);
 	            }
-	            $timeParser = time();
+	        	$timeParser = time();
             }
-            if (time() - $timePurge >= 50 && (!defined($pid_purge) || !defined($tabPID[$pid_purge]))){
-                $pid_purge = fork();
-                if (!$pid_purge){
-                   	print "PURGE : $i\n";
+            if (time() - $timePurge >= 360 && !$tabProc{'purge'}){
+                $tabProc{'purge'} = fork();
+                if (!$tabProc{'purge'}){
                     purgeMysqlData();
-                   	print "END PURGE : $i\n";
                     exit();
                 } else {
-                	$tabPID[$pid_purge] = $pid_purge;
-	                my $id = waitpid($pid_purge, WNOHANG);
+	                my $id = waitpid($tabProc{'purge'}, WNOHANG);
                 }
-                $timePurge = time();
+       	        $timePurge = time();
         	}
-            if (time() - $timeSynchro >= 10 && (!defined($pid_synchro) || !defined($tabPID[$pid_synchro]))){
-            	$pid_synchro = fork();
-		        if (!$pid_synchro){
-        			print "RESTART : $i\n";
+            if (time() - $timeSynchro >= 5 && !$tabProc{'synchro'}){
+            	$tabProc{'synchro'} = fork();
+		        if (!$tabProc{'synchro'}){
     	          	CheckRestart();
-        			print "END RESTART : $i\n";
-	                exit();
+                    exit();
 	            } else {
-	              	$tabPID[$pid_synchro] = $pid_synchro;
-		            my $id = waitpid($pid_synchro, WNOHANG);
+		            my $id = waitpid($tabProc{'synchro'}, WNOHANG);
 	            }
-	            $timeSynchro = time();
-           	}
-            if (time() - $timeRebuild >= 120 && (!defined($pid_Rebuild) || !defined($tabPID[$pid_Rebuild]))){
-	        	$pid_Rebuild = fork();
-	            if (!$pid_Rebuild){
-	      			print "REBUILD : $i\n";
+		        $timeSynchro = time();
+	       	}
+            if (time() - $timeRebuild >= 120 && !$tabProc{'rebuild'}){
+	        	$tabProc{'rebuild'} = fork();
+	            if (!$tabProc{'rebuild'}){
 	            	CheckRebuild();
-	      			print "END REBUILD : $i\n";
-	                exit();
+		            exit();
 	            } else {
-		           	$tabPID[$pid_Rebuild] = $pid_Rebuild;
-		          	my $id = waitpid($pid_Rebuild, WNOHANG);
+		          	my $id = waitpid($tabProc{'rebuild'}, WNOHANG);
 	            }
 	            $timeRebuild = time();
            	}
-           
-            foreach (@tabPID){
-            	if (defined($_)){
-            		my $pidzomb = waitpid($_, WNOHANG);
-#					undef($tabPID[$_]);
-            	}
-            }
-            sleep(1);
+           	
+			$tabProc{'parser'} = killProc($tabProc{'parser'}) if ($tabProc{'parser'});
+			$tabProc{'purge'} = killProc($tabProc{'purge'}) if ($tabProc{'purge'});
+			$tabProc{'synchro'} = killProc($tabProc{'synchro'}) if ($tabProc{'synchro'});
+			$tabProc{'rebuild'} = killProc($tabProc{'rebuild'}) if ($tabProc{'rebuild'});
+			
+			sleep(1);
             $i++;
         }
     	writeLogFile("Stopping ODS engine...\n");
