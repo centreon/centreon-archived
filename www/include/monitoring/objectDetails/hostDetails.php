@@ -303,7 +303,16 @@ For information : contact@oreon-project.org
 		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes"));
 		$tpl->assign("h_ext_notes_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_notes_url"));
 		$tpl->assign("h_ext_action_url_lang", _("URL Action"));
-		$tpl->assign("h_ext_action_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url"));
+
+		/*
+		* This part was added by Kay Roesler to fix the $HOSTMANE$ Thingy
+		*/
+		//$tpl->assign("h_ext_action_url", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url")); out by Kay
+		
+		$action_url = getMyHostExtendedInfoField($hostDB["host_id"], "ehi_action_url");
+		$new_action_url = str_replace("\$HOSTNAME$", $host_name, $action_url); // in by Kay
+		$tpl->assign("h_ext_action_url", $new_action_url); //in by Kay
+
 		//$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));
 
