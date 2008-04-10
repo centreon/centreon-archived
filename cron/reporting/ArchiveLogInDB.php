@@ -42,8 +42,8 @@
 
 	include_once("/etc/centreon/centreon.conf.php");
 	include_once($centreon_path ."/cron/reporting/DB-Func.php");
-	require_once($centreon_path ."/www/include/reporting/dashboard/reporting-func.php");
-	require_once($centreon_path ."/www/include/reporting/dashboard/simple-func.php");
+	require_once($centreon_path ."/www/include/reporting/dashboard/common-Func.php");
+	require_once($centreon_path ."/www/include/reporting/dashboard/DB-Func.php");
 
 	global $pearDB, $pearDBO;
 
