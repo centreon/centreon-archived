@@ -14,9 +14,6 @@
  * 
  * For information : contact@oreon-project.org
  */
-
-	if (!isset($oreon))
-		exit();
 	
 	/*
 	 * LCA Generation
