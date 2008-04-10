@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# SNMPTT v1.2beta3
+# SNMPTT v1.2
 #
 # Copyright 2002-2007 Alex Burger
 # alex_b@users.sourceforge.net
@@ -47,7 +47,7 @@
 #
 use strict;
 
-my $snmptt_version = "v1.2beta3";
+my $snmptt_version = "v1.2";
 
 sub showversion
 {
@@ -306,6 +306,7 @@ use Text::ParseWords;
 use POSIX qw(strftime);
 use Sys::Hostname;
 use File::Basename;
+use Text::Balanced qw (extract_bracketed);
 
 my $debug_file_used = 0;
 
@@ -2438,14 +2439,19 @@ sub substitute
     my $regex_temp = $event2[6][$i];
 
     #print "!!!!!!$regex_temp\n";
-    # Remove starting and ending ()
-    #$regex_temp =~ /^\((.*)\)$/;
-    $regex_temp =~ /^\((.*)\)(.*)$/;
+    # Pull out modifiers
+    $regex_temp =~ /^(.*\))(.*)$/;
     $regex_temp = $1;
     my $modifiers = $2;
 
     # Split using )(
-    my @regex_temp2 = split(/\)\(/,$regex_temp,2);
+    my @regex_temp2;
+    ($regex_temp2[0], $regex_temp2[1]) = extract_bracketed($regex_temp,'()');
+
+    #Remove starting and ending () from each part of the split REGEX
+    $regex_temp2[0] =~ s/^\((.*)\)$/$1/;
+    $regex_temp2[1] =~ s/^\((.*)\)$/$1/;
+
     #print "0:$regex_temp2[0]\n";
     #print "1:$regex_temp2[1]\n";
     #print "Modifiers: $modifiers\n";
