@@ -20,12 +20,8 @@
 ?>
 		<div id="footer">
 		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
-			<tr>
-				<td id="footerline1"></td>
-			</tr>
-			<tr>
-				<td id="footerline2"></td>
-			</tr>
+			<tr><td id="footerline1"></td></tr>
+			<tr><td id="footerline2"></td></tr>
 		</table>
 		<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 			<tr>
