@@ -66,10 +66,7 @@ sub removeSpecialCharInMetric($){
 sub insertMetrics($$$$$$$){
 	my ($index_id, $name, $unit, $warn, $crit, $min, $max) = @_;
 
-	my $con_ods = CreateConnexionForCentstorage();
-	
-	print ("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$index_id."', '".$name."', '".$unit."', '".$warn."', '".$crit."', '".$min."', '".$max."')\n");
-	
+	my $con_ods = CreateConnexionForCentstorage();	
 	my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$index_id."', '".$name."', '".$unit."', '".$warn."', '".$crit."', '".$min."', '".$max."')");
     writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
     undef($sth2);
