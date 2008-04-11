@@ -16,7 +16,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-	if (!isset($centreon))
+	if (!isset($oreon))
 		exit();
 
 	function display_copying_file($filename = NULL, $status){
