@@ -241,8 +241,6 @@ For information : contact@oreon-project.org
 		$buffer .= '<performance_data>'. $ndo["perfdata"]  . '</performance_data>';
 		$buffer .= '<performance_data_name><![CDATA['.html_entity_decode(_("Performance Data")).']]></performance_data_name>';
 
-//		$buffer .= '<current_attempt name="'.$lang["m_mon_current_attempt"].'">'. $ndo["current_check_attempt"]  . '</current_attempt>';
-		
 		$buffer .= '<state_type>'.$state_type[$ndo["state_type"]].'</state_type>';
 		$buffer .= '<state_type_name><![CDATA['.html_entity_decode(_("State Type")).']]> </state_type_name>';
 

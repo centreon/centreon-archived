@@ -86,44 +86,8 @@ For information : contact@oreon-project.org
 
 	include("./include/common/checkPagination.php");
 
-/*
-	#Fill a tab with different page numbers and link
-	$pageArr = array();
-	for ($i = 0; $i < ($rows / $limit); $i++)
-		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&list=".$list,
-														"label_page"=>"<b>".($i +1)."</b>", "num"=> $i);
-	if($i > 1)							
-	$tpl->assign("pageArr", $pageArr);
-
-	$tpl->assign("num", $num);
-	$tpl->assign("previous", $lang["previous"]);
-	$tpl->assign("next", $lang["next"]);
-
-	if(($prev = $num - 1) >= 0)
-	$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search));
-	if(($next = $num + 1) < ($rows/$limit))
-	$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search));
-	$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));
-	
-	#Select field to change the number of row on the page
-	for ($i = 10; $i <= 100; $i = $i +10)
-		$select[$i]=$i;
-	$select[$gopt["maxViewConfiguration"]]=$gopt["maxViewConfiguration"];
-	ksort($select);
-
-	$selLim =& $form->addElement('select', 'limit', $lang['nbr_per_page'], $select, array("onChange" => "this.form.submit('')"));
-	$selLim->setSelected($limit);
-	
-	#Element we need when we reload the page
-	$form->addElement('hidden', 'p');
-	$form->addElement('hidden', 'search');
-	$form->addElement('hidden', 'num');
-	$form->addElement('hidden', 'list');
-	$tab = array ("p" => $p, "search" => $search, "num"=>$num, "list"=>$list);
-	$form->setDefaults($tab);	
-*/
 	#
-	##Toolbar select $lang["lgd_more_actions"]
+	##Toolbar select more_actions
 	#
 	?>
 	<script type="text/javascript">

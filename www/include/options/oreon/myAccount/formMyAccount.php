@@ -94,8 +94,6 @@ For information : contact@oreon-project.org
 	$form->addRule('contact_name', _("Compulsory name"), 'required');
 	$form->addRule('contact_alias', _("Compulsory alias"), 'required');
 	$form->addRule('contact_email', _("Valid Email"), 'required');
-//	$form->addRule('contact_passwd', $lang['ErrRequired'], 'required');
-//	$form->addRule('contact_passwd2', $lang['ErrRequired'], 'required');
 	$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('contact_name', _("Name already in use"), 'exist');

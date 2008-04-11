@@ -49,8 +49,7 @@
 					 * Delay notification
 					 */
 					 		
-					//case 6: 	send_cmd("DELAY_HOST_NOTIFICATION", "", $lang);break;
-					//case 7: 	send_cmd("DELAY_SVC_NOTIFICATION", "", $lang);break;
+
 					
 					/*
 					 * Notifications

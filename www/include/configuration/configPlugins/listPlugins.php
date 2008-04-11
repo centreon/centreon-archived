@@ -108,19 +108,10 @@ For information : contact@oreon-project.org
 		$buf = NULL;
 		$fDataz =& $file->getValue();
 		print $fDataz["type"];
-		/*
-		# File Moving
-		switch ($fDataz["type"])	{
-			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." ".$lang["upl_uplBadType"]."<br />"; break;
-			case "application/x-gzip" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $fDataz["name"]." ".$lang["upl_uplOk"]."<br />"; break; // tar.gz
-			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= $lang["upl_manualDef"]." ".$lang["upl_uplOk"]."<br />"; break; // Text
-			default : $msg .= $lang["upl_uplKo"]."<br />";
-		}
-		*/
 	}
 
 	#
-	##Toolbar select $lang["lgd_more_actions"]
+	##Toolbar select more_actions
 	#
 	?>
 	<script type="text/javascript">

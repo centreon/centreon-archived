@@ -36,9 +36,9 @@ For information : contact@oreon-project.org
 	$DBRESULT->fetchInto($Host);
 	$DBRESULT->free();
 	switch ($o)	{
-		case "p" : $tool_cmd_script = "include/tools/ping.php?host=".$Host["host_address"]; $tool = $lang ["m_mon_tools_ping"]; break;
-		case "tr" : $tool_cmd_script = "include/tools/traceroute.php?host=".$Host["host_address"]; $tool = $lang ["m_mon_tools_tracert"]; break;
-		default :  $tool_cmd_script = "include/tools/ping.php?host=".$Host["host_address"]; $tool = $lang ["m_mon_tools_ping"]; break;
+		case "p" : $tool_cmd_script = "include/tools/ping.php?host=".$Host["host_address"]; $tool = _("Ping"); break;
+		case "tr" : $tool_cmd_script = "include/tools/traceroute.php?host=".$Host["host_address"]; $tool = _("Traceroute"); break;
+		default :  $tool_cmd_script = "include/tools/ping.php?host=".$Host["host_address"]; $tool = _("Ping"); break;
 	}
 
 	$attrsText 		= array("size"=>"15");
@@ -73,8 +73,7 @@ For information : contact@oreon-project.org
 	$tpl->assign('command_tool',$tool );
 
 	$tpl->assign("initJS", "<script type='text/javascript'>
-		display('".$lang ["m_mon_waiting"]."<br /><br /><img src=\'./img/icones/48x48/stopwatch.gif\'>','tools');
-//		display('".$lang ["m_mon_waiting"]."','tools');
+		display('"._("Please wait...")."<br /><br /><img src=\'./img/icones/48x48/stopwatch.gif\'>','tools');
 		loadXMLDoc('".$tool_cmd_script."','tools');
 		</script>");
 
