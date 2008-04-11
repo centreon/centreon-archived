@@ -653,7 +653,7 @@ if ($pid ne fork()) {
 	            }
 	        	$timeParser = time();
             }
-            if (time() - $timePurge >= 360 && !$tabProc{'purge'}){
+            if (time() - $timePurge >= 600 && !$tabProc{'purge'}){
                 $tabProc{'purge'} = fork();
                 if (!$tabProc{'purge'}){
                     purgeMysqlData();
@@ -663,8 +663,9 @@ if ($pid ne fork()) {
                 }
        	        $timePurge = time();
         	}
-            if (time() - $timeSynchro >= 5 && !$tabProc{'synchro'}){
-            	$tabProc{'synchro'} = fork();
+        	
+            if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}){
+           	$tabProc{'synchro'} = fork();
 		        if (!$tabProc{'synchro'}){
     	          	CheckRestart();
                     exit();
