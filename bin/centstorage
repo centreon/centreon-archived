@@ -162,7 +162,9 @@ sub getPerfDataFile(){
 	my ($filename, $sth2, $data, $con_ods);
 	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	$sth2 = $con_ods->prepare("SELECT perfdata_file FROM config");
-	writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n") if (!$sth2->execute);
+	if (!$sth2->execute){
+		writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "\n");
+	}
 	$data = $sth2->fetchrow_hashref();
 	undef($sth2);
 	$filename = $data->{'perfdata_file'};
@@ -458,7 +460,7 @@ sub replaceMetricSpecialChar($){
 sub createRRDDatabase($$$$$$){
 	my ($ERR, $RRDdatabase_path, $metric_id, $begin, $metric_name, $interval, $my_len_storage_rrd);
 	($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd) = @_;
-	RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric_name, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:MIN:0.5:12:".$my_len_storage_rrd, "RRA:MAX:0.5:12:".$my_len_storage_rrd);
+	RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr($metric_name, 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
 	$ERR = RRDs::error;
 	if ($ERR) {writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR\n");}
 	undef($ERR);
@@ -642,7 +644,7 @@ if ($pid ne fork()) {
 		close PID or warn $!;
 	    my $i = 0;
 	    while ($stop){
-	    	if (time() - $timeParser >= 15 && !$tabProc{'parser'}){
+	    	if (time() - $timeParser >= 30 && !$tabProc{'parser'}){
             	my $timeP = time() - $timeParser;
 	            $tabProc{'parser'} = fork();
 	            if (!$tabProc{'parser'}){
@@ -656,7 +658,9 @@ if ($pid ne fork()) {
             if (time() - $timePurge >= 600 && !$tabProc{'purge'}){
                 $tabProc{'purge'} = fork();
                 if (!$tabProc{'purge'}){
+                    writeLogFile("Begin MySQL Purge...\n");
                     purgeMysqlData();
+                    writeLogFile("End of MySQL Purge...\n");
                     exit();
                 } else {
 	                my $id = waitpid($tabProc{'purge'}, WNOHANG);
@@ -665,12 +669,12 @@ if ($pid ne fork()) {
         	}
         	
             if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}){
-           	$tabProc{'synchro'} = fork();
+           		$tabProc{'synchro'} = fork();
 		        if (!$tabProc{'synchro'}){
-    	          	CheckRestart();
+    	         	CheckRestart();
                     exit();
 	            } else {
-		            my $id = waitpid($tabProc{'synchro'}, WNOHANG);
+		           my $id = waitpid($tabProc{'synchro'}, WNOHANG);
 	            }
 		        $timeSynchro = time();
 	       	}

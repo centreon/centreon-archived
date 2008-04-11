@@ -25,7 +25,7 @@
 
 use strict;
 use POSIX qw(mkfifo);
-use POSIX qw(setsid :sys_wait_h);
+#use POSIX qw(setsid :sys_wait_h);
 use DBI;
 
 use File::Copy;
@@ -54,7 +54,7 @@ my $cfg;
 
 
 # Include Configuration Data
-require $installedPath."etc/conf.pm";
+require "/etc/centreon/conf.pm";
 
 sub catch_zap {
 	$stop = 0;
@@ -111,14 +111,15 @@ while ($stop) {
 	my $flag = 1;
 	my $difTime = time() - $timeSyncPerf if (defined($timeSyncPerf) && $timeSyncPerf);
 	if ($flag && ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0)){
+		
 		print "$timeBetween2SyncPerf <= $difTime\n" if (defined($timeSyncPerf) && $timeSyncPerf);
-		print "Synchronize Perf \n";
+				
 		# Get PerfData on Nagios Poller
 		GetAllNagiosServerPerfData();
+		
 		$timeSyncPerf = time();
 	}
-	print "############################################\n";
-	sleep(2);	
+	sleep(1);
 }
 
 sub moveCmdFile($){
@@ -130,10 +131,9 @@ sub moveCmdFile($){
 
 sub GetAllNagiosServerPerfData(){
 	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '0'");
+	my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '0' AND ns_activate = '1'");
 	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
 	while (my $data = $sth2->fetchrow_hashref()){
-		print 'NG : '.$data->{'id'}."\n";
 		GetPerfData($data->{'id'});
 		GetLogFile($data->{'id'});
 	}
@@ -173,31 +173,25 @@ sub getLocalServerID(){
 
 sub getServerConfig($){
 	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."'");
+	my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."' AND ns_activate = '1'");
 	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
 	return $sth2->fetchrow_hashref();
 }
 
 sub CheckMySQLConnexion(){
-	my $flag = 0;
-	while (!defined($con) || !$con->ping){
+	while ((!defined($con) || !$con->ping)){
 		if (!defined($con)) {
 			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 			if (!defined($con)) {
-				writeLogFile("Error when connecting to database : ".$DBI::errstr."\n");
+				writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
 				sleep(2);
 			}
 		} else {
 			sleep(2);
 			undef($con);
-			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});			
-			if (defined($con)) {
-				$flag = 1;
-				writeLogFile("DataBase became UP !\n");
-			}	
+			$con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 		}
 	}
-	undef($flag);
 }
 
 #
@@ -216,7 +210,7 @@ sub sendExternalCommand($$){
 	my $server_info = getServerConfig($id);
 	# check if ip address is defined
 	if (defined($server_info->{'ns_ip_address'})){
-		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." echo \"".$cmd."\" >> $command_file\n";
+		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." 'echo \"".$cmd."\" >> ".$command_file."'\n";
 		my $stdout = `$cmd`;
 	    writeLogFile("External command : poller $id : \"".$cmd."\"\n");
 	    if (defined($stdout) && $stdout){
@@ -362,8 +356,10 @@ sub restartNagios($){
 	my $id = $_[0];
 
 	my $conf = getServerConfig($id);
-	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	#$conf->{'user'}."@".
+	my $distantconnexion = $conf->{'ns_ip_address'};
 	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." restart\n";
+	print "RESTART : $cmd\n";
 	my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
 	undef($conf);
@@ -376,8 +372,10 @@ sub reloadNagios($){
 	my $id = $_[0];
 	
 	my $conf = getServerConfig($id);
-	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	# $conf->{'user'}."@".
+	my $distantconnexion = $conf->{'ns_ip_address'};
 	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." reload\n";
+	print "RELOAD : $cmd\n";
 	my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
 	undef($conf);
@@ -390,7 +388,8 @@ sub stopNagios($){
 	my $id = $_[0];
 	
 	my $conf = getServerConfig($id);
-	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	# $conf->{'user'}."@".
+	my $distantconnexion = $conf->{'ns_ip_address'};
 	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." stop\n";
 	my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
@@ -404,7 +403,8 @@ sub startNagios($){
 	my $id = $_[0];
 	
 	my $conf = getServerConfig($id);
-	my $distantconnexion = $conf->{'user'}."@".$conf->{'ns_ip_address'};
+	# $conf->{'user'}."@".
+	my $distantconnexion = $conf->{'ns_ip_address'};
 	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." start\n";
 	my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
@@ -418,8 +418,9 @@ sub testConfig($){
 	my $id = $_[0];
 	
 	my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
+	# $data->{'user'}."@".
 	my $data = getServerConfig($id);
-	my $distantconnexion = $data->{'user'}."@".$data->{'ns_ip_address'};
+	my $distantconnexion = $data->{'ns_ip_address'};
 	my $cmd = "$ssh $distantconnexion sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
 	my $stdout = `$cmd`;
 	undef($cmd);
@@ -443,10 +444,8 @@ sub parseRequest($){
 		stopNagios($1);
 	}  elsif ($_[0] =~ /TEST\:([0-9]*)/){
 		testConfig($1);
-	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:([.]*)/){
+	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
 		sendExternalCommand($1, $2);
-	} else {
-		writeLogFile("$_[0] : UNKNWON KEY \n");
 	}
 }
 
