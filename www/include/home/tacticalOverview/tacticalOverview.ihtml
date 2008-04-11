@@ -196,7 +196,7 @@
 		</tr>
 		<tr>
 			<td>
-				<table class="SubTableTactical">
+				<table class="SubTable2Tactical">
 					<tr style="font-weight:bold;">
 						<td class="SubTacticalDT" align=center>{$str_hostname}</td>
 						<td class="SubTacticalDT" align=center>{$str_servicename}</td>
@@ -206,26 +206,32 @@
 						<td class="SubTacticalDT" align=center>{$str_lastcheck}</td>
 						<td class="SubTacticalDT" align=center style="width:500px;">{$str_output}</td>
 					</tr>
+					{assign var="class" value="list_one"}
 					{foreach from=$tb_hostname key=k item=hostname}
-					<tr>
-						<td class="SubTacticalDT" style="background-color:#eeeeee;white-space:nowrap;"><a href={$url_hostdetail}{$tb_hostname[$k]}>{$tb_hostname[$k]}</a></td>
+					<tr class="{$class}">
+						<td class="ListColLeft" style="white-space:nowrap;"><a href={$url_hostdetail}{$tb_hostname[$k]}>{$tb_hostname[$k]}</a></td>
 						{if $tb_state[$k] == 3}
-						<td class="SubTacticalDT" style="background-color:#eeeeee;white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
-						<td class="SubTacticalDT" style="background-color:{$color.color_unknown};font-weight:bold;white-space:nowrap;" align=center>{$str_unknown}</td>
+						<td class="ListColLeft" style="white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
+						<td class="ListColCenter" style="background-color:{$color.color_unknown};font-weight:bold;white-space:nowrap;" align=center>{$str_unknown}</td>
 						{/if}
 						{if $tb_state[$k] == 2}
-						<td class="SubTacticalDT" style="background-color:#ee9572;white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
-						<td class="SubTacticalDT" style="background-color:{$color.color_critical};font-weight:bold;white-space:nowrap;" align=center>{$str_critical}</td>
+						<td class="ListColLeft" style="background-color:#ee9572;white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
+						<td class="ListColCenter" style="background-color:{$color.color_critical};font-weight:bold;white-space:nowrap;" align=center>{$str_critical}</td>
 						{/if}
 						{if $tb_state[$k] == 1}
-						<td class="SubTacticalDT" style="background-color:#ffcc66;white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
-						<td class="SubTacticalDT" style="background-color:{$color.color_warning};font-weight:bold;white-space:nowrap;" align=center>{$str_warning}</td>
+						<td class="ListColLeft" style="background-color:#ffcc66;white-space:nowrap;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
+						<td class="ListColCenter" style="background-color:{$color.color_warning};font-weight:bold;white-space:nowrap;" align=center>{$str_warning}</td>
 						{/if}
-						<td class="SubTacticalDT" align=center style="background-color:#eeeeee;white-space:nowrap;">{$tb_ip[$k]}</td>
-						<td class="SubTacticalDT" align=right style="background-color:#eeeeee;white-space:nowrap;">{$tb_duration[$k]}</td>
-						<td class="SubTacticalDT" align=center style="background-color:#eeeeee;white-space:nowrap;">{$tb_last[$k]}</td>
-						<td class="SubTacticalDT" style="width:500px; background-color:#eeeeee;">{$tb_output[$k]}</td>
-					</tr>				
+						<td class="ListColCenter" align=center style="white-space:nowrap;">{$tb_ip[$k]}</td>
+						<td class="ListColRight" align=right style="white-space:nowrap;">{$tb_duration[$k]}</td>
+						<td class="ListColCenter" align=center style="white-space:nowrap;">{$tb_last[$k]}</td>
+						<td class="ListColNoWrap" style="width:500px;">{$tb_output[$k]}</td>
+					</tr>
+					{if $class == "list_one"}
+						{assign var="class" value="list_two"}
+					{else}
+						{assign var="class" value="list_one"}
+					{/if}
 					{/foreach}
 				</table>
 			</td>
