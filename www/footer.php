@@ -47,3 +47,12 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 <?php } ?>
 </body>
 </html>
+<?php
+
+	if ($pearDB)
+		$pearDB->disconnect();
+	if ($pearDBO)
+		$pearDBO->disconnect();
+	if ($pearDBndo)
+		$pearDBndo->disconnect();
+?>
