@@ -85,6 +85,8 @@
 	while ($ndo = $DBRESULT_NDO1->fetchRow())
 		$hostStatus[$ndo["current_state"]] = $ndo["count(nagios_hoststatus.current_state)"];
 	
+	$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2]);
+	
 	/*
 	 * Get the  id's of problem hosts
 	*/
@@ -150,7 +152,10 @@
 	
 	$hostAck = array(0=>0, 1=>0, 2=>0);
 	while ($ndo = $DBRESULT_NDO1->fetchRow())
+	{
 		$hostAck[$ndo["state"]] = $ndo["count(nagios_acknowledgements.state)"];
+		$hostUnhand[$ndo["state"]] -= $hostAck[$ndo["state"]];
+	}
 	 
 	/*
 	 * Get Host inactive objects
@@ -175,7 +180,10 @@
 	
 	$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
 	while ($ndo = $DBRESULT_NDO1->fetchRow())
+	{
 		$hostInactive[$ndo["current_state"]] = $ndo["count(nagios_hoststatus.current_state)"];
+		$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];
+	}
 	 
 	 
 	/*
@@ -403,6 +411,7 @@
 	$tpl->assign("HostStatus", $hostStatus);
 	$tpl->assign("HostAck", $hostAck);
 	$tpl->assign("HostInact", $hostInactive);
+	$tpl->assign("HostUnhand", $hostUnhand);
 	$tpl->assign("ServiceStatus", $SvcStat);
 	$tpl->assign("SvcAck", $svcAck);
 	$tpl->assign("SvcInact", $svcInactive);
@@ -447,7 +456,7 @@
 	$tpl->assign("str_critical", _("Critical"));
 	$tpl->assign("str_unknown", _("Unknown"));
 	$tpl->assign("str_pbhost", _("On Problem Host"));
-	$tpl->assign("str_svcunhandled", _("Unhandled"));
+	$tpl->assign("str_unhandledpb", _("Unhandled"));
 	
 	/*
 	 *  Common Strings for both the host and service parts

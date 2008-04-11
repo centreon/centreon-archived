@@ -20,7 +20,7 @@
 				<table class="SubTableTactical">
 					<tr>
 						<td class="SubTacticalDT">
-							<table>
+							<table>								
 								{if ($HostStatus[1] == ($HostAck[1] + $HostInact[1])) && ($HostStatus[1] > 0)}
 								<tr><td style="background-color:#ee9572;"><a href={$url_hostPb}>{$HostStatus[1]} {$str_down}</a></td></tr>
 								{elseif $HostStatus[1] > 0}
@@ -34,6 +34,9 @@
 								{if $HostInact[1] > 0}
 								<tr><td class="SubTacticalDT" style="background-color:#ee9572;">{$HostInact[1]} {$str_disabled}</td></tr>
 								{/if}
+								{if $HostUnhand[1] > 0}
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_down};font-weight:bold;">{$HostUnhand[1]} {$str_unhandledpb}</td></tr>
+								{/if}								
 							</table>
 						</td>
 						<td class="SubTacticalDT">
@@ -50,6 +53,9 @@
 								{/if}
 								{if $HostInact[2] > 0}
 								<tr><td class="SubTacticalDT" style="background-color:#339999;">{$HostInact[2]} {$str_disabled}</td></tr>
+								{/if}
+								{if $HostUnhand[2] > 0}
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_unreachable};font-weight:bold;">{$HostUnhand[2]} {$str_unhandledpb}</td></tr>
 								{/if}
 							</table>
 						</td>
@@ -70,6 +76,9 @@
 								{/if}
 								{if $HostInact[3] > 0}
 								<tr><td class="SubTacticalDT" style="background-color:#99cccc;">{$HostInact[3]} {$str_disabled}</td></tr>
+								{/if}
+								{if $HostUnhand[3] > 0}
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_pending};font-weight:bold;">{$HostUnhand[3]} {$str_unhandledpb}</td></tr>
 								{/if}
 							</table>
 						</td>
@@ -108,7 +117,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#ee9572;">{$SvcOnPbHost[2]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[2] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_critical};font-weight:bold;">{$SvcUnhandled[2]} {$str_svcunhandled}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_critical};font-weight:bold;">{$SvcUnhandled[2]} {$str_unhandledpb}</td></tr>
 								{/if}
 							</table>
 						</td>
@@ -131,7 +140,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#ffcc66;">{$SvcOnPbHost[1]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[1] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_warning};font-weight:bold;">{$SvcUnhandled[1]} {$str_svcunhandled}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_warning};font-weight:bold;">{$SvcUnhandled[1]} {$str_unhandledpb}</td></tr>
 								{/if}
 							</table>
 						</td>
@@ -160,7 +169,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#cccccc;">{$SvcOnPbHost[3]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[3] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_unknown};font-weight:bold;">{$SvcUnhandled[3]} {$str_svcunhandled}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_unknown};font-weight:bold;">{$SvcUnhandled[3]} {$str_unhandledpb}</td></tr>
 								{/if}
 							</table>
 						</td>
@@ -178,7 +187,7 @@
 								<tr><td class="SubTacticalDT" style="background-color:#99cccc;">{$SvcOnPbHost[4]} {$str_pbhost}</td></tr>
 								{/if}
 								{if $SvcUnhandled[4] > 0}
-								<tr><td class="SubTacticalDT" style="background-color:{$color.color_pending};font-weight:bold;">{$SvcUnhandled[4]} {$str_svcunhandled}</td></tr>
+								<tr><td class="SubTacticalDT" style="background-color:{$color.color_pending};font-weight:bold;">{$SvcUnhandled[4]} {$str_unhandledpb}</td></tr>
 								{/if}
 							</table>
 						</td>
@@ -196,15 +205,15 @@
 		</tr>
 		<tr>
 			<td>
-				<table class="SubTable2Tactical">
-					<tr style="font-weight:bold;">
-						<td class="SubTacticalDT" align=center>{$str_hostname}</td>
-						<td class="SubTacticalDT" align=center>{$str_servicename}</td>
-						<td class="SubTacticalDT" align=center>{$str_status}</td>
-						<td class="SubTacticalDT" align=center>{$str_ip}</td>
-						<td class="SubTacticalDT" align=center>{$str_duration}</td>
-						<td class="SubTacticalDT" align=center>{$str_lastcheck}</td>
-						<td class="SubTacticalDT" align=center style="width:500px;">{$str_output}</td>
+				<table class="tactical_light_table">
+					<tr style="font-weight:bold;" class="tactical_light_header">
+						<td align=center>{$str_hostname}</td>
+						<td align=center>{$str_servicename}</td>
+						<td align=center>{$str_status}</td>
+						<td align=center>{$str_ip}</td>
+						<td align=center>{$str_duration}</td>
+						<td align=center>{$str_lastcheck}</td>
+						<td align=center style="width:500px;">{$str_output}</td>
 					</tr>
 					{assign var="class" value="list_one"}
 					{foreach from=$tb_hostname key=k item=hostname}

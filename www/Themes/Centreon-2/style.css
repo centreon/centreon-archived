@@ -491,5 +491,16 @@ div.pagination{
 	background-color:#D9D9D9;
 }
 
+#tactical_light		{position:absolute;top:10px;right:10px;}
+.tactical_light_table {padding: 1px;padding-right: 3px;padding-left: 3px;font-size: 8px;color: #454545;}
+.tactical_light_table td	{border: 1px SOLID #AEAEAE; width:120px;}
+
+.tactical_light_header{
+	background-image: url("./Images/bg_header_bluegray.gif");
+	background-position:top left;
+	background-repeat:repeat-x;
+	background-color: #eaeaee;
+	color:#666666;}
+
 .tacWarn 	{background-color:#F8C706;}
 .tacPB 		{background-color:#2AD1D4;}
