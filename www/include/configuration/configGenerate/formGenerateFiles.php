@@ -52,6 +52,7 @@ For information : contact@oreon-project.org
 	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"));
 	$form->setDefaults(array('debug' => '1'));	
 	
+	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"));
 	$form->addElement('checkbox', 'optimize', _("Run Optimization test (-s)"));
 	$form->addElement('checkbox', 'move', _("Move Export Files"));
 	$form->addElement('checkbox', 'restart', _("Restart Nagios"));
@@ -84,36 +85,37 @@ For information : contact@oreon-project.org
 			if ($key && ($res["host"] == 0 || $res["host"] == $key))
 				$host_list[$key] = $value;
 		
-		$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
-		if (PEAR::isError($DBRESULT_Servers))
-			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
-		while ($tab =& $DBRESULT_Servers->fetchRow()){
-			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){	
-				unset($DBRESULT2);
-				require($path."genCGICFG.php");
-				require($path."genNagiosCFG.php");
-				require($path."genNdomod.php");
-				require($path."genNagiosCFG-DEBUG.php");
-				require($path."genResourceCFG.php");
-				require($path."genTimeperiods.php");
-				require($path."genCommands.php");
-				require($path."genContacts.php");
-				require($path."genContactGroups.php");
-				require($path."genHosts.php");
-				require($path."genExtendedInfos.php");
-				require($path."genHostGroups.php");
-				require($path."genServices.php");
-				if ($oreon->user->get_version() >= 2)
-					require($path."genServiceGroups.php");
-				require($path."genEscalations.php");
-				require($path."genDependencies.php");
-				require($path."centreon_pm.php");
+		if (isset($ret["gen"]) && $ret["gen"]){
+			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
+			if (PEAR::isError($DBRESULT_Servers))
+				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
+			while ($tab =& $DBRESULT_Servers->fetchRow()){
+				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){	
+					unset($DBRESULT2);
+					require($path."genCGICFG.php");
+					require($path."genNagiosCFG.php");
+					require($path."genNdomod.php");
+					require($path."genNagiosCFG-DEBUG.php");
+					require($path."genResourceCFG.php");
+					require($path."genTimeperiods.php");
+					require($path."genCommands.php");
+					require($path."genContacts.php");
+					require($path."genContactGroups.php");
+					require($path."genHosts.php");
+					require($path."genExtendedInfos.php");
+					require($path."genHostGroups.php");
+					require($path."genServices.php");
+					if ($oreon->user->get_version() >= 2)
+						require($path."genServiceGroups.php");
+					require($path."genEscalations.php");
+					require($path."genDependencies.php");
+					require($path."centreon_pm.php");
+				}
+				unset($generatedHG);
+				unset($generatedSG);
+				unset($generatedS);
 			}
-			unset($generatedHG);
-			unset($generatedSG);
-			unset($generatedS);
-		}
-			
+		}			
 		/*
 		 * Meta Module Generator engine
 		 */
@@ -185,7 +187,7 @@ For information : contact@oreon-project.org
 					}
 					$msg_copy[$host["id"]] .= "</table>";
 				} else {
-					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd", $return);
+					passthru ("echo 'SENDCFGFILE:".$host['id']."' >> /usr/local/centreon/var/centcore.cmd", $return);
 					//print("echo 'SENDCFGFILE:".$host['id']."' >> /srv/oreon/var/centcore.cmd");	
 				}
 		}
@@ -209,7 +211,7 @@ For information : contact@oreon-project.org
 					if (isset($host['localhost']) && $host['localhost'] == 1){
 						$stdout = shell_exec("sudo " . $nagios_init_script . " restart");
 					} else {
-						system("echo \"RESTART:".$host["id"]."\" >> /srv/oreon/var/centcore.cmd", $return);
+						system("echo \"RESTART:".$host["id"]."\" >> /usr/local/centreon/var/centcore.cmd", $return);
 					}
 				} else if ($ret["restart_mode"] == 3)	{
 					require_once("./include/monitoring/external_cmd/functions.php");
@@ -217,7 +219,7 @@ For information : contact@oreon-project.org
 					$_GET["cmd"] = 25;
 					require_once("./include/monitoring/external_cmd/cmd.php");
 					$stdout = "EXTERNAL COMMAND: RESTART_PROGRAM;\n";
-					system("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /srv/oreon/var/centcore.cmd");
+					system("echo \"EXTERNALCMD:RESTART_PROGRAM:".$host["id"]."\" >> /usr/local/nagios/var/rw/nagios.cmd");
 				}
 				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
 				if (PEAR::isError($DBRESULT))
