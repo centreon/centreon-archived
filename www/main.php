@@ -200,39 +200,6 @@
 			$oreon->historyLimit[$url] = $_POST["limit"];
 	}
 
-	/*
-	 * Display Legend
-	 */
-	if (isset($path) && $path){
-		$lg_path = get_path($path);
-		if (file_exists($lg_path."legend.ihtml")){
-			$tpl = new Smarty();
-			$tpl = initSmartyTpl("./", $tpl);
-			
-			$tpl->assign('enable', _("Enable"));
-			$tpl->assign('disable', _("Disable"));
-			$tpl->assign('duplicate', _("Duplicate"));
-			$tpl->assign('sign', _("Sign"));
-			$tpl->assign('delete', _("Delete"));
-			$tpl->assign('deleteall', _("Delete all"));
-			$tpl->assign('view', _("View"));
-			$tpl->assign('edit', _("Edit"));
-			$tpl->assign('previous', _("Previous"));
-			$tpl->assign('next', _("Next"));
-			$tpl->assign('force', _("Force"));
-			$tpl->assign('graph', _("Graph"));
-			$tpl->assign('notification', _("Notification"));
-			$tpl->assign('passive', _("Passive"));
-			$tpl->assign('work', _("Work"));
-			$tpl->assign('refresh', _("Refresh"));
-			$tpl->assign('play', _("Play"));
-			$tpl->assign('pause', _("Pause"));
-			$tpl->assign('inactive', _("Inactive"));
-					
-			$tpl->display($lg_path."legend.ihtml");
-		}
-	}
-
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 	print "<!-- Footer -->";
 	/*

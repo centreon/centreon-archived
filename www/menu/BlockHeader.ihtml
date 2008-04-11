@@ -78,7 +78,7 @@
 	<span id="linkBar"></span>
 	<span id="logli">
 		<img src='./img/icones/16x16/text_code.gif' alt="icon_link_doc" />&nbsp;<a href='./oreon.php?p={$p}&amp;doc=1&amp;page=toc.html' title='{$Documentation}'>{$Documentation}</a>&nbsp;&nbsp;
-		<img onclick="DisplayHidden('legend');" src="./img/icones/16x16/text_view.gif" alt='{$legend1}' title='{$legend2}'/>&nbsp;<a onclick="DisplayHidden('legend');">{$Help}</a>&nbsp;&nbsp;
+
 		<a href="{$LogOutUrl}"><img src="./img/icones/16x16/logout.gif" alt="icon_logout"/></a>&nbsp;<a href="{$LogOutUrl}">{$Logout}</a>&nbsp;
 	</span>
 	<div id="date">{$Date}</div>

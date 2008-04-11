@@ -329,26 +329,30 @@
 	 * Get problem table
 	*/
 	if (!$is_admin)
-		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl" .
+		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
 				" WHERE obj.object_id = stat.service_object_id" .
 				" AND stat.service_object_id = svc.service_object_id" .
+				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
+				" AND stat.current_state <> 3" .
 				" AND stat.problem_has_been_acknowledged = 0" .
 				" AND obj.is_active = 1" .
 				" AND obj.name1 IN ($lcaSTR)" .
 				" AND obj.name2 = centreon_acl.service_description " .
 				" AND centreon_acl.group_id IN (".groupsListStr(getGroupListofUser($pearDB)).") " .
-				" ORDER by stat.current_state DESC, obj.name1, stat.last_check";
+				" ORDER by stat.current_state DESC, obj.name1";
 	else
-		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc" .
+		$rq1 = 	" SELECT distinct obj.name1, obj.name2, stat.current_state, stat.last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, " . "ht.address" .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
 				" WHERE obj.object_id = stat.service_object_id" .
 				" AND stat.service_object_id = svc.service_object_id" .
+				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
+				" AND stat.current_state <> 3" .
 				" AND stat.problem_has_been_acknowledged = 0" .
 				" AND obj.is_active = 1" .				
-				" ORDER by stat.last_check DESC";
+				" ORDER by stat.current_state DESC, obj.name1";
 				
 	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
 	if (PEAR::isError($DBRESULT_NDO1))
@@ -361,7 +365,9 @@
 	$tab_last[$j] = "";
 	$tab_duration[$j] = "";
 	$tab_output[$j] = "";
-	while ($ndo =& $DBRESULT_NDO1->fetchRow() && $j < 15)
+	$tab_ip[$j] = "";
+	
+	while ($ndo =& $DBRESULT_NDO1->fetchRow())
 	{
 		$is_unhandled = 1;	
 		for($i=0; $i<$pbCount && $is_unhandled; $i++)
@@ -375,6 +381,7 @@
 			$tab_svcname[$j] = $ndo["name2"];
 			$tab_state[$j] = $ndo["current_state"];
 			$tab_last[$j] = $ndo["last_check"];
+			$tab_ip[$j] = $ndo["address"];
 
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
 				$tab_duration[$j] = Duration::toString(time() - $ndo["last_state_change"]);
@@ -407,6 +414,8 @@
 	$tpl->assign("tb_last", $tab_last);
 	$tpl->assign("tb_output", $tab_output);
 	$tpl->assign("tb_duration", $tab_duration);
+	$tpl->assign("tb_ip", $tab_ip);
+	
 	$tpl->assign("refresh_interval", $oreon->optGen["oreon_refresh"]);
 	
 	/*
@@ -450,7 +459,7 @@
 	/*
 	 *  Strings for service problems
 	 */
-	$tpl->assign("str_unhandled", _("15 last Unhandled Service problems"));
+	$tpl->assign("str_unhandled", _("Unhandled Service problems"));
 	$tpl->assign("str_hostname", _("Host Name"));
 	$tpl->assign("str_servicename", _("Service Name"));
 	$tpl->assign("str_status", _("Status"));
@@ -458,6 +467,7 @@
 	$tpl->assign("str_duration", _("Duration"));
 	$tpl->assign("str_output", _("Status Output"));
 	$tpl->assign("str_actions", _("Actions"));
+	$tpl->assign("str_ip", _("IP Address"));
 	
 	$tpl->display("tacticalOverview.ihtml");
  ?>

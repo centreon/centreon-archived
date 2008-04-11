@@ -189,6 +189,7 @@
 						<td class="SubTacticalDT" align=center>{$str_hostname}</td>
 						<td class="SubTacticalDT" align=center>{$str_servicename}</td>
 						<td class="SubTacticalDT" align=center>{$str_status}</td>
+						<td class="SubTacticalDT" align=center>{$str_ip}</td>
 						<td class="SubTacticalDT" align=center>{$str_duration}</td>
 						<td class="SubTacticalDT" align=center>{$str_lastcheck}</td>
 						<td class="SubTacticalDT" align=center style="width:500px;">{$str_output}</td>
@@ -208,6 +209,7 @@
 						<td class="SubTacticalDT" style="background-color:#ffcc66;"><a href={$url_svcdetail}{$tb_hostname[$k]}{$url_svcdetail2}{$tb_svcname[$k]}>{$tb_svcname[$k]}</a></td>
 						<td class="SubTacticalDT" style="background-color:{$color.color_warning};font-weight:bold;" align=center>{$str_warning}</td>
 						{/if}
+						<td class="SubTacticalDT" align=center style="background-color:#eeeeee;">{$tb_ip[$k]}</td>
 						<td class="SubTacticalDT" align=right style="background-color:#eeeeee;">{$tb_duration[$k]}</td>
 						<td class="SubTacticalDT" align=center style="background-color:#eeeeee;">{$tb_last[$k]}</td>
 						<td class="SubTacticalDT" style="width:500px; background-color:#eeeeee;">{$tb_output[$k]}</td>
