@@ -53,7 +53,7 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
 # Include Configuration Data
-require $installedPath."etc/conf.pm";
+require "/etc/centreon/conf.pm";
 
 sub catch_zap {
 	$stop = 0;
