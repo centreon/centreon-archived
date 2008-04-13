@@ -32,12 +32,11 @@ use File::Copy;
 
 use vars qw($debug $LOG %status $generalcounter $stop $method);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
-use vars qw($con $ssh $installedPath);
+use vars qw($con $ssh $scp $installedPath);
 
-#if (POSIX::getuid() != 0 ) { print  STDERR "You must exec with root user \n"; exit 1;}
-#if ( -e $PID) { print STDERR "CentCore already in use \n"; exit 1;}
-
-my $method = "system";
+if (POSIX::getuid() == 0 ) { 
+	print  STDERR "You must not execute centcore with root user \n"; exit 1;
+}
 
 my $echo = "/bin/echo";
 
@@ -47,11 +46,11 @@ my $PID = $installedPath."var/centcore.pid";
 my $cmdFile = "/usr/local/centreon/var/centcore.cmd";
 
 $ssh = "/usr/bin/ssh";
+$scp = "/usr/bin/scp";
 
 my $stop = 1;
 my $debug = 0;
 my $cfg;
-
 
 # Include Configuration Data
 require "/etc/centreon/conf.pm";
@@ -64,7 +63,6 @@ sub catch_zap {
 sub writeLogFile($){
 	open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
 	print LOG time()." - ".$_[0];
-	print time()." - ".$_[0];
 	close LOG or warn $!;
 }
 
@@ -80,14 +78,18 @@ if (-x $PID){
 	exit(2);
 }
 
+sub killChild(){
+	;#print "Kill : $$ -> OK\n";
+}
+
 # Writing PID
 open (PID, ">> ".$PID) || print "can't write PID : $!";
 print PID $$ ;
 close PID or warn $!;
 
 # Set signals
-$SIG{INT}  		= \&catch_zap;
-$SIG{'CHLD'} 	= 'IGNORE';
+$SIG{'INT'}  	= \&catch_zap;
+$SIG{'CHLD'} 	= \&killChild;
 
 # Declare functions
 
@@ -99,6 +101,10 @@ sub moveCmdFile($);
 # In other words, we're keeping track of these handles.
 
 my $timeSyncPerf = 0;
+my $timeNagiosLogs = 0;
+
+my $difTime = 0;
+
 while ($stop) {  
 	# Select Wait
 	if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")){
@@ -107,16 +113,12 @@ while ($stop) {
 		}
 	}
 	close(FILE);
-	writeLogFile("Receiving order to stop...\n") if (!$stop);
-	my $flag = 1;
-	my $difTime = time() - $timeSyncPerf if (defined($timeSyncPerf) && $timeSyncPerf);
-	if ($flag && ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0)){
-		
-		print "$timeBetween2SyncPerf <= $difTime\n" if (defined($timeSyncPerf) && $timeSyncPerf);
-				
+	if (defined($timeSyncPerf) && $timeSyncPerf) {
+		$difTime = time() - $timeSyncPerf;
+	}
+	if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
 		# Get PerfData on Nagios Poller
-		GetAllNagiosServerPerfData();
-		
+		GetAllNagiosServerPerfData();		
 		$timeSyncPerf = time();
 	}
 	sleep(1);
@@ -129,10 +131,22 @@ sub moveCmdFile($){
 	}
 }
 
+sub removeTmpCmdFile($){
+	my $CMDFILE = $_[0];
+	if (unlink($CMDFILE."_read")){
+		return(1);
+	} else {
+		writeLogFile("Can't remove temporary command file.\n");
+		return 0;
+	}
+}
+
 sub GetAllNagiosServerPerfData(){
 	CheckMySQLConnexion();
-	my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '0' AND ns_activate = '1'");
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	my $sth2 = $con->prepare("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
+	if (!$sth2->execute()) {
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+	}
 	while (my $data = $sth2->fetchrow_hashref()){
 		GetPerfData($data->{'id'});
 		GetLogFile($data->{'id'});
@@ -151,7 +165,9 @@ sub GetAllNagiosServerPerfData(){
 sub getNagiosConfigurationField($$){
 	CheckMySQLConnexion();
 	my $sth2 = $con->prepare("SELECT ".$_[1]." FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	if (!$sth2->execute()) {
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+	}
 	my $data = $sth2->fetchrow_hashref();
 	return $data->{$_[1]};
 }
@@ -159,7 +175,9 @@ sub getNagiosConfigurationField($$){
 sub getLocalOptionsField($){
 	CheckMySQLConnexion();
 	my $sth2 = $con->prepare("SELECT ".$_[0]." FROM `general_opt` LIMIT 1");
-	writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	if (!$sth2->execute()) {
+		writeLogFile("Error when getting general options properties : ".$sth2->errstr."\n");
+	}
 	my $data = $sth2->fetchrow_hashref();
 	return $data->{$_[0]};
 }
@@ -167,14 +185,18 @@ sub getLocalOptionsField($){
 sub getLocalServerID(){
 	CheckMySQLConnexion();
 	my $sth2 = $con->prepare("SELECT id FROM `nagios_server` WHERE `localhost` = '1'");
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	if (!$sth2->execute()) {
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+	}
 	return $sth2->fetchrow_hashref();
 }
 
 sub getServerConfig($){
 	CheckMySQLConnexion();
 	my $sth2 = $con->prepare("SELECT * FROM `nagios_server` WHERE `id` = '".$_[0]."' AND ns_activate = '1'");
-	writeLogFile("Error when getting server properties : ".$sth2->errstr."\n") if (!$sth2->execute());
+	if (!$sth2->execute()) {
+		writeLogFile("Error when getting server properties : ".$sth2->errstr."\n");
+	}
 	return $sth2->fetchrow_hashref();
 }
 
@@ -206,13 +228,15 @@ sub sendExternalCommand($$){
 	
 	# Get command file 
 	my $command_file = getNagiosConfigurationField($id, "command_file");
+	
 	# Get server informations
 	my $server_info = getServerConfig($id);
+	
 	# check if ip address is defined
 	if (defined($server_info->{'ns_ip_address'})){
 		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." 'echo \"".$cmd."\" >> ".$command_file."'\n";
 		my $stdout = `$cmd`;
-	    writeLogFile("External command : poller $id : \"".$cmd."\"\n");
+	    writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"\n");
 	    if (defined($stdout) && $stdout){
 		    writeLogFile("Result : $stdout\n");
 	    }
@@ -238,7 +262,7 @@ sub getNagiosInformation($){
 
 sub GetPerfData($){
 	# init Values
-	my $debug = 1;
+	my $debug = 0;
 	my $id = $_[0];
 
 	# Get Server Infos
@@ -269,7 +293,7 @@ sub GetPerfData($){
 		
 		# Get Perfdata file
 		writeLogFile("scp -q $origin $localtmpperffile\n") if ($debug);
-		`scp -q $origin $localtmpperffile`;
+		`$scp -q $origin $localtmpperffile`;
 		
 		# Remove old perfdata file 
 		writeLogFile("$ssh -q $distantconnexion rm $distanttmpperffile\n") if ($debug);
@@ -277,7 +301,9 @@ sub GetPerfData($){
 		
 		# Write data from distant poller on local file for centstorage
 		if (-f $localtmpperffile){
-			writeLogFile("cat $localtmpperffile >> $localperffile\n") if ($debug);
+			if ($debug) {
+				writeLogFile("cat $localtmpperffile >> $localperffile\n");
+			}
 			`cat $localtmpperffile >> $localperffile`;
 			#`rm -f $localtmpperffile`;
 		}
@@ -287,13 +313,16 @@ sub GetPerfData($){
 sub GetLogFile($){
 	# Init values
 	my $id = $_[0];
+	
 	# Get Server informations
 	my $server_info = getServerConfig($id);
 
 	# Check configuration
 	my $distantconnexion = $server_info->{'ns_ip_address'};
-	writeLogFile("IP address not defined for poller $id\n") if (!defined($distantconnexion));	
-
+	if (!defined($distantconnexion)) {
+		writeLogFile("IP address not defined for poller $id\n");	
+	}
+	
 	# Set local directory
 	my $localDir = $installedPath."/var/log/nagios/$id/";
 	# Create tmp directory
@@ -352,18 +381,16 @@ sub sendConfigFile($){
 	undef($cfg_dir);
 }
 
-sub restartNagios($){
-	my $id = $_[0];
-
+sub initNagios($$){
+	my ($id, $options) = $_;
 	my $conf = getServerConfig($id);
-	#$conf->{'user'}."@".
-	my $distantconnexion = $conf->{'ns_ip_address'};
-	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." restart\n";
-	print "RESTART : $cmd\n";
+	my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." ".$options."\n";
+	print "$options : $cmd\n";
 	my $stdout = `$cmd`;
+	# Logs Actions
+	writeLogFile("init Script : 'sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)\n");
     writeLogFile("$stdout\n");
 	undef($conf);
-	undef($distantconnexion);
 	undef($cmd);
 	undef($stdout);
 }
@@ -372,14 +399,10 @@ sub reloadNagios($){
 	my $id = $_[0];
 	
 	my $conf = getServerConfig($id);
-	# $conf->{'user'}."@".
-	my $distantconnexion = $conf->{'ns_ip_address'};
-	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." reload\n";
-	print "RELOAD : $cmd\n";
+	my $cmd = "ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." reload\n";
 	my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
 	undef($conf);
-	undef($distantconnexion);
 	undef($cmd);
 	undef($stdout);
 }
@@ -389,12 +412,10 @@ sub stopNagios($){
 	
 	my $conf = getServerConfig($id);
 	# $conf->{'user'}."@".
-	my $distantconnexion = $conf->{'ns_ip_address'};
-	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." stop\n";
+	my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." stop\n";
 	my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
 	undef($conf);
-	undef($distantconnexion);
 	undef($cmd);
 	undef($stdout);
 }
@@ -404,12 +425,10 @@ sub startNagios($){
 	
 	my $conf = getServerConfig($id);
 	# $conf->{'user'}."@".
-	my $distantconnexion = $conf->{'ns_ip_address'};
-	my $cmd = "ssh $distantconnexion sudo ".$conf->{'init_script'}." start\n";
+	my $cmd = "$ssh ".$conf->{'ns_ip_address'}." sudo ".$conf->{'init_script'}." start\n";
 	my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
 	undef($conf);
-	undef($distantconnexion);
 	undef($cmd);
 	undef($stdout);
 }
@@ -431,18 +450,23 @@ sub testConfig($){
 }
 
 sub parseRequest($){
-	return if (!$_[0]);
+	if (!$_[0]){
+		return ;
+	}
+	# 
+	# Checks keys for launching commands
+	# 
 	if ($_[0] =~ /RESTART\:([0-9]*)/){
-		restartNagios($1);
+		initNagios($1, "restart");
 	} elsif ($_[0] =~ /RELOAD\:([0-9]*)/){
-		reloadNagios($1);
+		initNagios($1, "reload");
 	} elsif ($_[0] =~ /START\:([0-9]*)/){
-		startNagios($1);
+		initNagios($1, "start");
+	} elsif ($_[0] =~ /STOP\:([0-9]*)/){
+		initNagios($1, "stop");
 	} elsif ($_[0] =~ /SENDCFGFILE\:([0-9]*)/){
 		sendConfigFile($1);
-	} elsif ($_[0] =~ /STOP\:([0-9]*)/){
-		stopNagios($1);
-	}  elsif ($_[0] =~ /TEST\:([0-9]*)/){
+	} elsif ($_[0] =~ /TEST\:([0-9]*)/){
 		testConfig($1);
 	} elsif ($_[0] =~ /EXTERNALCMD\:([0-9]*)\:(.*)/){
 		sendExternalCommand($1, $2);
