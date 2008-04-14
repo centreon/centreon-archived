@@ -99,7 +99,7 @@ For information : contact@oreon-project.org
 	
 	function updateServiceCategorieInDB(){
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
+		$DBRESULT =& $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	}
