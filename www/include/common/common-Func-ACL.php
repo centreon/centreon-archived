@@ -140,9 +140,8 @@
 		$groups = array();
 		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_group_contacts_relations WHERE acl_group_contacts_relations.contact_contact_id = '".$user["user_id"]."'");
   		if ($num = $DBRESULT->numRows()){
-			while ($group = $DBRESULT->fetchRow()) {
+			while ($group = $DBRESULT->fetchRow())
 				$groups[$group["acl_group_id"]] = $group["acl_group_id"];
-			}
 			$DBRESULT->free();
   		}
   		/*
@@ -216,6 +215,18 @@
 					if (isset($lcaHost[$host["host_id"]]))
 						unset($lcaHost[$host["host_id"]]);
 			unset($DBRESULT3);
+			/*
+			 * Service group hosts
+			 */
+			$DBRESULT3 =& $pearDB->query(	"SELECT host_host_id FROM `acl_resources_sg_relations`,  `servicegroup_relation`  " .
+											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
+													"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
+	  		if ($DBRESULT3->numRows())
+		  		while ($host = $DBRESULT3->fetchRow()){
+					$lcaHost[$host["host_host_id"]] = $host["host_host_id"];
+		  		}
+			unset($DBRESULT3);
+
   		}
 		$lcaHost[$host["host_name"]] = $host["host_id"];
 		unset($DBRESULT2);

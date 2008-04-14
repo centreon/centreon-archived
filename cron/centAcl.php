@@ -1,6 +1,5 @@
 <?php
 /*
- * 
  * Centreon is developped with GPL Licence 2.0 :
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
  * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon
@@ -52,7 +51,7 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM `acl_groups` WHERE acl_group_id = '".$acl_group_id."'");
 		while ($res = $DBRESULT->fetchRow()){
-			print "-----------$acl_group_id-------------\n";
+			#print "-----------$acl_group_id-------------\n";
 			$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");			
 			$Host = array();
 			while ($res2 = $DBRESULT2->fetchRow()){
@@ -64,6 +63,7 @@
 				$DBRESULT3 =& $pearDB->query("SELECT host_id, host_name FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res2["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
 			  	while ($h = $DBRESULT3->fetchRow())
 					$Host[$h["host_id"]] = $h["host_name"];
+				$DBRESULT3->free();
 					
 			  	/*
 			  	 * Get all host in hostgroups
@@ -74,6 +74,7 @@
 		  			while ($host_hostgroup = $DBRESULT4->fetchRow())
 						$Host[$host_hostgroup["host_host_id"]] = $host_hostgroup["host_name"];
 		  		}
+				$DBRESULT3->free();
 		  		
 		  		/*
 		  		 * Get All exclude Hosts
@@ -83,6 +84,18 @@
 			  		while ($h = $DBRESULT3->fetchRow())
 						if (isset($Host[$h["host_id"]]))
 							unset($Host[$h["host_id"]]);
+				$DBRESULT3->free();
+				/*
+				 * get all Service groups
+				 */
+				$DBRESULT3 =& $pearDB->query(	"SELECT host_name, host_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host` " .
+												"WHERE acl_res_id = '".$res2["acl_res_id"]."' " .
+													"AND host.host_id = servicegroup_relation.host_host_id " .
+													"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
+				if ($DBRESULT3->numRows())
+			  		while ($h = $DBRESULT3->fetchRow())
+						$Host[$h["host_id"]] = $h["host_name"];
+				$DBRESULT3->free();
 				
 				$str = "";
 				foreach ($Host as $key => $value){
@@ -94,6 +107,7 @@
 					}	 
 				}
 			}
+			$DBRESULT2->free();
 		}
 		if (count($tabElem)){
 			foreach ($tabElem as $host => $svc_list){
@@ -103,7 +117,7 @@
 					$str .= "('".$host."', '".$desc."', ".$acl_group_id.") ";
 				}
 			}
-			print $strBegin.$str . "\n\n";
+			#print $strBegin.$str . "\n\n";
 			$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
 			if (PEAR::isError($DBRESULTNDO))
 				print "DB Error : ".$DBRESULTNDO->getDebugInfo()."<br />";
