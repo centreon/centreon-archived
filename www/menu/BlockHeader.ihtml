@@ -35,7 +35,7 @@
 		<tr>
 			<td>
 				<table class='Resume_light_table'>
-					<tr class='Resume_light_header'>
+					<tr class='Resume_light_header' style="white-space:nowrap;">
 						<td>{$Hosts_States}</td>
 						<td>{$Up}</td>
 						<td>{$Down}</td>
@@ -54,7 +54,7 @@
 			<td>&nbsp;</td>
 			<td>
 				<table class='Resume_light_table'>
-					<tr class='Resume_light_header'>
+					<tr class='Resume_light_header' style="white-space:nowrap;">
 						<td>{$Services_States}</td>
 						<td>{$Ok}</td>
 						<td>{$Warning}</td>
