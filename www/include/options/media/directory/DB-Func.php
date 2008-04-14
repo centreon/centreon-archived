@@ -155,6 +155,8 @@ For information : contact@oreon-project.org
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 		$old_dir_alias = $DBRESULT->fetchRow();
+		if (!is_dir("./img/media/".$old_dir_alias["dir_alias"]))
+			mkdir("./img/media/".$old_dir_alias["dir_alias"]);
 		rename("./img/media/".$old_dir_alias["dir_alias"], "./img/media/".$ret["dir_alias"]);
 		if (is_dir("./img/media/".$ret["dir_alias"]))	{
 			$rq = "UPDATE view_img_dir ";

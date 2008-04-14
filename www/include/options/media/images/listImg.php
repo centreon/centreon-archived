@@ -25,9 +25,9 @@ For information : contact@oreon-project.org
 	# end quickSearch form
 	
 	if (isset($search))
-		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img WHERE img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'");
+		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND img_img_id = img_id AND dir_dir_parent_id = dir_id");
 	else
-		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img");
+		$res = & $pearDB->query("SELECT COUNT(*) FROM view_img, view_img_dir, view_img_dir_relation WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id");
 	$tmp = & $res->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -46,9 +46,9 @@ For information : contact@oreon-project.org
 	# end header menu
 	# img list
 	if ($search)
-		$rq = "SELECT img_id, img_name, img_path, dir_name, dir_alias FROM view_img, view_img_dir, view_img_dir_relation WHERE img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%' AND img_img_id = img_id AND dir_dir_parent_id = dir_id ORDER BY img_name, dir_alias LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM view_img_dir_relation WHERE img_img_id = img_id GROUP BY img_id ) AS nbr, img_id, img_name, img_path, dir_name, dir_alias FROM view_img, view_img_dir, view_img_dir_relation WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES)."%'  OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES)."%') AND img_img_id = img_id AND dir_dir_parent_id = dir_id ORDER BY img_name, dir_alias LIMIT ".$num * $limit.", ".$limit;
 	else
-		$rq = "SELECT img_id, img_name, img_path, dir_name, dir_alias FROM view_img, view_img_dir, view_img_dir_relation WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id ORDER BY img_name, dir_alias LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM view_img_dir_relation WHERE img_img_id = img_id GROUP BY img_id ) AS nbr, img_id, img_name, img_path, dir_name, dir_alias FROM view_img, view_img_dir, view_img_dir_relation WHERE img_img_id = img_id AND dir_dir_parent_id = dir_id ORDER BY img_name, dir_alias LIMIT ".$num * $limit.", ".$limit;
 	$res =& $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
@@ -58,8 +58,6 @@ For information : contact@oreon-project.org
 	$elemArr = array();	for ($i = 0; $res->fetchInto($img); $i++) {
 		$selectedElements =& $form->addElement('checkbox', "select[".$img['img_id']."]");	
 		$moptions = "<a href='oreon.php?p=".$p."&img_id=".$img['img_id']."&o=w&&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&img_id=".$img['img_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&img_id=".$img['img_id']."&o=d&select[".$img['img_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>&nbsp;&nbsp;";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>html_entity_decode($img["img_name"], ENT_QUOTES),
@@ -124,5 +122,5 @@ For information : contact@oreon-project.org
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-	$tpl->display("listImg.ihtml");	
+	$tpl->display("listImg.ihtml");
 ?>

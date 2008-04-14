@@ -41,17 +41,13 @@ For information : contact@oreon-project.org
 		 */
 		if (!$img_path && !$dir_alias)
 			foreach($imgs as $key=>$value)	{
-				$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir, view_img_dir_relation WHERE img_img_id = '".$key."' AND dir_dir_parent_id = dir_id");
-				if (PEAR::isError($DBRESULT))
-					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-				$dir_alias = $DBRESULT->fetchRow();
-				$DBRESULT =& $pearDB->query("SELECT img_path FROM view_img WHERE img_id = '".$key."' LIMIT 1");
+				$DBRESULT =& $pearDB->query("SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation WHERE img_id = '".$key."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$img_path = $DBRESULT->fetchRow();
-				if (is_file("./img/media/".$dir_alias["dir_alias"]."/".$img_path["img_path"]))
-					unlink("./img/media/".$dir_alias["dir_alias"]."/".$img_path["img_path"]);
-				if (!is_file("./img/media/".$dir_alias["dir_alias"]."/".$img_path["img_path"]))	{
+				if (is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))
+					unlink("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]);
+				if (!is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))	{
 					$pearDB->query("DELETE FROM view_img WHERE img_id = '".$key."'");
 					if (PEAR::isError($DBRESULT))
 						print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
@@ -92,32 +88,28 @@ For information : contact@oreon-project.org
 			/*
 			 * Delete old file
 			 */
-			$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir, view_img_dir_relation WHERE img_img_id = '".$img_id."' AND dir_dir_parent_id = dir_id");
-			if (PEAR::isError($DBRESULT))
-				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
-			$dir_alias = $DBRESULT->fetchRow();
-			$DBRESULT =& $pearDB->query("SELECT img_path FROM view_img WHERE img_id = '".$img_id."' LIMIT 1");
+			$DBRESULT =& $pearDB->query("SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 			$img_path = $DBRESULT->fetchRow();
-			if (is_file("./img/media/".$dir_alias["dir_alias"]."/".$img_path["img_path"]))
-				unlink("./img/media/".$dir_alias["dir_alias"]."/".$img_path["img_path"]);
+			if (is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))
+				unlink("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]);
 			/*
 			 * Copy new file
 			 */
-			 if (!is_file("./img/media/".$dir_alias["dir_alias"]."/".$img_path["img_path"]))	{
+			 if (!is_file("./img/media/".$img_path["dir_alias"]."/".$img_path["img_path"]))	{
 				$DBRESULT =& $pearDB->query("SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$ret["directories"]."'");
 				if (PEAR::isError($DBRESULT))
 					print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
 				$dir_alias = $DBRESULT->fetchRow();			
-				$file->moveUploadedFile("./img/media/".$dir_alias["dir_alias"]);
+				$file->moveUploadedFile("./img/media/".$img_path["dir_alias"]);
 				$fDataz =& $file->getValue();
-				rename("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"], "./img/media/".$dir_alias["dir_alias"]."/".str_replace(" ", "_", $fDataz["name"]));
+				rename("./img/media/".$img_path["dir_alias"]."/".$fDataz["name"], "./img/media/".$img_path["dir_alias"]."/".str_replace(" ", "_", $fDataz["name"]));
 				# Delete space in image name
 				$fDataz["name"] = str_replace(" ", "_", $fDataz["name"]);
-				if (is_file("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]))	{
+				if (is_file("./img/media/".$img_path["dir_alias"]."/".$fDataz["name"]))	{
 					# Manage name
-					$pinfo = pathinfo("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]);
+					$pinfo = pathinfo("./img/media/".$img_path["dir_alias"]."/".$fDataz["name"]);
 					$ret["img_name"] = $pinfo["filename"];
 					$ret["img_path"] = $pinfo["basename"];
 					
