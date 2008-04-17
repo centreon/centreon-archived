@@ -55,8 +55,6 @@
 			$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");			
 			$Host = array();
 			while ($res2 = $DBRESULT2->fetchRow()){
-				//print "###################################\n";
-				
 				/*
 				 * Get all Hosts 
 				 */
@@ -85,17 +83,6 @@
 						if (isset($Host[$h["host_id"]]))
 							unset($Host[$h["host_id"]]);
 				$DBRESULT3->free();
-				/*
-				 * get all Service groups
-				 */
-				$DBRESULT3 =& $pearDB->query(	"SELECT host_name, host_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host` " .
-												"WHERE acl_res_id = '".$res2["acl_res_id"]."' " .
-													"AND host.host_id = servicegroup_relation.host_host_id " .
-													"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
-				if ($DBRESULT3->numRows())
-			  		while ($h = $DBRESULT3->fetchRow())
-						$Host[$h["host_id"]] = $h["host_name"];
-				$DBRESULT3->free();
 				
 				$str = "";
 				foreach ($Host as $key => $value){
@@ -106,6 +93,22 @@
 						$tabElem[$value][$desc] = 1;
 					}	 
 				}
+
+				/*
+				 * get all Service groups
+				 */
+				$DBRESULT3 =& $pearDB->query(	"SELECT host_name, host_id, service_description FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service` " .
+												"WHERE acl_res_id = '".$res2["acl_res_id"]."' " .
+													"AND host.host_id = servicegroup_relation.host_host_id " .
+													"AND service.service_id = servicegroup_relation.service_service_id " .
+													"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id");
+				if ($DBRESULT3->numRows())
+			  		while ($h = $DBRESULT3->fetchRow()){
+						if (!isset($tabElem[$h["host_id"]]))
+							$tabElem[$h["host_id"]] = array();
+			  			$tabElem[$h["host_name"]][$h["service_description"]] = 1;
+			  		}
+				$DBRESULT3->free();
 			}
 			$DBRESULT2->free();
 		}
@@ -117,7 +120,7 @@
 					$str .= "('".$host."', '".$desc."', ".$acl_group_id.") ";
 				}
 			}
-			#print $strBegin.$str . "\n\n";
+			//print $strBegin.$str . "\n\n";
 			$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
 			if (PEAR::isError($DBRESULTNDO))
 				print "DB Error : ".$DBRESULTNDO->getDebugInfo()."<br />";
