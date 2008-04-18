@@ -135,9 +135,7 @@ For information : contact@oreon-project.org
 	}
 		
 	function insertServiceGroup($ret = array())	{
-		global $form;
-		global $pearDB;
-		global $oreon;
+		global $form, $pearDB, $oreon, $is_admin;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO servicegroup (sg_name, sg_alias, sg_comment, sg_activate) ";

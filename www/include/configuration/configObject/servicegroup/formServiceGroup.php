@@ -29,7 +29,7 @@ For information : contact@oreon-project.org
 	
 	$sg = array();
 	if (($o == "c" || $o == "w") && $sg_id)	{	
-		if ($oreon->user->admin || !$isRestreint)		
+		if ($is_admin)		
 			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
 		else
 			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' AND sg_id IN (".$lcaSGStr.") LIMIT 1");
