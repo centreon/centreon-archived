@@ -18,6 +18,7 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 		
+		
 	 foreach ($_GET as $key => $value){
 		if (!is_array($value)){
 			$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
@@ -60,7 +61,6 @@ For information : contact@oreon-project.org
 	require_once ("./basic-functions.php");
 	require_once ("./include/common/common-Func.php");
 	require_once ("./header.php");
-
 	/*
 	 * LCA Init Common Var
 	 */
@@ -201,7 +201,6 @@ For information : contact@oreon-project.org
 		if (isset($_POST["limit"]))
 			$oreon->historyLimit[$url] = $_POST["limit"];
 	}
-
 
 	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
 	print "<!-- Footer -->";
