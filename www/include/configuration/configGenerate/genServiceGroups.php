@@ -19,21 +19,20 @@ For information : contact@oreon-project.org
 	if (!isset($oreon))
 		exit();
 		
-	if (!is_dir($nagiosCFGPath.$tab['id']."/")) {
+	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 		mkdir($nagiosCFGPath.$tab['id']."/");
-	}
 
 	$generatedSG = array();
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup ORDER BY `sg_name`");
+	$DBRESULT =& $pearDB->query("SELECT * FROM `servicegroup` ORDER BY `sg_name`");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	
 	$serviceGroup = array();
 	$i = 1;
 	$str = NULL;
-	while($DBRESULT->fetchInto($serviceGroup))	{
+	while ($serviceGroup = $DBRESULT->fetchRow())	{
 		$BP = false;
 		$generated = 0;
 		$strDef = "";
@@ -134,6 +133,7 @@ For information : contact@oreon-project.org
 		}
 		unset($serviceGroup);
 	}
+	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES), $nagiosCFGPath.$tab['id']."/servicegroups.cfg");
 	fclose($handle);
 	$DBRESULT->free();
