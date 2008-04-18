@@ -22,6 +22,27 @@
 	function getLCASG($pearDB){
 		if (!$pearDB)
 			return ;
+			
+		$groups = getGroupListofUser($pearDB);
+		$str 	= groupsListStr($groups);
+		
+		$str_topo = "";
+		$condition = "";
+		if ($str != "")
+			$condition = " WHERE acl_group_id IN (".$str.")";		
+		$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+		while ($res = $DBRESULT->fetchRow()){
+
+			$DBRESULT2 =& $pearDB->query("SELECT acl_resources_sg_relations.sg_id, sg_name FROM servicegroup, acl_resources_sg_relations WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_sg_relations.sg_id = servicegroup.sg_id");	
+			if (PEAR::isError($DBRESULT2))
+				print "DB Error : ".$DBRESULT2->getDebugInfo()."<br />";
+			while ($DBRESULT2->fetchInto($serviceGroup))
+				$lcaServiceGroup[$serviceGroup["sg_id"]] = $serviceGroup["sg_name"];
+			$DBRESULT2->free();
+		
+		}
+		$DBRESULT->free();
+		/*
 		if (session_id() == "") $uid = $_POST["sid"] ; else $uid = session_id();
 		$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$uid."'");
 		if (PEAR::isError($DBRESULT))
@@ -48,6 +69,7 @@
 					}
 			}
 		}
+		*/
 		return $lcaServiceGroup;
 	}
 	

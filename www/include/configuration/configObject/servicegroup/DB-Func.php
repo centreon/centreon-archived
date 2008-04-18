@@ -64,8 +64,7 @@ For information : contact@oreon-project.org
 	}
 	
 	function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())	{
-		global $pearDB;
-		global $oreon;
+		global $pearDB, $oreon, $is_admin;
 		foreach($serviceGroups as $key=>$value)	{
 			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
 			if (PEAR::isError($DBRESULT))
@@ -89,25 +88,22 @@ For information : contact@oreon-project.org
 						print $DBRESULT->getDebugInfo()."<br />";
 					$maxId =& $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
-						# Update LCA
-						$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-						if (PEAR::isError($DBRESULT))
-							print $DBRESULT->getDebugInfo()."<br />";
-						while($DBRESULT->fetchInto($contactGroup))	{
-						 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
-							if (PEAR::isError($DBRESULT2))
-								print $DBRESULT2->getDebugInfo()."<br />";
-							while ($DBRESULT2->fetchInto($lca))	{
-								$rq = "INSERT INTO lca_define_servicegroup_relation ";
-								$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
-								$rq .= "VALUES ";
-								$rq .= "('".$lca["lca_define_lca_id"]."', '".$maxId["MAX(sg_id)"]."')";
-								$DBRESULT3 =& $pearDB->query($rq);
-								if (PEAR::isError($DBRESULT3))
-									print $DBRESULT3->getDebugInfo()."<br />";
+						/*
+						 *  Update LCA
+						 */
+						if (!$is_admin){
+							$group_list = getGroupListofUser($pearDB);
+							$resource_list = getResourceACLList($group_list);
+							if (count($resource_list)){
+								foreach ($resource_list as $res_id)	{			
+									$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_sg_relations` (acl_res_id, sg_id) VALUES ('".$res_id."', '".$maxId["MAX(sg_id)"]."')");
+									if (PEAR::isError($DBRESULT3))
+										print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+								}
+								unset($resource_list);
 							}
-							$DBRESULT2->free();
 						}
+
 						$DBRESULT->free();
 						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 						if (PEAR::isError($DBRESULT))
@@ -160,25 +156,22 @@ For information : contact@oreon-project.org
 			print $DBRESULT->getDebugInfo()."<br />";
 		$sg_id = $DBRESULT->fetchRow();
 		
-		# Update LCA
-		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		if (PEAR::isError($DBRESULT))
-			print $DBRESULT->getDebugInfo()."<br />";
-		while($DBRESULT->fetchInto($contactGroup))	{
-		 	$DBRESULT2 =& $pearDB->query("SELECT lca_define_lca_id FROM lca_define_contactgroup_relation ldcgr WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."'");	
-			if (PEAR::isError($DBRESULT2))
-				print $DBRESULT2->getDebugInfo()."<br />";
-			while ($DBRESULT2->fetchInto($lca))	{
-				$rq = "INSERT INTO lca_define_servicegroup_relation ";
-				$rq .= "(lca_define_lca_id, servicegroup_sg_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$lca["lca_define_lca_id"]."', '".$sg_id["MAX(sg_id)"]."')";
-				$DBRESULT3 =& $pearDB->query($rq);
-				if (PEAR::isError($DBRESULT3))
-					print $DBRESULT3->getDebugInfo()."<br />";
+		/*
+		 *  Update LCA
+		 */
+		if (!$is_admin){
+			$group_list = getGroupListofUser($pearDB);
+			$resource_list = getResourceACLList($group_list);
+			if (count($resource_list)){
+				foreach ($resource_list as $res_id)	{			
+					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_sg_relations` (acl_res_id, sg_id) VALUES ('".$res_id."', '".$sg_id["MAX(sg_id)"]."')");
+					if (PEAR::isError($DBRESULT3))
+						print "DB Error : ".$DBRESULT3->getDebugInfo()."<br />";
+				}
+				unset($resource_list);
 			}
-			$DBRESULT2->free();
 		}
+
 		$DBRESULT->free();
 		return ($sg_id["MAX(sg_id)"]);
 	}

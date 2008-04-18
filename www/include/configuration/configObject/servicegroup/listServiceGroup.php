@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 	/*
 	 * start quickSearch form
 	 */
-	$advanced_search = 1;
+	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	
 	if (!$is_admin){
@@ -34,6 +34,7 @@ For information : contact@oreon-project.org
 		$lcaHGStr 	= getLCAHGStr($lcaHost["LcaHostGroup"]);
 	}
 
+	$SearchTool = 0;
 	if (isset($search) && $search)
 		$SearchTool = "sg_id IN (".$lcaSGStr.")";
 
