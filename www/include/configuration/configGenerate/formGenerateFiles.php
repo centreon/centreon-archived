@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	if (!isset($oreon))
 		exit();
@@ -53,7 +52,7 @@ For information : contact@oreon-project.org
 	$form->setDefaults(array('debug' => '1'));	
 	
 	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"));
-	$form->addElement('checkbox', 'optimize', _("Run Optimization test (-s)"));
+	$form->setDefaults(array('gen' => '1'));	
 	$form->addElement('checkbox', 'move', _("Move Export Files"));
 	$form->addElement('checkbox', 'restart', _("Restart Nagios"));
 	
@@ -84,7 +83,7 @@ For information : contact@oreon-project.org
 		foreach ($tab_nagios_server as $key => $value)
 			if ($key && ($res["host"] == 0 || $res["host"] == $key))
 				$host_list[$key] = $value;
-		
+
 		if (isset($ret["gen"]) && $ret["gen"]){
 			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost` FROM `nagios_server` ORDER BY `name`");
 			if (PEAR::isError($DBRESULT_Servers))
