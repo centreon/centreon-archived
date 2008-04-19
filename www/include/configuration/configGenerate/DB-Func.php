@@ -249,7 +249,7 @@ For information : contact@oreon-project.org
 		$DBRESULT->free();
 		
 		# OSL
-		if (is_dir("./modules/osl"))	{
+		if (isset($oreon->modules["osl"]))	{
 			$osl = array();
 			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl WHERE osl_activate = '1'");
 			if (PEAR::isError($DBRESULT))
@@ -378,7 +378,7 @@ For information : contact@oreon-project.org
 
 	
 		# OSL
-		if (is_dir("./modules/osl"))	{			
+		if (isset($oreon->modules["osl"]))	{		
 			$osl = array();
 			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl WHERE osl_activate = '1'");
 			if (PEAR::isError($DBRESULT))
@@ -475,7 +475,7 @@ For information : contact@oreon-project.org
 		$DBRESULT->free();
 
 		# OSL
-		if (is_dir("./modules/osl"))	{	
+		if (isset($oreon->modules["osl"]))	{
 			$osl = array();
 			$DBRESULT =& $pearDB->query("SELECT osl_id FROM osl");
 			if (PEAR::isError($DBRESULT))

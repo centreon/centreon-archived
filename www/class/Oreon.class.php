@@ -61,10 +61,9 @@ class Oreon	{
 		$this->modules = array();
 		$DBRESULT =& $pearDB->query("SELECT `name`,`sql_files`,`lang_files`,`php_files` FROM `modules_informations`");
 		while ($result =& $DBRESULT->fetchRow()){
-			$this->modules[$result["name"]]["name"] = $result["name"];
-			is_dir("./modules/".$result["name"]."/generate_files/") ? $this->modules[$filename]["gen"] = true : $this->modules[$filename]["gen"] = false;
-			is_dir("./modules/".$result["name"]."/sql/") ? $this->modules[$filename]["sql"] = true : $this->modules[$filename]["sql"] = false;
-			is_dir("./modules/".$result["name"]."/lang/") ? $this->modules[$filename]["lang"] = true : $this->modules[$filename]["lang"] = false;		
+			$this->modules[$result["name"]] = array("name"=>$result["name"], "gen"=>false, "sql"=>$result["sql_files"], "lang"=>$result["lang_files"]);
+			if (is_dir("./modules/".$result["name"]."/generate_files/"))
+				$this->modules[$result["name"]]["gen"] = true;
 		}
 		$DBRESULT->free();
 	}
