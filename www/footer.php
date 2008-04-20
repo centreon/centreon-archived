@@ -48,11 +48,11 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 </body>
 </html>
 <?php
-
-	if ($pearDB)
+	
+	if (isset($pearDB) && is_object($pearDB))
 		$pearDB->disconnect();
-	if ($pearDBO)
+	if (isset($pearDBO) && is_object($pearDBO))
 		$pearDBO->disconnect();
-	if ($pearDBndo)
+	if (isset($pearDBndo) && is_object($pearDBndo))
 		$pearDBndo->disconnect();
 ?>
