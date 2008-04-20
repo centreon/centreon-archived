@@ -1,31 +1,32 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
+	ini_set("Display_errors", "Off");
 
-For information : contact@oreon-project.org
-*/
-
-	 include("../../centreon.conf.php");
+	 include("/etc/centreon/centreon.conf.php");
 	 require_once ("../../$classdir/Session.class.php");
 	 require_once ("../../$classdir/Oreon.class.php");
+
 	 Session::start();
 
 	 if (!isset($_SESSION["oreon"])) {
 	 	// Quick dirty protection
 	 	header("Location: ../../index.php");
-	 }
-	 else
+	 } else
 	 	$oreon =& $_SESSION["oreon"];
 
 	if (isset($_GET["host"]))
@@ -39,7 +40,8 @@ For information : contact@oreon-project.org
 
 	$tr = Net_Traceroute::factory();
 
-	if(!PEAR::isError($tr))	{
+	$msg = "";
+	if (!PEAR::isError($tr))	{
 		$tr->setArgs(array('timeout' => 5));
 	    $response = $tr->traceroute($host);
 		foreach ($response->getRawData() as $key => $data)
