@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus - Cedrick Facon 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	if (!isset($oreon))
 		exit();
@@ -136,16 +135,14 @@ For information : contact@oreon-project.org
 		$DBRESULT_NDO =& $pearDBndo->query($rq2);
 		if (PEAR::isError($DBRESULT_NDO))
 			print "DB Error : ".$DBRESULT_NDO->getDebugInfo()."<br />";
-		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++)
 			$tab_comments_svc[$i] = $data;
-		}
 		unset($data);	
 
 		
 		$en = array("0" => _("No"), "1" => _("Yes"));
-		foreach ($tab_comments_svc as $key => $value){
+		foreach ($tab_comments_svc as $key => $value)
 			$tab_comments_svc[$key]["is_persistent"] = $en[$tab_comments_svc[$key]["is_persistent"]];
-		}
 		
 		$en_acknowledge_text = array("1" => _("Delete this Acknowledgement"), "0" => _("Acknowledge this service"));
 		$en_acknowledge = array("1" => "0", "0" => "1");
@@ -183,7 +180,7 @@ For information : contact@oreon-project.org
 		foreach ($tab_status as $key => $value)
 			$status .= "&value[".$key."]=".$value;
 
-//		$optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$service_description;
+		$optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$svc_description;
 
 		/*
 		 * Assign translations
@@ -264,7 +261,7 @@ For information : contact@oreon-project.org
 		$tpl->assign("sv_ext_action_url_lang", _("Action URL"));
 		$tpl->assign("sv_ext_action_url", getMyServiceExtendedInfoField($service_id, "esi_action_url"));
 		$tpl->assign("sv_ext_icon_image_alt", getMyServiceExtendedInfoField($service_id, "esi_icon_image_alt"));
-		//$tpl->assign("options", $optionsURL);
+		$tpl->assign("options", $optionsURL);
 		$tpl->display("serviceDetails.ihtml");
 	}
 ?>
