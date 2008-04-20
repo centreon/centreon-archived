@@ -1,20 +1,20 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
+ 
 	if (!isset($oreon))
 		exit();
 
@@ -23,7 +23,7 @@ For information : contact@oreon-project.org
 	/*
 	 * start quickSearch form
 	 */
-	$advanced_search = 1;
+	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	
 	if (isset($_GET["search_type_service"])){
@@ -84,6 +84,7 @@ For information : contact@oreon-project.org
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("HostGroup"));
 	$tpl->assign("headerMenu_desc", _("Service"));
+	$tpl->assign("headerMenu_retry", _("Scheduling"));
 	$tpl->assign("headerMenu_parent", _("Parent Template"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
@@ -117,7 +118,7 @@ For information : contact@oreon-project.org
 	 
 	$elemArr = array();
 	$fgHostgroup = array("value"=>NULL, "print"=>NULL);
-	for ($i = 0; $DBRESULT->fetchInto($service); $i++) {
+	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$fgHostgroup["value"] != $service["hg_name"] ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"]) : $fgHostgroup["print"] = false;
 		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");

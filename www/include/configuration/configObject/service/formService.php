@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 	if (!isset($oreon))
 		exit();
@@ -44,7 +43,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		while ($DBRESULT->fetchInto($parent))	{
+		while ($parent = $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"])
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
 			else if ($parent["hostgroup_hg_id"])
@@ -66,7 +65,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($notifCg); $i++)
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		$DBRESULT->free();
 		
@@ -74,7 +73,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($sg); $i++)
+		for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
 		
@@ -82,7 +81,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($trap); $i++)
+		for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++)
 			$service["service_traps"][$i] = $trap["traps_id"];
 		$DBRESULT->free();
 		
@@ -90,7 +89,7 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		for($i = 0; $DBRESULT->fetchInto($service_category); $i++)
+		for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++)
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		$DBRESULT->free();
 	}
@@ -105,15 +104,16 @@ For information : contact@oreon-project.org
 		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_id IN (".$lcaHostStr.") AND host_register = '1' ORDER BY host_name");		
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($host))
+	while ($host = $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
+	
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array(NULL=>NULL);
 	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($svTpl))	{
+	while ($svTpl = $DBRESULT->fetchRow())	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
 		else	{
@@ -123,6 +123,7 @@ For information : contact@oreon-project.org
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
 	}
 	$DBRESULT->free();
+	
 	# HostGroups comes from DB -> Store in $hgs Array
 	$hgs = array();
 	$lcaSTR = "";
@@ -131,7 +132,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $lcaSTR ORDER BY hg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($hg))
+	while ($hg = $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 
@@ -140,7 +141,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($tp))
+	while ($tp = $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 
@@ -149,7 +150,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($checkCmd))
+	while ($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
@@ -158,7 +159,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($checkCmd))
+	while ($checkCmd = $DBRESULT->fetchRow())
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
@@ -167,7 +168,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($notifCg))
+	while ($notifCg = $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 
@@ -177,7 +178,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($sg))
+	while ($sg = $DBRESULT->fetchRow())
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
 
@@ -186,7 +187,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($graphTpl))
+	while ($graphTpl = $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 
@@ -195,7 +196,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($service_categorie))
+	while ($service_categorie = $DBRESULT->fetchRow())
 		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	$DBRESULT->free();
 
@@ -204,7 +205,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($trap))
+	while ($trap = $DBRESULT->fetchRow())
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	$DBRESULT->free();
 	
@@ -213,7 +214,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT purge_policy_id, purge_policy_name FROM purge_policy ORDER BY purge_policy_name");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($ppol))
+	while ($ppol = $DBRESULT->fetchRow())
 		$ppols[$ppol["purge_policy_id"]] = $ppol["purge_policy_name"];
 	$DBRESULT->free();
 
@@ -226,13 +227,14 @@ For information : contact@oreon-project.org
 	##########################################################
 	# Var information to format the element
 	#
-	$attrsText 		= array("size"=>"30");
-	$attrsText2		= array("size"=>"6");
-	$attrsAdvSelect_small = array("style" => "width: 200px; height: 70px;");
-	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
-	$attrsAdvSelect2 = array("style" => "width: 200px; height: 200px;");
-	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$attrsText 				= array("size"=>"30");
+	$attrsText2				= array("size"=>"6");
+	$attrsTextURL 			= array("size"=>"50");
+	$attrsAdvSelect_small 	= array("style" => "width: 200px; height: 70px;");
+	$attrsAdvSelect 		= array("style" => "width: 200px; height: 100px;");
+	$attrsAdvSelect2 		= array("style" => "width: 200px; height: 200px;");
+	$attrsTextarea 			= array("rows"=>"5", "cols"=>"40");
+	$template 				= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin
@@ -422,7 +424,7 @@ For information : contact@oreon-project.org
 	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	while($DBRESULT->fetchInto($rmnftr))
+	while ($rmnftr = $DBRESULT->fetchRow())
 		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES);
 	$mnftr[""] = "_"._("ALL")."_";
 	$DBRESULT->free();
@@ -512,11 +514,11 @@ For information : contact@oreon-project.org
 		$form->addElement('header', 'title3', _("Massive Change"));
 
 	$form->addElement('header', 'nagios', _("Nagios"));
-	if ($oreon->user->get_version() == 2)
+	if ($oreon->user->get_version() >= 2)
 		$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
-	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsText);
-	if ($oreon->user->get_version() == 2)
-		$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);
+	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsTextURL);
+	if ($oreon->user->get_version() >= 2)
+		$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsTextURL);
 	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('esi_icon_image',this.form.elements['esi_icon_image'].value)"));
 	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
@@ -561,7 +563,6 @@ For information : contact@oreon-project.org
 	$form->applyFilter('__ALL__', 'myTrim');
 	$from_list_menu = false;
 	if ($o != "mc")	{
-		//$form->applyFilter('service_description', 'myReplace');
 		$form->addRule('service_description', _("Compulsory Name"), 'required');
 		# If we are using a Template, no need to check the value, we hope there are in the Template
 		if (!$form->getSubmitValue("service_template_model_stm_id"))	{
@@ -575,19 +576,18 @@ For information : contact@oreon-project.org
 			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
 			$form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
 			if (!$form->getSubmitValue("service_hPars"))
-			$form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
+				$form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
 			if (!$form->getSubmitValue("service_hgPars"))
-			$form->addRule('service_hPars', _("HostGroup or Host Required"), 'required');
+				$form->addRule('service_hPars', _("HostGroup or Host Required"), 'required');
 		}
 		if (!$form->getSubmitValue("service_hPars"))
-		$form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
+			$form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
 		if (!$form->getSubmitValue("service_hgPars"))
-		$form->addRule('service_hPars', _("HostGroup or Host Required"), 'required');
+			$form->addRule('service_hPars', _("HostGroup or Host Required"), 'required');
 		$form->registerRule('exist', 'callback', 'testServiceExistence');
 		$form->addRule('service_description', _("This description is in conflict with another one that is already defined in the selected relation(s)"), 'exist');
 		$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
-	}
-	else if ($o == "mc")	{
+	} else if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
 			$from_list_menu = false;
 		else
@@ -608,20 +608,17 @@ For information : contact@oreon-project.org
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$service_id."'"));
 	    $form->setDefaults($service);
 		$form->freeze();
-	}
-	# Modify a service information
-	else if ($o == "c")	{
+	} else if ($o == "c")	{
+		# Modify a service information
 		$subC =& $form->addElement('submit', 'submitC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($service);
-	}
-	# Add a service information
-	else if ($o == "a")	{
+	} else if ($o == "a")	{
+		# Add a service information
 		$subA =& $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
-	}
-	# Massive Change
-	else if ($o == "mc")	{
+	} else if ($o == "mc")	{
+		# Massive Change
 		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"));
 	}
@@ -629,15 +626,10 @@ For information : contact@oreon-project.org
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));
 	$tpl->assign("sort1", _("Service Configuration"));
 	$tpl->assign("sort2", _("Relations"));
-	$tpl->assign("sort3", _("Relations"));
 	$tpl->assign("sort3", _("Data Processing"));
 	$tpl->assign("sort4", _("Service Extended Info"));
-	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {".
-	"var _img = document.getElementById(_img_dst + '_img');".
-	"_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );
-		
+	$tpl->assign('javascript', "<script type='text/javascript'>function showLogo(_img_dst, _value) {var _img = document.getElementById(_img_dst + '_img');_img.src = 'include/common/getHiddenImage.php?path=' + _value + '&logo=1' ; }</script>" );		
 	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._(" seconds "));
-
 	$tpl->assign("p", $p);
 	
 	$valid = false;
@@ -670,7 +662,7 @@ For information : contact@oreon-project.org
 			require_once($path."listServiceByHostGroup.php");
 		else if ($p == "602")
 			require_once($path."listServiceByHost.php");
-	}	else	{
+	} else {
 		#Apply a template definition
 		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
