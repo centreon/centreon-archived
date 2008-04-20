@@ -18,98 +18,73 @@ For information : contact@oreon-project.org
 
 <!-- Begin
 
-	function toggleCheckAll(theElement, id){	
-		var a = document.getElementById(id);
+function toggleCheckAll(theElement, id){	
+	var a = document.getElementById(id);
 
-		for(var i = 0; document.getElementById(id+'_'+i) ;i++){
-			var b = document.getElementById(id+'_'+i);
-			if(a.checked)
-				b.checked = true;
+	for (var i = 0; document.getElementById(id+'_'+i) ;i++){
+		var b = document.getElementById(id+'_'+i);
+		if (a.checked)
+			b.checked = true;
+		else
+			b.checked = false;
+
+		for(var j = 0; document.getElementById(id+'_'+i+'_'+j) ;j++){
+			var c = document.getElementById(id+'_'+i+'_'+j);
+			if(b.checked)
+				c.checked = true;
 			else
-				b.checked = false;
-
-			for(var j = 0; document.getElementById(id+'_'+i+'_'+j) ;j++){
-				var c = document.getElementById(id+'_'+i+'_'+j);
-				if(b.checked)
-					c.checked = true;
+				c.checked = false;
+			for(var k = 0; document.getElementById(id+'_'+i+'_'+j+'_'+k) ;k++){
+				var d = document.getElementById(id+'_'+i+'_'+j+'_'+k);
+				if (c.checked)
+					d.checked = true;
 				else
-					c.checked = false;
-				for(var k = 0; document.getElementById(id+'_'+i+'_'+j+'_'+k) ;k++){
-					var d = document.getElementById(id+'_'+i+'_'+j+'_'+k);
-					if(c.checked)
-						d.checked = true;
-					else
-						d.checked = false;
-	
-				}
-
+					d.checked = false;
 			}
 		}
-					
-
-	}					
-	
-	
+	}
+}					
 		
-	function toggleDisplay(id)
-		{
-
-
-			var d = document.getElementById(id);
-			if(d)
-			{
-				var img = document.getElementById('img_'+id);
-
-				if(img){
-					if(d.style.display == 'block')
-						img.src = 'img/icones/16x16/navigate_plus.gif';
-					else
-						img.src = 'img/icones/16x16/navigate_minus.gif';
-				}
-
-
-				if (d.style.display == 'block') {
-				d.style.display='none';
-				}
-				else
-				{
-				d.style.display='block';
-				}
-			}	
-	}
-
-
-	function checkUncheckAll(theElement) {
-
-     var theForm = theElement.form, z = 0;
-	 for(z=0; z<theForm.length;z++){
-      if(theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
-		  if(theForm[z].checked)
-		  {
-		   theForm[z].checked = false;
-		   }
-		  else{
-		  theForm[z].checked = true;
-		  }
-	  }
-     }
-   }
-
-
-	function DisplayHidden(id) {
-		var d = document.getElementById(id);
-
-		if(d)
-		{
-			if (d.style.display == 'block') {
-			d.style.display='none';
-			}
+function toggleDisplay(id)	{
+	var d = document.getElementById(id);
+	if (d){
+		var img = document.getElementById('img_'+id);
+		if (img){
+			if(d.style.display == 'block')
+				img.src = 'img/icones/16x16/navigate_plus.gif';
 			else
-			{
+				img.src = 'img/icones/16x16/navigate_minus.gif';
+		}
+		if (d.style.display == 'block') {
+			d.style.display='none';
+		} else {
 			d.style.display='block';
+		}
+	}	
+}
+
+function checkUncheckAll(theElement) {
+     var theForm = theElement.form, z = 0;
+	 for (z=0; z<theForm.length;z++){
+      	if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
+		  	if (theForm[z].checked) {
+				theForm[z].checked = false;
+		   	} else {
+		  		theForm[z].checked = true;
 			}
 		}
 	}
+}
 
+function DisplayHidden(id) {
+	var d = document.getElementById(id);
+	if (d){
+		if (d.style.display == 'block') {
+			d.style.display='none';
+		} else	{
+			d.style.display='block';
+		}
+	}
+}
 
 //  End -->
