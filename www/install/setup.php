@@ -21,8 +21,8 @@ For information : contact@oreon-project.org
 	include_once ("DB-Func.php");
 	Session::start();
 	ini_set("track_errors",true);
-	if (file_exists("installoreon.conf.php")) {
-	   include_once ("installoreon.conf.php");
+	if (file_exists("install.conf.php")) {
+	   include_once ("install.conf.php");
 	}
 	// Pear Modules Management
 	if (file_exists("pear_module.conf.php")) {
