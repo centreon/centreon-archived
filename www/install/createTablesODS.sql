@@ -305,3 +305,11 @@ CREATE TABLE IF NOT EXISTS `statistics` (
   `average` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+
+--
+-- Data 
+--
+
+INSERT INTO `config` (`id`, `RRDdatabase_path`, `RRDdatabase_status_path`, `len_storage_rrd`, `len_storage_mysql`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `average`, `auto_drop`, `drop_file`, `perfdata_file`, `archive_log`, `archive_retention`, `nagios_log_file`, `last_line_read`) VALUES(1, '@CENTREON_VAR@/metrics/', '@CENTREON_VAR@/svc_status/', 160, 365, '1', 10, 360, 2, NULL, '0', '@NAGIOS_VAR@/service-perfdata.tmp', '@NAGIOS_VAR@/service-perfdata', '1', 31, '@NAGIOS_VAR@/nagios.log', 0);
+INSERT INTO `statistics` (`id`, `ctime`, `lineRead`, `valueReccorded`, `last_insert_duration`, `average_duration`, `last_nb_line`, `cpt`, `last_restart`, `average`) VALUES(1, 0, 1, 0, 0, 0, 0, 0, 0, 0);
