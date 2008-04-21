@@ -24,19 +24,19 @@ In order for your Centreon installation to function properly, please complete th
   	</tr>
   	<tr>
     	<td style="padding-left:50px ">Nagios user</td>
-		<td><input name="nagios_user" type="text" value="<?php echo (isset($_SESSION["nagios_user"]) ?  $_SESSION["nagios_user"]  : (isset($conf_installoreon['nagios_user']) ?  $conf_installoreon['nagios_user']  : "nagios" ) );?>"></td>
+		<td><input name="nagios_user" type="text" value="<?php echo (isset($_SESSION["nagios_user"]) ?  $_SESSION["nagios_user"]  : (isset($conf_centreon['nagios_user']) ?  $conf_centreon['nagios_user']  : "nagios" ) );?>"></td>
   	</tr>
   	<tr>
     	<td style="padding-left:50px ">Nagios group</td>
-		<td><input name="nagios_group" type="text" value="<?php echo (isset($_SESSION["nagios_group"]) ?  $_SESSION["nagios_group"]  : (isset($conf_installoreon["nagios_group"]) ?  $conf_installoreon["nagios_group"]  : "nagios" ) );?>"></td>
+		<td><input name="nagios_group" type="text" value="<?php echo (isset($_SESSION["nagios_group"]) ?  $_SESSION["nagios_group"]  : (isset($conf_centreon["nagios_group"]) ?  $conf_centreon["nagios_group"]  : "nagios" ) );?>"></td>
   	</tr>
  	<tr>
     	<td style="padding-left:50px ">Apache User</td>
-		<td><input name="apache_user" type="text" value="<?php echo (isset($_SESSION["apache_user"]) ?  $_SESSION["apache_user"]  : (isset($conf_installoreon["apache_user"]) ?  $conf_installoreon["apache_user"]  : "apache" ) );?>"></td>
+		<td><input name="apache_user" type="text" value="<?php echo (isset($_SESSION["apache_user"]) ?  $_SESSION["apache_user"]  : (isset($conf_centreon["apache_user"]) ?  $conf_centreon["apache_user"]  : "apache" ) );?>"></td>
   	</tr>
   	<tr>
     	<td style="padding-left:50px ">Apache Group</td>
-		<td><input name="apache_group" type="text" value="<?php echo (isset($_SESSION["apache_group"]) ?  $_SESSION["apache_group"]  : (isset($conf_installoreon["apache_group"]) ?  $conf_installoreon["apache_group"]  : "apache" ) );?>"></td>
+		<td><input name="apache_group" type="text" value="<?php echo (isset($_SESSION["apache_group"]) ?  $_SESSION["apache_group"]  : (isset($conf_centreon["apache_group"]) ?  $conf_centreon["apache_group"]  : "apache" ) );?>"></td>
   	</tr>
   	<tr>
     	<td style="padding-left:50px ">Nagios Version</td>
@@ -49,15 +49,15 @@ In order for your Centreon installation to function properly, please complete th
   	</tr>
   	<tr>
     	<td style="padding-left:50px ">Nagios configuration directory</td>
-		<td><input name="nagios_conf" type="text" value="<?php echo (isset($_SESSION["nagios_conf"]) ?  $_SESSION["nagios_conf"]  : (isset($conf_installoreon["nagios_conf"]) ?  $conf_installoreon["nagios_conf"]  : "/usr/local/nagios/etc/" ) );?>" size="40"></td>
+		<td><input name="nagios_conf" type="text" value="<?php echo (isset($_SESSION["nagios_conf"]) ?  $_SESSION["nagios_conf"]  : (isset($conf_centreon["nagios_conf"]) ?  $conf_centreon["nagios_conf"]  : "/usr/local/nagios/etc/" ) );?>" size="40"></td>
   	</tr>
   	<tr>
     	<td style="padding-left:50px ">Nagios plugins</td>
-		<td><input name="nagios_plugins" type="text" value="<?php echo (isset($_SESSION["nagios_plugins"]) ?  $_SESSION["nagios_plugins"]  : (isset($conf_installoreon["nagios_plugins"]) ?  $conf_installoreon["nagios_plugins"]  : "/usr/local/nagios/libexec/" ) );?>" size="40"></td>
+		<td><input name="nagios_plugins" type="text" value="<?php echo (isset($_SESSION["nagios_plugins"]) ?  $_SESSION["nagios_plugins"]  : (isset($conf_centreon["nagios_plugins"]) ?  $conf_centreon["nagios_plugins"]  : "/usr/local/nagios/libexec/" ) );?>" size="40"></td>
   	</tr>
   	<tr>
     	<td style="padding-left:50px ">RRDTool binary</td>
-		<td><input name="rrdtool_dir" type="text" value="<?php echo (isset($_SESSION["rrdtool_dir"]) ?  $_SESSION["rrdtool_dir"]  : (isset($conf_installoreon["rrdtool_dir"]) ?  $conf_installoreon["rrdtool_dir"]  : "/usr/bin/rrdtool" ) );?>" size="40"></td>
+		<td><input name="rrdtool_dir" type="text" value="<?php echo (isset($_SESSION["rrdtool_dir"]) ?  $_SESSION["rrdtool_dir"]  : (isset($conf_centreon["rrdtool_dir"]) ?  $conf_centreon["rrdtool_dir"]  : "/usr/bin/rrdtool" ) );?>" size="40"></td>
   	</tr>
 </table>
 <?php
