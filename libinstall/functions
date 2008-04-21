@@ -858,7 +858,7 @@ function check_group_apache()
 
 function copyInTempFile()
 {
-	local srclistcp="bin cron doc GPL_LIB lib misc snmptrapd snmptt www Plugins"
+	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www filesUpload filesGeneration Plugins"
 	# Prepare centreon Plugins
 	echo "`gettext \"Preparing Centreon temporary files\"`"
 	if [ -d $TMPDIR ] ; then

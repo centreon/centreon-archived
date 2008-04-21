@@ -60,7 +60,7 @@ elif [ $# -eq 2 ] ; then
 		[ -d $2 ] && mv $2 $2.`date +%Y%m%d-%H%M%S` 
 		}
 	[ ! -d `basename $2` ] && mkdir -p `basename $2`
-	echo "copy $1 dans $2"
+	echo "copy $1 in $2"
 	cp -aR $1 $2
 	chown -R $username:$group $2
 	find $2 -type f -print | \
