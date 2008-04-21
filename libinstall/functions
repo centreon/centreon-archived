@@ -384,7 +384,7 @@ function locate_rrdtool() {
 		else 
 			BIN_RRDTOOL="$BIN_RRDTOOL/rrdtool"
 		fi
-		echo_success "$BIN_RRDTOOL" "$ok"
+		echo_success "Path $BIN_RRDTOOL" "$ok"
 	fi
 	log "INFO" "BIN_RRDTOOL: $BIN_RRDTOOL"
 }
@@ -398,9 +398,9 @@ function locate_mail() {
 		else 
 			BIN_MAIL="$BIN_MAIL/mail"
 		fi
-		echo_success "$BIN_MAIL" "$ok"
+		echo_success "Path $BIN_MAIL" "$ok"
 	fi
-	log "INFO" "BIN_MAIL: $BIN_MAIL"
+	log "INFO" "BIN_MAIL : $BIN_MAIL"
 }
 
 ## Check pear_path
@@ -451,7 +451,7 @@ __EOT__
 		if [ $? -eq 0 ] ; then
 			write_config=1	
 		fi
-    	fi
+    fi
     
 	if [ $write_config -eq 1 ] ; then 
 		cp $BASE_DIR/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
