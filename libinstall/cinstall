@@ -32,6 +32,7 @@ group=""
 mode=""
 dirmode=""
 backupdir=0
+file=""
 echo "arg $@"
 
 while getopts ":u:g:m:d:b" Option ; do
@@ -42,7 +43,7 @@ while getopts ":u:g:m:d:b" Option ; do
 		m )	mode="${OPTARG}" ;;
 		d )	dirmode="${OPTARG}" ;;
 		b )	backupdir=1 ;;
-		* )	echo $OPTARG;;
+		* )	;;
 	esac 
 done
 shift $(($OPTIND - 1))
@@ -60,7 +61,7 @@ elif [ $# -eq 2 ] ; then
 		[ -d $2 ] && mv $2 $2.`date +%Y%m%d-%H%M%S` 
 		}
 	[ ! -d `basename $2` ] && mkdir -p `basename $2`
-	echo "copy $1 in $2"
+	echo "copy $1 dans $2"
 	cp -aR $1 $2
 	chown -R $username:$group $2
 	find $2 -type f -print | \

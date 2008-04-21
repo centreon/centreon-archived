@@ -1,4 +1,4 @@
-#Â -*-Shell-script-*-
+# -*-Shell-script-*-
 # install script for centcore
 
 echo "------------------------------------------------------------------------"
@@ -21,7 +21,7 @@ mkdir -p $TMPDIR/final/bin
 mkdir -p $TMPDIR/work/bin
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
 
-##Â Change macros 
+## Change macros 
 sed -e 's|@CENTREON_PATH@|"$INSTALL_DIR_CENTREON"|g' \
  -e 's|@RRD_PERL@|"$RRD_PERL"|g' \
  $TMPDIR/src/bin/centcore > $TMPDIR/work/bin/centcore

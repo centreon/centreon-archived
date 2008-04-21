@@ -202,11 +202,46 @@ function test_answer() {
 	fi
 }
 
+## function select_in_array
+# use for select a data on array
+# unset array and create a variable with data
+function select_in_array() {
+	local variable=$1
+	shift
+	local array=($@)
+	local res=1
+	local count=0
+	local first=0
+	while [ $res -gt $count ] ; do
+		[ $first -eq 1 ] && echo_failure "`gettext \"\$res is not a valid response.\"`" "$critical" 
+		count=0
+		local limit=${#array[@]}
+		for (( datas=0; datas < limit; datas++ )) ; do
+			echo -e "\t$datas:\t${array[$datas]}"
+			let "count += 1" 
+		done
+		echo -en "> "
+		read res
+		first=1
+		if [ $res -eq $res 2>/dev/null ] ; then
+			echo " "
+		else 
+			echo_failure "`gettext \"$res is not an integer\"`" "$fail"
+			res=255
+			first=0
+		fi
+	done
+	eval $variable=${array[$res]}
+	return 0
+}
+
+
 ## Fonction usage()
 function usage() {
 	local program=$0
 	echo -e "`gettext \"Usage: $program -f <file>\"`"
 	echo -e "\t-f\t`gettext \"file with all variable\"`"
+	echo -e "\t-u\t`gettext \"file with all variable for upgrade :\"` CENTREON_CONF"
 	exit 1
 }
 
@@ -356,6 +391,15 @@ function locate_centstorage_rrddir() {
 	log "INFO" "CENTSTORAGE_RRD: $CENTSTORAGE_RRD"
 }
 
+## Check centStorage_bindir
+function locate_centstorage_bindir() {
+	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
+		answer_with_createdir "`gettext \"Where is your CentStorage binary directory\"`" "$INSTALL_DIR_CENTREON$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
+		echo_success "Path $CENTSTORAGE_BINDIR" "$ok"
+	fi
+	log "INFO" "CENTSTORAGE_BINDIR: $CENTSTORAGE_BINDIR"
+}
+
 ## check sudo_file
 function locate_sudo() {
 	if [ -z "$SUDO_FILE" ] ; then
@@ -384,7 +428,7 @@ function locate_rrdtool() {
 		else 
 			BIN_RRDTOOL="$BIN_RRDTOOL/rrdtool"
 		fi
-		echo_success "Path $BIN_RRDTOOL" "$ok"
+		echo_success "$BIN_RRDTOOL" "$ok"
 	fi
 	log "INFO" "BIN_RRDTOOL: $BIN_RRDTOOL"
 }
@@ -398,9 +442,28 @@ function locate_mail() {
 		else 
 			BIN_MAIL="$BIN_MAIL/mail"
 		fi
-		echo_success "Path $BIN_MAIL" "$ok"
+		echo_success "$BIN_MAIL" "$ok"
 	fi
-	log "INFO" "BIN_MAIL : $BIN_MAIL"
+	log "INFO" "BIN_MAIL: $BIN_MAIL"
+}
+
+## Check php
+function locate_php_bin() {
+	if [ -z "$PHP_BIN" ] ; then
+		php_binaries="php php5"
+		for binary in $php_binaries ; do
+			pathfind_ret $binary "PHP_BIN"
+			if [ $? -eq 0 ] ; then
+				PHP_BIN="$PHP_BIN/$binary"
+				break
+			fi
+		done
+		if [ -z "$PHP_BIN" ] ; then 
+			answer_with_testfile "`gettext \"Where is your php binany ? \"`" "$DEFAULT_PHP_BIN" "PHP_BIN"
+		fi
+		echo_success "$PHP_BIN" "$ok"
+	fi
+	log "INFO" "PHP_BIN: $PHP_BIN"
 }
 
 ## Check pear_path
@@ -411,6 +474,20 @@ function locate_pear() {
 		echo_success "Path $PEAR_PATH" "$ok"
 	fi
 	log "INFO" "PEAR_PATH: $PEAR_PATH"
+}
+
+## Check cron.d directory
+function locale_cron() {
+	if [ -z "$CRON_D" ] ; then
+		if [ -d /etc/cron.d ] ; then
+			CRON_D="/etc/cron.d"
+		# Add most of init.d 
+		else 
+			answer_with_testdir "`gettext \"Where is your cron.d directory ?\"`" "$DEFAULT_CRON_D" "CRON_D"
+			echo_success "Path $CRON_D" "$ok"
+		fi
+	fi
+	log "INFO" "CRON_D: $CRON_D"
 }
 
 # Check apache version, and configure it. Ask to restart apache server
@@ -451,7 +528,7 @@ __EOT__
 		if [ $? -eq 0 ] ; then
 			write_config=1	
 		fi
-    fi
+    	fi
     
 	if [ $write_config -eq 1 ] ; then 
 		cp $BASE_DIR/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
@@ -555,7 +632,7 @@ For information : contact@oreon-project.org
 \$conf_centreon['nagios'] = "$INSTALL_DIR_NAGIOS/";
 \$conf_centreon['nagios_conf'] = "$NAGIOS_ETC/";
 \$conf_centreon['nagios_plugins'] = "$NAGIOS_PLUGIN/";
-\$conf_centreon['nagios_binary'] = "$NAGIOS_BINARY/";
+\$conf_centreon['nagios_binary'] = "$NAGIOS_BINARY";
 \$conf_centreon['nagiosstats_binary'] = "$NAGIOSSTATS_BINARY";
 \$conf_centreon['nagios_init_script'] = "$NAGIOS_INIT_SCRIPT";
 \$conf_centreon['rrdtool_dir'] = "$BIN_RRDTOOL";
@@ -594,14 +671,15 @@ __EOT__
 	
 }
 
-## Function createCentreonInstallConf
-function createCentWebInstallConf() {
+## Function createCentWebInstallConf
+# file use for upgrade CentWeb
+function createCentreonInstallConf() {
 
 if [ -e $CENTREON_CONF ] ; then 
 	# Reinit file
 	echo "" > $CENTREON_CONF
 fi
-cat << __EOF__ >> $CENTREON_CONF
+cat << __EOT__ >> $CENTREON_CONF
 INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
 NAGIOS_ETC=$NAGIOS_ETC
@@ -621,7 +699,8 @@ BIN_MAIL=$BIN_MAIL
 PEAR_PATH=$PEAR_PATH
 CENTREON_LOG=$CENTREON_LOG
 CENTREON_GENDIR=$CENTREON_GENDIR
-__EOF__
+CENTSTORAGE_RRD=$CENTSTORAGE_RRD
+__EOT__
 
 echo_success "Create $CENTREON_CONF " "OK"
 }
@@ -858,7 +937,7 @@ function check_group_apache()
 
 function copyInTempFile()
 {
-	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www filesUpload filesGeneration Plugins"
+	local srclistcp="bin cron doc GPL_LIB lib misc snmptrapd snmptt www Plugins"
 	# Prepare centreon Plugins
 	echo "`gettext \"Preparing Centreon temporary files\"`"
 	if [ -d $TMPDIR ] ; then

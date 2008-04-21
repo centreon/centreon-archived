@@ -100,10 +100,8 @@ find $NAGIOS_ETC -type f -print | \
 	xargs -I '{}' chown $WEB_USER:$WEB_GROUP '{}' 2>&1 >> $LOG_FILE
 
 ### Step 4: Copy final stuff in system directoy
-
 log "INFO" "`gettext \"Copy CentWeb in system directory\"`"
 echo_info "`gettext \"Copy CentWeb in system directory\"`"
-
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
 	$TMPDIR/final/www $INSTALL_DIR_CENTREON 2>&1 >> $LOG_FILE
 
@@ -114,7 +112,6 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
 
 echo_passed "`gettext \"CentWeb file installation\"`" "$passed"
-
 
 echo "------------------------------------------------------------------------"
 echo -e "`gettext \"Pear Modules\"`"
