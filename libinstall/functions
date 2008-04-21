@@ -477,7 +477,7 @@ function locate_pear() {
 }
 
 ## Check cron.d directory
-function locale_cron() {
+function locate_cron_d() {
 	if [ -z "$CRON_D" ] ; then
 		if [ -d /etc/cron.d ] ; then
 			CRON_D="/etc/cron.d"

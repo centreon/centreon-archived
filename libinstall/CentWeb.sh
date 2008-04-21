@@ -116,7 +116,9 @@ echo_passed "`gettext \"CentWeb file installation\"`" "$passed"
 echo "------------------------------------------------------------------------"
 echo -e "`gettext \"Pear Modules\"`"
 echo -e "------------------------------------------------------------------------\n"
+
 pear_module=0
+
 while [ $pear_module -eq 0 ] ; do 
 	check_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
 	if [ $? -ne 0 ] ; then
