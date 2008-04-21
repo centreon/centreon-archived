@@ -108,13 +108,9 @@ echo_info "`gettext \"Copy CentWeb in system directory\"`"
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
 	$TMPDIR/final/www $INSTALL_DIR_CENTREON 2>&1 >> $LOG_FILE
 
-mkdir $TMPDIR/final/filesGeneration
-mkdir $TMPDIR/final/filesGeneration/nagiosCFG
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG 2>&1 >> $LOG_FILE
 
-mkdir $TMPDIR/final/filesUpload
-mkdir $TMPDIR/final/filesUpload/nagiosCFG
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
 
