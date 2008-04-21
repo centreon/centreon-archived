@@ -126,7 +126,7 @@ my ($opt_f, $opt_m);
 GetOptions("f|file=s" => \$opt_f, "m|man=s"  => \$opt_m);
 
 if (!$opt_f || !$opt_m) {
-    print "fill_trapDB : Usage : ./fill_trapDB -f configuration_file -m manufacturer_id\n";
+    print "fill_trapDB : Usage : ./centFillTrapDB -f configuration_file -m manufacturer_id\n";
     exit;
 }
 
