@@ -28,8 +28,8 @@ use strict;
 use Getopt::Long;
 use DBI;
 
-use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
-require "/etc/centreon/conf.pm";
+use vars qw($mysql_database $mysql_database_data $mysql_host $mysql_user $mysql_passwd);
+require "@CENTREON_ETC@/conf.pm";
 
 ######################################
 ## Get snmptt configuration files path
@@ -37,7 +37,7 @@ require "/etc/centreon/conf.pm";
 
 sub getPath($) {
     my $dbh = shift;
-    my $sth = $dbh->prepare("Select snmp_trapd_path_conf from general_opt");
+    my $sth = $dbh->prepare("Select `snmp_trapd_path_conf` FROM `general_opt`");
     $sth->execute();
     my $path = $sth->fetchrow_array();
     undef($sth);
@@ -50,21 +50,20 @@ sub main() {
     print "Generating SNMPTT configuration files...\n";
     my ($nbMan, $nbTraps) = (0,0);
 
-	my $dsn = "dbi:mysql:$mysql_database_oreon";
-    my $dbh = DBI->connect($dsn, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
+    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
     my $confFiles_path = getPath($dbh);
-    
-	my $sth = $dbh->prepare("SELECT `oreon_path` FROM `general_opt` LIMIT 1");
-	$sth->execute();
-	my @conf = $sth->fetchrow_array();
-	$sth->finish();
-	my $NAGIOS_TRAPS = $conf[0]."bin/";
-    
-    $sth = $dbh->prepare("SELECT id, name from traps_vendor");
+
+    my $sth = $dbh->prepare("SELECT `oreon_path` FROM `general_opt` LIMIT 1");
+    $sth->execute();
+    my @conf = $sth->fetchrow_array();
+    $sth->finish();
+    my $NAGIOS_TRAPS = $conf[0]."bin/";
+
+    $sth = $dbh->prepare("SELECT `id`, `name` FROM `traps_vendor`");
     $sth->execute();
     my $snmpttIni = "";
     while (my ($man_id, $man_name) = $sth->fetchrow_array()) {
-		my $sth2 = $dbh->prepare("SELECT traps_name, traps_oid, traps_status, traps_args, traps_comments FROM traps WHERE manufacturer_id = '$man_id'");
+		my $sth2 = $dbh->prepare("SELECT `traps_name`, `traps_oid`, `traps_status`, `traps_args`, `traps_comments` FROM `traps` WHERE `manufacturer_id` = '$man_id'");
 		$sth2->execute();
 		if (!open(FILE, "> ".$confFiles_path."snmptt-".$man_name.".conf")) {
 		    print "Cannot open ".$confFiles_path."snmptt-".$man_name.".conf in write mode - Export aborded\n";
