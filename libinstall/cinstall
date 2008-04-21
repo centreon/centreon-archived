@@ -1,0 +1,76 @@
+#!/bin/bash
+###################################################################
+# Centreon is developped with GPL Licence 2.0 
+#
+# GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#
+# Developped by : Julien Mathis - Romain Le Merlus 
+# Contribute	: Guillaume Watteeux - Maximilien Bersoult
+#
+###################################################################
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+#    For information : infos@oreon-project.org
+####################################################################
+# redefine install command
+# username : user proprietary of folder
+# group : group proprietary of folder
+# mode : set permission mode on file (as in chmod), ex:755
+# dirmode : set permission mode on folder, ex:766
+
+## Init default variables
+username=""
+group=""
+mode=""
+dirmode=""
+backupdir=0
+echo "arg $@"
+
+while getopts ":u:g:m:d:b" Option ; do
+	echo "Option: $Option, arg: $OPTARG"
+	case $Option in
+		u )	username="${OPTARG}" ;;
+		g )	group="${OPTARG}" ;;
+		m )	mode="${OPTARG}" ;;
+		d )	dirmode="${OPTARG}" ;;
+		b )	backupdir=1 ;;
+		* )	echo $OPTARG;;
+	esac 
+done
+shift $(($OPTIND - 1))
+
+[ -z "$username" ] && exit 1
+[ ${#mode} -eq 0 -a ${#dirmode} -eq 0 ] &&  exit 1
+
+if [ $# -eq 1 ] ; then
+	[ ! -d $1 ] && mkdir -p $1
+	chown -R $username:$group $1
+	find $1 -type d -print | \
+		xargs -I '{}' chmod $dirmode '{}'
+elif [ $# -eq 2 ] ; then
+	[ $backupdir -eq 1 ] && {
+		[ -d $2 ] && mv $2 $2.`date +%Y%m%d-%H%M%S` 
+		}
+	[ ! -d `basename $2` ] && mkdir -p `basename $2`
+	echo "copy $1 dans $2"
+	cp -aR $1 $2
+	chown -R $username:$group $2
+	find $2 -type f -print | \
+		xargs -I '{}' chmod $mode '{}' 
+	find $2 -type d -print | \
+		xargs -I '{}' chmod $dirmode '{}' 
+else 
+	exit 1
+fi
+exit 0
+
+
+

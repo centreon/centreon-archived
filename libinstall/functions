@@ -1,0 +1,1016 @@
+# -*-Shell-script-*-
+#
+# functions     This file contains functions to be used by Centreon install scripts
+#
+## VARS
+yes="`gettext \"y\"`"
+no="`gettext \"n\"`"
+ok="`gettext \"OK\"`"
+fail="`gettext \"FAIL\"`"
+passed="`gettext \"PASSED\"`"
+critical="`gettext \"CRITICAL\"`"
+
+## COLOR FUNCTIONS
+
+RES_COL=60
+MOVE_TO_COL="\\033[${RES_COL}G"
+SETCOLOR_INFO="\\033[1;38m"
+SETCOLOR_SUCCESS="\\033[1;32m"
+SETCOLOR_FAILURE="\\033[1;31m"
+SETCOLOR_WARNING="\\033[1;33m"
+SETCOLOR_NORMAL="\\033[0;39m"
+
+function echo_info() {
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_INFO}${2}${SETCOLOR_NORMAL}"
+}
+
+function echo_success() {
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_SUCCESS}${2}${SETCOLOR_NORMAL}"
+}
+
+function echo_failure() {
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_FAILURE}${2}${SETCOLOR_NORMAL}"
+}
+
+function echo_passed() {
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}"
+}
+
+function echo_warning() {
+    echo -e "${1}${MOVE_TO_COL}${SETCOLOR_WARNING}${2}${SETCOLOR_NORMAL}"
+}
+
+
+function log() {
+	local program="$0"
+	local type="$1"
+	shift
+	local message="$@"
+	echo -e "[$program]:$type: $message" >> $LOG_FILE
+}
+
+
+## FUNCTION
+# find in $PATH (thank debian developper reference)
+function pathfind() {
+	OLDIFS="$IFS"
+	IFS=:
+	for p in $PATH; do
+		if [ -x "$p/$*" ]; then
+			IFS="$OLDIFS"
+			return 0
+		fi
+	done
+	IFS="$OLDIFS"
+	return 1
+}
+
+function pathfind_ret() {
+	local bin=$1
+	local var_ref=$2
+	local OLDIFS="$IFS"
+	IFS=:
+	for p in $PATH; do
+		if [ -x "$p/$bin" ]; then
+			IFS="$OLDIFS"
+			eval $var_ref=$p
+			return 0
+		fi
+	done
+	IFS="$OLDIFS"
+	return 1
+}
+
+## yes_no_default
+# return 0 if "yes"
+# return 1 if "no"
+function yes_no_default() {
+	local message=$1
+	local default=${2:-$no}
+	local res="not_define"
+	while [ "$res" != "$yes" ] && [ "$res" != "$no" ] && [ ! -z "$res" ] ; do
+		echo -e "\n$message\n`gettext \"[y/n], default to [$default]:\"`"
+		echo -en "> "
+		read res
+	done
+	if [ "$res" = "$yes" ] ; then 
+		return 0
+	else 
+		return 1
+	fi
+}
+
+## answer_with_testdir()
+# message: string
+# default: string
+# var_ref: global var to contains result
+# return: var_ref
+function answer_with_testdir() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_define"
+	local first=0
+	while [ ! -d "$res" ] ; do
+		[ $first -eq 1 ] && echo_passed "`gettext \"\$res is not a directory or does not exist.\"`" "$critical" 
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "`gettext \"default to [$default]\"`"
+		echo -en "> "
+		read res
+		if [ -z "$res" ] ; then 
+			[ $default != "NO_DEFAULT" ] && res=$default
+		fi
+		if [ -z ${res#/} ] ; then
+			echo_passed  "`gettext \"You select slash...\"`"
+			res="not_define"
+		else
+			first=1
+		fi
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+## answer_with_createdir()
+function answer_with_createdir() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_define"
+	local first=0
+	while [ ! -d "$res" ] ; do
+		[ $first -eq 1 ] && echo_passed "`gettext \"Directory \$res does not exists. \"`" "$critical"
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "`gettext \"default to\"` [$default]"
+		echo -en "> "
+		read res
+		if [ -z "$res" ] ; then
+			[ "$default" != "NO_DEFAULT" ] && res=$default
+		fi
+		if [ -z ${res#/} ] ; then
+			echo_passed  "`gettext \"You select slash...\"`"
+			res="not_define"
+		else 
+			first=1
+			[ -d "$res" ] && break 
+			yes_no_default "`gettext \"Do you want me to create this directory ?\"` [$res]"
+			if [ $? -eq 0 ] ; then
+				mkdir -p $res
+				if [ $? -ne 0 ] ; then
+					echo_passed "`gettext \"Could not create directory.\"`" "$critical"
+					#continue
+				fi
+			fi
+		fi
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+## answer_with_testfile()
+# message: string
+# default: string
+# var_ref: global var to contains result
+# return: var_ref
+function answer_with_testfile() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_define"
+	local first=0
+	while [ ! -f "$res" ] ; do
+		[ $first -eq 1 ] && echo_passed "`gettext \"\$res is not a valid file.\"`" "$critical" 
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "`gettext \"default to\"` [$default]"
+		echo -en "> "
+		read res
+		if [ -z "$res" ] ; then 
+			[ "$default" != "NO_DEFAULT" ] && res=$default
+		fi
+		first=1
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+
+function test_answer() {
+	if [ ! -z $2 ] ; then
+		if [ $2 != "" ] ; then
+			eval $1=$2
+		fi
+	fi
+}
+
+## Fonction usage()
+function usage() {
+	local program=$0
+	echo -e "`gettext \"Usage: $program -f <file>\"`"
+	echo -e "\t-f\t`gettext \"file with all variable\"`"
+	exit 1
+}
+
+
+## Functions for install path
+## Check nagios_install_dir
+function locate_nagios_installdir() {
+	if [ -z "$INSTALL_DIR_NAGIOS" ] ; then
+		answer_with_testdir "`gettext \"Where is installed Nagios ?\"`" "$DEFAULT_INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS"
+		echo_success "Path $INSTALL_DIR_NAGIOS" "$ok"
+	fi
+	log "INFO" "INSTALL_DIR_NAGIOS: $INSTALL_DIR_NAGIOS"
+}
+## Check nagios_etc
+function locate_nagios_etcdir() {
+	if [ -z "$NAGIOS_ETC" ] ; then
+		answer_with_testfile "`gettext \"Where is your nagios config file\"`" "$DEFAULT_NAGIOS_ETC/nagios.cfg" "NAGIOS_ETC"
+		NAGIOS_ETC=`dirname $NAGIOS_ETC`
+		echo_success "Path $NAGIOS_ETC" "$ok"
+	fi
+	log "INFO" "NAGIOS_ETC: $NAGIOS_ETC"
+}
+
+## Check nagios_var
+function locate_nagios_vardir() {
+	if [ -z "$NAGIOS_VAR" ] ; then
+		answer_with_testdir "`gettext \"Where is your Nagios var directory ?\"`" "$DEFAULT_NAGIOS_VAR" "NAGIOS_VAR"
+		echo_success "Path $NAGIOS_VAR" "$ok"
+	fi
+	log "INFO" "NAGIOS_VAR: $NAGIOS_VAR"
+}
+
+## Check nagios_plugin
+# in last version of this script, you've been a possibility to create if not exist
+# now is not possible. You'll create manualy.
+function locate_nagios_plugindir() {
+	if [ -z "$NAGIOS_PLUGIN" ] ; then
+		answer_with_testdir "`gettext \"Where is your Nagios plugins (libexec) directory ?\"`" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
+		echo_success "Path $NAGIOS_PLUGIN" "$ok"
+	fi
+	log "INFO" "NAGIOS_PLUGIN: $NAGIOS_PLUGIN"
+}
+
+## Check nagios_binary
+function locate_nagios_binary() {
+	if [ -z "$NAGIOS_BINARY" ] ; then
+		nagios_binaries="nagios nagios2 nagios3"
+		for binary in $nagios_binaries ; do
+			pathfind_ret $binary "NAGIOS_BINARY"
+			if [ $? -eq 0 ] ; then
+				NAGIOS_BINARY="$NAGIOS_BINARY/$binary"
+				break
+			fi
+		done
+		if [ -z "$NAGIOS_BINARY" ] ; then 
+			answer_with_testfile "`gettext \"Where is your nagios binary ? \"`" "$DEFAULT_NAGIOS_BINARY" "NAGIOS_BINARY"
+		fi
+		echo_success "$NAGIOS_BINARY" "$ok"
+	fi
+	log "INFO" "NAGIOS_BINARY: $NAGIOS_BINARY"
+}
+
+## Check nagiosstats_binary
+function locate_nagiosstats_binary() {
+	if [ -z "$NAGIOSSTATS_BINARY" ] ; then
+		nagiostats_binaries="nagiostats nagios2stats nagios3stats"
+		for binary in $nagiostats_binaries ; do
+			pathfind_ret $binary "NAGIOSSTATS_BINARY"
+			if [ $? -eq 0 ] ; then
+				NAGIOSSTATS_BINARY="$NAGIOSSTATS_BINARY/$binary"
+				break
+			fi
+		done
+		if [ -z "$NAGIOSSTATS_BINARY" ] ; then 
+			answer_with_testfile "`gettext \"Where is your nagiostats binany ? \"`" "$DEFAULT_NAGIOSSTATS_BINARY" "NAGIOSSTATS_BINARY"
+		fi
+		echo_success "$NAGIOSSTATS_BINARY" "$ok"
+	fi
+	log "INFO" "NAGIOSSTATS_BINARY: $NAGIOSSTATS_BINARY"
+}
+
+## Check nagios_img
+function locate_nagios_imgdir() {
+	if [ -z "$NAGIOS_IMG" ] ; then
+		answer_with_testdir "`gettext \"Where is your Nagios image directory ?\"`" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
+		echo_success "Path $NAGIOS_IMG" "$ok"
+	fi
+	log "INFO" "NAGIOS_IMG: $NAGIOS_IMG"
+}
+
+## Check init.d directory
+function locate_init_d() {
+	if [ -z "$INIT_D" ] ; then
+		if [ -d /etc/init.d ] ; then
+			INIT_D="/etc/init.d"
+		# Add most of init.d 
+		else 
+			answer_with_testdir "`gettext \"Where is your init.d directory ?\"`" "$DEFAULT_INIT_D" "INIT_D"
+			echo_success "Path $INIT_D" "$ok"
+		fi
+	fi
+	log "INFO" "INIT_D: $INIT_D"
+}
+
+## Check centreon_logdir
+function locate_centreon_logdir() {
+	if [ -z "$CENTREON_LOG" ] ; then
+		answer_with_createdir "`gettext \"Where is your Centreon log directory\"`" "$DEFAULT_CENTREON_LOG" "CENTREON_LOG"
+		echo_success "Path $CENTREON_LOG" "$ok"
+	fi
+	log "INFO" "CENTREON_LOG: $CENTREON_LOG"
+}
+
+## Check centreon_etcdir
+function locate_centreon_etcdir() {
+	if [ -z "$CENTREON_ETC" ] ; then
+		answer_with_createdir "`gettext \"Where is your Centreon etc directory\"`" "$DEFAULT_CENTREON_ETC" "CENTREON_ETC"
+		echo_success "Path $CENTREON_ETC" "$ok"
+	fi
+	log "INFO" "CENTREON_ETC: $CENTREON_ETC"
+}
+
+## Check centreon_installdir
+function locate_centreon_installdir() {
+	if [ -z "$INSTALL_DIR_CENTREON" ] ; then
+		answer_with_createdir "`gettext \"Where is your Centreon directory?\"`" "$DEFAULT_INSTALL_DIR_CENTREON" "INSTALL_DIR_CENTREON"
+		echo_success "Path $INSTALL_DIR_CENTREON" "$ok"
+	fi	
+	log "INFO" "INSTALL_DIR_CENTREON: $INSTALL_DIR_CENTREON"
+}
+
+## Check centreon_gendir
+function locate_centreon_generationdir() {
+	if [ -z "$CENTREON_GENDIR" ] ; then
+		answer_with_createdir "`gettext \"Where is your Centreon generation_files directory?\"`" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
+		echo_success "Path $CENTREON_GENDIR" "$ok"
+	fi	
+	log "INFO" "CENTREON_GENDIR: $CENTREON_GENDIR"
+}
+
+## Check centStorage_rrddir
+function locate_centstorage_rrddir() {
+	if [ -z "$CENTSTORAGE_RRD" ] ; then
+		answer_with_createdir "`gettext \"Where is your CentStorage RRD directory\"`" "$DEFAULT_CENTSTORAGE_RRD" "CENTSTORAGE_RRD"
+		echo_success "Path $CENTSTORAGE_RRD" "$ok"
+	fi
+	log "INFO" "CENTSTORAGE_RRD: $CENTSTORAGE_RRD"
+}
+
+## check sudo_file
+function locate_sudo() {
+	if [ -z "$SUDO_FILE" ] ; then
+		answer_with_testfile "`gettext \"Where is sudo configuration file\"`" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
+		echo_success "$SUDO_FILE" "$ok"
+	fi
+	log "INFO" "SUDO_FILE: $SUDO_FILE"
+}
+
+## check rrd_perl
+function locate_rrd_perldir() {
+	if [ -z "$RRD_PERL" ] ; then
+		answer_with_testfile "`gettext \"Where is installed RRD perl modules [RRDs.pm]\"`" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
+		RRD_PERL=`dirname $RRD_PERL`
+		echo_success "Path $RRD_PERL" "$ok"
+	fi
+	log "INFO" "RRD_PERL: $RRD_PERL"
+}
+
+## Check rrdtool
+function locate_rrdtool() {
+	if [ -z "$BIN_RRDTOOL" ] ; then 
+		pathfind_ret rrdtool "BIN_RRDTOOL"
+		if [ $? -ne 0 ] ; then 
+			answer_with_testfile "`gettext \"Where is rrdtool\"`" "$DEFAULT_BIN_RRDTOOL" "BIN_RRDTOOL"
+		else 
+			BIN_RRDTOOL="$BIN_RRDTOOL/rrdtool"
+		fi
+		echo_success "$BIN_RRDTOOL" "$ok"
+	fi
+	log "INFO" "BIN_RRDTOOL: $BIN_RRDTOOL"
+}
+
+## Check mail
+function locate_mail() {
+	if [ -z "$BIN_MAIL" ] ; then 
+		pathfind_ret mail "BIN_MAIL"
+		if [ $? -ne 0 ] ; then 
+			answer_with_testfile "`gettext \"Where is mail binary\"`" "$DEFAULT_BIN_MAIL" "BIN_MAIL"
+		else 
+			BIN_MAIL="$BIN_MAIL/mail"
+		fi
+		echo_success "$BIN_MAIL" "$ok"
+	fi
+	log "INFO" "BIN_MAIL: $BIN_MAIL"
+}
+
+## Check pear_path
+function locate_pear() {
+	if [ -z "$PEAR_PATH" ] ; then
+		answer_with_testfile "`gettext \"Where is PEAR [PEAR.php] \"`" "$DEFAULT_PEAR_PATH/PEAR.php" "PEAR_PATH"
+		PEAR_PATH=`dirname $PEAR_PATH`
+		echo_success "Path $PEAR_PATH" "$ok"
+	fi
+	log "INFO" "PEAR_PATH: $PEAR_PATH"
+}
+
+# Check apache version, and configure it. Ask to restart apache server
+# Make a copy of the original file as httpd.conf.initial
+
+function configureApache() {
+	echo -e "\n------------------------------------------------------------------------"
+	echo -e "\t`gettext \"Configure Apache server\"`"
+	echo -e "------------------------------------------------------------------------\n\n"
+
+## Prepare apache config
+	echo "" > $BASE_DIR/centreon.apache.conf
+	cat << __EOT__ >> $BASE_DIR/centreon.apache.conf
+##
+## Section add by Centreon Install Setup
+##
+	
+Alias /centreon $INSTALL_DIR_OREON/www/
+<Directory "$INSTALL_DIR_OREON/www">
+    Options None
+    AllowOverride AuthConfig Options
+    Order allow,deny
+    Allow from all
+</Directory>
+
+__EOT__
+
+	local write_config=0
+	if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
+		echo "`gettext \"Finding Apache Centreon configuration file\"`"
+		echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
+		yes_no_default "`gettext \"Do you want rewrite Apache configuration file ?\"`"
+		if [ $? -eq 0 ] ; then
+			write_config=1	
+		fi
+	else 
+		yes_no_default "`gettext \"Do you want write Apache configuration file ?\"`"
+		if [ $? -eq 0 ] ; then
+			write_config=1	
+		fi
+    	fi
+    
+	if [ $write_config -eq 1 ] ; then 
+		cp $BASE_DIR/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
+		echo_success "`gettext \"Create\"` '$DIR_APACHE_CONF/centreon.conf'" "$ok"
+		echo_success "`gettext \"Configuring Apache\"`" "$ok"
+		# After finishing the configuration -> 
+		# restart apache ! (if admin wants :p)
+		yes_no_default "`gettext \"Do you want restart your Apache ?\"`"
+		if [ $? -eq 0 ] ; then 
+			log "INFO" "`gettext \"Reload Apache...\"`"
+			if [ -x /etc/init.d/apache ] ; then
+				/etc/init.d/apache reload 2>&1 >> $LOG_FILE
+			elif [ -x /etc/init.d/httpd ] ; then
+				/etc/init.d/httpd reload 2>&1 >> $LOG_FILE
+			elif [ -e /etc/init.d/apache2 ] ; then
+				/etc/init.d/apache2 reload 2>&1 >> $LOG_FILE
+			elif [ -e /usr/local/etc/rc.d/apache ] ; then
+				/usr/local/etc/rc.d/apache reload 2>&1 >> $LOG_FILE
+			elif [ -e /usr/local/etc/rc.d/apache2 ]; then
+				/etc/init.d/apache2 reload 2>&1 >> $LOG_FILE
+			else
+				echo_warning "`gettext \"Unable to restart apache server\"`" "$warning"
+				log "WARN" "`gettext \"Unable to restart Apache server\"`"
+			fi
+		fi
+	else
+		echo_info "`gettext \"Please config Apache with this example\"`:\n $BASE_DIR/centreon.apache.conf"
+	fi
+}
+
+
+function configureSUDO(){
+	echo -e "\n------------------------------------------------------------------------"
+	echo -e "\t`gettext \"Configure Sudo\"`"
+	echo -e "------------------------------------------------------------------------\n\n"
+    
+    	locate_sudo
+	# Find Nagios Init Script
+	check_nagios_init_script
+	# Prepare sudo.conf
+	cat << __EOT__ >> $BASE_DIR/centreon.sudo.conf
+#Add by CENTREON installation script
+User_Alias      CENTREON= $WEB_USER
+# Nagios Restart
+CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
+# Nagios reload
+CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
+## Snmptrapd Restart
+CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart
+__EOT__
+
+	sudo=`grep -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null; echo $?`
+	if [ $sudo -eq 1 ]; then
+    		echo_info "`gettext \"Your sudo is not configure\"`"
+
+		yes_no_default "`gettext \"Do you want I configure your sudo ? (WARNING) \"`"
+		if [ $? -eq 0 ] ; then 
+			cat $BASE_DIR/centreon.sudo.conf >> $SUDO_FILE
+			echo_success "`gettext \"Configuring Sudo\"`" "$ok"
+		else
+			echo_passed "`Please config your sudo with this example\"`: $BASE_DIR/centreon.sudo.conf"
+		fi
+	else
+		echo_passed "`gettext \"Sudo is already configurated\"`" "$passed"
+	fi
+	return 0
+}
+
+# attente de relecture
+function createConfFile()
+{
+	echo -e "\n------------------------------------------------------------------------"
+	echo -e "\t\t`gettext \"Centreon Post Instal\"`"
+	echo -e "------------------------------------------------------------------------\n\n"
+
+	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
+	# Reinit file if exist	
+	echo "" > $INSTALL_DIR_CENTREON_CONF
+	cat << __EOT__ >> $INSTALL_DIR_CENTREON_CONF
+<?
+/**
+Centreon is developped with GPL Licence 2.0 :
+http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+Developped by : Julien Mathis - Romain Le Merlus
+
+The Software is provided to you AS IS and WITH ALL FAULTS.
+CENTREON makes no representation and gives no warranty whatsoever,
+whether express or implied, and without limitation, with regard to the quality,
+safety, contents, performance, merchantability, non-infringement or suitability for
+any particular or intended purpose of the Software found on the CENTREON web site.
+In no event will CENTREON be liable for any direct, indirect, punitive, special,
+incidental or consequential damages however they may arise and even if OREON has
+been previously advised of the possibility of such damages.
+
+For information : contact@oreon-project.org
+*/
+
+\$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
+\$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
+\$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
+\$conf_centreon['nagios'] = "$INSTALL_DIR_NAGIOS/";
+\$conf_centreon['nagios_conf'] = "$NAGIOS_ETC/";
+\$conf_centreon['nagios_plugins'] = "$NAGIOS_PLUGIN/";
+\$conf_centreon['nagios_binary'] = "$NAGIOS_BINARY/";
+\$conf_centreon['nagiosstats_binary'] = "$NAGIOSSTATS_BINARY";
+\$conf_centreon['nagios_init_script'] = "$NAGIOS_INIT_SCRIPT";
+\$conf_centreon['rrdtool_dir'] = "$BIN_RRDTOOL";
+\$conf_centreon['apache_user'] = "$WEB_USER";
+\$conf_centreon['apache_group'] = "$WEB_GROUP";
+\$conf_centreon['nagios_user'] = "$NAGIOS_USER";
+\$conf_centreon['nagios_group'] = "$NAGIOS_GROUP";
+\$conf_centreon['mail'] = "$BIN_MAIL";
+\$conf_centreon['pear_dir'] = "$PEAR_PATH";
+
+__EOT__
+
+	# Conf nagios.cfg
+	
+	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _file | grep -v \#`
+	do
+		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
+	done
+	
+	# Conf nagios.cfg
+	
+	for fichier in `cat $NAGIOS_ETC/nagios.cfg | grep _path | grep -v \#`
+	do
+		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
+	done
+	
+	# Conf GCI.cfg
+	
+	for fichier in `cat $NAGIOS_ETC/cgi.cfg | grep physical_html_path | grep -v \#`
+	do
+		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF		
+	done
+	
+	echo "?>" >> $INSTALL_DIR_CENTREON_CONF
+	echo_success "Create $INSTALL_DIR_CENTREON_CONF" "OK"
+	
+}
+
+## Function createCentreonInstallConf
+function createCentWebInstallConf() {
+
+if [ -e $CENTREON_CONF ] ; then 
+	# Reinit file
+	echo "" > $CENTREON_CONF
+fi
+cat << __EOF__ >> $CENTREON_CONF
+INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
+INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
+NAGIOS_ETC=$NAGIOS_ETC
+NAGIOS_PLUGIN=$NAGIOS_PLUGIN
+NAGIOS_IMG=$NAGIOS_IMG
+NAGIOS_BINARY=$NAGIOS_BINARY
+NAGIOSSTATS_BINARY=$NAGIOSSTATS_BINARY
+NAGIOS_VAR=$NAGIOS_VAR
+RRD_PERL=$RRD_PERL
+SUDO_FILE=$SUDO_FILE
+WEB_USER=$WEB_USER
+WEB_GROUP=$WEB_GROUP
+NAGIOS_USER=$NAGIOS_USER
+NAGIOS_GROUP=$NAGIOS_GROUP
+BIN_RRDTOOL=$BIN_RRDTOOL
+BIN_MAIL=$BIN_MAIL
+PEAR_PATH=$PEAR_PATH
+CENTREON_LOG=$CENTREON_LOG
+CENTREON_GENDIR=$CENTREON_GENDIR
+__EOF__
+
+echo_success "Create $CENTREON_CONF " "OK"
+}
+
+# When exit on error
+function error()
+{
+    echo "ERROR"
+    exit 2
+}
+
+# Find the user and group nagios in nagios.cfg and ask if we don't find
+function find_user_nagios()
+{
+	NAGIOS_USER=`cat $NAGIOS_ETC/nagios.cfg | grep ^nagios_user | cut -d= -f 2 2>/dev/null`
+	if [ -z "$NAGIOS_USER"  ] ; then
+	local NAGIOS_USER_TEMP=""
+		for fichier in $NAGIOS_ETC/*.cfg
+		do
+			if [ -f "$fichier" ];	then
+			NAGIOS_USER_TEMP=`cat $fichier | grep ^nagios_user | cut -d = -f 2`
+				if [ -n "$NAGIOS_USER_TEMP" ]; then
+					NAGIOS_USER=$NAGIOS_USER_TEMP
+				fi
+			fi
+		done
+	fi
+    
+	if [ -z "$NAGIOS_USER"  ] ; then
+		# Nagios User
+		NAGIOS_USER="nagios"
+		local user=""
+		echo_passed "`gettext \"Sorry, we do not found nagios user\"`" "$passed"
+		echo -e "`gettext \"Which is your nagios user ?\"`"
+		echo -n "`gettext \"default to\"` [$NAGIOS_USER]:"
+		read user
+		test_answer NAGIOS_USER $user
+		echo ""
+    else
+		echo_info "`gettext \"Finding Nagios user\"` :" "$NAGIOS_USER"
+    fi
+}
+
+function find_group_nagios()
+{
+	NAGIOS_GROUP=`cat $NAGIOS_ETC/nagios.cfg | grep ^nagios_group | cut -d = -f 2 2>/dev/null`
+    
+	if [ -z "$NAGIOS_GROUP"  ] ; then
+	local NAGIOS_GROUP_TEMP=""
+		for fichier in $NAGIOS_ETC/*.cfg
+		do
+			if [ -f "$fichier" ];	then
+				NAGIOS_GROUP_TEMP=`cat $fichier | grep ^nagios_group | cut -d = -f 2`
+				if [ -n "$NAGIOS_GROUP_TEMP" ]; then
+					NAGIOS_GROUP=$NAGIOS_GROUP_TEMP
+				fi
+			fi
+		done
+	fi
+    
+	if [ -z "$NAGIOS_GROUP"  ] ; then
+		# Nagios Group
+		NAGIOS_GROUP="nagios"
+		local user=""
+		echo_passed "`gettext \"Sorry, we do not found nagios group\"`" "PASSED"
+		echo -e "`gettext \"In which group is nagios user ?\"`"
+		echo -n "`gettext \"default to\"` [$NAGIOS_GROUP]:"
+		read temp
+		test_answer NAGIOS_GROUP $user
+		echo ""
+    else
+		echo_info "`gettext \"Finding Nagios group\"` :" "$NAGIOS_GROUP"
+    fi
+}
+
+# Check the user and group nagios and create it if necessary
+
+function check_user_nagios()
+{
+    # Try to find nagios user/group from nagios.cfg file.
+    # If not, we ask...
+    find_user_nagios
+
+    nagios_user_grep=`grep $NAGIOS_USER /etc/passwd > /dev/null; echo $?`
+    if [ $nagios_user_grep -eq 0 ]; then
+    	echo_success "`gettext \"Finding nagios user \$NAGIOS_USER in /etc/passwd\"`" "$ok"
+    else
+	echo -e "`gettext \"Nagios User $NAGIOS_USER Not found\"`"
+	echo ""
+	echo -e "`gettext \"You have to create you nagios user\"`"
+	echo "useradd -G $NAGIOS_GROUP $NAGIOS_USER"
+	exit 1
+    fi
+}
+
+function check_group_nagios()
+{
+    # Try to find nagios user/group from nagios.cfg file.
+    # If not, we ask...
+    find_group_nagios
+
+    nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
+    if [ $nagios_group_grep == 0 ]; then
+    	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "YES"
+    else
+	echo "Nagios Group $NAGIOS_GROUP Not found"
+	echo ""
+	echo "You have to create you nagios group"
+	echo "groupadd $NAGIOS_GROUP"
+	exit 1
+    fi
+}
+
+function check_nagios_init_script()
+{
+	if [ -x "/etc/init.d/nagios" ]; then
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
+	elif [ -x "/etc/init.d/nagios2" ] ; then
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios2"
+	elif [ -x "/etc/init.d/nagios3" ] ; then
+		NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
+	elif [ -x "/usr/local/etc/rc.d/nagios" ] ; then
+		NAGIOS_INIT_SCRIPT="/usr/local/etc/rc.d/nagios"
+	elif [ -x $DEFAULT_NAGIOS_INIT_SCRIPT ] ; then
+		NAGIOS_INIT_SCRIPT=$DEFAULT_NAGIOS_INIT_SCRIPT
+	else
+    		echo_passed "`gettext \"Not possible to find Nagios init script\"`" "$critical"
+		answer_with_testfile "`gettext \"Where is Nagios init script\"`" "NO_DEFAULT" "NAGIOS_INIT_SCRIPT"
+	fi
+	echo_success "Nagios init script " "$ok"
+}
+
+function check_httpd_directory()
+{
+	if [ -d /etc/apache/conf ]; then
+		DIR_APACHE="/etc/apache/conf"
+		DIR_APACHE_CONF="/etc/apache/conf.d"
+		HTPASSWD="htpasswd"
+	elif [ -d /usr/local/apache2/conf ] ; then
+		DIR_APACHE="/usr/local/apache2/conf"
+		DIR_APACHE_CONF="/usr/local/apache2/conf"
+		HTPASSWD="htpasswd2"
+	elif [ -d /etc/apache2 ] ; then
+		DIR_APACHE="/etc/apache2"
+		DIR_APACHE_CONF="/etc/apache2/conf.d"
+		HTPASSWD="htpasswd2"
+	elif [ -d /etc/httpd/conf ] ; then
+		DIR_APACHE="/etc/httpd/conf"
+		DIR_APACHE_CONF="/etc/httpd/conf.d"
+		HTPASSWD="htpasswd"
+	elif [ -d /usr/local/etc/apache ] ; then
+		DIR_APACHE="/usr/local/etc/apache"
+		DIR_APACHE_CONF="/usr/local/etc/apache/Includes"
+		HTPASSWD="htpasswd"
+	elif [ -d /usr/local/etc/apache2 ] ; then
+		DIR_APACHE="/usr/local/etc/apache2"
+		DIR_APACHE_CONF="/usr/local/etc/apache2/Includes"
+		HTPASSWD="htpasswd"
+	else 
+		echo_passed "`gettext \"Apache config directoty not found\"`" "$critical"
+		answer_with_testdir "`gettext \"Where is your Apache etc directory\"`" "NO_DEFAULT" "DIR_APACHE"
+		answer_with_testdir "`gettext \"Where is your Apache conf.d directory\"`" "NO_DEFAULT" "DIR_APACHE_CONF"
+		answer_with_testfile "`gettext \"Where is your Apache htpasswd file \"`" "NO_DEFAULT" "HTPASSWD"
+	fi
+
+	if [ -e $DIR_APACHE/apache2.conf ] ; then
+		APACHE_CONF="apache2.conf"
+	elif [ -e $DIR_APACHE/apache.conf ] ; then
+		APACHE_CONF="apache.conf"
+	elif [ -e $DIR_APACHE/commondhttpd.conf ] ; then
+		APACHE_CONF="commondhttpd.conf"
+	elif [ -e $DIR_APACHE/httpd.conf ] ; then
+		APACHE_CONF="httpd.conf"
+	else
+		echo_passed "`gettext \"Apache config file not found\"`" "$critical"
+		answer_with_testfile "`gettext \"Where is your Apache config file \"`" "NO_DEFAULT" "APACHE_CONF"
+	fi
+	return 0
+}
+
+function check_user_apache()
+{
+	if [ -e /etc/apache2/envvars ] ; then 
+		# for Debian system
+		WEB_USER=`cat /etc/apache2/envvars |grep "USER" | cut -d= -f2`
+	elif [ -e /etc/apache2/uid.conf ] ; then
+		# for SuSe system
+		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^User" | cut -d" " -f2`
+	else 
+		WEB_USER=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^User" | cut -d" " -f2`
+		if [ ! -z "$WEB_USER"  ] ; then
+			local WEB_USER_TEMP=""
+			for fichier in $DIR_APACHE/*
+			do
+				if [ -f "$fichier" ] ; then
+					WEB_USER_TEMP=`cat $fichier | grep -e "^User" | cut -d" " -f2`
+					if [ -n "$WEB_USER_TEMP" ] ; then
+						WEB_USER=$WEB_USER_TEMP
+					fi
+				fi
+			done
+		fi
+	fi
+	echo_info "`gettext \"Finding Apache user\"` :" "$WEB_USER"
+}
+
+function check_group_apache()
+{
+	if [ -e /etc/apache2/envvars ] ; then
+		# for debian system
+		WEB_GROUP=`cat /etc/apache2/envvars |grep "GROUP" |cut -d= -f2`
+	elif [ -e /etc/apache2/uid.conf ] ; then
+		# for SuSe system
+		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
+	else
+		WEB_GROUP=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^Group" | cut -d" " -f2`
+		if [ ! -z "$WEB_GROUP"  ] ; then
+			local WEB_GROUP_TMP=""
+			for fichier in $DIR_APACHE/*
+			do
+				if [ -f "$fichier" ];	then
+					WEB_GROUP_TEMP=`cat $fichier | grep -e "^Group" | cut -d" " -f2`
+					if [ -n "$WEB_GROUP_TEMP" ]; then
+						WEB_GROUP=$WEB_GROUP_TEMP
+					fi
+				fi
+			done
+		fi
+	fi
+	echo_info "`gettext \"Finding Apache group\"` :" "$WEB_GROUP"
+}
+
+
+
+function copyInTempFile()
+{
+	local srclistcp="bin cron doc GPL_LIB lib misc snmptrapd snmptt www Plugins"
+	# Prepare centreon Plugins
+	echo "`gettext \"Preparing Centreon temporary files\"`"
+	if [ -d $TMPDIR ] ; then
+		echo_passed "$TMPDIR `gettext \"exists, it will move...\"`"
+		mv $TMPDIR $TMPDIR.`date +%Y%m%d-%k%m%S`
+	fi
+	mkdir -p $TMPDIR/src
+	mkdir -p $TMPDIR/work
+	mkdir -p $TMPDIR/final
+
+	for folder in $srclistcp ; do
+		log "INFO" "`gettext \"Copy\"` $BASE_DIR/$folder $TMPDIR/src/"
+		cp -Rf $BASE_DIR/$folder $TMPDIR/src/ 2>&1 >> $LOG_FILE
+	done
+
+	log "INFO" "`gettext \"Copy\"` $BASE_DIR/init.d.* $TMPDIR/src/"
+	cp -f $BASE_DIR/init.d.* $TMPDIR/src/ 2>&1 >> $LOG_FILE
+}	
+
+## En attente de relecture
+function InstallPlugins()
+{
+	# set Plugins in unix mod
+	find $TMPDIR/Plugins/ -name "*" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
+    
+	# Prepare code
+	mkdir $TMPDIR/Plugins-Ready/
+
+	for fichier in $TMPDIR/Plugins/*
+    do
+    	if [ -d "$fichier" ]; then
+	  		echo ""
+      	else
+			filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
+	  		`sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g'  "$fichier" > "$TMPDIR/Plugins-Ready/$filename"`
+	 		echo_success " - $filename" "OK"  
+      	fi
+    done
+
+    # Set restriction 
+    chmod 755 $TMPDIR/Plugins-Ready/*
+    chmod 444 $TMPDIR/Plugins-Ready/centreon.conf
+    chown $NAGIOS_USER.$NAGIOS_GROUP $TMPDIR/Plugins-Ready/*
+
+    # Check if plugin dir exists
+    if test -d $NAGIOS_PLUGIN ; then
+		echo_success "Directory $NAGIOS_PLUGIN" "OK"
+    else
+		mkdir_result=`mkdir $NAGIOS_PLUGIN 2>&1 >> $LOG_FILE; echo $?`
+		if [ $mkdir_result = "0" ]; then
+	    	echo_success "mkdir '$NAGIOS_PLUGIN'" "OK"
+		else
+	    	echo_failure "mkdir '$NAGIOS_PLUGIN'" "FAILED"
+	    	return
+		fi
+    fi
+
+    # Copy plugins in nagios plugins dir
+    echo "Do you want to install Centreon Plugins ? "
+    echo ""
+    echo -n "[y/n], default to [y]:"
+    read temp
+    if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
+	while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
+		do
+	  	echo "Do you want to install Centreon Plugins ? "
+	  	echo -n "[y/n], default to [y]:"
+	  	read temp
+	done
+    fi
+    if [ -z $temp ];then
+		temp=y
+    fi
+    if [ $temp = "y" ];then
+		cp -a $TMPDIR/Plugins-Ready/* $NAGIOS_PLUGIN/ 2>&1 >> $LOG_FILE
+		echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
+    fi
+}
+
+
+## function check_pear_module()
+## use php script to check pear module
+function check_pear_module() {
+	local module_list=$1
+	echo -e "`gettext \"Check PEAR modules\"`"
+	php $INSTALL_DIR/check_pear.php check $module_list
+	return $?
+}
+
+## function install_pear_module()
+## install missed pear module
+function install_pear_module() {
+	local module_list=$1
+	echo -e "`gettext \"Installing PEAR modules\"`"
+	php $INSTALL_DIR/check_pear.php install $module_list
+	return $?
+}
+
+## function upgrade_pear_module()
+## upgrade local pear module
+function upgrade_pear_module() {
+	local module_list=$1
+	echo -e "`gettext \"Upgrading PEAR modules\"`"
+	php $INSTALL_DIR/check_pear.php upgrade $module_list
+	return $?
+}
+
+## function install_init_service()
+## install init script on distrib
+function install_init_service() {
+	# how to find methode to install in rc.d directory a correct link ?
+	# debian	update-rc.d
+	# redhat	chkconfig
+	# Suse		chkconfig
+	# FreeBSD	??
+	local service=$1
+	OS=""
+	find_OS "OS"
+	if [ "$OS" = "DEBIAN" ] ; then
+		update-rc.d $service start 40 2 3 4 5 . stop 30 0 1 6 .
+	elif [ "$OS" = "SUSE" ] ; then
+		chkconfig --add $service
+	elif [ "$OS" = "REDHAT" ] ; then
+		chkconfig --add $service
+	else
+		echo_passed "`gettext \"Impossible to install your run level for \"` $service" "$fail"
+	fi
+	return 0
+} 
+
+
+## function find_OS()
+## Define OS
+## usage: find_OS DISTRO
+## whitch DISTRO is a global var
+function find_OS() {
+	local distrib=$1
+	local dist_found=""
+	if [ -e /etc/debian_version ] ; then 
+		dist_found="DEBIAN"
+		log "INFO" "`gettext \"Distribution Debian\"`"
+	elif [ -e /etc/SuSE-release ] ; then
+		dist_found="SUSE"
+		log "INFO" "`gettext \"Distribution Suse\"`"
+	elif [ -e /etc/redhat-release ] ; then
+		dist_found="REDHAT"
+		log "INFO" "`gettext \"Distribution Redhat\"`"
+	else
+		dist_found="NOT_FOUND"
+		log "INFO" "`gettext \"Distribution not found\"`"
+	fi
+	eval $distrib=$dist_found
+	return 0
+}
+
