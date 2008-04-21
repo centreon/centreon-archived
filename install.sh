@@ -53,6 +53,25 @@ if [ $USERID != 0 ]; then
     exit 1
 fi
 
+silent_install=0
+upgrade=0
+user_install_vars=""
+
+## Getopts :)
+while getopts "f:u:h" Options
+do
+	case ${Options} in
+		f )	silent_install=1
+			user_install_vars="${OPTARG}" ;;
+		u )	silent_install=1
+			CENTREON_CONF="${OPTARG}"
+			upgrade=1 ;;
+		\?)	usage ;;
+		h )	usage ;;
+		* )	usage ;;
+	esac
+done
+
 version="2.0"
 
 cat << __EOT__
@@ -61,7 +80,7 @@ cat << __EOT__
 #                         Centreon (www.centreon.com)                         #
 #                          Thanks for using Centreon                          #
 #                                                                             #
-#                                    v$version 		    #
+#                                    v$version 				    #
 #                                                                             #
 #                             infos@oreon-project.org                         #
 #                                                                             #
@@ -71,31 +90,6 @@ cat << __EOT__
 ###############################################################################
 __EOT__
 
-silent_install=0
-upgrade=0
-user_install_vars=""
-
-## Getopts :)
-while getopts "f:u:h" Options
-do
-	case ${Options} in
-		f )
-		silent_install=1
-		echo "in f"
-		user_install_vars="${OPTARG}" ;;
-		u )
-		silent_install=1
-		echo "in u"
-		upgrade=1
-		user_install_vars="${OPTARG}" ;;
-		h )
-		echo "in h"
-		usage ;;
-		* )
-		echo "in *"
-		;;
-	esac
-done
 
 ## init LOG_FILE
 # backup old log file...
@@ -140,10 +134,28 @@ if [ $silent_install -ne 1 ] ; then
 		echo_info "`gettext \"Your not agree with GPL license ? Okay... have a nice day.\"`"
 		exit 1
 	fi
+else 
+	. $user_install_vars
 fi
 
 ## Check if is an upgrade or new install
 ## Use this on silent install ???
+# Check for old configfile
+# use for centreon1.x upgrade
+if [ ! -z "`ls $CENTREON_CONF_1_4`" ] ; then 
+	count=0
+	CENTREON_CONF=""
+	for conffile in $CENTREON_CONF_1_4 ; do
+		CENTREON_CONF[$count]=$conffile
+		let "count += 1"
+	done
+	
+	if [ $count -gt 1 ] ; then
+		echo_failure "`gettext \"You are $count config file, please select one\"`"
+		select_in_array "CENTREON_CONF" ${CENTREON_CONF[@]}
+	fi
+fi
+
 if [ -e $CENTREON_CONF ] ; then
 	echo "------------------------------------------------------------------------"
 	echo -e "\t`gettext \"Detecting old installation\"`"
