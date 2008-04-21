@@ -80,12 +80,16 @@
 	if (!isset($_SESSION["oreon"]))
 		header("Location: index.php?disconnect=1");
 
-	# Define Oreon var alias
+	/*
+	 * Define Oreon var alias
+	 */
 	$oreon =& $_SESSION["oreon"];
 	if (!is_object($oreon))
 		exit();
 
-	# Init differents elements we need in a lot of pages
+	/*
+	 * Init differents elements we need in a lot of pages
+	 */
 	unset($oreon->user->lcaTopo);
 	unset($oreon->user->lcaTStr);
 	$oreon->user->createLCA($pearDB);
@@ -107,7 +111,9 @@
 		}
 	}
 
-    # Cut Page ID
+    /*
+     * Cut Page ID
+     */
 	$level1 = NULL;
 	$level2 = NULL;
 	$level3 = NULL;
@@ -121,11 +127,13 @@
 		default : $level1= $p; break;
 	}
 
-	# Skin path
+	/*
+	 * Skin path
+	 */
 	$DBRESULT =& $pearDB->query("SELECT `template` FROM `general_opt` LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB error : ".$DBRESULT->getDebugInfo()."<br />";
-	$DBRESULT->fetchInto($data);
+	$data = $DBRESULT->fetchRow();
 	$skin = "./Themes/".$data["template"]."/";
 
 	$tab_file_css = array();
@@ -140,14 +148,19 @@
 
 	$colorfile = "Color/". $tab_file_css[0];
 
+	/*
+	 * Get CSS Order and color
+	 */
 	$DBRESULT =& $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
 	if (PEAR::isError($DBRESULT))
 		print ($DBRESULT->getMessage());
 	if ($DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow()))
 		$colorfile = "Color/".$elem["css_name"];
 
-	# Update Session Table For last_reload and current_page row
-	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."',`last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT( `session_id` USING utf8 ) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
+	/*
+	 * Update Session Table For last_reload and current_page row
+	 */
+	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$oreon->user->user_id."' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error WHERE Updating Session : ".$DBRESULT->getDebugInfo()."<br />";
 
@@ -156,10 +169,6 @@
 	setlocale(LC_ALL, $locale);
 	bindtextdomain("messages", "./locale/");
 	textdomain("messages");
-	
-	# Take this part again and get infos in module table
-	foreach ($oreon->modules as $module)
-		$module["lang"] ? (is_file ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") ? include_once ("./modules/".$module["name"]."/lang/".$oreon->user->get_lang().".php") : include_once ("./modules/".$module["name"]."/lang/en.php")) : NULL;
 
     $mlang = $oreon->user->get_lang();
 ?>
