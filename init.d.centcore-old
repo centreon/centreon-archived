@@ -77,7 +77,7 @@ elif [ -f /etc/init.d/functions ]; then
     . /etc/init.d/functions
 fi
 
-prefix=/srv/oreon/
+prefix="$INSTALL_DIR_CENTREON"/
 exec_prefix=${prefix}
 Bin=${exec_prefix}/bin/centcore
 CfgFile=${prefix}etc/conf.pm

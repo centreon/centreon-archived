@@ -76,7 +76,7 @@ elif [ -f /etc/init.d/functions ]; then
 	. /etc/init.d/functions
 fi
 
-prefix=@CENTREON_PATH@/
+prefix="$INSTALL_DIR_CENTREON"/
 centstorageBin=${prefix}/bin/centstorage2
 centstorageCfgFile=${prefix}/etc/conf.pm
 centstorageVarDir=${prefix}/var/
