@@ -19,7 +19,7 @@ For information : contact@oreon-project.org
 	include_once("DB.php");
 	include_once("../DBconnect.php");
 	
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `oreon_informations` WHERE `key` = 'version'");
+	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$DBRESULT->fetchInto($version);
 	
 	aff_header("Centreon Upgrade Wizard", "Select Version", 5); ?>

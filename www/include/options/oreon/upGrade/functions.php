@@ -42,7 +42,7 @@ function getConfigPatch() {
  */
 function getCurrentVersion() {
 	global $pearDB;
-	$query = "SELECT value FROM oreon_informations WHERE `key`='version'";
+	$query = "SELECT value FROM informations WHERE `key`='version'";
 	$DBRESULT =& $pearDB->query($query);
 	if (PEAR::isError($DBRESULT)) {
 		print $DBRESULT->getDebugInfo()."<br />";
@@ -241,7 +241,7 @@ function writeShellFooters($fd) {
  */
 function writeShellPatch($fd, $file, $dbuser, $dbpass, $dbname) {
 	global $lang;
-	$query = 'UPDATE `oreon_informations` SET `value`="' . $file->version . '" WHERE `key`="version"';
+	$query = 'UPDATE `informations` SET `value`="' . $file->version . '" WHERE `key`="version"';
 	fwrite($fd, 'patch -p1 --dry-run < ${PATH_PATCH}/' . $file->filename . ' > /dev/null' . "\n");
 	fwrite($fd, 'if [ $? -ne 0 ]; then');
 	fwrite($fd, "\n\t" . 'echo "' . sprintf(_("Error when installing patch : %s."), $file->filename) . '"');

@@ -24,7 +24,7 @@ For information : contact@oreon-project.org
 <div style="float: left; padding-left: 60px; padding-top: 30px;">
 	<div class="list_one"><h3>Centreon 
 	<?php
-	$DBRESULT =& $pearDB->query("SELECT oi.value FROM oreon_informations oi WHERE oi.key = 'version' LIMIT 1");
+	$DBRESULT =& $pearDB->query("SELECT oi.value FROM informations oi WHERE oi.key = 'version' LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$release = $DBRESULT->fetchRow();
