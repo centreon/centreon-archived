@@ -29,7 +29,7 @@ use Getopt::Long;
 use DBI;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
-require "@INSTALL_DIR_OREON@/etc/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 #########################################
 ## TEST IF OID ALREADY EXISTS IN DATABASE
@@ -37,7 +37,7 @@ require "@INSTALL_DIR_OREON@/etc/conf.pm";
 
 sub existsInDB($$) {
     my ($dbh, $oid) = @_;
-    my $sth = $dbh->prepare("SELECT traps_id FROM traps WHERE traps_oid = '$oid'");
+    my $sth = $dbh->prepare("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = '$oid'");
     $sth->execute();
     if (defined($sth->fetchrow_array)) {
 		$sth->finish();
@@ -69,8 +69,7 @@ sub getStatus($$) {
 
 sub main($$) {
     my $manuf = $_[1];
-    my $dsn = "dbi:mysql:$mysql_database_oreon";
-    my $dbh = DBI->connect($dsn, $mysql_user, $mysql_passwd) or die "Echec de la connexion\n";
+    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
     if (!open(FILE, $_[0])) {
 		print "Cannot open configuration file : $_[0]\n";
 		exit;
@@ -84,13 +83,13 @@ sub main($$) {
 				$last_oid = $oid;
 		    } else {
 				$val = getStatus($val,$type);
-				my $sth = $dbh->prepare("INSERT INTO `traps` (traps_name, traps_oid, traps_status, manufacturer_id) values ('$name', '$oid', '$val', '$manuf')");
+				my $sth = $dbh->prepare("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`) VALUES ('$name', '$oid', '$val', '$manuf')");
 				$sth->execute();
 				$sth->finish();
 				$last_oid = $oid;
 		    }
 		} elsif ($_ =~/^FORMAT\ (.*)/ && $last_oid ne "") {
-		    my $sth = $dbh->prepare("UPDATE `traps` set traps_args='$1' WHERE traps_oid = '$last_oid'");
+		    my $sth = $dbh->prepare("UPDATE `traps` set `traps_args` = '$1' WHERE `traps_oid` = '$last_oid'");
 		    $sth->execute();
 		    $sth->finish();
 		} elsif ($_ =~ /^SDESC(.*)/ && $last_oid ne "") {	    
@@ -113,7 +112,7 @@ sub main($$) {
 				}
 		    }
 		    if ($desc ne "") {
-				my $sth = $dbh->prepare("UPDATE `traps` set traps_comments='$desc' where traps_oid='$last_oid'");
+				my $sth = $dbh->prepare("UPDATE `traps` SET `traps_comments` = '$desc' WHERE `traps_oid` = '$last_oid'");
 				$sth->execute();
 				$sth->finish();
 		    }
