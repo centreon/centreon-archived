@@ -147,13 +147,13 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 	       $uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
 			$gid = @posix_getgrgid (filegroup($_SESSION['nagios_conf']));
 	       $perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
-		if( (strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
+		if( (strcmp($perms,'666') == 0 )  && (strcmp($_SESSION['nagios_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
 	          	echo '<b><span class="go">OK</font></b>';
 	          	 $msg =  '';
 			} else {
 	            echo '<b><span class="stop">Critical: Not Writeable</font></b>';
 	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>' ;
-	          	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':'.$_SESSION['nagios_group'].' (775)';
+	          	$msg .=  '<br />Should be '. $_SESSION['nagios_user'].':'.$_SESSION['nagios_group'].' (775)';
 			    $return_false = 1;
 	       }
 	    } else {
@@ -163,6 +163,23 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 	    } ?>
 		</td>
   </tr>
+</table>
+<?php
+aff_middle();
+$str = '';
+if (isset($return_false))
+	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
+$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
+if ($return_false)
+	$str .= " disabled";
+$str .= " />";
+print $str;
+aff_footer();
+?>
+
+<?
+/*
+ * 
   <tr>
     	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION['nagios_conf']; ?></td>
     	<td align="right"><b><?php echo  $msg ;  ?></td>
@@ -194,16 +211,7 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
     	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION['nagios_plugins']; ?></td>
     	<td align="right"><b><?php echo  $msg ; ?></td>
   </tr>
-</table>
-<?php
-aff_middle();
-$str = '';
-if (isset($return_false))
-	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
-$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
-if ($return_false)
-	$str .= " disabled";
-$str .= " />";
-print $str;
-aff_footer();
+
+ * 
+ */
 ?>
