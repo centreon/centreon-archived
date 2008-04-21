@@ -215,14 +215,8 @@
 		$DBRESULT =& $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
 		if (PEAR::isError($DBRESULT))
 			print ($DBRESULT->getMessage());
-		while ($DBRESULT->fetchInto($session)){
-			$tab_user[$session["user_id"]] = array();
-			$tab_user[$session["user_id"]]["ip"] = $session["ip_address"];
-			$tab_user[$session["user_id"]]["id"] = $session["user_id"];
-			$tab_user[$session["user_id"]]["alias"] = $session["contact_alias"];
-			$tab_user[$session["user_id"]]["admin"] = $session["contact_admin"];
-		}
-		
+		while ($session = $DBRESULT->fetchRow())
+			$tab_user[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);	
 		$tpl->assign("tab_user", $tab_user);
 	}
 	$tpl->assign('amIadmin', $oreon->user->admin);
