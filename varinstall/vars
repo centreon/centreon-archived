@@ -1,0 +1,33 @@
+# -*-Shell-script-*-
+# install_vars
+# This file contain reconfigured variables used in install scripts
+
+LOG_DIR="$BASE_DIR/log"
+LOG_FILE="$LOG_DIR/install_centreon.log"
+TMPDIR="/tmp/centreon-setup"
+SNMP_DIR="/etc/snmp/"
+CENTREON_CONF="/etc/centreon.conf"
+PEAR_MODULES_LIST="pear.lst"
+DEFAULT_INSTALL_DIR_NAGIOS="/usr/share/nagios2"
+DEFAULT_INSTALL_DIR_CENTREON="/usr/local/centreon"
+DEFAULT_NAGIOS_ETC="/etc/nagios2"
+DEFAULT_NAGIOS_PLUGIN="/usr/lib/nagios/plugins"
+DEFAULT_NAGIOS_IMG="/usr/share/nagios2/htdocs/images"
+DEFAULT_NAGIOS_BINARY="/usr/sbin/nagios2"
+DEFAULT_NAGIOSSTATS_BINARY="/usr/sbin/nagios2stats"
+DEFAULT_NAGIOS_VAR="/var/log"
+DEFAULT_RRD_PERL="/usr/lib/perl5"
+DEFAULT_SUDO_FILE="/etc/sudoers"
+DEFAULT_WEB_USER="www-data"
+DEFAULT_WEB_GROUP="www-data"
+DEFAULT_NAGIOS_USER="nagios"
+DEFAULT_NAGIOS_GROUP="nagios"
+DEFAULT_BIN_RRDTOOL="/usr/bin/rrdtool"
+DEFAULT_BIN_MAIL="/usr/bin/mail"
+DEFAULT_PEAR_PATH="/usr/share/php"
+DEFAULT_CENTREON_LOG="/var/log/centreon"
+DEFAULT_CENTREON_ETC="/etc/centreon"
+DEFAULT_CENTREON_GENDIR="/var/cache/centreon"
+DEFAULT_CENTSTORAGE_RRD="/var/lib/centreon"
+
+
