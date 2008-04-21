@@ -45,6 +45,9 @@ configureApache
 ## Create temps folder and copy all src into
 copyInTempFile
 
+# Create config file for centreon 
+createConfFile
+
 ## InstallCentreon
 
 echo "------------------------------------------------------------------------"
@@ -80,7 +83,7 @@ sed -e 's|@NAGIOS_VAR@|"$NAGIOS_VAR"|g' \
  -e 's|@BIN_MAIL@|"$BIN_MAIL"|g' \
 $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBaseConf.sql
 
-##Â Copy in final dir
+## Copy in final dir
 log "INFO" "Copying www/install/insertBaseConf.sql in final directory"
 cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertBaseConf.sql 2>&1 >> $LOG_FILE
 
@@ -105,35 +108,40 @@ echo_info "`gettext \"Copy CentWeb in system directory\"`"
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
 	$TMPDIR/final/www $INSTALL_DIR_CENTREON 2>&1 >> $LOG_FILE
 
+mkdir $TMPDIR/final/filesGeneration
+mkdir $TMPDIR/final/filesGeneration/nagiosCFG
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG 2>&1 >> $LOG_FILE
 
+mkdir $TMPDIR/final/filesUpload
+mkdir $TMPDIR/final/filesUpload/nagiosCFG
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
 
-echo_passed "`gettext \"CentWeb file installation\"`" "$passed"
+echo_passed "`gettext \"CentWeb file installation\"`" "$OK"
 
-echo "------------------------------------------------------------------------"
-echo -e "`gettext \"Pear Modules\"`"
-echo -e "------------------------------------------------------------------------\n"
+#echo ""
+#echo "------------------------------------------------------------------------"
+#echo -e "`gettext \"Pear Modules\"`"
+#echo -e "------------------------------------------------------------------------\n"
 
-pear_module=0
+#pear_module=0
 
-while [ $pear_module -eq 0 ] ; do 
-	check_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
-	if [ $? -ne 0 ] ; then
-		yes_no_default "`gettext \"Do you want I install/upgrade your PEAR modules\"`" "$yes"
-		if [ $? -eq 0 ] ; then
-			install_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
-			upgrade_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
-		else
-			pear_module=1
-		fi
-	else 
-		echo_success "`gettext \"All PEAR module\"`" "$ok"
-		pear_module=1
-	fi
-done
+#while [ $pear_module -eq 0 ] ; do 
+#	check_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
+#	if [ $? -ne 0 ] ; then
+#		yes_no_default "`gettext \"Do you want I install/upgrade your PEAR modules\"`" "$yes"
+#		if [ $? -eq 0 ] ; then
+#			install_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
+#			upgrade_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
+#		else
+#			pear_module=1
+#		fi
+#	else 
+#		echo_success "`gettext \"All PEAR module\"`" "$ok"
+#		pear_module=1
+#	fi
+#done
 
 ## wait sql inject script....
 

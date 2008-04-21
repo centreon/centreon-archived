@@ -505,7 +505,7 @@ function configureApache() {
 ## Section add by Centreon Install Setup
 ##
 	
-Alias /centreon $INSTALL_DIR_OREON/www/
+Alias /centreon $INSTALL_DIR_CENTREON/www/
 <Directory "$INSTALL_DIR_OREON/www">
     Options None
     AllowOverride AuthConfig Options
@@ -608,7 +608,7 @@ function createConfFile()
 	# Reinit file if exist	
 	echo "" > $INSTALL_DIR_CENTREON_CONF
 	cat << __EOT__ >> $INSTALL_DIR_CENTREON_CONF
-<?
+<?php
 /**
 Centreon is developped with GPL Licence 2.0 :
 http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -883,15 +883,19 @@ function check_httpd_directory()
 
 function check_user_apache()
 {
+	local found=1
 	if [ -e /etc/apache2/envvars ] ; then 
-		# for Debian system
+		#�for Debian system (lenny)
 		WEB_USER=`cat /etc/apache2/envvars |grep "USER" | cut -d= -f2`
+		[ -z "$WEB_USER" ] && found=0
 	elif [ -e /etc/apache2/uid.conf ] ; then
-		# for SuSe system
+		#�for SuSe system
 		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^User" | cut -d" " -f2`
-	else 
+		[ -z "$WEB_USER" ] && found=0
+	fi 
+	if [ $found -eq 0 ] ; then 
 		WEB_USER=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^User" | cut -d" " -f2`
-		if [ ! -z "$WEB_USER"  ] ; then
+		if [ -z "$WEB_USER"  ] ; then
 			local WEB_USER_TEMP=""
 			for fichier in $DIR_APACHE/*
 			do
@@ -909,15 +913,19 @@ function check_user_apache()
 
 function check_group_apache()
 {
+	local found=1
 	if [ -e /etc/apache2/envvars ] ; then
 		# for debian system
 		WEB_GROUP=`cat /etc/apache2/envvars |grep "GROUP" |cut -d= -f2`
+		[ -z "$WEB_GROUP" ] && found=0
 	elif [ -e /etc/apache2/uid.conf ] ; then
 		# for SuSe system
 		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^Group" | cut -d" " -f2`
-	else
+		[ -z "$WEB_GROUP" ] && found=0
+	fi
+	if [ $found -eq 0 ] ; then 
 		WEB_GROUP=`cat $DIR_APACHE/$APACHE_CONF | grep -e "^Group" | cut -d" " -f2`
-		if [ ! -z "$WEB_GROUP"  ] ; then
+		if [  -z "$WEB_GROUP"  ] ; then
 			local WEB_GROUP_TMP=""
 			for fichier in $DIR_APACHE/*
 			do
@@ -931,13 +939,12 @@ function check_group_apache()
 		fi
 	fi
 	echo_info "`gettext \"Finding Apache group\"` :" "$WEB_GROUP"
+
 }
-
-
 
 function copyInTempFile()
 {
-	local srclistcp="bin cron doc GPL_LIB lib misc snmptrapd snmptt www Plugins"
+	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www Plugins"
 	# Prepare centreon Plugins
 	echo "`gettext \"Preparing Centreon temporary files\"`"
 	if [ -d $TMPDIR ] ; then
@@ -1092,4 +1099,3 @@ function find_OS() {
 	eval $distrib=$dist_found
 	return 0
 }
-
