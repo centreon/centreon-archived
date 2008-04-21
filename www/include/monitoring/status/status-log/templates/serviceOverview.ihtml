@@ -14,7 +14,7 @@
 		{foreach item=host_list from=$h_data key=key}
 		{if $host_list && ($svc_data.$key || $svc_data_ack.$key)}
 			<tr class="{$h_class.$key}">
-				<td valign="top" width="200"><span style='float:left;'>{$host_list}</span><span style="float:right;"><a href="./oreon.php?p=20201&o=svc&host_name={$key}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./oreon.php?host_name={$key}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
+				<td valign="top" width="200"><span style='float:left;'>{$host_list}</span><span style="float:right;"><a href="./main.php?p=20201&o=svc&host_name={$key}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./main.php?host_name={$key}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
 				<td bgcolor="{$h_status.$key.color}" width="70" class='ListColCenter'>{$h_status.$key.current_state}</td>
 				<td>&nbsp;&nbsp;{$svc_data.$key}</td>
 				<td>&nbsp;&nbsp;{$svc_data_ack.$key}</td>
@@ -25,7 +25,7 @@
 		{foreach item=host_list from=$h_data key=key}
 		{if $host_list && $svc_data.$key}
 			<tr class="{$h_class.$key}">
-				<td valign="top" width="200"><span style='float:left;'>{$host_list}</span><span style="float:right;"><a href="./oreon.php?p=20201&o=svc&host_name={$key}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./oreon.php?host_name={$key}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
+				<td valign="top" width="200"><span style='float:left;'>{$host_list}</span><span style="float:right;"><a href="./main.php?p=20201&o=svc&host_name={$key}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./main.php?host_name={$key}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
 				<td bgcolor="{$h_status.$key.color}" width="70" class='ListColCenter'>{$h_status.$key.current_state}</td>
 				<td>&nbsp;&nbsp;{$svc_data.$key}</td>
 			</tr>

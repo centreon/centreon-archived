@@ -20,7 +20,7 @@
 		{foreach item=host_list from=$hostgroup.$hg_name.host}
 		{if $svc_data.$hg_name.$host_list || $svc_data_ack.$hg_name.$host_list}
 			<tr class="{$h_class.$hg_name.$host_list}">
-				<td class="ListColLeft" width="200"><span style='float:left;'>{$h_data.$hg_name.$host_list}</span><span style="float:right;"><a href="./oreon.php?p=20201&o=svc&host_name={$host_list}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./oreon.php?host_name={$host_list}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
+				<td class="ListColLeft" width="200"><span style='float:left;'>{$h_data.$hg_name.$host_list}</span><span style="float:right;"><a href="./main.php?p=20201&o=svc&host_name={$host_list}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./main.php?host_name={$host_list}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
 				{$h_status_data.$hg_name.$host_list}
 				<td class="ListColLeft">{$svc_data.$hg_name.$host_list}</td>
 				<td class="ListColLeft">{$svc_data_ack.$hg_name.$host_list}</td>
@@ -31,7 +31,7 @@
 		{foreach item=host_list from=$hostgroup.$hg_name.host}
 		{if $svc_data.$hg_name.$host_list }
 			<tr class="{$h_class.$hg_name.$host_list}">
-				<td class="ListColLeft" width="200"><span style='float:left;'>{$h_data.$hg_name.$host_list}</span><span style="float:right;"><a href="./oreon.php?p=20201&o=svc&host_name={$host_list}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./oreon.php?host_name={$host_list}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
+				<td class="ListColLeft" width="200"><span style='float:left;'>{$h_data.$hg_name.$host_list}</span><span style="float:right;"><a href="./main.php?p=20201&o=svc&host_name={$host_list}"><img src="./img/icones/16x16/view.gif"></a>&nbsp;<a href="./main.php?host_name={$host_list}&p=40210"><img src="./img/icones/16x16/column-chart.gif"></a></span></td>
 				{$h_status_data.$hg_name.$host_list}
 				<td class="ListColLeft">{$svc_data.$hg_name.$host_list}</td>
 			</tr>

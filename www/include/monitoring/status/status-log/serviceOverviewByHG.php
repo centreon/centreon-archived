@@ -48,7 +48,7 @@ For information : contact@oreon-project.org
 				if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$r_h["host_name"]]))){
 					$service_data_str = NULL;	
 					$service_data_str_ack = NULL;	
-					$host_data_str = "<a href='./oreon.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a>";
+					$host_data_str = "<a href='./main.php?p=201&o=hd&host_name=".$r_h["host_name"]."'>" . $r_h["host_name"] . "</a>";
 					isset($host_status[$r_h["host_name"]]) && $host_status[$r_h["host_name"]]["current_state"] == "DOWN" ? $h_class[$r["hg_name"]][$r_h["host_name"]] = "list_down" : $h_class[$r["hg_name"]][$r_h["host_name"]] = $tab_color[++$counter_host % 2];
 					
 					if(isset($tab_host_service[$r_h["host_name"]])){
@@ -61,17 +61,17 @@ For information : contact@oreon-project.org
 									if ($service_status[$r_h["host_name"]."_".$key]["problem_has_been_acknowledged"] == 1)
 										$service_data_str_ack .= 	"<span style='background:".
 																$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])].";opacity: 0.9;'>".
-																"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
+																"<a href='./main.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
 																"</a></span> &nbsp;&nbsp;";
 									else
 										$service_data_str .= 	"<span style='background:".
 																$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])].";opacity: 0.9;'>".
-																"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
+																"<a href='./main.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
 																"</a></span> &nbsp;&nbsp;";
 								} else {
 									$service_data_str .= 	"<span style='background:".
 															$oreon->optGen["color_".strtolower($service_status[$r_h["host_name"]."_".$key]["current_state"])].";opacity: 0.9;'>".
-															"<a href='./oreon.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
+															"<a href='./main.php?p=202&o=svcd&host_name=".$r_h["host_name"]."&service_description=".$key."'>".$key.
 															"</a></span> &nbsp;&nbsp;";
 								}
 							}

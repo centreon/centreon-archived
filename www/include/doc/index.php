@@ -47,7 +47,7 @@
 	$doc = fopen("../doc/".$lang."/".$page, "r");	
 	while ($line = fgets($doc)){
 		if ($flag_begin && !$flag_end){
-			$line = preg_replace("/href\=\"/", "href=\"./oreon.php?p=$p&doc=1&page=", $line);
+			$line = preg_replace("/href\=\"/", "href=\"./main.php?p=$p&doc=1&page=", $line);
 			$line = preg_replace("/page\=\#/", "page=".$_GET["page"]."#", $line);
 			$line = preg_replace("/\<ul\>/", "<ul style=\"padding-left:40px;\">", $line);
 			$line = preg_replace("/\<li\>/", "<li style=\"padding-left:30px;\">", $line);

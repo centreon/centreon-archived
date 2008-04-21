@@ -58,7 +58,7 @@ For information : contact@oreon-project.org
 						if (isset($service_status[$host_name."_".$service_description])){	
 							if (!isset($h_data[$r["sg_name"]]))
 								$h_data[$r["sg_name"]] = array();
-							$h_data[$r["sg_name"]][$host_name] = "<a href='./oreon.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
+							$h_data[$r["sg_name"]][$host_name] = "<a href='./main.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
 							
 							$h_status[$host_name] = array("current_state"=>$host_status[$host_name]["current_state"], "color"=>$oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])]);
 							if (!isset($svc_data[$r["sg_name"]]))
@@ -96,7 +96,7 @@ For information : contact@oreon-project.org
 							if (isset($service_status[$host_name."_".$service_description])){	
 								if (!isset($h_data[$r["sg_name"]]))
 									$h_data[$r["sg_name"]] = array();
-								$h_data[$r["sg_name"]][$host_name] = "<a href='./oreon.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
+								$h_data[$r["sg_name"]][$host_name] = "<a href='./main.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
 								
 								$h_status[$host_name] = array("current_state"=>$host_status[$host_name]["current_state"], "color"=>$oreon->optGen["color_".strtolower($host_status[$host_name]["current_state"])]);
 								if (!isset($svc_data[$r["sg_name"]]))
@@ -125,7 +125,7 @@ For information : contact@oreon-project.org
 			foreach ($svc_status as $key => $value){
 				$svc_data[$r["sg_name"]][$key] = "";
 				foreach ($value as $key_stt => $value_stt){
-					$svc_data[$r["sg_name"]][$key] .= "<span style='background:".$oreon->optGen["color_".strtolower($key_stt)]."'>$value_stt <a href='./oreon.php?p=202&o=svc_".strtolower($key_stt)."&host_name=$key'>".$key_stt."</a></span>&nbsp; \n";
+					$svc_data[$r["sg_name"]][$key] .= "<span style='background:".$oreon->optGen["color_".strtolower($key_stt)]."'>$value_stt <a href='./main.php?p=202&o=svc_".strtolower($key_stt)."&host_name=$key'>".$key_stt."</a></span>&nbsp; \n";
 				}
 			}
 	}

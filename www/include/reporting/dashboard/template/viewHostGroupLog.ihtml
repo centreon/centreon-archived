@@ -127,7 +127,7 @@
 						</tr>
 						{foreach item=tb from=$tab_host}
 						<tr class={cycle values="list_two, list_one"}>
-							<td class="ListColHeaderLeft"><a href="oreon.php?p=30701&host={$tb.hostName}{$period}">{$tb.hostName}</a></td>
+							<td class="ListColHeaderLeft"><a href="main.php?p=30701&host={$tb.hostName}{$period}">{$tb.hostName}</a></td>
 							<td {$style_up}>{$tb.PtimeUP}% ({$tb.PktimeUP}%)</td>
 							<td {$style_up_alert} >{$tb.UPnbEvent}</td>
 							<td {$style_down}>{$tb.PtimeDOWN}% ({$tb.PktimeDOWN}%)</td>

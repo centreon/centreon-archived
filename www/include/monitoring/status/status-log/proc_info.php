@@ -268,7 +268,7 @@ For information : contact@oreon-project.org
 				</td>
 			</tr>
 			</table><?php
-				print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"document.location.href=\'oreon.php?p=303&o=proc\'\",2000)</SCRIPT>";
+				print "<SCRIPT LANGUAGE='JavaScript'> setTimeout(\"document.location.href=\'main.php?p=303&o=proc\'\",2000)</SCRIPT>";
 			} else {?>
 			<table border='0'>
 			<tr>

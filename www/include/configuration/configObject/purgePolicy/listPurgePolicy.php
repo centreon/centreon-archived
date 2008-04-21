@@ -68,9 +68,9 @@ For information : contact@oreon-project.org
 	$elemArr = array();
 	for ($i = 0; $DBRESULT->fetchInto($purgePolicy); $i++) {		
 		$selectedElements =& $form->addElement('checkbox', "select[".$purgePolicy['purge_policy_id']."]");	
-		$moptions = "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";
-		$moptions .= "<a href='oreon.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=d&select[".$purgePolicy['purge_policy_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>&nbsp;&nbsp;";
+		$moptions = "<a href='main.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='main.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";
+		$moptions .= "<a href='main.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=d&select[".$purgePolicy['purge_policy_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$purgePolicy['purge_policy_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 

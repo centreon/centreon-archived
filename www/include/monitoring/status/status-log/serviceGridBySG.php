@@ -54,13 +54,13 @@ For information : contact@oreon-project.org
 						if (isset($service_status[$host_name."_".$service_description])){	
 							if (!isset($h_data[$r["sg_name"]]))
 								$h_data[$r["sg_name"]] = array();
-							$h_data[$r["sg_name"]][$host_name] = "<a href='./oreon.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
+							$h_data[$r["sg_name"]][$host_name] = "<a href='./main.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
 							if (!isset($svc_data[$r["sg_name"]]))
 								$svc_data[$r["sg_name"]] = array();
 							if (!isset($svc_data[$r["sg_name"]][$host_name]))
 								$svc_data[$r["sg_name"]][$host_name] = "";
 							
-							$svc_data[$r["sg_name"]][$host_name] .= " <span style='background:".$oreon->optGen["color_".strtolower($service_status[$host_name."_".$service_description]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$host_name."&service_description=".$service_description."'>".$service_description."</a></span>&nbsp; \n";				
+							$svc_data[$r["sg_name"]][$host_name] .= " <span style='background:".$oreon->optGen["color_".strtolower($service_status[$host_name."_".$service_description]["current_state"])]."'><a href='./main.php?p=202&o=svcd&host_name=".$host_name."&service_description=".$service_description."'>".$service_description."</a></span>&nbsp; \n";				
 				
 							# define class
 							isset($host_status[$host_name]) && $host_status[$host_name]["current_state"] == "DOWN" ? $h_class[$r["sg_name"]][$host_name] = "list_down" : $h_class[$r["sg_name"]][$host_name] = $tab_color[++$counter_host % 2];
@@ -84,13 +84,13 @@ For information : contact@oreon-project.org
 							if (isset($service_status[$host_name."_".$service_description])){	
 								if (!isset($h_data[$r["sg_name"]]))
 									$h_data[$r["sg_name"]] = array();
-								$h_data[$r["sg_name"]][$host_name] = "<a href='./oreon.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
+								$h_data[$r["sg_name"]][$host_name] = "<a href='./main.php?p=201&o=hd&host_name=".$host_name."'>" . $host_name . "</a> ";
 								if (!isset($svc_data[$r["sg_name"]]))
 									$svc_data[$r["sg_name"]] = array();
 								if (!isset($svc_data[$r["sg_name"]][$host_name]))
 									$svc_data[$r["sg_name"]][$host_name] = "";
 								
-								$svc_data[$r["sg_name"]][$host_name] .= " <span style='background:".$oreon->optGen["color_".strtolower($service_status[$host_name."_".$service_description]["current_state"])]."'><a href='./oreon.php?p=202&o=svcd&host_name=".$host_name."&service_description=".$service_description."'>".$service_description."</a></span>&nbsp; \n";				
+								$svc_data[$r["sg_name"]][$host_name] .= " <span style='background:".$oreon->optGen["color_".strtolower($service_status[$host_name."_".$service_description]["current_state"])]."'><a href='./main.php?p=202&o=svcd&host_name=".$host_name."&service_description=".$service_description."'>".$service_description."</a></span>&nbsp; \n";				
 					
 								# define class
 								isset($host_status[$host_name]) && $host_status[$host_name]["current_state"] == "DOWN" ? $h_class[$r["sg_name"]][$host_name] = "list_down" : $h_class[$r["sg_name"]][$host_name] = $tab_color[++$counter_host % 2];

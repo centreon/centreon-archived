@@ -38,7 +38,7 @@ For information : contact@oreon-project.org
 		if ($oreon->user->admin || !$isRestreint || ($isRestreint && isset($TabLca["LcaHost"][$data["host_name"]]))){	
 			$service_data_str = NULL;
 			$service_data_str_ack = NULL;
-			$h_data[$data["host_name"]] = "<a href='./oreon.php?p=201&o=hd&host_name=".$data["host_name"]."'>".$data["host_name"]."</a>";
+			$h_data[$data["host_name"]] = "<a href='./main.php?p=201&o=hd&host_name=".$data["host_name"]."'>".$data["host_name"]."</a>";
 			$h_status[$data["host_name"]]=array("current_state"=>$data["current_state"], "color"=>$oreon->optGen["color_".strtolower($data["current_state"])]);
 			# define class
 			isset($host_status[$data["host_name"]]) && $host_status[$data["host_name"]]["current_state"] == "DOWN" ? $h_class[$data["host_name"]] = "list_down" : $h_class[$data["host_name"]] = $tab_color[++$counter_host % 2];
@@ -73,38 +73,38 @@ For information : contact@oreon-project.org
 				}
 				if (isset($_GET["problem"])){
 					if (isset($tab_svc["OK"]) && $tab_svc["OK"] != 0)
-						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
+						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
 					if (isset($tab_svc["WARNING"]) && $tab_svc["WARNING"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc["WARNING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc["WARNING"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
 					if (isset($tab_svc["CRITICAL"]) && $tab_svc["CRITICAL"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>".$tab_svc["CRITICAL"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_critical'>CRITICAL</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>".$tab_svc["CRITICAL"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_critical'>CRITICAL</a></span> ";
 					if (isset($tab_svc["PENDING"]) && $tab_svc["PENDING"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>".$tab_svc["PENDING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svcpb'>PENDING</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>".$tab_svc["PENDING"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svcpb'>PENDING</a></span> ";
 					if (isset($tab_svc["UNKNOWN"]) && $tab_svc["UNKNOWN"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>".$tab_svc["UNKNOWN"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_unknown'>UNKNOWN</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>".$tab_svc["UNKNOWN"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_unknown'>UNKNOWN</a></span> ";
 					
 					if (isset($tab_svc_ack["OK"]) && $tab_svc_ack["OK"] != 0)
-						$service_data_str_ack = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc_ack["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
+						$service_data_str_ack = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc_ack["OK"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
 					if (isset($tab_svc_ack["WARNING"]) && $tab_svc_ack["WARNING"] != 0)
-						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc_ack["WARNING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
+						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc_ack["WARNING"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
 					if (isset($tab_svc_ack["CRITICAL"]) && $tab_svc_ack["CRITICAL"] != 0)
-						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_critical"]."'>".$tab_svc_ack["CRITICAL"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_critical'>CRITICAL</a></span> ";
+						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_critical"]."'>".$tab_svc_ack["CRITICAL"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_critical'>CRITICAL</a></span> ";
 					if (isset($tab_svc_ack["PENDING"]) && $tab_svc_ack["PENDING"] != 0)
-						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_pending"]."'>".$tab_svc_ack["PENDING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svcpb'>PENDING</a></span> ";
+						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_pending"]."'>".$tab_svc_ack["PENDING"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svcpb'>PENDING</a></span> ";
 					if (isset($tab_svc_ack["UNKNOWN"]) && $tab_svc_ack["UNKNOWN"] != 0)
-						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_unknown"]."'>".$tab_svc_ack["UNKNOWN"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_unknown'>UNKNOWN</a></span> ";
+						$service_data_str_ack .= "<span style='background:".$oreon->optGen["color_unknown"]."'>".$tab_svc_ack["UNKNOWN"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_unknown'>UNKNOWN</a></span> ";
 				
 				} else {
 					if (isset($tab_svc["OK"]) && $tab_svc["OK"] != 0)
-						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
+						$service_data_str = "<span style='background:".$oreon->optGen["color_ok"]."'>".$tab_svc["OK"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_ok'>OK</a></span> ";
 					if (isset($tab_svc["WARNING"]) && $tab_svc["WARNING"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc["WARNING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_warning"]."'>".$tab_svc["WARNING"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_warning'>WARNING</a></span> ";
 					if (isset($tab_svc["CRITICAL"]) && $tab_svc["CRITICAL"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>".$tab_svc["CRITICAL"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_critical'>CRITICAL</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_critical"]."'>".$tab_svc["CRITICAL"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_critical'>CRITICAL</a></span> ";
 					if (isset($tab_svc["PENDING"]) && $tab_svc["PENDING"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>".$tab_svc["PENDING"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svcpb'>PENDING</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_pending"]."'>".$tab_svc["PENDING"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svcpb'>PENDING</a></span> ";
 					if (isset($tab_svc["UNKNOWN"]) && $tab_svc["UNKNOWN"] != 0)
-						$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>".$tab_svc["UNKNOWN"]." <a href='./oreon.php?p=2020202&host_name=".$data["host_name"]."&o=svc_unknown'>UNKNOWN</a></span> ";
+						$service_data_str .= "<span style='background:".$oreon->optGen["color_unknown"]."'>".$tab_svc["UNKNOWN"]." <a href='./main.php?p=2020202&host_name=".$data["host_name"]."&o=svc_unknown'>UNKNOWN</a></span> ";
 				}
 				if (isset($service_data_str_ack))
 					$svc_data_ack[$data["host_name"]] = $service_data_str_ack;

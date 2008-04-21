@@ -3,10 +3,10 @@
 {/if}
 {if $hasUpdate}
 	{if $security != ''}
-		<div class="updateSecu">{$updateSecu} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$security}">{$security}</a></div>
+		<div class="updateSecu">{$updateSecu} : <a href="{$oreon_web_path}main.php?p=5010503&version={$security}">{$security}</a></div>
 	{/if}
 	{if $security != $lastVersion}
-		<div class="update">{$update} : <a href="{$oreon_web_path}oreon.php?p=5010503&version={$lastVersion}">{$lastVersion} ({$lastVersionType})</a></div>
+		<div class="update">{$update} : <a href="{$oreon_web_path}main.php?p=5010503&version={$lastVersion}">{$lastVersion} ({$lastVersionType})</a></div>
 	{/if}
 {else}
 	<div class="uptodate">{$uptodate}</div>

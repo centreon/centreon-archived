@@ -54,7 +54,7 @@ For information : contact@oreon-project.org
 		else
 			$session_data[$cpt]["topology_icone"] = "&nbsp;";
 		$session_data[$cpt]["last_reload"] = date("H:i:s", $r["last_reload"]);
-		$session_data[$cpt]["actions"] = "<a href='./oreon.php?p=$p&o=k&session_id=".$r["session_id"]."'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
+		$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=k&session_id=".$r["session_id"]."'><img src='./img/icones/16x16/flash.gif' border='0' alt='"._("Kick User")."' title='"._("Kick User")."'></a>";
 		$cpt++;
 	}
 	if (isset($msg))

@@ -32,7 +32,7 @@
 					<input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(2)" />
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					{$form.plugins.html}
-     				&nbsp;<img alt='{$cmd_help}' title='{$cmd_help}' src='./img/icones/16x16/about.gif' onClick="window.open('oreon.php?p=60706&command_name='+ document.Form.plugins.value + '&o=h&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">
+     				&nbsp;<img alt='{$cmd_help}' title='{$cmd_help}' src='./img/icones/16x16/about.gif' onClick="window.open('main.php?p=60706&command_name='+ document.Form.plugins.value + '&o=h&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">
 					<br /><br />
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(3)" />

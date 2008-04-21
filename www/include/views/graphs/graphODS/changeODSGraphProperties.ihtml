@@ -4,7 +4,7 @@
 {if $title2}
 <form {$form.attributes}>
 <div>
-	<!--<a href="./oreon.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a>&nbsp;<a href="./oreon.php?p={$p}&index={$index}&o=vz&start={$start}&end={$end}">Retour</a>-->
+	<!--<a href="./main.php?p={$p}&host_name={$host_name.host_name}"><img src='./img/icones/16x16/nav_left_red.gif'></a>&nbsp;<a href="./main.php?p={$p}&index={$index}&o=vz&start={$start}&end={$end}">Retour</a>-->
 	<table class="ListTable">
 		<tr class="ListHeader">
 			<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;{$ods_storProper} {$service_description} {$ods_on} {$host_name} </td>

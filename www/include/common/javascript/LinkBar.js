@@ -31,7 +31,7 @@ function goToLog(_input_name, _id){
 	_form.setAttribute('id', 'goToLogByPost');
 	_form.setAttribute('name', 'goToLogByPost');
 	_form.setAttribute('method', 'POST');
-	_form.setAttribute('action', 'oreon.php?p=203&mode=0');
+	_form.setAttribute('action', 'main.php?p=203&mode=0');
 	var _idValue = document.createElement("input");
 	_idValue.type ='text';
 	_idValue.value = tab;
@@ -46,14 +46,14 @@ function goToLog(_input_name, _id){
 
 function goToGraph(_input_name, _id){
 	var tab = getCheckedList(_input_name, _id);
-//	document.location.href='oreon.php?p=40211&mode=0&'+_id+'=' +tab;  	
+//	document.location.href='main.php?p=40211&mode=0&'+_id+'=' +tab;  	
 	myHeader = document.getElementById("header");
 
 	var _form = document.createElement("form");
 	_form.setAttribute('id', 'goToGraphByPost');
 	_form.setAttribute('name', 'goToGraphByPost');
 	_form.setAttribute('method', 'POST');
-	_form.setAttribute('action', 'oreon.php?p=40211&mode=0');
+	_form.setAttribute('action', 'main.php?p=40211&mode=0');
 	var _idValue = document.createElement("input");
 	_idValue.type ='text';
 	_idValue.value = tab;
@@ -67,17 +67,17 @@ function goToGraph(_input_name, _id){
 }
 function goToReport(_input_name, _id){
 	var tab = getCheckedList(_input_name, _id);
-	document.location.href='oreon.php?p=p=30702&period=today&'+_id+'=' +tab;  	
+	document.location.href='main.php?p=p=30702&period=today&'+_id+'=' +tab;  	
 }
 
 function goToIDCard(_input_name, _id){
 	var tab = getCheckedList(_input_name, _id);
-	document.location.href='oreon.php?p=70102&mode=0&'+_id+'=' +tab;  	
+	document.location.href='main.php?p=70102&mode=0&'+_id+'=' +tab;  	
 }
 
 function goToMonitoring(_input_name, _id){
 	var tab = getCheckedList(_input_name, _id);
-	document.location.href='oreon.php?p=20201&o=svc&mode=0&'+_id+'=' +tab;
+	document.location.href='main.php?p=20201&o=svc&mode=0&'+_id+'=' +tab;
 }
 
 function create_report_link(_input_name, _id){

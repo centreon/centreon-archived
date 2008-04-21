@@ -18,14 +18,14 @@
 		{if ($s.next_check || $s.last_check) &&  $s.active_checks_enabled == 1 && $s.next_check}
 		<tr {if $s.status == CRITICAL}class="list_three"{else}class="{$s.class}"{/if}>
 			<td class="ListColPicker" width="10"><input name="select[{$s.host_name};{$s.service_description}]" value="1" type="checkbox"></td>
-			<td class="ListColLeft"><a href='./oreon.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
-			<td class="ListColLeft"><a href='./oreon.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.service_description}'>{ $s.service_description }</a></td>
+			<td class="ListColLeft"><a href='./main.php?p=201&o=hd&host_name={$s.host_name}'>{ $s.host_name }</a></td>
+			<td class="ListColLeft"><a href='./main.php?p=202&o=svcd&host_name={$s.host_name}&service_description={$s.service_description}'>{ $s.service_description }</a></td>
 			<td class="ListColRight">
 				{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled}<img src='./img/icones/14x14/gears_pause.gif'>{/if}
 				{if $s.active_checks_enabled == 0 && $s.passive_checks_enabled == 0}<img src='./img/icones/14x14/gears_stop.gif'>{/if}
 				{if $s.notifications_enabled == 0}<img src='./img/icones/14x14/noloudspeaker.gif'>{/if}
-				<a href='./oreon.php?p={$p}&o=svcSch&cmd=2&select[{$s.host_name}:{$s.service_description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
-				<a href='./oreon.php?p=40207&host_name={ $s.host_name }&service_description={$s.service_description}&period=10800&step=0&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
+				<a href='./main.php?p={$p}&o=svcSch&cmd=2&select[{$s.host_name}:{$s.service_description}]=1'><img src='./img/icones/14x14/undo.gif' border='0'></a>
+				<a href='./main.php?p=40207&host_name={ $s.host_name }&service_description={$s.service_description}&period=10800&step=0&submitC=Grapher'><img src='./img/icones/16x16/column-chart.gif'></a>
 			</td>
 			{ $s.status_td }
 			<td class="ListColRight" align="right">{ $s.next_check }</td>

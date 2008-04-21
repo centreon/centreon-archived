@@ -82,7 +82,7 @@
 	for ($i2 = 0, $iend = $num; ( $iend <  ($rows / $limit -1)) && ( $i2 < (5 + $i)); $i2++)
 		$iend++;
 	for ($i = $istart; $i <= $iend; $i++){
-		$pageArr[$i] = array("url_page"=>"./oreon.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);
+		$pageArr[$i] = array("url_page"=>"./main.php?p=".$p."&num=$i&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o . $url_var, "label_page"=>"<b>".($i +1)."</b>","num"=> $i);
 	}
 	if ($i > 1)							
 		$tpl->assign("pageArr", $pageArr);
@@ -92,10 +92,10 @@
 	$tpl->assign("next", _("next"));
 
 	if (($prev = $num - 1) >= 0)
-		$tpl->assign('pagePrev', ("./oreon.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+		$tpl->assign('pagePrev', ("./main.php?p=".$p."&num=$prev&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	
 	if (($next = $num + 1) < ($rows/$limit))
-		$tpl->assign('pageNext', ("./oreon.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
+		$tpl->assign('pageNext', ("./main.php?p=".$p."&num=$next&limit=".$limit."&search=".$search."&type=".$type."&o=" . $o .$url_var));
 	
 	if (($rows / $limit) > 0)
 		$tpl->assign('pageNumber', ($num +1)."/".ceil($rows / $limit));

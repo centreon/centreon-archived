@@ -50,10 +50,10 @@
     		<td class='ListColCenter' valign="top" align='center'>
     			{if $curr_id.split}
     			{foreach from=$curr_id.metrics item=curr_id_metric key=key_metric}
-       			<div><a href='./oreon.php?p={$p}&o=vs&index={$key}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={counter}&metric={$key_metric}{if $curr_id[template_id].template_id}&template_id={$curr_id[template_id].template_id}{/if}&end={$end}&start={$start}' align="center"><a><br /></div>
+       			<div><a href='./main.php?p={$p}&o=vs&index={$key}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSMetricImage.php?session_id={$session_id}&cpt={counter}&metric={$key_metric}{if $curr_id[template_id].template_id}&template_id={$curr_id[template_id].template_id}{/if}&end={$end}&start={$start}' align="center"><a><br /></div>
     			{/foreach}
     			{else}
-    			<div><a href='./oreon.php?p={$p}&o=vs&index={$key}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$key}{if $curr_id[template_id].template_id}&template_id={$curr_id[template_id].template_id}{/if}&end={$end}&start={$start}'><a><br /></div>
+    			<div><a href='./main.php?p={$p}&o=vs&index={$key}&min={$min}'><img src='./include/views/graphs/graphODS/generateImages/generateODSImage.php?session_id={$session_id}&index={$key}{if $curr_id[template_id].template_id}&template_id={$curr_id[template_id].template_id}{/if}&end={$end}&start={$start}'><a><br /></div>
     			{/if}
     		</td>
         </tr>

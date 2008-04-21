@@ -67,7 +67,7 @@ For information : contact@oreon-project.org
 		if ($i >= $begin && $i < $end){
 			$cmd["command_id"] = 1;
 			$selectedElements =& $form->addElement('checkbox', "select[".$cmd['command_id']."]");	
-			$moptions = "<a href='oreon.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>";
+			$moptions = "<a href='main.php?p=".$p."&command_id=".$cmd['command_id']."&o=d&select[".$cmd['command_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>";
 			$path = str_replace('#BR#', "\\n", $path);
 			$path = str_replace('#T#', "\\t", $path);
 			$path = str_replace('#R#', "\\r", $path);
