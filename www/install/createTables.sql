@@ -1,8 +1,6 @@
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
 --
--- Base de données: `centreon-2.x`
+-- Data Base: `centreon-2.x`
 --
 
 -- --------------------------------------------------------
@@ -17,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `acl_groups` (
   `acl_group_alias` varchar(255) default NULL,
   `acl_group_activate` enum('0','1','2') default NULL,
   PRIMARY KEY  (`acl_group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -32,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `acl_group_contacts_relations` (
   PRIMARY KEY  (`agcr_id`),
   KEY `contact_contact_id` (`contact_contact_id`),
   KEY `acl_group_id` (`acl_group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -47,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `acl_group_topology_relations` (
   PRIMARY KEY  (`agt_id`),
   KEY `acl_group_id` (`acl_group_id`),
   KEY `acl_topology_id` (`acl_topology_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -64,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources` (
   `acl_res_status` enum('0','1') default NULL,
   `changed` int(11) default NULL,
   PRIMARY KEY  (`acl_res_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -77,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_hg_relations` (
   `hg_hg_id` int(11) default NULL,
   `acl_res_id` int(11) default NULL,
   PRIMARY KEY  (`arhge_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -92,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_hostex_relations` (
   PRIMARY KEY  (`arhe_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `acl_res_id` (`acl_res_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -107,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_host_relations` (
   PRIMARY KEY  (`arhr_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `acl_res_id` (`acl_res_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -122,7 +120,7 @@ CREATE TABLE IF NOT EXISTS `acl_resources_sc_relations` (
   PRIMARY KEY  (`arscr_id`),
   KEY `sc_id` (`sc_id`),
   KEY `acl_res_id` (`acl_res_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -137,7 +135,20 @@ CREATE TABLE IF NOT EXISTS `acl_resources_service_relations` (
   PRIMARY KEY  (`arsr_id`),
   KEY `service_service_id` (`service_service_id`),
   KEY `acl_group_id` (`acl_group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `acl_resources_sg_relations`
+--
+
+CREATE TABLE IF NOT EXISTS `acl_resources_sg_relations` (
+  `asgr` int(11) NOT NULL auto_increment,
+  `sg_id` int(11) default NULL,
+  `acl_res_id` int(11) default NULL,
+  PRIMARY KEY  (`asgr`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -152,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `acl_res_group_relations` (
   PRIMARY KEY  (`argr_id`),
   KEY `acl_res_id` (`acl_res_id`),
   KEY `acl_group_id` (`acl_group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -166,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `acl_topology` (
   `acl_topo_alias` varchar(255) default NULL,
   `acl_topo_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`acl_topo_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -181,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `acl_topology_relations` (
   PRIMARY KEY  (`agt_id`),
   KEY `topology_topology_id` (`topology_topology_id`),
   KEY `acl_topo_id` (`acl_topo_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -219,7 +230,7 @@ CREATE TABLE IF NOT EXISTS `cfg_cgi` (
   `cgi_comment` text,
   `cgi_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`cgi_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -360,7 +371,7 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios` (
   KEY `cmd7_index` (`host_perfdata_file_processing_command`),
   KEY `cmd8_index` (`service_perfdata_file_processing_command`),
   KEY `nagios_server_id` (`nagios_server_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -371,12 +382,14 @@ CREATE TABLE IF NOT EXISTS `cfg_nagios` (
 CREATE TABLE IF NOT EXISTS `cfg_ndo2db` (
   `id` int(11) NOT NULL auto_increment,
   `description` varchar(255) collate latin1_general_ci default NULL,
+  `ndo2db_user` varchar(255) collate latin1_general_ci default NULL,
+  `ndo2db_group` varchar(255) collate latin1_general_ci default NULL,
   `local` enum('0','1') collate latin1_general_ci default '0',
   `ns_nagios_server` int(11) default NULL,
   `socket_type` varchar(255) collate latin1_general_ci default NULL,
   `socket_name` varchar(255) collate latin1_general_ci default NULL,
   `tcp_port` int(11) default NULL,
-  `db_type` varchar(255) collate latin1_general_ci default NULL,
+  `db_servertype` varchar(255) collate latin1_general_ci default NULL,
   `db_host` varchar(255) collate latin1_general_ci default NULL,
   `db_name` varchar(255) collate latin1_general_ci default NULL,
   `db_port` varchar(255) collate latin1_general_ci default NULL,
@@ -391,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `cfg_ndo2db` (
   `activate` enum('0','1') collate latin1_general_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `ns_nagios_server` (`ns_nagios_server`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='configuration base for ndo daemon';
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='configuration base for ndo daemon' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -409,6 +422,7 @@ CREATE TABLE IF NOT EXISTS `cfg_ndomod` (
   `output` varchar(255) collate latin1_general_ci default NULL,
   `tcp_port` varchar(255) collate latin1_general_ci default NULL,
   `output_buffer_items` int(11) default NULL,
+  `buffer_file` varchar(255) collate latin1_general_ci default NULL,
   `file_rotation_interval` int(11) default NULL,
   `file_rotation_command` int(11) default NULL,
   `file_rotation_timeout` int(11) default NULL,
@@ -419,7 +433,7 @@ CREATE TABLE IF NOT EXISTS `cfg_ndomod` (
   `activate` enum('0','1') collate latin1_general_ci default NULL,
   PRIMARY KEY  (`id`),
   KEY `ns_nagios_server` (`ns_nagios_server`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='ndomog table config';
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci COMMENT='ndomog table config' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -434,7 +448,7 @@ CREATE TABLE IF NOT EXISTS `cfg_resource` (
   `resource_comment` varchar(255) default NULL,
   `resource_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`resource_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -451,7 +465,7 @@ CREATE TABLE IF NOT EXISTS `command` (
   `graph_id` int(11) default NULL,
   `cmd_cat_id` int(11) default NULL,
   PRIMARY KEY  (`command_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -465,7 +479,7 @@ CREATE TABLE IF NOT EXISTS `command_categories` (
   `category_alias` varchar(255) NOT NULL,
   `category_order` int(11) NOT NULL,
   PRIMARY KEY  (`cmd_category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -478,7 +492,7 @@ CREATE TABLE IF NOT EXISTS `command_categories_relation` (
   `category_id` int(11) default NULL,
   `command_command_id` int(11) default NULL,
   PRIMARY KEY  (`cmd_cat_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -510,7 +524,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   KEY `alias_index` (`contact_alias`),
   KEY `tp1_index` (`timeperiod_tp_id`),
   KEY `tp2_index` (`timeperiod_tp_id2`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -527,7 +541,7 @@ CREATE TABLE IF NOT EXISTS `contactgroup` (
   PRIMARY KEY  (`cg_id`),
   KEY `name_index` (`cg_name`),
   KEY `alias_index` (`cg_alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -542,7 +556,7 @@ CREATE TABLE IF NOT EXISTS `contactgroup_contact_relation` (
   PRIMARY KEY  (`cgr_id`),
   KEY `contact_index` (`contact_contact_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -557,7 +571,7 @@ CREATE TABLE IF NOT EXISTS `contactgroup_hostgroup_relation` (
   PRIMARY KEY  (`cghgr_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -572,7 +586,7 @@ CREATE TABLE IF NOT EXISTS `contactgroup_host_relation` (
   PRIMARY KEY  (`cghr_id`),
   KEY `host_index` (`host_host_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -587,7 +601,7 @@ CREATE TABLE IF NOT EXISTS `contactgroup_servicegroup_relation` (
   PRIMARY KEY  (`cgsgr_id`),
   KEY `servicegroup_index` (`servicegroup_sg_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -602,7 +616,7 @@ CREATE TABLE IF NOT EXISTS `contactgroup_service_relation` (
   PRIMARY KEY  (`cgsr_id`),
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   KEY `service_index` (`service_service_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -617,7 +631,7 @@ CREATE TABLE IF NOT EXISTS `contact_hostcommands_relation` (
   PRIMARY KEY  (`chr_id`),
   KEY `contact_index` (`contact_contact_id`),
   KEY `command_index` (`command_command_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -632,7 +646,7 @@ CREATE TABLE IF NOT EXISTS `contact_param` (
   `cp_contact_id` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `contact_id` (`cp_contact_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -647,7 +661,7 @@ CREATE TABLE IF NOT EXISTS `contact_servicecommands_relation` (
   PRIMARY KEY  (`csc_id`),
   KEY `contact_index` (`contact_contact_id`),
   KEY `command_index` (`command_command_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -665,7 +679,7 @@ CREATE TABLE IF NOT EXISTS `cron_operation` (
   `module` enum('0','1') default NULL,
   `activate` enum('0','1') default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -678,7 +692,7 @@ CREATE TABLE IF NOT EXISTS `css_color_menu` (
   `menu_nb` int(11) default NULL,
   `css_name` varchar(255) default NULL,
   PRIMARY KEY  (`id_css_color_menu`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -695,7 +709,7 @@ CREATE TABLE IF NOT EXISTS `dependency` (
   `notification_failure_criteria` varchar(255) default NULL,
   `dep_comment` text,
   PRIMARY KEY  (`dep_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -710,7 +724,7 @@ CREATE TABLE IF NOT EXISTS `dependency_hostChild_relation` (
   PRIMARY KEY  (`dhcr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -725,7 +739,7 @@ CREATE TABLE IF NOT EXISTS `dependency_hostgroupChild_relation` (
   PRIMARY KEY  (`dhgcr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -740,7 +754,7 @@ CREATE TABLE IF NOT EXISTS `dependency_hostgroupParent_relation` (
   PRIMARY KEY  (`dhgpr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -755,7 +769,7 @@ CREATE TABLE IF NOT EXISTS `dependency_hostParent_relation` (
   PRIMARY KEY  (`dhpr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -770,7 +784,7 @@ CREATE TABLE IF NOT EXISTS `dependency_metaserviceChild_relation` (
   PRIMARY KEY  (`dmscr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -785,7 +799,7 @@ CREATE TABLE IF NOT EXISTS `dependency_metaserviceParent_relation` (
   PRIMARY KEY  (`dmspr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -802,7 +816,7 @@ CREATE TABLE IF NOT EXISTS `dependency_serviceChild_relation` (
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -817,7 +831,7 @@ CREATE TABLE IF NOT EXISTS `dependency_servicegroupChild_relation` (
   PRIMARY KEY  (`dsgcr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -832,7 +846,7 @@ CREATE TABLE IF NOT EXISTS `dependency_servicegroupParent_relation` (
   PRIMARY KEY  (`dsgpr_id`),
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -849,7 +863,7 @@ CREATE TABLE IF NOT EXISTS `dependency_serviceParent_relation` (
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -870,7 +884,7 @@ CREATE TABLE IF NOT EXISTS `escalation` (
   `esc_comment` text,
   PRIMARY KEY  (`esc_id`),
   KEY `period_index` (`escalation_period`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -885,7 +899,7 @@ CREATE TABLE IF NOT EXISTS `escalation_contactgroup_relation` (
   PRIMARY KEY  (`ecgr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `cg_index` (`contactgroup_cg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -900,7 +914,7 @@ CREATE TABLE IF NOT EXISTS `escalation_hostgroup_relation` (
   PRIMARY KEY  (`ehgr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `hg_index` (`hostgroup_hg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -915,7 +929,7 @@ CREATE TABLE IF NOT EXISTS `escalation_host_relation` (
   PRIMARY KEY  (`ehr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `host_index` (`host_host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -930,7 +944,7 @@ CREATE TABLE IF NOT EXISTS `escalation_meta_service_relation` (
   PRIMARY KEY  (`emsr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `meta_service_index` (`meta_service_meta_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -945,7 +959,7 @@ CREATE TABLE IF NOT EXISTS `escalation_servicegroup_relation` (
   PRIMARY KEY  (`esgr_id`),
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `sg_index` (`servicegroup_sg_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -962,7 +976,7 @@ CREATE TABLE IF NOT EXISTS `escalation_service_relation` (
   KEY `escalation_index` (`escalation_esc_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -987,7 +1001,7 @@ CREATE TABLE IF NOT EXISTS `extended_host_information` (
   KEY `extended_host_information_ibfk_2` (`ehi_icon_image`),
   KEY `extended_host_information_ibfk_3` (`ehi_vrml_image`),
   KEY `extended_host_information_ibfk_4` (`ehi_statusmap_image`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1008,7 +1022,7 @@ CREATE TABLE IF NOT EXISTS `extended_service_information` (
   KEY `service_index` (`service_service_id`),
   KEY `graph_index` (`graph_id`),
   KEY `extended_service_information_ibfk_3` (`esi_icon_image`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1085,7 +1099,7 @@ CREATE TABLE IF NOT EXISTS `general_opt` (
   `ndo_activate` binary(1) default NULL,
   `snmptt_unknowntrap_log_file` varchar(255) default NULL,
   PRIMARY KEY  (`gopt_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1111,7 +1125,7 @@ CREATE TABLE IF NOT EXISTS `giv_components_template` (
   `default_tpl1` enum('0','1') default NULL,
   `comment` text,
   PRIMARY KEY  (`compo_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1142,7 +1156,7 @@ CREATE TABLE IF NOT EXISTS `giv_graphs_template` (
   `split_component` enum('0','1') default '0',
   `comment` text,
   PRIMARY KEY  (`graph_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1196,7 +1210,7 @@ CREATE TABLE IF NOT EXISTS `host` (
   KEY `name_index` (`host_name`),
   KEY `alias_index` (`host_alias`),
   KEY `purge_index` (`purge_policy_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1215,7 +1229,7 @@ CREATE TABLE IF NOT EXISTS `hostgroup` (
   PRIMARY KEY  (`hg_id`),
   KEY `name_index` (`hg_name`),
   KEY `alias_index` (`hg_alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1230,7 +1244,7 @@ CREATE TABLE IF NOT EXISTS `hostgroup_relation` (
   PRIMARY KEY  (`hgr_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
   KEY `host_index` (`host_host_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1245,7 +1259,7 @@ CREATE TABLE IF NOT EXISTS `host_hostparent_relation` (
   PRIMARY KEY  (`hhr_id`),
   KEY `host1_index` (`host_parent_hp_id`),
   KEY `host2_index` (`host_host_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1264,76 +1278,18 @@ CREATE TABLE IF NOT EXISTS `host_service_relation` (
   KEY `host_index` (`host_host_id`),
   KEY `servicegroup_index` (`servicegroup_sg_id`),
   KEY `service_index` (`service_service_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `inventory_index`
+-- Structure de la table `informations`
 --
 
-CREATE TABLE IF NOT EXISTS `inventory_index` (
-  `id` int(11) NOT NULL auto_increment,
-  `host_id` int(11) default NULL,
-  `name` varchar(254) default NULL,
-  `contact` varchar(254) default NULL,
-  `description` text,
-  `location` varchar(254) default NULL,
-  `manufacturer` varchar(254) default NULL,
-  `serial_number` varchar(254) default NULL,
-  `os` text,
-  `os_revision` varchar(254) default NULL,
-  `type_ressources` int(11) default NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `host_id` (`host_id`),
-  KEY `manufacturer_index` (`type_ressources`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `inventory_log`
---
-
-CREATE TABLE IF NOT EXISTS `inventory_log` (
-  `id` int(11) NOT NULL auto_increment,
-  `host_id` int(11) default NULL,
-  `type` varchar(20) default NULL,
-  `replaced_value` text,
-  `value` text,
-  `ctime` int(11) default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `host_id` (`host_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `inventory_mac_address`
---
-
-CREATE TABLE IF NOT EXISTS `inventory_mac_address` (
-  `id` int(11) NOT NULL auto_increment,
-  `mac_address_begin` varchar(8) default NULL,
-  `manufacturer` int(11) default NULL,
-  PRIMARY KEY  (`id`),
-  KEY `manufacturer` (`manufacturer`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `inventory_manufacturer`
---
-
-CREATE TABLE IF NOT EXISTS `inventory_manufacturer` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(254) default NULL,
-  `alias` varchar(254) default NULL,
-  `description` text,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
+CREATE TABLE IF NOT EXISTS `informations` (
+  `key` varchar(25) default NULL,
+  `value` varchar(25) default NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1348,7 +1304,7 @@ CREATE TABLE IF NOT EXISTS `meta_contactgroup_relation` (
   PRIMARY KEY  (`mcr_id`),
   KEY `meta_index` (`meta_id`),
   KEY `cg_index` (`cg_cg_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1382,7 +1338,7 @@ CREATE TABLE IF NOT EXISTS `meta_service` (
   KEY `check_period_index` (`check_period`),
   KEY `notification_period_index` (`notification_period`),
   KEY `graph_index` (`graph_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1401,7 +1357,7 @@ CREATE TABLE IF NOT EXISTS `meta_service_relation` (
   KEY `meta_index` (`meta_id`),
   KEY `metric_index` (`metric_id`),
   KEY `host_index` (`host_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1421,7 +1377,7 @@ CREATE TABLE IF NOT EXISTS `modules_informations` (
   `sql_files` enum('0','1') default NULL,
   `php_files` enum('0','1') default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1433,7 +1389,7 @@ CREATE TABLE IF NOT EXISTS `nagios_macro` (
   `macro_id` int(11) NOT NULL auto_increment,
   `macro_name` varchar(255) default NULL,
   PRIMARY KEY  (`macro_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1453,7 +1409,7 @@ CREATE TABLE IF NOT EXISTS `nagios_server` (
   `nagios_bin` varchar(255) default NULL,
   `nagiosstats_bin` varchar(255) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1468,7 +1424,7 @@ CREATE TABLE IF NOT EXISTS `ns_host_relation` (
   PRIMARY KEY  (`nsh_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `nagios_server_id` (`nagios_server_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Ralation Table For centreon Servers and hosts ';
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Ralation Table For centreon Servers and hosts ' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1483,91 +1439,7 @@ CREATE TABLE IF NOT EXISTS `ods_view_details` (
   `contact_id` int(11) default NULL,
   `all_user` enum('0','1') default NULL,
   PRIMARY KEY  (`dv_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `oreon_informations`
---
-
-CREATE TABLE IF NOT EXISTS `oreon_informations` (
-  `key` varchar(25) default NULL,
-  `value` varchar(25) default NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `osm_container`
---
-
-CREATE TABLE IF NOT EXISTS `osm_container` (
-  `ctn_id` int(11) NOT NULL auto_increment,
-  `ctn_coordsx` varchar(255) default NULL,
-  `ctn_coordsy` varchar(255) default NULL,
-  `ctn_type` smallint(4) default NULL,
-  `ctn_res_id` varchar(255) default NULL,
-  `ctn_name` varchar(255) default NULL,
-  `ctn_alias` varchar(255) default NULL,
-  `ctn_activate` enum('0','1') default NULL,
-  `ctn_comment` text,
-  `ctn_prop_zoom` int(11) default '100',
-  `ctn_prop_police` enum('0','1') default '1',
-  `ctn_prop_pos` enum('0','1') default '1',
-  PRIMARY KEY  (`ctn_id`),
-  KEY `name_index` (`ctn_name`),
-  KEY `type_index` (`ctn_type`),
-  KEY `resource_index` (`ctn_res_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `osm_container_relation`
---
-
-CREATE TABLE IF NOT EXISTS `osm_container_relation` (
-  `ctnr_id` int(11) NOT NULL auto_increment,
-  `ctnr_container_parent` int(11) default NULL,
-  `ctnr_container_child` int(11) default NULL,
-  PRIMARY KEY  (`ctnr_id`),
-  KEY `container_parent_index` (`ctnr_container_parent`),
-  KEY `container_child_index` (`ctnr_container_child`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `osm_status`
---
-
-CREATE TABLE IF NOT EXISTS `osm_status` (
-  `os_id` int(11) NOT NULL auto_increment,
-  `os_host_id` int(11) default NULL,
-  `os_osl_id` int(11) default NULL,
-  `os_meta_id` int(11) default NULL,
-  `os_service_id` int(11) default NULL,
-  `os_status` int(11) default NULL,
-  `os_output` text,
-  PRIMARY KEY  (`os_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `osm_user_properties`
---
-
-CREATE TABLE IF NOT EXISTS `osm_user_properties` (
-  `oup_id` int(11) NOT NULL auto_increment,
-  `contact_contact_id` int(11) default NULL,
-  `oup_param` varchar(255) default NULL,
-  `oup_value` text,
-  `oup_type` smallint(6) default NULL,
-  PRIMARY KEY  (`oup_id`),
-  KEY `osm_user_properties_ibfk_1` (`contact_contact_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1587,7 +1459,7 @@ CREATE TABLE IF NOT EXISTS `purge_policy` (
   `purge_policy_host` enum('0','1') default '0',
   `purge_policy_comment` text,
   PRIMARY KEY  (`purge_policy_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1602,7 +1474,7 @@ CREATE TABLE IF NOT EXISTS `reporting_diff_email` (
   `comment` text,
   `activate` enum('0','1') default NULL,
   PRIMARY KEY  (`rtde_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1620,7 +1492,7 @@ CREATE TABLE IF NOT EXISTS `reporting_diff_list` (
   PRIMARY KEY  (`rtdl_id`),
   KEY `timeperiod_index` (`tp_id`),
   KEY `name_index` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1636,7 +1508,7 @@ CREATE TABLE IF NOT EXISTS `reporting_email_list_relation` (
   PRIMARY KEY  (`rtelr_id`),
   KEY `list_index` (`rtdl_id`),
   KEY `email_index` (`rtde_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1688,7 +1560,7 @@ CREATE TABLE IF NOT EXISTS `service` (
   KEY `tp2_index` (`timeperiod_tp_id2`),
   KEY `description_index` (`service_description`),
   KEY `purge_index` (`purge_policy_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1705,7 +1577,7 @@ CREATE TABLE IF NOT EXISTS `servicegroup` (
   PRIMARY KEY  (`sg_id`),
   KEY `name_index` (`sg_name`),
   KEY `alias_index` (`sg_alias`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1724,7 +1596,7 @@ CREATE TABLE IF NOT EXISTS `servicegroup_relation` (
   KEY `servicegroup_index` (`servicegroup_sg_id`),
   KEY `host_host_id` (`host_host_id`),
   KEY `hostgroup_hg_id` (`hostgroup_hg_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1738,7 +1610,7 @@ CREATE TABLE IF NOT EXISTS `service_categories` (
   `sc_description` varchar(255) default NULL,
   `sc_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`sc_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Services Catories For best Reporting';
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Services Catygories For best Reporting' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1753,7 +1625,7 @@ CREATE TABLE IF NOT EXISTS `service_categories_relation` (
   PRIMARY KEY  (`scr_id`),
   KEY `service_service_id` (`service_service_id`),
   KEY `sc_id` (`sc_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1780,7 +1652,7 @@ CREATE TABLE IF NOT EXISTS `session` (
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1800,7 +1672,7 @@ CREATE TABLE IF NOT EXISTS `timeperiod` (
   `tp_friday` varchar(200) default NULL,
   `tp_saturday` varchar(200) default NULL,
   PRIMARY KEY  (`tp_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1829,7 +1701,7 @@ CREATE TABLE IF NOT EXISTS `topology` (
   KEY `topology_parent` (`topology_parent`),
   KEY `topology_order` (`topology_order`),
   KEY `topology_group` (`topology_group`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1845,7 +1717,7 @@ CREATE TABLE IF NOT EXISTS `topology_JS` (
   `Init` text,
   PRIMARY KEY  (`id_t_js`),
   KEY `id_page` (`id_page`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1864,7 +1736,7 @@ CREATE TABLE IF NOT EXISTS `traps` (
   UNIQUE KEY `traps_name` (`traps_name`),
   KEY `traps_id` (`traps_id`),
   KEY `traps_ibfk_1` (`manufacturer_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1879,7 +1751,7 @@ CREATE TABLE IF NOT EXISTS `traps_service_relation` (
   PRIMARY KEY  (`tsr_id`),
   KEY `service_index` (`service_id`),
   KEY `traps_index` (`traps_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1893,7 +1765,7 @@ CREATE TABLE IF NOT EXISTS `traps_vendor` (
   `alias` varchar(254) default NULL,
   `description` text,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1907,7 +1779,7 @@ CREATE TABLE IF NOT EXISTS `view_img` (
   `img_path` varchar(255) default NULL,
   `img_comment` text,
   PRIMARY KEY  (`img_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1921,7 +1793,7 @@ CREATE TABLE IF NOT EXISTS `view_img_dir` (
   `dir_alias` varchar(255) default NULL,
   `dir_comment` text,
   PRIMARY KEY  (`dir_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1936,7 +1808,7 @@ CREATE TABLE IF NOT EXISTS `view_img_dir_relation` (
   PRIMARY KEY  (`vidr_id`),
   KEY `directory_parent_index` (`dir_dir_parent_id`),
   KEY `image_index` (`img_img_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Contraintes pour les tables exportées
@@ -2002,15 +1874,16 @@ ALTER TABLE `acl_topology_relations`
 -- Contraintes pour la table `cfg_nagios`
 --
 ALTER TABLE `cfg_nagios`
-  ADD CONSTRAINT `cfg_nagios_ibfk_1` FOREIGN KEY (`global_host_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_2` FOREIGN KEY (`global_service_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_3` FOREIGN KEY (`ocsp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_4` FOREIGN KEY (`ochp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_5` FOREIGN KEY (`host_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_6` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_7` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_8` FOREIGN KEY (`host_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `cfg_nagios_ibfk_9` FOREIGN KEY (`service_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `cfg_nagios_ibfk_15` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_18` FOREIGN KEY (`global_host_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_19` FOREIGN KEY (`global_service_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_20` FOREIGN KEY (`ocsp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_21` FOREIGN KEY (`ochp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_22` FOREIGN KEY (`host_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_23` FOREIGN KEY (`service_perfdata_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_24` FOREIGN KEY (`host_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_25` FOREIGN KEY (`service_perfdata_file_processing_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `cfg_nagios_ibfk_26` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `cfg_ndo2db`
@@ -2258,38 +2131,6 @@ ALTER TABLE `host_service_relation`
   ADD CONSTRAINT `host_service_relation_ibfk_4` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
 
 --
--- Contraintes pour la table `inventory_index`
---
-ALTER TABLE `inventory_index`
-  ADD CONSTRAINT `inventory_index_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `inventory_index_ibfk_2` FOREIGN KEY (`type_ressources`) REFERENCES `inventory_manufacturer` (`id`) ON DELETE SET NULL;
-
---
--- Contraintes pour la table `inventory_log`
---
-ALTER TABLE `inventory_log`
-  ADD CONSTRAINT `inventory_log_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `inventory_mac_address`
---
-ALTER TABLE `inventory_mac_address`
-  ADD CONSTRAINT `inventory_mac_address_ibfk_1` FOREIGN KEY (`manufacturer`) REFERENCES `inventory_manufacturer` (`id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `log_archive_host`
---
--- ALTER TABLE `log_archive_host`
---  ADD CONSTRAINT `log_archive_host_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `log_archive_service`
---
--- ALTER TABLE `log_archive_service`
---  ADD CONSTRAINT `log_archive_service_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
---  ADD CONSTRAINT `log_archive_service_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE;
-
---
 -- Contraintes pour la table `meta_contactgroup_relation`
 --
 ALTER TABLE `meta_contactgroup_relation`
@@ -2317,19 +2158,6 @@ ALTER TABLE `meta_service_relation`
 ALTER TABLE `ns_host_relation`
   ADD CONSTRAINT `ns_host_relation_ibfk_2` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `ns_host_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `osm_container_relation`
---
-ALTER TABLE `osm_container_relation`
-  ADD CONSTRAINT `osm_container_relation_ibfk_1` FOREIGN KEY (`ctnr_container_parent`) REFERENCES `osm_container` (`ctn_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `osm_container_relation_ibfk_2` FOREIGN KEY (`ctnr_container_child`) REFERENCES `osm_container` (`ctn_id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `osm_user_properties`
---
-ALTER TABLE `osm_user_properties`
-  ADD CONSTRAINT `osm_user_properties_ibfk_1` FOREIGN KEY (`contact_contact_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `reporting_diff_list`
@@ -2387,10 +2215,3 @@ ALTER TABLE `traps`
 ALTER TABLE `traps_service_relation`
   ADD CONSTRAINT `traps_service_relation_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `traps_service_relation_ibfk_3` FOREIGN KEY (`traps_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE;
-
---
--- Contraintes pour la table `view_img_dir_relation`
---
-ALTER TABLE `view_img_dir_relation`
-  ADD CONSTRAINT `view_img_dir_relation_ibfk_1` FOREIGN KEY (`dir_dir_parent_id`) REFERENCES `view_img_dir` (`dir_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `view_img_dir_relation_ibfk_2` FOREIGN KEY (`img_img_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE;
