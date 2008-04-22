@@ -74,8 +74,14 @@ For information : contact@oreon-project.org
 	$sub =& $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
+	
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();		
+
+		$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` LIMIT 1");
+		$nagios_bin = $DBRESULT_Servers->fetchRow();
+		$DBRESULT_Servers->free();
+
 		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
 		if (PEAR::isError($DBRESULT_Servers))
 			print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
@@ -83,7 +89,7 @@ For information : contact@oreon-project.org
 		$cpt = 1;
 		while ($tab =& $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){		
-				$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
+				$stdout = shell_exec($nagios_bin["nagios_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
 				$msg_optimize[$cpt] = str_replace ("\n", "<br />", $stdout);
 				$cpt++;
 			}

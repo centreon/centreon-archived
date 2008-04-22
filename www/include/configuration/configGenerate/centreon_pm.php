@@ -33,7 +33,6 @@ For information : contact@oreon-project.org
 	$ini["GLOBAL"]["DIR_OREON"] = $oreon->optGen["oreon_path"];
 	$ini["GLOBAL"]["NAGIOS_LIBEXEC"] = $oreon->optGen["nagios_path_plugins"];
 	$ini["GLOBAL"]["NAGIOS_ETC"] = $oreon->Nagioscfg["cfg_dir"];
-	$ini["GLOBAL"]["DIR_RRDTOOL"] = $oreon->optGen["oreon_rrdbase_path"];
 	
 	# other section
 	$ini["NT"]["CPU"] = ".1.3.6.1.2.1.25.3.3.1.2";
