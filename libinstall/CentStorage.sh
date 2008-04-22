@@ -42,7 +42,7 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
  -e 's|@CENTREON_VAR@|'"$CENTREON_GENDIR"'|g' \
  $TMPDIR/src/www/install/createTablesODS.sql > $TMPDIR/work/www/install/createTablesODS.sql
 
-##Â Copy in final dir
+## Copy in final dir
 log "INFO" "`gettext \"Copying www/install/createTablesODS.sql in final directory\"`"
 cp $TMPDIR/work/www/install/createTablesODS.sql $TMPDIR/final/www/install/createTablesODS.sql 2>&1 >> $LOG_FILE
 
@@ -64,12 +64,12 @@ if [ ! -d "$CENTSTORAGE_RRD/metrics" ] ; then
 else
 	echo_passed "`gettext \"CentStorage metrics Directory already exists\"`" "$passed"
 fi
-    
+
     
 ## Change macros in CentStorage binary
 sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
-	 -e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
-	 $TMPDIR/src/bin/centstorage > $TMPDIR/work/bin/centstorage
+	-e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
+	$TMPDIR/src/bin/centstorage > $TMPDIR/work/bin/centstorage
 	 
 echo_success "`gettext \"Replace Centstorage Macro\"`" "$ok"
 log "INFO" "`gettext \"Copying CentStorage binary in final directory\"`"
