@@ -32,8 +32,7 @@ use POSIX ":sys_wait_h";
 use RRDs;
 use File::Copy;
 
-#my $installedPath = "@CENTREON_PATH@/ODS/";
-my $installedPath = "/usr/local/centreon/";
+my $installedPath = "@INSTALL_DIR_CENTREON@";
 
 my $LOG = $installedPath."var/centstorage.log";
 my $PID = $installedPath."var/centstorage.pid";
@@ -53,7 +52,7 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
 # Include Configuration Data
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 sub catch_zap {
 	$stop = 0;
