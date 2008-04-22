@@ -37,18 +37,18 @@ mkdir -p $TMPDIR/work/bin
 
 ## Change Macro in working dir
 
-sed -e 's|@NAGIOS_VAR@|"$NAGIOS_VAR"|g' \
- -e 's|@NAGIOS_BIN@|"$NAGIOS_BIN"|g' \
- -e 's|@INSTALL_DIR_NAGIOS@|"$INSTALL_DIR_NAGIOS"|g' \
- -e 's|@NAGIOS_USER@|"$NAGIOS_USER"|g' \
- -e 's|@NAGIOS_GROUP@|"$NAGIOS_GROUP"|g' \
- -e 's|@NAGIOS_ETC@|"$NAGIOS_ETC"|g' \
- -e 's|@NAGIOS_PLUGINS@|"$NAGIOS_PLUGIN"|g' \
- -e 's|@RRDTOOL_PERL_LIB@|"$RRD_PERL"|g' \
- -e 's|@RRD_PERL@|"$RRD_PERL"|g' \
- -e 's|@INSTALL_DIR_OREON@|"$INSTALL_DIR_OREON"|g' \
- -e 's|@BIN_RRDTOOL@|"$BIN_RRDTOOL"|g' \
- -e 's|@BIN_MAIL@|"$BIN_MAIL"|g' \
+sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
+ -e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' \
+ -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"|g' \
+ -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+ -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
+ -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
+ -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' \
+ -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
+ -e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
+ -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' \
+ -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
+ -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
  $TMPDIR/src/www/install/createTablesODS.sql > $TMPDIR/work/www/install/createTablesODS.sql
 
 ## Copy in final dir
@@ -90,10 +90,10 @@ echo_success "`gettext \"Set CentStorage properties\"`" "$ok"
 cp -a $TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage
  	
 ## Change macros in CentStorage init script
-sed -e 's|@CENTREON_PATH@|"$INSTALL_DIR_CENTREON"|g' \
-	-e 's|@CENTREON_ETC@|"$INSTALL_DIR_CENTREON"|g' \
-	-e 's|@NAGIOS_USER@|"$NAGIOS_USER"|g' \
-	-e 's|@NAGIOS_GROUP@|"$NAGIOS_GROUP"|g' \
+sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
+	-e 's|@CENTREON_ETC@|'"$INSTALL_DIR_CENTREON"'|g' \
+	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@NAGIOS_GROUP@|"$NAGIOS_GROUP"'|g' \
 	$TMPDIR/src/init.d.centstorage > $TMPDIR/work/init.d.centstorage
 
 echo_success "`gettext \"Replace Centstorage init script Macro\"`" "$ok"
@@ -117,7 +117,7 @@ fi
 ## Cron stuff
 # Macro
 ### logAnalyser
-sed -e 's|@CENTREON_ETC@|"$CENTREON_ETC"|g' \
+sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
 
 cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser 2>&1 >> $LOG_FILE
@@ -128,7 +128,7 @@ echo_success "`gettext \"Set logAnalyser properties\"`" "$ok"
 cp -a $TMPDIR/final/bin/logAnalyser $CENTSTORAGE_BINDIR/logAnalyser
 
 ### nagiosPerfTrace
-sed -e 's|@CENTREON_ETC@|"$CENTREON_ETC"|g' \
+sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace 2>&1 >> $LOG_FILE
@@ -139,8 +139,8 @@ echo_success "`gettext \"Set nagiosPerfTrace properties\"`" "$ok"
 cp -a $TMPDIR/final/bin/nagiosPerfTrace $CENTSTORAGE_BINDIR/nagiosPerfTrace
 
 ### centreon.cron.conf
-sed -e 's|@PHP_BIN@|"$PHP_BIN"|g' \
-	-e 's|@INSTALL_DIR_CENTREON@|"$INSTALL_DIR_CENTREON"|g' \
+sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
+	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	$TMPDIR/src/centreon.cron.conf > $TMPDIR/work/centreon.cron.conf
 cp $TMPDIR/work/centreon.cron.conf $TMPDIR/final/centreon.cron.conf 2>&1 >> $LOG_FILE
 chmod 755 $TMPDIR/final/centreon.cron.conf 2>&1 >> $LOG_FILE

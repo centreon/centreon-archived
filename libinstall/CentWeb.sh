@@ -27,6 +27,7 @@ locate_nagios_plugindir
 locate_nagios_binary
 locate_nagiosstats_binary
 locate_nagios_plugindir
+locate_cron_d
 
 ## Config apache
 check_httpd_directory
@@ -64,23 +65,26 @@ cp -Rf $TMPDIR/src/www $TMPDIR/final
 
 ## Prepare insertBaseConf.sql
 mkdir -p $TMPDIR/work/www/install
+mkdir -p $TMPDIR/work/cron/reporting
+mkdir -p $TMPDIR/final/cron/reporting
 
+## Prepare insertBaseConf.sql
 echo -e "`gettext \"In process\"`"
 ###Â Step 1:
 ## Change Macro on sql file
-sed -e 's|@NAGIOS_VAR@|"$NAGIOS_VAR"|g' \
+sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
  -e 's|@NAGIOS_BINARY@|"$NAGIOS_BINARY"|g' \
- -e 's|@NAGIOSSTATS_BINARY@|"$NAGIOSSTATS_BINARY"|g' \
- -e 's|@NAGIOS_IMG@|"$NAGIOS_IMG"|g' \
- -e 's|@INSTALL_DIR_NAGIOS@|"$INSTALL_DIR_NAGIOS"|g' \
- -e 's|@NAGIOS_USER@|"$NAGIOS_USER"|g' \
- -e 's|@NAGIOS_GROUP@|"$NAGIOS_GROUP"|g' \
- -e 's|@NAGIOS_ETC@|"$NAGIOS_ETC"|g' \
- -e 's|@NAGIOS_PLUGINS@|"$NAGIOS_PLUGIN"|g' \
- -e 's|@RRDTOOL_PERL_LIB@|"$RRD_PERL"|g' \
- -e 's|@INSTALL_DIR_OREON@|"$INSTALL_DIR_OREON"|g' \
- -e 's|@BIN_RRDTOOL@|"$BIN_RRDTOOL"|g' \
- -e 's|@BIN_MAIL@|"$BIN_MAIL"|g' \
+ -e 's|@NAGIOSSTATS_BINARY@|'"$NAGIOSSTATS_BINARY"'|g' \
+ -e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' \
+ -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
+ -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+ -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
+ -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
+ -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' \
+ -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
+ -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' \
+ -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
+ -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
 $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBaseConf.sql
 
 ## Copy in final dir
@@ -110,11 +114,36 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
 
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG 2>&1 >> $LOG_FILE
+# link on INSTALL_DIR_CENTREON
+ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON
+
 
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
+# link on INSTALL_DIR_CENTREON
+ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON
 
 echo_passed "`gettext \"CentWeb file installation\"`" "$OK"
+
+## Cron stuff
+sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
+	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
+	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	$BASE_DIR/tmpl/install/centreon.cron > $TMPDIR/work/centreon.cron
+cp $TMPDIR/work/centreon.cron $TMPDIR/final/centreon.cron 2>&1 >> $LOG_FILE
+chmod 755 $TMPDIR/final/centreon.cron 2>&1 >> $LOG_FILE
+cp -a $TMPDIR/final/centreon.cron $CRON_D/centreon 2>&1 >> $LOG_FILE
+echo_success "`gettext \"Install Centreon cron\"`" "$ok"
+
+## cron binary
+cp -R $TMPDIR/src/cron/reporting $TMPDIR/final/cron/
+sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	$TMPDIR/src/cron/reporting/ArchiveLogInDB.php > $TMPDIR/work/cron/reporting/ArchiveLogInDB.php
+
+cp -f $TMPDIR/work/cron/reporting/ArchiveLogInDB.php $TMPDIR/final/cron/reporting/ArchiveLogInDB.php
+$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $WEB_GROUP -d 755 -m 655 \
+	$TMPDIR/final/cron/reporting $INSTALL_DIR_CENTREON/cron/reporting 2>&1 >> $LOG_FILE
+
 
 #echo ""
 #echo "------------------------------------------------------------------------"

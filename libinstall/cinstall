@@ -33,7 +33,6 @@ mode=""
 dirmode=""
 backupdir=0
 file=""
-echo "arg $@"
 
 while getopts ":u:g:m:d:b" Option ; do
 	echo "Option: $Option, arg: $OPTARG"
@@ -60,7 +59,7 @@ elif [ $# -eq 2 ] ; then
 	[ $backupdir -eq 1 ] && {
 		[ -d $2 ] && mv $2 $2.`date +%Y%m%d-%H%M%S` 
 		}
-	[ ! -d `basename $2` ] && mkdir -p `basename $2`
+	[ ! -d `dirname $2` ] && mkdir -p `dirname $2`
 	echo "copy $1 dans $2"
 	cp -aR $1 $2
 	chown -R $username:$group $2

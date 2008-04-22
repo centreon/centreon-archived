@@ -142,7 +142,7 @@ fi
 ## Use this on silent install ???
 # Check for old configfile
 # use for centreon1.x upgrade
-if [ ! -z "`ls $CENTREON_CONF_1_4`" ] ; then 
+if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" ] ; then 
 	count=0
 	CENTREON_CONF=""
 	for conffile in $CENTREON_CONF_1_4 ; do
@@ -217,7 +217,7 @@ fi
 
 ## resquest centreon_plugins
 if [ $PROCESS_CENTREON_PLUGINS -eq 0 ] ; then 
-	yes_no_default "`gettext \"Do you want to install Centreon Nagios Plusgins\"`"
+	yes_no_default "`gettext \"Do you want to install Centreon Nagios Plugins\"`"
 	if [ $? -eq 0 ] ; then
 		PROCESS_CENTREON_PLUGINS=1
 		log "INFO" "`gettext \"You select to install Centreon Nagios Plugins\"`"
