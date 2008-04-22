@@ -39,7 +39,7 @@ mkdir -p $TMPDIR/work/bin
 
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
  -e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' \
- -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"|g' \
+ -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
  -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
  -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
  -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
@@ -91,9 +91,9 @@ cp -a $TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage
  	
 ## Change macros in CentStorage init script
 sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@CENTREON_ETC@|'"$INSTALL_DIR_CENTREON"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
-	-e 's|@NAGIOS_GROUP@|"$NAGIOS_GROUP"'|g' \
+	-e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
 	$TMPDIR/src/init.d.centstorage > $TMPDIR/work/init.d.centstorage
 
 echo_success "`gettext \"Replace Centstorage init script Macro\"`" "$ok"
@@ -140,12 +140,13 @@ cp -a $TMPDIR/final/bin/nagiosPerfTrace $CENTSTORAGE_BINDIR/nagiosPerfTrace
 
 ### centreon.cron.conf
 sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
-	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
-	$TMPDIR/src/centreon.cron.conf > $TMPDIR/work/centreon.cron.conf
-cp $TMPDIR/work/centreon.cron.conf $TMPDIR/final/centreon.cron.conf 2>&1 >> $LOG_FILE
-chmod 755 $TMPDIR/final/centreon.cron.conf 2>&1 >> $LOG_FILE
-
-cp -a $TMPDIR/final/centreon.cron.conf $CRON_D/centreon 2>&1 >> $LOG_FILE
+	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
+	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	$BASE_DIR/tmpl/install/centstorage.cron > $TMPDIR/work/centstorage.cron
+cp $TMPDIR/work/centstorage.cron $TMPDIR/final/centstorage.cron 2>&1 >> $LOG_FILE
+chmod 755 $TMPDIR/final/centstorage.cron 2>&1 >> $LOG_FILE
+cp -a $TMPDIR/final/centstorage.cron $CRON_D/centstorage 2>&1 >> $LOG_FILE
+echo_success "`gettext \"Install CentStorage cron\"`" "$ok"
 
 
 ## wait and see...

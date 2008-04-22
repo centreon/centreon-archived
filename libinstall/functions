@@ -506,7 +506,7 @@ function configureApache() {
 ##
 	
 Alias /centreon $INSTALL_DIR_CENTREON/www/
-<Directory "$INSTALL_DIR_OREON/www">
+<Directory "$INSTALL_DIR_CENTREON/www">
     Options None
     AllowOverride AuthConfig Options
     Order allow,deny
@@ -528,7 +528,7 @@ __EOT__
 		if [ $? -eq 0 ] ; then
 			write_config=1	
 		fi
-    	fi
+    fi
     
 	if [ $write_config -eq 1 ] ; then 
 		cp $BASE_DIR/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
@@ -569,7 +569,7 @@ function configureSUDO(){
 	# Find Nagios Init Script
 	check_nagios_init_script
 	# Prepare sudo.conf
-	cat << __EOT__ >> $BASE_DIR/centreon.sudo.conf
+	cat << __EOT__ > $BASE_DIR/centreon.sudo.conf
 #Add by CENTREON installation script
 User_Alias      CENTREON= $WEB_USER
 # Nagios Restart
@@ -885,11 +885,11 @@ function check_user_apache()
 {
 	local found=1
 	if [ -e /etc/apache2/envvars ] ; then 
-		# for Debian system (lenny)
+		# for Debian system (lenny)
 		WEB_USER=`cat /etc/apache2/envvars |grep "USER" | cut -d= -f2`
 		[ -z "$WEB_USER" ] && found=0
 	elif [ -e /etc/apache2/uid.conf ] ; then
-		# for SuSe system
+		# for SuSe system
 		WEB_USER=`cat /etc/apache2/uid.conf |grep -e "^User" | cut -d" " -f2`
 		[ -z "$WEB_USER" ] && found=0
 	fi 
@@ -939,8 +939,9 @@ function check_group_apache()
 		fi
 	fi
 	echo_info "`gettext \"Finding Apache group\"` :" "$WEB_GROUP"
-
 }
+
+
 
 function copyInTempFile()
 {
@@ -1099,3 +1100,4 @@ function find_OS() {
 	eval $distrib=$dist_found
 	return 0
 }
+
