@@ -1,20 +1,19 @@
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-OREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the OREON web site.
-In no event will OREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["ldap_auth_enable"] = $_POST["ldap_auth_enable"];
@@ -34,10 +33,10 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
   	<tr>
 		<td><b>Writable Oreon Configuration File (centreon.conf.php)</b></td>
 		<td align="right"><?php
-       	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir_www"]));
-		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir_www"]));
-       	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir_www"])), -3) ;
-		if((strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
+       	$uid = posix_getpwuid (fileowner($conf_centreon["centreon_dir"]));
+		$gid = posix_getgrgid (filegroup($conf_centreon["centreon_dir"]));
+       	$perms = substr(sprintf('%o', fileperms($conf_centreon["centreon_dir"])), -3) ;
+		if((strcmp($perms,'755') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
           	echo '<b><span class="go">OK</font></b>';
         	 $msg =  '';
 		} else {
@@ -49,37 +48,17 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
        	</td>
 	</tr>
   	<tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION["oreon_dir_www"]; ?></td>
+    	<td>&nbsp;&nbsp;&nbsp;<?php echo $conf_centreon["centreon_dir"]; ?></td>
     	<td align="right"><b><?php echo $msg ;	?></b></td>
   	</tr>
-  	<tr>
-		<td><b>Writable ODS Configuration File (conf.pm)</b></td>
-		<td align="right"><?php
-       	$uid = posix_getpwuid (fileowner($_SESSION["oreon_dir"]."ODS/etc/"));
-		$gid = posix_getgrgid (filegroup($_SESSION["oreon_dir"]."ODS/etc/"));
-       	$perms = substr(sprintf('%o', fileperms($_SESSION["oreon_dir"]."ODS/etc/")), -3) ;
-		if((strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['apache_group'], $gid['name']) == 0) ){
-          	echo '<b><span class="go">OK</font></b>';
-        	$msg =  '';
-		} else {
-          	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
-          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-          	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':'.$_SESSION['apache_group'].' (775)';
-		    $return_false = 1;
-       	}	?>
-       	</td>
-	</tr>
-  	<tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION["oreon_dir_www"]; ?></td>
-    	<td align="right"><b><?php echo $msg ;	?></b></td>
-  	</tr>
+
   	<tr>
 		<td><b>Generate Oreon configuration file</b></td>
 		<td align="right"><?php
 		
 			$_SESSION["pwdOreonDB"] = str_replace("\$", "\\\$", $_SESSION["pwdOreonDB"]);
 		
-			$file[0] = "<?\n";
+			$file[0] = "<?php\n";
 			$file[1] = "/**\n";
 			$file[2] = "Centreon is developped with GPL Licence 2.0 :\n";
 			$file[3] = "http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt\n";
@@ -106,7 +85,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$file[24] = "\n\n";
 			$file[25] = "// path to classes\n";
 			$file[26] = "\$classdir='./class';\n";
-			if ($fd = fopen("/etc/centreon/centreon.conf.php", "w"))	{
+			if ($fd = fopen($conf_centreon["centreon_dir"]."centreon.conf.php", "w"))	{
 				for ($i = 0; $i <= 26; $i++)
 					fwrite ($fd, $file[$i]);
 				fclose ($fd);
@@ -132,7 +111,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$file_pm[3] = "\$mysql_database_oreon = \"". $_SESSION["nameOreonDB"] . "\";\n";
 			$file_pm[4] = "\$mysql_database_ods = \"". $_SESSION["nameOdsDB"] . "\";\n";
 			$file_pm[5] = "1;\n";
-			if ($fd = fopen($_SESSION["oreon_dir"]."ODS/etc/conf.pm", "w"))	{
+			if ($fd = fopen($conf_centreon["centreon_dir"]."/conf.pm", "w"))	{
 				for ($i = 0; $i <= 5; $i++)
 					fwrite ($fd, $file_pm[$i]);
 				fclose ($fd);
@@ -145,7 +124,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 		</td>
 	</tr>
     <tr>
-	    <td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION["oreon_dir"].'ODS/etc/oreon.pm'; ?></td>
+	    <td>&nbsp;&nbsp;&nbsp;<?php echo $conf_centreon["centreon_dir"].'/conf.pm'; ?></td>
 	    <td align="right"><b><?php echo $msg ;	?></b></td>
  	</tr>
 <?php

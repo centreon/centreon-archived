@@ -32,8 +32,8 @@ If you want enable LDAP authentification, please complete the following fields. 
    <tr>
     <td style="padding-left:50px ">Enable LDAP Authentification ?</td>
 	<td>
-		<input type="radio" name="ldap_auth_enable"  value="0" <?phpif (isset($_SESSION["ldap_auth_enable"]) && $_SESSION["ldap_auth_enable"] == "0") { print "checked"; $display ="none" ;} else if (!isset($_SESSION["ldap_auth_enable"])) { print "checked"; $display ="none";} ?> onClick="document.getElementById('ldap_settings').style.display = 'none';" >No
-    	<input type="radio" name="ldap_auth_enable"  value="1" <?phpif (isset($_SESSION["ldap_auth_enable"]) && $_SESSION["ldap_auth_enable"] == "1") { print "checked"; $display ="block"; }?>  onClick="document.getElementById('ldap_settings').style.display = 'block';" >Yes
+		<input type="radio" name="ldap_auth_enable"  value="0" <?php if (isset($_SESSION["ldap_auth_enable"]) && $_SESSION["ldap_auth_enable"] == "0") { print "checked"; $display ="none" ;} else if (!isset($_SESSION["ldap_auth_enable"])) { print "checked"; $display ="none";} ?> onClick="document.getElementById('ldap_settings').style.display = 'none';" >No
+    	<input type="radio" name="ldap_auth_enable"  value="1" <?php if (isset($_SESSION["ldap_auth_enable"]) && $_SESSION["ldap_auth_enable"] == "1") { print "checked"; $display ="block"; }?>  onClick="document.getElementById('ldap_settings').style.display = 'block';" >Yes
 
   </tr>
   <tr>
@@ -58,8 +58,8 @@ If you want enable LDAP authentification, please complete the following fields. 
 		  </tr>
 		  <td style="padding-left:50px ">LDAP use SSL ?</td>
 			<td>
-				<input type="radio" name="ldap_ssl" value="0" <?phpif (isset($_SESSION["ldap_ssl"]) && $_SESSION["ldap_ssl"] == "0") print "checked"; else if (!isset($_SESSION["ldap_ssl"])) print "checked"; ?>>No
-		    	<input type="radio" name="ldap_ssl" value="1" <?phpif (isset($_SESSION["ldap_ssl"]) && $_SESSION["ldap_ssl"] == "1") print "checked"; ?>>Yes
+				<input type="radio" name="ldap_ssl" value="0" <?php if (isset($_SESSION["ldap_ssl"]) && $_SESSION["ldap_ssl"] == "0") print "checked"; else if (!isset($_SESSION["ldap_ssl"])) print "checked"; ?>>No
+		    	<input type="radio" name="ldap_ssl" value="1" <?php if (isset($_SESSION["ldap_ssl"]) && $_SESSION["ldap_ssl"] == "1") print "checked"; ?>>Yes
 
 			</td>
 		  </tr>

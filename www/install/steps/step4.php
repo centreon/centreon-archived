@@ -147,7 +147,7 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 	       $uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
 			$gid = @posix_getgrgid (filegroup($_SESSION['nagios_conf']));
 	       $perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
-		if( (strcmp($perms,'666') == 0 )  && (strcmp($_SESSION['nagios_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
+		if( (strcmp($perms,'666') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
 	          	echo '<b><span class="go">OK</font></b>';
 	          	 $msg =  '';
 			} else {

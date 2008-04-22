@@ -16,14 +16,6 @@ been previously advised of the possibility of such damages.
 For information : contact@oreon-project.org
 */
 
-/*if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
-	$_SESSION["oreonlogin"] = $_POST["oreonlogin"];
-	$_SESSION["oreonpasswd"] = $_POST["oreonpasswd"];
-	$_SESSION["oreonfirstname"] = $_POST["oreonfirstname"];
-	$_SESSION["oreonlastname"] = $_POST["oreonlastname"];
-	$_SESSION["oreonemail"] = $_POST["oreonemail"];
-	$_SESSION["oreonlang"] = $_POST["oreonlang"];
-}*/
 
 aff_header("Oreon Setup Wizard", "Post-Installation", 12);	?>
 
@@ -33,17 +25,29 @@ aff_header("Oreon Setup Wizard", "Post-Installation", 12);	?>
   </tr>
   <tr>
 	<td colspan="2"><br />
-	Oreon Setup is finished. Now you can use your monitoring Solution.<br /><br />Thanks for using Oreon
+	
+	Centreon Setup is finished. 
+	<br />
+	<br />
+	Before using centreon you have to move configuration files in configuration directory.
+	<br /><br />
+	<br>
+	mv <?=$conf_centreon["centreon_dir"]."/conf.pm"?> <?=$conf_centreon["centreon_etc"]."/conf.pm"?><br />
+	mv <?=$conf_centreon["centreon_dir"]."/centreon.conf.php"?> <?=$conf_centreon["centreon_etc"]."/centreon.conf.php"?> 
+	</b>
+	<br />
+	<br />
+	After that you will be able to use your monitoring Solution.<br /><br />Thanks for using Centreon
 	<br /><br />
 	<b>Self service and commercial Support.</b><br /><br />
-	There are various way to get informations about Oreon ; the documentation, the wiki, forum and other stuffs.
+	There are various way to get informations about Centreon ; the documentation, the wiki, forum and other stuffs.
 	<ul>
-		<li> Oreon WebSite : <a target="_blank" href="http://www.oreon-project.org">www.oreon-project.org</a></li>
-		<li> Oreon Forum : <a target="_blank" href="http://forum.oreon-project.org">forum.oreon-project.org</a></li></li>
-		<li> Oreon Wiki : <a target="_blank" href="http://wiki.oreon-project.org">wiki.oreon-project.org</a></li>
+		<li> Centreon WebSite : <a target="_blank" href="http://www.centreon.com">www.centreon.com</a></li>
+		<li> Centreon Forum : <a target="_blank" href="http://forum.centreon.com">forum.centreon.com</a></li></li>
+		<li> Centreon Wiki : <a target="_blank" href="http://doc.centreon.com">doc.centreon.com</a></li>
 	</ul>
 	<br /><p align="justify">
-	If your company needs professional consulting and services for Oreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://www.oreon-services.com">Oreon support center</a></b>.
+	If your company needs professional consulting and services for Centreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://www.merethis.com">Centreon support center</a></b>.
 	</p>
 	</td>
   </tr>
