@@ -131,18 +131,21 @@
 			print "Mysql Error : ".$res->getMessage();
 		$res->fetchInto($hostDB);
 		$current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
-
-		$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$hostDB["host_name"]."'");
-		if (PEAR::isError($res))
-			print "Mysql Error : ".$res->getMessage();
-		$res->fetchInto($inventory);
-
-		if ($inventory["type_ressources"] == 0){
+		
+		/*
+		$res =& $pearDB->query("SELECT COUNT(table_name) as table_number FROM user_tables WHERE table_name = 'inventory_index' GROUP BY table_name");
+		$nb_table = $res->fetchRow();
+		if ($nb_table["table_number"]){
+			$res =& $pearDB->query("SELECT * FROM inventory_index WHERE host_id = '".$hostDB["host_name"]."'");
+			$inventory = $res->fetchRow();
+		}
+		if (isset($inventory) && $inventory["type_ressources"] == 0){
 			$url_id = "p=7&o=t&host_id=" . $key;
-		} else if ($inventory["type_ressources"] != 0 && $inventory["type_ressources"] != NULL){
+		} else if (isset($inventory) &&  $inventory["type_ressources"] != 0 && $inventory["type_ressources"] != NULL){
 			$url_id = "p=7&o=o&host_id=" . $key;
 		} else
-			$url_id = NULL;
+		*/
+		$url_id = NULL;
 
 		$path = "./include/monitoring/objectDetails/";
 
