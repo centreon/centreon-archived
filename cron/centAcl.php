@@ -17,14 +17,12 @@
  * 
  */
 	
-	$path = "@INSTALL_DIR_CENTREON@";
-	
 	include_once("DB.php");
 	include("@CENTREON_ETC@/centreon.conf.php");
-	include_once($path."/www/DBconnect.php");
-	include_once($path."/www/DBNDOConnect.php");
-	include_once($path."/www/include/common/common-Func.php");
-	include_once($path."/www/include/common/common-Func-ACL.php");
+	include_once($centreon_path."/www/DBconnect.php");
+	include_once($centreon_path."/www/DBNDOConnect.php");
+	include_once($centreon_path."/www/include/common/common-Func.php");
+	include_once($centreon_path."/www/include/common/common-Func-ACL.php");
 	
 	$tabGroups = array();
 	$DBRESULT1 =& $pearDB->query(	"SELECT DISTINCT acl_groups.acl_group_id, acl_resources.acl_res_id " .
