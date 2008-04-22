@@ -17,10 +17,10 @@
  * 
  */
 	
-	$path = "/srv/centreon";
+	$path = "@INSTALL_DIR_CENTREON@";
 	
 	include_once("DB.php");
-	include("/etc/centreon/centreon.conf.php");
+	include("@CENTREON_ETC@/centreon.conf.php");
 	include_once($path."/www/DBconnect.php");
 	include_once($path."/www/DBNDOConnect.php");
 	include_once($path."/www/include/common/common-Func.php");
@@ -51,7 +51,6 @@
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM `acl_groups` WHERE acl_group_id = '".$acl_group_id."'");
 		while ($res = $DBRESULT->fetchRow()){
-			#print "-----------$acl_group_id-------------\n";
 			$DBRESULT2 =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");			
 			$Host = array();
 			while ($res2 = $DBRESULT2->fetchRow()){
@@ -120,7 +119,6 @@
 					$str .= "('".$host."', '".$desc."', ".$acl_group_id.") ";
 				}
 			}
-			//print $strBegin.$str . "\n\n";
 			$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
 			if (PEAR::isError($DBRESULTNDO))
 				print "DB Error : ".$DBRESULTNDO->getDebugInfo()."<br />";
