@@ -11,6 +11,7 @@ locate_centreon_installdir
 ## locate or create Centreon log dir
 locate_centreon_logdir
 locate_centreon_etcdir
+locate_centreon_generationdir
 
 ## Config pre-require
 locate_rrd_perldir
@@ -38,17 +39,7 @@ mkdir -p $TMPDIR/work/bin
 ## Change Macro in working dir
 
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
- -e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' \
- -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
- -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
- -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
- -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
- -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' \
- -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
- -e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
- -e 's|@INSTALL_DIR_OREON@|'"$INSTALL_DIR_OREON"'|g' \
- -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
- -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
+ -e 's|@CENTREON_VAR@|'"$CENTREON_GENDIR"'|g' \
  $TMPDIR/src/www/install/createTablesODS.sql > $TMPDIR/work/www/install/createTablesODS.sql
 
 ## Copy in final dir
@@ -83,11 +74,15 @@ sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 echo_success "`gettext \"Replace Centstorage Macro\"`" "$ok"
 log "INFO" "`gettext \"Copying CentStorage binary in final directory\"`"
 cp $TMPDIR/work/bin/centstorage $TMPDIR/final/bin/centstorage 2>&1 >> $LOG_FILE
-chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/final/bin/centstorage
-chmod 755 $TMPDIR/final/bin/centstorage
+$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 -m 755 \
+	$TMPDIR/final/bin/centstorage \
+	$CENTSTORAGE_BINDIR/centstorage 2>&1 >> $LOG_FILE
+
+#chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/final/bin/centstorage
+#chmod 755 $TMPDIR/final/bin/centstorage
 echo_success "`gettext \"Set CentStorage properties\"`" "$ok"
 
-cp -a $TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage
+#cp -a $TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage
  	
 ## Change macros in CentStorage init script
 sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
@@ -99,12 +94,15 @@ sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 echo_success "`gettext \"Replace Centstorage init script Macro\"`" "$ok"
 cp $TMPDIR/work/init.d.centstorage $TMPDIR/final/init.d.centstorage
 cp $TMPDIR/final/init.d.centstorage $INSTALL_DIR_CENTREON/examples/init.d.centstorage
-chmod 755 $TMPDIR/final/init.d.centstorage
+#chmod 755 $TMPDIR/final/init.d.centstorage
 
 yes_no_default "`gettext \"Do you want I install CentStorage init script ?\"`"
 if [ $? -eq 0 ] ; then 
 	log "INFO" "`gettext \"CentStorage init script installed\"`"
-	cp -a $TMPDIR/final/init.d.centstorage $INIT_D/centstorage
+	$INSTALL_DIR/cinstall -u root -g root -m 755 \
+		$TMPDIR/final/init.d.centstorage \
+		$INIT_D/centstorage 2>&1 >> $LOG_FILE
+	#cp -a $TMPDIR/final/init.d.centstorage $INIT_D/centstorage
 	yes_no_default "`gettext \"Do you want I install CentStorage run level ?\"`"
 		if [ $? -eq 0 ] ; then
 			install_init_service "centstorage"
@@ -121,22 +119,30 @@ sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
 
 cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser 2>&1 >> $LOG_FILE
-chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/final/bin/logAnalyser 2>&1 >> $LOG_FILE
-chmod 755 $TMPDIR/final/bin/logAnalyser 2>&1 >> $LOG_FILE
+$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
+	$TMPDIR/final/bin/logAnalyser \
+	$CENTSTORAGE_BINDIR/logAnalyser 2>&1 >> $LOG_FILE
+
+#chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/final/bin/logAnalyser 2>&1 >> $LOG_FILE
+#chmod 755 $TMPDIR/final/bin/logAnalyser 2>&1 >> $LOG_FILE
 echo_success "`gettext \"Set logAnalyser properties\"`" "$ok"
 
-cp -a $TMPDIR/final/bin/logAnalyser $CENTSTORAGE_BINDIR/logAnalyser
+#cp -a $TMPDIR/final/bin/logAnalyser $CENTSTORAGE_BINDIR/logAnalyser
 
 ### nagiosPerfTrace
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace 2>&1 >> $LOG_FILE
-chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/final/bin/nagiosPerfTrace 2>&1 >> $LOG_FILE
-chmod 755 $TMPDIR/final/bin/nagiosPerfTrace 2>&1 >> $LOG_FILE
+$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
+	$TMPDIR/final/bin/nagiosPerfTrace \
+	$CENTSTORAGE_BINDIR/nagiosPerfTrace 2>&1 >> $LOG_FILE
+
+#chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/final/bin/nagiosPerfTrace 2>&1 >> $LOG_FILE
+#chmod 755 $TMPDIR/final/bin/nagiosPerfTrace 2>&1 >> $LOG_FILE
 echo_success "`gettext \"Set nagiosPerfTrace properties\"`" "$ok"
 
-cp -a $TMPDIR/final/bin/nagiosPerfTrace $CENTSTORAGE_BINDIR/nagiosPerfTrace
+#cp -a $TMPDIR/final/bin/nagiosPerfTrace $CENTSTORAGE_BINDIR/nagiosPerfTrace
 
 ### centreon.cron.conf
 sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
@@ -144,8 +150,12 @@ sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMPDIR/work/centstorage.cron
 cp $TMPDIR/work/centstorage.cron $TMPDIR/final/centstorage.cron 2>&1 >> $LOG_FILE
-chmod 755 $TMPDIR/final/centstorage.cron 2>&1 >> $LOG_FILE
-cp -a $TMPDIR/final/centstorage.cron $CRON_D/centstorage 2>&1 >> $LOG_FILE
+$INSTALL_DIR/cinstall -u root -g root -m 644 \
+	$TMPDIR/final/centstorage.cron \
+	$CRON_D/centstorage 2>&1 >> $LOG_FILE
+
+#chmod 755 $TMPDIR/final/centstorage.cron 2>&1 >> $LOG_FILE
+#cp -a $TMPDIR/final/centstorage.cron $CRON_D/centstorage 2>&1 >> $LOG_FILE
 echo_success "`gettext \"Install CentStorage cron\"`" "$ok"
 
 

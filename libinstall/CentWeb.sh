@@ -28,6 +28,7 @@ locate_nagios_binary
 locate_nagiosstats_binary
 locate_nagios_plugindir
 locate_cron_d
+locate_php_bin
 
 ## Config apache
 check_httpd_directory
@@ -111,12 +112,14 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG 2>&1 >> $LOG_FILE
 # link on INSTALL_DIR_CENTREON
-ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON
+[ ! -h $INSTALL_DIR_CENTREON/filesGeneration ] && \
+	ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON
 
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
 # link on INSTALL_DIR_CENTREON
-ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON
+[ ! -h $INSTALL_DIR_CENTREON/filesUpload ] && \
+	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON
 
 echo_passed "`gettext \"CentWeb file installation\"`" "$ok"
 
@@ -126,8 +129,8 @@ sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	$BASE_DIR/tmpl/install/centreon.cron > $TMPDIR/work/centreon.cron
 cp $TMPDIR/work/centreon.cron $TMPDIR/final/centreon.cron 2>&1 >> $LOG_FILE
-chmod 755 $TMPDIR/final/centreon.cron 2>&1 >> $LOG_FILE
-cp -a $TMPDIR/final/centreon.cron $CRON_D/centreon 2>&1 >> $LOG_FILE
+$INSTALL_DIR/cinstall -u root -g root -m 644 \
+	$TMPDIR/final/centreon.cron $CRON_D/centreon 2>&1 >> $LOG_FILE
 echo_success "`gettext \"Install Centreon cron\"`" "$ok"
 
 ## cron binary
@@ -140,23 +143,23 @@ $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $WEB_GROUP -d 755 -m 655 \
 	$TMPDIR/final/cron/reporting $INSTALL_DIR_CENTREON/cron/reporting 2>&1 >> $LOG_FILE
 
 
-#echo -e "`gettext \"Pear Modules\"`"
-#pear_module=0
-#while [ $pear_module -eq 0 ] ; do 
-#	check_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
-#	if [ $? -ne 0 ] ; then
-#		yes_no_default "`gettext \"Do you want I install/upgrade your PEAR modules\"`" "$yes"
-#		if [ $? -eq 0 ] ; then
-#			install_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
-#			upgrade_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
-#		else
-#			pear_module=1
-#		fi
-#	else 
-#		echo_success "`gettext \"All PEAR module\"`" "$ok"
-#		pear_module=1
-#	fi
-#done
+echo -e "`gettext \"Pear Modules\"`"
+pear_module=0
+while [ $pear_module -eq 0 ] ; do 
+	check_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
+	if [ $? -ne 0 ] ; then
+		yes_no_default "`gettext \"Do you want I install/upgrade your PEAR modules\"`" "$yes"
+		if [ $? -eq 0 ] ; then
+			install_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
+			upgrade_pear_module $INSTALL_VARS_DIR/$PEAR_MODULES_LIST
+		else
+			pear_module=1
+		fi
+	else 
+		echo_success "`gettext \"All PEAR module\"`" "$ok"
+		pear_module=1
+	fi
+done
 
 ## wait sql inject script....
 

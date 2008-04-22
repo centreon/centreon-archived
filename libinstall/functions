@@ -578,6 +578,11 @@ CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
 CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
 ## Snmptrapd Restart
 CENTREON   ALL = NOPASSWD: /etc/init.d/snmptrapd restart
+## CentStorage Restart
+CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
+## CentStorage stop
+CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
+
 __EOT__
 
 	sudo=`grep -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null; echo $?`
@@ -675,11 +680,7 @@ __EOT__
 # file use for upgrade CentWeb
 function createCentreonInstallConf() {
 
-if [ -e $CENTREON_CONF ] ; then 
-	# Reinit file
-	echo "" > $CENTREON_CONF
-fi
-cat << __EOT__ >> $CENTREON_CONF
+cat << __EOT__ > $CENTREON_ETC/instCentWeb.conf
 INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
 NAGIOS_ETC=$NAGIOS_ETC
@@ -698,13 +699,34 @@ BIN_RRDTOOL=$BIN_RRDTOOL
 BIN_MAIL=$BIN_MAIL
 PEAR_PATH=$PEAR_PATH
 CENTREON_LOG=$CENTREON_LOG
+CENTREON_ETC=$CENTREON_ETC
 CENTREON_GENDIR=$CENTREON_GENDIR
+CRON_D=$CRON_D
+
+__EOT__
+
+echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
+}
+
+## Function createCentStorageInstallConf
+# file use for upgrade CentStorage
+function createCentStorageInstallConf() {
+cat << __EOT__ > $CENTREON_ETC/instCentStorage.conf
+INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
+CENTREON_LOG=$CENTREON_LOG
+CENTREON_ETC=$CENTREON_ETC
 CENTSTORAGE_RRD=$CENTSTORAGE_RRD
+CENTSTORAGE_BINDIR=$CENTSTORAGE_BINDIR
+NAGIOS_USER=$NAGIOS_USER
+NAGIOS_GROUP=$NAGIOS_GROUP
+RRD_PERL=$RRD_PERL
+CRON_D=$CRON_D
+INIT_D=$INIT_D
+
 __EOT__
 
 echo_success "Create $CENTREON_CONF " "OK"
 }
-
 # When exit on error
 function error()
 {
