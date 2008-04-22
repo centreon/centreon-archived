@@ -74,9 +74,8 @@ sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 echo_success "`gettext \"Replace Centstorage Macro\"`" "$ok"
 log "INFO" "`gettext \"Copying CentStorage binary in final directory\"`"
 cp $TMPDIR/work/bin/centstorage $TMPDIR/final/bin/centstorage 2>&1 >> $LOG_FILE
-$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 -m 755 \
-	$TMPDIR/final/bin/centstorage \
-	$CENTSTORAGE_BINDIR/centstorage 2>&1 >> $LOG_FILE
+$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755\
+	$TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage 2>&1 >> $LOG_FILE
 
 #chown $NAGIOS_USER:$NAGIOS_GROUP $TMPDIR/final/bin/centstorage
 #chmod 755 $TMPDIR/final/bin/centstorage
@@ -157,6 +156,10 @@ $INSTALL_DIR/cinstall -u root -g root -m 644 \
 #chmod 755 $TMPDIR/final/centstorage.cron 2>&1 >> $LOG_FILE
 #cp -a $TMPDIR/final/centstorage.cron $CRON_D/centstorage 2>&1 >> $LOG_FILE
 echo_success "`gettext \"Install CentStorage cron\"`" "$ok"
+
+
+## write install config file
+createCentStorageInstallConf
 
 
 ## wait and see...

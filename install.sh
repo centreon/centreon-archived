@@ -248,4 +248,8 @@ if [ $PROCESS_CENTCORE -eq 1 ] ; then
 	. $INSTALL_DIR/CentCore.sh
 fi
 
+## Start CentPlugins install
+if [ $PROCESS_CENTREON_PLUGINS -eq 1 ] ; then
+	. $INSTALL_DIR/CentPlugins.sh
+fi
 exit 0

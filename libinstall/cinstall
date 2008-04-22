@@ -26,6 +26,10 @@
 # mode : set permission mode on file (as in chmod), ex:755
 # dirmode : set permission mode on folder, ex:766
 
+## TODO LIST
+# add function to copy and rename directory
+
+
 ## Init default variables
 username=""
 group=""
@@ -34,39 +38,64 @@ dirmode=""
 backupdir=0
 file=""
 
-while getopts ":u:g:m:d:b" Option ; do
+while getopts ":u:g:m:d:bp:" Option ; do
 	echo "Option: $Option, arg: $OPTARG"
 	case $Option in
 		u )	username="${OPTARG}" ;;
 		g )	group="${OPTARG}" ;;
 		m )	mode="${OPTARG}" ;;
 		d )	dirmode="${OPTARG}" ;;
+		p )	basedir="${OPTARG}" ;;
 		b )	backupdir=1 ;;
 		* )	;;
 	esac 
 done
 shift $(($OPTIND - 1))
 
+echo "arg: $@"
 [ -z "$username" ] && exit 1
 [ ${#mode} -eq 0 -a ${#dirmode} -eq 0 ] &&  exit 1
 
 if [ $# -eq 1 ] ; then
 	[ ! -d $1 ] && mkdir -p $1
 	chown -R $username:$group $1
-	find $1 -type d -print | \
+	find `dirname $1` -type d -print | \
 		xargs -I '{}' chmod $dirmode '{}'
 elif [ $# -eq 2 ] ; then
 	[ $backupdir -eq 1 ] && {
 		[ -d $2 ] && mv $2 $2.`date +%Y%m%d-%H%M%S` 
 		}
 	[ ! -d `dirname $2` ] && mkdir -p `dirname $2`
-	echo "copy $1 dans $2"
-	cp -aR $1 $2
-	chown -R $username:$group $2
-	find $2 -type f -print | \
-		xargs -I '{}' chmod $mode '{}' 
-	find $2 -type d -print | \
-		xargs -I '{}' chmod $dirmode '{}' 
+	#echo "copy $1 dans $2"
+	cp -r $1 $2
+	if [ -n "$basedir" ] ; then 
+		cd $basedir
+		files=`mktemp -t cinstall_files.XXXXXX`
+		directory=`mktemp -t cinstall_dirs.XXXXXX`
+		find . -type f -print > $files
+		find . -type d -print | grep -v "^\.$" > $directory
+		
+		cd $2
+		cat $files $directory | xargs -I '{}' chown $username:$group '{}' 
+		cat $files | xargs -I '{}' chmod $mode '{}' 
+		cat $directory | xargs -I '{}' chmod $dirmode '{}' 
+
+		rm -f $files $directory
+	else 
+		chown -R $username:$group $2
+		if [ -f $2 ] ; then 
+			echo "$2 est un fichier"
+			chmod $mode $2
+		else 
+			find $2 -type f -print | \
+				xargs -I '{}' chmod $mode '{}' 
+		fi
+		[ -n "$dirmode" ] && {
+			find $2 -type d -print | \
+				xargs -I '{}' chmod $dirmode '{}' 
+				}
+	fi
+
 else 
 	exit 1
 fi

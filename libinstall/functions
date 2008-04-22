@@ -497,10 +497,9 @@ function configureApache() {
 	echo -e "\n------------------------------------------------------------------------"
 	echo -e "\t`gettext \"Configure Apache server\"`"
 	echo -e "------------------------------------------------------------------------\n\n"
-
+local examplesdir=$1
 ## Prepare apache config
-	echo "" > $BASE_DIR/centreon.apache.conf
-	cat << __EOT__ >> $BASE_DIR/centreon.apache.conf
+	cat << __EOT__ > $examplesdir/centreon.apache.conf
 ##
 ## Section add by Centreon Install Setup
 ##
@@ -531,12 +530,12 @@ __EOT__
     fi
     
 	if [ $write_config -eq 1 ] ; then 
-		cp $BASE_DIR/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
+		cp $examplesdir/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
 		echo_success "`gettext \"Create\"` '$DIR_APACHE_CONF/centreon.conf'" "$ok"
 		echo_success "`gettext \"Configuring Apache\"`" "$ok"
 		# After finishing the configuration -> 
 		# restart apache ! (if admin wants :p)
-		yes_no_default "`gettext \"Do you want restart your Apache ?\"`"
+		yes_no_default "`gettext \"Do you want reload your Apache ?\"`"
 		if [ $? -eq 0 ] ; then 
 			log "INFO" "`gettext \"Reload Apache...\"`"
 			if [ -x /etc/init.d/apache ] ; then
@@ -555,7 +554,7 @@ __EOT__
 			fi
 		fi
 	else
-		echo_info "`gettext \"Please config Apache with this example\"`:\n $BASE_DIR/centreon.apache.conf"
+		echo_info "`gettext \"Please config Apache with this example\"`:\n $examplesdir/centreon.apache.conf"
 	fi
 }
 
@@ -606,13 +605,12 @@ __EOT__
 function createConfFile()
 {
 	echo -e "\n------------------------------------------------------------------------"
-	echo -e "\t\t`gettext \"Centreon Post Instal\"`"
+	echo -e "\t\t`gettext \"Centreon Post Install\"`"
 	echo -e "------------------------------------------------------------------------\n\n"
 
 	INSTALL_DIR_CENTREON_CONF="$INSTALL_DIR_CENTREON/www/install/install.conf.php"
 	# Reinit file if exist	
-	echo "" > $INSTALL_DIR_CENTREON_CONF
-	cat << __EOT__ >> $INSTALL_DIR_CENTREON_CONF
+	cat << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
 /**
 Centreon is developped with GPL Licence 2.0 :
@@ -725,7 +723,7 @@ INIT_D=$INIT_D
 
 __EOT__
 
-echo_success "Create $CENTREON_CONF " "OK"
+echo_success "Create $CENTREON_ETC/instCentStorage " "OK"
 }
 # When exit on error
 function error()
@@ -967,7 +965,7 @@ function check_group_apache()
 
 function copyInTempFile()
 {
-	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www Plugins"
+	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins"
 	# Prepare centreon Plugins
 	echo "`gettext \"Preparing Centreon temporary files\"`"
 	if [ -d $TMPDIR ] ; then

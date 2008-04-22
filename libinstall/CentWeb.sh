@@ -42,7 +42,9 @@ check_group_nagios
 configureSUDO
 
 ## Config Apache
-configureApache
+echo "$INSTALL_DIR_CENTREON/examples"
+
+configureApache "$INSTALL_DIR_CENTREON/examples"
 
 ## Create temps folder and copy all src into
 copyInTempFile
@@ -61,6 +63,7 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $NAGIOS_GROUP -d 755 \
 ## Copy Web Front Source in final
 cp -Rf $TMPDIR/src/www $TMPDIR/final
 
+## Create temporary directory
 mkdir -p $TMPDIR/work/www/install
 mkdir -p $TMPDIR/work/cron/reporting
 mkdir -p $TMPDIR/final/cron/reporting
@@ -112,13 +115,13 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG 2>&1 >> $LOG_FILE
 # link on INSTALL_DIR_CENTREON
-[ ! -h $INSTALL_DIR_CENTREON/filesGeneration ] && \
+[ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \
 	ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON
 
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
 # link on INSTALL_DIR_CENTREON
-[ ! -h $INSTALL_DIR_CENTREON/filesUpload ] && \
+[ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
 	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON
 
 echo_passed "`gettext \"CentWeb file installation\"`" "$ok"
@@ -160,6 +163,12 @@ while [ $pear_module -eq 0 ] ; do
 		pear_module=1
 	fi
 done
+
+## Create configfile for web install
+createConfFile
+
+## Write install config file
+createCentreonInstallConf
 
 ## wait sql inject script....
 
