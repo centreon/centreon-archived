@@ -1,0 +1,12 @@
+#
+# Cron Configuration for Centreon
+#
+# rewrite file with new cron line
+CRONTAB_EXEC_USER=""
+
+# Cron for log parsor
+* * * * * @CENTSTORAGE_BINDIR@/logAnalyser 2>&1 >> @CENTREON_LOG@/logAnalyser.log
+
+# Cron for tracing Nagios Poller Performances
+*/5 * * * * @CENTSTORAGE_BINDIR@/nagiosPerfTrace 2>&1 >> @CENTREON_LOG@/nagiosPerfTrace.log
+

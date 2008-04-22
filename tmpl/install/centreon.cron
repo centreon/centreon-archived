@@ -1,0 +1,9 @@
+#
+# Cron Configuration for Centreon
+#
+# rewrite file with new cron line
+CRONTAB_EXEC_USER=""
+
+# Cron for log analyser - for reporting
+0 1 1-31 * * @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/reporting/ArchiveLogInDB.php 2>&1 >> @CENTREON_LOG@/archiveLogInDB.log
+
