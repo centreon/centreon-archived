@@ -202,9 +202,9 @@ function test_answer() {
 	fi
 }
 
-##Â function select_in_array
+## function select_in_array
 # use for select a data on array
-#Â unset array and create a variable with data
+# unset array and create a variable with data
 function select_in_array() {
 	local variable=$1
 	shift
@@ -246,7 +246,7 @@ function usage() {
 }
 
 
-##Â Functions for install path
+## Functions for install path
 ## Check nagios_install_dir
 function locate_nagios_installdir() {
 	if [ -z "$INSTALL_DIR_NAGIOS" ] ; then
@@ -612,24 +612,24 @@ function createConfFile()
 	# Reinit file if exist	
 	cat << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
-/**
-Centreon is developped with GPL Licence 2.0 :
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
-Developped by : Julien Mathis - Romain Le Merlus
-
-The Software is provided to you AS IS and WITH ALL FAULTS.
-CENTREON makes no representation and gives no warranty whatsoever,
-whether express or implied, and without limitation, with regard to the quality,
-safety, contents, performance, merchantability, non-infringement or suitability for
-any particular or intended purpose of the Software found on the CENTREON web site.
-In no event will CENTREON be liable for any direct, indirect, punitive, special,
-incidental or consequential damages however they may arise and even if OREON has
-been previously advised of the possibility of such damages.
-
-For information : contact@oreon-project.org
-*/
+/*
+ * Centreon is developped with GPL Licence 2.0 :
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * Developped by : Julien Mathis - Romain Le Merlus 
+ * 
+ * The Software is provided to you AS IS and WITH ALL FAULTS.
+ * Centreon makes no representation and gives no warranty whatsoever,
+ * whether express or implied, and without limitation, with regard to the quality,
+ * any particular or intended purpose of the Software found on the Centreon web site.
+ * In no event will Centreon be liable for any direct, indirect, punitive, special,
+ * incidental or consequential damages however they may arise and even if Centreon has
+ * been previously advised of the possibility of such damages.
+ * 
+ * For information : contact@oreon-project.org
+ */
 
 \$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
+\$conf_centreon['centreon_etc'] = "$CENTREON_ETC/";
 \$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
 \$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
 \$conf_centreon['nagios'] = "$INSTALL_DIR_NAGIOS/";
