@@ -112,7 +112,13 @@ For information : contact@oreon-project.org
 					$pinfo = pathinfo("./img/media/".$img_path["dir_alias"]."/".$fDataz["name"]);
 					$ret["img_name"] = $pinfo["filename"];
 					$ret["img_path"] = $pinfo["basename"];
-					
+					/*
+					 * 'pathinfo' func return a basename value NULL when PHP < 5.2
+					 */
+					if (!$ret["img_name"])	{
+						$img_name = explode(".", $ret["img_path"]);
+						$ret["img_name"] = $img_name[0];
+					}					
 					$rq = "UPDATE view_img SET ";
 					$rq .= "img_name = '".$ret["img_name"]."', img_path = '".$ret["img_path"]."' WHERE img_id = '".$img_id."'";
 					$DBRESULT = $pearDB->query($rq);
@@ -210,7 +216,13 @@ For information : contact@oreon-project.org
 					$pinfo = pathinfo("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]);
 					$ret["img_name"] = $pinfo["filename"];
 					$ret["img_path"] = $pinfo["basename"];
-					
+					/*
+					 * 'pathinfo' func return a basename value NULL when PHP < 5.2
+					 */
+					if (!$ret["img_name"])	{
+						$img_name = explode(".", $ret["img_path"]);
+						$ret["img_name"] = $img_name[0];
+					}					
 					$rq = "INSERT INTO view_img ";
 					$rq .= "(img_name, img_path, img_comment) ";
 					$rq .= "VALUES ";
@@ -235,7 +247,13 @@ For information : contact@oreon-project.org
 					$pinfo = pathinfo("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]);
 					$ret["img_name"] = $pinfo["filename"];
 					$ret["img_path"] = $pinfo["basename"];
-					
+					/*
+					 * 'pathinfo' func return a basename value NULL when PHP < 5.2
+					 */
+					if (!$ret["img_name"])	{
+						$img_name = explode(".", $ret["img_path"]);
+						$ret["img_name"] = $img_name[0];
+					}					
 					$rq = "INSERT INTO view_img ";
 					$rq .= "(img_name, img_path, img_comment) ";
 					$rq .= "VALUES ";
@@ -260,7 +278,13 @@ For information : contact@oreon-project.org
 					$pinfo = pathinfo("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]);
 					$ret["img_name"] = $pinfo["filename"];
 					$ret["img_path"] = $pinfo["basename"];
-					
+					/*
+					 * 'pathinfo' func return a basename value NULL when PHP < 5.2
+					 */
+					if (!$ret["img_name"])	{
+						$img_name = explode(".", $ret["img_path"]);
+						$ret["img_name"] = $img_name[0];
+					}					
 					$rq = "INSERT INTO view_img ";
 					$rq .= "(img_name, img_path, img_comment) ";
 					$rq .= "VALUES ";
@@ -285,7 +309,13 @@ For information : contact@oreon-project.org
 					$pinfo = pathinfo("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]);
 					$ret["img_name"] = $pinfo["filename"];
 					$ret["img_path"] = $pinfo["basename"];
-					
+					/*
+					 * 'pathinfo' func return a basename value NULL when PHP < 5.2
+					 */
+					if (!$ret["img_name"])	{
+						$img_name = explode(".", $ret["img_path"]);
+						$ret["img_name"] = $img_name[0];
+					}					
 					$rq = "INSERT INTO view_img ";
 					$rq .= "(img_name, img_path, img_comment) ";
 					$rq .= "VALUES ";
@@ -310,7 +340,13 @@ For information : contact@oreon-project.org
 					$pinfo = pathinfo("./img/media/".$dir_alias["dir_alias"]."/".$fDataz["name"]);
 					$ret["img_name"] = $pinfo["filename"];
 					$ret["img_path"] = $pinfo["basename"];
-					
+					/*
+					 * 'pathinfo' func return a basename value NULL when PHP < 5.2
+					 */
+					if (!$ret["img_name"])	{
+						$img_name = explode(".", $ret["img_path"]);
+						$ret["img_name"] = $img_name[0];
+					}					
 					$rq = "INSERT INTO view_img ";
 					$rq .= "(img_name, img_path, img_comment) ";
 					$rq .= "VALUES ";
