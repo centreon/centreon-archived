@@ -12,7 +12,7 @@
  * incidental or consequential damages however they may arise and even if Centreon has
  * been previously advised of the possibility of such damages.
  * 
- * For information : contact@oreon-project.org
+ * For information : contact@centreon.com
  */
 	if (!isset($oreon))
 		exit();
@@ -34,8 +34,8 @@
 	<div class="list_one"><h3>
 	<b><?php echo _("Project Leaders"); ?> :</b>
 	</h3></div><br />
-	<a href="mailto:rlemerlus@oreon-project.org" class="list_two">Romain Le Merlus (rom)</a><br />
-	<a href="mailto:jmathis@oreon-project.org" class="list_two">Julien Mathis (Julio)</a><br />
+	<a href="mailto:rlemerlus@centreon.com" class="list_two">Romain Le Merlus (rom)</a><br />
+	<a href="mailto:jmathis@centreon.com" class="list_two">Julien Mathis (Julio)</a><br />
 	
 	<br />
 	<div class="list_one"><h3>

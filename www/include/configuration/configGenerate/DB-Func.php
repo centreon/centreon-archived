@@ -12,7 +12,7 @@
  * incidental or consequential damages however they may arise and even if Centreon has
  * been previously advised of the possibility of such damages.
  * 
- * For information : contact@oreon-project.org
+ * For information : contact@centreon.com
  */
 
 	function isHostOnThisInstance($host_id, $instance_id){
@@ -510,7 +510,7 @@
 		$str .= "#                   - Romain Le Merlus                            #\n";
 		$str .= "#                                                                 #\n";
 		$str .= "#                           www.centreon.com                      #\n";
-		$str .= "#                For information : contact@oreon-project.org      #\n";
+		$str .= "#                For information : contact@centreon.com      #\n";
 		$str .= "###################################################################\n";
 		$str .= "#                                                                 #\n";
 		$str .= "#         Last modification " . $time;

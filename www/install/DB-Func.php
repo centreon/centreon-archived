@@ -13,7 +13,7 @@ In no event will OREON be liable for any direct, indirect, punitive, special,
 incidental or consequential damages however they may arise and even if OREON has
 been previously advised of the possibility of such damages.
 
-For information : contact@oreon-project.org
+For information : contact@centreon.com
 */
 
 function Connexion ($pNom, $pMotPasse, $pServeur)	{
@@ -60,7 +60,7 @@ function aff_header($str, $str2, $nb){
 <tr height="83" style=" background-image: url('../img/bg_banner.gif');">
   <th width="400" height="83"><?php print $nb . ". " . $str2; ?></th>
   <th width="200" height="83" style="text-align: right; padding: 0px;">
-		<a href="http://www.oreon-project.org" target="_blank"><IMG src="../img/logo_centreon_wt.gif" alt="Oreon" border="0"></a>
+		<a href="http://www.centreon.com" target="_blank"><IMG src="../img/logo_centreon_wt.gif" alt="Oreon" border="0"></a>
   </th>
 </tr>
 <tr>

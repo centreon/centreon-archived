@@ -12,7 +12,7 @@
  * incidental or consequential damages however they may arise and even if Centreon has
  * been previously advised of the possibility of such damages.
  * 
- * For information : contact@oreon-project.org
+ * For information : contact@centreon.com
  */
 
 if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
@@ -73,7 +73,7 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$file[12] = "incidental or consequential damages however they may arise and even if OREON has\n";
 			$file[13] = "been previously advised of the possibility of such damages.\n";
 			$file[14] = "\n";
-			$file[15] = "For information : contact@oreon-project.org\n";
+			$file[15] = "For information : contact@centreon.com\n";
 			$file[16] = "	*/\n";
 			$file[17] = "\n\n";
 			$file[18] = "// \tDatabase\n";

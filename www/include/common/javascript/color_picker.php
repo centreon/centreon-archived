@@ -12,7 +12,7 @@
  * incidental or consequential damages however they may arise and even if Centreon has
  * been previously advised of the possibility of such damages.
  * 
- * For information : contact@oreon-project.org
+ * For information : contact@centreon.com
  */
  
 $n ="";
