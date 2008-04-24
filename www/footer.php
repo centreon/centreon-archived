@@ -53,6 +53,6 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 		$pearDB->disconnect();
 	if (isset($pearDBO) && is_object($pearDBO))
 		$pearDBO->disconnect();
-	if (isset($pearDBndo) && is_object($pearDBndo))
+	if (isset($pearDBndo) && is_object($pearDBndo) && strcmp($pearDBndo, "DB Error: connect failed"))
 		$pearDBndo->disconnect();
 ?>
