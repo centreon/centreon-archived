@@ -14,8 +14,8 @@
  * 
  * For information : contact@oreon-project.org
  */
-
-	if (!isset($oreon))
+ 
+ 	if (!isset($oreon))
 		exit();
 
 	include("./include/common/autoNumLimit.php");
