@@ -18,7 +18,7 @@
  */
 	
 	include_once("DB.php");
-	include("@CENTREON_ETC@/centreon.conf.php");
+	include_once("@CENTREON_ETC@/centreon.conf.php");
 	include_once($centreon_path."/www/DBconnect.php");
 	include_once($centreon_path."/www/DBNDOConnect.php");
 	include_once($centreon_path."/www/include/common/common-Func.php");
