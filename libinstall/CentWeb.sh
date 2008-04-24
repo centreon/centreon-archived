@@ -41,9 +41,7 @@ check_group_nagios
 # I think this process move on CentCore install...
 configureSUDO
 
-## Config Apache
-echo "$INSTALL_DIR_CENTREON/examples"
-
+## Config Apache
 configureApache "$INSTALL_DIR_CENTREON/examples"
 
 ## Create temps folder and copy all src into
@@ -62,6 +60,7 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $NAGIOS_GROUP -d 755 \
 
 ## Copy Web Front Source in final
 cp -Rf $TMPDIR/src/www $TMPDIR/final
+cp -Rf $TMPDIR/src/GPL_LIB $TMPDIR/final
 
 ## Create temporary directory
 mkdir -p $TMPDIR/work/www/install
@@ -100,7 +99,10 @@ cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertB
 
 ### Step 3: Change right on nagios_etcdir
 log "INFO" "`gettext \"Change right on\"` $NAGIOS_ETC" 
-chmod 775 $NAGIOS_ETC 2>&1 >> $LOG_FILE
+$INSTALL_DIR/cinstall -u root -g $WEB_GROUP -d 775 \
+	$NAGIOS_ETC 2>&1 >> $LOG_FILE
+#chown root:$WEB_GROUP $NAGIOS_ETC 2>&1
+#chmod 775 $NAGIOS_ETC 2>&1 >> $LOG_FILE
 find $NAGIOS_ETC -type f -print | \
 	xargs -I '{}' chmod 775 '{}' 2>&1 >> $LOG_FILE 
 find $NAGIOS_ETC -type f -print | \
@@ -123,6 +125,10 @@ $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
 # link on INSTALL_DIR_CENTREON
 [ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
 	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON
+
+log "INFO" "`gettext \"Copying GPL_LIB\"`"
+$INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
+	$TMPDIR/final/GPL_LIB $INSTALL_DIR_CENTREON 2>&1 >> $LOG_FILE
 
 echo_passed "`gettext \"CentWeb file installation\"`" "$ok"
 

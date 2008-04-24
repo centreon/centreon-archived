@@ -43,7 +43,7 @@ for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
 		"$FILE" > "$TMPDIR/work/plugins/`basename $FILE`"
 done
 
-## Copy in final dir
+## Copy in final dir
 log "INFO" "`gettext \"Copying plugins in final directory\"`"
 cp -r $TMPDIR/work/plugins/* $TMPDIR/final/plugins 2>&1 >> $LOG_FILE
 

@@ -202,9 +202,9 @@ function test_answer() {
 	fi
 }
 
-## function select_in_array
+## function select_in_array
 # use for select a data on array
-# unset array and create a variable with data
+# unset array and create a variable with data
 function select_in_array() {
 	local variable=$1
 	shift
@@ -246,7 +246,7 @@ function usage() {
 }
 
 
-## Functions for install path
+## Functions for install path
 ## Check nagios_install_dir
 function locate_nagios_installdir() {
 	if [ -z "$INSTALL_DIR_NAGIOS" ] ; then
@@ -382,6 +382,15 @@ function locate_centreon_generationdir() {
 	log "INFO" "CENTREON_GENDIR: $CENTREON_GENDIR"
 }
 
+## Check centreon_rundir
+function locate_centreon_rundir() {
+	if [ -z "$CENTREON_RUNDIR" ] ; then
+		answer_with_createdir "`gettext \"Where is your Centreon Run Dir directory?\"`" "$DEFAULT_CENTREON_RUNDIR" "CENTREON_RUNDIR"
+		echo_success "Path $CENTREON_RUNDIR" "$ok"
+	fi	
+	log "INFO" "CENTREON_RUNDIR: $CENTREON_RUNDIR"
+}
+
 ## Check centStorage_rrddir
 function locate_centstorage_rrddir() {
 	if [ -z "$CENTSTORAGE_RRD" ] ; then
@@ -394,10 +403,19 @@ function locate_centstorage_rrddir() {
 ## Check centStorage_bindir
 function locate_centstorage_bindir() {
 	if [ -z "$CENTSTORAGE_BINDIR" ] ; then
-		answer_with_createdir "`gettext \"Where is your CentStorage binary directory\"`" "$INSTALL_DIR_CENTREON$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
+		answer_with_createdir "`gettext \"Where is your CentStorage binary directory\"`" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTSTORAGE_BINDIR" "CENTSTORAGE_BINDIR"
 		echo_success "Path $CENTSTORAGE_BINDIR" "$ok"
 	fi
 	log "INFO" "CENTSTORAGE_BINDIR: $CENTSTORAGE_BINDIR"
+}
+
+## Check centCore_bindir
+function locate_centcore_bindir() {
+	if [ -z "$CENTCORE_BINDIR" ] ; then
+		answer_with_createdir "`gettext \"Where is your CentCore binary directory\"`" "$INSTALL_DIR_CENTREON/$DEFAULT_CENTCORE_BINDIR" "CENTCORE_BINDIR"
+		echo_success "Path $CENTCORE_BINDIR" "$ok"
+	fi
+	log "INFO" "CENTCORE_BINDIR: $CENTCORE_BINDIR"
 }
 
 ## check sudo_file
@@ -445,6 +463,34 @@ function locate_mail() {
 		echo_success "$BIN_MAIL" "$ok"
 	fi
 	log "INFO" "BIN_MAIL: $BIN_MAIL"
+}
+
+## Check ssh
+function locate_ssh() {
+	if [ -z "$BIN_SSH" ] ; then 
+		pathfind_ret ssh "BIN_SSH"
+		if [ $? -ne 0 ] ; then 
+			answer_with_testfile "`gettext \"Where is ssh binary\"`" "$DEFAULT_BIN_SSH" "BIN_SSH"
+		else 
+			BIN_SSH="$BIN_SSH/ssh"
+		fi
+		echo_success "$BIN_SSH" "$ok"
+	fi
+	log "INFO" "BIN_SSH: $BIN_SSH"
+}
+
+## Check scp
+function locate_scp() {
+	if [ -z "$BIN_SCP" ] ; then 
+		pathfind_ret scp "BIN_SCP"
+		if [ $? -ne 0 ] ; then 
+			answer_with_testfile "`gettext \"Where is scp binary\"`" "$DEFAULT_BIN_SCP" "BIN_SCP"
+		else 
+			BIN_SCP="$BIN_SCP/scp"
+		fi
+		echo_success "$BIN_SCP" "$ok"
+	fi
+	log "INFO" "BIN_SCP: $BIN_SCP"
 }
 
 ## Check php
@@ -612,20 +658,20 @@ function createConfFile()
 	# Reinit file if exist	
 	cat << __EOT__ > $INSTALL_DIR_CENTREON_CONF
 <?php
-/*
- * Centreon is developped with GPL Licence 2.0 :
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
- * 
- * The Software is provided to you AS IS and WITH ALL FAULTS.
- * Centreon makes no representation and gives no warranty whatsoever,
- * whether express or implied, and without limitation, with regard to the quality,
- * any particular or intended purpose of the Software found on the Centreon web site.
- * In no event will Centreon be liable for any direct, indirect, punitive, special,
- * incidental or consequential damages however they may arise and even if Centreon has
- * been previously advised of the possibility of such damages.
- * 
- * For information : contact@oreon-project.org
+/* 
+ * Centreon is developped with GPL Licence 2.0 : 
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt 
+ * Developped by : Julien Mathis - Romain Le Merlus  
+ *  
+ * The Software is provided to you AS IS and WITH ALL FAULTS. 
+ * Centreon makes no representation and gives no warranty whatsoever, 
+ * whether express or implied, and without limitation, with regard to the quality, 
+ * any particular or intended purpose of the Software found on the Centreon web site. 
+ * In no event will Centreon be liable for any direct, indirect, punitive, special, 
+ * incidental or consequential damages however they may arise and even if Centreon has 
+ * been previously advised of the possibility of such damages. 
+ *  
+ * For information : contact@oreon-project.org 
  */
 
 \$conf_centreon['centreon_dir'] = "$INSTALL_DIR_CENTREON/";
@@ -713,6 +759,7 @@ cat << __EOT__ > $CENTREON_ETC/instCentStorage.conf
 INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
 CENTREON_LOG=$CENTREON_LOG
 CENTREON_ETC=$CENTREON_ETC
+CENTREON_RUNDIR=$CENTREON_RUNDIR
 CENTSTORAGE_RRD=$CENTSTORAGE_RRD
 CENTSTORAGE_BINDIR=$CENTSTORAGE_BINDIR
 NAGIOS_USER=$NAGIOS_USER
@@ -725,7 +772,31 @@ __EOT__
 
 echo_success "Create $CENTREON_ETC/instCentStorage " "OK"
 }
+
+## Function createCentCoreInstallConf
+# file use for upgrade CentCore
+function createCentCoreInstallConf() {
+cat << __EOT__ > $CENTREON_ETC/instCentcore.conf
+INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
+CENTREON_LOG=$CENTREON_LOG
+CENTREON_ETC=$CENTREON_ETC
+CENTREON_RUNDIR=$CENTREON_RUNDIR
+CENTREON_GENDIR=$CENTREON_GENDIR
+CENTCORE_BINDIR=$CENTCORE_BINDIR
+NAGIOS_USER=$NAGIOS_USER
+NAGIOS_GROUP=$NAGIOS_GROUP
+RRD_PERL=$RRD_PERL
+CRON_D=$CRON_D
+INIT_D=$INIT_D
+BIN_SSH=$BIN_SSH
+BIN_SCP=$BIN_SCP
+
+__EOT__
+
+echo_success "Create $CENTREON_ETC/instCentCore " "OK"
+}
 # When exit on error
+
 function error()
 {
     echo "ERROR"
