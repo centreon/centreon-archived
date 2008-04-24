@@ -143,22 +143,23 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
     <td align="right"><?php
 
 	    if (is_dir($_SESSION['nagios_conf'])) {
-	       $uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
+	       	$uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
 			$gid = @posix_getgrgid (filegroup($_SESSION['nagios_conf']));
-	       $perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
-		if( (strcmp($perms,'666') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
+	       	$perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
+			if (!(strcmp($perms,'644'))  && !strcmp($_SESSION['apache_user'], $uid['name']) && !strcmp($_SESSION['nagios_group'], $gid['name'])){
 	          	echo '<b><span class="go">OK</font></b>';
 	          	 $msg =  '';
 			} else {
 	            echo '<b><span class="stop">Critical: Not Writeable</font></b>';
 	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>' ;
-	          	$msg .=  '<br />Should be '. $_SESSION['nagios_user'].':'.$_SESSION['nagios_group'].' (775)';
+	          	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':'.$_SESSION['nagios_group'].' (666)';
+			   	echo $msg;
 			    $return_false = 1;
-	       }
+	       	}
 	    } else {
-	      echo '<b><span class="stop">Critical: Directory not exist</font></b>';
-	      $msg =  '';
-		  $return_false = 1;
+	      	echo '<b><span class="stop">Critical: Directory not exist</font></b>';
+	      	$msg =  '';
+		  	$return_false = 1;
 	    } ?>
 		</td>
   </tr>
