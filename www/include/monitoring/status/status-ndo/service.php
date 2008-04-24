@@ -44,9 +44,6 @@
 	/* row ? */
 	$rows = 10;
 
-
-	//include("./include/common/checkPagination.php");
-
 	include_once("makeJS_service.php");
 
 
