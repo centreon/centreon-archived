@@ -95,7 +95,7 @@
 		document.forms['form'].elements['o'].value = _i;
 	}
 	</SCRIPT>
-	<?
+	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
 				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
