@@ -418,6 +418,15 @@ function locate_centcore_bindir() {
 	log "INFO" "CENTCORE_BINDIR: $CENTCORE_BINDIR"
 }
 
+## Check centPlugins_tmpdir
+function locate_centplugins_tmpdir() {
+	if [ -z "$CENTPLUGINS_TMP" ] ; then
+		answer_with_createdir "`gettext \"Where is your CentPlugins lib directory\"`" "$DEFAULT_CENTPLUGINS_TMP" "CENTPLUGINS_TMP"
+		echo_success "Path $CENTPLUGINS_TMP" "$ok"
+	fi
+	log "INFO" "CENTPLUGINS_TMP: $CENTPLUGINS_TMP"
+}
+
 ## check sudo_file
 function locate_sudo() {
 	if [ -z "$SUDO_FILE" ] ; then

@@ -13,10 +13,7 @@ locate_nagios_vardir
 locate_nagios_installdir
 locate_nagios_etcdir
 locate_rrd_perldir
-
-## Config Nagios
-check_group_nagios
-check_user_nagios
+locate_centplugins_tmpdir
 
 ## Populate temporaty source directory
 copyInTempFile
@@ -49,7 +46,9 @@ cp -r $TMPDIR/work/plugins/* $TMPDIR/final/plugins 2>&1 >> $LOG_FILE
 
 ## Install the plugins
 log "INFO" "`gettext \"Installing the plugins\"`"
-$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
+$INSTALL_DIR/cinstall -u root -g root -m 755 \
 	-p "$TMPDIR/final/plugins" "$TMPDIR/final/plugins/*" "$NAGIOS_PLUGIN" 2>&1 >> $LOG_FILE
 
+$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 \
+	$CENTPLUGINS_TMP 2>&1 >> $LOG_FILE
 echo_success "`gettext \"CentPlugins is installed\"`"

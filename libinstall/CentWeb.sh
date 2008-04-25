@@ -143,13 +143,19 @@ $INSTALL_DIR/cinstall -u root -g root -m 644 \
 echo_success "`gettext \"Install Centreon cron\"`" "$ok"
 
 ## cron binary
-cp -R $TMPDIR/src/cron/reporting $TMPDIR/final/cron/
+cp -R $TMPDIR/src/cron/ $TMPDIR/final/
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/cron/reporting/ArchiveLogInDB.php > $TMPDIR/work/cron/reporting/ArchiveLogInDB.php
 
 cp -f $TMPDIR/work/cron/reporting/ArchiveLogInDB.php $TMPDIR/final/cron/reporting/ArchiveLogInDB.php
+
+sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	$TMPDIR/src/cron/centAcl.php > $TMPDIR/work/cron/centAcl.php
+
+cp -f $TMPDIR/work/cron/centAcl.php $TMPDIR/final/cron/centAcl.php
+
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $WEB_GROUP -d 755 -m 655 \
-	$TMPDIR/final/cron/reporting $INSTALL_DIR_CENTREON/cron/reporting 2>&1 >> $LOG_FILE
+	$TMPDIR/final/cron $INSTALL_DIR_CENTREON/cron 2>&1 >> $LOG_FILE
 
 
 echo -e "`gettext \"Pear Modules\"`"
