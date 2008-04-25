@@ -18,7 +18,7 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
-#    For information : infos@oreon-project.org
+#    For information : infos@centreon.com
 ####################################################################
 ## Need to find a correct wrapper to exec
 #TEXTDOMAINDIR=`pwd`/locale
@@ -82,7 +82,7 @@ cat << __EOT__
 #                                                                             #
 #                                    v$version 				    #
 #                                                                             #
-#                             infos@oreon-project.org                         #
+#                             infos@centreon.com                         #
 #                                                                             #
 #                   Make sure you have installed and configured               #
 #                   sudo - sed - php - apache - rrdtool - mysql               #
