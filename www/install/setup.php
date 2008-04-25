@@ -31,9 +31,6 @@
 	$msg = NULL;
 	$return_false = NULL;
 
-	$pear_path = $conf_installoreon['pear_dir'];
-
-
 	if (isset($_POST["step"]) && $_POST["step"] == 4 && isset($_POST["Recheck"]))
 		 $_POST["step"] = 3;
 	if (isset($_POST["step"]) && $_POST["step"] == 5 && isset($_POST["Recheck"]))
