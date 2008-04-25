@@ -157,9 +157,9 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 			    $return_false = 1;
 	       	}
 	    } else {
-	      	echo '<b><span class="stop">Critical: Directory not exist</font></b>';
-	      	$msg =  '';
-		  	$return_false = 1;
+	    	echo '<b><span class="stop">Critical: Directory not exist</font></b>';
+	    	$msg =  '';
+			$return_false = 1;
 	    } ?>
 		</td>
   </tr>
