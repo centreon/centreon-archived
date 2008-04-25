@@ -94,6 +94,7 @@
 					require($path."genCGICFG.php");
 					require($path."genNagiosCFG.php");
 					require($path."genNdomod.php");
+					require($path."genNdo2db.php");
 					require($path."genNagiosCFG-DEBUG.php");
 					require($path."genResourceCFG.php");
 					require($path."genTimeperiods.php");
