@@ -28,6 +28,7 @@ locate_nagios_binary
 locate_nagiosstats_binary
 locate_nagios_plugindir
 locate_cron_d
+locate_init_d
 locate_php_bin
 
 ## Config apache
