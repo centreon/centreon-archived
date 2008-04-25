@@ -36,15 +36,20 @@ fi
 INSTALL_DIR=$BASE_DIR/libinstall
 INSTALL_VARS_DIR=$BASE_DIR/varinstall
 
-## Load local gettext.sh (not dependancy
-. $INSTALL_DIR/gettext.sh
-
 ## log default vars 
 . $INSTALL_VARS_DIR/vars
 
 ## load all functions used in this script
 . $INSTALL_DIR/functions
 
+## Test if gettext was installed 
+pathfind gettext 
+if [ $? -eq 0 ] ; then  
+	. $INSTALL_DIR/gettext.sh 
+else 
+	# if not, use my gettext dummy :p 
+	PATH="$PATH:$INSTALL_DIR" 
+fi
 
 ## Valid if you are root 
 USERID=`id -u`
@@ -80,9 +85,9 @@ cat << __EOT__
 #                         Centreon (www.centreon.com)                         #
 #                          Thanks for using Centreon                          #
 #                                                                             #
-#                                    v$version 				    #
+#                                 v $version 			 	     	#
 #                                                                             #
-#                             infos@centreon.com                         #
+#                               infos@centreon.com                            #
 #                                                                             #
 #                   Make sure you have installed and configured               #
 #                   sudo - sed - php - apache - rrdtool - mysql               #
