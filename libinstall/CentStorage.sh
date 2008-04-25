@@ -81,6 +81,7 @@ sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	 -e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	 -e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
+	 -e 's|@CENTREON_VAR@|'"$CENTREON_VAR"'|g' \
 	 $TMPDIR/src/bin/centstorage > $TMPDIR/work/bin/centstorage
 	 
 echo_success "`gettext \"Replace Centstorage Macro\"`" "$ok"

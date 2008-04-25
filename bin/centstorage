@@ -28,14 +28,14 @@ use warnings;
 use DBI;
 use POSIX ":sys_wait_h";
 
-#use lib "@RRD_PERL@";
+use lib "@RRD_PERL@";
 use RRDs;
 use File::Copy;
 
-my $installedPath = "@INSTALL_DIR_CENTREON@";
+my $installedPath = "@CENTREON_PATH@";
 
-my $LOG = $installedPath."var/centstorage.log";
-my $PID = $installedPath."var/centstorage.pid";
+my $LOG = "@CENTREON_LOG@var/centstorage.log";
+my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
 
 # Init Globals
 use vars qw($debug $LOG %status $generalcounter);
