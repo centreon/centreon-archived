@@ -1,156 +1,8 @@
 --
--- Contenu de la table `acl_groups`
+-- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES(14, 'Guest', 'Guest', '1');
-
---
--- Contenu de la table `acl_group_contacts_relations`
---
-
-INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES(20, 17, 14);
-INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES(21, 18, 14);
-
---
--- Contenu de la table `acl_group_topology_relations`
---
-
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(2, 14, 5);
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(7, 14, 6);
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(14, 14, 4);
-INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(15, 14, 11);
-
---
--- Contenu de la table `acl_resources`
---
-
-INSERT INTO `acl_resources` (`acl_res_id`, `acl_res_name`, `acl_res_alias`, `acl_res_activate`, `acl_res_comment`, `acl_res_status`, `changed`) VALUES(7, 'NetWork and DB', 'NetWork and DB', '1', NULL, NULL, 0);
-
---
--- Contenu de la table `acl_resources_hg_relations`
---
-
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(57, 41, 6);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(58, 49, 1);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(200, 40, 2);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(201, 42, 2);
-INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(202, 51, 2);
-
---
--- Contenu de la table `acl_resources_sg_relations`
---
-
-INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(12, 0, 7);
-INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(13, 10, 7);
-INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(14, 11, 7);
-
---
--- Contenu de la table `acl_res_group_relations`
---
-
-INSERT INTO `acl_res_group_relations` (`argr_id`, `acl_res_id`, `acl_group_id`) VALUES(170, 7, 14);
-
---
--- Contenu de la table `acl_topology`
---
-
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(4, 'Access simple A la home', 'test2', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(5, 'Access Au monitoring', 'test2', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(6, 'Acces Aux options perso', 'Options', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(11, 'Configurations', 'All configs', '1');
-INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(13, 'Graphiques only', 'Seulement les graphs', '0');
-
---
--- Contenu de la table `acl_topology_relations`
---
-
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1279, 2, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1280, 23, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1281, 25, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1282, 31, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1283, 32, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1284, 33, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1285, 24, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1286, 34, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1287, 39, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1288, 62, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1289, 63, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1290, 64, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1291, 38, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1292, 59, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1293, 60, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1294, 61, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1295, 35, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1296, 50, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1297, 51, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1298, 52, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1299, 40, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1300, 65, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1301, 66, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1302, 67, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1303, 26, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1304, 41, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1305, 42, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1306, 43, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1307, 36, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1308, 53, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1309, 54, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1310, 55, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1311, 27, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1312, 44, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1313, 45, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1314, 46, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1315, 28, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1316, 47, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1317, 48, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1318, 49, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1319, 37, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1320, 56, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1321, 57, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1322, 58, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1323, 29, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1324, 30, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1325, 19, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1326, 22, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1327, 20, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1328, 21, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1329, 68, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1330, 75, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1331, 420, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1332, 76, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1333, 77, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1334, 78, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1335, 79, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1336, 80, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1337, 81, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1338, 82, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1339, 73, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1340, 74, 5);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1368, 5, 6);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1369, 128, 6);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1370, 147, 6);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1382, 4, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1383, 165, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1384, 168, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1385, 167, 13);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1390, 1, 4);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1391, 417, 4);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1392, 434, 4);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1393, 6, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1394, 83, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1395, 89, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1396, 90, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1397, 91, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1398, 84, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1399, 93, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1400, 94, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1401, 95, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1402, 98, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1403, 96, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1404, 100, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1405, 101, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1406, 102, 11);
-INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1407, 335, 11);
+INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiosstats_bin`) VALUES(1, 'Poller Principal', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@DEFAULT_NAGIOS_BINARY@', '@DEFAULT_NAGIOSSTATS_BINARY@');
 
 --
 -- Contenu de la table `cfg_cgi`
@@ -188,7 +40,6 @@ INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `re
 --
 
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(1, 1, 1, 'Supervisor', 'admin', '21496cd6c19f4bf6dcfd3ae2ec5f397e', 'en_US', 'n', 'n', 'root@localhost', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL);
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(3, 1, 1, 'Julien_Mathis', 'jmathis', '21496cd6c19f4bf6dcfd3ae2ec5f397e', 'en_US', 'd,u,r,f', 'w,u,c,r,f', 'jmathis@merethis.com', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', NULL, 'en_US', 'n', 'n', 'gest@localhost', NULL, NULL, '0', '0', 'txt', '1', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'user', 'user', '21496cd6c19f4bf6dcfd3ae2ec5f397e', 'en_US', 'n', 'n', 'user', NULL, NULL, '1', '0', 'txt', '1', 'local', NULL);
 
@@ -210,27 +61,6 @@ INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `co
 INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(77, 1, 5);
 INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `contactgroup_cg_id`) VALUES(78, 18, 3);
 
---
--- Contenu de la table `contactgroup_hostgroup_relation`
---
-
-
---
--- Contenu de la table `contactgroup_host_relation`
---
-
-INSERT INTO `contactgroup_host_relation` (`cghr_id`, `host_host_id`, `contactgroup_cg_id`) VALUES(4425, 2, 5);
-
---
--- Contenu de la table `contactgroup_servicegroup_relation`
---
-
-
---
--- Contenu de la table `contactgroup_service_relation`
---
-
-INSERT INTO `contactgroup_service_relation` (`cgsr_id`, `contactgroup_cg_id`, `service_service_id`) VALUES(121, 5, 1);
 
 --
 -- Contenu de la table `contact_hostcommands_relation`
@@ -260,54 +90,6 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(4, 4, 'red_css.php');
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(5, 5, 'blue_css.php');
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(6, 6, 'blue_css.php');
-
---
--- Contenu de la table `extended_host_information`
---
-
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(9, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(13, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-
---
--- Contenu de la table `extended_service_information`
---
-
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(1, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(3, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(4, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(5, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(6, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(7, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(8, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(9, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(10, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(11, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(12, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(13, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(14, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(15, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(16, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(17, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(18, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(19, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(20, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(21, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(22, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(23, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(24, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(25, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(26, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Contenu de la table `general_opt`
@@ -372,6 +154,37 @@ INSERT INTO `host` (`host_id`, `host_template_model_htm_id`, `command_command_id
 INSERT INTO `host` (`host_id`, `host_template_model_htm_id`, `command_command_id`, `command_command_id_arg1`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `purge_policy_id`, `command_command_id2`, `command_command_id_arg2`, `host_name`, `host_alias`, `host_address`, `host_max_check_attempts`, `host_check_interval`, `host_active_checks_enabled`, `host_passive_checks_enabled`, `host_checks_enabled`, `host_obsess_over_host`, `host_check_freshness`, `host_freshness_threshold`, `host_event_handler_enabled`, `host_low_flap_threshold`, `host_high_flap_threshold`, `host_flap_detection_enabled`, `host_process_perf_data`, `host_retain_status_information`, `host_retain_nonstatus_information`, `host_notification_interval`, `host_notification_options`, `host_notifications_enabled`, `host_stalking_options`, `host_snmp_community`, `host_snmp_version`, `host_comment`, `host_register`, `host_activate`) VALUES(14, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Centreon-Server', 'Monitoring Server', '127.0.0.1', NULL, NULL, '2', '2', '2', '2', '2', NULL, '2', NULL, NULL, '2', '2', '2', '2', NULL, NULL, '2', NULL, NULL, '0', NULL, '1', '1');
 
 --
+-- Contenu de la table `extended_host_information`
+--
+
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(9, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(13, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+--
+-- Contenu de la table `ns_host_relation`
+--
+
+INSERT INTO `ns_host_relation` (`nsh_id`, `nagios_server_id`, `host_host_id`) VALUES(918, 1, 14);
+
+--
+-- Contenu de la table `contactgroup_host_relation`
+--
+
+INSERT INTO `contactgroup_host_relation` (`cghr_id`, `host_host_id`, `contactgroup_cg_id`) VALUES(4425, 2, 5);
+
+
+--
 -- Contenu de la table `hostgroup`
 --
 
@@ -387,47 +200,6 @@ INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `h
 
 INSERT INTO `hostgroup_relation` (`hgr_id`, `hostgroup_hg_id`, `host_host_id`) VALUES(1250, 53, 14);
 
---
--- Contenu de la table `host_hostparent_relation`
---
-
-
---
--- Contenu de la table `host_service_relation`
---
-
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 10);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 11);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 16);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 15);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 17);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 19);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 20);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 21);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 22);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 23);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 24);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 26);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 5);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 12);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 14);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 25);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 18);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 18);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 13);
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 2, NULL, 3);
-
---
--- Contenu de la table `nagios_server`
---
-
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiosstats_bin`) VALUES(1, 'Poller Principal', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@DEFAULT_NAGIOS_BINARY@', '@DEFAULT_NAGIOSSTATS_BINARY@');
-
---
--- Contenu de la table `ns_host_relation`
---
-
-INSERT INTO `ns_host_relation` (`nsh_id`, `nagios_server_id`, `host_host_id`) VALUES(918, 1, 14);
 
 --
 -- Contenu de la table `service`
@@ -458,6 +230,67 @@ INSERT INTO `service` (`service_id`, `service_template_model_stm_id`, `command_c
 INSERT INTO `service` (`service_id`, `service_template_model_stm_id`, `command_command_id`, `timeperiod_tp_id`, `command_command_id2`, `timeperiod_tp_id2`, `purge_policy_id`, `service_description`, `service_alias`, `service_is_volatile`, `service_max_check_attempts`, `service_normal_check_interval`, `service_retry_check_interval`, `service_active_checks_enabled`, `service_passive_checks_enabled`, `service_parallelize_check`, `service_obsess_over_service`, `service_check_freshness`, `service_freshness_threshold`, `service_event_handler_enabled`, `service_low_flap_threshold`, `service_high_flap_threshold`, `service_flap_detection_enabled`, `service_process_perf_data`, `service_retain_status_information`, `service_retain_nonstatus_information`, `service_notification_interval`, `service_notification_options`, `service_notifications_enabled`, `service_stalking_options`, `service_comment`, `command_command_id_arg`, `command_command_id_arg2`, `service_register`, `service_activate`) VALUES(24, 12, NULL, NULL, NULL, NULL, NULL, 'load', NULL, '2', NULL, NULL, NULL, '2', '2', '2', '2', '2', NULL, '2', NULL, NULL, '2', '2', '2', '2', NULL, NULL, '2', NULL, NULL, NULL, NULL, '1', '1');
 INSERT INTO `service` (`service_id`, `service_template_model_stm_id`, `command_command_id`, `timeperiod_tp_id`, `command_command_id2`, `timeperiod_tp_id2`, `purge_policy_id`, `service_description`, `service_alias`, `service_is_volatile`, `service_max_check_attempts`, `service_normal_check_interval`, `service_retry_check_interval`, `service_active_checks_enabled`, `service_passive_checks_enabled`, `service_parallelize_check`, `service_obsess_over_service`, `service_check_freshness`, `service_freshness_threshold`, `service_event_handler_enabled`, `service_low_flap_threshold`, `service_high_flap_threshold`, `service_flap_detection_enabled`, `service_process_perf_data`, `service_retain_status_information`, `service_retain_nonstatus_information`, `service_notification_interval`, `service_notification_options`, `service_notifications_enabled`, `service_stalking_options`, `service_comment`, `command_command_id_arg`, `command_command_id_arg2`, `service_register`, `service_activate`) VALUES(25, 13, NULL, NULL, NULL, NULL, NULL, 'memory', NULL, '2', NULL, NULL, NULL, '2', '2', '2', '2', '2', NULL, '2', NULL, NULL, '2', '2', '2', '2', NULL, NULL, '2', NULL, NULL, NULL, NULL, '1', '1');
 INSERT INTO `service` (`service_id`, `service_template_model_stm_id`, `command_command_id`, `timeperiod_tp_id`, `command_command_id2`, `timeperiod_tp_id2`, `purge_policy_id`, `service_description`, `service_alias`, `service_is_volatile`, `service_max_check_attempts`, `service_normal_check_interval`, `service_retry_check_interval`, `service_active_checks_enabled`, `service_passive_checks_enabled`, `service_parallelize_check`, `service_obsess_over_service`, `service_check_freshness`, `service_freshness_threshold`, `service_event_handler_enabled`, `service_low_flap_threshold`, `service_high_flap_threshold`, `service_flap_detection_enabled`, `service_process_perf_data`, `service_retain_status_information`, `service_retain_nonstatus_information`, `service_notification_interval`, `service_notification_options`, `service_notifications_enabled`, `service_stalking_options`, `service_comment`, `command_command_id_arg`, `command_command_id_arg2`, `service_register`, `service_activate`) VALUES(26, 3, NULL, NULL, NULL, NULL, NULL, 'ping', NULL, '2', NULL, NULL, NULL, '2', '2', '2', '2', '2', NULL, '2', NULL, NULL, '2', '2', '2', '2', NULL, NULL, '2', NULL, NULL, NULL, NULL, '1', '1');
+
+--
+-- Contenu de la table `extended_service_information`
+--
+
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(1, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(3, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(4, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(5, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(6, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(7, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(8, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(9, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(10, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(11, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(12, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(13, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(14, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(15, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(16, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(17, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(18, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(19, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(20, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(21, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(22, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(23, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(24, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(25, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(26, NULL, NULL, NULL, NULL, NULL, NULL);
+
+--
+-- Contenu de la table `host_service_relation`
+--
+
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 10);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 11);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 16);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 15);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 17);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 19);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 20);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 21);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 22);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 23);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 24);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 26);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 5);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 12);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 14);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 25);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 18);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 18);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 13);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 2, NULL, 3);
+
+--
+-- Contenu de la table `contactgroup_service_relation`
+--
+
+INSERT INTO `contactgroup_service_relation` (`cgsr_id`, `contactgroup_cg_id`, `service_service_id`) VALUES(121, 5, 1);
 
 
 --
@@ -723,22 +556,156 @@ INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(10, 'SQ
 INSERT INTO `traps_vendor` (`id`, `name`, `alias`, `description`) VALUES(11, 'HP-Compaq', 'HP and Compaq Systems', '');
 
 --
--- Contenu de la table `view_img`
+-- Contenu de la table `acl_groups`
 --
 
-INSERT INTO `view_img` (`img_id`, `img_name`, `img_path`, `img_comment`) VALUES(26, 'report_2', 'report_2.png', '');
-INSERT INTO `view_img` (`img_id`, `img_name`, `img_path`, `img_comment`) VALUES(27, 'report_1', 'report_1.png', '');
-INSERT INTO `view_img` (`img_id`, `img_name`, `img_path`, `img_comment`) VALUES(28, 'report_3', 'report_3.png', '');
-INSERT INTO `view_img` (`img_id`, `img_name`, `img_path`, `img_comment`) VALUES(29, 'about', 'about.png', '');
+INSERT INTO `acl_groups` (`acl_group_id`, `acl_group_name`, `acl_group_alias`, `acl_group_activate`) VALUES(14, 'Guest', 'Guest', '1');
 
 --
--- Contenu de la table `view_img_dir`
+-- Contenu de la table `acl_group_contacts_relations`
 --
 
-INSERT INTO `view_img_dir` (`dir_id`, `dir_name`, `dir_alias`, `dir_comment`) VALUES(1, 'Logos', 'Logos', '');
+INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES(20, 17, 14);
+INSERT INTO `acl_group_contacts_relations` (`agcr_id`, `contact_contact_id`, `acl_group_id`) VALUES(21, 18, 14);
 
 --
--- Contenu de la table `view_img_dir_relation`
+-- Contenu de la table `acl_group_topology_relations`
 --
 
-INSERT INTO `view_img_dir_relation` (`vidr_id`, `dir_dir_parent_id`, `img_img_id`) VALUES(1, 1, 29);
+INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(2, 14, 5);
+INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(7, 14, 6);
+INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(14, 14, 4);
+INSERT INTO `acl_group_topology_relations` (`agt_id`, `acl_group_id`, `acl_topology_id`) VALUES(15, 14, 11);
+
+--
+-- Contenu de la table `acl_resources`
+--
+
+INSERT INTO `acl_resources` (`acl_res_id`, `acl_res_name`, `acl_res_alias`, `acl_res_activate`, `acl_res_comment`, `acl_res_status`, `changed`) VALUES(7, 'NetWork and DB', 'NetWork and DB', '1', NULL, NULL, 0);
+
+--
+-- Contenu de la table `acl_resources_hg_relations`
+--
+
+INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(57, 41, 6);
+INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(58, 49, 1);
+INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(200, 40, 2);
+INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(201, 42, 2);
+INSERT INTO `acl_resources_hg_relations` (`arhge_id`, `hg_hg_id`, `acl_res_id`) VALUES(202, 51, 2);
+
+--
+-- Contenu de la table `acl_resources_sg_relations`
+--
+
+INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(12, 0, 7);
+INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(13, 10, 7);
+INSERT INTO `acl_resources_sg_relations` (`asgr`, `sg_id`, `acl_res_id`) VALUES(14, 11, 7);
+
+--
+-- Contenu de la table `acl_res_group_relations`
+--
+
+INSERT INTO `acl_res_group_relations` (`argr_id`, `acl_res_id`, `acl_group_id`) VALUES(170, 7, 14);
+
+--
+-- Contenu de la table `acl_topology`
+--
+
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(4, 'Access simple A la home', 'test2', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(5, 'Access Au monitoring', 'test2', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(6, 'Acces Aux options perso', 'Options', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(11, 'Configurations', 'All configs', '1');
+INSERT INTO `acl_topology` (`acl_topo_id`, `acl_topo_name`, `acl_topo_alias`, `acl_topo_activate`) VALUES(13, 'Graphiques only', 'Seulement les graphs', '0');
+
+--
+-- Contenu de la table `acl_topology_relations`
+--
+
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1279, 2, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1280, 23, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1281, 25, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1282, 31, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1283, 32, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1284, 33, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1285, 24, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1286, 34, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1287, 39, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1288, 62, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1289, 63, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1290, 64, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1291, 38, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1292, 59, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1293, 60, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1294, 61, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1295, 35, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1296, 50, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1297, 51, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1298, 52, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1299, 40, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1300, 65, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1301, 66, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1302, 67, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1303, 26, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1304, 41, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1305, 42, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1306, 43, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1307, 36, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1308, 53, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1309, 54, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1310, 55, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1311, 27, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1312, 44, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1313, 45, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1314, 46, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1315, 28, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1316, 47, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1317, 48, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1318, 49, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1319, 37, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1320, 56, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1321, 57, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1322, 58, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1323, 29, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1324, 30, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1325, 19, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1326, 22, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1327, 20, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1328, 21, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1329, 68, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1330, 75, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1331, 420, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1332, 76, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1333, 77, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1334, 78, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1335, 79, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1336, 80, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1337, 81, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1338, 82, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1339, 73, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1340, 74, 5);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1368, 5, 6);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1369, 128, 6);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1370, 147, 6);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1382, 4, 13);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1383, 165, 13);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1384, 168, 13);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1385, 167, 13);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1390, 1, 4);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1391, 417, 4);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1392, 434, 4);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1393, 6, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1394, 83, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1395, 89, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1396, 90, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1397, 91, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1398, 84, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1399, 93, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1400, 94, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1401, 95, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1402, 98, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1403, 96, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1404, 100, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1405, 101, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1406, 102, 11);
+INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_topo_id`) VALUES(1407, 335, 11);
+
