@@ -58,5 +58,5 @@ $color_list_down_hover = "#dfbbbb";
 $bg_image_header = "../Images/bg_header_red.gif";
 $menu1_bgimg = "../Images/menu_bg_red.gif";
 
-include("../color_css.php")
+include("../color_css.php");
 ?>
