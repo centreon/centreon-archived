@@ -265,6 +265,7 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 -- Contenu de la table `extended_host_information`
 --
 
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
