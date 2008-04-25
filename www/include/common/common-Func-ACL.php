@@ -95,6 +95,7 @@
   			/*
   			 * Hosts
   			 */
+  			$host = array();
   			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
 	  		while ($host = $DBRESULT3->fetchRow())
 				if ($host["host_name"] != "")
@@ -103,6 +104,7 @@
 			/*
 			 * Hosts Groups Inclus
 			 */
+			$hostgroup =  array();
 			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_alias " .
 											"FROM `hostgroup`, `acl_resources_hg_relations` " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
@@ -116,6 +118,7 @@
 			/*
 			 * Hosts Exclus
 			 */
+			$host = array();
 			$DBRESULT3 =& $pearDB->query("SELECT host_name FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
 	  		if ($DBRESULT3->numRows())
 		  		while ($host = $DBRESULT3->fetchRow())
@@ -123,7 +126,8 @@
 						unset($lcaHost[$host["host_name"]]);
 			unset($DBRESULT3);
   		}
-		$lcaHost[$host["host_name"]] = $host["host_id"];
+  		if (isset($host))
+			$lcaHost[$host["host_name"]] = $host["host_id"];
 		unset($DBRESULT2);
   		$LcaHHG = array();
 		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
@@ -210,6 +214,7 @@
   			/*
   			 * Hosts
   			 */
+  			$host = array();
   			$DBRESULT3 =& $pearDB->query("SELECT host_name, host_id FROM `host`, `acl_resources_host_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND acl_resources_host_relations.host_host_id = host.host_id");
 	  		while ($host = $DBRESULT3->fetchRow())
 				if ($host["host_id"] != "")
@@ -218,6 +223,7 @@
 			/*
 			 * Hosts Groups Inclus
 			 */
+			$hostgroup = array();
 			$DBRESULT3 =& $pearDB->query(	"SELECT hg_id, hg_alias " .
 											"FROM `hostgroup`, `acl_resources_hg_relations` " .
 											"WHERE acl_res_id = '".$res["acl_res_id"]."' " .
@@ -231,6 +237,7 @@
 			/*
 			 * Hosts Exclus
 			 */
+			$host = array();
 			$DBRESULT3 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_res_id = '".$res["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
 	  		if ($DBRESULT3->numRows())
 		  		while ($host = $DBRESULT3->fetchRow())
@@ -250,7 +257,8 @@
 			unset($DBRESULT3);
 
   		}
-		$lcaHost[$host["host_name"]] = $host["host_id"];
+  		if (isset($host))
+			$lcaHost[$host["host_name"]] = $host["host_id"];
 		unset($DBRESULT2);
   		$LcaHHG = array();
 		isset($lcaHost) ? $LcaHHG["LcaHost"] = $lcaHost : $LcaHHG["LcaHost"] = array();
