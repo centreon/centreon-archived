@@ -118,8 +118,6 @@
         isset($ret["data_processing_options"]) && $ret["data_processing_options"] != 2 ? $rq .= "'".$ret["data_processing_options"]."',  " : $rq .= "NULL, ";
         isset($ret["config_output_options"]) && $ret["config_output_options"] != 2 ? $rq .= "'".$ret["config_output_options"]."',  " : $rq .= "NULL, ";
         isset($ret["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."')" : $rq .= "NULL )";
-       	print $rq;
-       	print_r($ret);
        	$DBRESULT =& $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
