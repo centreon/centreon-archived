@@ -45,7 +45,7 @@ configureSUDO
 configureApache "$INSTALL_DIR_CENTREON/examples"
 
 ## Create temps folder and copy all src into
-copyInTempFile
+copyInTempFile >> $LOG_FILE 2>&1
 
 ## InstallCentreon
 
@@ -56,7 +56,7 @@ echo -e "-----------------------------------------------------------------------
 # change right centreon_log directory
 log "INFO" "`gettext \"Change right on\"` $CENTREON_LOG"
 $INSTALL_DIR/cinstall -u $WEB_USER -g $NAGIOS_GROUP -d 755 \
-	$CENTREON_LOG 2>&1 >> $LOG_FILE
+	$CENTREON_LOG >> $LOG_FILE 2>&1
 
 ## Copy Web Front Source in final
 cp -Rf $TMPDIR/src/www $TMPDIR/final
@@ -88,7 +88,7 @@ $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBase
 
 ## Copy in final dir
 log "INFO" "Copying www/install/insertBaseConf.sql in final directory"
-cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertBaseConf.sql 2>&1 >> $LOG_FILE
+cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertBaseConf.sql >> $LOG_FILE 2>&1
 
 ### Step 2: Change right on Centreon WebFront
 #log "INFO" "`gettext \"Change right on www dir\"`"
@@ -100,35 +100,35 @@ cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertB
 ### Step 3: Change right on nagios_etcdir
 log "INFO" "`gettext \"Change right on\"` $NAGIOS_ETC" 
 $INSTALL_DIR/cinstall -u root -g $WEB_GROUP -d 775 \
-	$NAGIOS_ETC 2>&1 >> $LOG_FILE
+	$NAGIOS_ETC >> $LOG_FILE 2>&1
 #chown root:$WEB_GROUP $NAGIOS_ETC 2>&1
-#chmod 775 $NAGIOS_ETC 2>&1 >> $LOG_FILE
+#chmod 775 $NAGIOS_ETC >> $LOG_FILE 2>&1
 find $NAGIOS_ETC -type f -print | \
 	xargs -I '{}' chmod 775 '{}' 2>&1 >> $LOG_FILE 
 find $NAGIOS_ETC -type f -print | \
-	xargs -I '{}' chown $WEB_USER:$WEB_GROUP '{}' 2>&1 >> $LOG_FILE
+	xargs -I '{}' chown $WEB_USER:$WEB_GROUP '{}' >> $LOG_FILE 2>&1
 
 ### Step 4: Copy final stuff in system directoy
 log "INFO" "`gettext \"Copy CentWeb in system directory\"`"
 echo_info "`gettext \"Copy CentWeb in system directory\"`"
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
-	$TMPDIR/final/www $INSTALL_DIR_CENTREON 2>&1 >> $LOG_FILE
+	$TMPDIR/final/www $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
-	$CENTREON_GENDIR/filesGeneration/nagiosCFG 2>&1 >> $LOG_FILE
+	$CENTREON_GENDIR/filesGeneration/nagiosCFG >> $LOG_FILE 2>&1
 # link on INSTALL_DIR_CENTREON
 [ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \
 	ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON
 
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 775 \
-	$CENTREON_GENDIR/filesUpload/nagiosCFG 2>&1 >> $LOG_FILE
+	$CENTREON_GENDIR/filesUpload/nagiosCFG >> $LOG_FILE 2>&1
 # link on INSTALL_DIR_CENTREON
 [ ! -h $INSTALL_DIR_CENTREON/filesUpload -a ! -d $INSTALL_DIR_CENTREON/filesUpload ] && \
 	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON
 
 log "INFO" "`gettext \"Copying GPL_LIB\"`"
 $INSTALL_DIR/cinstall -u $WEB_USER -g $WEB_GROUP -d 755 -m 644 \
-	$TMPDIR/final/GPL_LIB $INSTALL_DIR_CENTREON 2>&1 >> $LOG_FILE
+	$TMPDIR/final/GPL_LIB $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
 echo_passed "`gettext \"CentWeb file installation\"`" "$ok"
 
@@ -137,9 +137,9 @@ sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	$BASE_DIR/tmpl/install/centreon.cron > $TMPDIR/work/centreon.cron
-cp $TMPDIR/work/centreon.cron $TMPDIR/final/centreon.cron 2>&1 >> $LOG_FILE
+cp $TMPDIR/work/centreon.cron $TMPDIR/final/centreon.cron >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall -u root -g root -m 644 \
-	$TMPDIR/final/centreon.cron $CRON_D/centreon 2>&1 >> $LOG_FILE
+	$TMPDIR/final/centreon.cron $CRON_D/centreon >> $LOG_FILE 2>&1
 echo_success "`gettext \"Install Centreon cron\"`" "$ok"
 
 ## cron binary
@@ -155,7 +155,7 @@ sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 cp -f $TMPDIR/work/cron/centAcl.php $TMPDIR/final/cron/centAcl.php
 
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $WEB_GROUP -d 755 -m 655 \
-	$TMPDIR/final/cron $INSTALL_DIR_CENTREON/cron 2>&1 >> $LOG_FILE
+	$TMPDIR/final/cron $INSTALL_DIR_CENTREON/cron >> $LOG_FILE 2>&1
 
 
 echo -e "`gettext \"Pear Modules\"`"

@@ -24,7 +24,7 @@ check_group_nagios
 check_user_nagios
 
 ## Populate temporaty source directory
-copyInTempFile
+copyInTempFile >> $LOG_FILE 2>&1
 
 ## Create temporary folder
 log "INFO" "`gettext \"Create working directory\"`"
@@ -52,14 +52,14 @@ log "INFO" "`gettext \"Copying CentCore binary in final directory\"`"
 cp $TMPDIR/work/bin/centcore $TMPDIR/final/bin/centcore 2>&1  >> $LOG_FILE
 
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
-	$TMPDIR/final/bin/centcore $CENTCORE_BINDIR/centcore 2>&1 >> $LOG_FILE
+	$TMPDIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
 echo_success "`gettext \"Copy CentCore in binary directory\"`" "$ok"
 log "INFO" "`gettext \"Copying CentCore in binary directory\"`"
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "`gettext \"Change right\"` : $CENTREON_RUNDIR"
 $INSTALL_DIR/cinstall -u root -g $NAGIOS_USER -d 775 \
-	$CENTREON_RUNDIR 2>&1 >> $LOG_FILE
+	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
 
 ###### CentCore init
 #################################

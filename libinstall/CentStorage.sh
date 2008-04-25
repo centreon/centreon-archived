@@ -29,7 +29,7 @@ check_group_nagios
 check_user_nagios
 
 ## Populate temporaty source directory
-copyInTempFile
+copyInTempFile >> $LOG_FILE 2>&1
 
 ## Create temporary folder
 log "INFO" "`gettext \"Create working directory\"`"
@@ -50,7 +50,7 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 
 ## Copy in final dir
 log "INFO" "`gettext \"Copying www/install/createTablesODS.sql in final directory\"`"
-cp $TMPDIR/work/www/install/createTablesODS.sql $TMPDIR/final/www/install/createTablesODS.sql 2>&1 >> $LOG_FILE
+cp $TMPDIR/work/www/install/createTablesODS.sql $TMPDIR/final/www/install/createTablesODS.sql >> $LOG_FILE 2>&1
 
 ###### RRD directory
 #################################
@@ -58,7 +58,7 @@ cp $TMPDIR/work/www/install/createTablesODS.sql $TMPDIR/final/www/install/create
 if [ ! -d "$CENTSTORAGE_RRD/status" ] ; then
 	log "INFO" "`gettext \"Create CentStorage status directory\"`"
 	$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 \
-		$CENTSTORAGE_RRD/status 2>&1 >> $LOG_FILE
+		$CENTSTORAGE_RRD/status >> $LOG_FILE 2>&1
 	echo_success "`gettext \"Creating Centreon Directory\"` '$CENTSTORAGE_RRD/status'" "$ok"
 else
 	echo_passed "`gettext \"CentStorage status Directory already exists\"`" "$passed"
@@ -67,7 +67,7 @@ fi
 if [ ! -d "$CENTSTORAGE_RRD/metrics" ] ; then
 	log "INFO" "`gettext \"Create CentStorage metrics directory\"`"
 	$INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 \
-		$CENTSTORAGE_RRD/metrics 2>&1 >> $LOG_FILE
+		$CENTSTORAGE_RRD/metrics >> $LOG_FILE 2>&1
 	echo_success "`gettext \"Creating Centreon Directory\"` '$CENTSTORAGE_RRD/metrics'" "$ok"
 else
 	echo_passed "`gettext \"CentStorage metrics Directory already exists\"`" "$passed"
@@ -85,20 +85,20 @@ sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	 
 echo_success "`gettext \"Replace Centstorage Macro\"`" "$ok"
 log "INFO" "`gettext \"Copying CentStorage binary in final directory\"`"
-cp $TMPDIR/work/bin/centstorage $TMPDIR/final/bin/centstorage 2>&1 >> $LOG_FILE
+cp $TMPDIR/work/bin/centstorage $TMPDIR/final/bin/centstorage >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
-	$TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage 2>&1 >> $LOG_FILE
+	$TMPDIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage >> $LOG_FILE 2>&1
 
 echo_success "`gettext \"Set CentStorage properties\"`" "$ok"
 
 ## Copy lib for CentStorage
 $INSTALL_DIR/cinstall -u root -g $NAGIOS_GROUP -m 766 \
-	$TMPDIR/final/lib $INSTALL_DIR_CENTREON/lib 2>&1 >> $LOG_FILE
+	$TMPDIR/final/lib $INSTALL_DIR_CENTREON/lib >> $LOG_FILE 2>&1
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "`gettext \"Change right\"` : $CENTREON_RUNDIR"
 $INSTALL_DIR/cinstall -u root -g $NAGIOS_USER -d 775 \
-	$CENTREON_RUNDIR 2>&1 >> $LOG_FILE
+	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
 
 ###### CentStorate init
 #################################
@@ -119,7 +119,7 @@ if [ $? -eq 0 ] ; then
 	log "INFO" "`gettext \"CentStorage init script installed\"`"
 	$INSTALL_DIR/cinstall -u root -g root -m 755 \
 		$TMPDIR/final/centstorage.init.d \
-		$INIT_D/centstorage 2>&1 >> $LOG_FILE
+		$INIT_D/centstorage >> $LOG_FILE 2>&1
 	yes_no_default "`gettext \"Do you want I install CentStorage run level ?\"`"
 		if [ $? -eq 0 ] ; then
 			install_init_service "centstorage"
@@ -136,10 +136,10 @@ fi
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
 
-cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser 2>&1 >> $LOG_FILE
+cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
 	$TMPDIR/final/bin/logAnalyser \
-	$CENTSTORAGE_BINDIR/logAnalyser 2>&1 >> $LOG_FILE
+	$CENTSTORAGE_BINDIR/logAnalyser >> $LOG_FILE 2>&1
 
 echo_success "`gettext \"Set logAnalyser properties\"`" "$ok"
 
@@ -147,10 +147,10 @@ echo_success "`gettext \"Set logAnalyser properties\"`" "$ok"
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
-cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace 2>&1 >> $LOG_FILE
+cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -m 755 \
 	$TMPDIR/final/bin/nagiosPerfTrace \
-	$CENTSTORAGE_BINDIR/nagiosPerfTrace 2>&1 >> $LOG_FILE
+	$CENTSTORAGE_BINDIR/nagiosPerfTrace >> $LOG_FILE 2>&1
 
 echo_success "`gettext \"Set nagiosPerfTrace properties\"`" "$ok"
 
@@ -160,10 +160,10 @@ sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMPDIR/work/centstorage.cron
-cp $TMPDIR/work/centstorage.cron $TMPDIR/final/centstorage.cron 2>&1 >> $LOG_FILE
+cp $TMPDIR/work/centstorage.cron $TMPDIR/final/centstorage.cron >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall -u root -g root -m 644 \
 	$TMPDIR/final/centstorage.cron \
-	$CRON_D/centstorage 2>&1 >> $LOG_FILE
+	$CRON_D/centstorage >> $LOG_FILE 2>&1
 
 echo_success "`gettext \"Install CentStorage cron\"`" "$ok"
 

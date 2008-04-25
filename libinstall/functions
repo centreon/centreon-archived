@@ -594,15 +594,15 @@ __EOT__
 		if [ $? -eq 0 ] ; then 
 			log "INFO" "`gettext \"Reload Apache...\"`"
 			if [ -x /etc/init.d/apache ] ; then
-				/etc/init.d/apache reload 2>&1 >> $LOG_FILE
+				/etc/init.d/apache reload >> $LOG_FILE 2>&1
 			elif [ -x /etc/init.d/httpd ] ; then
-				/etc/init.d/httpd reload 2>&1 >> $LOG_FILE
+				/etc/init.d/httpd reload >> $LOG_FILE 2>&1
 			elif [ -e /etc/init.d/apache2 ] ; then
-				/etc/init.d/apache2 reload 2>&1 >> $LOG_FILE
+				/etc/init.d/apache2 reload >> $LOG_FILE 2>&1
 			elif [ -e /usr/local/etc/rc.d/apache ] ; then
-				/usr/local/etc/rc.d/apache reload 2>&1 >> $LOG_FILE
+				/usr/local/etc/rc.d/apache reload >> $LOG_FILE 2>&1
 			elif [ -e /usr/local/etc/rc.d/apache2 ]; then
-				/etc/init.d/apache2 reload 2>&1 >> $LOG_FILE
+				/etc/init.d/apache2 reload >> $LOG_FILE 2>&1
 			else
 				echo_warning "`gettext \"Unable to restart apache server\"`" "$warning"
 				log "WARN" "`gettext \"Unable to restart Apache server\"`"
@@ -1058,72 +1058,13 @@ function copyInTempFile()
 
 	for folder in $srclistcp ; do
 		log "INFO" "`gettext \"Copy\"` $BASE_DIR/$folder $TMPDIR/src/"
-		cp -Rf $BASE_DIR/$folder $TMPDIR/src/ 2>&1 >> $LOG_FILE
+		cp -Rf $BASE_DIR/$folder $TMPDIR/src/ 
 	done
 
 	log "INFO" "`gettext \"Copy\"` $BASE_DIR/init.d.* $TMPDIR/src/"
-	cp -f $BASE_DIR/init.d.* $TMPDIR/src/ 2>&1 >> $LOG_FILE
+	cp -f $BASE_DIR/init.d.* $TMPDIR/src/ 
 }	
 
-## En attente de relecture
-function InstallPlugins()
-{
-	# set Plugins in unix mod
-	find $TMPDIR/Plugins/ -name "*" -exec dos2unix -d {} \;  2>&1 >> $LOG_FILE
-    
-	# Prepare code
-	mkdir $TMPDIR/Plugins-Ready/
-
-	for fichier in $TMPDIR/Plugins/*
-    do
-    	if [ -d "$fichier" ]; then
-	  		echo ""
-      	else
-			filename=`echo $fichier  | sed -e 's|.*\/\(.*\)|\1|'`
-	  		`sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g'  "$fichier" > "$TMPDIR/Plugins-Ready/$filename"`
-	 		echo_success " - $filename" "OK"  
-      	fi
-    done
-
-    # Set restriction 
-    chmod 755 $TMPDIR/Plugins-Ready/*
-    chmod 444 $TMPDIR/Plugins-Ready/centreon.conf
-    chown $NAGIOS_USER.$NAGIOS_GROUP $TMPDIR/Plugins-Ready/*
-
-    # Check if plugin dir exists
-    if test -d $NAGIOS_PLUGIN ; then
-		echo_success "Directory $NAGIOS_PLUGIN" "OK"
-    else
-		mkdir_result=`mkdir $NAGIOS_PLUGIN 2>&1 >> $LOG_FILE; echo $?`
-		if [ $mkdir_result = "0" ]; then
-	    	echo_success "mkdir '$NAGIOS_PLUGIN'" "OK"
-		else
-	    	echo_failure "mkdir '$NAGIOS_PLUGIN'" "FAILED"
-	    	return
-		fi
-    fi
-
-    # Copy plugins in nagios plugins dir
-    echo "Do you want to install Centreon Plugins ? "
-    echo ""
-    echo -n "[y/n], default to [y]:"
-    read temp
-    if [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ] ;then
-	while [ "$temp" != "y" ] && [ "$temp" != "n" ] && [ ! -z $temp ]
-		do
-	  	echo "Do you want to install Centreon Plugins ? "
-	  	echo -n "[y/n], default to [y]:"
-	  	read temp
-	done
-    fi
-    if [ -z $temp ];then
-		temp=y
-    fi
-    if [ $temp = "y" ];then
-		cp -a $TMPDIR/Plugins-Ready/* $NAGIOS_PLUGIN/ 2>&1 >> $LOG_FILE
-		echo_success "Installing Centreon Plugins on '$NAGIOS_PLUGIN'" "OK"
-    fi
-}
 
 
 ## function check_pear_module()

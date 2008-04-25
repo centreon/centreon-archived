@@ -15,8 +15,13 @@ locate_nagios_etcdir
 locate_rrd_perldir
 locate_centplugins_tmpdir
 
+## check nagios user and group
+check_user_nagios
+check_group_nagios
+
+
 ## Populate temporaty source directory
-copyInTempFile
+copyInTempFile >> $LOG_FILE 2>&1
 
 ## Create temporary folder
 log "INFO" "`gettext \"Create working directory\"`"
@@ -43,13 +48,14 @@ done
 
 ## Copy in final dir
 log "INFO" "`gettext \"Copying plugins in final directory\"`"
-cp -r $TMPDIR/work/plugins/* $TMPDIR/final/plugins 2>&1 >> $LOG_FILE
+cp -r $TMPDIR/work/plugins/* $TMPDIR/final/plugins >> $LOG_FILE 2>&1
 
 ## Install the plugins
 log "INFO" "`gettext \"Installing the plugins\"`"
 $INSTALL_DIR/cinstall -u root -g root -m 755 \
-	-p "$TMPDIR/final/plugins" "$TMPDIR/final/plugins/*" "$NAGIOS_PLUGIN" 2>&1 >> $LOG_FILE
+	-p "$TMPDIR/final/plugins" "$TMPDIR/final/plugins/*" "$NAGIOS_PLUGIN" >> $LOG_FILE 2>&1
 
+log "INFO" "`gettext \"Install temporary directory for plugins\"` : $CENTPLUGINS_TMP"
 $INSTALL_DIR/cinstall -u $NAGIOS_USER -g $NAGIOS_GROUP -d 775 \
-	$CENTPLUGINS_TMP 2>&1 >> $LOG_FILE
+	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "`gettext \"CentPlugins is installed\"`"
