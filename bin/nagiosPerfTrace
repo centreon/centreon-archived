@@ -25,7 +25,7 @@ use warnings;
 use RRDs;
 use DBI;
 
-my $global_prefix = "@CENTSTORAGE_RRD@/svc_status";
+my $global_prefix = "@CENTSTORAGE_LIB@/svc_status";
 my $tmp_prefix;
 
 my $global_cmd_buffer;

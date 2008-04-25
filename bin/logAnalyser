@@ -181,7 +181,7 @@ sub parseArchive($$) {
 		$data = $sth->fetchrow_hashref();
 		$archives = $data->{'log_archive_path'};
 	} else {
-		$archives = "/usr/local/centreon/var/log/archive/$instance/";
+		$archives = "@CENTREON_LOG@/nagios/archive/$instance/";
 	}
 
 	$archives .= "/" if (!($archives =~ /\/$/));
@@ -221,7 +221,7 @@ sub parseLogFile($$) {
 			exit(0);
 	    }
 	} else {
-		$LOG_FILE = "/usr/local/centreon/var/log/nagios/$instance/nagios.log";
+		$LOG_FILE = "@CENTREON_LOG@/nagios/log/$instance/nagios.log";
 	}
     # Decide if we have to read the nagios.log from the begining 
 

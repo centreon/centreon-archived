@@ -135,6 +135,7 @@ fi
 ### Macro
 ## logAnalyser
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
 
 cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser >> $LOG_FILE 2>&1
@@ -146,6 +147,7 @@ echo_success "`gettext \"Set logAnalyser properties\"`" "$ok"
 
 ## nagiosPerfTrace
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTSTORAGE_LIB@|'"$CENTSTORAGE_LIB"'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1
