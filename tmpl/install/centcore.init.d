@@ -28,7 +28,7 @@
 # Provides:       centcore
 # Required-Start: mysqld nagios
 # Required-Stop:
-# Default-Start:  2 3 4 5
+# Default-Start:  3 5
 # Default-Stop: 0 1 6
 # Description:    Start the centore high-Availability Engine
 ### END INIT INFO
