@@ -18,7 +18,7 @@
 	 foreach ($_GET as $key => $value){
 		if (!is_array($value)){
 			$value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-			$value = filter_var($value, INPUT_GET);	
+			//print filter_var($value, INPUT_GET);	
 			$_GET[$key] = $value;
 		}
 	}
@@ -61,10 +61,10 @@
 	/*
 	 * LCA Init Common Var
 	 */
-	 
+	  
 	global $is_admin;
 	$is_admin = isUserAdmin(session_id());
-
+	
 	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
 	if (PEAR::isError($DBRESULT)) 
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
@@ -83,6 +83,7 @@
 	/*
 	 * Init URL
 	 */
+	 
 	$url = "";
 	if (!isset($_GET["doc"])){
 		if ((isset($nb_page) && $nb_page) || $is_admin){
