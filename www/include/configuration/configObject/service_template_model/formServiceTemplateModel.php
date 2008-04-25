@@ -31,7 +31,8 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		# Set base value
-		$service = array_map("myDecodeSvTP", $DBRESULT->fetchRow());
+		$service_list =& $DBRESULT->fetchRow();
+		$service = array_map("myDecodeSvTP", $service_list);
 		# Grab hostgroup || host
 		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
 		if (PEAR::isError($DBRESULT))
