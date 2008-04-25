@@ -168,7 +168,7 @@ INSERT INTO `cfg_nagios` (`nagios_name`, `log_file`, `cfg_dir`, `object_cache_fi
 -- Contenu de la table `cfg_ndo2db`
 --
 
-INSERT INTO `cfg_ndo2db` (`id`, `description`, `ndo2db_user`, `ndo2db_group`, `local`, `ns_nagios_server`, `socket_type`, `socket_name`, `tcp_port`, `db_servertype`, `db_host`, `db_name`, `db_port`, `db_prefix`, `db_user`, `db_pass`, `max_timedevents_age`, `max_systemcommands_age`, `max_servicechecks_age`, `max_hostchecks_age`, `max_eventhandlers_age`, `activate`) VALUES(1, 'Principal', NULL, NULL, '0', 1, 'tcp', '/var/run/ndo.sock', 5668, 'mysql', 'localhost', 'ndo', '3306', 'nagios_', 'centreon', 'centreon', '1440', '1440', '1440', '1440', '1440', '1');
+INSERT INTO `cfg_ndo2db` (`id`, `description`, `ndo2db_user`, `ndo2db_group`, `local`, `ns_nagios_server`, `socket_type`, `socket_name`, `tcp_port`, `db_servertype`, `db_host`, `db_name`, `db_port`, `db_prefix`, `db_user`, `db_pass`, `max_timedevents_age`, `max_systemcommands_age`, `max_servicechecks_age`, `max_hostchecks_age`, `max_eventhandlers_age`, `activate`) VALUES(1, 'Principal', '@NAGIOS_USER@', '@NAGIOS_GROUP@', '0', 1, 'tcp', '/var/run/ndo.sock', 5668, 'mysql', 'localhost', 'ndo', '3306', 'nagios_', 'centreon', 'centreon', '1440', '1440', '1440', '1440', '1440', '1');
 
 --
 -- Contenu de la table `cfg_ndomod`
@@ -282,31 +282,31 @@ INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes
 -- Contenu de la table `extended_service_information`
 --
 
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2275, 1, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2277, 3, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2278, 4, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2279, 5, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2280, 6, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2281, 7, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2282, 8, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2283, 9, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2284, 10, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2285, 11, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2286, 12, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2287, 13, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2288, 14, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2289, 15, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2290, 16, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2291, 17, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2292, 18, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2293, 19, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2294, 20, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2295, 21, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2296, 22, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2297, 23, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2298, 24, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2299, 25, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_service_information` (`esi_id`, `service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(2300, 26, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(1, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(3, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(4, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(5, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(6, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(7, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(8, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(9, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(10, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(11, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(12, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(13, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(14, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(15, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(16, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(17, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(18, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(19, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(20, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(21, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(22, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(23, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(24, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(25, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `esi_notes_url`, `esi_action_url`, `esi_icon_image`, `esi_icon_image_alt`, `graph_id`) VALUES(26, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Contenu de la table `general_opt`
