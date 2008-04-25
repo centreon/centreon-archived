@@ -151,13 +151,13 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 	          	 $msg =  '';
 			} else {
 	            echo '<b><span class="stop">Critical: Not Writeable</font></b>';
-	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>' ;
+	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b></span>' ;
 	          	$msg .=  '<br />Should be root:'.$_SESSION['apache_group'].' (666)';
 			   	echo $msg;
 			    $return_false = 1;
 	       	}
 	    } else {
-	    	echo '<b><span class="stop">Critical: Directory not exist</font></b>';
+	    	echo '<b><span class="stop">Critical: Directory not exist</span></b>';
 	    	$msg =  '';
 			$return_false = 1;
 	    } ?>
@@ -175,43 +175,4 @@ if ($return_false)
 $str .= " />";
 print $str;
 aff_footer();
-?>
-
-<?
-/*
- * 
-  <tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION['nagios_conf']; ?></td>
-    	<td align="right"><b><?php echo  $msg ;  ?></td>
-  </tr>
-  <tr>
-    	<td><b>Writable Nagios Plugins Directory</b></td>
-    	<td align="right"><?php
-		    if (is_dir($_SESSION['nagios_plugins'])) {
-		       $uid = posix_getpwuid (fileowner($_SESSION['nagios_plugins']));
-		       $gid = posix_getgrgid (filegroup($_SESSION['nagios_plugins']));
-		       $perms = substr(sprintf('%o', fileperms($_SESSION['nagios_plugins'])), -3) ;
-				if( (strcmp($perms,'775') == 0 )  && (strcmp($_SESSION['apache_user'], $uid['name']) == 0 ) && (strcmp($_SESSION['nagios_group'], $gid['name']) == 0) ){
-		              	echo '<b><span class="go">OK</font></b>';
-		              	$msg ='';
-					} else {
-		              	echo '<b><span class="stop">Critical: Not Writeable</font></b>';
-		              	$msg = $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b>';
-		              	$msg .=  '<br />Should be '. $_SESSION['apache_user'].':'.$_SESSION['nagios_group'].' (775)';
-					    $return_false = 1;
-		           }
-		    } else {
-		    	echo '<b><span class="stop">Critical: Directory not exist</font></b>';
-		        $msg =  '';
-			    $return_false = 1;
-		    }	?>
-		 </td>
-  </tr>
-  <tr>
-    	<td>&nbsp;&nbsp;&nbsp;<?php echo $_SESSION['nagios_plugins']; ?></td>
-    	<td align="right"><b><?php echo  $msg ; ?></td>
-  </tr>
-
- * 
- */
 ?>
