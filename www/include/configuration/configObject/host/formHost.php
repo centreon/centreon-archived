@@ -33,7 +33,8 @@
 		/*
 		 * Set base value
 		 */
-		$host = array_map("myDecode", $DBRESULT->fetchRow());
+		$host_list =& $DBRESULT->fetchRow();
+		$host = array_map("myDecode", $host_list);
 		
 		/*
 		 * Set Host Notification Options
