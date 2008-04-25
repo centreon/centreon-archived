@@ -265,19 +265,18 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 -- Contenu de la table `extended_host_information`
 --
 
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(950, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(951, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(952, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(953, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(954, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(955, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(956, 8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(957, 9, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(958, 10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(959, 11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(960, 12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(961, 13, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `extended_host_information` (`ehi_id`, `host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(962, 14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(8, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(9, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(10, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(11, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(12, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(13, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `extended_host_information` (`host_host_id`, `ehi_notes`, `ehi_notes_url`, `ehi_action_url`, `ehi_icon_image`, `ehi_icon_image_alt`, `ehi_vrml_image`, `ehi_statusmap_image`, `ehi_2d_coords`, `ehi_3d_coords`) VALUES(14, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 --
 -- Contenu de la table `extended_service_information`
@@ -396,26 +395,26 @@ INSERT INTO `hostgroup_relation` (`hgr_id`, `hostgroup_hg_id`, `host_host_id`) V
 -- Contenu de la table `host_service_relation`
 --
 
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2288, NULL, 4, NULL, 10);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2289, NULL, 5, NULL, 11);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2298, NULL, 5, NULL, 16);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2299, NULL, 5, NULL, 15);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2301, NULL, 4, NULL, 17);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2304, NULL, 14, NULL, 19);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2305, NULL, 14, NULL, 20);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2306, NULL, 14, NULL, 21);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2307, NULL, 14, NULL, 22);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2308, NULL, 14, NULL, 23);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2309, NULL, 14, NULL, 24);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2311, NULL, 14, NULL, 26);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2312, NULL, 3, NULL, 5);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2313, NULL, 3, NULL, 12);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2315, NULL, 3, NULL, 14);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2316, NULL, 14, NULL, 25);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2318, NULL, 4, NULL, 18);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(2319, NULL, 5, NULL, 18);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(3305, NULL, 3, NULL, 13);
-INSERT INTO `host_service_relation` (`hsr_id`, `hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(3313, NULL, 2, NULL, 3);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 10);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 11);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 16);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 15);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 17);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 19);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 20);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 21);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 22);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 23);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 24);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 26);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 5);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 12);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 14);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 14, NULL, 25);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 18);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 18);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 3, NULL, 13);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 2, NULL, 3);
 
 --
 -- Contenu de la table `nagios_server`
