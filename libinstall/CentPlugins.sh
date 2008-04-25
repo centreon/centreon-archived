@@ -37,6 +37,7 @@ for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
 		-e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' \
 		-e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
 		-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
+		-e 's|@CENTPLUGINS_TMP@|'"$CENTPLUGINS_TMP"'|g' \
 		"$FILE" > "$TMPDIR/work/plugins/`basename $FILE`"
 done
 
