@@ -149,7 +149,7 @@
 	cssNode.href = css_file;
 	cssNode.media = 'screen';headID.appendChild(cssNode);
  
- 	var multi = <? echo $multi; ?>;
+ 	var multi = <?php echo $multi; ?>;
  
     tree=new dhtmlXTreeObject("menu_20301","100%","100%","1");
     tree.setImagePath("./img/icones/csh_vista/");
@@ -226,21 +226,21 @@
 		log_4_host(id, formu);
 	}
 
-	var _host 		= <? echo $user_params["log_filter_host"]; ?>;
-	var _service 	= <? echo $user_params["log_filter_svc"]; ?>;
+	var _host 		= <?php echo $user_params["log_filter_host"]; ?>;
+	var _service 	= <?php echo $user_params["log_filter_svc"]; ?>;
 	
-	var _down 		= <? echo $user_params["log_filter_host_down"]; ?>;
-	var _up 		= <? echo $user_params["log_filter_host_up"]; ?>;
-	var _unreachable = <? echo $user_params["log_filter_host_unreachable"]; ?>;
+	var _down 		= <?php echo $user_params["log_filter_host_down"]; ?>;
+	var _up 		= <?php echo $user_params["log_filter_host_up"]; ?>;
+	var _unreachable = <?php echo $user_params["log_filter_host_unreachable"]; ?>;
 	
-	var _ok 		= <? echo $user_params["log_filter_svc_ok"]; ?>;
-	var _warning 	= <? echo $user_params["log_filter_svc_warning"]; ?>;
-	var _critical 	= <? echo $user_params["log_filter_svc_critical"]; ?>;
-	var _unknown 	= <? echo $user_params["log_filter_svc_unknown"]; ?>;
+	var _ok 		= <?php echo $user_params["log_filter_svc_ok"]; ?>;
+	var _warning 	= <?php echo $user_params["log_filter_svc_warning"]; ?>;
+	var _critical 	= <?php echo $user_params["log_filter_svc_critical"]; ?>;
+	var _unknown 	= <?php echo $user_params["log_filter_svc_unknown"]; ?>;
 	
-	var _notification = <? echo $user_params["log_filter_notif"]; ?>;
-	var _error 		= <? echo $user_params["log_filter_error"]; ?>;
-	var _alert 		= <? echo $user_params["log_filter_alert"]; ?>;
+	var _notification = <?php echo $user_params["log_filter_notif"]; ?>;
+	var _error 		= <?php echo $user_params["log_filter_error"]; ?>;
+	var _alert 		= <?php echo $user_params["log_filter_alert"]; ?>;
 	
 	// Period
 	var currentTime = new Date();
