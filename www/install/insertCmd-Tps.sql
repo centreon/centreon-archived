@@ -53,7 +53,7 @@ INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_ex
 INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(94, 'check_centreon_snmp_value', '$USER1$#S#check_centreon_snmp_value -H $HOSTADDRESS$ -C $ARG1$ -v $ARG2$ -o $ARG3$ -w $ARG4$  -c $ARG5$', '!public!1!1.3.6.1.4.1.705.1.8.1.0!190!210', 2, 0, NULL);
 INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(95, 'check_centreon_snmp_proc_detailed', '$USER1$#S#check_centreon_snmp_process_detailed -H $HOSTADDRESS$ -C $USER2$ -n $ARG1$ -m $ARG2$', '!apache!20,50', 2, 0, NULL);
 INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(96, 'check_centreon_cpu', '$USER1$#S#check_centreon_snmp_cpu -H $HOSTADDRESS$ -v 1 -C $ARG1$ -c $ARG2$ -w $ARG3$', '!$USER2$!80!90', 2, 5, NULL);
-INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(97, 'check_centreon_real_memory', '$USER1$#S#check_centreon_snmp_real_memory -H $HOSTADDRESS$  -C $USER2$ -v 1 -w 80 -c 90', '', 2, 4, NULL);
+INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(97, 'check_centreon_memory', '$USER1$#S#check_centreon_snmp_memory -H $HOSTADDRESS$ -C $USER2$ -v 1 -w 80 -c 90', '', 2, 4, NULL);
 
 --
 -- table `timeperiod`
