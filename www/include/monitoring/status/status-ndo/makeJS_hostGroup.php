@@ -29,24 +29,24 @@
 <script type="text/javascript">
 var _debug = 0;
 
-var _search = '<?=$search?>';
-var _sid='<?=$sid?>';
-var _num='<?=$num?>';
-var _limit='<?=$limit?>';
-var _sort_type='<?=$sort_type?>';
-var _order='<?=$order?>';
-var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
-var _o='<?=$o?>';
-var _p='<?=$p?>';
+var _search = '<?php echo $search?>';
+var _sid='<?php echo $sid?>';
+var _num='<?php echo $num?>';
+var _limit='<?php echo $limit?>';
+var _sort_type='<?php echo $sort_type?>';
+var _order='<?php echo $order?>';
+var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
+var _o='<?php echo $o?>';
+var _p='<?php echo $p?>';
 
 var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_hostGroup.php?";
 var _addrXSL = "./include/monitoring/status/status-ndo/templates/hostGroup.xsl";
 var _timeoutID = 0;
 var _on = 1;
-var _time_reload = <?=$tM?>;
-var _time_live = <?=$tFM?>;
+var _time_reload = <?php echo $tM?>;
+var _time_live = <?php echo $tFM?>;
 var _nb = 0;
-var _oldInputFieldValue = '<?=$search?>';
+var _oldInputFieldValue = '<?php echo $search?>';
 var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
 var _first = 1;
@@ -66,17 +66,17 @@ function set_header_title(){
 
 	if(document.getElementById('hostGroup_name')){
 		var h = document.getElementById('hostGroup_name');
-		h.innerHTML = "<?=_("Host Group")?>";
+		h.innerHTML = "<?php echo _("Host Group")?>";
 	  	h.indice = 'hostGroup_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('host_status');
-		h.innerHTML = '<?=_("Hosts Status")?>';
+		h.innerHTML = '<?php echo _("Hosts Status")?>';
 	  	h.indice = 'host_status';
 
 		var h = document.getElementById('service_status');
-		h.innerHTML = '<?=_("Services Status")?>';
+		h.innerHTML = '<?php echo _("Services Status")?>';
 	  	h.indice = 'service_status';
 	
 		
@@ -100,7 +100,7 @@ function monitoring_refresh()	{
 	_on = 1;
 	window.clearTimeout(_timeoutID);
 
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
 	_on = _tmp_on;
 
 	viewDebugInfo('refresh');
@@ -112,7 +112,7 @@ function monitoring_play()	{
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
 	_on = 1;
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
 }
 
 function monitoring_pause()	{
@@ -144,7 +144,7 @@ function initM(_time_reload,_sid,_o){
 		_first = 0;
 	}
 
-	_time=<?=$time?>;
+	_time=<?php echo $time?>;
 
 	if(_on)
 	goM(_time_reload,_sid,_o);

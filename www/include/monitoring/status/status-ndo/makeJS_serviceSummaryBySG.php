@@ -35,26 +35,26 @@
 <script type="text/javascript">
 var _debug = 0;
 
-var _search = '<?=$search?>';
-var _sid='<?=$sid?>';
-var _search_type_host='<?=$search_type_host?>';
-var _search_type_service='<?=$search_type_service?>';
-var _num='<?=$num?>';
-var _limit='<?=$limit?>';
-var _sort_type='<?=$sort_type?>';
-var _order='<?=$order?>';
-var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
-var _o='<?=$o?>';
-var _p='<?=$p?>';
+var _search = '<?php echo $search?>';
+var _sid='<?php echo $sid?>';
+var _search_type_host='<?php echo $search_type_host?>';
+var _search_type_service='<?php echo $search_type_service?>';
+var _num='<?php echo $num?>';
+var _limit='<?php echo $limit?>';
+var _sort_type='<?php echo $sort_type?>';
+var _order='<?php echo $order?>';
+var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
+var _o='<?php echo $o?>';
+var _p='<?php echo $p?>';
 
 var _addrXSL = "./include/monitoring/status/status-ndo/templates/serviceSummaryBySG.xsl";
 
 var _timeoutID = 0;
 var _on = 1;
-var _time_reload = <?=$tM?>;
-var _time_live = <?=$tFM?>;
+var _time_reload = <?php echo $tM?>;
+var _time_live = <?php echo $tFM?>;
 var _nb = 0;
-var _oldInputFieldValue = '<?=$search?>';
+var _oldInputFieldValue = '<?php echo $search?>';
 var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
 var _first = 1;
@@ -72,13 +72,13 @@ function set_header_title(){
 
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?=_("Hosts")?>';
+		h.innerHTML = '<?php echo _("Hosts")?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('services');
-		h.innerHTML = '<?=_("Services")?>';
+		h.innerHTML = '<?php echo _("Services")?>';
 	  	h.indice = 'services';
 	
 		var h = document.getElementById(_sort_type);
@@ -101,7 +101,7 @@ function monitoring_refresh()	{
 	_on = 1;
 	window.clearTimeout(_timeoutID);
 
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
 	_on = _tmp_on;
 
 	viewDebugInfo('refresh');
@@ -113,7 +113,7 @@ function monitoring_play()	{
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
 	_on = 1;
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
 }
 
 function monitoring_pause()	{
@@ -145,7 +145,7 @@ function initM(_time_reload,_sid,_o){
 		_first = 0;
 	}
 
-	_time=<?=$time?>;
+	_time=<?php echo $time?>;
 	
 	if(_on)
 	goM(_time_reload,_sid,_o);
@@ -154,7 +154,7 @@ function initM(_time_reload,_sid,_o){
 function goM(_time_reload,_sid,_o){
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceSummaryBySG.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?=$obis?>&p='+_p+'&instance='+_instance;
+	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_serviceSummaryBySG.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o=<?php echo $obis?>&p='+_p+'&instance='+_instance;
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");

@@ -128,7 +128,7 @@
 				" nss.passive_checks_enabled," .
 				" nss.active_checks_enabled," .
 				" nss.event_handler_enabled," .
-				" nss. is_flapping," .
+				" nss.is_flapping," .
 				" nss.flap_detection_enabled," .
 				" no.object_id," .
 				" no.name2 as service_description" .

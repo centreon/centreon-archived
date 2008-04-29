@@ -32,25 +32,25 @@
 <script type="text/javascript">
 var _debug = 0;
 
-var _search = '<?=$search?>';
-var _sid='<?=$sid?>';
-var _search_type_host='<?=$search_type_host?>';
-var _search_type_service='<?=$search_type_service?>';
-var _num='<?=$num?>';
-var _limit='<?=$limit?>';
-var _sort_type='<?=$sort_type?>';
-var _order='<?=$order?>';
-var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
-var _o='<?=$o?>';
-var _p='<?=$p?>';
+var _search = '<?php echo $search; ?>';
+var _sid='<?php echo $sid?>';
+var _search_type_host='<?php echo $search_type_host?>';
+var _search_type_service='<?php echo $search_type_service?>';
+var _num='<?php echo $num?>';
+var _limit='<?php echo $limit?>';
+var _sort_type='<?php echo $sort_type?>';
+var _order='<?php echo $order?>';
+var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
+var _o='<?php echo $o?>';
+var _p='<?php echo $p?>';
 
 var _addrXSL = "./include/monitoring/status/status-ndo/templates/service.xsl";
 var _timeoutID = 0;
 var _on = 1;
-var _time_reload = <?=$tM?>;
-var _time_live = <?=$tFM?>;
+var _time_reload = <?php echo $tM?>;
+var _time_live = <?php echo $tFM?>;
 var _nb = 0;
-var _oldInputFieldValue = '<?=$search?>';
+var _oldInputFieldValue = '<?php echo $search?>';
 var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
 var _first = 1;
@@ -116,44 +116,44 @@ function set_header_title(){
 	if(document.getElementById('host_name')){
 
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?=_("Hosts")?>';
+		h.innerHTML = '<?php echo _("Hosts"); ?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('service_description');
-		h.innerHTML = '<?=_("Services")?>';
+		h.innerHTML = '<?php echo _("Services"); ?>';
 	  	h.indice = 'service_description';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_state');
-		h.innerHTML = '<?=_("Status")?>';
+		h.innerHTML = '<?php echo _("Status"); ?>';
 	  	h.indice = 'current_state';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 
 		var h = document.getElementById('last_state_change');
-		h.innerHTML = '<?=_("Duration")?>';
+		h.innerHTML = '<?php echo _("Duration"); ?>';
 	  	h.indice = 'last_state_change';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('last_check');
-		h.innerHTML = '<?=_("Last Check")?>';
+		h.innerHTML = '<?php echo _("Last Check"); ?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_attempt');
-		h.innerHTML = '<?=_("Tries")?>';
+		h.innerHTML = '<?php echo _("Tries"); ?>';
 	  	h.indice = 'current_attempt';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('plugin_output');
-		h.innerHTML = '<?=_("Status information")?>';
+		h.innerHTML = '<?php echo _("Status information"); ?>';
 	  	h.indice = 'plugin_output';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
@@ -181,7 +181,7 @@ function monitoring_refresh()	{
 	_on = 1;
 	window.clearTimeout(_timeoutID);
 
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o; ?>");
 	_on = _tmp_on;
 
 	viewDebugInfo('refresh');
@@ -193,7 +193,7 @@ function monitoring_play()	{
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
 	_on = 1;
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o; ?>");
 }
 
 function monitoring_pause()	{
@@ -207,7 +207,7 @@ function monitoring_pause()	{
 
 function initM(_time_reload,_sid,_o){
 	construct_selecteList_ndo_instance('instance_selected');
-	if(!document.getElementById('debug')){
+	if (!document.getElementById('debug')){
 		var _divdebug = document.createElement("div");
 		_divdebug.id = 'debug';
 		var _debugtable = document.createElement("table");
@@ -225,7 +225,7 @@ function initM(_time_reload,_sid,_o){
 		mainLoop();
 		_first = 0;
 	}
-	_time=<?=$time?>;
+	_time=<?php echo $time; ?>;
 	if(_on)
 		goM(_time_reload,_sid,_o);
 }
@@ -234,7 +234,7 @@ function goM(_time_reload,_sid,_o){
 
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_service.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?=$host_name?>'+'&instance='+_instance+'&nc='+_nc;
+	var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_service.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");

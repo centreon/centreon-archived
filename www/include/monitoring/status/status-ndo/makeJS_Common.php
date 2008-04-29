@@ -103,9 +103,9 @@ function construct_selecteList_ndo_instance(id){
 	 	$isntance_id = get_ndo_instance_id($nagios_server["name"]);
 ?>
 		var m = document.createElement('option');
-		m.value= "<?=$isntance_id?>";
+		m.value= "<?php echo $isntance_id; ?>";
 		_select.appendChild(m);
-		var n = document.createTextNode("<?=$nagios_server["name"]?>");
+		var n = document.createTextNode("<?php echo $nagios_server["name"]; ?>");
 		m.appendChild(n);
 		_select.appendChild(m);
 <?php
@@ -388,7 +388,7 @@ function set_limit(limit)
 	var xhrM = getXhrC();
 	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	_var = "sid=<?php echo $sid;?>&limit="+limit+"&url=<?php echo $url;?>";
+	_var = "sid=<?php echo $sid; ?>&limit="+limit+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
 }
 function set_search(search)
@@ -396,7 +396,7 @@ function set_search(search)
 	var xhrM = getXhrC();
 	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	_var = "sid=<?php echo $sid;?>&search="+search+"&url=<?php echo $url;?>";
+	_var = "sid=<?php echo $sid; ?>&search="+search+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
 }
 function set_page(page)
@@ -404,6 +404,6 @@ function set_page(page)
 	var xhrM = getXhrC();
 	xhrM.open("POST","./include/monitoring/engine/set_session_history.php",true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	_var = "sid=<?php echo $sid;?>&page="+page+"&url=<?php echo $url;?>";
+	_var = "sid=<?php echo $sid; ?>&page="+page+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
 }

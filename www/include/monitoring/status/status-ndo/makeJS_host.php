@@ -28,24 +28,24 @@
 <script type="text/javascript">
 var _debug = 0;
 
-var _search = '<?=$search?>';
-var _sid='<?=$sid?>';
-var _num='<?=$num?>';
-var _limit='<?=$limit?>';
-var _sort_type='<?=$sort_type?>';
-var _order='<?=$order?>';
-var _date_time_format_status='<?=_("d/m/Y H:i:s")?>';
-var _o='<?=$o?>';
-var _p='<?=$p?>';
+var _search = '<?php echo $search?>';
+var _sid='<?php echo $sid?>';
+var _num='<?php echo $num?>';
+var _limit='<?php echo $limit?>';
+var _sort_type='<?php echo $sort_type?>';
+var _order='<?php echo $order?>';
+var _date_time_format_status='<?php echo _("d/m/Y H:i:s")?>';
+var _o='<?php echo $o?>';
+var _p='<?php echo $p?>';
 
 var _addrXML = "./include/monitoring/engine/MakeXML_Ndo_host.php?";
 var _addrXSL = "./include/monitoring/status/status-ndo/templates/host.xsl";
 var _timeoutID = 0;
 var _on = 1;
-var _time_reload = <?=$tM?>;
-var _time_live = <?=$tFM?>;
+var _time_reload = <?php echo $tM?>;
+var _time_live = <?php echo $tFM?>;
 var _nb = 0;
-var _oldInputFieldValue = '<?=$search?>';
+var _oldInputFieldValue = '<?php echo $search?>';
 var _currentInputFieldValue=""; // valeur actuelle du champ texte
 var _resultCache=new Object();
 var _first = 1;
@@ -65,39 +65,39 @@ function set_header_title(){
 
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?=_("Hosts")?>';
+		h.innerHTML = '<?php echo _("Hosts")?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('current_state');
-		h.innerHTML = '<?=_("Status")?>';
+		h.innerHTML = '<?php echo _("Status")?>';
 	  	h.indice = 'current_state';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('ip');
-		h.innerHTML = '<?=_("IP Address")?>';
+		h.innerHTML = '<?php echo _("IP Address")?>';
 	  	h.indice = 'ip';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 	
 		var h = document.getElementById('last_state_change');
-		h.innerHTML = '<?=_("Duration")?>';
+		h.innerHTML = '<?php echo _("Duration")?>';
 	  	h.indice = 'last_state_change';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 		var h = document.getElementById('last_check');
-		h.innerHTML = '<?=_("Last Check")?>';
+		h.innerHTML = '<?php echo _("Last Check")?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 	
 	
 		var h = document.getElementById('plugin_output');
-		h.innerHTML = '<?=_("Status information")?>';
+		h.innerHTML = '<?php echo _("Status information")?>';
 	  	h.indice = 'plugin_output';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
@@ -122,7 +122,7 @@ function monitoring_refresh()	{
 	_on = 1;
 	window.clearTimeout(_timeoutID);
 
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
 	_on = _tmp_on;
 
 	viewDebugInfo('refresh');
@@ -134,7 +134,7 @@ function monitoring_play()	{
 	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
 	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
 	_on = 1;
-	initM(<?=$tM?>,"<?=$sid?>","<?=$o?>");
+	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
 }
 
 function monitoring_pause()	{
@@ -166,7 +166,7 @@ function initM(_time_reload,_sid,_o){
 		_first = 0;
 	}
 
-	_time=<?=$time?>;
+	_time=<?php echo $time?>;
 
 	if(_on)
 	goM(_time_reload,_sid,_o);
