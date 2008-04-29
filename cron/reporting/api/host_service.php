@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  * Created on 12 mars 07 by Cedrick Facon
  * Centreon is developped with GPL Licence 2.0 :
@@ -22,10 +22,8 @@
 	/*
 	 * Parsing Data for Hosts
 	 */
-	if (is_array($tab_hosts))
-	{
+	if (is_array($tab_hosts)){
 		foreach($tab_hosts as $host => $htab)	{
-			
 			if (isset($host_list[trim($host)]) && isset($htab["current_state"])){
 				## last host alert
 				if (!strncmp($htab["current_state"], "UP", 2))
@@ -66,8 +64,7 @@
 	 * Parsing Datas for Services
 	 */
 
-	if (is_array($tab_services))
-	{
+	if (is_array($tab_services))	{
 		foreach($tab_services as $svc => $htabsvc){
 			if (isset($service_list[trim($svc)]))
 				foreach($htabsvc as $host => $htab){

@@ -33,7 +33,7 @@
 	  <option>
 	  -d delete value in db and insert all file
 	  -h or --help for this help
-	<?
+	<?php
 	} else if ($argc == 2 && in_array($argv[1], array('-d')) ) {
 		$option = true;
 	}
