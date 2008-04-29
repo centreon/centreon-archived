@@ -81,6 +81,7 @@ sed -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
 	 -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	 -e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	 -e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
+	 -e 's|\/\/|'\/'|g' \
 	 $TMPDIR/src/bin/centstorage > $TMPDIR/work/bin/centstorage
 	 
 echo_success "`gettext \"Replace Centstorage Macro\"`" "$ok"
@@ -108,6 +109,7 @@ sed -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+	-e 's|\/\/|'\/'|g' \
 	$TMPDIR/src/centstorage.init.d > $TMPDIR/work/centstorage.init.d
 
 echo_success "`gettext \"Replace Centstorage init script Macro\"`" "$ok"
@@ -135,6 +137,7 @@ fi
 ## logAnalyser
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|\/\/|'\/'|g' \
 	$TMPDIR/src/bin/logAnalyser > $TMPDIR/work/bin/logAnalyser
 
 cp $TMPDIR/work/bin/logAnalyser $TMPDIR/final/bin/logAnalyser >> $LOG_FILE 2>&1
@@ -147,6 +150,7 @@ echo_success "`gettext \"Set logAnalyser properties\"`" "$ok"
 ## nagiosPerfTrace
 sed -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTSTORAGE_LIB@|'"$CENTSTORAGE_LIB"'|g' \
+	-e 's|\/\/|'\/'|g' \
 	$TMPDIR/src/bin/nagiosPerfTrace > $TMPDIR/work/bin/nagiosPerfTrace
 
 cp $TMPDIR/work/bin/nagiosPerfTrace $TMPDIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1
@@ -161,6 +165,7 @@ echo_success "`gettext \"Set nagiosPerfTrace properties\"`" "$ok"
 sed -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@CENTSTORAGE_BINDIR@|'"$CENTSTORAGE_BINDIR"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|\/\/|'\/'|g' \
 	$BASE_DIR/tmpl/install/centstorage.cron > $TMPDIR/work/centstorage.cron
 cp $TMPDIR/work/centstorage.cron $TMPDIR/final/centstorage.cron >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall -u root -g root -m 644 \

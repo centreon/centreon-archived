@@ -70,7 +70,7 @@ mkdir -p $TMPDIR/final/cron/reporting
 
 ## Prepare insertBaseConf.sql
 echo -e "`gettext \"In process\"`"
-###Â Step 1:
+### Step 1:
 ## Change Macro on sql file
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
  -e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g' \
@@ -86,9 +86,16 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
  -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
  -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
  -e 's|@INIT_D@|'"$INIT_D"'|g' \
+ -e 's|\/\/|'\/'|g' \
 $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBaseConf.sql
 
-##Â Copy in final dir
+sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
+ -e 's|@CENTSTORAGE_RRD@|'"$CENTSTORAGE_RRD"'|g' \
+ -e 's|\/\/|'\/'|g' \
+$TMPDIR/src/www/install/CreateTablesCentStorage.sql > $TMPDIR/work/www/install/CreateTablesCentStorage.sql
+
+
+## Copy in final dir
 log "INFO" "Copying www/install/insertBaseConf.sql in final directory"
 cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertBaseConf.sql >> $LOG_FILE 2>&1
 
