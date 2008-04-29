@@ -30,7 +30,7 @@
 # Required-Stop:
 # Default-Start:  3 5
 # Default-Stop: 0 1 6
-# Description:    Start the Oreon Database Storage collector
+# Description:    Start the CentStorage collector
 ### END INIT INFO
 
 ### BEGIN INIT INFO Redhat
