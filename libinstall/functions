@@ -275,8 +275,8 @@ function locate_nagios_vardir() {
 }
 
 ## Check nagios_plugin
-# in last version of this script, you've been a possibility to create if not exist
-# now is not possible. You'll create manualy.
+# in last version of this script, you have been a possibility to create if not exist
+# now is not possible. You will create manualy.
 function locate_nagios_plugindir() {
 	if [ -z "$NAGIOS_PLUGIN" ] ; then
 		answer_with_testdir "`gettext \"Where is your Nagios plugins (libexec) directory ?\"`" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
@@ -570,20 +570,19 @@ Alias /centreon $INSTALL_DIR_CENTREON/www/
 __EOT__
 
 	local write_config=0
-	if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
-		echo "`gettext \"Finding Apache Centreon configuration file\"`"
-		echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
-		yes_no_default "`gettext \"Do you want rewrite Apache configuration file ?\"`"
-		if [ $? -eq 0 ] ; then
-			write_config=1	
+	if [ $silent_install -ne 1 ] ; then 
+		if [ -e $DIR_APACHE_CONF/centreon.conf ] ; then
+			echo "`gettext \"Finding Apache Centreon configuration file\"`"
+			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
+			yes_no_default "`gettext \"Do you want rewrite Apache configuration file ?\"`"
+			[ $? -eq 0 ] && write_config=1	
+		else 
+			yes_no_default "`gettext \"Do you want write Apache configuration file ?\"`"
+			[ $? -eq 0 ] && write_config=1
 		fi
 	else 
-		yes_no_default "`gettext \"Do you want write Apache configuration file ?\"`"
-		if [ $? -eq 0 ] ; then
-			write_config=1	
-		fi
-    fi
-    
+		write_config=1
+    	fi
 	if [ $write_config -eq 1 ] ; then 
 		cp $examplesdir/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf 2>&1 > /dev/null
 		echo_success "`gettext \"Create\"` '$DIR_APACHE_CONF/centreon.conf'" "$ok"
@@ -812,7 +811,7 @@ function error()
     exit 2
 }
 
-# Find the user and group nagios in nagios.cfg and ask if we don't find
+# Find the user and group nagios in nagios.cfg and ask if we do not find
 function find_user_nagios()
 {
 	NAGIOS_USER=`cat $NAGIOS_ETC/nagios.cfg | grep ^nagios_user | cut -d= -f 2 2>/dev/null`
@@ -904,7 +903,7 @@ function check_group_nagios()
 
     nagios_group_grep=`grep $NAGIOS_GROUP /etc/group > /dev/null; echo $?`
     if [ $nagios_group_grep == 0 ]; then
-    	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "YES"
+    	echo_success "Finding nagios group '$NAGIOS_GROUP' in /etc/group" "$ok"
     else
 	echo "Nagios Group $NAGIOS_GROUP Not found"
 	echo ""

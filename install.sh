@@ -20,11 +20,6 @@
 # 
 #    For information : infos@centreon.com
 ####################################################################
-## Need to find a correct wrapper to exec
-#TEXTDOMAINDIR=`pwd`/locale
-#export TEXTDOMAINDIR
-#TEXTDOMAIN=install.sh
-#export TEXTDOMAIN
 
 BASE_DIR=`dirname $0`
 ## set directory
@@ -36,20 +31,27 @@ fi
 INSTALL_DIR=$BASE_DIR/libinstall
 INSTALL_VARS_DIR=$BASE_DIR/varinstall
 
+## Need to find a correct wrapper to exec gettext
+TEXTDOMAINDIR=$BASE_DIR/locale
+export TEXTDOMAINDIR
+TEXTDOMAIN=install.sh
+export TEXTDOMAIN
+
 ## log default vars 
 . $INSTALL_VARS_DIR/vars
 
 ## load all functions used in this script
 . $INSTALL_DIR/functions
 
-## Test if gettext was installed 
-pathfind gettext 
-if [ $? -eq 0 ] ; then  
-	. $INSTALL_DIR/gettext.sh 
-else 
-	# if not, use my gettext dummy :p 
-	PATH="$PATH:$INSTALL_DIR" 
+## Test if gettext was installed
+pathfind gettext
+if [ $? -eq 0 ] ; then 
+	. $INSTALL_DIR/gettext.sh
+else
+	# if not, use my gettext dummy :p
+	PATH="$PATH:$INSTALL_DIR"
 fi
+
 
 ## Valid if you are root 
 USERID=`id -u`
@@ -85,9 +87,9 @@ cat << __EOT__
 #                         Centreon (www.centreon.com)                         #
 #                          Thanks for using Centreon                          #
 #                                                                             #
-#                                 v $version 			 	     	#
+#                                    v$version 				    #
 #                                                                             #
-#                               infos@centreon.com                            #
+#                             infos@oreon-project.org                         #
 #                                                                             #
 #                   Make sure you have installed and configured               #
 #                   sudo - sed - php - apache - rrdtool - mysql               #
@@ -147,7 +149,7 @@ fi
 ## Use this on silent install ???
 # Check for old configfile
 # use for centreon1.x upgrade
-if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" ] ; then 
+if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" -a $silent_install -ne 1 ] ; then 
 	count=0
 	CENTREON_CONF=""
 	for conffile in $CENTREON_CONF_1_4 ; do
@@ -161,7 +163,7 @@ if [ ! -z "`ls $CENTREON_CONF_1_4 2>/dev/null`" ] ; then
 	fi
 fi
 
-if [ -e $CENTREON_CONF ] ; then
+if [ -e "$CENTREON_CONF" -a $silent_install -ne 1 ] ; then
 	echo "------------------------------------------------------------------------"
 	echo -e "\t`gettext \"Detecting old installation\"`"
 	echo "------------------------------------------------------------------------"
@@ -183,14 +185,17 @@ echo "------------------------------------------------------------------------"
 
 ## init install process
 # I prefer split install script.
-[ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW=0
-[ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE=0
-[ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE=0
-[ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS=0
-[ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS=0
+# 0 = do not install
+# 1 = install
+# 2 = question in console
+[ -z $PROCESS_CENTREON_WWW ] && PROCESS_CENTREON_WWW=2
+[ -z $PROCESS_CENTSTORAGE ] && PROCESS_CENTSTORAGE=2
+[ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE=2
+[ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS=2
+[ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS=2
 
 ## resquest centreon_www
-if [ $PROCESS_CENTREON_WWW -eq 0 ] ; then 
+if [ $PROCESS_CENTREON_WWW -eq 2 ] ; then 
 	yes_no_default "`gettext \"Do you want to install Centreon Web Front\"`"
 	if [ $? -eq 0 ] ; then
 		PROCESS_CENTREON_WWW=1
@@ -203,7 +208,7 @@ fi
 ## resquest centreon_centstorage
 # CentWeb/CentStorage dependancy
 [ $PROCESS_CENTREON_WWW -eq 1 ] && PROCESS_CENTSTORAGE=1
-if [ $PROCESS_CENTSTORAGE -eq 0 ] ; then 
+if [ $PROCESS_CENTSTORAGE -eq 2 ] ; then 
 	yes_no_default "`gettext \"Do you want to install Centreon CentStorage\"`"
 	if [ $? -eq 0 ] ; then
 		PROCESS_CENTSTORAGE=1
@@ -212,7 +217,7 @@ if [ $PROCESS_CENTSTORAGE -eq 0 ] ; then
 fi
 
 ## resquest centreon_centcore
-if [ $PROCESS_CENTCORE -eq 0 ] ; then 
+if [ $PROCESS_CENTCORE -eq 2 ] ; then 
 	yes_no_default "`gettext \"Do you want to install Centreon CentCore\"`"
 	if [ $? -eq 0 ] ; then
 		PROCESS_CENTCORE=1
@@ -221,7 +226,7 @@ if [ $PROCESS_CENTCORE -eq 0 ] ; then
 fi
 
 ## resquest centreon_plugins
-if [ $PROCESS_CENTREON_PLUGINS -eq 0 ] ; then 
+if [ $PROCESS_CENTREON_PLUGINS -eq 2 ] ; then 
 	yes_no_default "`gettext \"Do you want to install Centreon Nagios Plugins\"`"
 	if [ $? -eq 0 ] ; then
 		PROCESS_CENTREON_PLUGINS=1
@@ -230,7 +235,7 @@ if [ $PROCESS_CENTREON_PLUGINS -eq 0 ] ; then
 fi
 
 ## resquest centreon_snmp_traps
-if [ $PROCESS_CENTREON_SNMP_TRAPS -eq 0 ] ; then 
+if [ $PROCESS_CENTREON_SNMP_TRAPS -eq 2 ] ; then 
 	yes_no_default "`gettext \"Do you want to install Centreon Snmp Traps process\"`"
 	if [ $? -eq 0 ] ; then
 		PROCESS_CENTREON_SNMP_TRAPS=1

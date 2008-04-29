@@ -80,7 +80,6 @@ sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
  -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
  -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
  -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
- -e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' \
  -e 's|@NAGIOS_PLUGIN@|'"$NAGIOS_PLUGIN"'|g' \
  -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
  -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \

@@ -37,6 +37,7 @@ function get_list($file) {
 function check($packages) {
 	$config =& PEAR_Config::singleton();
 	$reg =& $config->getRegistry();
+	$ret = 0;
 	foreach ($packages as $package) {
 		echo "\033[s\033[1;37m" . $package['name'] . "\033[0m\033[33G\033[0;37m" . $package['version'] . "\033[0m\033[45G";
 		$package_info =& $reg->getPackage($package['name']);

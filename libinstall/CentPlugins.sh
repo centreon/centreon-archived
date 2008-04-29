@@ -30,6 +30,8 @@ mkdir -p $TMPDIR/work/plugins
 
 ## Change Macro in working dir
 for FILE in `ls $TMPDIR/src/plugins/src/check*centreon*` \
+	$TMPDIR/src/plugins/src/centreon.pm \
+	$TMPDIR/src/plugins/src/centreon.conf \
 	$TMPDIR/src/plugins/src/check_meta_service \
 	`ls $TMPDIR/src/plugins/src/check_snmp*` \
 	$TMPDIR/src/plugins/src/process-service-perfdata \
