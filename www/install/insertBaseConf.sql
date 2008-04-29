@@ -2,13 +2,13 @@
 -- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiosstats_bin`) VALUES(1, 'Poller Principal', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@DEFAULT_NAGIOS_BINARY@', '@DEFAULT_NAGIOSSTATS_BINARY@');
+INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiosstats_bin`) VALUES(1, 'Poller Principal', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSSTATS_BINARY@');
 
 --
 -- Contenu de la table `cfg_cgi`
 --
 
-INSERT INTO `cfg_cgi` (`cgi_id`, `cgi_name`, `main_config_file`, `physical_html_path`, `url_html_path`, `nagios_check_command`, `use_authentication`, `default_user_name`, `authorized_for_system_information`, `authorized_for_system_commands`, `authorized_for_configuration_information`, `authorized_for_all_hosts`, `authorized_for_all_host_commands`, `authorized_for_all_services`, `authorized_for_all_service_commands`, `statusmap_background_image`, `default_statusmap_layout`, `statuswrl_include`, `default_statuswrl_layout`, `refresh_rate`, `host_unreachable_sound`, `host_down_sound`, `service_critical_sound`, `service_warning_sound`, `service_unknown_sound`, `ping_syntax`, `cgi_comment`, `cgi_activate`) VALUES(10, 'CGI.cfg', '@NAGIOS_ETC@/nagios.cfg', '/usr/local/nagios/share', '/nagios', '/usr/local/nagios/libexec/check_nagios /usr/local/nagios/var/status.log 5 &#039;@DEFAULT_NAGIOS_BINARY@&#039;', '1', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'logofullsize.jpg', '4', NULL, '4', 90, NULL, NULL, NULL, NULL, NULL, '/bin/ping -n -c 5 $HOSTADDRESS$', 'Install Nagios TGZ', '1');
+INSERT INTO `cfg_cgi` (`cgi_id`, `cgi_name`, `main_config_file`, `physical_html_path`, `url_html_path`, `nagios_check_command`, `use_authentication`, `default_user_name`, `authorized_for_system_information`, `authorized_for_system_commands`, `authorized_for_configuration_information`, `authorized_for_all_hosts`, `authorized_for_all_host_commands`, `authorized_for_all_services`, `authorized_for_all_service_commands`, `statusmap_background_image`, `default_statusmap_layout`, `statuswrl_include`, `default_statuswrl_layout`, `refresh_rate`, `host_unreachable_sound`, `host_down_sound`, `service_critical_sound`, `service_warning_sound`, `service_unknown_sound`, `ping_syntax`, `cgi_comment`, `cgi_activate`) VALUES(10, 'CGI.cfg', '@NAGIOS_ETC@/nagios.cfg', '/usr/local/nagios/share', '/nagios', '/usr/local/nagios/libexec/check_nagios /usr/local/nagios/var/status.log 5 &#039;@NAGIOS_BINARY@&#039;', '1', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'logofullsize.jpg', '4', NULL, '4', 90, NULL, NULL, NULL, NULL, NULL, '/bin/ping -n -c 5 $HOSTADDRESS$', 'Install Nagios TGZ', '1');
 
 --
 -- Contenu de la table `cfg_nagios`
