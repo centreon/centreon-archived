@@ -11,7 +11,7 @@ DEFAULT_CENTREON_CONF="/etc/centreon/centreon.conf"
 CENTREON_CONF="/etc/centreon.conf"
 #use $CENTREON_ETC/centreon.conf
 PEAR_MODULES_LIST="pear.lst"
-DEFAULT_INSTALL_DIR_NAGIOS="/srv/nagios/"
+DEFAULT_INSTALL_DIR_NAGIOS="/usr/local/nagios/"
 DEFAULT_INSTALL_DIR_CENTREON="/usr/local/centreon"
 DEFAULT_NAGIOS_ETC="/usr/local/nagios/etc/"
 DEFAULT_NAGIOS_PLUGIN="/usr/local/nagios/libexec/"
