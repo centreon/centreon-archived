@@ -6,7 +6,7 @@ To use graphic plugins, you need to have on your server :
 
 To use Centreon, you need to have on your server :
 
-- php4 or php5 (php5 recommended)
+- php5
 - php-mysql
 - php-pear
 - php-snmp
