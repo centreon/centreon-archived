@@ -92,12 +92,17 @@ $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBase
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
  -e 's|@CENTSTORAGE_RRD@|'"$CENTSTORAGE_RRD"'|g' \
  -e 's|\/\/|'\/'|g' \
-$TMPDIR/src/www/install/CreateTablesCentStorage.sql > $TMPDIR/work/www/install/CreateTablesCentStorage.sql
+$TMPDIR/src/www/install/CreateTablesCentstorage.sql > $TMPDIR/work/www/install/CreateTablesCentstorage.sql
 
 
 ## Copy in final dir
 log "INFO" "Copying www/install/insertBaseConf.sql in final directory"
 cp $TMPDIR/work/www/install/insertBaseConf.sql $TMPDIR/final/www/install/insertBaseConf.sql >> $LOG_FILE 2>&1
+
+## Copy in final dir
+log "INFO" "Copying www/install/CreateTablesCentstorage.sql in final directory"
+cp $TMPDIR/work/www/install/CreateTablesCentstorage.sql $TMPDIR/final/www/install/CreateTablesCentstorage.sql >> $LOG_FILE 2>&1
+
 
 ### Step 2: Change right on Centreon WebFront
 #log "INFO" "`gettext \"Change right on www dir\"`"

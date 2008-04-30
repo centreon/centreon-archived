@@ -45,12 +45,12 @@ cp -rf $TMPDIR/src/lib $TMPDIR/final
 #################################
 ## Change Macro in working dir
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
- -e 's|@CENTREON_VAR@|'"$CENTREON_GENDIR"'|g' \
- $TMPDIR/src/www/install/createTablesODS.sql > $TMPDIR/work/www/install/createTablesODS.sql
+ 	-e 's|@CENTREON_VAR@|'"$CENTREON_GENDIR"'|g' \
+ $TMPDIR/src/www/install/createTablesCentstorage.sql > $TMPDIR/work/www/install/createTablesCentstorage.sql
 
 ## Copy in final dir
 log "INFO" "`gettext \"Copying www/install/createTablesODS.sql in final directory\"`"
-cp $TMPDIR/work/www/install/createTablesODS.sql $TMPDIR/final/www/install/createTablesODS.sql >> $LOG_FILE 2>&1
+cp $TMPDIR/work/www/install/createTablesCentstorage.sql $TMPDIR/final/www/install/createTablesCentstorage.sql >> $LOG_FILE 2>&1
 
 ###### RRD directory
 #################################
