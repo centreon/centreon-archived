@@ -31,6 +31,8 @@
 		print "<div style='padding-top: 60px;'><span class='msg'>Session Expired.</span></div>";
 	if ($file_install_acces)
 		print "<div style='padding-top: 60px;'><span class='msg'>$error_msg</span></div>";
+	if ($msg)
+		print "<div style='padding-top: 60px;'><span class='msg'>$msg</span></div>";
 ?>
 <div id="LoginInvit">
 	<table id="logintab1">
@@ -54,11 +56,11 @@
 				<table id="logintab2">
 					<tr>
 						<td><label for="useralias">Login:</label></td>
-						<td><input type="text" name="useralias" value="" class="inputclassic"></td>
+						<td><input type="text" name="useralias" value="" class="inputclassic" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
 					</tr>
 					<tr>
 						<td><label for="password">Password:</label></td>
-						<td><input type="password" name="password" value="" class="inputclassic"></td>
+						<td><input type="password" name="password" value="" class="inputclassic" <?php if (isset($freeze) && $freeze) print "disabled='disabled'"; ?>></td>
 					</tr>
 					<tr>
 						<td  colspan="2" id="sublogin">

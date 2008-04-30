@@ -30,9 +30,10 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 12);	?>
 	Before using centreon you have to move configuration files in configuration directory.
 	<br /><br />
 	<br>
-	mv <?=$conf_centreon["centreon_dir"]."/conf.pm"?> <?=$conf_centreon["centreon_etc"]."/conf.pm"?><br />
-	mv <?=$conf_centreon["centreon_dir"]."/centreon.conf.php"?> <?=$conf_centreon["centreon_etc"]."/centreon.conf.php"?> 
-	</b>
+	<ul>
+	<li>mv <?php echo $conf_centreon["centreon_dir"]."/conf.pm"?> <?php echo $conf_centreon["centreon_etc"]."/conf.pm"?><br /></li>
+	<li>mv <?php echo $conf_centreon["centreon_dir"]."/centreon.conf.php"?> <?php echo $conf_centreon["centreon_etc"]."/centreon.conf.php"?> </li>
+	</ul>
 	<br />
 	<br />
 	After that you will be able to use your monitoring Solution.<br /><br />Thanks for using Centreon

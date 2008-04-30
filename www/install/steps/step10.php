@@ -75,9 +75,8 @@ aff_header("Centreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$file[14] = " * \n";
 			$file[15] = " * For information : contact@centreon.com\n";
 			$file[16] = " */\n";
-			$file[17] = "\n\n";
-			$file[18] = "/* \tDatabase */\n";
-			$file[19] = "\$conf_oreon['hostCentreon'] = \"". $_SESSION["dbLocation"] ."\";\n";
+			$file[17] = "/* \tDatabase */\n";
+			$file[18] = "\$conf_oreon['hostCentreon'] = \"". $_SESSION["dbLocation"] ."\";\n";
 			$file[19] = "\$conf_oreon['hostCentstorage'] = \"". $_SESSION["dbLocation"] ."\";\n";
 			$file[20] = "\$conf_oreon['user'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
 			$file[21] = "\$conf_oreon['password'] = \"". $_SESSION["pwdOreonDB"] . "\";\n";

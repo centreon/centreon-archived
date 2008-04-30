@@ -21,8 +21,6 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["oreonpasswd"] = $_POST["oreonpasswd"];
 	$_SESSION["oreonfirstname"] = $_POST["oreonfirstname"];
 	$_SESSION["oreonlastname"] = $_POST["oreonlastname"];
-	$_SESSION["oreonemail"] = $_POST["oreonemail"];
-	$_SESSION["oreonlang"] = $_POST["oreonlang"];
 }
 aff_header("Centreon Setup Wizard", "LDAP Authentification", 9);   ?>
 If you want enable LDAP authentification, please complete the following fields. If you don't, leave blank.<br /><br />
@@ -35,7 +33,7 @@ If you want enable LDAP authentification, please complete the following fields. 
 	<td>
 		<input type="radio" name="ldap_auth_enable"  value="0" <?php if (isset($_SESSION["ldap_auth_enable"]) && $_SESSION["ldap_auth_enable"] == "0") { print "checked"; $display ="none" ;} else if (!isset($_SESSION["ldap_auth_enable"])) { print "checked"; $display ="none";} ?> onClick="document.getElementById('ldap_settings').style.display = 'none';" >No
     	<input type="radio" name="ldap_auth_enable"  value="1" <?php if (isset($_SESSION["ldap_auth_enable"]) && $_SESSION["ldap_auth_enable"] == "1") { print "checked"; $display ="block"; }?>  onClick="document.getElementById('ldap_settings').style.display = 'block';" >Yes
-
+ 	</td>
   </tr>
   <tr>
   	<td colspan="2">

@@ -48,25 +48,6 @@ if (isset($passwd_error) && $passwd_error)
     <td><b>Administrator Email for Oreon</b></td>
     <td align="right"><input type="text" name="oreonemail" value="<?php if (isset($_SESSION["oreonemail"])) print $_SESSION["oreonemail"]; ?>"></td>
   </tr>
-  <tr>
-    <td><b>Administrator language for Oreon</b></td>
-    <td align="right"><select name="oreonlang">
-			<?php
-			$chemintotal = "../lang/";
-			if ($handle  = opendir($chemintotal))	{
-				while ($file = readdir($handle))
-					if	(!is_dir("$chemintotal/$file") && strcmp($file, "index.php") && strcmp($file, "index.html") && strcmp($file, "index.ihtml") ) {
-						$tab = split('\.', $file);
-						print "<option ";
-						if (isset($_SESSION["oreonlang"]) && !strcmp($_SESSION["oreonlang"], $tab[0]))
-							print "selected";
-						print ">" . $tab[0] . "</option>";
-					}
-				closedir($handle);
-			}
-			?>
-			</select>
-	</td>
   </tr>
 </table>
 <?php

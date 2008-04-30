@@ -15,12 +15,20 @@
  * For information : contact@centreon.com
  */
  
-	if (!file_exists("/etc/centreon/centreon.conf.php"))
+	if (!file_exists("/etc/centreon/centreon.conf.php") && is_dir('./install'))
 		header("Location: ./install/setup.php");
 	else if (file_exists("/etc/centreon/centreon.conf.php") && is_dir('install'))
 		header("Location: ./install/upgrade.php");
-	else
-		require_once ("/etc/centreon/centreon.conf.php");
+	else {
+		if (file_exists("/etc/centreon/centreon.conf.php")){
+			require_once ("/etc/centreon/centreon.conf.php");
+			$freeze = 0;
+		} else {
+			$freeze = 1;
+			require_once ("../centreon.conf.php");
+			$msg = _("You have to move centreon configuration file from temporary directory to final directory");
+		}
+	}
 
 	require_once ("$classdir/Session.class.php");
 	require_once ("$classdir/Oreon.class.php");
