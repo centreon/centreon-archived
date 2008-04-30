@@ -59,34 +59,39 @@ aff_header("Oreon Setup Wizard", "Oreon Configuration File", 10);	?>
 			$_SESSION["pwdOreonDB"] = str_replace("\$", "\\\$", $_SESSION["pwdOreonDB"]);
 		
 			$file[0] = "<?php\n";
-			$file[1] = "/**\n";
-			$file[2] = "Centreon is developped with GPL Licence 2.0 :\n";
-			$file[3] = "http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt\n";
-			$file[4] = "Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf\n";
-			$file[5] = "\n";
-			$file[6] = "The Software is provided to you AS IS and WITH ALL FAULTS.\n";
-			$file[7] = "OREON makes no representation and gives no warranty whatsoever,\n";
-			$file[8] = "whether express or implied, and without limitation, with regard to the quality,\n";
-			$file[9] = "safety, contents, performance, merchantability, non-infringement or suitability for\n";
-			$file[10] = "any particular or intended purpose of the Software found on the OREON web site.\n";
-			$file[11] = "In no event will OREON be liable for any direct, indirect, punitive, special,\n";
-			$file[12] = "incidental or consequential damages however they may arise and even if OREON has\n";
-			$file[13] = "been previously advised of the possibility of such damages.\n";
-			$file[14] = "\n";
-			$file[15] = "For information : contact@centreon.com\n";
-			$file[16] = "	*/\n";
+			$file[1] = "/*\n";
+			$file[2] = " * Centreon is developped with GPL Licence 2.0 :\n";
+			$file[3] = " * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt\n";
+			$file[4] = " * Developped by : Julien Mathis - Romain Le Merlus - Christophe Coraboeuf\n";
+			$file[5] = " * \n";
+			$file[6] = " * The Software is provided to you AS IS and WITH ALL FAULTS.\n";
+			$file[7] = " * Centreon makes no representation and gives no warranty whatsoever,\n";
+			$file[8] = " * whether express or implied, and without limitation, with regard to the quality,\n";
+			$file[9] = " * safety, contents, performance, merchantability, non-infringement or suitability for\n";
+			$file[10] = " * any particular or intended purpose of the Software found on the Centreon web site.\n";
+			$file[11] = " * In no event will Centreon be liable for any direct, indirect, punitive, special,\n";
+			$file[12] = " * incidental or consequential damages however they may arise and even if Centreon has\n";
+			$file[13] = " * been previously advised of the possibility of such damages.\n";
+			$file[14] = " * \n";
+			$file[15] = " * For information : contact@centreon.com\n";
+			$file[16] = " */\n";
 			$file[17] = "\n\n";
-			$file[18] = "// \tDatabase\n";
-			$file[19] = "\$conf_oreon['host'] = \"". $_SESSION["dbLocation"] ."\";\n";
+			$file[18] = "/* \tDatabase */\n";
+			$file[19] = "\$conf_oreon['hostCentreon'] = \"". $_SESSION["dbLocation"] ."\";\n";
+			$file[19] = "\$conf_oreon['hostCentstorage'] = \"". $_SESSION["dbLocation"] ."\";\n";
 			$file[20] = "\$conf_oreon['user'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
 			$file[21] = "\$conf_oreon['password'] = \"". $_SESSION["pwdOreonDB"] . "\";\n";
 			$file[22] = "\$conf_oreon['db'] = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file[23] = "\$conf_oreon['ods'] = \"". $_SESSION["nameOdsDB"] . "\";\n";
+			$file[23] = "\$conf_oreon['dbcstg'] = \"". $_SESSION["nameOdsDB"] . "\";\n";
 			$file[24] = "\n\n";
-			$file[25] = "// path to classes\n";
+			$file[25] = "/* path to classes */\n";
 			$file[26] = "\$classdir='./class';\n";
+			$file[27] = "/* Centreon Path */\n";
+			$file[28] = "\$centreon_path='".$conf_centreon["centreon_dir"]."';\n";
+			$file[29] = "?>";
+			
 			if ($fd = fopen($conf_centreon["centreon_dir"]."centreon.conf.php", "w"))	{
-				for ($i = 0; $i <= 26; $i++)
+				for ($i = 0; $i <= 28; $i++)
 					fwrite ($fd, $file[$i]);
 				fclose ($fd);
 				echo '<b><span class="go">OK</b>';

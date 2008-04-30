@@ -46,9 +46,9 @@
 		$row =& $res->fetchRow();
 		$version = $row['mysql_version'];
 		if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
-			$db = $conf_oreon["ods"];
+			$db = $conf_oreon["dbcstg"];
 			$db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$db`" : $db;
-			$sql = "SHOW TABLE STATUS FROM `".$conf_oreon["ods"]."`";
+			$sql = "SHOW TABLE STATUS FROM `".$conf_oreon["dbcstg"]."`";
 			if($res =& $pearDB->query($sql))
 			{
 				$dbsizeods = 0;

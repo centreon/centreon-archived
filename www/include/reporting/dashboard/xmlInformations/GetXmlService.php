@@ -48,8 +48,8 @@
 			     'phptype'  => 'mysql',
 			     'username' => $conf_oreon['user'],
 			     'password' => $conf_oreon['password'],
-			     'hostspec' => $conf_oreon['host'],
-			     'database' => $conf_oreon['ods'],
+			     'hostspec' => $conf_oreon['hostCentstorage'],
+			     'database' => $conf_oreon['dbcstg'],
 			     );
 		
 
