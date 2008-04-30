@@ -20,7 +20,7 @@
 		
 	require_once("DB.php");
 	
-	if (isset($conf_oreon["ods"])){ 
+	if (isset($conf_oreon["dbcstg"])){ 
 		// Pear connection
 		
 		$debug = 0;
@@ -28,14 +28,13 @@
 		    'phptype'  => 'mysql',
 		    'username' => $conf_oreon["user"],
 		    'password' => $conf_oreon["password"],
-		    'hostspec' => $conf_oreon["hostCenstorage"],
+		    'hostspec' => $conf_oreon["hostCentstorage"],
 		    'database' => $conf_oreon["dbcstg"],
 		);
 		
-		$options = array(
-		    'debug'       => 2,
-		    'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE, 
-		);
+		print_r($dsn);
+		
+		$options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 		
 		global $pearDB0;
 		
