@@ -28,8 +28,8 @@
 		    'phptype'  => 'mysql',
 		    'username' => $conf_oreon["user"],
 		    'password' => $conf_oreon["password"],
-		    'hostspec' => $conf_oreon["host"],
-		    'database' => $conf_oreon["ods"],
+		    'hostspec' => $conf_oreon["hostCenstorage"],
+		    'database' => $conf_oreon["dbcstg"],
 		);
 		
 		$options = array(
