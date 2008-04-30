@@ -139,7 +139,7 @@ aff_header("Oreon Setup Wizard", "Creating Database", 11);
 	if (!$return_false){
 		print '<tr><td><b>Database &#146;'.$_SESSION["nameOdsDB"].'&#146; : Schema Creation</b></td>';
 		$mysql_msg = '';
-		$file_sql = file("./createTablesODS.sql");
+		$file_sql = file("./createTablesCentstorage.sql");
 	    $str = NULL;
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
