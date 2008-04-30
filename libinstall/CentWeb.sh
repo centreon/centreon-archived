@@ -73,20 +73,21 @@ echo -e "`gettext \"In process\"`"
 ### Step 1:
 ## Change Macro on sql file
 sed -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
- -e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g' \
- -e 's|@NAGIOSSTATS_BINARY@|'"$NAGIOSSTATS_BINARY"'|g' \
- -e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' \
- -e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
- -e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
- -e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
- -e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
- -e 's|@NAGIOS_PLUGIN@|'"$NAGIOS_PLUGIN"'|g' \
- -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
- -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
- -e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
- -e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
- -e 's|@INIT_D@|'"$INIT_D"'|g' \
- -e 's|\/\/|'\/'|g' \
+ 	-e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g' \
+ 	-e 's|@NAGIOSSTATS_BINARY@|'"$NAGIOSSTATS_BINARY"'|g' \
+ 	-e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' \
+ 	-e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
+ 	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+ 	-e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
+ 	-e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
+ 	-e 's|@NAGIOS_PLUGIN@|'"$NAGIOS_PLUGIN"'|g' \
+	-e 's|@NAGIOS_INIT_SCRIPT@|'"$NAGIOS_INIT_SCRIPT"'|g' \ 
+	-e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
+ 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
+ 	-e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
+ 	-e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
+ 	-e 's|@INIT_D@|'"$INIT_D"'|g' \
+ 	-e 's|\/\/|'\/'|g' \
 $TMPDIR/src/www/install/insertBaseConf.sql > $TMPDIR/work/www/install/insertBaseConf.sql
 
 ## Copy in final dir
