@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 
-aff_header("Oreon Setup Wizard", "User Interface Configuration", 8);
+aff_header("Centreon Setup Wizard", "User Interface Configuration", 8);
 if (isset($passwd_error) && $passwd_error)
 	print "<center><b><span class=\"stop\">$passwd_error</span></b></center><br />";
 ?>

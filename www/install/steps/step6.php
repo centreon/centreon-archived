@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 
-aff_header("Oreon Setup Wizard", "DataBase Configuration", 6);
+aff_header("Centreon Setup Wizard", "DataBase Configuration", 6);
 if (isset($passwd_error) && $passwd_error)
 	print "<center><b><span class=\"stop\">$passwd_error</span></b></center><br />";
 ?>

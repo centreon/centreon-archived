@@ -15,7 +15,7 @@
  * For information : contact@centreon.com
  */
 
-aff_header("Oreon Setup Wizard", "Creating Database", 11);
+aff_header("Centreon Setup Wizard", "Creating Database", 11);
 ?>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
   	<tr>

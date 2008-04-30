@@ -32,7 +32,7 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	if (isset($_POST["nagiosVersion"])) $_SESSION["nagiosVersion"] = $_POST["nagiosVersion"];
 	if (isset($_POST["mysqlVersion"])) $_SESSION["mysqlVersion"] = $_POST["mysqlVersion"];
 }
-aff_header("Oreon Setup Wizard", "DataBase Verification", 7);
+aff_header("Centreon Setup Wizard", "DataBase Verification", 7);
 
 ?>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
