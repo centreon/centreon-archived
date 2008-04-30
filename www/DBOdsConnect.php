@@ -32,8 +32,6 @@
 		    'database' => $conf_oreon["dbcstg"],
 		);
 		
-		print_r($dsn);
-		
 		$options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 		
 		global $pearDB0;
