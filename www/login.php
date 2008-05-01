@@ -31,7 +31,7 @@
 		print "<div style='padding-top: 60px;'><span class='msg'>Session Expired.</span></div>";
 	if ($file_install_acces)
 		print "<div style='padding-top: 60px;'><span class='msg'>$error_msg</span></div>";
-	if ($msg)
+	if (isset($msg) && $msg)
 		print "<div style='padding-top: 60px;'><span class='msg'>$msg</span></div>";
 ?>
 <div id="LoginInvit">

@@ -16,6 +16,7 @@
  */
 
 	global $pearDB;
+	
 	$DBRESULT =& $pearDB->query("SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : SELECT debug_path, debug_nagios_import FROM general_opt LIMIT 1 : ".$DBRESULT->getMessage()."<br />";
@@ -28,6 +29,15 @@
 	if (!isset($debug_nagios_import))
 		$debug_nagios_import = 0;
 
+	# Get Poller List
+	$tab_nagios_server = array();
+	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
+	if (PEAR::isError($DBRESULT))
+		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	while ($nagios =& $DBRESULT->fetchRow())
+		$tab_nagios_server[$nagios['id']] = $nagios['name'];
+	
+
 	#
 	## Form begin
 	#
@@ -38,7 +48,7 @@
 	$form->addElement('header', 'title', _("Nagios Configuration Upload"));
 
 	$form->addElement('header', 'infos', _("Implied Server"));
-    $form->addElement('select', 'host', _("Nagios/Centreon Server"), array(0=>"localhost"), $attrSelect);
+    $form->addElement('select', 'host', _("Nagios/Centreon Server"), $tab_nagios_server, $attrSelect);
 
 	$form->addElement('header', 'opt', _("Upload Options"));
 	$tab = array();
@@ -46,11 +56,13 @@
 	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, _("No"), '0');
 	$form->addGroup($tab, 'del', _("Delete all configuration for the chosen type of files"), '&nbsp;');
 	$form->setDefaults(array('del' => '0'));
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, _("No"), '0');
 	$form->addGroup($tab, 'overwrite', _("Update definition in case of double definition"), '&nbsp;');
 	$form->setDefaults(array('overwrite' => '1'));
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("No"), '0');
@@ -59,6 +71,7 @@
 
 	$form->addElement('header', 'fileType', _("File Type"));
 	$form->addElement('header', 'fileMis1', _("For archive upload, be sure that the first line of each file has no importance because it is not handled.<br />Avoid to begin with a definition."));
+
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("nagios.cfg"), 'nagios');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("cgi.cfg"), 'cgi');
@@ -108,7 +121,6 @@
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : ". $fDataz["name"] . " -> ". $fDataz["type"]."\n", 3, $debug_path."cfgimport.log");
 
-
 		# File Moving
 		switch ($fDataz["type"])	{
 			case "application/x-zip-compressed" : $msg .= $fDataz["name"]." "._("Not supported extension")."<br />"; break;
@@ -117,6 +129,7 @@
 			case "application/octet-stream" : $file->moveUploadedFile($nagiosCFGPath); $msg .= _("Manual filling OK")." "._("File loading OK")."<br />"; break; // Text
 			default : $msg .= _("File loading KO")."<br />";
 		}
+
 		# Buffering Data
 		if (is_file($nagiosCFGPath.$fDataz["name"]))	{
 			$buf =& gzfile($nagiosCFGPath.$fDataz["name"]);

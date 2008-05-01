@@ -61,23 +61,21 @@
 	}
 
 	function insertResourceCFG(& $buf)	{
+		global $oreon, $debug_nagios_import, $debug_path;
 		$i = 0;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
 		foreach ($buf as $str)	{
 			$regs = array();
 			$resCFG = array();
 			# Fill with buffer value
-			if (preg_match("/^[ \t]*([0-9a-zA-Z\_ \$#]+)[ \t]*=[ \t]*(.+)/", $str, $regs))	{
+			if (preg_match("/^[ \t]*([0-9a-zA-Z\_\ \$\#]+)[ \t]*=[ \t]*(.+)/", $str, $regs))	{
 				if (preg_match("/([#]+)/", trim($regs[1])))	{
 					$resCFG["resource_activate"]["resource_activate"] = "0";
 					$resCFG["resource_name"] = preg_replace("/([#]+)/", "", trim($regs[1]));
-				}	else	{					
+				}	else	{
 					$resCFG["resource_activate"]["resource_activate"] = "1";
 					$resCFG["resource_name"] = trim($regs[1]);
 				}				
-				$resCFG["resource_line"] = $resCFG["resource_name"]."=".trim($regs[2]);
+				$resCFG["resource_line"] = trim($regs[2]);
 				$resCFG["resource_comment"] = trim($regs[1])." ".date("d/m/Y - H:i:s", time());
 				# Add in db
 				require_once("./include/configuration/configResources/DB-Func.php");
@@ -195,7 +193,7 @@
 
 	function insertCFG(& $buf, & $ret)	{
 		$typeDef = NULL;
-		global $nbr,$oreon,$debug_nagios_import,$debug_path;
+		global $nbr,$oreon,$debug_nagios_import,$debug_path, $pearDB;
 		$nbr = array("cmd"=>0, "tp"=>0, "cct"=>0, "cg"=>0, "h"=>0, "hg"=>0, "hd"=>0, "sv"=>0, "svd"=>0, "sg"=>0, "sgd"=>0, "hei"=>0);
 		$tmpConf = array();
 		$get = false;
@@ -289,6 +287,11 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				$useTpl = insertHostCFG($tmpConf);
+				$rq = "INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".getMyHostID($tmpConf["host_name"])."', '".$_POST['host']."')";
+				$DBRESULT = $pearDB->query($rq);
+				if (PEAR::isError($DBRESULT))
+					print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+				
 				$useTpls[$useTpl[0]] = $useTpl[1];
 				isset($useTpl[2]) ? $parentsTMP[$useTpl[0]] = $useTpl[2] : NULL;
 				$get = false;

@@ -107,9 +107,6 @@
 			$DBRESULT =& $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-			$files = glob($oreon->optGen["oreon_rrdbase_path"].$key."_*.rrd");
-			foreach ($files as $filename)
-				unlink ($filename);
 		}
 	}
 	
@@ -672,7 +669,7 @@
 			$hpars[$arr["host_parent_hp_id"]] = $arr["host_parent_hp_id"];
 		$ret = $form->getSubmitValue("host_parents");
 		for($i = 0; $i < count($ret); $i++)	{
-			if (!isset($hpars[$ret[$i]]))	{
+			if (!isset($hpars[$ret[$i]]) && isset($ret[$i]))	{
 				$rq = "INSERT INTO host_hostparent_relation ";
 				$rq .= "(host_parent_hp_id, host_host_id) ";
 				$rq .= "VALUES ";
@@ -719,7 +716,7 @@
 			$hchs[$arr["host_host_id"]] = $arr["host_host_id"];
 		$ret = $form->getSubmitValue("host_childs");
 		for($i = 0; $i < count($ret); $i++)	{
-			if (!isset($hchs[$ret[$i]]))	{
+			if (!isset($hchs[$ret[$i]]) && isset($ret[$i]))	{
 				$rq = "INSERT INTO host_hostparent_relation ";
 				$rq .= "(host_parent_hp_id, host_host_id) ";
 				$rq .= "VALUES ";
@@ -1072,7 +1069,7 @@
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		isset($ret["nagios_server_id"]) ? $ret = $ret["nagios_server_id"] : $ret = $form->getSubmitValue("nagios_server_id");
-		for($i = 0; $i < count($ret); $i++)	{
+		for ($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO `ns_host_relation` ";
 			$rq .= "(`host_host_id`, `nagios_server_id`) ";
 			$rq .= "VALUES ";
