@@ -12,7 +12,9 @@
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/download.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.directories.label}</td><td class="FormRowValue">{$form.directories.html}</td></tr>
+		{if $o == "c" || $o == "w"}
+			<tr class="list_two"><td class="FormRowField">{$form.img_name.label}</td><td class="FormRowValue">{$form.img_name.html}</td></tr>
+		{/if}		<tr class="list_one"><td class="FormRowField">{$form.directories.label}</td><td class="FormRowValue">{$form.directories.html}</td></tr>
 		<tr class="list_two">
 			<td class="FormRowField">{$form.filename.label}</td>
 			<td class="FormRowValue">

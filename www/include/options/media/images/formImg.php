@@ -70,6 +70,8 @@
 	$form->addElement('header', 'information', _("General Information"));	
 	$form->addElement('select', 'directories', _("Directory"), $dirs);
 
+	if ($o == "c" || $o == "w")
+		$form->addElement('text', 'img_name', $lang['views_img_imgName'], $attrsText);
  	$file =& $form->addElement('file', 'filename', _("Image"));
 	$file1 =& $form->addElement('file', 'filename1', _("Image"));
 	$file2 =& $form->addElement('file', 'filename2', _("Image"));
@@ -103,6 +105,8 @@
 	## Form Rules
 	#
 	$form->applyFilter('__ALL__', 'myTrim');
+	if ($o == "c")
+		$form->addRule('img_name', $lang['ErrName'], 'required');
 	$form->addRule('directories', _("Required Field"), 'required');
 	$form->setRequiredNote(_("Required Field"));
 

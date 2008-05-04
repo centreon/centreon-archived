@@ -83,6 +83,13 @@
 		$ret = array();
 		$ret["img_path"] = NULL;
 		$ret = $form->getSubmitValues();
+		if (isset($ret["img_name"]) && $ret["img_name"])	{
+			$rq = "UPDATE view_img SET ";
+			$rq .= "img_name = '".$ret["img_name"]."' WHERE img_id = '".$img_id."'";
+			$DBRESULT = $pearDB->query($rq);
+			if (PEAR::isError($DBRESULT))
+				print "DB Error : ".$DBRESULT->getDebugInfo()."<br>";
+		}
 		if ($file->isUploadedFile())	{
 			/*
 			 * Delete old file
